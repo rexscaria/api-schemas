@@ -243,18 +243,18 @@ which can be used to wrap any `io.Reader` with the appropriate file name and con
 ```go
 // A file from the file system
 file, err := os.Open("/path/to/file")
-cfrex.AccountAIConvertToMarkdownParams{
-	Body: cfrex.F[io.Reader](file),
+cfrex.AccountAIFinetuneUploadAssetParams{
+	File: cfrex.F[io.Reader](file),
 }
 
 // A file from a string
-cfrex.AccountAIConvertToMarkdownParams{
-	Body: cfrex.F[io.Reader](strings.NewReader("my file contents")),
+cfrex.AccountAIFinetuneUploadAssetParams{
+	File: cfrex.F[io.Reader](strings.NewReader("my file contents")),
 }
 
 // With a custom filename and contentType
-cfrex.AccountAIConvertToMarkdownParams{
-	Body: cfrex.FileParam(strings.NewReader(`{"hello": "foo"}`), "file.go", "application/json"),
+cfrex.AccountAIFinetuneUploadAssetParams{
+	File: cfrex.FileParam(strings.NewReader(`{"hello": "foo"}`), "file.go", "application/json"),
 }
 ```
 
