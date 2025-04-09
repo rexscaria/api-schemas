@@ -184,7 +184,7 @@ func TestAccountTokenListWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"eb78d65290b24279ba6f44721b3ea3c4",
 		cfrex.AccountTokenListParams{
-			Direction: cfrex.F(cfrex.AccountTokenListParamsDirectionAsc),
+			Direction: cfrex.F(cfrex.AccountTokenListParamsDirectionDesc),
 			Page:      cfrex.F(1.000000),
 			PerPage:   cfrex.F(5.000000),
 		},

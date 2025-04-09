@@ -43,7 +43,7 @@ func TestAccountLogGetAuditLogsWithOptionalParams(t *testing.T) {
 			ActorIPAddress:  cfrex.F("17.168.228.63"),
 			ActorTokenID:    cfrex.F("144cdb2e39c55e203cf225d8d8208647"),
 			ActorTokenName:  cfrex.F("Test Token"),
-			ActorType:       cfrex.F(cfrex.AccountLogGetAuditLogsParamsActorTypeCloudflareAdmin),
+			ActorType:       cfrex.F(cfrex.AccountLogGetAuditLogsParamsActorTypeAccount),
 			AuditLogID:      cfrex.F("f174be97-19b1-40d6-954d-70cd5fbd52db"),
 			Cursor:          cfrex.F("Q1buH-__DQqqig7SVYXT-SsMOTGY2Z3Y80W-fGgva7yaDdmPKveucH5ddOcHsJRhNb-xUK8agZQqkJSMAENGO8NU6g=="),
 			Direction:       cfrex.F(cfrex.AccountLogGetAuditLogsParamsDirectionDesc),

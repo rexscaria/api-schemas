@@ -30,7 +30,7 @@ func TestAccountRulesetPhaseEntrypointGet(t *testing.T) {
 	_, err := client.Accounts.Rulesets.Phases.Entrypoint.Get(
 		context.TODO(),
 		"abf9b32d38c5f572afde3336ec0ce302",
-		cfrex.RulesetPhaseDdosL4,
+		cfrex.RulesetPhaseHTTPRequestFirewallCustom,
 	)
 	if err != nil {
 		var apierr *cfrex.Error
@@ -58,7 +58,7 @@ func TestAccountRulesetPhaseEntrypointUpdateWithOptionalParams(t *testing.T) {
 	_, err := client.Accounts.Rulesets.Phases.Entrypoint.Update(
 		context.TODO(),
 		"abf9b32d38c5f572afde3336ec0ce302",
-		cfrex.RulesetPhaseDdosL4,
+		cfrex.RulesetPhaseHTTPRequestFirewallCustom,
 		cfrex.AccountRulesetPhaseEntrypointUpdateParams{
 			ID:          cfrex.F("2f2feab2026849078ba485f918791bdc"),
 			Version:     cfrex.F("1"),
@@ -86,7 +86,7 @@ func TestAccountRulesetPhaseEntrypointUpdateWithOptionalParams(t *testing.T) {
 				}),
 				Ratelimit: cfrex.F(cfrex.AccountRulesetPhaseEntrypointUpdateParamsRulesObjectRatelimit{
 					Characteristics:         cfrex.F([]string{"ip.src"}),
-					Period:                  cfrex.F(cfrex.AccountRulesetPhaseEntrypointUpdateParamsRulesObjectRatelimitPeriod10),
+					Period:                  cfrex.F(cfrex.AccountRulesetPhaseEntrypointUpdateParamsRulesObjectRatelimitPeriod60),
 					CountingExpression:      cfrex.F(`http.request.body.raw eq "abcd"`),
 					MitigationTimeout:       cfrex.F(int64(600)),
 					RequestsPerPeriod:       cfrex.F(int64(1000)),

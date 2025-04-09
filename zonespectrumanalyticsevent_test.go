@@ -32,7 +32,7 @@ func TestZoneSpectrumAnalyticsEventGetByTimeWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.ZoneSpectrumAnalyticsEventGetByTimeParams{
-			TimeDelta:  cfrex.F(cfrex.ZoneSpectrumAnalyticsEventGetByTimeParamsTimeDeltaYear),
+			TimeDelta:  cfrex.F(cfrex.ZoneSpectrumAnalyticsEventGetByTimeParamsTimeDeltaMinute),
 			Dimensions: cfrex.F([]cfrex.DimensionItem{cfrex.DimensionItemEvent, cfrex.DimensionItemAppID}),
 			Filters:    cfrex.F("event==disconnect%20AND%20coloName!=SFO"),
 			Metrics:    cfrex.F([]cfrex.MetricItem{cfrex.MetricItemCount, cfrex.MetricItemBytesIngress}),

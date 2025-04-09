@@ -29,7 +29,7 @@ func TestRadarLeakedCredentialCheckTimeseriesGroupGetByBotClassWithOptionalParam
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.LeakedCredentialChecks.TimeseriesGroups.GetByBotClass(context.TODO(), cfrex.RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassParams{
-		AggInterval: cfrex.F(cfrex.RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassParamsAggInterval15m),
+		AggInterval: cfrex.F(cfrex.RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassParamsAggInterval1h),
 		Compromised: cfrex.F([]cfrex.RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassParamsCompromised{cfrex.RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassParamsCompromisedClean}),
 		DateEnd:     cfrex.F([]time.Time{time.Now()}),
 		DateRange:   cfrex.F([]string{"7d"}),
@@ -61,7 +61,7 @@ func TestRadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusWithOpti
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.LeakedCredentialChecks.TimeseriesGroups.GetByCompromisedStatus(context.TODO(), cfrex.RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusParams{
-		AggInterval: cfrex.F(cfrex.RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusParamsAggInterval15m),
+		AggInterval: cfrex.F(cfrex.RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusParamsAggInterval1h),
 		BotClass:    cfrex.F([]cfrex.RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusParamsBotClass{cfrex.RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusParamsBotClassLikelyAutomated}),
 		DateEnd:     cfrex.F([]time.Time{time.Now()}),
 		DateRange:   cfrex.F([]string{"7d"}),

@@ -41,7 +41,7 @@ func TestZoneSubscriptionNewWithOptionalParams(t *testing.T) {
 					Price:   cfrex.F(5.000000),
 					Value:   cfrex.F(20.000000),
 				}}),
-				Frequency: cfrex.F(cfrex.SubscriptionV2FrequencyWeekly),
+				Frequency: cfrex.F(cfrex.SubscriptionV2FrequencyMonthly),
 				RatePlan: cfrex.F(cfrex.SubscriptionV2RatePlanParam{
 					ID:                cfrex.F("free"),
 					Currency:          cfrex.F("USD"),
@@ -116,7 +116,7 @@ func TestZoneSubscriptionUpdateWithOptionalParams(t *testing.T) {
 					Price:   cfrex.F(5.000000),
 					Value:   cfrex.F(20.000000),
 				}}),
-				Frequency: cfrex.F(cfrex.SubscriptionV2FrequencyWeekly),
+				Frequency: cfrex.F(cfrex.SubscriptionV2FrequencyMonthly),
 				RatePlan: cfrex.F(cfrex.SubscriptionV2RatePlanParam{
 					ID:                cfrex.F("free"),
 					Currency:          cfrex.F("USD"),

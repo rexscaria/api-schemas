@@ -169,7 +169,7 @@ func TestAccountWorkerDispatchNamespaceScriptUploadWithOptionalParams(t *testing
 						Headers:          cfrex.F("/dashboard/*\nX-Frame-Options: DENY\n\n/static/*\nAccess-Control-Allow-Origin: *"),
 						Redirects:        cfrex.F("/foo /bar 301\n/news/* /blog/:splat"),
 						HTMLHandling:     cfrex.F(cfrex.AccountWorkerDispatchNamespaceScriptUploadParamsMetadataAssetsConfigHTMLHandlingAutoTrailingSlash),
-						NotFoundHandling: cfrex.F(cfrex.AccountWorkerDispatchNamespaceScriptUploadParamsMetadataAssetsConfigNotFoundHandlingNone),
+						NotFoundHandling: cfrex.F(cfrex.AccountWorkerDispatchNamespaceScriptUploadParamsMetadataAssetsConfigNotFoundHandling404Page),
 						RunWorkerFirst:   cfrex.F(false),
 						ServeDirectly:    cfrex.F(true),
 					}),
@@ -177,7 +177,7 @@ func TestAccountWorkerDispatchNamespaceScriptUploadWithOptionalParams(t *testing
 				}),
 				Bindings: cfrex.F([]cfrex.BindingItemUnionParam{cfrex.BindingItemWorkersBindingKindAIParam{
 					Name: cfrex.F("MY_ENV_VAR"),
-					Type: cfrex.F(cfrex.BindingItemWorkersBindingKindAITypeAI),
+					Type: cfrex.F(cfrex.BindingItemWorkersBindingKindAITypePlainText),
 				}}),
 				BodyPart:           cfrex.F("worker.js"),
 				CompatibilityDate:  cfrex.F("2021-01-01"),

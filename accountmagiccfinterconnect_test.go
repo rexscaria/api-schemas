@@ -73,7 +73,7 @@ func TestAccountMagicCfInterconnectUpdateWithOptionalParams(t *testing.T) {
 				Target: cfrex.F[cfrex.MagicHealthCheckBaseTargetUnionParam](cfrex.MagicHealthCheckBaseTargetMagicHealthCheckTargetParam{
 					Saved: cfrex.F("203.0.113.1"),
 				}),
-				Type: cfrex.F(cfrex.MagicHealthCheckBaseTypeReply),
+				Type: cfrex.F(cfrex.MagicHealthCheckBaseTypeRequest),
 			}),
 			InterfaceAddress:  cfrex.F("192.0.2.0/31"),
 			Mtu:               cfrex.F(int64(0)),

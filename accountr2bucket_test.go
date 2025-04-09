@@ -96,7 +96,7 @@ func TestAccountR2BucketListWithOptionalParams(t *testing.T) {
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.AccountR2BucketListParams{
 			Cursor:       cfrex.F("cursor"),
-			Direction:    cfrex.F(cfrex.AccountR2BucketListParamsDirectionAsc),
+			Direction:    cfrex.F(cfrex.AccountR2BucketListParamsDirectionDesc),
 			NameContains: cfrex.F("my-bucket"),
 			Order:        cfrex.F(cfrex.AccountR2BucketListParamsOrderName),
 			PerPage:      cfrex.F(1.000000),

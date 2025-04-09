@@ -31,7 +31,7 @@ func TestAccountGatewayRuleNewWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"699d98642c564d2e855e9661899b7252",
 		cfrex.AccountGatewayRuleNewParams{
-			Action:        cfrex.F(cfrex.ActionPerformOn),
+			Action:        cfrex.F(cfrex.ActionPerformAllow),
 			Name:          cfrex.F("block bad websites"),
 			Description:   cfrex.F("Block bad websites based on their host name."),
 			DevicePosture: cfrex.F(`any(device_posture.checks.passed[*] in {"1308749e-fcfb-4ebc-b051-fe022b632644"})`),
@@ -54,7 +54,7 @@ func TestAccountGatewayRuleNewWithOptionalParams(t *testing.T) {
 					CommandLogging: cfrex.F(false),
 				}),
 				BisoAdminControls: cfrex.F(cfrex.RuleSettingsBisoAdminControlsParam{
-					Copy:     cfrex.F(cfrex.RuleSettingsBisoAdminControlsCopyEnabled),
+					Copy:     cfrex.F(cfrex.RuleSettingsBisoAdminControlsCopyRemoteOnly),
 					Dcp:      cfrex.F(false),
 					Dd:       cfrex.F(false),
 					Dk:       cfrex.F(false),
@@ -124,7 +124,7 @@ func TestAccountGatewayRuleNewWithOptionalParams(t *testing.T) {
 				}),
 				ResolveDNSThroughCloudflare: cfrex.F(true),
 				UntrustedCert: cfrex.F(cfrex.RuleSettingsUntrustedCertParam{
-					Action: cfrex.F(cfrex.RuleSettingsUntrustedCertActionPassThrough),
+					Action: cfrex.F(cfrex.RuleSettingsUntrustedCertActionError),
 				}),
 			}),
 			Schedule: cfrex.F(cfrex.ScheduleParam{
@@ -196,7 +196,7 @@ func TestAccountGatewayRuleUpdateWithOptionalParams(t *testing.T) {
 		"699d98642c564d2e855e9661899b7252",
 		"f174e90a-fafe-4643-bbbc-4a0ed4fc8415",
 		cfrex.AccountGatewayRuleUpdateParams{
-			Action:        cfrex.F(cfrex.ActionPerformOn),
+			Action:        cfrex.F(cfrex.ActionPerformAllow),
 			Name:          cfrex.F("block bad websites"),
 			Description:   cfrex.F("Block bad websites based on their host name."),
 			DevicePosture: cfrex.F(`any(device_posture.checks.passed[*] in {"1308749e-fcfb-4ebc-b051-fe022b632644"})`),
@@ -219,7 +219,7 @@ func TestAccountGatewayRuleUpdateWithOptionalParams(t *testing.T) {
 					CommandLogging: cfrex.F(false),
 				}),
 				BisoAdminControls: cfrex.F(cfrex.RuleSettingsBisoAdminControlsParam{
-					Copy:     cfrex.F(cfrex.RuleSettingsBisoAdminControlsCopyEnabled),
+					Copy:     cfrex.F(cfrex.RuleSettingsBisoAdminControlsCopyRemoteOnly),
 					Dcp:      cfrex.F(false),
 					Dd:       cfrex.F(false),
 					Dk:       cfrex.F(false),
@@ -289,7 +289,7 @@ func TestAccountGatewayRuleUpdateWithOptionalParams(t *testing.T) {
 				}),
 				ResolveDNSThroughCloudflare: cfrex.F(true),
 				UntrustedCert: cfrex.F(cfrex.RuleSettingsUntrustedCertParam{
-					Action: cfrex.F(cfrex.RuleSettingsUntrustedCertActionPassThrough),
+					Action: cfrex.F(cfrex.RuleSettingsUntrustedCertActionError),
 				}),
 			}),
 			Schedule: cfrex.F(cfrex.ScheduleParam{

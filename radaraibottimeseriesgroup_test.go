@@ -29,7 +29,7 @@ func TestRadarAIBotTimeseriesGroupGetUserAgentWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.AI.Bots.TimeseriesGroups.GetUserAgent(context.TODO(), cfrex.RadarAIBotTimeseriesGroupGetUserAgentParams{
-		AggInterval:   cfrex.F(cfrex.RadarAIBotTimeseriesGroupGetUserAgentParamsAggInterval15m),
+		AggInterval:   cfrex.F(cfrex.RadarAIBotTimeseriesGroupGetUserAgentParamsAggInterval1h),
 		Asn:           cfrex.F([]string{"string"}),
 		Continent:     cfrex.F([]string{"string"}),
 		DateEnd:       cfrex.F([]time.Time{time.Now()}),

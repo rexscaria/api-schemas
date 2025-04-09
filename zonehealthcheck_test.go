@@ -34,7 +34,7 @@ func TestZoneHealthcheckNewWithOptionalParams(t *testing.T) {
 			HealthcheckQuery: cfrex.HealthcheckQueryParam{
 				Address:              cfrex.F("www.example.com"),
 				Name:                 cfrex.F("server-1"),
-				CheckRegions:         cfrex.F([]cfrex.HealthcheckCheckRegion{cfrex.HealthcheckCheckRegionWnam, cfrex.HealthcheckCheckRegionEnam}),
+				CheckRegions:         cfrex.F([]cfrex.HealthcheckCheckRegion{cfrex.HealthcheckCheckRegionWeu, cfrex.HealthcheckCheckRegionEnam}),
 				ConsecutiveFails:     cfrex.F(int64(0)),
 				ConsecutiveSuccesses: cfrex.F(int64(0)),
 				Description:          cfrex.F("Health check for www.example.com"),
@@ -122,7 +122,7 @@ func TestZoneHealthcheckUpdateWithOptionalParams(t *testing.T) {
 			HealthcheckQuery: cfrex.HealthcheckQueryParam{
 				Address:              cfrex.F("www.example.com"),
 				Name:                 cfrex.F("server-1"),
-				CheckRegions:         cfrex.F([]cfrex.HealthcheckCheckRegion{cfrex.HealthcheckCheckRegionWnam, cfrex.HealthcheckCheckRegionEnam}),
+				CheckRegions:         cfrex.F([]cfrex.HealthcheckCheckRegion{cfrex.HealthcheckCheckRegionWeu, cfrex.HealthcheckCheckRegionEnam}),
 				ConsecutiveFails:     cfrex.F(int64(0)),
 				ConsecutiveSuccesses: cfrex.F(int64(0)),
 				Description:          cfrex.F("Health check for www.example.com"),
@@ -244,7 +244,7 @@ func TestZoneHealthcheckPatchWithOptionalParams(t *testing.T) {
 			HealthcheckQuery: cfrex.HealthcheckQueryParam{
 				Address:              cfrex.F("www.example.com"),
 				Name:                 cfrex.F("server-1"),
-				CheckRegions:         cfrex.F([]cfrex.HealthcheckCheckRegion{cfrex.HealthcheckCheckRegionWnam, cfrex.HealthcheckCheckRegionEnam}),
+				CheckRegions:         cfrex.F([]cfrex.HealthcheckCheckRegion{cfrex.HealthcheckCheckRegionWeu, cfrex.HealthcheckCheckRegionEnam}),
 				ConsecutiveFails:     cfrex.F(int64(0)),
 				ConsecutiveSuccesses: cfrex.F(int64(0)),
 				Description:          cfrex.F("Health check for www.example.com"),

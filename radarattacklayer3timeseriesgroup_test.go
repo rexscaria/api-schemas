@@ -29,7 +29,7 @@ func TestRadarAttackLayer3TimeseriesGroupGetBitrateTimeseriesWithOptionalParams(
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.Attacks.Layer3.TimeseriesGroups.GetBitrateTimeseries(context.TODO(), cfrex.RadarAttackLayer3TimeseriesGroupGetBitrateTimeseriesParams{
-		AggInterval:   cfrex.F(cfrex.RadarAttackLayer3TimeseriesGroupGetBitrateTimeseriesParamsAggInterval15m),
+		AggInterval:   cfrex.F(cfrex.RadarAttackLayer3TimeseriesGroupGetBitrateTimeseriesParamsAggInterval1h),
 		Continent:     cfrex.F([]string{"string"}),
 		DateEnd:       cfrex.F([]time.Time{time.Now()}),
 		DateRange:     cfrex.F([]string{"7d"}),
@@ -66,7 +66,7 @@ func TestRadarAttackLayer3TimeseriesGroupGetDurationTimeseriesWithOptionalParams
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.Attacks.Layer3.TimeseriesGroups.GetDurationTimeseries(context.TODO(), cfrex.RadarAttackLayer3TimeseriesGroupGetDurationTimeseriesParams{
-		AggInterval:   cfrex.F(cfrex.RadarAttackLayer3TimeseriesGroupGetDurationTimeseriesParamsAggInterval15m),
+		AggInterval:   cfrex.F(cfrex.RadarAttackLayer3TimeseriesGroupGetDurationTimeseriesParamsAggInterval1h),
 		Continent:     cfrex.F([]string{"string"}),
 		DateEnd:       cfrex.F([]time.Time{time.Now()}),
 		DateRange:     cfrex.F([]string{"7d"}),
@@ -103,7 +103,7 @@ func TestRadarAttackLayer3TimeseriesGroupGetIndustryTimeseriesWithOptionalParams
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.Attacks.Layer3.TimeseriesGroups.GetIndustryTimeseries(context.TODO(), cfrex.RadarAttackLayer3TimeseriesGroupGetIndustryTimeseriesParams{
-		AggInterval:   cfrex.F(cfrex.RadarAttackLayer3TimeseriesGroupGetIndustryTimeseriesParamsAggInterval15m),
+		AggInterval:   cfrex.F(cfrex.RadarAttackLayer3TimeseriesGroupGetIndustryTimeseriesParamsAggInterval1h),
 		Continent:     cfrex.F([]string{"string"}),
 		DateEnd:       cfrex.F([]time.Time{time.Now()}),
 		DateRange:     cfrex.F([]string{"7d"}),
@@ -141,7 +141,7 @@ func TestRadarAttackLayer3TimeseriesGroupGetIPVersionTimeseriesWithOptionalParam
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.Attacks.Layer3.TimeseriesGroups.GetIPVersionTimeseries(context.TODO(), cfrex.RadarAttackLayer3TimeseriesGroupGetIPVersionTimeseriesParams{
-		AggInterval:   cfrex.F(cfrex.RadarAttackLayer3TimeseriesGroupGetIPVersionTimeseriesParamsAggInterval15m),
+		AggInterval:   cfrex.F(cfrex.RadarAttackLayer3TimeseriesGroupGetIPVersionTimeseriesParamsAggInterval1h),
 		Continent:     cfrex.F([]string{"string"}),
 		DateEnd:       cfrex.F([]time.Time{time.Now()}),
 		DateRange:     cfrex.F([]string{"7d"}),
@@ -177,7 +177,7 @@ func TestRadarAttackLayer3TimeseriesGroupGetProtocolTimeseriesWithOptionalParams
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.Attacks.Layer3.TimeseriesGroups.GetProtocolTimeseries(context.TODO(), cfrex.RadarAttackLayer3TimeseriesGroupGetProtocolTimeseriesParams{
-		AggInterval:   cfrex.F(cfrex.RadarAttackLayer3TimeseriesGroupGetProtocolTimeseriesParamsAggInterval15m),
+		AggInterval:   cfrex.F(cfrex.RadarAttackLayer3TimeseriesGroupGetProtocolTimeseriesParamsAggInterval1h),
 		Continent:     cfrex.F([]string{"string"}),
 		DateEnd:       cfrex.F([]time.Time{time.Now()}),
 		DateRange:     cfrex.F([]string{"7d"}),
@@ -213,7 +213,7 @@ func TestRadarAttackLayer3TimeseriesGroupGetVectorTimeseriesWithOptionalParams(t
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.Attacks.Layer3.TimeseriesGroups.GetVectorTimeseries(context.TODO(), cfrex.RadarAttackLayer3TimeseriesGroupGetVectorTimeseriesParams{
-		AggInterval:   cfrex.F(cfrex.RadarAttackLayer3TimeseriesGroupGetVectorTimeseriesParamsAggInterval15m),
+		AggInterval:   cfrex.F(cfrex.RadarAttackLayer3TimeseriesGroupGetVectorTimeseriesParamsAggInterval1h),
 		Continent:     cfrex.F([]string{"string"}),
 		DateEnd:       cfrex.F([]time.Time{time.Now()}),
 		DateRange:     cfrex.F([]string{"7d"}),
@@ -251,7 +251,7 @@ func TestRadarAttackLayer3TimeseriesGroupGetVerticalTimeseriesWithOptionalParams
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.Attacks.Layer3.TimeseriesGroups.GetVerticalTimeseries(context.TODO(), cfrex.RadarAttackLayer3TimeseriesGroupGetVerticalTimeseriesParams{
-		AggInterval:   cfrex.F(cfrex.RadarAttackLayer3TimeseriesGroupGetVerticalTimeseriesParamsAggInterval15m),
+		AggInterval:   cfrex.F(cfrex.RadarAttackLayer3TimeseriesGroupGetVerticalTimeseriesParamsAggInterval1h),
 		Continent:     cfrex.F([]string{"string"}),
 		DateEnd:       cfrex.F([]time.Time{time.Now()}),
 		DateRange:     cfrex.F([]string{"7d"}),

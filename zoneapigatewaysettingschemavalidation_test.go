@@ -55,7 +55,7 @@ func TestZoneAPIGatewaySettingSchemaValidationUpdateWithOptionalParams(t *testin
 		context.TODO(),
 		"zone_id",
 		cfrex.ZoneAPIGatewaySettingSchemaValidationUpdateParams{
-			ValidationDefaultMitigationAction:  cfrex.F(cfrex.DefaultMitigationActionNone),
+			ValidationDefaultMitigationAction:  cfrex.F(cfrex.DefaultMitigationActionBlock),
 			ValidationOverrideMitigationAction: cfrex.F(cfrex.ZoneAPIGatewaySettingSchemaValidationUpdateParamsValidationOverrideMitigationActionNone),
 		},
 	)

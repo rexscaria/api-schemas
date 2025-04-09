@@ -32,7 +32,7 @@ func TestZoneSpeedAPIScheduleNewWithOptionalParams(t *testing.T) {
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		"example.com",
 		cfrex.ZoneSpeedAPIScheduleNewParams{
-			Region: cfrex.F(cfrex.ObservatoryRegionAsiaEast1),
+			Region: cfrex.F(cfrex.ObservatoryRegionUsCentral1),
 		},
 	)
 	if err != nil {
@@ -63,7 +63,7 @@ func TestZoneSpeedAPIScheduleDeleteWithOptionalParams(t *testing.T) {
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		"example.com",
 		cfrex.ZoneSpeedAPIScheduleDeleteParams{
-			Region: cfrex.F(cfrex.ObservatoryRegionAsiaEast1),
+			Region: cfrex.F(cfrex.ObservatoryRegionUsCentral1),
 		},
 	)
 	if err != nil {
@@ -94,7 +94,7 @@ func TestZoneSpeedAPIScheduleGetWithOptionalParams(t *testing.T) {
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		"example.com",
 		cfrex.ZoneSpeedAPIScheduleGetParams{
-			Region: cfrex.F(cfrex.ObservatoryRegionAsiaEast1),
+			Region: cfrex.F(cfrex.ObservatoryRegionUsCentral1),
 		},
 	)
 	if err != nil {

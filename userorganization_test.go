@@ -52,10 +52,10 @@ func TestUserOrganizationListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.User.Organizations.List(context.TODO(), cfrex.UserOrganizationListParams{
-		Direction: cfrex.F(cfrex.UserOrganizationListParamsDirectionAsc),
+		Direction: cfrex.F(cfrex.UserOrganizationListParamsDirectionDesc),
 		Match:     cfrex.F(cfrex.UserOrganizationListParamsMatchAny),
 		Name:      cfrex.F("Cloudflare, Inc."),
-		Order:     cfrex.F(cfrex.UserOrganizationListParamsOrderID),
+		Order:     cfrex.F(cfrex.UserOrganizationListParamsOrderStatus),
 		Page:      cfrex.F(1.000000),
 		PerPage:   cfrex.F(5.000000),
 		Status:    cfrex.F(cfrex.UserOrganizationListParamsStatusMember),

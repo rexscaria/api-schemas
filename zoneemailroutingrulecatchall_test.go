@@ -56,7 +56,7 @@ func TestZoneEmailRoutingRuleCatchAllUpdateWithOptionalParams(t *testing.T) {
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.ZoneEmailRoutingRuleCatchAllUpdateParams{
 			Actions: cfrex.F([]cfrex.EmailRuleCatchallActionParam{{
-				Type:  cfrex.F(cfrex.EmailRuleCatchallActionTypeDrop),
+				Type:  cfrex.F(cfrex.EmailRuleCatchallActionTypeForward),
 				Value: cfrex.F([]string{"destinationaddress@example.net"}),
 			}}),
 			Matchers: cfrex.F([]cfrex.EmailRuleCatchallMatcherParam{{

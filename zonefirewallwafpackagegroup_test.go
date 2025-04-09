@@ -93,7 +93,7 @@ func TestZoneFirewallWafPackageGroupListWithOptionalParams(t *testing.T) {
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		"a25a9a7e9c00afc1fb2e0245519d725b",
 		cfrex.ZoneFirewallWafPackageGroupListParams{
-			Direction:  cfrex.F(cfrex.ZoneFirewallWafPackageGroupListParamsDirectionAsc),
+			Direction:  cfrex.F(cfrex.ZoneFirewallWafPackageGroupListParamsDirectionDesc),
 			Match:      cfrex.F(cfrex.ZoneFirewallWafPackageGroupListParamsMatchAny),
 			Mode:       cfrex.F(cfrex.WafManagedRulesModeOn),
 			Name:       cfrex.F("Project Honey Pot"),

@@ -34,7 +34,7 @@ func TestZoneCustomHostnameNewWithOptionalParams(t *testing.T) {
 			Hostname: cfrex.F("app.example.com"),
 			Ssl: cfrex.F(cfrex.SslPostPropertiesParam{
 				BundleMethod:         cfrex.F(cfrex.SslPostPropertiesBundleMethodUbiquitous),
-				CertificateAuthority: cfrex.F(cfrex.CertificateAuthorityCustomHostnameDigicert),
+				CertificateAuthority: cfrex.F(cfrex.CertificateAuthorityCustomHostnameGoogle),
 				CloudflareBranding:   cfrex.F(false),
 				CustomCertBundle: cfrex.F([]cfrex.CustomCertAndKeyParam{{
 					CustomCertificate: cfrex.F("-----BEGIN CERTIFICATE-----\nMIIDdjCCAl6gAwIBAgIJAPnMg0Fs+/B0MA0GCSqGSIb3DQEBCwUAMFsx...\n-----END CERTIFICATE-----\n"),
@@ -47,7 +47,7 @@ func TestZoneCustomHostnameNewWithOptionalParams(t *testing.T) {
 					Ciphers:       cfrex.F([]string{"ECDHE-RSA-AES128-GCM-SHA256", "AES128-SHA"}),
 					EarlyHints:    cfrex.F(cfrex.SslSettingsEarlyHintsOn),
 					Http2:         cfrex.F(cfrex.SslSettingsHttp2On),
-					MinTlsVersion: cfrex.F(cfrex.SslSettingsMinTlsVersion1_0),
+					MinTlsVersion: cfrex.F(cfrex.SslSettingsMinTlsVersion1_2),
 					Tls1_3:        cfrex.F(cfrex.SslSettingsTls1_3On),
 				}),
 				Type:     cfrex.F(cfrex.SslPostPropertiesTypeDv),
@@ -121,7 +121,7 @@ func TestZoneCustomHostnameUpdateWithOptionalParams(t *testing.T) {
 			CustomOriginSni:    cfrex.F("sni.example.com"),
 			Ssl: cfrex.F(cfrex.SslPostPropertiesParam{
 				BundleMethod:         cfrex.F(cfrex.SslPostPropertiesBundleMethodUbiquitous),
-				CertificateAuthority: cfrex.F(cfrex.CertificateAuthorityCustomHostnameDigicert),
+				CertificateAuthority: cfrex.F(cfrex.CertificateAuthorityCustomHostnameGoogle),
 				CloudflareBranding:   cfrex.F(false),
 				CustomCertBundle: cfrex.F([]cfrex.CustomCertAndKeyParam{{
 					CustomCertificate: cfrex.F("-----BEGIN CERTIFICATE-----\nMIIDdjCCAl6gAwIBAgIJAPnMg0Fs+/B0MA0GCSqGSIb3DQEBCwUAMFsx...\n-----END CERTIFICATE-----\n"),
@@ -134,7 +134,7 @@ func TestZoneCustomHostnameUpdateWithOptionalParams(t *testing.T) {
 					Ciphers:       cfrex.F([]string{"ECDHE-RSA-AES128-GCM-SHA256", "AES128-SHA"}),
 					EarlyHints:    cfrex.F(cfrex.SslSettingsEarlyHintsOn),
 					Http2:         cfrex.F(cfrex.SslSettingsHttp2On),
-					MinTlsVersion: cfrex.F(cfrex.SslSettingsMinTlsVersion1_0),
+					MinTlsVersion: cfrex.F(cfrex.SslSettingsMinTlsVersion1_2),
 					Tls1_3:        cfrex.F(cfrex.SslSettingsTls1_3On),
 				}),
 				Type:     cfrex.F(cfrex.SslPostPropertiesTypeDv),
@@ -170,7 +170,7 @@ func TestZoneCustomHostnameListWithOptionalParams(t *testing.T) {
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.ZoneCustomHostnameListParams{
 			ID:        cfrex.F("0d89c70d-ad9f-4843-b99f-6cc0252067e9"),
-			Direction: cfrex.F(cfrex.ZoneCustomHostnameListParamsDirectionAsc),
+			Direction: cfrex.F(cfrex.ZoneCustomHostnameListParamsDirectionDesc),
 			Hostname:  cfrex.F("app.example.com"),
 			Order:     cfrex.F(cfrex.ZoneCustomHostnameListParamsOrderSsl),
 			Page:      cfrex.F(1.000000),

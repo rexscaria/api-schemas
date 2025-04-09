@@ -175,7 +175,7 @@ func TestZoneSslCertificatePackOrderWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.ZoneSslCertificatePackOrderParams{
-			CertificateAuthority: cfrex.F(cfrex.CertificateAuthoritySslPackGoogle),
+			CertificateAuthority: cfrex.F(cfrex.CertificateAuthoritySslPackLetsEncrypt),
 			Hosts:                cfrex.F([]string{"example.com", "*.example.com", "www.example.com"}),
 			Type:                 cfrex.F(cfrex.AdvancedTypeAdvanced),
 			ValidationMethod:     cfrex.F(cfrex.ValidationMethodTxt),

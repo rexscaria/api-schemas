@@ -141,7 +141,7 @@ func TestAccountStreamListWithOptionalParams(t *testing.T) {
 			IncludeCounts: cfrex.F(true),
 			Search:        cfrex.F("puppy.mp4"),
 			Start:         cfrex.F(time.Now()),
-			Status:        cfrex.F(cfrex.MediaStatePendingupload),
+			Status:        cfrex.F(cfrex.MediaStateInprogress),
 			Type:          cfrex.F("live"),
 		},
 	)
@@ -288,17 +288,17 @@ func TestAccountStreamNewSignedURLWithOptionalParams(t *testing.T) {
 		cfrex.AccountStreamNewSignedURLParams{
 			ID: cfrex.F("ab0d4ef71g4425f8dcba9041231813000"),
 			AccessRules: cfrex.F([]cfrex.AccountStreamNewSignedURLParamsAccessRule{{
-				Action:  cfrex.F(cfrex.AccountStreamNewSignedURLParamsAccessRulesActionAllow),
+				Action:  cfrex.F(cfrex.AccountStreamNewSignedURLParamsAccessRulesActionBlock),
 				Country: cfrex.F([]string{"US", "MX"}),
 				IP:      cfrex.F([]string{"string"}),
-				Type:    cfrex.F(cfrex.AccountStreamNewSignedURLParamsAccessRulesTypeAny),
+				Type:    cfrex.F(cfrex.AccountStreamNewSignedURLParamsAccessRulesTypeIPGeoipCountry),
 			}, {
 				Action:  cfrex.F(cfrex.AccountStreamNewSignedURLParamsAccessRulesActionAllow),
 				Country: cfrex.F([]string{"string"}),
 				IP:      cfrex.F([]string{"93.184.216.0/24", "2400:cb00::/32"}),
-				Type:    cfrex.F(cfrex.AccountStreamNewSignedURLParamsAccessRulesTypeAny),
+				Type:    cfrex.F(cfrex.AccountStreamNewSignedURLParamsAccessRulesTypeIPSrc),
 			}, {
-				Action:  cfrex.F(cfrex.AccountStreamNewSignedURLParamsAccessRulesActionAllow),
+				Action:  cfrex.F(cfrex.AccountStreamNewSignedURLParamsAccessRulesActionBlock),
 				Country: cfrex.F([]string{"string"}),
 				IP:      cfrex.F([]string{"string"}),
 				Type:    cfrex.F(cfrex.AccountStreamNewSignedURLParamsAccessRulesTypeAny),

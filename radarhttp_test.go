@@ -29,7 +29,7 @@ func TestRadarHTTPGetTimeseriesWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.HTTP.GetTimeseries(context.TODO(), cfrex.RadarHTTPGetTimeseriesParams{
-		AggInterval:   cfrex.F(cfrex.RadarHTTPGetTimeseriesParamsAggInterval15m),
+		AggInterval:   cfrex.F(cfrex.RadarHTTPGetTimeseriesParamsAggInterval1h),
 		Asn:           cfrex.F([]string{"string"}),
 		BotClass:      cfrex.F([]cfrex.RadarHTTPGetTimeseriesParamsBotClass{cfrex.RadarHTTPGetTimeseriesParamsBotClassLikelyAutomated}),
 		BrowserFamily: cfrex.F([]cfrex.RadarHTTPGetTimeseriesParamsBrowserFamily{cfrex.RadarHTTPGetTimeseriesParamsBrowserFamilyChrome}),
@@ -44,7 +44,7 @@ func TestRadarHTTPGetTimeseriesWithOptionalParams(t *testing.T) {
 		IPVersion:     cfrex.F([]cfrex.RadarHTTPGetTimeseriesParamsIPVersion{cfrex.RadarHTTPGetTimeseriesParamsIPVersionIPv4}),
 		Location:      cfrex.F([]string{"string"}),
 		Name:          cfrex.F([]string{"main_series"}),
-		Normalization: cfrex.F(cfrex.RadarHTTPGetTimeseriesParamsNormalizationPercentageChange),
+		Normalization: cfrex.F(cfrex.RadarHTTPGetTimeseriesParamsNormalizationMin0Max),
 		Os:            cfrex.F([]cfrex.RadarHTTPGetTimeseriesParamsO{cfrex.RadarHTTPGetTimeseriesParamsOWindows}),
 		TlsVersion:    cfrex.F([]cfrex.RadarHTTPGetTimeseriesParamsTlsVersion{cfrex.RadarHTTPGetTimeseriesParamsTlsVersionTlSv1_0}),
 	})

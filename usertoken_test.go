@@ -172,7 +172,7 @@ func TestUserTokenListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.User.Tokens.List(context.TODO(), cfrex.UserTokenListParams{
-		Direction: cfrex.F(cfrex.UserTokenListParamsDirectionAsc),
+		Direction: cfrex.F(cfrex.UserTokenListParamsDirectionDesc),
 		Page:      cfrex.F(1.000000),
 		PerPage:   cfrex.F(5.000000),
 	})

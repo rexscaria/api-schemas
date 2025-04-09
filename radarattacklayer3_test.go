@@ -29,7 +29,7 @@ func TestRadarAttackLayer3GetTimeseriesWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.Attacks.Layer3.GetTimeseries(context.TODO(), cfrex.RadarAttackLayer3GetTimeseriesParams{
-		AggInterval:   cfrex.F(cfrex.RadarAttackLayer3GetTimeseriesParamsAggInterval15m),
+		AggInterval:   cfrex.F(cfrex.RadarAttackLayer3GetTimeseriesParamsAggInterval1h),
 		Asn:           cfrex.F([]string{"string"}),
 		Continent:     cfrex.F([]string{"string"}),
 		DateEnd:       cfrex.F([]time.Time{time.Now()}),
@@ -41,7 +41,7 @@ func TestRadarAttackLayer3GetTimeseriesWithOptionalParams(t *testing.T) {
 		Location:      cfrex.F([]string{"string"}),
 		Metric:        cfrex.F(cfrex.RadarAttackLayer3GetTimeseriesParamsMetricBytes),
 		Name:          cfrex.F([]string{"main_series"}),
-		Normalization: cfrex.F(cfrex.RadarAttackLayer3GetTimeseriesParamsNormalizationPercentageChange),
+		Normalization: cfrex.F(cfrex.RadarAttackLayer3GetTimeseriesParamsNormalizationMin0Max),
 		Protocol:      cfrex.F([]cfrex.RadarAttackLayer3GetTimeseriesParamsProtocol{cfrex.RadarAttackLayer3GetTimeseriesParamsProtocolUdp}),
 	})
 	if err != nil {

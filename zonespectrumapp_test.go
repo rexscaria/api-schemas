@@ -45,7 +45,7 @@ func TestZoneSpectrumAppNewWithOptionalParams(t *testing.T) {
 				IPFirewall:       cfrex.F(true),
 				Protocol:         cfrex.F("tcp/22"),
 				ProxyProtocol:    cfrex.F(cfrex.AppConfigProxyProtocolOff),
-				Tls:              cfrex.F(cfrex.AppConfigTlsOff),
+				Tls:              cfrex.F(cfrex.AppConfigTlsFull),
 				TrafficType:      cfrex.F(cfrex.AppConfigTrafficTypeDirect),
 				ArgoSmartRouting: cfrex.F(true),
 				EdgeIPs: cfrex.F[cfrex.AppConfigEdgeIPsUnionParam](cfrex.AppConfigEdgeIPsObjectParam{
@@ -131,7 +131,7 @@ func TestZoneSpectrumAppUpdateWithOptionalParams(t *testing.T) {
 				IPFirewall:       cfrex.F(true),
 				Protocol:         cfrex.F("tcp/22"),
 				ProxyProtocol:    cfrex.F(cfrex.AppConfigProxyProtocolOff),
-				Tls:              cfrex.F(cfrex.AppConfigTlsOff),
+				Tls:              cfrex.F(cfrex.AppConfigTlsFull),
 				TrafficType:      cfrex.F(cfrex.AppConfigTrafficTypeDirect),
 				ArgoSmartRouting: cfrex.F(true),
 				EdgeIPs: cfrex.F[cfrex.AppConfigEdgeIPsUnionParam](cfrex.AppConfigEdgeIPsObjectParam{
@@ -175,7 +175,7 @@ func TestZoneSpectrumAppListWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		map[string]interface{}{},
 		cfrex.ZoneSpectrumAppListParams{
-			Direction: cfrex.F(cfrex.ZoneSpectrumAppListParamsDirectionAsc),
+			Direction: cfrex.F(cfrex.ZoneSpectrumAppListParamsDirectionDesc),
 			Order:     cfrex.F(cfrex.ZoneSpectrumAppListParamsOrderProtocol),
 			Page:      cfrex.F(1.000000),
 			PerPage:   cfrex.F(1.000000),

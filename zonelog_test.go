@@ -33,7 +33,7 @@ func TestZoneLogGetRayidLogsWithOptionalParams(t *testing.T) {
 		"41ddf1740f67442d",
 		cfrex.ZoneLogGetRayidLogsParams{
 			Fields:     cfrex.F("ClientIP,RayID,EdgeStartTimestamp"),
-			Timestamps: cfrex.F(cfrex.TimestampsUnix),
+			Timestamps: cfrex.F(cfrex.TimestampsUnixnano),
 		},
 	)
 	if err != nil {

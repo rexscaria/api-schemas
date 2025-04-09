@@ -35,7 +35,7 @@ func TestZoneFirewallUaRuleNewWithOptionalParams(t *testing.T) {
 				Target: cfrex.F(cfrex.FirewallRuleConfigurationFirewallIPConfigurationTargetIP),
 				Value:  cfrex.F("198.51.100.4"),
 			}),
-			Mode: cfrex.F(cfrex.FirewallSchemasModeBlock),
+			Mode: cfrex.F(cfrex.FirewallSchemasModeChallenge),
 		},
 	)
 	if err != nil {
@@ -98,7 +98,7 @@ func TestZoneFirewallUaRuleUpdateWithOptionalParams(t *testing.T) {
 				Target: cfrex.F(cfrex.FirewallRuleConfigurationFirewallIPConfigurationTargetIP),
 				Value:  cfrex.F("198.51.100.4"),
 			}),
-			Mode: cfrex.F(cfrex.FirewallSchemasModeBlock),
+			Mode: cfrex.F(cfrex.FirewallSchemasModeChallenge),
 		},
 	)
 	if err != nil {

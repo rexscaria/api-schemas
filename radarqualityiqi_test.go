@@ -64,7 +64,7 @@ func TestRadarQualityIqiGetTimeseriesGroupsWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Radar.Quality.Iqi.GetTimeseriesGroups(context.TODO(), cfrex.RadarQualityIqiGetTimeseriesGroupsParams{
 		Metric:        cfrex.F(cfrex.RadarQualityIqiGetTimeseriesGroupsParamsMetricBandwidth),
-		AggInterval:   cfrex.F(cfrex.RadarQualityIqiGetTimeseriesGroupsParamsAggInterval15m),
+		AggInterval:   cfrex.F(cfrex.RadarQualityIqiGetTimeseriesGroupsParamsAggInterval1h),
 		Asn:           cfrex.F([]string{"string"}),
 		Continent:     cfrex.F([]string{"string"}),
 		DateEnd:       cfrex.F([]time.Time{time.Now()}),

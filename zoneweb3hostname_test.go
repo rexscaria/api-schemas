@@ -32,7 +32,7 @@ func TestZoneWeb3HostnameNewWithOptionalParams(t *testing.T) {
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.ZoneWeb3HostnameNewParams{
 			Name:        cfrex.F("gateway.example.com"),
-			Target:      cfrex.F(cfrex.TargetGatewayEthereum),
+			Target:      cfrex.F(cfrex.TargetGatewayIpfs),
 			Description: cfrex.F("This is my IPFS gateway."),
 			Dnslink:     cfrex.F("/ipns/onboarding.ipfs.cloudflare.com"),
 		},

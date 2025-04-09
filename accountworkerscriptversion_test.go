@@ -102,7 +102,7 @@ func TestAccountWorkerScriptVersionUploadWithOptionalParams(t *testing.T) {
 				}),
 				Bindings: cfrex.F([]cfrex.BindingItemUnionParam{cfrex.BindingItemWorkersBindingKindAIParam{
 					Name: cfrex.F("MY_ENV_VAR"),
-					Type: cfrex.F(cfrex.BindingItemWorkersBindingKindAITypeAI),
+					Type: cfrex.F(cfrex.BindingItemWorkersBindingKindAITypePlainText),
 				}}),
 				CompatibilityDate:  cfrex.F("2021-01-01"),
 				CompatibilityFlags: cfrex.F([]string{"nodejs_compat"}),

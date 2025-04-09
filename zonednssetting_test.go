@@ -50,7 +50,7 @@ func TestZoneDNSSettingUpdateWithOptionalParams(t *testing.T) {
 						Rname:   cfrex.F("admin.example.com"),
 						Ttl:     cfrex.F(3600.000000),
 					}),
-					ZoneMode: cfrex.F(cfrex.DNSSettingsZoneModeStandard),
+					ZoneMode: cfrex.F(cfrex.DNSSettingsZoneModeDNSOnly),
 				},
 				Nameservers: cfrex.F(cfrex.SettingsZoneNameserversParam{
 					Type:  cfrex.F(cfrex.SettingsZoneNameserversTypeCloudflareStandard),

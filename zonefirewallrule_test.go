@@ -32,7 +32,7 @@ func TestZoneFirewallRuleNewWithOptionalParams(t *testing.T) {
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.ZoneFirewallRuleNewParams{
 			Action: cfrex.F(cfrex.FirewallActionParam{
-				Mode: cfrex.F(cfrex.FirewallActionModeSimulate),
+				Mode: cfrex.F(cfrex.FirewallActionModeChallenge),
 				Response: cfrex.F(cfrex.FirewallActionResponseParam{
 					Body:        cfrex.F("<error>This request has been rate-limited.</error>"),
 					ContentType: cfrex.F("text/xml"),
@@ -107,7 +107,7 @@ func TestZoneFirewallRuleUpdateWithOptionalParams(t *testing.T) {
 		"372e67954025e0ba6aaa6d586b9e0b60",
 		cfrex.ZoneFirewallRuleUpdateParams{
 			Action: cfrex.F(cfrex.FirewallActionParam{
-				Mode: cfrex.F(cfrex.FirewallActionModeSimulate),
+				Mode: cfrex.F(cfrex.FirewallActionModeChallenge),
 				Response: cfrex.F(cfrex.FirewallActionResponseParam{
 					Body:        cfrex.F("<error>This request has been rate-limited.</error>"),
 					ContentType: cfrex.F("text/xml"),

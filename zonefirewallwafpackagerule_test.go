@@ -62,7 +62,7 @@ func TestZoneFirewallWafPackageRuleUpdateWithOptionalParams(t *testing.T) {
 		"a25a9a7e9c00afc1fb2e0245519d725b",
 		"a25a9a7e9c00afc1fb2e0245519d725b",
 		cfrex.ZoneFirewallWafPackageRuleUpdateParams{
-			Mode: cfrex.F(cfrex.ZoneFirewallWafPackageRuleUpdateParamsModeDefault),
+			Mode: cfrex.F(cfrex.ZoneFirewallWafPackageRuleUpdateParamsModeOn),
 		},
 	)
 	if err != nil {
@@ -94,10 +94,10 @@ func TestZoneFirewallWafPackageRuleListWithOptionalParams(t *testing.T) {
 		"a25a9a7e9c00afc1fb2e0245519d725b",
 		cfrex.ZoneFirewallWafPackageRuleListParams{
 			Description: cfrex.F("SQL injection prevention for SELECT statements"),
-			Direction:   cfrex.F(cfrex.ZoneFirewallWafPackageRuleListParamsDirectionAsc),
+			Direction:   cfrex.F(cfrex.ZoneFirewallWafPackageRuleListParamsDirectionDesc),
 			GroupID:     cfrex.F("de677e5818985db1285d0e80225f06e5"),
 			Match:       cfrex.F(cfrex.ZoneFirewallWafPackageRuleListParamsMatchAny),
-			Mode:        cfrex.F(cfrex.ZoneFirewallWafPackageRuleListParamsModeDis),
+			Mode:        cfrex.F(cfrex.ZoneFirewallWafPackageRuleListParamsModeChl),
 			Order:       cfrex.F(cfrex.ZoneFirewallWafPackageRuleListParamsOrderPriority),
 			Page:        cfrex.F(1.000000),
 			PerPage:     cfrex.F(5.000000),

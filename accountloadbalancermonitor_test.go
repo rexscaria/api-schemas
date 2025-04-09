@@ -50,7 +50,7 @@ func TestAccountLoadBalancerMonitorNewWithOptionalParams(t *testing.T) {
 				ProbeZone: cfrex.F("example.com"),
 				Retries:   cfrex.F(int64(0)),
 				Timeout:   cfrex.F(int64(0)),
-				Type:      cfrex.F(cfrex.EditableMonitorTypeHTTP),
+				Type:      cfrex.F(cfrex.EditableMonitorTypeHTTPS),
 			},
 		},
 	)
@@ -129,7 +129,7 @@ func TestAccountLoadBalancerMonitorUpdateWithOptionalParams(t *testing.T) {
 				ProbeZone: cfrex.F("example.com"),
 				Retries:   cfrex.F(int64(0)),
 				Timeout:   cfrex.F(int64(0)),
-				Type:      cfrex.F(cfrex.EditableMonitorTypeHTTP),
+				Type:      cfrex.F(cfrex.EditableMonitorTypeHTTPS),
 			},
 		},
 	)
@@ -263,7 +263,7 @@ func TestAccountLoadBalancerMonitorPatchWithOptionalParams(t *testing.T) {
 				ProbeZone: cfrex.F("example.com"),
 				Retries:   cfrex.F(int64(0)),
 				Timeout:   cfrex.F(int64(0)),
-				Type:      cfrex.F(cfrex.EditableMonitorTypeHTTP),
+				Type:      cfrex.F(cfrex.EditableMonitorTypeHTTPS),
 			},
 		},
 	)
@@ -314,7 +314,7 @@ func TestAccountLoadBalancerMonitorPreviewWithOptionalParams(t *testing.T) {
 				ProbeZone: cfrex.F("example.com"),
 				Retries:   cfrex.F(int64(0)),
 				Timeout:   cfrex.F(int64(0)),
-				Type:      cfrex.F(cfrex.EditableMonitorTypeHTTP),
+				Type:      cfrex.F(cfrex.EditableMonitorTypeHTTPS),
 			},
 		},
 	)

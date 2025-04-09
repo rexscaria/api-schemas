@@ -29,7 +29,7 @@ func TestRadarEmailSecurityTimeseriesGroupGetArcWithOptionalParams(t *testing.T)
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.Email.Security.TimeseriesGroups.GetArc(context.TODO(), cfrex.RadarEmailSecurityTimeseriesGroupGetArcParams{
-		AggInterval: cfrex.F(cfrex.RadarEmailSecurityTimeseriesGroupGetArcParamsAggInterval15m),
+		AggInterval: cfrex.F(cfrex.RadarEmailSecurityTimeseriesGroupGetArcParamsAggInterval1h),
 		DateEnd:     cfrex.F([]time.Time{time.Now()}),
 		DateRange:   cfrex.F([]string{"7d"}),
 		DateStart:   cfrex.F([]time.Time{time.Now()}),
@@ -64,7 +64,7 @@ func TestRadarEmailSecurityTimeseriesGroupGetDkimWithOptionalParams(t *testing.T
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.Email.Security.TimeseriesGroups.GetDkim(context.TODO(), cfrex.RadarEmailSecurityTimeseriesGroupGetDkimParams{
-		AggInterval: cfrex.F(cfrex.RadarEmailSecurityTimeseriesGroupGetDkimParamsAggInterval15m),
+		AggInterval: cfrex.F(cfrex.RadarEmailSecurityTimeseriesGroupGetDkimParamsAggInterval1h),
 		Arc:         cfrex.F([]cfrex.RadarEmailSecurityTimeseriesGroupGetDkimParamsArc{cfrex.RadarEmailSecurityTimeseriesGroupGetDkimParamsArcPass}),
 		DateEnd:     cfrex.F([]time.Time{time.Now()}),
 		DateRange:   cfrex.F([]string{"7d"}),
@@ -99,7 +99,7 @@ func TestRadarEmailSecurityTimeseriesGroupGetDmarcWithOptionalParams(t *testing.
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.Email.Security.TimeseriesGroups.GetDmarc(context.TODO(), cfrex.RadarEmailSecurityTimeseriesGroupGetDmarcParams{
-		AggInterval: cfrex.F(cfrex.RadarEmailSecurityTimeseriesGroupGetDmarcParamsAggInterval15m),
+		AggInterval: cfrex.F(cfrex.RadarEmailSecurityTimeseriesGroupGetDmarcParamsAggInterval1h),
 		Arc:         cfrex.F([]cfrex.RadarEmailSecurityTimeseriesGroupGetDmarcParamsArc{cfrex.RadarEmailSecurityTimeseriesGroupGetDmarcParamsArcPass}),
 		DateEnd:     cfrex.F([]time.Time{time.Now()}),
 		DateRange:   cfrex.F([]string{"7d"}),
@@ -134,7 +134,7 @@ func TestRadarEmailSecurityTimeseriesGroupGetMaliciousWithOptionalParams(t *test
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.Email.Security.TimeseriesGroups.GetMalicious(context.TODO(), cfrex.RadarEmailSecurityTimeseriesGroupGetMaliciousParams{
-		AggInterval: cfrex.F(cfrex.RadarEmailSecurityTimeseriesGroupGetMaliciousParamsAggInterval15m),
+		AggInterval: cfrex.F(cfrex.RadarEmailSecurityTimeseriesGroupGetMaliciousParamsAggInterval1h),
 		Arc:         cfrex.F([]cfrex.RadarEmailSecurityTimeseriesGroupGetMaliciousParamsArc{cfrex.RadarEmailSecurityTimeseriesGroupGetMaliciousParamsArcPass}),
 		DateEnd:     cfrex.F([]time.Time{time.Now()}),
 		DateRange:   cfrex.F([]string{"7d"}),
@@ -170,7 +170,7 @@ func TestRadarEmailSecurityTimeseriesGroupGetSpamWithOptionalParams(t *testing.T
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.Email.Security.TimeseriesGroups.GetSpam(context.TODO(), cfrex.RadarEmailSecurityTimeseriesGroupGetSpamParams{
-		AggInterval: cfrex.F(cfrex.RadarEmailSecurityTimeseriesGroupGetSpamParamsAggInterval15m),
+		AggInterval: cfrex.F(cfrex.RadarEmailSecurityTimeseriesGroupGetSpamParamsAggInterval1h),
 		Arc:         cfrex.F([]cfrex.RadarEmailSecurityTimeseriesGroupGetSpamParamsArc{cfrex.RadarEmailSecurityTimeseriesGroupGetSpamParamsArcPass}),
 		DateEnd:     cfrex.F([]time.Time{time.Now()}),
 		DateRange:   cfrex.F([]string{"7d"}),
@@ -206,7 +206,7 @@ func TestRadarEmailSecurityTimeseriesGroupGetSpfWithOptionalParams(t *testing.T)
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.Email.Security.TimeseriesGroups.GetSpf(context.TODO(), cfrex.RadarEmailSecurityTimeseriesGroupGetSpfParams{
-		AggInterval: cfrex.F(cfrex.RadarEmailSecurityTimeseriesGroupGetSpfParamsAggInterval15m),
+		AggInterval: cfrex.F(cfrex.RadarEmailSecurityTimeseriesGroupGetSpfParamsAggInterval1h),
 		Arc:         cfrex.F([]cfrex.RadarEmailSecurityTimeseriesGroupGetSpfParamsArc{cfrex.RadarEmailSecurityTimeseriesGroupGetSpfParamsArcPass}),
 		DateEnd:     cfrex.F([]time.Time{time.Now()}),
 		DateRange:   cfrex.F([]string{"7d"}),
@@ -241,7 +241,7 @@ func TestRadarEmailSecurityTimeseriesGroupGetSpoofWithOptionalParams(t *testing.
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.Email.Security.TimeseriesGroups.GetSpoof(context.TODO(), cfrex.RadarEmailSecurityTimeseriesGroupGetSpoofParams{
-		AggInterval: cfrex.F(cfrex.RadarEmailSecurityTimeseriesGroupGetSpoofParamsAggInterval15m),
+		AggInterval: cfrex.F(cfrex.RadarEmailSecurityTimeseriesGroupGetSpoofParamsAggInterval1h),
 		Arc:         cfrex.F([]cfrex.RadarEmailSecurityTimeseriesGroupGetSpoofParamsArc{cfrex.RadarEmailSecurityTimeseriesGroupGetSpoofParamsArcPass}),
 		DateEnd:     cfrex.F([]time.Time{time.Now()}),
 		DateRange:   cfrex.F([]string{"7d"}),
@@ -277,7 +277,7 @@ func TestRadarEmailSecurityTimeseriesGroupGetThreatCategoryWithOptionalParams(t 
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.Email.Security.TimeseriesGroups.GetThreatCategory(context.TODO(), cfrex.RadarEmailSecurityTimeseriesGroupGetThreatCategoryParams{
-		AggInterval: cfrex.F(cfrex.RadarEmailSecurityTimeseriesGroupGetThreatCategoryParamsAggInterval15m),
+		AggInterval: cfrex.F(cfrex.RadarEmailSecurityTimeseriesGroupGetThreatCategoryParamsAggInterval1h),
 		Arc:         cfrex.F([]cfrex.RadarEmailSecurityTimeseriesGroupGetThreatCategoryParamsArc{cfrex.RadarEmailSecurityTimeseriesGroupGetThreatCategoryParamsArcPass}),
 		DateEnd:     cfrex.F([]time.Time{time.Now()}),
 		DateRange:   cfrex.F([]string{"7d"}),
@@ -313,7 +313,7 @@ func TestRadarEmailSecurityTimeseriesGroupGetTlsVersionWithOptionalParams(t *tes
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.Email.Security.TimeseriesGroups.GetTlsVersion(context.TODO(), cfrex.RadarEmailSecurityTimeseriesGroupGetTlsVersionParams{
-		AggInterval: cfrex.F(cfrex.RadarEmailSecurityTimeseriesGroupGetTlsVersionParamsAggInterval15m),
+		AggInterval: cfrex.F(cfrex.RadarEmailSecurityTimeseriesGroupGetTlsVersionParamsAggInterval1h),
 		Arc:         cfrex.F([]cfrex.RadarEmailSecurityTimeseriesGroupGetTlsVersionParamsArc{cfrex.RadarEmailSecurityTimeseriesGroupGetTlsVersionParamsArcPass}),
 		DateEnd:     cfrex.F([]time.Time{time.Now()}),
 		DateRange:   cfrex.F([]string{"7d"}),

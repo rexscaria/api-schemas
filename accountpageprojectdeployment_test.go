@@ -92,7 +92,7 @@ func TestAccountPageProjectDeploymentListWithOptionalParams(t *testing.T) {
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		"this-is-my-project-01",
 		cfrex.AccountPageProjectDeploymentListParams{
-			Env: cfrex.F(cfrex.AccountPageProjectDeploymentListParamsEnvProduction),
+			Env: cfrex.F(cfrex.AccountPageProjectDeploymentListParamsEnvPreview),
 		},
 	)
 	if err != nil {

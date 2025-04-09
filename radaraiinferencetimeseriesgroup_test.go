@@ -29,7 +29,7 @@ func TestRadarAIInferenceTimeseriesGroupGetModelWithOptionalParams(t *testing.T)
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.AI.Inference.TimeseriesGroups.GetModel(context.TODO(), cfrex.RadarAIInferenceTimeseriesGroupGetModelParams{
-		AggInterval:   cfrex.F(cfrex.RadarAIInferenceTimeseriesGroupGetModelParamsAggInterval15m),
+		AggInterval:   cfrex.F(cfrex.RadarAIInferenceTimeseriesGroupGetModelParamsAggInterval1h),
 		DateEnd:       cfrex.F([]time.Time{time.Now()}),
 		DateRange:     cfrex.F([]string{"7d"}),
 		DateStart:     cfrex.F([]time.Time{time.Now()}),
@@ -61,7 +61,7 @@ func TestRadarAIInferenceTimeseriesGroupGetTaskWithOptionalParams(t *testing.T) 
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.AI.Inference.TimeseriesGroups.GetTask(context.TODO(), cfrex.RadarAIInferenceTimeseriesGroupGetTaskParams{
-		AggInterval:   cfrex.F(cfrex.RadarAIInferenceTimeseriesGroupGetTaskParamsAggInterval15m),
+		AggInterval:   cfrex.F(cfrex.RadarAIInferenceTimeseriesGroupGetTaskParamsAggInterval1h),
 		DateEnd:       cfrex.F([]time.Time{time.Now()}),
 		DateRange:     cfrex.F([]string{"7d"}),
 		DateStart:     cfrex.F([]time.Time{time.Now()}),

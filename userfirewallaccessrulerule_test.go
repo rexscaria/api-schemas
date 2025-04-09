@@ -32,7 +32,7 @@ func TestUserFirewallAccessRuleRuleNewWithOptionalParams(t *testing.T) {
 			Target: cfrex.F(cfrex.FirewallRuleConfigurationFirewallIPConfigurationTargetIP),
 			Value:  cfrex.F("198.51.100.4"),
 		}),
-		Mode:  cfrex.F(cfrex.FirewallSchemasModeBlock),
+		Mode:  cfrex.F(cfrex.FirewallSchemasModeChallenge),
 		Notes: cfrex.F("This rule is enabled because of an event that occurred on date X."),
 	})
 	if err != nil {
@@ -62,7 +62,7 @@ func TestUserFirewallAccessRuleRuleUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.UserFirewallAccessRuleRuleUpdateParams{
-			Mode:  cfrex.F(cfrex.FirewallSchemasModeBlock),
+			Mode:  cfrex.F(cfrex.FirewallSchemasModeChallenge),
 			Notes: cfrex.F("This rule is enabled because of an event that occurred on date X."),
 		},
 	)
@@ -94,11 +94,11 @@ func TestUserFirewallAccessRuleRuleListWithOptionalParams(t *testing.T) {
 			Target: cfrex.F(cfrex.UserFirewallAccessRuleRuleListParamsConfigurationTargetIP),
 			Value:  cfrex.F("198.51.100.4"),
 		}),
-		Direction: cfrex.F(cfrex.UserFirewallAccessRuleRuleListParamsDirectionAsc),
+		Direction: cfrex.F(cfrex.UserFirewallAccessRuleRuleListParamsDirectionDesc),
 		Match:     cfrex.F(cfrex.UserFirewallAccessRuleRuleListParamsMatchAny),
-		Mode:      cfrex.F(cfrex.FirewallSchemasModeBlock),
+		Mode:      cfrex.F(cfrex.FirewallSchemasModeChallenge),
 		Notes:     cfrex.F("my note"),
-		Order:     cfrex.F(cfrex.UserFirewallAccessRuleRuleListParamsOrderConfigurationTarget),
+		Order:     cfrex.F(cfrex.UserFirewallAccessRuleRuleListParamsOrderMode),
 		Page:      cfrex.F(1.000000),
 		PerPage:   cfrex.F(20.000000),
 	})

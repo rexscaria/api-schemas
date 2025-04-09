@@ -36,7 +36,7 @@ func TestAccountDevicePostureNewWithOptionalParams(t *testing.T) {
 			Description: cfrex.F("The rule for admin serial numbers"),
 			Expiration:  cfrex.F("1h"),
 			Input: cfrex.F[cfrex.InputValueUnionParam](cfrex.InputValueTeamsDevicesFileInputRequestParam{
-				OperatingSystem: cfrex.F(cfrex.InputValueTeamsDevicesFileInputRequestOperatingSystemWindows),
+				OperatingSystem: cfrex.F(cfrex.InputValueTeamsDevicesFileInputRequestOperatingSystemLinux),
 				Path:            cfrex.F("/bin/cat"),
 				Exists:          cfrex.F(true),
 				Sha256:          cfrex.F("https://api.us-2.crowdstrike.com"),
@@ -109,7 +109,7 @@ func TestAccountDevicePostureUpdateWithOptionalParams(t *testing.T) {
 			Description: cfrex.F("The rule for admin serial numbers"),
 			Expiration:  cfrex.F("1h"),
 			Input: cfrex.F[cfrex.InputValueUnionParam](cfrex.InputValueTeamsDevicesFileInputRequestParam{
-				OperatingSystem: cfrex.F(cfrex.InputValueTeamsDevicesFileInputRequestOperatingSystemWindows),
+				OperatingSystem: cfrex.F(cfrex.InputValueTeamsDevicesFileInputRequestOperatingSystemLinux),
 				Path:            cfrex.F("/bin/cat"),
 				Exists:          cfrex.F(true),
 				Sha256:          cfrex.F("https://api.us-2.crowdstrike.com"),

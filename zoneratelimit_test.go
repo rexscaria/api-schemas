@@ -32,7 +32,7 @@ func TestZoneRateLimitNewWithOptionalParams(t *testing.T) {
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.ZoneRateLimitNewParams{
 			Action: cfrex.F(cfrex.FirewallActionParam{
-				Mode: cfrex.F(cfrex.FirewallActionModeSimulate),
+				Mode: cfrex.F(cfrex.FirewallActionModeChallenge),
 				Response: cfrex.F(cfrex.FirewallActionResponseParam{
 					Body:        cfrex.F("<error>This request has been rate-limited.</error>"),
 					ContentType: cfrex.F("text/xml"),
@@ -42,7 +42,7 @@ func TestZoneRateLimitNewWithOptionalParams(t *testing.T) {
 			Match: cfrex.F(cfrex.FirewallMatchParam{
 				Headers: cfrex.F([]cfrex.FirewallMatchHeaderParam{{
 					Name:  cfrex.F("Cf-Cache-Status"),
-					Op:    cfrex.F(cfrex.FirewallMatchHeadersOpEq),
+					Op:    cfrex.F(cfrex.FirewallMatchHeadersOpNe),
 					Value: cfrex.F("HIT"),
 				}}),
 				Request: cfrex.F(cfrex.FirewallMatchRequestParam{
@@ -115,7 +115,7 @@ func TestZoneRateLimitUpdateWithOptionalParams(t *testing.T) {
 		"372e67954025e0ba6aaa6d586b9e0b59",
 		cfrex.ZoneRateLimitUpdateParams{
 			Action: cfrex.F(cfrex.FirewallActionParam{
-				Mode: cfrex.F(cfrex.FirewallActionModeSimulate),
+				Mode: cfrex.F(cfrex.FirewallActionModeChallenge),
 				Response: cfrex.F(cfrex.FirewallActionResponseParam{
 					Body:        cfrex.F("<error>This request has been rate-limited.</error>"),
 					ContentType: cfrex.F("text/xml"),
@@ -125,7 +125,7 @@ func TestZoneRateLimitUpdateWithOptionalParams(t *testing.T) {
 			Match: cfrex.F(cfrex.FirewallMatchParam{
 				Headers: cfrex.F([]cfrex.FirewallMatchHeaderParam{{
 					Name:  cfrex.F("Cf-Cache-Status"),
-					Op:    cfrex.F(cfrex.FirewallMatchHeadersOpEq),
+					Op:    cfrex.F(cfrex.FirewallMatchHeadersOpNe),
 					Value: cfrex.F("HIT"),
 				}}),
 				Request: cfrex.F(cfrex.FirewallMatchRequestParam{

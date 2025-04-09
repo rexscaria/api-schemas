@@ -85,9 +85,9 @@ func TestMembershipListWithOptionalParams(t *testing.T) {
 		Account: cfrex.F(cfrex.MembershipListParamsAccount{
 			Name: cfrex.F("Demo Account"),
 		}),
-		Direction: cfrex.F(cfrex.MembershipListParamsDirectionAsc),
+		Direction: cfrex.F(cfrex.MembershipListParamsDirectionDesc),
 		Name:      cfrex.F("Demo Account"),
-		Order:     cfrex.F(cfrex.MembershipListParamsOrderID),
+		Order:     cfrex.F(cfrex.MembershipListParamsOrderStatus),
 		Page:      cfrex.F(1.000000),
 		PerPage:   cfrex.F(5.000000),
 		Status:    cfrex.F(cfrex.MembershipListParamsStatusAccepted),

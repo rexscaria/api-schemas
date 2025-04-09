@@ -29,7 +29,7 @@ func TestRadarAs112GetTimeseriesWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.As112.GetTimeseries(context.TODO(), cfrex.RadarAs112GetTimeseriesParams{
-		AggInterval:  cfrex.F(cfrex.RadarAs112GetTimeseriesParamsAggInterval15m),
+		AggInterval:  cfrex.F(cfrex.RadarAs112GetTimeseriesParamsAggInterval1h),
 		Asn:          cfrex.F([]string{"string"}),
 		Continent:    cfrex.F([]string{"string"}),
 		DateEnd:      cfrex.F([]time.Time{time.Now()}),

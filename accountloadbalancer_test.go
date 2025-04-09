@@ -63,7 +63,7 @@ func TestAccountLoadBalancerSearchWithOptionalParams(t *testing.T) {
 			PerPage: cfrex.F(1.000000),
 			SearchParams: cfrex.F(cfrex.AccountLoadBalancerSearchParamsSearchParams{
 				Query:      cfrex.F("primary"),
-				References: cfrex.F(cfrex.AccountLoadBalancerSearchParamsSearchParamsReferencesEmpty),
+				References: cfrex.F(cfrex.AccountLoadBalancerSearchParamsSearchParamsReferencesStar),
 			}),
 		},
 	)

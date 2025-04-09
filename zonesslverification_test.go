@@ -62,7 +62,7 @@ func TestZoneSslVerificationUpdate(t *testing.T) {
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		"a77f8bd7-3b47-46b4-a6f1-75cf98109948",
 		cfrex.ZoneSslVerificationUpdateParams{
-			ValidationMethod: cfrex.F(cfrex.ValidationMethodDefinitionHTTP),
+			ValidationMethod: cfrex.F(cfrex.ValidationMethodDefinitionTxt),
 		},
 	)
 	if err != nil {

@@ -61,7 +61,7 @@ func TestZoneAPIGatewayOperationSchemaValidationUpdateWithOptionalParams(t *test
 		"f174e90a-fafe-4643-bbbc-4a0ed4fc8415",
 		cfrex.ZoneAPIGatewayOperationSchemaValidationUpdateParams{
 			SchemaValidationSettings: cfrex.SchemaValidationSettingsParam{
-				MitigationAction: cfrex.F(cfrex.SchemaValidationSettingsMitigationActionLog),
+				MitigationAction: cfrex.F(cfrex.SchemaValidationSettingsMitigationActionBlock),
 			},
 		},
 	)
@@ -97,7 +97,7 @@ func TestZoneAPIGatewayOperationSchemaValidationUpdateMultiple(t *testing.T) {
 					MitigationAction: cfrex.F(cfrex.ZoneAPIGatewayOperationSchemaValidationUpdateMultipleParamsBodyMitigationActionLog),
 				},
 				"b17c8043-99a0-4202-b7d9-8f7cdbee02cd": {
-					MitigationAction: cfrex.F(cfrex.ZoneAPIGatewayOperationSchemaValidationUpdateMultipleParamsBodyMitigationActionLog),
+					MitigationAction: cfrex.F(cfrex.ZoneAPIGatewayOperationSchemaValidationUpdateMultipleParamsBodyMitigationActionBlock),
 				},
 			},
 		},

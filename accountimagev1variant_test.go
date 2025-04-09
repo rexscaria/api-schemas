@@ -36,7 +36,7 @@ func TestAccountImageV1VariantNewWithOptionalParams(t *testing.T) {
 				Options: cfrex.F(cfrex.ImageVariantOptionsParam{
 					Fit:      cfrex.F(cfrex.ImageVariantOptionsFitScaleDown),
 					Height:   cfrex.F(768.000000),
-					Metadata: cfrex.F(cfrex.ImageVariantOptionsMetadataKeep),
+					Metadata: cfrex.F(cfrex.ImageVariantOptionsMetadataNone),
 					Width:    cfrex.F(1366.000000),
 				}),
 				NeverRequireSignedURLs: cfrex.F(true),
@@ -102,7 +102,7 @@ func TestAccountImageV1VariantUpdateWithOptionalParams(t *testing.T) {
 			Options: cfrex.F(cfrex.ImageVariantOptionsParam{
 				Fit:      cfrex.F(cfrex.ImageVariantOptionsFitScaleDown),
 				Height:   cfrex.F(768.000000),
-				Metadata: cfrex.F(cfrex.ImageVariantOptionsMetadataKeep),
+				Metadata: cfrex.F(cfrex.ImageVariantOptionsMetadataNone),
 				Width:    cfrex.F(1366.000000),
 			}),
 			NeverRequireSignedURLs: cfrex.F(true),

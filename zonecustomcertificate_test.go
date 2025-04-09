@@ -38,7 +38,7 @@ func TestZoneCustomCertificateNewWithOptionalParams(t *testing.T) {
 				Label: cfrex.F(cfrex.GeoRestrictionsLabelUs),
 			}),
 			Policy: cfrex.F("(country: US) or (region: EU)"),
-			Type:   cfrex.F(cfrex.ZoneCustomCertificateNewParamsTypeLegacyCustom),
+			Type:   cfrex.F(cfrex.ZoneCustomCertificateNewParamsTypeSniCustom),
 		},
 	)
 	if err != nil {

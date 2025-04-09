@@ -57,8 +57,8 @@ func TestZoneBotManagementUpdateWithOptionalParams(t *testing.T) {
 		cfrex.ZoneBotManagementUpdateParams{
 			Body: cfrex.BotFightModeConfigParam(cfrex.BotFightModeConfigParam{
 				BaseConfigParam: cfrex.BaseConfigParam{
-					AIBotsProtection:  cfrex.F(cfrex.BaseConfigAIBotsProtectionBlock),
-					CrawlerProtection: cfrex.F(cfrex.BaseConfigCrawlerProtectionEnabled),
+					AIBotsProtection:  cfrex.F(cfrex.BaseConfigAIBotsProtectionDisabled),
+					CrawlerProtection: cfrex.F(cfrex.BaseConfigCrawlerProtectionDisabled),
 					EnableJs:          cfrex.F(true),
 				},
 				FightMode: cfrex.F(true),

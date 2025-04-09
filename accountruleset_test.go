@@ -32,9 +32,9 @@ func TestAccountRulesetNewWithOptionalParams(t *testing.T) {
 		"abf9b32d38c5f572afde3336ec0ce302",
 		cfrex.AccountRulesetNewParams{
 			ID:          cfrex.F("2f2feab2026849078ba485f918791bdc"),
-			Kind:        cfrex.F(cfrex.AccountRulesetNewParamsKindManaged),
+			Kind:        cfrex.F(cfrex.AccountRulesetNewParamsKindRoot),
 			Name:        cfrex.F("My ruleset"),
-			Phase:       cfrex.F(cfrex.RulesetPhaseDdosL4),
+			Phase:       cfrex.F(cfrex.RulesetPhaseHTTPRequestFirewallCustom),
 			Version:     cfrex.F("1"),
 			Description: cfrex.F("My ruleset to execute managed rulesets"),
 			Rules: cfrex.F([]cfrex.AccountRulesetNewParamsRuleUnion{cfrex.AccountRulesetNewParamsRulesObject{
@@ -59,7 +59,7 @@ func TestAccountRulesetNewWithOptionalParams(t *testing.T) {
 				}),
 				Ratelimit: cfrex.F(cfrex.AccountRulesetNewParamsRulesObjectRatelimit{
 					Characteristics:         cfrex.F([]string{"ip.src"}),
-					Period:                  cfrex.F(cfrex.AccountRulesetNewParamsRulesObjectRatelimitPeriod10),
+					Period:                  cfrex.F(cfrex.AccountRulesetNewParamsRulesObjectRatelimitPeriod60),
 					CountingExpression:      cfrex.F(`http.request.body.raw eq "abcd"`),
 					MitigationTimeout:       cfrex.F(int64(600)),
 					RequestsPerPeriod:       cfrex.F(int64(1000)),
@@ -130,9 +130,9 @@ func TestAccountRulesetUpdateWithOptionalParams(t *testing.T) {
 			ID:          cfrex.F("2f2feab2026849078ba485f918791bdc"),
 			Version:     cfrex.F("1"),
 			Description: cfrex.F("My ruleset to execute managed rulesets"),
-			Kind:        cfrex.F(cfrex.AccountRulesetUpdateParamsKindManaged),
+			Kind:        cfrex.F(cfrex.AccountRulesetUpdateParamsKindRoot),
 			Name:        cfrex.F("My ruleset"),
-			Phase:       cfrex.F(cfrex.RulesetPhaseDdosL4),
+			Phase:       cfrex.F(cfrex.RulesetPhaseHTTPRequestFirewallCustom),
 			Rules: cfrex.F([]cfrex.AccountRulesetUpdateParamsRuleUnion{cfrex.AccountRulesetUpdateParamsRulesObject{
 				ID:     cfrex.F("3a03d665bac047339bb530ecb439a90d"),
 				Action: cfrex.F(cfrex.AccountRulesetUpdateParamsRulesObjectActionBlock),
@@ -155,7 +155,7 @@ func TestAccountRulesetUpdateWithOptionalParams(t *testing.T) {
 				}),
 				Ratelimit: cfrex.F(cfrex.AccountRulesetUpdateParamsRulesObjectRatelimit{
 					Characteristics:         cfrex.F([]string{"ip.src"}),
-					Period:                  cfrex.F(cfrex.AccountRulesetUpdateParamsRulesObjectRatelimitPeriod10),
+					Period:                  cfrex.F(cfrex.AccountRulesetUpdateParamsRulesObjectRatelimitPeriod60),
 					CountingExpression:      cfrex.F(`http.request.body.raw eq "abcd"`),
 					MitigationTimeout:       cfrex.F(int64(600)),
 					RequestsPerPeriod:       cfrex.F(int64(1000)),

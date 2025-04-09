@@ -62,7 +62,7 @@ func TestZoneAPIGatewayOperationListWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"zone_id",
 		cfrex.ZoneAPIGatewayOperationListParams{
-			Direction: cfrex.F(cfrex.ZoneAPIGatewayOperationListParamsDirectionAsc),
+			Direction: cfrex.F(cfrex.ZoneAPIGatewayOperationListParamsDirectionDesc),
 			Endpoint:  cfrex.F("/api/v1"),
 			Feature:   cfrex.F([]cfrex.ZoneAPIGatewayOperationListParamsFeature{cfrex.ZoneAPIGatewayOperationListParamsFeatureThresholds}),
 			Host:      cfrex.F([]string{"api.cloudflare.com"}),

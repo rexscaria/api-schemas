@@ -57,7 +57,7 @@ func TestAccountRulesetRuleNewWithOptionalParams(t *testing.T) {
 				}),
 				Ratelimit: cfrex.F(cfrex.AccountRulesetRuleNewParamsBodyObjectRatelimit{
 					Characteristics:         cfrex.F([]string{"ip.src"}),
-					Period:                  cfrex.F(cfrex.AccountRulesetRuleNewParamsBodyObjectRatelimitPeriod10),
+					Period:                  cfrex.F(cfrex.AccountRulesetRuleNewParamsBodyObjectRatelimitPeriod60),
 					CountingExpression:      cfrex.F(`http.request.body.raw eq "abcd"`),
 					MitigationTimeout:       cfrex.F(int64(600)),
 					RequestsPerPeriod:       cfrex.F(int64(1000)),
@@ -123,7 +123,7 @@ func TestAccountRulesetRuleUpdateWithOptionalParams(t *testing.T) {
 				}),
 				Ratelimit: cfrex.F(cfrex.AccountRulesetRuleUpdateParamsBodyObjectRatelimit{
 					Characteristics:         cfrex.F([]string{"ip.src"}),
-					Period:                  cfrex.F(cfrex.AccountRulesetRuleUpdateParamsBodyObjectRatelimitPeriod10),
+					Period:                  cfrex.F(cfrex.AccountRulesetRuleUpdateParamsBodyObjectRatelimitPeriod60),
 					CountingExpression:      cfrex.F(`http.request.body.raw eq "abcd"`),
 					MitigationTimeout:       cfrex.F(int64(600)),
 					RequestsPerPeriod:       cfrex.F(int64(1000)),

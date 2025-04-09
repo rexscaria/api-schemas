@@ -59,7 +59,7 @@ func TestZoneSpeedAPIPageGetTrendWithOptionalParams(t *testing.T) {
 		cfrex.ZoneSpeedAPIPageGetTrendParams{
 			DeviceType: cfrex.F(cfrex.ObservatoryDeviceTypeDesktop),
 			Metrics:    cfrex.F("performanceScore,ttfb,fcp,si,lcp,tti,tbt,cls"),
-			Region:     cfrex.F(cfrex.ObservatoryRegionAsiaEast1),
+			Region:     cfrex.F(cfrex.ObservatoryRegionUsCentral1),
 			Start:      cfrex.F(time.Now()),
 			Tz:         cfrex.F("tz"),
 			End:        cfrex.F(time.Now()),

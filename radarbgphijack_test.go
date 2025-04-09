@@ -42,7 +42,7 @@ func TestRadarBgpHijackListEventsWithOptionalParams(t *testing.T) {
 		Page:            cfrex.F(int64(0)),
 		PerPage:         cfrex.F(int64(0)),
 		Prefix:          cfrex.F("1.1.1.0/24"),
-		SortBy:          cfrex.F(cfrex.RadarBgpHijackListEventsParamsSortByID),
+		SortBy:          cfrex.F(cfrex.RadarBgpHijackListEventsParamsSortByTime),
 		SortOrder:       cfrex.F(cfrex.RadarBgpHijackListEventsParamsSortOrderAsc),
 		VictimAsn:       cfrex.F(int64(0)),
 	})

@@ -31,7 +31,7 @@ func TestRadarBgpRouteListAsesWithOptionalParams(t *testing.T) {
 		Format:    cfrex.F(cfrex.RadarBgpRouteListAsesParamsFormatJson),
 		Limit:     cfrex.F(int64(5)),
 		Location:  cfrex.F("US"),
-		SortBy:    cfrex.F(cfrex.RadarBgpRouteListAsesParamsSortByCone),
+		SortBy:    cfrex.F(cfrex.RadarBgpRouteListAsesParamsSortByIpv4),
 		SortOrder: cfrex.F(cfrex.RadarBgpRouteListAsesParamsSortOrderAsc),
 	})
 	if err != nil {
@@ -91,7 +91,7 @@ func TestRadarBgpRouteGetPrefixToAsWithOptionalParams(t *testing.T) {
 		LongestPrefixMatch: cfrex.F(true),
 		Origin:             cfrex.F(int64(0)),
 		Prefix:             cfrex.F("1.1.1.0/24"),
-		RpkiStatus:         cfrex.F(cfrex.RadarBgpRouteGetPrefixToAsParamsRpkiStatusValid),
+		RpkiStatus:         cfrex.F(cfrex.RadarBgpRouteGetPrefixToAsParamsRpkiStatusInvalid),
 	})
 	if err != nil {
 		var apierr *cfrex.Error

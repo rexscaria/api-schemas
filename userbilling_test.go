@@ -31,7 +31,7 @@ func TestUserBillingListHistoryWithOptionalParams(t *testing.T) {
 	_, err := client.User.Billing.ListHistory(context.TODO(), cfrex.UserBillingListHistoryParams{
 		Action:     cfrex.F("subscription"),
 		OccurredAt: cfrex.F(time.Now()),
-		Order:      cfrex.F(cfrex.UserBillingListHistoryParamsOrderType),
+		Order:      cfrex.F(cfrex.UserBillingListHistoryParamsOrderOccurredAt),
 		Page:       cfrex.F(1.000000),
 		PerPage:    cfrex.F(5.000000),
 		Type:       cfrex.F("charge"),

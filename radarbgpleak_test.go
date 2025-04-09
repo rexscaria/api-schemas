@@ -39,7 +39,7 @@ func TestRadarBgpLeakListEventsWithOptionalParams(t *testing.T) {
 		LeakAsn:         cfrex.F(int64(0)),
 		Page:            cfrex.F(int64(0)),
 		PerPage:         cfrex.F(int64(0)),
-		SortBy:          cfrex.F(cfrex.RadarBgpLeakListEventsParamsSortByID),
+		SortBy:          cfrex.F(cfrex.RadarBgpLeakListEventsParamsSortByTime),
 		SortOrder:       cfrex.F(cfrex.RadarBgpLeakListEventsParamsSortOrderAsc),
 	})
 	if err != nil {

@@ -29,7 +29,7 @@ func TestRadarBgpGetTimeseriesWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.Bgp.GetTimeseries(context.TODO(), cfrex.RadarBgpGetTimeseriesParams{
-		AggInterval: cfrex.F(cfrex.RadarBgpGetTimeseriesParamsAggInterval15m),
+		AggInterval: cfrex.F(cfrex.RadarBgpGetTimeseriesParamsAggInterval1h),
 		Asn:         cfrex.F([]string{"string"}),
 		DateEnd:     cfrex.F([]time.Time{time.Now()}),
 		DateRange:   cfrex.F([]string{"7d"}),

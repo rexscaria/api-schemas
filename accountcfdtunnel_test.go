@@ -33,7 +33,7 @@ func TestAccountCfdTunnelNewWithOptionalParams(t *testing.T) {
 		"699d98642c564d2e855e9661899b7252",
 		cfrex.AccountCfdTunnelNewParams{
 			Name:         cfrex.F("blog"),
-			ConfigSrc:    cfrex.F(cfrex.AccountCfdTunnelNewParamsConfigSrcLocal),
+			ConfigSrc:    cfrex.F(cfrex.AccountCfdTunnelNewParamsConfigSrcCloudflare),
 			TunnelSecret: cfrex.F("AQIDBAUGBwgBAgMEBQYHCAECAwQFBgcIAQIDBAUGBwg="),
 		},
 	)
@@ -131,7 +131,7 @@ func TestAccountCfdTunnelListWithOptionalParams(t *testing.T) {
 			Name:          cfrex.F("blog"),
 			Page:          cfrex.F(1.000000),
 			PerPage:       cfrex.F(1.000000),
-			Status:        cfrex.F(cfrex.StatusTunnelInactive),
+			Status:        cfrex.F(cfrex.StatusTunnelHealthy),
 			Uuid:          cfrex.F("f70ff985-a4ef-4643-bbbc-4a0ed4fc8415"),
 			WasActiveAt:   cfrex.F(time.Now()),
 			WasInactiveAt: cfrex.F(time.Now()),

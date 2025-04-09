@@ -94,8 +94,8 @@ func TestAccountMemberListWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"eb78d65290b24279ba6f44721b3ea3c4",
 		cfrex.AccountMemberListParams{
-			Direction: cfrex.F(cfrex.AccountMemberListParamsDirectionAsc),
-			Order:     cfrex.F(cfrex.AccountMemberListParamsOrderUserFirstName),
+			Direction: cfrex.F(cfrex.AccountMemberListParamsDirectionDesc),
+			Order:     cfrex.F(cfrex.AccountMemberListParamsOrderStatus),
 			Page:      cfrex.F(1.000000),
 			PerPage:   cfrex.F(5.000000),
 			Status:    cfrex.F(cfrex.AccountMemberListParamsStatusAccepted),

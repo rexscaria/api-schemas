@@ -91,7 +91,7 @@ func TestZoneFirewallWafPackageListWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.ZoneFirewallWafPackageListParams{
-			Direction: cfrex.F(cfrex.ZoneFirewallWafPackageListParamsDirectionAsc),
+			Direction: cfrex.F(cfrex.ZoneFirewallWafPackageListParamsDirectionDesc),
 			Match:     cfrex.F(cfrex.ZoneFirewallWafPackageListParamsMatchAny),
 			Name:      cfrex.F("USER"),
 			Order:     cfrex.F(cfrex.ZoneFirewallWafPackageListParamsOrderName),

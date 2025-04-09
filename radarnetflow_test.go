@@ -62,7 +62,7 @@ func TestRadarNetflowGetTimeseriesWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.Netflows.GetTimeseries(context.TODO(), cfrex.RadarNetflowGetTimeseriesParams{
-		AggInterval:   cfrex.F(cfrex.RadarNetflowGetTimeseriesParamsAggInterval15m),
+		AggInterval:   cfrex.F(cfrex.RadarNetflowGetTimeseriesParamsAggInterval1h),
 		Asn:           cfrex.F([]string{"string"}),
 		Continent:     cfrex.F([]string{"string"}),
 		DateEnd:       cfrex.F([]time.Time{time.Now()}),
@@ -71,7 +71,7 @@ func TestRadarNetflowGetTimeseriesWithOptionalParams(t *testing.T) {
 		Format:        cfrex.F(cfrex.RadarNetflowGetTimeseriesParamsFormatJson),
 		Location:      cfrex.F([]string{"string"}),
 		Name:          cfrex.F([]string{"main_series"}),
-		Normalization: cfrex.F(cfrex.RadarNetflowGetTimeseriesParamsNormalizationPercentageChange),
+		Normalization: cfrex.F(cfrex.RadarNetflowGetTimeseriesParamsNormalizationMin0Max),
 		Product:       cfrex.F([]cfrex.RadarNetflowGetTimeseriesParamsProduct{cfrex.RadarNetflowGetTimeseriesParamsProductHTTP}),
 	})
 	if err != nil {

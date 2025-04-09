@@ -144,7 +144,7 @@ func TestZonePageruleListWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.ZonePageruleListParams{
-			Direction: cfrex.F(cfrex.ZonePageruleListParamsDirectionAsc),
+			Direction: cfrex.F(cfrex.ZonePageruleListParamsDirectionDesc),
 			Match:     cfrex.F(cfrex.ZonePageruleListParamsMatchAny),
 			Order:     cfrex.F(cfrex.ZonePageruleListParamsOrderStatus),
 			Status:    cfrex.F(cfrex.ZonePageruleListParamsStatusActive),

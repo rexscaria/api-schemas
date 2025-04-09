@@ -31,7 +31,7 @@ func TestAccountAlertingV3PolicyNewWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.AccountAlertingV3PolicyNewParams{
-			AlertType: cfrex.F(cfrex.AlertTypeAccessCustomCertificateExpirationType),
+			AlertType: cfrex.F(cfrex.AlertTypeUniversalSslEventType),
 			Enabled:   cfrex.F(true),
 			Mechanisms: cfrex.F(cfrex.MechanismsParam{
 				Email: cfrex.F([]cfrex.MechanismsEmailParam{{
@@ -150,7 +150,7 @@ func TestAccountAlertingV3PolicyUpdateWithOptionalParams(t *testing.T) {
 		"0da2b59e-f118-439d-8097-bdfb215203c9",
 		cfrex.AccountAlertingV3PolicyUpdateParams{
 			AlertInterval: cfrex.F("30m"),
-			AlertType:     cfrex.F(cfrex.AlertTypeAccessCustomCertificateExpirationType),
+			AlertType:     cfrex.F(cfrex.AlertTypeUniversalSslEventType),
 			Description:   cfrex.F("Something describing the policy."),
 			Enabled:       cfrex.F(true),
 			Filters: cfrex.F(cfrex.AlertFiltersParam{

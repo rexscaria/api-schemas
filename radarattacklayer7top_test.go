@@ -39,7 +39,7 @@ func TestRadarAttackLayer7TopGetTopAttacksWithOptionalParams(t *testing.T) {
 		LimitDirection:    cfrex.F(cfrex.RadarAttackLayer7TopGetTopAttacksParamsLimitDirectionOrigin),
 		LimitPerLocation:  cfrex.F(int64(10)),
 		Location:          cfrex.F([]string{"string"}),
-		Magnitude:         cfrex.F(cfrex.RadarAttackLayer7TopGetTopAttacksParamsMagnitudeAffectedZones),
+		Magnitude:         cfrex.F(cfrex.RadarAttackLayer7TopGetTopAttacksParamsMagnitudeMitigatedRequests),
 		MitigationProduct: cfrex.F([]cfrex.RadarAttackLayer7TopGetTopAttacksParamsMitigationProduct{cfrex.RadarAttackLayer7TopGetTopAttacksParamsMitigationProductDdos}),
 		Name:              cfrex.F([]string{"main_series"}),
 		Normalization:     cfrex.F(cfrex.RadarAttackLayer7TopGetTopAttacksParamsNormalizationPercentage),

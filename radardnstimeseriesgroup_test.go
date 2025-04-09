@@ -29,7 +29,7 @@ func TestRadarDNSTimeseriesGroupGetCacheHitWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.DNS.TimeseriesGroups.GetCacheHit(context.TODO(), cfrex.RadarDNSTimeseriesGroupGetCacheHitParams{
-		AggInterval:  cfrex.F(cfrex.RadarDNSTimeseriesGroupGetCacheHitParamsAggInterval15m),
+		AggInterval:  cfrex.F(cfrex.RadarDNSTimeseriesGroupGetCacheHitParamsAggInterval1h),
 		Asn:          cfrex.F([]string{"string"}),
 		Continent:    cfrex.F([]string{"string"}),
 		DateEnd:      cfrex.F([]time.Time{time.Now()}),
@@ -68,7 +68,7 @@ func TestRadarDNSTimeseriesGroupGetDnssecWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.DNS.TimeseriesGroups.GetDnssec(context.TODO(), cfrex.RadarDNSTimeseriesGroupGetDnssecParams{
-		AggInterval:  cfrex.F(cfrex.RadarDNSTimeseriesGroupGetDnssecParamsAggInterval15m),
+		AggInterval:  cfrex.F(cfrex.RadarDNSTimeseriesGroupGetDnssecParamsAggInterval1h),
 		Asn:          cfrex.F([]string{"string"}),
 		Continent:    cfrex.F([]string{"string"}),
 		DateEnd:      cfrex.F([]time.Time{time.Now()}),
@@ -107,7 +107,7 @@ func TestRadarDNSTimeseriesGroupGetDnssecAwareWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.DNS.TimeseriesGroups.GetDnssecAware(context.TODO(), cfrex.RadarDNSTimeseriesGroupGetDnssecAwareParams{
-		AggInterval:  cfrex.F(cfrex.RadarDNSTimeseriesGroupGetDnssecAwareParamsAggInterval15m),
+		AggInterval:  cfrex.F(cfrex.RadarDNSTimeseriesGroupGetDnssecAwareParamsAggInterval1h),
 		Asn:          cfrex.F([]string{"string"}),
 		Continent:    cfrex.F([]string{"string"}),
 		DateEnd:      cfrex.F([]time.Time{time.Now()}),
@@ -146,7 +146,7 @@ func TestRadarDNSTimeseriesGroupGetDnssecE2EWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.DNS.TimeseriesGroups.GetDnssecE2E(context.TODO(), cfrex.RadarDNSTimeseriesGroupGetDnssecE2EParams{
-		AggInterval:  cfrex.F(cfrex.RadarDNSTimeseriesGroupGetDnssecE2EParamsAggInterval15m),
+		AggInterval:  cfrex.F(cfrex.RadarDNSTimeseriesGroupGetDnssecE2EParamsAggInterval1h),
 		Asn:          cfrex.F([]string{"string"}),
 		Continent:    cfrex.F([]string{"string"}),
 		DateEnd:      cfrex.F([]time.Time{time.Now()}),
@@ -185,7 +185,7 @@ func TestRadarDNSTimeseriesGroupGetIPVersionWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.DNS.TimeseriesGroups.GetIPVersion(context.TODO(), cfrex.RadarDNSTimeseriesGroupGetIPVersionParams{
-		AggInterval:  cfrex.F(cfrex.RadarDNSTimeseriesGroupGetIPVersionParamsAggInterval15m),
+		AggInterval:  cfrex.F(cfrex.RadarDNSTimeseriesGroupGetIPVersionParamsAggInterval1h),
 		Asn:          cfrex.F([]string{"string"}),
 		Continent:    cfrex.F([]string{"string"}),
 		DateEnd:      cfrex.F([]time.Time{time.Now()}),
@@ -224,7 +224,7 @@ func TestRadarDNSTimeseriesGroupGetMatchingAnswerWithOptionalParams(t *testing.T
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.DNS.TimeseriesGroups.GetMatchingAnswer(context.TODO(), cfrex.RadarDNSTimeseriesGroupGetMatchingAnswerParams{
-		AggInterval:  cfrex.F(cfrex.RadarDNSTimeseriesGroupGetMatchingAnswerParamsAggInterval15m),
+		AggInterval:  cfrex.F(cfrex.RadarDNSTimeseriesGroupGetMatchingAnswerParamsAggInterval1h),
 		Asn:          cfrex.F([]string{"string"}),
 		Continent:    cfrex.F([]string{"string"}),
 		DateEnd:      cfrex.F([]time.Time{time.Now()}),
@@ -263,7 +263,7 @@ func TestRadarDNSTimeseriesGroupGetProtocolWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.DNS.TimeseriesGroups.GetProtocol(context.TODO(), cfrex.RadarDNSTimeseriesGroupGetProtocolParams{
-		AggInterval:  cfrex.F(cfrex.RadarDNSTimeseriesGroupGetProtocolParamsAggInterval15m),
+		AggInterval:  cfrex.F(cfrex.RadarDNSTimeseriesGroupGetProtocolParamsAggInterval1h),
 		Asn:          cfrex.F([]string{"string"}),
 		Continent:    cfrex.F([]string{"string"}),
 		DateEnd:      cfrex.F([]time.Time{time.Now()}),
@@ -301,7 +301,7 @@ func TestRadarDNSTimeseriesGroupGetQueryTypeWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.DNS.TimeseriesGroups.GetQueryType(context.TODO(), cfrex.RadarDNSTimeseriesGroupGetQueryTypeParams{
-		AggInterval:   cfrex.F(cfrex.RadarDNSTimeseriesGroupGetQueryTypeParamsAggInterval15m),
+		AggInterval:   cfrex.F(cfrex.RadarDNSTimeseriesGroupGetQueryTypeParamsAggInterval1h),
 		Asn:           cfrex.F([]string{"string"}),
 		Continent:     cfrex.F([]string{"string"}),
 		DateEnd:       cfrex.F([]time.Time{time.Now()}),
@@ -340,7 +340,7 @@ func TestRadarDNSTimeseriesGroupGetResponseCodeWithOptionalParams(t *testing.T) 
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.DNS.TimeseriesGroups.GetResponseCode(context.TODO(), cfrex.RadarDNSTimeseriesGroupGetResponseCodeParams{
-		AggInterval:   cfrex.F(cfrex.RadarDNSTimeseriesGroupGetResponseCodeParamsAggInterval15m),
+		AggInterval:   cfrex.F(cfrex.RadarDNSTimeseriesGroupGetResponseCodeParamsAggInterval1h),
 		Asn:           cfrex.F([]string{"string"}),
 		Continent:     cfrex.F([]string{"string"}),
 		DateEnd:       cfrex.F([]time.Time{time.Now()}),
@@ -379,7 +379,7 @@ func TestRadarDNSTimeseriesGroupGetResponseTtlWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.DNS.TimeseriesGroups.GetResponseTtl(context.TODO(), cfrex.RadarDNSTimeseriesGroupGetResponseTtlParams{
-		AggInterval:  cfrex.F(cfrex.RadarDNSTimeseriesGroupGetResponseTtlParamsAggInterval15m),
+		AggInterval:  cfrex.F(cfrex.RadarDNSTimeseriesGroupGetResponseTtlParamsAggInterval1h),
 		Asn:          cfrex.F([]string{"string"}),
 		Continent:    cfrex.F([]string{"string"}),
 		DateEnd:      cfrex.F([]time.Time{time.Now()}),

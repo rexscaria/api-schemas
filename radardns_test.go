@@ -29,7 +29,7 @@ func TestRadarDNSGetTimeseriesWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.DNS.GetTimeseries(context.TODO(), cfrex.RadarDNSGetTimeseriesParams{
-		AggInterval:  cfrex.F(cfrex.RadarDNSGetTimeseriesParamsAggInterval15m),
+		AggInterval:  cfrex.F(cfrex.RadarDNSGetTimeseriesParamsAggInterval1h),
 		Asn:          cfrex.F([]string{"string"}),
 		Continent:    cfrex.F([]string{"string"}),
 		DateEnd:      cfrex.F([]time.Time{time.Now()}),

@@ -98,7 +98,7 @@ func TestZoneFirewallWafOverrideUpdateWithOptionalParams(t *testing.T) {
 				Simulate:  cfrex.F(cfrex.FirewallWafRewriteActionChallenge),
 			}),
 			Rules: cfrex.F(map[string]cfrex.ZoneFirewallWafOverrideUpdateParamsRules{
-				"100015": cfrex.ZoneFirewallWafOverrideUpdateParamsRulesChallenge,
+				"100015": cfrex.ZoneFirewallWafOverrideUpdateParamsRulesDisable,
 			}),
 			URLs: cfrex.F([]string{"shop.example.com/*"}),
 		},

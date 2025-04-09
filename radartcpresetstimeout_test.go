@@ -62,7 +62,7 @@ func TestRadarTcpResetsTimeoutTimeseriesGroupsWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.TcpResetsTimeouts.TimeseriesGroups(context.TODO(), cfrex.RadarTcpResetsTimeoutTimeseriesGroupsParams{
-		AggInterval: cfrex.F(cfrex.RadarTcpResetsTimeoutTimeseriesGroupsParamsAggInterval15m),
+		AggInterval: cfrex.F(cfrex.RadarTcpResetsTimeoutTimeseriesGroupsParamsAggInterval1h),
 		Asn:         cfrex.F([]string{"string"}),
 		Continent:   cfrex.F([]string{"string"}),
 		DateEnd:     cfrex.F([]time.Time{time.Now()}),

@@ -33,7 +33,7 @@ func TestZoneAPIGatewayDiscoveryOperationUpdate(t *testing.T) {
 		cfrex.ZoneAPIGatewayDiscoveryOperationUpdateParams{
 			Body: map[string]cfrex.ZoneAPIGatewayDiscoveryOperationUpdateParamsBody{
 				"3818d821-5901-4147-a474-f5f5aec1d54e": {
-					State: cfrex.F(cfrex.ZoneAPIGatewayDiscoveryOperationUpdateParamsBodyStateReview),
+					State: cfrex.F(cfrex.ZoneAPIGatewayDiscoveryOperationUpdateParamsBodyStateIgnored),
 				},
 				"b17c8043-99a0-4202-b7d9-8f7cdbee02cd": {
 					State: cfrex.F(cfrex.ZoneAPIGatewayDiscoveryOperationUpdateParamsBodyStateReview),
@@ -69,11 +69,11 @@ func TestZoneAPIGatewayDiscoveryOperationListWithOptionalParams(t *testing.T) {
 		"zone_id",
 		cfrex.ZoneAPIGatewayDiscoveryOperationListParams{
 			Diff:      cfrex.F(true),
-			Direction: cfrex.F(cfrex.ZoneAPIGatewayDiscoveryOperationListParamsDirectionAsc),
+			Direction: cfrex.F(cfrex.ZoneAPIGatewayDiscoveryOperationListParamsDirectionDesc),
 			Endpoint:  cfrex.F("/api/v1"),
 			Host:      cfrex.F([]string{"api.cloudflare.com"}),
 			Method:    cfrex.F([]string{"GET"}),
-			Order:     cfrex.F(cfrex.ZoneAPIGatewayDiscoveryOperationListParamsOrderHost),
+			Order:     cfrex.F(cfrex.ZoneAPIGatewayDiscoveryOperationListParamsOrderMethod),
 			Origin:    cfrex.F(cfrex.ZoneAPIGatewayDiscoveryOperationListParamsOriginMl),
 			Page:      cfrex.F(int64(1)),
 			PerPage:   cfrex.F(int64(5)),

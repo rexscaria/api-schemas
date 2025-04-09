@@ -70,7 +70,7 @@ func TestZonePageShieldCookieListWithOptionalParams(t *testing.T) {
 			PageURL:   cfrex.F("example.com/page,*/checkout,example.com/*,*checkout*"),
 			Path:      cfrex.F("/"),
 			PerPage:   cfrex.F(100.000000),
-			SameSite:  cfrex.F(cfrex.ZonePageShieldCookieListParamsSameSiteLax),
+			SameSite:  cfrex.F(cfrex.ZonePageShieldCookieListParamsSameSiteStrict),
 			Secure:    cfrex.F(true),
 			Type:      cfrex.F(cfrex.ZonePageShieldCookieListParamsTypeFirstParty),
 		},

@@ -106,9 +106,9 @@ func TestAccountMagicGreTunnelUpdateWithOptionalParams(t *testing.T) {
 					Target: cfrex.F[cfrex.MagicHealthCheckBaseTargetUnionParam](cfrex.MagicHealthCheckBaseTargetMagicHealthCheckTargetParam{
 						Saved: cfrex.F("203.0.113.1"),
 					}),
-					Type: cfrex.F(cfrex.MagicHealthCheckBaseTypeReply),
+					Type: cfrex.F(cfrex.MagicHealthCheckBaseTypeRequest),
 				},
-				Direction: cfrex.F(cfrex.MagicTunnelHealthCheckDirectionUnidirectional),
+				Direction: cfrex.F(cfrex.MagicTunnelHealthCheckDirectionBidirectional),
 			}),
 			Mtu:               cfrex.F(int64(0)),
 			Ttl:               cfrex.F(int64(0)),

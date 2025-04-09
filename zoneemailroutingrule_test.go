@@ -32,7 +32,7 @@ func TestZoneEmailRoutingRuleNewWithOptionalParams(t *testing.T) {
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.ZoneEmailRoutingRuleNewParams{
 			Actions: cfrex.F([]cfrex.EmailRuleActionPatternParam{{
-				Type:  cfrex.F(cfrex.EmailRuleActionPatternTypeDrop),
+				Type:  cfrex.F(cfrex.EmailRuleActionPatternTypeForward),
 				Value: cfrex.F([]string{"destinationaddress@example.net"}),
 			}}),
 			Matchers: cfrex.F([]cfrex.EmailRuleMatcherParam{{
@@ -102,7 +102,7 @@ func TestZoneEmailRoutingRuleUpdateWithOptionalParams(t *testing.T) {
 		"a7e6fb77503c41d8a7f3113c6918f10c",
 		cfrex.ZoneEmailRoutingRuleUpdateParams{
 			Actions: cfrex.F([]cfrex.EmailRuleActionPatternParam{{
-				Type:  cfrex.F(cfrex.EmailRuleActionPatternTypeDrop),
+				Type:  cfrex.F(cfrex.EmailRuleActionPatternTypeForward),
 				Value: cfrex.F([]string{"destinationaddress@example.net"}),
 			}}),
 			Matchers: cfrex.F([]cfrex.EmailRuleMatcherParam{{

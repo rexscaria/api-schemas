@@ -33,7 +33,7 @@ func TestAccountR2NewTempAccessCredentialsWithOptionalParams(t *testing.T) {
 		cfrex.AccountR2NewTempAccessCredentialsParams{
 			Bucket:            cfrex.F("example-bucket"),
 			ParentAccessKeyID: cfrex.F("example-access-key-id"),
-			Permission:        cfrex.F(cfrex.AccountR2NewTempAccessCredentialsParamsPermissionAdminReadWrite),
+			Permission:        cfrex.F(cfrex.AccountR2NewTempAccessCredentialsParamsPermissionObjectReadWrite),
 			TtlSeconds:        cfrex.F(3600.000000),
 			Objects:           cfrex.F([]string{"example-object"}),
 			Prefixes:          cfrex.F([]string{"example-prefix/"}),

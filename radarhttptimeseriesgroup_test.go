@@ -29,7 +29,7 @@ func TestRadarHTTPTimeseriesGroupGetByBotClassWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.HTTP.TimeseriesGroups.GetByBotClass(context.TODO(), cfrex.RadarHTTPTimeseriesGroupGetByBotClassParams{
-		AggInterval:   cfrex.F(cfrex.RadarHTTPTimeseriesGroupGetByBotClassParamsAggInterval15m),
+		AggInterval:   cfrex.F(cfrex.RadarHTTPTimeseriesGroupGetByBotClassParamsAggInterval1h),
 		Asn:           cfrex.F([]string{"string"}),
 		BrowserFamily: cfrex.F([]cfrex.RadarHTTPTimeseriesGroupGetByBotClassParamsBrowserFamily{cfrex.RadarHTTPTimeseriesGroupGetByBotClassParamsBrowserFamilyChrome}),
 		Continent:     cfrex.F([]string{"string"}),
@@ -70,7 +70,7 @@ func TestRadarHTTPTimeseriesGroupGetByBrowserWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.HTTP.TimeseriesGroups.GetByBrowser(context.TODO(), cfrex.RadarHTTPTimeseriesGroupGetByBrowserParams{
-		AggInterval:   cfrex.F(cfrex.RadarHTTPTimeseriesGroupGetByBrowserParamsAggInterval15m),
+		AggInterval:   cfrex.F(cfrex.RadarHTTPTimeseriesGroupGetByBrowserParamsAggInterval1h),
 		Asn:           cfrex.F([]string{"string"}),
 		BotClass:      cfrex.F([]cfrex.RadarHTTPTimeseriesGroupGetByBrowserParamsBotClass{cfrex.RadarHTTPTimeseriesGroupGetByBrowserParamsBotClassLikelyAutomated}),
 		BrowserFamily: cfrex.F([]cfrex.RadarHTTPTimeseriesGroupGetByBrowserParamsBrowserFamily{cfrex.RadarHTTPTimeseriesGroupGetByBrowserParamsBrowserFamilyChrome}),
@@ -113,7 +113,7 @@ func TestRadarHTTPTimeseriesGroupGetByBrowserFamilyWithOptionalParams(t *testing
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.HTTP.TimeseriesGroups.GetByBrowserFamily(context.TODO(), cfrex.RadarHTTPTimeseriesGroupGetByBrowserFamilyParams{
-		AggInterval:   cfrex.F(cfrex.RadarHTTPTimeseriesGroupGetByBrowserFamilyParamsAggInterval15m),
+		AggInterval:   cfrex.F(cfrex.RadarHTTPTimeseriesGroupGetByBrowserFamilyParamsAggInterval1h),
 		Asn:           cfrex.F([]string{"string"}),
 		BotClass:      cfrex.F([]cfrex.RadarHTTPTimeseriesGroupGetByBrowserFamilyParamsBotClass{cfrex.RadarHTTPTimeseriesGroupGetByBrowserFamilyParamsBotClassLikelyAutomated}),
 		Continent:     cfrex.F([]string{"string"}),
@@ -155,7 +155,7 @@ func TestRadarHTTPTimeseriesGroupGetByDeviceTypeWithOptionalParams(t *testing.T)
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.HTTP.TimeseriesGroups.GetByDeviceType(context.TODO(), cfrex.RadarHTTPTimeseriesGroupGetByDeviceTypeParams{
-		AggInterval:   cfrex.F(cfrex.RadarHTTPTimeseriesGroupGetByDeviceTypeParamsAggInterval15m),
+		AggInterval:   cfrex.F(cfrex.RadarHTTPTimeseriesGroupGetByDeviceTypeParamsAggInterval1h),
 		Asn:           cfrex.F([]string{"string"}),
 		BotClass:      cfrex.F([]cfrex.RadarHTTPTimeseriesGroupGetByDeviceTypeParamsBotClass{cfrex.RadarHTTPTimeseriesGroupGetByDeviceTypeParamsBotClassLikelyAutomated}),
 		BrowserFamily: cfrex.F([]cfrex.RadarHTTPTimeseriesGroupGetByDeviceTypeParamsBrowserFamily{cfrex.RadarHTTPTimeseriesGroupGetByDeviceTypeParamsBrowserFamilyChrome}),
@@ -196,7 +196,7 @@ func TestRadarHTTPTimeseriesGroupGetByHTTPProtocolWithOptionalParams(t *testing.
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.HTTP.TimeseriesGroups.GetByHTTPProtocol(context.TODO(), cfrex.RadarHTTPTimeseriesGroupGetByHTTPProtocolParams{
-		AggInterval:   cfrex.F(cfrex.RadarHTTPTimeseriesGroupGetByHTTPProtocolParamsAggInterval15m),
+		AggInterval:   cfrex.F(cfrex.RadarHTTPTimeseriesGroupGetByHTTPProtocolParamsAggInterval1h),
 		Asn:           cfrex.F([]string{"string"}),
 		BotClass:      cfrex.F([]cfrex.RadarHTTPTimeseriesGroupGetByHTTPProtocolParamsBotClass{cfrex.RadarHTTPTimeseriesGroupGetByHTTPProtocolParamsBotClassLikelyAutomated}),
 		BrowserFamily: cfrex.F([]cfrex.RadarHTTPTimeseriesGroupGetByHTTPProtocolParamsBrowserFamily{cfrex.RadarHTTPTimeseriesGroupGetByHTTPProtocolParamsBrowserFamilyChrome}),
@@ -237,7 +237,7 @@ func TestRadarHTTPTimeseriesGroupGetByHTTPVersionWithOptionalParams(t *testing.T
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.HTTP.TimeseriesGroups.GetByHTTPVersion(context.TODO(), cfrex.RadarHTTPTimeseriesGroupGetByHTTPVersionParams{
-		AggInterval:   cfrex.F(cfrex.RadarHTTPTimeseriesGroupGetByHTTPVersionParamsAggInterval15m),
+		AggInterval:   cfrex.F(cfrex.RadarHTTPTimeseriesGroupGetByHTTPVersionParamsAggInterval1h),
 		Asn:           cfrex.F([]string{"string"}),
 		BotClass:      cfrex.F([]cfrex.RadarHTTPTimeseriesGroupGetByHTTPVersionParamsBotClass{cfrex.RadarHTTPTimeseriesGroupGetByHTTPVersionParamsBotClassLikelyAutomated}),
 		BrowserFamily: cfrex.F([]cfrex.RadarHTTPTimeseriesGroupGetByHTTPVersionParamsBrowserFamily{cfrex.RadarHTTPTimeseriesGroupGetByHTTPVersionParamsBrowserFamilyChrome}),
@@ -278,7 +278,7 @@ func TestRadarHTTPTimeseriesGroupGetByIPVersionWithOptionalParams(t *testing.T) 
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.HTTP.TimeseriesGroups.GetByIPVersion(context.TODO(), cfrex.RadarHTTPTimeseriesGroupGetByIPVersionParams{
-		AggInterval:   cfrex.F(cfrex.RadarHTTPTimeseriesGroupGetByIPVersionParamsAggInterval15m),
+		AggInterval:   cfrex.F(cfrex.RadarHTTPTimeseriesGroupGetByIPVersionParamsAggInterval1h),
 		Asn:           cfrex.F([]string{"string"}),
 		BotClass:      cfrex.F([]cfrex.RadarHTTPTimeseriesGroupGetByIPVersionParamsBotClass{cfrex.RadarHTTPTimeseriesGroupGetByIPVersionParamsBotClassLikelyAutomated}),
 		BrowserFamily: cfrex.F([]cfrex.RadarHTTPTimeseriesGroupGetByIPVersionParamsBrowserFamily{cfrex.RadarHTTPTimeseriesGroupGetByIPVersionParamsBrowserFamilyChrome}),
@@ -319,7 +319,7 @@ func TestRadarHTTPTimeseriesGroupGetByOsWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.HTTP.TimeseriesGroups.GetByOs(context.TODO(), cfrex.RadarHTTPTimeseriesGroupGetByOsParams{
-		AggInterval:   cfrex.F(cfrex.RadarHTTPTimeseriesGroupGetByOsParamsAggInterval15m),
+		AggInterval:   cfrex.F(cfrex.RadarHTTPTimeseriesGroupGetByOsParamsAggInterval1h),
 		Asn:           cfrex.F([]string{"string"}),
 		BotClass:      cfrex.F([]cfrex.RadarHTTPTimeseriesGroupGetByOsParamsBotClass{cfrex.RadarHTTPTimeseriesGroupGetByOsParamsBotClassLikelyAutomated}),
 		BrowserFamily: cfrex.F([]cfrex.RadarHTTPTimeseriesGroupGetByOsParamsBrowserFamily{cfrex.RadarHTTPTimeseriesGroupGetByOsParamsBrowserFamilyChrome}),
@@ -360,7 +360,7 @@ func TestRadarHTTPTimeseriesGroupGetByPostQuantumWithOptionalParams(t *testing.T
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.HTTP.TimeseriesGroups.GetByPostQuantum(context.TODO(), cfrex.RadarHTTPTimeseriesGroupGetByPostQuantumParams{
-		AggInterval:   cfrex.F(cfrex.RadarHTTPTimeseriesGroupGetByPostQuantumParamsAggInterval15m),
+		AggInterval:   cfrex.F(cfrex.RadarHTTPTimeseriesGroupGetByPostQuantumParamsAggInterval1h),
 		Asn:           cfrex.F([]string{"string"}),
 		BotClass:      cfrex.F([]cfrex.RadarHTTPTimeseriesGroupGetByPostQuantumParamsBotClass{cfrex.RadarHTTPTimeseriesGroupGetByPostQuantumParamsBotClassLikelyAutomated}),
 		BrowserFamily: cfrex.F([]cfrex.RadarHTTPTimeseriesGroupGetByPostQuantumParamsBrowserFamily{cfrex.RadarHTTPTimeseriesGroupGetByPostQuantumParamsBrowserFamilyChrome}),
@@ -402,7 +402,7 @@ func TestRadarHTTPTimeseriesGroupGetByTlsVersionWithOptionalParams(t *testing.T)
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.HTTP.TimeseriesGroups.GetByTlsVersion(context.TODO(), cfrex.RadarHTTPTimeseriesGroupGetByTlsVersionParams{
-		AggInterval:   cfrex.F(cfrex.RadarHTTPTimeseriesGroupGetByTlsVersionParamsAggInterval15m),
+		AggInterval:   cfrex.F(cfrex.RadarHTTPTimeseriesGroupGetByTlsVersionParamsAggInterval1h),
 		Asn:           cfrex.F([]string{"string"}),
 		BotClass:      cfrex.F([]cfrex.RadarHTTPTimeseriesGroupGetByTlsVersionParamsBotClass{cfrex.RadarHTTPTimeseriesGroupGetByTlsVersionParamsBotClassLikelyAutomated}),
 		BrowserFamily: cfrex.F([]cfrex.RadarHTTPTimeseriesGroupGetByTlsVersionParamsBrowserFamily{cfrex.RadarHTTPTimeseriesGroupGetByTlsVersionParamsBrowserFamilyChrome}),

@@ -29,7 +29,7 @@ func TestRadarEmailRoutingTimeseriesGroupGetArcWithOptionalParams(t *testing.T) 
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.Email.Routing.TimeseriesGroups.GetArc(context.TODO(), cfrex.RadarEmailRoutingTimeseriesGroupGetArcParams{
-		AggInterval: cfrex.F(cfrex.RadarEmailRoutingTimeseriesGroupGetArcParamsAggInterval15m),
+		AggInterval: cfrex.F(cfrex.RadarEmailRoutingTimeseriesGroupGetArcParamsAggInterval1h),
 		DateEnd:     cfrex.F([]time.Time{time.Now()}),
 		DateRange:   cfrex.F([]string{"7d"}),
 		DateStart:   cfrex.F([]time.Time{time.Now()}),
@@ -65,7 +65,7 @@ func TestRadarEmailRoutingTimeseriesGroupGetDkimWithOptionalParams(t *testing.T)
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.Email.Routing.TimeseriesGroups.GetDkim(context.TODO(), cfrex.RadarEmailRoutingTimeseriesGroupGetDkimParams{
-		AggInterval: cfrex.F(cfrex.RadarEmailRoutingTimeseriesGroupGetDkimParamsAggInterval15m),
+		AggInterval: cfrex.F(cfrex.RadarEmailRoutingTimeseriesGroupGetDkimParamsAggInterval1h),
 		Arc:         cfrex.F([]cfrex.RadarEmailRoutingTimeseriesGroupGetDkimParamsArc{cfrex.RadarEmailRoutingTimeseriesGroupGetDkimParamsArcPass}),
 		DateEnd:     cfrex.F([]time.Time{time.Now()}),
 		DateRange:   cfrex.F([]string{"7d"}),
@@ -101,7 +101,7 @@ func TestRadarEmailRoutingTimeseriesGroupGetDmarcWithOptionalParams(t *testing.T
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.Email.Routing.TimeseriesGroups.GetDmarc(context.TODO(), cfrex.RadarEmailRoutingTimeseriesGroupGetDmarcParams{
-		AggInterval: cfrex.F(cfrex.RadarEmailRoutingTimeseriesGroupGetDmarcParamsAggInterval15m),
+		AggInterval: cfrex.F(cfrex.RadarEmailRoutingTimeseriesGroupGetDmarcParamsAggInterval1h),
 		Arc:         cfrex.F([]cfrex.RadarEmailRoutingTimeseriesGroupGetDmarcParamsArc{cfrex.RadarEmailRoutingTimeseriesGroupGetDmarcParamsArcPass}),
 		DateEnd:     cfrex.F([]time.Time{time.Now()}),
 		DateRange:   cfrex.F([]string{"7d"}),
@@ -137,7 +137,7 @@ func TestRadarEmailRoutingTimeseriesGroupGetEncryptedWithOptionalParams(t *testi
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.Email.Routing.TimeseriesGroups.GetEncrypted(context.TODO(), cfrex.RadarEmailRoutingTimeseriesGroupGetEncryptedParams{
-		AggInterval: cfrex.F(cfrex.RadarEmailRoutingTimeseriesGroupGetEncryptedParamsAggInterval15m),
+		AggInterval: cfrex.F(cfrex.RadarEmailRoutingTimeseriesGroupGetEncryptedParamsAggInterval1h),
 		Arc:         cfrex.F([]cfrex.RadarEmailRoutingTimeseriesGroupGetEncryptedParamsArc{cfrex.RadarEmailRoutingTimeseriesGroupGetEncryptedParamsArcPass}),
 		DateEnd:     cfrex.F([]time.Time{time.Now()}),
 		DateRange:   cfrex.F([]string{"7d"}),
@@ -173,7 +173,7 @@ func TestRadarEmailRoutingTimeseriesGroupGetIPVersionWithOptionalParams(t *testi
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.Email.Routing.TimeseriesGroups.GetIPVersion(context.TODO(), cfrex.RadarEmailRoutingTimeseriesGroupGetIPVersionParams{
-		AggInterval: cfrex.F(cfrex.RadarEmailRoutingTimeseriesGroupGetIPVersionParamsAggInterval15m),
+		AggInterval: cfrex.F(cfrex.RadarEmailRoutingTimeseriesGroupGetIPVersionParamsAggInterval1h),
 		Arc:         cfrex.F([]cfrex.RadarEmailRoutingTimeseriesGroupGetIPVersionParamsArc{cfrex.RadarEmailRoutingTimeseriesGroupGetIPVersionParamsArcPass}),
 		DateEnd:     cfrex.F([]time.Time{time.Now()}),
 		DateRange:   cfrex.F([]string{"7d"}),
@@ -209,7 +209,7 @@ func TestRadarEmailRoutingTimeseriesGroupGetSpfWithOptionalParams(t *testing.T) 
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.Email.Routing.TimeseriesGroups.GetSpf(context.TODO(), cfrex.RadarEmailRoutingTimeseriesGroupGetSpfParams{
-		AggInterval: cfrex.F(cfrex.RadarEmailRoutingTimeseriesGroupGetSpfParamsAggInterval15m),
+		AggInterval: cfrex.F(cfrex.RadarEmailRoutingTimeseriesGroupGetSpfParamsAggInterval1h),
 		Arc:         cfrex.F([]cfrex.RadarEmailRoutingTimeseriesGroupGetSpfParamsArc{cfrex.RadarEmailRoutingTimeseriesGroupGetSpfParamsArcPass}),
 		DateEnd:     cfrex.F([]time.Time{time.Now()}),
 		DateRange:   cfrex.F([]string{"7d"}),

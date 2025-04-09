@@ -37,7 +37,7 @@ func TestZoneLogReceivedGetLogsWithOptionalParams(t *testing.T) {
 			Fields:     cfrex.F("ClientIP,RayID,EdgeStartTimestamp"),
 			Sample:     cfrex.F(0.100000),
 			Start:      cfrex.F[cfrex.ZoneLogReceivedGetLogsParamsStartUnion](shared.UnionString("2018-05-20T10:00:00Z")),
-			Timestamps: cfrex.F(cfrex.TimestampsUnix),
+			Timestamps: cfrex.F(cfrex.TimestampsUnixnano),
 		},
 	)
 	if err != nil {

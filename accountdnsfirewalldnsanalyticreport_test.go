@@ -76,7 +76,7 @@ func TestAccountDNSFirewallDNSAnalyticReportListByTimeWithOptionalParams(t *test
 			Metrics:    cfrex.F("queryCount,uncachedCount"),
 			Since:      cfrex.F(time.Now()),
 			Sort:       cfrex.F("+responseCode,-queryName"),
-			TimeDelta:  cfrex.F(cfrex.TimeDeltaAll),
+			TimeDelta:  cfrex.F(cfrex.TimeDeltaHour),
 			Until:      cfrex.F(time.Now()),
 		},
 	)

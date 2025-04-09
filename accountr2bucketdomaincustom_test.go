@@ -66,7 +66,7 @@ func TestAccountR2BucketDomainCustomUpdateWithOptionalParams(t *testing.T) {
 		"example-domain/custom-domain.com",
 		cfrex.AccountR2BucketDomainCustomUpdateParams{
 			Enabled:      cfrex.F(true),
-			MinTls:       cfrex.F(cfrex.AccountR2BucketDomainCustomUpdateParamsMinTls1_0),
+			MinTls:       cfrex.F(cfrex.AccountR2BucketDomainCustomUpdateParamsMinTls1_2),
 			Jurisdiction: cfrex.F(cfrex.AccountR2BucketDomainCustomUpdateParamsCfR2JurisdictionDefault),
 		},
 	)

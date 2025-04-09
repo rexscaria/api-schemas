@@ -137,7 +137,7 @@ func TestAccountLoadBalancerPoolUpdateWithOptionalParams(t *testing.T) {
 				VirtualNetworkID: cfrex.F("a5624d4e-044a-4ff0-b3e1-e2465353d4b4"),
 				Weight:           cfrex.F(0.600000),
 			}}),
-			CheckRegions: cfrex.F([]cfrex.CheckRegions{cfrex.CheckRegionsWnam, cfrex.CheckRegionsEnam}),
+			CheckRegions: cfrex.F([]cfrex.CheckRegions{cfrex.CheckRegionsWeu, cfrex.CheckRegionsEnam}),
 			Description:  cfrex.F("Primary data center - Provider XYZ"),
 			Enabled:      cfrex.F(false),
 			Latitude:     cfrex.F(0.000000),
@@ -311,7 +311,7 @@ func TestAccountLoadBalancerPoolPatchWithOptionalParams(t *testing.T) {
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		"17b5962d775c646f3f9725cbc7a53df4",
 		cfrex.AccountLoadBalancerPoolPatchParams{
-			CheckRegions: cfrex.F([]cfrex.CheckRegions{cfrex.CheckRegionsWnam, cfrex.CheckRegionsEnam}),
+			CheckRegions: cfrex.F([]cfrex.CheckRegions{cfrex.CheckRegionsWeu, cfrex.CheckRegionsEnam}),
 			Description:  cfrex.F("Primary data center - Provider XYZ"),
 			Enabled:      cfrex.F(false),
 			Latitude:     cfrex.F(0.000000),
@@ -398,7 +398,7 @@ func TestAccountLoadBalancerPoolPreviewWithOptionalParams(t *testing.T) {
 				ProbeZone: cfrex.F("example.com"),
 				Retries:   cfrex.F(int64(0)),
 				Timeout:   cfrex.F(int64(0)),
-				Type:      cfrex.F(cfrex.EditableMonitorTypeHTTP),
+				Type:      cfrex.F(cfrex.EditableMonitorTypeHTTPS),
 			},
 		},
 	)

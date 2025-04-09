@@ -30,7 +30,7 @@ func TestZoneRulesetPhaseEntrypointVersionGet(t *testing.T) {
 	_, err := client.Zones.Rulesets.Phases.Entrypoint.Versions.Get(
 		context.TODO(),
 		"9f1839b6152d298aca64c4e906b6d074",
-		cfrex.RulesetPhaseDdosL4,
+		cfrex.RulesetPhaseHTTPRequestFirewallCustom,
 		"1",
 	)
 	if err != nil {
@@ -59,7 +59,7 @@ func TestZoneRulesetPhaseEntrypointVersionList(t *testing.T) {
 	_, err := client.Zones.Rulesets.Phases.Entrypoint.Versions.List(
 		context.TODO(),
 		"9f1839b6152d298aca64c4e906b6d074",
-		cfrex.RulesetPhaseDdosL4,
+		cfrex.RulesetPhaseHTTPRequestFirewallCustom,
 	)
 	if err != nil {
 		var apierr *cfrex.Error

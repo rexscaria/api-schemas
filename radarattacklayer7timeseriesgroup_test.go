@@ -29,7 +29,7 @@ func TestRadarAttackLayer7TimeseriesGroupGetHTTPMethodTimeseriesWithOptionalPara
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.Attacks.Layer7.TimeseriesGroups.GetHTTPMethodTimeseries(context.TODO(), cfrex.RadarAttackLayer7TimeseriesGroupGetHTTPMethodTimeseriesParams{
-		AggInterval:       cfrex.F(cfrex.RadarAttackLayer7TimeseriesGroupGetHTTPMethodTimeseriesParamsAggInterval15m),
+		AggInterval:       cfrex.F(cfrex.RadarAttackLayer7TimeseriesGroupGetHTTPMethodTimeseriesParamsAggInterval1h),
 		Asn:               cfrex.F([]string{"string"}),
 		Continent:         cfrex.F([]string{"string"}),
 		DateEnd:           cfrex.F([]time.Time{time.Now()}),
@@ -68,7 +68,7 @@ func TestRadarAttackLayer7TimeseriesGroupGetHTTPVersionTimeseriesWithOptionalPar
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.Attacks.Layer7.TimeseriesGroups.GetHTTPVersionTimeseries(context.TODO(), cfrex.RadarAttackLayer7TimeseriesGroupGetHTTPVersionTimeseriesParams{
-		AggInterval:       cfrex.F(cfrex.RadarAttackLayer7TimeseriesGroupGetHTTPVersionTimeseriesParamsAggInterval15m),
+		AggInterval:       cfrex.F(cfrex.RadarAttackLayer7TimeseriesGroupGetHTTPVersionTimeseriesParamsAggInterval1h),
 		Asn:               cfrex.F([]string{"string"}),
 		Continent:         cfrex.F([]string{"string"}),
 		DateEnd:           cfrex.F([]time.Time{time.Now()}),
@@ -106,7 +106,7 @@ func TestRadarAttackLayer7TimeseriesGroupGetIndustryTimeseriesWithOptionalParams
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.Attacks.Layer7.TimeseriesGroups.GetIndustryTimeseries(context.TODO(), cfrex.RadarAttackLayer7TimeseriesGroupGetIndustryTimeseriesParams{
-		AggInterval:       cfrex.F(cfrex.RadarAttackLayer7TimeseriesGroupGetIndustryTimeseriesParamsAggInterval15m),
+		AggInterval:       cfrex.F(cfrex.RadarAttackLayer7TimeseriesGroupGetIndustryTimeseriesParamsAggInterval1h),
 		Asn:               cfrex.F([]string{"string"}),
 		Continent:         cfrex.F([]string{"string"}),
 		DateEnd:           cfrex.F([]time.Time{time.Now()}),
@@ -146,7 +146,7 @@ func TestRadarAttackLayer7TimeseriesGroupGetIPVersionTimeseriesWithOptionalParam
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.Attacks.Layer7.TimeseriesGroups.GetIPVersionTimeseries(context.TODO(), cfrex.RadarAttackLayer7TimeseriesGroupGetIPVersionTimeseriesParams{
-		AggInterval:       cfrex.F(cfrex.RadarAttackLayer7TimeseriesGroupGetIPVersionTimeseriesParamsAggInterval15m),
+		AggInterval:       cfrex.F(cfrex.RadarAttackLayer7TimeseriesGroupGetIPVersionTimeseriesParamsAggInterval1h),
 		Asn:               cfrex.F([]string{"string"}),
 		Continent:         cfrex.F([]string{"string"}),
 		DateEnd:           cfrex.F([]time.Time{time.Now()}),
@@ -184,7 +184,7 @@ func TestRadarAttackLayer7TimeseriesGroupGetManagedRulesTimeseriesWithOptionalPa
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.Attacks.Layer7.TimeseriesGroups.GetManagedRulesTimeseries(context.TODO(), cfrex.RadarAttackLayer7TimeseriesGroupGetManagedRulesTimeseriesParams{
-		AggInterval:       cfrex.F(cfrex.RadarAttackLayer7TimeseriesGroupGetManagedRulesTimeseriesParamsAggInterval15m),
+		AggInterval:       cfrex.F(cfrex.RadarAttackLayer7TimeseriesGroupGetManagedRulesTimeseriesParamsAggInterval1h),
 		Asn:               cfrex.F([]string{"string"}),
 		Continent:         cfrex.F([]string{"string"}),
 		DateEnd:           cfrex.F([]time.Time{time.Now()}),
@@ -224,7 +224,7 @@ func TestRadarAttackLayer7TimeseriesGroupGetMitigationProductTimeseriesWithOptio
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.Attacks.Layer7.TimeseriesGroups.GetMitigationProductTimeseries(context.TODO(), cfrex.RadarAttackLayer7TimeseriesGroupGetMitigationProductTimeseriesParams{
-		AggInterval:   cfrex.F(cfrex.RadarAttackLayer7TimeseriesGroupGetMitigationProductTimeseriesParamsAggInterval15m),
+		AggInterval:   cfrex.F(cfrex.RadarAttackLayer7TimeseriesGroupGetMitigationProductTimeseriesParamsAggInterval1h),
 		Asn:           cfrex.F([]string{"string"}),
 		Continent:     cfrex.F([]string{"string"}),
 		DateEnd:       cfrex.F([]time.Time{time.Now()}),
@@ -263,7 +263,7 @@ func TestRadarAttackLayer7TimeseriesGroupGetVerticalTimeseriesWithOptionalParams
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.Attacks.Layer7.TimeseriesGroups.GetVerticalTimeseries(context.TODO(), cfrex.RadarAttackLayer7TimeseriesGroupGetVerticalTimeseriesParams{
-		AggInterval:       cfrex.F(cfrex.RadarAttackLayer7TimeseriesGroupGetVerticalTimeseriesParamsAggInterval15m),
+		AggInterval:       cfrex.F(cfrex.RadarAttackLayer7TimeseriesGroupGetVerticalTimeseriesParamsAggInterval1h),
 		Asn:               cfrex.F([]string{"string"}),
 		Continent:         cfrex.F([]string{"string"}),
 		DateEnd:           cfrex.F([]time.Time{time.Now()}),

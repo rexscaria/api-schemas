@@ -29,7 +29,7 @@ func TestRadarAs112TimeseriesGroupGetDnssecWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.As112.TimeseriesGroups.GetDnssec(context.TODO(), cfrex.RadarAs112TimeseriesGroupGetDnssecParams{
-		AggInterval:  cfrex.F(cfrex.RadarAs112TimeseriesGroupGetDnssecParamsAggInterval15m),
+		AggInterval:  cfrex.F(cfrex.RadarAs112TimeseriesGroupGetDnssecParamsAggInterval1h),
 		Asn:          cfrex.F([]string{"string"}),
 		Continent:    cfrex.F([]string{"string"}),
 		DateEnd:      cfrex.F([]time.Time{time.Now()}),
@@ -66,7 +66,7 @@ func TestRadarAs112TimeseriesGroupGetEdnsWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.As112.TimeseriesGroups.GetEdns(context.TODO(), cfrex.RadarAs112TimeseriesGroupGetEdnsParams{
-		AggInterval:  cfrex.F(cfrex.RadarAs112TimeseriesGroupGetEdnsParamsAggInterval15m),
+		AggInterval:  cfrex.F(cfrex.RadarAs112TimeseriesGroupGetEdnsParamsAggInterval1h),
 		Asn:          cfrex.F([]string{"string"}),
 		Continent:    cfrex.F([]string{"string"}),
 		DateEnd:      cfrex.F([]time.Time{time.Now()}),
@@ -103,7 +103,7 @@ func TestRadarAs112TimeseriesGroupGetIPVersionWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.As112.TimeseriesGroups.GetIPVersion(context.TODO(), cfrex.RadarAs112TimeseriesGroupGetIPVersionParams{
-		AggInterval:  cfrex.F(cfrex.RadarAs112TimeseriesGroupGetIPVersionParamsAggInterval15m),
+		AggInterval:  cfrex.F(cfrex.RadarAs112TimeseriesGroupGetIPVersionParamsAggInterval1h),
 		Asn:          cfrex.F([]string{"string"}),
 		Continent:    cfrex.F([]string{"string"}),
 		DateEnd:      cfrex.F([]time.Time{time.Now()}),
@@ -140,7 +140,7 @@ func TestRadarAs112TimeseriesGroupGetProtocolWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.As112.TimeseriesGroups.GetProtocol(context.TODO(), cfrex.RadarAs112TimeseriesGroupGetProtocolParams{
-		AggInterval:  cfrex.F(cfrex.RadarAs112TimeseriesGroupGetProtocolParamsAggInterval15m),
+		AggInterval:  cfrex.F(cfrex.RadarAs112TimeseriesGroupGetProtocolParamsAggInterval1h),
 		Asn:          cfrex.F([]string{"string"}),
 		Continent:    cfrex.F([]string{"string"}),
 		DateEnd:      cfrex.F([]time.Time{time.Now()}),
@@ -176,7 +176,7 @@ func TestRadarAs112TimeseriesGroupGetQueryTypeWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.As112.TimeseriesGroups.GetQueryType(context.TODO(), cfrex.RadarAs112TimeseriesGroupGetQueryTypeParams{
-		AggInterval:   cfrex.F(cfrex.RadarAs112TimeseriesGroupGetQueryTypeParamsAggInterval15m),
+		AggInterval:   cfrex.F(cfrex.RadarAs112TimeseriesGroupGetQueryTypeParamsAggInterval1h),
 		Asn:           cfrex.F([]string{"string"}),
 		Continent:     cfrex.F([]string{"string"}),
 		DateEnd:       cfrex.F([]time.Time{time.Now()}),
@@ -213,7 +213,7 @@ func TestRadarAs112TimeseriesGroupGetResponseCodesWithOptionalParams(t *testing.
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.As112.TimeseriesGroups.GetResponseCodes(context.TODO(), cfrex.RadarAs112TimeseriesGroupGetResponseCodesParams{
-		AggInterval:   cfrex.F(cfrex.RadarAs112TimeseriesGroupGetResponseCodesParamsAggInterval15m),
+		AggInterval:   cfrex.F(cfrex.RadarAs112TimeseriesGroupGetResponseCodesParamsAggInterval1h),
 		Asn:           cfrex.F([]string{"string"}),
 		Continent:     cfrex.F([]string{"string"}),
 		DateEnd:       cfrex.F([]time.Time{time.Now()}),
