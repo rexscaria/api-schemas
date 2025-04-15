@@ -2,8 +2,8 @@
 
 <a href="https://pkg.go.dev/github.com/stainless-sdks/cf-rex-go"><img src="https://pkg.go.dev/badge/github.com/stainless-sdks/cf-rex-go.svg" alt="Go Reference"></a>
 
-The Cf Rex Go library provides convenient access to [the Cf Rex REST
-API](https://docs.cf-rex.com) from applications written in Go. The full API of this library can be found in [api.md](api.md).
+The Cf Rex Go library provides convenient access to the [Cf Rex REST API](https://docs.cf-rex.com)
+from applications written in Go.
 
 It is generated with [Stainless](https://www.stainless.com/).
 
