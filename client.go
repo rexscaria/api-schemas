@@ -29,11 +29,14 @@ type Client struct {
 	Zones         *ZoneService
 }
 
-// DefaultClientOptions read from the environment (CF_REX_API_EMAIL,
-// CF_REX_API_KEY, CF_REX_ACCESS_TOKEN, CF_REX_SERVICE_KEY). This should be used to
-// initialize new clients.
+// DefaultClientOptions read from the environment (CF_REX_API_KEY,
+// CF_REX_SERVICE_KEY, CF_REX_API_EMAIL, CF_REX_ACCESS_TOKEN, CF_REX_BASE_URL).
+// This should be used to initialize new clients.
 func DefaultClientOptions() []option.RequestOption {
 	defaults := []option.RequestOption{option.WithEnvironmentProduction()}
+	if o, ok := os.LookupEnv("CF_REX_BASE_URL"); ok {
+		defaults = append(defaults, option.WithBaseURL(o))
+	}
 	if o, ok := os.LookupEnv("CF_REX_API_EMAIL"); ok {
 		defaults = append(defaults, option.WithAPIEmail(o))
 	}
@@ -50,10 +53,10 @@ func DefaultClientOptions() []option.RequestOption {
 }
 
 // NewClient generates a new client with the default option read from the
-// environment (CF_REX_API_EMAIL, CF_REX_API_KEY, CF_REX_ACCESS_TOKEN,
-// CF_REX_SERVICE_KEY). The option passed in as arguments are applied after these
-// default arguments, and all option will be passed down to the services and
-// requests that this client makes.
+// environment (CF_REX_API_KEY, CF_REX_SERVICE_KEY, CF_REX_API_EMAIL,
+// CF_REX_ACCESS_TOKEN, CF_REX_BASE_URL). The option passed in as arguments are
+// applied after these default arguments, and all option will be passed down to the
+// services and requests that this client makes.
 func NewClient(opts ...option.RequestOption) (r *Client) {
 	opts = append(DefaultClientOptions(), opts...)
 
