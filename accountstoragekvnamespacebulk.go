@@ -318,6 +318,10 @@ func init() {
 			TypeFilter: gjson.False,
 			Type:       reflect.TypeOf(shared.UnionBool(false)),
 		},
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(AccountStorageKvNamespaceBulkGetMultipleResponseResultWorkersKvBulkGetResultValuesMap{}),
+		},
 	)
 }
 
@@ -410,6 +414,10 @@ func init() {
 		apijson.UnionVariant{
 			TypeFilter: gjson.False,
 			Type:       reflect.TypeOf(shared.UnionBool(false)),
+		},
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(AccountStorageKvNamespaceBulkGetMultipleResponseResultWorkersKvBulkGetResultWithMetadataValuesValueMap{}),
 		},
 	)
 }
