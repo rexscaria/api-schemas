@@ -8,8 +8,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/stainless-sdks/cf-rex-go/internal/requestconfig"
-	"github.com/stainless-sdks/cf-rex-go/option"
+	"github.com/rexscaria/api-schemas/internal/requestconfig"
+	"github.com/rexscaria/api-schemas/option"
 )
 
 // ZoneLogpushDatasetService contains methods and other services that help with

@@ -9,9 +9,9 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/stainless-sdks/cf-rex-go/internal/apijson"
-	"github.com/stainless-sdks/cf-rex-go/internal/requestconfig"
-	"github.com/stainless-sdks/cf-rex-go/option"
+	"github.com/rexscaria/api-schemas/internal/apijson"
+	"github.com/rexscaria/api-schemas/internal/requestconfig"
+	"github.com/rexscaria/api-schemas/option"
 )
 
 // AccountAccessBookmarkService contains methods and other services that help with
@@ -34,6 +34,8 @@ func NewAccountAccessBookmarkService(opts ...option.RequestOption) (r *AccountAc
 }
 
 // Create a new Bookmark application.
+//
+// Deprecated: deprecated
 func (r *AccountAccessBookmarkService) New(ctx context.Context, accountID string, bookmarkID string, body AccountAccessBookmarkNewParams, opts ...option.RequestOption) (res *SingleResponseBookmark, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
@@ -50,6 +52,8 @@ func (r *AccountAccessBookmarkService) New(ctx context.Context, accountID string
 }
 
 // Fetches a single Bookmark application.
+//
+// Deprecated: deprecated
 func (r *AccountAccessBookmarkService) Get(ctx context.Context, accountID string, bookmarkID string, opts ...option.RequestOption) (res *SingleResponseBookmark, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
@@ -66,6 +70,8 @@ func (r *AccountAccessBookmarkService) Get(ctx context.Context, accountID string
 }
 
 // Updates a configured Bookmark application.
+//
+// Deprecated: deprecated
 func (r *AccountAccessBookmarkService) Update(ctx context.Context, accountID string, bookmarkID string, body AccountAccessBookmarkUpdateParams, opts ...option.RequestOption) (res *SingleResponseBookmark, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
@@ -82,6 +88,8 @@ func (r *AccountAccessBookmarkService) Update(ctx context.Context, accountID str
 }
 
 // Lists Bookmark applications.
+//
+// Deprecated: deprecated
 func (r *AccountAccessBookmarkService) List(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountAccessBookmarkListResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
@@ -94,6 +102,8 @@ func (r *AccountAccessBookmarkService) List(ctx context.Context, accountID strin
 }
 
 // Deletes a Bookmark application.
+//
+// Deprecated: deprecated
 func (r *AccountAccessBookmarkService) Delete(ctx context.Context, accountID string, bookmarkID string, body AccountAccessBookmarkDeleteParams, opts ...option.RequestOption) (res *IDResponseApps, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {

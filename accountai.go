@@ -11,10 +11,10 @@ import (
 	"mime/multipart"
 	"net/http"
 
-	"github.com/stainless-sdks/cf-rex-go/internal/apiform"
-	"github.com/stainless-sdks/cf-rex-go/internal/apijson"
-	"github.com/stainless-sdks/cf-rex-go/internal/requestconfig"
-	"github.com/stainless-sdks/cf-rex-go/option"
+	"github.com/rexscaria/api-schemas/internal/apiform"
+	"github.com/rexscaria/api-schemas/internal/apijson"
+	"github.com/rexscaria/api-schemas/internal/requestconfig"
+	"github.com/rexscaria/api-schemas/option"
 )
 
 // AccountAIService contains methods and other services that help with interacting

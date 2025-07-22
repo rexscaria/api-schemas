@@ -9,11 +9,11 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/stainless-sdks/cf-rex-go/internal/apijson"
-	"github.com/stainless-sdks/cf-rex-go/internal/apiquery"
-	"github.com/stainless-sdks/cf-rex-go/internal/param"
-	"github.com/stainless-sdks/cf-rex-go/internal/requestconfig"
-	"github.com/stainless-sdks/cf-rex-go/option"
+	"github.com/rexscaria/api-schemas/internal/apijson"
+	"github.com/rexscaria/api-schemas/internal/apiquery"
+	"github.com/rexscaria/api-schemas/internal/param"
+	"github.com/rexscaria/api-schemas/internal/requestconfig"
+	"github.com/rexscaria/api-schemas/option"
 )
 
 // ZoneFirewallWafOverrideService contains methods and other services that help
@@ -39,6 +39,8 @@ func NewZoneFirewallWafOverrideService(opts ...option.RequestOption) (r *ZoneFir
 //
 // **Note:** Applies only to the
 // [previous version of WAF managed rules](https://developers.cloudflare.com/support/firewall/managed-rules-web-application-firewall-waf/understanding-waf-managed-rules-web-application-firewall/).
+//
+// Deprecated: deprecated
 func (r *ZoneFirewallWafOverrideService) New(ctx context.Context, zoneID string, body ZoneFirewallWafOverrideNewParams, opts ...option.RequestOption) (res *FirewallOverrideResponseSingle, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
@@ -54,6 +56,8 @@ func (r *ZoneFirewallWafOverrideService) New(ctx context.Context, zoneID string,
 //
 // **Note:** Applies only to the
 // [previous version of WAF managed rules](https://developers.cloudflare.com/support/firewall/managed-rules-web-application-firewall-waf/understanding-waf-managed-rules-web-application-firewall/).
+//
+// Deprecated: deprecated
 func (r *ZoneFirewallWafOverrideService) Get(ctx context.Context, zoneID string, overridesID string, opts ...option.RequestOption) (res *FirewallOverrideResponseSingle, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
@@ -73,6 +77,8 @@ func (r *ZoneFirewallWafOverrideService) Get(ctx context.Context, zoneID string,
 //
 // **Note:** Applies only to the
 // [previous version of WAF managed rules](https://developers.cloudflare.com/support/firewall/managed-rules-web-application-firewall-waf/understanding-waf-managed-rules-web-application-firewall/).
+//
+// Deprecated: deprecated
 func (r *ZoneFirewallWafOverrideService) Update(ctx context.Context, zoneID string, overridesID string, body ZoneFirewallWafOverrideUpdateParams, opts ...option.RequestOption) (res *FirewallOverrideResponseSingle, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
@@ -92,6 +98,8 @@ func (r *ZoneFirewallWafOverrideService) Update(ctx context.Context, zoneID stri
 //
 // **Note:** Applies only to the
 // [previous version of WAF managed rules](https://developers.cloudflare.com/support/firewall/managed-rules-web-application-firewall-waf/understanding-waf-managed-rules-web-application-firewall/).
+//
+// Deprecated: deprecated
 func (r *ZoneFirewallWafOverrideService) List(ctx context.Context, zoneID string, query ZoneFirewallWafOverrideListParams, opts ...option.RequestOption) (res *ZoneFirewallWafOverrideListResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
@@ -107,6 +115,8 @@ func (r *ZoneFirewallWafOverrideService) List(ctx context.Context, zoneID string
 //
 // **Note:** Applies only to the
 // [previous version of WAF managed rules](https://developers.cloudflare.com/support/firewall/managed-rules-web-application-firewall-waf/understanding-waf-managed-rules-web-application-firewall/).
+//
+// Deprecated: deprecated
 func (r *ZoneFirewallWafOverrideService) Delete(ctx context.Context, zoneID string, overridesID string, body ZoneFirewallWafOverrideDeleteParams, opts ...option.RequestOption) (res *ZoneFirewallWafOverrideDeleteResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {

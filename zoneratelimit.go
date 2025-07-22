@@ -9,11 +9,11 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/stainless-sdks/cf-rex-go/internal/apijson"
-	"github.com/stainless-sdks/cf-rex-go/internal/apiquery"
-	"github.com/stainless-sdks/cf-rex-go/internal/param"
-	"github.com/stainless-sdks/cf-rex-go/internal/requestconfig"
-	"github.com/stainless-sdks/cf-rex-go/option"
+	"github.com/rexscaria/api-schemas/internal/apijson"
+	"github.com/rexscaria/api-schemas/internal/apiquery"
+	"github.com/rexscaria/api-schemas/internal/param"
+	"github.com/rexscaria/api-schemas/internal/requestconfig"
+	"github.com/rexscaria/api-schemas/option"
 )
 
 // ZoneRateLimitService contains methods and other services that help with
@@ -37,6 +37,8 @@ func NewZoneRateLimitService(opts ...option.RequestOption) (r *ZoneRateLimitServ
 
 // Creates a new rate limit for a zone. Refer to the object definition for a list
 // of required attributes.
+//
+// Deprecated: deprecated
 func (r *ZoneRateLimitService) New(ctx context.Context, zoneID string, body ZoneRateLimitNewParams, opts ...option.RequestOption) (res *FirewallRatelimitSingle, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
@@ -49,6 +51,8 @@ func (r *ZoneRateLimitService) New(ctx context.Context, zoneID string, body Zone
 }
 
 // Fetches the details of a rate limit.
+//
+// Deprecated: deprecated
 func (r *ZoneRateLimitService) Get(ctx context.Context, zoneID string, rateLimitID string, opts ...option.RequestOption) (res *FirewallRatelimitSingle, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
@@ -65,6 +69,8 @@ func (r *ZoneRateLimitService) Get(ctx context.Context, zoneID string, rateLimit
 }
 
 // Updates an existing rate limit.
+//
+// Deprecated: deprecated
 func (r *ZoneRateLimitService) Update(ctx context.Context, zoneID string, rateLimitID string, body ZoneRateLimitUpdateParams, opts ...option.RequestOption) (res *FirewallRatelimitSingle, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
@@ -81,6 +87,8 @@ func (r *ZoneRateLimitService) Update(ctx context.Context, zoneID string, rateLi
 }
 
 // Fetches the rate limits for a zone.
+//
+// Deprecated: deprecated
 func (r *ZoneRateLimitService) List(ctx context.Context, zoneID string, query ZoneRateLimitListParams, opts ...option.RequestOption) (res *ZoneRateLimitListResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
@@ -93,6 +101,8 @@ func (r *ZoneRateLimitService) List(ctx context.Context, zoneID string, query Zo
 }
 
 // Deletes an existing rate limit.
+//
+// Deprecated: deprecated
 func (r *ZoneRateLimitService) Delete(ctx context.Context, zoneID string, rateLimitID string, body ZoneRateLimitDeleteParams, opts ...option.RequestOption) (res *ZoneRateLimitDeleteResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {

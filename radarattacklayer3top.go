@@ -8,11 +8,11 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/stainless-sdks/cf-rex-go/internal/apijson"
-	"github.com/stainless-sdks/cf-rex-go/internal/apiquery"
-	"github.com/stainless-sdks/cf-rex-go/internal/param"
-	"github.com/stainless-sdks/cf-rex-go/internal/requestconfig"
-	"github.com/stainless-sdks/cf-rex-go/option"
+	"github.com/rexscaria/api-schemas/internal/apijson"
+	"github.com/rexscaria/api-schemas/internal/apiquery"
+	"github.com/rexscaria/api-schemas/internal/param"
+	"github.com/rexscaria/api-schemas/internal/requestconfig"
+	"github.com/rexscaria/api-schemas/option"
 )
 
 // RadarAttackLayer3TopService contains methods and other services that help with
@@ -49,6 +49,8 @@ func (r *RadarAttackLayer3TopService) GetTopAttacks(ctx context.Context, query R
 
 // This endpoint is deprecated. To continue getting this data, switch to the
 // summary by industry endpoint.
+//
+// Deprecated: deprecated
 func (r *RadarAttackLayer3TopService) GetTopIndustry(ctx context.Context, query RadarAttackLayer3TopGetTopIndustryParams, opts ...option.RequestOption) (res *RadarAttackLayer3TopGetTopIndustryResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "radar/attacks/layer3/top/industry"
@@ -58,6 +60,8 @@ func (r *RadarAttackLayer3TopService) GetTopIndustry(ctx context.Context, query 
 
 // This endpoint is deprecated. To continue getting this data, switch to the
 // summary by vertical endpoint.
+//
+// Deprecated: deprecated
 func (r *RadarAttackLayer3TopService) GetTopVerticals(ctx context.Context, query RadarAttackLayer3TopGetTopVerticalsParams, opts ...option.RequestOption) (res *RadarAttackLayer3TopGetTopVerticalsResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "radar/attacks/layer3/top/vertical"

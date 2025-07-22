@@ -1,6 +1,6 @@
 # Cf Rex Go API Library
 
-<a href="https://pkg.go.dev/github.com/stainless-sdks/cf-rex-go"><img src="https://pkg.go.dev/badge/github.com/stainless-sdks/cf-rex-go.svg" alt="Go Reference"></a>
+<a href="https://pkg.go.dev/github.com/rexscaria/api-schemas"><img src="https://pkg.go.dev/badge/github.com/rexscaria/api-schemas.svg" alt="Go Reference"></a>
 
 The Cf Rex Go library provides convenient access to the [Cf Rex REST API](https://docs.cf-rex.com)
 from applications written in Go.
@@ -9,17 +9,25 @@ It is generated with [Stainless](https://www.stainless.com/).
 
 ## Installation
 
+<!-- x-release-please-start-version -->
+
 ```go
 import (
-	"github.com/stainless-sdks/cf-rex-go" // imported as cfrex
+	"github.com/rexscaria/api-schemas" // imported as cfrex
 )
 ```
 
+<!-- x-release-please-end -->
+
 Or to pin the version:
 
+<!-- x-release-please-start-version -->
+
 ```sh
-go get -u 'github.com/stainless-sdks/cf-rex-go@v0.0.1-alpha.0'
+go get -u 'github.com/rexscaria/api-schemas@v0.0.1-alpha.0'
 ```
+
+<!-- x-release-please-end -->
 
 ## Requirements
 
@@ -36,8 +44,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/stainless-sdks/cf-rex-go"
-	"github.com/stainless-sdks/cf-rex-go/option"
+	"github.com/rexscaria/api-schemas"
+	"github.com/rexscaria/api-schemas/option"
 )
 
 func main() {
@@ -156,7 +164,7 @@ client.Accounts.Access.UpdateSeats(context.TODO(), ...,
 )
 ```
 
-See the [full list of request options](https://pkg.go.dev/github.com/stainless-sdks/cf-rex-go/option).
+See the [full list of request options](https://pkg.go.dev/github.com/rexscaria/api-schemas/option).
 
 ### Pagination
 
@@ -411,7 +419,7 @@ This package generally follows [SemVer](https://semver.org/spec/v2.0.0.html) con
 
 We take backwards-compatibility seriously and work hard to ensure you can rely on a smooth upgrade experience.
 
-We are keen for your feedback; please open an [issue](https://www.github.com/stainless-sdks/cf-rex-go/issues) with questions, bugs, or suggestions.
+We are keen for your feedback; please open an [issue](https://www.github.com/rexscaria/api-schemas/issues) with questions, bugs, or suggestions.
 
 ## Contributing
 

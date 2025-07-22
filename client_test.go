@@ -10,9 +10,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/stainless-sdks/cf-rex-go"
-	"github.com/stainless-sdks/cf-rex-go/internal"
-	"github.com/stainless-sdks/cf-rex-go/option"
+	"github.com/rexscaria/api-schemas"
+	"github.com/rexscaria/api-schemas/internal"
+	"github.com/rexscaria/api-schemas/option"
 )
 
 type closureTransport struct {

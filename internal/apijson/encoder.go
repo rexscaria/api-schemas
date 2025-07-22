@@ -13,7 +13,7 @@ import (
 
 	"github.com/tidwall/sjson"
 
-	"github.com/stainless-sdks/cf-rex-go/internal/param"
+	"github.com/rexscaria/api-schemas/internal/param"
 )
 
 var encoders sync.Map // map[encoderEntry]encoderFunc

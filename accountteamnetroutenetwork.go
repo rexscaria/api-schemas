@@ -9,11 +9,11 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/stainless-sdks/cf-rex-go/internal/apijson"
-	"github.com/stainless-sdks/cf-rex-go/internal/apiquery"
-	"github.com/stainless-sdks/cf-rex-go/internal/param"
-	"github.com/stainless-sdks/cf-rex-go/internal/requestconfig"
-	"github.com/stainless-sdks/cf-rex-go/option"
+	"github.com/rexscaria/api-schemas/internal/apijson"
+	"github.com/rexscaria/api-schemas/internal/apiquery"
+	"github.com/rexscaria/api-schemas/internal/param"
+	"github.com/rexscaria/api-schemas/internal/requestconfig"
+	"github.com/rexscaria/api-schemas/option"
 )
 
 // AccountTeamnetRouteNetworkService contains methods and other services that help
@@ -37,6 +37,9 @@ func NewAccountTeamnetRouteNetworkService(opts ...option.RequestOption) (r *Acco
 
 // Routes a private network through a Cloudflare Tunnel. The CIDR in
 // `ip_network_encoded` must be written in URL-encoded format.
+//
+// Deprecated: This endpoint and its related APIs are deprecated in favor of the
+// equivalent Tunnel Route (without CIDR) APIs.
 func (r *AccountTeamnetRouteNetworkService) New(ctx context.Context, accountID string, ipNetworkEncoded string, body AccountTeamnetRouteNetworkNewParams, opts ...option.RequestOption) (res *TunnelRouteResponseSingle, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
@@ -54,6 +57,9 @@ func (r *AccountTeamnetRouteNetworkService) New(ctx context.Context, accountID s
 
 // Updates an existing private network route in an account. The CIDR in
 // `ip_network_encoded` must be written in URL-encoded format.
+//
+// Deprecated: This endpoint and its related APIs are deprecated in favor of the
+// equivalent Tunnel Route (without CIDR) APIs.
 func (r *AccountTeamnetRouteNetworkService) Update(ctx context.Context, accountID string, ipNetworkEncoded string, opts ...option.RequestOption) (res *TunnelRouteResponseSingle, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
@@ -76,6 +82,9 @@ func (r *AccountTeamnetRouteNetworkService) Update(ctx context.Context, accountI
 // is missing it will assume Cloudflare Tunnel as default. If tunnel_id is provided
 // it will delete the route from that tunnel, otherwise it will delete the route
 // based on the vnet and tun_type.
+//
+// Deprecated: This endpoint and its related APIs are deprecated in favor of the
+// equivalent Tunnel Route (without CIDR) APIs.
 func (r *AccountTeamnetRouteNetworkService) Delete(ctx context.Context, accountID string, ipNetworkEncoded string, body AccountTeamnetRouteNetworkDeleteParams, opts ...option.RequestOption) (res *TunnelRouteResponseSingle, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {

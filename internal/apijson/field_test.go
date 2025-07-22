@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/stainless-sdks/cf-rex-go/internal/param"
+	"github.com/rexscaria/api-schemas/internal/param"
 )
 
 type Struct struct {

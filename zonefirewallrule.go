@@ -10,11 +10,11 @@ import (
 	"net/url"
 	"reflect"
 
-	"github.com/stainless-sdks/cf-rex-go/internal/apijson"
-	"github.com/stainless-sdks/cf-rex-go/internal/apiquery"
-	"github.com/stainless-sdks/cf-rex-go/internal/param"
-	"github.com/stainless-sdks/cf-rex-go/internal/requestconfig"
-	"github.com/stainless-sdks/cf-rex-go/option"
+	"github.com/rexscaria/api-schemas/internal/apijson"
+	"github.com/rexscaria/api-schemas/internal/apiquery"
+	"github.com/rexscaria/api-schemas/internal/param"
+	"github.com/rexscaria/api-schemas/internal/requestconfig"
+	"github.com/rexscaria/api-schemas/option"
 	"github.com/tidwall/gjson"
 )
 
@@ -38,6 +38,8 @@ func NewZoneFirewallRuleService(opts ...option.RequestOption) (r *ZoneFirewallRu
 }
 
 // Create one or more firewall rules.
+//
+// Deprecated: deprecated
 func (r *ZoneFirewallRuleService) New(ctx context.Context, zoneID string, body ZoneFirewallRuleNewParams, opts ...option.RequestOption) (res *FirewallFilterRulesResponseCollection, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
@@ -50,6 +52,8 @@ func (r *ZoneFirewallRuleService) New(ctx context.Context, zoneID string, body Z
 }
 
 // Fetches the details of a firewall rule.
+//
+// Deprecated: deprecated
 func (r *ZoneFirewallRuleService) Get(ctx context.Context, zoneID string, ruleID string, query ZoneFirewallRuleGetParams, opts ...option.RequestOption) (res *FirewallFilterRulesSingleResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
@@ -66,6 +70,8 @@ func (r *ZoneFirewallRuleService) Get(ctx context.Context, zoneID string, ruleID
 }
 
 // Updates an existing firewall rule.
+//
+// Deprecated: deprecated
 func (r *ZoneFirewallRuleService) Update(ctx context.Context, zoneID string, ruleID string, body ZoneFirewallRuleUpdateParams, opts ...option.RequestOption) (res *FirewallFilterRulesSingleResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
@@ -83,6 +89,8 @@ func (r *ZoneFirewallRuleService) Update(ctx context.Context, zoneID string, rul
 
 // Fetches firewall rules in a zone. You can filter the results using several
 // optional parameters.
+//
+// Deprecated: deprecated
 func (r *ZoneFirewallRuleService) List(ctx context.Context, zoneID string, query ZoneFirewallRuleListParams, opts ...option.RequestOption) (res *FirewallFilterRulesResponseCollection, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
@@ -95,6 +103,8 @@ func (r *ZoneFirewallRuleService) List(ctx context.Context, zoneID string, query
 }
 
 // Deletes an existing firewall rule.
+//
+// Deprecated: deprecated
 func (r *ZoneFirewallRuleService) Delete(ctx context.Context, zoneID string, ruleID string, body ZoneFirewallRuleDeleteParams, opts ...option.RequestOption) (res *ZoneFirewallRuleDeleteResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
@@ -111,6 +121,8 @@ func (r *ZoneFirewallRuleService) Delete(ctx context.Context, zoneID string, rul
 }
 
 // Updates the priority of an existing firewall rule.
+//
+// Deprecated: deprecated
 func (r *ZoneFirewallRuleService) UpdatePriority(ctx context.Context, zoneID string, ruleID string, body ZoneFirewallRuleUpdatePriorityParams, opts ...option.RequestOption) (res *FirewallFilterRulesResponseCollection, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {

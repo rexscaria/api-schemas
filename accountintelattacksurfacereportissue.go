@@ -10,11 +10,11 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/stainless-sdks/cf-rex-go/internal/apijson"
-	"github.com/stainless-sdks/cf-rex-go/internal/apiquery"
-	"github.com/stainless-sdks/cf-rex-go/internal/param"
-	"github.com/stainless-sdks/cf-rex-go/internal/requestconfig"
-	"github.com/stainless-sdks/cf-rex-go/option"
+	"github.com/rexscaria/api-schemas/internal/apijson"
+	"github.com/rexscaria/api-schemas/internal/apiquery"
+	"github.com/rexscaria/api-schemas/internal/param"
+	"github.com/rexscaria/api-schemas/internal/requestconfig"
+	"github.com/rexscaria/api-schemas/option"
 )
 
 // AccountIntelAttackSurfaceReportIssueService contains methods and other services
@@ -38,6 +38,8 @@ func NewAccountIntelAttackSurfaceReportIssueService(opts ...option.RequestOption
 }
 
 // Get Security Center Issues
+//
+// Deprecated: deprecated
 func (r *AccountIntelAttackSurfaceReportIssueService) List(ctx context.Context, accountID string, query AccountIntelAttackSurfaceReportIssueListParams, opts ...option.RequestOption) (res *AccountIntelAttackSurfaceReportIssueListResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
@@ -50,6 +52,8 @@ func (r *AccountIntelAttackSurfaceReportIssueService) List(ctx context.Context, 
 }
 
 // Get Security Center Issue Counts by Class
+//
+// Deprecated: deprecated
 func (r *AccountIntelAttackSurfaceReportIssueService) ListByClass(ctx context.Context, accountID string, query AccountIntelAttackSurfaceReportIssueListByClassParams, opts ...option.RequestOption) (res *ValueCountsResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
@@ -62,6 +66,8 @@ func (r *AccountIntelAttackSurfaceReportIssueService) ListByClass(ctx context.Co
 }
 
 // Get Security Center Issue Counts by Severity
+//
+// Deprecated: deprecated
 func (r *AccountIntelAttackSurfaceReportIssueService) ListBySeverity(ctx context.Context, accountID string, query AccountIntelAttackSurfaceReportIssueListBySeverityParams, opts ...option.RequestOption) (res *ValueCountsResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
@@ -74,6 +80,8 @@ func (r *AccountIntelAttackSurfaceReportIssueService) ListBySeverity(ctx context
 }
 
 // Get Security Center Issue Counts by Type
+//
+// Deprecated: deprecated
 func (r *AccountIntelAttackSurfaceReportIssueService) ListByType(ctx context.Context, accountID string, query AccountIntelAttackSurfaceReportIssueListByTypeParams, opts ...option.RequestOption) (res *ValueCountsResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {

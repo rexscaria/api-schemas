@@ -3,7 +3,7 @@
 package cfrex
 
 import (
-	"github.com/stainless-sdks/cf-rex-go/option"
+	"github.com/rexscaria/api-schemas/option"
 )
 
 // AccountPageService contains methods and other services that help with

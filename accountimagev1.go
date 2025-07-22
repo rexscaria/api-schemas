@@ -13,13 +13,13 @@ import (
 	"reflect"
 	"time"
 
-	"github.com/stainless-sdks/cf-rex-go/internal/apiform"
-	"github.com/stainless-sdks/cf-rex-go/internal/apijson"
-	"github.com/stainless-sdks/cf-rex-go/internal/apiquery"
-	"github.com/stainless-sdks/cf-rex-go/internal/param"
-	"github.com/stainless-sdks/cf-rex-go/internal/requestconfig"
-	"github.com/stainless-sdks/cf-rex-go/option"
-	"github.com/stainless-sdks/cf-rex-go/shared"
+	"github.com/rexscaria/api-schemas/internal/apiform"
+	"github.com/rexscaria/api-schemas/internal/apijson"
+	"github.com/rexscaria/api-schemas/internal/apiquery"
+	"github.com/rexscaria/api-schemas/internal/param"
+	"github.com/rexscaria/api-schemas/internal/requestconfig"
+	"github.com/rexscaria/api-schemas/option"
+	"github.com/rexscaria/api-schemas/shared"
 	"github.com/tidwall/gjson"
 )
 
@@ -81,6 +81,8 @@ func (r *AccountImageV1Service) Update(ctx context.Context, accountID string, im
 
 // List up to 100 images with one request. Use the optional parameters below to get
 // a specific range of images.
+//
+// Deprecated: deprecated
 func (r *AccountImageV1Service) List(ctx context.Context, accountID string, query AccountImageV1ListParams, opts ...option.RequestOption) (res *AccountImageV1ListResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {

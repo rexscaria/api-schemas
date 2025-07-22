@@ -9,11 +9,11 @@ import (
 	"net/http"
 	"reflect"
 
-	"github.com/stainless-sdks/cf-rex-go/internal/apijson"
-	"github.com/stainless-sdks/cf-rex-go/internal/param"
-	"github.com/stainless-sdks/cf-rex-go/internal/requestconfig"
-	"github.com/stainless-sdks/cf-rex-go/option"
-	"github.com/stainless-sdks/cf-rex-go/shared"
+	"github.com/rexscaria/api-schemas/internal/apijson"
+	"github.com/rexscaria/api-schemas/internal/param"
+	"github.com/rexscaria/api-schemas/internal/requestconfig"
+	"github.com/rexscaria/api-schemas/option"
+	"github.com/rexscaria/api-schemas/shared"
 	"github.com/tidwall/gjson"
 )
 
@@ -38,6 +38,8 @@ func NewAccountStorageKvNamespaceBulkService(opts ...option.RequestOption) (r *A
 
 // Remove multiple KV pairs from the namespace. Body should be an array of up to
 // 10,000 keys to be removed.
+//
+// Deprecated: deprecated
 func (r *AccountStorageKvNamespaceBulkService) Delete(ctx context.Context, accountID string, namespaceID string, body AccountStorageKvNamespaceBulkDeleteParams, opts ...option.RequestOption) (res *AccountStorageKvNamespaceBulkDeleteResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {

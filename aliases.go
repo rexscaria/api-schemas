@@ -3,7 +3,7 @@
 package cfrex
 
 import (
-	"github.com/stainless-sdks/cf-rex-go/internal/apierror"
+	"github.com/rexscaria/api-schemas/internal/apierror"
 )
 
 type Error = apierror.Error
