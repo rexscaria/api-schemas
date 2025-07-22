@@ -9,11 +9,11 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/stainless-sdks/cf-rex-go/internal/apijson"
-	"github.com/stainless-sdks/cf-rex-go/internal/apiquery"
-	"github.com/stainless-sdks/cf-rex-go/internal/param"
-	"github.com/stainless-sdks/cf-rex-go/internal/requestconfig"
-	"github.com/stainless-sdks/cf-rex-go/option"
+	"github.com/rexscaria/api-schemas/internal/apijson"
+	"github.com/rexscaria/api-schemas/internal/apiquery"
+	"github.com/rexscaria/api-schemas/internal/param"
+	"github.com/rexscaria/api-schemas/internal/requestconfig"
+	"github.com/rexscaria/api-schemas/option"
 )
 
 // UserOrganizationService contains methods and other services that help with
@@ -36,6 +36,8 @@ func NewUserOrganizationService(opts ...option.RequestOption) (r *UserOrganizati
 }
 
 // Gets a specific organization the user is associated with.
+//
+// Deprecated: deprecated
 func (r *UserOrganizationService) Get(ctx context.Context, organizationID string, opts ...option.RequestOption) (res *UserOrganizationGetResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if organizationID == "" {
@@ -48,6 +50,8 @@ func (r *UserOrganizationService) Get(ctx context.Context, organizationID string
 }
 
 // Lists organizations the user is associated with.
+//
+// Deprecated: deprecated
 func (r *UserOrganizationService) List(ctx context.Context, query UserOrganizationListParams, opts ...option.RequestOption) (res *UserOrganizationListResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "user/organizations"
@@ -56,6 +60,8 @@ func (r *UserOrganizationService) List(ctx context.Context, query UserOrganizati
 }
 
 // Removes association to an organization.
+//
+// Deprecated: deprecated
 func (r *UserOrganizationService) Leave(ctx context.Context, organizationID string, body UserOrganizationLeaveParams, opts ...option.RequestOption) (res *UserOrganizationLeaveResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if organizationID == "" {

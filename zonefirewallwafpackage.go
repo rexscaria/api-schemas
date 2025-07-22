@@ -10,11 +10,11 @@ import (
 	"net/url"
 	"reflect"
 
-	"github.com/stainless-sdks/cf-rex-go/internal/apijson"
-	"github.com/stainless-sdks/cf-rex-go/internal/apiquery"
-	"github.com/stainless-sdks/cf-rex-go/internal/param"
-	"github.com/stainless-sdks/cf-rex-go/internal/requestconfig"
-	"github.com/stainless-sdks/cf-rex-go/option"
+	"github.com/rexscaria/api-schemas/internal/apijson"
+	"github.com/rexscaria/api-schemas/internal/apiquery"
+	"github.com/rexscaria/api-schemas/internal/param"
+	"github.com/rexscaria/api-schemas/internal/requestconfig"
+	"github.com/rexscaria/api-schemas/option"
 	"github.com/tidwall/gjson"
 )
 
@@ -45,6 +45,8 @@ func NewZoneFirewallWafPackageService(opts ...option.RequestOption) (r *ZoneFire
 //
 // **Note:** Applies only to the
 // [previous version of WAF managed rules](https://developers.cloudflare.com/support/firewall/managed-rules-web-application-firewall-waf/understanding-waf-managed-rules-web-application-firewall/).
+//
+// Deprecated: deprecated
 func (r *ZoneFirewallWafPackageService) Get(ctx context.Context, zoneID string, packageID string, opts ...option.RequestOption) (res *FirewallPackageResponseSingle, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
@@ -65,6 +67,8 @@ func (r *ZoneFirewallWafPackageService) Get(ctx context.Context, zoneID string, 
 //
 // **Note:** Applies only to the
 // [previous version of WAF managed rules](https://developers.cloudflare.com/support/firewall/managed-rules-web-application-firewall-waf/understanding-waf-managed-rules-web-application-firewall/).
+//
+// Deprecated: deprecated
 func (r *ZoneFirewallWafPackageService) Update(ctx context.Context, zoneID string, packageID string, body ZoneFirewallWafPackageUpdateParams, opts ...option.RequestOption) (res *ZoneFirewallWafPackageUpdateResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
@@ -84,6 +88,8 @@ func (r *ZoneFirewallWafPackageService) Update(ctx context.Context, zoneID strin
 //
 // **Note:** Applies only to the
 // [previous version of WAF managed rules](https://developers.cloudflare.com/support/firewall/managed-rules-web-application-firewall-waf/understanding-waf-managed-rules-web-application-firewall/).
+//
+// Deprecated: deprecated
 func (r *ZoneFirewallWafPackageService) List(ctx context.Context, zoneID string, query ZoneFirewallWafPackageListParams, opts ...option.RequestOption) (res *ZoneFirewallWafPackageListResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {

@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/stainless-sdks/cf-rex-go/internal/requestconfig"
+	"github.com/rexscaria/api-schemas/internal/requestconfig"
 	"github.com/tidwall/sjson"
 )
 
@@ -19,7 +19,7 @@ import (
 // which can be supplied to clients, services, and methods. You can read more about this functional
 // options pattern in our [README].
 //
-// [README]: https://pkg.go.dev/github.com/stainless-sdks/cf-rex-go#readme-requestoptions
+// [README]: https://pkg.go.dev/github.com/rexscaria/api-schemas#readme-requestoptions
 type RequestOption = requestconfig.RequestOption
 
 // WithBaseURL returns a RequestOption that sets the BaseURL for the client.
@@ -27,14 +27,15 @@ type RequestOption = requestconfig.RequestOption
 // For security reasons, ensure that the base URL is trusted.
 func WithBaseURL(base string) RequestOption {
 	u, err := url.Parse(base)
+	if err == nil && u.Path != "" && !strings.HasSuffix(u.Path, "/") {
+		u.Path += "/"
+	}
+
 	return requestconfig.RequestOptionFunc(func(r *requestconfig.RequestConfig) error {
 		if err != nil {
-			return fmt.Errorf("requestoption: WithBaseURL failed to parse url %s\n", err)
+			return fmt.Errorf("requestoption: WithBaseURL failed to parse url %s", err)
 		}
 
-		if u.Path != "" && !strings.HasSuffix(u.Path, "/") {
-			u.Path += "/"
-		}
 		r.BaseURL = u
 		return nil
 	})
@@ -182,7 +183,6 @@ func WithJSONSet(key string, value interface{}) RequestOption {
 			if err != nil {
 				return err
 			}
-			return nil
 		} else {
 			return fmt.Errorf("cannot use WithJSONSet on a body that is not serialized as *bytes.Buffer")
 		}
@@ -263,7 +263,7 @@ func WithRequestTimeout(dur time.Duration) RequestOption {
 // environment to be the "production" environment. An environment specifies which base URL
 // to use by default.
 func WithEnvironmentProduction() RequestOption {
-	return WithBaseURL("https://api.cloudflare.com/client/v4/")
+	return requestconfig.WithDefaultBaseURL("https://api.cloudflare.com/client/v4/")
 }
 
 // WithAPIEmail returns a RequestOption that sets the client setting "api_email".

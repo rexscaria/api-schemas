@@ -41,7 +41,7 @@ To use a local version of this library from source in another project, edit the 
 directive. This can be done through the CLI with the following:
 
 ```sh
-$ go mod edit -replace github.com/stainless-sdks/cf-rex-go=/path/to/cf-rex-go
+$ go mod edit -replace github.com/rexscaria/api-schemas=/path/to/api-schemas
 ```
 
 ## Running tests

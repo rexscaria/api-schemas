@@ -11,12 +11,12 @@ import (
 	"reflect"
 	"time"
 
-	"github.com/stainless-sdks/cf-rex-go/internal/apijson"
-	"github.com/stainless-sdks/cf-rex-go/internal/apiquery"
-	"github.com/stainless-sdks/cf-rex-go/internal/param"
-	"github.com/stainless-sdks/cf-rex-go/internal/requestconfig"
-	"github.com/stainless-sdks/cf-rex-go/option"
-	"github.com/stainless-sdks/cf-rex-go/shared"
+	"github.com/rexscaria/api-schemas/internal/apijson"
+	"github.com/rexscaria/api-schemas/internal/apiquery"
+	"github.com/rexscaria/api-schemas/internal/param"
+	"github.com/rexscaria/api-schemas/internal/requestconfig"
+	"github.com/rexscaria/api-schemas/option"
+	"github.com/rexscaria/api-schemas/shared"
 	"github.com/tidwall/gjson"
 )
 
@@ -130,6 +130,8 @@ func (r *ZonePageruleService) Edit(ctx context.Context, zoneID string, pageruleI
 
 // Returns a list of settings (and their details) that Page Rules can apply to
 // matching requests.
+//
+// Deprecated: deprecated
 func (r *ZonePageruleService) ListSettings(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *ZonePageruleListSettingsResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {

@@ -9,10 +9,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/stainless-sdks/cf-rex-go"
-	"github.com/stainless-sdks/cf-rex-go/internal/testutil"
-	"github.com/stainless-sdks/cf-rex-go/option"
-	"github.com/stainless-sdks/cf-rex-go/shared"
+	"github.com/rexscaria/api-schemas"
+	"github.com/rexscaria/api-schemas/internal/testutil"
+	"github.com/rexscaria/api-schemas/option"
+	"github.com/rexscaria/api-schemas/shared"
 )
 
 func TestUserGet(t *testing.T) {

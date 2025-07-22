@@ -10,12 +10,12 @@ import (
 	"net/url"
 	"reflect"
 
-	"github.com/stainless-sdks/cf-rex-go/internal/apijson"
-	"github.com/stainless-sdks/cf-rex-go/internal/apiquery"
-	"github.com/stainless-sdks/cf-rex-go/internal/param"
-	"github.com/stainless-sdks/cf-rex-go/internal/requestconfig"
-	"github.com/stainless-sdks/cf-rex-go/option"
-	"github.com/stainless-sdks/cf-rex-go/shared"
+	"github.com/rexscaria/api-schemas/internal/apijson"
+	"github.com/rexscaria/api-schemas/internal/apiquery"
+	"github.com/rexscaria/api-schemas/internal/param"
+	"github.com/rexscaria/api-schemas/internal/requestconfig"
+	"github.com/rexscaria/api-schemas/option"
+	"github.com/rexscaria/api-schemas/shared"
 	"github.com/tidwall/gjson"
 )
 
@@ -42,6 +42,8 @@ func NewZoneFirewallWafPackageGroupService(opts ...option.RequestOption) (r *Zon
 //
 // **Note:** Applies only to the
 // [previous version of WAF managed rules](https://developers.cloudflare.com/support/firewall/managed-rules-web-application-firewall-waf/understanding-waf-managed-rules-web-application-firewall/).
+//
+// Deprecated: deprecated
 func (r *ZoneFirewallWafPackageGroupService) Get(ctx context.Context, zoneID string, packageID string, groupID string, opts ...option.RequestOption) (res *WafManagedRulesRuleGroupResponseSingle, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
@@ -66,6 +68,8 @@ func (r *ZoneFirewallWafPackageGroupService) Get(ctx context.Context, zoneID str
 //
 // **Note:** Applies only to the
 // [previous version of WAF managed rules](https://developers.cloudflare.com/support/firewall/managed-rules-web-application-firewall-waf/understanding-waf-managed-rules-web-application-firewall/).
+//
+// Deprecated: deprecated
 func (r *ZoneFirewallWafPackageGroupService) Update(ctx context.Context, zoneID string, packageID string, groupID string, body ZoneFirewallWafPackageGroupUpdateParams, opts ...option.RequestOption) (res *WafManagedRulesRuleGroupResponseSingle, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
@@ -89,6 +93,8 @@ func (r *ZoneFirewallWafPackageGroupService) Update(ctx context.Context, zoneID 
 //
 // **Note:** Applies only to the
 // [previous version of WAF managed rules](https://developers.cloudflare.com/support/firewall/managed-rules-web-application-firewall-waf/understanding-waf-managed-rules-web-application-firewall/).
+//
+// Deprecated: deprecated
 func (r *ZoneFirewallWafPackageGroupService) List(ctx context.Context, zoneID string, packageID string, query ZoneFirewallWafPackageGroupListParams, opts ...option.RequestOption) (res *ZoneFirewallWafPackageGroupListResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {

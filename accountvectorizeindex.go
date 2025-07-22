@@ -13,12 +13,12 @@ import (
 	"reflect"
 	"time"
 
-	"github.com/stainless-sdks/cf-rex-go/internal/apiform"
-	"github.com/stainless-sdks/cf-rex-go/internal/apijson"
-	"github.com/stainless-sdks/cf-rex-go/internal/param"
-	"github.com/stainless-sdks/cf-rex-go/internal/requestconfig"
-	"github.com/stainless-sdks/cf-rex-go/option"
-	"github.com/stainless-sdks/cf-rex-go/shared"
+	"github.com/rexscaria/api-schemas/internal/apiform"
+	"github.com/rexscaria/api-schemas/internal/apijson"
+	"github.com/rexscaria/api-schemas/internal/param"
+	"github.com/rexscaria/api-schemas/internal/requestconfig"
+	"github.com/rexscaria/api-schemas/option"
+	"github.com/rexscaria/api-schemas/shared"
 	"github.com/tidwall/gjson"
 )
 
@@ -42,6 +42,8 @@ func NewAccountVectorizeIndexService(opts ...option.RequestOption) (r *AccountVe
 }
 
 // Creates and returns a new Vectorize Index.
+//
+// Deprecated: deprecated
 func (r *AccountVectorizeIndexService) New(ctx context.Context, accountID string, body AccountVectorizeIndexNewParams, opts ...option.RequestOption) (res *AccountVectorizeIndexNewResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
@@ -54,6 +56,8 @@ func (r *AccountVectorizeIndexService) New(ctx context.Context, accountID string
 }
 
 // Returns the specified Vectorize Index.
+//
+// Deprecated: deprecated
 func (r *AccountVectorizeIndexService) Get(ctx context.Context, accountID string, indexName string, opts ...option.RequestOption) (res *AccountVectorizeIndexGetResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
@@ -70,6 +74,8 @@ func (r *AccountVectorizeIndexService) Get(ctx context.Context, accountID string
 }
 
 // Updates and returns the specified Vectorize Index.
+//
+// Deprecated: deprecated
 func (r *AccountVectorizeIndexService) Update(ctx context.Context, accountID string, indexName string, body AccountVectorizeIndexUpdateParams, opts ...option.RequestOption) (res *AccountVectorizeIndexUpdateResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
@@ -86,6 +92,8 @@ func (r *AccountVectorizeIndexService) Update(ctx context.Context, accountID str
 }
 
 // Returns a list of Vectorize Indexes
+//
+// Deprecated: deprecated
 func (r *AccountVectorizeIndexService) List(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountVectorizeIndexListResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
@@ -98,6 +106,8 @@ func (r *AccountVectorizeIndexService) List(ctx context.Context, accountID strin
 }
 
 // Deletes the specified Vectorize Index.
+//
+// Deprecated: deprecated
 func (r *AccountVectorizeIndexService) Delete(ctx context.Context, accountID string, indexName string, opts ...option.RequestOption) (res *AccountVectorizeIndexDeleteResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
@@ -114,6 +124,8 @@ func (r *AccountVectorizeIndexService) Delete(ctx context.Context, accountID str
 }
 
 // Delete a set of vectors from an index by their vector identifiers.
+//
+// Deprecated: deprecated
 func (r *AccountVectorizeIndexService) DeleteByIDs(ctx context.Context, accountID string, indexName string, body AccountVectorizeIndexDeleteByIDsParams, opts ...option.RequestOption) (res *AccountVectorizeIndexDeleteByIDsResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
@@ -130,6 +142,8 @@ func (r *AccountVectorizeIndexService) DeleteByIDs(ctx context.Context, accountI
 }
 
 // Get a set of vectors from an index by their vector identifiers.
+//
+// Deprecated: deprecated
 func (r *AccountVectorizeIndexService) GetByIDs(ctx context.Context, accountID string, indexName string, body AccountVectorizeIndexGetByIDsParams, opts ...option.RequestOption) (res *AccountVectorizeIndexGetByIDsResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
@@ -147,6 +161,8 @@ func (r *AccountVectorizeIndexService) GetByIDs(ctx context.Context, accountID s
 
 // Inserts vectors into the specified index and returns the count of the vectors
 // successfully inserted.
+//
+// Deprecated: deprecated
 func (r *AccountVectorizeIndexService) Insert(ctx context.Context, accountID string, indexName string, body AccountVectorizeIndexInsertParams, opts ...option.RequestOption) (res *AccountVectorizeIndexInsertResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
@@ -163,6 +179,8 @@ func (r *AccountVectorizeIndexService) Insert(ctx context.Context, accountID str
 }
 
 // Finds vectors closest to a given vector in an index.
+//
+// Deprecated: deprecated
 func (r *AccountVectorizeIndexService) Query(ctx context.Context, accountID string, indexName string, body AccountVectorizeIndexQueryParams, opts ...option.RequestOption) (res *AccountVectorizeIndexQueryResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
@@ -180,6 +198,8 @@ func (r *AccountVectorizeIndexService) Query(ctx context.Context, accountID stri
 
 // Upserts vectors into the specified index, creating them if they do not exist and
 // returns the count of values and ids successfully inserted.
+//
+// Deprecated: deprecated
 func (r *AccountVectorizeIndexService) Upsert(ctx context.Context, accountID string, indexName string, body AccountVectorizeIndexUpsertParams, opts ...option.RequestOption) (res *AccountVectorizeIndexUpsertResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {

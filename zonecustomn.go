@@ -8,10 +8,10 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/stainless-sdks/cf-rex-go/internal/apijson"
-	"github.com/stainless-sdks/cf-rex-go/internal/param"
-	"github.com/stainless-sdks/cf-rex-go/internal/requestconfig"
-	"github.com/stainless-sdks/cf-rex-go/option"
+	"github.com/rexscaria/api-schemas/internal/apijson"
+	"github.com/rexscaria/api-schemas/internal/param"
+	"github.com/rexscaria/api-schemas/internal/requestconfig"
+	"github.com/rexscaria/api-schemas/option"
 )
 
 // ZoneCustomNService contains methods and other services that help with
@@ -37,6 +37,8 @@ func NewZoneCustomNService(opts ...option.RequestOption) (r *ZoneCustomNService)
 //
 // Deprecated in favor of
 // [Show DNS Settings](https://developers.cloudflare.com/api/operations/dns-settings-for-a-zone-list-dns-settings).
+//
+// Deprecated: deprecated
 func (r *ZoneCustomNService) Get(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *ZoneCustomNGetResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
@@ -56,6 +58,8 @@ func (r *ZoneCustomNService) Get(ctx context.Context, zoneID string, opts ...opt
 //
 // Deprecated in favor of
 // [Update DNS Settings](https://developers.cloudflare.com/api/operations/dns-settings-for-a-zone-update-dns-settings).
+//
+// Deprecated: deprecated
 func (r *ZoneCustomNService) Update(ctx context.Context, zoneID string, body ZoneCustomNUpdateParams, opts ...option.RequestOption) (res *ZoneCustomNUpdateResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {

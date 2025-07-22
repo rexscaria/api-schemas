@@ -9,9 +9,9 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/stainless-sdks/cf-rex-go/internal/apijson"
-	"github.com/stainless-sdks/cf-rex-go/internal/requestconfig"
-	"github.com/stainless-sdks/cf-rex-go/option"
+	"github.com/rexscaria/api-schemas/internal/apijson"
+	"github.com/rexscaria/api-schemas/internal/requestconfig"
+	"github.com/rexscaria/api-schemas/option"
 )
 
 // ZoneEmailRoutingService contains methods and other services that help with
@@ -51,6 +51,8 @@ func (r *ZoneEmailRoutingService) Get(ctx context.Context, zoneID string, opts .
 
 // Disable your Email Routing zone. Also removes additional MX records previously
 // required for Email Routing to work.
+//
+// Deprecated: deprecated
 func (r *ZoneEmailRoutingService) Disable(ctx context.Context, zoneID string, body ZoneEmailRoutingDisableParams, opts ...option.RequestOption) (res *EmailEmailSettingsResponseSingle, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
@@ -63,6 +65,8 @@ func (r *ZoneEmailRoutingService) Disable(ctx context.Context, zoneID string, bo
 }
 
 // Enable you Email Routing zone. Add and lock the necessary MX and SPF records.
+//
+// Deprecated: deprecated
 func (r *ZoneEmailRoutingService) Enable(ctx context.Context, zoneID string, body ZoneEmailRoutingEnableParams, opts ...option.RequestOption) (res *EmailEmailSettingsResponseSingle, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {

@@ -1,4 +1,4 @@
-module github.com/stainless-sdks/cf-rex-go
+module github.com/rexscaria/api-schemas
 
 go 1.21
 

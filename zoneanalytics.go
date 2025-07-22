@@ -10,12 +10,12 @@ import (
 	"net/url"
 	"reflect"
 
-	"github.com/stainless-sdks/cf-rex-go/internal/apijson"
-	"github.com/stainless-sdks/cf-rex-go/internal/apiquery"
-	"github.com/stainless-sdks/cf-rex-go/internal/param"
-	"github.com/stainless-sdks/cf-rex-go/internal/requestconfig"
-	"github.com/stainless-sdks/cf-rex-go/option"
-	"github.com/stainless-sdks/cf-rex-go/shared"
+	"github.com/rexscaria/api-schemas/internal/apijson"
+	"github.com/rexscaria/api-schemas/internal/apiquery"
+	"github.com/rexscaria/api-schemas/internal/param"
+	"github.com/rexscaria/api-schemas/internal/requestconfig"
+	"github.com/rexscaria/api-schemas/option"
+	"github.com/rexscaria/api-schemas/shared"
 	"github.com/tidwall/gjson"
 )
 
@@ -42,6 +42,8 @@ func NewZoneAnalyticsService(opts ...option.RequestOption) (r *ZoneAnalyticsServ
 
 // This view provides a breakdown of analytics data by datacenter. Note: This is
 // available to Enterprise customers only.
+//
+// Deprecated: deprecated
 func (r *ZoneAnalyticsService) ListColos(ctx context.Context, zoneIdentifier string, query ZoneAnalyticsListColosParams, opts ...option.RequestOption) (res *ZoneAnalyticsListColosResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneIdentifier == "" {
@@ -55,6 +57,8 @@ func (r *ZoneAnalyticsService) ListColos(ctx context.Context, zoneIdentifier str
 
 // The dashboard view provides both totals and timeseries data for the given zone
 // and time period across the entire Cloudflare network.
+//
+// Deprecated: deprecated
 func (r *ZoneAnalyticsService) GetDashboard(ctx context.Context, zoneIdentifier string, query ZoneAnalyticsGetDashboardParams, opts ...option.RequestOption) (res *ZoneAnalyticsGetDashboardResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneIdentifier == "" {

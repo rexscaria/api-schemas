@@ -9,9 +9,9 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/stainless-sdks/cf-rex-go/internal/apijson"
-	"github.com/stainless-sdks/cf-rex-go/internal/requestconfig"
-	"github.com/stainless-sdks/cf-rex-go/option"
+	"github.com/rexscaria/api-schemas/internal/apijson"
+	"github.com/rexscaria/api-schemas/internal/requestconfig"
+	"github.com/rexscaria/api-schemas/option"
 )
 
 // AccountBillingService contains methods and other services that help with
@@ -34,6 +34,8 @@ func NewAccountBillingService(opts ...option.RequestOption) (r *AccountBillingSe
 }
 
 // Gets the current billing profile for the account.
+//
+// Deprecated: deprecated
 func (r *AccountBillingService) GetProfile(ctx context.Context, accountID string, opts ...option.RequestOption) (res *BillingResponseSingle, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {

@@ -9,11 +9,11 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/stainless-sdks/cf-rex-go/internal/apijson"
-	"github.com/stainless-sdks/cf-rex-go/internal/apiquery"
-	"github.com/stainless-sdks/cf-rex-go/internal/param"
-	"github.com/stainless-sdks/cf-rex-go/internal/requestconfig"
-	"github.com/stainless-sdks/cf-rex-go/option"
+	"github.com/rexscaria/api-schemas/internal/apijson"
+	"github.com/rexscaria/api-schemas/internal/apiquery"
+	"github.com/rexscaria/api-schemas/internal/param"
+	"github.com/rexscaria/api-schemas/internal/requestconfig"
+	"github.com/rexscaria/api-schemas/option"
 )
 
 // ZoneFilterService contains methods and other services that help with interacting
@@ -36,6 +36,8 @@ func NewZoneFilterService(opts ...option.RequestOption) (r *ZoneFilterService) {
 }
 
 // Creates one or more filters.
+//
+// Deprecated: deprecated
 func (r *ZoneFilterService) New(ctx context.Context, zoneID string, body ZoneFilterNewParams, opts ...option.RequestOption) (res *FirewallFilterCollection, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
@@ -48,6 +50,8 @@ func (r *ZoneFilterService) New(ctx context.Context, zoneID string, body ZoneFil
 }
 
 // Fetches the details of a filter.
+//
+// Deprecated: deprecated
 func (r *ZoneFilterService) Get(ctx context.Context, zoneID string, filterID string, opts ...option.RequestOption) (res *FirewallFilterSingle, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
@@ -64,6 +68,8 @@ func (r *ZoneFilterService) Get(ctx context.Context, zoneID string, filterID str
 }
 
 // Updates one or more existing filters.
+//
+// Deprecated: deprecated
 func (r *ZoneFilterService) Update(ctx context.Context, zoneID string, body ZoneFilterUpdateParams, opts ...option.RequestOption) (res *FirewallFilterCollection, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
@@ -77,6 +83,8 @@ func (r *ZoneFilterService) Update(ctx context.Context, zoneID string, body Zone
 
 // Fetches filters in a zone. You can filter the results using several optional
 // parameters.
+//
+// Deprecated: deprecated
 func (r *ZoneFilterService) List(ctx context.Context, zoneID string, query ZoneFilterListParams, opts ...option.RequestOption) (res *FirewallFilterCollection, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
@@ -89,6 +97,8 @@ func (r *ZoneFilterService) List(ctx context.Context, zoneID string, query ZoneF
 }
 
 // Deletes one or more existing filters.
+//
+// Deprecated: deprecated
 func (r *ZoneFilterService) Delete(ctx context.Context, zoneID string, body ZoneFilterDeleteParams, opts ...option.RequestOption) (res *ZoneFilterDeleteResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
@@ -101,6 +111,8 @@ func (r *ZoneFilterService) Delete(ctx context.Context, zoneID string, body Zone
 }
 
 // Deletes an existing filter.
+//
+// Deprecated: deprecated
 func (r *ZoneFilterService) DeleteSingle(ctx context.Context, zoneID string, filterID string, body ZoneFilterDeleteSingleParams, opts ...option.RequestOption) (res *ZoneFilterDeleteSingleResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
@@ -117,6 +129,8 @@ func (r *ZoneFilterService) DeleteSingle(ctx context.Context, zoneID string, fil
 }
 
 // Updates an existing filter.
+//
+// Deprecated: deprecated
 func (r *ZoneFilterService) UpdateSingle(ctx context.Context, zoneID string, filterID string, body ZoneFilterUpdateSingleParams, opts ...option.RequestOption) (res *FirewallFilterSingle, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {

@@ -3,8 +3,8 @@
 package cfrex
 
 import (
-	"github.com/stainless-sdks/cf-rex-go/internal/apijson"
-	"github.com/stainless-sdks/cf-rex-go/option"
+	"github.com/rexscaria/api-schemas/internal/apijson"
+	"github.com/rexscaria/api-schemas/option"
 )
 
 // ZoneCachePurgeService contains methods and other services that help with
