@@ -1,0 +1,342 @@
+// File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
+
+package cfrex
+
+import (
+	"context"
+	"errors"
+	"fmt"
+	"net/http"
+	"net/url"
+
+	"github.com/rexscaria/api-schemas/internal/apijson"
+	"github.com/rexscaria/api-schemas/internal/apiquery"
+	"github.com/rexscaria/api-schemas/internal/param"
+	"github.com/rexscaria/api-schemas/internal/requestconfig"
+	"github.com/rexscaria/api-schemas/option"
+)
+
+// AccountAIRunHfNousresearchService contains methods and other services that help
+// with interacting with the cf-rex API.
+//
+// Note, unlike clients, this service does not read variables from the environment
+// automatically. You should not instantiate this service directly, and instead use
+// the [NewAccountAIRunHfNousresearchService] method instead.
+type AccountAIRunHfNousresearchService struct {
+	Options []option.RequestOption
+}
+
+// NewAccountAIRunHfNousresearchService generates a new service that applies the
+// given options to each request. These options are applied after the parent
+// client's options (if there is one), and before any request-specific options.
+func NewAccountAIRunHfNousresearchService(opts ...option.RequestOption) (r *AccountAIRunHfNousresearchService) {
+	r = &AccountAIRunHfNousresearchService{}
+	r.Options = opts
+	return
+}
+
+// Execute @hf/nousresearch/hermes-2-pro-mistral-7b model.
+func (r *AccountAIRunHfNousresearchService) ExecuteHermes2ProMistral7b(ctx context.Context, accountID string, params AccountAIRunHfNousresearchExecuteHermes2ProMistral7bParams, opts ...option.RequestOption) (res *AccountAIRunHfNousresearchExecuteHermes2ProMistral7bResponse, err error) {
+	opts = append(r.Options[:], opts...)
+	if accountID == "" {
+		err = errors.New("missing required account_id parameter")
+		return
+	}
+	path := fmt.Sprintf("accounts/%s/ai/run/@hf/nousresearch/hermes-2-pro-mistral-7b", accountID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
+	return
+}
+
+type AccountAIRunHfNousresearchExecuteHermes2ProMistral7bResponse = interface{}
+
+type AccountAIRunHfNousresearchExecuteHermes2ProMistral7bParams struct {
+	QueueRequest param.Field[string]                                                 `query:"queueRequest"`
+	Body         AccountAIRunHfNousresearchExecuteHermes2ProMistral7bParamsBodyUnion `json:"body"`
+}
+
+func (r AccountAIRunHfNousresearchExecuteHermes2ProMistral7bParams) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r.Body)
+}
+
+// URLQuery serializes
+// [AccountAIRunHfNousresearchExecuteHermes2ProMistral7bParams]'s query parameters
+// as `url.Values`.
+func (r AccountAIRunHfNousresearchExecuteHermes2ProMistral7bParams) URLQuery() (v url.Values) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+type AccountAIRunHfNousresearchExecuteHermes2ProMistral7bParamsBody struct {
+	// Decreases the likelihood of the model repeating the same lines verbatim.
+	FrequencyPenalty param.Field[float64]     `json:"frequency_penalty"`
+	Functions        param.Field[interface{}] `json:"functions"`
+	// Name of the LoRA (Low-Rank Adaptation) model to fine-tune the base model.
+	Lora param.Field[string] `json:"lora"`
+	// The maximum number of tokens to generate in the response.
+	MaxTokens param.Field[int64]       `json:"max_tokens"`
+	Messages  param.Field[interface{}] `json:"messages"`
+	// Increases the likelihood of the model introducing new topics.
+	PresencePenalty param.Field[float64] `json:"presence_penalty"`
+	// The input text prompt for the model to generate a response.
+	Prompt param.Field[string] `json:"prompt"`
+	// If true, a chat template is not applied and you must adhere to the specific
+	// model's expected formatting.
+	Raw param.Field[bool] `json:"raw"`
+	// Penalty for repeated tokens; higher values discourage repetition.
+	RepetitionPenalty param.Field[float64]     `json:"repetition_penalty"`
+	ResponseFormat    param.Field[interface{}] `json:"response_format"`
+	// Random seed for reproducibility of the generation.
+	Seed param.Field[int64] `json:"seed"`
+	// If true, the response will be streamed back incrementally using SSE, Server Sent
+	// Events.
+	Stream param.Field[bool] `json:"stream"`
+	// Controls the randomness of the output; higher values produce more random
+	// results.
+	Temperature param.Field[float64]     `json:"temperature"`
+	Tools       param.Field[interface{}] `json:"tools"`
+	// Limits the AI to choose from the top 'k' most probable words. Lower values make
+	// responses more focused; higher values introduce more variety and potential
+	// surprises.
+	TopK param.Field[int64] `json:"top_k"`
+	// Adjusts the creativity of the AI's responses by controlling how many possible
+	// words it considers. Lower values make outputs more predictable; higher values
+	// allow for more varied and creative responses.
+	TopP param.Field[float64] `json:"top_p"`
+}
+
+func (r AccountAIRunHfNousresearchExecuteHermes2ProMistral7bParamsBody) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r AccountAIRunHfNousresearchExecuteHermes2ProMistral7bParamsBody) implementsAccountAIRunHfNousresearchExecuteHermes2ProMistral7bParamsBodyUnion() {
+}
+
+// Satisfied by
+// [AccountAIRunHfNousresearchExecuteHermes2ProMistral7bParamsBodyPrompt],
+// [AccountAIRunHfNousresearchExecuteHermes2ProMistral7bParamsBodyMessages],
+// [AccountAIRunHfNousresearchExecuteHermes2ProMistral7bParamsBody].
+type AccountAIRunHfNousresearchExecuteHermes2ProMistral7bParamsBodyUnion interface {
+	implementsAccountAIRunHfNousresearchExecuteHermes2ProMistral7bParamsBodyUnion()
+}
+
+type AccountAIRunHfNousresearchExecuteHermes2ProMistral7bParamsBodyPrompt struct {
+	// The input text prompt for the model to generate a response.
+	Prompt param.Field[string] `json:"prompt,required"`
+	// Decreases the likelihood of the model repeating the same lines verbatim.
+	FrequencyPenalty param.Field[float64] `json:"frequency_penalty"`
+	// Name of the LoRA (Low-Rank Adaptation) model to fine-tune the base model.
+	Lora param.Field[string] `json:"lora"`
+	// The maximum number of tokens to generate in the response.
+	MaxTokens param.Field[int64] `json:"max_tokens"`
+	// Increases the likelihood of the model introducing new topics.
+	PresencePenalty param.Field[float64] `json:"presence_penalty"`
+	// If true, a chat template is not applied and you must adhere to the specific
+	// model's expected formatting.
+	Raw param.Field[bool] `json:"raw"`
+	// Penalty for repeated tokens; higher values discourage repetition.
+	RepetitionPenalty param.Field[float64]                                                                            `json:"repetition_penalty"`
+	ResponseFormat    param.Field[AccountAIRunHfNousresearchExecuteHermes2ProMistral7bParamsBodyPromptResponseFormat] `json:"response_format"`
+	// Random seed for reproducibility of the generation.
+	Seed param.Field[int64] `json:"seed"`
+	// If true, the response will be streamed back incrementally using SSE, Server Sent
+	// Events.
+	Stream param.Field[bool] `json:"stream"`
+	// Controls the randomness of the output; higher values produce more random
+	// results.
+	Temperature param.Field[float64] `json:"temperature"`
+	// Limits the AI to choose from the top 'k' most probable words. Lower values make
+	// responses more focused; higher values introduce more variety and potential
+	// surprises.
+	TopK param.Field[int64] `json:"top_k"`
+	// Adjusts the creativity of the AI's responses by controlling how many possible
+	// words it considers. Lower values make outputs more predictable; higher values
+	// allow for more varied and creative responses.
+	TopP param.Field[float64] `json:"top_p"`
+}
+
+func (r AccountAIRunHfNousresearchExecuteHermes2ProMistral7bParamsBodyPrompt) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r AccountAIRunHfNousresearchExecuteHermes2ProMistral7bParamsBodyPrompt) implementsAccountAIRunHfNousresearchExecuteHermes2ProMistral7bParamsBodyUnion() {
+}
+
+type AccountAIRunHfNousresearchExecuteHermes2ProMistral7bParamsBodyPromptResponseFormat struct {
+	JsonSchema param.Field[interface{}]                                                                            `json:"json_schema"`
+	Type       param.Field[AccountAIRunHfNousresearchExecuteHermes2ProMistral7bParamsBodyPromptResponseFormatType] `json:"type"`
+}
+
+func (r AccountAIRunHfNousresearchExecuteHermes2ProMistral7bParamsBodyPromptResponseFormat) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type AccountAIRunHfNousresearchExecuteHermes2ProMistral7bParamsBodyPromptResponseFormatType string
+
+const (
+	AccountAIRunHfNousresearchExecuteHermes2ProMistral7bParamsBodyPromptResponseFormatTypeJsonObject AccountAIRunHfNousresearchExecuteHermes2ProMistral7bParamsBodyPromptResponseFormatType = "json_object"
+	AccountAIRunHfNousresearchExecuteHermes2ProMistral7bParamsBodyPromptResponseFormatTypeJsonSchema AccountAIRunHfNousresearchExecuteHermes2ProMistral7bParamsBodyPromptResponseFormatType = "json_schema"
+)
+
+func (r AccountAIRunHfNousresearchExecuteHermes2ProMistral7bParamsBodyPromptResponseFormatType) IsKnown() bool {
+	switch r {
+	case AccountAIRunHfNousresearchExecuteHermes2ProMistral7bParamsBodyPromptResponseFormatTypeJsonObject, AccountAIRunHfNousresearchExecuteHermes2ProMistral7bParamsBodyPromptResponseFormatTypeJsonSchema:
+		return true
+	}
+	return false
+}
+
+type AccountAIRunHfNousresearchExecuteHermes2ProMistral7bParamsBodyMessages struct {
+	// An array of message objects representing the conversation history.
+	Messages param.Field[[]AccountAIRunHfNousresearchExecuteHermes2ProMistral7bParamsBodyMessagesMessage] `json:"messages,required"`
+	// Decreases the likelihood of the model repeating the same lines verbatim.
+	FrequencyPenalty param.Field[float64]                                                                          `json:"frequency_penalty"`
+	Functions        param.Field[[]AccountAIRunHfNousresearchExecuteHermes2ProMistral7bParamsBodyMessagesFunction] `json:"functions"`
+	// The maximum number of tokens to generate in the response.
+	MaxTokens param.Field[int64] `json:"max_tokens"`
+	// Increases the likelihood of the model introducing new topics.
+	PresencePenalty param.Field[float64] `json:"presence_penalty"`
+	// If true, a chat template is not applied and you must adhere to the specific
+	// model's expected formatting.
+	Raw param.Field[bool] `json:"raw"`
+	// Penalty for repeated tokens; higher values discourage repetition.
+	RepetitionPenalty param.Field[float64]                                                                              `json:"repetition_penalty"`
+	ResponseFormat    param.Field[AccountAIRunHfNousresearchExecuteHermes2ProMistral7bParamsBodyMessagesResponseFormat] `json:"response_format"`
+	// Random seed for reproducibility of the generation.
+	Seed param.Field[int64] `json:"seed"`
+	// If true, the response will be streamed back incrementally using SSE, Server Sent
+	// Events.
+	Stream param.Field[bool] `json:"stream"`
+	// Controls the randomness of the output; higher values produce more random
+	// results.
+	Temperature param.Field[float64] `json:"temperature"`
+	// A list of tools available for the assistant to use.
+	Tools param.Field[[]AccountAIRunHfNousresearchExecuteHermes2ProMistral7bParamsBodyMessagesToolUnion] `json:"tools"`
+	// Limits the AI to choose from the top 'k' most probable words. Lower values make
+	// responses more focused; higher values introduce more variety and potential
+	// surprises.
+	TopK param.Field[int64] `json:"top_k"`
+	// Adjusts the creativity of the AI's responses by controlling how many possible
+	// words it considers. Lower values make outputs more predictable; higher values
+	// allow for more varied and creative responses.
+	TopP param.Field[float64] `json:"top_p"`
+}
+
+func (r AccountAIRunHfNousresearchExecuteHermes2ProMistral7bParamsBodyMessages) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r AccountAIRunHfNousresearchExecuteHermes2ProMistral7bParamsBodyMessages) implementsAccountAIRunHfNousresearchExecuteHermes2ProMistral7bParamsBodyUnion() {
+}
+
+type AccountAIRunHfNousresearchExecuteHermes2ProMistral7bParamsBodyMessagesMessage struct {
+	// The content of the message as a string.
+	Content param.Field[string] `json:"content,required"`
+	// The role of the message sender (e.g., 'user', 'assistant', 'system', 'tool').
+	Role param.Field[string] `json:"role,required"`
+}
+
+func (r AccountAIRunHfNousresearchExecuteHermes2ProMistral7bParamsBodyMessagesMessage) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type AccountAIRunHfNousresearchExecuteHermes2ProMistral7bParamsBodyMessagesFunction struct {
+	Code param.Field[string] `json:"code,required"`
+	Name param.Field[string] `json:"name,required"`
+}
+
+func (r AccountAIRunHfNousresearchExecuteHermes2ProMistral7bParamsBodyMessagesFunction) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type AccountAIRunHfNousresearchExecuteHermes2ProMistral7bParamsBodyMessagesResponseFormat struct {
+	JsonSchema param.Field[interface{}]                                                                              `json:"json_schema"`
+	Type       param.Field[AccountAIRunHfNousresearchExecuteHermes2ProMistral7bParamsBodyMessagesResponseFormatType] `json:"type"`
+}
+
+func (r AccountAIRunHfNousresearchExecuteHermes2ProMistral7bParamsBodyMessagesResponseFormat) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type AccountAIRunHfNousresearchExecuteHermes2ProMistral7bParamsBodyMessagesResponseFormatType string
+
+const (
+	AccountAIRunHfNousresearchExecuteHermes2ProMistral7bParamsBodyMessagesResponseFormatTypeJsonObject AccountAIRunHfNousresearchExecuteHermes2ProMistral7bParamsBodyMessagesResponseFormatType = "json_object"
+	AccountAIRunHfNousresearchExecuteHermes2ProMistral7bParamsBodyMessagesResponseFormatTypeJsonSchema AccountAIRunHfNousresearchExecuteHermes2ProMistral7bParamsBodyMessagesResponseFormatType = "json_schema"
+)
+
+func (r AccountAIRunHfNousresearchExecuteHermes2ProMistral7bParamsBodyMessagesResponseFormatType) IsKnown() bool {
+	switch r {
+	case AccountAIRunHfNousresearchExecuteHermes2ProMistral7bParamsBodyMessagesResponseFormatTypeJsonObject, AccountAIRunHfNousresearchExecuteHermes2ProMistral7bParamsBodyMessagesResponseFormatTypeJsonSchema:
+		return true
+	}
+	return false
+}
+
+type AccountAIRunHfNousresearchExecuteHermes2ProMistral7bParamsBodyMessagesTool struct {
+	// A brief description of what the tool does.
+	Description param.Field[string]      `json:"description"`
+	Function    param.Field[interface{}] `json:"function"`
+	// The name of the tool. More descriptive the better.
+	Name       param.Field[string]      `json:"name"`
+	Parameters param.Field[interface{}] `json:"parameters"`
+	// Specifies the type of tool (e.g., 'function').
+	Type param.Field[string] `json:"type"`
+}
+
+func (r AccountAIRunHfNousresearchExecuteHermes2ProMistral7bParamsBodyMessagesTool) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r AccountAIRunHfNousresearchExecuteHermes2ProMistral7bParamsBodyMessagesTool) implementsAccountAIRunHfNousresearchExecuteHermes2ProMistral7bParamsBodyMessagesToolUnion() {
+}
+
+// Satisfied by
+// [AccountAIRunHfNousresearchExecuteHermes2ProMistral7bParamsBodyMessagesToolsObject],
+// [AccountAIRunHfNousresearchExecuteHermes2ProMistral7bParamsBodyMessagesToolsObject],
+// [AccountAIRunHfNousresearchExecuteHermes2ProMistral7bParamsBodyMessagesTool].
+type AccountAIRunHfNousresearchExecuteHermes2ProMistral7bParamsBodyMessagesToolUnion interface {
+	implementsAccountAIRunHfNousresearchExecuteHermes2ProMistral7bParamsBodyMessagesToolUnion()
+}
+
+type AccountAIRunHfNousresearchExecuteHermes2ProMistral7bParamsBodyMessagesToolsObject struct {
+	// A brief description of what the tool does.
+	Description param.Field[string] `json:"description,required"`
+	// The name of the tool. More descriptive the better.
+	Name param.Field[string] `json:"name,required"`
+	// Schema defining the parameters accepted by the tool.
+	Parameters param.Field[AccountAIRunHfNousresearchExecuteHermes2ProMistral7bParamsBodyMessagesToolsObjectParameters] `json:"parameters,required"`
+}
+
+func (r AccountAIRunHfNousresearchExecuteHermes2ProMistral7bParamsBodyMessagesToolsObject) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r AccountAIRunHfNousresearchExecuteHermes2ProMistral7bParamsBodyMessagesToolsObject) implementsAccountAIRunHfNousresearchExecuteHermes2ProMistral7bParamsBodyMessagesToolUnion() {
+}
+
+// Schema defining the parameters accepted by the tool.
+type AccountAIRunHfNousresearchExecuteHermes2ProMistral7bParamsBodyMessagesToolsObjectParameters struct {
+	// Definitions of each parameter.
+	Properties param.Field[map[string]AccountAIRunHfNousresearchExecuteHermes2ProMistral7bParamsBodyMessagesToolsObjectParametersProperties] `json:"properties,required"`
+	// The type of the parameters object (usually 'object').
+	Type param.Field[string] `json:"type,required"`
+	// List of required parameter names.
+	Required param.Field[[]string] `json:"required"`
+}
+
+func (r AccountAIRunHfNousresearchExecuteHermes2ProMistral7bParamsBodyMessagesToolsObjectParameters) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type AccountAIRunHfNousresearchExecuteHermes2ProMistral7bParamsBodyMessagesToolsObjectParametersProperties struct {
+	// A description of the expected parameter.
+	Description param.Field[string] `json:"description,required"`
+	// The data type of the parameter.
+	Type param.Field[string] `json:"type,required"`
+}
+
+func (r AccountAIRunHfNousresearchExecuteHermes2ProMistral7bParamsBodyMessagesToolsObjectParametersProperties) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}

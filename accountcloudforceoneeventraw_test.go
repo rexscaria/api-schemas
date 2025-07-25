@@ -1,0 +1,77 @@
+// File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
+
+package cfrex_test
+
+import (
+	"context"
+	"errors"
+	"os"
+	"testing"
+
+	"github.com/rexscaria/api-schemas"
+	"github.com/rexscaria/api-schemas/internal/testutil"
+	"github.com/rexscaria/api-schemas/option"
+)
+
+func TestAccountCloudforceOneEventRawGet(t *testing.T) {
+	t.Skip("skipped: tests are disabled for the time being")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := cfrex.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIEmail("My API Email"),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Accounts.CloudforceOne.Events.Raw.Get(
+		context.TODO(),
+		"account_id",
+		"dataset_id",
+		"event_id",
+	)
+	if err != nil {
+		var apierr *cfrex.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestAccountCloudforceOneEventRawUpdateWithOptionalParams(t *testing.T) {
+	t.Skip("skipped: tests are disabled for the time being")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := cfrex.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIEmail("My API Email"),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Accounts.CloudforceOne.Events.Raw.Update(
+		context.TODO(),
+		"account_id",
+		"event_id",
+		"raw_id",
+		cfrex.AccountCloudforceOneEventRawUpdateParams{
+			Data:   cfrex.F[any](map[string]interface{}{}),
+			Source: cfrex.F("example.com"),
+			Tlp:    cfrex.F("amber"),
+		},
+	)
+	if err != nil {
+		var apierr *cfrex.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}

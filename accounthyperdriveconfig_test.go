@@ -1,0 +1,239 @@
+// File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
+
+package cfrex_test
+
+import (
+	"context"
+	"errors"
+	"os"
+	"testing"
+
+	"github.com/rexscaria/api-schemas"
+	"github.com/rexscaria/api-schemas/internal/testutil"
+	"github.com/rexscaria/api-schemas/option"
+)
+
+func TestAccountHyperdriveConfigNewWithOptionalParams(t *testing.T) {
+	t.Skip("skipped: tests are disabled for the time being")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := cfrex.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIEmail("My API Email"),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Accounts.Hyperdrive.Configs.New(
+		context.TODO(),
+		"023e105f4ecef8ad9ca31a8372d0c353",
+		cfrex.AccountHyperdriveConfigNewParams{
+			HyperdriveHyperdriveConfig: cfrex.HyperdriveHyperdriveConfigParam{
+				Name: cfrex.F("example-hyperdrive"),
+				Origin: cfrex.F[cfrex.HyperdriveHyperdriveConfigOriginUnionParam](cfrex.HyperdriveHyperdriveConfigOriginPublicDatabaseParam{
+					Database: cfrex.F("postgres"),
+					Host:     cfrex.F("database.example.com"),
+					Password: cfrex.F("password"),
+					Port:     cfrex.F(int64(5432)),
+					Scheme:   cfrex.F(cfrex.HyperdriveHyperdriveConfigOriginPublicDatabaseSchemePostgres),
+					User:     cfrex.F("postgres"),
+				}),
+				Caching: cfrex.F[cfrex.HyperdriveHyperdriveCachingUnionParam](cfrex.HyperdriveHyperdriveCachingCommonParam{
+					Disabled: cfrex.F(true),
+				}),
+				Mtls: cfrex.F(cfrex.HyperdriveHyperdriveConfigMtlsParam{
+					CaCertificateID:   cfrex.F("00000000-0000-0000-0000-0000000000"),
+					MtlsCertificateID: cfrex.F("00000000-0000-0000-0000-0000000000"),
+					Sslmode:           cfrex.F("verify-full"),
+				}),
+				OriginConnectionLimit: cfrex.F(int64(60)),
+			},
+		},
+	)
+	if err != nil {
+		var apierr *cfrex.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestAccountHyperdriveConfigGet(t *testing.T) {
+	t.Skip("skipped: tests are disabled for the time being")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := cfrex.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIEmail("My API Email"),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Accounts.Hyperdrive.Configs.Get(
+		context.TODO(),
+		"023e105f4ecef8ad9ca31a8372d0c353",
+		"023e105f4ecef8ad9ca31a8372d0c353",
+	)
+	if err != nil {
+		var apierr *cfrex.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestAccountHyperdriveConfigUpdateWithOptionalParams(t *testing.T) {
+	t.Skip("skipped: tests are disabled for the time being")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := cfrex.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIEmail("My API Email"),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Accounts.Hyperdrive.Configs.Update(
+		context.TODO(),
+		"023e105f4ecef8ad9ca31a8372d0c353",
+		"023e105f4ecef8ad9ca31a8372d0c353",
+		cfrex.AccountHyperdriveConfigUpdateParams{
+			HyperdriveHyperdriveConfig: cfrex.HyperdriveHyperdriveConfigParam{
+				Name: cfrex.F("example-hyperdrive"),
+				Origin: cfrex.F[cfrex.HyperdriveHyperdriveConfigOriginUnionParam](cfrex.HyperdriveHyperdriveConfigOriginPublicDatabaseParam{
+					Database: cfrex.F("postgres"),
+					Host:     cfrex.F("database.example.com"),
+					Password: cfrex.F("password"),
+					Port:     cfrex.F(int64(5432)),
+					Scheme:   cfrex.F(cfrex.HyperdriveHyperdriveConfigOriginPublicDatabaseSchemePostgres),
+					User:     cfrex.F("postgres"),
+				}),
+				Caching: cfrex.F[cfrex.HyperdriveHyperdriveCachingUnionParam](cfrex.HyperdriveHyperdriveCachingCommonParam{
+					Disabled: cfrex.F(true),
+				}),
+				Mtls: cfrex.F(cfrex.HyperdriveHyperdriveConfigMtlsParam{
+					CaCertificateID:   cfrex.F("00000000-0000-0000-0000-0000000000"),
+					MtlsCertificateID: cfrex.F("00000000-0000-0000-0000-0000000000"),
+					Sslmode:           cfrex.F("verify-full"),
+				}),
+				OriginConnectionLimit: cfrex.F(int64(60)),
+			},
+		},
+	)
+	if err != nil {
+		var apierr *cfrex.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestAccountHyperdriveConfigList(t *testing.T) {
+	t.Skip("skipped: tests are disabled for the time being")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := cfrex.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIEmail("My API Email"),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Accounts.Hyperdrive.Configs.List(context.TODO(), "023e105f4ecef8ad9ca31a8372d0c353")
+	if err != nil {
+		var apierr *cfrex.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestAccountHyperdriveConfigDelete(t *testing.T) {
+	t.Skip("skipped: tests are disabled for the time being")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := cfrex.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIEmail("My API Email"),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Accounts.Hyperdrive.Configs.Delete(
+		context.TODO(),
+		"023e105f4ecef8ad9ca31a8372d0c353",
+		"023e105f4ecef8ad9ca31a8372d0c353",
+	)
+	if err != nil {
+		var apierr *cfrex.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestAccountHyperdriveConfigPatchWithOptionalParams(t *testing.T) {
+	t.Skip("skipped: tests are disabled for the time being")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := cfrex.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIEmail("My API Email"),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Accounts.Hyperdrive.Configs.Patch(
+		context.TODO(),
+		"023e105f4ecef8ad9ca31a8372d0c353",
+		"023e105f4ecef8ad9ca31a8372d0c353",
+		cfrex.AccountHyperdriveConfigPatchParams{
+			Caching: cfrex.F[cfrex.HyperdriveHyperdriveCachingUnionParam](cfrex.HyperdriveHyperdriveCachingCommonParam{
+				Disabled: cfrex.F(true),
+			}),
+			Mtls: cfrex.F(cfrex.AccountHyperdriveConfigPatchParamsMtls{
+				CaCertificateID:   cfrex.F("00000000-0000-0000-0000-0000000000"),
+				MtlsCertificateID: cfrex.F("00000000-0000-0000-0000-0000000000"),
+				Sslmode:           cfrex.F("verify-full"),
+			}),
+			Name: cfrex.F("example-hyperdrive"),
+			Origin: cfrex.F[cfrex.AccountHyperdriveConfigPatchParamsOriginUnion](cfrex.HyperdriveHyperdriveDatabaseParam{
+				Database: cfrex.F("postgres"),
+				Password: cfrex.F("password"),
+				Scheme:   cfrex.F(cfrex.HyperdriveHyperdriveDatabaseSchemePostgres),
+				User:     cfrex.F("postgres"),
+			}),
+			OriginConnectionLimit: cfrex.F(int64(60)),
+		},
+	)
+	if err != nil {
+		var apierr *cfrex.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}

@@ -1,0 +1,181 @@
+// File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
+
+package cfrex_test
+
+import (
+	"context"
+	"errors"
+	"os"
+	"testing"
+
+	"github.com/rexscaria/api-schemas"
+	"github.com/rexscaria/api-schemas/internal/testutil"
+	"github.com/rexscaria/api-schemas/option"
+)
+
+func TestZoneWaitingRoomRuleNewWithOptionalParams(t *testing.T) {
+	t.Skip("skipped: tests are disabled for the time being")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := cfrex.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIEmail("My API Email"),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Zones.WaitingRooms.Rules.New(
+		context.TODO(),
+		"023e105f4ecef8ad9ca31a8372d0c353",
+		"699d98642c564d2e855e9661899b7252",
+		cfrex.ZoneWaitingRoomRuleNewParams{
+			CreateWaitingRoomRule: cfrex.CreateWaitingRoomRuleParam{
+				Action:      cfrex.F(cfrex.RuleActionBypassWaitingRoom),
+				Expression:  cfrex.F("ip.src in {10.20.30.40}"),
+				Description: cfrex.F("allow all traffic from 10.20.30.40"),
+				Enabled:     cfrex.F(true),
+			},
+		},
+	)
+	if err != nil {
+		var apierr *cfrex.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestZoneWaitingRoomRuleList(t *testing.T) {
+	t.Skip("skipped: tests are disabled for the time being")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := cfrex.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIEmail("My API Email"),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Zones.WaitingRooms.Rules.List(
+		context.TODO(),
+		"023e105f4ecef8ad9ca31a8372d0c353",
+		"699d98642c564d2e855e9661899b7252",
+	)
+	if err != nil {
+		var apierr *cfrex.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestZoneWaitingRoomRuleDelete(t *testing.T) {
+	t.Skip("skipped: tests are disabled for the time being")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := cfrex.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIEmail("My API Email"),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Zones.WaitingRooms.Rules.Delete(
+		context.TODO(),
+		"023e105f4ecef8ad9ca31a8372d0c353",
+		"699d98642c564d2e855e9661899b7252",
+		"25756b2dfe6e378a06b033b670413757",
+	)
+	if err != nil {
+		var apierr *cfrex.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestZoneWaitingRoomRulePatchWithOptionalParams(t *testing.T) {
+	t.Skip("skipped: tests are disabled for the time being")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := cfrex.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIEmail("My API Email"),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Zones.WaitingRooms.Rules.Patch(
+		context.TODO(),
+		"023e105f4ecef8ad9ca31a8372d0c353",
+		"699d98642c564d2e855e9661899b7252",
+		"25756b2dfe6e378a06b033b670413757",
+		cfrex.ZoneWaitingRoomRulePatchParams{
+			Action:      cfrex.F(cfrex.RuleActionBypassWaitingRoom),
+			Expression:  cfrex.F("ip.src in {10.20.30.40}"),
+			Description: cfrex.F("allow all traffic from 10.20.30.40"),
+			Enabled:     cfrex.F(true),
+			Position: cfrex.F[cfrex.ZoneWaitingRoomRulePatchParamsPositionUnion](cfrex.ZoneWaitingRoomRulePatchParamsPositionIndex{
+				Index: cfrex.F(int64(0)),
+			}),
+		},
+	)
+	if err != nil {
+		var apierr *cfrex.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestZoneWaitingRoomRuleReplace(t *testing.T) {
+	t.Skip("skipped: tests are disabled for the time being")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := cfrex.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIEmail("My API Email"),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Zones.WaitingRooms.Rules.Replace(
+		context.TODO(),
+		"023e105f4ecef8ad9ca31a8372d0c353",
+		"699d98642c564d2e855e9661899b7252",
+		cfrex.ZoneWaitingRoomRuleReplaceParams{
+			Body: []cfrex.CreateWaitingRoomRuleParam{{
+				Action:      cfrex.F(cfrex.RuleActionBypassWaitingRoom),
+				Expression:  cfrex.F("ip.src in {10.20.30.40}"),
+				Description: cfrex.F("allow all traffic from 10.20.30.40"),
+				Enabled:     cfrex.F(true),
+			}},
+		},
+	)
+	if err != nil {
+		var apierr *cfrex.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
