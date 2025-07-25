@@ -29,7 +29,7 @@ func TestZoneAPIGatewayOperationGetWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Zones.APIGateway.Operations.Get(
 		context.TODO(),
-		"zone_id",
+		"023e105f4ecef8ad9ca31a8372d0c353",
 		"f174e90a-fafe-4643-bbbc-4a0ed4fc8415",
 		cfrex.ZoneAPIGatewayOperationGetParams{
 			Feature: cfrex.F([]cfrex.ZoneAPIGatewayOperationGetParamsFeature{cfrex.ZoneAPIGatewayOperationGetParamsFeatureThresholds}),
@@ -60,7 +60,7 @@ func TestZoneAPIGatewayOperationListWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Zones.APIGateway.Operations.List(
 		context.TODO(),
-		"zone_id",
+		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.ZoneAPIGatewayOperationListParams{
 			Direction: cfrex.F(cfrex.ZoneAPIGatewayOperationListParamsDirectionDesc),
 			Endpoint:  cfrex.F("/api/v1"),
@@ -97,7 +97,7 @@ func TestZoneAPIGatewayOperationAddMultiple(t *testing.T) {
 	)
 	_, err := client.Zones.APIGateway.Operations.AddMultiple(
 		context.TODO(),
-		"zone_id",
+		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.ZoneAPIGatewayOperationAddMultipleParams{
 			Body: []cfrex.BasicOperationParam{{
 				Endpoint: cfrex.F("/api/v1/users/{var1}"),
@@ -131,7 +131,7 @@ func TestZoneAPIGatewayOperationAddSingle(t *testing.T) {
 	)
 	_, err := client.Zones.APIGateway.Operations.AddSingle(
 		context.TODO(),
-		"zone_id",
+		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.ZoneAPIGatewayOperationAddSingleParams{
 			BasicOperation: cfrex.BasicOperationParam{
 				Endpoint: cfrex.F("/api/v1/users/{var1}"),
@@ -163,17 +163,7 @@ func TestZoneAPIGatewayOperationDeleteMultiple(t *testing.T) {
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Zones.APIGateway.Operations.DeleteMultiple(
-		context.TODO(),
-		"zone_id",
-		cfrex.ZoneAPIGatewayOperationDeleteMultipleParams{
-			Body: []cfrex.ZoneAPIGatewayOperationDeleteMultipleParamsBody{{
-				OperationID: cfrex.F("b17c8043-99a0-4202-b7d9-8f7cdbee02cd"),
-			}, {
-				OperationID: cfrex.F("3818d821-5901-4147-a474-f5f5aec1d54e"),
-			}},
-		},
-	)
+	_, err := client.Zones.APIGateway.Operations.DeleteMultiple(context.TODO(), "023e105f4ecef8ad9ca31a8372d0c353")
 	if err != nil {
 		var apierr *cfrex.Error
 		if errors.As(err, &apierr) {
@@ -199,7 +189,7 @@ func TestZoneAPIGatewayOperationDeleteSingle(t *testing.T) {
 	)
 	_, err := client.Zones.APIGateway.Operations.DeleteSingle(
 		context.TODO(),
-		"zone_id",
+		"023e105f4ecef8ad9ca31a8372d0c353",
 		"f174e90a-fafe-4643-bbbc-4a0ed4fc8415",
 	)
 	if err != nil {

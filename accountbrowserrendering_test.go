@@ -15,6 +15,7 @@ import (
 	"github.com/rexscaria/api-schemas"
 	"github.com/rexscaria/api-schemas/internal/testutil"
 	"github.com/rexscaria/api-schemas/option"
+	"github.com/rexscaria/api-schemas/shared"
 )
 
 func TestAccountBrowserRenderingGetHTMLContentWithOptionalParams(t *testing.T) {
@@ -35,7 +36,8 @@ func TestAccountBrowserRenderingGetHTMLContentWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"account_id",
 		cfrex.AccountBrowserRenderingGetHTMLContentParams{
-			CacheTtl: cfrex.F(86400.000000),
+			CacheTtl:      cfrex.F(86400.000000),
+			ActionTimeout: cfrex.F(300000.000000),
 			AddScriptTag: cfrex.F([]cfrex.AccountBrowserRenderingGetHTMLContentParamsAddScriptTag{{
 				ID:      cfrex.F("id"),
 				Content: cfrex.F("content"),
@@ -129,7 +131,8 @@ func TestAccountBrowserRenderingGetJsonWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"account_id",
 		cfrex.AccountBrowserRenderingGetJsonParams{
-			CacheTtl: cfrex.F(86400.000000),
+			CacheTtl:      cfrex.F(86400.000000),
+			ActionTimeout: cfrex.F(300000.000000),
 			AddScriptTag: cfrex.F([]cfrex.AccountBrowserRenderingGetJsonParamsAddScriptTag{{
 				ID:      cfrex.F("id"),
 				Content: cfrex.F("content"),
@@ -230,7 +233,8 @@ func TestAccountBrowserRenderingGetLinksWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"account_id",
 		cfrex.AccountBrowserRenderingGetLinksParams{
-			CacheTtl: cfrex.F(86400.000000),
+			CacheTtl:      cfrex.F(86400.000000),
+			ActionTimeout: cfrex.F(300000.000000),
 			AddScriptTag: cfrex.F([]cfrex.AccountBrowserRenderingGetLinksParamsAddScriptTag{{
 				ID:      cfrex.F("id"),
 				Content: cfrex.F("content"),
@@ -325,7 +329,8 @@ func TestAccountBrowserRenderingGetMarkdownWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"account_id",
 		cfrex.AccountBrowserRenderingGetMarkdownParams{
-			CacheTtl: cfrex.F(86400.000000),
+			CacheTtl:      cfrex.F(86400.000000),
+			ActionTimeout: cfrex.F(300000.000000),
 			AddScriptTag: cfrex.F([]cfrex.AccountBrowserRenderingGetMarkdownParamsAddScriptTag{{
 				ID:      cfrex.F("id"),
 				Content: cfrex.F("content"),
@@ -418,7 +423,8 @@ func TestAccountBrowserRenderingGetPdfWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"account_id",
 		cfrex.AccountBrowserRenderingGetPdfParams{
-			CacheTtl: cfrex.F(86400.000000),
+			CacheTtl:      cfrex.F(86400.000000),
+			ActionTimeout: cfrex.F(300000.000000),
 			AddScriptTag: cfrex.F([]cfrex.AccountBrowserRenderingGetPdfParamsAddScriptTag{{
 				ID:      cfrex.F("id"),
 				Content: cfrex.F("content"),
@@ -459,7 +465,30 @@ func TestAccountBrowserRenderingGetPdfWithOptionalParams(t *testing.T) {
 				Timeout:        cfrex.F(60000.000000),
 				WaitUntil:      cfrex.F[cfrex.AccountBrowserRenderingGetPdfParamsGotoOptionsWaitUntilUnion](cfrex.AccountBrowserRenderingGetPdfParamsGotoOptionsWaitUntilString(cfrex.AccountBrowserRenderingGetPdfParamsGotoOptionsWaitUntilStringLoad)),
 			}),
-			HTML:                 cfrex.F("x"),
+			HTML: cfrex.F("x"),
+			PdfOptions: cfrex.F(cfrex.AccountBrowserRenderingGetPdfParamsPdfOptions{
+				DisplayHeaderFooter: cfrex.F(true),
+				FooterTemplate:      cfrex.F("footerTemplate"),
+				Format:              cfrex.F(cfrex.AccountBrowserRenderingGetPdfParamsPdfOptionsFormatLetter),
+				HeaderTemplate:      cfrex.F("headerTemplate"),
+				Height:              cfrex.F[cfrex.AccountBrowserRenderingGetPdfParamsPdfOptionsHeightUnion](shared.UnionString("string")),
+				Landscape:           cfrex.F(true),
+				Margin: cfrex.F(cfrex.AccountBrowserRenderingGetPdfParamsPdfOptionsMargin{
+					Bottom: cfrex.F[cfrex.AccountBrowserRenderingGetPdfParamsPdfOptionsMarginBottomUnion](shared.UnionString("string")),
+					Left:   cfrex.F[cfrex.AccountBrowserRenderingGetPdfParamsPdfOptionsMarginLeftUnion](shared.UnionString("string")),
+					Right:  cfrex.F[cfrex.AccountBrowserRenderingGetPdfParamsPdfOptionsMarginRightUnion](shared.UnionString("string")),
+					Top:    cfrex.F[cfrex.AccountBrowserRenderingGetPdfParamsPdfOptionsMarginTopUnion](shared.UnionString("string")),
+				}),
+				OmitBackground:    cfrex.F(true),
+				Outline:           cfrex.F(true),
+				PageRanges:        cfrex.F("pageRanges"),
+				PreferCssPageSize: cfrex.F(true),
+				PrintBackground:   cfrex.F(true),
+				Scale:             cfrex.F(0.100000),
+				Tagged:            cfrex.F(true),
+				Timeout:           cfrex.F(0.000000),
+				Width:             cfrex.F[cfrex.AccountBrowserRenderingGetPdfParamsPdfOptionsWidthUnion](shared.UnionString("string")),
+			}),
 			RejectRequestPattern: cfrex.F([]string{"string"}),
 			RejectResourceTypes:  cfrex.F([]cfrex.AccountBrowserRenderingGetPdfParamsRejectResourceType{cfrex.AccountBrowserRenderingGetPdfParamsRejectResourceTypeDocument}),
 			SetExtraHTTPHeaders: cfrex.F(map[string]string{
@@ -525,7 +554,8 @@ func TestAccountBrowserRenderingGetScreenshotWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"account_id",
 		cfrex.AccountBrowserRenderingGetScreenshotParams{
-			CacheTtl: cfrex.F(86400.000000),
+			CacheTtl:      cfrex.F(86400.000000),
+			ActionTimeout: cfrex.F(300000.000000),
 			AddScriptTag: cfrex.F([]cfrex.AccountBrowserRenderingGetScreenshotParamsAddScriptTag{{
 				ID:      cfrex.F("id"),
 				Content: cfrex.F("content"),
@@ -638,7 +668,8 @@ func TestAccountBrowserRenderingGetSnapshotWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"account_id",
 		cfrex.AccountBrowserRenderingGetSnapshotParams{
-			CacheTtl: cfrex.F(86400.000000),
+			CacheTtl:      cfrex.F(86400.000000),
+			ActionTimeout: cfrex.F(300000.000000),
 			AddScriptTag: cfrex.F([]cfrex.AccountBrowserRenderingGetSnapshotParamsAddScriptTag{{
 				ID:      cfrex.F("id"),
 				Content: cfrex.F("content"),
@@ -751,7 +782,8 @@ func TestAccountBrowserRenderingScrapeElementsWithOptionalParams(t *testing.T) {
 			Elements: cfrex.F([]cfrex.AccountBrowserRenderingScrapeElementsParamsElement{{
 				Selector: cfrex.F("selector"),
 			}}),
-			CacheTtl: cfrex.F(86400.000000),
+			CacheTtl:      cfrex.F(86400.000000),
+			ActionTimeout: cfrex.F(300000.000000),
 			AddScriptTag: cfrex.F([]cfrex.AccountBrowserRenderingScrapeElementsParamsAddScriptTag{{
 				ID:      cfrex.F("id"),
 				Content: cfrex.F("content"),

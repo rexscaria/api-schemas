@@ -62,32 +62,6 @@ func (r *ZoneSettingFontService) Update(ctx context.Context, zoneID string, body
 	return
 }
 
-type SpeedAPIResponseCommon struct {
-	Errors   []SpeedMessagesItems `json:"errors,required"`
-	Messages []SpeedMessagesItems `json:"messages,required"`
-	// Whether the API call was successful
-	Success bool                       `json:"success,required"`
-	JSON    speedAPIResponseCommonJSON `json:"-"`
-}
-
-// speedAPIResponseCommonJSON contains the JSON metadata for the struct
-// [SpeedAPIResponseCommon]
-type speedAPIResponseCommonJSON struct {
-	Errors      apijson.Field
-	Messages    apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *SpeedAPIResponseCommon) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r speedAPIResponseCommonJSON) RawJSON() string {
-	return r.raw
-}
-
 type SpeedBase struct {
 	// Identifier of the zone setting.
 	ID string `json:"id"`
@@ -158,16 +132,22 @@ func (r SpeedBaseValue) IsKnown() bool {
 type SpeedCloudflareFonts struct {
 	// ID of the zone setting.
 	ID SpeedCloudflareFontsID `json:"id"`
-	// Whether the feature is enabled or disabled.
+	// Whether or not this setting can be modified for this zone (based on your
+	// Cloudflare plan level).
+	Editable SpeedCloudflareFontsEditable `json:"editable"`
+	// last time this setting was modified.
+	ModifiedOn time.Time `json:"modified_on,nullable" format:"date-time"`
+	// Current value of the zone setting.
 	Value SpeedCloudflareFontsValue `json:"value"`
 	JSON  speedCloudflareFontsJSON  `json:"-"`
-	SpeedBase
 }
 
 // speedCloudflareFontsJSON contains the JSON metadata for the struct
 // [SpeedCloudflareFonts]
 type speedCloudflareFontsJSON struct {
 	ID          apijson.Field
+	Editable    apijson.Field
+	ModifiedOn  apijson.Field
 	Value       apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -196,7 +176,24 @@ func (r SpeedCloudflareFontsID) IsKnown() bool {
 	return false
 }
 
-// Whether the feature is enabled or disabled.
+// Whether or not this setting can be modified for this zone (based on your
+// Cloudflare plan level).
+type SpeedCloudflareFontsEditable bool
+
+const (
+	SpeedCloudflareFontsEditableTrue  SpeedCloudflareFontsEditable = true
+	SpeedCloudflareFontsEditableFalse SpeedCloudflareFontsEditable = false
+)
+
+func (r SpeedCloudflareFontsEditable) IsKnown() bool {
+	switch r {
+	case SpeedCloudflareFontsEditableTrue, SpeedCloudflareFontsEditableFalse:
+		return true
+	}
+	return false
+}
+
+// Current value of the zone setting.
 type SpeedCloudflareFontsValue string
 
 const (
@@ -213,18 +210,22 @@ func (r SpeedCloudflareFontsValue) IsKnown() bool {
 }
 
 type SpeedMessagesItems struct {
-	Code    int64                  `json:"code,required"`
-	Message string                 `json:"message,required"`
-	JSON    speedMessagesItemsJSON `json:"-"`
+	Code             int64                    `json:"code,required"`
+	Message          string                   `json:"message,required"`
+	DocumentationURL string                   `json:"documentation_url"`
+	Source           SpeedMessagesItemsSource `json:"source"`
+	JSON             speedMessagesItemsJSON   `json:"-"`
 }
 
 // speedMessagesItemsJSON contains the JSON metadata for the struct
 // [SpeedMessagesItems]
 type speedMessagesItemsJSON struct {
-	Code        apijson.Field
-	Message     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
 }
 
 func (r *SpeedMessagesItems) UnmarshalJSON(data []byte) (err error) {
@@ -235,18 +236,45 @@ func (r speedMessagesItemsJSON) RawJSON() string {
 	return r.raw
 }
 
+type SpeedMessagesItemsSource struct {
+	Pointer string                       `json:"pointer"`
+	JSON    speedMessagesItemsSourceJSON `json:"-"`
+}
+
+// speedMessagesItemsSourceJSON contains the JSON metadata for the struct
+// [SpeedMessagesItemsSource]
+type speedMessagesItemsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *SpeedMessagesItemsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r speedMessagesItemsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
 type ZoneSettingFontGetResponse struct {
+	Errors   []SpeedMessagesItems `json:"errors,required"`
+	Messages []SpeedMessagesItems `json:"messages,required"`
+	// Whether the API call was successful
+	Success bool `json:"success,required"`
 	// Enhance your website's font delivery with Cloudflare Fonts. Deliver Google
 	// Hosted fonts from your own domain, boost performance, and enhance user privacy.
 	// Refer to the Cloudflare Fonts documentation for more information.
 	Result SpeedCloudflareFonts           `json:"result"`
 	JSON   zoneSettingFontGetResponseJSON `json:"-"`
-	SpeedAPIResponseCommon
 }
 
 // zoneSettingFontGetResponseJSON contains the JSON metadata for the struct
 // [ZoneSettingFontGetResponse]
 type zoneSettingFontGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -261,17 +289,23 @@ func (r zoneSettingFontGetResponseJSON) RawJSON() string {
 }
 
 type ZoneSettingFontUpdateResponse struct {
+	Errors   []SpeedMessagesItems `json:"errors,required"`
+	Messages []SpeedMessagesItems `json:"messages,required"`
+	// Whether the API call was successful
+	Success bool `json:"success,required"`
 	// Enhance your website's font delivery with Cloudflare Fonts. Deliver Google
 	// Hosted fonts from your own domain, boost performance, and enhance user privacy.
 	// Refer to the Cloudflare Fonts documentation for more information.
 	Result SpeedCloudflareFonts              `json:"result"`
 	JSON   zoneSettingFontUpdateResponseJSON `json:"-"`
-	SpeedAPIResponseCommon
 }
 
 // zoneSettingFontUpdateResponseJSON contains the JSON metadata for the struct
 // [ZoneSettingFontUpdateResponse]
 type zoneSettingFontUpdateResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field

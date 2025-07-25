@@ -68,7 +68,7 @@ func TestAccountIntelGetDomainHistoryWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.AccountIntelGetDomainHistoryParams{
-			Domain: cfrex.F[any]("example.com"),
+			Domain: cfrex.F("example.com"),
 		},
 	)
 	if err != nil {

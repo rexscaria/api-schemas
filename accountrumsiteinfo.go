@@ -108,40 +108,21 @@ func (r *AccountRumSiteInfoService) Delete(ctx context.Context, accountID string
 	return
 }
 
-type Common struct {
+type ResponseSingleSite struct {
 	Errors   []RumMessages `json:"errors,required"`
 	Messages []RumMessages `json:"messages,required"`
 	// Whether the API call was successful.
-	Success bool       `json:"success,required"`
-	JSON    commonJSON `json:"-"`
-}
-
-// commonJSON contains the JSON metadata for the struct [Common]
-type commonJSON struct {
-	Errors      apijson.Field
-	Messages    apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *Common) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r commonJSON) RawJSON() string {
-	return r.raw
-}
-
-type ResponseSingleSite struct {
-	Result Site                   `json:"result"`
-	JSON   responseSingleSiteJSON `json:"-"`
-	Common
+	Success bool                   `json:"success,required"`
+	Result  Site                   `json:"result"`
+	JSON    responseSingleSiteJSON `json:"-"`
 }
 
 // responseSingleSiteJSON contains the JSON metadata for the struct
 // [ResponseSingleSite]
 type responseSingleSiteJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -156,17 +137,21 @@ func (r responseSingleSiteJSON) RawJSON() string {
 }
 
 type RumMessages struct {
-	Code    int64           `json:"code,required"`
-	Message string          `json:"message,required"`
-	JSON    rumMessagesJSON `json:"-"`
+	Code             int64             `json:"code,required"`
+	Message          string            `json:"message,required"`
+	DocumentationURL string            `json:"documentation_url"`
+	Source           RumMessagesSource `json:"source"`
+	JSON             rumMessagesJSON   `json:"-"`
 }
 
 // rumMessagesJSON contains the JSON metadata for the struct [RumMessages]
 type rumMessagesJSON struct {
-	Code        apijson.Field
-	Message     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
 }
 
 func (r *RumMessages) UnmarshalJSON(data []byte) (err error) {
@@ -174,6 +159,27 @@ func (r *RumMessages) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (r rumMessagesJSON) RawJSON() string {
+	return r.raw
+}
+
+type RumMessagesSource struct {
+	Pointer string                `json:"pointer"`
+	JSON    rumMessagesSourceJSON `json:"-"`
+}
+
+// rumMessagesSourceJSON contains the JSON metadata for the struct
+// [RumMessagesSource]
+type rumMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *RumMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r rumMessagesSourceJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -216,15 +222,21 @@ func (r siteJSON) RawJSON() string {
 }
 
 type AccountRumSiteInfoListResponse struct {
+	Errors   []RumMessages `json:"errors,required"`
+	Messages []RumMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success    bool                                     `json:"success,required"`
 	Result     []Site                                   `json:"result"`
 	ResultInfo AccountRumSiteInfoListResponseResultInfo `json:"result_info"`
 	JSON       accountRumSiteInfoListResponseJSON       `json:"-"`
-	Common
 }
 
 // accountRumSiteInfoListResponseJSON contains the JSON metadata for the struct
 // [AccountRumSiteInfoListResponse]
 type accountRumSiteInfoListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	ResultInfo  apijson.Field
 	raw         string
@@ -274,14 +286,20 @@ func (r accountRumSiteInfoListResponseResultInfoJSON) RawJSON() string {
 }
 
 type AccountRumSiteInfoDeleteResponse struct {
-	Result AccountRumSiteInfoDeleteResponseResult `json:"result"`
-	JSON   accountRumSiteInfoDeleteResponseJSON   `json:"-"`
-	Common
+	Errors   []RumMessages `json:"errors,required"`
+	Messages []RumMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success bool                                   `json:"success,required"`
+	Result  AccountRumSiteInfoDeleteResponseResult `json:"result"`
+	JSON    accountRumSiteInfoDeleteResponseJSON   `json:"-"`
 }
 
 // accountRumSiteInfoDeleteResponseJSON contains the JSON metadata for the struct
 // [AccountRumSiteInfoDeleteResponse]
 type accountRumSiteInfoDeleteResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field

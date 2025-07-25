@@ -31,33 +31,31 @@ func TestAccountDlpProfileCustomNewWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"account_id",
 		cfrex.AccountDlpProfileCustomNewParams{
-			Body: cfrex.AccountDlpProfileCustomNewParamsBodyProfiles{
-				Profiles: cfrex.F([]cfrex.NewCustomProfileParam{{
-					Entries: cfrex.F([]cfrex.NewCustomProfileEntriesUnionParam{cfrex.NewCustomEntryParam{
-						Enabled: cfrex.F(true),
-						Name:    cfrex.F("name"),
-						Pattern: cfrex.F(cfrex.PatternParam{
-							Regex:      cfrex.F("regex"),
-							Validation: cfrex.F(cfrex.PatternValidationLuhn),
-						}),
-					}}),
-					Name:                cfrex.F("name"),
-					AIContextEnabled:    cfrex.F(true),
-					AllowedMatchCount:   cfrex.F(int64(5)),
-					ConfidenceThreshold: cfrex.F("confidence_threshold"),
-					ContextAwareness: cfrex.F(cfrex.ContextAwarenessParam{
-						Enabled: cfrex.F(true),
-						Skip: cfrex.F(cfrex.ContextAwarenessSkipParam{
-							Files: cfrex.F(true),
-						}),
+			NewCustomProfile: cfrex.NewCustomProfileParam{
+				Entries: cfrex.F([]cfrex.NewCustomProfileEntriesUnionParam{cfrex.NewCustomEntryParam{
+					Enabled: cfrex.F(true),
+					Name:    cfrex.F("name"),
+					Pattern: cfrex.F(cfrex.PatternParam{
+						Regex:      cfrex.F("regex"),
+						Validation: cfrex.F(cfrex.PatternValidationLuhn),
 					}),
-					Description: cfrex.F("description"),
-					OcrEnabled:  cfrex.F(true),
-					SharedEntries: cfrex.F([]cfrex.NewCustomProfileSharedEntriesUnionParam{cfrex.NewCustomProfileSharedEntriesObjectParam{
-						Enabled:   cfrex.F(true),
-						EntryID:   cfrex.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-						EntryType: cfrex.F(cfrex.NewCustomProfileSharedEntriesObjectEntryTypeCustom),
-					}}),
+				}}),
+				Name:                cfrex.F("name"),
+				AIContextEnabled:    cfrex.F(true),
+				AllowedMatchCount:   cfrex.F(int64(5)),
+				ConfidenceThreshold: cfrex.F("confidence_threshold"),
+				ContextAwareness: cfrex.F(cfrex.ContextAwarenessParam{
+					Enabled: cfrex.F(true),
+					Skip: cfrex.F(cfrex.ContextAwarenessSkipParam{
+						Files: cfrex.F(true),
+					}),
+				}),
+				Description: cfrex.F("description"),
+				OcrEnabled:  cfrex.F(true),
+				SharedEntries: cfrex.F([]cfrex.NewCustomProfileSharedEntriesUnionParam{cfrex.NewCustomProfileSharedEntriesCustomParam{
+					Enabled:   cfrex.F(true),
+					EntryID:   cfrex.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+					EntryType: cfrex.F(cfrex.NewCustomProfileSharedEntriesCustomEntryTypeCustom),
 				}}),
 			},
 		},
@@ -129,22 +127,20 @@ func TestAccountDlpProfileCustomUpdateWithOptionalParams(t *testing.T) {
 				}),
 			}),
 			Description: cfrex.F("description"),
-			Entries: cfrex.F([]cfrex.AccountDlpProfileCustomUpdateParamsEntryUnion{cfrex.AccountDlpProfileCustomUpdateParamsEntriesDlpNewCustomEntryWithID(cfrex.AccountDlpProfileCustomUpdateParamsEntriesDlpNewCustomEntryWithID{
-				NewCustomEntryParam: cfrex.NewCustomEntryParam{
-					Enabled: cfrex.F(true),
-					Name:    cfrex.F("name"),
-					Pattern: cfrex.F(cfrex.PatternParam{
-						Regex:      cfrex.F("regex"),
-						Validation: cfrex.F(cfrex.PatternValidationLuhn),
-					}),
-				},
+			Entries: cfrex.F([]cfrex.AccountDlpProfileCustomUpdateParamsEntryUnion{cfrex.AccountDlpProfileCustomUpdateParamsEntriesDlpNewCustomEntryWithID{
+				Enabled: cfrex.F(true),
 				EntryID: cfrex.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-			})}),
+				Name:    cfrex.F("name"),
+				Pattern: cfrex.F(cfrex.PatternParam{
+					Regex:      cfrex.F("regex"),
+					Validation: cfrex.F(cfrex.PatternValidationLuhn),
+				}),
+			}}),
 			OcrEnabled: cfrex.F(true),
-			SharedEntries: cfrex.F([]cfrex.AccountDlpProfileCustomUpdateParamsSharedEntryUnion{cfrex.AccountDlpProfileCustomUpdateParamsSharedEntriesObject{
+			SharedEntries: cfrex.F([]cfrex.AccountDlpProfileCustomUpdateParamsSharedEntryUnion{cfrex.AccountDlpProfileCustomUpdateParamsSharedEntriesPredefined{
 				Enabled:   cfrex.F(true),
 				EntryID:   cfrex.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-				EntryType: cfrex.F(cfrex.AccountDlpProfileCustomUpdateParamsSharedEntriesObjectEntryTypePredefined),
+				EntryType: cfrex.F(cfrex.AccountDlpProfileCustomUpdateParamsSharedEntriesPredefinedEntryTypePredefined),
 			}}),
 		},
 	)

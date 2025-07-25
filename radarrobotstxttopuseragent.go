@@ -66,6 +66,7 @@ func (r radarRobotsTxtTopUserAgentGetTopUserAgentsResponseJSON) RawJSON() string
 }
 
 type RadarRobotsTxtTopUserAgentGetTopUserAgentsResponseResult struct {
+	// Metadata for the results.
 	Meta RadarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultMeta   `json:"meta,required"`
 	Top0 []RadarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultTop0 `json:"top_0,required"`
 	JSON radarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultJSON   `json:"-"`
@@ -89,23 +90,28 @@ func (r radarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultJSON) RawJSON() 
 	return r.raw
 }
 
+// Metadata for the results.
 type RadarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultMeta struct {
+	ConfidenceInfo RadarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultMetaConfidenceInfo `json:"confidenceInfo,required,nullable"`
 	DateRange      []RadarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultMetaDateRange    `json:"dateRange,required"`
-	LastUpdated    string                                                                     `json:"lastUpdated,required"`
-	Normalization  string                                                                     `json:"normalization,required"`
-	ConfidenceInfo RadarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultMetaConfidenceInfo `json:"confidenceInfo"`
-	Units          []RadarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultMetaUnit         `json:"units"`
-	JSON           radarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultMetaJSON           `json:"-"`
+	// Timestamp of the last dataset update.
+	LastUpdated time.Time `json:"lastUpdated,required" format:"date-time"`
+	// Normalization method applied to the results. Refer to
+	// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
+	Normalization RadarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultMetaNormalization `json:"normalization,required"`
+	// Measurement units for the results.
+	Units []RadarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultMetaUnit `json:"units,required"`
+	JSON  radarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultMetaJSON   `json:"-"`
 }
 
 // radarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultMetaJSON contains the
 // JSON metadata for the struct
 // [RadarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultMeta]
 type radarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultMetaJSON struct {
+	ConfidenceInfo apijson.Field
 	DateRange      apijson.Field
 	LastUpdated    apijson.Field
 	Normalization  apijson.Field
-	ConfidenceInfo apijson.Field
 	Units          apijson.Field
 	raw            string
 	ExtraFields    map[string]apijson.Field
@@ -116,6 +122,67 @@ func (r *RadarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultMeta) Unmarshal
 }
 
 func (r radarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultMetaJSON) RawJSON() string {
+	return r.raw
+}
+
+type RadarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultMetaConfidenceInfo struct {
+	Annotations []RadarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultMetaConfidenceInfoAnnotation `json:"annotations,required"`
+	// Provides an indication of how much confidence Cloudflare has in the data.
+	Level int64                                                                          `json:"level,required"`
+	JSON  radarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultMetaConfidenceInfoJSON `json:"-"`
+}
+
+// radarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultMetaConfidenceInfoJSON
+// contains the JSON metadata for the struct
+// [RadarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultMetaConfidenceInfo]
+type radarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultMetaConfidenceInfoJSON struct {
+	Annotations apijson.Field
+	Level       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *RadarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultMetaConfidenceInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultMetaConfidenceInfoJSON) RawJSON() string {
+	return r.raw
+}
+
+// Annotation associated with the result (e.g. outage or other type of event).
+type RadarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultMetaConfidenceInfoAnnotation struct {
+	DataSource  string    `json:"dataSource,required"`
+	Description string    `json:"description,required"`
+	EndDate     time.Time `json:"endDate,required" format:"date-time"`
+	EventType   string    `json:"eventType,required"`
+	// Whether event is a single point in time or a time range.
+	IsInstantaneous bool                                                                                     `json:"isInstantaneous,required"`
+	LinkedURL       string                                                                                   `json:"linkedUrl,required" format:"uri"`
+	StartDate       time.Time                                                                                `json:"startDate,required" format:"date-time"`
+	JSON            radarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
+}
+
+// radarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultMetaConfidenceInfoAnnotationJSON
+// contains the JSON metadata for the struct
+// [RadarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultMetaConfidenceInfoAnnotation]
+type radarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultMetaConfidenceInfoAnnotationJSON struct {
+	DataSource      apijson.Field
+	Description     apijson.Field
+	EndDate         apijson.Field
+	EventType       apijson.Field
+	IsInstantaneous apijson.Field
+	LinkedURL       apijson.Field
+	StartDate       apijson.Field
+	raw             string
+	ExtraFields     map[string]apijson.Field
+}
+
+func (r *RadarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultMetaConfidenceInfoAnnotation) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultMetaConfidenceInfoAnnotationJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -145,62 +212,27 @@ func (r radarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultMetaDateRangeJSO
 	return r.raw
 }
 
-type RadarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultMetaConfidenceInfo struct {
-	Annotations []RadarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultMetaConfidenceInfoAnnotation `json:"annotations"`
-	Level       int64                                                                                  `json:"level"`
-	JSON        radarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultMetaConfidenceInfoJSON         `json:"-"`
-}
+// Normalization method applied to the results. Refer to
+// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
+type RadarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultMetaNormalization string
 
-// radarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultMetaConfidenceInfoJSON
-// contains the JSON metadata for the struct
-// [RadarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultMetaConfidenceInfo]
-type radarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultMetaConfidenceInfoJSON struct {
-	Annotations apijson.Field
-	Level       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
+const (
+	RadarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultMetaNormalizationPercentage           RadarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultMetaNormalization = "PERCENTAGE"
+	RadarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultMetaNormalizationMin0Max              RadarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultMetaNormalization = "MIN0_MAX"
+	RadarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultMetaNormalizationMinMax               RadarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultMetaNormalization = "MIN_MAX"
+	RadarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultMetaNormalizationRawValues            RadarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultMetaNormalization = "RAW_VALUES"
+	RadarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultMetaNormalizationPercentageChange     RadarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultMetaNormalization = "PERCENTAGE_CHANGE"
+	RadarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultMetaNormalizationRollingAverage       RadarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultMetaNormalization = "ROLLING_AVERAGE"
+	RadarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultMetaNormalizationOverlappedPercentage RadarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultMetaNormalization = "OVERLAPPED_PERCENTAGE"
+	RadarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultMetaNormalizationRatio                RadarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultMetaNormalization = "RATIO"
+)
 
-func (r *RadarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultMetaConfidenceInfo) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r radarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultMetaConfidenceInfoJSON) RawJSON() string {
-	return r.raw
-}
-
-type RadarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultMetaConfidenceInfoAnnotation struct {
-	DataSource      string                                                                                   `json:"dataSource,required"`
-	Description     string                                                                                   `json:"description,required"`
-	EventType       string                                                                                   `json:"eventType,required"`
-	IsInstantaneous bool                                                                                     `json:"isInstantaneous,required"`
-	EndTime         time.Time                                                                                `json:"endTime" format:"date-time"`
-	LinkedURL       string                                                                                   `json:"linkedUrl"`
-	StartTime       time.Time                                                                                `json:"startTime" format:"date-time"`
-	JSON            radarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
-}
-
-// radarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultMetaConfidenceInfoAnnotationJSON
-// contains the JSON metadata for the struct
-// [RadarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultMetaConfidenceInfoAnnotation]
-type radarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultMetaConfidenceInfoAnnotationJSON struct {
-	DataSource      apijson.Field
-	Description     apijson.Field
-	EventType       apijson.Field
-	IsInstantaneous apijson.Field
-	EndTime         apijson.Field
-	LinkedURL       apijson.Field
-	StartTime       apijson.Field
-	raw             string
-	ExtraFields     map[string]apijson.Field
-}
-
-func (r *RadarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultMetaConfidenceInfoAnnotation) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r radarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultMetaConfidenceInfoAnnotationJSON) RawJSON() string {
-	return r.raw
+func (r RadarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultMetaNormalization) IsKnown() bool {
+	switch r {
+	case RadarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultMetaNormalizationPercentage, RadarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultMetaNormalizationMin0Max, RadarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultMetaNormalizationMinMax, RadarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultMetaNormalizationRawValues, RadarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultMetaNormalizationPercentageChange, RadarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultMetaNormalizationRollingAverage, RadarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultMetaNormalizationOverlappedPercentage, RadarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultMetaNormalizationRatio:
+		return true
+	}
+	return false
 }
 
 type RadarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultMetaUnit struct {
@@ -256,7 +288,7 @@ func (r radarRobotsTxtTopUserAgentGetTopUserAgentsResponseResultTop0JSON) RawJSO
 }
 
 type RadarRobotsTxtTopUserAgentGetTopUserAgentsParams struct {
-	// Array of dates to filter the results.
+	// Filters results by the specified array of dates.
 	Date param.Field[[]time.Time] `query:"date" format:"date"`
 	// Filters results by robots.txt directive.
 	Directive param.Field[RadarRobotsTxtTopUserAgentGetTopUserAgentsParamsDirective] `query:"directive"`

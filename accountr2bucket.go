@@ -60,7 +60,7 @@ func (r *AccountR2BucketService) New(ctx context.Context, accountID string, para
 	return
 }
 
-// Gets metadata for an existing R2 bucket.
+// Gets properties of an existing R2 bucket.
 func (r *AccountR2BucketService) Get(ctx context.Context, accountID string, bucketName string, query AccountR2BucketGetParams, opts ...option.RequestOption) (res *AccountR2BucketGetResponse, err error) {
 	if query.Jurisdiction.Present {
 		opts = append(opts, option.WithHeader("cf-r2-jurisdiction", fmt.Sprintf("%s", query.Jurisdiction)))
@@ -79,7 +79,7 @@ func (r *AccountR2BucketService) Get(ctx context.Context, accountID string, buck
 	return
 }
 
-// Lists all R2 buckets on your account
+// Lists all R2 buckets on your account.
 func (r *AccountR2BucketService) List(ctx context.Context, accountID string, params AccountR2BucketListParams, opts ...option.RequestOption) (res *AccountR2BucketListResponse, err error) {
 	if params.Jurisdiction.Present {
 		opts = append(opts, option.WithHeader("cf-r2-jurisdiction", fmt.Sprintf("%s", params.Jurisdiction)))
@@ -113,13 +113,15 @@ func (r *AccountR2BucketService) Delete(ctx context.Context, accountID string, b
 	return
 }
 
-// A single R2 bucket
+// A single R2 bucket.
 type R2Bucket struct {
-	// Creation timestamp
+	// Creation timestamp.
 	CreationDate string `json:"creation_date"`
-	// Location of the bucket
+	// Jurisdiction where objects in this bucket are guaranteed to be stored.
+	Jurisdiction R2BucketJurisdiction `json:"jurisdiction"`
+	// Location of the bucket.
 	Location R2BucketLocation `json:"location"`
-	// Name of the bucket
+	// Name of the bucket.
 	Name string `json:"name"`
 	// Storage class for newly uploaded objects, unless specified otherwise.
 	StorageClass R2StorageClass `json:"storage_class"`
@@ -129,6 +131,7 @@ type R2Bucket struct {
 // r2BucketJSON contains the JSON metadata for the struct [R2Bucket]
 type r2BucketJSON struct {
 	CreationDate apijson.Field
+	Jurisdiction apijson.Field
 	Location     apijson.Field
 	Name         apijson.Field
 	StorageClass apijson.Field
@@ -144,7 +147,24 @@ func (r r2BucketJSON) RawJSON() string {
 	return r.raw
 }
 
-// Location of the bucket
+// Jurisdiction where objects in this bucket are guaranteed to be stored.
+type R2BucketJurisdiction string
+
+const (
+	R2BucketJurisdictionDefault R2BucketJurisdiction = "default"
+	R2BucketJurisdictionEu      R2BucketJurisdiction = "eu"
+	R2BucketJurisdictionFedramp R2BucketJurisdiction = "fedramp"
+)
+
+func (r R2BucketJurisdiction) IsKnown() bool {
+	switch r {
+	case R2BucketJurisdictionDefault, R2BucketJurisdictionEu, R2BucketJurisdictionFedramp:
+		return true
+	}
+	return false
+}
+
+// Location of the bucket.
 type R2BucketLocation string
 
 const (
@@ -184,7 +204,7 @@ type R2V4Response struct {
 	Errors   []R2V4ResponseError `json:"errors,required"`
 	Messages []string            `json:"messages,required"`
 	Result   interface{}         `json:"result,required"`
-	// Whether the API call was successful
+	// Whether the API call was successful.
 	Success R2V4ResponseSuccess `json:"success,required"`
 	JSON    r2V4ResponseJSON    `json:"-"`
 }
@@ -208,18 +228,22 @@ func (r r2V4ResponseJSON) RawJSON() string {
 }
 
 type R2V4ResponseError struct {
-	Code    int64                 `json:"code,required"`
-	Message string                `json:"message,required"`
-	JSON    r2V4ResponseErrorJSON `json:"-"`
+	Code             int64                    `json:"code,required"`
+	Message          string                   `json:"message,required"`
+	DocumentationURL string                   `json:"documentation_url"`
+	Source           R2V4ResponseErrorsSource `json:"source"`
+	JSON             r2V4ResponseErrorJSON    `json:"-"`
 }
 
 // r2V4ResponseErrorJSON contains the JSON metadata for the struct
 // [R2V4ResponseError]
 type r2V4ResponseErrorJSON struct {
-	Code        apijson.Field
-	Message     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
 }
 
 func (r *R2V4ResponseError) UnmarshalJSON(data []byte) (err error) {
@@ -230,7 +254,28 @@ func (r r2V4ResponseErrorJSON) RawJSON() string {
 	return r.raw
 }
 
-// Whether the API call was successful
+type R2V4ResponseErrorsSource struct {
+	Pointer string                       `json:"pointer"`
+	JSON    r2V4ResponseErrorsSourceJSON `json:"-"`
+}
+
+// r2V4ResponseErrorsSourceJSON contains the JSON metadata for the struct
+// [R2V4ResponseErrorsSource]
+type r2V4ResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *R2V4ResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r r2V4ResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful.
 type R2V4ResponseSuccess bool
 
 const (
@@ -246,16 +291,22 @@ func (r R2V4ResponseSuccess) IsKnown() bool {
 }
 
 type AccountR2BucketNewResponse struct {
-	// A single R2 bucket
-	Result R2Bucket                       `json:"result"`
-	JSON   accountR2BucketNewResponseJSON `json:"-"`
-	R2V4Response
+	Errors   []AccountR2BucketNewResponseError `json:"errors,required"`
+	Messages []string                          `json:"messages,required"`
+	// A single R2 bucket.
+	Result R2Bucket `json:"result,required"`
+	// Whether the API call was successful.
+	Success AccountR2BucketNewResponseSuccess `json:"success,required"`
+	JSON    accountR2BucketNewResponseJSON    `json:"-"`
 }
 
 // accountR2BucketNewResponseJSON contains the JSON metadata for the struct
 // [AccountR2BucketNewResponse]
 type accountR2BucketNewResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -268,17 +319,86 @@ func (r accountR2BucketNewResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+type AccountR2BucketNewResponseError struct {
+	Code             int64                                  `json:"code,required"`
+	Message          string                                 `json:"message,required"`
+	DocumentationURL string                                 `json:"documentation_url"`
+	Source           AccountR2BucketNewResponseErrorsSource `json:"source"`
+	JSON             accountR2BucketNewResponseErrorJSON    `json:"-"`
+}
+
+// accountR2BucketNewResponseErrorJSON contains the JSON metadata for the struct
+// [AccountR2BucketNewResponseError]
+type accountR2BucketNewResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountR2BucketNewResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountR2BucketNewResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountR2BucketNewResponseErrorsSource struct {
+	Pointer string                                     `json:"pointer"`
+	JSON    accountR2BucketNewResponseErrorsSourceJSON `json:"-"`
+}
+
+// accountR2BucketNewResponseErrorsSourceJSON contains the JSON metadata for the
+// struct [AccountR2BucketNewResponseErrorsSource]
+type accountR2BucketNewResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountR2BucketNewResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountR2BucketNewResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountR2BucketNewResponseSuccess bool
+
+const (
+	AccountR2BucketNewResponseSuccessTrue AccountR2BucketNewResponseSuccess = true
+)
+
+func (r AccountR2BucketNewResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountR2BucketNewResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountR2BucketGetResponse struct {
-	// A single R2 bucket
-	Result R2Bucket                       `json:"result"`
-	JSON   accountR2BucketGetResponseJSON `json:"-"`
-	R2V4Response
+	Errors   []AccountR2BucketGetResponseError `json:"errors,required"`
+	Messages []string                          `json:"messages,required"`
+	// A single R2 bucket.
+	Result R2Bucket `json:"result,required"`
+	// Whether the API call was successful.
+	Success AccountR2BucketGetResponseSuccess `json:"success,required"`
+	JSON    accountR2BucketGetResponseJSON    `json:"-"`
 }
 
 // accountR2BucketGetResponseJSON contains the JSON metadata for the struct
 // [AccountR2BucketGetResponse]
 type accountR2BucketGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -291,17 +411,86 @@ func (r accountR2BucketGetResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+type AccountR2BucketGetResponseError struct {
+	Code             int64                                  `json:"code,required"`
+	Message          string                                 `json:"message,required"`
+	DocumentationURL string                                 `json:"documentation_url"`
+	Source           AccountR2BucketGetResponseErrorsSource `json:"source"`
+	JSON             accountR2BucketGetResponseErrorJSON    `json:"-"`
+}
+
+// accountR2BucketGetResponseErrorJSON contains the JSON metadata for the struct
+// [AccountR2BucketGetResponseError]
+type accountR2BucketGetResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountR2BucketGetResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountR2BucketGetResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountR2BucketGetResponseErrorsSource struct {
+	Pointer string                                     `json:"pointer"`
+	JSON    accountR2BucketGetResponseErrorsSourceJSON `json:"-"`
+}
+
+// accountR2BucketGetResponseErrorsSourceJSON contains the JSON metadata for the
+// struct [AccountR2BucketGetResponseErrorsSource]
+type accountR2BucketGetResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountR2BucketGetResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountR2BucketGetResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountR2BucketGetResponseSuccess bool
+
+const (
+	AccountR2BucketGetResponseSuccessTrue AccountR2BucketGetResponseSuccess = true
+)
+
+func (r AccountR2BucketGetResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountR2BucketGetResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountR2BucketListResponse struct {
-	Result     AccountR2BucketListResponseResult     `json:"result"`
+	Errors   []AccountR2BucketListResponseError `json:"errors,required"`
+	Messages []string                           `json:"messages,required"`
+	Result   AccountR2BucketListResponseResult  `json:"result,required"`
+	// Whether the API call was successful.
+	Success    AccountR2BucketListResponseSuccess    `json:"success,required"`
 	ResultInfo AccountR2BucketListResponseResultInfo `json:"result_info"`
 	JSON       accountR2BucketListResponseJSON       `json:"-"`
-	R2V4Response
 }
 
 // accountR2BucketListResponseJSON contains the JSON metadata for the struct
 // [AccountR2BucketListResponse]
 type accountR2BucketListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -312,6 +501,54 @@ func (r *AccountR2BucketListResponse) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (r accountR2BucketListResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountR2BucketListResponseError struct {
+	Code             int64                                   `json:"code,required"`
+	Message          string                                  `json:"message,required"`
+	DocumentationURL string                                  `json:"documentation_url"`
+	Source           AccountR2BucketListResponseErrorsSource `json:"source"`
+	JSON             accountR2BucketListResponseErrorJSON    `json:"-"`
+}
+
+// accountR2BucketListResponseErrorJSON contains the JSON metadata for the struct
+// [AccountR2BucketListResponseError]
+type accountR2BucketListResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountR2BucketListResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountR2BucketListResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountR2BucketListResponseErrorsSource struct {
+	Pointer string                                      `json:"pointer"`
+	JSON    accountR2BucketListResponseErrorsSourceJSON `json:"-"`
+}
+
+// accountR2BucketListResponseErrorsSourceJSON contains the JSON metadata for the
+// struct [AccountR2BucketListResponseErrorsSource]
+type accountR2BucketListResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountR2BucketListResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountR2BucketListResponseErrorsSourceJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -336,10 +573,25 @@ func (r accountR2BucketListResponseResultJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountR2BucketListResponseSuccess bool
+
+const (
+	AccountR2BucketListResponseSuccessTrue AccountR2BucketListResponseSuccess = true
+)
+
+func (r AccountR2BucketListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountR2BucketListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountR2BucketListResponseResultInfo struct {
-	// A continuation token that should be used to fetch the next page of results
+	// A continuation token that should be used to fetch the next page of results.
 	Cursor string `json:"cursor"`
-	// Maximum number of results on this page
+	// Maximum number of results on this page.
 	PerPage float64                                   `json:"per_page"`
 	JSON    accountR2BucketListResponseResultInfoJSON `json:"-"`
 }
@@ -362,13 +614,13 @@ func (r accountR2BucketListResponseResultInfoJSON) RawJSON() string {
 }
 
 type AccountR2BucketNewParams struct {
-	// Name of the bucket
+	// Name of the bucket.
 	Name param.Field[string] `json:"name,required"`
-	// Location of the bucket
+	// Location of the bucket.
 	LocationHint param.Field[R2BucketLocation] `json:"locationHint"`
 	// Storage class for newly uploaded objects, unless specified otherwise.
 	StorageClass param.Field[R2StorageClass] `json:"storageClass"`
-	// Creates the bucket in the provided jurisdiction
+	// Jurisdiction where objects in this bucket are guaranteed to be stored.
 	Jurisdiction param.Field[AccountR2BucketNewParamsCfR2Jurisdiction] `header:"cf-r2-jurisdiction"`
 }
 
@@ -376,7 +628,7 @@ func (r AccountR2BucketNewParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-// Creates the bucket in the provided jurisdiction
+// Jurisdiction where objects in this bucket are guaranteed to be stored.
 type AccountR2BucketNewParamsCfR2Jurisdiction string
 
 const (
@@ -394,11 +646,11 @@ func (r AccountR2BucketNewParamsCfR2Jurisdiction) IsKnown() bool {
 }
 
 type AccountR2BucketGetParams struct {
-	// The bucket jurisdiction
+	// Jurisdiction where objects in this bucket are guaranteed to be stored.
 	Jurisdiction param.Field[AccountR2BucketGetParamsCfR2Jurisdiction] `header:"cf-r2-jurisdiction"`
 }
 
-// The bucket jurisdiction
+// Jurisdiction where objects in this bucket are guaranteed to be stored.
 type AccountR2BucketGetParamsCfR2Jurisdiction string
 
 const (
@@ -419,18 +671,18 @@ type AccountR2BucketListParams struct {
 	// Pagination cursor received during the last List Buckets call. R2 buckets are
 	// paginated using cursors instead of page numbers.
 	Cursor param.Field[string] `query:"cursor"`
-	// Direction to order buckets
+	// Direction to order buckets.
 	Direction param.Field[AccountR2BucketListParamsDirection] `query:"direction"`
 	// Bucket names to filter by. Only buckets with this phrase in their name will be
 	// returned.
 	NameContains param.Field[string] `query:"name_contains"`
-	// Field to order buckets by
+	// Field to order buckets by.
 	Order param.Field[AccountR2BucketListParamsOrder] `query:"order"`
-	// Maximum number of buckets to return in a single call
+	// Maximum number of buckets to return in a single call.
 	PerPage param.Field[float64] `query:"per_page"`
 	// Bucket name to start searching after. Buckets are ordered lexicographically.
 	StartAfter param.Field[string] `query:"start_after"`
-	// Lists buckets in the provided jurisdiction
+	// Jurisdiction where objects in this bucket are guaranteed to be stored.
 	Jurisdiction param.Field[AccountR2BucketListParamsCfR2Jurisdiction] `header:"cf-r2-jurisdiction"`
 }
 
@@ -443,7 +695,7 @@ func (r AccountR2BucketListParams) URLQuery() (v url.Values) {
 	})
 }
 
-// Direction to order buckets
+// Direction to order buckets.
 type AccountR2BucketListParamsDirection string
 
 const (
@@ -459,7 +711,7 @@ func (r AccountR2BucketListParamsDirection) IsKnown() bool {
 	return false
 }
 
-// Field to order buckets by
+// Field to order buckets by.
 type AccountR2BucketListParamsOrder string
 
 const (
@@ -474,7 +726,7 @@ func (r AccountR2BucketListParamsOrder) IsKnown() bool {
 	return false
 }
 
-// Lists buckets in the provided jurisdiction
+// Jurisdiction where objects in this bucket are guaranteed to be stored.
 type AccountR2BucketListParamsCfR2Jurisdiction string
 
 const (
@@ -492,11 +744,11 @@ func (r AccountR2BucketListParamsCfR2Jurisdiction) IsKnown() bool {
 }
 
 type AccountR2BucketDeleteParams struct {
-	// The bucket jurisdiction
+	// Jurisdiction where objects in this bucket are guaranteed to be stored.
 	Jurisdiction param.Field[AccountR2BucketDeleteParamsCfR2Jurisdiction] `header:"cf-r2-jurisdiction"`
 }
 
-// The bucket jurisdiction
+// Jurisdiction where objects in this bucket are guaranteed to be stored.
 type AccountR2BucketDeleteParamsCfR2Jurisdiction string
 
 const (

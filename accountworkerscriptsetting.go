@@ -36,7 +36,7 @@ func NewAccountWorkerScriptSettingService(opts ...option.RequestOption) (r *Acco
 	return
 }
 
-// Get metadata and config, such as bindings or usage model
+// Get metadata and config, such as bindings or usage model.
 func (r *AccountWorkerScriptSettingService) Get(ctx context.Context, accountID string, scriptName string, opts ...option.RequestOption) (res *ScriptVersionResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
@@ -52,7 +52,7 @@ func (r *AccountWorkerScriptSettingService) Get(ctx context.Context, accountID s
 	return
 }
 
-// Patch metadata or config, such as bindings or usage model
+// Patch metadata or config, such as bindings or usage model.
 func (r *AccountWorkerScriptSettingService) Patch(ctx context.Context, accountID string, scriptName string, body AccountWorkerScriptSettingPatchParams, opts ...option.RequestOption) (res *ScriptVersionResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
@@ -69,15 +69,21 @@ func (r *AccountWorkerScriptSettingService) Patch(ctx context.Context, accountID
 }
 
 type ScriptVersionResponse struct {
-	Result ScriptVersionItem         `json:"result"`
-	JSON   scriptVersionResponseJSON `json:"-"`
-	CommonResponseWorkers
+	Errors   []WorkersMessages `json:"errors,required"`
+	Messages []WorkersMessages `json:"messages,required"`
+	Result   ScriptVersionItem `json:"result,required"`
+	// Whether the API call was successful.
+	Success ScriptVersionResponseSuccess `json:"success,required"`
+	JSON    scriptVersionResponseJSON    `json:"-"`
 }
 
 // scriptVersionResponseJSON contains the JSON metadata for the struct
 // [ScriptVersionResponse]
 type scriptVersionResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -88,6 +94,21 @@ func (r *ScriptVersionResponse) UnmarshalJSON(data []byte) (err error) {
 
 func (r scriptVersionResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type ScriptVersionResponseSuccess bool
+
+const (
+	ScriptVersionResponseSuccessTrue ScriptVersionResponseSuccess = true
+)
+
+func (r ScriptVersionResponseSuccess) IsKnown() bool {
+	switch r {
+	case ScriptVersionResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountWorkerScriptSettingPatchParams struct {

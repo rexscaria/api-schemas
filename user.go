@@ -75,13 +75,19 @@ func (r *UserService) ListAuditLogs(ctx context.Context, query UserListAuditLogs
 }
 
 type IamSingleUser struct {
-	Result interface{}       `json:"result"`
-	JSON   iamSingleUserJSON `json:"-"`
-	APIResponseSingleIam
+	Errors   []IamSingleUserError   `json:"errors,required"`
+	Messages []IamSingleUserMessage `json:"messages,required"`
+	// Whether the API call was successful.
+	Success IamSingleUserSuccess `json:"success,required"`
+	Result  IamSingleUserResult  `json:"result"`
+	JSON    iamSingleUserJSON    `json:"-"`
 }
 
 // iamSingleUserJSON contains the JSON metadata for the struct [IamSingleUser]
 type iamSingleUserJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -93,6 +99,229 @@ func (r *IamSingleUser) UnmarshalJSON(data []byte) (err error) {
 
 func (r iamSingleUserJSON) RawJSON() string {
 	return r.raw
+}
+
+type IamSingleUserError struct {
+	Code             int64                     `json:"code,required"`
+	Message          string                    `json:"message,required"`
+	DocumentationURL string                    `json:"documentation_url"`
+	Source           IamSingleUserErrorsSource `json:"source"`
+	JSON             iamSingleUserErrorJSON    `json:"-"`
+}
+
+// iamSingleUserErrorJSON contains the JSON metadata for the struct
+// [IamSingleUserError]
+type iamSingleUserErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *IamSingleUserError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r iamSingleUserErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type IamSingleUserErrorsSource struct {
+	Pointer string                        `json:"pointer"`
+	JSON    iamSingleUserErrorsSourceJSON `json:"-"`
+}
+
+// iamSingleUserErrorsSourceJSON contains the JSON metadata for the struct
+// [IamSingleUserErrorsSource]
+type iamSingleUserErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *IamSingleUserErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r iamSingleUserErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type IamSingleUserMessage struct {
+	Code             int64                       `json:"code,required"`
+	Message          string                      `json:"message,required"`
+	DocumentationURL string                      `json:"documentation_url"`
+	Source           IamSingleUserMessagesSource `json:"source"`
+	JSON             iamSingleUserMessageJSON    `json:"-"`
+}
+
+// iamSingleUserMessageJSON contains the JSON metadata for the struct
+// [IamSingleUserMessage]
+type iamSingleUserMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *IamSingleUserMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r iamSingleUserMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type IamSingleUserMessagesSource struct {
+	Pointer string                          `json:"pointer"`
+	JSON    iamSingleUserMessagesSourceJSON `json:"-"`
+}
+
+// iamSingleUserMessagesSourceJSON contains the JSON metadata for the struct
+// [IamSingleUserMessagesSource]
+type iamSingleUserMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *IamSingleUserMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r iamSingleUserMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful.
+type IamSingleUserSuccess bool
+
+const (
+	IamSingleUserSuccessTrue IamSingleUserSuccess = true
+)
+
+func (r IamSingleUserSuccess) IsKnown() bool {
+	switch r {
+	case IamSingleUserSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type IamSingleUserResult struct {
+	// Identifier of the user.
+	ID string `json:"id"`
+	// Lists the betas that the user is participating in.
+	Betas []string `json:"betas"`
+	// The country in which the user lives.
+	Country string `json:"country,nullable"`
+	// User's first name
+	FirstName string `json:"first_name,nullable"`
+	// Indicates whether user has any business zones
+	HasBusinessZones bool `json:"has_business_zones"`
+	// Indicates whether user has any enterprise zones
+	HasEnterpriseZones bool `json:"has_enterprise_zones"`
+	// Indicates whether user has any pro zones
+	HasProZones bool `json:"has_pro_zones"`
+	// User's last name
+	LastName      string                            `json:"last_name,nullable"`
+	Organizations []IamSingleUserResultOrganization `json:"organizations"`
+	// Indicates whether user has been suspended
+	Suspended bool `json:"suspended"`
+	// User's telephone number
+	Telephone string `json:"telephone,nullable"`
+	// Indicates whether two-factor authentication is enabled for the user account.
+	// Does not apply to API authentication.
+	TwoFactorAuthenticationEnabled bool `json:"two_factor_authentication_enabled"`
+	// Indicates whether two-factor authentication is required by one of the accounts
+	// that the user is a member of.
+	TwoFactorAuthenticationLocked bool `json:"two_factor_authentication_locked"`
+	// The zipcode or postal code where the user lives.
+	Zipcode string                  `json:"zipcode,nullable"`
+	JSON    iamSingleUserResultJSON `json:"-"`
+}
+
+// iamSingleUserResultJSON contains the JSON metadata for the struct
+// [IamSingleUserResult]
+type iamSingleUserResultJSON struct {
+	ID                             apijson.Field
+	Betas                          apijson.Field
+	Country                        apijson.Field
+	FirstName                      apijson.Field
+	HasBusinessZones               apijson.Field
+	HasEnterpriseZones             apijson.Field
+	HasProZones                    apijson.Field
+	LastName                       apijson.Field
+	Organizations                  apijson.Field
+	Suspended                      apijson.Field
+	Telephone                      apijson.Field
+	TwoFactorAuthenticationEnabled apijson.Field
+	TwoFactorAuthenticationLocked  apijson.Field
+	Zipcode                        apijson.Field
+	raw                            string
+	ExtraFields                    map[string]apijson.Field
+}
+
+func (r *IamSingleUserResult) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r iamSingleUserResultJSON) RawJSON() string {
+	return r.raw
+}
+
+type IamSingleUserResultOrganization struct {
+	// Identifier
+	ID string `json:"id"`
+	// Organization name.
+	Name string `json:"name"`
+	// Access permissions for this User.
+	Permissions []string `json:"permissions"`
+	// List of roles that a user has within an organization.
+	Roles []string `json:"roles"`
+	// Whether the user is a member of the organization or has an invitation pending.
+	Status IamSingleUserResultOrganizationsStatus `json:"status"`
+	JSON   iamSingleUserResultOrganizationJSON    `json:"-"`
+}
+
+// iamSingleUserResultOrganizationJSON contains the JSON metadata for the struct
+// [IamSingleUserResultOrganization]
+type iamSingleUserResultOrganizationJSON struct {
+	ID          apijson.Field
+	Name        apijson.Field
+	Permissions apijson.Field
+	Roles       apijson.Field
+	Status      apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *IamSingleUserResultOrganization) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r iamSingleUserResultOrganizationJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the user is a member of the organization or has an invitation pending.
+type IamSingleUserResultOrganizationsStatus string
+
+const (
+	IamSingleUserResultOrganizationsStatusMember  IamSingleUserResultOrganizationsStatus = "member"
+	IamSingleUserResultOrganizationsStatusInvited IamSingleUserResultOrganizationsStatus = "invited"
+)
+
+func (r IamSingleUserResultOrganizationsStatus) IsKnown() bool {
+	switch r {
+	case IamSingleUserResultOrganizationsStatusMember, IamSingleUserResultOrganizationsStatusInvited:
+		return true
+	}
+	return false
 }
 
 type UserUpdateParams struct {

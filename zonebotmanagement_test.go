@@ -55,14 +55,12 @@ func TestZoneBotManagementUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.ZoneBotManagementUpdateParams{
-			Body: cfrex.BotFightModeConfigParam(cfrex.BotFightModeConfigParam{
-				BaseConfigParam: cfrex.BaseConfigParam{
-					AIBotsProtection:  cfrex.F(cfrex.BaseConfigAIBotsProtectionDisabled),
-					CrawlerProtection: cfrex.F(cfrex.BaseConfigCrawlerProtectionDisabled),
-					EnableJs:          cfrex.F(true),
-				},
-				FightMode: cfrex.F(true),
-			}),
+			Body: cfrex.BotFightModeConfigParam{
+				AIBotsProtection:  cfrex.F(cfrex.BotFightModeConfigAIBotsProtectionDisabled),
+				CrawlerProtection: cfrex.F(cfrex.BotFightModeConfigCrawlerProtectionDisabled),
+				EnableJs:          cfrex.F(true),
+				FightMode:         cfrex.F(true),
+			},
 		},
 	)
 	if err != nil {

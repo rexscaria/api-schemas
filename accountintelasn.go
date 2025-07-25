@@ -32,7 +32,7 @@ func NewAccountIntelAsnService(opts ...option.RequestOption) (r *AccountIntelAsn
 	return
 }
 
-// Get ASN Subnets
+// Get ASN Subnets.
 func (r *AccountIntelAsnService) ListSubnets(ctx context.Context, accountID string, asn int64, opts ...option.RequestOption) (res *AccountIntelAsnListSubnetsResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
@@ -92,14 +92,20 @@ func (r accountIntelAsnListSubnetsResponseJSON) RawJSON() string {
 }
 
 type AccountIntelAsnGetOverviewResponse struct {
-	Result int64                                  `json:"result"`
-	JSON   accountIntelAsnGetOverviewResponseJSON `json:"-"`
-	SingleResponseIntel
+	Errors   []AccountIntelAsnGetOverviewResponseError   `json:"errors,required"`
+	Messages []AccountIntelAsnGetOverviewResponseMessage `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountIntelAsnGetOverviewResponseSuccess `json:"success,required"`
+	Result  int64                                     `json:"result"`
+	JSON    accountIntelAsnGetOverviewResponseJSON    `json:"-"`
 }
 
 // accountIntelAsnGetOverviewResponseJSON contains the JSON metadata for the struct
 // [AccountIntelAsnGetOverviewResponse]
 type accountIntelAsnGetOverviewResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -111,4 +117,115 @@ func (r *AccountIntelAsnGetOverviewResponse) UnmarshalJSON(data []byte) (err err
 
 func (r accountIntelAsnGetOverviewResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+type AccountIntelAsnGetOverviewResponseError struct {
+	Code             int64                                          `json:"code,required"`
+	Message          string                                         `json:"message,required"`
+	DocumentationURL string                                         `json:"documentation_url"`
+	Source           AccountIntelAsnGetOverviewResponseErrorsSource `json:"source"`
+	JSON             accountIntelAsnGetOverviewResponseErrorJSON    `json:"-"`
+}
+
+// accountIntelAsnGetOverviewResponseErrorJSON contains the JSON metadata for the
+// struct [AccountIntelAsnGetOverviewResponseError]
+type accountIntelAsnGetOverviewResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountIntelAsnGetOverviewResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountIntelAsnGetOverviewResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountIntelAsnGetOverviewResponseErrorsSource struct {
+	Pointer string                                             `json:"pointer"`
+	JSON    accountIntelAsnGetOverviewResponseErrorsSourceJSON `json:"-"`
+}
+
+// accountIntelAsnGetOverviewResponseErrorsSourceJSON contains the JSON metadata
+// for the struct [AccountIntelAsnGetOverviewResponseErrorsSource]
+type accountIntelAsnGetOverviewResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountIntelAsnGetOverviewResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountIntelAsnGetOverviewResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountIntelAsnGetOverviewResponseMessage struct {
+	Code             int64                                            `json:"code,required"`
+	Message          string                                           `json:"message,required"`
+	DocumentationURL string                                           `json:"documentation_url"`
+	Source           AccountIntelAsnGetOverviewResponseMessagesSource `json:"source"`
+	JSON             accountIntelAsnGetOverviewResponseMessageJSON    `json:"-"`
+}
+
+// accountIntelAsnGetOverviewResponseMessageJSON contains the JSON metadata for the
+// struct [AccountIntelAsnGetOverviewResponseMessage]
+type accountIntelAsnGetOverviewResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountIntelAsnGetOverviewResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountIntelAsnGetOverviewResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountIntelAsnGetOverviewResponseMessagesSource struct {
+	Pointer string                                               `json:"pointer"`
+	JSON    accountIntelAsnGetOverviewResponseMessagesSourceJSON `json:"-"`
+}
+
+// accountIntelAsnGetOverviewResponseMessagesSourceJSON contains the JSON metadata
+// for the struct [AccountIntelAsnGetOverviewResponseMessagesSource]
+type accountIntelAsnGetOverviewResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountIntelAsnGetOverviewResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountIntelAsnGetOverviewResponseMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountIntelAsnGetOverviewResponseSuccess bool
+
+const (
+	AccountIntelAsnGetOverviewResponseSuccessTrue AccountIntelAsnGetOverviewResponseSuccess = true
+)
+
+func (r AccountIntelAsnGetOverviewResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountIntelAsnGetOverviewResponseSuccessTrue:
+		return true
+	}
+	return false
 }

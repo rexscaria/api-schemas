@@ -34,8 +34,12 @@ func NewAccountCloudforceOneEventRawService(opts ...option.RequestOption) (r *Ac
 }
 
 // Reads data for a raw event
-func (r *AccountCloudforceOneEventRawService) Get(ctx context.Context, accountID float64, datasetID string, eventID string, opts ...option.RequestOption) (res *AccountCloudforceOneEventRawGetResponse, err error) {
+func (r *AccountCloudforceOneEventRawService) Get(ctx context.Context, accountID string, datasetID string, eventID string, opts ...option.RequestOption) (res *AccountCloudforceOneEventRawGetResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	if accountID == "" {
+		err = errors.New("missing required account_id parameter")
+		return
+	}
 	if datasetID == "" {
 		err = errors.New("missing required dataset_id parameter")
 		return
@@ -44,14 +48,18 @@ func (r *AccountCloudforceOneEventRawService) Get(ctx context.Context, accountID
 		err = errors.New("missing required event_id parameter")
 		return
 	}
-	path := fmt.Sprintf("accounts/%v/cloudforce-one/events/raw/%s/%s", accountID, datasetID, eventID)
+	path := fmt.Sprintf("accounts/%s/cloudforce-one/events/raw/%s/%s", accountID, datasetID, eventID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
 
 // Updates a raw event
-func (r *AccountCloudforceOneEventRawService) Update(ctx context.Context, accountID float64, eventID string, rawID string, body AccountCloudforceOneEventRawUpdateParams, opts ...option.RequestOption) (res *AccountCloudforceOneEventRawUpdateResponse, err error) {
+func (r *AccountCloudforceOneEventRawService) Update(ctx context.Context, accountID string, eventID string, rawID string, body AccountCloudforceOneEventRawUpdateParams, opts ...option.RequestOption) (res *AccountCloudforceOneEventRawUpdateResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	if accountID == "" {
+		err = errors.New("missing required account_id parameter")
+		return
+	}
 	if eventID == "" {
 		err = errors.New("missing required event_id parameter")
 		return
@@ -60,7 +68,7 @@ func (r *AccountCloudforceOneEventRawService) Update(ctx context.Context, accoun
 		err = errors.New("missing required raw_id parameter")
 		return
 	}
-	path := fmt.Sprintf("accounts/%v/cloudforce-one/events/%s/raw/%s", accountID, eventID, rawID)
+	path := fmt.Sprintf("accounts/%s/cloudforce-one/events/%s/raw/%s", accountID, eventID, rawID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }

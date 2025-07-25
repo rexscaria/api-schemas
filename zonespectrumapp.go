@@ -4,10 +4,12 @@ package cfrex
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net/http"
 	"net/url"
 	"reflect"
+	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -39,93 +41,90 @@ func NewZoneSpectrumAppService(opts ...option.RequestOption) (r *ZoneSpectrumApp
 
 // Creates a new Spectrum application from a configuration using a name for the
 // origin.
-func (r *ZoneSpectrumAppService) New(ctx context.Context, zoneID interface{}, body ZoneSpectrumAppNewParams, opts ...option.RequestOption) (res *AppConfigSingle, err error) {
+func (r *ZoneSpectrumAppService) New(ctx context.Context, zoneID ZoneIdentifierParam, body ZoneSpectrumAppNewParams, opts ...option.RequestOption) (res *AppConfigSingle, err error) {
 	opts = append(r.Options[:], opts...)
-	path := fmt.Sprintf("zones/%v/spectrum/apps", zoneID)
+	if zoneID == "" {
+		err = errors.New("missing required zone_id parameter")
+		return
+	}
+	path := fmt.Sprintf("zones/%s/spectrum/apps", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
 
 // Gets the application configuration of a specific application inside a zone.
-func (r *ZoneSpectrumAppService) Get(ctx context.Context, zoneID interface{}, appID interface{}, opts ...option.RequestOption) (res *AppConfigSingle, err error) {
+func (r *ZoneSpectrumAppService) Get(ctx context.Context, zoneID ZoneIdentifierParam, appID AppIdentifierParam, opts ...option.RequestOption) (res *AppConfigSingle, err error) {
 	opts = append(r.Options[:], opts...)
-	path := fmt.Sprintf("zones/%v/spectrum/apps/%v", zoneID, appID)
+	if zoneID == "" {
+		err = errors.New("missing required zone_id parameter")
+		return
+	}
+	if appID == "" {
+		err = errors.New("missing required app_id parameter")
+		return
+	}
+	path := fmt.Sprintf("zones/%s/spectrum/apps/%s", zoneID, appID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
 
 // Updates a previously existing application's configuration that uses a name for
 // the origin.
-func (r *ZoneSpectrumAppService) Update(ctx context.Context, zoneID interface{}, appID interface{}, body ZoneSpectrumAppUpdateParams, opts ...option.RequestOption) (res *AppConfigSingle, err error) {
+func (r *ZoneSpectrumAppService) Update(ctx context.Context, zoneID ZoneIdentifierParam, appID AppIdentifierParam, body ZoneSpectrumAppUpdateParams, opts ...option.RequestOption) (res *AppConfigSingle, err error) {
 	opts = append(r.Options[:], opts...)
-	path := fmt.Sprintf("zones/%v/spectrum/apps/%v", zoneID, appID)
+	if zoneID == "" {
+		err = errors.New("missing required zone_id parameter")
+		return
+	}
+	if appID == "" {
+		err = errors.New("missing required app_id parameter")
+		return
+	}
+	path := fmt.Sprintf("zones/%s/spectrum/apps/%s", zoneID, appID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
 	return
 }
 
 // Retrieves a list of currently existing Spectrum applications inside a zone.
-func (r *ZoneSpectrumAppService) List(ctx context.Context, zoneID interface{}, query ZoneSpectrumAppListParams, opts ...option.RequestOption) (res *ZoneSpectrumAppListResponse, err error) {
+func (r *ZoneSpectrumAppService) List(ctx context.Context, zoneID ZoneIdentifierParam, query ZoneSpectrumAppListParams, opts ...option.RequestOption) (res *ZoneSpectrumAppListResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	path := fmt.Sprintf("zones/%v/spectrum/apps", zoneID)
+	if zoneID == "" {
+		err = errors.New("missing required zone_id parameter")
+		return
+	}
+	path := fmt.Sprintf("zones/%s/spectrum/apps", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
 }
 
 // Deletes a previously existing application.
-func (r *ZoneSpectrumAppService) Delete(ctx context.Context, zoneID interface{}, appID interface{}, body ZoneSpectrumAppDeleteParams, opts ...option.RequestOption) (res *ZoneSpectrumAppDeleteResponse, err error) {
+func (r *ZoneSpectrumAppService) Delete(ctx context.Context, zoneID ZoneIdentifierParam, appID AppIdentifierParam, opts ...option.RequestOption) (res *ZoneSpectrumAppDeleteResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	path := fmt.Sprintf("zones/%v/spectrum/apps/%v", zoneID, appID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	if zoneID == "" {
+		err = errors.New("missing required zone_id parameter")
+		return
+	}
+	if appID == "" {
+		err = errors.New("missing required app_id parameter")
+		return
+	}
+	path := fmt.Sprintf("zones/%s/spectrum/apps/%s", zoneID, appID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
-type APIResponseSpectrumConfig struct {
-	Errors   []SpectrumConfigMessageItem `json:"errors,required"`
-	Messages []SpectrumConfigMessageItem `json:"messages,required"`
-	// Whether the API call was successful
-	Success APIResponseSpectrumConfigSuccess `json:"success,required"`
-	JSON    apiResponseSpectrumConfigJSON    `json:"-"`
-}
-
-// apiResponseSpectrumConfigJSON contains the JSON metadata for the struct
-// [APIResponseSpectrumConfig]
-type apiResponseSpectrumConfigJSON struct {
-	Errors      apijson.Field
-	Messages    apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *APIResponseSpectrumConfig) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r apiResponseSpectrumConfigJSON) RawJSON() string {
-	return r.raw
-}
-
-// Whether the API call was successful
-type APIResponseSpectrumConfigSuccess bool
-
-const (
-	APIResponseSpectrumConfigSuccessTrue APIResponseSpectrumConfigSuccess = true
-)
-
-func (r APIResponseSpectrumConfigSuccess) IsKnown() bool {
-	switch r {
-	case APIResponseSpectrumConfigSuccessTrue:
-		return true
-	}
-	return false
-}
-
 type AppConfig struct {
+	// App identifier.
+	ID AppIdentifier `json:"id,required"`
+	// When the Application was created.
+	CreatedOn time.Time `json:"created_on,required" format:"date-time"`
 	// The name and type of DNS record for the Spectrum application.
 	DNS DNS `json:"dns,required"`
 	// Enables IP Access Rules for this application. Notes: Only available for TCP
 	// applications.
 	IPFirewall bool `json:"ip_firewall,required"`
+	// When the Application was last modified.
+	ModifiedOn time.Time `json:"modified_on,required" format:"date-time"`
 	// The port configuration at Cloudflare's edge. May specify a single port, for
 	// example `"tcp/1000"`, or a range of ports, for example `"tcp/1000-2000"`.
 	Protocol string `json:"protocol,required"`
@@ -159,13 +158,15 @@ type AppConfig struct {
 	// range must match the number of ports specified in the "protocol" field.
 	OriginPort AppConfigOriginPortUnion `json:"origin_port"`
 	JSON       appConfigJSON            `json:"-"`
-	BaseAppConfig
 }
 
 // appConfigJSON contains the JSON metadata for the struct [AppConfig]
 type appConfigJSON struct {
+	ID               apijson.Field
+	CreatedOn        apijson.Field
 	DNS              apijson.Field
 	IPFirewall       apijson.Field
+	ModifiedOn       apijson.Field
 	Protocol         apijson.Field
 	ProxyProtocol    apijson.Field
 	Tls              apijson.Field
@@ -289,15 +290,15 @@ func (r *AppConfigEdgeIPs) UnmarshalJSON(data []byte) (err error) {
 // AsUnion returns a [AppConfigEdgeIPsUnion] interface which you can cast to the
 // specific types for more type safety.
 //
-// Possible runtime types of the union are [AppConfigEdgeIPsObject],
-// [AppConfigEdgeIPsObject].
+// Possible runtime types of the union are [AppConfigEdgeIPsDynamic],
+// [AppConfigEdgeIPsStatic].
 func (r AppConfigEdgeIPs) AsUnion() AppConfigEdgeIPsUnion {
 	return r.union
 }
 
 // The anycast edge IP configuration for the hostname of this application.
 //
-// Union satisfied by [AppConfigEdgeIPsObject] or [AppConfigEdgeIPsObject].
+// Union satisfied by [AppConfigEdgeIPsDynamic] or [AppConfigEdgeIPsStatic].
 type AppConfigEdgeIPsUnion interface {
 	implementsAppConfigEdgeIPs()
 }
@@ -308,56 +309,56 @@ func init() {
 		"",
 		apijson.UnionVariant{
 			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(AppConfigEdgeIPsObject{}),
+			Type:       reflect.TypeOf(AppConfigEdgeIPsDynamic{}),
 		},
 		apijson.UnionVariant{
 			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(AppConfigEdgeIPsObject{}),
+			Type:       reflect.TypeOf(AppConfigEdgeIPsStatic{}),
 		},
 	)
 }
 
-type AppConfigEdgeIPsObject struct {
+type AppConfigEdgeIPsDynamic struct {
 	// The IP versions supported for inbound connections on Spectrum anycast IPs.
-	Connectivity AppConfigEdgeIPsObjectConnectivity `json:"connectivity"`
+	Connectivity AppConfigEdgeIPsDynamicConnectivity `json:"connectivity"`
 	// The type of edge IP configuration specified. Dynamically allocated edge IPs use
 	// Spectrum anycast IPs in accordance with the connectivity you specify. Only valid
 	// with CNAME DNS names.
-	Type AppConfigEdgeIPsObjectType `json:"type"`
-	JSON appConfigEdgeIPsObjectJSON `json:"-"`
+	Type AppConfigEdgeIPsDynamicType `json:"type"`
+	JSON appConfigEdgeIPsDynamicJSON `json:"-"`
 }
 
-// appConfigEdgeIPsObjectJSON contains the JSON metadata for the struct
-// [AppConfigEdgeIPsObject]
-type appConfigEdgeIPsObjectJSON struct {
+// appConfigEdgeIPsDynamicJSON contains the JSON metadata for the struct
+// [AppConfigEdgeIPsDynamic]
+type appConfigEdgeIPsDynamicJSON struct {
 	Connectivity apijson.Field
 	Type         apijson.Field
 	raw          string
 	ExtraFields  map[string]apijson.Field
 }
 
-func (r *AppConfigEdgeIPsObject) UnmarshalJSON(data []byte) (err error) {
+func (r *AppConfigEdgeIPsDynamic) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r appConfigEdgeIPsObjectJSON) RawJSON() string {
+func (r appConfigEdgeIPsDynamicJSON) RawJSON() string {
 	return r.raw
 }
 
-func (r AppConfigEdgeIPsObject) implementsAppConfigEdgeIPs() {}
+func (r AppConfigEdgeIPsDynamic) implementsAppConfigEdgeIPs() {}
 
 // The IP versions supported for inbound connections on Spectrum anycast IPs.
-type AppConfigEdgeIPsObjectConnectivity string
+type AppConfigEdgeIPsDynamicConnectivity string
 
 const (
-	AppConfigEdgeIPsObjectConnectivityAll  AppConfigEdgeIPsObjectConnectivity = "all"
-	AppConfigEdgeIPsObjectConnectivityIpv4 AppConfigEdgeIPsObjectConnectivity = "ipv4"
-	AppConfigEdgeIPsObjectConnectivityIpv6 AppConfigEdgeIPsObjectConnectivity = "ipv6"
+	AppConfigEdgeIPsDynamicConnectivityAll  AppConfigEdgeIPsDynamicConnectivity = "all"
+	AppConfigEdgeIPsDynamicConnectivityIpv4 AppConfigEdgeIPsDynamicConnectivity = "ipv4"
+	AppConfigEdgeIPsDynamicConnectivityIpv6 AppConfigEdgeIPsDynamicConnectivity = "ipv6"
 )
 
-func (r AppConfigEdgeIPsObjectConnectivity) IsKnown() bool {
+func (r AppConfigEdgeIPsDynamicConnectivity) IsKnown() bool {
 	switch r {
-	case AppConfigEdgeIPsObjectConnectivityAll, AppConfigEdgeIPsObjectConnectivityIpv4, AppConfigEdgeIPsObjectConnectivityIpv6:
+	case AppConfigEdgeIPsDynamicConnectivityAll, AppConfigEdgeIPsDynamicConnectivityIpv4, AppConfigEdgeIPsDynamicConnectivityIpv6:
 		return true
 	}
 	return false
@@ -366,15 +367,62 @@ func (r AppConfigEdgeIPsObjectConnectivity) IsKnown() bool {
 // The type of edge IP configuration specified. Dynamically allocated edge IPs use
 // Spectrum anycast IPs in accordance with the connectivity you specify. Only valid
 // with CNAME DNS names.
-type AppConfigEdgeIPsObjectType string
+type AppConfigEdgeIPsDynamicType string
 
 const (
-	AppConfigEdgeIPsObjectTypeDynamic AppConfigEdgeIPsObjectType = "dynamic"
+	AppConfigEdgeIPsDynamicTypeDynamic AppConfigEdgeIPsDynamicType = "dynamic"
 )
 
-func (r AppConfigEdgeIPsObjectType) IsKnown() bool {
+func (r AppConfigEdgeIPsDynamicType) IsKnown() bool {
 	switch r {
-	case AppConfigEdgeIPsObjectTypeDynamic:
+	case AppConfigEdgeIPsDynamicTypeDynamic:
+		return true
+	}
+	return false
+}
+
+type AppConfigEdgeIPsStatic struct {
+	// The array of customer owned IPs we broadcast via anycast for this hostname and
+	// application.
+	IPs []string `json:"ips"`
+	// The type of edge IP configuration specified. Statically allocated edge IPs use
+	// customer IPs in accordance with the ips array you specify. Only valid with
+	// ADDRESS DNS names.
+	Type AppConfigEdgeIPsStaticType `json:"type"`
+	JSON appConfigEdgeIPsStaticJSON `json:"-"`
+}
+
+// appConfigEdgeIPsStaticJSON contains the JSON metadata for the struct
+// [AppConfigEdgeIPsStatic]
+type appConfigEdgeIPsStaticJSON struct {
+	IPs         apijson.Field
+	Type        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AppConfigEdgeIPsStatic) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r appConfigEdgeIPsStaticJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r AppConfigEdgeIPsStatic) implementsAppConfigEdgeIPs() {}
+
+// The type of edge IP configuration specified. Statically allocated edge IPs use
+// customer IPs in accordance with the ips array you specify. Only valid with
+// ADDRESS DNS names.
+type AppConfigEdgeIPsStaticType string
+
+const (
+	AppConfigEdgeIPsStaticTypeStatic AppConfigEdgeIPsStaticType = "static"
+)
+
+func (r AppConfigEdgeIPsStaticType) IsKnown() bool {
+	switch r {
+	case AppConfigEdgeIPsStaticTypeStatic:
 		return true
 	}
 	return false
@@ -528,7 +576,6 @@ type AppConfigParam struct {
 	// `"1000-2000"`. Notes: If specifying a port range, the number of ports in the
 	// range must match the number of ports specified in the "protocol" field.
 	OriginPort param.Field[AppConfigOriginPortUnionParam] `json:"origin_port"`
-	BaseAppConfigParam
 }
 
 func (r AppConfigParam) MarshalJSON() (data []byte, err error) {
@@ -556,26 +603,42 @@ func (r AppConfigEdgeIPsParam) implementsAppConfigEdgeIPsUnionParam() {}
 
 // The anycast edge IP configuration for the hostname of this application.
 //
-// Satisfied by [AppConfigEdgeIPsObjectParam], [AppConfigEdgeIPsObjectParam],
+// Satisfied by [AppConfigEdgeIPsDynamicParam], [AppConfigEdgeIPsStaticParam],
 // [AppConfigEdgeIPsParam].
 type AppConfigEdgeIPsUnionParam interface {
 	implementsAppConfigEdgeIPsUnionParam()
 }
 
-type AppConfigEdgeIPsObjectParam struct {
+type AppConfigEdgeIPsDynamicParam struct {
 	// The IP versions supported for inbound connections on Spectrum anycast IPs.
-	Connectivity param.Field[AppConfigEdgeIPsObjectConnectivity] `json:"connectivity"`
+	Connectivity param.Field[AppConfigEdgeIPsDynamicConnectivity] `json:"connectivity"`
 	// The type of edge IP configuration specified. Dynamically allocated edge IPs use
 	// Spectrum anycast IPs in accordance with the connectivity you specify. Only valid
 	// with CNAME DNS names.
-	Type param.Field[AppConfigEdgeIPsObjectType] `json:"type"`
+	Type param.Field[AppConfigEdgeIPsDynamicType] `json:"type"`
 }
 
-func (r AppConfigEdgeIPsObjectParam) MarshalJSON() (data []byte, err error) {
+func (r AppConfigEdgeIPsDynamicParam) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-func (r AppConfigEdgeIPsObjectParam) implementsAppConfigEdgeIPsUnionParam() {}
+func (r AppConfigEdgeIPsDynamicParam) implementsAppConfigEdgeIPsUnionParam() {}
+
+type AppConfigEdgeIPsStaticParam struct {
+	// The array of customer owned IPs we broadcast via anycast for this hostname and
+	// application.
+	IPs param.Field[[]string] `json:"ips"`
+	// The type of edge IP configuration specified. Statically allocated edge IPs use
+	// customer IPs in accordance with the ips array you specify. Only valid with
+	// ADDRESS DNS names.
+	Type param.Field[AppConfigEdgeIPsStaticType] `json:"type"`
+}
+
+func (r AppConfigEdgeIPsStaticParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r AppConfigEdgeIPsStaticParam) implementsAppConfigEdgeIPsUnionParam() {}
 
 // The name and type of DNS record for the Spectrum application.
 type AppConfigOriginDNSParam struct {
@@ -604,13 +667,19 @@ type AppConfigOriginPortUnionParam interface {
 }
 
 type AppConfigSingle struct {
-	Result AppConfigSingleResult `json:"result"`
-	JSON   appConfigSingleJSON   `json:"-"`
-	APIResponseSpectrumConfig
+	Errors   []SpectrumConfigMessageItem `json:"errors,required"`
+	Messages []SpectrumConfigMessageItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AppConfigSingleSuccess `json:"success,required"`
+	Result  AppConfigSingleResult  `json:"result"`
+	JSON    appConfigSingleJSON    `json:"-"`
 }
 
 // appConfigSingleJSON contains the JSON metadata for the struct [AppConfigSingle]
 type appConfigSingleJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -624,32 +693,47 @@ func (r appConfigSingleJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AppConfigSingleSuccess bool
+
+const (
+	AppConfigSingleSuccessTrue AppConfigSingleSuccess = true
+)
+
+func (r AppConfigSingleSuccess) IsKnown() bool {
+	switch r {
+	case AppConfigSingleSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AppConfigSingleResult struct {
 	// App identifier.
-	ID AppIdentifier `json:"id"`
+	ID shared.UnionString `json:"id,required"`
+	// When the Application was created.
+	CreatedOn time.Time `json:"created_on,required" format:"date-time"`
+	// The name and type of DNS record for the Spectrum application.
+	DNS DNS `json:"dns,required"`
+	// When the Application was last modified.
+	ModifiedOn time.Time `json:"modified_on,required" format:"date-time"`
+	// The port configuration at Cloudflare's edge. May specify a single port, for
+	// example `"tcp/1000"`, or a range of ports, for example `"tcp/1000-2000"`.
+	Protocol string `json:"protocol,required"`
 	// Enables Argo Smart Routing for this application. Notes: Only available for TCP
 	// applications with traffic_type set to "direct".
 	ArgoSmartRouting bool `json:"argo_smart_routing"`
-	// This field can have the runtime type of [BaseAppConfigCreatedOn].
-	CreatedOn interface{} `json:"created_on"`
-	// The name and type of DNS record for the Spectrum application.
-	DNS DNS `json:"dns"`
 	// This field can have the runtime type of [AppConfigEdgeIPs].
 	EdgeIPs interface{} `json:"edge_ips"`
 	// Enables IP Access Rules for this application. Notes: Only available for TCP
 	// applications.
 	IPFirewall bool `json:"ip_firewall"`
-	// This field can have the runtime type of [BaseAppConfigModifiedOn].
-	ModifiedOn interface{} `json:"modified_on"`
 	// This field can have the runtime type of [[]string].
 	OriginDirect interface{} `json:"origin_direct"`
 	// This field can have the runtime type of [AppConfigOriginDNS].
 	OriginDNS interface{} `json:"origin_dns"`
 	// This field can have the runtime type of [AppConfigOriginPortUnion].
 	OriginPort interface{} `json:"origin_port"`
-	// The port configuration at Cloudflare's edge. May specify a single port, for
-	// example `"tcp/1000"`, or a range of ports, for example `"tcp/1000-2000"`.
-	Protocol string `json:"protocol"`
 	// Enables Proxy Protocol to the origin. Refer to
 	// [Enable Proxy protocol](https://developers.cloudflare.com/spectrum/getting-started/proxy-protocol/)
 	// for implementation details on PROXY Protocol V1, PROXY Protocol V2, and Simple
@@ -671,16 +755,16 @@ type AppConfigSingleResult struct {
 // [AppConfigSingleResult]
 type appConfigSingleResultJSON struct {
 	ID               apijson.Field
-	ArgoSmartRouting apijson.Field
 	CreatedOn        apijson.Field
 	DNS              apijson.Field
+	ModifiedOn       apijson.Field
+	Protocol         apijson.Field
+	ArgoSmartRouting apijson.Field
 	EdgeIPs          apijson.Field
 	IPFirewall       apijson.Field
-	ModifiedOn       apijson.Field
 	OriginDirect     apijson.Field
 	OriginDNS        apijson.Field
 	OriginPort       apijson.Field
-	Protocol         apijson.Field
 	ProxyProtocol    apijson.Field
 	Tls              apijson.Field
 	TrafficType      apijson.Field
@@ -789,128 +873,9 @@ func (r AppConfigSingleResultTrafficType) IsKnown() bool {
 	return false
 }
 
-// App identifier.
-type AppIdentifier struct {
-	JSON appIdentifierJSON `json:"-"`
-}
+type AppIdentifier = string
 
-// appIdentifierJSON contains the JSON metadata for the struct [AppIdentifier]
-type appIdentifierJSON struct {
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AppIdentifier) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r appIdentifierJSON) RawJSON() string {
-	return r.raw
-}
-
-// App identifier.
-type AppIdentifierParam struct {
-}
-
-func (r AppIdentifierParam) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-type BaseAppConfig struct {
-	// App identifier.
-	ID AppIdentifier `json:"id,required"`
-	// When the Application was created.
-	CreatedOn BaseAppConfigCreatedOn `json:"created_on,required"`
-	// When the Application was last modified.
-	ModifiedOn BaseAppConfigModifiedOn `json:"modified_on,required"`
-	JSON       baseAppConfigJSON       `json:"-"`
-}
-
-// baseAppConfigJSON contains the JSON metadata for the struct [BaseAppConfig]
-type baseAppConfigJSON struct {
-	ID          apijson.Field
-	CreatedOn   apijson.Field
-	ModifiedOn  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *BaseAppConfig) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r baseAppConfigJSON) RawJSON() string {
-	return r.raw
-}
-
-// When the Application was created.
-type BaseAppConfigCreatedOn struct {
-	JSON baseAppConfigCreatedOnJSON `json:"-"`
-}
-
-// baseAppConfigCreatedOnJSON contains the JSON metadata for the struct
-// [BaseAppConfigCreatedOn]
-type baseAppConfigCreatedOnJSON struct {
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *BaseAppConfigCreatedOn) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r baseAppConfigCreatedOnJSON) RawJSON() string {
-	return r.raw
-}
-
-// When the Application was last modified.
-type BaseAppConfigModifiedOn struct {
-	JSON baseAppConfigModifiedOnJSON `json:"-"`
-}
-
-// baseAppConfigModifiedOnJSON contains the JSON metadata for the struct
-// [BaseAppConfigModifiedOn]
-type baseAppConfigModifiedOnJSON struct {
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *BaseAppConfigModifiedOn) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r baseAppConfigModifiedOnJSON) RawJSON() string {
-	return r.raw
-}
-
-type BaseAppConfigParam struct {
-	// App identifier.
-	ID param.Field[AppIdentifierParam] `json:"id,required"`
-	// When the Application was created.
-	CreatedOn param.Field[BaseAppConfigCreatedOnParam] `json:"created_on,required"`
-	// When the Application was last modified.
-	ModifiedOn param.Field[BaseAppConfigModifiedOnParam] `json:"modified_on,required"`
-}
-
-func (r BaseAppConfigParam) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-// When the Application was created.
-type BaseAppConfigCreatedOnParam struct {
-}
-
-func (r BaseAppConfigCreatedOnParam) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-// When the Application was last modified.
-type BaseAppConfigModifiedOnParam struct {
-}
-
-func (r BaseAppConfigModifiedOnParam) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
+type AppIdentifierParam = string
 
 // The name and type of DNS record for the Spectrum application.
 type DNS struct {
@@ -966,8 +931,14 @@ func (r DNSParam) MarshalJSON() (data []byte, err error) {
 }
 
 type PaygoAppConfig struct {
+	// App identifier.
+	ID AppIdentifier `json:"id,required"`
+	// When the Application was created.
+	CreatedOn time.Time `json:"created_on,required" format:"date-time"`
 	// The name and type of DNS record for the Spectrum application.
 	DNS DNS `json:"dns,required"`
+	// When the Application was last modified.
+	ModifiedOn time.Time `json:"modified_on,required" format:"date-time"`
 	// The port configuration at Cloudflare's edge. May specify a single port, for
 	// example `"tcp/1000"`, or a range of ports, for example `"tcp/1000-2000"`.
 	Protocol string `json:"protocol,required"`
@@ -975,12 +946,14 @@ type PaygoAppConfig struct {
 	// balancing.
 	OriginDirect []string           `json:"origin_direct" format:"URI"`
 	JSON         paygoAppConfigJSON `json:"-"`
-	BaseAppConfig
 }
 
 // paygoAppConfigJSON contains the JSON metadata for the struct [PaygoAppConfig]
 type paygoAppConfigJSON struct {
+	ID           apijson.Field
+	CreatedOn    apijson.Field
 	DNS          apijson.Field
+	ModifiedOn   apijson.Field
 	Protocol     apijson.Field
 	OriginDirect apijson.Field
 	raw          string
@@ -1006,7 +979,6 @@ type PaygoAppConfigParam struct {
 	// List of origin IP addresses. Array may contain multiple IP addresses for load
 	// balancing.
 	OriginDirect param.Field[[]string] `json:"origin_direct" format:"URI"`
-	BaseAppConfigParam
 }
 
 func (r PaygoAppConfigParam) MarshalJSON() (data []byte, err error) {
@@ -1016,18 +988,22 @@ func (r PaygoAppConfigParam) MarshalJSON() (data []byte, err error) {
 func (r PaygoAppConfigParam) implementsUpdateAppConfigUnionParam() {}
 
 type SpectrumConfigMessageItem struct {
-	Code    int64                         `json:"code,required"`
-	Message string                        `json:"message,required"`
-	JSON    spectrumConfigMessageItemJSON `json:"-"`
+	Code             int64                           `json:"code,required"`
+	Message          string                          `json:"message,required"`
+	DocumentationURL string                          `json:"documentation_url"`
+	Source           SpectrumConfigMessageItemSource `json:"source"`
+	JSON             spectrumConfigMessageItemJSON   `json:"-"`
 }
 
 // spectrumConfigMessageItemJSON contains the JSON metadata for the struct
 // [SpectrumConfigMessageItem]
 type spectrumConfigMessageItemJSON struct {
-	Code        apijson.Field
-	Message     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
 }
 
 func (r *SpectrumConfigMessageItem) UnmarshalJSON(data []byte) (err error) {
@@ -1038,21 +1014,147 @@ func (r spectrumConfigMessageItemJSON) RawJSON() string {
 	return r.raw
 }
 
-// Satisfied by [AppConfigParam], [PaygoAppConfigParam].
+type SpectrumConfigMessageItemSource struct {
+	Pointer string                              `json:"pointer"`
+	JSON    spectrumConfigMessageItemSourceJSON `json:"-"`
+}
+
+// spectrumConfigMessageItemSourceJSON contains the JSON metadata for the struct
+// [SpectrumConfigMessageItemSource]
+type spectrumConfigMessageItemSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *SpectrumConfigMessageItemSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r spectrumConfigMessageItemSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type UpdateAppConfigParam struct {
+	// The name and type of DNS record for the Spectrum application.
+	DNS param.Field[DNSParam] `json:"dns,required"`
+	// The port configuration at Cloudflare's edge. May specify a single port, for
+	// example `"tcp/1000"`, or a range of ports, for example `"tcp/1000-2000"`.
+	Protocol param.Field[string] `json:"protocol,required"`
+	// Enables Argo Smart Routing for this application. Notes: Only available for TCP
+	// applications with traffic_type set to "direct".
+	ArgoSmartRouting param.Field[bool]        `json:"argo_smart_routing"`
+	EdgeIPs          param.Field[interface{}] `json:"edge_ips"`
+	// Enables IP Access Rules for this application. Notes: Only available for TCP
+	// applications.
+	IPFirewall   param.Field[bool]        `json:"ip_firewall"`
+	OriginDirect param.Field[interface{}] `json:"origin_direct"`
+	OriginDNS    param.Field[interface{}] `json:"origin_dns"`
+	OriginPort   param.Field[interface{}] `json:"origin_port"`
+	// Enables Proxy Protocol to the origin. Refer to
+	// [Enable Proxy protocol](https://developers.cloudflare.com/spectrum/getting-started/proxy-protocol/)
+	// for implementation details on PROXY Protocol V1, PROXY Protocol V2, and Simple
+	// Proxy Protocol.
+	ProxyProtocol param.Field[UpdateAppConfigProxyProtocol] `json:"proxy_protocol"`
+	// The type of TLS termination associated with the application.
+	Tls param.Field[UpdateAppConfigTls] `json:"tls"`
+	// Determines how data travels from the edge to your origin. When set to "direct",
+	// Spectrum will send traffic directly to your origin, and the application's type
+	// is derived from the `protocol`. When set to "http" or "https", Spectrum will
+	// apply Cloudflare's HTTP/HTTPS features as it sends traffic to your origin, and
+	// the application type matches this property exactly.
+	TrafficType param.Field[UpdateAppConfigTrafficType] `json:"traffic_type"`
+}
+
+func (r UpdateAppConfigParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r UpdateAppConfigParam) implementsUpdateAppConfigUnionParam() {}
+
+// Satisfied by [AppConfigParam], [PaygoAppConfigParam], [UpdateAppConfigParam].
 type UpdateAppConfigUnionParam interface {
 	implementsUpdateAppConfigUnionParam()
 }
 
+// Enables Proxy Protocol to the origin. Refer to
+// [Enable Proxy protocol](https://developers.cloudflare.com/spectrum/getting-started/proxy-protocol/)
+// for implementation details on PROXY Protocol V1, PROXY Protocol V2, and Simple
+// Proxy Protocol.
+type UpdateAppConfigProxyProtocol string
+
+const (
+	UpdateAppConfigProxyProtocolOff    UpdateAppConfigProxyProtocol = "off"
+	UpdateAppConfigProxyProtocolV1     UpdateAppConfigProxyProtocol = "v1"
+	UpdateAppConfigProxyProtocolV2     UpdateAppConfigProxyProtocol = "v2"
+	UpdateAppConfigProxyProtocolSimple UpdateAppConfigProxyProtocol = "simple"
+)
+
+func (r UpdateAppConfigProxyProtocol) IsKnown() bool {
+	switch r {
+	case UpdateAppConfigProxyProtocolOff, UpdateAppConfigProxyProtocolV1, UpdateAppConfigProxyProtocolV2, UpdateAppConfigProxyProtocolSimple:
+		return true
+	}
+	return false
+}
+
+// The type of TLS termination associated with the application.
+type UpdateAppConfigTls string
+
+const (
+	UpdateAppConfigTlsOff      UpdateAppConfigTls = "off"
+	UpdateAppConfigTlsFlexible UpdateAppConfigTls = "flexible"
+	UpdateAppConfigTlsFull     UpdateAppConfigTls = "full"
+	UpdateAppConfigTlsStrict   UpdateAppConfigTls = "strict"
+)
+
+func (r UpdateAppConfigTls) IsKnown() bool {
+	switch r {
+	case UpdateAppConfigTlsOff, UpdateAppConfigTlsFlexible, UpdateAppConfigTlsFull, UpdateAppConfigTlsStrict:
+		return true
+	}
+	return false
+}
+
+// Determines how data travels from the edge to your origin. When set to "direct",
+// Spectrum will send traffic directly to your origin, and the application's type
+// is derived from the `protocol`. When set to "http" or "https", Spectrum will
+// apply Cloudflare's HTTP/HTTPS features as it sends traffic to your origin, and
+// the application type matches this property exactly.
+type UpdateAppConfigTrafficType string
+
+const (
+	UpdateAppConfigTrafficTypeDirect UpdateAppConfigTrafficType = "direct"
+	UpdateAppConfigTrafficTypeHTTP   UpdateAppConfigTrafficType = "http"
+	UpdateAppConfigTrafficTypeHTTPS  UpdateAppConfigTrafficType = "https"
+)
+
+func (r UpdateAppConfigTrafficType) IsKnown() bool {
+	switch r {
+	case UpdateAppConfigTrafficTypeDirect, UpdateAppConfigTrafficTypeHTTP, UpdateAppConfigTrafficTypeHTTPS:
+		return true
+	}
+	return false
+}
+
+type ZoneIdentifierParam = string
+
 type ZoneSpectrumAppListResponse struct {
+	Errors   []SpectrumConfigMessageItem `json:"errors,required"`
+	Messages []SpectrumConfigMessageItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success    ZoneSpectrumAppListResponseSuccess     `json:"success,required"`
 	Result     ZoneSpectrumAppListResponseResultUnion `json:"result"`
 	ResultInfo ZoneSpectrumAppListResponseResultInfo  `json:"result_info"`
 	JSON       zoneSpectrumAppListResponseJSON        `json:"-"`
-	APIResponseSpectrumConfig
 }
 
 // zoneSpectrumAppListResponseJSON contains the JSON metadata for the struct
 // [ZoneSpectrumAppListResponse]
 type zoneSpectrumAppListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	ResultInfo  apijson.Field
 	raw         string
@@ -1065,6 +1167,21 @@ func (r *ZoneSpectrumAppListResponse) UnmarshalJSON(data []byte) (err error) {
 
 func (r zoneSpectrumAppListResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type ZoneSpectrumAppListResponseSuccess bool
+
+const (
+	ZoneSpectrumAppListResponseSuccessTrue ZoneSpectrumAppListResponseSuccess = true
+)
+
+func (r ZoneSpectrumAppListResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneSpectrumAppListResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 // Union satisfied by [ZoneSpectrumAppListResponseResultArray] or
@@ -1093,13 +1210,13 @@ type ZoneSpectrumAppListResponseResultArray []AppConfig
 func (r ZoneSpectrumAppListResponseResultArray) implementsZoneSpectrumAppListResponseResultUnion() {}
 
 type ZoneSpectrumAppListResponseResultInfo struct {
-	// Total number of results for the requested service
+	// Total number of results for the requested service.
 	Count float64 `json:"count"`
-	// Current page within paginated list of results
+	// Current page within paginated list of results.
 	Page float64 `json:"page"`
-	// Number of results per page of results
+	// Number of results per page of results.
 	PerPage float64 `json:"per_page"`
-	// Total results available without any search parameters
+	// Total results available without any search parameters.
 	TotalCount float64                                   `json:"total_count"`
 	JSON       zoneSpectrumAppListResponseResultInfoJSON `json:"-"`
 }
@@ -1124,14 +1241,20 @@ func (r zoneSpectrumAppListResponseResultInfoJSON) RawJSON() string {
 }
 
 type ZoneSpectrumAppDeleteResponse struct {
-	Result ZoneSpectrumAppDeleteResponseResult `json:"result,nullable"`
-	JSON   zoneSpectrumAppDeleteResponseJSON   `json:"-"`
-	APIResponseSpectrumConfig
+	Errors   []SpectrumConfigMessageItem `json:"errors,required"`
+	Messages []SpectrumConfigMessageItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success ZoneSpectrumAppDeleteResponseSuccess `json:"success,required"`
+	Result  ZoneSpectrumAppDeleteResponseResult  `json:"result,nullable"`
+	JSON    zoneSpectrumAppDeleteResponseJSON    `json:"-"`
 }
 
 // zoneSpectrumAppDeleteResponseJSON contains the JSON metadata for the struct
 // [ZoneSpectrumAppDeleteResponse]
 type zoneSpectrumAppDeleteResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -1145,8 +1268,23 @@ func (r zoneSpectrumAppDeleteResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type ZoneSpectrumAppDeleteResponseSuccess bool
+
+const (
+	ZoneSpectrumAppDeleteResponseSuccessTrue ZoneSpectrumAppDeleteResponseSuccess = true
+)
+
+func (r ZoneSpectrumAppDeleteResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneSpectrumAppDeleteResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type ZoneSpectrumAppDeleteResponseResult struct {
-	// Identifier
+	// Identifier.
 	ID   string                                  `json:"id,required"`
 	JSON zoneSpectrumAppDeleteResponseResultJSON `json:"-"`
 }
@@ -1238,12 +1376,4 @@ func (r ZoneSpectrumAppListParamsOrder) IsKnown() bool {
 		return true
 	}
 	return false
-}
-
-type ZoneSpectrumAppDeleteParams struct {
-	Body interface{} `json:"body,required"`
-}
-
-func (r ZoneSpectrumAppDeleteParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
 }

@@ -122,6 +122,8 @@ func (r TunnelType) IsKnown() bool {
 }
 
 type AccountTeamnetRouteNetworkNewParams struct {
+	// UUID of the tunnel.
+	TunnelID param.Field[string] `json:"tunnel_id,required" format:"uuid"`
 	// Optional remark describing the route.
 	Comment param.Field[string] `json:"comment"`
 	// UUID of the virtual network.

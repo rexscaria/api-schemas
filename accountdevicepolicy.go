@@ -41,76 +41,106 @@ func NewAccountDevicePolicyService(opts ...option.RequestOption) (r *AccountDevi
 
 // Creates a device settings profile to be applied to certain devices matching the
 // criteria.
-func (r *AccountDevicePolicyService) New(ctx context.Context, accountID interface{}, body AccountDevicePolicyNewParams, opts ...option.RequestOption) (res *DeviceSettingsResponse, err error) {
+func (r *AccountDevicePolicyService) New(ctx context.Context, accountID string, body AccountDevicePolicyNewParams, opts ...option.RequestOption) (res *DeviceSettingsResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	path := fmt.Sprintf("accounts/%v/devices/policy", accountID)
+	if accountID == "" {
+		err = errors.New("missing required account_id parameter")
+		return
+	}
+	path := fmt.Sprintf("accounts/%s/devices/policy", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
 
 // Fetches the default device settings profile for an account.
-func (r *AccountDevicePolicyService) Get(ctx context.Context, accountID interface{}, opts ...option.RequestOption) (res *DefaultDeviceSettingsResponse, err error) {
+func (r *AccountDevicePolicyService) Get(ctx context.Context, accountID string, opts ...option.RequestOption) (res *DefaultDeviceSettingsResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	path := fmt.Sprintf("accounts/%v/devices/policy", accountID)
+	if accountID == "" {
+		err = errors.New("missing required account_id parameter")
+		return
+	}
+	path := fmt.Sprintf("accounts/%s/devices/policy", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
 
 // Updates the default device settings profile for an account.
-func (r *AccountDevicePolicyService) Update(ctx context.Context, accountID interface{}, body AccountDevicePolicyUpdateParams, opts ...option.RequestOption) (res *DefaultDeviceSettingsResponse, err error) {
+func (r *AccountDevicePolicyService) Update(ctx context.Context, accountID string, body AccountDevicePolicyUpdateParams, opts ...option.RequestOption) (res *DefaultDeviceSettingsResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	path := fmt.Sprintf("accounts/%v/devices/policy", accountID)
+	if accountID == "" {
+		err = errors.New("missing required account_id parameter")
+		return
+	}
+	path := fmt.Sprintf("accounts/%s/devices/policy", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return
 }
 
 // Deletes a device settings profile and fetches a list of the remaining profiles
 // for an account.
-func (r *AccountDevicePolicyService) Delete(ctx context.Context, accountID interface{}, policyID string, body AccountDevicePolicyDeleteParams, opts ...option.RequestOption) (res *DeviceSettingsResponseCollection, err error) {
+func (r *AccountDevicePolicyService) Delete(ctx context.Context, accountID string, policyID string, opts ...option.RequestOption) (res *DeviceSettingsResponseCollection, err error) {
 	opts = append(r.Options[:], opts...)
+	if accountID == "" {
+		err = errors.New("missing required account_id parameter")
+		return
+	}
 	if policyID == "" {
 		err = errors.New("missing required policy_id parameter")
 		return
 	}
-	path := fmt.Sprintf("accounts/%v/devices/policy/%s", accountID, policyID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	path := fmt.Sprintf("accounts/%s/devices/policy/%s", accountID, policyID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
 // Fetches a device settings profile by ID.
-func (r *AccountDevicePolicyService) GetByID(ctx context.Context, accountID interface{}, policyID string, opts ...option.RequestOption) (res *DeviceSettingsResponse, err error) {
+func (r *AccountDevicePolicyService) GetByID(ctx context.Context, accountID string, policyID string, opts ...option.RequestOption) (res *DeviceSettingsResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	if accountID == "" {
+		err = errors.New("missing required account_id parameter")
+		return
+	}
 	if policyID == "" {
 		err = errors.New("missing required policy_id parameter")
 		return
 	}
-	path := fmt.Sprintf("accounts/%v/devices/policy/%s", accountID, policyID)
+	path := fmt.Sprintf("accounts/%s/devices/policy/%s", accountID, policyID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
 
 // Updates a configured device settings profile.
-func (r *AccountDevicePolicyService) UpdateByID(ctx context.Context, accountID interface{}, policyID string, body AccountDevicePolicyUpdateByIDParams, opts ...option.RequestOption) (res *DeviceSettingsResponse, err error) {
+func (r *AccountDevicePolicyService) UpdateByID(ctx context.Context, accountID string, policyID string, body AccountDevicePolicyUpdateByIDParams, opts ...option.RequestOption) (res *DeviceSettingsResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	if accountID == "" {
+		err = errors.New("missing required account_id parameter")
+		return
+	}
 	if policyID == "" {
 		err = errors.New("missing required policy_id parameter")
 		return
 	}
-	path := fmt.Sprintf("accounts/%v/devices/policy/%s", accountID, policyID)
+	path := fmt.Sprintf("accounts/%s/devices/policy/%s", accountID, policyID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return
 }
 
 type DefaultDeviceSettingsResponse struct {
-	Result DefaultDeviceSettingsResponseResult `json:"result"`
-	JSON   defaultDeviceSettingsResponseJSON   `json:"-"`
-	APIResponseSingleTeamsDevices
+	Errors   []DefaultDeviceSettingsResponseError   `json:"errors,required"`
+	Messages []DefaultDeviceSettingsResponseMessage `json:"messages,required"`
+	Result   DefaultDeviceSettingsResponseResult    `json:"result,required,nullable"`
+	// Whether the API call was successful.
+	Success DefaultDeviceSettingsResponseSuccess `json:"success,required"`
+	JSON    defaultDeviceSettingsResponseJSON    `json:"-"`
 }
 
 // defaultDeviceSettingsResponseJSON contains the JSON metadata for the struct
 // [DefaultDeviceSettingsResponse]
 type defaultDeviceSettingsResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -120,6 +150,102 @@ func (r *DefaultDeviceSettingsResponse) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (r defaultDeviceSettingsResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+type DefaultDeviceSettingsResponseError struct {
+	Code             int64                                     `json:"code,required"`
+	Message          string                                    `json:"message,required"`
+	DocumentationURL string                                    `json:"documentation_url"`
+	Source           DefaultDeviceSettingsResponseErrorsSource `json:"source"`
+	JSON             defaultDeviceSettingsResponseErrorJSON    `json:"-"`
+}
+
+// defaultDeviceSettingsResponseErrorJSON contains the JSON metadata for the struct
+// [DefaultDeviceSettingsResponseError]
+type defaultDeviceSettingsResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *DefaultDeviceSettingsResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r defaultDeviceSettingsResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type DefaultDeviceSettingsResponseErrorsSource struct {
+	Pointer string                                        `json:"pointer"`
+	JSON    defaultDeviceSettingsResponseErrorsSourceJSON `json:"-"`
+}
+
+// defaultDeviceSettingsResponseErrorsSourceJSON contains the JSON metadata for the
+// struct [DefaultDeviceSettingsResponseErrorsSource]
+type defaultDeviceSettingsResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *DefaultDeviceSettingsResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r defaultDeviceSettingsResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type DefaultDeviceSettingsResponseMessage struct {
+	Code             int64                                       `json:"code,required"`
+	Message          string                                      `json:"message,required"`
+	DocumentationURL string                                      `json:"documentation_url"`
+	Source           DefaultDeviceSettingsResponseMessagesSource `json:"source"`
+	JSON             defaultDeviceSettingsResponseMessageJSON    `json:"-"`
+}
+
+// defaultDeviceSettingsResponseMessageJSON contains the JSON metadata for the
+// struct [DefaultDeviceSettingsResponseMessage]
+type defaultDeviceSettingsResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *DefaultDeviceSettingsResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r defaultDeviceSettingsResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type DefaultDeviceSettingsResponseMessagesSource struct {
+	Pointer string                                          `json:"pointer"`
+	JSON    defaultDeviceSettingsResponseMessagesSourceJSON `json:"-"`
+}
+
+// defaultDeviceSettingsResponseMessagesSourceJSON contains the JSON metadata for
+// the struct [DefaultDeviceSettingsResponseMessagesSource]
+type defaultDeviceSettingsResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *DefaultDeviceSettingsResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r defaultDeviceSettingsResponseMessagesSourceJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -150,11 +276,14 @@ type DefaultDeviceSettingsResponseResult struct {
 	FallbackDomains  []FallbackDomain `json:"fallback_domains"`
 	GatewayUniqueID  string           `json:"gateway_unique_id"`
 	// List of routes included in the WARP client's tunnel.
-	Include []SplitTunnel `json:"include"`
+	Include []SplitTunnelInclude `json:"include"`
 	// Determines if the operating system will register WARP's local interface IP with
 	// your on-premises DNS server.
-	RegisterInterfaceIPWithDNS bool          `json:"register_interface_ip_with_dns"`
-	ServiceModeV2              ServiceModeV2 `json:"service_mode_v2"`
+	RegisterInterfaceIPWithDNS bool `json:"register_interface_ip_with_dns"`
+	// Determines whether the WARP client indicates to SCCM that it is inside a VPN
+	// boundary. (Windows only).
+	SccmVpnBoundarySupport bool          `json:"sccm_vpn_boundary_support"`
+	ServiceModeV2          ServiceModeV2 `json:"service_mode_v2"`
 	// The URL to launch when the Send Feedback button is clicked.
 	SupportURL string `json:"support_url"`
 	// Whether to allow the user to turn off the WARP switch and disconnect the client.
@@ -181,6 +310,7 @@ type defaultDeviceSettingsResponseResultJSON struct {
 	GatewayUniqueID            apijson.Field
 	Include                    apijson.Field
 	RegisterInterfaceIPWithDNS apijson.Field
+	SccmVpnBoundarySupport     apijson.Field
 	ServiceModeV2              apijson.Field
 	SupportURL                 apijson.Field
 	SwitchLocked               apijson.Field
@@ -195,6 +325,21 @@ func (r *DefaultDeviceSettingsResponseResult) UnmarshalJSON(data []byte) (err er
 
 func (r defaultDeviceSettingsResponseResultJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type DefaultDeviceSettingsResponseSuccess bool
+
+const (
+	DefaultDeviceSettingsResponseSuccessTrue DefaultDeviceSettingsResponseSuccess = true
+)
+
+func (r DefaultDeviceSettingsResponseSuccess) IsKnown() bool {
+	switch r {
+	case DefaultDeviceSettingsResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type DeviceSettingsPolicy struct {
@@ -226,7 +371,7 @@ type DeviceSettingsPolicy struct {
 	FallbackDomains  []FallbackDomain `json:"fallback_domains"`
 	GatewayUniqueID  string           `json:"gateway_unique_id"`
 	// List of routes included in the WARP client's tunnel.
-	Include []SplitTunnel `json:"include"`
+	Include []SplitTunnelInclude `json:"include"`
 	// The amount of time in minutes a user is allowed access to their LAN. A value of
 	// 0 will allow LAN access until the next WARP reconnection, such as a reboot or a
 	// laptop waking from sleep. Note that this field is omitted from the response if
@@ -235,19 +380,24 @@ type DeviceSettingsPolicy struct {
 	// The size of the subnet for the local access network. Note that this field is
 	// omitted from the response if null or unset.
 	LanAllowSubnetSize float64 `json:"lan_allow_subnet_size"`
-	// The wirefilter expression to match devices.
+	// The wirefilter expression to match devices. Available values: "identity.email",
+	// "identity.groups.id", "identity.groups.name", "identity.groups.email",
+	// "identity.service_token_uuid", "identity.saml_attributes", "network", "os.name",
+	// "os.version".
 	Match string `json:"match"`
 	// The name of the device settings profile.
-	Name string `json:"name"`
-	// Device ID.
+	Name     string `json:"name"`
 	PolicyID string `json:"policy_id"`
 	// The precedence of the policy. Lower values indicate higher precedence. Policies
 	// will be evaluated in ascending order of this field.
 	Precedence float64 `json:"precedence"`
 	// Determines if the operating system will register WARP's local interface IP with
 	// your on-premises DNS server.
-	RegisterInterfaceIPWithDNS bool          `json:"register_interface_ip_with_dns"`
-	ServiceModeV2              ServiceModeV2 `json:"service_mode_v2"`
+	RegisterInterfaceIPWithDNS bool `json:"register_interface_ip_with_dns"`
+	// Determines whether the WARP client indicates to SCCM that it is inside a VPN
+	// boundary. (Windows only).
+	SccmVpnBoundarySupport bool          `json:"sccm_vpn_boundary_support"`
+	ServiceModeV2          ServiceModeV2 `json:"service_mode_v2"`
 	// The URL to launch when the Send Feedback button is clicked.
 	SupportURL string `json:"support_url"`
 	// Whether to allow the user to turn off the WARP switch and disconnect the client.
@@ -282,6 +432,7 @@ type deviceSettingsPolicyJSON struct {
 	PolicyID                   apijson.Field
 	Precedence                 apijson.Field
 	RegisterInterfaceIPWithDNS apijson.Field
+	SccmVpnBoundarySupport     apijson.Field
 	ServiceModeV2              apijson.Field
 	SupportURL                 apijson.Field
 	SwitchLocked               apijson.Field
@@ -300,9 +451,9 @@ func (r deviceSettingsPolicyJSON) RawJSON() string {
 }
 
 type DeviceSettingsPolicyTargetTest struct {
-	// The id of the DEX test targeting this policy
+	// The id of the DEX test targeting this policy.
 	ID string `json:"id"`
-	// The name of the DEX test targeting this policy
+	// The name of the DEX test targeting this policy.
 	Name string                             `json:"name"`
 	JSON deviceSettingsPolicyTargetTestJSON `json:"-"`
 }
@@ -325,15 +476,21 @@ func (r deviceSettingsPolicyTargetTestJSON) RawJSON() string {
 }
 
 type DeviceSettingsResponse struct {
-	Result DeviceSettingsPolicy       `json:"result"`
-	JSON   deviceSettingsResponseJSON `json:"-"`
-	APIResponseSingleTeamsDevices
+	Errors   []DeviceSettingsResponseError   `json:"errors,required"`
+	Messages []DeviceSettingsResponseMessage `json:"messages,required"`
+	Result   DeviceSettingsPolicy            `json:"result,required,nullable"`
+	// Whether the API call was successful.
+	Success DeviceSettingsResponseSuccess `json:"success,required"`
+	JSON    deviceSettingsResponseJSON    `json:"-"`
 }
 
 // deviceSettingsResponseJSON contains the JSON metadata for the struct
 // [DeviceSettingsResponse]
 type deviceSettingsResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -344,6 +501,117 @@ func (r *DeviceSettingsResponse) UnmarshalJSON(data []byte) (err error) {
 
 func (r deviceSettingsResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+type DeviceSettingsResponseError struct {
+	Code             int64                              `json:"code,required"`
+	Message          string                             `json:"message,required"`
+	DocumentationURL string                             `json:"documentation_url"`
+	Source           DeviceSettingsResponseErrorsSource `json:"source"`
+	JSON             deviceSettingsResponseErrorJSON    `json:"-"`
+}
+
+// deviceSettingsResponseErrorJSON contains the JSON metadata for the struct
+// [DeviceSettingsResponseError]
+type deviceSettingsResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *DeviceSettingsResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r deviceSettingsResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type DeviceSettingsResponseErrorsSource struct {
+	Pointer string                                 `json:"pointer"`
+	JSON    deviceSettingsResponseErrorsSourceJSON `json:"-"`
+}
+
+// deviceSettingsResponseErrorsSourceJSON contains the JSON metadata for the struct
+// [DeviceSettingsResponseErrorsSource]
+type deviceSettingsResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *DeviceSettingsResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r deviceSettingsResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type DeviceSettingsResponseMessage struct {
+	Code             int64                                `json:"code,required"`
+	Message          string                               `json:"message,required"`
+	DocumentationURL string                               `json:"documentation_url"`
+	Source           DeviceSettingsResponseMessagesSource `json:"source"`
+	JSON             deviceSettingsResponseMessageJSON    `json:"-"`
+}
+
+// deviceSettingsResponseMessageJSON contains the JSON metadata for the struct
+// [DeviceSettingsResponseMessage]
+type deviceSettingsResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *DeviceSettingsResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r deviceSettingsResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type DeviceSettingsResponseMessagesSource struct {
+	Pointer string                                   `json:"pointer"`
+	JSON    deviceSettingsResponseMessagesSourceJSON `json:"-"`
+}
+
+// deviceSettingsResponseMessagesSourceJSON contains the JSON metadata for the
+// struct [DeviceSettingsResponseMessagesSource]
+type deviceSettingsResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *DeviceSettingsResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r deviceSettingsResponseMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful.
+type DeviceSettingsResponseSuccess bool
+
+const (
+	DeviceSettingsResponseSuccessTrue DeviceSettingsResponseSuccess = true
+)
+
+func (r DeviceSettingsResponseSuccess) IsKnown() bool {
+	switch r {
+	case DeviceSettingsResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type ServiceModeV2 struct {
@@ -382,7 +650,10 @@ func (r ServiceModeV2Param) MarshalJSON() (data []byte, err error) {
 }
 
 type AccountDevicePolicyNewParams struct {
-	// The wirefilter expression to match devices.
+	// The wirefilter expression to match devices. Available values: "identity.email",
+	// "identity.groups.id", "identity.groups.name", "identity.groups.email",
+	// "identity.service_token_uuid", "identity.saml_attributes", "network", "os.name",
+	// "os.version".
 	Match param.Field[string] `json:"match,required"`
 	// The name of the device settings profile.
 	Name param.Field[string] `json:"name,required"`
@@ -415,7 +686,7 @@ type AccountDevicePolicyNewParams struct {
 	ExcludeOfficeIPs param.Field[bool] `json:"exclude_office_ips"`
 	// List of routes included in the WARP client's tunnel. Both 'exclude' and
 	// 'include' cannot be set in the same request.
-	Include param.Field[[]SplitTunnelUnionParam] `json:"include"`
+	Include param.Field[[]SplitTunnelIncludeUnionParam] `json:"include"`
 	// The amount of time in minutes a user is allowed access to their LAN. A value of
 	// 0 will allow LAN access until the next WARP reconnection, such as a reboot or a
 	// laptop waking from sleep. Note that this field is omitted from the response if
@@ -426,8 +697,11 @@ type AccountDevicePolicyNewParams struct {
 	LanAllowSubnetSize param.Field[float64] `json:"lan_allow_subnet_size"`
 	// Determines if the operating system will register WARP's local interface IP with
 	// your on-premises DNS server.
-	RegisterInterfaceIPWithDNS param.Field[bool]               `json:"register_interface_ip_with_dns"`
-	ServiceModeV2              param.Field[ServiceModeV2Param] `json:"service_mode_v2"`
+	RegisterInterfaceIPWithDNS param.Field[bool] `json:"register_interface_ip_with_dns"`
+	// Determines whether the WARP client indicates to SCCM that it is inside a VPN
+	// boundary. (Windows only).
+	SccmVpnBoundarySupport param.Field[bool]               `json:"sccm_vpn_boundary_support"`
+	ServiceModeV2          param.Field[ServiceModeV2Param] `json:"service_mode_v2"`
 	// The URL to launch when the Send Feedback button is clicked.
 	SupportURL param.Field[string] `json:"support_url"`
 	// Whether to allow the user to turn off the WARP switch and disconnect the client.
@@ -463,11 +737,22 @@ type AccountDevicePolicyUpdateParams struct {
 	ExcludeOfficeIPs param.Field[bool] `json:"exclude_office_ips"`
 	// List of routes included in the WARP client's tunnel. Both 'exclude' and
 	// 'include' cannot be set in the same request.
-	Include param.Field[[]SplitTunnelUnionParam] `json:"include"`
+	Include param.Field[[]SplitTunnelIncludeUnionParam] `json:"include"`
+	// The amount of time in minutes a user is allowed access to their LAN. A value of
+	// 0 will allow LAN access until the next WARP reconnection, such as a reboot or a
+	// laptop waking from sleep. Note that this field is omitted from the response if
+	// null or unset.
+	LanAllowMinutes param.Field[float64] `json:"lan_allow_minutes"`
+	// The size of the subnet for the local access network. Note that this field is
+	// omitted from the response if null or unset.
+	LanAllowSubnetSize param.Field[float64] `json:"lan_allow_subnet_size"`
 	// Determines if the operating system will register WARP's local interface IP with
 	// your on-premises DNS server.
-	RegisterInterfaceIPWithDNS param.Field[bool]               `json:"register_interface_ip_with_dns"`
-	ServiceModeV2              param.Field[ServiceModeV2Param] `json:"service_mode_v2"`
+	RegisterInterfaceIPWithDNS param.Field[bool] `json:"register_interface_ip_with_dns"`
+	// Determines whether the WARP client indicates to SCCM that it is inside a VPN
+	// boundary. (Windows only).
+	SccmVpnBoundarySupport param.Field[bool]               `json:"sccm_vpn_boundary_support"`
+	ServiceModeV2          param.Field[ServiceModeV2Param] `json:"service_mode_v2"`
 	// The URL to launch when the Send Feedback button is clicked.
 	SupportURL param.Field[string] `json:"support_url"`
 	// Whether to allow the user to turn off the WARP switch and disconnect the client.
@@ -478,14 +763,6 @@ type AccountDevicePolicyUpdateParams struct {
 
 func (r AccountDevicePolicyUpdateParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
-}
-
-type AccountDevicePolicyDeleteParams struct {
-	Body interface{} `json:"body,required"`
-}
-
-func (r AccountDevicePolicyDeleteParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
 }
 
 type AccountDevicePolicyUpdateByIDParams struct {
@@ -515,8 +792,19 @@ type AccountDevicePolicyUpdateByIDParams struct {
 	ExcludeOfficeIPs param.Field[bool] `json:"exclude_office_ips"`
 	// List of routes included in the WARP client's tunnel. Both 'exclude' and
 	// 'include' cannot be set in the same request.
-	Include param.Field[[]SplitTunnelUnionParam] `json:"include"`
-	// The wirefilter expression to match devices.
+	Include param.Field[[]SplitTunnelIncludeUnionParam] `json:"include"`
+	// The amount of time in minutes a user is allowed access to their LAN. A value of
+	// 0 will allow LAN access until the next WARP reconnection, such as a reboot or a
+	// laptop waking from sleep. Note that this field is omitted from the response if
+	// null or unset.
+	LanAllowMinutes param.Field[float64] `json:"lan_allow_minutes"`
+	// The size of the subnet for the local access network. Note that this field is
+	// omitted from the response if null or unset.
+	LanAllowSubnetSize param.Field[float64] `json:"lan_allow_subnet_size"`
+	// The wirefilter expression to match devices. Available values: "identity.email",
+	// "identity.groups.id", "identity.groups.name", "identity.groups.email",
+	// "identity.service_token_uuid", "identity.saml_attributes", "network", "os.name",
+	// "os.version".
 	Match param.Field[string] `json:"match"`
 	// The name of the device settings profile.
 	Name param.Field[string] `json:"name"`
@@ -525,8 +813,11 @@ type AccountDevicePolicyUpdateByIDParams struct {
 	Precedence param.Field[float64] `json:"precedence"`
 	// Determines if the operating system will register WARP's local interface IP with
 	// your on-premises DNS server.
-	RegisterInterfaceIPWithDNS param.Field[bool]               `json:"register_interface_ip_with_dns"`
-	ServiceModeV2              param.Field[ServiceModeV2Param] `json:"service_mode_v2"`
+	RegisterInterfaceIPWithDNS param.Field[bool] `json:"register_interface_ip_with_dns"`
+	// Determines whether the WARP client indicates to SCCM that it is inside a VPN
+	// boundary. (Windows only).
+	SccmVpnBoundarySupport param.Field[bool]               `json:"sccm_vpn_boundary_support"`
+	ServiceModeV2          param.Field[ServiceModeV2Param] `json:"service_mode_v2"`
 	// The URL to launch when the Send Feedback button is clicked.
 	SupportURL param.Field[string] `json:"support_url"`
 	// Whether to allow the user to turn off the WARP switch and disconnect the client.

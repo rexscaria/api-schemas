@@ -97,7 +97,7 @@ func (r *ZoneCustomCertificateService) List(ctx context.Context, zoneID string, 
 }
 
 // Remove a SSL certificate from a zone.
-func (r *ZoneCustomCertificateService) Delete(ctx context.Context, zoneID string, customCertificateID string, body ZoneCustomCertificateDeleteParams, opts ...option.RequestOption) (res *ZoneCustomCertificateDeleteResponse, err error) {
+func (r *ZoneCustomCertificateService) Delete(ctx context.Context, zoneID string, customCertificateID string, opts ...option.RequestOption) (res *ZoneCustomCertificateDeleteResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
@@ -108,7 +108,7 @@ func (r *ZoneCustomCertificateService) Delete(ctx context.Context, zoneID string
 		return
 	}
 	path := fmt.Sprintf("zones/%s/custom_certificates/%s", zoneID, customCertificateID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
@@ -147,15 +147,23 @@ func (r BundleMethod) IsKnown() bool {
 }
 
 type CertificateResponseCollection struct {
-	Result []CustomCertificate               `json:"result"`
-	JSON   certificateResponseCollectionJSON `json:"-"`
-	APIResponseCollectionTlsCertificates
+	Errors   []MessagesTlsCertificatesItem `json:"errors,required"`
+	Messages []MessagesTlsCertificatesItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success    CertificateResponseCollectionSuccess    `json:"success,required"`
+	Result     []CustomCertificate                     `json:"result"`
+	ResultInfo CertificateResponseCollectionResultInfo `json:"result_info"`
+	JSON       certificateResponseCollectionJSON       `json:"-"`
 }
 
 // certificateResponseCollectionJSON contains the JSON metadata for the struct
 // [CertificateResponseCollection]
 type certificateResponseCollectionJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -168,15 +176,67 @@ func (r certificateResponseCollectionJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type CertificateResponseCollectionSuccess bool
+
+const (
+	CertificateResponseCollectionSuccessTrue CertificateResponseCollectionSuccess = true
+)
+
+func (r CertificateResponseCollectionSuccess) IsKnown() bool {
+	switch r {
+	case CertificateResponseCollectionSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type CertificateResponseCollectionResultInfo struct {
+	// Total number of results for the requested service.
+	Count float64 `json:"count"`
+	// Current page within paginated list of results.
+	Page float64 `json:"page"`
+	// Number of results per page of results.
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters.
+	TotalCount float64                                     `json:"total_count"`
+	JSON       certificateResponseCollectionResultInfoJSON `json:"-"`
+}
+
+// certificateResponseCollectionResultInfoJSON contains the JSON metadata for the
+// struct [CertificateResponseCollectionResultInfo]
+type certificateResponseCollectionResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *CertificateResponseCollectionResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r certificateResponseCollectionResultInfoJSON) RawJSON() string {
+	return r.raw
+}
+
 type CertificateResponseSingleCustom struct {
-	Result CustomCertificate                   `json:"result"`
-	JSON   certificateResponseSingleCustomJSON `json:"-"`
-	APIResponseSingleTlsCertificates
+	Errors   []MessagesTlsCertificatesItem `json:"errors,required"`
+	Messages []MessagesTlsCertificatesItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success CertificateResponseSingleCustomSuccess `json:"success,required"`
+	Result  CustomCertificate                      `json:"result"`
+	JSON    certificateResponseSingleCustomJSON    `json:"-"`
 }
 
 // certificateResponseSingleCustomJSON contains the JSON metadata for the struct
 // [CertificateResponseSingleCustom]
 type certificateResponseSingleCustomJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -190,8 +250,23 @@ func (r certificateResponseSingleCustomJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type CertificateResponseSingleCustomSuccess bool
+
+const (
+	CertificateResponseSingleCustomSuccessTrue CertificateResponseSingleCustomSuccess = true
+)
+
+func (r CertificateResponseSingleCustomSuccess) IsKnown() bool {
+	switch r {
+	case CertificateResponseSingleCustomSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type CustomCertificate struct {
-	// Identifier
+	// Identifier.
 	ID string `json:"id,required"`
 	// A ubiquitous bundle has the highest probability of being verified everywhere,
 	// even by clients using outdated or unusual trust stores. An optimal bundle uses
@@ -216,7 +291,7 @@ type CustomCertificate struct {
 	Status CustomCertificateStatus `json:"status,required"`
 	// When the certificate was uploaded to Cloudflare.
 	UploadedOn time.Time `json:"uploaded_on,required" format:"date-time"`
-	// Identifier
+	// Identifier.
 	ZoneID string `json:"zone_id,required"`
 	// Specify the region where your private key can be held locally for optimal TLS
 	// performance. HTTPS connections to any excluded data center will still be fully
@@ -347,14 +422,20 @@ func (r GeoRestrictionsParam) MarshalJSON() (data []byte, err error) {
 }
 
 type ZoneCustomCertificateDeleteResponse struct {
-	Result ZoneCustomCertificateDeleteResponseResult `json:"result"`
-	JSON   zoneCustomCertificateDeleteResponseJSON   `json:"-"`
-	APIResponseSingleTlsCertificates
+	Errors   []MessagesTlsCertificatesItem `json:"errors,required"`
+	Messages []MessagesTlsCertificatesItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success ZoneCustomCertificateDeleteResponseSuccess `json:"success,required"`
+	Result  ZoneCustomCertificateDeleteResponseResult  `json:"result"`
+	JSON    zoneCustomCertificateDeleteResponseJSON    `json:"-"`
 }
 
 // zoneCustomCertificateDeleteResponseJSON contains the JSON metadata for the
 // struct [ZoneCustomCertificateDeleteResponse]
 type zoneCustomCertificateDeleteResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -368,8 +449,23 @@ func (r zoneCustomCertificateDeleteResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type ZoneCustomCertificateDeleteResponseSuccess bool
+
+const (
+	ZoneCustomCertificateDeleteResponseSuccessTrue ZoneCustomCertificateDeleteResponseSuccess = true
+)
+
+func (r ZoneCustomCertificateDeleteResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneCustomCertificateDeleteResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type ZoneCustomCertificateDeleteResponseResult struct {
-	// Identifier
+	// Identifier.
 	ID   string                                        `json:"id"`
 	JSON zoneCustomCertificateDeleteResponseResultJSON `json:"-"`
 }
@@ -533,14 +629,6 @@ func (r ZoneCustomCertificateListParamsStatus) IsKnown() bool {
 	return false
 }
 
-type ZoneCustomCertificateDeleteParams struct {
-	Body interface{} `json:"body,required"`
-}
-
-func (r ZoneCustomCertificateDeleteParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
-}
-
 type ZoneCustomCertificatePrioritizeParams struct {
 	// Array of ordered certificates.
 	Certificates param.Field[[]ZoneCustomCertificatePrioritizeParamsCertificate] `json:"certificates,required"`
@@ -551,7 +639,7 @@ func (r ZoneCustomCertificatePrioritizeParams) MarshalJSON() (data []byte, err e
 }
 
 type ZoneCustomCertificatePrioritizeParamsCertificate struct {
-	// Identifier
+	// Identifier.
 	ID param.Field[string] `json:"id"`
 	// The order/priority in which the certificate will be used in a request. The
 	// higher priority will break ties across overlapping 'legacy_custom' certificates,

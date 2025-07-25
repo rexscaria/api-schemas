@@ -112,88 +112,6 @@ func (r *AccountInfrastructureTargetService) Delete(ctx context.Context, account
 	return
 }
 
-type APIResponseInfrastructure struct {
-	Errors   []MessagesInfraItem `json:"errors,required"`
-	Messages []MessagesInfraItem `json:"messages,required"`
-	// Whether the API call was successful
-	Success APIResponseInfrastructureSuccess `json:"success,required"`
-	JSON    apiResponseInfrastructureJSON    `json:"-"`
-}
-
-// apiResponseInfrastructureJSON contains the JSON metadata for the struct
-// [APIResponseInfrastructure]
-type apiResponseInfrastructureJSON struct {
-	Errors      apijson.Field
-	Messages    apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *APIResponseInfrastructure) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r apiResponseInfrastructureJSON) RawJSON() string {
-	return r.raw
-}
-
-// Whether the API call was successful
-type APIResponseInfrastructureSuccess bool
-
-const (
-	APIResponseInfrastructureSuccessTrue APIResponseInfrastructureSuccess = true
-)
-
-func (r APIResponseInfrastructureSuccess) IsKnown() bool {
-	switch r {
-	case APIResponseInfrastructureSuccessTrue:
-		return true
-	}
-	return false
-}
-
-type APIResponseSingleInfrastructure struct {
-	Errors   []MessagesInfraItem `json:"errors,required"`
-	Messages []MessagesInfraItem `json:"messages,required"`
-	// Whether the API call was successful
-	Success APIResponseSingleInfrastructureSuccess `json:"success,required"`
-	JSON    apiResponseSingleInfrastructureJSON    `json:"-"`
-}
-
-// apiResponseSingleInfrastructureJSON contains the JSON metadata for the struct
-// [APIResponseSingleInfrastructure]
-type apiResponseSingleInfrastructureJSON struct {
-	Errors      apijson.Field
-	Messages    apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *APIResponseSingleInfrastructure) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r apiResponseSingleInfrastructureJSON) RawJSON() string {
-	return r.raw
-}
-
-// Whether the API call was successful
-type APIResponseSingleInfrastructureSuccess bool
-
-const (
-	APIResponseSingleInfrastructureSuccessTrue APIResponseSingleInfrastructureSuccess = true
-)
-
-func (r APIResponseSingleInfrastructureSuccess) IsKnown() bool {
-	switch r {
-	case APIResponseSingleInfrastructureSuccessTrue:
-		return true
-	}
-	return false
-}
-
 // The IPv4/IPv6 address that identifies where to reach a target
 type IPInfoTarget struct {
 	// The target's IPv4 address
@@ -312,18 +230,22 @@ func (r IPInfoTargetIpv6Param) MarshalJSON() (data []byte, err error) {
 }
 
 type MessagesInfraItem struct {
-	Code    int64                 `json:"code,required"`
-	Message string                `json:"message,required"`
-	JSON    messagesInfraItemJSON `json:"-"`
+	Code             int64                   `json:"code,required"`
+	Message          string                  `json:"message,required"`
+	DocumentationURL string                  `json:"documentation_url"`
+	Source           MessagesInfraItemSource `json:"source"`
+	JSON             messagesInfraItemJSON   `json:"-"`
 }
 
 // messagesInfraItemJSON contains the JSON metadata for the struct
 // [MessagesInfraItem]
 type messagesInfraItemJSON struct {
-	Code        apijson.Field
-	Message     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
 }
 
 func (r *MessagesInfraItem) UnmarshalJSON(data []byte) (err error) {
@@ -334,15 +256,42 @@ func (r messagesInfraItemJSON) RawJSON() string {
 	return r.raw
 }
 
+type MessagesInfraItemSource struct {
+	Pointer string                      `json:"pointer"`
+	JSON    messagesInfraItemSourceJSON `json:"-"`
+}
+
+// messagesInfraItemSourceJSON contains the JSON metadata for the struct
+// [MessagesInfraItemSource]
+type messagesInfraItemSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *MessagesInfraItemSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r messagesInfraItemSourceJSON) RawJSON() string {
+	return r.raw
+}
+
 type AccountInfrastructureTargetNewResponse struct {
-	Result TargetBatch                                `json:"result"`
-	JSON   accountInfrastructureTargetNewResponseJSON `json:"-"`
-	APIResponseSingleInfrastructure
+	Errors   []MessagesInfraItem `json:"errors,required"`
+	Messages []MessagesInfraItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountInfrastructureTargetNewResponseSuccess `json:"success,required"`
+	Result  TargetBatch                                   `json:"result"`
+	JSON    accountInfrastructureTargetNewResponseJSON    `json:"-"`
 }
 
 // accountInfrastructureTargetNewResponseJSON contains the JSON metadata for the
 // struct [AccountInfrastructureTargetNewResponse]
 type accountInfrastructureTargetNewResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -356,15 +305,36 @@ func (r accountInfrastructureTargetNewResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountInfrastructureTargetNewResponseSuccess bool
+
+const (
+	AccountInfrastructureTargetNewResponseSuccessTrue AccountInfrastructureTargetNewResponseSuccess = true
+)
+
+func (r AccountInfrastructureTargetNewResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountInfrastructureTargetNewResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountInfrastructureTargetGetResponse struct {
-	Result TargetBatch                                `json:"result"`
-	JSON   accountInfrastructureTargetGetResponseJSON `json:"-"`
-	APIResponseSingleInfrastructure
+	Errors   []MessagesInfraItem `json:"errors,required"`
+	Messages []MessagesInfraItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountInfrastructureTargetGetResponseSuccess `json:"success,required"`
+	Result  TargetBatch                                   `json:"result"`
+	JSON    accountInfrastructureTargetGetResponseJSON    `json:"-"`
 }
 
 // accountInfrastructureTargetGetResponseJSON contains the JSON metadata for the
 // struct [AccountInfrastructureTargetGetResponse]
 type accountInfrastructureTargetGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -378,15 +348,36 @@ func (r accountInfrastructureTargetGetResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountInfrastructureTargetGetResponseSuccess bool
+
+const (
+	AccountInfrastructureTargetGetResponseSuccessTrue AccountInfrastructureTargetGetResponseSuccess = true
+)
+
+func (r AccountInfrastructureTargetGetResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountInfrastructureTargetGetResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountInfrastructureTargetUpdateResponse struct {
-	Result TargetBatch                                   `json:"result"`
-	JSON   accountInfrastructureTargetUpdateResponseJSON `json:"-"`
-	APIResponseSingleInfrastructure
+	Errors   []MessagesInfraItem `json:"errors,required"`
+	Messages []MessagesInfraItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountInfrastructureTargetUpdateResponseSuccess `json:"success,required"`
+	Result  TargetBatch                                      `json:"result"`
+	JSON    accountInfrastructureTargetUpdateResponseJSON    `json:"-"`
 }
 
 // accountInfrastructureTargetUpdateResponseJSON contains the JSON metadata for the
 // struct [AccountInfrastructureTargetUpdateResponse]
 type accountInfrastructureTargetUpdateResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -400,16 +391,37 @@ func (r accountInfrastructureTargetUpdateResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountInfrastructureTargetUpdateResponseSuccess bool
+
+const (
+	AccountInfrastructureTargetUpdateResponseSuccessTrue AccountInfrastructureTargetUpdateResponseSuccess = true
+)
+
+func (r AccountInfrastructureTargetUpdateResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountInfrastructureTargetUpdateResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountInfrastructureTargetListResponse struct {
+	Errors   []MessagesInfraItem `json:"errors,required"`
+	Messages []MessagesInfraItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success    AccountInfrastructureTargetListResponseSuccess    `json:"success,required"`
 	Result     []TargetBatch                                     `json:"result"`
 	ResultInfo AccountInfrastructureTargetListResponseResultInfo `json:"result_info"`
 	JSON       accountInfrastructureTargetListResponseJSON       `json:"-"`
-	APIResponseInfrastructure
 }
 
 // accountInfrastructureTargetListResponseJSON contains the JSON metadata for the
 // struct [AccountInfrastructureTargetListResponse]
 type accountInfrastructureTargetListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	ResultInfo  apijson.Field
 	raw         string
@@ -424,14 +436,29 @@ func (r accountInfrastructureTargetListResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountInfrastructureTargetListResponseSuccess bool
+
+const (
+	AccountInfrastructureTargetListResponseSuccessTrue AccountInfrastructureTargetListResponseSuccess = true
+)
+
+func (r AccountInfrastructureTargetListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountInfrastructureTargetListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountInfrastructureTargetListResponseResultInfo struct {
-	// Total number of results for the requested service
+	// Total number of results for the requested service.
 	Count float64 `json:"count"`
-	// Current page within paginated list of results
+	// Current page within paginated list of results.
 	Page float64 `json:"page"`
-	// Number of results per page of results
+	// Number of results per page of results.
 	PerPage float64 `json:"per_page"`
-	// Total results available without any search parameters
+	// Total results available without any search parameters.
 	TotalCount float64                                               `json:"total_count"`
 	JSON       accountInfrastructureTargetListResponseResultInfoJSON `json:"-"`
 }

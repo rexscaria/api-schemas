@@ -33,7 +33,6 @@ func TestAccountMagicSiteLanNewWithOptionalParams(t *testing.T) {
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.AccountMagicSiteLanNewParams{
 			Physport: cfrex.F(int64(1)),
-			VlanTag:  cfrex.F(int64(0)),
 			HaLink:   cfrex.F(true),
 			Name:     cfrex.F("name"),
 			Nat: cfrex.F(cfrex.MagicNatParam{
@@ -64,6 +63,7 @@ func TestAccountMagicSiteLanNewWithOptionalParams(t *testing.T) {
 				SecondaryAddress: cfrex.F("192.0.2.0/24"),
 				VirtualAddress:   cfrex.F("192.0.2.0/24"),
 			}),
+			VlanTag: cfrex.F(int64(42)),
 		},
 	)
 	if err != nil {
@@ -155,7 +155,7 @@ func TestAccountMagicSiteLanUpdateWithOptionalParams(t *testing.T) {
 					SecondaryAddress: cfrex.F("192.0.2.0/24"),
 					VirtualAddress:   cfrex.F("192.0.2.0/24"),
 				}),
-				VlanTag: cfrex.F(int64(0)),
+				VlanTag: cfrex.F(int64(42)),
 			},
 		},
 	)
@@ -215,9 +215,6 @@ func TestAccountMagicSiteLanDelete(t *testing.T) {
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		"023e105f4ecef8ad9ca31a8372d0c353",
-		cfrex.AccountMagicSiteLanDeleteParams{
-			Body: map[string]interface{}{},
-		},
 	)
 	if err != nil {
 		var apierr *cfrex.Error
@@ -279,7 +276,7 @@ func TestAccountMagicSiteLanPatchWithOptionalParams(t *testing.T) {
 					SecondaryAddress: cfrex.F("192.0.2.0/24"),
 					VirtualAddress:   cfrex.F("192.0.2.0/24"),
 				}),
-				VlanTag: cfrex.F(int64(0)),
+				VlanTag: cfrex.F(int64(42)),
 			},
 		},
 	)

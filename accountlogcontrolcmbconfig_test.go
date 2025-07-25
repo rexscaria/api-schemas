@@ -56,7 +56,8 @@ func TestAccountLogControlCmbConfigUpdateWithOptionalParams(t *testing.T) {
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.AccountLogControlCmbConfigUpdateParams{
 			CmbConfig: cfrex.CmbConfigParam{
-				Regions: cfrex.F("eu"),
+				AllowOutOfRegionAccess: cfrex.F(false),
+				Regions:                cfrex.F("eu"),
 			},
 		},
 	)
@@ -83,13 +84,7 @@ func TestAccountLogControlCmbConfigDelete(t *testing.T) {
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Accounts.Logs.Control.Cmb.Config.Delete(
-		context.TODO(),
-		"023e105f4ecef8ad9ca31a8372d0c353",
-		cfrex.AccountLogControlCmbConfigDeleteParams{
-			Body: map[string]interface{}{},
-		},
-	)
+	_, err := client.Accounts.Logs.Control.Cmb.Config.Delete(context.TODO(), "023e105f4ecef8ad9ca31a8372d0c353")
 	if err != nil {
 		var apierr *cfrex.Error
 		if errors.As(err, &apierr) {

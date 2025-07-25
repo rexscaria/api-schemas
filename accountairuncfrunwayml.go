@@ -36,9 +36,8 @@ func NewAccountAIRunCfRunwaymlService(opts ...option.RequestOption) (r *AccountA
 }
 
 // Execute @cf/runwayml/stable-diffusion-v1-5-img2img model.
-func (r *AccountAIRunCfRunwaymlService) ExecuteStableDiffusionV1_5Img2img(ctx context.Context, accountID string, params AccountAIRunCfRunwaymlExecuteStableDiffusionV1_5Img2imgParams, opts ...option.RequestOption) (res *http.Response, err error) {
+func (r *AccountAIRunCfRunwaymlService) ExecuteStableDiffusionV1_5Img2img(ctx context.Context, accountID string, params AccountAIRunCfRunwaymlExecuteStableDiffusionV1_5Img2imgParams, opts ...option.RequestOption) (res *AccountAIRunCfRunwaymlExecuteStableDiffusionV1_5Img2imgResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "image/png")}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -49,9 +48,8 @@ func (r *AccountAIRunCfRunwaymlService) ExecuteStableDiffusionV1_5Img2img(ctx co
 }
 
 // Execute @cf/runwayml/stable-diffusion-v1-5-inpainting model.
-func (r *AccountAIRunCfRunwaymlService) ExecuteStableDiffusionV1_5Inpainting(ctx context.Context, accountID string, params AccountAIRunCfRunwaymlExecuteStableDiffusionV1_5InpaintingParams, opts ...option.RequestOption) (res *http.Response, err error) {
+func (r *AccountAIRunCfRunwaymlService) ExecuteStableDiffusionV1_5Inpainting(ctx context.Context, accountID string, params AccountAIRunCfRunwaymlExecuteStableDiffusionV1_5InpaintingParams, opts ...option.RequestOption) (res *AccountAIRunCfRunwaymlExecuteStableDiffusionV1_5InpaintingResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "image/png")}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -60,6 +58,10 @@ func (r *AccountAIRunCfRunwaymlService) ExecuteStableDiffusionV1_5Inpainting(ctx
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
 }
+
+type AccountAIRunCfRunwaymlExecuteStableDiffusionV1_5Img2imgResponse = interface{}
+
+type AccountAIRunCfRunwaymlExecuteStableDiffusionV1_5InpaintingResponse = interface{}
 
 type AccountAIRunCfRunwaymlExecuteStableDiffusionV1_5Img2imgParams struct {
 	// A text description of the image you want to generate

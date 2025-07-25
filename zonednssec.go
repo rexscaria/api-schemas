@@ -59,30 +59,34 @@ func (r *ZoneDnssecService) Update(ctx context.Context, zoneID string, body Zone
 }
 
 // Delete DNSSEC.
-func (r *ZoneDnssecService) Delete(ctx context.Context, zoneID string, body ZoneDnssecDeleteParams, opts ...option.RequestOption) (res *ZoneDnssecDeleteResponse, err error) {
+func (r *ZoneDnssecService) Delete(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *ZoneDnssecDeleteResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
 	}
 	path := fmt.Sprintf("zones/%s/dnssec", zoneID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
 type DnssecMessageItem struct {
-	Code    int64                 `json:"code,required"`
-	Message string                `json:"message,required"`
-	JSON    dnssecMessageItemJSON `json:"-"`
+	Code             int64                   `json:"code,required"`
+	Message          string                  `json:"message,required"`
+	DocumentationURL string                  `json:"documentation_url"`
+	Source           DnssecMessageItemSource `json:"source"`
+	JSON             dnssecMessageItemJSON   `json:"-"`
 }
 
 // dnssecMessageItemJSON contains the JSON metadata for the struct
 // [DnssecMessageItem]
 type dnssecMessageItemJSON struct {
-	Code        apijson.Field
-	Message     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
 }
 
 func (r *DnssecMessageItem) UnmarshalJSON(data []byte) (err error) {
@@ -93,14 +97,41 @@ func (r dnssecMessageItemJSON) RawJSON() string {
 	return r.raw
 }
 
+type DnssecMessageItemSource struct {
+	Pointer string                      `json:"pointer"`
+	JSON    dnssecMessageItemSourceJSON `json:"-"`
+}
+
+// dnssecMessageItemSourceJSON contains the JSON metadata for the struct
+// [DnssecMessageItemSource]
+type dnssecMessageItemSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *DnssecMessageItemSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r dnssecMessageItemSourceJSON) RawJSON() string {
+	return r.raw
+}
+
 type DnssecResponse struct {
-	Result DnssecResponseResult `json:"result"`
-	JSON   dnssecResponseJSON   `json:"-"`
-	SingleResponseDnssec
+	Errors   []DnssecMessageItem `json:"errors,required"`
+	Messages []DnssecMessageItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success DnssecResponseSuccess `json:"success,required"`
+	Result  DnssecResponseResult  `json:"result"`
+	JSON    dnssecResponseJSON    `json:"-"`
 }
 
 // dnssecResponseJSON contains the JSON metadata for the struct [DnssecResponse]
 type dnssecResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -112,6 +143,21 @@ func (r *DnssecResponse) UnmarshalJSON(data []byte) (err error) {
 
 func (r dnssecResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type DnssecResponseSuccess bool
+
+const (
+	DnssecResponseSuccessTrue DnssecResponseSuccess = true
+)
+
+func (r DnssecResponseSuccess) IsKnown() bool {
+	switch r {
+	case DnssecResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type DnssecResponseResult struct {
@@ -140,6 +186,16 @@ type DnssecResponseResult struct {
 	// [Cloudflare as Secondary](https://developers.cloudflare.com/dns/zone-setups/zone-transfers/cloudflare-as-secondary/setup/#dnssec)
 	// for details.
 	DnssecPresigned bool `json:"dnssec_presigned"`
+	// If true, enables the use of NSEC3 together with DNSSEC on the zone. Combined
+	// with setting dnssec_presigned to true, this enables the use of NSEC3 records
+	// when transferring in from an external provider. If dnssec_presigned is instead
+	// set to false (default), NSEC3 records will be generated and signed at request
+	// time.
+	//
+	// See
+	// [DNSSEC with NSEC3](https://developers.cloudflare.com/dns/dnssec/enable-nsec3/)
+	// for details.
+	DnssecUseNsec3 bool `json:"dnssec_use_nsec3"`
 	// Full DS record.
 	Ds string `json:"ds,nullable"`
 	// Flag for DNSSEC record.
@@ -166,6 +222,7 @@ type dnssecResponseResultJSON struct {
 	DigestType        apijson.Field
 	DnssecMultiSigner apijson.Field
 	DnssecPresigned   apijson.Field
+	DnssecUseNsec3    apijson.Field
 	Ds                apijson.Field
 	Flags             apijson.Field
 	KeyTag            apijson.Field
@@ -204,56 +261,21 @@ func (r DnssecResponseResultStatus) IsKnown() bool {
 	return false
 }
 
-type SingleResponseDnssec struct {
+type ZoneDnssecDeleteResponse struct {
 	Errors   []DnssecMessageItem `json:"errors,required"`
 	Messages []DnssecMessageItem `json:"messages,required"`
-	// Whether the API call was successful
-	Success SingleResponseDnssecSuccess `json:"success,required"`
-	JSON    singleResponseDnssecJSON    `json:"-"`
-}
-
-// singleResponseDnssecJSON contains the JSON metadata for the struct
-// [SingleResponseDnssec]
-type singleResponseDnssecJSON struct {
-	Errors      apijson.Field
-	Messages    apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *SingleResponseDnssec) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r singleResponseDnssecJSON) RawJSON() string {
-	return r.raw
-}
-
-// Whether the API call was successful
-type SingleResponseDnssecSuccess bool
-
-const (
-	SingleResponseDnssecSuccessTrue SingleResponseDnssecSuccess = true
-)
-
-func (r SingleResponseDnssecSuccess) IsKnown() bool {
-	switch r {
-	case SingleResponseDnssecSuccessTrue:
-		return true
-	}
-	return false
-}
-
-type ZoneDnssecDeleteResponse struct {
-	Result string                       `json:"result"`
-	JSON   zoneDnssecDeleteResponseJSON `json:"-"`
-	SingleResponseDnssec
+	// Whether the API call was successful.
+	Success ZoneDnssecDeleteResponseSuccess `json:"success,required"`
+	Result  string                          `json:"result"`
+	JSON    zoneDnssecDeleteResponseJSON    `json:"-"`
 }
 
 // zoneDnssecDeleteResponseJSON contains the JSON metadata for the struct
 // [ZoneDnssecDeleteResponse]
 type zoneDnssecDeleteResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -265,6 +287,21 @@ func (r *ZoneDnssecDeleteResponse) UnmarshalJSON(data []byte) (err error) {
 
 func (r zoneDnssecDeleteResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type ZoneDnssecDeleteResponseSuccess bool
+
+const (
+	ZoneDnssecDeleteResponseSuccessTrue ZoneDnssecDeleteResponseSuccess = true
+)
+
+func (r ZoneDnssecDeleteResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneDnssecDeleteResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type ZoneDnssecUpdateParams struct {
@@ -285,6 +322,16 @@ type ZoneDnssecUpdateParams struct {
 	// [Cloudflare as Secondary](https://developers.cloudflare.com/dns/zone-setups/zone-transfers/cloudflare-as-secondary/setup/#dnssec)
 	// for details.
 	DnssecPresigned param.Field[bool] `json:"dnssec_presigned"`
+	// If true, enables the use of NSEC3 together with DNSSEC on the zone. Combined
+	// with setting dnssec_presigned to true, this enables the use of NSEC3 records
+	// when transferring in from an external provider. If dnssec_presigned is instead
+	// set to false (default), NSEC3 records will be generated and signed at request
+	// time.
+	//
+	// See
+	// [DNSSEC with NSEC3](https://developers.cloudflare.com/dns/dnssec/enable-nsec3/)
+	// for details.
+	DnssecUseNsec3 param.Field[bool] `json:"dnssec_use_nsec3"`
 	// Status of DNSSEC, based on user-desired state and presence of necessary records.
 	Status param.Field[ZoneDnssecUpdateParamsStatus] `json:"status"`
 }
@@ -307,12 +354,4 @@ func (r ZoneDnssecUpdateParamsStatus) IsKnown() bool {
 		return true
 	}
 	return false
-}
-
-type ZoneDnssecDeleteParams struct {
-	Body interface{} `json:"body,required"`
-}
-
-func (r ZoneDnssecDeleteParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
 }

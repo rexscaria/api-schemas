@@ -204,9 +204,6 @@ func TestAccountGatewayLocationDelete(t *testing.T) {
 		context.TODO(),
 		"699d98642c564d2e855e9661899b7252",
 		"ed35569b41ce4d1facfe683550f54086",
-		cfrex.AccountGatewayLocationDeleteParams{
-			Body: map[string]interface{}{},
-		},
 	)
 	if err != nil {
 		var apierr *cfrex.Error

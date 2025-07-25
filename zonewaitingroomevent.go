@@ -114,7 +114,7 @@ func (r *ZoneWaitingRoomEventService) List(ctx context.Context, zoneID string, w
 }
 
 // Deletes an event for a waiting room.
-func (r *ZoneWaitingRoomEventService) Delete(ctx context.Context, zoneID string, waitingRoomID string, eventID string, body ZoneWaitingRoomEventDeleteParams, opts ...option.RequestOption) (res *ZoneWaitingRoomEventDeleteResponse, err error) {
+func (r *ZoneWaitingRoomEventService) Delete(ctx context.Context, zoneID string, waitingRoomID string, eventID string, opts ...option.RequestOption) (res *ZoneWaitingRoomEventDeleteResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
@@ -129,7 +129,7 @@ func (r *ZoneWaitingRoomEventService) Delete(ctx context.Context, zoneID string,
 		return
 	}
 	path := fmt.Sprintf("zones/%s/waiting_rooms/%s/events/%s", zoneID, waitingRoomID, eventID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
@@ -175,9 +175,8 @@ func (r *ZoneWaitingRoomEventService) Preview(ctx context.Context, zoneID string
 }
 
 type EventResponse struct {
-	Result EventResult       `json:"result"`
+	Result EventResult       `json:"result,required"`
 	JSON   eventResponseJSON `json:"-"`
-	APIResponseSingle
 }
 
 // eventResponseJSON contains the JSON metadata for the struct [EventResponse]
@@ -380,15 +379,23 @@ func (r TurnstileEventMode) IsKnown() bool {
 }
 
 type ZoneWaitingRoomEventListResponse struct {
-	Result []EventResult                        `json:"result"`
-	JSON   zoneWaitingRoomEventListResponseJSON `json:"-"`
-	WaitingroomAPIResponseCollection
+	Errors   []WaitingroomMessage `json:"errors,required"`
+	Messages []WaitingroomMessage `json:"messages,required"`
+	// Whether the API call was successful.
+	Success    ZoneWaitingRoomEventListResponseSuccess    `json:"success,required"`
+	Result     []EventResult                              `json:"result"`
+	ResultInfo ZoneWaitingRoomEventListResponseResultInfo `json:"result_info"`
+	JSON       zoneWaitingRoomEventListResponseJSON       `json:"-"`
 }
 
 // zoneWaitingRoomEventListResponseJSON contains the JSON metadata for the struct
 // [ZoneWaitingRoomEventListResponse]
 type zoneWaitingRoomEventListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -401,10 +408,55 @@ func (r zoneWaitingRoomEventListResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type ZoneWaitingRoomEventListResponseSuccess bool
+
+const (
+	ZoneWaitingRoomEventListResponseSuccessTrue ZoneWaitingRoomEventListResponseSuccess = true
+)
+
+func (r ZoneWaitingRoomEventListResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneWaitingRoomEventListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type ZoneWaitingRoomEventListResponseResultInfo struct {
+	// Total number of results for the requested service.
+	Count float64 `json:"count"`
+	// Current page within paginated list of results.
+	Page float64 `json:"page"`
+	// Number of results per page of results.
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters.
+	TotalCount float64                                        `json:"total_count"`
+	JSON       zoneWaitingRoomEventListResponseResultInfoJSON `json:"-"`
+}
+
+// zoneWaitingRoomEventListResponseResultInfoJSON contains the JSON metadata for
+// the struct [ZoneWaitingRoomEventListResponseResultInfo]
+type zoneWaitingRoomEventListResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZoneWaitingRoomEventListResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneWaitingRoomEventListResponseResultInfoJSON) RawJSON() string {
+	return r.raw
+}
+
 type ZoneWaitingRoomEventDeleteResponse struct {
-	Result ZoneWaitingRoomEventDeleteResponseResult `json:"result"`
+	Result ZoneWaitingRoomEventDeleteResponseResult `json:"result,required"`
 	JSON   zoneWaitingRoomEventDeleteResponseJSON   `json:"-"`
-	APIResponseSingle
 }
 
 // zoneWaitingRoomEventDeleteResponseJSON contains the JSON metadata for the struct
@@ -445,9 +497,8 @@ func (r zoneWaitingRoomEventDeleteResponseResultJSON) RawJSON() string {
 }
 
 type ZoneWaitingRoomEventPreviewResponse struct {
-	Result ZoneWaitingRoomEventPreviewResponseResult `json:"result"`
+	Result ZoneWaitingRoomEventPreviewResponseResult `json:"result,required"`
 	JSON   zoneWaitingRoomEventPreviewResponseJSON   `json:"-"`
-	APIResponseSingle
 }
 
 // zoneWaitingRoomEventPreviewResponseJSON contains the JSON metadata for the
@@ -565,14 +616,6 @@ func (r ZoneWaitingRoomEventListParams) URLQuery() (v url.Values) {
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
-}
-
-type ZoneWaitingRoomEventDeleteParams struct {
-	Body interface{} `json:"body,required"`
-}
-
-func (r ZoneWaitingRoomEventDeleteParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
 }
 
 type ZoneWaitingRoomEventPatchParams struct {

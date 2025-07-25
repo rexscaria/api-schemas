@@ -69,13 +69,7 @@ func TestAccountInfrastructureTargetBatchDelete(t *testing.T) {
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Accounts.Infrastructure.Targets.Batch.Delete(
-		context.TODO(),
-		"023e105f4ecef8ad9ca31a8372d0c353",
-		cfrex.AccountInfrastructureTargetBatchDeleteParams{
-			TargetIDs: cfrex.F([]string{"0191dce4-9ab4-7fce-b660-8e5dec5172da"}),
-		},
-	)
+	err := client.Accounts.Infrastructure.Targets.Batch.Delete(context.TODO(), "023e105f4ecef8ad9ca31a8372d0c353")
 	if err != nil {
 		var apierr *cfrex.Error
 		if errors.As(err, &apierr) {

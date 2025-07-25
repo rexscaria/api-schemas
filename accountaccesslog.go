@@ -51,14 +51,20 @@ func (r *AccountAccessLogService) AccessRequests(ctx context.Context, accountID 
 }
 
 type AccountAccessLogAccessRequestsResponse struct {
-	Result []AccountAccessLogAccessRequestsResponseResult `json:"result"`
-	JSON   accountAccessLogAccessRequestsResponseJSON     `json:"-"`
-	APIResponseAccess
+	Errors   []MessagesAccessItem `json:"errors,required"`
+	Messages []MessagesAccessItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountAccessLogAccessRequestsResponseSuccess  `json:"success,required"`
+	Result  []AccountAccessLogAccessRequestsResponseResult `json:"result"`
+	JSON    accountAccessLogAccessRequestsResponseJSON     `json:"-"`
 }
 
 // accountAccessLogAccessRequestsResponseJSON contains the JSON metadata for the
 // struct [AccountAccessLogAccessRequestsResponse]
 type accountAccessLogAccessRequestsResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -70,6 +76,21 @@ func (r *AccountAccessLogAccessRequestsResponse) UnmarshalJSON(data []byte) (err
 
 func (r accountAccessLogAccessRequestsResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountAccessLogAccessRequestsResponseSuccess bool
+
+const (
+	AccountAccessLogAccessRequestsResponseSuccessTrue AccountAccessLogAccessRequestsResponseSuccess = true
+)
+
+func (r AccountAccessLogAccessRequestsResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountAccessLogAccessRequestsResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountAccessLogAccessRequestsResponseResult struct {

@@ -116,8 +116,15 @@ type BgpPrefixes struct {
 	// Identifier of BGP Prefix.
 	ID string `json:"id"`
 	// Autonomous System Number (ASN) the prefix will be advertised under.
-	Asn           int64                    `json:"asn,nullable"`
-	BgpSignalOpts BgpPrefixesBgpSignalOpts `json:"bgp_signal_opts"`
+	Asn int64 `json:"asn,nullable"`
+	// Number of times to prepend the Cloudflare ASN to the BGP AS-Path attribute
+	AsnPrependCount int64 `json:"asn_prepend_count"`
+	// Determines if Cloudflare advertises a BYOIP BGP prefix even when there is no
+	// matching BGP prefix in the Magic routing table. When true, Cloudflare will
+	// automatically withdraw the BGP prefix when there are no matching BGP routes, and
+	// will resume advertising when there is at least one matching BGP route.
+	AutoAdvertiseWithdraw bool                     `json:"auto_advertise_withdraw"`
+	BgpSignalOpts         BgpPrefixesBgpSignalOpts `json:"bgp_signal_opts"`
 	// IP Prefix in Classless Inter-Domain Routing format.
 	Cidr       string              `json:"cidr"`
 	CreatedAt  time.Time           `json:"created_at" format:"date-time"`
@@ -128,15 +135,17 @@ type BgpPrefixes struct {
 
 // bgpPrefixesJSON contains the JSON metadata for the struct [BgpPrefixes]
 type bgpPrefixesJSON struct {
-	ID            apijson.Field
-	Asn           apijson.Field
-	BgpSignalOpts apijson.Field
-	Cidr          apijson.Field
-	CreatedAt     apijson.Field
-	ModifiedAt    apijson.Field
-	OnDemand      apijson.Field
-	raw           string
-	ExtraFields   map[string]apijson.Field
+	ID                    apijson.Field
+	Asn                   apijson.Field
+	AsnPrependCount       apijson.Field
+	AutoAdvertiseWithdraw apijson.Field
+	BgpSignalOpts         apijson.Field
+	Cidr                  apijson.Field
+	CreatedAt             apijson.Field
+	ModifiedAt            apijson.Field
+	OnDemand              apijson.Field
+	raw                   string
+	ExtraFields           map[string]apijson.Field
 }
 
 func (r *BgpPrefixes) UnmarshalJSON(data []byte) (err error) {
@@ -210,14 +219,20 @@ func (r bgpPrefixesOnDemandJSON) RawJSON() string {
 }
 
 type SingleResponseBgp struct {
-	Result BgpPrefixes           `json:"result"`
-	JSON   singleResponseBgpJSON `json:"-"`
-	AddressingAPIResponseSingle
+	Errors   []AddressingMessages `json:"errors,required"`
+	Messages []AddressingMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success SingleResponseBgpSuccess `json:"success,required"`
+	Result  BgpPrefixes              `json:"result"`
+	JSON    singleResponseBgpJSON    `json:"-"`
 }
 
 // singleResponseBgpJSON contains the JSON metadata for the struct
 // [SingleResponseBgp]
 type singleResponseBgpJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -231,16 +246,39 @@ func (r singleResponseBgpJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type SingleResponseBgpSuccess bool
+
+const (
+	SingleResponseBgpSuccessTrue SingleResponseBgpSuccess = true
+)
+
+func (r SingleResponseBgpSuccess) IsKnown() bool {
+	switch r {
+	case SingleResponseBgpSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountAddressingPrefixBgpPrefixListResponse struct {
-	Result []BgpPrefixes                                    `json:"result"`
-	JSON   accountAddressingPrefixBgpPrefixListResponseJSON `json:"-"`
-	APIResponseCollectionAddressing
+	Errors   []AddressingMessages `json:"errors,required"`
+	Messages []AddressingMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success    AccountAddressingPrefixBgpPrefixListResponseSuccess    `json:"success,required"`
+	Result     []BgpPrefixes                                          `json:"result"`
+	ResultInfo AccountAddressingPrefixBgpPrefixListResponseResultInfo `json:"result_info"`
+	JSON       accountAddressingPrefixBgpPrefixListResponseJSON       `json:"-"`
 }
 
 // accountAddressingPrefixBgpPrefixListResponseJSON contains the JSON metadata for
 // the struct [AccountAddressingPrefixBgpPrefixListResponse]
 type accountAddressingPrefixBgpPrefixListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -250,6 +288,52 @@ func (r *AccountAddressingPrefixBgpPrefixListResponse) UnmarshalJSON(data []byte
 }
 
 func (r accountAddressingPrefixBgpPrefixListResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountAddressingPrefixBgpPrefixListResponseSuccess bool
+
+const (
+	AccountAddressingPrefixBgpPrefixListResponseSuccessTrue AccountAddressingPrefixBgpPrefixListResponseSuccess = true
+)
+
+func (r AccountAddressingPrefixBgpPrefixListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountAddressingPrefixBgpPrefixListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type AccountAddressingPrefixBgpPrefixListResponseResultInfo struct {
+	// Total number of results for the requested service.
+	Count float64 `json:"count"`
+	// Current page within paginated list of results.
+	Page float64 `json:"page"`
+	// Number of results per page of results.
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters.
+	TotalCount float64                                                    `json:"total_count"`
+	JSON       accountAddressingPrefixBgpPrefixListResponseResultInfoJSON `json:"-"`
+}
+
+// accountAddressingPrefixBgpPrefixListResponseResultInfoJSON contains the JSON
+// metadata for the struct [AccountAddressingPrefixBgpPrefixListResponseResultInfo]
+type accountAddressingPrefixBgpPrefixListResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountAddressingPrefixBgpPrefixListResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountAddressingPrefixBgpPrefixListResponseResultInfoJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -263,7 +347,14 @@ func (r AccountAddressingPrefixBgpPrefixNewParams) MarshalJSON() (data []byte, e
 }
 
 type AccountAddressingPrefixBgpPrefixUpdateParams struct {
-	OnDemand param.Field[AccountAddressingPrefixBgpPrefixUpdateParamsOnDemand] `json:"on_demand"`
+	// Number of times to prepend the Cloudflare ASN to the BGP AS-Path attribute
+	AsnPrependCount param.Field[int64] `json:"asn_prepend_count"`
+	// Determines if Cloudflare advertises a BYOIP BGP prefix even when there is no
+	// matching BGP prefix in the Magic routing table. When true, Cloudflare will
+	// automatically withdraw the BGP prefix when there are no matching BGP routes, and
+	// will resume advertising when there is at least one matching BGP route.
+	AutoAdvertiseWithdraw param.Field[bool]                                                 `json:"auto_advertise_withdraw"`
+	OnDemand              param.Field[AccountAddressingPrefixBgpPrefixUpdateParamsOnDemand] `json:"on_demand"`
 }
 
 func (r AccountAddressingPrefixBgpPrefixUpdateParams) MarshalJSON() (data []byte, err error) {

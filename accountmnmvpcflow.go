@@ -45,16 +45,22 @@ func (r *AccountMnmVpcFlowService) GenerateToken(ctx context.Context, accountID 
 }
 
 type AccountMnmVpcFlowGenerateTokenResponse struct {
+	Errors   []MessagesMagicVisibilityMnmItem `json:"errors,required"`
+	Messages []MessagesMagicVisibilityMnmItem `json:"messages,required"`
 	// Authentication token to be used for VPC Flows export authentication.
-	Result string                                     `json:"result"`
-	JSON   accountMnmVpcFlowGenerateTokenResponseJSON `json:"-"`
-	APIResponseSingleMagicVisibility
+	Result string `json:"result,required"`
+	// Whether the API call was successful
+	Success AccountMnmVpcFlowGenerateTokenResponseSuccess `json:"success,required"`
+	JSON    accountMnmVpcFlowGenerateTokenResponseJSON    `json:"-"`
 }
 
 // accountMnmVpcFlowGenerateTokenResponseJSON contains the JSON metadata for the
 // struct [AccountMnmVpcFlowGenerateTokenResponse]
 type accountMnmVpcFlowGenerateTokenResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -65,4 +71,19 @@ func (r *AccountMnmVpcFlowGenerateTokenResponse) UnmarshalJSON(data []byte) (err
 
 func (r accountMnmVpcFlowGenerateTokenResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful
+type AccountMnmVpcFlowGenerateTokenResponseSuccess bool
+
+const (
+	AccountMnmVpcFlowGenerateTokenResponseSuccessTrue AccountMnmVpcFlowGenerateTokenResponseSuccess = true
+)
+
+func (r AccountMnmVpcFlowGenerateTokenResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountMnmVpcFlowGenerateTokenResponseSuccessTrue:
+		return true
+	}
+	return false
 }

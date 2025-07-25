@@ -54,6 +54,9 @@ func (r *ZoneSslService) AnalyzeCertificate(ctx context.Context, zoneID string, 
 }
 
 // Retrieve the SSL/TLS Recommender's recommendation for a zone.
+//
+// Deprecated: SSL/TLS Recommender has been decommissioned in favor of Automatic
+// SSL/TLS
 func (r *ZoneSslService) GetRecommendation(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *ZoneSslGetRecommendationResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
@@ -65,79 +68,21 @@ func (r *ZoneSslService) GetRecommendation(ctx context.Context, zoneID string, o
 	return
 }
 
-type CacheAPIResponseSingle struct {
-	Errors   []CacheMessagesItem `json:"errors,required"`
-	Messages []CacheMessagesItem `json:"messages,required"`
-	// Whether the API call was successful
-	Success CacheAPIResponseSingleSuccess `json:"success,required"`
-	JSON    cacheAPIResponseSingleJSON    `json:"-"`
-}
-
-// cacheAPIResponseSingleJSON contains the JSON metadata for the struct
-// [CacheAPIResponseSingle]
-type cacheAPIResponseSingleJSON struct {
-	Errors      apijson.Field
-	Messages    apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *CacheAPIResponseSingle) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r cacheAPIResponseSingleJSON) RawJSON() string {
-	return r.raw
-}
-
-// Whether the API call was successful
-type CacheAPIResponseSingleSuccess bool
-
-const (
-	CacheAPIResponseSingleSuccessTrue CacheAPIResponseSingleSuccess = true
-)
-
-func (r CacheAPIResponseSingleSuccess) IsKnown() bool {
-	switch r {
-	case CacheAPIResponseSingleSuccessTrue:
-		return true
-	}
-	return false
-}
-
-type CacheMessagesItem struct {
-	Code    int64                 `json:"code,required"`
-	Message string                `json:"message,required"`
-	JSON    cacheMessagesItemJSON `json:"-"`
-}
-
-// cacheMessagesItemJSON contains the JSON metadata for the struct
-// [CacheMessagesItem]
-type cacheMessagesItemJSON struct {
-	Code        apijson.Field
-	Message     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *CacheMessagesItem) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r cacheMessagesItemJSON) RawJSON() string {
-	return r.raw
-}
-
 type ZoneSslAnalyzeCertificateResponse struct {
-	Result interface{}                           `json:"result"`
-	JSON   zoneSslAnalyzeCertificateResponseJSON `json:"-"`
-	APIResponseSingleTlsCertificates
+	Errors   []MessagesTlsCertificatesItem `json:"errors,required"`
+	Messages []MessagesTlsCertificatesItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success ZoneSslAnalyzeCertificateResponseSuccess `json:"success,required"`
+	Result  interface{}                              `json:"result"`
+	JSON    zoneSslAnalyzeCertificateResponseJSON    `json:"-"`
 }
 
 // zoneSslAnalyzeCertificateResponseJSON contains the JSON metadata for the struct
 // [ZoneSslAnalyzeCertificateResponse]
 type zoneSslAnalyzeCertificateResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -151,16 +96,37 @@ func (r zoneSslAnalyzeCertificateResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type ZoneSslAnalyzeCertificateResponseSuccess bool
+
+const (
+	ZoneSslAnalyzeCertificateResponseSuccessTrue ZoneSslAnalyzeCertificateResponseSuccess = true
+)
+
+func (r ZoneSslAnalyzeCertificateResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneSslAnalyzeCertificateResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type ZoneSslGetRecommendationResponse struct {
-	Result ZoneSslGetRecommendationResponseResult `json:"result"`
-	JSON   zoneSslGetRecommendationResponseJSON   `json:"-"`
-	CacheAPIResponseSingle
+	Errors   []ZoneSslGetRecommendationResponseError   `json:"errors,required"`
+	Messages []ZoneSslGetRecommendationResponseMessage `json:"messages,required"`
+	Result   ZoneSslGetRecommendationResponseResult    `json:"result,required"`
+	// Indicates the API call's success or failure.
+	Success bool                                 `json:"success,required"`
+	JSON    zoneSslGetRecommendationResponseJSON `json:"-"`
 }
 
 // zoneSslGetRecommendationResponseJSON contains the JSON metadata for the struct
 // [ZoneSslGetRecommendationResponse]
 type zoneSslGetRecommendationResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -173,22 +139,125 @@ func (r zoneSslGetRecommendationResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+type ZoneSslGetRecommendationResponseError struct {
+	Code             int64                                        `json:"code,required"`
+	Message          string                                       `json:"message,required"`
+	DocumentationURL string                                       `json:"documentation_url"`
+	Source           ZoneSslGetRecommendationResponseErrorsSource `json:"source"`
+	JSON             zoneSslGetRecommendationResponseErrorJSON    `json:"-"`
+}
+
+// zoneSslGetRecommendationResponseErrorJSON contains the JSON metadata for the
+// struct [ZoneSslGetRecommendationResponseError]
+type zoneSslGetRecommendationResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *ZoneSslGetRecommendationResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneSslGetRecommendationResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZoneSslGetRecommendationResponseErrorsSource struct {
+	Pointer string                                           `json:"pointer"`
+	JSON    zoneSslGetRecommendationResponseErrorsSourceJSON `json:"-"`
+}
+
+// zoneSslGetRecommendationResponseErrorsSourceJSON contains the JSON metadata for
+// the struct [ZoneSslGetRecommendationResponseErrorsSource]
+type zoneSslGetRecommendationResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZoneSslGetRecommendationResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneSslGetRecommendationResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZoneSslGetRecommendationResponseMessage struct {
+	Code             int64                                          `json:"code,required"`
+	Message          string                                         `json:"message,required"`
+	DocumentationURL string                                         `json:"documentation_url"`
+	Source           ZoneSslGetRecommendationResponseMessagesSource `json:"source"`
+	JSON             zoneSslGetRecommendationResponseMessageJSON    `json:"-"`
+}
+
+// zoneSslGetRecommendationResponseMessageJSON contains the JSON metadata for the
+// struct [ZoneSslGetRecommendationResponseMessage]
+type zoneSslGetRecommendationResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *ZoneSslGetRecommendationResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneSslGetRecommendationResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZoneSslGetRecommendationResponseMessagesSource struct {
+	Pointer string                                             `json:"pointer"`
+	JSON    zoneSslGetRecommendationResponseMessagesSourceJSON `json:"-"`
+}
+
+// zoneSslGetRecommendationResponseMessagesSourceJSON contains the JSON metadata
+// for the struct [ZoneSslGetRecommendationResponseMessagesSource]
+type zoneSslGetRecommendationResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZoneSslGetRecommendationResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneSslGetRecommendationResponseMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
 type ZoneSslGetRecommendationResponseResult struct {
-	// Identifier of a recommendation result.
-	ID         string                                      `json:"id"`
-	ModifiedOn time.Time                                   `json:"modified_on" format:"date-time"`
-	Value      ZoneSslGetRecommendationResponseResultValue `json:"value"`
-	JSON       zoneSslGetRecommendationResponseResultJSON  `json:"-"`
+	ID string `json:"id,required"`
+	// Whether this setting can be updated or not.
+	Editable bool `json:"editable,required"`
+	// Last time this setting was modified.
+	ModifiedOn time.Time `json:"modified_on,required" format:"date-time"`
+	// Current setting of the automatic SSL/TLS.
+	Value ZoneSslGetRecommendationResponseResultValue `json:"value,required"`
+	// Next time this zone will be scanned by the Automatic SSL/TLS.
+	NextScheduledScan time.Time                                  `json:"next_scheduled_scan,nullable" format:"date-time"`
+	JSON              zoneSslGetRecommendationResponseResultJSON `json:"-"`
 }
 
 // zoneSslGetRecommendationResponseResultJSON contains the JSON metadata for the
 // struct [ZoneSslGetRecommendationResponseResult]
 type zoneSslGetRecommendationResponseResultJSON struct {
-	ID          apijson.Field
-	ModifiedOn  apijson.Field
-	Value       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	ID                apijson.Field
+	Editable          apijson.Field
+	ModifiedOn        apijson.Field
+	Value             apijson.Field
+	NextScheduledScan apijson.Field
+	raw               string
+	ExtraFields       map[string]apijson.Field
 }
 
 func (r *ZoneSslGetRecommendationResponseResult) UnmarshalJSON(data []byte) (err error) {
@@ -199,17 +268,17 @@ func (r zoneSslGetRecommendationResponseResultJSON) RawJSON() string {
 	return r.raw
 }
 
+// Current setting of the automatic SSL/TLS.
 type ZoneSslGetRecommendationResponseResultValue string
 
 const (
-	ZoneSslGetRecommendationResponseResultValueFlexible ZoneSslGetRecommendationResponseResultValue = "flexible"
-	ZoneSslGetRecommendationResponseResultValueFull     ZoneSslGetRecommendationResponseResultValue = "full"
-	ZoneSslGetRecommendationResponseResultValueStrict   ZoneSslGetRecommendationResponseResultValue = "strict"
+	ZoneSslGetRecommendationResponseResultValueAuto   ZoneSslGetRecommendationResponseResultValue = "auto"
+	ZoneSslGetRecommendationResponseResultValueCustom ZoneSslGetRecommendationResponseResultValue = "custom"
 )
 
 func (r ZoneSslGetRecommendationResponseResultValue) IsKnown() bool {
 	switch r {
-	case ZoneSslGetRecommendationResponseResultValueFlexible, ZoneSslGetRecommendationResponseResultValueFull, ZoneSslGetRecommendationResponseResultValueStrict:
+	case ZoneSslGetRecommendationResponseResultValueAuto, ZoneSslGetRecommendationResponseResultValueCustom:
 		return true
 	}
 	return false

@@ -111,7 +111,7 @@ func (r *ZoneClientCertificateService) Revoke(ctx context.Context, zoneID string
 }
 
 type ClientCertificate struct {
-	// Identifier
+	// Identifier.
 	ID string `json:"id"`
 	// The Client Certificate PEM
 	Certificate string `json:"certificate"`
@@ -228,14 +228,20 @@ func (r ClientCertificateStatus) IsKnown() bool {
 }
 
 type ClientCertificateResponseSingle struct {
-	Result ClientCertificate                   `json:"result"`
-	JSON   clientCertificateResponseSingleJSON `json:"-"`
-	APIResponseSingleTlsCertificates
+	Errors   []MessagesTlsCertificatesItem `json:"errors,required"`
+	Messages []MessagesTlsCertificatesItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success ClientCertificateResponseSingleSuccess `json:"success,required"`
+	Result  ClientCertificate                      `json:"result"`
+	JSON    clientCertificateResponseSingleJSON    `json:"-"`
 }
 
 // clientCertificateResponseSingleJSON contains the JSON metadata for the struct
 // [ClientCertificateResponseSingle]
 type clientCertificateResponseSingleJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -249,16 +255,39 @@ func (r clientCertificateResponseSingleJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type ClientCertificateResponseSingleSuccess bool
+
+const (
+	ClientCertificateResponseSingleSuccessTrue ClientCertificateResponseSingleSuccess = true
+)
+
+func (r ClientCertificateResponseSingleSuccess) IsKnown() bool {
+	switch r {
+	case ClientCertificateResponseSingleSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type ZoneClientCertificateListResponse struct {
-	Result []ClientCertificate                   `json:"result"`
-	JSON   zoneClientCertificateListResponseJSON `json:"-"`
-	APIResponseCollectionTlsCertificates
+	Errors   []MessagesTlsCertificatesItem `json:"errors,required"`
+	Messages []MessagesTlsCertificatesItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success    ZoneClientCertificateListResponseSuccess    `json:"success,required"`
+	Result     []ClientCertificate                         `json:"result"`
+	ResultInfo ZoneClientCertificateListResponseResultInfo `json:"result_info"`
+	JSON       zoneClientCertificateListResponseJSON       `json:"-"`
 }
 
 // zoneClientCertificateListResponseJSON contains the JSON metadata for the struct
 // [ZoneClientCertificateListResponse]
 type zoneClientCertificateListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -268,6 +297,52 @@ func (r *ZoneClientCertificateListResponse) UnmarshalJSON(data []byte) (err erro
 }
 
 func (r zoneClientCertificateListResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful.
+type ZoneClientCertificateListResponseSuccess bool
+
+const (
+	ZoneClientCertificateListResponseSuccessTrue ZoneClientCertificateListResponseSuccess = true
+)
+
+func (r ZoneClientCertificateListResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneClientCertificateListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type ZoneClientCertificateListResponseResultInfo struct {
+	// Total number of results for the requested service.
+	Count float64 `json:"count"`
+	// Current page within paginated list of results.
+	Page float64 `json:"page"`
+	// Number of results per page of results.
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters.
+	TotalCount float64                                         `json:"total_count"`
+	JSON       zoneClientCertificateListResponseResultInfoJSON `json:"-"`
+}
+
+// zoneClientCertificateListResponseResultInfoJSON contains the JSON metadata for
+// the struct [ZoneClientCertificateListResponseResultInfo]
+type zoneClientCertificateListResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZoneClientCertificateListResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneClientCertificateListResponseResultInfoJSON) RawJSON() string {
 	return r.raw
 }
 

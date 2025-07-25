@@ -142,15 +142,21 @@ type TlsSettingValueArrayParam []string
 func (r TlsSettingValueArrayParam) ImplementsTlsSettingValueUnionParam() {}
 
 type ZoneHostnameSettingGetResponse struct {
+	Errors   []MessagesTlsCertificatesItem `json:"errors,required"`
+	Messages []MessagesTlsCertificatesItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success    ZoneHostnameSettingGetResponseSuccess    `json:"success,required"`
 	Result     []ZoneHostnameSettingGetResponseResult   `json:"result"`
 	ResultInfo ZoneHostnameSettingGetResponseResultInfo `json:"result_info"`
 	JSON       zoneHostnameSettingGetResponseJSON       `json:"-"`
-	APIResponseCollectionTlsCertificates
 }
 
 // zoneHostnameSettingGetResponseJSON contains the JSON metadata for the struct
 // [ZoneHostnameSettingGetResponse]
 type zoneHostnameSettingGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	ResultInfo  apijson.Field
 	raw         string
@@ -163,6 +169,21 @@ func (r *ZoneHostnameSettingGetResponse) UnmarshalJSON(data []byte) (err error) 
 
 func (r zoneHostnameSettingGetResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type ZoneHostnameSettingGetResponseSuccess bool
+
+const (
+	ZoneHostnameSettingGetResponseSuccessTrue ZoneHostnameSettingGetResponseSuccess = true
+)
+
+func (r ZoneHostnameSettingGetResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneHostnameSettingGetResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type ZoneHostnameSettingGetResponseResult struct {
@@ -200,10 +221,14 @@ func (r zoneHostnameSettingGetResponseResultJSON) RawJSON() string {
 }
 
 type ZoneHostnameSettingGetResponseResultInfo struct {
-	Count      interface{} `json:"count"`
-	Page       interface{} `json:"page"`
-	PerPage    interface{} `json:"per_page"`
-	TotalCount interface{} `json:"total_count"`
+	// Total number of results for the requested service.
+	Count float64 `json:"count"`
+	// Current page within paginated list of results.
+	Page float64 `json:"page"`
+	// Number of results per page of results.
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters.
+	TotalCount float64 `json:"total_count"`
 	// Total pages available of results
 	TotalPages float64                                      `json:"total_pages"`
 	JSON       zoneHostnameSettingGetResponseResultInfoJSON `json:"-"`
@@ -230,14 +255,20 @@ func (r zoneHostnameSettingGetResponseResultInfoJSON) RawJSON() string {
 }
 
 type ZoneHostnameSettingUpdateResponse struct {
-	Result ZoneHostnameSettingUpdateResponseResult `json:"result"`
-	JSON   zoneHostnameSettingUpdateResponseJSON   `json:"-"`
-	APIResponseSingleTlsCertificates
+	Errors   []MessagesTlsCertificatesItem `json:"errors,required"`
+	Messages []MessagesTlsCertificatesItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success ZoneHostnameSettingUpdateResponseSuccess `json:"success,required"`
+	Result  ZoneHostnameSettingUpdateResponseResult  `json:"result"`
+	JSON    zoneHostnameSettingUpdateResponseJSON    `json:"-"`
 }
 
 // zoneHostnameSettingUpdateResponseJSON contains the JSON metadata for the struct
 // [ZoneHostnameSettingUpdateResponse]
 type zoneHostnameSettingUpdateResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -249,6 +280,21 @@ func (r *ZoneHostnameSettingUpdateResponse) UnmarshalJSON(data []byte) (err erro
 
 func (r zoneHostnameSettingUpdateResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type ZoneHostnameSettingUpdateResponseSuccess bool
+
+const (
+	ZoneHostnameSettingUpdateResponseSuccessTrue ZoneHostnameSettingUpdateResponseSuccess = true
+)
+
+func (r ZoneHostnameSettingUpdateResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneHostnameSettingUpdateResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type ZoneHostnameSettingUpdateResponseResult struct {
@@ -286,14 +332,20 @@ func (r zoneHostnameSettingUpdateResponseResultJSON) RawJSON() string {
 }
 
 type ZoneHostnameSettingDeleteResponse struct {
-	Result ZoneHostnameSettingDeleteResponseResult `json:"result"`
-	JSON   zoneHostnameSettingDeleteResponseJSON   `json:"-"`
-	APIResponseSingleTlsCertificates
+	Errors   []MessagesTlsCertificatesItem `json:"errors,required"`
+	Messages []MessagesTlsCertificatesItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success ZoneHostnameSettingDeleteResponseSuccess `json:"success,required"`
+	Result  ZoneHostnameSettingDeleteResponseResult  `json:"result"`
+	JSON    zoneHostnameSettingDeleteResponseJSON    `json:"-"`
 }
 
 // zoneHostnameSettingDeleteResponseJSON contains the JSON metadata for the struct
 // [ZoneHostnameSettingDeleteResponse]
 type zoneHostnameSettingDeleteResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -305,6 +357,21 @@ func (r *ZoneHostnameSettingDeleteResponse) UnmarshalJSON(data []byte) (err erro
 
 func (r zoneHostnameSettingDeleteResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type ZoneHostnameSettingDeleteResponseSuccess bool
+
+const (
+	ZoneHostnameSettingDeleteResponseSuccessTrue ZoneHostnameSettingDeleteResponseSuccess = true
+)
+
+func (r ZoneHostnameSettingDeleteResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneHostnameSettingDeleteResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type ZoneHostnameSettingDeleteResponseResult struct {

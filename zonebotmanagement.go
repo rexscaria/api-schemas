@@ -127,105 +127,41 @@ func (r *ZoneBotManagementService) Update(ctx context.Context, zoneID string, bo
 	return
 }
 
-type BaseConfig struct {
-	// Enable rule to block AI Scrapers and Crawlers.
-	AIBotsProtection BaseConfigAIBotsProtection `json:"ai_bots_protection"`
-	// Enable rule to punish AI Scrapers and Crawlers via a link maze.
-	CrawlerProtection BaseConfigCrawlerProtection `json:"crawler_protection"`
-	// Use lightweight, invisible JavaScript detections to improve Bot Management.
-	// [Learn more about JavaScript Detections](https://developers.cloudflare.com/bots/reference/javascript-detections/).
-	EnableJs bool `json:"enable_js"`
-	// A read-only field that indicates whether the zone currently is running the
-	// latest ML model.
-	UsingLatestModel bool           `json:"using_latest_model"`
-	JSON             baseConfigJSON `json:"-"`
-}
-
-// baseConfigJSON contains the JSON metadata for the struct [BaseConfig]
-type baseConfigJSON struct {
-	AIBotsProtection  apijson.Field
-	CrawlerProtection apijson.Field
-	EnableJs          apijson.Field
-	UsingLatestModel  apijson.Field
-	raw               string
-	ExtraFields       map[string]apijson.Field
-}
-
-func (r *BaseConfig) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r baseConfigJSON) RawJSON() string {
-	return r.raw
-}
-
-// Enable rule to block AI Scrapers and Crawlers.
-type BaseConfigAIBotsProtection string
-
-const (
-	BaseConfigAIBotsProtectionBlock    BaseConfigAIBotsProtection = "block"
-	BaseConfigAIBotsProtectionDisabled BaseConfigAIBotsProtection = "disabled"
-)
-
-func (r BaseConfigAIBotsProtection) IsKnown() bool {
-	switch r {
-	case BaseConfigAIBotsProtectionBlock, BaseConfigAIBotsProtectionDisabled:
-		return true
-	}
-	return false
-}
-
-// Enable rule to punish AI Scrapers and Crawlers via a link maze.
-type BaseConfigCrawlerProtection string
-
-const (
-	BaseConfigCrawlerProtectionEnabled  BaseConfigCrawlerProtection = "enabled"
-	BaseConfigCrawlerProtectionDisabled BaseConfigCrawlerProtection = "disabled"
-)
-
-func (r BaseConfigCrawlerProtection) IsKnown() bool {
-	switch r {
-	case BaseConfigCrawlerProtectionEnabled, BaseConfigCrawlerProtectionDisabled:
-		return true
-	}
-	return false
-}
-
-type BaseConfigParam struct {
-	// Enable rule to block AI Scrapers and Crawlers.
-	AIBotsProtection param.Field[BaseConfigAIBotsProtection] `json:"ai_bots_protection"`
-	// Enable rule to punish AI Scrapers and Crawlers via a link maze.
-	CrawlerProtection param.Field[BaseConfigCrawlerProtection] `json:"crawler_protection"`
-	// Use lightweight, invisible JavaScript detections to improve Bot Management.
-	// [Learn more about JavaScript Detections](https://developers.cloudflare.com/bots/reference/javascript-detections/).
-	EnableJs param.Field[bool] `json:"enable_js"`
-}
-
-func (r BaseConfigParam) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
 type BmSubscriptionConfig struct {
+	// Enable rule to block AI Scrapers and Crawlers. Please note the value
+	// `only_on_ad_pages` is currently not available for Enterprise customers.
+	AIBotsProtection BmSubscriptionConfigAIBotsProtection `json:"ai_bots_protection"`
 	// Automatically update to the newest bot detection models created by Cloudflare as
 	// they are released.
 	// [Learn more.](https://developers.cloudflare.com/bots/reference/machine-learning-models#model-versions-and-release-notes)
 	AutoUpdateModel bool `json:"auto_update_model"`
+	// Enable rule to punish AI Scrapers and Crawlers via a link maze.
+	CrawlerProtection BmSubscriptionConfigCrawlerProtection `json:"crawler_protection"`
+	// Use lightweight, invisible JavaScript detections to improve Bot Management.
+	// [Learn more about JavaScript Detections](https://developers.cloudflare.com/bots/reference/javascript-detections/).
+	EnableJs bool `json:"enable_js"`
 	// A read-only field that shows which unauthorized settings are currently active on
 	// the zone. These settings typically result from upgrades or downgrades.
 	StaleZoneConfiguration BmSubscriptionConfigStaleZoneConfiguration `json:"stale_zone_configuration"`
 	// Whether to disable tracking the highest bot score for a session in the Bot
 	// Management cookie.
-	SuppressSessionScore bool                     `json:"suppress_session_score"`
-	JSON                 bmSubscriptionConfigJSON `json:"-"`
-	BaseConfig
+	SuppressSessionScore bool `json:"suppress_session_score"`
+	// A read-only field that indicates whether the zone currently is running the
+	// latest ML model.
+	UsingLatestModel bool                     `json:"using_latest_model"`
+	JSON             bmSubscriptionConfigJSON `json:"-"`
 }
 
 // bmSubscriptionConfigJSON contains the JSON metadata for the struct
 // [BmSubscriptionConfig]
 type bmSubscriptionConfigJSON struct {
+	AIBotsProtection       apijson.Field
 	AutoUpdateModel        apijson.Field
+	CrawlerProtection      apijson.Field
+	EnableJs               apijson.Field
 	StaleZoneConfiguration apijson.Field
 	SuppressSessionScore   apijson.Field
+	UsingLatestModel       apijson.Field
 	raw                    string
 	ExtraFields            map[string]apijson.Field
 }
@@ -239,6 +175,40 @@ func (r bmSubscriptionConfigJSON) RawJSON() string {
 }
 
 func (r BmSubscriptionConfig) implementsManagementResponseBodyResult() {}
+
+// Enable rule to block AI Scrapers and Crawlers. Please note the value
+// `only_on_ad_pages` is currently not available for Enterprise customers.
+type BmSubscriptionConfigAIBotsProtection string
+
+const (
+	BmSubscriptionConfigAIBotsProtectionBlock         BmSubscriptionConfigAIBotsProtection = "block"
+	BmSubscriptionConfigAIBotsProtectionDisabled      BmSubscriptionConfigAIBotsProtection = "disabled"
+	BmSubscriptionConfigAIBotsProtectionOnlyOnAdPages BmSubscriptionConfigAIBotsProtection = "only_on_ad_pages"
+)
+
+func (r BmSubscriptionConfigAIBotsProtection) IsKnown() bool {
+	switch r {
+	case BmSubscriptionConfigAIBotsProtectionBlock, BmSubscriptionConfigAIBotsProtectionDisabled, BmSubscriptionConfigAIBotsProtectionOnlyOnAdPages:
+		return true
+	}
+	return false
+}
+
+// Enable rule to punish AI Scrapers and Crawlers via a link maze.
+type BmSubscriptionConfigCrawlerProtection string
+
+const (
+	BmSubscriptionConfigCrawlerProtectionEnabled  BmSubscriptionConfigCrawlerProtection = "enabled"
+	BmSubscriptionConfigCrawlerProtectionDisabled BmSubscriptionConfigCrawlerProtection = "disabled"
+)
+
+func (r BmSubscriptionConfigCrawlerProtection) IsKnown() bool {
+	switch r {
+	case BmSubscriptionConfigCrawlerProtectionEnabled, BmSubscriptionConfigCrawlerProtectionDisabled:
+		return true
+	}
+	return false
+}
 
 // A read-only field that shows which unauthorized settings are currently active on
 // the zone. These settings typically result from upgrades or downgrades.
@@ -282,14 +252,21 @@ func (r bmSubscriptionConfigStaleZoneConfigurationJSON) RawJSON() string {
 }
 
 type BmSubscriptionConfigParam struct {
+	// Enable rule to block AI Scrapers and Crawlers. Please note the value
+	// `only_on_ad_pages` is currently not available for Enterprise customers.
+	AIBotsProtection param.Field[BmSubscriptionConfigAIBotsProtection] `json:"ai_bots_protection"`
 	// Automatically update to the newest bot detection models created by Cloudflare as
 	// they are released.
 	// [Learn more.](https://developers.cloudflare.com/bots/reference/machine-learning-models#model-versions-and-release-notes)
 	AutoUpdateModel param.Field[bool] `json:"auto_update_model"`
+	// Enable rule to punish AI Scrapers and Crawlers via a link maze.
+	CrawlerProtection param.Field[BmSubscriptionConfigCrawlerProtection] `json:"crawler_protection"`
+	// Use lightweight, invisible JavaScript detections to improve Bot Management.
+	// [Learn more about JavaScript Detections](https://developers.cloudflare.com/bots/reference/javascript-detections/).
+	EnableJs param.Field[bool] `json:"enable_js"`
 	// Whether to disable tracking the highest bot score for a session in the Bot
 	// Management cookie.
 	SuppressSessionScore param.Field[bool] `json:"suppress_session_score"`
-	BaseConfigParam
 }
 
 func (r BmSubscriptionConfigParam) MarshalJSON() (data []byte, err error) {
@@ -322,20 +299,34 @@ func (r BmSubscriptionConfigStaleZoneConfigurationParam) MarshalJSON() (data []b
 }
 
 type BotFightModeConfig struct {
+	// Enable rule to block AI Scrapers and Crawlers. Please note the value
+	// `only_on_ad_pages` is currently not available for Enterprise customers.
+	AIBotsProtection BotFightModeConfigAIBotsProtection `json:"ai_bots_protection"`
+	// Enable rule to punish AI Scrapers and Crawlers via a link maze.
+	CrawlerProtection BotFightModeConfigCrawlerProtection `json:"crawler_protection"`
+	// Use lightweight, invisible JavaScript detections to improve Bot Management.
+	// [Learn more about JavaScript Detections](https://developers.cloudflare.com/bots/reference/javascript-detections/).
+	EnableJs bool `json:"enable_js"`
 	// Whether to enable Bot Fight Mode.
 	FightMode bool `json:"fight_mode"`
 	// A read-only field that shows which unauthorized settings are currently active on
 	// the zone. These settings typically result from upgrades or downgrades.
 	StaleZoneConfiguration BotFightModeConfigStaleZoneConfiguration `json:"stale_zone_configuration"`
-	JSON                   botFightModeConfigJSON                   `json:"-"`
-	BaseConfig
+	// A read-only field that indicates whether the zone currently is running the
+	// latest ML model.
+	UsingLatestModel bool                   `json:"using_latest_model"`
+	JSON             botFightModeConfigJSON `json:"-"`
 }
 
 // botFightModeConfigJSON contains the JSON metadata for the struct
 // [BotFightModeConfig]
 type botFightModeConfigJSON struct {
+	AIBotsProtection       apijson.Field
+	CrawlerProtection      apijson.Field
+	EnableJs               apijson.Field
 	FightMode              apijson.Field
 	StaleZoneConfiguration apijson.Field
+	UsingLatestModel       apijson.Field
 	raw                    string
 	ExtraFields            map[string]apijson.Field
 }
@@ -349,6 +340,40 @@ func (r botFightModeConfigJSON) RawJSON() string {
 }
 
 func (r BotFightModeConfig) implementsManagementResponseBodyResult() {}
+
+// Enable rule to block AI Scrapers and Crawlers. Please note the value
+// `only_on_ad_pages` is currently not available for Enterprise customers.
+type BotFightModeConfigAIBotsProtection string
+
+const (
+	BotFightModeConfigAIBotsProtectionBlock         BotFightModeConfigAIBotsProtection = "block"
+	BotFightModeConfigAIBotsProtectionDisabled      BotFightModeConfigAIBotsProtection = "disabled"
+	BotFightModeConfigAIBotsProtectionOnlyOnAdPages BotFightModeConfigAIBotsProtection = "only_on_ad_pages"
+)
+
+func (r BotFightModeConfigAIBotsProtection) IsKnown() bool {
+	switch r {
+	case BotFightModeConfigAIBotsProtectionBlock, BotFightModeConfigAIBotsProtectionDisabled, BotFightModeConfigAIBotsProtectionOnlyOnAdPages:
+		return true
+	}
+	return false
+}
+
+// Enable rule to punish AI Scrapers and Crawlers via a link maze.
+type BotFightModeConfigCrawlerProtection string
+
+const (
+	BotFightModeConfigCrawlerProtectionEnabled  BotFightModeConfigCrawlerProtection = "enabled"
+	BotFightModeConfigCrawlerProtectionDisabled BotFightModeConfigCrawlerProtection = "disabled"
+)
+
+func (r BotFightModeConfigCrawlerProtection) IsKnown() bool {
+	switch r {
+	case BotFightModeConfigCrawlerProtectionEnabled, BotFightModeConfigCrawlerProtectionDisabled:
+		return true
+	}
+	return false
+}
 
 // A read-only field that shows which unauthorized settings are currently active on
 // the zone. These settings typically result from upgrades or downgrades.
@@ -392,9 +417,16 @@ func (r botFightModeConfigStaleZoneConfigurationJSON) RawJSON() string {
 }
 
 type BotFightModeConfigParam struct {
+	// Enable rule to block AI Scrapers and Crawlers. Please note the value
+	// `only_on_ad_pages` is currently not available for Enterprise customers.
+	AIBotsProtection param.Field[BotFightModeConfigAIBotsProtection] `json:"ai_bots_protection"`
+	// Enable rule to punish AI Scrapers and Crawlers via a link maze.
+	CrawlerProtection param.Field[BotFightModeConfigCrawlerProtection] `json:"crawler_protection"`
+	// Use lightweight, invisible JavaScript detections to improve Bot Management.
+	// [Learn more about JavaScript Detections](https://developers.cloudflare.com/bots/reference/javascript-detections/).
+	EnableJs param.Field[bool] `json:"enable_js"`
 	// Whether to enable Bot Fight Mode.
 	FightMode param.Field[bool] `json:"fight_mode"`
-	BaseConfigParam
 }
 
 func (r BotFightModeConfigParam) MarshalJSON() (data []byte, err error) {
@@ -429,7 +461,7 @@ func (r BotFightModeConfigStaleZoneConfigurationParam) MarshalJSON() (data []byt
 type ManagementResponseBody struct {
 	Errors   []MessagesBotManagementItem `json:"errors,required"`
 	Messages []MessagesBotManagementItem `json:"messages,required"`
-	// Whether the API call was successful
+	// Whether the API call was successful.
 	Success ManagementResponseBodySuccess `json:"success,required"`
 	Result  ManagementResponseBodyResult  `json:"result"`
 	JSON    managementResponseBodyJSON    `json:"-"`
@@ -454,7 +486,7 @@ func (r managementResponseBodyJSON) RawJSON() string {
 	return r.raw
 }
 
-// Whether the API call was successful
+// Whether the API call was successful.
 type ManagementResponseBodySuccess bool
 
 const (
@@ -470,7 +502,8 @@ func (r ManagementResponseBodySuccess) IsKnown() bool {
 }
 
 type ManagementResponseBodyResult struct {
-	// Enable rule to block AI Scrapers and Crawlers.
+	// Enable rule to block AI Scrapers and Crawlers. Please note the value
+	// `only_on_ad_pages` is currently not available for Enterprise customers.
 	AIBotsProtection ManagementResponseBodyResultAIBotsProtection `json:"ai_bots_protection"`
 	// Automatically update to the newest bot detection models created by Cloudflare as
 	// they are released.
@@ -582,17 +615,19 @@ func init() {
 	)
 }
 
-// Enable rule to block AI Scrapers and Crawlers.
+// Enable rule to block AI Scrapers and Crawlers. Please note the value
+// `only_on_ad_pages` is currently not available for Enterprise customers.
 type ManagementResponseBodyResultAIBotsProtection string
 
 const (
-	ManagementResponseBodyResultAIBotsProtectionBlock    ManagementResponseBodyResultAIBotsProtection = "block"
-	ManagementResponseBodyResultAIBotsProtectionDisabled ManagementResponseBodyResultAIBotsProtection = "disabled"
+	ManagementResponseBodyResultAIBotsProtectionBlock         ManagementResponseBodyResultAIBotsProtection = "block"
+	ManagementResponseBodyResultAIBotsProtectionDisabled      ManagementResponseBodyResultAIBotsProtection = "disabled"
+	ManagementResponseBodyResultAIBotsProtectionOnlyOnAdPages ManagementResponseBodyResultAIBotsProtection = "only_on_ad_pages"
 )
 
 func (r ManagementResponseBodyResultAIBotsProtection) IsKnown() bool {
 	switch r {
-	case ManagementResponseBodyResultAIBotsProtectionBlock, ManagementResponseBodyResultAIBotsProtectionDisabled:
+	case ManagementResponseBodyResultAIBotsProtectionBlock, ManagementResponseBodyResultAIBotsProtectionDisabled, ManagementResponseBodyResultAIBotsProtectionOnlyOnAdPages:
 		return true
 	}
 	return false
@@ -632,18 +667,22 @@ func (r ManagementResponseBodyResultSbfmLikelyAutomated) IsKnown() bool {
 }
 
 type MessagesBotManagementItem struct {
-	Code    int64                         `json:"code,required"`
-	Message string                        `json:"message,required"`
-	JSON    messagesBotManagementItemJSON `json:"-"`
+	Code             int64                           `json:"code,required"`
+	Message          string                          `json:"message,required"`
+	DocumentationURL string                          `json:"documentation_url"`
+	Source           MessagesBotManagementItemSource `json:"source"`
+	JSON             messagesBotManagementItemJSON   `json:"-"`
 }
 
 // messagesBotManagementItemJSON contains the JSON metadata for the struct
 // [MessagesBotManagementItem]
 type messagesBotManagementItemJSON struct {
-	Code        apijson.Field
-	Message     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
 }
 
 func (r *MessagesBotManagementItem) UnmarshalJSON(data []byte) (err error) {
@@ -651,6 +690,27 @@ func (r *MessagesBotManagementItem) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (r messagesBotManagementItemJSON) RawJSON() string {
+	return r.raw
+}
+
+type MessagesBotManagementItemSource struct {
+	Pointer string                              `json:"pointer"`
+	JSON    messagesBotManagementItemSourceJSON `json:"-"`
+}
+
+// messagesBotManagementItemSourceJSON contains the JSON metadata for the struct
+// [MessagesBotManagementItemSource]
+type messagesBotManagementItemSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *MessagesBotManagementItemSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r messagesBotManagementItemSourceJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -672,6 +732,14 @@ func (r SbfmDefinitelyAutomated) IsKnown() bool {
 }
 
 type SbfmDefinitelyConfig struct {
+	// Enable rule to block AI Scrapers and Crawlers. Please note the value
+	// `only_on_ad_pages` is currently not available for Enterprise customers.
+	AIBotsProtection SbfmDefinitelyConfigAIBotsProtection `json:"ai_bots_protection"`
+	// Enable rule to punish AI Scrapers and Crawlers via a link maze.
+	CrawlerProtection SbfmDefinitelyConfigCrawlerProtection `json:"crawler_protection"`
+	// Use lightweight, invisible JavaScript detections to improve Bot Management.
+	// [Learn more about JavaScript Detections](https://developers.cloudflare.com/bots/reference/javascript-detections/).
+	EnableJs bool `json:"enable_js"`
 	// Whether to optimize Super Bot Fight Mode protections for Wordpress.
 	OptimizeWordpress bool `json:"optimize_wordpress"`
 	// Super Bot Fight Mode (SBFM) action to take on definitely automated requests.
@@ -685,18 +753,24 @@ type SbfmDefinitelyConfig struct {
 	// A read-only field that shows which unauthorized settings are currently active on
 	// the zone. These settings typically result from upgrades or downgrades.
 	StaleZoneConfiguration SbfmDefinitelyConfigStaleZoneConfiguration `json:"stale_zone_configuration"`
-	JSON                   sbfmDefinitelyConfigJSON                   `json:"-"`
-	BaseConfig
+	// A read-only field that indicates whether the zone currently is running the
+	// latest ML model.
+	UsingLatestModel bool                     `json:"using_latest_model"`
+	JSON             sbfmDefinitelyConfigJSON `json:"-"`
 }
 
 // sbfmDefinitelyConfigJSON contains the JSON metadata for the struct
 // [SbfmDefinitelyConfig]
 type sbfmDefinitelyConfigJSON struct {
+	AIBotsProtection             apijson.Field
+	CrawlerProtection            apijson.Field
+	EnableJs                     apijson.Field
 	OptimizeWordpress            apijson.Field
 	SbfmDefinitelyAutomated      apijson.Field
 	SbfmStaticResourceProtection apijson.Field
 	SbfmVerifiedBots             apijson.Field
 	StaleZoneConfiguration       apijson.Field
+	UsingLatestModel             apijson.Field
 	raw                          string
 	ExtraFields                  map[string]apijson.Field
 }
@@ -710,6 +784,40 @@ func (r sbfmDefinitelyConfigJSON) RawJSON() string {
 }
 
 func (r SbfmDefinitelyConfig) implementsManagementResponseBodyResult() {}
+
+// Enable rule to block AI Scrapers and Crawlers. Please note the value
+// `only_on_ad_pages` is currently not available for Enterprise customers.
+type SbfmDefinitelyConfigAIBotsProtection string
+
+const (
+	SbfmDefinitelyConfigAIBotsProtectionBlock         SbfmDefinitelyConfigAIBotsProtection = "block"
+	SbfmDefinitelyConfigAIBotsProtectionDisabled      SbfmDefinitelyConfigAIBotsProtection = "disabled"
+	SbfmDefinitelyConfigAIBotsProtectionOnlyOnAdPages SbfmDefinitelyConfigAIBotsProtection = "only_on_ad_pages"
+)
+
+func (r SbfmDefinitelyConfigAIBotsProtection) IsKnown() bool {
+	switch r {
+	case SbfmDefinitelyConfigAIBotsProtectionBlock, SbfmDefinitelyConfigAIBotsProtectionDisabled, SbfmDefinitelyConfigAIBotsProtectionOnlyOnAdPages:
+		return true
+	}
+	return false
+}
+
+// Enable rule to punish AI Scrapers and Crawlers via a link maze.
+type SbfmDefinitelyConfigCrawlerProtection string
+
+const (
+	SbfmDefinitelyConfigCrawlerProtectionEnabled  SbfmDefinitelyConfigCrawlerProtection = "enabled"
+	SbfmDefinitelyConfigCrawlerProtectionDisabled SbfmDefinitelyConfigCrawlerProtection = "disabled"
+)
+
+func (r SbfmDefinitelyConfigCrawlerProtection) IsKnown() bool {
+	switch r {
+	case SbfmDefinitelyConfigCrawlerProtectionEnabled, SbfmDefinitelyConfigCrawlerProtectionDisabled:
+		return true
+	}
+	return false
+}
 
 // A read-only field that shows which unauthorized settings are currently active on
 // the zone. These settings typically result from upgrades or downgrades.
@@ -740,6 +848,14 @@ func (r sbfmDefinitelyConfigStaleZoneConfigurationJSON) RawJSON() string {
 }
 
 type SbfmDefinitelyConfigParam struct {
+	// Enable rule to block AI Scrapers and Crawlers. Please note the value
+	// `only_on_ad_pages` is currently not available for Enterprise customers.
+	AIBotsProtection param.Field[SbfmDefinitelyConfigAIBotsProtection] `json:"ai_bots_protection"`
+	// Enable rule to punish AI Scrapers and Crawlers via a link maze.
+	CrawlerProtection param.Field[SbfmDefinitelyConfigCrawlerProtection] `json:"crawler_protection"`
+	// Use lightweight, invisible JavaScript detections to improve Bot Management.
+	// [Learn more about JavaScript Detections](https://developers.cloudflare.com/bots/reference/javascript-detections/).
+	EnableJs param.Field[bool] `json:"enable_js"`
 	// Whether to optimize Super Bot Fight Mode protections for Wordpress.
 	OptimizeWordpress param.Field[bool] `json:"optimize_wordpress"`
 	// Super Bot Fight Mode (SBFM) action to take on definitely automated requests.
@@ -750,7 +866,6 @@ type SbfmDefinitelyConfigParam struct {
 	SbfmStaticResourceProtection param.Field[bool] `json:"sbfm_static_resource_protection"`
 	// Super Bot Fight Mode (SBFM) action to take on verified bots requests.
 	SbfmVerifiedBots param.Field[SbfmVerifiedBots] `json:"sbfm_verified_bots"`
-	BaseConfigParam
 }
 
 func (r SbfmDefinitelyConfigParam) MarshalJSON() (data []byte, err error) {
@@ -774,6 +889,14 @@ func (r SbfmDefinitelyConfigStaleZoneConfigurationParam) MarshalJSON() (data []b
 }
 
 type SbfmLikelyConfig struct {
+	// Enable rule to block AI Scrapers and Crawlers. Please note the value
+	// `only_on_ad_pages` is currently not available for Enterprise customers.
+	AIBotsProtection SbfmLikelyConfigAIBotsProtection `json:"ai_bots_protection"`
+	// Enable rule to punish AI Scrapers and Crawlers via a link maze.
+	CrawlerProtection SbfmLikelyConfigCrawlerProtection `json:"crawler_protection"`
+	// Use lightweight, invisible JavaScript detections to improve Bot Management.
+	// [Learn more about JavaScript Detections](https://developers.cloudflare.com/bots/reference/javascript-detections/).
+	EnableJs bool `json:"enable_js"`
 	// Whether to optimize Super Bot Fight Mode protections for Wordpress.
 	OptimizeWordpress bool `json:"optimize_wordpress"`
 	// Super Bot Fight Mode (SBFM) action to take on definitely automated requests.
@@ -789,19 +912,25 @@ type SbfmLikelyConfig struct {
 	// A read-only field that shows which unauthorized settings are currently active on
 	// the zone. These settings typically result from upgrades or downgrades.
 	StaleZoneConfiguration SbfmLikelyConfigStaleZoneConfiguration `json:"stale_zone_configuration"`
-	JSON                   sbfmLikelyConfigJSON                   `json:"-"`
-	BaseConfig
+	// A read-only field that indicates whether the zone currently is running the
+	// latest ML model.
+	UsingLatestModel bool                 `json:"using_latest_model"`
+	JSON             sbfmLikelyConfigJSON `json:"-"`
 }
 
 // sbfmLikelyConfigJSON contains the JSON metadata for the struct
 // [SbfmLikelyConfig]
 type sbfmLikelyConfigJSON struct {
+	AIBotsProtection             apijson.Field
+	CrawlerProtection            apijson.Field
+	EnableJs                     apijson.Field
 	OptimizeWordpress            apijson.Field
 	SbfmDefinitelyAutomated      apijson.Field
 	SbfmLikelyAutomated          apijson.Field
 	SbfmStaticResourceProtection apijson.Field
 	SbfmVerifiedBots             apijson.Field
 	StaleZoneConfiguration       apijson.Field
+	UsingLatestModel             apijson.Field
 	raw                          string
 	ExtraFields                  map[string]apijson.Field
 }
@@ -815,6 +944,40 @@ func (r sbfmLikelyConfigJSON) RawJSON() string {
 }
 
 func (r SbfmLikelyConfig) implementsManagementResponseBodyResult() {}
+
+// Enable rule to block AI Scrapers and Crawlers. Please note the value
+// `only_on_ad_pages` is currently not available for Enterprise customers.
+type SbfmLikelyConfigAIBotsProtection string
+
+const (
+	SbfmLikelyConfigAIBotsProtectionBlock         SbfmLikelyConfigAIBotsProtection = "block"
+	SbfmLikelyConfigAIBotsProtectionDisabled      SbfmLikelyConfigAIBotsProtection = "disabled"
+	SbfmLikelyConfigAIBotsProtectionOnlyOnAdPages SbfmLikelyConfigAIBotsProtection = "only_on_ad_pages"
+)
+
+func (r SbfmLikelyConfigAIBotsProtection) IsKnown() bool {
+	switch r {
+	case SbfmLikelyConfigAIBotsProtectionBlock, SbfmLikelyConfigAIBotsProtectionDisabled, SbfmLikelyConfigAIBotsProtectionOnlyOnAdPages:
+		return true
+	}
+	return false
+}
+
+// Enable rule to punish AI Scrapers and Crawlers via a link maze.
+type SbfmLikelyConfigCrawlerProtection string
+
+const (
+	SbfmLikelyConfigCrawlerProtectionEnabled  SbfmLikelyConfigCrawlerProtection = "enabled"
+	SbfmLikelyConfigCrawlerProtectionDisabled SbfmLikelyConfigCrawlerProtection = "disabled"
+)
+
+func (r SbfmLikelyConfigCrawlerProtection) IsKnown() bool {
+	switch r {
+	case SbfmLikelyConfigCrawlerProtectionEnabled, SbfmLikelyConfigCrawlerProtectionDisabled:
+		return true
+	}
+	return false
+}
 
 // Super Bot Fight Mode (SBFM) action to take on likely automated requests.
 type SbfmLikelyConfigSbfmLikelyAutomated string
@@ -858,6 +1021,14 @@ func (r sbfmLikelyConfigStaleZoneConfigurationJSON) RawJSON() string {
 }
 
 type SbfmLikelyConfigParam struct {
+	// Enable rule to block AI Scrapers and Crawlers. Please note the value
+	// `only_on_ad_pages` is currently not available for Enterprise customers.
+	AIBotsProtection param.Field[SbfmLikelyConfigAIBotsProtection] `json:"ai_bots_protection"`
+	// Enable rule to punish AI Scrapers and Crawlers via a link maze.
+	CrawlerProtection param.Field[SbfmLikelyConfigCrawlerProtection] `json:"crawler_protection"`
+	// Use lightweight, invisible JavaScript detections to improve Bot Management.
+	// [Learn more about JavaScript Detections](https://developers.cloudflare.com/bots/reference/javascript-detections/).
+	EnableJs param.Field[bool] `json:"enable_js"`
 	// Whether to optimize Super Bot Fight Mode protections for Wordpress.
 	OptimizeWordpress param.Field[bool] `json:"optimize_wordpress"`
 	// Super Bot Fight Mode (SBFM) action to take on definitely automated requests.
@@ -870,7 +1041,6 @@ type SbfmLikelyConfigParam struct {
 	SbfmStaticResourceProtection param.Field[bool] `json:"sbfm_static_resource_protection"`
 	// Super Bot Fight Mode (SBFM) action to take on verified bots requests.
 	SbfmVerifiedBots param.Field[SbfmVerifiedBots] `json:"sbfm_verified_bots"`
-	BaseConfigParam
 }
 
 func (r SbfmLikelyConfigParam) MarshalJSON() (data []byte, err error) {
@@ -914,8 +1084,99 @@ func (r ZoneBotManagementUpdateParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r.Body)
 }
 
+type ZoneBotManagementUpdateParamsBody struct {
+	// Enable rule to block AI Scrapers and Crawlers. Please note the value
+	// `only_on_ad_pages` is currently not available for Enterprise customers.
+	AIBotsProtection param.Field[ZoneBotManagementUpdateParamsBodyAIBotsProtection] `json:"ai_bots_protection"`
+	// Automatically update to the newest bot detection models created by Cloudflare as
+	// they are released.
+	// [Learn more.](https://developers.cloudflare.com/bots/reference/machine-learning-models#model-versions-and-release-notes)
+	AutoUpdateModel param.Field[bool] `json:"auto_update_model"`
+	// Enable rule to punish AI Scrapers and Crawlers via a link maze.
+	CrawlerProtection param.Field[ZoneBotManagementUpdateParamsBodyCrawlerProtection] `json:"crawler_protection"`
+	// Use lightweight, invisible JavaScript detections to improve Bot Management.
+	// [Learn more about JavaScript Detections](https://developers.cloudflare.com/bots/reference/javascript-detections/).
+	EnableJs param.Field[bool] `json:"enable_js"`
+	// Whether to enable Bot Fight Mode.
+	FightMode param.Field[bool] `json:"fight_mode"`
+	// Whether to optimize Super Bot Fight Mode protections for Wordpress.
+	OptimizeWordpress param.Field[bool] `json:"optimize_wordpress"`
+	// Super Bot Fight Mode (SBFM) action to take on definitely automated requests.
+	SbfmDefinitelyAutomated param.Field[SbfmDefinitelyAutomated] `json:"sbfm_definitely_automated"`
+	// Super Bot Fight Mode (SBFM) action to take on likely automated requests.
+	SbfmLikelyAutomated param.Field[ZoneBotManagementUpdateParamsBodySbfmLikelyAutomated] `json:"sbfm_likely_automated"`
+	// Super Bot Fight Mode (SBFM) to enable static resource protection. Enable if
+	// static resources on your application need bot protection. Note: Static resource
+	// protection can also result in legitimate traffic being blocked.
+	SbfmStaticResourceProtection param.Field[bool] `json:"sbfm_static_resource_protection"`
+	// Super Bot Fight Mode (SBFM) action to take on verified bots requests.
+	SbfmVerifiedBots       param.Field[SbfmVerifiedBots] `json:"sbfm_verified_bots"`
+	StaleZoneConfiguration param.Field[interface{}]      `json:"stale_zone_configuration"`
+	// Whether to disable tracking the highest bot score for a session in the Bot
+	// Management cookie.
+	SuppressSessionScore param.Field[bool] `json:"suppress_session_score"`
+}
+
+func (r ZoneBotManagementUpdateParamsBody) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r ZoneBotManagementUpdateParamsBody) implementsZoneBotManagementUpdateParamsBodyUnion() {}
+
 // Satisfied by [BotFightModeConfigParam], [SbfmDefinitelyConfigParam],
-// [SbfmLikelyConfigParam], [BmSubscriptionConfigParam].
+// [SbfmLikelyConfigParam], [BmSubscriptionConfigParam],
+// [ZoneBotManagementUpdateParamsBody].
 type ZoneBotManagementUpdateParamsBodyUnion interface {
 	implementsZoneBotManagementUpdateParamsBodyUnion()
+}
+
+// Enable rule to block AI Scrapers and Crawlers. Please note the value
+// `only_on_ad_pages` is currently not available for Enterprise customers.
+type ZoneBotManagementUpdateParamsBodyAIBotsProtection string
+
+const (
+	ZoneBotManagementUpdateParamsBodyAIBotsProtectionBlock         ZoneBotManagementUpdateParamsBodyAIBotsProtection = "block"
+	ZoneBotManagementUpdateParamsBodyAIBotsProtectionDisabled      ZoneBotManagementUpdateParamsBodyAIBotsProtection = "disabled"
+	ZoneBotManagementUpdateParamsBodyAIBotsProtectionOnlyOnAdPages ZoneBotManagementUpdateParamsBodyAIBotsProtection = "only_on_ad_pages"
+)
+
+func (r ZoneBotManagementUpdateParamsBodyAIBotsProtection) IsKnown() bool {
+	switch r {
+	case ZoneBotManagementUpdateParamsBodyAIBotsProtectionBlock, ZoneBotManagementUpdateParamsBodyAIBotsProtectionDisabled, ZoneBotManagementUpdateParamsBodyAIBotsProtectionOnlyOnAdPages:
+		return true
+	}
+	return false
+}
+
+// Enable rule to punish AI Scrapers and Crawlers via a link maze.
+type ZoneBotManagementUpdateParamsBodyCrawlerProtection string
+
+const (
+	ZoneBotManagementUpdateParamsBodyCrawlerProtectionEnabled  ZoneBotManagementUpdateParamsBodyCrawlerProtection = "enabled"
+	ZoneBotManagementUpdateParamsBodyCrawlerProtectionDisabled ZoneBotManagementUpdateParamsBodyCrawlerProtection = "disabled"
+)
+
+func (r ZoneBotManagementUpdateParamsBodyCrawlerProtection) IsKnown() bool {
+	switch r {
+	case ZoneBotManagementUpdateParamsBodyCrawlerProtectionEnabled, ZoneBotManagementUpdateParamsBodyCrawlerProtectionDisabled:
+		return true
+	}
+	return false
+}
+
+// Super Bot Fight Mode (SBFM) action to take on likely automated requests.
+type ZoneBotManagementUpdateParamsBodySbfmLikelyAutomated string
+
+const (
+	ZoneBotManagementUpdateParamsBodySbfmLikelyAutomatedAllow            ZoneBotManagementUpdateParamsBodySbfmLikelyAutomated = "allow"
+	ZoneBotManagementUpdateParamsBodySbfmLikelyAutomatedBlock            ZoneBotManagementUpdateParamsBodySbfmLikelyAutomated = "block"
+	ZoneBotManagementUpdateParamsBodySbfmLikelyAutomatedManagedChallenge ZoneBotManagementUpdateParamsBodySbfmLikelyAutomated = "managed_challenge"
+)
+
+func (r ZoneBotManagementUpdateParamsBodySbfmLikelyAutomated) IsKnown() bool {
+	switch r {
+	case ZoneBotManagementUpdateParamsBodySbfmLikelyAutomatedAllow, ZoneBotManagementUpdateParamsBodySbfmLikelyAutomatedBlock, ZoneBotManagementUpdateParamsBodySbfmLikelyAutomatedManagedChallenge:
+		return true
+	}
+	return false
 }

@@ -90,6 +90,7 @@ func TestZoneFirewallWafOverrideUpdateWithOptionalParams(t *testing.T) {
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		"de677e5818985db1285d0e80225f06e5",
 		cfrex.ZoneFirewallWafOverrideUpdateParams{
+			ID: cfrex.F("023e105f4ecef8ad9ca31a8372d0c353"),
 			RewriteAction: cfrex.F(cfrex.FirewallRewriteActionParam{
 				Block:     cfrex.F(cfrex.FirewallWafRewriteActionChallenge),
 				Challenge: cfrex.F(cfrex.FirewallWafRewriteActionChallenge),
@@ -161,9 +162,6 @@ func TestZoneFirewallWafOverrideDelete(t *testing.T) {
 		context.TODO(),
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		"de677e5818985db1285d0e80225f06e5",
-		cfrex.ZoneFirewallWafOverrideDeleteParams{
-			Body: map[string]interface{}{},
-		},
 	)
 	if err != nil {
 		var apierr *cfrex.Error

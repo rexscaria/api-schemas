@@ -44,71 +44,24 @@ func (r *AccountAddressingRegionalHostnameService) List(ctx context.Context, acc
 	return
 }
 
-type APIResponseCollectionDls struct {
-	Result     []interface{}                      `json:"result,nullable"`
-	ResultInfo APIResponseCollectionDlsResultInfo `json:"result_info"`
-	JSON       apiResponseCollectionDlsJSON       `json:"-"`
-	APIResponseDls
-}
-
-// apiResponseCollectionDlsJSON contains the JSON metadata for the struct
-// [APIResponseCollectionDls]
-type apiResponseCollectionDlsJSON struct {
-	Result      apijson.Field
-	ResultInfo  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *APIResponseCollectionDls) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r apiResponseCollectionDlsJSON) RawJSON() string {
-	return r.raw
-}
-
-type APIResponseCollectionDlsResultInfo struct {
-	// Total number of results for the requested service
-	Count float64 `json:"count"`
-	// Current page within paginated list of results
-	Page float64 `json:"page"`
-	// Number of results per page of results
-	PerPage float64 `json:"per_page"`
-	// Total results available without any search parameters
-	TotalCount float64                                `json:"total_count"`
-	JSON       apiResponseCollectionDlsResultInfoJSON `json:"-"`
-}
-
-// apiResponseCollectionDlsResultInfoJSON contains the JSON metadata for the struct
-// [APIResponseCollectionDlsResultInfo]
-type apiResponseCollectionDlsResultInfoJSON struct {
-	Count       apijson.Field
-	Page        apijson.Field
-	PerPage     apijson.Field
-	TotalCount  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *APIResponseCollectionDlsResultInfo) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r apiResponseCollectionDlsResultInfoJSON) RawJSON() string {
-	return r.raw
-}
-
 type AccountAddressingRegionalHostnameListResponse struct {
-	Result []AccountAddressingRegionalHostnameListResponseResult `json:"result"`
-	JSON   accountAddressingRegionalHostnameListResponseJSON     `json:"-"`
-	APIResponseCollectionDls
+	Errors   []MessagesDlsItem `json:"errors,required"`
+	Messages []MessagesDlsItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success    AccountAddressingRegionalHostnameListResponseSuccess    `json:"success,required"`
+	Result     []AccountAddressingRegionalHostnameListResponseResult   `json:"result"`
+	ResultInfo AccountAddressingRegionalHostnameListResponseResultInfo `json:"result_info"`
+	JSON       accountAddressingRegionalHostnameListResponseJSON       `json:"-"`
 }
 
 // accountAddressingRegionalHostnameListResponseJSON contains the JSON metadata for
 // the struct [AccountAddressingRegionalHostnameListResponse]
 type accountAddressingRegionalHostnameListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -119,6 +72,21 @@ func (r *AccountAddressingRegionalHostnameListResponse) UnmarshalJSON(data []byt
 
 func (r accountAddressingRegionalHostnameListResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountAddressingRegionalHostnameListResponseSuccess bool
+
+const (
+	AccountAddressingRegionalHostnameListResponseSuccessTrue AccountAddressingRegionalHostnameListResponseSuccess = true
+)
+
+func (r AccountAddressingRegionalHostnameListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountAddressingRegionalHostnameListResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountAddressingRegionalHostnameListResponseResult struct {
@@ -143,5 +111,37 @@ func (r *AccountAddressingRegionalHostnameListResponseResult) UnmarshalJSON(data
 }
 
 func (r accountAddressingRegionalHostnameListResponseResultJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountAddressingRegionalHostnameListResponseResultInfo struct {
+	// Total number of results for the requested service.
+	Count float64 `json:"count"`
+	// Current page within paginated list of results.
+	Page float64 `json:"page"`
+	// Number of results per page of results.
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters.
+	TotalCount float64                                                     `json:"total_count"`
+	JSON       accountAddressingRegionalHostnameListResponseResultInfoJSON `json:"-"`
+}
+
+// accountAddressingRegionalHostnameListResponseResultInfoJSON contains the JSON
+// metadata for the struct
+// [AccountAddressingRegionalHostnameListResponseResultInfo]
+type accountAddressingRegionalHostnameListResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountAddressingRegionalHostnameListResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountAddressingRegionalHostnameListResponseResultInfoJSON) RawJSON() string {
 	return r.raw
 }

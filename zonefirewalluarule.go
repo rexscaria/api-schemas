@@ -93,7 +93,7 @@ func (r *ZoneFirewallUaRuleService) List(ctx context.Context, zoneID string, que
 }
 
 // Deletes an existing User Agent Blocking rule.
-func (r *ZoneFirewallUaRuleService) Delete(ctx context.Context, zoneID string, uaRuleID string, body ZoneFirewallUaRuleDeleteParams, opts ...option.RequestOption) (res *ZoneFirewallUaRuleDeleteResponse, err error) {
+func (r *ZoneFirewallUaRuleService) Delete(ctx context.Context, zoneID string, uaRuleID string, opts ...option.RequestOption) (res *ZoneFirewallUaRuleDeleteResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
@@ -104,20 +104,26 @@ func (r *ZoneFirewallUaRuleService) Delete(ctx context.Context, zoneID string, u
 		return
 	}
 	path := fmt.Sprintf("zones/%s/firewall/ua_rules/%s", zoneID, uaRuleID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
 type FirewallUablockResponseSingle struct {
-	Result interface{}                       `json:"result"`
-	JSON   firewallUablockResponseSingleJSON `json:"-"`
-	FirewallAPIResponseSingle
+	Errors   []FirewallUablockResponseSingleError   `json:"errors,required"`
+	Messages []FirewallUablockResponseSingleMessage `json:"messages,required"`
+	Result   FirewallUablockResponseSingleResult    `json:"result,required"`
+	// Defines whether the API call was successful.
+	Success FirewallUablockResponseSingleSuccess `json:"success,required"`
+	JSON    firewallUablockResponseSingleJSON    `json:"-"`
 }
 
 // firewallUablockResponseSingleJSON contains the JSON metadata for the struct
 // [FirewallUablockResponseSingle]
 type firewallUablockResponseSingleJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -130,16 +136,215 @@ func (r firewallUablockResponseSingleJSON) RawJSON() string {
 	return r.raw
 }
 
+type FirewallUablockResponseSingleError struct {
+	Code             int64                                     `json:"code,required"`
+	Message          string                                    `json:"message,required"`
+	DocumentationURL string                                    `json:"documentation_url"`
+	Source           FirewallUablockResponseSingleErrorsSource `json:"source"`
+	JSON             firewallUablockResponseSingleErrorJSON    `json:"-"`
+}
+
+// firewallUablockResponseSingleErrorJSON contains the JSON metadata for the struct
+// [FirewallUablockResponseSingleError]
+type firewallUablockResponseSingleErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *FirewallUablockResponseSingleError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r firewallUablockResponseSingleErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type FirewallUablockResponseSingleErrorsSource struct {
+	Pointer string                                        `json:"pointer"`
+	JSON    firewallUablockResponseSingleErrorsSourceJSON `json:"-"`
+}
+
+// firewallUablockResponseSingleErrorsSourceJSON contains the JSON metadata for the
+// struct [FirewallUablockResponseSingleErrorsSource]
+type firewallUablockResponseSingleErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *FirewallUablockResponseSingleErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r firewallUablockResponseSingleErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type FirewallUablockResponseSingleMessage struct {
+	Code             int64                                       `json:"code,required"`
+	Message          string                                      `json:"message,required"`
+	DocumentationURL string                                      `json:"documentation_url"`
+	Source           FirewallUablockResponseSingleMessagesSource `json:"source"`
+	JSON             firewallUablockResponseSingleMessageJSON    `json:"-"`
+}
+
+// firewallUablockResponseSingleMessageJSON contains the JSON metadata for the
+// struct [FirewallUablockResponseSingleMessage]
+type firewallUablockResponseSingleMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *FirewallUablockResponseSingleMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r firewallUablockResponseSingleMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type FirewallUablockResponseSingleMessagesSource struct {
+	Pointer string                                          `json:"pointer"`
+	JSON    firewallUablockResponseSingleMessagesSourceJSON `json:"-"`
+}
+
+// firewallUablockResponseSingleMessagesSourceJSON contains the JSON metadata for
+// the struct [FirewallUablockResponseSingleMessagesSource]
+type firewallUablockResponseSingleMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *FirewallUablockResponseSingleMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r firewallUablockResponseSingleMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type FirewallUablockResponseSingleResult struct {
+	// The unique identifier of the User Agent Blocking rule.
+	ID string `json:"id"`
+	// The configuration object for the current rule.
+	Configuration FirewallUablockResponseSingleResultConfiguration `json:"configuration"`
+	// An informative summary of the rule.
+	Description string `json:"description"`
+	// The action to apply to a matched request.
+	Mode FirewallUablockResponseSingleResultMode `json:"mode"`
+	// When true, indicates that the rule is currently paused.
+	Paused bool                                    `json:"paused"`
+	JSON   firewallUablockResponseSingleResultJSON `json:"-"`
+}
+
+// firewallUablockResponseSingleResultJSON contains the JSON metadata for the
+// struct [FirewallUablockResponseSingleResult]
+type firewallUablockResponseSingleResultJSON struct {
+	ID            apijson.Field
+	Configuration apijson.Field
+	Description   apijson.Field
+	Mode          apijson.Field
+	Paused        apijson.Field
+	raw           string
+	ExtraFields   map[string]apijson.Field
+}
+
+func (r *FirewallUablockResponseSingleResult) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r firewallUablockResponseSingleResultJSON) RawJSON() string {
+	return r.raw
+}
+
+// The configuration object for the current rule.
+type FirewallUablockResponseSingleResultConfiguration struct {
+	// The configuration target for this rule. You must set the target to `ua` for User
+	// Agent Blocking rules.
+	Target string `json:"target"`
+	// The exact user agent string to match. This value will be compared to the
+	// received `User-Agent` HTTP header value.
+	Value string                                               `json:"value"`
+	JSON  firewallUablockResponseSingleResultConfigurationJSON `json:"-"`
+}
+
+// firewallUablockResponseSingleResultConfigurationJSON contains the JSON metadata
+// for the struct [FirewallUablockResponseSingleResultConfiguration]
+type firewallUablockResponseSingleResultConfigurationJSON struct {
+	Target      apijson.Field
+	Value       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *FirewallUablockResponseSingleResultConfiguration) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r firewallUablockResponseSingleResultConfigurationJSON) RawJSON() string {
+	return r.raw
+}
+
+// The action to apply to a matched request.
+type FirewallUablockResponseSingleResultMode string
+
+const (
+	FirewallUablockResponseSingleResultModeBlock            FirewallUablockResponseSingleResultMode = "block"
+	FirewallUablockResponseSingleResultModeChallenge        FirewallUablockResponseSingleResultMode = "challenge"
+	FirewallUablockResponseSingleResultModeJsChallenge      FirewallUablockResponseSingleResultMode = "js_challenge"
+	FirewallUablockResponseSingleResultModeManagedChallenge FirewallUablockResponseSingleResultMode = "managed_challenge"
+)
+
+func (r FirewallUablockResponseSingleResultMode) IsKnown() bool {
+	switch r {
+	case FirewallUablockResponseSingleResultModeBlock, FirewallUablockResponseSingleResultModeChallenge, FirewallUablockResponseSingleResultModeJsChallenge, FirewallUablockResponseSingleResultModeManagedChallenge:
+		return true
+	}
+	return false
+}
+
+// Defines whether the API call was successful.
+type FirewallUablockResponseSingleSuccess bool
+
+const (
+	FirewallUablockResponseSingleSuccessTrue FirewallUablockResponseSingleSuccess = true
+)
+
+func (r FirewallUablockResponseSingleSuccess) IsKnown() bool {
+	switch r {
+	case FirewallUablockResponseSingleSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type ZoneFirewallUaRuleListResponse struct {
-	Result []ZoneFirewallUaRuleListResponseResult `json:"result"`
-	JSON   zoneFirewallUaRuleListResponseJSON     `json:"-"`
-	FirewallAPIResponseCollection
+	Errors   []ZoneFirewallUaRuleListResponseError   `json:"errors,required"`
+	Messages []ZoneFirewallUaRuleListResponseMessage `json:"messages,required"`
+	Result   []ZoneFirewallUaRuleListResponseResult  `json:"result,required"`
+	// Defines whether the API call was successful.
+	Success    ZoneFirewallUaRuleListResponseSuccess    `json:"success,required"`
+	ResultInfo ZoneFirewallUaRuleListResponseResultInfo `json:"result_info"`
+	JSON       zoneFirewallUaRuleListResponseJSON       `json:"-"`
 }
 
 // zoneFirewallUaRuleListResponseJSON contains the JSON metadata for the struct
 // [ZoneFirewallUaRuleListResponse]
 type zoneFirewallUaRuleListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -149,6 +354,102 @@ func (r *ZoneFirewallUaRuleListResponse) UnmarshalJSON(data []byte) (err error) 
 }
 
 func (r zoneFirewallUaRuleListResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZoneFirewallUaRuleListResponseError struct {
+	Code             int64                                      `json:"code,required"`
+	Message          string                                     `json:"message,required"`
+	DocumentationURL string                                     `json:"documentation_url"`
+	Source           ZoneFirewallUaRuleListResponseErrorsSource `json:"source"`
+	JSON             zoneFirewallUaRuleListResponseErrorJSON    `json:"-"`
+}
+
+// zoneFirewallUaRuleListResponseErrorJSON contains the JSON metadata for the
+// struct [ZoneFirewallUaRuleListResponseError]
+type zoneFirewallUaRuleListResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *ZoneFirewallUaRuleListResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneFirewallUaRuleListResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZoneFirewallUaRuleListResponseErrorsSource struct {
+	Pointer string                                         `json:"pointer"`
+	JSON    zoneFirewallUaRuleListResponseErrorsSourceJSON `json:"-"`
+}
+
+// zoneFirewallUaRuleListResponseErrorsSourceJSON contains the JSON metadata for
+// the struct [ZoneFirewallUaRuleListResponseErrorsSource]
+type zoneFirewallUaRuleListResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZoneFirewallUaRuleListResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneFirewallUaRuleListResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZoneFirewallUaRuleListResponseMessage struct {
+	Code             int64                                        `json:"code,required"`
+	Message          string                                       `json:"message,required"`
+	DocumentationURL string                                       `json:"documentation_url"`
+	Source           ZoneFirewallUaRuleListResponseMessagesSource `json:"source"`
+	JSON             zoneFirewallUaRuleListResponseMessageJSON    `json:"-"`
+}
+
+// zoneFirewallUaRuleListResponseMessageJSON contains the JSON metadata for the
+// struct [ZoneFirewallUaRuleListResponseMessage]
+type zoneFirewallUaRuleListResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *ZoneFirewallUaRuleListResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneFirewallUaRuleListResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZoneFirewallUaRuleListResponseMessagesSource struct {
+	Pointer string                                           `json:"pointer"`
+	JSON    zoneFirewallUaRuleListResponseMessagesSourceJSON `json:"-"`
+}
+
+// zoneFirewallUaRuleListResponseMessagesSourceJSON contains the JSON metadata for
+// the struct [ZoneFirewallUaRuleListResponseMessagesSource]
+type zoneFirewallUaRuleListResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZoneFirewallUaRuleListResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneFirewallUaRuleListResponseMessagesSourceJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -232,16 +533,68 @@ func (r ZoneFirewallUaRuleListResponseResultMode) IsKnown() bool {
 	return false
 }
 
+// Defines whether the API call was successful.
+type ZoneFirewallUaRuleListResponseSuccess bool
+
+const (
+	ZoneFirewallUaRuleListResponseSuccessTrue ZoneFirewallUaRuleListResponseSuccess = true
+)
+
+func (r ZoneFirewallUaRuleListResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneFirewallUaRuleListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type ZoneFirewallUaRuleListResponseResultInfo struct {
+	// Defines the total number of results for the requested service.
+	Count float64 `json:"count"`
+	// Defines the current page within paginated list of results.
+	Page float64 `json:"page"`
+	// Defines the number of results per page of results.
+	PerPage float64 `json:"per_page"`
+	// Defines the total results available without any search parameters.
+	TotalCount float64                                      `json:"total_count"`
+	JSON       zoneFirewallUaRuleListResponseResultInfoJSON `json:"-"`
+}
+
+// zoneFirewallUaRuleListResponseResultInfoJSON contains the JSON metadata for the
+// struct [ZoneFirewallUaRuleListResponseResultInfo]
+type zoneFirewallUaRuleListResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZoneFirewallUaRuleListResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneFirewallUaRuleListResponseResultInfoJSON) RawJSON() string {
+	return r.raw
+}
+
 type ZoneFirewallUaRuleDeleteResponse struct {
-	Result ZoneFirewallUaRuleDeleteResponseResult `json:"result"`
-	JSON   zoneFirewallUaRuleDeleteResponseJSON   `json:"-"`
-	FirewallUablockResponseSingle
+	Errors   []FirewallMessagesItem                 `json:"errors,required"`
+	Messages []FirewallMessagesItem                 `json:"messages,required"`
+	Result   ZoneFirewallUaRuleDeleteResponseResult `json:"result,required"`
+	// Defines whether the API call was successful.
+	Success ZoneFirewallUaRuleDeleteResponseSuccess `json:"success,required"`
+	JSON    zoneFirewallUaRuleDeleteResponseJSON    `json:"-"`
 }
 
 // zoneFirewallUaRuleDeleteResponseJSON contains the JSON metadata for the struct
 // [ZoneFirewallUaRuleDeleteResponse]
 type zoneFirewallUaRuleDeleteResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -256,16 +609,28 @@ func (r zoneFirewallUaRuleDeleteResponseJSON) RawJSON() string {
 
 type ZoneFirewallUaRuleDeleteResponseResult struct {
 	// The unique identifier of the User Agent Blocking rule.
-	ID   string                                     `json:"id"`
-	JSON zoneFirewallUaRuleDeleteResponseResultJSON `json:"-"`
+	ID string `json:"id"`
+	// The configuration object for the current rule.
+	Configuration ZoneFirewallUaRuleDeleteResponseResultConfiguration `json:"configuration"`
+	// An informative summary of the rule.
+	Description string `json:"description"`
+	// The action to apply to a matched request.
+	Mode ZoneFirewallUaRuleDeleteResponseResultMode `json:"mode"`
+	// When true, indicates that the rule is currently paused.
+	Paused bool                                       `json:"paused"`
+	JSON   zoneFirewallUaRuleDeleteResponseResultJSON `json:"-"`
 }
 
 // zoneFirewallUaRuleDeleteResponseResultJSON contains the JSON metadata for the
 // struct [ZoneFirewallUaRuleDeleteResponseResult]
 type zoneFirewallUaRuleDeleteResponseResultJSON struct {
-	ID          apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	ID            apijson.Field
+	Configuration apijson.Field
+	Description   apijson.Field
+	Mode          apijson.Field
+	Paused        apijson.Field
+	raw           string
+	ExtraFields   map[string]apijson.Field
 }
 
 func (r *ZoneFirewallUaRuleDeleteResponseResult) UnmarshalJSON(data []byte) (err error) {
@@ -276,15 +641,108 @@ func (r zoneFirewallUaRuleDeleteResponseResultJSON) RawJSON() string {
 	return r.raw
 }
 
+// The configuration object for the current rule.
+type ZoneFirewallUaRuleDeleteResponseResultConfiguration struct {
+	// The configuration target for this rule. You must set the target to `ua` for User
+	// Agent Blocking rules.
+	Target string `json:"target"`
+	// The exact user agent string to match. This value will be compared to the
+	// received `User-Agent` HTTP header value.
+	Value string                                                  `json:"value"`
+	JSON  zoneFirewallUaRuleDeleteResponseResultConfigurationJSON `json:"-"`
+}
+
+// zoneFirewallUaRuleDeleteResponseResultConfigurationJSON contains the JSON
+// metadata for the struct [ZoneFirewallUaRuleDeleteResponseResultConfiguration]
+type zoneFirewallUaRuleDeleteResponseResultConfigurationJSON struct {
+	Target      apijson.Field
+	Value       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZoneFirewallUaRuleDeleteResponseResultConfiguration) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneFirewallUaRuleDeleteResponseResultConfigurationJSON) RawJSON() string {
+	return r.raw
+}
+
+// The action to apply to a matched request.
+type ZoneFirewallUaRuleDeleteResponseResultMode string
+
+const (
+	ZoneFirewallUaRuleDeleteResponseResultModeBlock            ZoneFirewallUaRuleDeleteResponseResultMode = "block"
+	ZoneFirewallUaRuleDeleteResponseResultModeChallenge        ZoneFirewallUaRuleDeleteResponseResultMode = "challenge"
+	ZoneFirewallUaRuleDeleteResponseResultModeJsChallenge      ZoneFirewallUaRuleDeleteResponseResultMode = "js_challenge"
+	ZoneFirewallUaRuleDeleteResponseResultModeManagedChallenge ZoneFirewallUaRuleDeleteResponseResultMode = "managed_challenge"
+)
+
+func (r ZoneFirewallUaRuleDeleteResponseResultMode) IsKnown() bool {
+	switch r {
+	case ZoneFirewallUaRuleDeleteResponseResultModeBlock, ZoneFirewallUaRuleDeleteResponseResultModeChallenge, ZoneFirewallUaRuleDeleteResponseResultModeJsChallenge, ZoneFirewallUaRuleDeleteResponseResultModeManagedChallenge:
+		return true
+	}
+	return false
+}
+
+// Defines whether the API call was successful.
+type ZoneFirewallUaRuleDeleteResponseSuccess bool
+
+const (
+	ZoneFirewallUaRuleDeleteResponseSuccessTrue ZoneFirewallUaRuleDeleteResponseSuccess = true
+)
+
+func (r ZoneFirewallUaRuleDeleteResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneFirewallUaRuleDeleteResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type ZoneFirewallUaRuleNewParams struct {
-	// The rule configuration.
-	Configuration param.Field[FirewallRuleConfigurationUnionParam] `json:"configuration,required"`
+	Configuration param.Field[ZoneFirewallUaRuleNewParamsConfiguration] `json:"configuration,required"`
 	// The action to apply to a matched request.
 	Mode param.Field[FirewallSchemasMode] `json:"mode,required"`
+	// An informative summary of the rule. This value is sanitized and any tags will be
+	// removed.
+	Description param.Field[string] `json:"description"`
+	// When true, indicates that the rule is currently paused.
+	Paused param.Field[bool] `json:"paused"`
 }
 
 func (r ZoneFirewallUaRuleNewParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
+}
+
+type ZoneFirewallUaRuleNewParamsConfiguration struct {
+	// The configuration target. You must set the target to `ua` when specifying a user
+	// agent in the rule.
+	Target param.Field[ZoneFirewallUaRuleNewParamsConfigurationTarget] `json:"target"`
+	// the user agent to exactly match
+	Value param.Field[string] `json:"value"`
+}
+
+func (r ZoneFirewallUaRuleNewParamsConfiguration) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// The configuration target. You must set the target to `ua` when specifying a user
+// agent in the rule.
+type ZoneFirewallUaRuleNewParamsConfigurationTarget string
+
+const (
+	ZoneFirewallUaRuleNewParamsConfigurationTargetUa ZoneFirewallUaRuleNewParamsConfigurationTarget = "ua"
+)
+
+func (r ZoneFirewallUaRuleNewParamsConfigurationTarget) IsKnown() bool {
+	switch r {
+	case ZoneFirewallUaRuleNewParamsConfigurationTargetUa:
+		return true
+	}
+	return false
 }
 
 type ZoneFirewallUaRuleUpdateParams struct {
@@ -292,6 +750,11 @@ type ZoneFirewallUaRuleUpdateParams struct {
 	Configuration param.Field[FirewallRuleConfigurationUnionParam] `json:"configuration,required"`
 	// The action to apply to a matched request.
 	Mode param.Field[FirewallSchemasMode] `json:"mode,required"`
+	// An informative summary of the rule. This value is sanitized and any tags will be
+	// removed.
+	Description param.Field[string] `json:"description"`
+	// When true, indicates that the rule is currently paused.
+	Paused param.Field[bool] `json:"paused"`
 }
 
 func (r ZoneFirewallUaRuleUpdateParams) MarshalJSON() (data []byte, err error) {
@@ -301,15 +764,15 @@ func (r ZoneFirewallUaRuleUpdateParams) MarshalJSON() (data []byte, err error) {
 type ZoneFirewallUaRuleListParams struct {
 	// A string to search for in the description of existing rules.
 	Description param.Field[string] `query:"description"`
-	// A string to search for in the description of existing rules.
-	DescriptionSearch param.Field[string] `query:"description_search"`
 	// Page number of paginated results.
 	Page param.Field[float64] `query:"page"`
+	// When true, indicates that the rule is currently paused.
+	Paused param.Field[bool] `query:"paused"`
 	// The maximum number of results per page. You can only set the value to `1` or to
 	// a multiple of 5 such as `5`, `10`, `15`, or `20`.
 	PerPage param.Field[float64] `query:"per_page"`
 	// A string to search for in the user agent values of existing rules.
-	UaSearch param.Field[string] `query:"ua_search"`
+	UserAgent param.Field[string] `query:"user_agent"`
 }
 
 // URLQuery serializes [ZoneFirewallUaRuleListParams]'s query parameters as
@@ -319,12 +782,4 @@ func (r ZoneFirewallUaRuleListParams) URLQuery() (v url.Values) {
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
-}
-
-type ZoneFirewallUaRuleDeleteParams struct {
-	Body interface{} `json:"body,required"`
-}
-
-func (r ZoneFirewallUaRuleDeleteParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
 }

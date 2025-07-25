@@ -31,9 +31,10 @@ func TestAccountTeamnetVirtualNetworkNewWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"699d98642c564d2e855e9661899b7252",
 		cfrex.AccountTeamnetVirtualNetworkNewParams{
-			Name:      cfrex.F("us-east-1-vpc"),
-			Comment:   cfrex.F("Staging VPC for data science"),
-			IsDefault: cfrex.F(true),
+			Name:             cfrex.F("us-east-1-vpc"),
+			Comment:          cfrex.F("Staging VPC for data science"),
+			IsDefault:        cfrex.F(true),
+			IsDefaultNetwork: cfrex.F(false),
 		},
 	)
 	if err != nil {
@@ -63,7 +64,6 @@ func TestAccountTeamnetVirtualNetworkGet(t *testing.T) {
 		context.TODO(),
 		"699d98642c564d2e855e9661899b7252",
 		"f70ff985-a4ef-4643-bbbc-4a0ed4fc8415",
-		cfrex.AccountTeamnetVirtualNetworkGetParams{},
 	)
 	if err != nil {
 		var apierr *cfrex.Error
@@ -94,7 +94,7 @@ func TestAccountTeamnetVirtualNetworkUpdateWithOptionalParams(t *testing.T) {
 		"f70ff985-a4ef-4643-bbbc-4a0ed4fc8415",
 		cfrex.AccountTeamnetVirtualNetworkUpdateParams{
 			Comment:          cfrex.F("Staging VPC for data science"),
-			IsDefaultNetwork: cfrex.F(true),
+			IsDefaultNetwork: cfrex.F(false),
 			Name:             cfrex.F("us-east-1-vpc"),
 		},
 	)
@@ -158,9 +158,6 @@ func TestAccountTeamnetVirtualNetworkDelete(t *testing.T) {
 		context.TODO(),
 		"699d98642c564d2e855e9661899b7252",
 		"f70ff985-a4ef-4643-bbbc-4a0ed4fc8415",
-		cfrex.AccountTeamnetVirtualNetworkDeleteParams{
-			Body: map[string]interface{}{},
-		},
 	)
 	if err != nil {
 		var apierr *cfrex.Error

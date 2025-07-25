@@ -109,7 +109,7 @@ func (r *ZoneWeb3HostnameIpfsUniversalPathContentListEntryService) List(ctx cont
 }
 
 // Delete IPFS Universal Path Gateway Content List Entry
-func (r *ZoneWeb3HostnameIpfsUniversalPathContentListEntryService) Delete(ctx context.Context, zoneID string, identifier string, contentListEntryIdentifier string, body ZoneWeb3HostnameIpfsUniversalPathContentListEntryDeleteParams, opts ...option.RequestOption) (res *APIResponseSingleID, err error) {
+func (r *ZoneWeb3HostnameIpfsUniversalPathContentListEntryService) Delete(ctx context.Context, zoneID string, identifier string, contentListEntryIdentifier string, opts ...option.RequestOption) (res *APIResponseSingleID, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
@@ -124,21 +124,21 @@ func (r *ZoneWeb3HostnameIpfsUniversalPathContentListEntryService) Delete(ctx co
 		return
 	}
 	path := fmt.Sprintf("zones/%s/web3/hostnames/%s/ipfs_universal_path/content_list/entries/%s", zoneID, identifier, contentListEntryIdentifier)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
-// Content list entry to be blocked.
+// Specify a content list entry to block.
 type ContentListEntry struct {
-	// Identifier
+	// Specify the identifier of the hostname.
 	ID string `json:"id"`
-	// CID or content path of content to block.
+	// Specify the CID or content path of content to block.
 	Content   string    `json:"content"`
 	CreatedOn time.Time `json:"created_on" format:"date-time"`
-	// An optional description of the content list entry.
+	// Specify an optional description of the content list entry.
 	Description string    `json:"description"`
 	ModifiedOn  time.Time `json:"modified_on" format:"date-time"`
-	// Type of content list entry to block.
+	// Specify the type of content list entry to block.
 	Type EntryType            `json:"type"`
 	JSON contentListEntryJSON `json:"-"`
 }
@@ -164,13 +164,13 @@ func (r contentListEntryJSON) RawJSON() string {
 	return r.raw
 }
 
-// Content list entry to be blocked.
+// Specify a content list entry to block.
 type ContentListEntryParam struct {
-	// CID or content path of content to block.
+	// Specify the CID or content path of content to block.
 	Content param.Field[string] `json:"content"`
-	// An optional description of the content list entry.
+	// Specify an optional description of the content list entry.
 	Description param.Field[string] `json:"description"`
-	// Type of content list entry to block.
+	// Specify the type of content list entry to block.
 	Type param.Field[EntryType] `json:"type"`
 }
 
@@ -179,11 +179,11 @@ func (r ContentListEntryParam) MarshalJSON() (data []byte, err error) {
 }
 
 type EntryCreateRequestParam struct {
-	// CID or content path of content to block.
+	// Specify the CID or content path of content to block.
 	Content param.Field[string] `json:"content,required"`
-	// Type of content list entry to block.
+	// Specify the type of content list entry to block.
 	Type param.Field[EntryType] `json:"type,required"`
-	// An optional description of the content list entry.
+	// Specify an optional description of the content list entry.
 	Description param.Field[string] `json:"description"`
 }
 
@@ -192,16 +192,25 @@ func (r EntryCreateRequestParam) MarshalJSON() (data []byte, err error) {
 }
 
 type EntrySingleResponse struct {
-	// Content list entry to be blocked.
-	Result ContentListEntry        `json:"result"`
-	JSON   entrySingleResponseJSON `json:"-"`
-	APIResponseSingleWeb3
+	Errors   []EntrySingleResponseError   `json:"errors,required"`
+	Messages []EntrySingleResponseMessage `json:"messages,required"`
+	// Specify a content list entry to block.
+	Result ContentListEntry `json:"result,required"`
+	// Specifies whether the API call was successful.
+	Success EntrySingleResponseSuccess `json:"success,required"`
+	// Provides the API response.
+	ResultInfo interface{}             `json:"result_info"`
+	JSON       entrySingleResponseJSON `json:"-"`
 }
 
 // entrySingleResponseJSON contains the JSON metadata for the struct
 // [EntrySingleResponse]
 type entrySingleResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -214,7 +223,118 @@ func (r entrySingleResponseJSON) RawJSON() string {
 	return r.raw
 }
 
-// Type of content list entry to block.
+type EntrySingleResponseError struct {
+	Code             int64                           `json:"code,required"`
+	Message          string                          `json:"message,required"`
+	DocumentationURL string                          `json:"documentation_url"`
+	Source           EntrySingleResponseErrorsSource `json:"source"`
+	JSON             entrySingleResponseErrorJSON    `json:"-"`
+}
+
+// entrySingleResponseErrorJSON contains the JSON metadata for the struct
+// [EntrySingleResponseError]
+type entrySingleResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *EntrySingleResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r entrySingleResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type EntrySingleResponseErrorsSource struct {
+	Pointer string                              `json:"pointer"`
+	JSON    entrySingleResponseErrorsSourceJSON `json:"-"`
+}
+
+// entrySingleResponseErrorsSourceJSON contains the JSON metadata for the struct
+// [EntrySingleResponseErrorsSource]
+type entrySingleResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *EntrySingleResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r entrySingleResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type EntrySingleResponseMessage struct {
+	Code             int64                             `json:"code,required"`
+	Message          string                            `json:"message,required"`
+	DocumentationURL string                            `json:"documentation_url"`
+	Source           EntrySingleResponseMessagesSource `json:"source"`
+	JSON             entrySingleResponseMessageJSON    `json:"-"`
+}
+
+// entrySingleResponseMessageJSON contains the JSON metadata for the struct
+// [EntrySingleResponseMessage]
+type entrySingleResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *EntrySingleResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r entrySingleResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type EntrySingleResponseMessagesSource struct {
+	Pointer string                                `json:"pointer"`
+	JSON    entrySingleResponseMessagesSourceJSON `json:"-"`
+}
+
+// entrySingleResponseMessagesSourceJSON contains the JSON metadata for the struct
+// [EntrySingleResponseMessagesSource]
+type entrySingleResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *EntrySingleResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r entrySingleResponseMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Specifies whether the API call was successful.
+type EntrySingleResponseSuccess bool
+
+const (
+	EntrySingleResponseSuccessTrue EntrySingleResponseSuccess = true
+)
+
+func (r EntrySingleResponseSuccess) IsKnown() bool {
+	switch r {
+	case EntrySingleResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+// Specify the type of content list entry to block.
 type EntryType string
 
 const (
@@ -231,16 +351,24 @@ func (r EntryType) IsKnown() bool {
 }
 
 type ZoneWeb3HostnameIpfsUniversalPathContentListEntryListResponse struct {
-	Result ZoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseResult `json:"result"`
-	JSON   zoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseJSON   `json:"-"`
-	APIResponseCollectionWeb3
+	Errors   []ZoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseError   `json:"errors,required"`
+	Messages []ZoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseMessage `json:"messages,required"`
+	Result   ZoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseResult    `json:"result,required,nullable"`
+	// Specifies whether the API call was successful.
+	Success    ZoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseSuccess    `json:"success,required"`
+	ResultInfo ZoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseResultInfo `json:"result_info"`
+	JSON       zoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseJSON       `json:"-"`
 }
 
 // zoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseJSON contains the
 // JSON metadata for the struct
 // [ZoneWeb3HostnameIpfsUniversalPathContentListEntryListResponse]
 type zoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -253,8 +381,108 @@ func (r zoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseJSON) RawJS
 	return r.raw
 }
 
+type ZoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseError struct {
+	Code             int64                                                                     `json:"code,required"`
+	Message          string                                                                    `json:"message,required"`
+	DocumentationURL string                                                                    `json:"documentation_url"`
+	Source           ZoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseErrorsSource `json:"source"`
+	JSON             zoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseErrorJSON    `json:"-"`
+}
+
+// zoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseErrorJSON contains
+// the JSON metadata for the struct
+// [ZoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseError]
+type zoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *ZoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseErrorsSource struct {
+	Pointer string                                                                        `json:"pointer"`
+	JSON    zoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseErrorsSourceJSON `json:"-"`
+}
+
+// zoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseErrorsSourceJSON
+// contains the JSON metadata for the struct
+// [ZoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseErrorsSource]
+type zoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseMessage struct {
+	Code             int64                                                                       `json:"code,required"`
+	Message          string                                                                      `json:"message,required"`
+	DocumentationURL string                                                                      `json:"documentation_url"`
+	Source           ZoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseMessagesSource `json:"source"`
+	JSON             zoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseMessageJSON    `json:"-"`
+}
+
+// zoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseMessageJSON
+// contains the JSON metadata for the struct
+// [ZoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseMessage]
+type zoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *ZoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseMessagesSource struct {
+	Pointer string                                                                          `json:"pointer"`
+	JSON    zoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseMessagesSourceJSON `json:"-"`
+}
+
+// zoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseMessagesSourceJSON
+// contains the JSON metadata for the struct
+// [ZoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseMessagesSource]
+type zoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
 type ZoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseResult struct {
-	// Content list entries.
+	// Provides content list entries.
 	Entries []ContentListEntry                                                      `json:"entries"`
 	JSON    zoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseResultJSON `json:"-"`
 }
@@ -276,6 +504,53 @@ func (r zoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseResultJSON)
 	return r.raw
 }
 
+// Specifies whether the API call was successful.
+type ZoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseSuccess bool
+
+const (
+	ZoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseSuccessTrue ZoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseSuccess = true
+)
+
+func (r ZoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type ZoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseResultInfo struct {
+	// Specifies the total number of results for the requested service.
+	Count float64 `json:"count"`
+	// Specifies the current page within paginated list of results.
+	Page float64 `json:"page"`
+	// Specifies the number of results per page of results.
+	PerPage float64 `json:"per_page"`
+	// Specifies the total results available without any search parameters.
+	TotalCount float64                                                                     `json:"total_count"`
+	JSON       zoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseResultInfoJSON `json:"-"`
+}
+
+// zoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseResultInfoJSON
+// contains the JSON metadata for the struct
+// [ZoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseResultInfo]
+type zoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseResultInfoJSON) RawJSON() string {
+	return r.raw
+}
+
 type ZoneWeb3HostnameIpfsUniversalPathContentListEntryNewParams struct {
 	EntryCreateRequest EntryCreateRequestParam `json:"entry_create_request,required"`
 }
@@ -290,12 +565,4 @@ type ZoneWeb3HostnameIpfsUniversalPathContentListEntryUpdateParams struct {
 
 func (r ZoneWeb3HostnameIpfsUniversalPathContentListEntryUpdateParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r.EntryCreateRequest)
-}
-
-type ZoneWeb3HostnameIpfsUniversalPathContentListEntryDeleteParams struct {
-	Body interface{} `json:"body,required"`
-}
-
-func (r ZoneWeb3HostnameIpfsUniversalPathContentListEntryDeleteParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
 }

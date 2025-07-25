@@ -8,15 +8,12 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
-	"reflect"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
 	"github.com/rexscaria/api-schemas/internal/param"
 	"github.com/rexscaria/api-schemas/internal/requestconfig"
 	"github.com/rexscaria/api-schemas/option"
-	"github.com/rexscaria/api-schemas/shared"
-	"github.com/tidwall/gjson"
 )
 
 // AccountAIRunHfNexusflowService contains methods and other services that help
@@ -50,138 +47,7 @@ func (r *AccountAIRunHfNexusflowService) ExecuteStarlingLm7bBeta(ctx context.Con
 	return
 }
 
-type AccountAIRunHfNexusflowExecuteStarlingLm7bBetaResponse struct {
-	Result  AccountAIRunHfNexusflowExecuteStarlingLm7bBetaResponseResultUnion `json:"result" format:"binary"`
-	Success bool                                                              `json:"success"`
-	JSON    accountAIRunHfNexusflowExecuteStarlingLm7bBetaResponseJSON        `json:"-"`
-}
-
-// accountAIRunHfNexusflowExecuteStarlingLm7bBetaResponseJSON contains the JSON
-// metadata for the struct [AccountAIRunHfNexusflowExecuteStarlingLm7bBetaResponse]
-type accountAIRunHfNexusflowExecuteStarlingLm7bBetaResponseJSON struct {
-	Result      apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountAIRunHfNexusflowExecuteStarlingLm7bBetaResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountAIRunHfNexusflowExecuteStarlingLm7bBetaResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-// Union satisfied by
-// [AccountAIRunHfNexusflowExecuteStarlingLm7bBetaResponseResultObject] or
-// [shared.UnionString].
-type AccountAIRunHfNexusflowExecuteStarlingLm7bBetaResponseResultUnion interface {
-	ImplementsAccountAIRunHfNexusflowExecuteStarlingLm7bBetaResponseResultUnion()
-}
-
-func init() {
-	apijson.RegisterUnion(
-		reflect.TypeOf((*AccountAIRunHfNexusflowExecuteStarlingLm7bBetaResponseResultUnion)(nil)).Elem(),
-		"",
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(AccountAIRunHfNexusflowExecuteStarlingLm7bBetaResponseResultObject{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.String,
-			Type:       reflect.TypeOf(shared.UnionString("")),
-		},
-	)
-}
-
-type AccountAIRunHfNexusflowExecuteStarlingLm7bBetaResponseResultObject struct {
-	// The generated text response from the model
-	Response string `json:"response,required"`
-	// An array of tool calls requests made during the response generation
-	ToolCalls []AccountAIRunHfNexusflowExecuteStarlingLm7bBetaResponseResultObjectToolCall `json:"tool_calls"`
-	// Usage statistics for the inference request
-	Usage AccountAIRunHfNexusflowExecuteStarlingLm7bBetaResponseResultObjectUsage `json:"usage"`
-	JSON  accountAIRunHfNexusflowExecuteStarlingLm7bBetaResponseResultObjectJSON  `json:"-"`
-}
-
-// accountAIRunHfNexusflowExecuteStarlingLm7bBetaResponseResultObjectJSON contains
-// the JSON metadata for the struct
-// [AccountAIRunHfNexusflowExecuteStarlingLm7bBetaResponseResultObject]
-type accountAIRunHfNexusflowExecuteStarlingLm7bBetaResponseResultObjectJSON struct {
-	Response    apijson.Field
-	ToolCalls   apijson.Field
-	Usage       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountAIRunHfNexusflowExecuteStarlingLm7bBetaResponseResultObject) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountAIRunHfNexusflowExecuteStarlingLm7bBetaResponseResultObjectJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r AccountAIRunHfNexusflowExecuteStarlingLm7bBetaResponseResultObject) ImplementsAccountAIRunHfNexusflowExecuteStarlingLm7bBetaResponseResultUnion() {
-}
-
-type AccountAIRunHfNexusflowExecuteStarlingLm7bBetaResponseResultObjectToolCall struct {
-	// The arguments passed to be passed to the tool call request
-	Arguments interface{} `json:"arguments"`
-	// The name of the tool to be called
-	Name string                                                                         `json:"name"`
-	JSON accountAIRunHfNexusflowExecuteStarlingLm7bBetaResponseResultObjectToolCallJSON `json:"-"`
-}
-
-// accountAIRunHfNexusflowExecuteStarlingLm7bBetaResponseResultObjectToolCallJSON
-// contains the JSON metadata for the struct
-// [AccountAIRunHfNexusflowExecuteStarlingLm7bBetaResponseResultObjectToolCall]
-type accountAIRunHfNexusflowExecuteStarlingLm7bBetaResponseResultObjectToolCallJSON struct {
-	Arguments   apijson.Field
-	Name        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountAIRunHfNexusflowExecuteStarlingLm7bBetaResponseResultObjectToolCall) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountAIRunHfNexusflowExecuteStarlingLm7bBetaResponseResultObjectToolCallJSON) RawJSON() string {
-	return r.raw
-}
-
-// Usage statistics for the inference request
-type AccountAIRunHfNexusflowExecuteStarlingLm7bBetaResponseResultObjectUsage struct {
-	// Total number of tokens in output
-	CompletionTokens float64 `json:"completion_tokens"`
-	// Total number of tokens in input
-	PromptTokens float64 `json:"prompt_tokens"`
-	// Total number of input and output tokens
-	TotalTokens float64                                                                     `json:"total_tokens"`
-	JSON        accountAIRunHfNexusflowExecuteStarlingLm7bBetaResponseResultObjectUsageJSON `json:"-"`
-}
-
-// accountAIRunHfNexusflowExecuteStarlingLm7bBetaResponseResultObjectUsageJSON
-// contains the JSON metadata for the struct
-// [AccountAIRunHfNexusflowExecuteStarlingLm7bBetaResponseResultObjectUsage]
-type accountAIRunHfNexusflowExecuteStarlingLm7bBetaResponseResultObjectUsageJSON struct {
-	CompletionTokens apijson.Field
-	PromptTokens     apijson.Field
-	TotalTokens      apijson.Field
-	raw              string
-	ExtraFields      map[string]apijson.Field
-}
-
-func (r *AccountAIRunHfNexusflowExecuteStarlingLm7bBetaResponseResultObjectUsage) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountAIRunHfNexusflowExecuteStarlingLm7bBetaResponseResultObjectUsageJSON) RawJSON() string {
-	return r.raw
-}
+type AccountAIRunHfNexusflowExecuteStarlingLm7bBetaResponse = interface{}
 
 type AccountAIRunHfNexusflowExecuteStarlingLm7bBetaParams struct {
 	QueueRequest param.Field[string]                                           `query:"queueRequest"`

@@ -96,15 +96,23 @@ func (r liveStatJSON) RawJSON() string {
 }
 
 type AccountDexFleetStatusListDevicesResponse struct {
-	Result []Device                                     `json:"result"`
-	JSON   accountDexFleetStatusListDevicesResponseJSON `json:"-"`
-	APIResponseCollectionDigitalExperienceMonitoring
+	Errors   []Item `json:"errors,required"`
+	Messages []Item `json:"messages,required"`
+	// Whether the API call was successful.
+	Success    AccountDexFleetStatusListDevicesResponseSuccess    `json:"success,required"`
+	Result     []Device                                           `json:"result"`
+	ResultInfo AccountDexFleetStatusListDevicesResponseResultInfo `json:"result_info"`
+	JSON       accountDexFleetStatusListDevicesResponseJSON       `json:"-"`
 }
 
 // accountDexFleetStatusListDevicesResponseJSON contains the JSON metadata for the
 // struct [AccountDexFleetStatusListDevicesResponse]
 type accountDexFleetStatusListDevicesResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -117,15 +125,67 @@ func (r accountDexFleetStatusListDevicesResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountDexFleetStatusListDevicesResponseSuccess bool
+
+const (
+	AccountDexFleetStatusListDevicesResponseSuccessTrue AccountDexFleetStatusListDevicesResponseSuccess = true
+)
+
+func (r AccountDexFleetStatusListDevicesResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountDexFleetStatusListDevicesResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type AccountDexFleetStatusListDevicesResponseResultInfo struct {
+	// Total number of results for the requested service.
+	Count float64 `json:"count"`
+	// Current page within paginated list of results.
+	Page float64 `json:"page"`
+	// Number of results per page of results.
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters.
+	TotalCount float64                                                `json:"total_count"`
+	JSON       accountDexFleetStatusListDevicesResponseResultInfoJSON `json:"-"`
+}
+
+// accountDexFleetStatusListDevicesResponseResultInfoJSON contains the JSON
+// metadata for the struct [AccountDexFleetStatusListDevicesResponseResultInfo]
+type accountDexFleetStatusListDevicesResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountDexFleetStatusListDevicesResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountDexFleetStatusListDevicesResponseResultInfoJSON) RawJSON() string {
+	return r.raw
+}
+
 type AccountDexFleetStatusListLiveStatusResponse struct {
-	Result AccountDexFleetStatusListLiveStatusResponseResult `json:"result"`
-	JSON   accountDexFleetStatusListLiveStatusResponseJSON   `json:"-"`
-	APIResponseSingleDigitalExperience
+	Errors   []Item `json:"errors,required"`
+	Messages []Item `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountDexFleetStatusListLiveStatusResponseSuccess `json:"success,required"`
+	Result  AccountDexFleetStatusListLiveStatusResponseResult  `json:"result"`
+	JSON    accountDexFleetStatusListLiveStatusResponseJSON    `json:"-"`
 }
 
 // accountDexFleetStatusListLiveStatusResponseJSON contains the JSON metadata for
 // the struct [AccountDexFleetStatusListLiveStatusResponse]
 type accountDexFleetStatusListLiveStatusResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -137,6 +197,21 @@ func (r *AccountDexFleetStatusListLiveStatusResponse) UnmarshalJSON(data []byte)
 
 func (r accountDexFleetStatusListLiveStatusResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountDexFleetStatusListLiveStatusResponseSuccess bool
+
+const (
+	AccountDexFleetStatusListLiveStatusResponseSuccessTrue AccountDexFleetStatusListLiveStatusResponseSuccess = true
+)
+
+func (r AccountDexFleetStatusListLiveStatusResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountDexFleetStatusListLiveStatusResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountDexFleetStatusListLiveStatusResponseResult struct {

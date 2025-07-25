@@ -3,8 +3,10 @@
 package cfrex_test
 
 import (
+	"bytes"
 	"context"
 	"errors"
+	"io"
 	"os"
 	"testing"
 
@@ -56,13 +58,12 @@ func TestAccountWorkerDispatchNamespaceScriptDeleteWithOptionalParams(t *testing
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Accounts.Workers.Dispatch.Namespaces.Scripts.Delete(
+	_, err := client.Accounts.Workers.Dispatch.Namespaces.Scripts.Delete(
 		context.TODO(),
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		"my-dispatch-namespace",
 		"this-is_my_script-01",
 		cfrex.AccountWorkerDispatchNamespaceScriptDeleteParams{
-			Body:  map[string]interface{}{},
 			Force: cfrex.F(true),
 		},
 	)
@@ -75,7 +76,7 @@ func TestAccountWorkerDispatchNamespaceScriptDeleteWithOptionalParams(t *testing
 	}
 }
 
-func TestAccountWorkerDispatchNamespaceScriptNewAssetsUploadSessionWithOptionalParams(t *testing.T) {
+func TestAccountWorkerDispatchNamespaceScriptNewAssetsUploadSession(t *testing.T) {
 	t.Skip("skipped: tests are disabled for the time being")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -170,14 +171,15 @@ func TestAccountWorkerDispatchNamespaceScriptUploadWithOptionalParams(t *testing
 						Redirects:        cfrex.F("/foo /bar 301\n/news/* /blog/:splat"),
 						HTMLHandling:     cfrex.F(cfrex.AccountWorkerDispatchNamespaceScriptUploadParamsMetadataAssetsConfigHTMLHandlingAutoTrailingSlash),
 						NotFoundHandling: cfrex.F(cfrex.AccountWorkerDispatchNamespaceScriptUploadParamsMetadataAssetsConfigNotFoundHandling404Page),
-						RunWorkerFirst:   cfrex.F(false),
+						RunWorkerFirst:   cfrex.F[cfrex.AccountWorkerDispatchNamespaceScriptUploadParamsMetadataAssetsConfigRunWorkerFirstUnion](cfrex.AccountWorkerDispatchNamespaceScriptUploadParamsMetadataAssetsConfigRunWorkerFirstArray([]string{"string"})),
 						ServeDirectly:    cfrex.F(true),
 					}),
 					Jwt: cfrex.F("jwt"),
 				}),
-				Bindings: cfrex.F([]cfrex.BindingItemUnionParam{cfrex.BindingItemWorkersBindingKindAIParam{
+				Bindings: cfrex.F([]cfrex.BindingItemUnionParam{cfrex.BindingItemWorkersBindingKindPlainTextParam{
 					Name: cfrex.F("MY_ENV_VAR"),
-					Type: cfrex.F(cfrex.BindingItemWorkersBindingKindAITypePlainText),
+					Text: cfrex.F("my_data"),
+					Type: cfrex.F(cfrex.BindingItemWorkersBindingKindPlainTextTypePlainText),
 				}}),
 				BodyPart:           cfrex.F("worker.js"),
 				CompatibilityDate:  cfrex.F("2021-01-01"),
@@ -186,29 +188,30 @@ func TestAccountWorkerDispatchNamespaceScriptUploadWithOptionalParams(t *testing
 				KeepBindings:       cfrex.F([]string{"string"}),
 				Logpush:            cfrex.F(false),
 				MainModule:         cfrex.F("worker.js"),
-				Migrations: cfrex.F[cfrex.AccountWorkerDispatchNamespaceScriptUploadParamsMetadataMigrationsUnion](cfrex.AccountWorkerDispatchNamespaceScriptUploadParamsMetadataMigrationsWorkersSingleStepMigrations(cfrex.AccountWorkerDispatchNamespaceScriptUploadParamsMetadataMigrationsWorkersSingleStepMigrations{
-					MigrationTagConditionsParam: cfrex.MigrationTagConditionsParam{
-						NewTag: cfrex.F("v2"),
-						OldTag: cfrex.F("v1"),
-					},
-					MigrationStepParam: cfrex.MigrationStepParam{
-						DeletedClasses:   cfrex.F([]string{"string"}),
-						NewClasses:       cfrex.F([]string{"string"}),
-						NewSqliteClasses: cfrex.F([]string{"string"}),
-						RenamedClasses: cfrex.F([]cfrex.MigrationStepRenamedClassParam{{
-							From: cfrex.F("from"),
-							To:   cfrex.F("to"),
-						}}),
-						TransferredClasses: cfrex.F([]cfrex.MigrationStepTransferredClassParam{{
-							From:       cfrex.F("from"),
-							FromScript: cfrex.F("from_script"),
-							To:         cfrex.F("to"),
-						}}),
-					},
-				})),
+				Migrations: cfrex.F[cfrex.AccountWorkerDispatchNamespaceScriptUploadParamsMetadataMigrationsUnion](cfrex.AccountWorkerDispatchNamespaceScriptUploadParamsMetadataMigrationsWorkersSingleStepMigrations{
+					DeletedClasses:   cfrex.F([]string{"string"}),
+					NewClasses:       cfrex.F([]string{"string"}),
+					NewSqliteClasses: cfrex.F([]string{"string"}),
+					NewTag:           cfrex.F("v2"),
+					OldTag:           cfrex.F("v1"),
+					RenamedClasses: cfrex.F([]cfrex.AccountWorkerDispatchNamespaceScriptUploadParamsMetadataMigrationsWorkersSingleStepMigrationsRenamedClass{{
+						From: cfrex.F("from"),
+						To:   cfrex.F("to"),
+					}}),
+					TransferredClasses: cfrex.F([]cfrex.AccountWorkerDispatchNamespaceScriptUploadParamsMetadataMigrationsWorkersSingleStepMigrationsTransferredClass{{
+						From:       cfrex.F("from"),
+						FromScript: cfrex.F("from_script"),
+						To:         cfrex.F("to"),
+					}}),
+				}),
 				Observability: cfrex.F(cfrex.ObservabilityParam{
 					Enabled:          cfrex.F(true),
 					HeadSamplingRate: cfrex.F(0.100000),
+					Logs: cfrex.F(cfrex.ObservabilityLogsParam{
+						Enabled:          cfrex.F(true),
+						InvocationLogs:   cfrex.F(true),
+						HeadSamplingRate: cfrex.F(0.100000),
+					}),
 				}),
 				Placement: cfrex.F(cfrex.AccountWorkerDispatchNamespaceScriptUploadParamsMetadataPlacement{
 					Mode: cfrex.F(cfrex.PlacementModeSmart),
@@ -221,6 +224,7 @@ func TestAccountWorkerDispatchNamespaceScriptUploadWithOptionalParams(t *testing
 				}}),
 				UsageModel: cfrex.F(cfrex.UsageModelStandard),
 			}),
+			Files: cfrex.F([]io.Reader{io.Reader(bytes.NewBuffer([]byte("some file contents")))}),
 		},
 	)
 	if err != nil {

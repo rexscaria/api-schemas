@@ -45,7 +45,7 @@ func (r *ZoneSettingRumService) Get(ctx context.Context, zoneID string, opts ...
 	return
 }
 
-// Toggles RUM on/off for an existing zone
+// Toggles RUM on/off for an existing zone.
 func (r *ZoneSettingRumService) Update(ctx context.Context, zoneID string, body ZoneSettingRumUpdateParams, opts ...option.RequestOption) (res *RumSiteResponseSingle, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
@@ -58,14 +58,20 @@ func (r *ZoneSettingRumService) Update(ctx context.Context, zoneID string, body 
 }
 
 type RumSiteResponseSingle struct {
-	Result RumSiteResponseSingleResult `json:"result"`
-	JSON   rumSiteResponseSingleJSON   `json:"-"`
-	Common
+	Errors   []RumMessages `json:"errors,required"`
+	Messages []RumMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success bool                        `json:"success,required"`
+	Result  RumSiteResponseSingleResult `json:"result"`
+	JSON    rumSiteResponseSingleJSON   `json:"-"`
 }
 
 // rumSiteResponseSingleJSON contains the JSON metadata for the struct
 // [RumSiteResponseSingle]
 type rumSiteResponseSingleJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -82,7 +88,7 @@ func (r rumSiteResponseSingleJSON) RawJSON() string {
 type RumSiteResponseSingleResult struct {
 	ID       string `json:"id"`
 	Editable bool   `json:"editable"`
-	// Current state of RUM. Returns On, Off, or Manual
+	// Current state of RUM. Returns On, Off, or Manual.
 	Value string                          `json:"value"`
 	JSON  rumSiteResponseSingleResultJSON `json:"-"`
 }
@@ -106,7 +112,7 @@ func (r rumSiteResponseSingleResultJSON) RawJSON() string {
 }
 
 type ZoneSettingRumUpdateParams struct {
-	// Value can either be On or Off
+	// Value can either be On or Off.
 	Value param.Field[string] `json:"value"`
 }
 

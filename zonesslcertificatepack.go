@@ -82,7 +82,7 @@ func (r *ZoneSslCertificatePackService) List(ctx context.Context, zoneID string,
 }
 
 // For a given zone, delete an advanced certificate pack.
-func (r *ZoneSslCertificatePackService) Delete(ctx context.Context, zoneID string, certificatePackID string, body ZoneSslCertificatePackDeleteParams, opts ...option.RequestOption) (res *ZoneSslCertificatePackDeleteResponse, err error) {
+func (r *ZoneSslCertificatePackService) Delete(ctx context.Context, zoneID string, certificatePackID string, opts ...option.RequestOption) (res *ZoneSslCertificatePackDeleteResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
@@ -93,7 +93,7 @@ func (r *ZoneSslCertificatePackService) Delete(ctx context.Context, zoneID strin
 		return
 	}
 	path := fmt.Sprintf("zones/%s/ssl/certificate_packs/%s", zoneID, certificatePackID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
@@ -122,14 +122,20 @@ func (r *ZoneSslCertificatePackService) Order(ctx context.Context, zoneID string
 }
 
 type AdvancedCertificatePackResponseSingle struct {
-	Result AdvancedCertificatePackResponseSingleResult `json:"result"`
-	JSON   advancedCertificatePackResponseSingleJSON   `json:"-"`
-	APIResponseSingleTlsCertificates
+	Errors   []MessagesTlsCertificatesItem `json:"errors,required"`
+	Messages []MessagesTlsCertificatesItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AdvancedCertificatePackResponseSingleSuccess `json:"success,required"`
+	Result  AdvancedCertificatePackResponseSingleResult  `json:"result"`
+	JSON    advancedCertificatePackResponseSingleJSON    `json:"-"`
 }
 
 // advancedCertificatePackResponseSingleJSON contains the JSON metadata for the
 // struct [AdvancedCertificatePackResponseSingle]
 type advancedCertificatePackResponseSingleJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -143,8 +149,23 @@ func (r advancedCertificatePackResponseSingleJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AdvancedCertificatePackResponseSingleSuccess bool
+
+const (
+	AdvancedCertificatePackResponseSingleSuccessTrue AdvancedCertificatePackResponseSingleSuccess = true
+)
+
+func (r AdvancedCertificatePackResponseSingleSuccess) IsKnown() bool {
+	switch r {
+	case AdvancedCertificatePackResponseSingleSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AdvancedCertificatePackResponseSingleResult struct {
-	// Identifier
+	// Identifier.
 	ID string `json:"id"`
 	// Certificate Authority selected for the order. For information on any certificate
 	// authority specific details or restrictions
@@ -295,14 +316,20 @@ func (r ValidityDays) IsKnown() bool {
 }
 
 type ZoneSslCertificatePackGetResponse struct {
-	Result interface{}                           `json:"result"`
-	JSON   zoneSslCertificatePackGetResponseJSON `json:"-"`
-	APIResponseSingleTlsCertificates
+	Errors   []MessagesTlsCertificatesItem `json:"errors,required"`
+	Messages []MessagesTlsCertificatesItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success ZoneSslCertificatePackGetResponseSuccess `json:"success,required"`
+	Result  interface{}                              `json:"result"`
+	JSON    zoneSslCertificatePackGetResponseJSON    `json:"-"`
 }
 
 // zoneSslCertificatePackGetResponseJSON contains the JSON metadata for the struct
 // [ZoneSslCertificatePackGetResponse]
 type zoneSslCertificatePackGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -316,16 +343,39 @@ func (r zoneSslCertificatePackGetResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type ZoneSslCertificatePackGetResponseSuccess bool
+
+const (
+	ZoneSslCertificatePackGetResponseSuccessTrue ZoneSslCertificatePackGetResponseSuccess = true
+)
+
+func (r ZoneSslCertificatePackGetResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneSslCertificatePackGetResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type ZoneSslCertificatePackListResponse struct {
-	Result []interface{}                          `json:"result"`
-	JSON   zoneSslCertificatePackListResponseJSON `json:"-"`
-	APIResponseCollectionTlsCertificates
+	Errors   []MessagesTlsCertificatesItem `json:"errors,required"`
+	Messages []MessagesTlsCertificatesItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success    ZoneSslCertificatePackListResponseSuccess    `json:"success,required"`
+	Result     []interface{}                                `json:"result"`
+	ResultInfo ZoneSslCertificatePackListResponseResultInfo `json:"result_info"`
+	JSON       zoneSslCertificatePackListResponseJSON       `json:"-"`
 }
 
 // zoneSslCertificatePackListResponseJSON contains the JSON metadata for the struct
 // [ZoneSslCertificatePackListResponse]
 type zoneSslCertificatePackListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -338,15 +388,67 @@ func (r zoneSslCertificatePackListResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type ZoneSslCertificatePackListResponseSuccess bool
+
+const (
+	ZoneSslCertificatePackListResponseSuccessTrue ZoneSslCertificatePackListResponseSuccess = true
+)
+
+func (r ZoneSslCertificatePackListResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneSslCertificatePackListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type ZoneSslCertificatePackListResponseResultInfo struct {
+	// Total number of results for the requested service.
+	Count float64 `json:"count"`
+	// Current page within paginated list of results.
+	Page float64 `json:"page"`
+	// Number of results per page of results.
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters.
+	TotalCount float64                                          `json:"total_count"`
+	JSON       zoneSslCertificatePackListResponseResultInfoJSON `json:"-"`
+}
+
+// zoneSslCertificatePackListResponseResultInfoJSON contains the JSON metadata for
+// the struct [ZoneSslCertificatePackListResponseResultInfo]
+type zoneSslCertificatePackListResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZoneSslCertificatePackListResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneSslCertificatePackListResponseResultInfoJSON) RawJSON() string {
+	return r.raw
+}
+
 type ZoneSslCertificatePackDeleteResponse struct {
-	Result ZoneSslCertificatePackDeleteResponseResult `json:"result"`
-	JSON   zoneSslCertificatePackDeleteResponseJSON   `json:"-"`
-	APIResponseSingleTlsCertificates
+	Errors   []MessagesTlsCertificatesItem `json:"errors,required"`
+	Messages []MessagesTlsCertificatesItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success ZoneSslCertificatePackDeleteResponseSuccess `json:"success,required"`
+	Result  ZoneSslCertificatePackDeleteResponseResult  `json:"result"`
+	JSON    zoneSslCertificatePackDeleteResponseJSON    `json:"-"`
 }
 
 // zoneSslCertificatePackDeleteResponseJSON contains the JSON metadata for the
 // struct [ZoneSslCertificatePackDeleteResponse]
 type zoneSslCertificatePackDeleteResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -360,8 +462,23 @@ func (r zoneSslCertificatePackDeleteResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type ZoneSslCertificatePackDeleteResponseSuccess bool
+
+const (
+	ZoneSslCertificatePackDeleteResponseSuccessTrue ZoneSslCertificatePackDeleteResponseSuccess = true
+)
+
+func (r ZoneSslCertificatePackDeleteResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneSslCertificatePackDeleteResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type ZoneSslCertificatePackDeleteResponseResult struct {
-	// Identifier
+	// Identifier.
 	ID   string                                         `json:"id"`
 	JSON zoneSslCertificatePackDeleteResponseResultJSON `json:"-"`
 }
@@ -383,14 +500,20 @@ func (r zoneSslCertificatePackDeleteResponseResultJSON) RawJSON() string {
 }
 
 type ZoneSslCertificatePackGetQuotaResponse struct {
-	Result ZoneSslCertificatePackGetQuotaResponseResult `json:"result"`
-	JSON   zoneSslCertificatePackGetQuotaResponseJSON   `json:"-"`
-	APIResponseSingleTlsCertificates
+	Errors   []MessagesTlsCertificatesItem `json:"errors,required"`
+	Messages []MessagesTlsCertificatesItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success ZoneSslCertificatePackGetQuotaResponseSuccess `json:"success,required"`
+	Result  ZoneSslCertificatePackGetQuotaResponseResult  `json:"result"`
+	JSON    zoneSslCertificatePackGetQuotaResponseJSON    `json:"-"`
 }
 
 // zoneSslCertificatePackGetQuotaResponseJSON contains the JSON metadata for the
 // struct [ZoneSslCertificatePackGetQuotaResponse]
 type zoneSslCertificatePackGetQuotaResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -402,6 +525,21 @@ func (r *ZoneSslCertificatePackGetQuotaResponse) UnmarshalJSON(data []byte) (err
 
 func (r zoneSslCertificatePackGetQuotaResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type ZoneSslCertificatePackGetQuotaResponseSuccess bool
+
+const (
+	ZoneSslCertificatePackGetQuotaResponseSuccessTrue ZoneSslCertificatePackGetQuotaResponseSuccess = true
+)
+
+func (r ZoneSslCertificatePackGetQuotaResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneSslCertificatePackGetQuotaResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type ZoneSslCertificatePackGetQuotaResponseResult struct {
@@ -487,14 +625,6 @@ func (r ZoneSslCertificatePackListParamsStatus) IsKnown() bool {
 		return true
 	}
 	return false
-}
-
-type ZoneSslCertificatePackDeleteParams struct {
-	Body interface{} `json:"body,required"`
-}
-
-func (r ZoneSslCertificatePackDeleteParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
 }
 
 type ZoneSslCertificatePackOrderParams struct {

@@ -119,13 +119,7 @@ func TestZoneSecondaryDNSIncomingDelete(t *testing.T) {
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Zones.SecondaryDNS.Incoming.Delete(
-		context.TODO(),
-		"269d8f4853475ca241c4e730be286b20",
-		cfrex.ZoneSecondaryDNSIncomingDeleteParams{
-			Body: map[string]interface{}{},
-		},
-	)
+	_, err := client.Zones.SecondaryDNS.Incoming.Delete(context.TODO(), "269d8f4853475ca241c4e730be286b20")
 	if err != nil {
 		var apierr *cfrex.Error
 		if errors.As(err, &apierr) {

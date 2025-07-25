@@ -63,60 +63,23 @@ func (r *ZoneCacheCacheReserveClearService) Start(ctx context.Context, zoneID st
 	return
 }
 
-type APIResponseCacheRules struct {
-	Errors   []MessagesCacheRulesItem `json:"errors,required"`
-	Messages []MessagesCacheRulesItem `json:"messages,required"`
-	// Whether the API call was successful
-	Success APIResponseCacheRulesSuccess `json:"success,required"`
-	JSON    apiResponseCacheRulesJSON    `json:"-"`
-}
-
-// apiResponseCacheRulesJSON contains the JSON metadata for the struct
-// [APIResponseCacheRules]
-type apiResponseCacheRulesJSON struct {
-	Errors      apijson.Field
-	Messages    apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *APIResponseCacheRules) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r apiResponseCacheRulesJSON) RawJSON() string {
-	return r.raw
-}
-
-// Whether the API call was successful
-type APIResponseCacheRulesSuccess bool
-
-const (
-	APIResponseCacheRulesSuccessTrue APIResponseCacheRulesSuccess = true
-)
-
-func (r APIResponseCacheRulesSuccess) IsKnown() bool {
-	switch r {
-	case APIResponseCacheRulesSuccessTrue:
-		return true
-	}
-	return false
-}
-
 type MessagesCacheRulesItem struct {
-	Code    int64                      `json:"code,required"`
-	Message string                     `json:"message,required"`
-	JSON    messagesCacheRulesItemJSON `json:"-"`
+	Code             int64                        `json:"code,required"`
+	Message          string                       `json:"message,required"`
+	DocumentationURL string                       `json:"documentation_url"`
+	Source           MessagesCacheRulesItemSource `json:"source"`
+	JSON             messagesCacheRulesItemJSON   `json:"-"`
 }
 
 // messagesCacheRulesItemJSON contains the JSON metadata for the struct
 // [MessagesCacheRulesItem]
 type messagesCacheRulesItemJSON struct {
-	Code        apijson.Field
-	Message     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
 }
 
 func (r *MessagesCacheRulesItem) UnmarshalJSON(data []byte) (err error) {
@@ -127,99 +90,47 @@ func (r messagesCacheRulesItemJSON) RawJSON() string {
 	return r.raw
 }
 
-type ResponseValueClear struct {
-	Result ResponseValueClearResult `json:"result"`
-	JSON   responseValueClearJSON   `json:"-"`
+type MessagesCacheRulesItemSource struct {
+	Pointer string                           `json:"pointer"`
+	JSON    messagesCacheRulesItemSourceJSON `json:"-"`
 }
 
-// responseValueClearJSON contains the JSON metadata for the struct
-// [ResponseValueClear]
-type responseValueClearJSON struct {
-	Result      apijson.Field
+// messagesCacheRulesItemSourceJSON contains the JSON metadata for the struct
+// [MessagesCacheRulesItemSource]
+type messagesCacheRulesItemSourceJSON struct {
+	Pointer     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *ResponseValueClear) UnmarshalJSON(data []byte) (err error) {
+func (r *MessagesCacheRulesItemSource) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r responseValueClearJSON) RawJSON() string {
+func (r messagesCacheRulesItemSourceJSON) RawJSON() string {
 	return r.raw
-}
-
-type ResponseValueClearResult struct {
-	// The time that the latest Cache Reserve Clear operation started.
-	StartTs time.Time `json:"start_ts,required" format:"date-time"`
-	// The current state of the Cache Reserve Clear operation.
-	State ResponseValueClearResultState `json:"state,required"`
-	// ID of the zone setting.
-	ID ResponseValueClearResultID `json:"id"`
-	// The time that the latest Cache Reserve Clear operation completed.
-	EndTs time.Time                    `json:"end_ts" format:"date-time"`
-	JSON  responseValueClearResultJSON `json:"-"`
-	BaseCacheRule
-}
-
-// responseValueClearResultJSON contains the JSON metadata for the struct
-// [ResponseValueClearResult]
-type responseValueClearResultJSON struct {
-	StartTs     apijson.Field
-	State       apijson.Field
-	ID          apijson.Field
-	EndTs       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ResponseValueClearResult) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r responseValueClearResultJSON) RawJSON() string {
-	return r.raw
-}
-
-// The current state of the Cache Reserve Clear operation.
-type ResponseValueClearResultState string
-
-const (
-	ResponseValueClearResultStateInProgress ResponseValueClearResultState = "In-progress"
-	ResponseValueClearResultStateCompleted  ResponseValueClearResultState = "Completed"
-)
-
-func (r ResponseValueClearResultState) IsKnown() bool {
-	switch r {
-	case ResponseValueClearResultStateInProgress, ResponseValueClearResultStateCompleted:
-		return true
-	}
-	return false
-}
-
-// ID of the zone setting.
-type ResponseValueClearResultID string
-
-const (
-	ResponseValueClearResultIDCacheReserveClear ResponseValueClearResultID = "cache_reserve_clear"
-)
-
-func (r ResponseValueClearResultID) IsKnown() bool {
-	switch r {
-	case ResponseValueClearResultIDCacheReserveClear:
-		return true
-	}
-	return false
 }
 
 type ZoneCacheCacheReserveClearGetResponse struct {
-	JSON zoneCacheCacheReserveClearGetResponseJSON `json:"-"`
-	APIResponseCacheRules
-	ResponseValueClear
+	Errors   []MessagesCacheRulesItem `json:"errors,required"`
+	Messages []MessagesCacheRulesItem `json:"messages,required"`
+	// Whether the API call was successful
+	Success ZoneCacheCacheReserveClearGetResponseSuccess `json:"success,required"`
+	// You can use Cache Reserve Clear to clear your Cache Reserve, but you must first
+	// disable Cache Reserve. In most cases, this will be accomplished within 24 hours.
+	// You cannot re-enable Cache Reserve while this process is ongoing. Keep in mind
+	// that you cannot undo or cancel this operation.
+	Result ZoneCacheCacheReserveClearGetResponseResult `json:"result"`
+	JSON   zoneCacheCacheReserveClearGetResponseJSON   `json:"-"`
 }
 
 // zoneCacheCacheReserveClearGetResponseJSON contains the JSON metadata for the
 // struct [ZoneCacheCacheReserveClearGetResponse]
 type zoneCacheCacheReserveClearGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
+	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -232,15 +143,110 @@ func (r zoneCacheCacheReserveClearGetResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful
+type ZoneCacheCacheReserveClearGetResponseSuccess bool
+
+const (
+	ZoneCacheCacheReserveClearGetResponseSuccessTrue ZoneCacheCacheReserveClearGetResponseSuccess = true
+)
+
+func (r ZoneCacheCacheReserveClearGetResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneCacheCacheReserveClearGetResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+// You can use Cache Reserve Clear to clear your Cache Reserve, but you must first
+// disable Cache Reserve. In most cases, this will be accomplished within 24 hours.
+// You cannot re-enable Cache Reserve while this process is ongoing. Keep in mind
+// that you cannot undo or cancel this operation.
+type ZoneCacheCacheReserveClearGetResponseResult struct {
+	// ID of the zone setting.
+	ID ZoneCacheCacheReserveClearGetResponseResultID `json:"id,required"`
+	// The time that the latest Cache Reserve Clear operation started.
+	StartTs time.Time `json:"start_ts,required" format:"date-time"`
+	// The current state of the Cache Reserve Clear operation.
+	State ZoneCacheCacheReserveClearGetResponseResultState `json:"state,required"`
+	// The time that the latest Cache Reserve Clear operation completed.
+	EndTs time.Time `json:"end_ts" format:"date-time"`
+	// Last time this setting was modified.
+	ModifiedOn time.Time                                       `json:"modified_on,nullable" format:"date-time"`
+	JSON       zoneCacheCacheReserveClearGetResponseResultJSON `json:"-"`
+}
+
+// zoneCacheCacheReserveClearGetResponseResultJSON contains the JSON metadata for
+// the struct [ZoneCacheCacheReserveClearGetResponseResult]
+type zoneCacheCacheReserveClearGetResponseResultJSON struct {
+	ID          apijson.Field
+	StartTs     apijson.Field
+	State       apijson.Field
+	EndTs       apijson.Field
+	ModifiedOn  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZoneCacheCacheReserveClearGetResponseResult) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneCacheCacheReserveClearGetResponseResultJSON) RawJSON() string {
+	return r.raw
+}
+
+// ID of the zone setting.
+type ZoneCacheCacheReserveClearGetResponseResultID string
+
+const (
+	ZoneCacheCacheReserveClearGetResponseResultIDCacheReserveClear ZoneCacheCacheReserveClearGetResponseResultID = "cache_reserve_clear"
+)
+
+func (r ZoneCacheCacheReserveClearGetResponseResultID) IsKnown() bool {
+	switch r {
+	case ZoneCacheCacheReserveClearGetResponseResultIDCacheReserveClear:
+		return true
+	}
+	return false
+}
+
+// The current state of the Cache Reserve Clear operation.
+type ZoneCacheCacheReserveClearGetResponseResultState string
+
+const (
+	ZoneCacheCacheReserveClearGetResponseResultStateInProgress ZoneCacheCacheReserveClearGetResponseResultState = "In-progress"
+	ZoneCacheCacheReserveClearGetResponseResultStateCompleted  ZoneCacheCacheReserveClearGetResponseResultState = "Completed"
+)
+
+func (r ZoneCacheCacheReserveClearGetResponseResultState) IsKnown() bool {
+	switch r {
+	case ZoneCacheCacheReserveClearGetResponseResultStateInProgress, ZoneCacheCacheReserveClearGetResponseResultStateCompleted:
+		return true
+	}
+	return false
+}
+
 type ZoneCacheCacheReserveClearStartResponse struct {
-	JSON zoneCacheCacheReserveClearStartResponseJSON `json:"-"`
-	APIResponseCacheRules
-	ResponseValueClear
+	Errors   []MessagesCacheRulesItem `json:"errors,required"`
+	Messages []MessagesCacheRulesItem `json:"messages,required"`
+	// Whether the API call was successful
+	Success ZoneCacheCacheReserveClearStartResponseSuccess `json:"success,required"`
+	// You can use Cache Reserve Clear to clear your Cache Reserve, but you must first
+	// disable Cache Reserve. In most cases, this will be accomplished within 24 hours.
+	// You cannot re-enable Cache Reserve while this process is ongoing. Keep in mind
+	// that you cannot undo or cancel this operation.
+	Result ZoneCacheCacheReserveClearStartResponseResult `json:"result"`
+	JSON   zoneCacheCacheReserveClearStartResponseJSON   `json:"-"`
 }
 
 // zoneCacheCacheReserveClearStartResponseJSON contains the JSON metadata for the
 // struct [ZoneCacheCacheReserveClearStartResponse]
 type zoneCacheCacheReserveClearStartResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
+	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -251,6 +257,90 @@ func (r *ZoneCacheCacheReserveClearStartResponse) UnmarshalJSON(data []byte) (er
 
 func (r zoneCacheCacheReserveClearStartResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful
+type ZoneCacheCacheReserveClearStartResponseSuccess bool
+
+const (
+	ZoneCacheCacheReserveClearStartResponseSuccessTrue ZoneCacheCacheReserveClearStartResponseSuccess = true
+)
+
+func (r ZoneCacheCacheReserveClearStartResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneCacheCacheReserveClearStartResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+// You can use Cache Reserve Clear to clear your Cache Reserve, but you must first
+// disable Cache Reserve. In most cases, this will be accomplished within 24 hours.
+// You cannot re-enable Cache Reserve while this process is ongoing. Keep in mind
+// that you cannot undo or cancel this operation.
+type ZoneCacheCacheReserveClearStartResponseResult struct {
+	// ID of the zone setting.
+	ID ZoneCacheCacheReserveClearStartResponseResultID `json:"id,required"`
+	// The time that the latest Cache Reserve Clear operation started.
+	StartTs time.Time `json:"start_ts,required" format:"date-time"`
+	// The current state of the Cache Reserve Clear operation.
+	State ZoneCacheCacheReserveClearStartResponseResultState `json:"state,required"`
+	// The time that the latest Cache Reserve Clear operation completed.
+	EndTs time.Time `json:"end_ts" format:"date-time"`
+	// Last time this setting was modified.
+	ModifiedOn time.Time                                         `json:"modified_on,nullable" format:"date-time"`
+	JSON       zoneCacheCacheReserveClearStartResponseResultJSON `json:"-"`
+}
+
+// zoneCacheCacheReserveClearStartResponseResultJSON contains the JSON metadata for
+// the struct [ZoneCacheCacheReserveClearStartResponseResult]
+type zoneCacheCacheReserveClearStartResponseResultJSON struct {
+	ID          apijson.Field
+	StartTs     apijson.Field
+	State       apijson.Field
+	EndTs       apijson.Field
+	ModifiedOn  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZoneCacheCacheReserveClearStartResponseResult) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneCacheCacheReserveClearStartResponseResultJSON) RawJSON() string {
+	return r.raw
+}
+
+// ID of the zone setting.
+type ZoneCacheCacheReserveClearStartResponseResultID string
+
+const (
+	ZoneCacheCacheReserveClearStartResponseResultIDCacheReserveClear ZoneCacheCacheReserveClearStartResponseResultID = "cache_reserve_clear"
+)
+
+func (r ZoneCacheCacheReserveClearStartResponseResultID) IsKnown() bool {
+	switch r {
+	case ZoneCacheCacheReserveClearStartResponseResultIDCacheReserveClear:
+		return true
+	}
+	return false
+}
+
+// The current state of the Cache Reserve Clear operation.
+type ZoneCacheCacheReserveClearStartResponseResultState string
+
+const (
+	ZoneCacheCacheReserveClearStartResponseResultStateInProgress ZoneCacheCacheReserveClearStartResponseResultState = "In-progress"
+	ZoneCacheCacheReserveClearStartResponseResultStateCompleted  ZoneCacheCacheReserveClearStartResponseResultState = "Completed"
+)
+
+func (r ZoneCacheCacheReserveClearStartResponseResultState) IsKnown() bool {
+	switch r {
+	case ZoneCacheCacheReserveClearStartResponseResultStateInProgress, ZoneCacheCacheReserveClearStartResponseResultStateCompleted:
+		return true
+	}
+	return false
 }
 
 type ZoneCacheCacheReserveClearStartParams struct {

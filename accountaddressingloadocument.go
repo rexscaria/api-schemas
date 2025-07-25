@@ -67,14 +67,20 @@ func (r *AccountAddressingLoaDocumentService) Upload(ctx context.Context, accoun
 }
 
 type AccountAddressingLoaDocumentUploadResponse struct {
-	Result AccountAddressingLoaDocumentUploadResponseResult `json:"result"`
-	JSON   accountAddressingLoaDocumentUploadResponseJSON   `json:"-"`
-	AddressingAPIResponseSingle
+	Errors   []AddressingMessages `json:"errors,required"`
+	Messages []AddressingMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountAddressingLoaDocumentUploadResponseSuccess `json:"success,required"`
+	Result  AccountAddressingLoaDocumentUploadResponseResult  `json:"result"`
+	JSON    accountAddressingLoaDocumentUploadResponseJSON    `json:"-"`
 }
 
 // accountAddressingLoaDocumentUploadResponseJSON contains the JSON metadata for
 // the struct [AccountAddressingLoaDocumentUploadResponse]
 type accountAddressingLoaDocumentUploadResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -86,6 +92,21 @@ func (r *AccountAddressingLoaDocumentUploadResponse) UnmarshalJSON(data []byte) 
 
 func (r accountAddressingLoaDocumentUploadResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountAddressingLoaDocumentUploadResponseSuccess bool
+
+const (
+	AccountAddressingLoaDocumentUploadResponseSuccessTrue AccountAddressingLoaDocumentUploadResponseSuccess = true
+)
+
+func (r AccountAddressingLoaDocumentUploadResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountAddressingLoaDocumentUploadResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountAddressingLoaDocumentUploadResponseResult struct {

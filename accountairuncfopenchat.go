@@ -8,15 +8,12 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
-	"reflect"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
 	"github.com/rexscaria/api-schemas/internal/param"
 	"github.com/rexscaria/api-schemas/internal/requestconfig"
 	"github.com/rexscaria/api-schemas/option"
-	"github.com/rexscaria/api-schemas/shared"
-	"github.com/tidwall/gjson"
 )
 
 // AccountAIRunCfOpenchatService contains methods and other services that help with
@@ -50,138 +47,7 @@ func (r *AccountAIRunCfOpenchatService) ExecuteOpenchat3_5_0106(ctx context.Cont
 	return
 }
 
-type AccountAIRunCfOpenchatExecuteOpenchat3_5_0106Response struct {
-	Result  AccountAIRunCfOpenchatExecuteOpenchat3_5_0106ResponseResultUnion `json:"result" format:"binary"`
-	Success bool                                                             `json:"success"`
-	JSON    accountAIRunCfOpenchatExecuteOpenchat3_5_0106ResponseJSON        `json:"-"`
-}
-
-// accountAIRunCfOpenchatExecuteOpenchat3_5_0106ResponseJSON contains the JSON
-// metadata for the struct [AccountAIRunCfOpenchatExecuteOpenchat3_5_0106Response]
-type accountAIRunCfOpenchatExecuteOpenchat3_5_0106ResponseJSON struct {
-	Result      apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountAIRunCfOpenchatExecuteOpenchat3_5_0106Response) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountAIRunCfOpenchatExecuteOpenchat3_5_0106ResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-// Union satisfied by
-// [AccountAIRunCfOpenchatExecuteOpenchat3_5_0106ResponseResultObject] or
-// [shared.UnionString].
-type AccountAIRunCfOpenchatExecuteOpenchat3_5_0106ResponseResultUnion interface {
-	ImplementsAccountAIRunCfOpenchatExecuteOpenchat3_5_0106ResponseResultUnion()
-}
-
-func init() {
-	apijson.RegisterUnion(
-		reflect.TypeOf((*AccountAIRunCfOpenchatExecuteOpenchat3_5_0106ResponseResultUnion)(nil)).Elem(),
-		"",
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(AccountAIRunCfOpenchatExecuteOpenchat3_5_0106ResponseResultObject{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.String,
-			Type:       reflect.TypeOf(shared.UnionString("")),
-		},
-	)
-}
-
-type AccountAIRunCfOpenchatExecuteOpenchat3_5_0106ResponseResultObject struct {
-	// The generated text response from the model
-	Response string `json:"response,required"`
-	// An array of tool calls requests made during the response generation
-	ToolCalls []AccountAIRunCfOpenchatExecuteOpenchat3_5_0106ResponseResultObjectToolCall `json:"tool_calls"`
-	// Usage statistics for the inference request
-	Usage AccountAIRunCfOpenchatExecuteOpenchat3_5_0106ResponseResultObjectUsage `json:"usage"`
-	JSON  accountAIRunCfOpenchatExecuteOpenchat3_5_0106ResponseResultObjectJSON  `json:"-"`
-}
-
-// accountAIRunCfOpenchatExecuteOpenchat3_5_0106ResponseResultObjectJSON contains
-// the JSON metadata for the struct
-// [AccountAIRunCfOpenchatExecuteOpenchat3_5_0106ResponseResultObject]
-type accountAIRunCfOpenchatExecuteOpenchat3_5_0106ResponseResultObjectJSON struct {
-	Response    apijson.Field
-	ToolCalls   apijson.Field
-	Usage       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountAIRunCfOpenchatExecuteOpenchat3_5_0106ResponseResultObject) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountAIRunCfOpenchatExecuteOpenchat3_5_0106ResponseResultObjectJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r AccountAIRunCfOpenchatExecuteOpenchat3_5_0106ResponseResultObject) ImplementsAccountAIRunCfOpenchatExecuteOpenchat3_5_0106ResponseResultUnion() {
-}
-
-type AccountAIRunCfOpenchatExecuteOpenchat3_5_0106ResponseResultObjectToolCall struct {
-	// The arguments passed to be passed to the tool call request
-	Arguments interface{} `json:"arguments"`
-	// The name of the tool to be called
-	Name string                                                                        `json:"name"`
-	JSON accountAIRunCfOpenchatExecuteOpenchat3_5_0106ResponseResultObjectToolCallJSON `json:"-"`
-}
-
-// accountAIRunCfOpenchatExecuteOpenchat3_5_0106ResponseResultObjectToolCallJSON
-// contains the JSON metadata for the struct
-// [AccountAIRunCfOpenchatExecuteOpenchat3_5_0106ResponseResultObjectToolCall]
-type accountAIRunCfOpenchatExecuteOpenchat3_5_0106ResponseResultObjectToolCallJSON struct {
-	Arguments   apijson.Field
-	Name        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountAIRunCfOpenchatExecuteOpenchat3_5_0106ResponseResultObjectToolCall) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountAIRunCfOpenchatExecuteOpenchat3_5_0106ResponseResultObjectToolCallJSON) RawJSON() string {
-	return r.raw
-}
-
-// Usage statistics for the inference request
-type AccountAIRunCfOpenchatExecuteOpenchat3_5_0106ResponseResultObjectUsage struct {
-	// Total number of tokens in output
-	CompletionTokens float64 `json:"completion_tokens"`
-	// Total number of tokens in input
-	PromptTokens float64 `json:"prompt_tokens"`
-	// Total number of input and output tokens
-	TotalTokens float64                                                                    `json:"total_tokens"`
-	JSON        accountAIRunCfOpenchatExecuteOpenchat3_5_0106ResponseResultObjectUsageJSON `json:"-"`
-}
-
-// accountAIRunCfOpenchatExecuteOpenchat3_5_0106ResponseResultObjectUsageJSON
-// contains the JSON metadata for the struct
-// [AccountAIRunCfOpenchatExecuteOpenchat3_5_0106ResponseResultObjectUsage]
-type accountAIRunCfOpenchatExecuteOpenchat3_5_0106ResponseResultObjectUsageJSON struct {
-	CompletionTokens apijson.Field
-	PromptTokens     apijson.Field
-	TotalTokens      apijson.Field
-	raw              string
-	ExtraFields      map[string]apijson.Field
-}
-
-func (r *AccountAIRunCfOpenchatExecuteOpenchat3_5_0106ResponseResultObjectUsage) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountAIRunCfOpenchatExecuteOpenchat3_5_0106ResponseResultObjectUsageJSON) RawJSON() string {
-	return r.raw
-}
+type AccountAIRunCfOpenchatExecuteOpenchat3_5_0106Response = interface{}
 
 type AccountAIRunCfOpenchatExecuteOpenchat3_5_0106Params struct {
 	QueueRequest param.Field[string]                                          `query:"queueRequest"`

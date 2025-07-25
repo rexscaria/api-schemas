@@ -49,15 +49,21 @@ func (r *ZoneSecondaryDNSService) ForceAxfr(ctx context.Context, zoneID string, 
 }
 
 type ZoneSecondaryDNSForceAxfrResponse struct {
+	Errors   []SecondaryDNSMessages `json:"errors,required"`
+	Messages []SecondaryDNSMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success ZoneSecondaryDNSForceAxfrResponseSuccess `json:"success,required"`
 	// When force_axfr query parameter is set to true, the response is a simple string
 	Result string                                `json:"result"`
 	JSON   zoneSecondaryDNSForceAxfrResponseJSON `json:"-"`
-	ResponseSingleACL
 }
 
 // zoneSecondaryDNSForceAxfrResponseJSON contains the JSON metadata for the struct
 // [ZoneSecondaryDNSForceAxfrResponse]
 type zoneSecondaryDNSForceAxfrResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -69,6 +75,21 @@ func (r *ZoneSecondaryDNSForceAxfrResponse) UnmarshalJSON(data []byte) (err erro
 
 func (r zoneSecondaryDNSForceAxfrResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type ZoneSecondaryDNSForceAxfrResponseSuccess bool
+
+const (
+	ZoneSecondaryDNSForceAxfrResponseSuccessTrue ZoneSecondaryDNSForceAxfrResponseSuccess = true
+)
+
+func (r ZoneSecondaryDNSForceAxfrResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneSecondaryDNSForceAxfrResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type ZoneSecondaryDNSForceAxfrParams struct {

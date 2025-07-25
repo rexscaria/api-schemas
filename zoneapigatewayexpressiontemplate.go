@@ -46,16 +46,22 @@ func (r *ZoneAPIGatewayExpressionTemplateService) GenerateFallthrough(ctx contex
 }
 
 type ZoneAPIGatewayExpressionTemplateGenerateFallthroughResponse struct {
-	Result ZoneAPIGatewayExpressionTemplateGenerateFallthroughResponseResult `json:"result,required"`
-	JSON   zoneAPIGatewayExpressionTemplateGenerateFallthroughResponseJSON   `json:"-"`
-	APIResponseAPIShield
+	Errors   []MessagesAPIShieldItem                                           `json:"errors,required"`
+	Messages []MessagesAPIShieldItem                                           `json:"messages,required"`
+	Result   ZoneAPIGatewayExpressionTemplateGenerateFallthroughResponseResult `json:"result,required"`
+	// Whether the API call was successful.
+	Success ZoneAPIGatewayExpressionTemplateGenerateFallthroughResponseSuccess `json:"success,required"`
+	JSON    zoneAPIGatewayExpressionTemplateGenerateFallthroughResponseJSON    `json:"-"`
 }
 
 // zoneAPIGatewayExpressionTemplateGenerateFallthroughResponseJSON contains the
 // JSON metadata for the struct
 // [ZoneAPIGatewayExpressionTemplateGenerateFallthroughResponse]
 type zoneAPIGatewayExpressionTemplateGenerateFallthroughResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -92,6 +98,21 @@ func (r *ZoneAPIGatewayExpressionTemplateGenerateFallthroughResponseResult) Unma
 
 func (r zoneAPIGatewayExpressionTemplateGenerateFallthroughResponseResultJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type ZoneAPIGatewayExpressionTemplateGenerateFallthroughResponseSuccess bool
+
+const (
+	ZoneAPIGatewayExpressionTemplateGenerateFallthroughResponseSuccessTrue ZoneAPIGatewayExpressionTemplateGenerateFallthroughResponseSuccess = true
+)
+
+func (r ZoneAPIGatewayExpressionTemplateGenerateFallthroughResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneAPIGatewayExpressionTemplateGenerateFallthroughResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type ZoneAPIGatewayExpressionTemplateGenerateFallthroughParams struct {

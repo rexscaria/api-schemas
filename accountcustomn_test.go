@@ -86,9 +86,6 @@ func TestAccountCustomNDelete(t *testing.T) {
 		context.TODO(),
 		"372e67954025e0ba6aaa6d586b9e0b59",
 		"ns1.example.com",
-		cfrex.AccountCustomNDeleteParams{
-			Body: map[string]interface{}{},
-		},
 	)
 	if err != nil {
 		var apierr *cfrex.Error

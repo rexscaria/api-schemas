@@ -70,26 +70,32 @@ func (r *ZoneSecondaryDNSIncomingService) Update(ctx context.Context, zoneID str
 }
 
 // Delete secondary zone configuration for incoming zone transfers.
-func (r *ZoneSecondaryDNSIncomingService) Delete(ctx context.Context, zoneID string, body ZoneSecondaryDNSIncomingDeleteParams, opts ...option.RequestOption) (res *IDResponseSecondaryDNS, err error) {
+func (r *ZoneSecondaryDNSIncomingService) Delete(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *IDResponseSecondaryDNS, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
 	}
 	path := fmt.Sprintf("zones/%s/secondary_dns/incoming", zoneID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
 type IDResponseSecondaryDNS struct {
-	Result IDResponseSecondaryDNSResult `json:"result"`
-	JSON   idResponseSecondaryDNSJSON   `json:"-"`
-	ResponseSingleACL
+	Errors   []SecondaryDNSMessages `json:"errors,required"`
+	Messages []SecondaryDNSMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success IDResponseSecondaryDNSSuccess `json:"success,required"`
+	Result  IDResponseSecondaryDNSResult  `json:"result"`
+	JSON    idResponseSecondaryDNSJSON    `json:"-"`
 }
 
 // idResponseSecondaryDNSJSON contains the JSON metadata for the struct
 // [IDResponseSecondaryDNS]
 type idResponseSecondaryDNSJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -101,6 +107,21 @@ func (r *IDResponseSecondaryDNS) UnmarshalJSON(data []byte) (err error) {
 
 func (r idResponseSecondaryDNSJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type IDResponseSecondaryDNSSuccess bool
+
+const (
+	IDResponseSecondaryDNSSuccessTrue IDResponseSecondaryDNSSuccess = true
+)
+
+func (r IDResponseSecondaryDNSSuccess) IsKnown() bool {
+	switch r {
+	case IDResponseSecondaryDNSSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type IDResponseSecondaryDNSResult struct {
@@ -139,14 +160,20 @@ func (r SecondaryZoneParam) MarshalJSON() (data []byte, err error) {
 }
 
 type SingleResponseIncoming struct {
-	Result SingleResponseIncomingResult `json:"result"`
-	JSON   singleResponseIncomingJSON   `json:"-"`
-	ResponseSingleACL
+	Errors   []SecondaryDNSMessages `json:"errors,required"`
+	Messages []SecondaryDNSMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success SingleResponseIncomingSuccess `json:"success,required"`
+	Result  SingleResponseIncomingResult  `json:"result"`
+	JSON    singleResponseIncomingJSON    `json:"-"`
 }
 
 // singleResponseIncomingJSON contains the JSON metadata for the struct
 // [SingleResponseIncoming]
 type singleResponseIncomingJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -158,6 +185,21 @@ func (r *SingleResponseIncoming) UnmarshalJSON(data []byte) (err error) {
 
 func (r singleResponseIncomingJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type SingleResponseIncomingSuccess bool
+
+const (
+	SingleResponseIncomingSuccessTrue SingleResponseIncomingSuccess = true
+)
+
+func (r SingleResponseIncomingSuccess) IsKnown() bool {
+	switch r {
+	case SingleResponseIncomingSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type SingleResponseIncomingResult struct {
@@ -217,12 +259,4 @@ type ZoneSecondaryDNSIncomingUpdateParams struct {
 
 func (r ZoneSecondaryDNSIncomingUpdateParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r.SecondaryZone)
-}
-
-type ZoneSecondaryDNSIncomingDeleteParams struct {
-	Body interface{} `json:"body,required"`
-}
-
-func (r ZoneSecondaryDNSIncomingDeleteParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
 }

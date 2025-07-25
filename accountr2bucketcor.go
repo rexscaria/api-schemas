@@ -33,7 +33,7 @@ func NewAccountR2BucketCorService(opts ...option.RequestOption) (r *AccountR2Buc
 	return
 }
 
-// Get the CORS policy for a bucket
+// Get the CORS policy for a bucket.
 func (r *AccountR2BucketCorService) Get(ctx context.Context, accountID string, bucketName string, query AccountR2BucketCorGetParams, opts ...option.RequestOption) (res *AccountR2BucketCorGetResponse, err error) {
 	if query.Jurisdiction.Present {
 		opts = append(opts, option.WithHeader("cf-r2-jurisdiction", fmt.Sprintf("%s", query.Jurisdiction)))
@@ -52,8 +52,8 @@ func (r *AccountR2BucketCorService) Get(ctx context.Context, accountID string, b
 	return
 }
 
-// Set the CORS policy for a bucket
-func (r *AccountR2BucketCorService) Update(ctx context.Context, accountID string, bucketName string, params AccountR2BucketCorUpdateParams, opts ...option.RequestOption) (res *AccountR2BucketCorUpdateResponse, err error) {
+// Set the CORS policy for a bucket.
+func (r *AccountR2BucketCorService) Update(ctx context.Context, accountID string, bucketName string, params AccountR2BucketCorUpdateParams, opts ...option.RequestOption) (res *R2V4Response, err error) {
 	if params.Jurisdiction.Present {
 		opts = append(opts, option.WithHeader("cf-r2-jurisdiction", fmt.Sprintf("%s", params.Jurisdiction)))
 	}
@@ -71,8 +71,8 @@ func (r *AccountR2BucketCorService) Update(ctx context.Context, accountID string
 	return
 }
 
-// Delete the CORS policy for a bucket
-func (r *AccountR2BucketCorService) Delete(ctx context.Context, accountID string, bucketName string, body AccountR2BucketCorDeleteParams, opts ...option.RequestOption) (res *AccountR2BucketCorDeleteResponse, err error) {
+// Delete the CORS policy for a bucket.
+func (r *AccountR2BucketCorService) Delete(ctx context.Context, accountID string, bucketName string, body AccountR2BucketCorDeleteParams, opts ...option.RequestOption) (res *R2V4Response, err error) {
 	if body.Jurisdiction.Present {
 		opts = append(opts, option.WithHeader("cf-r2-jurisdiction", fmt.Sprintf("%s", body.Jurisdiction)))
 	}
@@ -93,7 +93,7 @@ func (r *AccountR2BucketCorService) Delete(ctx context.Context, accountID string
 type R2CorsRule struct {
 	// Object specifying allowed origins, methods and headers for this CORS rule.
 	Allowed R2CorsRuleAllowed `json:"allowed,required"`
-	// Identifier for this rule
+	// Identifier for this rule.
 	ID string `json:"id"`
 	// Specifies the headers that can be exposed back, and accessed by, the JavaScript
 	// making the cross-origin request. If you need to access headers beyond the
@@ -180,7 +180,7 @@ func (r R2CorsRuleAllowedMethod) IsKnown() bool {
 type R2CorsRuleParam struct {
 	// Object specifying allowed origins, methods and headers for this CORS rule.
 	Allowed param.Field[R2CorsRuleAllowedParam] `json:"allowed,required"`
-	// Identifier for this rule
+	// Identifier for this rule.
 	ID param.Field[string] `json:"id"`
 	// Specifies the headers that can be exposed back, and accessed by, the JavaScript
 	// making the cross-origin request. If you need to access headers beyond the
@@ -217,15 +217,21 @@ func (r R2CorsRuleAllowedParam) MarshalJSON() (data []byte, err error) {
 }
 
 type AccountR2BucketCorGetResponse struct {
-	Result AccountR2BucketCorGetResponseResult `json:"result"`
-	JSON   accountR2BucketCorGetResponseJSON   `json:"-"`
-	R2V4Response
+	Errors   []AccountR2BucketCorGetResponseError `json:"errors,required"`
+	Messages []string                             `json:"messages,required"`
+	Result   AccountR2BucketCorGetResponseResult  `json:"result,required"`
+	// Whether the API call was successful.
+	Success AccountR2BucketCorGetResponseSuccess `json:"success,required"`
+	JSON    accountR2BucketCorGetResponseJSON    `json:"-"`
 }
 
 // accountR2BucketCorGetResponseJSON contains the JSON metadata for the struct
 // [AccountR2BucketCorGetResponse]
 type accountR2BucketCorGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -235,6 +241,54 @@ func (r *AccountR2BucketCorGetResponse) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (r accountR2BucketCorGetResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountR2BucketCorGetResponseError struct {
+	Code             int64                                     `json:"code,required"`
+	Message          string                                    `json:"message,required"`
+	DocumentationURL string                                    `json:"documentation_url"`
+	Source           AccountR2BucketCorGetResponseErrorsSource `json:"source"`
+	JSON             accountR2BucketCorGetResponseErrorJSON    `json:"-"`
+}
+
+// accountR2BucketCorGetResponseErrorJSON contains the JSON metadata for the struct
+// [AccountR2BucketCorGetResponseError]
+type accountR2BucketCorGetResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountR2BucketCorGetResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountR2BucketCorGetResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountR2BucketCorGetResponseErrorsSource struct {
+	Pointer string                                        `json:"pointer"`
+	JSON    accountR2BucketCorGetResponseErrorsSourceJSON `json:"-"`
+}
+
+// accountR2BucketCorGetResponseErrorsSourceJSON contains the JSON metadata for the
+// struct [AccountR2BucketCorGetResponseErrorsSource]
+type accountR2BucketCorGetResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountR2BucketCorGetResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountR2BucketCorGetResponseErrorsSourceJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -259,52 +313,27 @@ func (r accountR2BucketCorGetResponseResultJSON) RawJSON() string {
 	return r.raw
 }
 
-type AccountR2BucketCorUpdateResponse struct {
-	JSON accountR2BucketCorUpdateResponseJSON `json:"-"`
-	R2V4Response
-}
+// Whether the API call was successful.
+type AccountR2BucketCorGetResponseSuccess bool
 
-// accountR2BucketCorUpdateResponseJSON contains the JSON metadata for the struct
-// [AccountR2BucketCorUpdateResponse]
-type accountR2BucketCorUpdateResponseJSON struct {
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
+const (
+	AccountR2BucketCorGetResponseSuccessTrue AccountR2BucketCorGetResponseSuccess = true
+)
 
-func (r *AccountR2BucketCorUpdateResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountR2BucketCorUpdateResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-type AccountR2BucketCorDeleteResponse struct {
-	JSON accountR2BucketCorDeleteResponseJSON `json:"-"`
-	R2V4Response
-}
-
-// accountR2BucketCorDeleteResponseJSON contains the JSON metadata for the struct
-// [AccountR2BucketCorDeleteResponse]
-type accountR2BucketCorDeleteResponseJSON struct {
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountR2BucketCorDeleteResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountR2BucketCorDeleteResponseJSON) RawJSON() string {
-	return r.raw
+func (r AccountR2BucketCorGetResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountR2BucketCorGetResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountR2BucketCorGetParams struct {
-	// The bucket jurisdiction
+	// Jurisdiction where objects in this bucket are guaranteed to be stored.
 	Jurisdiction param.Field[AccountR2BucketCorGetParamsCfR2Jurisdiction] `header:"cf-r2-jurisdiction"`
 }
 
-// The bucket jurisdiction
+// Jurisdiction where objects in this bucket are guaranteed to be stored.
 type AccountR2BucketCorGetParamsCfR2Jurisdiction string
 
 const (
@@ -323,7 +352,7 @@ func (r AccountR2BucketCorGetParamsCfR2Jurisdiction) IsKnown() bool {
 
 type AccountR2BucketCorUpdateParams struct {
 	Rules param.Field[[]R2CorsRuleParam] `json:"rules"`
-	// The bucket jurisdiction
+	// Jurisdiction where objects in this bucket are guaranteed to be stored.
 	Jurisdiction param.Field[AccountR2BucketCorUpdateParamsCfR2Jurisdiction] `header:"cf-r2-jurisdiction"`
 }
 
@@ -331,7 +360,7 @@ func (r AccountR2BucketCorUpdateParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-// The bucket jurisdiction
+// Jurisdiction where objects in this bucket are guaranteed to be stored.
 type AccountR2BucketCorUpdateParamsCfR2Jurisdiction string
 
 const (
@@ -349,11 +378,11 @@ func (r AccountR2BucketCorUpdateParamsCfR2Jurisdiction) IsKnown() bool {
 }
 
 type AccountR2BucketCorDeleteParams struct {
-	// The bucket jurisdiction
+	// Jurisdiction where objects in this bucket are guaranteed to be stored.
 	Jurisdiction param.Field[AccountR2BucketCorDeleteParamsCfR2Jurisdiction] `header:"cf-r2-jurisdiction"`
 }
 
-// The bucket jurisdiction
+// Jurisdiction where objects in this bucket are guaranteed to be stored.
 type AccountR2BucketCorDeleteParamsCfR2Jurisdiction string
 
 const (

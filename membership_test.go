@@ -115,13 +115,7 @@ func TestMembershipRemove(t *testing.T) {
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Memberships.Remove(
-		context.TODO(),
-		"4536bcfad5faccb111b47003c79917fa",
-		cfrex.MembershipRemoveParams{
-			Body: map[string]interface{}{},
-		},
-	)
+	_, err := client.Memberships.Remove(context.TODO(), "4536bcfad5faccb111b47003c79917fa")
 	if err != nil {
 		var apierr *cfrex.Error
 		if errors.As(err, &apierr) {

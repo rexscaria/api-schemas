@@ -42,7 +42,7 @@ func NewAccountDlpProfileService(opts ...option.RequestOption) (r *AccountDlpPro
 	return
 }
 
-// Fetches a DLP profile by ID
+// Fetches a DLP profile by ID.
 func (r *AccountDlpProfileService) Get(ctx context.Context, accountID string, profileID string, opts ...option.RequestOption) (res *AccountDlpProfileGetResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
@@ -88,11 +88,11 @@ func (r Confidence) IsKnown() bool {
 }
 
 type Profile struct {
-	// The id of the profile (uuid)
+	// The id of the profile (uuid).
 	ID string `json:"id,required" format:"uuid"`
 	// This field can have the runtime type of [[]DlpEntry].
 	Entries interface{} `json:"entries,required"`
-	// The name of the profile
+	// The name of the profile.
 	Name             string      `json:"name,required"`
 	Type             ProfileType `json:"type,required"`
 	AIContextEnabled bool        `json:"ai_context_enabled"`
@@ -101,15 +101,17 @@ type Profile struct {
 	ConfidenceThreshold Confidence `json:"confidence_threshold"`
 	// Scan the context of predefined entries to only return matches surrounded by
 	// keywords.
+	//
+	// Deprecated: deprecated
 	ContextAwareness ContextAwareness `json:"context_awareness"`
-	// When the profile was created
+	// When the profile was created.
 	CreatedAt time.Time `json:"created_at" format:"date-time"`
-	// The description of the profile
+	// The description of the profile.
 	Description string `json:"description,nullable"`
 	OcrEnabled  bool   `json:"ocr_enabled"`
-	// Whether this profile can be accessed by anyone
+	// Whether this profile can be accessed by anyone.
 	OpenAccess bool `json:"open_access"`
-	// When the profile was lasted updated
+	// When the profile was lasted updated.
 	UpdatedAt time.Time   `json:"updated_at" format:"date-time"`
 	JSON      profileJSON `json:"-"`
 	union     ProfileUnion
@@ -182,25 +184,27 @@ func init() {
 }
 
 type ProfileCustomProfile struct {
-	// The id of the profile (uuid)
+	// The id of the profile (uuid).
 	ID string `json:"id,required" format:"uuid"`
 	// Related DLP policies will trigger when the match count exceeds the number set.
 	AllowedMatchCount int64 `json:"allowed_match_count,required"`
-	// Scan the context of predefined entries to only return matches surrounded by
-	// keywords.
-	ContextAwareness ContextAwareness `json:"context_awareness,required"`
-	// When the profile was created
+	// When the profile was created.
 	CreatedAt time.Time  `json:"created_at,required" format:"date-time"`
 	Entries   []DlpEntry `json:"entries,required"`
-	// The name of the profile
+	// The name of the profile.
 	Name       string                   `json:"name,required"`
 	OcrEnabled bool                     `json:"ocr_enabled,required"`
 	Type       ProfileCustomProfileType `json:"type,required"`
-	// When the profile was lasted updated
+	// When the profile was lasted updated.
 	UpdatedAt           time.Time  `json:"updated_at,required" format:"date-time"`
 	AIContextEnabled    bool       `json:"ai_context_enabled"`
 	ConfidenceThreshold Confidence `json:"confidence_threshold"`
-	// The description of the profile
+	// Scan the context of predefined entries to only return matches surrounded by
+	// keywords.
+	//
+	// Deprecated: deprecated
+	ContextAwareness ContextAwareness `json:"context_awareness"`
+	// The description of the profile.
 	Description string                   `json:"description,nullable"`
 	JSON        profileCustomProfileJSON `json:"-"`
 }
@@ -210,7 +214,6 @@ type ProfileCustomProfile struct {
 type profileCustomProfileJSON struct {
 	ID                  apijson.Field
 	AllowedMatchCount   apijson.Field
-	ContextAwareness    apijson.Field
 	CreatedAt           apijson.Field
 	Entries             apijson.Field
 	Name                apijson.Field
@@ -219,6 +222,7 @@ type profileCustomProfileJSON struct {
 	UpdatedAt           apijson.Field
 	AIContextEnabled    apijson.Field
 	ConfidenceThreshold apijson.Field
+	ContextAwareness    apijson.Field
 	Description         apijson.Field
 	raw                 string
 	ExtraFields         map[string]apijson.Field
@@ -249,20 +253,22 @@ func (r ProfileCustomProfileType) IsKnown() bool {
 }
 
 type ProfilePredefinedProfile struct {
-	// The id of the predefined profile (uuid)
+	// The id of the predefined profile (uuid).
 	ID                string     `json:"id,required" format:"uuid"`
 	AllowedMatchCount int64      `json:"allowed_match_count,required"`
 	Entries           []DlpEntry `json:"entries,required"`
-	// The name of the predefined profile
+	// The name of the predefined profile.
 	Name                string                       `json:"name,required"`
 	Type                ProfilePredefinedProfileType `json:"type,required"`
 	AIContextEnabled    bool                         `json:"ai_context_enabled"`
 	ConfidenceThreshold Confidence                   `json:"confidence_threshold"`
 	// Scan the context of predefined entries to only return matches surrounded by
 	// keywords.
+	//
+	// Deprecated: deprecated
 	ContextAwareness ContextAwareness `json:"context_awareness"`
 	OcrEnabled       bool             `json:"ocr_enabled"`
-	// Whether this profile can be accessed by anyone
+	// Whether this profile can be accessed by anyone.
 	OpenAccess bool                         `json:"open_access"`
 	JSON       profilePredefinedProfileJSON `json:"-"`
 }
@@ -315,7 +321,7 @@ type ProfileIntegrationProfile struct {
 	Name      string                        `json:"name,required"`
 	Type      ProfileIntegrationProfileType `json:"type,required"`
 	UpdatedAt time.Time                     `json:"updated_at,required" format:"date-time"`
-	// The description of the profile
+	// The description of the profile.
 	Description string                        `json:"description,nullable"`
 	JSON        profileIntegrationProfileJSON `json:"-"`
 }
@@ -375,14 +381,20 @@ func (r ProfileType) IsKnown() bool {
 }
 
 type AccountDlpProfileGetResponse struct {
-	Result Profile                          `json:"result"`
-	JSON   accountDlpProfileGetResponseJSON `json:"-"`
-	APIResponseSingleDlp
+	Errors   []MessagesDlpItems `json:"errors,required"`
+	Messages []MessagesDlpItems `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountDlpProfileGetResponseSuccess `json:"success,required"`
+	Result  Profile                             `json:"result"`
+	JSON    accountDlpProfileGetResponseJSON    `json:"-"`
 }
 
 // accountDlpProfileGetResponseJSON contains the JSON metadata for the struct
 // [AccountDlpProfileGetResponse]
 type accountDlpProfileGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -396,15 +408,36 @@ func (r accountDlpProfileGetResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountDlpProfileGetResponseSuccess bool
+
+const (
+	AccountDlpProfileGetResponseSuccessTrue AccountDlpProfileGetResponseSuccess = true
+)
+
+func (r AccountDlpProfileGetResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountDlpProfileGetResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountDlpProfileListResponse struct {
-	Result []Profile                         `json:"result"`
-	JSON   accountDlpProfileListResponseJSON `json:"-"`
-	APIResponseSingleDlp
+	Errors   []MessagesDlpItems `json:"errors,required"`
+	Messages []MessagesDlpItems `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountDlpProfileListResponseSuccess `json:"success,required"`
+	Result  []Profile                            `json:"result"`
+	JSON    accountDlpProfileListResponseJSON    `json:"-"`
 }
 
 // accountDlpProfileListResponseJSON contains the JSON metadata for the struct
 // [AccountDlpProfileListResponse]
 type accountDlpProfileListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -416,6 +449,21 @@ func (r *AccountDlpProfileListResponse) UnmarshalJSON(data []byte) (err error) {
 
 func (r accountDlpProfileListResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountDlpProfileListResponseSuccess bool
+
+const (
+	AccountDlpProfileListResponseSuccessTrue AccountDlpProfileListResponseSuccess = true
+)
+
+func (r AccountDlpProfileListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountDlpProfileListResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountDlpProfileListParams struct {

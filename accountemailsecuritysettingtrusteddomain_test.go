@@ -135,6 +135,7 @@ func TestAccountEmailSecuritySettingTrustedDomainListWithOptionalParams(t *testi
 			IsSimilarity: cfrex.F(true),
 			Order:        cfrex.F(cfrex.AccountEmailSecuritySettingTrustedDomainListParamsOrderPattern),
 			Page:         cfrex.F(int64(1)),
+			Pattern:      cfrex.F("pattern"),
 			PerPage:      cfrex.F(int64(1)),
 			Search:       cfrex.F("search"),
 		},

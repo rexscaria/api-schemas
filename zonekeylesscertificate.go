@@ -92,7 +92,7 @@ func (r *ZoneKeylessCertificateService) List(ctx context.Context, zoneID string,
 }
 
 // Delete Keyless SSL Configuration
-func (r *ZoneKeylessCertificateService) Delete(ctx context.Context, zoneID string, keylessCertificateID string, body ZoneKeylessCertificateDeleteParams, opts ...option.RequestOption) (res *ZoneKeylessCertificateDeleteResponse, err error) {
+func (r *ZoneKeylessCertificateService) Delete(ctx context.Context, zoneID string, keylessCertificateID string, opts ...option.RequestOption) (res *ZoneKeylessCertificateDeleteResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
@@ -103,7 +103,7 @@ func (r *ZoneKeylessCertificateService) Delete(ctx context.Context, zoneID strin
 		return
 	}
 	path := fmt.Sprintf("zones/%s/keyless_certificates/%s", zoneID, keylessCertificateID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
@@ -175,14 +175,20 @@ func (r KeylessCertificateStatus) IsKnown() bool {
 }
 
 type KeylessResponseSingle struct {
-	Result TlsCertificateBase        `json:"result"`
-	JSON   keylessResponseSingleJSON `json:"-"`
-	APIResponseSingleTlsCertificates
+	Errors   []MessagesTlsCertificatesItem `json:"errors,required"`
+	Messages []MessagesTlsCertificatesItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success KeylessResponseSingleSuccess `json:"success,required"`
+	Result  TlsCertificateBase           `json:"result"`
+	JSON    keylessResponseSingleJSON    `json:"-"`
 }
 
 // keylessResponseSingleJSON contains the JSON metadata for the struct
 // [KeylessResponseSingle]
 type keylessResponseSingleJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -194,6 +200,21 @@ func (r *KeylessResponseSingle) UnmarshalJSON(data []byte) (err error) {
 
 func (r keylessResponseSingleJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type KeylessResponseSingleSuccess bool
+
+const (
+	KeylessResponseSingleSuccessTrue KeylessResponseSingleSuccess = true
+)
+
+func (r KeylessResponseSingleSuccess) IsKnown() bool {
+	switch r {
+	case KeylessResponseSingleSuccessTrue:
+		return true
+	}
+	return false
 }
 
 // Configuration for using Keyless SSL through a Cloudflare Tunnel
@@ -301,15 +322,23 @@ func (r TlsCertificateBaseStatus) IsKnown() bool {
 }
 
 type ZoneKeylessCertificateListResponse struct {
-	Result []KeylessCertificate                   `json:"result"`
-	JSON   zoneKeylessCertificateListResponseJSON `json:"-"`
-	APIResponseCollectionTlsCertificates
+	Errors   []MessagesTlsCertificatesItem `json:"errors,required"`
+	Messages []MessagesTlsCertificatesItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success    ZoneKeylessCertificateListResponseSuccess    `json:"success,required"`
+	Result     []KeylessCertificate                         `json:"result"`
+	ResultInfo ZoneKeylessCertificateListResponseResultInfo `json:"result_info"`
+	JSON       zoneKeylessCertificateListResponseJSON       `json:"-"`
 }
 
 // zoneKeylessCertificateListResponseJSON contains the JSON metadata for the struct
 // [ZoneKeylessCertificateListResponse]
 type zoneKeylessCertificateListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -322,15 +351,67 @@ func (r zoneKeylessCertificateListResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type ZoneKeylessCertificateListResponseSuccess bool
+
+const (
+	ZoneKeylessCertificateListResponseSuccessTrue ZoneKeylessCertificateListResponseSuccess = true
+)
+
+func (r ZoneKeylessCertificateListResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneKeylessCertificateListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type ZoneKeylessCertificateListResponseResultInfo struct {
+	// Total number of results for the requested service.
+	Count float64 `json:"count"`
+	// Current page within paginated list of results.
+	Page float64 `json:"page"`
+	// Number of results per page of results.
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters.
+	TotalCount float64                                          `json:"total_count"`
+	JSON       zoneKeylessCertificateListResponseResultInfoJSON `json:"-"`
+}
+
+// zoneKeylessCertificateListResponseResultInfoJSON contains the JSON metadata for
+// the struct [ZoneKeylessCertificateListResponseResultInfo]
+type zoneKeylessCertificateListResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZoneKeylessCertificateListResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneKeylessCertificateListResponseResultInfoJSON) RawJSON() string {
+	return r.raw
+}
+
 type ZoneKeylessCertificateDeleteResponse struct {
-	Result ZoneKeylessCertificateDeleteResponseResult `json:"result"`
-	JSON   zoneKeylessCertificateDeleteResponseJSON   `json:"-"`
-	APIResponseSingleTlsCertificates
+	Errors   []MessagesTlsCertificatesItem `json:"errors,required"`
+	Messages []MessagesTlsCertificatesItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success ZoneKeylessCertificateDeleteResponseSuccess `json:"success,required"`
+	Result  ZoneKeylessCertificateDeleteResponseResult  `json:"result"`
+	JSON    zoneKeylessCertificateDeleteResponseJSON    `json:"-"`
 }
 
 // zoneKeylessCertificateDeleteResponseJSON contains the JSON metadata for the
 // struct [ZoneKeylessCertificateDeleteResponse]
 type zoneKeylessCertificateDeleteResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -344,8 +425,23 @@ func (r zoneKeylessCertificateDeleteResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type ZoneKeylessCertificateDeleteResponseSuccess bool
+
+const (
+	ZoneKeylessCertificateDeleteResponseSuccessTrue ZoneKeylessCertificateDeleteResponseSuccess = true
+)
+
+func (r ZoneKeylessCertificateDeleteResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneKeylessCertificateDeleteResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type ZoneKeylessCertificateDeleteResponseResult struct {
-	// Identifier
+	// Identifier.
 	ID   string                                         `json:"id"`
 	JSON zoneKeylessCertificateDeleteResponseResultJSON `json:"-"`
 }
@@ -405,12 +501,4 @@ type ZoneKeylessCertificateUpdateParams struct {
 
 func (r ZoneKeylessCertificateUpdateParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
-}
-
-type ZoneKeylessCertificateDeleteParams struct {
-	Body interface{} `json:"body,required"`
-}
-
-func (r ZoneKeylessCertificateDeleteParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
 }

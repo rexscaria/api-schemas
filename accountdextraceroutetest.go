@@ -86,14 +86,20 @@ func (r *AccountDexTracerouteTestService) GetPercentiles(ctx context.Context, ac
 }
 
 type AccountDexTracerouteTestGetResponse struct {
-	Result AccountDexTracerouteTestGetResponseResult `json:"result"`
-	JSON   accountDexTracerouteTestGetResponseJSON   `json:"-"`
-	APIResponseSingleDigitalExperience
+	Errors   []Item `json:"errors,required"`
+	Messages []Item `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountDexTracerouteTestGetResponseSuccess `json:"success,required"`
+	Result  AccountDexTracerouteTestGetResponseResult  `json:"result"`
+	JSON    accountDexTracerouteTestGetResponseJSON    `json:"-"`
 }
 
 // accountDexTracerouteTestGetResponseJSON contains the JSON metadata for the
 // struct [AccountDexTracerouteTestGetResponse]
 type accountDexTracerouteTestGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -105,6 +111,21 @@ func (r *AccountDexTracerouteTestGetResponse) UnmarshalJSON(data []byte) (err er
 
 func (r accountDexTracerouteTestGetResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountDexTracerouteTestGetResponseSuccess bool
+
+const (
+	AccountDexTracerouteTestGetResponseSuccessTrue AccountDexTracerouteTestGetResponseSuccess = true
+)
+
+func (r AccountDexTracerouteTestGetResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountDexTracerouteTestGetResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountDexTracerouteTestGetResponseResult struct {
@@ -250,14 +271,20 @@ func (r accountDexTracerouteTestGetResponseResultTracerouteStatsByColoJSON) RawJ
 }
 
 type AccountDexTracerouteTestGetNetworkPathResponse struct {
-	Result AccountDexTracerouteTestGetNetworkPathResponseResult `json:"result"`
-	JSON   accountDexTracerouteTestGetNetworkPathResponseJSON   `json:"-"`
-	APIResponseSingleDigitalExperience
+	Errors   []Item `json:"errors,required"`
+	Messages []Item `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountDexTracerouteTestGetNetworkPathResponseSuccess `json:"success,required"`
+	Result  AccountDexTracerouteTestGetNetworkPathResponseResult  `json:"result"`
+	JSON    accountDexTracerouteTestGetNetworkPathResponseJSON    `json:"-"`
 }
 
 // accountDexTracerouteTestGetNetworkPathResponseJSON contains the JSON metadata
 // for the struct [AccountDexTracerouteTestGetNetworkPathResponse]
 type accountDexTracerouteTestGetNetworkPathResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -269,6 +296,21 @@ func (r *AccountDexTracerouteTestGetNetworkPathResponse) UnmarshalJSON(data []by
 
 func (r accountDexTracerouteTestGetNetworkPathResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountDexTracerouteTestGetNetworkPathResponseSuccess bool
+
+const (
+	AccountDexTracerouteTestGetNetworkPathResponseSuccessTrue AccountDexTracerouteTestGetNetworkPathResponseSuccess = true
+)
+
+func (r AccountDexTracerouteTestGetNetworkPathResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountDexTracerouteTestGetNetworkPathResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountDexTracerouteTestGetNetworkPathResponseResult struct {
@@ -427,14 +469,20 @@ func (r AccountDexTracerouteTestGetNetworkPathResponseResultNetworkPathSamplingU
 }
 
 type AccountDexTracerouteTestGetPercentilesResponse struct {
-	Result AccountDexTracerouteTestGetPercentilesResponseResult `json:"result"`
-	JSON   accountDexTracerouteTestGetPercentilesResponseJSON   `json:"-"`
-	APIResponseSingleDigitalExperience
+	Errors   []Item `json:"errors,required"`
+	Messages []Item `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountDexTracerouteTestGetPercentilesResponseSuccess `json:"success,required"`
+	Result  AccountDexTracerouteTestGetPercentilesResponseResult  `json:"result"`
+	JSON    accountDexTracerouteTestGetPercentilesResponseJSON    `json:"-"`
 }
 
 // accountDexTracerouteTestGetPercentilesResponseJSON contains the JSON metadata
 // for the struct [AccountDexTracerouteTestGetPercentilesResponse]
 type accountDexTracerouteTestGetPercentilesResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -446,6 +494,21 @@ func (r *AccountDexTracerouteTestGetPercentilesResponse) UnmarshalJSON(data []by
 
 func (r accountDexTracerouteTestGetPercentilesResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountDexTracerouteTestGetPercentilesResponseSuccess bool
+
+const (
+	AccountDexTracerouteTestGetPercentilesResponseSuccessTrue AccountDexTracerouteTestGetPercentilesResponseSuccess = true
+)
+
+func (r AccountDexTracerouteTestGetPercentilesResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountDexTracerouteTestGetPercentilesResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountDexTracerouteTestGetPercentilesResponseResult struct {

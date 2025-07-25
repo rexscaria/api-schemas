@@ -106,7 +106,7 @@ func (r *AccountPageProjectDomainService) List(ctx context.Context, accountID st
 }
 
 // Delete a Pages project's domain.
-func (r *AccountPageProjectDomainService) Delete(ctx context.Context, accountID string, projectName string, domainName string, body AccountPageProjectDomainDeleteParams, opts ...option.RequestOption) (res *AccountPageProjectDomainDeleteResponse, err error) {
+func (r *AccountPageProjectDomainService) Delete(ctx context.Context, accountID string, projectName string, domainName string, opts ...option.RequestOption) (res *AccountPageProjectDomainDeleteResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
@@ -121,7 +121,7 @@ func (r *AccountPageProjectDomainService) Delete(ctx context.Context, accountID 
 		return
 	}
 	path := fmt.Sprintf("accounts/%s/pages/projects/%s/domains/%s", accountID, projectName, domainName)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
@@ -299,15 +299,21 @@ func (r DomainProjectVerificationDataStatus) IsKnown() bool {
 }
 
 type ResponseSingleDomain struct {
-	Result ResponseSingleDomainResult `json:"result,nullable"`
-	JSON   responseSingleDomainJSON   `json:"-"`
-	APIResponsePages
+	Errors   []ResponseSingleDomainError   `json:"errors,required"`
+	Messages []ResponseSingleDomainMessage `json:"messages,required"`
+	Result   DomainProject                 `json:"result,required,nullable"`
+	// Whether the API call was successful
+	Success ResponseSingleDomainSuccess `json:"success,required"`
+	JSON    responseSingleDomainJSON    `json:"-"`
 }
 
 // responseSingleDomainJSON contains the JSON metadata for the struct
 // [ResponseSingleDomain]
 type responseSingleDomainJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -320,191 +326,136 @@ func (r responseSingleDomainJSON) RawJSON() string {
 	return r.raw
 }
 
-type ResponseSingleDomainResult struct {
-	ID                   string                                         `json:"id"`
-	CertificateAuthority ResponseSingleDomainResultCertificateAuthority `json:"certificate_authority"`
-	CreatedOn            string                                         `json:"created_on"`
-	DomainID             string                                         `json:"domain_id"`
-	Name                 string                                         `json:"name"`
-	Status               ResponseSingleDomainResultStatus               `json:"status"`
-	ValidationData       ResponseSingleDomainResultValidationData       `json:"validation_data"`
-	VerificationData     ResponseSingleDomainResultVerificationData     `json:"verification_data"`
-	ZoneTag              string                                         `json:"zone_tag"`
-	JSON                 responseSingleDomainResultJSON                 `json:"-"`
+type ResponseSingleDomainError struct {
+	Code             int64                            `json:"code,required"`
+	Message          string                           `json:"message,required"`
+	DocumentationURL string                           `json:"documentation_url"`
+	Source           ResponseSingleDomainErrorsSource `json:"source"`
+	JSON             responseSingleDomainErrorJSON    `json:"-"`
 }
 
-// responseSingleDomainResultJSON contains the JSON metadata for the struct
-// [ResponseSingleDomainResult]
-type responseSingleDomainResultJSON struct {
-	ID                   apijson.Field
-	CertificateAuthority apijson.Field
-	CreatedOn            apijson.Field
-	DomainID             apijson.Field
-	Name                 apijson.Field
-	Status               apijson.Field
-	ValidationData       apijson.Field
-	VerificationData     apijson.Field
-	ZoneTag              apijson.Field
-	raw                  string
-	ExtraFields          map[string]apijson.Field
+// responseSingleDomainErrorJSON contains the JSON metadata for the struct
+// [ResponseSingleDomainError]
+type responseSingleDomainErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
 }
 
-func (r *ResponseSingleDomainResult) UnmarshalJSON(data []byte) (err error) {
+func (r *ResponseSingleDomainError) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r responseSingleDomainResultJSON) RawJSON() string {
+func (r responseSingleDomainErrorJSON) RawJSON() string {
 	return r.raw
 }
 
-type ResponseSingleDomainResultCertificateAuthority string
-
-const (
-	ResponseSingleDomainResultCertificateAuthorityGoogle      ResponseSingleDomainResultCertificateAuthority = "google"
-	ResponseSingleDomainResultCertificateAuthorityLetsEncrypt ResponseSingleDomainResultCertificateAuthority = "lets_encrypt"
-)
-
-func (r ResponseSingleDomainResultCertificateAuthority) IsKnown() bool {
-	switch r {
-	case ResponseSingleDomainResultCertificateAuthorityGoogle, ResponseSingleDomainResultCertificateAuthorityLetsEncrypt:
-		return true
-	}
-	return false
+type ResponseSingleDomainErrorsSource struct {
+	Pointer string                               `json:"pointer"`
+	JSON    responseSingleDomainErrorsSourceJSON `json:"-"`
 }
 
-type ResponseSingleDomainResultStatus string
-
-const (
-	ResponseSingleDomainResultStatusInitializing ResponseSingleDomainResultStatus = "initializing"
-	ResponseSingleDomainResultStatusPending      ResponseSingleDomainResultStatus = "pending"
-	ResponseSingleDomainResultStatusActive       ResponseSingleDomainResultStatus = "active"
-	ResponseSingleDomainResultStatusDeactivated  ResponseSingleDomainResultStatus = "deactivated"
-	ResponseSingleDomainResultStatusBlocked      ResponseSingleDomainResultStatus = "blocked"
-	ResponseSingleDomainResultStatusError        ResponseSingleDomainResultStatus = "error"
-)
-
-func (r ResponseSingleDomainResultStatus) IsKnown() bool {
-	switch r {
-	case ResponseSingleDomainResultStatusInitializing, ResponseSingleDomainResultStatusPending, ResponseSingleDomainResultStatusActive, ResponseSingleDomainResultStatusDeactivated, ResponseSingleDomainResultStatusBlocked, ResponseSingleDomainResultStatusError:
-		return true
-	}
-	return false
+// responseSingleDomainErrorsSourceJSON contains the JSON metadata for the struct
+// [ResponseSingleDomainErrorsSource]
+type responseSingleDomainErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
 }
 
-type ResponseSingleDomainResultValidationData struct {
-	ErrorMessage string                                         `json:"error_message"`
-	Method       ResponseSingleDomainResultValidationDataMethod `json:"method"`
-	Status       ResponseSingleDomainResultValidationDataStatus `json:"status"`
-	TxtName      string                                         `json:"txt_name"`
-	TxtValue     string                                         `json:"txt_value"`
-	JSON         responseSingleDomainResultValidationDataJSON   `json:"-"`
-}
-
-// responseSingleDomainResultValidationDataJSON contains the JSON metadata for the
-// struct [ResponseSingleDomainResultValidationData]
-type responseSingleDomainResultValidationDataJSON struct {
-	ErrorMessage apijson.Field
-	Method       apijson.Field
-	Status       apijson.Field
-	TxtName      apijson.Field
-	TxtValue     apijson.Field
-	raw          string
-	ExtraFields  map[string]apijson.Field
-}
-
-func (r *ResponseSingleDomainResultValidationData) UnmarshalJSON(data []byte) (err error) {
+func (r *ResponseSingleDomainErrorsSource) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r responseSingleDomainResultValidationDataJSON) RawJSON() string {
+func (r responseSingleDomainErrorsSourceJSON) RawJSON() string {
 	return r.raw
 }
 
-type ResponseSingleDomainResultValidationDataMethod string
-
-const (
-	ResponseSingleDomainResultValidationDataMethodHTTP ResponseSingleDomainResultValidationDataMethod = "http"
-	ResponseSingleDomainResultValidationDataMethodTxt  ResponseSingleDomainResultValidationDataMethod = "txt"
-)
-
-func (r ResponseSingleDomainResultValidationDataMethod) IsKnown() bool {
-	switch r {
-	case ResponseSingleDomainResultValidationDataMethodHTTP, ResponseSingleDomainResultValidationDataMethodTxt:
-		return true
-	}
-	return false
+type ResponseSingleDomainMessage struct {
+	Code             int64                              `json:"code,required"`
+	Message          string                             `json:"message,required"`
+	DocumentationURL string                             `json:"documentation_url"`
+	Source           ResponseSingleDomainMessagesSource `json:"source"`
+	JSON             responseSingleDomainMessageJSON    `json:"-"`
 }
 
-type ResponseSingleDomainResultValidationDataStatus string
-
-const (
-	ResponseSingleDomainResultValidationDataStatusInitializing ResponseSingleDomainResultValidationDataStatus = "initializing"
-	ResponseSingleDomainResultValidationDataStatusPending      ResponseSingleDomainResultValidationDataStatus = "pending"
-	ResponseSingleDomainResultValidationDataStatusActive       ResponseSingleDomainResultValidationDataStatus = "active"
-	ResponseSingleDomainResultValidationDataStatusDeactivated  ResponseSingleDomainResultValidationDataStatus = "deactivated"
-	ResponseSingleDomainResultValidationDataStatusError        ResponseSingleDomainResultValidationDataStatus = "error"
-)
-
-func (r ResponseSingleDomainResultValidationDataStatus) IsKnown() bool {
-	switch r {
-	case ResponseSingleDomainResultValidationDataStatusInitializing, ResponseSingleDomainResultValidationDataStatusPending, ResponseSingleDomainResultValidationDataStatusActive, ResponseSingleDomainResultValidationDataStatusDeactivated, ResponseSingleDomainResultValidationDataStatusError:
-		return true
-	}
-	return false
+// responseSingleDomainMessageJSON contains the JSON metadata for the struct
+// [ResponseSingleDomainMessage]
+type responseSingleDomainMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
 }
 
-type ResponseSingleDomainResultVerificationData struct {
-	ErrorMessage string                                           `json:"error_message"`
-	Status       ResponseSingleDomainResultVerificationDataStatus `json:"status"`
-	JSON         responseSingleDomainResultVerificationDataJSON   `json:"-"`
-}
-
-// responseSingleDomainResultVerificationDataJSON contains the JSON metadata for
-// the struct [ResponseSingleDomainResultVerificationData]
-type responseSingleDomainResultVerificationDataJSON struct {
-	ErrorMessage apijson.Field
-	Status       apijson.Field
-	raw          string
-	ExtraFields  map[string]apijson.Field
-}
-
-func (r *ResponseSingleDomainResultVerificationData) UnmarshalJSON(data []byte) (err error) {
+func (r *ResponseSingleDomainMessage) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r responseSingleDomainResultVerificationDataJSON) RawJSON() string {
+func (r responseSingleDomainMessageJSON) RawJSON() string {
 	return r.raw
 }
 
-type ResponseSingleDomainResultVerificationDataStatus string
+type ResponseSingleDomainMessagesSource struct {
+	Pointer string                                 `json:"pointer"`
+	JSON    responseSingleDomainMessagesSourceJSON `json:"-"`
+}
+
+// responseSingleDomainMessagesSourceJSON contains the JSON metadata for the struct
+// [ResponseSingleDomainMessagesSource]
+type responseSingleDomainMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ResponseSingleDomainMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r responseSingleDomainMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful
+type ResponseSingleDomainSuccess bool
 
 const (
-	ResponseSingleDomainResultVerificationDataStatusPending     ResponseSingleDomainResultVerificationDataStatus = "pending"
-	ResponseSingleDomainResultVerificationDataStatusActive      ResponseSingleDomainResultVerificationDataStatus = "active"
-	ResponseSingleDomainResultVerificationDataStatusDeactivated ResponseSingleDomainResultVerificationDataStatus = "deactivated"
-	ResponseSingleDomainResultVerificationDataStatusBlocked     ResponseSingleDomainResultVerificationDataStatus = "blocked"
-	ResponseSingleDomainResultVerificationDataStatusError       ResponseSingleDomainResultVerificationDataStatus = "error"
+	ResponseSingleDomainSuccessFalse ResponseSingleDomainSuccess = false
+	ResponseSingleDomainSuccessTrue  ResponseSingleDomainSuccess = true
 )
 
-func (r ResponseSingleDomainResultVerificationDataStatus) IsKnown() bool {
+func (r ResponseSingleDomainSuccess) IsKnown() bool {
 	switch r {
-	case ResponseSingleDomainResultVerificationDataStatusPending, ResponseSingleDomainResultVerificationDataStatusActive, ResponseSingleDomainResultVerificationDataStatusDeactivated, ResponseSingleDomainResultVerificationDataStatusBlocked, ResponseSingleDomainResultVerificationDataStatusError:
+	case ResponseSingleDomainSuccessFalse, ResponseSingleDomainSuccessTrue:
 		return true
 	}
 	return false
 }
 
 type AccountPageProjectDomainListResponse struct {
-	Result []DomainProject                          `json:"result"`
-	JSON   accountPageProjectDomainListResponseJSON `json:"-"`
-	APIResponsePages
-	APIResponsePagination
+	Errors   []AccountPageProjectDomainListResponseError   `json:"errors,required"`
+	Messages []AccountPageProjectDomainListResponseMessage `json:"messages,required"`
+	Result   []DomainProject                               `json:"result,required"`
+	// Whether the API call was successful
+	Success    AccountPageProjectDomainListResponseSuccess    `json:"success,required"`
+	ResultInfo AccountPageProjectDomainListResponseResultInfo `json:"result_info"`
+	JSON       accountPageProjectDomainListResponseJSON       `json:"-"`
 }
 
 // accountPageProjectDomainListResponseJSON contains the JSON metadata for the
 // struct [AccountPageProjectDomainListResponse]
 type accountPageProjectDomainListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -517,16 +468,168 @@ func (r accountPageProjectDomainListResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+type AccountPageProjectDomainListResponseError struct {
+	Code             int64                                            `json:"code,required"`
+	Message          string                                           `json:"message,required"`
+	DocumentationURL string                                           `json:"documentation_url"`
+	Source           AccountPageProjectDomainListResponseErrorsSource `json:"source"`
+	JSON             accountPageProjectDomainListResponseErrorJSON    `json:"-"`
+}
+
+// accountPageProjectDomainListResponseErrorJSON contains the JSON metadata for the
+// struct [AccountPageProjectDomainListResponseError]
+type accountPageProjectDomainListResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountPageProjectDomainListResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountPageProjectDomainListResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountPageProjectDomainListResponseErrorsSource struct {
+	Pointer string                                               `json:"pointer"`
+	JSON    accountPageProjectDomainListResponseErrorsSourceJSON `json:"-"`
+}
+
+// accountPageProjectDomainListResponseErrorsSourceJSON contains the JSON metadata
+// for the struct [AccountPageProjectDomainListResponseErrorsSource]
+type accountPageProjectDomainListResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountPageProjectDomainListResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountPageProjectDomainListResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountPageProjectDomainListResponseMessage struct {
+	Code             int64                                              `json:"code,required"`
+	Message          string                                             `json:"message,required"`
+	DocumentationURL string                                             `json:"documentation_url"`
+	Source           AccountPageProjectDomainListResponseMessagesSource `json:"source"`
+	JSON             accountPageProjectDomainListResponseMessageJSON    `json:"-"`
+}
+
+// accountPageProjectDomainListResponseMessageJSON contains the JSON metadata for
+// the struct [AccountPageProjectDomainListResponseMessage]
+type accountPageProjectDomainListResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountPageProjectDomainListResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountPageProjectDomainListResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountPageProjectDomainListResponseMessagesSource struct {
+	Pointer string                                                 `json:"pointer"`
+	JSON    accountPageProjectDomainListResponseMessagesSourceJSON `json:"-"`
+}
+
+// accountPageProjectDomainListResponseMessagesSourceJSON contains the JSON
+// metadata for the struct [AccountPageProjectDomainListResponseMessagesSource]
+type accountPageProjectDomainListResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountPageProjectDomainListResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountPageProjectDomainListResponseMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful
+type AccountPageProjectDomainListResponseSuccess bool
+
+const (
+	AccountPageProjectDomainListResponseSuccessFalse AccountPageProjectDomainListResponseSuccess = false
+	AccountPageProjectDomainListResponseSuccessTrue  AccountPageProjectDomainListResponseSuccess = true
+)
+
+func (r AccountPageProjectDomainListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountPageProjectDomainListResponseSuccessFalse, AccountPageProjectDomainListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type AccountPageProjectDomainListResponseResultInfo struct {
+	// The number of items on the current page.
+	Count int64 `json:"count,required"`
+	// The page currently being requested.
+	Page int64 `json:"page,required"`
+	// The number of items per page being returned.
+	PerPage int64 `json:"per_page,required"`
+	// The total count of items.
+	TotalCount int64 `json:"total_count,required"`
+	// The total count of pages.
+	TotalPages int64                                              `json:"total_pages"`
+	JSON       accountPageProjectDomainListResponseResultInfoJSON `json:"-"`
+}
+
+// accountPageProjectDomainListResponseResultInfoJSON contains the JSON metadata
+// for the struct [AccountPageProjectDomainListResponseResultInfo]
+type accountPageProjectDomainListResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	TotalPages  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountPageProjectDomainListResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountPageProjectDomainListResponseResultInfoJSON) RawJSON() string {
+	return r.raw
+}
+
 type AccountPageProjectDomainDeleteResponse struct {
-	Result interface{}                                `json:"result,nullable"`
-	JSON   accountPageProjectDomainDeleteResponseJSON `json:"-"`
-	APIResponsePages
+	Errors   []MessagesPageItem `json:"errors,required"`
+	Messages []MessagesPageItem `json:"messages,required"`
+	Result   interface{}        `json:"result,required,nullable"`
+	// Whether the API call was successful
+	Success AccountPageProjectDomainDeleteResponseSuccess `json:"success,required"`
+	JSON    accountPageProjectDomainDeleteResponseJSON    `json:"-"`
 }
 
 // accountPageProjectDomainDeleteResponseJSON contains the JSON metadata for the
 // struct [AccountPageProjectDomainDeleteResponse]
 type accountPageProjectDomainDeleteResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -537,6 +640,22 @@ func (r *AccountPageProjectDomainDeleteResponse) UnmarshalJSON(data []byte) (err
 
 func (r accountPageProjectDomainDeleteResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful
+type AccountPageProjectDomainDeleteResponseSuccess bool
+
+const (
+	AccountPageProjectDomainDeleteResponseSuccessFalse AccountPageProjectDomainDeleteResponseSuccess = false
+	AccountPageProjectDomainDeleteResponseSuccessTrue  AccountPageProjectDomainDeleteResponseSuccess = true
+)
+
+func (r AccountPageProjectDomainDeleteResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountPageProjectDomainDeleteResponseSuccessFalse, AccountPageProjectDomainDeleteResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountPageProjectDomainNewParams struct {
@@ -552,13 +671,5 @@ type AccountPageProjectDomainUpdateParams struct {
 }
 
 func (r AccountPageProjectDomainUpdateParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
-}
-
-type AccountPageProjectDomainDeleteParams struct {
-	Body interface{} `json:"body,required"`
-}
-
-func (r AccountPageProjectDomainDeleteParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r.Body)
 }

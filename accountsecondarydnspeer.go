@@ -90,7 +90,7 @@ func (r *AccountSecondaryDNSPeerService) List(ctx context.Context, accountID str
 }
 
 // Delete Peer.
-func (r *AccountSecondaryDNSPeerService) Delete(ctx context.Context, accountID string, peerID string, body AccountSecondaryDNSPeerDeleteParams, opts ...option.RequestOption) (res *SchemasIDResponseSecondaryDNS, err error) {
+func (r *AccountSecondaryDNSPeerService) Delete(ctx context.Context, accountID string, peerID string, opts ...option.RequestOption) (res *SchemasIDResponseSecondaryDNS, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
@@ -101,7 +101,7 @@ func (r *AccountSecondaryDNSPeerService) Delete(ctx context.Context, accountID s
 		return
 	}
 	path := fmt.Sprintf("accounts/%s/secondary_dns/peers/%s", accountID, peerID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
@@ -170,14 +170,20 @@ func (r PeerParam) MarshalJSON() (data []byte, err error) {
 }
 
 type SchemasSecondaryDNSPeersSingleResponse struct {
-	Result Peer                                       `json:"result"`
-	JSON   schemasSecondaryDNSPeersSingleResponseJSON `json:"-"`
-	ResponseSingleACL
+	Errors   []SecondaryDNSMessages `json:"errors,required"`
+	Messages []SecondaryDNSMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success SchemasSecondaryDNSPeersSingleResponseSuccess `json:"success,required"`
+	Result  Peer                                          `json:"result"`
+	JSON    schemasSecondaryDNSPeersSingleResponseJSON    `json:"-"`
 }
 
 // schemasSecondaryDNSPeersSingleResponseJSON contains the JSON metadata for the
 // struct [SchemasSecondaryDNSPeersSingleResponse]
 type schemasSecondaryDNSPeersSingleResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -191,16 +197,39 @@ func (r schemasSecondaryDNSPeersSingleResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type SchemasSecondaryDNSPeersSingleResponseSuccess bool
+
+const (
+	SchemasSecondaryDNSPeersSingleResponseSuccessTrue SchemasSecondaryDNSPeersSingleResponseSuccess = true
+)
+
+func (r SchemasSecondaryDNSPeersSingleResponseSuccess) IsKnown() bool {
+	switch r {
+	case SchemasSecondaryDNSPeersSingleResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountSecondaryDNSPeerListResponse struct {
-	Result []Peer                                  `json:"result"`
-	JSON   accountSecondaryDNSPeerListResponseJSON `json:"-"`
-	ResponseCollectionDNSACLs
+	Errors   []SecondaryDNSMessages `json:"errors,required"`
+	Messages []SecondaryDNSMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success    AccountSecondaryDNSPeerListResponseSuccess    `json:"success,required"`
+	Result     []Peer                                        `json:"result"`
+	ResultInfo AccountSecondaryDNSPeerListResponseResultInfo `json:"result_info"`
+	JSON       accountSecondaryDNSPeerListResponseJSON       `json:"-"`
 }
 
 // accountSecondaryDNSPeerListResponseJSON contains the JSON metadata for the
 // struct [AccountSecondaryDNSPeerListResponse]
 type accountSecondaryDNSPeerListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -210,6 +239,52 @@ func (r *AccountSecondaryDNSPeerListResponse) UnmarshalJSON(data []byte) (err er
 }
 
 func (r accountSecondaryDNSPeerListResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountSecondaryDNSPeerListResponseSuccess bool
+
+const (
+	AccountSecondaryDNSPeerListResponseSuccessTrue AccountSecondaryDNSPeerListResponseSuccess = true
+)
+
+func (r AccountSecondaryDNSPeerListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountSecondaryDNSPeerListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type AccountSecondaryDNSPeerListResponseResultInfo struct {
+	// Total number of results for the requested service.
+	Count float64 `json:"count"`
+	// Current page within paginated list of results.
+	Page float64 `json:"page"`
+	// Number of results per page of results.
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters.
+	TotalCount float64                                           `json:"total_count"`
+	JSON       accountSecondaryDNSPeerListResponseResultInfoJSON `json:"-"`
+}
+
+// accountSecondaryDNSPeerListResponseResultInfoJSON contains the JSON metadata for
+// the struct [AccountSecondaryDNSPeerListResponseResultInfo]
+type accountSecondaryDNSPeerListResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountSecondaryDNSPeerListResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountSecondaryDNSPeerListResponseResultInfoJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -228,12 +303,4 @@ type AccountSecondaryDNSPeerUpdateParams struct {
 
 func (r AccountSecondaryDNSPeerUpdateParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r.Peer)
-}
-
-type AccountSecondaryDNSPeerDeleteParams struct {
-	Body interface{} `json:"body,required"`
-}
-
-func (r AccountSecondaryDNSPeerDeleteParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
 }

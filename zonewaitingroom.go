@@ -7,11 +7,9 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"net/url"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
-	"github.com/rexscaria/api-schemas/internal/apiquery"
 	"github.com/rexscaria/api-schemas/internal/param"
 	"github.com/rexscaria/api-schemas/internal/requestconfig"
 	"github.com/rexscaria/api-schemas/option"
@@ -86,20 +84,8 @@ func (r *ZoneWaitingRoomService) Update(ctx context.Context, zoneID string, wait
 	return
 }
 
-// Lists waiting rooms for zone.
-func (r *ZoneWaitingRoomService) List(ctx context.Context, zoneID string, query ZoneWaitingRoomListParams, opts ...option.RequestOption) (res *WaitingroomResponseCollection, err error) {
-	opts = append(r.Options[:], opts...)
-	if zoneID == "" {
-		err = errors.New("missing required zone_id parameter")
-		return
-	}
-	path := fmt.Sprintf("zones/%s/waiting_rooms", zoneID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
-}
-
 // Deletes a waiting room.
-func (r *ZoneWaitingRoomService) Delete(ctx context.Context, zoneID string, waitingRoomID string, body ZoneWaitingRoomDeleteParams, opts ...option.RequestOption) (res *ZoneWaitingRoomDeleteResponse, err error) {
+func (r *ZoneWaitingRoomService) Delete(ctx context.Context, zoneID string, waitingRoomID string, opts ...option.RequestOption) (res *ZoneWaitingRoomDeleteResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
@@ -110,7 +96,7 @@ func (r *ZoneWaitingRoomService) Delete(ctx context.Context, zoneID string, wait
 		return
 	}
 	path := fmt.Sprintf("zones/%s/waiting_rooms/%s", zoneID, waitingRoomID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
@@ -146,7 +132,7 @@ func (r *ZoneWaitingRoomService) Patch(ctx context.Context, zoneID string, waiti
 //     waiting room page will only be displayed if `force_queue=true` or
 //     `event=prequeueing` — for other cases the request will pass through to the
 //     origin. For our preview, this will be a fake origin website returning
-//     "Welcome".
+//     \"Welcome\".
 //     - **reject** indicates a Reject queue.
 //  4. `event`: Used to preview a waiting room event.
 //     - **none** indicates no event is occurring.
@@ -254,27 +240,6 @@ type AdditionalRouteParam struct {
 
 func (r AdditionalRouteParam) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
-}
-
-type APIResponseSingle struct {
-	Result interface{}           `json:"result,required"`
-	JSON   apiResponseSingleJSON `json:"-"`
-}
-
-// apiResponseSingleJSON contains the JSON metadata for the struct
-// [APIResponseSingle]
-type apiResponseSingleJSON struct {
-	Result      apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *APIResponseSingle) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r apiResponseSingleJSON) RawJSON() string {
-	return r.raw
 }
 
 // Configures cookie attributes for the waiting room cookie. This encrypted cookie
@@ -544,7 +509,7 @@ type QueryWaitingroomParam struct {
 	//  11. `refreshIntervalSeconds`: Integer indicating the number of seconds after
 	//     `lastUpdated` until the user is able to make another attempt to leave the
 	//     waiting room and be let into the origin website. When the `queueingMethod`
-	//     is `reject`, there is no specified refresh time — it will always be
+	//     is `reject`, there is no specified refresh time —\_it will always be
 	//     **zero**.
 	//  12. `queueingMethod`: The queueing method currently used by the waiting room. It
 	//     is either **fifo**, **random**, **passthrough**, or **reject**.
@@ -580,6 +545,11 @@ type QueryWaitingroomParam struct {
 	//  23. `shuffleAtEventStart`: Valid only when `isEventActive` is **true**. Boolean
 	//     indicating if the users in the prequeue are shuffled randomly when the event
 	//     starts.
+	//  24. `turnstile`: Empty when turnstile isn't enabled. String displaying an html
+	//     tag to display the Turnstile widget. Please add the `{{{turnstile}}}` tag to
+	//     the `custom_html` template to ensure the Turnstile widget appears.
+	//  25. `infiniteQueue`: Boolean indicating whether the response is for a user in
+	//     the infinite queue.
 	//
 	// An example cURL to a waiting room could be:
 	//
@@ -648,7 +618,7 @@ type QueryWaitingroomParam struct {
 	//			"timeUntilEventEndFormatted": "15 minutes",
 	//			"shuffleAtEventStart": true
 	//		}
-	//	}.
+	//	}
 	JsonResponseEnabled param.Field[bool] `json:"json_response_enabled"`
 	// Sets the path within the host to enable the waiting room on. The waiting room
 	// will be enabled for all subpaths as well. If there are two waiting rooms on the
@@ -776,9 +746,8 @@ func (r QueueingStatusCode) IsKnown() bool {
 }
 
 type SingleResponseWaitingRoom struct {
-	Result Waitingroom                   `json:"result"`
+	Result Waitingroom                   `json:"result,required"`
 	JSON   singleResponseWaitingRoomJSON `json:"-"`
-	APIResponseSingle
 }
 
 // singleResponseWaitingRoomJSON contains the JSON metadata for the struct
@@ -933,7 +902,7 @@ type Waitingroom struct {
 	//  11. `refreshIntervalSeconds`: Integer indicating the number of seconds after
 	//     `lastUpdated` until the user is able to make another attempt to leave the
 	//     waiting room and be let into the origin website. When the `queueingMethod`
-	//     is `reject`, there is no specified refresh time — it will always be
+	//     is `reject`, there is no specified refresh time —\_it will always be
 	//     **zero**.
 	//  12. `queueingMethod`: The queueing method currently used by the waiting room. It
 	//     is either **fifo**, **random**, **passthrough**, or **reject**.
@@ -969,6 +938,11 @@ type Waitingroom struct {
 	//  23. `shuffleAtEventStart`: Valid only when `isEventActive` is **true**. Boolean
 	//     indicating if the users in the prequeue are shuffled randomly when the event
 	//     starts.
+	//  24. `turnstile`: Empty when turnstile isn't enabled. String displaying an html
+	//     tag to display the Turnstile widget. Please add the `{{{turnstile}}}` tag to
+	//     the `custom_html` template to ensure the Turnstile widget appears.
+	//  25. `infiniteQueue`: Boolean indicating whether the response is for a user in
+	//     the infinite queue.
 	//
 	// An example cURL to a waiting room could be:
 	//
@@ -1037,7 +1011,7 @@ type Waitingroom struct {
 	//			"timeUntilEventEndFormatted": "15 minutes",
 	//			"shuffleAtEventStart": true
 	//		}
-	//	}.
+	//	}
 	JsonResponseEnabled bool      `json:"json_response_enabled"`
 	ModifiedOn          time.Time `json:"modified_on" format:"date-time"`
 	// A unique name to identify the waiting room. Only alphanumeric characters,
@@ -1161,9 +1135,8 @@ func (r waitingroomJSON) RawJSON() string {
 }
 
 type ZoneWaitingRoomDeleteResponse struct {
-	Result ZoneWaitingRoomDeleteResponseResult `json:"result"`
+	Result ZoneWaitingRoomDeleteResponseResult `json:"result,required"`
 	JSON   zoneWaitingRoomDeleteResponseJSON   `json:"-"`
-	APIResponseSingle
 }
 
 // zoneWaitingRoomDeleteResponseJSON contains the JSON metadata for the struct
@@ -1204,9 +1177,8 @@ func (r zoneWaitingRoomDeleteResponseResultJSON) RawJSON() string {
 }
 
 type ZoneWaitingRoomPreviewResponse struct {
-	Result ZoneWaitingRoomPreviewResponseResult `json:"result"`
+	Result ZoneWaitingRoomPreviewResponseResult `json:"result,required"`
 	JSON   zoneWaitingRoomPreviewResponseJSON   `json:"-"`
-	APIResponseSingle
 }
 
 // zoneWaitingRoomPreviewResponseJSON contains the JSON metadata for the struct
@@ -1248,9 +1220,8 @@ func (r zoneWaitingRoomPreviewResponseResultJSON) RawJSON() string {
 }
 
 type ZoneWaitingRoomStatusResponse struct {
-	Result ZoneWaitingRoomStatusResponseResult `json:"result"`
+	Result ZoneWaitingRoomStatusResponseResult `json:"result,required"`
 	JSON   zoneWaitingRoomStatusResponseJSON   `json:"-"`
-	APIResponseSingle
 }
 
 // zoneWaitingRoomStatusResponseJSON contains the JSON metadata for the struct
@@ -1329,30 +1300,6 @@ type ZoneWaitingRoomUpdateParams struct {
 
 func (r ZoneWaitingRoomUpdateParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r.QueryWaitingroom)
-}
-
-type ZoneWaitingRoomListParams struct {
-	// Page number of paginated results.
-	Page param.Field[float64] `query:"page"`
-	// Maximum number of results per page. Must be a multiple of 5.
-	PerPage param.Field[float64] `query:"per_page"`
-}
-
-// URLQuery serializes [ZoneWaitingRoomListParams]'s query parameters as
-// `url.Values`.
-func (r ZoneWaitingRoomListParams) URLQuery() (v url.Values) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
-}
-
-type ZoneWaitingRoomDeleteParams struct {
-	Body interface{} `json:"body,required"`
-}
-
-func (r ZoneWaitingRoomDeleteParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
 }
 
 type ZoneWaitingRoomPatchParams struct {

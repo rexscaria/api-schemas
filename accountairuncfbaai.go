@@ -8,14 +8,12 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
-	"reflect"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
 	"github.com/rexscaria/api-schemas/internal/param"
 	"github.com/rexscaria/api-schemas/internal/requestconfig"
 	"github.com/rexscaria/api-schemas/option"
-	"github.com/tidwall/gjson"
 )
 
 // AccountAIRunCfBaaiService contains methods and other services that help with
@@ -97,485 +95,23 @@ func (r *AccountAIRunCfBaaiService) ExecuteBgeSmallEnV1_5(ctx context.Context, a
 	return
 }
 
-type AccountAIRunCfBaaiExecuteBgeBaseEnV1_5Response struct {
-	Result  AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ResponseResult `json:"result"`
-	Success bool                                                 `json:"success"`
-	JSON    accountAIRunCfBaaiExecuteBgeBaseEnV1_5ResponseJSON   `json:"-"`
-}
+type AccountAIRunCfBaaiExecuteBgeBaseEnV1_5Response = interface{}
 
-// accountAIRunCfBaaiExecuteBgeBaseEnV1_5ResponseJSON contains the JSON metadata
-// for the struct [AccountAIRunCfBaaiExecuteBgeBaseEnV1_5Response]
-type accountAIRunCfBaaiExecuteBgeBaseEnV1_5ResponseJSON struct {
-	Result      apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
+type AccountAIRunCfBaaiExecuteBgeLargeEnV1_5Response = interface{}
 
-func (r *AccountAIRunCfBaaiExecuteBgeBaseEnV1_5Response) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
+type AccountAIRunCfBaaiExecuteBgeM3Response = interface{}
 
-func (r accountAIRunCfBaaiExecuteBgeBaseEnV1_5ResponseJSON) RawJSON() string {
-	return r.raw
-}
+type AccountAIRunCfBaaiExecuteBgeRerankerBaseResponse = interface{}
 
-type AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ResponseResult struct {
-	// Embeddings of the requested text values
-	Data  [][]float64                                              `json:"data"`
-	Shape []float64                                                `json:"shape"`
-	JSON  accountAIRunCfBaaiExecuteBgeBaseEnV1_5ResponseResultJSON `json:"-"`
-}
-
-// accountAIRunCfBaaiExecuteBgeBaseEnV1_5ResponseResultJSON contains the JSON
-// metadata for the struct [AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ResponseResult]
-type accountAIRunCfBaaiExecuteBgeBaseEnV1_5ResponseResultJSON struct {
-	Data        apijson.Field
-	Shape       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ResponseResult) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountAIRunCfBaaiExecuteBgeBaseEnV1_5ResponseResultJSON) RawJSON() string {
-	return r.raw
-}
-
-type AccountAIRunCfBaaiExecuteBgeLargeEnV1_5Response struct {
-	Result  AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ResponseResult `json:"result"`
-	Success bool                                                  `json:"success"`
-	JSON    accountAIRunCfBaaiExecuteBgeLargeEnV1_5ResponseJSON   `json:"-"`
-}
-
-// accountAIRunCfBaaiExecuteBgeLargeEnV1_5ResponseJSON contains the JSON metadata
-// for the struct [AccountAIRunCfBaaiExecuteBgeLargeEnV1_5Response]
-type accountAIRunCfBaaiExecuteBgeLargeEnV1_5ResponseJSON struct {
-	Result      apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountAIRunCfBaaiExecuteBgeLargeEnV1_5Response) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountAIRunCfBaaiExecuteBgeLargeEnV1_5ResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-type AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ResponseResult struct {
-	// Embeddings of the requested text values
-	Data  [][]float64                                               `json:"data"`
-	Shape []float64                                                 `json:"shape"`
-	JSON  accountAIRunCfBaaiExecuteBgeLargeEnV1_5ResponseResultJSON `json:"-"`
-}
-
-// accountAIRunCfBaaiExecuteBgeLargeEnV1_5ResponseResultJSON contains the JSON
-// metadata for the struct [AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ResponseResult]
-type accountAIRunCfBaaiExecuteBgeLargeEnV1_5ResponseResultJSON struct {
-	Data        apijson.Field
-	Shape       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ResponseResult) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountAIRunCfBaaiExecuteBgeLargeEnV1_5ResponseResultJSON) RawJSON() string {
-	return r.raw
-}
-
-type AccountAIRunCfBaaiExecuteBgeM3Response struct {
-	Result  AccountAIRunCfBaaiExecuteBgeM3ResponseResult `json:"result"`
-	Success bool                                         `json:"success"`
-	JSON    accountAIRunCfBaaiExecuteBgeM3ResponseJSON   `json:"-"`
-}
-
-// accountAIRunCfBaaiExecuteBgeM3ResponseJSON contains the JSON metadata for the
-// struct [AccountAIRunCfBaaiExecuteBgeM3Response]
-type accountAIRunCfBaaiExecuteBgeM3ResponseJSON struct {
-	Result      apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountAIRunCfBaaiExecuteBgeM3Response) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountAIRunCfBaaiExecuteBgeM3ResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-type AccountAIRunCfBaaiExecuteBgeM3ResponseResult struct {
-	// This field can have the runtime type of [[][]float64].
-	Data interface{} `json:"data"`
-	// The pooling method used in the embedding process.
-	Pooling AccountAIRunCfBaaiExecuteBgeM3ResponseResultPooling `json:"pooling"`
-	// This field can have the runtime type of
-	// [[]AccountAIRunCfBaaiExecuteBgeM3ResponseResultBgeM3OuputQueryResponse],
-	// [[][]float64].
-	Response interface{} `json:"response"`
-	// This field can have the runtime type of [[]float64].
-	Shape interface{}                                      `json:"shape"`
-	JSON  accountAIRunCfBaaiExecuteBgeM3ResponseResultJSON `json:"-"`
-	union AccountAIRunCfBaaiExecuteBgeM3ResponseResultUnion
-}
-
-// accountAIRunCfBaaiExecuteBgeM3ResponseResultJSON contains the JSON metadata for
-// the struct [AccountAIRunCfBaaiExecuteBgeM3ResponseResult]
-type accountAIRunCfBaaiExecuteBgeM3ResponseResultJSON struct {
-	Data        apijson.Field
-	Pooling     apijson.Field
-	Response    apijson.Field
-	Shape       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r accountAIRunCfBaaiExecuteBgeM3ResponseResultJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r *AccountAIRunCfBaaiExecuteBgeM3ResponseResult) UnmarshalJSON(data []byte) (err error) {
-	*r = AccountAIRunCfBaaiExecuteBgeM3ResponseResult{}
-	err = apijson.UnmarshalRoot(data, &r.union)
-	if err != nil {
-		return err
-	}
-	return apijson.Port(r.union, &r)
-}
-
-// AsUnion returns a [AccountAIRunCfBaaiExecuteBgeM3ResponseResultUnion] interface
-// which you can cast to the specific types for more type safety.
-//
-// Possible runtime types of the union are
-// [AccountAIRunCfBaaiExecuteBgeM3ResponseResultBgeM3OuputQuery],
-// [AccountAIRunCfBaaiExecuteBgeM3ResponseResultBgeM3OutputEmbeddingForContexts],
-// [AccountAIRunCfBaaiExecuteBgeM3ResponseResultBgeM3OuputEmbedding].
-func (r AccountAIRunCfBaaiExecuteBgeM3ResponseResult) AsUnion() AccountAIRunCfBaaiExecuteBgeM3ResponseResultUnion {
-	return r.union
-}
-
-// Union satisfied by
-// [AccountAIRunCfBaaiExecuteBgeM3ResponseResultBgeM3OuputQuery],
-// [AccountAIRunCfBaaiExecuteBgeM3ResponseResultBgeM3OutputEmbeddingForContexts] or
-// [AccountAIRunCfBaaiExecuteBgeM3ResponseResultBgeM3OuputEmbedding].
-type AccountAIRunCfBaaiExecuteBgeM3ResponseResultUnion interface {
-	implementsAccountAIRunCfBaaiExecuteBgeM3ResponseResult()
-}
-
-func init() {
-	apijson.RegisterUnion(
-		reflect.TypeOf((*AccountAIRunCfBaaiExecuteBgeM3ResponseResultUnion)(nil)).Elem(),
-		"",
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(AccountAIRunCfBaaiExecuteBgeM3ResponseResultBgeM3OuputQuery{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(AccountAIRunCfBaaiExecuteBgeM3ResponseResultBgeM3OutputEmbeddingForContexts{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(AccountAIRunCfBaaiExecuteBgeM3ResponseResultBgeM3OuputEmbedding{}),
-		},
-	)
-}
-
-type AccountAIRunCfBaaiExecuteBgeM3ResponseResultBgeM3OuputQuery struct {
-	Response []AccountAIRunCfBaaiExecuteBgeM3ResponseResultBgeM3OuputQueryResponse `json:"response"`
-	JSON     accountAIRunCfBaaiExecuteBgeM3ResponseResultBgeM3OuputQueryJSON       `json:"-"`
-}
-
-// accountAIRunCfBaaiExecuteBgeM3ResponseResultBgeM3OuputQueryJSON contains the
-// JSON metadata for the struct
-// [AccountAIRunCfBaaiExecuteBgeM3ResponseResultBgeM3OuputQuery]
-type accountAIRunCfBaaiExecuteBgeM3ResponseResultBgeM3OuputQueryJSON struct {
-	Response    apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountAIRunCfBaaiExecuteBgeM3ResponseResultBgeM3OuputQuery) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountAIRunCfBaaiExecuteBgeM3ResponseResultBgeM3OuputQueryJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r AccountAIRunCfBaaiExecuteBgeM3ResponseResultBgeM3OuputQuery) implementsAccountAIRunCfBaaiExecuteBgeM3ResponseResult() {
-}
-
-type AccountAIRunCfBaaiExecuteBgeM3ResponseResultBgeM3OuputQueryResponse struct {
-	// Index of the context in the request
-	ID int64 `json:"id"`
-	// Score of the context under the index.
-	Score float64                                                                 `json:"score"`
-	JSON  accountAIRunCfBaaiExecuteBgeM3ResponseResultBgeM3OuputQueryResponseJSON `json:"-"`
-}
-
-// accountAIRunCfBaaiExecuteBgeM3ResponseResultBgeM3OuputQueryResponseJSON contains
-// the JSON metadata for the struct
-// [AccountAIRunCfBaaiExecuteBgeM3ResponseResultBgeM3OuputQueryResponse]
-type accountAIRunCfBaaiExecuteBgeM3ResponseResultBgeM3OuputQueryResponseJSON struct {
-	ID          apijson.Field
-	Score       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountAIRunCfBaaiExecuteBgeM3ResponseResultBgeM3OuputQueryResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountAIRunCfBaaiExecuteBgeM3ResponseResultBgeM3OuputQueryResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-type AccountAIRunCfBaaiExecuteBgeM3ResponseResultBgeM3OutputEmbeddingForContexts struct {
-	// The pooling method used in the embedding process.
-	Pooling  AccountAIRunCfBaaiExecuteBgeM3ResponseResultBgeM3OutputEmbeddingForContextsPooling `json:"pooling"`
-	Response [][]float64                                                                        `json:"response"`
-	Shape    []float64                                                                          `json:"shape"`
-	JSON     accountAIRunCfBaaiExecuteBgeM3ResponseResultBgeM3OutputEmbeddingForContextsJSON    `json:"-"`
-}
-
-// accountAIRunCfBaaiExecuteBgeM3ResponseResultBgeM3OutputEmbeddingForContextsJSON
-// contains the JSON metadata for the struct
-// [AccountAIRunCfBaaiExecuteBgeM3ResponseResultBgeM3OutputEmbeddingForContexts]
-type accountAIRunCfBaaiExecuteBgeM3ResponseResultBgeM3OutputEmbeddingForContextsJSON struct {
-	Pooling     apijson.Field
-	Response    apijson.Field
-	Shape       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountAIRunCfBaaiExecuteBgeM3ResponseResultBgeM3OutputEmbeddingForContexts) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountAIRunCfBaaiExecuteBgeM3ResponseResultBgeM3OutputEmbeddingForContextsJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r AccountAIRunCfBaaiExecuteBgeM3ResponseResultBgeM3OutputEmbeddingForContexts) implementsAccountAIRunCfBaaiExecuteBgeM3ResponseResult() {
-}
-
-// The pooling method used in the embedding process.
-type AccountAIRunCfBaaiExecuteBgeM3ResponseResultBgeM3OutputEmbeddingForContextsPooling string
-
-const (
-	AccountAIRunCfBaaiExecuteBgeM3ResponseResultBgeM3OutputEmbeddingForContextsPoolingMean AccountAIRunCfBaaiExecuteBgeM3ResponseResultBgeM3OutputEmbeddingForContextsPooling = "mean"
-	AccountAIRunCfBaaiExecuteBgeM3ResponseResultBgeM3OutputEmbeddingForContextsPoolingCls  AccountAIRunCfBaaiExecuteBgeM3ResponseResultBgeM3OutputEmbeddingForContextsPooling = "cls"
-)
-
-func (r AccountAIRunCfBaaiExecuteBgeM3ResponseResultBgeM3OutputEmbeddingForContextsPooling) IsKnown() bool {
-	switch r {
-	case AccountAIRunCfBaaiExecuteBgeM3ResponseResultBgeM3OutputEmbeddingForContextsPoolingMean, AccountAIRunCfBaaiExecuteBgeM3ResponseResultBgeM3OutputEmbeddingForContextsPoolingCls:
-		return true
-	}
-	return false
-}
-
-type AccountAIRunCfBaaiExecuteBgeM3ResponseResultBgeM3OuputEmbedding struct {
-	// Embeddings of the requested text values
-	Data [][]float64 `json:"data"`
-	// The pooling method used in the embedding process.
-	Pooling AccountAIRunCfBaaiExecuteBgeM3ResponseResultBgeM3OuputEmbeddingPooling `json:"pooling"`
-	Shape   []float64                                                              `json:"shape"`
-	JSON    accountAIRunCfBaaiExecuteBgeM3ResponseResultBgeM3OuputEmbeddingJSON    `json:"-"`
-}
-
-// accountAIRunCfBaaiExecuteBgeM3ResponseResultBgeM3OuputEmbeddingJSON contains the
-// JSON metadata for the struct
-// [AccountAIRunCfBaaiExecuteBgeM3ResponseResultBgeM3OuputEmbedding]
-type accountAIRunCfBaaiExecuteBgeM3ResponseResultBgeM3OuputEmbeddingJSON struct {
-	Data        apijson.Field
-	Pooling     apijson.Field
-	Shape       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountAIRunCfBaaiExecuteBgeM3ResponseResultBgeM3OuputEmbedding) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountAIRunCfBaaiExecuteBgeM3ResponseResultBgeM3OuputEmbeddingJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r AccountAIRunCfBaaiExecuteBgeM3ResponseResultBgeM3OuputEmbedding) implementsAccountAIRunCfBaaiExecuteBgeM3ResponseResult() {
-}
-
-// The pooling method used in the embedding process.
-type AccountAIRunCfBaaiExecuteBgeM3ResponseResultBgeM3OuputEmbeddingPooling string
-
-const (
-	AccountAIRunCfBaaiExecuteBgeM3ResponseResultBgeM3OuputEmbeddingPoolingMean AccountAIRunCfBaaiExecuteBgeM3ResponseResultBgeM3OuputEmbeddingPooling = "mean"
-	AccountAIRunCfBaaiExecuteBgeM3ResponseResultBgeM3OuputEmbeddingPoolingCls  AccountAIRunCfBaaiExecuteBgeM3ResponseResultBgeM3OuputEmbeddingPooling = "cls"
-)
-
-func (r AccountAIRunCfBaaiExecuteBgeM3ResponseResultBgeM3OuputEmbeddingPooling) IsKnown() bool {
-	switch r {
-	case AccountAIRunCfBaaiExecuteBgeM3ResponseResultBgeM3OuputEmbeddingPoolingMean, AccountAIRunCfBaaiExecuteBgeM3ResponseResultBgeM3OuputEmbeddingPoolingCls:
-		return true
-	}
-	return false
-}
-
-// The pooling method used in the embedding process.
-type AccountAIRunCfBaaiExecuteBgeM3ResponseResultPooling string
-
-const (
-	AccountAIRunCfBaaiExecuteBgeM3ResponseResultPoolingMean AccountAIRunCfBaaiExecuteBgeM3ResponseResultPooling = "mean"
-	AccountAIRunCfBaaiExecuteBgeM3ResponseResultPoolingCls  AccountAIRunCfBaaiExecuteBgeM3ResponseResultPooling = "cls"
-)
-
-func (r AccountAIRunCfBaaiExecuteBgeM3ResponseResultPooling) IsKnown() bool {
-	switch r {
-	case AccountAIRunCfBaaiExecuteBgeM3ResponseResultPoolingMean, AccountAIRunCfBaaiExecuteBgeM3ResponseResultPoolingCls:
-		return true
-	}
-	return false
-}
-
-type AccountAIRunCfBaaiExecuteBgeRerankerBaseResponse struct {
-	Result  AccountAIRunCfBaaiExecuteBgeRerankerBaseResponseResult `json:"result"`
-	Success bool                                                   `json:"success"`
-	JSON    accountAIRunCfBaaiExecuteBgeRerankerBaseResponseJSON   `json:"-"`
-}
-
-// accountAIRunCfBaaiExecuteBgeRerankerBaseResponseJSON contains the JSON metadata
-// for the struct [AccountAIRunCfBaaiExecuteBgeRerankerBaseResponse]
-type accountAIRunCfBaaiExecuteBgeRerankerBaseResponseJSON struct {
-	Result      apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountAIRunCfBaaiExecuteBgeRerankerBaseResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountAIRunCfBaaiExecuteBgeRerankerBaseResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-type AccountAIRunCfBaaiExecuteBgeRerankerBaseResponseResult struct {
-	Response []AccountAIRunCfBaaiExecuteBgeRerankerBaseResponseResultResponse `json:"response"`
-	JSON     accountAIRunCfBaaiExecuteBgeRerankerBaseResponseResultJSON       `json:"-"`
-}
-
-// accountAIRunCfBaaiExecuteBgeRerankerBaseResponseResultJSON contains the JSON
-// metadata for the struct [AccountAIRunCfBaaiExecuteBgeRerankerBaseResponseResult]
-type accountAIRunCfBaaiExecuteBgeRerankerBaseResponseResultJSON struct {
-	Response    apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountAIRunCfBaaiExecuteBgeRerankerBaseResponseResult) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountAIRunCfBaaiExecuteBgeRerankerBaseResponseResultJSON) RawJSON() string {
-	return r.raw
-}
-
-type AccountAIRunCfBaaiExecuteBgeRerankerBaseResponseResultResponse struct {
-	// Index of the context in the request
-	ID int64 `json:"id"`
-	// Score of the context under the index.
-	Score float64                                                            `json:"score"`
-	JSON  accountAIRunCfBaaiExecuteBgeRerankerBaseResponseResultResponseJSON `json:"-"`
-}
-
-// accountAIRunCfBaaiExecuteBgeRerankerBaseResponseResultResponseJSON contains the
-// JSON metadata for the struct
-// [AccountAIRunCfBaaiExecuteBgeRerankerBaseResponseResultResponse]
-type accountAIRunCfBaaiExecuteBgeRerankerBaseResponseResultResponseJSON struct {
-	ID          apijson.Field
-	Score       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountAIRunCfBaaiExecuteBgeRerankerBaseResponseResultResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountAIRunCfBaaiExecuteBgeRerankerBaseResponseResultResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-type AccountAIRunCfBaaiExecuteBgeSmallEnV1_5Response struct {
-	Result  AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ResponseResult `json:"result"`
-	Success bool                                                  `json:"success"`
-	JSON    accountAIRunCfBaaiExecuteBgeSmallEnV1_5ResponseJSON   `json:"-"`
-}
-
-// accountAIRunCfBaaiExecuteBgeSmallEnV1_5ResponseJSON contains the JSON metadata
-// for the struct [AccountAIRunCfBaaiExecuteBgeSmallEnV1_5Response]
-type accountAIRunCfBaaiExecuteBgeSmallEnV1_5ResponseJSON struct {
-	Result      apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountAIRunCfBaaiExecuteBgeSmallEnV1_5Response) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountAIRunCfBaaiExecuteBgeSmallEnV1_5ResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-type AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ResponseResult struct {
-	// Embeddings of the requested text values
-	Data  [][]float64                                               `json:"data"`
-	Shape []float64                                                 `json:"shape"`
-	JSON  accountAIRunCfBaaiExecuteBgeSmallEnV1_5ResponseResultJSON `json:"-"`
-}
-
-// accountAIRunCfBaaiExecuteBgeSmallEnV1_5ResponseResultJSON contains the JSON
-// metadata for the struct [AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ResponseResult]
-type accountAIRunCfBaaiExecuteBgeSmallEnV1_5ResponseResultJSON struct {
-	Data        apijson.Field
-	Shape       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ResponseResult) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountAIRunCfBaaiExecuteBgeSmallEnV1_5ResponseResultJSON) RawJSON() string {
-	return r.raw
-}
+type AccountAIRunCfBaaiExecuteBgeSmallEnV1_5Response = interface{}
 
 type AccountAIRunCfBaaiExecuteBgeBaseEnV1_5Params struct {
-	// The text to embed
-	Text         param.Field[AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsTextUnion] `json:"text,required"`
-	QueueRequest param.Field[string]                                                `query:"queueRequest"`
+	QueueRequest param.Field[string]                                   `query:"queueRequest"`
+	Body         AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyUnion `json:"body"`
 }
 
 func (r AccountAIRunCfBaaiExecuteBgeBaseEnV1_5Params) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	return apijson.MarshalRoot(r.Body)
 }
 
 // URLQuery serializes [AccountAIRunCfBaaiExecuteBgeBaseEnV1_5Params]'s query
@@ -587,27 +123,169 @@ func (r AccountAIRunCfBaaiExecuteBgeBaseEnV1_5Params) URLQuery() (v url.Values) 
 	})
 }
 
+type AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBody struct {
+	// The pooling method used in the embedding process. `cls` pooling will generate
+	// more accurate embeddings on larger inputs - however, embeddings created with cls
+	// pooling are not compatible with embeddings generated with mean pooling. The
+	// default pooling method is `mean` in order for this to not be a breaking change,
+	// but we highly suggest using the new `cls` pooling for better accuracy.
+	Pooling  param.Field[AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyPooling] `json:"pooling"`
+	Requests param.Field[interface{}]                                             `json:"requests"`
+	Text     param.Field[interface{}]                                             `json:"text"`
+}
+
+func (r AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBody) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBody) implementsAccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyUnion() {
+}
+
+// Satisfied by [AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyObject],
+// [AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyRequests],
+// [AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBody].
+type AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyUnion interface {
+	implementsAccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyUnion()
+}
+
+type AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyObject struct {
+	// The text to embed
+	Text param.Field[AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyObjectTextUnion] `json:"text,required"`
+	// The pooling method used in the embedding process. `cls` pooling will generate
+	// more accurate embeddings on larger inputs - however, embeddings created with cls
+	// pooling are not compatible with embeddings generated with mean pooling. The
+	// default pooling method is `mean` in order for this to not be a breaking change,
+	// but we highly suggest using the new `cls` pooling for better accuracy.
+	Pooling param.Field[AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyObjectPooling] `json:"pooling"`
+}
+
+func (r AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyObject) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyObject) implementsAccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyUnion() {
+}
+
 // The text to embed
 //
 // Satisfied by [shared.UnionString],
-// [AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsTextArray].
-type AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsTextUnion interface {
-	ImplementsAccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsTextUnion()
+// [AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyObjectTextArray].
+type AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyObjectTextUnion interface {
+	ImplementsAccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyObjectTextUnion()
 }
 
-type AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsTextArray []string
+type AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyObjectTextArray []string
 
-func (r AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsTextArray) ImplementsAccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsTextUnion() {
+func (r AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyObjectTextArray) ImplementsAccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyObjectTextUnion() {
+}
+
+// The pooling method used in the embedding process. `cls` pooling will generate
+// more accurate embeddings on larger inputs - however, embeddings created with cls
+// pooling are not compatible with embeddings generated with mean pooling. The
+// default pooling method is `mean` in order for this to not be a breaking change,
+// but we highly suggest using the new `cls` pooling for better accuracy.
+type AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyObjectPooling string
+
+const (
+	AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyObjectPoolingMean AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyObjectPooling = "mean"
+	AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyObjectPoolingCls  AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyObjectPooling = "cls"
+)
+
+func (r AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyObjectPooling) IsKnown() bool {
+	switch r {
+	case AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyObjectPoolingMean, AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyObjectPoolingCls:
+		return true
+	}
+	return false
+}
+
+type AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyRequests struct {
+	// Batch of the embeddings requests to run using async-queue
+	Requests param.Field[[]AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyRequestsRequest] `json:"requests,required"`
+}
+
+func (r AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyRequests) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyRequests) implementsAccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyUnion() {
+}
+
+type AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyRequestsRequest struct {
+	// The text to embed
+	Text param.Field[AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyRequestsRequestsTextUnion] `json:"text,required"`
+	// The pooling method used in the embedding process. `cls` pooling will generate
+	// more accurate embeddings on larger inputs - however, embeddings created with cls
+	// pooling are not compatible with embeddings generated with mean pooling. The
+	// default pooling method is `mean` in order for this to not be a breaking change,
+	// but we highly suggest using the new `cls` pooling for better accuracy.
+	Pooling param.Field[AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyRequestsRequestsPooling] `json:"pooling"`
+}
+
+func (r AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyRequestsRequest) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// The text to embed
+//
+// Satisfied by [shared.UnionString],
+// [AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyRequestsRequestsTextArray].
+type AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyRequestsRequestsTextUnion interface {
+	ImplementsAccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyRequestsRequestsTextUnion()
+}
+
+type AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyRequestsRequestsTextArray []string
+
+func (r AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyRequestsRequestsTextArray) ImplementsAccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyRequestsRequestsTextUnion() {
+}
+
+// The pooling method used in the embedding process. `cls` pooling will generate
+// more accurate embeddings on larger inputs - however, embeddings created with cls
+// pooling are not compatible with embeddings generated with mean pooling. The
+// default pooling method is `mean` in order for this to not be a breaking change,
+// but we highly suggest using the new `cls` pooling for better accuracy.
+type AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyRequestsRequestsPooling string
+
+const (
+	AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyRequestsRequestsPoolingMean AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyRequestsRequestsPooling = "mean"
+	AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyRequestsRequestsPoolingCls  AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyRequestsRequestsPooling = "cls"
+)
+
+func (r AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyRequestsRequestsPooling) IsKnown() bool {
+	switch r {
+	case AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyRequestsRequestsPoolingMean, AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyRequestsRequestsPoolingCls:
+		return true
+	}
+	return false
+}
+
+// The pooling method used in the embedding process. `cls` pooling will generate
+// more accurate embeddings on larger inputs - however, embeddings created with cls
+// pooling are not compatible with embeddings generated with mean pooling. The
+// default pooling method is `mean` in order for this to not be a breaking change,
+// but we highly suggest using the new `cls` pooling for better accuracy.
+type AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyPooling string
+
+const (
+	AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyPoolingMean AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyPooling = "mean"
+	AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyPoolingCls  AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyPooling = "cls"
+)
+
+func (r AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyPooling) IsKnown() bool {
+	switch r {
+	case AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyPoolingMean, AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyPoolingCls:
+		return true
+	}
+	return false
 }
 
 type AccountAIRunCfBaaiExecuteBgeLargeEnV1_5Params struct {
-	// The text to embed
-	Text         param.Field[AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsTextUnion] `json:"text,required"`
-	QueueRequest param.Field[string]                                                 `query:"queueRequest"`
+	QueueRequest param.Field[string]                                    `query:"queueRequest"`
+	Body         AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyUnion `json:"body"`
 }
 
 func (r AccountAIRunCfBaaiExecuteBgeLargeEnV1_5Params) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	return apijson.MarshalRoot(r.Body)
 }
 
 // URLQuery serializes [AccountAIRunCfBaaiExecuteBgeLargeEnV1_5Params]'s query
@@ -619,17 +297,160 @@ func (r AccountAIRunCfBaaiExecuteBgeLargeEnV1_5Params) URLQuery() (v url.Values)
 	})
 }
 
+type AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBody struct {
+	// The pooling method used in the embedding process. `cls` pooling will generate
+	// more accurate embeddings on larger inputs - however, embeddings created with cls
+	// pooling are not compatible with embeddings generated with mean pooling. The
+	// default pooling method is `mean` in order for this to not be a breaking change,
+	// but we highly suggest using the new `cls` pooling for better accuracy.
+	Pooling  param.Field[AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyPooling] `json:"pooling"`
+	Requests param.Field[interface{}]                                              `json:"requests"`
+	Text     param.Field[interface{}]                                              `json:"text"`
+}
+
+func (r AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBody) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBody) implementsAccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyUnion() {
+}
+
+// Satisfied by [AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyObject],
+// [AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyRequests],
+// [AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBody].
+type AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyUnion interface {
+	implementsAccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyUnion()
+}
+
+type AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyObject struct {
+	// The text to embed
+	Text param.Field[AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyObjectTextUnion] `json:"text,required"`
+	// The pooling method used in the embedding process. `cls` pooling will generate
+	// more accurate embeddings on larger inputs - however, embeddings created with cls
+	// pooling are not compatible with embeddings generated with mean pooling. The
+	// default pooling method is `mean` in order for this to not be a breaking change,
+	// but we highly suggest using the new `cls` pooling for better accuracy.
+	Pooling param.Field[AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyObjectPooling] `json:"pooling"`
+}
+
+func (r AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyObject) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyObject) implementsAccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyUnion() {
+}
+
 // The text to embed
 //
 // Satisfied by [shared.UnionString],
-// [AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsTextArray].
-type AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsTextUnion interface {
-	ImplementsAccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsTextUnion()
+// [AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyObjectTextArray].
+type AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyObjectTextUnion interface {
+	ImplementsAccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyObjectTextUnion()
 }
 
-type AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsTextArray []string
+type AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyObjectTextArray []string
 
-func (r AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsTextArray) ImplementsAccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsTextUnion() {
+func (r AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyObjectTextArray) ImplementsAccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyObjectTextUnion() {
+}
+
+// The pooling method used in the embedding process. `cls` pooling will generate
+// more accurate embeddings on larger inputs - however, embeddings created with cls
+// pooling are not compatible with embeddings generated with mean pooling. The
+// default pooling method is `mean` in order for this to not be a breaking change,
+// but we highly suggest using the new `cls` pooling for better accuracy.
+type AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyObjectPooling string
+
+const (
+	AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyObjectPoolingMean AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyObjectPooling = "mean"
+	AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyObjectPoolingCls  AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyObjectPooling = "cls"
+)
+
+func (r AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyObjectPooling) IsKnown() bool {
+	switch r {
+	case AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyObjectPoolingMean, AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyObjectPoolingCls:
+		return true
+	}
+	return false
+}
+
+type AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyRequests struct {
+	// Batch of the embeddings requests to run using async-queue
+	Requests param.Field[[]AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyRequestsRequest] `json:"requests,required"`
+}
+
+func (r AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyRequests) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyRequests) implementsAccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyUnion() {
+}
+
+type AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyRequestsRequest struct {
+	// The text to embed
+	Text param.Field[AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyRequestsRequestsTextUnion] `json:"text,required"`
+	// The pooling method used in the embedding process. `cls` pooling will generate
+	// more accurate embeddings on larger inputs - however, embeddings created with cls
+	// pooling are not compatible with embeddings generated with mean pooling. The
+	// default pooling method is `mean` in order for this to not be a breaking change,
+	// but we highly suggest using the new `cls` pooling for better accuracy.
+	Pooling param.Field[AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyRequestsRequestsPooling] `json:"pooling"`
+}
+
+func (r AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyRequestsRequest) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// The text to embed
+//
+// Satisfied by [shared.UnionString],
+// [AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyRequestsRequestsTextArray].
+type AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyRequestsRequestsTextUnion interface {
+	ImplementsAccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyRequestsRequestsTextUnion()
+}
+
+type AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyRequestsRequestsTextArray []string
+
+func (r AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyRequestsRequestsTextArray) ImplementsAccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyRequestsRequestsTextUnion() {
+}
+
+// The pooling method used in the embedding process. `cls` pooling will generate
+// more accurate embeddings on larger inputs - however, embeddings created with cls
+// pooling are not compatible with embeddings generated with mean pooling. The
+// default pooling method is `mean` in order for this to not be a breaking change,
+// but we highly suggest using the new `cls` pooling for better accuracy.
+type AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyRequestsRequestsPooling string
+
+const (
+	AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyRequestsRequestsPoolingMean AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyRequestsRequestsPooling = "mean"
+	AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyRequestsRequestsPoolingCls  AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyRequestsRequestsPooling = "cls"
+)
+
+func (r AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyRequestsRequestsPooling) IsKnown() bool {
+	switch r {
+	case AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyRequestsRequestsPoolingMean, AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyRequestsRequestsPoolingCls:
+		return true
+	}
+	return false
+}
+
+// The pooling method used in the embedding process. `cls` pooling will generate
+// more accurate embeddings on larger inputs - however, embeddings created with cls
+// pooling are not compatible with embeddings generated with mean pooling. The
+// default pooling method is `mean` in order for this to not be a breaking change,
+// but we highly suggest using the new `cls` pooling for better accuracy.
+type AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyPooling string
+
+const (
+	AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyPoolingMean AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyPooling = "mean"
+	AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyPoolingCls  AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyPooling = "cls"
+)
+
+func (r AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyPooling) IsKnown() bool {
+	switch r {
+	case AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyPoolingMean, AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyPoolingCls:
+		return true
+	}
+	return false
 }
 
 type AccountAIRunCfBaaiExecuteBgeM3Params struct {
@@ -654,8 +475,9 @@ type AccountAIRunCfBaaiExecuteBgeM3ParamsBody struct {
 	Contexts param.Field[interface{}] `json:"contexts"`
 	// A query you wish to perform against the provided contexts. If no query is
 	// provided the model with respond with embeddings for contexts
-	Query param.Field[string]      `json:"query"`
-	Text  param.Field[interface{}] `json:"text"`
+	Query    param.Field[string]      `json:"query"`
+	Requests param.Field[interface{}] `json:"requests"`
+	Text     param.Field[interface{}] `json:"text"`
 	// When provided with too long context should the model error out or truncate the
 	// context to fit?
 	TruncateInputs param.Field[bool] `json:"truncate_inputs"`
@@ -671,6 +493,7 @@ func (r AccountAIRunCfBaaiExecuteBgeM3ParamsBody) implementsAccountAIRunCfBaaiEx
 // Satisfied by
 // [AccountAIRunCfBaaiExecuteBgeM3ParamsBodyBgeM3InputQueryAndContexts],
 // [AccountAIRunCfBaaiExecuteBgeM3ParamsBodyBgeM3InputEmbedding],
+// [AccountAIRunCfBaaiExecuteBgeM3ParamsBodyRequests],
 // [AccountAIRunCfBaaiExecuteBgeM3ParamsBody].
 type AccountAIRunCfBaaiExecuteBgeM3ParamsBodyUnion interface {
 	implementsAccountAIRunCfBaaiExecuteBgeM3ParamsBodyUnion()
@@ -732,6 +555,100 @@ type AccountAIRunCfBaaiExecuteBgeM3ParamsBodyBgeM3InputEmbeddingTextArray []stri
 func (r AccountAIRunCfBaaiExecuteBgeM3ParamsBodyBgeM3InputEmbeddingTextArray) ImplementsAccountAIRunCfBaaiExecuteBgeM3ParamsBodyBgeM3InputEmbeddingTextUnion() {
 }
 
+type AccountAIRunCfBaaiExecuteBgeM3ParamsBodyRequests struct {
+	// Batch of the embeddings requests to run using async-queue
+	Requests param.Field[[]AccountAIRunCfBaaiExecuteBgeM3ParamsBodyRequestsRequestUnion] `json:"requests,required"`
+}
+
+func (r AccountAIRunCfBaaiExecuteBgeM3ParamsBodyRequests) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r AccountAIRunCfBaaiExecuteBgeM3ParamsBodyRequests) implementsAccountAIRunCfBaaiExecuteBgeM3ParamsBodyUnion() {
+}
+
+type AccountAIRunCfBaaiExecuteBgeM3ParamsBodyRequestsRequest struct {
+	Contexts param.Field[interface{}] `json:"contexts"`
+	// A query you wish to perform against the provided contexts. If no query is
+	// provided the model with respond with embeddings for contexts
+	Query param.Field[string]      `json:"query"`
+	Text  param.Field[interface{}] `json:"text"`
+	// When provided with too long context should the model error out or truncate the
+	// context to fit?
+	TruncateInputs param.Field[bool] `json:"truncate_inputs"`
+}
+
+func (r AccountAIRunCfBaaiExecuteBgeM3ParamsBodyRequestsRequest) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r AccountAIRunCfBaaiExecuteBgeM3ParamsBodyRequestsRequest) implementsAccountAIRunCfBaaiExecuteBgeM3ParamsBodyRequestsRequestUnion() {
+}
+
+// Satisfied by
+// [AccountAIRunCfBaaiExecuteBgeM3ParamsBodyRequestsRequestsBgeM3InputQueryAndContexts],
+// [AccountAIRunCfBaaiExecuteBgeM3ParamsBodyRequestsRequestsBgeM3InputEmbedding],
+// [AccountAIRunCfBaaiExecuteBgeM3ParamsBodyRequestsRequest].
+type AccountAIRunCfBaaiExecuteBgeM3ParamsBodyRequestsRequestUnion interface {
+	implementsAccountAIRunCfBaaiExecuteBgeM3ParamsBodyRequestsRequestUnion()
+}
+
+type AccountAIRunCfBaaiExecuteBgeM3ParamsBodyRequestsRequestsBgeM3InputQueryAndContexts struct {
+	// List of provided contexts. Note that the index in this array is important, as
+	// the response will refer to it.
+	Contexts param.Field[[]AccountAIRunCfBaaiExecuteBgeM3ParamsBodyRequestsRequestsBgeM3InputQueryAndContextsContext] `json:"contexts,required"`
+	// A query you wish to perform against the provided contexts. If no query is
+	// provided the model with respond with embeddings for contexts
+	Query param.Field[string] `json:"query"`
+	// When provided with too long context should the model error out or truncate the
+	// context to fit?
+	TruncateInputs param.Field[bool] `json:"truncate_inputs"`
+}
+
+func (r AccountAIRunCfBaaiExecuteBgeM3ParamsBodyRequestsRequestsBgeM3InputQueryAndContexts) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r AccountAIRunCfBaaiExecuteBgeM3ParamsBodyRequestsRequestsBgeM3InputQueryAndContexts) implementsAccountAIRunCfBaaiExecuteBgeM3ParamsBodyRequestsRequestUnion() {
+}
+
+type AccountAIRunCfBaaiExecuteBgeM3ParamsBodyRequestsRequestsBgeM3InputQueryAndContextsContext struct {
+	// One of the provided context content
+	Text param.Field[string] `json:"text"`
+}
+
+func (r AccountAIRunCfBaaiExecuteBgeM3ParamsBodyRequestsRequestsBgeM3InputQueryAndContextsContext) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type AccountAIRunCfBaaiExecuteBgeM3ParamsBodyRequestsRequestsBgeM3InputEmbedding struct {
+	// The text to embed
+	Text param.Field[AccountAIRunCfBaaiExecuteBgeM3ParamsBodyRequestsRequestsBgeM3InputEmbeddingTextUnion] `json:"text,required"`
+	// When provided with too long context should the model error out or truncate the
+	// context to fit?
+	TruncateInputs param.Field[bool] `json:"truncate_inputs"`
+}
+
+func (r AccountAIRunCfBaaiExecuteBgeM3ParamsBodyRequestsRequestsBgeM3InputEmbedding) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r AccountAIRunCfBaaiExecuteBgeM3ParamsBodyRequestsRequestsBgeM3InputEmbedding) implementsAccountAIRunCfBaaiExecuteBgeM3ParamsBodyRequestsRequestUnion() {
+}
+
+// The text to embed
+//
+// Satisfied by [shared.UnionString],
+// [AccountAIRunCfBaaiExecuteBgeM3ParamsBodyRequestsRequestsBgeM3InputEmbeddingTextArray].
+type AccountAIRunCfBaaiExecuteBgeM3ParamsBodyRequestsRequestsBgeM3InputEmbeddingTextUnion interface {
+	ImplementsAccountAIRunCfBaaiExecuteBgeM3ParamsBodyRequestsRequestsBgeM3InputEmbeddingTextUnion()
+}
+
+type AccountAIRunCfBaaiExecuteBgeM3ParamsBodyRequestsRequestsBgeM3InputEmbeddingTextArray []string
+
+func (r AccountAIRunCfBaaiExecuteBgeM3ParamsBodyRequestsRequestsBgeM3InputEmbeddingTextArray) ImplementsAccountAIRunCfBaaiExecuteBgeM3ParamsBodyRequestsRequestsBgeM3InputEmbeddingTextUnion() {
+}
+
 type AccountAIRunCfBaaiExecuteBgeRerankerBaseParams struct {
 	// List of provided contexts. Note that the index in this array is important, as
 	// the response will refer to it.
@@ -766,13 +683,12 @@ func (r AccountAIRunCfBaaiExecuteBgeRerankerBaseParamsContext) MarshalJSON() (da
 }
 
 type AccountAIRunCfBaaiExecuteBgeSmallEnV1_5Params struct {
-	// The text to embed
-	Text         param.Field[AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsTextUnion] `json:"text,required"`
-	QueueRequest param.Field[string]                                                 `query:"queueRequest"`
+	QueueRequest param.Field[string]                                    `query:"queueRequest"`
+	Body         AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyUnion `json:"body"`
 }
 
 func (r AccountAIRunCfBaaiExecuteBgeSmallEnV1_5Params) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+	return apijson.MarshalRoot(r.Body)
 }
 
 // URLQuery serializes [AccountAIRunCfBaaiExecuteBgeSmallEnV1_5Params]'s query
@@ -784,15 +700,158 @@ func (r AccountAIRunCfBaaiExecuteBgeSmallEnV1_5Params) URLQuery() (v url.Values)
 	})
 }
 
+type AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBody struct {
+	// The pooling method used in the embedding process. `cls` pooling will generate
+	// more accurate embeddings on larger inputs - however, embeddings created with cls
+	// pooling are not compatible with embeddings generated with mean pooling. The
+	// default pooling method is `mean` in order for this to not be a breaking change,
+	// but we highly suggest using the new `cls` pooling for better accuracy.
+	Pooling  param.Field[AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyPooling] `json:"pooling"`
+	Requests param.Field[interface{}]                                              `json:"requests"`
+	Text     param.Field[interface{}]                                              `json:"text"`
+}
+
+func (r AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBody) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBody) implementsAccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyUnion() {
+}
+
+// Satisfied by [AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyObject],
+// [AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyRequests],
+// [AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBody].
+type AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyUnion interface {
+	implementsAccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyUnion()
+}
+
+type AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyObject struct {
+	// The text to embed
+	Text param.Field[AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyObjectTextUnion] `json:"text,required"`
+	// The pooling method used in the embedding process. `cls` pooling will generate
+	// more accurate embeddings on larger inputs - however, embeddings created with cls
+	// pooling are not compatible with embeddings generated with mean pooling. The
+	// default pooling method is `mean` in order for this to not be a breaking change,
+	// but we highly suggest using the new `cls` pooling for better accuracy.
+	Pooling param.Field[AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyObjectPooling] `json:"pooling"`
+}
+
+func (r AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyObject) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyObject) implementsAccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyUnion() {
+}
+
 // The text to embed
 //
 // Satisfied by [shared.UnionString],
-// [AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsTextArray].
-type AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsTextUnion interface {
-	ImplementsAccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsTextUnion()
+// [AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyObjectTextArray].
+type AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyObjectTextUnion interface {
+	ImplementsAccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyObjectTextUnion()
 }
 
-type AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsTextArray []string
+type AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyObjectTextArray []string
 
-func (r AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsTextArray) ImplementsAccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsTextUnion() {
+func (r AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyObjectTextArray) ImplementsAccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyObjectTextUnion() {
+}
+
+// The pooling method used in the embedding process. `cls` pooling will generate
+// more accurate embeddings on larger inputs - however, embeddings created with cls
+// pooling are not compatible with embeddings generated with mean pooling. The
+// default pooling method is `mean` in order for this to not be a breaking change,
+// but we highly suggest using the new `cls` pooling for better accuracy.
+type AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyObjectPooling string
+
+const (
+	AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyObjectPoolingMean AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyObjectPooling = "mean"
+	AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyObjectPoolingCls  AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyObjectPooling = "cls"
+)
+
+func (r AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyObjectPooling) IsKnown() bool {
+	switch r {
+	case AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyObjectPoolingMean, AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyObjectPoolingCls:
+		return true
+	}
+	return false
+}
+
+type AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyRequests struct {
+	// Batch of the embeddings requests to run using async-queue
+	Requests param.Field[[]AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyRequestsRequest] `json:"requests,required"`
+}
+
+func (r AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyRequests) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyRequests) implementsAccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyUnion() {
+}
+
+type AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyRequestsRequest struct {
+	// The text to embed
+	Text param.Field[AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyRequestsRequestsTextUnion] `json:"text,required"`
+	// The pooling method used in the embedding process. `cls` pooling will generate
+	// more accurate embeddings on larger inputs - however, embeddings created with cls
+	// pooling are not compatible with embeddings generated with mean pooling. The
+	// default pooling method is `mean` in order for this to not be a breaking change,
+	// but we highly suggest using the new `cls` pooling for better accuracy.
+	Pooling param.Field[AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyRequestsRequestsPooling] `json:"pooling"`
+}
+
+func (r AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyRequestsRequest) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// The text to embed
+//
+// Satisfied by [shared.UnionString],
+// [AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyRequestsRequestsTextArray].
+type AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyRequestsRequestsTextUnion interface {
+	ImplementsAccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyRequestsRequestsTextUnion()
+}
+
+type AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyRequestsRequestsTextArray []string
+
+func (r AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyRequestsRequestsTextArray) ImplementsAccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyRequestsRequestsTextUnion() {
+}
+
+// The pooling method used in the embedding process. `cls` pooling will generate
+// more accurate embeddings on larger inputs - however, embeddings created with cls
+// pooling are not compatible with embeddings generated with mean pooling. The
+// default pooling method is `mean` in order for this to not be a breaking change,
+// but we highly suggest using the new `cls` pooling for better accuracy.
+type AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyRequestsRequestsPooling string
+
+const (
+	AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyRequestsRequestsPoolingMean AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyRequestsRequestsPooling = "mean"
+	AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyRequestsRequestsPoolingCls  AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyRequestsRequestsPooling = "cls"
+)
+
+func (r AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyRequestsRequestsPooling) IsKnown() bool {
+	switch r {
+	case AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyRequestsRequestsPoolingMean, AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyRequestsRequestsPoolingCls:
+		return true
+	}
+	return false
+}
+
+// The pooling method used in the embedding process. `cls` pooling will generate
+// more accurate embeddings on larger inputs - however, embeddings created with cls
+// pooling are not compatible with embeddings generated with mean pooling. The
+// default pooling method is `mean` in order for this to not be a breaking change,
+// but we highly suggest using the new `cls` pooling for better accuracy.
+type AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyPooling string
+
+const (
+	AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyPoolingMean AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyPooling = "mean"
+	AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyPoolingCls  AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyPooling = "cls"
+)
+
+func (r AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyPooling) IsKnown() bool {
+	switch r {
+	case AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyPoolingMean, AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyPoolingCls:
+		return true
+	}
+	return false
 }

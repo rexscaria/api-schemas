@@ -84,14 +84,23 @@ func (r ActionBehavior) IsKnown() bool {
 }
 
 type DetailsResponse struct {
-	Result DetailsResponseResult `json:"result"`
-	JSON   detailsResponseJSON   `json:"-"`
-	APIResponseSingleWeb3
+	Errors   []DetailsResponseError   `json:"errors,required"`
+	Messages []DetailsResponseMessage `json:"messages,required"`
+	Result   DetailsResponseResult    `json:"result,required"`
+	// Specifies whether the API call was successful.
+	Success DetailsResponseSuccess `json:"success,required"`
+	// Provides the API response.
+	ResultInfo interface{}         `json:"result_info"`
+	JSON       detailsResponseJSON `json:"-"`
 }
 
 // detailsResponseJSON contains the JSON metadata for the struct [DetailsResponse]
 type detailsResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -101,6 +110,102 @@ func (r *DetailsResponse) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (r detailsResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+type DetailsResponseError struct {
+	Code             int64                       `json:"code,required"`
+	Message          string                      `json:"message,required"`
+	DocumentationURL string                      `json:"documentation_url"`
+	Source           DetailsResponseErrorsSource `json:"source"`
+	JSON             detailsResponseErrorJSON    `json:"-"`
+}
+
+// detailsResponseErrorJSON contains the JSON metadata for the struct
+// [DetailsResponseError]
+type detailsResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *DetailsResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r detailsResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type DetailsResponseErrorsSource struct {
+	Pointer string                          `json:"pointer"`
+	JSON    detailsResponseErrorsSourceJSON `json:"-"`
+}
+
+// detailsResponseErrorsSourceJSON contains the JSON metadata for the struct
+// [DetailsResponseErrorsSource]
+type detailsResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *DetailsResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r detailsResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type DetailsResponseMessage struct {
+	Code             int64                         `json:"code,required"`
+	Message          string                        `json:"message,required"`
+	DocumentationURL string                        `json:"documentation_url"`
+	Source           DetailsResponseMessagesSource `json:"source"`
+	JSON             detailsResponseMessageJSON    `json:"-"`
+}
+
+// detailsResponseMessageJSON contains the JSON metadata for the struct
+// [DetailsResponseMessage]
+type detailsResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *DetailsResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r detailsResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type DetailsResponseMessagesSource struct {
+	Pointer string                            `json:"pointer"`
+	JSON    detailsResponseMessagesSourceJSON `json:"-"`
+}
+
+// detailsResponseMessagesSourceJSON contains the JSON metadata for the struct
+// [DetailsResponseMessagesSource]
+type detailsResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *DetailsResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r detailsResponseMessagesSourceJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -126,10 +231,25 @@ func (r detailsResponseResultJSON) RawJSON() string {
 	return r.raw
 }
 
+// Specifies whether the API call was successful.
+type DetailsResponseSuccess bool
+
+const (
+	DetailsResponseSuccessTrue DetailsResponseSuccess = true
+)
+
+func (r DetailsResponseSuccess) IsKnown() bool {
+	switch r {
+	case DetailsResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type ZoneWeb3HostnameIpfsUniversalPathContentListUpdateParams struct {
 	// Behavior of the content list.
 	Action param.Field[ActionBehavior] `json:"action,required"`
-	// Content list entries.
+	// Provides content list entries.
 	Entries param.Field[[]ContentListEntryParam] `json:"entries,required"`
 }
 

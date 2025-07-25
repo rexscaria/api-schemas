@@ -152,9 +152,6 @@ func TestAccountSecondaryDNSTsigDelete(t *testing.T) {
 		context.TODO(),
 		"01a7362d577a6c3019a474fd6f485823",
 		"69cd1e104af3e6ed3cb344f263fd0d5a",
-		cfrex.AccountSecondaryDNSTsigDeleteParams{
-			Body: map[string]interface{}{},
-		},
 	)
 	if err != nil {
 		var apierr *cfrex.Error

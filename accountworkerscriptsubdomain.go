@@ -66,21 +66,23 @@ func (r *AccountWorkerScriptSubdomainService) Post(ctx context.Context, accountI
 }
 
 type AccountWorkerScriptSubdomainGetResponse struct {
-	// Whether the Worker is available on the workers.dev subdomain.
-	Enabled bool `json:"enabled"`
-	// Whether the Worker's Preview URLs should be available on the workers.dev
-	// subdomain.
-	PreviewsEnabled bool                                        `json:"previews_enabled"`
-	JSON            accountWorkerScriptSubdomainGetResponseJSON `json:"-"`
+	Errors   []WorkersMessages                             `json:"errors,required"`
+	Messages []WorkersMessages                             `json:"messages,required"`
+	Result   AccountWorkerScriptSubdomainGetResponseResult `json:"result,required"`
+	// Whether the API call was successful.
+	Success AccountWorkerScriptSubdomainGetResponseSuccess `json:"success,required"`
+	JSON    accountWorkerScriptSubdomainGetResponseJSON    `json:"-"`
 }
 
 // accountWorkerScriptSubdomainGetResponseJSON contains the JSON metadata for the
 // struct [AccountWorkerScriptSubdomainGetResponse]
 type accountWorkerScriptSubdomainGetResponseJSON struct {
-	Enabled         apijson.Field
-	PreviewsEnabled apijson.Field
-	raw             string
-	ExtraFields     map[string]apijson.Field
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Result      apijson.Field
+	Success     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
 }
 
 func (r *AccountWorkerScriptSubdomainGetResponse) UnmarshalJSON(data []byte) (err error) {
@@ -91,22 +93,64 @@ func (r accountWorkerScriptSubdomainGetResponseJSON) RawJSON() string {
 	return r.raw
 }
 
-type AccountWorkerScriptSubdomainPostResponse struct {
+type AccountWorkerScriptSubdomainGetResponseResult struct {
 	// Whether the Worker is available on the workers.dev subdomain.
-	Enabled bool `json:"enabled"`
-	// Whether the Worker's Preview URLs should be available on the workers.dev
-	// subdomain.
-	PreviewsEnabled bool                                         `json:"previews_enabled"`
-	JSON            accountWorkerScriptSubdomainPostResponseJSON `json:"-"`
+	Enabled bool `json:"enabled,required"`
+	// Whether the Worker's Preview URLs are available on the workers.dev subdomain.
+	PreviewsEnabled bool                                              `json:"previews_enabled,required"`
+	JSON            accountWorkerScriptSubdomainGetResponseResultJSON `json:"-"`
+}
+
+// accountWorkerScriptSubdomainGetResponseResultJSON contains the JSON metadata for
+// the struct [AccountWorkerScriptSubdomainGetResponseResult]
+type accountWorkerScriptSubdomainGetResponseResultJSON struct {
+	Enabled         apijson.Field
+	PreviewsEnabled apijson.Field
+	raw             string
+	ExtraFields     map[string]apijson.Field
+}
+
+func (r *AccountWorkerScriptSubdomainGetResponseResult) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountWorkerScriptSubdomainGetResponseResultJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountWorkerScriptSubdomainGetResponseSuccess bool
+
+const (
+	AccountWorkerScriptSubdomainGetResponseSuccessTrue AccountWorkerScriptSubdomainGetResponseSuccess = true
+)
+
+func (r AccountWorkerScriptSubdomainGetResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountWorkerScriptSubdomainGetResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type AccountWorkerScriptSubdomainPostResponse struct {
+	Errors   []WorkersMessages                              `json:"errors,required"`
+	Messages []WorkersMessages                              `json:"messages,required"`
+	Result   AccountWorkerScriptSubdomainPostResponseResult `json:"result,required"`
+	// Whether the API call was successful.
+	Success AccountWorkerScriptSubdomainPostResponseSuccess `json:"success,required"`
+	JSON    accountWorkerScriptSubdomainPostResponseJSON    `json:"-"`
 }
 
 // accountWorkerScriptSubdomainPostResponseJSON contains the JSON metadata for the
 // struct [AccountWorkerScriptSubdomainPostResponse]
 type accountWorkerScriptSubdomainPostResponseJSON struct {
-	Enabled         apijson.Field
-	PreviewsEnabled apijson.Field
-	raw             string
-	ExtraFields     map[string]apijson.Field
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Result      apijson.Field
+	Success     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
 }
 
 func (r *AccountWorkerScriptSubdomainPostResponse) UnmarshalJSON(data []byte) (err error) {
@@ -115,6 +159,46 @@ func (r *AccountWorkerScriptSubdomainPostResponse) UnmarshalJSON(data []byte) (e
 
 func (r accountWorkerScriptSubdomainPostResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+type AccountWorkerScriptSubdomainPostResponseResult struct {
+	// Whether the Worker is available on the workers.dev subdomain.
+	Enabled bool `json:"enabled,required"`
+	// Whether the Worker's Preview URLs are available on the workers.dev subdomain.
+	PreviewsEnabled bool                                               `json:"previews_enabled,required"`
+	JSON            accountWorkerScriptSubdomainPostResponseResultJSON `json:"-"`
+}
+
+// accountWorkerScriptSubdomainPostResponseResultJSON contains the JSON metadata
+// for the struct [AccountWorkerScriptSubdomainPostResponseResult]
+type accountWorkerScriptSubdomainPostResponseResultJSON struct {
+	Enabled         apijson.Field
+	PreviewsEnabled apijson.Field
+	raw             string
+	ExtraFields     map[string]apijson.Field
+}
+
+func (r *AccountWorkerScriptSubdomainPostResponseResult) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountWorkerScriptSubdomainPostResponseResultJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountWorkerScriptSubdomainPostResponseSuccess bool
+
+const (
+	AccountWorkerScriptSubdomainPostResponseSuccessTrue AccountWorkerScriptSubdomainPostResponseSuccess = true
+)
+
+func (r AccountWorkerScriptSubdomainPostResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountWorkerScriptSubdomainPostResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountWorkerScriptSubdomainPostParams struct {

@@ -34,41 +34,57 @@ func NewAccountCloudforceOneEventDatasetService(opts ...option.RequestOption) (r
 }
 
 // Creates a dataset
-func (r *AccountCloudforceOneEventDatasetService) New(ctx context.Context, accountID float64, body AccountCloudforceOneEventDatasetNewParams, opts ...option.RequestOption) (res *AccountCloudforceOneEventDatasetNewResponse, err error) {
+func (r *AccountCloudforceOneEventDatasetService) New(ctx context.Context, accountID string, body AccountCloudforceOneEventDatasetNewParams, opts ...option.RequestOption) (res *AccountCloudforceOneEventDatasetNewResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	path := fmt.Sprintf("accounts/%v/cloudforce-one/events/dataset/create", accountID)
+	if accountID == "" {
+		err = errors.New("missing required account_id parameter")
+		return
+	}
+	path := fmt.Sprintf("accounts/%s/cloudforce-one/events/dataset/create", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
 
 // Reads a dataset
-func (r *AccountCloudforceOneEventDatasetService) Get(ctx context.Context, accountID float64, datasetID string, opts ...option.RequestOption) (res *AccountCloudforceOneEventDatasetGetResponse, err error) {
+func (r *AccountCloudforceOneEventDatasetService) Get(ctx context.Context, accountID string, datasetID string, opts ...option.RequestOption) (res *AccountCloudforceOneEventDatasetGetResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	if accountID == "" {
+		err = errors.New("missing required account_id parameter")
+		return
+	}
 	if datasetID == "" {
 		err = errors.New("missing required dataset_id parameter")
 		return
 	}
-	path := fmt.Sprintf("accounts/%v/cloudforce-one/events/dataset/%s", accountID, datasetID)
+	path := fmt.Sprintf("accounts/%s/cloudforce-one/events/dataset/%s", accountID, datasetID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
 
 // Updates an existing dataset
-func (r *AccountCloudforceOneEventDatasetService) Update(ctx context.Context, accountID float64, datasetID string, body AccountCloudforceOneEventDatasetUpdateParams, opts ...option.RequestOption) (res *AccountCloudforceOneEventDatasetUpdateResponse, err error) {
+func (r *AccountCloudforceOneEventDatasetService) Update(ctx context.Context, accountID string, datasetID string, body AccountCloudforceOneEventDatasetUpdateParams, opts ...option.RequestOption) (res *AccountCloudforceOneEventDatasetUpdateResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	if accountID == "" {
+		err = errors.New("missing required account_id parameter")
+		return
+	}
 	if datasetID == "" {
 		err = errors.New("missing required dataset_id parameter")
 		return
 	}
-	path := fmt.Sprintf("accounts/%v/cloudforce-one/events/dataset/%s", accountID, datasetID)
+	path := fmt.Sprintf("accounts/%s/cloudforce-one/events/dataset/%s", accountID, datasetID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
 
 // Lists all datasets in an account
-func (r *AccountCloudforceOneEventDatasetService) List(ctx context.Context, accountID float64, opts ...option.RequestOption) (res *[]AccountCloudforceOneEventDatasetListResponse, err error) {
+func (r *AccountCloudforceOneEventDatasetService) List(ctx context.Context, accountID string, opts ...option.RequestOption) (res *[]AccountCloudforceOneEventDatasetListResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	path := fmt.Sprintf("accounts/%v/cloudforce-one/events/dataset", accountID)
+	if accountID == "" {
+		err = errors.New("missing required account_id parameter")
+		return
+	}
+	path := fmt.Sprintf("accounts/%s/cloudforce-one/events/dataset", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
@@ -177,7 +193,7 @@ type AccountCloudforceOneEventDatasetNewParams struct {
 	// If true, then anyone can search the dataset. If false, then its limited to the
 	// account.
 	IsPublic param.Field[bool] `json:"isPublic,required"`
-	// Used to describe the dataset within the account context
+	// Used to describe the dataset within the account context.
 	Name param.Field[string] `json:"name,required"`
 }
 
@@ -189,7 +205,7 @@ type AccountCloudforceOneEventDatasetUpdateParams struct {
 	// If true, then anyone can search the dataset. If false, then its limited to the
 	// account.
 	IsPublic param.Field[bool] `json:"isPublic,required"`
-	// Used to describe the dataset within the account context
+	// Used to describe the dataset within the account context.
 	Name param.Field[string] `json:"name,required"`
 }
 

@@ -3,18 +3,10 @@
 package cfrex
 
 import (
-	"context"
-	"errors"
-	"fmt"
-	"net/http"
-	"net/url"
 	"reflect"
-	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
-	"github.com/rexscaria/api-schemas/internal/apiquery"
 	"github.com/rexscaria/api-schemas/internal/param"
-	"github.com/rexscaria/api-schemas/internal/requestconfig"
 	"github.com/rexscaria/api-schemas/option"
 	"github.com/tidwall/gjson"
 )
@@ -35,78 +27,6 @@ type AccountAccessGroupService struct {
 func NewAccountAccessGroupService(opts ...option.RequestOption) (r *AccountAccessGroupService) {
 	r = &AccountAccessGroupService{}
 	r.Options = opts
-	return
-}
-
-// Creates a new Access group.
-func (r *AccountAccessGroupService) New(ctx context.Context, accountID string, body AccountAccessGroupNewParams, opts ...option.RequestOption) (res *SingleResponseGroup, err error) {
-	opts = append(r.Options[:], opts...)
-	if accountID == "" {
-		err = errors.New("missing required account_id parameter")
-		return
-	}
-	path := fmt.Sprintf("accounts/%s/access/groups", accountID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
-}
-
-// Fetches a single Access group.
-func (r *AccountAccessGroupService) Get(ctx context.Context, accountID string, groupID string, opts ...option.RequestOption) (res *SingleResponseGroup, err error) {
-	opts = append(r.Options[:], opts...)
-	if accountID == "" {
-		err = errors.New("missing required account_id parameter")
-		return
-	}
-	if groupID == "" {
-		err = errors.New("missing required group_id parameter")
-		return
-	}
-	path := fmt.Sprintf("accounts/%s/access/groups/%s", accountID, groupID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
-}
-
-// Updates a configured Access group.
-func (r *AccountAccessGroupService) Update(ctx context.Context, accountID string, groupID string, body AccountAccessGroupUpdateParams, opts ...option.RequestOption) (res *SingleResponseGroup, err error) {
-	opts = append(r.Options[:], opts...)
-	if accountID == "" {
-		err = errors.New("missing required account_id parameter")
-		return
-	}
-	if groupID == "" {
-		err = errors.New("missing required group_id parameter")
-		return
-	}
-	path := fmt.Sprintf("accounts/%s/access/groups/%s", accountID, groupID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
-}
-
-// Lists all Access groups.
-func (r *AccountAccessGroupService) List(ctx context.Context, accountID string, query AccountAccessGroupListParams, opts ...option.RequestOption) (res *AccountAccessGroupListResponse, err error) {
-	opts = append(r.Options[:], opts...)
-	if accountID == "" {
-		err = errors.New("missing required account_id parameter")
-		return
-	}
-	path := fmt.Sprintf("accounts/%s/access/groups", accountID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
-}
-
-// Deletes an Access group.
-func (r *AccountAccessGroupService) Delete(ctx context.Context, accountID string, groupID string, opts ...option.RequestOption) (res *IDResponseApps, err error) {
-	opts = append(r.Options[:], opts...)
-	if accountID == "" {
-		err = errors.New("missing required account_id parameter")
-		return
-	}
-	if groupID == "" {
-		err = errors.New("missing required group_id parameter")
-		return
-	}
-	path := fmt.Sprintf("accounts/%s/access/groups/%s", accountID, groupID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
@@ -158,8 +78,13 @@ type AccessRule struct {
 	// This field can have the runtime type of [AccessRuleAccessIPListRuleIPList].
 	IPList interface{} `json:"ip_list"`
 	// This field can have the runtime type of
+	// [AccessRuleAccessLinkedAppTokenRuleLinkedAppToken].
+	LinkedAppToken interface{} `json:"linked_app_token"`
+	// This field can have the runtime type of
 	// [AccessRuleAccessLoginMethodRuleLoginMethod].
 	LoginMethod interface{} `json:"login_method"`
+	// This field can have the runtime type of [AccessRuleAccessOidcClaimRuleOidc].
+	Oidc interface{} `json:"oidc"`
 	// This field can have the runtime type of [AccessRuleAccessOktaGroupRuleOkta].
 	Okta interface{} `json:"okta"`
 	// This field can have the runtime type of [AccessRuleAccessSAMLGroupRuleSAML].
@@ -191,7 +116,9 @@ type accessRuleJSON struct {
 	Gsuite               apijson.Field
 	IP                   apijson.Field
 	IPList               apijson.Field
+	LinkedAppToken       apijson.Field
 	LoginMethod          apijson.Field
+	Oidc                 apijson.Field
 	Okta                 apijson.Field
 	SAML                 apijson.Field
 	ServiceToken         apijson.Field
@@ -226,7 +153,8 @@ func (r *AccessRule) UnmarshalJSON(data []byte) (err error) {
 // [AccessRuleAccessGitHubOrganizationRule], [AccessRuleAccessGsuiteGroupRule],
 // [AccessRuleAccessLoginMethodRule], [AccessRuleAccessIPListRule],
 // [AccessRuleAccessIPRule], [AccessRuleAccessOktaGroupRule],
-// [AccessRuleAccessSAMLGroupRule], [AccessRuleAccessServiceTokenRule].
+// [AccessRuleAccessSAMLGroupRule], [AccessRuleAccessOidcClaimRule],
+// [AccessRuleAccessServiceTokenRule], [AccessRuleAccessLinkedAppTokenRule].
 func (r AccessRule) AsUnion() AccessRuleUnion {
 	return r.union
 }
@@ -244,7 +172,8 @@ func (r AccessRule) AsUnion() AccessRuleUnion {
 // [AccessRuleAccessGitHubOrganizationRule], [AccessRuleAccessGsuiteGroupRule],
 // [AccessRuleAccessLoginMethodRule], [AccessRuleAccessIPListRule],
 // [AccessRuleAccessIPRule], [AccessRuleAccessOktaGroupRule],
-// [AccessRuleAccessSAMLGroupRule] or [AccessRuleAccessServiceTokenRule].
+// [AccessRuleAccessSAMLGroupRule], [AccessRuleAccessOidcClaimRule],
+// [AccessRuleAccessServiceTokenRule] or [AccessRuleAccessLinkedAppTokenRule].
 type AccessRuleUnion interface {
 	implementsAccessRule()
 }
@@ -339,7 +268,15 @@ func init() {
 		},
 		apijson.UnionVariant{
 			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(AccessRuleAccessOidcClaimRule{}),
+		},
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
 			Type:       reflect.TypeOf(AccessRuleAccessServiceTokenRule{}),
+		},
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(AccessRuleAccessLinkedAppTokenRule{}),
 		},
 	)
 }
@@ -1341,6 +1278,58 @@ func (r accessRuleAccessSAMLGroupRuleSAMLJSON) RawJSON() string {
 	return r.raw
 }
 
+// Matches an OIDC claim. Requires an OIDC identity provider.
+type AccessRuleAccessOidcClaimRule struct {
+	Oidc AccessRuleAccessOidcClaimRuleOidc `json:"oidc,required"`
+	JSON accessRuleAccessOidcClaimRuleJSON `json:"-"`
+}
+
+// accessRuleAccessOidcClaimRuleJSON contains the JSON metadata for the struct
+// [AccessRuleAccessOidcClaimRule]
+type accessRuleAccessOidcClaimRuleJSON struct {
+	Oidc        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccessRuleAccessOidcClaimRule) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accessRuleAccessOidcClaimRuleJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r AccessRuleAccessOidcClaimRule) implementsAccessRule() {}
+
+type AccessRuleAccessOidcClaimRuleOidc struct {
+	// The name of the OIDC claim.
+	ClaimName string `json:"claim_name,required"`
+	// The OIDC claim value to look for.
+	ClaimValue string `json:"claim_value,required"`
+	// The ID of your OIDC identity provider.
+	IdentityProviderID string                                `json:"identity_provider_id,required"`
+	JSON               accessRuleAccessOidcClaimRuleOidcJSON `json:"-"`
+}
+
+// accessRuleAccessOidcClaimRuleOidcJSON contains the JSON metadata for the struct
+// [AccessRuleAccessOidcClaimRuleOidc]
+type accessRuleAccessOidcClaimRuleOidcJSON struct {
+	ClaimName          apijson.Field
+	ClaimValue         apijson.Field
+	IdentityProviderID apijson.Field
+	raw                string
+	ExtraFields        map[string]apijson.Field
+}
+
+func (r *AccessRuleAccessOidcClaimRuleOidc) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accessRuleAccessOidcClaimRuleOidcJSON) RawJSON() string {
+	return r.raw
+}
+
 // Matches a specific Access Service Token
 type AccessRuleAccessServiceTokenRule struct {
 	ServiceToken AccessRuleAccessServiceTokenRuleServiceToken `json:"service_token,required"`
@@ -1387,6 +1376,53 @@ func (r accessRuleAccessServiceTokenRuleServiceTokenJSON) RawJSON() string {
 	return r.raw
 }
 
+// Matches OAuth 2.0 access tokens issued by the specified Access OIDC SaaS
+// application. Only compatible with non_identity and bypass decisions.
+type AccessRuleAccessLinkedAppTokenRule struct {
+	LinkedAppToken AccessRuleAccessLinkedAppTokenRuleLinkedAppToken `json:"linked_app_token,required"`
+	JSON           accessRuleAccessLinkedAppTokenRuleJSON           `json:"-"`
+}
+
+// accessRuleAccessLinkedAppTokenRuleJSON contains the JSON metadata for the struct
+// [AccessRuleAccessLinkedAppTokenRule]
+type accessRuleAccessLinkedAppTokenRuleJSON struct {
+	LinkedAppToken apijson.Field
+	raw            string
+	ExtraFields    map[string]apijson.Field
+}
+
+func (r *AccessRuleAccessLinkedAppTokenRule) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accessRuleAccessLinkedAppTokenRuleJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r AccessRuleAccessLinkedAppTokenRule) implementsAccessRule() {}
+
+type AccessRuleAccessLinkedAppTokenRuleLinkedAppToken struct {
+	// The ID of an Access OIDC SaaS application
+	AppUid string                                               `json:"app_uid,required"`
+	JSON   accessRuleAccessLinkedAppTokenRuleLinkedAppTokenJSON `json:"-"`
+}
+
+// accessRuleAccessLinkedAppTokenRuleLinkedAppTokenJSON contains the JSON metadata
+// for the struct [AccessRuleAccessLinkedAppTokenRuleLinkedAppToken]
+type accessRuleAccessLinkedAppTokenRuleLinkedAppTokenJSON struct {
+	AppUid      apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccessRuleAccessLinkedAppTokenRuleLinkedAppToken) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accessRuleAccessLinkedAppTokenRuleLinkedAppTokenJSON) RawJSON() string {
+	return r.raw
+}
+
 // Matches an Access group.
 type AccessRuleParam struct {
 	AnyValidServiceToken param.Field[interface{}] `json:"any_valid_service_token"`
@@ -1407,7 +1443,9 @@ type AccessRuleParam struct {
 	Gsuite               param.Field[interface{}] `json:"gsuite"`
 	IP                   param.Field[interface{}] `json:"ip"`
 	IPList               param.Field[interface{}] `json:"ip_list"`
+	LinkedAppToken       param.Field[interface{}] `json:"linked_app_token"`
 	LoginMethod          param.Field[interface{}] `json:"login_method"`
+	Oidc                 param.Field[interface{}] `json:"oidc"`
 	Okta                 param.Field[interface{}] `json:"okta"`
 	SAML                 param.Field[interface{}] `json:"saml"`
 	ServiceToken         param.Field[interface{}] `json:"service_token"`
@@ -1435,7 +1473,8 @@ func (r AccessRuleParam) implementsAccessRuleUnionParam() {}
 // [AccessRuleAccessGsuiteGroupRuleParam], [AccessRuleAccessLoginMethodRuleParam],
 // [AccessRuleAccessIPListRuleParam], [AccessRuleAccessIPRuleParam],
 // [AccessRuleAccessOktaGroupRuleParam], [AccessRuleAccessSAMLGroupRuleParam],
-// [AccessRuleAccessServiceTokenRuleParam], [AccessRuleParam].
+// [AccessRuleAccessOidcClaimRuleParam], [AccessRuleAccessServiceTokenRuleParam],
+// [AccessRuleAccessLinkedAppTokenRuleParam], [AccessRuleParam].
 type AccessRuleUnionParam interface {
 	implementsAccessRuleUnionParam()
 }
@@ -1881,6 +1920,30 @@ func (r AccessRuleAccessSAMLGroupRuleSAMLParam) MarshalJSON() (data []byte, err 
 	return apijson.MarshalRoot(r)
 }
 
+// Matches an OIDC claim. Requires an OIDC identity provider.
+type AccessRuleAccessOidcClaimRuleParam struct {
+	Oidc param.Field[AccessRuleAccessOidcClaimRuleOidcParam] `json:"oidc,required"`
+}
+
+func (r AccessRuleAccessOidcClaimRuleParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r AccessRuleAccessOidcClaimRuleParam) implementsAccessRuleUnionParam() {}
+
+type AccessRuleAccessOidcClaimRuleOidcParam struct {
+	// The name of the OIDC claim.
+	ClaimName param.Field[string] `json:"claim_name,required"`
+	// The OIDC claim value to look for.
+	ClaimValue param.Field[string] `json:"claim_value,required"`
+	// The ID of your OIDC identity provider.
+	IdentityProviderID param.Field[string] `json:"identity_provider_id,required"`
+}
+
+func (r AccessRuleAccessOidcClaimRuleOidcParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
 // Matches a specific Access Service Token
 type AccessRuleAccessServiceTokenRuleParam struct {
 	ServiceToken param.Field[AccessRuleAccessServiceTokenRuleServiceTokenParam] `json:"service_token,required"`
@@ -1901,146 +1964,23 @@ func (r AccessRuleAccessServiceTokenRuleServiceTokenParam) MarshalJSON() (data [
 	return apijson.MarshalRoot(r)
 }
 
-type SchemasGroups struct {
-	// UUID
-	ID        string    `json:"id"`
-	CreatedAt time.Time `json:"created_at" format:"date-time"`
-	// Rules evaluated with a NOT logical operator. To match a policy, a user cannot
-	// meet any of the Exclude rules.
-	Exclude []AccessRule `json:"exclude"`
-	// Rules evaluated with an OR logical operator. A user needs to meet only one of
-	// the Include rules.
-	Include []AccessRule `json:"include"`
-	// Rules evaluated with an AND logical operator. To match a policy, a user must
-	// meet all of the Require rules.
-	IsDefault []AccessRule `json:"is_default"`
-	// The name of the Access group.
-	Name string `json:"name"`
-	// Rules evaluated with an AND logical operator. To match a policy, a user must
-	// meet all of the Require rules.
-	Require   []AccessRule      `json:"require"`
-	UpdatedAt time.Time         `json:"updated_at" format:"date-time"`
-	JSON      schemasGroupsJSON `json:"-"`
+// Matches OAuth 2.0 access tokens issued by the specified Access OIDC SaaS
+// application. Only compatible with non_identity and bypass decisions.
+type AccessRuleAccessLinkedAppTokenRuleParam struct {
+	LinkedAppToken param.Field[AccessRuleAccessLinkedAppTokenRuleLinkedAppTokenParam] `json:"linked_app_token,required"`
 }
 
-// schemasGroupsJSON contains the JSON metadata for the struct [SchemasGroups]
-type schemasGroupsJSON struct {
-	ID          apijson.Field
-	CreatedAt   apijson.Field
-	Exclude     apijson.Field
-	Include     apijson.Field
-	IsDefault   apijson.Field
-	Name        apijson.Field
-	Require     apijson.Field
-	UpdatedAt   apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *SchemasGroups) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r schemasGroupsJSON) RawJSON() string {
-	return r.raw
-}
-
-type SingleResponseGroup struct {
-	Result SchemasGroups           `json:"result"`
-	JSON   singleResponseGroupJSON `json:"-"`
-	APIResponseSingleAccess
-}
-
-// singleResponseGroupJSON contains the JSON metadata for the struct
-// [SingleResponseGroup]
-type singleResponseGroupJSON struct {
-	Result      apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *SingleResponseGroup) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r singleResponseGroupJSON) RawJSON() string {
-	return r.raw
-}
-
-type AccountAccessGroupListResponse struct {
-	Result []SchemasGroups                    `json:"result"`
-	JSON   accountAccessGroupListResponseJSON `json:"-"`
-	APIResponseCollectionAccess
-}
-
-// accountAccessGroupListResponseJSON contains the JSON metadata for the struct
-// [AccountAccessGroupListResponse]
-type accountAccessGroupListResponseJSON struct {
-	Result      apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountAccessGroupListResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountAccessGroupListResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-type AccountAccessGroupNewParams struct {
-	// Rules evaluated with an OR logical operator. A user needs to meet only one of
-	// the Include rules.
-	Include param.Field[[]AccessRuleUnionParam] `json:"include,required"`
-	// The name of the Access group.
-	Name param.Field[string] `json:"name,required"`
-	// Rules evaluated with a NOT logical operator. To match a policy, a user cannot
-	// meet any of the Exclude rules.
-	Exclude param.Field[[]AccessRuleUnionParam] `json:"exclude"`
-	// Whether this is the default group
-	IsDefault param.Field[bool] `json:"is_default"`
-	// Rules evaluated with an AND logical operator. To match a policy, a user must
-	// meet all of the Require rules.
-	Require param.Field[[]AccessRuleUnionParam] `json:"require"`
-}
-
-func (r AccountAccessGroupNewParams) MarshalJSON() (data []byte, err error) {
+func (r AccessRuleAccessLinkedAppTokenRuleParam) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-type AccountAccessGroupUpdateParams struct {
-	// Rules evaluated with an OR logical operator. A user needs to meet only one of
-	// the Include rules.
-	Include param.Field[[]AccessRuleUnionParam] `json:"include,required"`
-	// The name of the Access group.
-	Name param.Field[string] `json:"name,required"`
-	// Rules evaluated with a NOT logical operator. To match a policy, a user cannot
-	// meet any of the Exclude rules.
-	Exclude param.Field[[]AccessRuleUnionParam] `json:"exclude"`
-	// Whether this is the default group
-	IsDefault param.Field[bool] `json:"is_default"`
-	// Rules evaluated with an AND logical operator. To match a policy, a user must
-	// meet all of the Require rules.
-	Require param.Field[[]AccessRuleUnionParam] `json:"require"`
+func (r AccessRuleAccessLinkedAppTokenRuleParam) implementsAccessRuleUnionParam() {}
+
+type AccessRuleAccessLinkedAppTokenRuleLinkedAppTokenParam struct {
+	// The ID of an Access OIDC SaaS application
+	AppUid param.Field[string] `json:"app_uid,required"`
 }
 
-func (r AccountAccessGroupUpdateParams) MarshalJSON() (data []byte, err error) {
+func (r AccessRuleAccessLinkedAppTokenRuleLinkedAppTokenParam) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
-}
-
-type AccountAccessGroupListParams struct {
-	// The name of the group.
-	Name param.Field[string] `query:"name"`
-	// Search for groups by other listed query parameters.
-	Search param.Field[string] `query:"search"`
-}
-
-// URLQuery serializes [AccountAccessGroupListParams]'s query parameters as
-// `url.Values`.
-func (r AccountAccessGroupListParams) URLQuery() (v url.Values) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
 }

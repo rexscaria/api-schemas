@@ -10,7 +10,6 @@ import (
 	"io"
 	"mime/multipart"
 	"net/http"
-	"reflect"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apiform"
@@ -18,8 +17,6 @@ import (
 	"github.com/rexscaria/api-schemas/internal/param"
 	"github.com/rexscaria/api-schemas/internal/requestconfig"
 	"github.com/rexscaria/api-schemas/option"
-	"github.com/rexscaria/api-schemas/shared"
-	"github.com/tidwall/gjson"
 )
 
 // AccountVectorizeIndexService contains methods and other services that help with
@@ -213,96 +210,6 @@ func (r *AccountVectorizeIndexService) Upsert(ctx context.Context, accountID str
 	path := fmt.Sprintf("accounts/%s/vectorize/indexes/%s/upsert", accountID, indexName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
-}
-
-type VectorizeAPIResponseCommon struct {
-	Errors   []VectorizeMessages                   `json:"errors,required"`
-	Messages []VectorizeMessages                   `json:"messages,required"`
-	Result   VectorizeAPIResponseCommonResultUnion `json:"result,required"`
-	// Whether the API call was successful
-	Success VectorizeAPIResponseCommonSuccess `json:"success,required"`
-	JSON    vectorizeAPIResponseCommonJSON    `json:"-"`
-}
-
-// vectorizeAPIResponseCommonJSON contains the JSON metadata for the struct
-// [VectorizeAPIResponseCommon]
-type vectorizeAPIResponseCommonJSON struct {
-	Errors      apijson.Field
-	Messages    apijson.Field
-	Result      apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *VectorizeAPIResponseCommon) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r vectorizeAPIResponseCommonJSON) RawJSON() string {
-	return r.raw
-}
-
-// Union satisfied by [VectorizeAPIResponseCommonResultArray] or
-// [shared.UnionString].
-type VectorizeAPIResponseCommonResultUnion interface {
-	ImplementsVectorizeAPIResponseCommonResultUnion()
-}
-
-func init() {
-	apijson.RegisterUnion(
-		reflect.TypeOf((*VectorizeAPIResponseCommonResultUnion)(nil)).Elem(),
-		"",
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(VectorizeAPIResponseCommonResultArray{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.String,
-			Type:       reflect.TypeOf(shared.UnionString("")),
-		},
-	)
-}
-
-type VectorizeAPIResponseCommonResultArray []interface{}
-
-func (r VectorizeAPIResponseCommonResultArray) ImplementsVectorizeAPIResponseCommonResultUnion() {}
-
-// Whether the API call was successful
-type VectorizeAPIResponseCommonSuccess bool
-
-const (
-	VectorizeAPIResponseCommonSuccessTrue VectorizeAPIResponseCommonSuccess = true
-)
-
-func (r VectorizeAPIResponseCommonSuccess) IsKnown() bool {
-	switch r {
-	case VectorizeAPIResponseCommonSuccessTrue:
-		return true
-	}
-	return false
-}
-
-type VectorizeAPIResponseSingle struct {
-	Result interface{}                    `json:"result,nullable"`
-	JSON   vectorizeAPIResponseSingleJSON `json:"-"`
-	VectorizeAPIResponseCommon
-}
-
-// vectorizeAPIResponseSingleJSON contains the JSON metadata for the struct
-// [VectorizeAPIResponseSingle]
-type vectorizeAPIResponseSingleJSON struct {
-	Result      apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *VectorizeAPIResponseSingle) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r vectorizeAPIResponseSingleJSON) RawJSON() string {
-	return r.raw
 }
 
 type VectorizeCreateIndexRequestParam struct {
@@ -516,47 +423,23 @@ func (r VectorizeIndexGetVectorsByIDRequestParam) MarshalJSON() (data []byte, er
 	return apijson.MarshalRoot(r)
 }
 
-type VectorizeIndexGetVectorsByIDResponse struct {
-	// Identifier for a Vector
-	ID        string                                   `json:"id"`
-	Metadata  interface{}                              `json:"metadata"`
-	Namespace string                                   `json:"namespace,nullable"`
-	Values    []float64                                `json:"values"`
-	JSON      vectorizeIndexGetVectorsByIDResponseJSON `json:"-"`
-}
-
-// vectorizeIndexGetVectorsByIDResponseJSON contains the JSON metadata for the
-// struct [VectorizeIndexGetVectorsByIDResponse]
-type vectorizeIndexGetVectorsByIDResponseJSON struct {
-	ID          apijson.Field
-	Metadata    apijson.Field
-	Namespace   apijson.Field
-	Values      apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *VectorizeIndexGetVectorsByIDResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r vectorizeIndexGetVectorsByIDResponseJSON) RawJSON() string {
-	return r.raw
-}
-
 type VectorizeMessages struct {
-	Code    int64                 `json:"code,required"`
-	Message string                `json:"message,required"`
-	JSON    vectorizeMessagesJSON `json:"-"`
+	Code             int64                   `json:"code,required"`
+	Message          string                  `json:"message,required"`
+	DocumentationURL string                  `json:"documentation_url"`
+	Source           VectorizeMessagesSource `json:"source"`
+	JSON             vectorizeMessagesJSON   `json:"-"`
 }
 
 // vectorizeMessagesJSON contains the JSON metadata for the struct
 // [VectorizeMessages]
 type vectorizeMessagesJSON struct {
-	Code        apijson.Field
-	Message     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
 }
 
 func (r *VectorizeMessages) UnmarshalJSON(data []byte) (err error) {
@@ -567,16 +450,43 @@ func (r vectorizeMessagesJSON) RawJSON() string {
 	return r.raw
 }
 
+type VectorizeMessagesSource struct {
+	Pointer string                      `json:"pointer"`
+	JSON    vectorizeMessagesSourceJSON `json:"-"`
+}
+
+// vectorizeMessagesSourceJSON contains the JSON metadata for the struct
+// [VectorizeMessagesSource]
+type vectorizeMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *VectorizeMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r vectorizeMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
 type AccountVectorizeIndexNewResponse struct {
-	Result VectorizeCreateIndexResponse         `json:"result"`
-	JSON   accountVectorizeIndexNewResponseJSON `json:"-"`
-	VectorizeAPIResponseSingle
+	Errors   []VectorizeMessages          `json:"errors,required"`
+	Messages []VectorizeMessages          `json:"messages,required"`
+	Result   VectorizeCreateIndexResponse `json:"result,required,nullable"`
+	// Whether the API call was successful
+	Success AccountVectorizeIndexNewResponseSuccess `json:"success,required"`
+	JSON    accountVectorizeIndexNewResponseJSON    `json:"-"`
 }
 
 // accountVectorizeIndexNewResponseJSON contains the JSON metadata for the struct
 // [AccountVectorizeIndexNewResponse]
 type accountVectorizeIndexNewResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -589,16 +499,37 @@ func (r accountVectorizeIndexNewResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful
+type AccountVectorizeIndexNewResponseSuccess bool
+
+const (
+	AccountVectorizeIndexNewResponseSuccessTrue AccountVectorizeIndexNewResponseSuccess = true
+)
+
+func (r AccountVectorizeIndexNewResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountVectorizeIndexNewResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountVectorizeIndexGetResponse struct {
-	Result VectorizeCreateIndexResponse         `json:"result"`
-	JSON   accountVectorizeIndexGetResponseJSON `json:"-"`
-	VectorizeAPIResponseSingle
+	Errors   []VectorizeMessages          `json:"errors,required"`
+	Messages []VectorizeMessages          `json:"messages,required"`
+	Result   VectorizeCreateIndexResponse `json:"result,required,nullable"`
+	// Whether the API call was successful
+	Success AccountVectorizeIndexGetResponseSuccess `json:"success,required"`
+	JSON    accountVectorizeIndexGetResponseJSON    `json:"-"`
 }
 
 // accountVectorizeIndexGetResponseJSON contains the JSON metadata for the struct
 // [AccountVectorizeIndexGetResponse]
 type accountVectorizeIndexGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -611,16 +542,37 @@ func (r accountVectorizeIndexGetResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful
+type AccountVectorizeIndexGetResponseSuccess bool
+
+const (
+	AccountVectorizeIndexGetResponseSuccessTrue AccountVectorizeIndexGetResponseSuccess = true
+)
+
+func (r AccountVectorizeIndexGetResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountVectorizeIndexGetResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountVectorizeIndexUpdateResponse struct {
-	Result VectorizeCreateIndexResponse            `json:"result"`
-	JSON   accountVectorizeIndexUpdateResponseJSON `json:"-"`
-	VectorizeAPIResponseSingle
+	Errors   []VectorizeMessages          `json:"errors,required"`
+	Messages []VectorizeMessages          `json:"messages,required"`
+	Result   VectorizeCreateIndexResponse `json:"result,required,nullable"`
+	// Whether the API call was successful
+	Success AccountVectorizeIndexUpdateResponseSuccess `json:"success,required"`
+	JSON    accountVectorizeIndexUpdateResponseJSON    `json:"-"`
 }
 
 // accountVectorizeIndexUpdateResponseJSON contains the JSON metadata for the
 // struct [AccountVectorizeIndexUpdateResponse]
 type accountVectorizeIndexUpdateResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -633,16 +585,37 @@ func (r accountVectorizeIndexUpdateResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful
+type AccountVectorizeIndexUpdateResponseSuccess bool
+
+const (
+	AccountVectorizeIndexUpdateResponseSuccessTrue AccountVectorizeIndexUpdateResponseSuccess = true
+)
+
+func (r AccountVectorizeIndexUpdateResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountVectorizeIndexUpdateResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountVectorizeIndexListResponse struct {
-	Result []VectorizeCreateIndexResponse        `json:"result"`
-	JSON   accountVectorizeIndexListResponseJSON `json:"-"`
-	VectorizeAPIResponseCommon
+	Errors   []VectorizeMessages            `json:"errors,required"`
+	Messages []VectorizeMessages            `json:"messages,required"`
+	Result   []VectorizeCreateIndexResponse `json:"result,required"`
+	// Whether the API call was successful
+	Success AccountVectorizeIndexListResponseSuccess `json:"success,required"`
+	JSON    accountVectorizeIndexListResponseJSON    `json:"-"`
 }
 
 // accountVectorizeIndexListResponseJSON contains the JSON metadata for the struct
 // [AccountVectorizeIndexListResponse]
 type accountVectorizeIndexListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -655,16 +628,37 @@ func (r accountVectorizeIndexListResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful
+type AccountVectorizeIndexListResponseSuccess bool
+
+const (
+	AccountVectorizeIndexListResponseSuccessTrue AccountVectorizeIndexListResponseSuccess = true
+)
+
+func (r AccountVectorizeIndexListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountVectorizeIndexListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountVectorizeIndexDeleteResponse struct {
-	Result interface{}                             `json:"result,nullable"`
-	JSON   accountVectorizeIndexDeleteResponseJSON `json:"-"`
-	VectorizeAPIResponseSingle
+	Errors   []VectorizeMessages `json:"errors,required"`
+	Messages []VectorizeMessages `json:"messages,required"`
+	Result   interface{}         `json:"result,required,nullable"`
+	// Whether the API call was successful
+	Success AccountVectorizeIndexDeleteResponseSuccess `json:"success,required"`
+	JSON    accountVectorizeIndexDeleteResponseJSON    `json:"-"`
 }
 
 // accountVectorizeIndexDeleteResponseJSON contains the JSON metadata for the
 // struct [AccountVectorizeIndexDeleteResponse]
 type accountVectorizeIndexDeleteResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -677,16 +671,37 @@ func (r accountVectorizeIndexDeleteResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful
+type AccountVectorizeIndexDeleteResponseSuccess bool
+
+const (
+	AccountVectorizeIndexDeleteResponseSuccessTrue AccountVectorizeIndexDeleteResponseSuccess = true
+)
+
+func (r AccountVectorizeIndexDeleteResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountVectorizeIndexDeleteResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountVectorizeIndexDeleteByIDsResponse struct {
-	Result AccountVectorizeIndexDeleteByIDsResponseResult `json:"result"`
-	JSON   accountVectorizeIndexDeleteByIDsResponseJSON   `json:"-"`
-	VectorizeAPIResponseSingle
+	Errors   []VectorizeMessages                            `json:"errors,required"`
+	Messages []VectorizeMessages                            `json:"messages,required"`
+	Result   AccountVectorizeIndexDeleteByIDsResponseResult `json:"result,required,nullable"`
+	// Whether the API call was successful
+	Success AccountVectorizeIndexDeleteByIDsResponseSuccess `json:"success,required"`
+	JSON    accountVectorizeIndexDeleteByIDsResponseJSON    `json:"-"`
 }
 
 // accountVectorizeIndexDeleteByIDsResponseJSON contains the JSON metadata for the
 // struct [AccountVectorizeIndexDeleteByIDsResponse]
 type accountVectorizeIndexDeleteByIDsResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -725,17 +740,38 @@ func (r accountVectorizeIndexDeleteByIDsResponseResultJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful
+type AccountVectorizeIndexDeleteByIDsResponseSuccess bool
+
+const (
+	AccountVectorizeIndexDeleteByIDsResponseSuccessTrue AccountVectorizeIndexDeleteByIDsResponseSuccess = true
+)
+
+func (r AccountVectorizeIndexDeleteByIDsResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountVectorizeIndexDeleteByIDsResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountVectorizeIndexGetByIDsResponse struct {
+	Errors   []VectorizeMessages `json:"errors,required"`
+	Messages []VectorizeMessages `json:"messages,required"`
 	// Array of vectors with matching ids.
-	Result []VectorizeIndexGetVectorsByIDResponse    `json:"result"`
-	JSON   accountVectorizeIndexGetByIDsResponseJSON `json:"-"`
-	VectorizeAPIResponseSingle
+	Result interface{} `json:"result,required,nullable"`
+	// Whether the API call was successful
+	Success AccountVectorizeIndexGetByIDsResponseSuccess `json:"success,required"`
+	JSON    accountVectorizeIndexGetByIDsResponseJSON    `json:"-"`
 }
 
 // accountVectorizeIndexGetByIDsResponseJSON contains the JSON metadata for the
 // struct [AccountVectorizeIndexGetByIDsResponse]
 type accountVectorizeIndexGetByIDsResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -748,16 +784,37 @@ func (r accountVectorizeIndexGetByIDsResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful
+type AccountVectorizeIndexGetByIDsResponseSuccess bool
+
+const (
+	AccountVectorizeIndexGetByIDsResponseSuccessTrue AccountVectorizeIndexGetByIDsResponseSuccess = true
+)
+
+func (r AccountVectorizeIndexGetByIDsResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountVectorizeIndexGetByIDsResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountVectorizeIndexInsertResponse struct {
-	Result AccountVectorizeIndexInsertResponseResult `json:"result"`
-	JSON   accountVectorizeIndexInsertResponseJSON   `json:"-"`
-	VectorizeAPIResponseSingle
+	Errors   []VectorizeMessages                       `json:"errors,required"`
+	Messages []VectorizeMessages                       `json:"messages,required"`
+	Result   AccountVectorizeIndexInsertResponseResult `json:"result,required,nullable"`
+	// Whether the API call was successful
+	Success AccountVectorizeIndexInsertResponseSuccess `json:"success,required"`
+	JSON    accountVectorizeIndexInsertResponseJSON    `json:"-"`
 }
 
 // accountVectorizeIndexInsertResponseJSON contains the JSON metadata for the
 // struct [AccountVectorizeIndexInsertResponse]
 type accountVectorizeIndexInsertResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -795,16 +852,37 @@ func (r accountVectorizeIndexInsertResponseResultJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful
+type AccountVectorizeIndexInsertResponseSuccess bool
+
+const (
+	AccountVectorizeIndexInsertResponseSuccessTrue AccountVectorizeIndexInsertResponseSuccess = true
+)
+
+func (r AccountVectorizeIndexInsertResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountVectorizeIndexInsertResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountVectorizeIndexQueryResponse struct {
-	Result AccountVectorizeIndexQueryResponseResult `json:"result"`
-	JSON   accountVectorizeIndexQueryResponseJSON   `json:"-"`
-	VectorizeAPIResponseSingle
+	Errors   []VectorizeMessages                      `json:"errors,required"`
+	Messages []VectorizeMessages                      `json:"messages,required"`
+	Result   AccountVectorizeIndexQueryResponseResult `json:"result,required,nullable"`
+	// Whether the API call was successful
+	Success AccountVectorizeIndexQueryResponseSuccess `json:"success,required"`
+	JSON    accountVectorizeIndexQueryResponseJSON    `json:"-"`
 }
 
 // accountVectorizeIndexQueryResponseJSON contains the JSON metadata for the struct
 // [AccountVectorizeIndexQueryResponse]
 type accountVectorizeIndexQueryResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -871,16 +949,37 @@ func (r accountVectorizeIndexQueryResponseResultMatchJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful
+type AccountVectorizeIndexQueryResponseSuccess bool
+
+const (
+	AccountVectorizeIndexQueryResponseSuccessTrue AccountVectorizeIndexQueryResponseSuccess = true
+)
+
+func (r AccountVectorizeIndexQueryResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountVectorizeIndexQueryResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountVectorizeIndexUpsertResponse struct {
-	Result AccountVectorizeIndexUpsertResponseResult `json:"result"`
-	JSON   accountVectorizeIndexUpsertResponseJSON   `json:"-"`
-	VectorizeAPIResponseSingle
+	Errors   []VectorizeMessages                       `json:"errors,required"`
+	Messages []VectorizeMessages                       `json:"messages,required"`
+	Result   AccountVectorizeIndexUpsertResponseResult `json:"result,required,nullable"`
+	// Whether the API call was successful
+	Success AccountVectorizeIndexUpsertResponseSuccess `json:"success,required"`
+	JSON    accountVectorizeIndexUpsertResponseJSON    `json:"-"`
 }
 
 // accountVectorizeIndexUpsertResponseJSON contains the JSON metadata for the
 // struct [AccountVectorizeIndexUpsertResponse]
 type accountVectorizeIndexUpsertResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -916,6 +1015,21 @@ func (r *AccountVectorizeIndexUpsertResponseResult) UnmarshalJSON(data []byte) (
 
 func (r accountVectorizeIndexUpsertResponseResultJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful
+type AccountVectorizeIndexUpsertResponseSuccess bool
+
+const (
+	AccountVectorizeIndexUpsertResponseSuccessTrue AccountVectorizeIndexUpsertResponseSuccess = true
+)
+
+func (r AccountVectorizeIndexUpsertResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountVectorizeIndexUpsertResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountVectorizeIndexNewParams struct {

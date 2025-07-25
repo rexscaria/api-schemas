@@ -29,7 +29,7 @@ func TestAccountCloudforceOneEventRawGet(t *testing.T) {
 	)
 	_, err := client.Accounts.CloudforceOne.Events.Raw.Get(
 		context.TODO(),
-		0.000000,
+		"account_id",
 		"dataset_id",
 		"event_id",
 	)
@@ -58,7 +58,7 @@ func TestAccountCloudforceOneEventRawUpdateWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Accounts.CloudforceOne.Events.Raw.Update(
 		context.TODO(),
-		0.000000,
+		"account_id",
 		"event_id",
 		"raw_id",
 		cfrex.AccountCloudforceOneEventRawUpdateParams{

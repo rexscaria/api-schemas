@@ -3,14 +3,6 @@
 package cfrex
 
 import (
-	"context"
-	"errors"
-	"fmt"
-	"net/http"
-
-	"github.com/rexscaria/api-schemas/internal/apijson"
-	"github.com/rexscaria/api-schemas/internal/param"
-	"github.com/rexscaria/api-schemas/internal/requestconfig"
 	"github.com/rexscaria/api-schemas/option"
 )
 
@@ -31,75 +23,4 @@ func NewZoneLogpushValidateService(opts ...option.RequestOption) (r *ZoneLogpush
 	r = &ZoneLogpushValidateService{}
 	r.Options = opts
 	return
-}
-
-// Validates destination.
-func (r *ZoneLogpushValidateService) Destination(ctx context.Context, zoneID string, body ZoneLogpushValidateDestinationParams, opts ...option.RequestOption) (res *ValidateResponse, err error) {
-	opts = append(r.Options[:], opts...)
-	if zoneID == "" {
-		err = errors.New("missing required zone_id parameter")
-		return
-	}
-	path := fmt.Sprintf("zones/%s/logpush/validate/destination", zoneID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
-}
-
-// Checks if there is an existing job with a destination.
-func (r *ZoneLogpushValidateService) DestinationExists(ctx context.Context, zoneID string, body ZoneLogpushValidateDestinationExistsParams, opts ...option.RequestOption) (res *DestinationExistsResponse, err error) {
-	opts = append(r.Options[:], opts...)
-	if zoneID == "" {
-		err = errors.New("missing required zone_id parameter")
-		return
-	}
-	path := fmt.Sprintf("zones/%s/logpush/validate/destination/exists", zoneID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
-}
-
-// Validates logpull origin with logpull_options.
-func (r *ZoneLogpushValidateService) Origin(ctx context.Context, zoneID string, body ZoneLogpushValidateOriginParams, opts ...option.RequestOption) (res *ValidateResponse, err error) {
-	opts = append(r.Options[:], opts...)
-	if zoneID == "" {
-		err = errors.New("missing required zone_id parameter")
-		return
-	}
-	path := fmt.Sprintf("zones/%s/logpush/validate/origin", zoneID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
-}
-
-type ZoneLogpushValidateDestinationParams struct {
-	// Uniquely identifies a resource (such as an s3 bucket) where data will be pushed.
-	// Additional configuration parameters supported by the destination may be
-	// included.
-	DestinationConf param.Field[string] `json:"destination_conf,required" format:"uri"`
-}
-
-func (r ZoneLogpushValidateDestinationParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-type ZoneLogpushValidateDestinationExistsParams struct {
-	// Uniquely identifies a resource (such as an s3 bucket) where data will be pushed.
-	// Additional configuration parameters supported by the destination may be
-	// included.
-	DestinationConf param.Field[string] `json:"destination_conf,required" format:"uri"`
-}
-
-func (r ZoneLogpushValidateDestinationExistsParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-type ZoneLogpushValidateOriginParams struct {
-	// This field is deprecated. Use `output_options` instead. Configuration string. It
-	// specifies things like requested fields and timestamp formats. If migrating from
-	// the logpull api, copy the url (full url or just the query string) of your call
-	// here, and logpush will keep on making this call for you, setting start and end
-	// times appropriately.
-	LogpullOptions param.Field[string] `json:"logpull_options,required" format:"uri-reference"`
-}
-
-func (r ZoneLogpushValidateOriginParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
 }

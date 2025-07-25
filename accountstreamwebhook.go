@@ -58,26 +58,32 @@ func (r *AccountStreamWebhookService) List(ctx context.Context, accountID string
 }
 
 // Deletes a webhook.
-func (r *AccountStreamWebhookService) Delete(ctx context.Context, accountID string, body AccountStreamWebhookDeleteParams, opts ...option.RequestOption) (res *DeletedStreamResponse, err error) {
+func (r *AccountStreamWebhookService) Delete(ctx context.Context, accountID string, opts ...option.RequestOption) (res *DeletedStreamResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
 	}
 	path := fmt.Sprintf("accounts/%s/stream/webhook", accountID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
 type WebhookResponseSingle struct {
-	Result interface{}               `json:"result"`
-	JSON   webhookResponseSingleJSON `json:"-"`
-	APIResponseSingleStream
+	Errors   []StreamMessages `json:"errors,required"`
+	Messages []StreamMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success WebhookResponseSingleSuccess `json:"success,required"`
+	Result  interface{}                  `json:"result"`
+	JSON    webhookResponseSingleJSON    `json:"-"`
 }
 
 // webhookResponseSingleJSON contains the JSON metadata for the struct
 // [WebhookResponseSingle]
 type webhookResponseSingleJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -91,6 +97,21 @@ func (r webhookResponseSingleJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type WebhookResponseSingleSuccess bool
+
+const (
+	WebhookResponseSingleSuccessTrue WebhookResponseSingleSuccess = true
+)
+
+func (r WebhookResponseSingleSuccess) IsKnown() bool {
+	switch r {
+	case WebhookResponseSingleSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountStreamWebhookNewParams struct {
 	// The URL where webhooks will be sent.
 	NotificationURL param.Field[string] `json:"notificationUrl,required" format:"uri"`
@@ -98,12 +119,4 @@ type AccountStreamWebhookNewParams struct {
 
 func (r AccountStreamWebhookNewParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
-}
-
-type AccountStreamWebhookDeleteParams struct {
-	Body interface{} `json:"body,required"`
-}
-
-func (r AccountStreamWebhookDeleteParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
 }

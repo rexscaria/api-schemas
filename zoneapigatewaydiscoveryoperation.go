@@ -96,69 +96,22 @@ func (r APIDiscoveryState) IsKnown() bool {
 	return false
 }
 
-type APIResponseCollectionAPIShield struct {
-	ResultInfo APIResponseCollectionAPIShieldResultInfo `json:"result_info"`
-	JSON       apiResponseCollectionAPIShieldJSON       `json:"-"`
-	APIResponseAPIShield
-}
-
-// apiResponseCollectionAPIShieldJSON contains the JSON metadata for the struct
-// [APIResponseCollectionAPIShield]
-type apiResponseCollectionAPIShieldJSON struct {
-	ResultInfo  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *APIResponseCollectionAPIShield) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r apiResponseCollectionAPIShieldJSON) RawJSON() string {
-	return r.raw
-}
-
-type APIResponseCollectionAPIShieldResultInfo struct {
-	// Total number of results for the requested service
-	Count float64 `json:"count"`
-	// Current page within paginated list of results
-	Page float64 `json:"page"`
-	// Number of results per page of results
-	PerPage float64 `json:"per_page"`
-	// Total results available without any search parameters
-	TotalCount float64                                      `json:"total_count"`
-	JSON       apiResponseCollectionAPIShieldResultInfoJSON `json:"-"`
-}
-
-// apiResponseCollectionAPIShieldResultInfoJSON contains the JSON metadata for the
-// struct [APIResponseCollectionAPIShieldResultInfo]
-type apiResponseCollectionAPIShieldResultInfoJSON struct {
-	Count       apijson.Field
-	Page        apijson.Field
-	PerPage     apijson.Field
-	TotalCount  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *APIResponseCollectionAPIShieldResultInfo) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r apiResponseCollectionAPIShieldResultInfoJSON) RawJSON() string {
-	return r.raw
-}
-
 type ZoneAPIGatewayDiscoveryOperationUpdateResponse struct {
-	Result map[string]ZoneAPIGatewayDiscoveryOperationUpdateResponseResult `json:"result,required"`
-	JSON   zoneAPIGatewayDiscoveryOperationUpdateResponseJSON              `json:"-"`
-	APIResponseAPIShield
+	Errors   []MessagesAPIShieldItem                                         `json:"errors,required"`
+	Messages []MessagesAPIShieldItem                                         `json:"messages,required"`
+	Result   map[string]ZoneAPIGatewayDiscoveryOperationUpdateResponseResult `json:"result,required"`
+	// Whether the API call was successful.
+	Success ZoneAPIGatewayDiscoveryOperationUpdateResponseSuccess `json:"success,required"`
+	JSON    zoneAPIGatewayDiscoveryOperationUpdateResponseJSON    `json:"-"`
 }
 
 // zoneAPIGatewayDiscoveryOperationUpdateResponseJSON contains the JSON metadata
 // for the struct [ZoneAPIGatewayDiscoveryOperationUpdateResponse]
 type zoneAPIGatewayDiscoveryOperationUpdateResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -216,16 +169,39 @@ func (r ZoneAPIGatewayDiscoveryOperationUpdateResponseResultState) IsKnown() boo
 	return false
 }
 
+// Whether the API call was successful.
+type ZoneAPIGatewayDiscoveryOperationUpdateResponseSuccess bool
+
+const (
+	ZoneAPIGatewayDiscoveryOperationUpdateResponseSuccessTrue ZoneAPIGatewayDiscoveryOperationUpdateResponseSuccess = true
+)
+
+func (r ZoneAPIGatewayDiscoveryOperationUpdateResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneAPIGatewayDiscoveryOperationUpdateResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type ZoneAPIGatewayDiscoveryOperationListResponse struct {
-	Result []ZoneAPIGatewayDiscoveryOperationListResponseResult `json:"result,required"`
-	JSON   zoneAPIGatewayDiscoveryOperationListResponseJSON     `json:"-"`
-	APIResponseCollectionAPIShield
+	Errors   []MessagesAPIShieldItem                              `json:"errors,required"`
+	Messages []MessagesAPIShieldItem                              `json:"messages,required"`
+	Result   []ZoneAPIGatewayDiscoveryOperationListResponseResult `json:"result,required"`
+	// Whether the API call was successful.
+	Success    ZoneAPIGatewayDiscoveryOperationListResponseSuccess    `json:"success,required"`
+	ResultInfo ZoneAPIGatewayDiscoveryOperationListResponseResultInfo `json:"result_info"`
+	JSON       zoneAPIGatewayDiscoveryOperationListResponseJSON       `json:"-"`
 }
 
 // zoneAPIGatewayDiscoveryOperationListResponseJSON contains the JSON metadata for
 // the struct [ZoneAPIGatewayDiscoveryOperationListResponse]
 type zoneAPIGatewayDiscoveryOperationListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -239,9 +215,18 @@ func (r zoneAPIGatewayDiscoveryOperationListResponseJSON) RawJSON() string {
 }
 
 type ZoneAPIGatewayDiscoveryOperationListResponseResult struct {
-	// UUID
-	ID          SchemasUuid      `json:"id,required"`
-	LastUpdated SchemasTimestamp `json:"last_updated,required"`
+	// UUID.
+	ID SchemasUuid `json:"id,required"`
+	// The endpoint which can contain path parameter templates in curly braces, each
+	// will be replaced from left to right with {varN}, starting with {var1}, during
+	// insertion. This will further be Cloudflare-normalized upon insertion. See:
+	// https://developers.cloudflare.com/rules/normalization/how-it-works/.
+	Endpoint string `json:"endpoint,required" format:"uri-template"`
+	// RFC3986-compliant host.
+	Host        string           `json:"host,required" format:"hostname"`
+	LastUpdated SchemasTimestamp `json:"last_updated,required" format:"date-time"`
+	// The HTTP method used to access the endpoint.
+	Method ZoneAPIGatewayDiscoveryOperationListResponseResultMethod `json:"method,required"`
 	// API discovery engine(s) that discovered this operation
 	Origin []ZoneAPIGatewayDiscoveryOperationListResponseResultOrigin `json:"origin,required"`
 	// State of operation in API Discovery
@@ -252,14 +237,16 @@ type ZoneAPIGatewayDiscoveryOperationListResponseResult struct {
 	State    APIDiscoveryState                                          `json:"state,required"`
 	Features ZoneAPIGatewayDiscoveryOperationListResponseResultFeatures `json:"features"`
 	JSON     zoneAPIGatewayDiscoveryOperationListResponseResultJSON     `json:"-"`
-	BasicOperation
 }
 
 // zoneAPIGatewayDiscoveryOperationListResponseResultJSON contains the JSON
 // metadata for the struct [ZoneAPIGatewayDiscoveryOperationListResponseResult]
 type zoneAPIGatewayDiscoveryOperationListResponseResultJSON struct {
 	ID          apijson.Field
+	Endpoint    apijson.Field
+	Host        apijson.Field
 	LastUpdated apijson.Field
+	Method      apijson.Field
 	Origin      apijson.Field
 	State       apijson.Field
 	Features    apijson.Field
@@ -273,6 +260,29 @@ func (r *ZoneAPIGatewayDiscoveryOperationListResponseResult) UnmarshalJSON(data 
 
 func (r zoneAPIGatewayDiscoveryOperationListResponseResultJSON) RawJSON() string {
 	return r.raw
+}
+
+// The HTTP method used to access the endpoint.
+type ZoneAPIGatewayDiscoveryOperationListResponseResultMethod string
+
+const (
+	ZoneAPIGatewayDiscoveryOperationListResponseResultMethodGet     ZoneAPIGatewayDiscoveryOperationListResponseResultMethod = "GET"
+	ZoneAPIGatewayDiscoveryOperationListResponseResultMethodPost    ZoneAPIGatewayDiscoveryOperationListResponseResultMethod = "POST"
+	ZoneAPIGatewayDiscoveryOperationListResponseResultMethodHead    ZoneAPIGatewayDiscoveryOperationListResponseResultMethod = "HEAD"
+	ZoneAPIGatewayDiscoveryOperationListResponseResultMethodOptions ZoneAPIGatewayDiscoveryOperationListResponseResultMethod = "OPTIONS"
+	ZoneAPIGatewayDiscoveryOperationListResponseResultMethodPut     ZoneAPIGatewayDiscoveryOperationListResponseResultMethod = "PUT"
+	ZoneAPIGatewayDiscoveryOperationListResponseResultMethodDelete  ZoneAPIGatewayDiscoveryOperationListResponseResultMethod = "DELETE"
+	ZoneAPIGatewayDiscoveryOperationListResponseResultMethodConnect ZoneAPIGatewayDiscoveryOperationListResponseResultMethod = "CONNECT"
+	ZoneAPIGatewayDiscoveryOperationListResponseResultMethodPatch   ZoneAPIGatewayDiscoveryOperationListResponseResultMethod = "PATCH"
+	ZoneAPIGatewayDiscoveryOperationListResponseResultMethodTrace   ZoneAPIGatewayDiscoveryOperationListResponseResultMethod = "TRACE"
+)
+
+func (r ZoneAPIGatewayDiscoveryOperationListResponseResultMethod) IsKnown() bool {
+	switch r {
+	case ZoneAPIGatewayDiscoveryOperationListResponseResultMethodGet, ZoneAPIGatewayDiscoveryOperationListResponseResultMethodPost, ZoneAPIGatewayDiscoveryOperationListResponseResultMethodHead, ZoneAPIGatewayDiscoveryOperationListResponseResultMethodOptions, ZoneAPIGatewayDiscoveryOperationListResponseResultMethodPut, ZoneAPIGatewayDiscoveryOperationListResponseResultMethodDelete, ZoneAPIGatewayDiscoveryOperationListResponseResultMethodConnect, ZoneAPIGatewayDiscoveryOperationListResponseResultMethodPatch, ZoneAPIGatewayDiscoveryOperationListResponseResultMethodTrace:
+		return true
+	}
+	return false
 }
 
 //   - `ML` - Discovered operation was sourced using ML API Discovery _
@@ -318,7 +328,7 @@ func (r zoneAPIGatewayDiscoveryOperationListResponseResultFeaturesJSON) RawJSON(
 }
 
 type ZoneAPIGatewayDiscoveryOperationListResponseResultFeaturesTrafficStats struct {
-	LastUpdated SchemasTimestamp `json:"last_updated,required"`
+	LastUpdated SchemasTimestamp `json:"last_updated,required" format:"date-time"`
 	// The period in seconds these statistics were computed over
 	PeriodSeconds int64 `json:"period_seconds,required"`
 	// The average number of requests seen during this period
@@ -345,16 +355,68 @@ func (r zoneAPIGatewayDiscoveryOperationListResponseResultFeaturesTrafficStatsJS
 	return r.raw
 }
 
+// Whether the API call was successful.
+type ZoneAPIGatewayDiscoveryOperationListResponseSuccess bool
+
+const (
+	ZoneAPIGatewayDiscoveryOperationListResponseSuccessTrue ZoneAPIGatewayDiscoveryOperationListResponseSuccess = true
+)
+
+func (r ZoneAPIGatewayDiscoveryOperationListResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneAPIGatewayDiscoveryOperationListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type ZoneAPIGatewayDiscoveryOperationListResponseResultInfo struct {
+	// Total number of results for the requested service.
+	Count float64 `json:"count"`
+	// Current page within paginated list of results.
+	Page float64 `json:"page"`
+	// Number of results per page of results.
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters.
+	TotalCount float64                                                    `json:"total_count"`
+	JSON       zoneAPIGatewayDiscoveryOperationListResponseResultInfoJSON `json:"-"`
+}
+
+// zoneAPIGatewayDiscoveryOperationListResponseResultInfoJSON contains the JSON
+// metadata for the struct [ZoneAPIGatewayDiscoveryOperationListResponseResultInfo]
+type zoneAPIGatewayDiscoveryOperationListResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZoneAPIGatewayDiscoveryOperationListResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneAPIGatewayDiscoveryOperationListResponseResultInfoJSON) RawJSON() string {
+	return r.raw
+}
+
 type ZoneAPIGatewayDiscoveryOperationUpdateSingleResponse struct {
-	Result ZoneAPIGatewayDiscoveryOperationUpdateSingleResponseResult `json:"result,required"`
-	JSON   zoneAPIGatewayDiscoveryOperationUpdateSingleResponseJSON   `json:"-"`
-	APIResponseAPIShield
+	Errors   []MessagesAPIShieldItem                                    `json:"errors,required"`
+	Messages []MessagesAPIShieldItem                                    `json:"messages,required"`
+	Result   ZoneAPIGatewayDiscoveryOperationUpdateSingleResponseResult `json:"result,required"`
+	// Whether the API call was successful.
+	Success ZoneAPIGatewayDiscoveryOperationUpdateSingleResponseSuccess `json:"success,required"`
+	JSON    zoneAPIGatewayDiscoveryOperationUpdateSingleResponseJSON    `json:"-"`
 }
 
 // zoneAPIGatewayDiscoveryOperationUpdateSingleResponseJSON contains the JSON
 // metadata for the struct [ZoneAPIGatewayDiscoveryOperationUpdateSingleResponse]
 type zoneAPIGatewayDiscoveryOperationUpdateSingleResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -392,6 +454,21 @@ func (r *ZoneAPIGatewayDiscoveryOperationUpdateSingleResponseResult) UnmarshalJS
 
 func (r zoneAPIGatewayDiscoveryOperationUpdateSingleResponseResultJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type ZoneAPIGatewayDiscoveryOperationUpdateSingleResponseSuccess bool
+
+const (
+	ZoneAPIGatewayDiscoveryOperationUpdateSingleResponseSuccessTrue ZoneAPIGatewayDiscoveryOperationUpdateSingleResponseSuccess = true
+)
+
+func (r ZoneAPIGatewayDiscoveryOperationUpdateSingleResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneAPIGatewayDiscoveryOperationUpdateSingleResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type ZoneAPIGatewayDiscoveryOperationUpdateParams struct {

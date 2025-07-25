@@ -42,7 +42,7 @@ func TestAccountWorkerServiceEnvironmentSettingGet(t *testing.T) {
 	}
 }
 
-func TestAccountWorkerServiceEnvironmentSettingPatchWithOptionalParams(t *testing.T) {
+func TestAccountWorkerServiceEnvironmentSettingPatch(t *testing.T) {
 	t.Skip("skipped: tests are disabled for the time being")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -63,22 +63,32 @@ func TestAccountWorkerServiceEnvironmentSettingPatchWithOptionalParams(t *testin
 		"production",
 		cfrex.AccountWorkerServiceEnvironmentSettingPatchParams{
 			SettingsResponseScriptSettings: cfrex.SettingsResponseScriptSettingsParam{
-				CommonResponseWorkersParam: cfrex.CommonResponseWorkersParam{
-					Errors: cfrex.F([]cfrex.WorkersMessagesParam{{
-						Code:    cfrex.F(int64(1000)),
-						Message: cfrex.F("message"),
-					}}),
-					Messages: cfrex.F([]cfrex.WorkersMessagesParam{{
-						Code:    cfrex.F(int64(1000)),
-						Message: cfrex.F("message"),
-					}}),
-					Success: cfrex.F(cfrex.CommonResponseWorkersSuccessTrue),
-				},
+				Errors: cfrex.F([]cfrex.WorkersMessagesParam{{
+					Code:             cfrex.F(int64(1000)),
+					Message:          cfrex.F("message"),
+					DocumentationURL: cfrex.F("documentation_url"),
+					Source: cfrex.F(cfrex.WorkersMessagesSourceParam{
+						Pointer: cfrex.F("pointer"),
+					}),
+				}}),
+				Messages: cfrex.F([]cfrex.WorkersMessagesParam{{
+					Code:             cfrex.F(int64(1000)),
+					Message:          cfrex.F("message"),
+					DocumentationURL: cfrex.F("documentation_url"),
+					Source: cfrex.F(cfrex.WorkersMessagesSourceParam{
+						Pointer: cfrex.F("pointer"),
+					}),
+				}}),
 				Result: cfrex.F(cfrex.SettingsItemParam{
 					Logpush: cfrex.F(false),
 					Observability: cfrex.F(cfrex.ObservabilityParam{
 						Enabled:          cfrex.F(true),
 						HeadSamplingRate: cfrex.F(0.100000),
+						Logs: cfrex.F(cfrex.ObservabilityLogsParam{
+							Enabled:          cfrex.F(true),
+							InvocationLogs:   cfrex.F(true),
+							HeadSamplingRate: cfrex.F(0.100000),
+						}),
 					}),
 					TailConsumers: cfrex.F([]cfrex.TailConsumersScriptParam{{
 						Service:     cfrex.F("my-log-consumer"),
@@ -86,6 +96,7 @@ func TestAccountWorkerServiceEnvironmentSettingPatchWithOptionalParams(t *testin
 						Namespace:   cfrex.F("my-namespace"),
 					}}),
 				}),
+				Success: cfrex.F(cfrex.SettingsResponseScriptSettingsSuccessTrue),
 			},
 		},
 	)

@@ -59,10 +59,7 @@ func TestAccountWorkerScriptTailDelete(t *testing.T) {
 		context.TODO(),
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		"this-is_my_script-01",
-		"03dc9f77817b488fb26c5861ec18f791",
-		cfrex.AccountWorkerScriptTailDeleteParams{
-			Body: map[string]interface{}{},
-		},
+		"023e105f4ecef8ad9ca31a8372d0c353",
 	)
 	if err != nil {
 		var apierr *cfrex.Error

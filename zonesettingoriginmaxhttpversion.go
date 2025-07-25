@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -67,80 +68,6 @@ func (r *ZoneSettingOriginMaxHTTPVersionService) Update(ctx context.Context, zon
 	return
 }
 
-type CacheRulesOriginMaxHTTPVersionResponseValue struct {
-	// Origin Max HTTP Setting Version sets the highest HTTP version Cloudflare will
-	// attempt to use with your origin. This setting allows Cloudflare to make HTTP/2
-	// requests to your origin. (Refer to
-	// [Enable HTTP/2 to Origin](https://developers.cloudflare.com/cache/how-to/enable-http2-to-origin/),
-	// for more information.). The default value is "2" for all plan types except
-	// Enterprise where it is "1"
-	Result CacheRulesOriginMaxHTTPVersionResponseValueResult `json:"result"`
-	JSON   cacheRulesOriginMaxHTTPVersionResponseValueJSON   `json:"-"`
-}
-
-// cacheRulesOriginMaxHTTPVersionResponseValueJSON contains the JSON metadata for
-// the struct [CacheRulesOriginMaxHTTPVersionResponseValue]
-type cacheRulesOriginMaxHTTPVersionResponseValueJSON struct {
-	Result      apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *CacheRulesOriginMaxHTTPVersionResponseValue) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r cacheRulesOriginMaxHTTPVersionResponseValueJSON) RawJSON() string {
-	return r.raw
-}
-
-// Origin Max HTTP Setting Version sets the highest HTTP version Cloudflare will
-// attempt to use with your origin. This setting allows Cloudflare to make HTTP/2
-// requests to your origin. (Refer to
-// [Enable HTTP/2 to Origin](https://developers.cloudflare.com/cache/how-to/enable-http2-to-origin/),
-// for more information.). The default value is "2" for all plan types except
-// Enterprise where it is "1"
-type CacheRulesOriginMaxHTTPVersionResponseValueResult struct {
-	// Value of the zone setting.
-	ID CacheRulesOriginMaxHTTPVersionResponseValueResultID `json:"id"`
-	// Value of the Origin Max HTTP Version Setting.
-	Value CacheRulesOriginMaxHTTPVersionValue                   `json:"value"`
-	JSON  cacheRulesOriginMaxHTTPVersionResponseValueResultJSON `json:"-"`
-	BaseCacheRule
-}
-
-// cacheRulesOriginMaxHTTPVersionResponseValueResultJSON contains the JSON metadata
-// for the struct [CacheRulesOriginMaxHTTPVersionResponseValueResult]
-type cacheRulesOriginMaxHTTPVersionResponseValueResultJSON struct {
-	ID          apijson.Field
-	Value       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *CacheRulesOriginMaxHTTPVersionResponseValueResult) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r cacheRulesOriginMaxHTTPVersionResponseValueResultJSON) RawJSON() string {
-	return r.raw
-}
-
-// Value of the zone setting.
-type CacheRulesOriginMaxHTTPVersionResponseValueResultID string
-
-const (
-	CacheRulesOriginMaxHTTPVersionResponseValueResultIDOriginMaxHTTPVersion CacheRulesOriginMaxHTTPVersionResponseValueResultID = "origin_max_http_version"
-)
-
-func (r CacheRulesOriginMaxHTTPVersionResponseValueResultID) IsKnown() bool {
-	switch r {
-	case CacheRulesOriginMaxHTTPVersionResponseValueResultIDOriginMaxHTTPVersion:
-		return true
-	}
-	return false
-}
-
 // Value of the Origin Max HTTP Version Setting.
 type CacheRulesOriginMaxHTTPVersionValue string
 
@@ -158,14 +85,21 @@ func (r CacheRulesOriginMaxHTTPVersionValue) IsKnown() bool {
 }
 
 type ZoneSettingOriginMaxHTTPVersionGetResponse struct {
-	JSON zoneSettingOriginMaxHTTPVersionGetResponseJSON `json:"-"`
-	CacheRulesZoneCacheSettingsResponse
-	CacheRulesOriginMaxHTTPVersionResponseValue
+	Errors   []MessagesCacheRulesItem `json:"errors,required"`
+	Messages []MessagesCacheRulesItem `json:"messages,required"`
+	// Whether the API call was successful
+	Success ZoneSettingOriginMaxHTTPVersionGetResponseSuccess `json:"success,required"`
+	Result  ZoneSettingOriginMaxHTTPVersionGetResponseResult  `json:"result"`
+	JSON    zoneSettingOriginMaxHTTPVersionGetResponseJSON    `json:"-"`
 }
 
 // zoneSettingOriginMaxHTTPVersionGetResponseJSON contains the JSON metadata for
 // the struct [ZoneSettingOriginMaxHTTPVersionGetResponse]
 type zoneSettingOriginMaxHTTPVersionGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
+	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -178,15 +112,83 @@ func (r zoneSettingOriginMaxHTTPVersionGetResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful
+type ZoneSettingOriginMaxHTTPVersionGetResponseSuccess bool
+
+const (
+	ZoneSettingOriginMaxHTTPVersionGetResponseSuccessTrue ZoneSettingOriginMaxHTTPVersionGetResponseSuccess = true
+)
+
+func (r ZoneSettingOriginMaxHTTPVersionGetResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneSettingOriginMaxHTTPVersionGetResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type ZoneSettingOriginMaxHTTPVersionGetResponseResult struct {
+	// Value of the zone setting.
+	ID ZoneSettingOriginMaxHTTPVersionGetResponseResultID `json:"id,required"`
+	// Whether the setting is editable
+	Editable bool `json:"editable,required"`
+	// The value of the feature
+	Value CacheRulesOriginMaxHTTPVersionValue `json:"value,required"`
+	// Last time this setting was modified.
+	ModifiedOn time.Time                                            `json:"modified_on,nullable" format:"date-time"`
+	JSON       zoneSettingOriginMaxHTTPVersionGetResponseResultJSON `json:"-"`
+}
+
+// zoneSettingOriginMaxHTTPVersionGetResponseResultJSON contains the JSON metadata
+// for the struct [ZoneSettingOriginMaxHTTPVersionGetResponseResult]
+type zoneSettingOriginMaxHTTPVersionGetResponseResultJSON struct {
+	ID          apijson.Field
+	Editable    apijson.Field
+	Value       apijson.Field
+	ModifiedOn  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZoneSettingOriginMaxHTTPVersionGetResponseResult) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneSettingOriginMaxHTTPVersionGetResponseResultJSON) RawJSON() string {
+	return r.raw
+}
+
+// Value of the zone setting.
+type ZoneSettingOriginMaxHTTPVersionGetResponseResultID string
+
+const (
+	ZoneSettingOriginMaxHTTPVersionGetResponseResultIDOriginMaxHTTPVersion ZoneSettingOriginMaxHTTPVersionGetResponseResultID = "origin_max_http_version"
+)
+
+func (r ZoneSettingOriginMaxHTTPVersionGetResponseResultID) IsKnown() bool {
+	switch r {
+	case ZoneSettingOriginMaxHTTPVersionGetResponseResultIDOriginMaxHTTPVersion:
+		return true
+	}
+	return false
+}
+
 type ZoneSettingOriginMaxHTTPVersionUpdateResponse struct {
-	JSON zoneSettingOriginMaxHTTPVersionUpdateResponseJSON `json:"-"`
-	CacheRulesZoneCacheSettingsResponse
-	CacheRulesOriginMaxHTTPVersionResponseValue
+	Errors   []MessagesCacheRulesItem `json:"errors,required"`
+	Messages []MessagesCacheRulesItem `json:"messages,required"`
+	// Whether the API call was successful
+	Success ZoneSettingOriginMaxHTTPVersionUpdateResponseSuccess `json:"success,required"`
+	Result  ZoneSettingOriginMaxHTTPVersionUpdateResponseResult  `json:"result"`
+	JSON    zoneSettingOriginMaxHTTPVersionUpdateResponseJSON    `json:"-"`
 }
 
 // zoneSettingOriginMaxHTTPVersionUpdateResponseJSON contains the JSON metadata for
 // the struct [ZoneSettingOriginMaxHTTPVersionUpdateResponse]
 type zoneSettingOriginMaxHTTPVersionUpdateResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
+	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -197,6 +199,67 @@ func (r *ZoneSettingOriginMaxHTTPVersionUpdateResponse) UnmarshalJSON(data []byt
 
 func (r zoneSettingOriginMaxHTTPVersionUpdateResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful
+type ZoneSettingOriginMaxHTTPVersionUpdateResponseSuccess bool
+
+const (
+	ZoneSettingOriginMaxHTTPVersionUpdateResponseSuccessTrue ZoneSettingOriginMaxHTTPVersionUpdateResponseSuccess = true
+)
+
+func (r ZoneSettingOriginMaxHTTPVersionUpdateResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneSettingOriginMaxHTTPVersionUpdateResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type ZoneSettingOriginMaxHTTPVersionUpdateResponseResult struct {
+	// Value of the zone setting.
+	ID ZoneSettingOriginMaxHTTPVersionUpdateResponseResultID `json:"id,required"`
+	// Whether the setting is editable
+	Editable bool `json:"editable,required"`
+	// The value of the feature
+	Value CacheRulesOriginMaxHTTPVersionValue `json:"value,required"`
+	// Last time this setting was modified.
+	ModifiedOn time.Time                                               `json:"modified_on,nullable" format:"date-time"`
+	JSON       zoneSettingOriginMaxHTTPVersionUpdateResponseResultJSON `json:"-"`
+}
+
+// zoneSettingOriginMaxHTTPVersionUpdateResponseResultJSON contains the JSON
+// metadata for the struct [ZoneSettingOriginMaxHTTPVersionUpdateResponseResult]
+type zoneSettingOriginMaxHTTPVersionUpdateResponseResultJSON struct {
+	ID          apijson.Field
+	Editable    apijson.Field
+	Value       apijson.Field
+	ModifiedOn  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZoneSettingOriginMaxHTTPVersionUpdateResponseResult) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneSettingOriginMaxHTTPVersionUpdateResponseResultJSON) RawJSON() string {
+	return r.raw
+}
+
+// Value of the zone setting.
+type ZoneSettingOriginMaxHTTPVersionUpdateResponseResultID string
+
+const (
+	ZoneSettingOriginMaxHTTPVersionUpdateResponseResultIDOriginMaxHTTPVersion ZoneSettingOriginMaxHTTPVersionUpdateResponseResultID = "origin_max_http_version"
+)
+
+func (r ZoneSettingOriginMaxHTTPVersionUpdateResponseResultID) IsKnown() bool {
+	switch r {
+	case ZoneSettingOriginMaxHTTPVersionUpdateResponseResultIDOriginMaxHTTPVersion:
+		return true
+	}
+	return false
 }
 
 type ZoneSettingOriginMaxHTTPVersionUpdateParams struct {

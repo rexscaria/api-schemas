@@ -8,14 +8,12 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
-	"reflect"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
 	"github.com/rexscaria/api-schemas/internal/param"
 	"github.com/rexscaria/api-schemas/internal/requestconfig"
 	"github.com/rexscaria/api-schemas/option"
-	"github.com/tidwall/gjson"
 )
 
 // AccountRuleListItemService contains methods and other services that help with
@@ -40,8 +38,7 @@ func NewAccountRuleListItemService(opts ...option.RequestOption) (r *AccountRule
 // Appends new items to the list.
 //
 // This operation is asynchronous. To get current the operation status, invoke the
-// [Get bulk operation status](/operations/lists-get-bulk-operation-status)
-// endpoint with the returned `operation_id`.
+// `Get bulk operation status` endpoint with the returned `operation_id`.
 func (r *AccountRuleListItemService) New(ctx context.Context, accountID string, listID string, body AccountRuleListItemNewParams, opts ...option.RequestOption) (res *AsyncResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
@@ -57,32 +54,11 @@ func (r *AccountRuleListItemService) New(ctx context.Context, accountID string, 
 	return
 }
 
-// Fetches a list item in the list.
-func (r *AccountRuleListItemService) Get(ctx context.Context, accountIdentifier string, listID string, itemID string, opts ...option.RequestOption) (res *AccountRuleListItemGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
-	if accountIdentifier == "" {
-		err = errors.New("missing required account_identifier parameter")
-		return
-	}
-	if listID == "" {
-		err = errors.New("missing required list_id parameter")
-		return
-	}
-	if itemID == "" {
-		err = errors.New("missing required item_id parameter")
-		return
-	}
-	path := fmt.Sprintf("accounts/%s/rules/lists/%s/items/%s", accountIdentifier, listID, itemID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
-}
-
 // Removes all existing items from the list and adds the provided items to the
 // list.
 //
 // This operation is asynchronous. To get current the operation status, invoke the
-// [Get bulk operation status](/operations/lists-get-bulk-operation-status)
-// endpoint with the returned `operation_id`.
+// `Get bulk operation status` endpoint with the returned `operation_id`.
 func (r *AccountRuleListItemService) Update(ctx context.Context, accountID string, listID string, body AccountRuleListItemUpdateParams, opts ...option.RequestOption) (res *AsyncResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
@@ -117,8 +93,7 @@ func (r *AccountRuleListItemService) List(ctx context.Context, accountID string,
 // Removes one or more items from a list.
 //
 // This operation is asynchronous. To get current the operation status, invoke the
-// [Get bulk operation status](/operations/lists-get-bulk-operation-status)
-// endpoint with the returned `operation_id`.
+// `Get bulk operation status` endpoint with the returned `operation_id`.
 func (r *AccountRuleListItemService) Delete(ctx context.Context, accountID string, listID string, body AccountRuleListItemDeleteParams, opts ...option.RequestOption) (res *AsyncResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
@@ -135,14 +110,20 @@ func (r *AccountRuleListItemService) Delete(ctx context.Context, accountID strin
 }
 
 type AsyncResponse struct {
-	Result AsyncResponseResult `json:"result"`
-	JSON   asyncResponseJSON   `json:"-"`
-	APIResponseCollectionLists
+	Errors   []AsyncResponseError   `json:"errors,required"`
+	Messages []AsyncResponseMessage `json:"messages,required"`
+	Result   AsyncResponseResult    `json:"result,required"`
+	// Defines whether the API call was successful.
+	Success AsyncResponseSuccess `json:"success,required"`
+	JSON    asyncResponseJSON    `json:"-"`
 }
 
 // asyncResponseJSON contains the JSON metadata for the struct [AsyncResponse]
 type asyncResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -155,9 +136,105 @@ func (r asyncResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+type AsyncResponseError struct {
+	Code             int64                     `json:"code,required"`
+	Message          string                    `json:"message,required"`
+	DocumentationURL string                    `json:"documentation_url"`
+	Source           AsyncResponseErrorsSource `json:"source"`
+	JSON             asyncResponseErrorJSON    `json:"-"`
+}
+
+// asyncResponseErrorJSON contains the JSON metadata for the struct
+// [AsyncResponseError]
+type asyncResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AsyncResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r asyncResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type AsyncResponseErrorsSource struct {
+	Pointer string                        `json:"pointer"`
+	JSON    asyncResponseErrorsSourceJSON `json:"-"`
+}
+
+// asyncResponseErrorsSourceJSON contains the JSON metadata for the struct
+// [AsyncResponseErrorsSource]
+type asyncResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AsyncResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r asyncResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type AsyncResponseMessage struct {
+	Code             int64                       `json:"code,required"`
+	Message          string                      `json:"message,required"`
+	DocumentationURL string                      `json:"documentation_url"`
+	Source           AsyncResponseMessagesSource `json:"source"`
+	JSON             asyncResponseMessageJSON    `json:"-"`
+}
+
+// asyncResponseMessageJSON contains the JSON metadata for the struct
+// [AsyncResponseMessage]
+type asyncResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AsyncResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r asyncResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type AsyncResponseMessagesSource struct {
+	Pointer string                          `json:"pointer"`
+	JSON    asyncResponseMessagesSourceJSON `json:"-"`
+}
+
+// asyncResponseMessagesSourceJSON contains the JSON metadata for the struct
+// [AsyncResponseMessagesSource]
+type asyncResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AsyncResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r asyncResponseMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
 type AsyncResponseResult struct {
 	// The unique operation ID of the asynchronous action.
-	OperationID string                  `json:"operation_id"`
+	OperationID string                  `json:"operation_id,required"`
 	JSON        asyncResponseResultJSON `json:"-"`
 }
 
@@ -177,269 +254,82 @@ func (r asyncResponseResultJSON) RawJSON() string {
 	return r.raw
 }
 
-// An IPv4 address, an IPv4 CIDR, or an IPv6 CIDR. IPv6 CIDRs are limited to a
-// maximum of /64.
+// Defines whether the API call was successful.
+type AsyncResponseSuccess bool
+
+const (
+	AsyncResponseSuccessTrue AsyncResponseSuccess = true
+)
+
+func (r AsyncResponseSuccess) IsKnown() bool {
+	switch r {
+	case AsyncResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type ListItem struct {
 	// The unique ID of the list.
 	ID string `json:"id"`
-	// A non-negative 32 bit integer
+	// Defines a non-negative 32 bit integer.
 	Asn int64 `json:"asn"`
-	// An informative summary of the list item.
+	// Defines an informative summary of the list item.
 	Comment string `json:"comment"`
 	// The RFC 3339 timestamp of when the item was created.
 	CreatedOn string `json:"created_on"`
 	// Valid characters for hostnames are ASCII(7) letters from a to z, the digits from
 	// 0 to 9, wildcards (\*), and the hyphen (-).
-	Hostname          ListItemHostname `json:"hostname"`
-	IncludeSubdomains bool             `json:"include_subdomains"`
-	// An IPv4 address, an IPv4 CIDR, or an IPv6 CIDR. IPv6 CIDRs are limited to a
-	// maximum of /64.
+	Hostname ListItemHostname `json:"hostname"`
+	// An IPv4 address, an IPv4 CIDR, an IPv6 address, or an IPv6 CIDR.
 	IP string `json:"ip"`
 	// The RFC 3339 timestamp of when the item was last modified.
-	ModifiedOn          string `json:"modified_on"`
-	PreservePathSuffix  bool   `json:"preserve_path_suffix"`
-	PreserveQueryString bool   `json:"preserve_query_string"`
+	ModifiedOn string `json:"modified_on"`
 	// The definition of the redirect.
-	Redirect        ListItemRedirect   `json:"redirect"`
-	SourceURL       string             `json:"source_url"`
-	StatusCode      ListItemStatusCode `json:"status_code"`
-	SubpathMatching bool               `json:"subpath_matching"`
-	TargetURL       string             `json:"target_url"`
-	URLHostname     string             `json:"url_hostname"`
-	JSON            listItemJSON       `json:"-"`
-	union           ListItemUnion
+	Redirect ListItemRedirect `json:"redirect"`
+	JSON     listItemJSON     `json:"-"`
 }
 
 // listItemJSON contains the JSON metadata for the struct [ListItem]
 type listItemJSON struct {
-	ID                  apijson.Field
-	Asn                 apijson.Field
-	Comment             apijson.Field
-	CreatedOn           apijson.Field
-	Hostname            apijson.Field
-	IncludeSubdomains   apijson.Field
-	IP                  apijson.Field
-	ModifiedOn          apijson.Field
-	PreservePathSuffix  apijson.Field
-	PreserveQueryString apijson.Field
-	Redirect            apijson.Field
-	SourceURL           apijson.Field
-	StatusCode          apijson.Field
-	SubpathMatching     apijson.Field
-	TargetURL           apijson.Field
-	URLHostname         apijson.Field
-	raw                 string
-	ExtraFields         map[string]apijson.Field
+	ID          apijson.Field
+	Asn         apijson.Field
+	Comment     apijson.Field
+	CreatedOn   apijson.Field
+	Hostname    apijson.Field
+	IP          apijson.Field
+	ModifiedOn  apijson.Field
+	Redirect    apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ListItem) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 func (r listItemJSON) RawJSON() string {
 	return r.raw
 }
 
-func (r *ListItem) UnmarshalJSON(data []byte) (err error) {
-	*r = ListItem{}
-	err = apijson.UnmarshalRoot(data, &r.union)
-	if err != nil {
-		return err
-	}
-	return apijson.Port(r.union, &r)
-}
-
-// AsUnion returns a [ListItemUnion] interface which you can cast to the specific
-// types for more type safety.
-//
-// Possible runtime types of the union are [ListItemIntersection],
-// [ListItemAccountsRulesListsItemsListItemRedirect],
-// [ListItemAccountsRulesListsItemsListItemHostname], [ListItemIntersection].
-func (r ListItem) AsUnion() ListItemUnion {
-	return r.union
-}
-
-// An IPv4 address, an IPv4 CIDR, or an IPv6 CIDR. IPv6 CIDRs are limited to a
-// maximum of /64.
-//
-// Union satisfied by [ListItemIntersection],
-// [ListItemAccountsRulesListsItemsListItemRedirect],
-// [ListItemAccountsRulesListsItemsListItemHostname] or [ListItemIntersection].
-type ListItemUnion interface {
-	implementsListItem()
-}
-
-func init() {
-	apijson.RegisterUnion(
-		reflect.TypeOf((*ListItemUnion)(nil)).Elem(),
-		"",
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(ListItemIntersection{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(ListItemAccountsRulesListsItemsListItemRedirect{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(ListItemAccountsRulesListsItemsListItemHostname{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(ListItemIntersection{}),
-		},
-	)
-}
-
-// An IPv4 address, an IPv4 CIDR, or an IPv6 CIDR. IPv6 CIDRs are limited to a
-// maximum of /64.
-type ListItemIntersection struct {
-	JSON listItemIntersectionJSON `json:"-"`
-}
-
-// listItemIntersectionJSON contains the JSON metadata for the struct
-// [ListItemIntersection]
-type listItemIntersectionJSON struct {
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ListItemIntersection) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r listItemIntersectionJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r ListItemIntersection) implementsListItem() {}
-
-// The definition of the redirect.
-type ListItemAccountsRulesListsItemsListItemRedirect struct {
-	// The unique ID of the list.
-	ID string `json:"id"`
-	// A non-negative 32 bit integer
-	Asn int64 `json:"asn"`
-	// An informative summary of the list item.
-	Comment string `json:"comment"`
-	// The RFC 3339 timestamp of when the item was created.
-	CreatedOn string `json:"created_on"`
-	// Valid characters for hostnames are ASCII(7) letters from a to z, the digits from
-	// 0 to 9, wildcards (\*), and the hyphen (-).
-	Hostname ListItemHostname `json:"hostname"`
-	// An IPv4 address, an IPv4 CIDR, or an IPv6 CIDR. IPv6 CIDRs are limited to a
-	// maximum of /64.
-	IP string `json:"ip"`
-	// The RFC 3339 timestamp of when the item was last modified.
-	ModifiedOn string `json:"modified_on"`
-	// The definition of the redirect.
-	Redirect ListItemRedirect                                    `json:"redirect"`
-	JSON     listItemAccountsRulesListsItemsListItemRedirectJSON `json:"-"`
-	ListItemRedirect
-}
-
-// listItemAccountsRulesListsItemsListItemRedirectJSON contains the JSON metadata
-// for the struct [ListItemAccountsRulesListsItemsListItemRedirect]
-type listItemAccountsRulesListsItemsListItemRedirectJSON struct {
-	ID          apijson.Field
-	Asn         apijson.Field
-	Comment     apijson.Field
-	CreatedOn   apijson.Field
-	Hostname    apijson.Field
-	IP          apijson.Field
-	ModifiedOn  apijson.Field
-	Redirect    apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ListItemAccountsRulesListsItemsListItemRedirect) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r listItemAccountsRulesListsItemsListItemRedirectJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r ListItemAccountsRulesListsItemsListItemRedirect) implementsListItem() {}
-
-// Valid characters for hostnames are ASCII(7) letters from a to z, the digits from
-// 0 to 9, wildcards (\*), and the hyphen (-).
-type ListItemAccountsRulesListsItemsListItemHostname struct {
-	// The unique ID of the list.
-	ID string `json:"id"`
-	// A non-negative 32 bit integer
-	Asn int64 `json:"asn"`
-	// An informative summary of the list item.
-	Comment string `json:"comment"`
-	// The RFC 3339 timestamp of when the item was created.
-	CreatedOn string `json:"created_on"`
-	// Valid characters for hostnames are ASCII(7) letters from a to z, the digits from
-	// 0 to 9, wildcards (\*), and the hyphen (-).
-	Hostname ListItemHostname `json:"hostname"`
-	// An IPv4 address, an IPv4 CIDR, or an IPv6 CIDR. IPv6 CIDRs are limited to a
-	// maximum of /64.
-	IP string `json:"ip"`
-	// The RFC 3339 timestamp of when the item was last modified.
-	ModifiedOn string `json:"modified_on"`
-	// The definition of the redirect.
-	Redirect ListItemRedirect                                    `json:"redirect"`
-	JSON     listItemAccountsRulesListsItemsListItemHostnameJSON `json:"-"`
-	ListItemHostname
-}
-
-// listItemAccountsRulesListsItemsListItemHostnameJSON contains the JSON metadata
-// for the struct [ListItemAccountsRulesListsItemsListItemHostname]
-type listItemAccountsRulesListsItemsListItemHostnameJSON struct {
-	ID          apijson.Field
-	Asn         apijson.Field
-	Comment     apijson.Field
-	CreatedOn   apijson.Field
-	Hostname    apijson.Field
-	IP          apijson.Field
-	ModifiedOn  apijson.Field
-	Redirect    apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ListItemAccountsRulesListsItemsListItemHostname) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r listItemAccountsRulesListsItemsListItemHostnameJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r ListItemAccountsRulesListsItemsListItemHostname) implementsListItem() {}
-
-type ListItemStatusCode int64
-
-const (
-	ListItemStatusCode301 ListItemStatusCode = 301
-	ListItemStatusCode302 ListItemStatusCode = 302
-	ListItemStatusCode307 ListItemStatusCode = 307
-	ListItemStatusCode308 ListItemStatusCode = 308
-)
-
-func (r ListItemStatusCode) IsKnown() bool {
-	switch r {
-	case ListItemStatusCode301, ListItemStatusCode302, ListItemStatusCode307, ListItemStatusCode308:
-		return true
-	}
-	return false
-}
-
 // Valid characters for hostnames are ASCII(7) letters from a to z, the digits from
 // 0 to 9, wildcards (\*), and the hyphen (-).
 type ListItemHostname struct {
-	URLHostname string               `json:"url_hostname,required"`
-	JSON        listItemHostnameJSON `json:"-"`
+	URLHostname string `json:"url_hostname,required"`
+	// Only applies to wildcard hostnames (e.g., \*.example.com). When true (default),
+	// only subdomains are blocked. When false, both the root domain and subdomains are
+	// blocked.
+	ExcludeExactHostname bool                 `json:"exclude_exact_hostname"`
+	JSON                 listItemHostnameJSON `json:"-"`
 }
 
 // listItemHostnameJSON contains the JSON metadata for the struct
 // [ListItemHostname]
 type listItemHostnameJSON struct {
-	URLHostname apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	URLHostname          apijson.Field
+	ExcludeExactHostname apijson.Field
+	raw                  string
+	ExtraFields          map[string]apijson.Field
 }
 
 func (r *ListItemHostname) UnmarshalJSON(data []byte) (err error) {
@@ -454,6 +344,10 @@ func (r listItemHostnameJSON) RawJSON() string {
 // 0 to 9, wildcards (\*), and the hyphen (-).
 type ListItemHostnameParam struct {
 	URLHostname param.Field[string] `json:"url_hostname,required"`
+	// Only applies to wildcard hostnames (e.g., \*.example.com). When true (default),
+	// only subdomains are blocked. When false, both the root domain and subdomains are
+	// blocked.
+	ExcludeExactHostname param.Field[bool] `json:"exclude_exact_hostname"`
 }
 
 func (r ListItemHostnameParam) MarshalJSON() (data []byte, err error) {
@@ -527,15 +421,14 @@ func (r ListItemRedirectParam) MarshalJSON() (data []byte, err error) {
 }
 
 type UpdateRequestCollectionItemParam struct {
-	// A non-negative 32 bit integer
+	// Defines a non-negative 32 bit integer.
 	Asn param.Field[int64] `json:"asn"`
-	// An informative summary of the list item.
+	// Defines an informative summary of the list item.
 	Comment param.Field[string] `json:"comment"`
 	// Valid characters for hostnames are ASCII(7) letters from a to z, the digits from
 	// 0 to 9, wildcards (\*), and the hyphen (-).
 	Hostname param.Field[ListItemHostnameParam] `json:"hostname"`
-	// An IPv4 address, an IPv4 CIDR, or an IPv6 CIDR. IPv6 CIDRs are limited to a
-	// maximum of /64.
+	// An IPv4 address, an IPv4 CIDR, an IPv6 address, or an IPv6 CIDR.
 	IP param.Field[string] `json:"ip"`
 	// The definition of the redirect.
 	Redirect param.Field[ListItemRedirectParam] `json:"redirect"`
@@ -545,41 +438,46 @@ func (r UpdateRequestCollectionItemParam) MarshalJSON() (data []byte, err error)
 	return apijson.MarshalRoot(r)
 }
 
-type AccountRuleListItemGetResponse struct {
-	// An IPv4 address, an IPv4 CIDR, or an IPv6 CIDR. IPv6 CIDRs are limited to a
-	// maximum of /64.
-	Result ListItem                           `json:"result"`
-	JSON   accountRuleListItemGetResponseJSON `json:"-"`
-	APIResponseCollectionLists
+func (r UpdateRequestCollectionItemParam) implementsUpdateRequestCollectionItemUnionParam() {}
+
+// Satisfied by [UpdateRequestCollectionItemObjectParam],
+// [UpdateRequestCollectionItemObjectParam],
+// [UpdateRequestCollectionItemObjectParam],
+// [UpdateRequestCollectionItemObjectParam], [UpdateRequestCollectionItemParam].
+type UpdateRequestCollectionItemUnionParam interface {
+	implementsUpdateRequestCollectionItemUnionParam()
 }
 
-// accountRuleListItemGetResponseJSON contains the JSON metadata for the struct
-// [AccountRuleListItemGetResponse]
-type accountRuleListItemGetResponseJSON struct {
-	Result      apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+type UpdateRequestCollectionItemObjectParam struct {
+	// An IPv4 address, an IPv4 CIDR, an IPv6 address, or an IPv6 CIDR.
+	IP param.Field[string] `json:"ip,required"`
+	// Defines an informative summary of the list item.
+	Comment param.Field[string] `json:"comment"`
 }
 
-func (r *AccountRuleListItemGetResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
+func (r UpdateRequestCollectionItemObjectParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
 }
 
-func (r accountRuleListItemGetResponseJSON) RawJSON() string {
-	return r.raw
-}
+func (r UpdateRequestCollectionItemObjectParam) implementsUpdateRequestCollectionItemUnionParam() {}
 
 type AccountRuleListItemListResponse struct {
-	Result     []ListItem                                `json:"result"`
+	Errors   []AccountRuleListItemListResponseError   `json:"errors,required"`
+	Messages []AccountRuleListItemListResponseMessage `json:"messages,required"`
+	Result   []ListItem                               `json:"result,required"`
+	// Defines whether the API call was successful.
+	Success    AccountRuleListItemListResponseSuccess    `json:"success,required"`
 	ResultInfo AccountRuleListItemListResponseResultInfo `json:"result_info"`
 	JSON       accountRuleListItemListResponseJSON       `json:"-"`
-	APIResponseCollectionLists
 }
 
 // accountRuleListItemListResponseJSON contains the JSON metadata for the struct
 // [AccountRuleListItemListResponse]
 type accountRuleListItemListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -591,6 +489,117 @@ func (r *AccountRuleListItemListResponse) UnmarshalJSON(data []byte) (err error)
 
 func (r accountRuleListItemListResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+type AccountRuleListItemListResponseError struct {
+	Code             int64                                       `json:"code,required"`
+	Message          string                                      `json:"message,required"`
+	DocumentationURL string                                      `json:"documentation_url"`
+	Source           AccountRuleListItemListResponseErrorsSource `json:"source"`
+	JSON             accountRuleListItemListResponseErrorJSON    `json:"-"`
+}
+
+// accountRuleListItemListResponseErrorJSON contains the JSON metadata for the
+// struct [AccountRuleListItemListResponseError]
+type accountRuleListItemListResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountRuleListItemListResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountRuleListItemListResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountRuleListItemListResponseErrorsSource struct {
+	Pointer string                                          `json:"pointer"`
+	JSON    accountRuleListItemListResponseErrorsSourceJSON `json:"-"`
+}
+
+// accountRuleListItemListResponseErrorsSourceJSON contains the JSON metadata for
+// the struct [AccountRuleListItemListResponseErrorsSource]
+type accountRuleListItemListResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountRuleListItemListResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountRuleListItemListResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountRuleListItemListResponseMessage struct {
+	Code             int64                                         `json:"code,required"`
+	Message          string                                        `json:"message,required"`
+	DocumentationURL string                                        `json:"documentation_url"`
+	Source           AccountRuleListItemListResponseMessagesSource `json:"source"`
+	JSON             accountRuleListItemListResponseMessageJSON    `json:"-"`
+}
+
+// accountRuleListItemListResponseMessageJSON contains the JSON metadata for the
+// struct [AccountRuleListItemListResponseMessage]
+type accountRuleListItemListResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountRuleListItemListResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountRuleListItemListResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountRuleListItemListResponseMessagesSource struct {
+	Pointer string                                            `json:"pointer"`
+	JSON    accountRuleListItemListResponseMessagesSourceJSON `json:"-"`
+}
+
+// accountRuleListItemListResponseMessagesSourceJSON contains the JSON metadata for
+// the struct [AccountRuleListItemListResponseMessagesSource]
+type accountRuleListItemListResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountRuleListItemListResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountRuleListItemListResponseMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Defines whether the API call was successful.
+type AccountRuleListItemListResponseSuccess bool
+
+const (
+	AccountRuleListItemListResponseSuccessTrue AccountRuleListItemListResponseSuccess = true
+)
+
+func (r AccountRuleListItemListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountRuleListItemListResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountRuleListItemListResponseResultInfo struct {
@@ -638,7 +647,7 @@ func (r accountRuleListItemListResponseResultInfoCursorsJSON) RawJSON() string {
 }
 
 type AccountRuleListItemNewParams struct {
-	Body []UpdateRequestCollectionItemParam `json:"body,required"`
+	Body []UpdateRequestCollectionItemUnionParam `json:"body,required"`
 }
 
 func (r AccountRuleListItemNewParams) MarshalJSON() (data []byte, err error) {
@@ -646,7 +655,7 @@ func (r AccountRuleListItemNewParams) MarshalJSON() (data []byte, err error) {
 }
 
 type AccountRuleListItemUpdateParams struct {
-	Body []UpdateRequestCollectionItemParam `json:"body,required"`
+	Body []UpdateRequestCollectionItemUnionParam `json:"body,required"`
 }
 
 func (r AccountRuleListItemUpdateParams) MarshalJSON() (data []byte, err error) {
@@ -686,8 +695,6 @@ func (r AccountRuleListItemDeleteParams) MarshalJSON() (data []byte, err error) 
 }
 
 type AccountRuleListItemDeleteParamsItem struct {
-	// The unique ID of the item in the List.
-	ID param.Field[string] `json:"id"`
 }
 
 func (r AccountRuleListItemDeleteParamsItem) MarshalJSON() (data []byte, err error) {

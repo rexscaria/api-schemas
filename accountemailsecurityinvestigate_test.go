@@ -75,6 +75,7 @@ func TestAccountEmailSecurityInvestigateListWithOptionalParams(t *testing.T) {
 			Recipient:        cfrex.F("recipient"),
 			Sender:           cfrex.F("sender"),
 			Start:            cfrex.F(time.Now()),
+			Subject:          cfrex.F("subject"),
 		},
 	)
 	if err != nil {

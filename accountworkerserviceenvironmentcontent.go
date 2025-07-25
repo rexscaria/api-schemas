@@ -7,6 +7,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"io"
 	"mime/multipart"
 	"net/http"
 
@@ -37,7 +38,7 @@ func NewAccountWorkerServiceEnvironmentContentService(opts ...option.RequestOpti
 	return
 }
 
-// Get script content from a worker with an environment
+// Get script content from a worker with an environment.
 func (r *AccountWorkerServiceEnvironmentContentService) Get(ctx context.Context, accountID string, serviceName string, environmentName string, opts ...option.RequestOption) (res *http.Response, err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "string")}, opts...)
@@ -58,7 +59,7 @@ func (r *AccountWorkerServiceEnvironmentContentService) Get(ctx context.Context,
 	return
 }
 
-// Put script content from a worker with an environment
+// Put script content from a worker with an environment.
 func (r *AccountWorkerServiceEnvironmentContentService) Put(ctx context.Context, accountID string, serviceName string, environmentName string, params AccountWorkerServiceEnvironmentContentPutParams, opts ...option.RequestOption) (res *SingleScriptResponse, err error) {
 	if params.CfWorkerBodyPart.Present {
 		opts = append(opts, option.WithHeader("CF-WORKER-BODY-PART", fmt.Sprintf("%s", params.CfWorkerBodyPart)))
@@ -86,9 +87,16 @@ func (r *AccountWorkerServiceEnvironmentContentService) Put(ctx context.Context,
 
 type AccountWorkerServiceEnvironmentContentPutParams struct {
 	// JSON encoded metadata about the uploaded parts and Worker configuration.
-	Metadata               param.Field[AccountWorkerServiceEnvironmentContentPutParamsMetadata] `json:"metadata,required"`
-	CfWorkerBodyPart       param.Field[string]                                                  `header:"CF-WORKER-BODY-PART"`
-	CfWorkerMainModulePart param.Field[string]                                                  `header:"CF-WORKER-MAIN-MODULE-PART"`
+	Metadata param.Field[AccountWorkerServiceEnvironmentContentPutParamsMetadata] `json:"metadata,required"`
+	// An array of modules (often JavaScript files) comprising a Worker script. At
+	// least one module must be present and referenced in the metadata as `main_module`
+	// or `body_part` by filename.<br/>Possible Content-Type(s) are:
+	// `application/javascript+module`, `text/javascript+module`,
+	// `application/javascript`, `text/javascript`, `application/wasm`, `text/plain`,
+	// `application/octet-stream`, `application/source-map`.
+	Files                  param.Field[[]io.Reader] `json:"files" format:"binary"`
+	CfWorkerBodyPart       param.Field[string]      `header:"CF-WORKER-BODY-PART"`
+	CfWorkerMainModulePart param.Field[string]      `header:"CF-WORKER-MAIN-MODULE-PART"`
 }
 
 func (r AccountWorkerServiceEnvironmentContentPutParams) MarshalMultipart() (data []byte, contentType string, err error) {

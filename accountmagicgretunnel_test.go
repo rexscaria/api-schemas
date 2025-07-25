@@ -31,7 +31,22 @@ func TestAccountMagicGreTunnelNewWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.AccountMagicGreTunnelNewParams{
-			Body:              map[string]interface{}{},
+			CloudflareGreEndpoint: cfrex.F("203.0.113.1"),
+			CustomerGreEndpoint:   cfrex.F("203.0.113.1"),
+			InterfaceAddress:      cfrex.F("192.0.2.0/31"),
+			Name:                  cfrex.F("GRE_1"),
+			Description:           cfrex.F("Tunnel for ISP X"),
+			HealthCheck: cfrex.F(cfrex.MagicTunnelHealthCheckParam{
+				Direction: cfrex.F(cfrex.MagicTunnelHealthCheckDirectionBidirectional),
+				Enabled:   cfrex.F(true),
+				Rate:      cfrex.F(cfrex.MagicTunnelHealthCheckRateLow),
+				Target: cfrex.F[cfrex.MagicTunnelHealthCheckTargetUnionParam](cfrex.MagicTunnelHealthCheckTargetMagicHealthCheckTargetParam{
+					Saved: cfrex.F("203.0.113.1"),
+				}),
+				Type: cfrex.F(cfrex.MagicTunnelHealthCheckTypeRequest),
+			}),
+			Mtu:               cfrex.F(int64(0)),
+			Ttl:               cfrex.F(int64(0)),
 			XMagicNewHcTarget: cfrex.F(true),
 		},
 	)
@@ -100,15 +115,13 @@ func TestAccountMagicGreTunnelUpdateWithOptionalParams(t *testing.T) {
 			Name:                  cfrex.F("GRE_1"),
 			Description:           cfrex.F("Tunnel for ISP X"),
 			HealthCheck: cfrex.F(cfrex.MagicTunnelHealthCheckParam{
-				MagicHealthCheckBaseParam: cfrex.MagicHealthCheckBaseParam{
-					Enabled: cfrex.F(true),
-					Rate:    cfrex.F(cfrex.MagicHealthCheckBaseRateLow),
-					Target: cfrex.F[cfrex.MagicHealthCheckBaseTargetUnionParam](cfrex.MagicHealthCheckBaseTargetMagicHealthCheckTargetParam{
-						Saved: cfrex.F("203.0.113.1"),
-					}),
-					Type: cfrex.F(cfrex.MagicHealthCheckBaseTypeRequest),
-				},
 				Direction: cfrex.F(cfrex.MagicTunnelHealthCheckDirectionBidirectional),
+				Enabled:   cfrex.F(true),
+				Rate:      cfrex.F(cfrex.MagicTunnelHealthCheckRateLow),
+				Target: cfrex.F[cfrex.MagicTunnelHealthCheckTargetUnionParam](cfrex.MagicTunnelHealthCheckTargetMagicHealthCheckTargetParam{
+					Saved: cfrex.F("203.0.113.1"),
+				}),
+				Type: cfrex.F(cfrex.MagicTunnelHealthCheckTypeRequest),
 			}),
 			Mtu:               cfrex.F(int64(0)),
 			Ttl:               cfrex.F(int64(0)),
@@ -173,7 +186,6 @@ func TestAccountMagicGreTunnelDeleteWithOptionalParams(t *testing.T) {
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.AccountMagicGreTunnelDeleteParams{
-			Body:              map[string]interface{}{},
 			XMagicNewHcTarget: cfrex.F(true),
 		},
 	)

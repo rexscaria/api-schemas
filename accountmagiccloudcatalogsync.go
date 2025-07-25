@@ -35,7 +35,7 @@ func NewAccountMagicCloudCatalogSyncService(opts ...option.RequestOption) (r *Ac
 	return
 }
 
-// Create a new Catalog Sync (Closed Beta)
+// Create a new Catalog Sync (Closed Beta).
 func (r *AccountMagicCloudCatalogSyncService) New(ctx context.Context, accountID string, params AccountMagicCloudCatalogSyncNewParams, opts ...option.RequestOption) (res *AccountMagicCloudCatalogSyncNewResponse, err error) {
 	if params.Forwarded.Present {
 		opts = append(opts, option.WithHeader("forwarded", fmt.Sprintf("%s", params.Forwarded)))
@@ -50,7 +50,7 @@ func (r *AccountMagicCloudCatalogSyncService) New(ctx context.Context, accountID
 	return
 }
 
-// Read a Catalog Sync (Closed Beta)
+// Read a Catalog Sync (Closed Beta).
 func (r *AccountMagicCloudCatalogSyncService) Get(ctx context.Context, accountID string, syncID string, opts ...option.RequestOption) (res *AccountMagicCloudCatalogSyncGetResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
@@ -66,7 +66,7 @@ func (r *AccountMagicCloudCatalogSyncService) Get(ctx context.Context, accountID
 	return
 }
 
-// Update a Catalog Sync (Closed Beta)
+// Update a Catalog Sync (Closed Beta).
 func (r *AccountMagicCloudCatalogSyncService) Update(ctx context.Context, accountID string, syncID string, body AccountMagicCloudCatalogSyncUpdateParams, opts ...option.RequestOption) (res *McnUpdateCatalogSyncResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
@@ -82,7 +82,7 @@ func (r *AccountMagicCloudCatalogSyncService) Update(ctx context.Context, accoun
 	return
 }
 
-// List Catalog Syncs (Closed Beta)
+// List Catalog Syncs (Closed Beta).
 func (r *AccountMagicCloudCatalogSyncService) List(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountMagicCloudCatalogSyncListResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
@@ -94,7 +94,7 @@ func (r *AccountMagicCloudCatalogSyncService) List(ctx context.Context, accountI
 	return
 }
 
-// Delete a Catalog Sync (Closed Beta)
+// Delete a Catalog Sync (Closed Beta).
 func (r *AccountMagicCloudCatalogSyncService) Delete(ctx context.Context, accountID string, syncID string, body AccountMagicCloudCatalogSyncDeleteParams, opts ...option.RequestOption) (res *AccountMagicCloudCatalogSyncDeleteResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
@@ -110,7 +110,7 @@ func (r *AccountMagicCloudCatalogSyncService) Delete(ctx context.Context, accoun
 	return
 }
 
-// List prebuilt catalog sync policies (Closed Beta)
+// List prebuilt catalog sync policies (Closed Beta).
 func (r *AccountMagicCloudCatalogSyncService) ListPolicies(ctx context.Context, accountID string, query AccountMagicCloudCatalogSyncListPoliciesParams, opts ...option.RequestOption) (res *AccountMagicCloudCatalogSyncListPoliciesResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
@@ -122,7 +122,7 @@ func (r *AccountMagicCloudCatalogSyncService) ListPolicies(ctx context.Context, 
 	return
 }
 
-// Update a Catalog Sync (Closed Beta)
+// Update a Catalog Sync (Closed Beta).
 func (r *AccountMagicCloudCatalogSyncService) Patch(ctx context.Context, accountID string, syncID string, body AccountMagicCloudCatalogSyncPatchParams, opts ...option.RequestOption) (res *McnUpdateCatalogSyncResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
@@ -139,7 +139,7 @@ func (r *AccountMagicCloudCatalogSyncService) Patch(ctx context.Context, account
 }
 
 // Refresh a Catalog Sync's destination by running the sync policy against latest
-// resource catalog (Closed Beta)
+// resource catalog (Closed Beta).
 func (r *AccountMagicCloudCatalogSyncService) Run(ctx context.Context, accountID string, syncID string, opts ...option.RequestOption) (res *AccountMagicCloudCatalogSyncRunResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
@@ -239,15 +239,20 @@ func (r McnUpdateCatalogSyncRequestParam) MarshalJSON() (data []byte, err error)
 }
 
 type McnUpdateCatalogSyncResponse struct {
-	Result McnCatalogSync                   `json:"result"`
-	JSON   mcnUpdateCatalogSyncResponseJSON `json:"-"`
-	McnGoodResponse
+	Errors   []McnError                       `json:"errors,required"`
+	Messages []McnError                       `json:"messages,required"`
+	Result   McnCatalogSync                   `json:"result,required"`
+	Success  bool                             `json:"success,required"`
+	JSON     mcnUpdateCatalogSyncResponseJSON `json:"-"`
 }
 
 // mcnUpdateCatalogSyncResponseJSON contains the JSON metadata for the struct
 // [McnUpdateCatalogSyncResponse]
 type mcnUpdateCatalogSyncResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -261,15 +266,20 @@ func (r mcnUpdateCatalogSyncResponseJSON) RawJSON() string {
 }
 
 type AccountMagicCloudCatalogSyncNewResponse struct {
-	Result McnCatalogSync                              `json:"result"`
-	JSON   accountMagicCloudCatalogSyncNewResponseJSON `json:"-"`
-	McnGoodResponse
+	Errors   []McnError                                  `json:"errors,required"`
+	Messages []McnError                                  `json:"messages,required"`
+	Result   McnCatalogSync                              `json:"result,required"`
+	Success  bool                                        `json:"success,required"`
+	JSON     accountMagicCloudCatalogSyncNewResponseJSON `json:"-"`
 }
 
 // accountMagicCloudCatalogSyncNewResponseJSON contains the JSON metadata for the
 // struct [AccountMagicCloudCatalogSyncNewResponse]
 type accountMagicCloudCatalogSyncNewResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -283,15 +293,20 @@ func (r accountMagicCloudCatalogSyncNewResponseJSON) RawJSON() string {
 }
 
 type AccountMagicCloudCatalogSyncGetResponse struct {
-	Result McnCatalogSync                              `json:"result"`
-	JSON   accountMagicCloudCatalogSyncGetResponseJSON `json:"-"`
-	McnGoodResponse
+	Errors   []McnError                                  `json:"errors,required"`
+	Messages []McnError                                  `json:"messages,required"`
+	Result   McnCatalogSync                              `json:"result,required"`
+	Success  bool                                        `json:"success,required"`
+	JSON     accountMagicCloudCatalogSyncGetResponseJSON `json:"-"`
 }
 
 // accountMagicCloudCatalogSyncGetResponseJSON contains the JSON metadata for the
 // struct [AccountMagicCloudCatalogSyncGetResponse]
 type accountMagicCloudCatalogSyncGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -305,15 +320,20 @@ func (r accountMagicCloudCatalogSyncGetResponseJSON) RawJSON() string {
 }
 
 type AccountMagicCloudCatalogSyncListResponse struct {
-	Result []McnCatalogSync                             `json:"result"`
-	JSON   accountMagicCloudCatalogSyncListResponseJSON `json:"-"`
-	McnGoodResponse
+	Errors   []McnError                                   `json:"errors,required"`
+	Messages []McnError                                   `json:"messages,required"`
+	Result   []McnCatalogSync                             `json:"result,required"`
+	Success  bool                                         `json:"success,required"`
+	JSON     accountMagicCloudCatalogSyncListResponseJSON `json:"-"`
 }
 
 // accountMagicCloudCatalogSyncListResponseJSON contains the JSON metadata for the
 // struct [AccountMagicCloudCatalogSyncListResponse]
 type accountMagicCloudCatalogSyncListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -327,15 +347,20 @@ func (r accountMagicCloudCatalogSyncListResponseJSON) RawJSON() string {
 }
 
 type AccountMagicCloudCatalogSyncDeleteResponse struct {
-	Result AccountMagicCloudCatalogSyncDeleteResponseResult `json:"result"`
-	JSON   accountMagicCloudCatalogSyncDeleteResponseJSON   `json:"-"`
-	McnGoodResponse
+	Errors   []McnError                                       `json:"errors,required"`
+	Messages []McnError                                       `json:"messages,required"`
+	Result   AccountMagicCloudCatalogSyncDeleteResponseResult `json:"result,required"`
+	Success  bool                                             `json:"success,required"`
+	JSON     accountMagicCloudCatalogSyncDeleteResponseJSON   `json:"-"`
 }
 
 // accountMagicCloudCatalogSyncDeleteResponseJSON contains the JSON metadata for
 // the struct [AccountMagicCloudCatalogSyncDeleteResponse]
 type accountMagicCloudCatalogSyncDeleteResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -370,15 +395,20 @@ func (r accountMagicCloudCatalogSyncDeleteResponseResultJSON) RawJSON() string {
 }
 
 type AccountMagicCloudCatalogSyncListPoliciesResponse struct {
-	Result []AccountMagicCloudCatalogSyncListPoliciesResponseResult `json:"result"`
-	JSON   accountMagicCloudCatalogSyncListPoliciesResponseJSON     `json:"-"`
-	McnGoodResponse
+	Errors   []McnError                                               `json:"errors,required"`
+	Messages []McnError                                               `json:"messages,required"`
+	Result   []AccountMagicCloudCatalogSyncListPoliciesResponseResult `json:"result,required"`
+	Success  bool                                                     `json:"success,required"`
+	JSON     accountMagicCloudCatalogSyncListPoliciesResponseJSON     `json:"-"`
 }
 
 // accountMagicCloudCatalogSyncListPoliciesResponseJSON contains the JSON metadata
 // for the struct [AccountMagicCloudCatalogSyncListPoliciesResponse]
 type accountMagicCloudCatalogSyncListPoliciesResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -419,15 +449,20 @@ func (r accountMagicCloudCatalogSyncListPoliciesResponseResultJSON) RawJSON() st
 }
 
 type AccountMagicCloudCatalogSyncRunResponse struct {
-	Result string                                      `json:"result"`
-	JSON   accountMagicCloudCatalogSyncRunResponseJSON `json:"-"`
-	McnGoodResponse
+	Errors   []McnError                                  `json:"errors,required"`
+	Messages []McnError                                  `json:"messages,required"`
+	Result   string                                      `json:"result,required"`
+	Success  bool                                        `json:"success,required"`
+	JSON     accountMagicCloudCatalogSyncRunResponseJSON `json:"-"`
 }
 
 // accountMagicCloudCatalogSyncRunResponseJSON contains the JSON metadata for the
 // struct [AccountMagicCloudCatalogSyncRunResponse]
 type accountMagicCloudCatalogSyncRunResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -475,7 +510,7 @@ func (r AccountMagicCloudCatalogSyncDeleteParams) URLQuery() (v url.Values) {
 }
 
 type AccountMagicCloudCatalogSyncListPoliciesParams struct {
-	// specify type of destination, omit to return all
+	// Specify type of destination, omit to return all.
 	DestinationType param.Field[McnCatalogSyncDestinationType] `query:"destination_type"`
 }
 

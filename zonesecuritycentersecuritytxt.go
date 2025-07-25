@@ -123,14 +123,20 @@ func (r SecurityTxtParam) MarshalJSON() (data []byte, err error) {
 }
 
 type ZoneSecurityCenterSecuritytxtGetResponse struct {
-	Result SecurityTxt                                  `json:"result"`
-	JSON   zoneSecurityCenterSecuritytxtGetResponseJSON `json:"-"`
-	CommonResponseAttackSurfaceReport
+	Errors   []AttackSurfaceReportMessage `json:"errors,required"`
+	Messages []AttackSurfaceReportMessage `json:"messages,required"`
+	// Whether the API call was successful.
+	Success ZoneSecurityCenterSecuritytxtGetResponseSuccess `json:"success,required"`
+	Result  SecurityTxt                                     `json:"result"`
+	JSON    zoneSecurityCenterSecuritytxtGetResponseJSON    `json:"-"`
 }
 
 // zoneSecurityCenterSecuritytxtGetResponseJSON contains the JSON metadata for the
 // struct [ZoneSecurityCenterSecuritytxtGetResponse]
 type zoneSecurityCenterSecuritytxtGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -142,6 +148,21 @@ func (r *ZoneSecurityCenterSecuritytxtGetResponse) UnmarshalJSON(data []byte) (e
 
 func (r zoneSecurityCenterSecuritytxtGetResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type ZoneSecurityCenterSecuritytxtGetResponseSuccess bool
+
+const (
+	ZoneSecurityCenterSecuritytxtGetResponseSuccessTrue ZoneSecurityCenterSecuritytxtGetResponseSuccess = true
+)
+
+func (r ZoneSecurityCenterSecuritytxtGetResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneSecurityCenterSecuritytxtGetResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type ZoneSecurityCenterSecuritytxtUpdateParams struct {

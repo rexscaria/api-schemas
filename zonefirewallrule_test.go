@@ -56,7 +56,7 @@ func TestZoneFirewallRuleNewWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestZoneFirewallRuleGetWithOptionalParams(t *testing.T) {
+func TestZoneFirewallRuleGet(t *testing.T) {
 	t.Skip("skipped: tests are disabled for the time being")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -74,9 +74,6 @@ func TestZoneFirewallRuleGetWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		"372e67954025e0ba6aaa6d586b9e0b60",
-		cfrex.ZoneFirewallRuleGetParams{
-			ID: cfrex.F("372e67954025e0ba6aaa6d586b9e0b60"),
-		},
 	)
 	if err != nil {
 		var apierr *cfrex.Error
@@ -166,7 +163,7 @@ func TestZoneFirewallRuleListWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestZoneFirewallRuleDeleteWithOptionalParams(t *testing.T) {
+func TestZoneFirewallRuleDelete(t *testing.T) {
 	t.Skip("skipped: tests are disabled for the time being")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -184,9 +181,6 @@ func TestZoneFirewallRuleDeleteWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		"372e67954025e0ba6aaa6d586b9e0b60",
-		cfrex.ZoneFirewallRuleDeleteParams{
-			DeleteFilterIfUnused: cfrex.F(true),
-		},
 	)
 	if err != nil {
 		var apierr *cfrex.Error

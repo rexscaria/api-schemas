@@ -48,15 +48,21 @@ func (r *ZoneAPIGatewayDiscoveryService) Get(ctx context.Context, zoneID string,
 }
 
 type ZoneAPIGatewayDiscoveryGetResponse struct {
-	Result ZoneAPIGatewayDiscoveryGetResponseResult `json:"result,required"`
-	JSON   zoneAPIGatewayDiscoveryGetResponseJSON   `json:"-"`
-	APIResponseAPIShield
+	Errors   []MessagesAPIShieldItem                  `json:"errors,required"`
+	Messages []MessagesAPIShieldItem                  `json:"messages,required"`
+	Result   ZoneAPIGatewayDiscoveryGetResponseResult `json:"result,required"`
+	// Whether the API call was successful.
+	Success ZoneAPIGatewayDiscoveryGetResponseSuccess `json:"success,required"`
+	JSON    zoneAPIGatewayDiscoveryGetResponseJSON    `json:"-"`
 }
 
 // zoneAPIGatewayDiscoveryGetResponseJSON contains the JSON metadata for the struct
 // [ZoneAPIGatewayDiscoveryGetResponse]
 type zoneAPIGatewayDiscoveryGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -71,7 +77,7 @@ func (r zoneAPIGatewayDiscoveryGetResponseJSON) RawJSON() string {
 
 type ZoneAPIGatewayDiscoveryGetResponseResult struct {
 	Schemas   []interface{}                                `json:"schemas,required"`
-	Timestamp SchemasTimestamp                             `json:"timestamp,required"`
+	Timestamp SchemasTimestamp                             `json:"timestamp,required" format:"date-time"`
 	JSON      zoneAPIGatewayDiscoveryGetResponseResultJSON `json:"-"`
 }
 
@@ -90,4 +96,19 @@ func (r *ZoneAPIGatewayDiscoveryGetResponseResult) UnmarshalJSON(data []byte) (e
 
 func (r zoneAPIGatewayDiscoveryGetResponseResultJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type ZoneAPIGatewayDiscoveryGetResponseSuccess bool
+
+const (
+	ZoneAPIGatewayDiscoveryGetResponseSuccessTrue ZoneAPIGatewayDiscoveryGetResponseSuccess = true
+)
+
+func (r ZoneAPIGatewayDiscoveryGetResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneAPIGatewayDiscoveryGetResponseSuccessTrue:
+		return true
+	}
+	return false
 }

@@ -34,10 +34,10 @@ func TestAccountAIRunCfDefogExecuteSqlcoder7b2WithOptionalParams(t *testing.T) {
 			QueueRequest: cfrex.F("true"),
 			Body: cfrex.AccountAIRunCfDefogExecuteSqlcoder7b2ParamsBodyPrompt{
 				Prompt:            cfrex.F("x"),
-				FrequencyPenalty:  cfrex.F(0.000000),
+				FrequencyPenalty:  cfrex.F(-2.000000),
 				Lora:              cfrex.F("lora"),
 				MaxTokens:         cfrex.F(int64(0)),
-				PresencePenalty:   cfrex.F(0.000000),
+				PresencePenalty:   cfrex.F(-2.000000),
 				Raw:               cfrex.F(true),
 				RepetitionPenalty: cfrex.F(0.000000),
 				ResponseFormat: cfrex.F(cfrex.AccountAIRunCfDefogExecuteSqlcoder7b2ParamsBodyPromptResponseFormat{
@@ -48,7 +48,7 @@ func TestAccountAIRunCfDefogExecuteSqlcoder7b2WithOptionalParams(t *testing.T) {
 				Stream:      cfrex.F(true),
 				Temperature: cfrex.F(0.000000),
 				TopK:        cfrex.F(int64(1)),
-				TopP:        cfrex.F(0.000000),
+				TopP:        cfrex.F(0.001000),
 			},
 		},
 	)

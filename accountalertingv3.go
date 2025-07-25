@@ -67,15 +67,23 @@ func (r *AccountAlertingV3Service) ListHistory(ctx context.Context, accountID st
 }
 
 type AccountAlertingV3ListAvailableAlertsResponse struct {
-	Result map[string][]AccountAlertingV3ListAvailableAlertsResponseResult `json:"result"`
-	JSON   accountAlertingV3ListAvailableAlertsResponseJSON                `json:"-"`
-	APIResponseCollectionAlerting
+	Errors   []AaaMessage `json:"errors,required"`
+	Messages []AaaMessage `json:"messages,required"`
+	// Whether the API call was successful
+	Success    AccountAlertingV3ListAvailableAlertsResponseSuccess             `json:"success,required"`
+	Result     map[string][]AccountAlertingV3ListAvailableAlertsResponseResult `json:"result"`
+	ResultInfo AccountAlertingV3ListAvailableAlertsResponseResultInfo          `json:"result_info"`
+	JSON       accountAlertingV3ListAvailableAlertsResponseJSON                `json:"-"`
 }
 
 // accountAlertingV3ListAvailableAlertsResponseJSON contains the JSON metadata for
 // the struct [AccountAlertingV3ListAvailableAlertsResponse]
 type accountAlertingV3ListAvailableAlertsResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -86,6 +94,21 @@ func (r *AccountAlertingV3ListAvailableAlertsResponse) UnmarshalJSON(data []byte
 
 func (r accountAlertingV3ListAvailableAlertsResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful
+type AccountAlertingV3ListAvailableAlertsResponseSuccess bool
+
+const (
+	AccountAlertingV3ListAvailableAlertsResponseSuccessTrue AccountAlertingV3ListAvailableAlertsResponseSuccess = true
+)
+
+func (r AccountAlertingV3ListAvailableAlertsResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountAlertingV3ListAvailableAlertsResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountAlertingV3ListAvailableAlertsResponseResult struct {
@@ -120,16 +143,53 @@ func (r accountAlertingV3ListAvailableAlertsResponseResultJSON) RawJSON() string
 	return r.raw
 }
 
+type AccountAlertingV3ListAvailableAlertsResponseResultInfo struct {
+	// Total number of results for the requested service
+	Count float64 `json:"count"`
+	// Current page within paginated list of results
+	Page float64 `json:"page"`
+	// Number of results per page of results
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters
+	TotalCount float64                                                    `json:"total_count"`
+	JSON       accountAlertingV3ListAvailableAlertsResponseResultInfoJSON `json:"-"`
+}
+
+// accountAlertingV3ListAvailableAlertsResponseResultInfoJSON contains the JSON
+// metadata for the struct [AccountAlertingV3ListAvailableAlertsResponseResultInfo]
+type accountAlertingV3ListAvailableAlertsResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountAlertingV3ListAvailableAlertsResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountAlertingV3ListAvailableAlertsResponseResultInfoJSON) RawJSON() string {
+	return r.raw
+}
+
 type AccountAlertingV3ListHistoryResponse struct {
-	Result     []AccountAlertingV3ListHistoryResponseResult `json:"result"`
-	ResultInfo interface{}                                  `json:"result_info"`
-	JSON       accountAlertingV3ListHistoryResponseJSON     `json:"-"`
-	APIResponseCollectionAlerting
+	Errors   []AccountAlertingV3ListHistoryResponseError   `json:"errors,required"`
+	Messages []AccountAlertingV3ListHistoryResponseMessage `json:"messages,required"`
+	// Whether the API call was successful
+	Success    AccountAlertingV3ListHistoryResponseSuccess    `json:"success,required"`
+	Result     []AccountAlertingV3ListHistoryResponseResult   `json:"result"`
+	ResultInfo AccountAlertingV3ListHistoryResponseResultInfo `json:"result_info"`
+	JSON       accountAlertingV3ListHistoryResponseJSON       `json:"-"`
 }
 
 // accountAlertingV3ListHistoryResponseJSON contains the JSON metadata for the
 // struct [AccountAlertingV3ListHistoryResponse]
 type accountAlertingV3ListHistoryResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	ResultInfo  apijson.Field
 	raw         string
@@ -142,6 +202,117 @@ func (r *AccountAlertingV3ListHistoryResponse) UnmarshalJSON(data []byte) (err e
 
 func (r accountAlertingV3ListHistoryResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+type AccountAlertingV3ListHistoryResponseError struct {
+	Code             int64                                            `json:"code,required"`
+	Message          string                                           `json:"message,required"`
+	DocumentationURL string                                           `json:"documentation_url"`
+	Source           AccountAlertingV3ListHistoryResponseErrorsSource `json:"source"`
+	JSON             accountAlertingV3ListHistoryResponseErrorJSON    `json:"-"`
+}
+
+// accountAlertingV3ListHistoryResponseErrorJSON contains the JSON metadata for the
+// struct [AccountAlertingV3ListHistoryResponseError]
+type accountAlertingV3ListHistoryResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountAlertingV3ListHistoryResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountAlertingV3ListHistoryResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountAlertingV3ListHistoryResponseErrorsSource struct {
+	Pointer string                                               `json:"pointer"`
+	JSON    accountAlertingV3ListHistoryResponseErrorsSourceJSON `json:"-"`
+}
+
+// accountAlertingV3ListHistoryResponseErrorsSourceJSON contains the JSON metadata
+// for the struct [AccountAlertingV3ListHistoryResponseErrorsSource]
+type accountAlertingV3ListHistoryResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountAlertingV3ListHistoryResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountAlertingV3ListHistoryResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountAlertingV3ListHistoryResponseMessage struct {
+	Code             int64                                              `json:"code,required"`
+	Message          string                                             `json:"message,required"`
+	DocumentationURL string                                             `json:"documentation_url"`
+	Source           AccountAlertingV3ListHistoryResponseMessagesSource `json:"source"`
+	JSON             accountAlertingV3ListHistoryResponseMessageJSON    `json:"-"`
+}
+
+// accountAlertingV3ListHistoryResponseMessageJSON contains the JSON metadata for
+// the struct [AccountAlertingV3ListHistoryResponseMessage]
+type accountAlertingV3ListHistoryResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountAlertingV3ListHistoryResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountAlertingV3ListHistoryResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountAlertingV3ListHistoryResponseMessagesSource struct {
+	Pointer string                                                 `json:"pointer"`
+	JSON    accountAlertingV3ListHistoryResponseMessagesSourceJSON `json:"-"`
+}
+
+// accountAlertingV3ListHistoryResponseMessagesSourceJSON contains the JSON
+// metadata for the struct [AccountAlertingV3ListHistoryResponseMessagesSource]
+type accountAlertingV3ListHistoryResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountAlertingV3ListHistoryResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountAlertingV3ListHistoryResponseMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful
+type AccountAlertingV3ListHistoryResponseSuccess bool
+
+const (
+	AccountAlertingV3ListHistoryResponseSuccessTrue AccountAlertingV3ListHistoryResponseSuccess = true
+)
+
+func (r AccountAlertingV3ListHistoryResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountAlertingV3ListHistoryResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountAlertingV3ListHistoryResponseResult struct {
@@ -207,6 +378,37 @@ func (r AccountAlertingV3ListHistoryResponseResultMechanismType) IsKnown() bool 
 		return true
 	}
 	return false
+}
+
+type AccountAlertingV3ListHistoryResponseResultInfo struct {
+	// Total number of results for the requested service
+	Count float64 `json:"count"`
+	// Current page within paginated list of results
+	Page float64 `json:"page"`
+	// Number of results per page of results
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters
+	TotalCount float64                                            `json:"total_count"`
+	JSON       accountAlertingV3ListHistoryResponseResultInfoJSON `json:"-"`
+}
+
+// accountAlertingV3ListHistoryResponseResultInfoJSON contains the JSON metadata
+// for the struct [AccountAlertingV3ListHistoryResponseResultInfo]
+type accountAlertingV3ListHistoryResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountAlertingV3ListHistoryResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountAlertingV3ListHistoryResponseResultInfoJSON) RawJSON() string {
+	return r.raw
 }
 
 type AccountAlertingV3ListHistoryParams struct {

@@ -49,15 +49,23 @@ func (r *AccountAlertingV3DestinationService) ListEligibility(ctx context.Contex
 }
 
 type AccountAlertingV3DestinationListEligibilityResponse struct {
-	Result map[string][]AccountAlertingV3DestinationListEligibilityResponseResult `json:"result"`
-	JSON   accountAlertingV3DestinationListEligibilityResponseJSON                `json:"-"`
-	APIResponseCollectionAlerting
+	Errors   []AaaMessage `json:"errors,required"`
+	Messages []AaaMessage `json:"messages,required"`
+	// Whether the API call was successful
+	Success    AccountAlertingV3DestinationListEligibilityResponseSuccess             `json:"success,required"`
+	Result     map[string][]AccountAlertingV3DestinationListEligibilityResponseResult `json:"result"`
+	ResultInfo AccountAlertingV3DestinationListEligibilityResponseResultInfo          `json:"result_info"`
+	JSON       accountAlertingV3DestinationListEligibilityResponseJSON                `json:"-"`
 }
 
 // accountAlertingV3DestinationListEligibilityResponseJSON contains the JSON
 // metadata for the struct [AccountAlertingV3DestinationListEligibilityResponse]
 type accountAlertingV3DestinationListEligibilityResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -68,6 +76,21 @@ func (r *AccountAlertingV3DestinationListEligibilityResponse) UnmarshalJSON(data
 
 func (r accountAlertingV3DestinationListEligibilityResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful
+type AccountAlertingV3DestinationListEligibilityResponseSuccess bool
+
+const (
+	AccountAlertingV3DestinationListEligibilityResponseSuccessTrue AccountAlertingV3DestinationListEligibilityResponseSuccess = true
+)
+
+func (r AccountAlertingV3DestinationListEligibilityResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountAlertingV3DestinationListEligibilityResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountAlertingV3DestinationListEligibilityResponseResult struct {
@@ -115,4 +138,36 @@ func (r AccountAlertingV3DestinationListEligibilityResponseResultType) IsKnown()
 		return true
 	}
 	return false
+}
+
+type AccountAlertingV3DestinationListEligibilityResponseResultInfo struct {
+	// Total number of results for the requested service
+	Count float64 `json:"count"`
+	// Current page within paginated list of results
+	Page float64 `json:"page"`
+	// Number of results per page of results
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters
+	TotalCount float64                                                           `json:"total_count"`
+	JSON       accountAlertingV3DestinationListEligibilityResponseResultInfoJSON `json:"-"`
+}
+
+// accountAlertingV3DestinationListEligibilityResponseResultInfoJSON contains the
+// JSON metadata for the struct
+// [AccountAlertingV3DestinationListEligibilityResponseResultInfo]
+type accountAlertingV3DestinationListEligibilityResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountAlertingV3DestinationListEligibilityResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountAlertingV3DestinationListEligibilityResponseResultInfoJSON) RawJSON() string {
+	return r.raw
 }

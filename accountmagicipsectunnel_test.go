@@ -38,15 +38,13 @@ func TestAccountMagicIpsecTunnelNewWithOptionalParams(t *testing.T) {
 				CustomerEndpoint:   cfrex.F("203.0.113.1"),
 				Description:        cfrex.F("Tunnel for ISP X"),
 				HealthCheck: cfrex.F(cfrex.MagicTunnelHealthCheckParam{
-					MagicHealthCheckBaseParam: cfrex.MagicHealthCheckBaseParam{
-						Enabled: cfrex.F(true),
-						Rate:    cfrex.F(cfrex.MagicHealthCheckBaseRateLow),
-						Target: cfrex.F[cfrex.MagicHealthCheckBaseTargetUnionParam](cfrex.MagicHealthCheckBaseTargetMagicHealthCheckTargetParam{
-							Saved: cfrex.F("203.0.113.1"),
-						}),
-						Type: cfrex.F(cfrex.MagicHealthCheckBaseTypeRequest),
-					},
 					Direction: cfrex.F(cfrex.MagicTunnelHealthCheckDirectionBidirectional),
+					Enabled:   cfrex.F(true),
+					Rate:      cfrex.F(cfrex.MagicTunnelHealthCheckRateLow),
+					Target: cfrex.F[cfrex.MagicTunnelHealthCheckTargetUnionParam](cfrex.MagicTunnelHealthCheckTargetMagicHealthCheckTargetParam{
+						Saved: cfrex.F("203.0.113.1"),
+					}),
+					Type: cfrex.F(cfrex.MagicTunnelHealthCheckTypeRequest),
 				}),
 				Psk:              cfrex.F("O3bwKSjnaoCxDoUxjcq4Rk8ZKkezQUiy"),
 				ReplayProtection: cfrex.F(false),
@@ -120,15 +118,13 @@ func TestAccountMagicIpsecTunnelUpdateWithOptionalParams(t *testing.T) {
 				CustomerEndpoint:   cfrex.F("203.0.113.1"),
 				Description:        cfrex.F("Tunnel for ISP X"),
 				HealthCheck: cfrex.F(cfrex.MagicTunnelHealthCheckParam{
-					MagicHealthCheckBaseParam: cfrex.MagicHealthCheckBaseParam{
-						Enabled: cfrex.F(true),
-						Rate:    cfrex.F(cfrex.MagicHealthCheckBaseRateLow),
-						Target: cfrex.F[cfrex.MagicHealthCheckBaseTargetUnionParam](cfrex.MagicHealthCheckBaseTargetMagicHealthCheckTargetParam{
-							Saved: cfrex.F("203.0.113.1"),
-						}),
-						Type: cfrex.F(cfrex.MagicHealthCheckBaseTypeRequest),
-					},
 					Direction: cfrex.F(cfrex.MagicTunnelHealthCheckDirectionBidirectional),
+					Enabled:   cfrex.F(true),
+					Rate:      cfrex.F(cfrex.MagicTunnelHealthCheckRateLow),
+					Target: cfrex.F[cfrex.MagicTunnelHealthCheckTargetUnionParam](cfrex.MagicTunnelHealthCheckTargetMagicHealthCheckTargetParam{
+						Saved: cfrex.F("203.0.113.1"),
+					}),
+					Type: cfrex.F(cfrex.MagicTunnelHealthCheckTypeRequest),
 				}),
 				Psk:              cfrex.F("O3bwKSjnaoCxDoUxjcq4Rk8ZKkezQUiy"),
 				ReplayProtection: cfrex.F(false),
@@ -194,7 +190,6 @@ func TestAccountMagicIpsecTunnelDeleteWithOptionalParams(t *testing.T) {
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.AccountMagicIpsecTunnelDeleteParams{
-			Body:              map[string]interface{}{},
 			XMagicNewHcTarget: cfrex.F(true),
 		},
 	)

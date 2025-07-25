@@ -98,14 +98,14 @@ func (r *ZoneAPIGatewayOperationService) AddSingle(ctx context.Context, zoneID s
 }
 
 // Delete multiple operations
-func (r *ZoneAPIGatewayOperationService) DeleteMultiple(ctx context.Context, zoneID string, body ZoneAPIGatewayOperationDeleteMultipleParams, opts ...option.RequestOption) (res *APIResponseAPIShield, err error) {
+func (r *ZoneAPIGatewayOperationService) DeleteMultiple(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *APIResponseAPIShield, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
 	}
 	path := fmt.Sprintf("zones/%s/api_gateway/operations", zoneID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
@@ -197,15 +197,21 @@ func (r BasicOperationParam) MarshalJSON() (data []byte, err error) {
 }
 
 type SingleOperationResponse struct {
-	Result Operation                   `json:"result,required"`
-	JSON   singleOperationResponseJSON `json:"-"`
-	APIResponseAPIShield
+	Errors   []MessagesAPIShieldItem `json:"errors,required"`
+	Messages []MessagesAPIShieldItem `json:"messages,required"`
+	Result   Operation               `json:"result,required"`
+	// Whether the API call was successful.
+	Success SingleOperationResponseSuccess `json:"success,required"`
+	JSON    singleOperationResponseJSON    `json:"-"`
 }
 
 // singleOperationResponseJSON contains the JSON metadata for the struct
 // [SingleOperationResponse]
 type singleOperationResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -218,16 +224,39 @@ func (r singleOperationResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type SingleOperationResponseSuccess bool
+
+const (
+	SingleOperationResponseSuccessTrue SingleOperationResponseSuccess = true
+)
+
+func (r SingleOperationResponseSuccess) IsKnown() bool {
+	switch r {
+	case SingleOperationResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type ZoneAPIGatewayOperationListResponse struct {
-	Result []Operation                             `json:"result,required"`
-	JSON   zoneAPIGatewayOperationListResponseJSON `json:"-"`
-	APIResponseCollectionAPIShield
+	Errors   []MessagesAPIShieldItem `json:"errors,required"`
+	Messages []MessagesAPIShieldItem `json:"messages,required"`
+	Result   []Operation             `json:"result,required"`
+	// Whether the API call was successful.
+	Success    ZoneAPIGatewayOperationListResponseSuccess    `json:"success,required"`
+	ResultInfo ZoneAPIGatewayOperationListResponseResultInfo `json:"result_info"`
+	JSON       zoneAPIGatewayOperationListResponseJSON       `json:"-"`
 }
 
 // zoneAPIGatewayOperationListResponseJSON contains the JSON metadata for the
 // struct [ZoneAPIGatewayOperationListResponse]
 type zoneAPIGatewayOperationListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -240,16 +269,68 @@ func (r zoneAPIGatewayOperationListResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type ZoneAPIGatewayOperationListResponseSuccess bool
+
+const (
+	ZoneAPIGatewayOperationListResponseSuccessTrue ZoneAPIGatewayOperationListResponseSuccess = true
+)
+
+func (r ZoneAPIGatewayOperationListResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneAPIGatewayOperationListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type ZoneAPIGatewayOperationListResponseResultInfo struct {
+	// Total number of results for the requested service.
+	Count float64 `json:"count"`
+	// Current page within paginated list of results.
+	Page float64 `json:"page"`
+	// Number of results per page of results.
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters.
+	TotalCount float64                                           `json:"total_count"`
+	JSON       zoneAPIGatewayOperationListResponseResultInfoJSON `json:"-"`
+}
+
+// zoneAPIGatewayOperationListResponseResultInfoJSON contains the JSON metadata for
+// the struct [ZoneAPIGatewayOperationListResponseResultInfo]
+type zoneAPIGatewayOperationListResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZoneAPIGatewayOperationListResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneAPIGatewayOperationListResponseResultInfoJSON) RawJSON() string {
+	return r.raw
+}
+
 type ZoneAPIGatewayOperationAddMultipleResponse struct {
-	Result []Operation                                    `json:"result,required"`
-	JSON   zoneAPIGatewayOperationAddMultipleResponseJSON `json:"-"`
-	APIResponseAPIShield
+	Errors   []MessagesAPIShieldItem `json:"errors,required"`
+	Messages []MessagesAPIShieldItem `json:"messages,required"`
+	Result   []Operation             `json:"result,required"`
+	// Whether the API call was successful.
+	Success ZoneAPIGatewayOperationAddMultipleResponseSuccess `json:"success,required"`
+	JSON    zoneAPIGatewayOperationAddMultipleResponseJSON    `json:"-"`
 }
 
 // zoneAPIGatewayOperationAddMultipleResponseJSON contains the JSON metadata for
 // the struct [ZoneAPIGatewayOperationAddMultipleResponse]
 type zoneAPIGatewayOperationAddMultipleResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -260,6 +341,21 @@ func (r *ZoneAPIGatewayOperationAddMultipleResponse) UnmarshalJSON(data []byte) 
 
 func (r zoneAPIGatewayOperationAddMultipleResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type ZoneAPIGatewayOperationAddMultipleResponseSuccess bool
+
+const (
+	ZoneAPIGatewayOperationAddMultipleResponseSuccessTrue ZoneAPIGatewayOperationAddMultipleResponseSuccess = true
+)
+
+func (r ZoneAPIGatewayOperationAddMultipleResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneAPIGatewayOperationAddMultipleResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type ZoneAPIGatewayOperationGetParams struct {
@@ -390,21 +486,4 @@ type ZoneAPIGatewayOperationAddSingleParams struct {
 
 func (r ZoneAPIGatewayOperationAddSingleParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r.BasicOperation)
-}
-
-type ZoneAPIGatewayOperationDeleteMultipleParams struct {
-	Body []ZoneAPIGatewayOperationDeleteMultipleParamsBody `json:"body,required"`
-}
-
-func (r ZoneAPIGatewayOperationDeleteMultipleParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
-}
-
-type ZoneAPIGatewayOperationDeleteMultipleParamsBody struct {
-	// UUID
-	OperationID param.Field[SchemasUuidParam] `json:"operation_id,required"`
-}
-
-func (r ZoneAPIGatewayOperationDeleteMultipleParamsBody) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
 }

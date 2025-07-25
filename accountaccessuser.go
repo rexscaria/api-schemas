@@ -83,15 +83,21 @@ func (r *AccountAccessUserService) LastSeenIdentity(ctx context.Context, account
 }
 
 type AccountAccessUserListResponse struct {
+	Errors   []MessagesAccessItem `json:"errors,required"`
+	Messages []MessagesAccessItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success    AccountAccessUserListResponseSuccess    `json:"success,required"`
 	Result     []AccountAccessUserListResponseResult   `json:"result"`
 	ResultInfo AccountAccessUserListResponseResultInfo `json:"result_info"`
 	JSON       accountAccessUserListResponseJSON       `json:"-"`
-	APIResponseCollectionAccess
 }
 
 // accountAccessUserListResponseJSON contains the JSON metadata for the struct
 // [AccountAccessUserListResponse]
 type accountAccessUserListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	ResultInfo  apijson.Field
 	raw         string
@@ -106,8 +112,23 @@ func (r accountAccessUserListResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountAccessUserListResponseSuccess bool
+
+const (
+	AccountAccessUserListResponseSuccessTrue AccountAccessUserListResponseSuccess = true
+)
+
+func (r AccountAccessUserListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountAccessUserListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountAccessUserListResponseResult struct {
-	// UUID
+	// UUID.
 	ID string `json:"id"`
 	// True if the user has authenticated with Cloudflare Access.
 	AccessSeat bool `json:"access_seat"`
@@ -157,10 +178,14 @@ func (r accountAccessUserListResponseResultJSON) RawJSON() string {
 }
 
 type AccountAccessUserListResponseResultInfo struct {
-	Count      interface{}                                 `json:"count"`
-	Page       interface{}                                 `json:"page"`
-	PerPage    interface{}                                 `json:"per_page"`
-	TotalCount interface{}                                 `json:"total_count"`
+	// Total number of results for the requested service.
+	Count float64 `json:"count"`
+	// Current page within paginated list of results.
+	Page float64 `json:"page"`
+	// Number of results per page of results.
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters.
+	TotalCount float64                                     `json:"total_count"`
 	JSON       accountAccessUserListResponseResultInfoJSON `json:"-"`
 }
 
@@ -184,15 +209,23 @@ func (r accountAccessUserListResponseResultInfoJSON) RawJSON() string {
 }
 
 type AccountAccessUserFailedLoginsResponse struct {
-	Result []AccountAccessUserFailedLoginsResponseResult `json:"result"`
-	JSON   accountAccessUserFailedLoginsResponseJSON     `json:"-"`
-	APIResponseCollectionAccess
+	Errors   []MessagesAccessItem `json:"errors,required"`
+	Messages []MessagesAccessItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success    AccountAccessUserFailedLoginsResponseSuccess    `json:"success,required"`
+	Result     []AccountAccessUserFailedLoginsResponseResult   `json:"result"`
+	ResultInfo AccountAccessUserFailedLoginsResponseResultInfo `json:"result_info"`
+	JSON       accountAccessUserFailedLoginsResponseJSON       `json:"-"`
 }
 
 // accountAccessUserFailedLoginsResponseJSON contains the JSON metadata for the
 // struct [AccountAccessUserFailedLoginsResponse]
 type accountAccessUserFailedLoginsResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -203,6 +236,21 @@ func (r *AccountAccessUserFailedLoginsResponse) UnmarshalJSON(data []byte) (err 
 
 func (r accountAccessUserFailedLoginsResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountAccessUserFailedLoginsResponseSuccess bool
+
+const (
+	AccountAccessUserFailedLoginsResponseSuccessTrue AccountAccessUserFailedLoginsResponseSuccess = true
+)
+
+func (r AccountAccessUserFailedLoginsResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountAccessUserFailedLoginsResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountAccessUserFailedLoginsResponseResult struct {
@@ -228,15 +276,52 @@ func (r accountAccessUserFailedLoginsResponseResultJSON) RawJSON() string {
 	return r.raw
 }
 
+type AccountAccessUserFailedLoginsResponseResultInfo struct {
+	// Total number of results for the requested service.
+	Count float64 `json:"count"`
+	// Current page within paginated list of results.
+	Page float64 `json:"page"`
+	// Number of results per page of results.
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters.
+	TotalCount float64                                             `json:"total_count"`
+	JSON       accountAccessUserFailedLoginsResponseResultInfoJSON `json:"-"`
+}
+
+// accountAccessUserFailedLoginsResponseResultInfoJSON contains the JSON metadata
+// for the struct [AccountAccessUserFailedLoginsResponseResultInfo]
+type accountAccessUserFailedLoginsResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountAccessUserFailedLoginsResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountAccessUserFailedLoginsResponseResultInfoJSON) RawJSON() string {
+	return r.raw
+}
+
 type AccountAccessUserLastSeenIdentityResponse struct {
-	Result Identity                                      `json:"result"`
-	JSON   accountAccessUserLastSeenIdentityResponseJSON `json:"-"`
-	APIResponseSingleAccess
+	Errors   []MessagesAccessItem `json:"errors,required"`
+	Messages []MessagesAccessItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountAccessUserLastSeenIdentityResponseSuccess `json:"success,required"`
+	Result  Identity                                         `json:"result"`
+	JSON    accountAccessUserLastSeenIdentityResponseJSON    `json:"-"`
 }
 
 // accountAccessUserLastSeenIdentityResponseJSON contains the JSON metadata for the
 // struct [AccountAccessUserLastSeenIdentityResponse]
 type accountAccessUserLastSeenIdentityResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -248,6 +333,21 @@ func (r *AccountAccessUserLastSeenIdentityResponse) UnmarshalJSON(data []byte) (
 
 func (r accountAccessUserLastSeenIdentityResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountAccessUserLastSeenIdentityResponseSuccess bool
+
+const (
+	AccountAccessUserLastSeenIdentityResponseSuccessTrue AccountAccessUserLastSeenIdentityResponseSuccess = true
+)
+
+func (r AccountAccessUserLastSeenIdentityResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountAccessUserLastSeenIdentityResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountAccessUserListParams struct {

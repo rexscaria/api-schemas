@@ -117,7 +117,7 @@ func (r *ZoneFirewallWafOverrideService) List(ctx context.Context, zoneID string
 // [previous version of WAF managed rules](https://developers.cloudflare.com/support/firewall/managed-rules-web-application-firewall-waf/understanding-waf-managed-rules-web-application-firewall/).
 //
 // Deprecated: deprecated
-func (r *ZoneFirewallWafOverrideService) Delete(ctx context.Context, zoneID string, overridesID string, body ZoneFirewallWafOverrideDeleteParams, opts ...option.RequestOption) (res *ZoneFirewallWafOverrideDeleteResponse, err error) {
+func (r *ZoneFirewallWafOverrideService) Delete(ctx context.Context, zoneID string, overridesID string, opts ...option.RequestOption) (res *ZoneFirewallWafOverrideDeleteResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
@@ -128,7 +128,7 @@ func (r *ZoneFirewallWafOverrideService) Delete(ctx context.Context, zoneID stri
 		return
 	}
 	path := fmt.Sprintf("zones/%s/firewall/waf/overrides/%s", zoneID, overridesID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
@@ -143,7 +143,7 @@ type FirewallOverride struct {
 	// creating a new URI-based WAF override, you must provide a `groups` object or a
 	// `rules` object.
 	Groups map[string]interface{} `json:"groups"`
-	// When true, indicates that the WAF package is currently paused.
+	// When true, indicates that the rule is currently paused.
 	Paused bool `json:"paused"`
 	// The relative priority of the current URI-based WAF override when multiple
 	// overrides match a single URL. A lower number indicates higher priority. Higher
@@ -208,15 +208,21 @@ func (r FirewallOverrideRule) IsKnown() bool {
 }
 
 type FirewallOverrideResponseSingle struct {
-	Result FirewallOverride                   `json:"result,required"`
-	JSON   firewallOverrideResponseSingleJSON `json:"-"`
-	FirewallAPIResponseSingle
+	Errors   []FirewallMessagesItem `json:"errors,required"`
+	Messages []FirewallMessagesItem `json:"messages,required"`
+	Result   FirewallOverride       `json:"result,required"`
+	// Defines whether the API call was successful.
+	Success FirewallOverrideResponseSingleSuccess `json:"success,required"`
+	JSON    firewallOverrideResponseSingleJSON    `json:"-"`
 }
 
 // firewallOverrideResponseSingleJSON contains the JSON metadata for the struct
 // [FirewallOverrideResponseSingle]
 type firewallOverrideResponseSingleJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -227,6 +233,21 @@ func (r *FirewallOverrideResponseSingle) UnmarshalJSON(data []byte) (err error) 
 
 func (r firewallOverrideResponseSingleJSON) RawJSON() string {
 	return r.raw
+}
+
+// Defines whether the API call was successful.
+type FirewallOverrideResponseSingleSuccess bool
+
+const (
+	FirewallOverrideResponseSingleSuccessTrue FirewallOverrideResponseSingleSuccess = true
+)
+
+func (r FirewallOverrideResponseSingleSuccess) IsKnown() bool {
+	switch r {
+	case FirewallOverrideResponseSingleSuccessTrue:
+		return true
+	}
+	return false
 }
 
 // Specifies that, when a WAF rule matches, its configured action will be replaced
@@ -304,15 +325,23 @@ func (r FirewallWafRewriteAction) IsKnown() bool {
 }
 
 type ZoneFirewallWafOverrideListResponse struct {
-	Result []ZoneFirewallWafOverrideListResponseResult `json:"result,required"`
-	JSON   zoneFirewallWafOverrideListResponseJSON     `json:"-"`
-	FirewallAPIResponseCollection
+	Errors   []FirewallMessagesItem `json:"errors,required"`
+	Messages []FirewallMessagesItem `json:"messages,required"`
+	Result   []FirewallOverride     `json:"result,required,nullable"`
+	// Defines whether the API call was successful.
+	Success    ZoneFirewallWafOverrideListResponseSuccess    `json:"success,required"`
+	ResultInfo ZoneFirewallWafOverrideListResponseResultInfo `json:"result_info"`
+	JSON       zoneFirewallWafOverrideListResponseJSON       `json:"-"`
 }
 
 // zoneFirewallWafOverrideListResponseJSON contains the JSON metadata for the
 // struct [ZoneFirewallWafOverrideListResponse]
 type zoneFirewallWafOverrideListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -325,23 +354,49 @@ func (r zoneFirewallWafOverrideListResponseJSON) RawJSON() string {
 	return r.raw
 }
 
-type ZoneFirewallWafOverrideListResponseResult struct {
-	JSON zoneFirewallWafOverrideListResponseResultJSON `json:"-"`
-	FirewallOverride
+// Defines whether the API call was successful.
+type ZoneFirewallWafOverrideListResponseSuccess bool
+
+const (
+	ZoneFirewallWafOverrideListResponseSuccessTrue ZoneFirewallWafOverrideListResponseSuccess = true
+)
+
+func (r ZoneFirewallWafOverrideListResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneFirewallWafOverrideListResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
-// zoneFirewallWafOverrideListResponseResultJSON contains the JSON metadata for the
-// struct [ZoneFirewallWafOverrideListResponseResult]
-type zoneFirewallWafOverrideListResponseResultJSON struct {
+type ZoneFirewallWafOverrideListResponseResultInfo struct {
+	// Defines the total number of results for the requested service.
+	Count float64 `json:"count"`
+	// Defines the current page within paginated list of results.
+	Page float64 `json:"page"`
+	// Defines the number of results per page of results.
+	PerPage float64 `json:"per_page"`
+	// Defines the total results available without any search parameters.
+	TotalCount float64                                           `json:"total_count"`
+	JSON       zoneFirewallWafOverrideListResponseResultInfoJSON `json:"-"`
+}
+
+// zoneFirewallWafOverrideListResponseResultInfoJSON contains the JSON metadata for
+// the struct [ZoneFirewallWafOverrideListResponseResultInfo]
+type zoneFirewallWafOverrideListResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *ZoneFirewallWafOverrideListResponseResult) UnmarshalJSON(data []byte) (err error) {
+func (r *ZoneFirewallWafOverrideListResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r zoneFirewallWafOverrideListResponseResultJSON) RawJSON() string {
+func (r zoneFirewallWafOverrideListResponseResultInfoJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -400,6 +455,8 @@ func (r ZoneFirewallWafOverrideNewParams) MarshalJSON() (data []byte, err error)
 }
 
 type ZoneFirewallWafOverrideUpdateParams struct {
+	// Defines an identifier.
+	ID param.Field[string] `json:"id,required"`
 	// Specifies that, when a WAF rule matches, its configured action will be replaced
 	// by the action configured in this object.
 	RewriteAction param.Field[FirewallRewriteActionParam] `json:"rewrite_action,required"`
@@ -452,12 +509,4 @@ func (r ZoneFirewallWafOverrideListParams) URLQuery() (v url.Values) {
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
-}
-
-type ZoneFirewallWafOverrideDeleteParams struct {
-	Body interface{} `json:"body,required"`
-}
-
-func (r ZoneFirewallWafOverrideDeleteParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
 }

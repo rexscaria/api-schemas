@@ -154,9 +154,6 @@ func TestAccountMnmRuleDelete(t *testing.T) {
 		context.TODO(),
 		"6f91088a406011ed95aed352566e8d4c",
 		"2890e6fa406311ed9b5a23f70f6fb8cf",
-		cfrex.AccountMnmRuleDeleteParams{
-			Body: map[string]interface{}{},
-		},
 	)
 	if err != nil {
 		var apierr *cfrex.Error

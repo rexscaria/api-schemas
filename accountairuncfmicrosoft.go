@@ -3,24 +3,17 @@
 package cfrex
 
 import (
-	"bytes"
 	"context"
 	"errors"
 	"fmt"
-	"io"
-	"mime/multipart"
 	"net/http"
 	"net/url"
-	"reflect"
 
-	"github.com/rexscaria/api-schemas/internal/apiform"
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
 	"github.com/rexscaria/api-schemas/internal/param"
 	"github.com/rexscaria/api-schemas/internal/requestconfig"
 	"github.com/rexscaria/api-schemas/option"
-	"github.com/rexscaria/api-schemas/shared"
-	"github.com/tidwall/gjson"
 )
 
 // AccountAIRunCfMicrosoftService contains methods and other services that help
@@ -54,197 +47,7 @@ func (r *AccountAIRunCfMicrosoftService) ExecutePhi2(ctx context.Context, accoun
 	return
 }
 
-// Execute @cf/microsoft/resnet-50 model.
-func (r *AccountAIRunCfMicrosoftService) ExecuteResnet50(ctx context.Context, accountID string, params AccountAIRunCfMicrosoftExecuteResnet50Params, opts ...option.RequestOption) (res *AccountAIRunCfMicrosoftExecuteResnet50Response, err error) {
-	opts = append(r.Options[:], opts...)
-	if accountID == "" {
-		err = errors.New("missing required account_id parameter")
-		return
-	}
-	path := fmt.Sprintf("accounts/%s/ai/run/@cf/microsoft/resnet-50", accountID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
-}
-
-type AccountAIRunCfMicrosoftExecutePhi2Response struct {
-	Result  AccountAIRunCfMicrosoftExecutePhi2ResponseResultUnion `json:"result" format:"binary"`
-	Success bool                                                  `json:"success"`
-	JSON    accountAIRunCfMicrosoftExecutePhi2ResponseJSON        `json:"-"`
-}
-
-// accountAIRunCfMicrosoftExecutePhi2ResponseJSON contains the JSON metadata for
-// the struct [AccountAIRunCfMicrosoftExecutePhi2Response]
-type accountAIRunCfMicrosoftExecutePhi2ResponseJSON struct {
-	Result      apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountAIRunCfMicrosoftExecutePhi2Response) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountAIRunCfMicrosoftExecutePhi2ResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-// Union satisfied by [AccountAIRunCfMicrosoftExecutePhi2ResponseResultObject] or
-// [shared.UnionString].
-type AccountAIRunCfMicrosoftExecutePhi2ResponseResultUnion interface {
-	ImplementsAccountAIRunCfMicrosoftExecutePhi2ResponseResultUnion()
-}
-
-func init() {
-	apijson.RegisterUnion(
-		reflect.TypeOf((*AccountAIRunCfMicrosoftExecutePhi2ResponseResultUnion)(nil)).Elem(),
-		"",
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(AccountAIRunCfMicrosoftExecutePhi2ResponseResultObject{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.String,
-			Type:       reflect.TypeOf(shared.UnionString("")),
-		},
-	)
-}
-
-type AccountAIRunCfMicrosoftExecutePhi2ResponseResultObject struct {
-	// The generated text response from the model
-	Response string `json:"response,required"`
-	// An array of tool calls requests made during the response generation
-	ToolCalls []AccountAIRunCfMicrosoftExecutePhi2ResponseResultObjectToolCall `json:"tool_calls"`
-	// Usage statistics for the inference request
-	Usage AccountAIRunCfMicrosoftExecutePhi2ResponseResultObjectUsage `json:"usage"`
-	JSON  accountAIRunCfMicrosoftExecutePhi2ResponseResultObjectJSON  `json:"-"`
-}
-
-// accountAIRunCfMicrosoftExecutePhi2ResponseResultObjectJSON contains the JSON
-// metadata for the struct [AccountAIRunCfMicrosoftExecutePhi2ResponseResultObject]
-type accountAIRunCfMicrosoftExecutePhi2ResponseResultObjectJSON struct {
-	Response    apijson.Field
-	ToolCalls   apijson.Field
-	Usage       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountAIRunCfMicrosoftExecutePhi2ResponseResultObject) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountAIRunCfMicrosoftExecutePhi2ResponseResultObjectJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r AccountAIRunCfMicrosoftExecutePhi2ResponseResultObject) ImplementsAccountAIRunCfMicrosoftExecutePhi2ResponseResultUnion() {
-}
-
-type AccountAIRunCfMicrosoftExecutePhi2ResponseResultObjectToolCall struct {
-	// The arguments passed to be passed to the tool call request
-	Arguments interface{} `json:"arguments"`
-	// The name of the tool to be called
-	Name string                                                             `json:"name"`
-	JSON accountAIRunCfMicrosoftExecutePhi2ResponseResultObjectToolCallJSON `json:"-"`
-}
-
-// accountAIRunCfMicrosoftExecutePhi2ResponseResultObjectToolCallJSON contains the
-// JSON metadata for the struct
-// [AccountAIRunCfMicrosoftExecutePhi2ResponseResultObjectToolCall]
-type accountAIRunCfMicrosoftExecutePhi2ResponseResultObjectToolCallJSON struct {
-	Arguments   apijson.Field
-	Name        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountAIRunCfMicrosoftExecutePhi2ResponseResultObjectToolCall) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountAIRunCfMicrosoftExecutePhi2ResponseResultObjectToolCallJSON) RawJSON() string {
-	return r.raw
-}
-
-// Usage statistics for the inference request
-type AccountAIRunCfMicrosoftExecutePhi2ResponseResultObjectUsage struct {
-	// Total number of tokens in output
-	CompletionTokens float64 `json:"completion_tokens"`
-	// Total number of tokens in input
-	PromptTokens float64 `json:"prompt_tokens"`
-	// Total number of input and output tokens
-	TotalTokens float64                                                         `json:"total_tokens"`
-	JSON        accountAIRunCfMicrosoftExecutePhi2ResponseResultObjectUsageJSON `json:"-"`
-}
-
-// accountAIRunCfMicrosoftExecutePhi2ResponseResultObjectUsageJSON contains the
-// JSON metadata for the struct
-// [AccountAIRunCfMicrosoftExecutePhi2ResponseResultObjectUsage]
-type accountAIRunCfMicrosoftExecutePhi2ResponseResultObjectUsageJSON struct {
-	CompletionTokens apijson.Field
-	PromptTokens     apijson.Field
-	TotalTokens      apijson.Field
-	raw              string
-	ExtraFields      map[string]apijson.Field
-}
-
-func (r *AccountAIRunCfMicrosoftExecutePhi2ResponseResultObjectUsage) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountAIRunCfMicrosoftExecutePhi2ResponseResultObjectUsageJSON) RawJSON() string {
-	return r.raw
-}
-
-type AccountAIRunCfMicrosoftExecuteResnet50Response struct {
-	Result  []AccountAIRunCfMicrosoftExecuteResnet50ResponseResult `json:"result"`
-	Success bool                                                   `json:"success"`
-	JSON    accountAIRunCfMicrosoftExecuteResnet50ResponseJSON     `json:"-"`
-}
-
-// accountAIRunCfMicrosoftExecuteResnet50ResponseJSON contains the JSON metadata
-// for the struct [AccountAIRunCfMicrosoftExecuteResnet50Response]
-type accountAIRunCfMicrosoftExecuteResnet50ResponseJSON struct {
-	Result      apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountAIRunCfMicrosoftExecuteResnet50Response) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountAIRunCfMicrosoftExecuteResnet50ResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-type AccountAIRunCfMicrosoftExecuteResnet50ResponseResult struct {
-	// The predicted category or class for the input image based on analysis
-	Label string `json:"label"`
-	// A confidence value, between 0 and 1, indicating how certain the model is about
-	// the predicted label
-	Score float64                                                  `json:"score"`
-	JSON  accountAIRunCfMicrosoftExecuteResnet50ResponseResultJSON `json:"-"`
-}
-
-// accountAIRunCfMicrosoftExecuteResnet50ResponseResultJSON contains the JSON
-// metadata for the struct [AccountAIRunCfMicrosoftExecuteResnet50ResponseResult]
-type accountAIRunCfMicrosoftExecuteResnet50ResponseResultJSON struct {
-	Label       apijson.Field
-	Score       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountAIRunCfMicrosoftExecuteResnet50ResponseResult) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountAIRunCfMicrosoftExecuteResnet50ResponseResultJSON) RawJSON() string {
-	return r.raw
-}
+type AccountAIRunCfMicrosoftExecutePhi2Response = interface{}
 
 type AccountAIRunCfMicrosoftExecutePhi2Params struct {
 	QueueRequest param.Field[string]                               `query:"queueRequest"`
@@ -533,33 +336,4 @@ type AccountAIRunCfMicrosoftExecutePhi2ParamsBodyMessagesToolsObjectParametersPr
 
 func (r AccountAIRunCfMicrosoftExecutePhi2ParamsBodyMessagesToolsObjectParametersProperties) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
-}
-
-type AccountAIRunCfMicrosoftExecuteResnet50Params struct {
-	QueueRequest param.Field[string] `query:"queueRequest"`
-	Body         io.Reader           `json:"body" format:"binary"`
-}
-
-func (r AccountAIRunCfMicrosoftExecuteResnet50Params) MarshalMultipart() (data []byte, contentType string, err error) {
-	buf := bytes.NewBuffer(nil)
-	writer := multipart.NewWriter(buf)
-	err = apiform.MarshalRoot(r, writer)
-	if err != nil {
-		writer.Close()
-		return nil, "", err
-	}
-	err = writer.Close()
-	if err != nil {
-		return nil, "", err
-	}
-	return buf.Bytes(), writer.FormDataContentType(), nil
-}
-
-// URLQuery serializes [AccountAIRunCfMicrosoftExecuteResnet50Params]'s query
-// parameters as `url.Values`.
-func (r AccountAIRunCfMicrosoftExecuteResnet50Params) URLQuery() (v url.Values) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
 }

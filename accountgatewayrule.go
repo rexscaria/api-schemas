@@ -35,7 +35,7 @@ func NewAccountGatewayRuleService(opts ...option.RequestOption) (r *AccountGatew
 }
 
 // Creates a new Zero Trust Gateway rule.
-func (r *AccountGatewayRuleService) New(ctx context.Context, accountID string, body AccountGatewayRuleNewParams, opts ...option.RequestOption) (res *SingleResponseRule, err error) {
+func (r *AccountGatewayRuleService) New(ctx context.Context, accountID string, body AccountGatewayRuleNewParams, opts ...option.RequestOption) (res *SingleResponseLocation, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
@@ -47,7 +47,7 @@ func (r *AccountGatewayRuleService) New(ctx context.Context, accountID string, b
 }
 
 // Fetches a single Zero Trust Gateway rule.
-func (r *AccountGatewayRuleService) Get(ctx context.Context, accountID string, ruleID string, opts ...option.RequestOption) (res *SingleResponseRule, err error) {
+func (r *AccountGatewayRuleService) Get(ctx context.Context, accountID string, ruleID string, opts ...option.RequestOption) (res *SingleResponseLocation, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
@@ -63,7 +63,7 @@ func (r *AccountGatewayRuleService) Get(ctx context.Context, accountID string, r
 }
 
 // Updates a configured Zero Trust Gateway rule.
-func (r *AccountGatewayRuleService) Update(ctx context.Context, accountID string, ruleID string, body AccountGatewayRuleUpdateParams, opts ...option.RequestOption) (res *SingleResponseRule, err error) {
+func (r *AccountGatewayRuleService) Update(ctx context.Context, accountID string, ruleID string, body AccountGatewayRuleUpdateParams, opts ...option.RequestOption) (res *SingleResponseLocation, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
@@ -91,7 +91,7 @@ func (r *AccountGatewayRuleService) List(ctx context.Context, accountID string, 
 }
 
 // Deletes a Zero Trust Gateway rule.
-func (r *AccountGatewayRuleService) Delete(ctx context.Context, accountID string, ruleID string, body AccountGatewayRuleDeleteParams, opts ...option.RequestOption) (res *ZeroTrustGatewayEmptyResponse, err error) {
+func (r *AccountGatewayRuleService) Delete(ctx context.Context, accountID string, ruleID string, opts ...option.RequestOption) (res *ZeroTrustGatewayEmptyResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
@@ -102,7 +102,7 @@ func (r *AccountGatewayRuleService) Delete(ctx context.Context, accountID string
 		return
 	}
 	path := fmt.Sprintf("accounts/%s/gateway/rules/%s", accountID, ruleID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
@@ -111,7 +111,7 @@ func (r *AccountGatewayRuleService) Delete(ctx context.Context, accountID string
 //
 // The Zero Trust Gateway Rule must have values for both `expiration.expires_at`
 // and `expiration.duration`.
-func (r *AccountGatewayRuleService) ResetExpiration(ctx context.Context, accountID string, ruleID string, opts ...option.RequestOption) (res *SingleResponseRule, err error) {
+func (r *AccountGatewayRuleService) ResetExpiration(ctx context.Context, accountID string, ruleID string, opts ...option.RequestOption) (res *SingleResponseLocation, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
@@ -126,7 +126,7 @@ func (r *AccountGatewayRuleService) ResetExpiration(ctx context.Context, account
 	return
 }
 
-// The action to preform when the associated traffic, identity, and device posture
+// The action to perform when the associated traffic, identity, and device posture
 // expressions are either absent or evaluate to `true`.
 type ActionPerform string
 
@@ -171,7 +171,7 @@ type Expiration struct {
 	// Policies with an expiration do not consider the timezone of clients they are
 	// applied to, and expire "globally" at the point given by their `expires_at`
 	// value.
-	ExpiresAt string `json:"expires_at,required"`
+	ExpiresAt time.Time `json:"expires_at,required" format:"date-time"`
 	// The default duration a policy will be active in minutes. Must be set in order to
 	// use the `reset_expiration` endpoint on this rule.
 	Duration int64 `json:"duration"`
@@ -211,12 +211,10 @@ type ExpirationParam struct {
 	// Policies with an expiration do not consider the timezone of clients they are
 	// applied to, and expire "globally" at the point given by their `expires_at`
 	// value.
-	ExpiresAt param.Field[string] `json:"expires_at,required"`
+	ExpiresAt param.Field[time.Time] `json:"expires_at,required" format:"date-time"`
 	// The default duration a policy will be active in minutes. Must be set in order to
 	// use the `reset_expiration` endpoint on this rule.
 	Duration param.Field[int64] `json:"duration"`
-	// Whether the policy has expired.
-	Expired param.Field[bool] `json:"expired"`
 }
 
 func (r ExpirationParam) MarshalJSON() (data []byte, err error) {
@@ -243,68 +241,82 @@ func (r GatewayFilters) IsKnown() bool {
 }
 
 type GatewayRule struct {
-	// The API resource UUID.
-	ID string `json:"id"`
-	// The action to preform when the associated traffic, identity, and device posture
+	// The action to perform when the associated traffic, identity, and device posture
 	// expressions are either absent or evaluate to `true`.
-	Action    ActionPerform `json:"action"`
-	CreatedAt time.Time     `json:"created_at" format:"date-time"`
+	Action ActionPerform `json:"action,required"`
+	// True if the rule is enabled.
+	Enabled bool `json:"enabled,required"`
+	// The protocol or layer to evaluate the traffic, identity, and device posture
+	// expressions.
+	Filters []GatewayFilters `json:"filters,required"`
+	// The name of the rule.
+	Name string `json:"name,required"`
+	// Precedence sets the order of your rules. Lower values indicate higher
+	// precedence. At each processing phase, applicable rules are evaluated in
+	// ascending order of this value. Refer to
+	// [Order of enforcement](http://developers.cloudflare.com/learning-paths/secure-internet-traffic/understand-policies/order-of-enforcement/#manage-precedence-with-terraform)
+	// docs on how to manage precedence via Terraform.
+	Precedence int64 `json:"precedence,required"`
+	// The wirefilter expression used for traffic matching.
+	Traffic string `json:"traffic,required"`
+	// The API resource UUID.
+	ID        string    `json:"id"`
+	CreatedAt time.Time `json:"created_at" format:"date-time"`
 	// Date of deletion, if any.
 	DeletedAt time.Time `json:"deleted_at,nullable" format:"date-time"`
 	// The description of the rule.
 	Description string `json:"description"`
 	// The wirefilter expression used for device posture check matching.
 	DevicePosture string `json:"device_posture"`
-	// True if the rule is enabled.
-	Enabled bool `json:"enabled"`
 	// The expiration time stamp and default duration of a DNS policy. Takes precedence
 	// over the policy's `schedule` configuration, if any.
 	//
 	// This does not apply to HTTP or network policies.
-	Expiration Expiration `json:"expiration"`
-	// The protocol or layer to evaluate the traffic, identity, and device posture
-	// expressions.
-	Filters []GatewayFilters `json:"filters"`
+	Expiration Expiration `json:"expiration,nullable"`
 	// The wirefilter expression used for identity matching.
 	Identity string `json:"identity"`
-	// The name of the rule.
-	Name string `json:"name"`
-	// Precedence sets the order of your rules. Lower values indicate higher
-	// precedence. At each processing phase, applicable rules are evaluated in
-	// ascending order of this value.
-	Precedence int64 `json:"precedence"`
+	// The rule cannot be shared via the Orgs API
+	NotSharable bool `json:"not_sharable"`
+	// The rule was shared via the Orgs API and cannot be edited by the current account
+	ReadOnly bool `json:"read_only"`
 	// Additional settings that modify the rule's action.
 	RuleSettings RuleSettings `json:"rule_settings"`
 	// The schedule for activating DNS policies. This does not apply to HTTP or network
 	// policies.
-	Schedule Schedule `json:"schedule"`
-	// The wirefilter expression used for traffic matching.
-	Traffic   string    `json:"traffic"`
-	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
+	Schedule Schedule `json:"schedule,nullable"`
+	// account tag of account that created the rule
+	SourceAccount string    `json:"source_account"`
+	UpdatedAt     time.Time `json:"updated_at" format:"date-time"`
 	// version number of the rule
-	Version int64           `json:"version"`
-	JSON    gatewayRuleJSON `json:"-"`
+	Version int64 `json:"version"`
+	// Warning for a misconfigured rule, if any.
+	WarningStatus string          `json:"warning_status,nullable"`
+	JSON          gatewayRuleJSON `json:"-"`
 }
 
 // gatewayRuleJSON contains the JSON metadata for the struct [GatewayRule]
 type gatewayRuleJSON struct {
-	ID            apijson.Field
 	Action        apijson.Field
+	Enabled       apijson.Field
+	Filters       apijson.Field
+	Name          apijson.Field
+	Precedence    apijson.Field
+	Traffic       apijson.Field
+	ID            apijson.Field
 	CreatedAt     apijson.Field
 	DeletedAt     apijson.Field
 	Description   apijson.Field
 	DevicePosture apijson.Field
-	Enabled       apijson.Field
 	Expiration    apijson.Field
-	Filters       apijson.Field
 	Identity      apijson.Field
-	Name          apijson.Field
-	Precedence    apijson.Field
+	NotSharable   apijson.Field
+	ReadOnly      apijson.Field
 	RuleSettings  apijson.Field
 	Schedule      apijson.Field
-	Traffic       apijson.Field
+	SourceAccount apijson.Field
 	UpdatedAt     apijson.Field
 	Version       apijson.Field
+	WarningStatus apijson.Field
 	raw           string
 	ExtraFields   map[string]apijson.Field
 }
@@ -321,31 +333,34 @@ func (r gatewayRuleJSON) RawJSON() string {
 type RuleSettings struct {
 	// Add custom headers to allowed requests, in the form of key-value pairs. Keys are
 	// header names, pointing to an array with its header value(s).
-	AddHeaders map[string]string `json:"add_headers"`
+	AddHeaders map[string][]string `json:"add_headers,nullable"`
 	// Set by parent MSP accounts to enable their children to bypass this rule.
-	AllowChildBypass bool `json:"allow_child_bypass"`
+	AllowChildBypass bool `json:"allow_child_bypass,nullable"`
 	// Settings for the Audit SSH action.
-	AuditSSH RuleSettingsAuditSSH `json:"audit_ssh"`
+	AuditSSH RuleSettingsAuditSSH `json:"audit_ssh,nullable"`
 	// Configure how browser isolation behaves.
 	BisoAdminControls RuleSettingsBisoAdminControls `json:"biso_admin_controls"`
+	// Custom block page settings. If missing/null, blocking will use the the account
+	// settings.
+	BlockPage RuleSettingsBlockPage `json:"block_page,nullable"`
 	// Enable the custom block page.
 	BlockPageEnabled bool `json:"block_page_enabled"`
 	// The text describing why this block occurred, displayed on the custom block page
 	// (if enabled).
 	BlockReason string `json:"block_reason"`
 	// Set by children MSP accounts to bypass their parent's rules.
-	BypassParentRule bool `json:"bypass_parent_rule"`
+	BypassParentRule bool `json:"bypass_parent_rule,nullable"`
 	// Configure how session check behaves.
-	CheckSession RuleSettingsCheckSession `json:"check_session"`
+	CheckSession RuleSettingsCheckSession `json:"check_session,nullable"`
 	// Add your own custom resolvers to route queries that match the resolver policy.
 	// Cannot be used when 'resolve_dns_through_cloudflare' or 'resolve_dns_internally'
 	// are set. DNS queries will route to the address closest to their origin. Only
 	// valid when a rule's action is set to 'resolve'.
-	DNSResolvers RuleSettingsDNSResolvers `json:"dns_resolvers"`
+	DNSResolvers RuleSettingsDNSResolvers `json:"dns_resolvers,nullable"`
 	// Configure how Gateway Proxy traffic egresses. You can enable this setting for
 	// rules with Egress actions and filters, or omit it to indicate local egress via
 	// WARP IPs.
-	Egress RuleSettingsEgress `json:"egress"`
+	Egress RuleSettingsEgress `json:"egress,nullable"`
 	// Set to true, to ignore the category matches at CNAME domains in a response. If
 	// unchecked, the categories in this rule will be checked against all the CNAME
 	// domain categories in a response.
@@ -359,32 +374,32 @@ type RuleSettings struct {
 	// indicator feeds only block based on domain names.
 	IPIndicatorFeeds bool `json:"ip_indicator_feeds"`
 	// Send matching traffic to the supplied destination IP address and port.
-	L4override RuleSettingsL4override `json:"l4override"`
+	L4override RuleSettingsL4override `json:"l4override,nullable"`
 	// Configure a notification to display on the user's device when this rule is
 	// matched.
-	NotificationSettings RuleSettingsNotificationSettings `json:"notification_settings"`
+	NotificationSettings RuleSettingsNotificationSettings `json:"notification_settings,nullable"`
 	// Override matching DNS queries with a hostname.
 	OverrideHost string `json:"override_host"`
 	// Override matching DNS queries with an IP or set of IPs.
-	OverrideIPs []string `json:"override_ips"`
+	OverrideIPs []string `json:"override_ips,nullable"`
 	// Configure DLP payload logging.
-	PayloadLog RuleSettingsPayloadLog `json:"payload_log"`
+	PayloadLog RuleSettingsPayloadLog `json:"payload_log,nullable"`
 	// Settings that apply to quarantine rules
-	Quarantine RuleSettingsQuarantine `json:"quarantine"`
+	Quarantine RuleSettingsQuarantine `json:"quarantine,nullable"`
 	// Settings that apply to redirect rules
-	Redirect RuleSettingsRedirect `json:"redirect"`
+	Redirect RuleSettingsRedirect `json:"redirect,nullable"`
 	// Configure to forward the query to the internal DNS service, passing the
 	// specified 'view_id' as input. Cannot be set when 'dns_resolvers' are specified
 	// or 'resolve_dns_through_cloudflare' is set. Only valid when a rule's action is
 	// set to 'resolve'.
-	ResolveDNSInternally RuleSettingsResolveDNSInternally `json:"resolve_dns_internally"`
+	ResolveDNSInternally RuleSettingsResolveDNSInternally `json:"resolve_dns_internally,nullable"`
 	// Enable to send queries that match the policy to Cloudflare's default 1.1.1.1 DNS
 	// resolver. Cannot be set when 'dns_resolvers' are specified or
 	// 'resolve_dns_internally' is set. Only valid when a rule's action is set to
 	// 'resolve'.
-	ResolveDNSThroughCloudflare bool `json:"resolve_dns_through_cloudflare"`
+	ResolveDNSThroughCloudflare bool `json:"resolve_dns_through_cloudflare,nullable"`
 	// Configure behavior when an upstream cert is invalid or an SSL error occurs.
-	UntrustedCert RuleSettingsUntrustedCert `json:"untrusted_cert"`
+	UntrustedCert RuleSettingsUntrustedCert `json:"untrusted_cert,nullable"`
 	JSON          ruleSettingsJSON          `json:"-"`
 }
 
@@ -394,6 +409,7 @@ type ruleSettingsJSON struct {
 	AllowChildBypass                apijson.Field
 	AuditSSH                        apijson.Field
 	BisoAdminControls               apijson.Field
+	BlockPage                       apijson.Field
 	BlockPageEnabled                apijson.Field
 	BlockReason                     apijson.Field
 	BypassParentRule                apijson.Field
@@ -461,8 +477,8 @@ type RuleSettingsBisoAdminControls struct {
 	Dd bool `json:"dd"`
 	// Set to false to enable keyboard usage. Only applies when `version == "v1"`.
 	Dk bool `json:"dk"`
-	// Configure whether downloading enabled or not. When absent, downloading is
-	// enabled. Only applies when `version == "v2"`.
+	// Configure whether downloading enabled or not. When set with "remote_only",
+	// downloads are only available for viewing. Only applies when `version == "v2"`.
 	Download RuleSettingsBisoAdminControlsDownload `json:"download"`
 	// Set to false to enable printing. Only applies when `version == "v1"`.
 	Dp bool `json:"dp"`
@@ -532,18 +548,19 @@ func (r RuleSettingsBisoAdminControlsCopy) IsKnown() bool {
 	return false
 }
 
-// Configure whether downloading enabled or not. When absent, downloading is
-// enabled. Only applies when `version == "v2"`.
+// Configure whether downloading enabled or not. When set with "remote_only",
+// downloads are only available for viewing. Only applies when `version == "v2"`.
 type RuleSettingsBisoAdminControlsDownload string
 
 const (
-	RuleSettingsBisoAdminControlsDownloadEnabled  RuleSettingsBisoAdminControlsDownload = "enabled"
-	RuleSettingsBisoAdminControlsDownloadDisabled RuleSettingsBisoAdminControlsDownload = "disabled"
+	RuleSettingsBisoAdminControlsDownloadEnabled    RuleSettingsBisoAdminControlsDownload = "enabled"
+	RuleSettingsBisoAdminControlsDownloadDisabled   RuleSettingsBisoAdminControlsDownload = "disabled"
+	RuleSettingsBisoAdminControlsDownloadRemoteOnly RuleSettingsBisoAdminControlsDownload = "remote_only"
 )
 
 func (r RuleSettingsBisoAdminControlsDownload) IsKnown() bool {
 	switch r {
-	case RuleSettingsBisoAdminControlsDownloadEnabled, RuleSettingsBisoAdminControlsDownloadDisabled:
+	case RuleSettingsBisoAdminControlsDownloadEnabled, RuleSettingsBisoAdminControlsDownloadDisabled, RuleSettingsBisoAdminControlsDownloadRemoteOnly:
 		return true
 	}
 	return false
@@ -633,6 +650,33 @@ func (r RuleSettingsBisoAdminControlsVersion) IsKnown() bool {
 		return true
 	}
 	return false
+}
+
+// Custom block page settings. If missing/null, blocking will use the the account
+// settings.
+type RuleSettingsBlockPage struct {
+	// URI to which the user will be redirected
+	TargetUri string `json:"target_uri,required" format:"uri"`
+	// If true, context information will be passed as query parameters
+	IncludeContext bool                      `json:"include_context"`
+	JSON           ruleSettingsBlockPageJSON `json:"-"`
+}
+
+// ruleSettingsBlockPageJSON contains the JSON metadata for the struct
+// [RuleSettingsBlockPage]
+type ruleSettingsBlockPageJSON struct {
+	TargetUri      apijson.Field
+	IncludeContext apijson.Field
+	raw            string
+	ExtraFields    map[string]apijson.Field
+}
+
+func (r *RuleSettingsBlockPage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r ruleSettingsBlockPageJSON) RawJSON() string {
+	return r.raw
 }
 
 // Configure how session check behaves.
@@ -818,6 +862,8 @@ func (r ruleSettingsL4overrideJSON) RawJSON() string {
 type RuleSettingsNotificationSettings struct {
 	// Set notification on
 	Enabled bool `json:"enabled"`
+	// If true, context information will be passed as query parameters
+	IncludeContext bool `json:"include_context"`
 	// Customize the message shown in the notification.
 	Msg string `json:"msg"`
 	// Optional URL to direct users to additional information. If not set, the
@@ -829,11 +875,12 @@ type RuleSettingsNotificationSettings struct {
 // ruleSettingsNotificationSettingsJSON contains the JSON metadata for the struct
 // [RuleSettingsNotificationSettings]
 type ruleSettingsNotificationSettingsJSON struct {
-	Enabled     apijson.Field
-	Msg         apijson.Field
-	SupportURL  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	Enabled        apijson.Field
+	IncludeContext apijson.Field
+	Msg            apijson.Field
+	SupportURL     apijson.Field
+	raw            string
+	ExtraFields    map[string]apijson.Field
 }
 
 func (r *RuleSettingsNotificationSettings) UnmarshalJSON(data []byte) (err error) {
@@ -920,6 +967,8 @@ func (r RuleSettingsQuarantineFileType) IsKnown() bool {
 type RuleSettingsRedirect struct {
 	// URI to which the user will be redirected
 	TargetUri string `json:"target_uri,required" format:"uri"`
+	// If true, context information will be passed as query parameters
+	IncludeContext bool `json:"include_context"`
 	// If true, the path and query parameters from the original request will be
 	// appended to target_uri
 	PreservePathAndQuery bool                     `json:"preserve_path_and_query"`
@@ -930,6 +979,7 @@ type RuleSettingsRedirect struct {
 // [RuleSettingsRedirect]
 type ruleSettingsRedirectJSON struct {
 	TargetUri            apijson.Field
+	IncludeContext       apijson.Field
 	PreservePathAndQuery apijson.Field
 	raw                  string
 	ExtraFields          map[string]apijson.Field
@@ -1038,13 +1088,16 @@ func (r RuleSettingsUntrustedCertAction) IsKnown() bool {
 type RuleSettingsParam struct {
 	// Add custom headers to allowed requests, in the form of key-value pairs. Keys are
 	// header names, pointing to an array with its header value(s).
-	AddHeaders param.Field[map[string]string] `json:"add_headers"`
+	AddHeaders param.Field[map[string][]string] `json:"add_headers"`
 	// Set by parent MSP accounts to enable their children to bypass this rule.
 	AllowChildBypass param.Field[bool] `json:"allow_child_bypass"`
 	// Settings for the Audit SSH action.
 	AuditSSH param.Field[RuleSettingsAuditSSHParam] `json:"audit_ssh"`
 	// Configure how browser isolation behaves.
 	BisoAdminControls param.Field[RuleSettingsBisoAdminControlsParam] `json:"biso_admin_controls"`
+	// Custom block page settings. If missing/null, blocking will use the the account
+	// settings.
+	BlockPage param.Field[RuleSettingsBlockPageParam] `json:"block_page"`
 	// Enable the custom block page.
 	BlockPageEnabled param.Field[bool] `json:"block_page_enabled"`
 	// The text describing why this block occurred, displayed on the custom block page
@@ -1130,8 +1183,8 @@ type RuleSettingsBisoAdminControlsParam struct {
 	Dd param.Field[bool] `json:"dd"`
 	// Set to false to enable keyboard usage. Only applies when `version == "v1"`.
 	Dk param.Field[bool] `json:"dk"`
-	// Configure whether downloading enabled or not. When absent, downloading is
-	// enabled. Only applies when `version == "v2"`.
+	// Configure whether downloading enabled or not. When set with "remote_only",
+	// downloads are only available for viewing. Only applies when `version == "v2"`.
 	Download param.Field[RuleSettingsBisoAdminControlsDownload] `json:"download"`
 	// Set to false to enable printing. Only applies when `version == "v1"`.
 	Dp param.Field[bool] `json:"dp"`
@@ -1155,6 +1208,19 @@ type RuleSettingsBisoAdminControlsParam struct {
 }
 
 func (r RuleSettingsBisoAdminControlsParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// Custom block page settings. If missing/null, blocking will use the the account
+// settings.
+type RuleSettingsBlockPageParam struct {
+	// URI to which the user will be redirected
+	TargetUri param.Field[string] `json:"target_uri,required" format:"uri"`
+	// If true, context information will be passed as query parameters
+	IncludeContext param.Field[bool] `json:"include_context"`
+}
+
+func (r RuleSettingsBlockPageParam) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
@@ -1252,6 +1318,8 @@ func (r RuleSettingsL4overrideParam) MarshalJSON() (data []byte, err error) {
 type RuleSettingsNotificationSettingsParam struct {
 	// Set notification on
 	Enabled param.Field[bool] `json:"enabled"`
+	// If true, context information will be passed as query parameters
+	IncludeContext param.Field[bool] `json:"include_context"`
 	// Customize the message shown in the notification.
 	Msg param.Field[string] `json:"msg"`
 	// Optional URL to direct users to additional information. If not set, the
@@ -1287,6 +1355,8 @@ func (r RuleSettingsQuarantineParam) MarshalJSON() (data []byte, err error) {
 type RuleSettingsRedirectParam struct {
 	// URI to which the user will be redirected
 	TargetUri param.Field[string] `json:"target_uri,required" format:"uri"`
+	// If true, context information will be passed as query parameters
+	IncludeContext param.Field[bool] `json:"include_context"`
 	// If true, the path and query parameters from the original request will be
 	// appended to target_uri
 	PreservePathAndQuery param.Field[bool] `json:"preserve_path_and_query"`
@@ -1433,38 +1503,24 @@ func (r ScheduleParam) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-type SingleResponseRule struct {
-	Result GatewayRule            `json:"result"`
-	JSON   singleResponseRuleJSON `json:"-"`
-	APIResponseSingleZeroTrustGateway
-}
-
-// singleResponseRuleJSON contains the JSON metadata for the struct
-// [SingleResponseRule]
-type singleResponseRuleJSON struct {
-	Result      apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *SingleResponseRule) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r singleResponseRuleJSON) RawJSON() string {
-	return r.raw
-}
-
 type AccountGatewayRuleListResponse struct {
-	Result []GatewayRule                      `json:"result"`
-	JSON   accountGatewayRuleListResponseJSON `json:"-"`
-	APIResponseCollectionZeroTrustGateway
+	Errors   []ZeroTrustGatewayMessages `json:"errors,required"`
+	Messages []ZeroTrustGatewayMessages `json:"messages,required"`
+	// Whether the API call was successful
+	Success    AccountGatewayRuleListResponseSuccess    `json:"success,required"`
+	Result     []GatewayRule                            `json:"result"`
+	ResultInfo AccountGatewayRuleListResponseResultInfo `json:"result_info"`
+	JSON       accountGatewayRuleListResponseJSON       `json:"-"`
 }
 
 // accountGatewayRuleListResponseJSON contains the JSON metadata for the struct
 // [AccountGatewayRuleListResponse]
 type accountGatewayRuleListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -1477,8 +1533,54 @@ func (r accountGatewayRuleListResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful
+type AccountGatewayRuleListResponseSuccess bool
+
+const (
+	AccountGatewayRuleListResponseSuccessTrue AccountGatewayRuleListResponseSuccess = true
+)
+
+func (r AccountGatewayRuleListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountGatewayRuleListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type AccountGatewayRuleListResponseResultInfo struct {
+	// Total number of results for the requested service
+	Count float64 `json:"count"`
+	// Current page within paginated list of results
+	Page float64 `json:"page"`
+	// Number of results per page of results
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters
+	TotalCount float64                                      `json:"total_count"`
+	JSON       accountGatewayRuleListResponseResultInfoJSON `json:"-"`
+}
+
+// accountGatewayRuleListResponseResultInfoJSON contains the JSON metadata for the
+// struct [AccountGatewayRuleListResponseResultInfo]
+type accountGatewayRuleListResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountGatewayRuleListResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountGatewayRuleListResponseResultInfoJSON) RawJSON() string {
+	return r.raw
+}
+
 type AccountGatewayRuleNewParams struct {
-	// The action to preform when the associated traffic, identity, and device posture
+	// The action to perform when the associated traffic, identity, and device posture
 	// expressions are either absent or evaluate to `true`.
 	Action param.Field[ActionPerform] `json:"action,required"`
 	// The name of the rule.
@@ -1501,7 +1603,9 @@ type AccountGatewayRuleNewParams struct {
 	Identity param.Field[string] `json:"identity"`
 	// Precedence sets the order of your rules. Lower values indicate higher
 	// precedence. At each processing phase, applicable rules are evaluated in
-	// ascending order of this value.
+	// ascending order of this value. Refer to
+	// [Order of enforcement](http://developers.cloudflare.com/learning-paths/secure-internet-traffic/understand-policies/order-of-enforcement/#manage-precedence-with-terraform)
+	// docs on how to manage precedence via Terraform.
 	Precedence param.Field[int64] `json:"precedence"`
 	// Additional settings that modify the rule's action.
 	RuleSettings param.Field[RuleSettingsParam] `json:"rule_settings"`
@@ -1517,7 +1621,7 @@ func (r AccountGatewayRuleNewParams) MarshalJSON() (data []byte, err error) {
 }
 
 type AccountGatewayRuleUpdateParams struct {
-	// The action to preform when the associated traffic, identity, and device posture
+	// The action to perform when the associated traffic, identity, and device posture
 	// expressions are either absent or evaluate to `true`.
 	Action param.Field[ActionPerform] `json:"action,required"`
 	// The name of the rule.
@@ -1540,7 +1644,9 @@ type AccountGatewayRuleUpdateParams struct {
 	Identity param.Field[string] `json:"identity"`
 	// Precedence sets the order of your rules. Lower values indicate higher
 	// precedence. At each processing phase, applicable rules are evaluated in
-	// ascending order of this value.
+	// ascending order of this value. Refer to
+	// [Order of enforcement](http://developers.cloudflare.com/learning-paths/secure-internet-traffic/understand-policies/order-of-enforcement/#manage-precedence-with-terraform)
+	// docs on how to manage precedence via Terraform.
 	Precedence param.Field[int64] `json:"precedence"`
 	// Additional settings that modify the rule's action.
 	RuleSettings param.Field[RuleSettingsParam] `json:"rule_settings"`
@@ -1553,12 +1659,4 @@ type AccountGatewayRuleUpdateParams struct {
 
 func (r AccountGatewayRuleUpdateParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
-}
-
-type AccountGatewayRuleDeleteParams struct {
-	Body interface{} `json:"body,required"`
-}
-
-func (r AccountGatewayRuleDeleteParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
 }

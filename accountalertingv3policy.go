@@ -393,12 +393,14 @@ const (
 	AlertTypeBlockNotificationBlockRemoved                 AlertType = "block_notification_block_removed"
 	AlertTypeBlockNotificationNewBlock                     AlertType = "block_notification_new_block"
 	AlertTypeBlockNotificationReviewRejected               AlertType = "block_notification_review_rejected"
+	AlertTypeBotTrafficBasicAlert                          AlertType = "bot_traffic_basic_alert"
 	AlertTypeBrandProtectionAlert                          AlertType = "brand_protection_alert"
 	AlertTypeBrandProtectionDigest                         AlertType = "brand_protection_digest"
 	AlertTypeClickhouseAlertFwAnomaly                      AlertType = "clickhouse_alert_fw_anomaly"
 	AlertTypeClickhouseAlertFwEntAnomaly                   AlertType = "clickhouse_alert_fw_ent_anomaly"
 	AlertTypeCloudforceOneRequestNotification              AlertType = "cloudforce_one_request_notification"
 	AlertTypeCustomAnalytics                               AlertType = "custom_analytics"
+	AlertTypeCustomBotDetectionAlert                       AlertType = "custom_bot_detection_alert"
 	AlertTypeCustomSslCertificateEventType                 AlertType = "custom_ssl_certificate_event_type"
 	AlertTypeDedicatedSslCertificateEventType              AlertType = "dedicated_ssl_certificate_event_type"
 	AlertTypeDeviceConnectivityAnomalyAlert                AlertType = "device_connectivity_anomaly_alert"
@@ -453,7 +455,7 @@ const (
 
 func (r AlertType) IsKnown() bool {
 	switch r {
-	case AlertTypeAccessCustomCertificateExpirationType, AlertTypeAdvancedDdosAttackL4Alert, AlertTypeAdvancedDdosAttackL7Alert, AlertTypeAdvancedHTTPAlertError, AlertTypeBgpHijackNotification, AlertTypeBillingUsageAlert, AlertTypeBlockNotificationBlockRemoved, AlertTypeBlockNotificationNewBlock, AlertTypeBlockNotificationReviewRejected, AlertTypeBrandProtectionAlert, AlertTypeBrandProtectionDigest, AlertTypeClickhouseAlertFwAnomaly, AlertTypeClickhouseAlertFwEntAnomaly, AlertTypeCloudforceOneRequestNotification, AlertTypeCustomAnalytics, AlertTypeCustomSslCertificateEventType, AlertTypeDedicatedSslCertificateEventType, AlertTypeDeviceConnectivityAnomalyAlert, AlertTypeDosAttackL4, AlertTypeDosAttackL7, AlertTypeExpiringServiceTokenAlert, AlertTypeFailingLogpushJobDisabledAlert, AlertTypeFbmAutoAdvertisement, AlertTypeFbmDosdAttack, AlertTypeFbmVolumetricAttack, AlertTypeHealthCheckStatusNotification, AlertTypeHostnameAopCustomCertificateExpirationType, AlertTypeHTTPAlertEdgeError, AlertTypeHTTPAlertOriginError, AlertTypeImageNotification, AlertTypeImageResizingNotification, AlertTypeIncidentAlert, AlertTypeLoadBalancingHealthAlert, AlertTypeLoadBalancingPoolEnablementAlert, AlertTypeLogoMatchAlert, AlertTypeMagicTunnelHealthCheckEvent, AlertTypeMagicWanTunnelHealth, AlertTypeMaintenanceEventNotification, AlertTypeMtlsCertificateStoreCertificateExpirationType, AlertTypePagesEventAlert, AlertTypeRadarNotification, AlertTypeRealOriginMonitoring, AlertTypeScriptmonitorAlertNewCodeChangeDetections, AlertTypeScriptmonitorAlertNewHosts, AlertTypeScriptmonitorAlertNewMaliciousHosts, AlertTypeScriptmonitorAlertNewMaliciousScripts, AlertTypeScriptmonitorAlertNewMaliciousURL, AlertTypeScriptmonitorAlertNewMaxLengthResourceURL, AlertTypeScriptmonitorAlertNewResources, AlertTypeSecondaryDNSAllPrimariesFailing, AlertTypeSecondaryDNSPrimariesFailing, AlertTypeSecondaryDNSWarning, AlertTypeSecondaryDNSZoneSuccessfullyUpdated, AlertTypeSecondaryDNSZoneValidationWarning, AlertTypeSecurityInsightsAlert, AlertTypeSentinelAlert, AlertTypeStreamLiveNotifications, AlertTypeSyntheticTestLatencyAlert, AlertTypeSyntheticTestLowAvailabilityAlert, AlertTypeTrafficAnomaliesAlert, AlertTypeTunnelHealthEvent, AlertTypeTunnelUpdateEvent, AlertTypeUniversalSslEventType, AlertTypeWebAnalyticsMetricsUpdate, AlertTypeZoneAopCustomCertificateExpirationType:
+	case AlertTypeAccessCustomCertificateExpirationType, AlertTypeAdvancedDdosAttackL4Alert, AlertTypeAdvancedDdosAttackL7Alert, AlertTypeAdvancedHTTPAlertError, AlertTypeBgpHijackNotification, AlertTypeBillingUsageAlert, AlertTypeBlockNotificationBlockRemoved, AlertTypeBlockNotificationNewBlock, AlertTypeBlockNotificationReviewRejected, AlertTypeBotTrafficBasicAlert, AlertTypeBrandProtectionAlert, AlertTypeBrandProtectionDigest, AlertTypeClickhouseAlertFwAnomaly, AlertTypeClickhouseAlertFwEntAnomaly, AlertTypeCloudforceOneRequestNotification, AlertTypeCustomAnalytics, AlertTypeCustomBotDetectionAlert, AlertTypeCustomSslCertificateEventType, AlertTypeDedicatedSslCertificateEventType, AlertTypeDeviceConnectivityAnomalyAlert, AlertTypeDosAttackL4, AlertTypeDosAttackL7, AlertTypeExpiringServiceTokenAlert, AlertTypeFailingLogpushJobDisabledAlert, AlertTypeFbmAutoAdvertisement, AlertTypeFbmDosdAttack, AlertTypeFbmVolumetricAttack, AlertTypeHealthCheckStatusNotification, AlertTypeHostnameAopCustomCertificateExpirationType, AlertTypeHTTPAlertEdgeError, AlertTypeHTTPAlertOriginError, AlertTypeImageNotification, AlertTypeImageResizingNotification, AlertTypeIncidentAlert, AlertTypeLoadBalancingHealthAlert, AlertTypeLoadBalancingPoolEnablementAlert, AlertTypeLogoMatchAlert, AlertTypeMagicTunnelHealthCheckEvent, AlertTypeMagicWanTunnelHealth, AlertTypeMaintenanceEventNotification, AlertTypeMtlsCertificateStoreCertificateExpirationType, AlertTypePagesEventAlert, AlertTypeRadarNotification, AlertTypeRealOriginMonitoring, AlertTypeScriptmonitorAlertNewCodeChangeDetections, AlertTypeScriptmonitorAlertNewHosts, AlertTypeScriptmonitorAlertNewMaliciousHosts, AlertTypeScriptmonitorAlertNewMaliciousScripts, AlertTypeScriptmonitorAlertNewMaliciousURL, AlertTypeScriptmonitorAlertNewMaxLengthResourceURL, AlertTypeScriptmonitorAlertNewResources, AlertTypeSecondaryDNSAllPrimariesFailing, AlertTypeSecondaryDNSPrimariesFailing, AlertTypeSecondaryDNSWarning, AlertTypeSecondaryDNSZoneSuccessfullyUpdated, AlertTypeSecondaryDNSZoneValidationWarning, AlertTypeSecurityInsightsAlert, AlertTypeSentinelAlert, AlertTypeStreamLiveNotifications, AlertTypeSyntheticTestLatencyAlert, AlertTypeSyntheticTestLowAvailabilityAlert, AlertTypeTrafficAnomaliesAlert, AlertTypeTunnelHealthEvent, AlertTypeTunnelUpdateEvent, AlertTypeUniversalSslEventType, AlertTypeWebAnalyticsMetricsUpdate, AlertTypeZoneAopCustomCertificateExpirationType:
 		return true
 	}
 	return false
@@ -642,14 +644,20 @@ func (r policiesJSON) RawJSON() string {
 }
 
 type AccountAlertingV3PolicyGetResponse struct {
-	Result Policies                               `json:"result"`
-	JSON   accountAlertingV3PolicyGetResponseJSON `json:"-"`
-	APIResponseSingleAlerting
+	Errors   []AaaMessage `json:"errors,required"`
+	Messages []AaaMessage `json:"messages,required"`
+	// Whether the API call was successful
+	Success AccountAlertingV3PolicyGetResponseSuccess `json:"success,required"`
+	Result  Policies                                  `json:"result"`
+	JSON    accountAlertingV3PolicyGetResponseJSON    `json:"-"`
 }
 
 // accountAlertingV3PolicyGetResponseJSON contains the JSON metadata for the struct
 // [AccountAlertingV3PolicyGetResponse]
 type accountAlertingV3PolicyGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -663,16 +671,39 @@ func (r accountAlertingV3PolicyGetResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful
+type AccountAlertingV3PolicyGetResponseSuccess bool
+
+const (
+	AccountAlertingV3PolicyGetResponseSuccessTrue AccountAlertingV3PolicyGetResponseSuccess = true
+)
+
+func (r AccountAlertingV3PolicyGetResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountAlertingV3PolicyGetResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountAlertingV3PolicyListResponse struct {
-	Result []Policies                              `json:"result"`
-	JSON   accountAlertingV3PolicyListResponseJSON `json:"-"`
-	APIResponseCollectionAlerting
+	Errors   []AaaMessage `json:"errors,required"`
+	Messages []AaaMessage `json:"messages,required"`
+	// Whether the API call was successful
+	Success    AccountAlertingV3PolicyListResponseSuccess    `json:"success,required"`
+	Result     []Policies                                    `json:"result"`
+	ResultInfo AccountAlertingV3PolicyListResponseResultInfo `json:"result_info"`
+	JSON       accountAlertingV3PolicyListResponseJSON       `json:"-"`
 }
 
 // accountAlertingV3PolicyListResponseJSON contains the JSON metadata for the
 // struct [AccountAlertingV3PolicyListResponse]
 type accountAlertingV3PolicyListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -682,6 +713,52 @@ func (r *AccountAlertingV3PolicyListResponse) UnmarshalJSON(data []byte) (err er
 }
 
 func (r accountAlertingV3PolicyListResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful
+type AccountAlertingV3PolicyListResponseSuccess bool
+
+const (
+	AccountAlertingV3PolicyListResponseSuccessTrue AccountAlertingV3PolicyListResponseSuccess = true
+)
+
+func (r AccountAlertingV3PolicyListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountAlertingV3PolicyListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type AccountAlertingV3PolicyListResponseResultInfo struct {
+	// Total number of results for the requested service
+	Count float64 `json:"count"`
+	// Current page within paginated list of results
+	Page float64 `json:"page"`
+	// Number of results per page of results
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters
+	TotalCount float64                                           `json:"total_count"`
+	JSON       accountAlertingV3PolicyListResponseResultInfoJSON `json:"-"`
+}
+
+// accountAlertingV3PolicyListResponseResultInfoJSON contains the JSON metadata for
+// the struct [AccountAlertingV3PolicyListResponseResultInfo]
+type accountAlertingV3PolicyListResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountAlertingV3PolicyListResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountAlertingV3PolicyListResponseResultInfoJSON) RawJSON() string {
 	return r.raw
 }
 

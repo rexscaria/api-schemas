@@ -160,15 +160,20 @@ func (r trustedDomainJSON) RawJSON() string {
 func (r TrustedDomain) implementsAccountEmailSecuritySettingTrustedDomainNewResponseResultUnion() {}
 
 type AccountEmailSecuritySettingTrustedDomainNewResponse struct {
-	Result AccountEmailSecuritySettingTrustedDomainNewResponseResultUnion `json:"result,required"`
-	JSON   accountEmailSecuritySettingTrustedDomainNewResponseJSON        `json:"-"`
-	APIResponseEmailSecurity
+	Errors   []EmailSecurityMessage                                         `json:"errors,required"`
+	Messages []EmailSecurityMessage                                         `json:"messages,required"`
+	Result   AccountEmailSecuritySettingTrustedDomainNewResponseResultUnion `json:"result,required"`
+	Success  bool                                                           `json:"success,required"`
+	JSON     accountEmailSecuritySettingTrustedDomainNewResponseJSON        `json:"-"`
 }
 
 // accountEmailSecuritySettingTrustedDomainNewResponseJSON contains the JSON
 // metadata for the struct [AccountEmailSecuritySettingTrustedDomainNewResponse]
 type accountEmailSecuritySettingTrustedDomainNewResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -208,15 +213,20 @@ func (r AccountEmailSecuritySettingTrustedDomainNewResponseResultArray) implemen
 }
 
 type AccountEmailSecuritySettingTrustedDomainGetResponse struct {
-	Result AccountEmailSecuritySettingTrustedDomainGetResponseResult `json:"result,required"`
-	JSON   accountEmailSecuritySettingTrustedDomainGetResponseJSON   `json:"-"`
-	APIResponseEmailSecurity
+	Errors   []EmailSecurityMessage                                    `json:"errors,required"`
+	Messages []EmailSecurityMessage                                    `json:"messages,required"`
+	Result   AccountEmailSecuritySettingTrustedDomainGetResponseResult `json:"result,required"`
+	Success  bool                                                      `json:"success,required"`
+	JSON     accountEmailSecuritySettingTrustedDomainGetResponseJSON   `json:"-"`
 }
 
 // accountEmailSecuritySettingTrustedDomainGetResponseJSON contains the JSON
 // metadata for the struct [AccountEmailSecuritySettingTrustedDomainGetResponse]
 type accountEmailSecuritySettingTrustedDomainGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -271,15 +281,20 @@ func (r accountEmailSecuritySettingTrustedDomainGetResponseResultJSON) RawJSON()
 }
 
 type AccountEmailSecuritySettingTrustedDomainUpdateResponse struct {
-	Result AccountEmailSecuritySettingTrustedDomainUpdateResponseResult `json:"result,required"`
-	JSON   accountEmailSecuritySettingTrustedDomainUpdateResponseJSON   `json:"-"`
-	APIResponseEmailSecurity
+	Errors   []EmailSecurityMessage                                       `json:"errors,required"`
+	Messages []EmailSecurityMessage                                       `json:"messages,required"`
+	Result   AccountEmailSecuritySettingTrustedDomainUpdateResponseResult `json:"result,required"`
+	Success  bool                                                         `json:"success,required"`
+	JSON     accountEmailSecuritySettingTrustedDomainUpdateResponseJSON   `json:"-"`
 }
 
 // accountEmailSecuritySettingTrustedDomainUpdateResponseJSON contains the JSON
 // metadata for the struct [AccountEmailSecuritySettingTrustedDomainUpdateResponse]
 type accountEmailSecuritySettingTrustedDomainUpdateResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -334,17 +349,22 @@ func (r accountEmailSecuritySettingTrustedDomainUpdateResponseResultJSON) RawJSO
 }
 
 type AccountEmailSecuritySettingTrustedDomainListResponse struct {
+	Errors     []EmailSecurityMessage                                   `json:"errors,required"`
+	Messages   []EmailSecurityMessage                                   `json:"messages,required"`
 	Result     []TrustedDomain                                          `json:"result,required"`
 	ResultInfo ResultInfoEmailSecurity                                  `json:"result_info,required"`
+	Success    bool                                                     `json:"success,required"`
 	JSON       accountEmailSecuritySettingTrustedDomainListResponseJSON `json:"-"`
-	APIResponseEmailSecurity
 }
 
 // accountEmailSecuritySettingTrustedDomainListResponseJSON contains the JSON
 // metadata for the struct [AccountEmailSecuritySettingTrustedDomainListResponse]
 type accountEmailSecuritySettingTrustedDomainListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
 	ResultInfo  apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -358,15 +378,20 @@ func (r accountEmailSecuritySettingTrustedDomainListResponseJSON) RawJSON() stri
 }
 
 type AccountEmailSecuritySettingTrustedDomainDeleteResponse struct {
-	Result AccountEmailSecuritySettingTrustedDomainDeleteResponseResult `json:"result,required"`
-	JSON   accountEmailSecuritySettingTrustedDomainDeleteResponseJSON   `json:"-"`
-	APIResponseEmailSecurity
+	Errors   []EmailSecurityMessage                                       `json:"errors,required"`
+	Messages []EmailSecurityMessage                                       `json:"messages,required"`
+	Result   AccountEmailSecuritySettingTrustedDomainDeleteResponseResult `json:"result,required"`
+	Success  bool                                                         `json:"success,required"`
+	JSON     accountEmailSecuritySettingTrustedDomainDeleteResponseJSON   `json:"-"`
 }
 
 // accountEmailSecuritySettingTrustedDomainDeleteResponseJSON contains the JSON
 // metadata for the struct [AccountEmailSecuritySettingTrustedDomainDeleteResponse]
 type accountEmailSecuritySettingTrustedDomainDeleteResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -445,7 +470,8 @@ type AccountEmailSecuritySettingTrustedDomainListParams struct {
 	// The field to sort by.
 	Order param.Field[AccountEmailSecuritySettingTrustedDomainListParamsOrder] `query:"order"`
 	// The page number of paginated results.
-	Page param.Field[int64] `query:"page"`
+	Page    param.Field[int64]  `query:"page"`
+	Pattern param.Field[string] `query:"pattern"`
 	// The number of results per page.
 	PerPage param.Field[int64] `query:"per_page"`
 	// Allows searching in multiple properties of a record simultaneously. This

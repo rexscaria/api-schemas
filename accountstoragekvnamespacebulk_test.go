@@ -31,9 +31,6 @@ func TestAccountStorageKvNamespaceBulkDelete(t *testing.T) {
 		context.TODO(),
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		"0f2ac74b498b48028cb68387c421e279",
-		cfrex.AccountStorageKvNamespaceBulkDeleteParams{
-			Body: []string{"My-Key"},
-		},
 	)
 	if err != nil {
 		var apierr *cfrex.Error
@@ -128,14 +125,12 @@ func TestAccountStorageKvNamespaceBulkWrite(t *testing.T) {
 		"0f2ac74b498b48028cb68387c421e279",
 		cfrex.AccountStorageKvNamespaceBulkWriteParams{
 			Body: []cfrex.AccountStorageKvNamespaceBulkWriteParamsBody{{
+				Key:           cfrex.F("My-Key"),
+				Value:         cfrex.F("Some string"),
 				Base64:        cfrex.F(true),
 				Expiration:    cfrex.F(1578435000.000000),
 				ExpirationTtl: cfrex.F(300.000000),
-				Key:           cfrex.F("My-Key"),
-				Metadata: cfrex.F(map[string]interface{}{
-					"someMetadataKey": "bar",
-				}),
-				Value: cfrex.F("Some string"),
+				Metadata:      cfrex.F[any](map[string]interface{}{}),
 			}},
 		},
 	)

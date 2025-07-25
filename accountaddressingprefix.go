@@ -85,7 +85,7 @@ func (r *AccountAddressingPrefixService) List(ctx context.Context, accountID str
 }
 
 // Delete an unapproved prefix owned by the account.
-func (r *AccountAddressingPrefixService) Delete(ctx context.Context, accountID string, prefixID string, body AccountAddressingPrefixDeleteParams, opts ...option.RequestOption) (res *APIResponseCollectionAddressing, err error) {
+func (r *AccountAddressingPrefixService) Delete(ctx context.Context, accountID string, prefixID string, opts ...option.RequestOption) (res *APIResponseCollectionAddressing, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
@@ -96,7 +96,7 @@ func (r *AccountAddressingPrefixService) Delete(ctx context.Context, accountID s
 		return
 	}
 	path := fmt.Sprintf("accounts/%s/addressing/prefixes/%s", accountID, prefixID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
@@ -172,14 +172,20 @@ func (r ipamPrefixesJSON) RawJSON() string {
 }
 
 type SingleResponsePrefix struct {
-	Result IpamPrefixes             `json:"result"`
-	JSON   singleResponsePrefixJSON `json:"-"`
-	AddressingAPIResponseSingle
+	Errors   []AddressingMessages `json:"errors,required"`
+	Messages []AddressingMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success SingleResponsePrefixSuccess `json:"success,required"`
+	Result  IpamPrefixes                `json:"result"`
+	JSON    singleResponsePrefixJSON    `json:"-"`
 }
 
 // singleResponsePrefixJSON contains the JSON metadata for the struct
 // [SingleResponsePrefix]
 type singleResponsePrefixJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -193,16 +199,39 @@ func (r singleResponsePrefixJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type SingleResponsePrefixSuccess bool
+
+const (
+	SingleResponsePrefixSuccessTrue SingleResponsePrefixSuccess = true
+)
+
+func (r SingleResponsePrefixSuccess) IsKnown() bool {
+	switch r {
+	case SingleResponsePrefixSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountAddressingPrefixListResponse struct {
-	Result []IpamPrefixes                          `json:"result"`
-	JSON   accountAddressingPrefixListResponseJSON `json:"-"`
-	APIResponseCollectionAddressing
+	Errors   []AddressingMessages `json:"errors,required"`
+	Messages []AddressingMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success    AccountAddressingPrefixListResponseSuccess    `json:"success,required"`
+	Result     []IpamPrefixes                                `json:"result"`
+	ResultInfo AccountAddressingPrefixListResponseResultInfo `json:"result_info"`
+	JSON       accountAddressingPrefixListResponseJSON       `json:"-"`
 }
 
 // accountAddressingPrefixListResponseJSON contains the JSON metadata for the
 // struct [AccountAddressingPrefixListResponse]
 type accountAddressingPrefixListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -215,6 +244,52 @@ func (r accountAddressingPrefixListResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountAddressingPrefixListResponseSuccess bool
+
+const (
+	AccountAddressingPrefixListResponseSuccessTrue AccountAddressingPrefixListResponseSuccess = true
+)
+
+func (r AccountAddressingPrefixListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountAddressingPrefixListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type AccountAddressingPrefixListResponseResultInfo struct {
+	// Total number of results for the requested service.
+	Count float64 `json:"count"`
+	// Current page within paginated list of results.
+	Page float64 `json:"page"`
+	// Number of results per page of results.
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters.
+	TotalCount float64                                           `json:"total_count"`
+	JSON       accountAddressingPrefixListResponseResultInfoJSON `json:"-"`
+}
+
+// accountAddressingPrefixListResponseResultInfoJSON contains the JSON metadata for
+// the struct [AccountAddressingPrefixListResponseResultInfo]
+type accountAddressingPrefixListResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountAddressingPrefixListResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountAddressingPrefixListResponseResultInfoJSON) RawJSON() string {
+	return r.raw
+}
+
 type AccountAddressingPrefixUpdateParams struct {
 	// Description of the prefix.
 	Description param.Field[string] `json:"description,required"`
@@ -222,14 +297,6 @@ type AccountAddressingPrefixUpdateParams struct {
 
 func (r AccountAddressingPrefixUpdateParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
-}
-
-type AccountAddressingPrefixDeleteParams struct {
-	Body interface{} `json:"body,required"`
-}
-
-func (r AccountAddressingPrefixDeleteParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
 }
 
 type AccountAddressingPrefixAddParams struct {

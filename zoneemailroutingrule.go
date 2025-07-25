@@ -115,7 +115,7 @@ func (r *ZoneEmailRoutingRuleService) Delete(ctx context.Context, zoneID string,
 type EmailRuleActionPattern struct {
 	// Type of supported action.
 	Type  EmailRuleActionPatternType `json:"type,required"`
-	Value []string                   `json:"value,required"`
+	Value []string                   `json:"value"`
 	JSON  emailRuleActionPatternJSON `json:"-"`
 }
 
@@ -157,7 +157,7 @@ func (r EmailRuleActionPatternType) IsKnown() bool {
 type EmailRuleActionPatternParam struct {
 	// Type of supported action.
 	Type  param.Field[EmailRuleActionPatternType] `json:"type,required"`
-	Value param.Field[[]string]                   `json:"value,required"`
+	Value param.Field[[]string]                   `json:"value"`
 }
 
 func (r EmailRuleActionPatternParam) MarshalJSON() (data []byte, err error) {
@@ -182,20 +182,20 @@ func (r EmailRuleEnabled) IsKnown() bool {
 
 // Matching pattern to forward your actions.
 type EmailRuleMatcher struct {
-	// Field for type matcher.
-	Field EmailRuleMatcherField `json:"field,required"`
 	// Type of matcher.
 	Type EmailRuleMatcherType `json:"type,required"`
+	// Field for type matcher.
+	Field EmailRuleMatcherField `json:"field"`
 	// Value for matcher.
-	Value string               `json:"value,required"`
+	Value string               `json:"value"`
 	JSON  emailRuleMatcherJSON `json:"-"`
 }
 
 // emailRuleMatcherJSON contains the JSON metadata for the struct
 // [EmailRuleMatcher]
 type emailRuleMatcherJSON struct {
-	Field       apijson.Field
 	Type        apijson.Field
+	Field       apijson.Field
 	Value       apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -207,6 +207,22 @@ func (r *EmailRuleMatcher) UnmarshalJSON(data []byte) (err error) {
 
 func (r emailRuleMatcherJSON) RawJSON() string {
 	return r.raw
+}
+
+// Type of matcher.
+type EmailRuleMatcherType string
+
+const (
+	EmailRuleMatcherTypeAll     EmailRuleMatcherType = "all"
+	EmailRuleMatcherTypeLiteral EmailRuleMatcherType = "literal"
+)
+
+func (r EmailRuleMatcherType) IsKnown() bool {
+	switch r {
+	case EmailRuleMatcherTypeAll, EmailRuleMatcherTypeLiteral:
+		return true
+	}
+	return false
 }
 
 // Field for type matcher.
@@ -224,29 +240,14 @@ func (r EmailRuleMatcherField) IsKnown() bool {
 	return false
 }
 
-// Type of matcher.
-type EmailRuleMatcherType string
-
-const (
-	EmailRuleMatcherTypeLiteral EmailRuleMatcherType = "literal"
-)
-
-func (r EmailRuleMatcherType) IsKnown() bool {
-	switch r {
-	case EmailRuleMatcherTypeLiteral:
-		return true
-	}
-	return false
-}
-
 // Matching pattern to forward your actions.
 type EmailRuleMatcherParam struct {
-	// Field for type matcher.
-	Field param.Field[EmailRuleMatcherField] `json:"field,required"`
 	// Type of matcher.
 	Type param.Field[EmailRuleMatcherType] `json:"type,required"`
+	// Field for type matcher.
+	Field param.Field[EmailRuleMatcherField] `json:"field"`
 	// Value for matcher.
-	Value param.Field[string] `json:"value,required"`
+	Value param.Field[string] `json:"value"`
 }
 
 func (r EmailRuleMatcherParam) MarshalJSON() (data []byte, err error) {
@@ -254,14 +255,20 @@ func (r EmailRuleMatcherParam) MarshalJSON() (data []byte, err error) {
 }
 
 type EmailRuleResponseSingle struct {
-	Result EmailRules                  `json:"result"`
-	JSON   emailRuleResponseSingleJSON `json:"-"`
-	EmailAPIResponseSingle
+	Errors   []EmailMessagesItem `json:"errors,required"`
+	Messages []EmailMessagesItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success EmailRuleResponseSingleSuccess `json:"success,required"`
+	Result  EmailRules                     `json:"result"`
+	JSON    emailRuleResponseSingleJSON    `json:"-"`
 }
 
 // emailRuleResponseSingleJSON contains the JSON metadata for the struct
 // [EmailRuleResponseSingle]
 type emailRuleResponseSingleJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -273,6 +280,21 @@ func (r *EmailRuleResponseSingle) UnmarshalJSON(data []byte) (err error) {
 
 func (r emailRuleResponseSingleJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type EmailRuleResponseSingleSuccess bool
+
+const (
+	EmailRuleResponseSingleSuccessTrue EmailRuleResponseSingleSuccess = true
+)
+
+func (r EmailRuleResponseSingleSuccess) IsKnown() bool {
+	switch r {
+	case EmailRuleResponseSingleSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type EmailRules struct {
@@ -317,15 +339,21 @@ func (r emailRulesJSON) RawJSON() string {
 }
 
 type ZoneEmailRoutingRuleListResponse struct {
+	Errors   []EmailMessagesItem `json:"errors,required"`
+	Messages []EmailMessagesItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success    ZoneEmailRoutingRuleListResponseSuccess    `json:"success,required"`
 	Result     []EmailRules                               `json:"result"`
 	ResultInfo ZoneEmailRoutingRuleListResponseResultInfo `json:"result_info"`
 	JSON       zoneEmailRoutingRuleListResponseJSON       `json:"-"`
-	APIResponseCollectionEmail
 }
 
 // zoneEmailRoutingRuleListResponseJSON contains the JSON metadata for the struct
 // [ZoneEmailRoutingRuleListResponse]
 type zoneEmailRoutingRuleListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	ResultInfo  apijson.Field
 	raw         string
@@ -340,11 +368,30 @@ func (r zoneEmailRoutingRuleListResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type ZoneEmailRoutingRuleListResponseSuccess bool
+
+const (
+	ZoneEmailRoutingRuleListResponseSuccessTrue ZoneEmailRoutingRuleListResponseSuccess = true
+)
+
+func (r ZoneEmailRoutingRuleListResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneEmailRoutingRuleListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type ZoneEmailRoutingRuleListResponseResultInfo struct {
-	Count      interface{}                                    `json:"count"`
-	Page       interface{}                                    `json:"page"`
-	PerPage    interface{}                                    `json:"per_page"`
-	TotalCount interface{}                                    `json:"total_count"`
+	// Total number of results for the requested service.
+	Count float64 `json:"count"`
+	// Current page within paginated list of results.
+	Page float64 `json:"page"`
+	// Number of results per page of results.
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters.
+	TotalCount float64                                        `json:"total_count"`
 	JSON       zoneEmailRoutingRuleListResponseResultInfoJSON `json:"-"`
 }
 

@@ -7,15 +7,12 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"reflect"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
 	"github.com/rexscaria/api-schemas/internal/requestconfig"
 	"github.com/rexscaria/api-schemas/option"
-	"github.com/rexscaria/api-schemas/shared"
-	"github.com/tidwall/gjson"
 )
 
 // AccountSubscriptionService contains methods and other services that help with
@@ -78,7 +75,7 @@ func (r *AccountSubscriptionService) List(ctx context.Context, accountID string,
 }
 
 // Deletes an account's subscription.
-func (r *AccountSubscriptionService) Delete(ctx context.Context, accountID string, subscriptionIdentifier string, body AccountSubscriptionDeleteParams, opts ...option.RequestOption) (res *AccountSubscriptionDeleteResponse, err error) {
+func (r *AccountSubscriptionService) Delete(ctx context.Context, accountID string, subscriptionIdentifier string, opts ...option.RequestOption) (res *AccountSubscriptionDeleteResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
@@ -89,20 +86,26 @@ func (r *AccountSubscriptionService) Delete(ctx context.Context, accountID strin
 		return
 	}
 	path := fmt.Sprintf("accounts/%s/subscriptions/%s", accountID, subscriptionIdentifier)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
 type AccountSubscriptionResponseSingle struct {
-	Result interface{}                           `json:"result"`
-	JSON   accountSubscriptionResponseSingleJSON `json:"-"`
-	APIResponseSingleBilling
+	Errors   []AccountSubscriptionResponseSingleError   `json:"errors,required"`
+	Messages []AccountSubscriptionResponseSingleMessage `json:"messages,required"`
+	Result   Subscription                               `json:"result,required"`
+	// Whether the API call was successful
+	Success AccountSubscriptionResponseSingleSuccess `json:"success,required"`
+	JSON    accountSubscriptionResponseSingleJSON    `json:"-"`
 }
 
 // accountSubscriptionResponseSingleJSON contains the JSON metadata for the struct
 // [AccountSubscriptionResponseSingle]
 type accountSubscriptionResponseSingleJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -115,108 +118,134 @@ func (r accountSubscriptionResponseSingleJSON) RawJSON() string {
 	return r.raw
 }
 
-type APIResponseBilling struct {
-	Errors   []BillSubsAPIMessages         `json:"errors,required"`
-	Messages []BillSubsAPIMessages         `json:"messages,required"`
-	Result   APIResponseBillingResultUnion `json:"result,required"`
-	// Whether the API call was successful
-	Success APIResponseBillingSuccess `json:"success,required"`
-	JSON    apiResponseBillingJSON    `json:"-"`
+type AccountSubscriptionResponseSingleError struct {
+	Code             int64                                         `json:"code,required"`
+	Message          string                                        `json:"message,required"`
+	DocumentationURL string                                        `json:"documentation_url"`
+	Source           AccountSubscriptionResponseSingleErrorsSource `json:"source"`
+	JSON             accountSubscriptionResponseSingleErrorJSON    `json:"-"`
 }
 
-// apiResponseBillingJSON contains the JSON metadata for the struct
-// [APIResponseBilling]
-type apiResponseBillingJSON struct {
-	Errors      apijson.Field
-	Messages    apijson.Field
-	Result      apijson.Field
-	Success     apijson.Field
+// accountSubscriptionResponseSingleErrorJSON contains the JSON metadata for the
+// struct [AccountSubscriptionResponseSingleError]
+type accountSubscriptionResponseSingleErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountSubscriptionResponseSingleError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountSubscriptionResponseSingleErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountSubscriptionResponseSingleErrorsSource struct {
+	Pointer string                                            `json:"pointer"`
+	JSON    accountSubscriptionResponseSingleErrorsSourceJSON `json:"-"`
+}
+
+// accountSubscriptionResponseSingleErrorsSourceJSON contains the JSON metadata for
+// the struct [AccountSubscriptionResponseSingleErrorsSource]
+type accountSubscriptionResponseSingleErrorsSourceJSON struct {
+	Pointer     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *APIResponseBilling) UnmarshalJSON(data []byte) (err error) {
+func (r *AccountSubscriptionResponseSingleErrorsSource) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r apiResponseBillingJSON) RawJSON() string {
+func (r accountSubscriptionResponseSingleErrorsSourceJSON) RawJSON() string {
 	return r.raw
 }
 
-// Union satisfied by [APIResponseBillingResultArray] or [shared.UnionString].
-type APIResponseBillingResultUnion interface {
-	ImplementsAPIResponseBillingResultUnion()
+type AccountSubscriptionResponseSingleMessage struct {
+	Code             int64                                           `json:"code,required"`
+	Message          string                                          `json:"message,required"`
+	DocumentationURL string                                          `json:"documentation_url"`
+	Source           AccountSubscriptionResponseSingleMessagesSource `json:"source"`
+	JSON             accountSubscriptionResponseSingleMessageJSON    `json:"-"`
 }
 
-func init() {
-	apijson.RegisterUnion(
-		reflect.TypeOf((*APIResponseBillingResultUnion)(nil)).Elem(),
-		"",
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(APIResponseBillingResultArray{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.String,
-			Type:       reflect.TypeOf(shared.UnionString("")),
-		},
-	)
+// accountSubscriptionResponseSingleMessageJSON contains the JSON metadata for the
+// struct [AccountSubscriptionResponseSingleMessage]
+type accountSubscriptionResponseSingleMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
 }
 
-type APIResponseBillingResultArray []interface{}
+func (r *AccountSubscriptionResponseSingleMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
 
-func (r APIResponseBillingResultArray) ImplementsAPIResponseBillingResultUnion() {}
+func (r accountSubscriptionResponseSingleMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountSubscriptionResponseSingleMessagesSource struct {
+	Pointer string                                              `json:"pointer"`
+	JSON    accountSubscriptionResponseSingleMessagesSourceJSON `json:"-"`
+}
+
+// accountSubscriptionResponseSingleMessagesSourceJSON contains the JSON metadata
+// for the struct [AccountSubscriptionResponseSingleMessagesSource]
+type accountSubscriptionResponseSingleMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountSubscriptionResponseSingleMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountSubscriptionResponseSingleMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
 
 // Whether the API call was successful
-type APIResponseBillingSuccess bool
+type AccountSubscriptionResponseSingleSuccess bool
 
 const (
-	APIResponseBillingSuccessTrue APIResponseBillingSuccess = true
+	AccountSubscriptionResponseSingleSuccessTrue AccountSubscriptionResponseSingleSuccess = true
 )
 
-func (r APIResponseBillingSuccess) IsKnown() bool {
+func (r AccountSubscriptionResponseSingleSuccess) IsKnown() bool {
 	switch r {
-	case APIResponseBillingSuccessTrue:
+	case AccountSubscriptionResponseSingleSuccessTrue:
 		return true
 	}
 	return false
 }
 
-type APIResponseSingleBilling struct {
-	Result interface{}                  `json:"result"`
-	JSON   apiResponseSingleBillingJSON `json:"-"`
-	APIResponseBilling
-}
-
-// apiResponseSingleBillingJSON contains the JSON metadata for the struct
-// [APIResponseSingleBilling]
-type apiResponseSingleBillingJSON struct {
-	Result      apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *APIResponseSingleBilling) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r apiResponseSingleBillingJSON) RawJSON() string {
-	return r.raw
-}
-
 type BillSubsAPIMessages struct {
-	Code    int64                   `json:"code,required"`
-	Message string                  `json:"message,required"`
-	JSON    billSubsAPIMessagesJSON `json:"-"`
+	Code             int64                     `json:"code,required"`
+	Message          string                    `json:"message,required"`
+	DocumentationURL string                    `json:"documentation_url"`
+	Source           BillSubsAPIMessagesSource `json:"source"`
+	JSON             billSubsAPIMessagesJSON   `json:"-"`
 }
 
 // billSubsAPIMessagesJSON contains the JSON metadata for the struct
 // [BillSubsAPIMessages]
 type billSubsAPIMessagesJSON struct {
-	Code        apijson.Field
-	Message     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
 }
 
 func (r *BillSubsAPIMessages) UnmarshalJSON(data []byte) (err error) {
@@ -227,12 +256,30 @@ func (r billSubsAPIMessagesJSON) RawJSON() string {
 	return r.raw
 }
 
+type BillSubsAPIMessagesSource struct {
+	Pointer string                        `json:"pointer"`
+	JSON    billSubsAPIMessagesSourceJSON `json:"-"`
+}
+
+// billSubsAPIMessagesSourceJSON contains the JSON metadata for the struct
+// [BillSubsAPIMessagesSource]
+type billSubsAPIMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *BillSubsAPIMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r billSubsAPIMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
 type Subscription struct {
 	// Subscription identifier tag.
-	ID  string          `json:"id"`
-	App SubscriptionApp `json:"app"`
-	// The list of add-ons subscribed to.
-	ComponentValues []SubscriptionComponentValue `json:"component_values"`
+	ID string `json:"id"`
 	// The monetary unit in which pricing information is displayed.
 	Currency string `json:"currency"`
 	// The end of the current period and also when the next billing is due.
@@ -248,16 +295,12 @@ type Subscription struct {
 	RatePlan SubscriptionRatePlan `json:"rate_plan"`
 	// The state that the subscription is in.
 	State SubscriptionState `json:"state"`
-	// A simple zone object. May have null properties if not a zone subscription.
-	Zone SubscriptionZone `json:"zone"`
-	JSON subscriptionJSON `json:"-"`
+	JSON  subscriptionJSON  `json:"-"`
 }
 
 // subscriptionJSON contains the JSON metadata for the struct [Subscription]
 type subscriptionJSON struct {
 	ID                 apijson.Field
-	App                apijson.Field
-	ComponentValues    apijson.Field
 	Currency           apijson.Field
 	CurrentPeriodEnd   apijson.Field
 	CurrentPeriodStart apijson.Field
@@ -265,7 +308,6 @@ type subscriptionJSON struct {
 	Price              apijson.Field
 	RatePlan           apijson.Field
 	State              apijson.Field
-	Zone               apijson.Field
 	raw                string
 	ExtraFields        map[string]apijson.Field
 }
@@ -275,59 +317,6 @@ func (r *Subscription) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (r subscriptionJSON) RawJSON() string {
-	return r.raw
-}
-
-type SubscriptionApp struct {
-	// app install id.
-	InstallID string              `json:"install_id"`
-	JSON      subscriptionAppJSON `json:"-"`
-}
-
-// subscriptionAppJSON contains the JSON metadata for the struct [SubscriptionApp]
-type subscriptionAppJSON struct {
-	InstallID   apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *SubscriptionApp) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r subscriptionAppJSON) RawJSON() string {
-	return r.raw
-}
-
-// A component value for a subscription.
-type SubscriptionComponentValue struct {
-	// The default amount assigned.
-	Default float64 `json:"default"`
-	// The name of the component value.
-	Name string `json:"name"`
-	// The unit price for the component value.
-	Price float64 `json:"price"`
-	// The amount of the component value assigned.
-	Value float64                        `json:"value"`
-	JSON  subscriptionComponentValueJSON `json:"-"`
-}
-
-// subscriptionComponentValueJSON contains the JSON metadata for the struct
-// [SubscriptionComponentValue]
-type subscriptionComponentValueJSON struct {
-	Default     apijson.Field
-	Name        apijson.Field
-	Price       apijson.Field
-	Value       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *SubscriptionComponentValue) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r subscriptionComponentValueJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -352,7 +341,7 @@ func (r SubscriptionFrequency) IsKnown() bool {
 // The rate plan applied to the subscription.
 type SubscriptionRatePlan struct {
 	// The ID of the rate plan.
-	ID string `json:"id"`
+	ID SubscriptionRatePlanID `json:"id"`
 	// The currency applied to the rate plan subscription.
 	Currency string `json:"currency"`
 	// Whether this rate plan is managed externally from Cloudflare.
@@ -390,6 +379,30 @@ func (r subscriptionRatePlanJSON) RawJSON() string {
 	return r.raw
 }
 
+// The ID of the rate plan.
+type SubscriptionRatePlanID string
+
+const (
+	SubscriptionRatePlanIDFree               SubscriptionRatePlanID = "free"
+	SubscriptionRatePlanIDLite               SubscriptionRatePlanID = "lite"
+	SubscriptionRatePlanIDPro                SubscriptionRatePlanID = "pro"
+	SubscriptionRatePlanIDProPlus            SubscriptionRatePlanID = "pro_plus"
+	SubscriptionRatePlanIDBusiness           SubscriptionRatePlanID = "business"
+	SubscriptionRatePlanIDEnterprise         SubscriptionRatePlanID = "enterprise"
+	SubscriptionRatePlanIDPartnersFree       SubscriptionRatePlanID = "partners_free"
+	SubscriptionRatePlanIDPartnersPro        SubscriptionRatePlanID = "partners_pro"
+	SubscriptionRatePlanIDPartnersBusiness   SubscriptionRatePlanID = "partners_business"
+	SubscriptionRatePlanIDPartnersEnterprise SubscriptionRatePlanID = "partners_enterprise"
+)
+
+func (r SubscriptionRatePlanID) IsKnown() bool {
+	switch r {
+	case SubscriptionRatePlanIDFree, SubscriptionRatePlanIDLite, SubscriptionRatePlanIDPro, SubscriptionRatePlanIDProPlus, SubscriptionRatePlanIDBusiness, SubscriptionRatePlanIDEnterprise, SubscriptionRatePlanIDPartnersFree, SubscriptionRatePlanIDPartnersPro, SubscriptionRatePlanIDPartnersBusiness, SubscriptionRatePlanIDPartnersEnterprise:
+		return true
+	}
+	return false
+}
+
 // The state that the subscription is in.
 type SubscriptionState string
 
@@ -411,70 +424,14 @@ func (r SubscriptionState) IsKnown() bool {
 	return false
 }
 
-// A simple zone object. May have null properties if not a zone subscription.
-type SubscriptionZone struct {
-	// Identifier
-	ID string `json:"id"`
-	// The domain name
-	Name string               `json:"name"`
-	JSON subscriptionZoneJSON `json:"-"`
-}
-
-// subscriptionZoneJSON contains the JSON metadata for the struct
-// [SubscriptionZone]
-type subscriptionZoneJSON struct {
-	ID          apijson.Field
-	Name        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *SubscriptionZone) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r subscriptionZoneJSON) RawJSON() string {
-	return r.raw
-}
-
 type SubscriptionV2Param struct {
-	App param.Field[SubscriptionV2AppParam] `json:"app"`
-	// The list of add-ons subscribed to.
-	ComponentValues param.Field[[]SubscriptionV2ComponentValueParam] `json:"component_values"`
 	// How often the subscription is renewed automatically.
 	Frequency param.Field[SubscriptionV2Frequency] `json:"frequency"`
 	// The rate plan applied to the subscription.
 	RatePlan param.Field[SubscriptionV2RatePlanParam] `json:"rate_plan"`
-	// A simple zone object. May have null properties if not a zone subscription.
-	Zone param.Field[SubscriptionV2ZoneParam] `json:"zone"`
 }
 
 func (r SubscriptionV2Param) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-type SubscriptionV2AppParam struct {
-	// app install id.
-	InstallID param.Field[string] `json:"install_id"`
-}
-
-func (r SubscriptionV2AppParam) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-// A component value for a subscription.
-type SubscriptionV2ComponentValueParam struct {
-	// The default amount assigned.
-	Default param.Field[float64] `json:"default"`
-	// The name of the component value.
-	Name param.Field[string] `json:"name"`
-	// The unit price for the component value.
-	Price param.Field[float64] `json:"price"`
-	// The amount of the component value assigned.
-	Value param.Field[float64] `json:"value"`
-}
-
-func (r SubscriptionV2ComponentValueParam) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
@@ -499,7 +456,7 @@ func (r SubscriptionV2Frequency) IsKnown() bool {
 // The rate plan applied to the subscription.
 type SubscriptionV2RatePlanParam struct {
 	// The ID of the rate plan.
-	ID param.Field[string] `json:"id"`
+	ID param.Field[SubscriptionV2RatePlanID] `json:"id"`
 	// The currency applied to the rate plan subscription.
 	Currency param.Field[string] `json:"currency"`
 	// Whether this rate plan is managed externally from Cloudflare.
@@ -516,6 +473,30 @@ type SubscriptionV2RatePlanParam struct {
 
 func (r SubscriptionV2RatePlanParam) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
+}
+
+// The ID of the rate plan.
+type SubscriptionV2RatePlanID string
+
+const (
+	SubscriptionV2RatePlanIDFree               SubscriptionV2RatePlanID = "free"
+	SubscriptionV2RatePlanIDLite               SubscriptionV2RatePlanID = "lite"
+	SubscriptionV2RatePlanIDPro                SubscriptionV2RatePlanID = "pro"
+	SubscriptionV2RatePlanIDProPlus            SubscriptionV2RatePlanID = "pro_plus"
+	SubscriptionV2RatePlanIDBusiness           SubscriptionV2RatePlanID = "business"
+	SubscriptionV2RatePlanIDEnterprise         SubscriptionV2RatePlanID = "enterprise"
+	SubscriptionV2RatePlanIDPartnersFree       SubscriptionV2RatePlanID = "partners_free"
+	SubscriptionV2RatePlanIDPartnersPro        SubscriptionV2RatePlanID = "partners_pro"
+	SubscriptionV2RatePlanIDPartnersBusiness   SubscriptionV2RatePlanID = "partners_business"
+	SubscriptionV2RatePlanIDPartnersEnterprise SubscriptionV2RatePlanID = "partners_enterprise"
+)
+
+func (r SubscriptionV2RatePlanID) IsKnown() bool {
+	switch r {
+	case SubscriptionV2RatePlanIDFree, SubscriptionV2RatePlanIDLite, SubscriptionV2RatePlanIDPro, SubscriptionV2RatePlanIDProPlus, SubscriptionV2RatePlanIDBusiness, SubscriptionV2RatePlanIDEnterprise, SubscriptionV2RatePlanIDPartnersFree, SubscriptionV2RatePlanIDPartnersPro, SubscriptionV2RatePlanIDPartnersBusiness, SubscriptionV2RatePlanIDPartnersEnterprise:
+		return true
+	}
+	return false
 }
 
 // The state that the subscription is in.
@@ -539,24 +520,24 @@ func (r SubscriptionV2State) IsKnown() bool {
 	return false
 }
 
-// A simple zone object. May have null properties if not a zone subscription.
-type SubscriptionV2ZoneParam struct {
-}
-
-func (r SubscriptionV2ZoneParam) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
 type AccountSubscriptionListResponse struct {
-	Result []Subscription                      `json:"result"`
-	JSON   accountSubscriptionListResponseJSON `json:"-"`
-	BillSubsAPIResponseCollection
+	Errors   []AccountSubscriptionListResponseError   `json:"errors,required"`
+	Messages []AccountSubscriptionListResponseMessage `json:"messages,required"`
+	Result   []Subscription                           `json:"result,required,nullable"`
+	// Whether the API call was successful
+	Success    AccountSubscriptionListResponseSuccess    `json:"success,required"`
+	ResultInfo AccountSubscriptionListResponseResultInfo `json:"result_info"`
+	JSON       accountSubscriptionListResponseJSON       `json:"-"`
 }
 
 // accountSubscriptionListResponseJSON contains the JSON metadata for the struct
 // [AccountSubscriptionListResponse]
 type accountSubscriptionListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -569,16 +550,164 @@ func (r accountSubscriptionListResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+type AccountSubscriptionListResponseError struct {
+	Code             int64                                       `json:"code,required"`
+	Message          string                                      `json:"message,required"`
+	DocumentationURL string                                      `json:"documentation_url"`
+	Source           AccountSubscriptionListResponseErrorsSource `json:"source"`
+	JSON             accountSubscriptionListResponseErrorJSON    `json:"-"`
+}
+
+// accountSubscriptionListResponseErrorJSON contains the JSON metadata for the
+// struct [AccountSubscriptionListResponseError]
+type accountSubscriptionListResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountSubscriptionListResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountSubscriptionListResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountSubscriptionListResponseErrorsSource struct {
+	Pointer string                                          `json:"pointer"`
+	JSON    accountSubscriptionListResponseErrorsSourceJSON `json:"-"`
+}
+
+// accountSubscriptionListResponseErrorsSourceJSON contains the JSON metadata for
+// the struct [AccountSubscriptionListResponseErrorsSource]
+type accountSubscriptionListResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountSubscriptionListResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountSubscriptionListResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountSubscriptionListResponseMessage struct {
+	Code             int64                                         `json:"code,required"`
+	Message          string                                        `json:"message,required"`
+	DocumentationURL string                                        `json:"documentation_url"`
+	Source           AccountSubscriptionListResponseMessagesSource `json:"source"`
+	JSON             accountSubscriptionListResponseMessageJSON    `json:"-"`
+}
+
+// accountSubscriptionListResponseMessageJSON contains the JSON metadata for the
+// struct [AccountSubscriptionListResponseMessage]
+type accountSubscriptionListResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountSubscriptionListResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountSubscriptionListResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountSubscriptionListResponseMessagesSource struct {
+	Pointer string                                            `json:"pointer"`
+	JSON    accountSubscriptionListResponseMessagesSourceJSON `json:"-"`
+}
+
+// accountSubscriptionListResponseMessagesSourceJSON contains the JSON metadata for
+// the struct [AccountSubscriptionListResponseMessagesSource]
+type accountSubscriptionListResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountSubscriptionListResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountSubscriptionListResponseMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful
+type AccountSubscriptionListResponseSuccess bool
+
+const (
+	AccountSubscriptionListResponseSuccessTrue AccountSubscriptionListResponseSuccess = true
+)
+
+func (r AccountSubscriptionListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountSubscriptionListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type AccountSubscriptionListResponseResultInfo struct {
+	// Total number of results for the requested service
+	Count float64 `json:"count"`
+	// Current page within paginated list of results
+	Page float64 `json:"page"`
+	// Number of results per page of results
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters
+	TotalCount float64                                       `json:"total_count"`
+	JSON       accountSubscriptionListResponseResultInfoJSON `json:"-"`
+}
+
+// accountSubscriptionListResponseResultInfoJSON contains the JSON metadata for the
+// struct [AccountSubscriptionListResponseResultInfo]
+type accountSubscriptionListResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountSubscriptionListResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountSubscriptionListResponseResultInfoJSON) RawJSON() string {
+	return r.raw
+}
+
 type AccountSubscriptionDeleteResponse struct {
-	Result AccountSubscriptionDeleteResponseResult `json:"result"`
-	JSON   accountSubscriptionDeleteResponseJSON   `json:"-"`
-	APIResponseSingleBilling
+	Errors   []BillSubsAPIMessages                   `json:"errors,required"`
+	Messages []BillSubsAPIMessages                   `json:"messages,required"`
+	Result   AccountSubscriptionDeleteResponseResult `json:"result,required"`
+	// Whether the API call was successful
+	Success AccountSubscriptionDeleteResponseSuccess `json:"success,required"`
+	JSON    accountSubscriptionDeleteResponseJSON    `json:"-"`
 }
 
 // accountSubscriptionDeleteResponseJSON contains the JSON metadata for the struct
 // [AccountSubscriptionDeleteResponse]
 type accountSubscriptionDeleteResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -613,6 +742,21 @@ func (r accountSubscriptionDeleteResponseResultJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful
+type AccountSubscriptionDeleteResponseSuccess bool
+
+const (
+	AccountSubscriptionDeleteResponseSuccessTrue AccountSubscriptionDeleteResponseSuccess = true
+)
+
+func (r AccountSubscriptionDeleteResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountSubscriptionDeleteResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountSubscriptionNewParams struct {
 	SubscriptionV2 SubscriptionV2Param `json:"subscription_v2,required"`
 }
@@ -627,12 +771,4 @@ type AccountSubscriptionUpdateParams struct {
 
 func (r AccountSubscriptionUpdateParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r.SubscriptionV2)
-}
-
-type AccountSubscriptionDeleteParams struct {
-	Body interface{} `json:"body,required"`
-}
-
-func (r AccountSubscriptionDeleteParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
 }

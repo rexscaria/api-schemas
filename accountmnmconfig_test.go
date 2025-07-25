@@ -125,13 +125,7 @@ func TestAccountMnmConfigDelete(t *testing.T) {
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Accounts.Mnm.Config.Delete(
-		context.TODO(),
-		"6f91088a406011ed95aed352566e8d4c",
-		cfrex.AccountMnmConfigDeleteParams{
-			Body: map[string]interface{}{},
-		},
-	)
+	_, err := client.Accounts.Mnm.Config.Delete(context.TODO(), "6f91088a406011ed95aed352566e8d4c")
 	if err != nil {
 		var apierr *cfrex.Error
 		if errors.As(err, &apierr) {

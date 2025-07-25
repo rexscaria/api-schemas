@@ -46,10 +46,9 @@ func TestUserTokenNewWithOptionalParams(t *testing.T) {
 						Value: cfrex.F("value"),
 					}),
 				}}),
-				Resources: cfrex.F(map[string]string{
-					"com.cloudflare.api.account.zone.22b1de5f1c0e4b3ea97bb1e963b06a43": "*",
-					"com.cloudflare.api.account.zone.eb78d65290b24279ba6f44721b3ea3c4": "*",
-				}),
+				Resources: cfrex.F[cfrex.IamPolicyWithPermissionGroupsAndResourcesResourcesUnionParam](cfrex.IamPolicyWithPermissionGroupsAndResourcesResourcesIamResourcesTypeObjectStringParam(map[string]string{
+					"foo": "string",
+				})),
 			}}),
 			Condition: cfrex.F(cfrex.IamConditionParam{
 				RequestIP: cfrex.F(cfrex.IamConditionRequestIPParam{
@@ -113,38 +112,35 @@ func TestUserTokenUpdateWithOptionalParams(t *testing.T) {
 		"ed17574386854bf78a67040be0a770b0",
 		cfrex.UserTokenUpdateParams{
 			IamTokenBody: cfrex.IamTokenBodyParam{
-				IamTokenBaseParam: cfrex.IamTokenBaseParam{
-					Condition: cfrex.F(cfrex.IamConditionParam{
-						RequestIP: cfrex.F(cfrex.IamConditionRequestIPParam{
-							In:    cfrex.F([]string{"123.123.123.0/24", "2606:4700::/32"}),
-							NotIn: cfrex.F([]string{"123.123.123.100/24", "2606:4700:4700::/48"}),
+				Name: cfrex.F("readonly token"),
+				Policies: cfrex.F([]cfrex.IamPolicyWithPermissionGroupsAndResourcesParam{{
+					Effect: cfrex.F(cfrex.IamPolicyWithPermissionGroupsAndResourcesEffectAllow),
+					PermissionGroups: cfrex.F([]cfrex.IamPermissionGroupParam{{
+						ID: cfrex.F("c8fed203ed3043cba015a93ad1616f1f"),
+						Meta: cfrex.F(cfrex.IamPermissionGroupMetaParam{
+							Key:   cfrex.F("key"),
+							Value: cfrex.F("value"),
 						}),
-					}),
-					ExpiresOn: cfrex.F(time.Now()),
-					Name:      cfrex.F("readonly token"),
-					NotBefore: cfrex.F(time.Now()),
-					Policies: cfrex.F([]cfrex.IamPolicyWithPermissionGroupsAndResourcesParam{{
-						Effect: cfrex.F(cfrex.IamPolicyWithPermissionGroupsAndResourcesEffectAllow),
-						PermissionGroups: cfrex.F([]cfrex.IamPermissionGroupParam{{
-							ID: cfrex.F("c8fed203ed3043cba015a93ad1616f1f"),
-							Meta: cfrex.F(cfrex.IamPermissionGroupMetaParam{
-								Key:   cfrex.F("key"),
-								Value: cfrex.F("value"),
-							}),
-						}, {
-							ID: cfrex.F("82e64a83756745bbbb1c9c2701bf816b"),
-							Meta: cfrex.F(cfrex.IamPermissionGroupMetaParam{
-								Key:   cfrex.F("key"),
-								Value: cfrex.F("value"),
-							}),
-						}}),
-						Resources: cfrex.F(map[string]string{
-							"com.cloudflare.api.account.zone.22b1de5f1c0e4b3ea97bb1e963b06a43": "*",
-							"com.cloudflare.api.account.zone.eb78d65290b24279ba6f44721b3ea3c4": "*",
+					}, {
+						ID: cfrex.F("82e64a83756745bbbb1c9c2701bf816b"),
+						Meta: cfrex.F(cfrex.IamPermissionGroupMetaParam{
+							Key:   cfrex.F("key"),
+							Value: cfrex.F("value"),
 						}),
 					}}),
-					Status: cfrex.F(cfrex.IamStatusActive),
-				},
+					Resources: cfrex.F[cfrex.IamPolicyWithPermissionGroupsAndResourcesResourcesUnionParam](cfrex.IamPolicyWithPermissionGroupsAndResourcesResourcesIamResourcesTypeObjectStringParam(map[string]string{
+						"foo": "string",
+					})),
+				}}),
+				Condition: cfrex.F(cfrex.IamConditionParam{
+					RequestIP: cfrex.F(cfrex.IamConditionRequestIPParam{
+						In:    cfrex.F([]string{"123.123.123.0/24", "2606:4700::/32"}),
+						NotIn: cfrex.F([]string{"123.123.123.100/24", "2606:4700:4700::/48"}),
+					}),
+				}),
+				ExpiresOn: cfrex.F(time.Now()),
+				NotBefore: cfrex.F(time.Now()),
+				Status:    cfrex.F(cfrex.IamTokenBodyStatusActive),
 			},
 		},
 	)
@@ -199,13 +195,7 @@ func TestUserTokenDelete(t *testing.T) {
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.User.Tokens.Delete(
-		context.TODO(),
-		"ed17574386854bf78a67040be0a770b0",
-		cfrex.UserTokenDeleteParams{
-			Body: map[string]interface{}{},
-		},
-	)
+	_, err := client.User.Tokens.Delete(context.TODO(), "ed17574386854bf78a67040be0a770b0")
 	if err != nil {
 		var apierr *cfrex.Error
 		if errors.As(err, &apierr) {
@@ -215,7 +205,7 @@ func TestUserTokenDelete(t *testing.T) {
 	}
 }
 
-func TestUserTokenListPermissionGroups(t *testing.T) {
+func TestUserTokenListPermissionGroupsWithOptionalParams(t *testing.T) {
 	t.Skip("skipped: tests are disabled for the time being")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -229,7 +219,10 @@ func TestUserTokenListPermissionGroups(t *testing.T) {
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.User.Tokens.ListPermissionGroups(context.TODO())
+	_, err := client.User.Tokens.ListPermissionGroups(context.TODO(), cfrex.UserTokenListPermissionGroupsParams{
+		Name:  cfrex.F("Account%20Settings%20Write"),
+		Scope: cfrex.F("com.cloudflare.api.account.zone"),
+	})
 	if err != nil {
 		var apierr *cfrex.Error
 		if errors.As(err, &apierr) {

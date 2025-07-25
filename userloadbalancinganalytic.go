@@ -43,15 +43,23 @@ func (r *UserLoadBalancingAnalyticService) ListEvents(ctx context.Context, query
 }
 
 type UserLoadBalancingAnalyticListEventsResponse struct {
-	Result []UserLoadBalancingAnalyticListEventsResponseResult `json:"result"`
-	JSON   userLoadBalancingAnalyticListEventsResponseJSON     `json:"-"`
-	PaginatedResponseCollection
+	Errors   []UserLoadBalancingAnalyticListEventsResponseError   `json:"errors,required"`
+	Messages []UserLoadBalancingAnalyticListEventsResponseMessage `json:"messages,required"`
+	Result   []UserLoadBalancingAnalyticListEventsResponseResult  `json:"result,required"`
+	// Whether the API call was successful
+	Success    UserLoadBalancingAnalyticListEventsResponseSuccess    `json:"success,required"`
+	ResultInfo UserLoadBalancingAnalyticListEventsResponseResultInfo `json:"result_info"`
+	JSON       userLoadBalancingAnalyticListEventsResponseJSON       `json:"-"`
 }
 
 // userLoadBalancingAnalyticListEventsResponseJSON contains the JSON metadata for
 // the struct [UserLoadBalancingAnalyticListEventsResponse]
 type userLoadBalancingAnalyticListEventsResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -61,6 +69,104 @@ func (r *UserLoadBalancingAnalyticListEventsResponse) UnmarshalJSON(data []byte)
 }
 
 func (r userLoadBalancingAnalyticListEventsResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+type UserLoadBalancingAnalyticListEventsResponseError struct {
+	Code             int64                                                   `json:"code,required"`
+	Message          string                                                  `json:"message,required"`
+	DocumentationURL string                                                  `json:"documentation_url"`
+	Source           UserLoadBalancingAnalyticListEventsResponseErrorsSource `json:"source"`
+	JSON             userLoadBalancingAnalyticListEventsResponseErrorJSON    `json:"-"`
+}
+
+// userLoadBalancingAnalyticListEventsResponseErrorJSON contains the JSON metadata
+// for the struct [UserLoadBalancingAnalyticListEventsResponseError]
+type userLoadBalancingAnalyticListEventsResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *UserLoadBalancingAnalyticListEventsResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r userLoadBalancingAnalyticListEventsResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type UserLoadBalancingAnalyticListEventsResponseErrorsSource struct {
+	Pointer string                                                      `json:"pointer"`
+	JSON    userLoadBalancingAnalyticListEventsResponseErrorsSourceJSON `json:"-"`
+}
+
+// userLoadBalancingAnalyticListEventsResponseErrorsSourceJSON contains the JSON
+// metadata for the struct
+// [UserLoadBalancingAnalyticListEventsResponseErrorsSource]
+type userLoadBalancingAnalyticListEventsResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *UserLoadBalancingAnalyticListEventsResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r userLoadBalancingAnalyticListEventsResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type UserLoadBalancingAnalyticListEventsResponseMessage struct {
+	Code             int64                                                     `json:"code,required"`
+	Message          string                                                    `json:"message,required"`
+	DocumentationURL string                                                    `json:"documentation_url"`
+	Source           UserLoadBalancingAnalyticListEventsResponseMessagesSource `json:"source"`
+	JSON             userLoadBalancingAnalyticListEventsResponseMessageJSON    `json:"-"`
+}
+
+// userLoadBalancingAnalyticListEventsResponseMessageJSON contains the JSON
+// metadata for the struct [UserLoadBalancingAnalyticListEventsResponseMessage]
+type userLoadBalancingAnalyticListEventsResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *UserLoadBalancingAnalyticListEventsResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r userLoadBalancingAnalyticListEventsResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type UserLoadBalancingAnalyticListEventsResponseMessagesSource struct {
+	Pointer string                                                        `json:"pointer"`
+	JSON    userLoadBalancingAnalyticListEventsResponseMessagesSourceJSON `json:"-"`
+}
+
+// userLoadBalancingAnalyticListEventsResponseMessagesSourceJSON contains the JSON
+// metadata for the struct
+// [UserLoadBalancingAnalyticListEventsResponseMessagesSource]
+type userLoadBalancingAnalyticListEventsResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *UserLoadBalancingAnalyticListEventsResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r userLoadBalancingAnalyticListEventsResponseMessagesSourceJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -134,6 +240,55 @@ func (r *UserLoadBalancingAnalyticListEventsResponseResultOrigin) UnmarshalJSON(
 }
 
 func (r userLoadBalancingAnalyticListEventsResponseResultOriginJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful
+type UserLoadBalancingAnalyticListEventsResponseSuccess bool
+
+const (
+	UserLoadBalancingAnalyticListEventsResponseSuccessTrue UserLoadBalancingAnalyticListEventsResponseSuccess = true
+)
+
+func (r UserLoadBalancingAnalyticListEventsResponseSuccess) IsKnown() bool {
+	switch r {
+	case UserLoadBalancingAnalyticListEventsResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type UserLoadBalancingAnalyticListEventsResponseResultInfo struct {
+	// Total number of results on the current page
+	Count float64 `json:"count"`
+	// Current page within paginated list of results
+	Page float64 `json:"page"`
+	// Number of results per page
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters
+	TotalCount float64 `json:"total_count"`
+	// Total number of pages available
+	TotalPages float64                                                   `json:"total_pages"`
+	JSON       userLoadBalancingAnalyticListEventsResponseResultInfoJSON `json:"-"`
+}
+
+// userLoadBalancingAnalyticListEventsResponseResultInfoJSON contains the JSON
+// metadata for the struct [UserLoadBalancingAnalyticListEventsResponseResultInfo]
+type userLoadBalancingAnalyticListEventsResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	TotalPages  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *UserLoadBalancingAnalyticListEventsResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r userLoadBalancingAnalyticListEventsResponseResultInfoJSON) RawJSON() string {
 	return r.raw
 }
 

@@ -61,14 +61,20 @@ func (r *ZoneCertificateAuthorityHostnameAssociationService) Replace(ctx context
 }
 
 type HostnameAssociationsResponse struct {
-	Result HostnameAssociationsResponseResult `json:"result"`
-	JSON   hostnameAssociationsResponseJSON   `json:"-"`
-	APIResponseSingleTlsCertificates
+	Errors   []MessagesTlsCertificatesItem `json:"errors,required"`
+	Messages []MessagesTlsCertificatesItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success HostnameAssociationsResponseSuccess `json:"success,required"`
+	Result  HostnameAssociationsResponseResult  `json:"result"`
+	JSON    hostnameAssociationsResponseJSON    `json:"-"`
 }
 
 // hostnameAssociationsResponseJSON contains the JSON metadata for the struct
 // [HostnameAssociationsResponse]
 type hostnameAssociationsResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -80,6 +86,21 @@ func (r *HostnameAssociationsResponse) UnmarshalJSON(data []byte) (err error) {
 
 func (r hostnameAssociationsResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type HostnameAssociationsResponseSuccess bool
+
+const (
+	HostnameAssociationsResponseSuccessTrue HostnameAssociationsResponseSuccess = true
+)
+
+func (r HostnameAssociationsResponseSuccess) IsKnown() bool {
+	switch r {
+	case HostnameAssociationsResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type HostnameAssociationsResponseResult struct {

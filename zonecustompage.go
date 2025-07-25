@@ -3,14 +3,6 @@
 package cfrex
 
 import (
-	"context"
-	"errors"
-	"fmt"
-	"net/http"
-
-	"github.com/rexscaria/api-schemas/internal/apijson"
-	"github.com/rexscaria/api-schemas/internal/param"
-	"github.com/rexscaria/api-schemas/internal/requestconfig"
 	"github.com/rexscaria/api-schemas/option"
 )
 
@@ -31,59 +23,4 @@ func NewZoneCustomPageService(opts ...option.RequestOption) (r *ZoneCustomPageSe
 	r = &ZoneCustomPageService{}
 	r.Options = opts
 	return
-}
-
-// Fetches the details of a custom page.
-func (r *ZoneCustomPageService) Get(ctx context.Context, zoneIdentifier string, identifier string, opts ...option.RequestOption) (res *CustomPagesResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
-	if zoneIdentifier == "" {
-		err = errors.New("missing required zone_identifier parameter")
-		return
-	}
-	if identifier == "" {
-		err = errors.New("missing required identifier parameter")
-		return
-	}
-	path := fmt.Sprintf("zones/%s/custom_pages/%s", zoneIdentifier, identifier)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
-}
-
-// Updates the configuration of an existing custom page.
-func (r *ZoneCustomPageService) Update(ctx context.Context, zoneIdentifier string, identifier string, body ZoneCustomPageUpdateParams, opts ...option.RequestOption) (res *CustomPagesResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
-	if zoneIdentifier == "" {
-		err = errors.New("missing required zone_identifier parameter")
-		return
-	}
-	if identifier == "" {
-		err = errors.New("missing required identifier parameter")
-		return
-	}
-	path := fmt.Sprintf("zones/%s/custom_pages/%s", zoneIdentifier, identifier)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
-}
-
-// Fetches all the custom pages at the zone level.
-func (r *ZoneCustomPageService) List(ctx context.Context, zoneIdentifier string, opts ...option.RequestOption) (res *CustomPagesResponseCollection, err error) {
-	opts = append(r.Options[:], opts...)
-	if zoneIdentifier == "" {
-		err = errors.New("missing required zone_identifier parameter")
-		return
-	}
-	path := fmt.Sprintf("zones/%s/custom_pages", zoneIdentifier)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
-}
-
-type ZoneCustomPageUpdateParams struct {
-	// The custom page state.
-	State param.Field[State] `json:"state,required"`
-	// The URL associated with the custom page.
-	URL param.Field[string] `json:"url,required" format:"uri"`
-}
-
-func (r ZoneCustomPageUpdateParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
 }

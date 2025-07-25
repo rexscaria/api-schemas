@@ -225,14 +225,18 @@ func (r ShareResourceObjectStatus) IsKnown() bool {
 }
 
 type ShareResourceResponseSingle struct {
-	Result ShareResourceObject             `json:"result"`
-	JSON   shareResourceResponseSingleJSON `json:"-"`
-	APIResponseResourceSharing
+	Errors []ShareResourceResponseSingleError `json:"errors,required"`
+	// Whether the API call was successful.
+	Success bool                            `json:"success,required"`
+	Result  ShareResourceObject             `json:"result"`
+	JSON    shareResourceResponseSingleJSON `json:"-"`
 }
 
 // shareResourceResponseSingleJSON contains the JSON metadata for the struct
 // [ShareResourceResponseSingle]
 type shareResourceResponseSingleJSON struct {
+	Errors      apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -246,16 +250,70 @@ func (r shareResourceResponseSingleJSON) RawJSON() string {
 	return r.raw
 }
 
+type ShareResourceResponseSingleError struct {
+	Code             int64                                   `json:"code,required"`
+	Message          string                                  `json:"message,required"`
+	DocumentationURL string                                  `json:"documentation_url"`
+	Source           ShareResourceResponseSingleErrorsSource `json:"source"`
+	JSON             shareResourceResponseSingleErrorJSON    `json:"-"`
+}
+
+// shareResourceResponseSingleErrorJSON contains the JSON metadata for the struct
+// [ShareResourceResponseSingleError]
+type shareResourceResponseSingleErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *ShareResourceResponseSingleError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r shareResourceResponseSingleErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type ShareResourceResponseSingleErrorsSource struct {
+	Pointer string                                      `json:"pointer"`
+	JSON    shareResourceResponseSingleErrorsSourceJSON `json:"-"`
+}
+
+// shareResourceResponseSingleErrorsSourceJSON contains the JSON metadata for the
+// struct [ShareResourceResponseSingleErrorsSource]
+type shareResourceResponseSingleErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ShareResourceResponseSingleErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r shareResourceResponseSingleErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
 type AccountShareResourceListResponse struct {
-	Result []ShareResourceObject                `json:"result"`
-	JSON   accountShareResourceListResponseJSON `json:"-"`
-	APIResponseCollectionResourceSharing
+	Errors []AccountShareResourceListResponseError `json:"errors,required"`
+	// Whether the API call was successful.
+	Success    bool                                       `json:"success,required"`
+	Result     []ShareResourceObject                      `json:"result,nullable"`
+	ResultInfo AccountShareResourceListResponseResultInfo `json:"result_info"`
+	JSON       accountShareResourceListResponseJSON       `json:"-"`
 }
 
 // accountShareResourceListResponseJSON contains the JSON metadata for the struct
 // [AccountShareResourceListResponse]
 type accountShareResourceListResponseJSON struct {
+	Errors      apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -265,6 +323,88 @@ func (r *AccountShareResourceListResponse) UnmarshalJSON(data []byte) (err error
 }
 
 func (r accountShareResourceListResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountShareResourceListResponseError struct {
+	Code             int64                                        `json:"code,required"`
+	Message          string                                       `json:"message,required"`
+	DocumentationURL string                                       `json:"documentation_url"`
+	Source           AccountShareResourceListResponseErrorsSource `json:"source"`
+	JSON             accountShareResourceListResponseErrorJSON    `json:"-"`
+}
+
+// accountShareResourceListResponseErrorJSON contains the JSON metadata for the
+// struct [AccountShareResourceListResponseError]
+type accountShareResourceListResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountShareResourceListResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountShareResourceListResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountShareResourceListResponseErrorsSource struct {
+	Pointer string                                           `json:"pointer"`
+	JSON    accountShareResourceListResponseErrorsSourceJSON `json:"-"`
+}
+
+// accountShareResourceListResponseErrorsSourceJSON contains the JSON metadata for
+// the struct [AccountShareResourceListResponseErrorsSource]
+type accountShareResourceListResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountShareResourceListResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountShareResourceListResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountShareResourceListResponseResultInfo struct {
+	// Total number of results for the requested service.
+	Count float64 `json:"count"`
+	// Current page within paginated list of results.
+	Page float64 `json:"page"`
+	// Number of results per page of results.
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters.
+	TotalCount float64 `json:"total_count"`
+	// Total number of pages using the given per page.
+	TotalPages float64                                        `json:"total_pages"`
+	JSON       accountShareResourceListResponseResultInfoJSON `json:"-"`
+}
+
+// accountShareResourceListResponseResultInfoJSON contains the JSON metadata for
+// the struct [AccountShareResourceListResponseResultInfo]
+type accountShareResourceListResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	TotalPages  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountShareResourceListResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountShareResourceListResponseResultInfoJSON) RawJSON() string {
 	return r.raw
 }
 

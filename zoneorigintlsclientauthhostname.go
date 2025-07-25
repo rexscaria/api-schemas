@@ -69,7 +69,7 @@ func (r *ZoneOriginTlsClientAuthHostnameService) Update(ctx context.Context, zon
 }
 
 type CertidObject struct {
-	// Identifier
+	// Identifier.
 	CertID string `json:"cert_id"`
 	// Status of the certificate or the association.
 	CertStatus StatusCertificate `json:"cert_status"`
@@ -131,9 +131,9 @@ func (r certidObjectJSON) RawJSON() string {
 }
 
 type HostnameAuthenticatedOriginPull struct {
-	// Identifier
+	// Identifier.
 	ID string `json:"id"`
-	// Identifier
+	// Identifier.
 	CertID string `json:"cert_id"`
 	// The hostname certificate.
 	Certificate string `json:"certificate"`
@@ -192,14 +192,20 @@ func (r StatusCertificate) IsKnown() bool {
 }
 
 type ZoneOriginTlsClientAuthHostnameGetResponse struct {
-	Result CertidObject                                   `json:"result"`
-	JSON   zoneOriginTlsClientAuthHostnameGetResponseJSON `json:"-"`
-	APIResponseSingleTlsCertificates
+	Errors   []MessagesTlsCertificatesItem `json:"errors,required"`
+	Messages []MessagesTlsCertificatesItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success ZoneOriginTlsClientAuthHostnameGetResponseSuccess `json:"success,required"`
+	Result  CertidObject                                      `json:"result"`
+	JSON    zoneOriginTlsClientAuthHostnameGetResponseJSON    `json:"-"`
 }
 
 // zoneOriginTlsClientAuthHostnameGetResponseJSON contains the JSON metadata for
 // the struct [ZoneOriginTlsClientAuthHostnameGetResponse]
 type zoneOriginTlsClientAuthHostnameGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -213,16 +219,39 @@ func (r zoneOriginTlsClientAuthHostnameGetResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type ZoneOriginTlsClientAuthHostnameGetResponseSuccess bool
+
+const (
+	ZoneOriginTlsClientAuthHostnameGetResponseSuccessTrue ZoneOriginTlsClientAuthHostnameGetResponseSuccess = true
+)
+
+func (r ZoneOriginTlsClientAuthHostnameGetResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneOriginTlsClientAuthHostnameGetResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type ZoneOriginTlsClientAuthHostnameUpdateResponse struct {
-	Result []HostnameAuthenticatedOriginPull                 `json:"result"`
-	JSON   zoneOriginTlsClientAuthHostnameUpdateResponseJSON `json:"-"`
-	APIResponseCollectionTlsCertificates
+	Errors   []MessagesTlsCertificatesItem `json:"errors,required"`
+	Messages []MessagesTlsCertificatesItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success    ZoneOriginTlsClientAuthHostnameUpdateResponseSuccess    `json:"success,required"`
+	Result     []HostnameAuthenticatedOriginPull                       `json:"result"`
+	ResultInfo ZoneOriginTlsClientAuthHostnameUpdateResponseResultInfo `json:"result_info"`
+	JSON       zoneOriginTlsClientAuthHostnameUpdateResponseJSON       `json:"-"`
 }
 
 // zoneOriginTlsClientAuthHostnameUpdateResponseJSON contains the JSON metadata for
 // the struct [ZoneOriginTlsClientAuthHostnameUpdateResponse]
 type zoneOriginTlsClientAuthHostnameUpdateResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -232,6 +261,53 @@ func (r *ZoneOriginTlsClientAuthHostnameUpdateResponse) UnmarshalJSON(data []byt
 }
 
 func (r zoneOriginTlsClientAuthHostnameUpdateResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful.
+type ZoneOriginTlsClientAuthHostnameUpdateResponseSuccess bool
+
+const (
+	ZoneOriginTlsClientAuthHostnameUpdateResponseSuccessTrue ZoneOriginTlsClientAuthHostnameUpdateResponseSuccess = true
+)
+
+func (r ZoneOriginTlsClientAuthHostnameUpdateResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneOriginTlsClientAuthHostnameUpdateResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type ZoneOriginTlsClientAuthHostnameUpdateResponseResultInfo struct {
+	// Total number of results for the requested service.
+	Count float64 `json:"count"`
+	// Current page within paginated list of results.
+	Page float64 `json:"page"`
+	// Number of results per page of results.
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters.
+	TotalCount float64                                                     `json:"total_count"`
+	JSON       zoneOriginTlsClientAuthHostnameUpdateResponseResultInfoJSON `json:"-"`
+}
+
+// zoneOriginTlsClientAuthHostnameUpdateResponseResultInfoJSON contains the JSON
+// metadata for the struct
+// [ZoneOriginTlsClientAuthHostnameUpdateResponseResultInfo]
+type zoneOriginTlsClientAuthHostnameUpdateResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZoneOriginTlsClientAuthHostnameUpdateResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneOriginTlsClientAuthHostnameUpdateResponseResultInfoJSON) RawJSON() string {
 	return r.raw
 }
 

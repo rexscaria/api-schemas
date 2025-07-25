@@ -63,59 +63,22 @@ func (r *AccountBotnetFeedAsnService) GetFullReport(ctx context.Context, account
 	return
 }
 
-type CommonResponseBotnetAsn struct {
-	Errors   []DosMessages `json:"errors,required"`
-	Messages []DosMessages `json:"messages,required"`
-	// Whether the API call was successful
-	Success CommonResponseBotnetAsnSuccess `json:"success,required"`
-	JSON    commonResponseBotnetAsnJSON    `json:"-"`
-}
-
-// commonResponseBotnetAsnJSON contains the JSON metadata for the struct
-// [CommonResponseBotnetAsn]
-type commonResponseBotnetAsnJSON struct {
-	Errors      apijson.Field
-	Messages    apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *CommonResponseBotnetAsn) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r commonResponseBotnetAsnJSON) RawJSON() string {
-	return r.raw
-}
-
-// Whether the API call was successful
-type CommonResponseBotnetAsnSuccess bool
-
-const (
-	CommonResponseBotnetAsnSuccessTrue CommonResponseBotnetAsnSuccess = true
-)
-
-func (r CommonResponseBotnetAsnSuccess) IsKnown() bool {
-	switch r {
-	case CommonResponseBotnetAsnSuccessTrue:
-		return true
-	}
-	return false
-}
-
 type DosMessages struct {
-	Code    int64           `json:"code,required"`
-	Message string          `json:"message,required"`
-	JSON    dosMessagesJSON `json:"-"`
+	Code             int64             `json:"code,required"`
+	Message          string            `json:"message,required"`
+	DocumentationURL string            `json:"documentation_url"`
+	Source           DosMessagesSource `json:"source"`
+	JSON             dosMessagesJSON   `json:"-"`
 }
 
 // dosMessagesJSON contains the JSON metadata for the struct [DosMessages]
 type dosMessagesJSON struct {
-	Code        apijson.Field
-	Message     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
 }
 
 func (r *DosMessages) UnmarshalJSON(data []byte) (err error) {
@@ -126,15 +89,42 @@ func (r dosMessagesJSON) RawJSON() string {
 	return r.raw
 }
 
+type DosMessagesSource struct {
+	Pointer string                `json:"pointer"`
+	JSON    dosMessagesSourceJSON `json:"-"`
+}
+
+// dosMessagesSourceJSON contains the JSON metadata for the struct
+// [DosMessagesSource]
+type dosMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *DosMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r dosMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
 type AccountBotnetFeedAsnGetDailyReportResponse struct {
-	Result AccountBotnetFeedAsnGetDailyReportResponseResult `json:"result"`
-	JSON   accountBotnetFeedAsnGetDailyReportResponseJSON   `json:"-"`
-	CommonResponseBotnetAsn
+	Errors   []DosMessages `json:"errors,required"`
+	Messages []DosMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountBotnetFeedAsnGetDailyReportResponseSuccess `json:"success,required"`
+	Result  AccountBotnetFeedAsnGetDailyReportResponseResult  `json:"result"`
+	JSON    accountBotnetFeedAsnGetDailyReportResponseJSON    `json:"-"`
 }
 
 // accountBotnetFeedAsnGetDailyReportResponseJSON contains the JSON metadata for
 // the struct [AccountBotnetFeedAsnGetDailyReportResponse]
 type accountBotnetFeedAsnGetDailyReportResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -146,6 +136,21 @@ func (r *AccountBotnetFeedAsnGetDailyReportResponse) UnmarshalJSON(data []byte) 
 
 func (r accountBotnetFeedAsnGetDailyReportResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountBotnetFeedAsnGetDailyReportResponseSuccess bool
+
+const (
+	AccountBotnetFeedAsnGetDailyReportResponseSuccessTrue AccountBotnetFeedAsnGetDailyReportResponseSuccess = true
+)
+
+func (r AccountBotnetFeedAsnGetDailyReportResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountBotnetFeedAsnGetDailyReportResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountBotnetFeedAsnGetDailyReportResponseResult struct {
@@ -174,14 +179,20 @@ func (r accountBotnetFeedAsnGetDailyReportResponseResultJSON) RawJSON() string {
 }
 
 type AccountBotnetFeedAsnGetFullReportResponse struct {
-	Result AccountBotnetFeedAsnGetFullReportResponseResult `json:"result"`
-	JSON   accountBotnetFeedAsnGetFullReportResponseJSON   `json:"-"`
-	CommonResponseBotnetAsn
+	Errors   []DosMessages `json:"errors,required"`
+	Messages []DosMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountBotnetFeedAsnGetFullReportResponseSuccess `json:"success,required"`
+	Result  AccountBotnetFeedAsnGetFullReportResponseResult  `json:"result"`
+	JSON    accountBotnetFeedAsnGetFullReportResponseJSON    `json:"-"`
 }
 
 // accountBotnetFeedAsnGetFullReportResponseJSON contains the JSON metadata for the
 // struct [AccountBotnetFeedAsnGetFullReportResponse]
 type accountBotnetFeedAsnGetFullReportResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -193,6 +204,21 @@ func (r *AccountBotnetFeedAsnGetFullReportResponse) UnmarshalJSON(data []byte) (
 
 func (r accountBotnetFeedAsnGetFullReportResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountBotnetFeedAsnGetFullReportResponseSuccess bool
+
+const (
+	AccountBotnetFeedAsnGetFullReportResponseSuccessTrue AccountBotnetFeedAsnGetFullReportResponseSuccess = true
+)
+
+func (r AccountBotnetFeedAsnGetFullReportResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountBotnetFeedAsnGetFullReportResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountBotnetFeedAsnGetFullReportResponseResult struct {

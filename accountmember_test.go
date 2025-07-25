@@ -29,7 +29,7 @@ func TestAccountMemberGet(t *testing.T) {
 	)
 	_, err := client.Accounts.Members.Get(
 		context.TODO(),
-		"eb78d65290b24279ba6f44721b3ea3c4",
+		"023e105f4ecef8ad9ca31a8372d0c353",
 		"4536bcfad5faccb111b47003c79917fa",
 	)
 	if err != nil {
@@ -57,7 +57,7 @@ func TestAccountMemberUpdateWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Accounts.Members.Update(
 		context.TODO(),
-		"eb78d65290b24279ba6f44721b3ea3c4",
+		"023e105f4ecef8ad9ca31a8372d0c353",
 		"4536bcfad5faccb111b47003c79917fa",
 		cfrex.AccountMemberUpdateParams{
 			Body: cfrex.AccountMemberUpdateParamsBodyIamUpdateMemberWithRoles{
@@ -92,7 +92,7 @@ func TestAccountMemberListWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Accounts.Members.List(
 		context.TODO(),
-		"eb78d65290b24279ba6f44721b3ea3c4",
+		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.AccountMemberListParams{
 			Direction: cfrex.F(cfrex.AccountMemberListParamsDirectionDesc),
 			Order:     cfrex.F(cfrex.AccountMemberListParamsOrderStatus),
@@ -126,7 +126,7 @@ func TestAccountMemberAddWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Accounts.Members.Add(
 		context.TODO(),
-		"eb78d65290b24279ba6f44721b3ea3c4",
+		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.AccountMemberAddParams{
 			Body: cfrex.AccountMemberAddParamsBodyIamCreateMemberWithRoles{
 				Email:  cfrex.F("user@example.com"),
@@ -160,11 +160,8 @@ func TestAccountMemberRemove(t *testing.T) {
 	)
 	_, err := client.Accounts.Members.Remove(
 		context.TODO(),
-		"eb78d65290b24279ba6f44721b3ea3c4",
+		"023e105f4ecef8ad9ca31a8372d0c353",
 		"4536bcfad5faccb111b47003c79917fa",
-		cfrex.AccountMemberRemoveParams{
-			Body: map[string]interface{}{},
-		},
 	)
 	if err != nil {
 		var apierr *cfrex.Error

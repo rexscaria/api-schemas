@@ -57,6 +57,7 @@ func TestZoneDnssecUpdateWithOptionalParams(t *testing.T) {
 		cfrex.ZoneDnssecUpdateParams{
 			DnssecMultiSigner: cfrex.F(false),
 			DnssecPresigned:   cfrex.F(true),
+			DnssecUseNsec3:    cfrex.F(false),
 			Status:            cfrex.F(cfrex.ZoneDnssecUpdateParamsStatusActive),
 		},
 	)
@@ -83,13 +84,7 @@ func TestZoneDnssecDelete(t *testing.T) {
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Zones.Dnssec.Delete(
-		context.TODO(),
-		"023e105f4ecef8ad9ca31a8372d0c353",
-		cfrex.ZoneDnssecDeleteParams{
-			Body: map[string]interface{}{},
-		},
-	)
+	_, err := client.Zones.Dnssec.Delete(context.TODO(), "023e105f4ecef8ad9ca31a8372d0c353")
 	if err != nil {
 		var apierr *cfrex.Error
 		if errors.As(err, &apierr) {

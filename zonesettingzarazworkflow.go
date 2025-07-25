@@ -73,16 +73,22 @@ func (r ZarazWorkflow) IsKnown() bool {
 }
 
 type ZarazWorkflowResponse struct {
+	Errors   []ZarazMessagesItems `json:"errors,required"`
+	Messages []ZarazMessagesItems `json:"messages,required"`
 	// Zaraz workflow
-	Result ZarazWorkflow             `json:"result"`
-	JSON   zarazWorkflowResponseJSON `json:"-"`
-	ZarazAPIResponseCommon
+	Result ZarazWorkflow `json:"result,required"`
+	// Whether the API call was successful
+	Success bool                      `json:"success,required"`
+	JSON    zarazWorkflowResponseJSON `json:"-"`
 }
 
 // zarazWorkflowResponseJSON contains the JSON metadata for the struct
 // [ZarazWorkflowResponse]
 type zarazWorkflowResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }

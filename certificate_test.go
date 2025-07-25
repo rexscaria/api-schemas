@@ -66,7 +66,7 @@ func TestCertificateGet(t *testing.T) {
 	}
 }
 
-func TestCertificateList(t *testing.T) {
+func TestCertificateListWithOptionalParams(t *testing.T) {
 	t.Skip("skipped: tests are disabled for the time being")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -81,7 +81,11 @@ func TestCertificateList(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Certificates.List(context.TODO(), cfrex.CertificateListParams{
-		ZoneID: cfrex.F("023e105f4ecef8ad9ca31a8372d0c353"),
+		ZoneID:  cfrex.F("023e105f4ecef8ad9ca31a8372d0c353"),
+		Limit:   cfrex.F(int64(10)),
+		Offset:  cfrex.F(int64(10)),
+		Page:    cfrex.F(1.000000),
+		PerPage: cfrex.F(5.000000),
 	})
 	if err != nil {
 		var apierr *cfrex.Error
@@ -106,13 +110,7 @@ func TestCertificateRevoke(t *testing.T) {
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Certificates.Revoke(
-		context.TODO(),
-		"023e105f4ecef8ad9ca31a8372d0c353",
-		cfrex.CertificateRevokeParams{
-			Body: map[string]interface{}{},
-		},
-	)
+	_, err := client.Certificates.Revoke(context.TODO(), "023e105f4ecef8ad9ca31a8372d0c353")
 	if err != nil {
 		var apierr *cfrex.Error
 		if errors.As(err, &apierr) {

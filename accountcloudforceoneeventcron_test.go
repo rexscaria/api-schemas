@@ -27,7 +27,7 @@ func TestAccountCloudforceOneEventCronGet(t *testing.T) {
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Accounts.CloudforceOne.Events.Cron.Get(context.TODO(), 0.000000)
+	_, err := client.Accounts.CloudforceOne.Events.Cron.Get(context.TODO(), "account_id")
 	if err != nil {
 		var apierr *cfrex.Error
 		if errors.As(err, &apierr) {
@@ -51,7 +51,7 @@ func TestAccountCloudforceOneEventCronUpdate(t *testing.T) {
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Accounts.CloudforceOne.Events.Cron.Update(context.TODO(), 0.000000)
+	_, err := client.Accounts.CloudforceOne.Events.Cron.Update(context.TODO(), "account_id")
 	if err != nil {
 		var apierr *cfrex.Error
 		if errors.As(err, &apierr) {

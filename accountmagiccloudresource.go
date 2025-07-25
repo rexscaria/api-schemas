@@ -37,7 +37,7 @@ func NewAccountMagicCloudResourceService(opts ...option.RequestOption) (r *Accou
 	return
 }
 
-// Read an resource from the Resource Catalog (Closed Beta)
+// Read an resource from the Resource Catalog (Closed Beta).
 func (r *AccountMagicCloudResourceService) Get(ctx context.Context, accountID string, resourceID string, query AccountMagicCloudResourceGetParams, opts ...option.RequestOption) (res *AccountMagicCloudResourceGetResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
@@ -53,7 +53,7 @@ func (r *AccountMagicCloudResourceService) Get(ctx context.Context, accountID st
 	return
 }
 
-// List resources in the Resource Catalog (Closed Beta)
+// List resources in the Resource Catalog (Closed Beta).
 func (r *AccountMagicCloudResourceService) List(ctx context.Context, accountID string, query AccountMagicCloudResourceListParams, opts ...option.RequestOption) (res *AccountMagicCloudResourceListResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
@@ -65,7 +65,7 @@ func (r *AccountMagicCloudResourceService) List(ctx context.Context, accountID s
 	return
 }
 
-// Export resources in the Resource Catalog as a JSON file (Closed Beta)
+// Export resources in the Resource Catalog as a JSON file (Closed Beta).
 func (r *AccountMagicCloudResourceService) Export(ctx context.Context, accountID string, query AccountMagicCloudResourceExportParams, opts ...option.RequestOption) (res *http.Response, err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "application/octet-stream")}, opts...)
@@ -78,7 +78,7 @@ func (r *AccountMagicCloudResourceService) Export(ctx context.Context, accountID
 	return
 }
 
-// Preview Rego query result against the latest resource catalog (Closed Beta)
+// Preview Rego query result against the latest resource catalog (Closed Beta).
 func (r *AccountMagicCloudResourceService) PreviewPolicy(ctx context.Context, accountID string, body AccountMagicCloudResourcePreviewPolicyParams, opts ...option.RequestOption) (res *AccountMagicCloudResourcePreviewPolicyResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
@@ -589,6 +589,39 @@ func (r McnResourceType) IsKnown() bool {
 	return false
 }
 
+type McnResultInfo struct {
+	// The number of items in the current result set.
+	Count int64 `json:"count,required"`
+	// The current page (starts from zero).
+	Page int64 `json:"page,required"`
+	// The maximum numnber of items per page.
+	PerPage int64 `json:"per_page,required"`
+	// The total number of items in the entire result set.
+	TotalCount int64 `json:"total_count,required"`
+	// The number of total pages in the entire result set.
+	TotalPages int64             `json:"total_pages"`
+	JSON       mcnResultInfoJSON `json:"-"`
+}
+
+// mcnResultInfoJSON contains the JSON metadata for the struct [McnResultInfo]
+type mcnResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	TotalPages  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *McnResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r mcnResultInfoJSON) RawJSON() string {
+	return r.raw
+}
+
 type McnStringItem struct {
 	ItemType string            `json:"item_type,required"`
 	String   string            `json:"string,required"`
@@ -616,15 +649,20 @@ func (r McnStringItem) implementsMcnResourceDetailsSectionItemValue() {}
 func (r McnStringItem) implementsMcnResourceDetailsSectionItemValueMcnListItemList() {}
 
 type AccountMagicCloudResourceGetResponse struct {
-	Result McnResourceDetails                       `json:"result"`
-	JSON   accountMagicCloudResourceGetResponseJSON `json:"-"`
-	McnGoodResponse
+	Errors   []McnError                               `json:"errors,required"`
+	Messages []McnError                               `json:"messages,required"`
+	Result   McnResourceDetails                       `json:"result,required"`
+	Success  bool                                     `json:"success,required"`
+	JSON     accountMagicCloudResourceGetResponseJSON `json:"-"`
 }
 
 // accountMagicCloudResourceGetResponseJSON contains the JSON metadata for the
 // struct [AccountMagicCloudResourceGetResponse]
 type accountMagicCloudResourceGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -638,12 +676,12 @@ func (r accountMagicCloudResourceGetResponseJSON) RawJSON() string {
 }
 
 type AccountMagicCloudResourceListResponse struct {
-	Errors     []McnError                                      `json:"errors,required"`
-	Messages   []McnError                                      `json:"messages,required"`
-	Result     []McnResourceDetails                            `json:"result,required"`
-	Success    bool                                            `json:"success,required"`
-	ResultInfo AccountMagicCloudResourceListResponseResultInfo `json:"result_info"`
-	JSON       accountMagicCloudResourceListResponseJSON       `json:"-"`
+	Errors     []McnError                                `json:"errors,required"`
+	Messages   []McnError                                `json:"messages,required"`
+	Result     []McnResourceDetails                      `json:"result,required"`
+	Success    bool                                      `json:"success,required"`
+	ResultInfo McnResultInfo                             `json:"result_info"`
+	JSON       accountMagicCloudResourceListResponseJSON `json:"-"`
 }
 
 // accountMagicCloudResourceListResponseJSON contains the JSON metadata for the
@@ -666,50 +704,21 @@ func (r accountMagicCloudResourceListResponseJSON) RawJSON() string {
 	return r.raw
 }
 
-type AccountMagicCloudResourceListResponseResultInfo struct {
-	// The number of items in the current result set.
-	Count int64 `json:"count,required"`
-	// The current page (starts from zero).
-	Page int64 `json:"page,required"`
-	// Max items per page.
-	PerPage int64 `json:"per_page,required"`
-	// The total number of items in the entire result set.
-	TotalCount int64 `json:"total_count,required"`
-	// The number of total pages in the entire result set.
-	TotalPages int64                                               `json:"total_pages"`
-	JSON       accountMagicCloudResourceListResponseResultInfoJSON `json:"-"`
-}
-
-// accountMagicCloudResourceListResponseResultInfoJSON contains the JSON metadata
-// for the struct [AccountMagicCloudResourceListResponseResultInfo]
-type accountMagicCloudResourceListResponseResultInfoJSON struct {
-	Count       apijson.Field
-	Page        apijson.Field
-	PerPage     apijson.Field
-	TotalCount  apijson.Field
-	TotalPages  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountMagicCloudResourceListResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountMagicCloudResourceListResponseResultInfoJSON) RawJSON() string {
-	return r.raw
-}
-
 type AccountMagicCloudResourcePreviewPolicyResponse struct {
-	Result string                                             `json:"result"`
-	JSON   accountMagicCloudResourcePreviewPolicyResponseJSON `json:"-"`
-	McnGoodResponse
+	Errors   []McnError                                         `json:"errors,required"`
+	Messages []McnError                                         `json:"messages,required"`
+	Result   string                                             `json:"result,required"`
+	Success  bool                                               `json:"success,required"`
+	JSON     accountMagicCloudResourcePreviewPolicyResponseJSON `json:"-"`
 }
 
 // accountMagicCloudResourcePreviewPolicyResponseJSON contains the JSON metadata
 // for the struct [AccountMagicCloudResourcePreviewPolicyResponse]
 type accountMagicCloudResourcePreviewPolicyResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -739,7 +748,7 @@ type AccountMagicCloudResourceListParams struct {
 	Cloudflare param.Field[bool] `query:"cloudflare"`
 	Desc       param.Field[bool] `query:"desc"`
 	Managed    param.Field[bool] `query:"managed"`
-	// one of ["id", "resource_type", "region"]
+	// One of ["id", "resource_type", "region"].
 	OrderBy       param.Field[string]            `query:"order_by"`
 	Page          param.Field[int64]             `query:"page"`
 	PerPage       param.Field[int64]             `query:"per_page"`
@@ -763,7 +772,7 @@ func (r AccountMagicCloudResourceListParams) URLQuery() (v url.Values) {
 
 type AccountMagicCloudResourceExportParams struct {
 	Desc param.Field[bool] `query:"desc"`
-	// one of ["id", "resource_type", "region"]
+	// One of ["id", "resource_type", "region"].
 	OrderBy       param.Field[string]            `query:"order_by"`
 	ProviderID    param.Field[string]            `query:"provider_id"`
 	Region        param.Field[string]            `query:"region"`

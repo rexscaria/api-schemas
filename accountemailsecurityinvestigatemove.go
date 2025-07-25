@@ -31,12 +31,12 @@ func NewAccountEmailSecurityInvestigateMoveService(opts ...option.RequestOption)
 
 type RetractionResponseItem struct {
 	CompletedTimestamp time.Time                  `json:"completed_timestamp,required" format:"date-time"`
-	Destination        string                     `json:"destination,required"`
 	ItemCount          int64                      `json:"item_count,required"`
-	MessageID          string                     `json:"message_id,required"`
-	Operation          string                     `json:"operation,required"`
-	Recipient          string                     `json:"recipient,required"`
-	Status             string                     `json:"status,required"`
+	Destination        string                     `json:"destination,nullable"`
+	MessageID          string                     `json:"message_id,nullable"`
+	Operation          string                     `json:"operation,nullable"`
+	Recipient          string                     `json:"recipient,nullable"`
+	Status             string                     `json:"status,nullable"`
 	JSON               retractionResponseItemJSON `json:"-"`
 }
 
@@ -44,8 +44,8 @@ type RetractionResponseItem struct {
 // [RetractionResponseItem]
 type retractionResponseItemJSON struct {
 	CompletedTimestamp apijson.Field
-	Destination        apijson.Field
 	ItemCount          apijson.Field
+	Destination        apijson.Field
 	MessageID          apijson.Field
 	Operation          apijson.Field
 	Recipient          apijson.Field

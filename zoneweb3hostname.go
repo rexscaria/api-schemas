@@ -7,15 +7,12 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"reflect"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
 	"github.com/rexscaria/api-schemas/internal/requestconfig"
 	"github.com/rexscaria/api-schemas/option"
-	"github.com/rexscaria/api-schemas/shared"
-	"github.com/tidwall/gjson"
 )
 
 // ZoneWeb3HostnameService contains methods and other services that help with
@@ -80,7 +77,7 @@ func (r *ZoneWeb3HostnameService) List(ctx context.Context, zoneID string, opts 
 }
 
 // Delete Web3 Hostname
-func (r *ZoneWeb3HostnameService) Delete(ctx context.Context, zoneID string, identifier string, body ZoneWeb3HostnameDeleteParams, opts ...option.RequestOption) (res *APIResponseSingleID, err error) {
+func (r *ZoneWeb3HostnameService) Delete(ctx context.Context, zoneID string, identifier string, opts ...option.RequestOption) (res *APIResponseSingleID, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
@@ -91,7 +88,7 @@ func (r *ZoneWeb3HostnameService) Delete(ctx context.Context, zoneID string, ide
 		return
 	}
 	path := fmt.Sprintf("zones/%s/web3/hostnames/%s", zoneID, identifier)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
@@ -111,71 +108,22 @@ func (r *ZoneWeb3HostnameService) Patch(ctx context.Context, zoneID string, iden
 	return
 }
 
-type APIResponseCollectionWeb3 struct {
-	Result     []interface{}                       `json:"result,nullable"`
-	ResultInfo APIResponseCollectionWeb3ResultInfo `json:"result_info"`
-	JSON       apiResponseCollectionWeb3JSON       `json:"-"`
-	APIResponseWeb3
-}
-
-// apiResponseCollectionWeb3JSON contains the JSON metadata for the struct
-// [APIResponseCollectionWeb3]
-type apiResponseCollectionWeb3JSON struct {
-	Result      apijson.Field
-	ResultInfo  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *APIResponseCollectionWeb3) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r apiResponseCollectionWeb3JSON) RawJSON() string {
-	return r.raw
-}
-
-type APIResponseCollectionWeb3ResultInfo struct {
-	// Total number of results for the requested service
-	Count float64 `json:"count"`
-	// Current page within paginated list of results
-	Page float64 `json:"page"`
-	// Number of results per page of results
-	PerPage float64 `json:"per_page"`
-	// Total results available without any search parameters
-	TotalCount float64                                 `json:"total_count"`
-	JSON       apiResponseCollectionWeb3ResultInfoJSON `json:"-"`
-}
-
-// apiResponseCollectionWeb3ResultInfoJSON contains the JSON metadata for the
-// struct [APIResponseCollectionWeb3ResultInfo]
-type apiResponseCollectionWeb3ResultInfoJSON struct {
-	Count       apijson.Field
-	Page        apijson.Field
-	PerPage     apijson.Field
-	TotalCount  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *APIResponseCollectionWeb3ResultInfo) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r apiResponseCollectionWeb3ResultInfoJSON) RawJSON() string {
-	return r.raw
-}
-
 type APIResponseSingleID struct {
-	Result APIResponseSingleIDResult `json:"result,nullable"`
-	JSON   apiResponseSingleIDJSON   `json:"-"`
-	APIResponseWeb3
+	Errors   []APIResponseSingleIDError   `json:"errors,required"`
+	Messages []APIResponseSingleIDMessage `json:"messages,required"`
+	Result   APIResponseSingleIDResult    `json:"result,required,nullable"`
+	// Specifies whether the API call was successful.
+	Success APIResponseSingleIDSuccess `json:"success,required"`
+	JSON    apiResponseSingleIDJSON    `json:"-"`
 }
 
 // apiResponseSingleIDJSON contains the JSON metadata for the struct
 // [APIResponseSingleID]
 type apiResponseSingleIDJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -188,8 +136,104 @@ func (r apiResponseSingleIDJSON) RawJSON() string {
 	return r.raw
 }
 
+type APIResponseSingleIDError struct {
+	Code             int64                           `json:"code,required"`
+	Message          string                          `json:"message,required"`
+	DocumentationURL string                          `json:"documentation_url"`
+	Source           APIResponseSingleIDErrorsSource `json:"source"`
+	JSON             apiResponseSingleIDErrorJSON    `json:"-"`
+}
+
+// apiResponseSingleIDErrorJSON contains the JSON metadata for the struct
+// [APIResponseSingleIDError]
+type apiResponseSingleIDErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *APIResponseSingleIDError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r apiResponseSingleIDErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type APIResponseSingleIDErrorsSource struct {
+	Pointer string                              `json:"pointer"`
+	JSON    apiResponseSingleIDErrorsSourceJSON `json:"-"`
+}
+
+// apiResponseSingleIDErrorsSourceJSON contains the JSON metadata for the struct
+// [APIResponseSingleIDErrorsSource]
+type apiResponseSingleIDErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *APIResponseSingleIDErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r apiResponseSingleIDErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type APIResponseSingleIDMessage struct {
+	Code             int64                             `json:"code,required"`
+	Message          string                            `json:"message,required"`
+	DocumentationURL string                            `json:"documentation_url"`
+	Source           APIResponseSingleIDMessagesSource `json:"source"`
+	JSON             apiResponseSingleIDMessageJSON    `json:"-"`
+}
+
+// apiResponseSingleIDMessageJSON contains the JSON metadata for the struct
+// [APIResponseSingleIDMessage]
+type apiResponseSingleIDMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *APIResponseSingleIDMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r apiResponseSingleIDMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type APIResponseSingleIDMessagesSource struct {
+	Pointer string                                `json:"pointer"`
+	JSON    apiResponseSingleIDMessagesSourceJSON `json:"-"`
+}
+
+// apiResponseSingleIDMessagesSourceJSON contains the JSON metadata for the struct
+// [APIResponseSingleIDMessagesSource]
+type apiResponseSingleIDMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *APIResponseSingleIDMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r apiResponseSingleIDMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
 type APIResponseSingleIDResult struct {
-	// Identifier
+	// Specify the identifier of the hostname.
 	ID   string                        `json:"id,required"`
 	JSON apiResponseSingleIDResultJSON `json:"-"`
 }
@@ -210,106 +254,37 @@ func (r apiResponseSingleIDResultJSON) RawJSON() string {
 	return r.raw
 }
 
-type APIResponseSingleWeb3 struct {
-	Result interface{}               `json:"result"`
-	JSON   apiResponseSingleWeb3JSON `json:"-"`
-	APIResponseWeb3
-}
-
-// apiResponseSingleWeb3JSON contains the JSON metadata for the struct
-// [APIResponseSingleWeb3]
-type apiResponseSingleWeb3JSON struct {
-	Result      apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *APIResponseSingleWeb3) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r apiResponseSingleWeb3JSON) RawJSON() string {
-	return r.raw
-}
-
-type APIResponseWeb3 struct {
-	Errors   []MessageItems             `json:"errors,required"`
-	Messages []MessageItems             `json:"messages,required"`
-	Result   APIResponseWeb3ResultUnion `json:"result,required"`
-	// Whether the API call was successful
-	Success APIResponseWeb3Success `json:"success,required"`
-	JSON    apiResponseWeb3JSON    `json:"-"`
-}
-
-// apiResponseWeb3JSON contains the JSON metadata for the struct [APIResponseWeb3]
-type apiResponseWeb3JSON struct {
-	Errors      apijson.Field
-	Messages    apijson.Field
-	Result      apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *APIResponseWeb3) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r apiResponseWeb3JSON) RawJSON() string {
-	return r.raw
-}
-
-// Union satisfied by [APIResponseWeb3ResultArray] or [shared.UnionString].
-type APIResponseWeb3ResultUnion interface {
-	ImplementsAPIResponseWeb3ResultUnion()
-}
-
-func init() {
-	apijson.RegisterUnion(
-		reflect.TypeOf((*APIResponseWeb3ResultUnion)(nil)).Elem(),
-		"",
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(APIResponseWeb3ResultArray{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.String,
-			Type:       reflect.TypeOf(shared.UnionString("")),
-		},
-	)
-}
-
-type APIResponseWeb3ResultArray []interface{}
-
-func (r APIResponseWeb3ResultArray) ImplementsAPIResponseWeb3ResultUnion() {}
-
-// Whether the API call was successful
-type APIResponseWeb3Success bool
+// Specifies whether the API call was successful.
+type APIResponseSingleIDSuccess bool
 
 const (
-	APIResponseWeb3SuccessTrue APIResponseWeb3Success = true
+	APIResponseSingleIDSuccessTrue APIResponseSingleIDSuccess = true
 )
 
-func (r APIResponseWeb3Success) IsKnown() bool {
+func (r APIResponseSingleIDSuccess) IsKnown() bool {
 	switch r {
-	case APIResponseWeb3SuccessTrue:
+	case APIResponseSingleIDSuccessTrue:
 		return true
 	}
 	return false
 }
 
 type MessageItems struct {
-	Code    int64            `json:"code,required"`
-	Message string           `json:"message,required"`
-	JSON    messageItemsJSON `json:"-"`
+	Code             int64              `json:"code,required"`
+	Message          string             `json:"message,required"`
+	DocumentationURL string             `json:"documentation_url"`
+	Source           MessageItemsSource `json:"source"`
+	JSON             messageItemsJSON   `json:"-"`
 }
 
 // messageItemsJSON contains the JSON metadata for the struct [MessageItems]
 type messageItemsJSON struct {
-	Code        apijson.Field
-	Message     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
 }
 
 func (r *MessageItems) UnmarshalJSON(data []byte) (err error) {
@@ -320,16 +295,46 @@ func (r messageItemsJSON) RawJSON() string {
 	return r.raw
 }
 
+type MessageItemsSource struct {
+	Pointer string                 `json:"pointer"`
+	JSON    messageItemsSourceJSON `json:"-"`
+}
+
+// messageItemsSourceJSON contains the JSON metadata for the struct
+// [MessageItemsSource]
+type messageItemsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *MessageItemsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r messageItemsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
 type SingleResponseWeb3 struct {
-	Result Web3Hostname           `json:"result"`
-	JSON   singleResponseWeb3JSON `json:"-"`
-	APIResponseSingleWeb3
+	Errors   []MessageItems `json:"errors,required"`
+	Messages []MessageItems `json:"messages,required"`
+	Result   Web3Hostname   `json:"result,required"`
+	// Specifies whether the API call was successful.
+	Success SingleResponseWeb3Success `json:"success,required"`
+	// Provides the API response.
+	ResultInfo interface{}            `json:"result_info"`
+	JSON       singleResponseWeb3JSON `json:"-"`
 }
 
 // singleResponseWeb3JSON contains the JSON metadata for the struct
 // [SingleResponseWeb3]
 type singleResponseWeb3JSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -342,7 +347,22 @@ func (r singleResponseWeb3JSON) RawJSON() string {
 	return r.raw
 }
 
-// Target gateway of the hostname.
+// Specifies whether the API call was successful.
+type SingleResponseWeb3Success bool
+
+const (
+	SingleResponseWeb3SuccessTrue SingleResponseWeb3Success = true
+)
+
+func (r SingleResponseWeb3Success) IsKnown() bool {
+	switch r {
+	case SingleResponseWeb3SuccessTrue:
+		return true
+	}
+	return false
+}
+
+// Specify the target gateway of the hostname.
 type TargetGateway string
 
 const (
@@ -360,19 +380,19 @@ func (r TargetGateway) IsKnown() bool {
 }
 
 type Web3Hostname struct {
-	// Identifier
+	// Specify the identifier of the hostname.
 	ID        string    `json:"id"`
 	CreatedOn time.Time `json:"created_on" format:"date-time"`
-	// An optional description of the hostname.
+	// Specify an optional description of the hostname.
 	Description string `json:"description"`
-	// DNSLink value used if the target is ipfs.
+	// Specify the DNSLink value used if the target is ipfs.
 	Dnslink    string    `json:"dnslink"`
 	ModifiedOn time.Time `json:"modified_on" format:"date-time"`
-	// The hostname that will point to the target gateway via CNAME.
+	// Specify the hostname that points to the target gateway via CNAME.
 	Name string `json:"name"`
-	// Status of the hostname's activation.
+	// Specifies the status of the hostname's activation.
 	Status Web3HostnameStatus `json:"status"`
-	// Target gateway of the hostname.
+	// Specify the target gateway of the hostname.
 	Target TargetGateway    `json:"target"`
 	JSON   web3HostnameJSON `json:"-"`
 }
@@ -399,7 +419,7 @@ func (r web3HostnameJSON) RawJSON() string {
 	return r.raw
 }
 
-// Status of the hostname's activation.
+// Specifies the status of the hostname's activation.
 type Web3HostnameStatus string
 
 const (
@@ -418,15 +438,23 @@ func (r Web3HostnameStatus) IsKnown() bool {
 }
 
 type ZoneWeb3HostnameListResponse struct {
-	Result []Web3Hostname                   `json:"result"`
-	JSON   zoneWeb3HostnameListResponseJSON `json:"-"`
-	APIResponseCollectionWeb3
+	Errors   []ZoneWeb3HostnameListResponseError   `json:"errors,required"`
+	Messages []ZoneWeb3HostnameListResponseMessage `json:"messages,required"`
+	Result   []Web3Hostname                        `json:"result,required,nullable"`
+	// Specifies whether the API call was successful.
+	Success    ZoneWeb3HostnameListResponseSuccess    `json:"success,required"`
+	ResultInfo ZoneWeb3HostnameListResponseResultInfo `json:"result_info"`
+	JSON       zoneWeb3HostnameListResponseJSON       `json:"-"`
 }
 
 // zoneWeb3HostnameListResponseJSON contains the JSON metadata for the struct
 // [ZoneWeb3HostnameListResponse]
 type zoneWeb3HostnameListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -439,14 +467,156 @@ func (r zoneWeb3HostnameListResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+type ZoneWeb3HostnameListResponseError struct {
+	Code             int64                                    `json:"code,required"`
+	Message          string                                   `json:"message,required"`
+	DocumentationURL string                                   `json:"documentation_url"`
+	Source           ZoneWeb3HostnameListResponseErrorsSource `json:"source"`
+	JSON             zoneWeb3HostnameListResponseErrorJSON    `json:"-"`
+}
+
+// zoneWeb3HostnameListResponseErrorJSON contains the JSON metadata for the struct
+// [ZoneWeb3HostnameListResponseError]
+type zoneWeb3HostnameListResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *ZoneWeb3HostnameListResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneWeb3HostnameListResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZoneWeb3HostnameListResponseErrorsSource struct {
+	Pointer string                                       `json:"pointer"`
+	JSON    zoneWeb3HostnameListResponseErrorsSourceJSON `json:"-"`
+}
+
+// zoneWeb3HostnameListResponseErrorsSourceJSON contains the JSON metadata for the
+// struct [ZoneWeb3HostnameListResponseErrorsSource]
+type zoneWeb3HostnameListResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZoneWeb3HostnameListResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneWeb3HostnameListResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZoneWeb3HostnameListResponseMessage struct {
+	Code             int64                                      `json:"code,required"`
+	Message          string                                     `json:"message,required"`
+	DocumentationURL string                                     `json:"documentation_url"`
+	Source           ZoneWeb3HostnameListResponseMessagesSource `json:"source"`
+	JSON             zoneWeb3HostnameListResponseMessageJSON    `json:"-"`
+}
+
+// zoneWeb3HostnameListResponseMessageJSON contains the JSON metadata for the
+// struct [ZoneWeb3HostnameListResponseMessage]
+type zoneWeb3HostnameListResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *ZoneWeb3HostnameListResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneWeb3HostnameListResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZoneWeb3HostnameListResponseMessagesSource struct {
+	Pointer string                                         `json:"pointer"`
+	JSON    zoneWeb3HostnameListResponseMessagesSourceJSON `json:"-"`
+}
+
+// zoneWeb3HostnameListResponseMessagesSourceJSON contains the JSON metadata for
+// the struct [ZoneWeb3HostnameListResponseMessagesSource]
+type zoneWeb3HostnameListResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZoneWeb3HostnameListResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneWeb3HostnameListResponseMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Specifies whether the API call was successful.
+type ZoneWeb3HostnameListResponseSuccess bool
+
+const (
+	ZoneWeb3HostnameListResponseSuccessTrue ZoneWeb3HostnameListResponseSuccess = true
+)
+
+func (r ZoneWeb3HostnameListResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneWeb3HostnameListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type ZoneWeb3HostnameListResponseResultInfo struct {
+	// Specifies the total number of results for the requested service.
+	Count float64 `json:"count"`
+	// Specifies the current page within paginated list of results.
+	Page float64 `json:"page"`
+	// Specifies the number of results per page of results.
+	PerPage float64 `json:"per_page"`
+	// Specifies the total results available without any search parameters.
+	TotalCount float64                                    `json:"total_count"`
+	JSON       zoneWeb3HostnameListResponseResultInfoJSON `json:"-"`
+}
+
+// zoneWeb3HostnameListResponseResultInfoJSON contains the JSON metadata for the
+// struct [ZoneWeb3HostnameListResponseResultInfo]
+type zoneWeb3HostnameListResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZoneWeb3HostnameListResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneWeb3HostnameListResponseResultInfoJSON) RawJSON() string {
+	return r.raw
+}
+
 type ZoneWeb3HostnameNewParams struct {
-	// The hostname that will point to the target gateway via CNAME.
+	// Specify the hostname that points to the target gateway via CNAME.
 	Name param.Field[string] `json:"name,required"`
-	// Target gateway of the hostname.
+	// Specify the target gateway of the hostname.
 	Target param.Field[TargetGateway] `json:"target,required"`
-	// An optional description of the hostname.
+	// Specify an optional description of the hostname.
 	Description param.Field[string] `json:"description"`
-	// DNSLink value used if the target is ipfs.
+	// Specify the DNSLink value used if the target is ipfs.
 	Dnslink param.Field[string] `json:"dnslink"`
 }
 
@@ -454,18 +624,10 @@ func (r ZoneWeb3HostnameNewParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-type ZoneWeb3HostnameDeleteParams struct {
-	Body interface{} `json:"body,required"`
-}
-
-func (r ZoneWeb3HostnameDeleteParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
-}
-
 type ZoneWeb3HostnamePatchParams struct {
-	// An optional description of the hostname.
+	// Specify an optional description of the hostname.
 	Description param.Field[string] `json:"description"`
-	// DNSLink value used if the target is ipfs.
+	// Specify the DNSLink value used if the target is ipfs.
 	Dnslink param.Field[string] `json:"dnslink"`
 }
 

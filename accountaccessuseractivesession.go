@@ -275,14 +275,20 @@ func (r identityMtlsAuthJSON) RawJSON() string {
 }
 
 type AccountAccessUserActiveSessionGetResponse struct {
-	Result AccountAccessUserActiveSessionGetResponseResult `json:"result"`
-	JSON   accountAccessUserActiveSessionGetResponseJSON   `json:"-"`
-	APIResponseSingleAccess
+	Errors   []MessagesAccessItem `json:"errors,required"`
+	Messages []MessagesAccessItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountAccessUserActiveSessionGetResponseSuccess `json:"success,required"`
+	Result  AccountAccessUserActiveSessionGetResponseResult  `json:"result"`
+	JSON    accountAccessUserActiveSessionGetResponseJSON    `json:"-"`
 }
 
 // accountAccessUserActiveSessionGetResponseJSON contains the JSON metadata for the
 // struct [AccountAccessUserActiveSessionGetResponse]
 type accountAccessUserActiveSessionGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -296,18 +302,68 @@ func (r accountAccessUserActiveSessionGetResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountAccessUserActiveSessionGetResponseSuccess bool
+
+const (
+	AccountAccessUserActiveSessionGetResponseSuccessTrue AccountAccessUserActiveSessionGetResponseSuccess = true
+)
+
+func (r AccountAccessUserActiveSessionGetResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountAccessUserActiveSessionGetResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountAccessUserActiveSessionGetResponseResult struct {
-	IsActive bool                                                `json:"isActive"`
-	JSON     accountAccessUserActiveSessionGetResponseResultJSON `json:"-"`
-	Identity
+	AccountID          string                                                                  `json:"account_id"`
+	AuthStatus         string                                                                  `json:"auth_status"`
+	CommonName         string                                                                  `json:"common_name"`
+	DeviceID           string                                                                  `json:"device_id"`
+	DeviceSessions     map[string]AccountAccessUserActiveSessionGetResponseResultDeviceSession `json:"device_sessions"`
+	DevicePosture      map[string]AccountAccessUserActiveSessionGetResponseResultDevicePosture `json:"devicePosture"`
+	Email              string                                                                  `json:"email"`
+	Geo                AccountAccessUserActiveSessionGetResponseResultGeo                      `json:"geo"`
+	Iat                float64                                                                 `json:"iat"`
+	Idp                AccountAccessUserActiveSessionGetResponseResultIdp                      `json:"idp"`
+	IP                 string                                                                  `json:"ip"`
+	IsGateway          bool                                                                    `json:"is_gateway"`
+	IsWarp             bool                                                                    `json:"is_warp"`
+	IsActive           bool                                                                    `json:"isActive"`
+	MtlsAuth           AccountAccessUserActiveSessionGetResponseResultMtlsAuth                 `json:"mtls_auth"`
+	ServiceTokenID     string                                                                  `json:"service_token_id"`
+	ServiceTokenStatus bool                                                                    `json:"service_token_status"`
+	UserUuid           string                                                                  `json:"user_uuid"`
+	Version            float64                                                                 `json:"version"`
+	JSON               accountAccessUserActiveSessionGetResponseResultJSON                     `json:"-"`
 }
 
 // accountAccessUserActiveSessionGetResponseResultJSON contains the JSON metadata
 // for the struct [AccountAccessUserActiveSessionGetResponseResult]
 type accountAccessUserActiveSessionGetResponseResultJSON struct {
-	IsActive    apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	AccountID          apijson.Field
+	AuthStatus         apijson.Field
+	CommonName         apijson.Field
+	DeviceID           apijson.Field
+	DeviceSessions     apijson.Field
+	DevicePosture      apijson.Field
+	Email              apijson.Field
+	Geo                apijson.Field
+	Iat                apijson.Field
+	Idp                apijson.Field
+	IP                 apijson.Field
+	IsGateway          apijson.Field
+	IsWarp             apijson.Field
+	IsActive           apijson.Field
+	MtlsAuth           apijson.Field
+	ServiceTokenID     apijson.Field
+	ServiceTokenStatus apijson.Field
+	UserUuid           apijson.Field
+	Version            apijson.Field
+	raw                string
+	ExtraFields        map[string]apijson.Field
 }
 
 func (r *AccountAccessUserActiveSessionGetResponseResult) UnmarshalJSON(data []byte) (err error) {
@@ -318,16 +374,182 @@ func (r accountAccessUserActiveSessionGetResponseResultJSON) RawJSON() string {
 	return r.raw
 }
 
+type AccountAccessUserActiveSessionGetResponseResultDeviceSession struct {
+	LastAuthenticated float64                                                          `json:"last_authenticated"`
+	JSON              accountAccessUserActiveSessionGetResponseResultDeviceSessionJSON `json:"-"`
+}
+
+// accountAccessUserActiveSessionGetResponseResultDeviceSessionJSON contains the
+// JSON metadata for the struct
+// [AccountAccessUserActiveSessionGetResponseResultDeviceSession]
+type accountAccessUserActiveSessionGetResponseResultDeviceSessionJSON struct {
+	LastAuthenticated apijson.Field
+	raw               string
+	ExtraFields       map[string]apijson.Field
+}
+
+func (r *AccountAccessUserActiveSessionGetResponseResultDeviceSession) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountAccessUserActiveSessionGetResponseResultDeviceSessionJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountAccessUserActiveSessionGetResponseResultDevicePosture struct {
+	ID          string                                                            `json:"id"`
+	Check       AccountAccessUserActiveSessionGetResponseResultDevicePostureCheck `json:"check"`
+	Data        interface{}                                                       `json:"data"`
+	Description string                                                            `json:"description"`
+	Error       string                                                            `json:"error"`
+	RuleName    string                                                            `json:"rule_name"`
+	Success     bool                                                              `json:"success"`
+	Timestamp   string                                                            `json:"timestamp"`
+	Type        string                                                            `json:"type"`
+	JSON        accountAccessUserActiveSessionGetResponseResultDevicePostureJSON  `json:"-"`
+}
+
+// accountAccessUserActiveSessionGetResponseResultDevicePostureJSON contains the
+// JSON metadata for the struct
+// [AccountAccessUserActiveSessionGetResponseResultDevicePosture]
+type accountAccessUserActiveSessionGetResponseResultDevicePostureJSON struct {
+	ID          apijson.Field
+	Check       apijson.Field
+	Data        apijson.Field
+	Description apijson.Field
+	Error       apijson.Field
+	RuleName    apijson.Field
+	Success     apijson.Field
+	Timestamp   apijson.Field
+	Type        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountAccessUserActiveSessionGetResponseResultDevicePosture) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountAccessUserActiveSessionGetResponseResultDevicePostureJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountAccessUserActiveSessionGetResponseResultDevicePostureCheck struct {
+	Exists bool                                                                  `json:"exists"`
+	Path   string                                                                `json:"path"`
+	JSON   accountAccessUserActiveSessionGetResponseResultDevicePostureCheckJSON `json:"-"`
+}
+
+// accountAccessUserActiveSessionGetResponseResultDevicePostureCheckJSON contains
+// the JSON metadata for the struct
+// [AccountAccessUserActiveSessionGetResponseResultDevicePostureCheck]
+type accountAccessUserActiveSessionGetResponseResultDevicePostureCheckJSON struct {
+	Exists      apijson.Field
+	Path        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountAccessUserActiveSessionGetResponseResultDevicePostureCheck) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountAccessUserActiveSessionGetResponseResultDevicePostureCheckJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountAccessUserActiveSessionGetResponseResultGeo struct {
+	Country string                                                 `json:"country"`
+	JSON    accountAccessUserActiveSessionGetResponseResultGeoJSON `json:"-"`
+}
+
+// accountAccessUserActiveSessionGetResponseResultGeoJSON contains the JSON
+// metadata for the struct [AccountAccessUserActiveSessionGetResponseResultGeo]
+type accountAccessUserActiveSessionGetResponseResultGeoJSON struct {
+	Country     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountAccessUserActiveSessionGetResponseResultGeo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountAccessUserActiveSessionGetResponseResultGeoJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountAccessUserActiveSessionGetResponseResultIdp struct {
+	ID   string                                                 `json:"id"`
+	Type string                                                 `json:"type"`
+	JSON accountAccessUserActiveSessionGetResponseResultIdpJSON `json:"-"`
+}
+
+// accountAccessUserActiveSessionGetResponseResultIdpJSON contains the JSON
+// metadata for the struct [AccountAccessUserActiveSessionGetResponseResultIdp]
+type accountAccessUserActiveSessionGetResponseResultIdpJSON struct {
+	ID          apijson.Field
+	Type        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountAccessUserActiveSessionGetResponseResultIdp) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountAccessUserActiveSessionGetResponseResultIdpJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountAccessUserActiveSessionGetResponseResultMtlsAuth struct {
+	AuthStatus    string                                                      `json:"auth_status"`
+	CertIssuerDn  string                                                      `json:"cert_issuer_dn"`
+	CertIssuerSki string                                                      `json:"cert_issuer_ski"`
+	CertPresented bool                                                        `json:"cert_presented"`
+	CertSerial    string                                                      `json:"cert_serial"`
+	JSON          accountAccessUserActiveSessionGetResponseResultMtlsAuthJSON `json:"-"`
+}
+
+// accountAccessUserActiveSessionGetResponseResultMtlsAuthJSON contains the JSON
+// metadata for the struct
+// [AccountAccessUserActiveSessionGetResponseResultMtlsAuth]
+type accountAccessUserActiveSessionGetResponseResultMtlsAuthJSON struct {
+	AuthStatus    apijson.Field
+	CertIssuerDn  apijson.Field
+	CertIssuerSki apijson.Field
+	CertPresented apijson.Field
+	CertSerial    apijson.Field
+	raw           string
+	ExtraFields   map[string]apijson.Field
+}
+
+func (r *AccountAccessUserActiveSessionGetResponseResultMtlsAuth) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountAccessUserActiveSessionGetResponseResultMtlsAuthJSON) RawJSON() string {
+	return r.raw
+}
+
 type AccountAccessUserActiveSessionListResponse struct {
-	Result []AccountAccessUserActiveSessionListResponseResult `json:"result"`
-	JSON   accountAccessUserActiveSessionListResponseJSON     `json:"-"`
-	APIResponseCollectionAccess
+	Errors   []MessagesAccessItem `json:"errors,required"`
+	Messages []MessagesAccessItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success    AccountAccessUserActiveSessionListResponseSuccess    `json:"success,required"`
+	Result     []AccountAccessUserActiveSessionListResponseResult   `json:"result"`
+	ResultInfo AccountAccessUserActiveSessionListResponseResultInfo `json:"result_info"`
+	JSON       accountAccessUserActiveSessionListResponseJSON       `json:"-"`
 }
 
 // accountAccessUserActiveSessionListResponseJSON contains the JSON metadata for
 // the struct [AccountAccessUserActiveSessionListResponse]
 type accountAccessUserActiveSessionListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -338,6 +560,21 @@ func (r *AccountAccessUserActiveSessionListResponse) UnmarshalJSON(data []byte) 
 
 func (r accountAccessUserActiveSessionListResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountAccessUserActiveSessionListResponseSuccess bool
+
+const (
+	AccountAccessUserActiveSessionListResponseSuccessTrue AccountAccessUserActiveSessionListResponseSuccess = true
+)
+
+func (r AccountAccessUserActiveSessionListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountAccessUserActiveSessionListResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountAccessUserActiveSessionListResponseResult struct {
@@ -420,5 +657,36 @@ func (r *AccountAccessUserActiveSessionListResponseResultMetadataApp) UnmarshalJ
 }
 
 func (r accountAccessUserActiveSessionListResponseResultMetadataAppJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountAccessUserActiveSessionListResponseResultInfo struct {
+	// Total number of results for the requested service.
+	Count float64 `json:"count"`
+	// Current page within paginated list of results.
+	Page float64 `json:"page"`
+	// Number of results per page of results.
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters.
+	TotalCount float64                                                  `json:"total_count"`
+	JSON       accountAccessUserActiveSessionListResponseResultInfoJSON `json:"-"`
+}
+
+// accountAccessUserActiveSessionListResponseResultInfoJSON contains the JSON
+// metadata for the struct [AccountAccessUserActiveSessionListResponseResultInfo]
+type accountAccessUserActiveSessionListResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountAccessUserActiveSessionListResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountAccessUserActiveSessionListResponseResultInfoJSON) RawJSON() string {
 	return r.raw
 }

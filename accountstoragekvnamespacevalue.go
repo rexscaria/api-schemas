@@ -3,13 +3,15 @@
 package cfrex
 
 import (
+	"bytes"
 	"context"
 	"errors"
 	"fmt"
+	"mime/multipart"
 	"net/http"
 	"net/url"
 
-	"github.com/rexscaria/api-schemas/internal/apijson"
+	"github.com/rexscaria/api-schemas/internal/apiform"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
 	"github.com/rexscaria/api-schemas/internal/param"
 	"github.com/rexscaria/api-schemas/internal/requestconfig"
@@ -62,7 +64,7 @@ func (r *AccountStorageKvNamespaceValueService) Get(ctx context.Context, account
 
 // Remove a KV pair from the namespace. Use URL-encoding to use special characters
 // (for example, `:`, `!`, `%`) in the key name.
-func (r *AccountStorageKvNamespaceValueService) Delete(ctx context.Context, accountID string, namespaceID string, keyName string, body AccountStorageKvNamespaceValueDeleteParams, opts ...option.RequestOption) (res *APIResponseCommonNoResult, err error) {
+func (r *AccountStorageKvNamespaceValueService) Delete(ctx context.Context, accountID string, namespaceID string, keyName string, opts ...option.RequestOption) (res *APIResponseCommonNoResult, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
@@ -77,7 +79,7 @@ func (r *AccountStorageKvNamespaceValueService) Delete(ctx context.Context, acco
 		return
 	}
 	path := fmt.Sprintf("accounts/%s/storage/kv/namespaces/%s/values/%s", accountID, namespaceID, keyName)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
@@ -108,29 +110,30 @@ func (r *AccountStorageKvNamespaceValueService) Write(ctx context.Context, accou
 	return
 }
 
-type AccountStorageKvNamespaceValueDeleteParams struct {
-	Body interface{} `json:"body,required"`
-}
-
-func (r AccountStorageKvNamespaceValueDeleteParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
-}
-
 type AccountStorageKvNamespaceValueWriteParams struct {
-	// Arbitrary JSON to be associated with a key/value pair.
-	Metadata param.Field[string] `json:"metadata,required"`
 	// A byte sequence to be stored, up to 25 MiB in length.
 	Value param.Field[string] `json:"value,required"`
-	// The time, measured in number of seconds since the UNIX epoch, at which the key
-	// should expire.
+	// Expires the key at a certain time, measured in number of seconds since the UNIX
+	// epoch.
 	Expiration param.Field[float64] `query:"expiration"`
-	// The number of seconds for which the key should be visible before it expires. At
-	// least 60.
-	ExpirationTtl param.Field[float64] `query:"expiration_ttl"`
+	// Expires the key after a number of seconds. Must be at least 60.
+	ExpirationTtl param.Field[float64]     `query:"expiration_ttl"`
+	Metadata      param.Field[interface{}] `json:"metadata"`
 }
 
-func (r AccountStorageKvNamespaceValueWriteParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+func (r AccountStorageKvNamespaceValueWriteParams) MarshalMultipart() (data []byte, contentType string, err error) {
+	buf := bytes.NewBuffer(nil)
+	writer := multipart.NewWriter(buf)
+	err = apiform.MarshalRoot(r, writer)
+	if err != nil {
+		writer.Close()
+		return nil, "", err
+	}
+	err = writer.Close()
+	if err != nil {
+		return nil, "", err
+	}
+	return buf.Bytes(), writer.FormDataContentType(), nil
 }
 
 // URLQuery serializes [AccountStorageKvNamespaceValueWriteParams]'s query

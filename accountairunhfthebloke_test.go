@@ -34,10 +34,10 @@ func TestAccountAIRunHfTheblokeExecuteDeepseekCoder6_7bBaseAwqWithOptionalParams
 			QueueRequest: cfrex.F("true"),
 			Body: cfrex.AccountAIRunHfTheblokeExecuteDeepseekCoder6_7bBaseAwqParamsBodyPrompt{
 				Prompt:            cfrex.F("x"),
-				FrequencyPenalty:  cfrex.F(0.000000),
+				FrequencyPenalty:  cfrex.F(-2.000000),
 				Lora:              cfrex.F("lora"),
 				MaxTokens:         cfrex.F(int64(0)),
-				PresencePenalty:   cfrex.F(0.000000),
+				PresencePenalty:   cfrex.F(-2.000000),
 				Raw:               cfrex.F(true),
 				RepetitionPenalty: cfrex.F(0.000000),
 				ResponseFormat: cfrex.F(cfrex.AccountAIRunHfTheblokeExecuteDeepseekCoder6_7bBaseAwqParamsBodyPromptResponseFormat{
@@ -48,7 +48,7 @@ func TestAccountAIRunHfTheblokeExecuteDeepseekCoder6_7bBaseAwqWithOptionalParams
 				Stream:      cfrex.F(true),
 				Temperature: cfrex.F(0.000000),
 				TopK:        cfrex.F(int64(1)),
-				TopP:        cfrex.F(0.000000),
+				TopP:        cfrex.F(0.001000),
 			},
 		},
 	)
@@ -82,10 +82,10 @@ func TestAccountAIRunHfTheblokeExecuteDeepseekCoder6_7bInstructAwqWithOptionalPa
 			QueueRequest: cfrex.F("true"),
 			Body: cfrex.AccountAIRunHfTheblokeExecuteDeepseekCoder6_7bInstructAwqParamsBodyPrompt{
 				Prompt:            cfrex.F("x"),
-				FrequencyPenalty:  cfrex.F(0.000000),
+				FrequencyPenalty:  cfrex.F(-2.000000),
 				Lora:              cfrex.F("lora"),
 				MaxTokens:         cfrex.F(int64(0)),
-				PresencePenalty:   cfrex.F(0.000000),
+				PresencePenalty:   cfrex.F(-2.000000),
 				Raw:               cfrex.F(true),
 				RepetitionPenalty: cfrex.F(0.000000),
 				ResponseFormat: cfrex.F(cfrex.AccountAIRunHfTheblokeExecuteDeepseekCoder6_7bInstructAwqParamsBodyPromptResponseFormat{
@@ -96,7 +96,7 @@ func TestAccountAIRunHfTheblokeExecuteDeepseekCoder6_7bInstructAwqWithOptionalPa
 				Stream:      cfrex.F(true),
 				Temperature: cfrex.F(0.000000),
 				TopK:        cfrex.F(int64(1)),
-				TopP:        cfrex.F(0.000000),
+				TopP:        cfrex.F(0.001000),
 			},
 		},
 	)
@@ -130,10 +130,10 @@ func TestAccountAIRunHfTheblokeExecuteLlama2_13bChatAwqWithOptionalParams(t *tes
 			QueueRequest: cfrex.F("true"),
 			Body: cfrex.AccountAIRunHfTheblokeExecuteLlama2_13bChatAwqParamsBodyPrompt{
 				Prompt:            cfrex.F("x"),
-				FrequencyPenalty:  cfrex.F(0.000000),
+				FrequencyPenalty:  cfrex.F(-2.000000),
 				Lora:              cfrex.F("lora"),
 				MaxTokens:         cfrex.F(int64(0)),
-				PresencePenalty:   cfrex.F(0.000000),
+				PresencePenalty:   cfrex.F(-2.000000),
 				Raw:               cfrex.F(true),
 				RepetitionPenalty: cfrex.F(0.000000),
 				ResponseFormat: cfrex.F(cfrex.AccountAIRunHfTheblokeExecuteLlama2_13bChatAwqParamsBodyPromptResponseFormat{
@@ -144,7 +144,7 @@ func TestAccountAIRunHfTheblokeExecuteLlama2_13bChatAwqWithOptionalParams(t *tes
 				Stream:      cfrex.F(true),
 				Temperature: cfrex.F(0.000000),
 				TopK:        cfrex.F(int64(1)),
-				TopP:        cfrex.F(0.000000),
+				TopP:        cfrex.F(0.001000),
 			},
 		},
 	)
@@ -178,10 +178,10 @@ func TestAccountAIRunHfTheblokeExecuteLlamaguard7bAwqWithOptionalParams(t *testi
 			QueueRequest: cfrex.F("true"),
 			Body: cfrex.AccountAIRunHfTheblokeExecuteLlamaguard7bAwqParamsBodyPrompt{
 				Prompt:            cfrex.F("x"),
-				FrequencyPenalty:  cfrex.F(0.000000),
+				FrequencyPenalty:  cfrex.F(-2.000000),
 				Lora:              cfrex.F("lora"),
 				MaxTokens:         cfrex.F(int64(0)),
-				PresencePenalty:   cfrex.F(0.000000),
+				PresencePenalty:   cfrex.F(-2.000000),
 				Raw:               cfrex.F(true),
 				RepetitionPenalty: cfrex.F(0.000000),
 				ResponseFormat: cfrex.F(cfrex.AccountAIRunHfTheblokeExecuteLlamaguard7bAwqParamsBodyPromptResponseFormat{
@@ -192,7 +192,7 @@ func TestAccountAIRunHfTheblokeExecuteLlamaguard7bAwqWithOptionalParams(t *testi
 				Stream:      cfrex.F(true),
 				Temperature: cfrex.F(0.000000),
 				TopK:        cfrex.F(int64(1)),
-				TopP:        cfrex.F(0.000000),
+				TopP:        cfrex.F(0.001000),
 			},
 		},
 	)
@@ -226,10 +226,10 @@ func TestAccountAIRunHfTheblokeExecuteMistral7bInstructV0_1AwqWithOptionalParams
 			QueueRequest: cfrex.F("true"),
 			Body: cfrex.AccountAIRunHfTheblokeExecuteMistral7bInstructV0_1AwqParamsBodyPrompt{
 				Prompt:            cfrex.F("x"),
-				FrequencyPenalty:  cfrex.F(0.000000),
+				FrequencyPenalty:  cfrex.F(-2.000000),
 				Lora:              cfrex.F("lora"),
 				MaxTokens:         cfrex.F(int64(0)),
-				PresencePenalty:   cfrex.F(0.000000),
+				PresencePenalty:   cfrex.F(-2.000000),
 				Raw:               cfrex.F(true),
 				RepetitionPenalty: cfrex.F(0.000000),
 				ResponseFormat: cfrex.F(cfrex.AccountAIRunHfTheblokeExecuteMistral7bInstructV0_1AwqParamsBodyPromptResponseFormat{
@@ -240,7 +240,7 @@ func TestAccountAIRunHfTheblokeExecuteMistral7bInstructV0_1AwqWithOptionalParams
 				Stream:      cfrex.F(true),
 				Temperature: cfrex.F(0.000000),
 				TopK:        cfrex.F(int64(1)),
-				TopP:        cfrex.F(0.000000),
+				TopP:        cfrex.F(0.001000),
 			},
 		},
 	)
@@ -274,10 +274,10 @@ func TestAccountAIRunHfTheblokeExecuteNeuralChat7bV3_1AwqWithOptionalParams(t *t
 			QueueRequest: cfrex.F("true"),
 			Body: cfrex.AccountAIRunHfTheblokeExecuteNeuralChat7bV3_1AwqParamsBodyPrompt{
 				Prompt:            cfrex.F("x"),
-				FrequencyPenalty:  cfrex.F(0.000000),
+				FrequencyPenalty:  cfrex.F(-2.000000),
 				Lora:              cfrex.F("lora"),
 				MaxTokens:         cfrex.F(int64(0)),
-				PresencePenalty:   cfrex.F(0.000000),
+				PresencePenalty:   cfrex.F(-2.000000),
 				Raw:               cfrex.F(true),
 				RepetitionPenalty: cfrex.F(0.000000),
 				ResponseFormat: cfrex.F(cfrex.AccountAIRunHfTheblokeExecuteNeuralChat7bV3_1AwqParamsBodyPromptResponseFormat{
@@ -288,7 +288,7 @@ func TestAccountAIRunHfTheblokeExecuteNeuralChat7bV3_1AwqWithOptionalParams(t *t
 				Stream:      cfrex.F(true),
 				Temperature: cfrex.F(0.000000),
 				TopK:        cfrex.F(int64(1)),
-				TopP:        cfrex.F(0.000000),
+				TopP:        cfrex.F(0.001000),
 			},
 		},
 	)
@@ -322,10 +322,10 @@ func TestAccountAIRunHfTheblokeExecuteOpenhermes2_5Mistral7bAwqWithOptionalParam
 			QueueRequest: cfrex.F("true"),
 			Body: cfrex.AccountAIRunHfTheblokeExecuteOpenhermes2_5Mistral7bAwqParamsBodyPrompt{
 				Prompt:            cfrex.F("x"),
-				FrequencyPenalty:  cfrex.F(0.000000),
+				FrequencyPenalty:  cfrex.F(-2.000000),
 				Lora:              cfrex.F("lora"),
 				MaxTokens:         cfrex.F(int64(0)),
-				PresencePenalty:   cfrex.F(0.000000),
+				PresencePenalty:   cfrex.F(-2.000000),
 				Raw:               cfrex.F(true),
 				RepetitionPenalty: cfrex.F(0.000000),
 				ResponseFormat: cfrex.F(cfrex.AccountAIRunHfTheblokeExecuteOpenhermes2_5Mistral7bAwqParamsBodyPromptResponseFormat{
@@ -336,7 +336,7 @@ func TestAccountAIRunHfTheblokeExecuteOpenhermes2_5Mistral7bAwqWithOptionalParam
 				Stream:      cfrex.F(true),
 				Temperature: cfrex.F(0.000000),
 				TopK:        cfrex.F(int64(1)),
-				TopP:        cfrex.F(0.000000),
+				TopP:        cfrex.F(0.001000),
 			},
 		},
 	)
@@ -370,10 +370,10 @@ func TestAccountAIRunHfTheblokeExecuteZephyr7bBetaAwqWithOptionalParams(t *testi
 			QueueRequest: cfrex.F("true"),
 			Body: cfrex.AccountAIRunHfTheblokeExecuteZephyr7bBetaAwqParamsBodyPrompt{
 				Prompt:            cfrex.F("x"),
-				FrequencyPenalty:  cfrex.F(0.000000),
+				FrequencyPenalty:  cfrex.F(-2.000000),
 				Lora:              cfrex.F("lora"),
 				MaxTokens:         cfrex.F(int64(0)),
-				PresencePenalty:   cfrex.F(0.000000),
+				PresencePenalty:   cfrex.F(-2.000000),
 				Raw:               cfrex.F(true),
 				RepetitionPenalty: cfrex.F(0.000000),
 				ResponseFormat: cfrex.F(cfrex.AccountAIRunHfTheblokeExecuteZephyr7bBetaAwqParamsBodyPromptResponseFormat{
@@ -384,7 +384,7 @@ func TestAccountAIRunHfTheblokeExecuteZephyr7bBetaAwqWithOptionalParams(t *testi
 				Stream:      cfrex.F(true),
 				Temperature: cfrex.F(0.000000),
 				TopK:        cfrex.F(int64(1)),
-				TopP:        cfrex.F(0.000000),
+				TopP:        cfrex.F(0.001000),
 			},
 		},
 	)

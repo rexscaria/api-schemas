@@ -37,7 +37,7 @@ func NewAccountMagicCloudOnrampService(opts ...option.RequestOption) (r *Account
 	return
 }
 
-// Create a new On-ramp (Closed Beta)
+// Create a new On-ramp (Closed Beta).
 func (r *AccountMagicCloudOnrampService) New(ctx context.Context, accountID string, params AccountMagicCloudOnrampNewParams, opts ...option.RequestOption) (res *AccountMagicCloudOnrampNewResponse, err error) {
 	if params.Forwarded.Present {
 		opts = append(opts, option.WithHeader("forwarded", fmt.Sprintf("%s", params.Forwarded)))
@@ -52,7 +52,7 @@ func (r *AccountMagicCloudOnrampService) New(ctx context.Context, accountID stri
 	return
 }
 
-// Read an On-ramp (Closed Beta)
+// Read an On-ramp (Closed Beta).
 func (r *AccountMagicCloudOnrampService) Get(ctx context.Context, accountID string, onrampID string, query AccountMagicCloudOnrampGetParams, opts ...option.RequestOption) (res *AccountMagicCloudOnrampGetResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
@@ -68,7 +68,7 @@ func (r *AccountMagicCloudOnrampService) Get(ctx context.Context, accountID stri
 	return
 }
 
-// Update an On-ramp (Closed Beta)
+// Update an On-ramp (Closed Beta).
 func (r *AccountMagicCloudOnrampService) Update(ctx context.Context, accountID string, onrampID string, body AccountMagicCloudOnrampUpdateParams, opts ...option.RequestOption) (res *McnUpdateOnrampResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
@@ -84,7 +84,7 @@ func (r *AccountMagicCloudOnrampService) Update(ctx context.Context, accountID s
 	return
 }
 
-// List On-ramps (Closed Beta)
+// List On-ramps (Closed Beta).
 func (r *AccountMagicCloudOnrampService) List(ctx context.Context, accountID string, query AccountMagicCloudOnrampListParams, opts ...option.RequestOption) (res *AccountMagicCloudOnrampListResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
@@ -96,7 +96,7 @@ func (r *AccountMagicCloudOnrampService) List(ctx context.Context, accountID str
 	return
 }
 
-// Delete an On-ramp (Closed Beta)
+// Delete an On-ramp (Closed Beta).
 func (r *AccountMagicCloudOnrampService) Delete(ctx context.Context, accountID string, onrampID string, body AccountMagicCloudOnrampDeleteParams, opts ...option.RequestOption) (res *AccountMagicCloudOnrampDeleteResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
@@ -112,7 +112,7 @@ func (r *AccountMagicCloudOnrampService) Delete(ctx context.Context, accountID s
 	return
 }
 
-// Apply an On-ramp (Closed Beta)
+// Apply an On-ramp (Closed Beta).
 func (r *AccountMagicCloudOnrampService) Apply(ctx context.Context, accountID string, onrampID string, opts ...option.RequestOption) (res *McnGoodResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
@@ -128,7 +128,7 @@ func (r *AccountMagicCloudOnrampService) Apply(ctx context.Context, accountID st
 	return
 }
 
-// Export an On-ramp to terraform ready file(s) (Closed Beta)
+// Export an On-ramp to terraform ready file(s) (Closed Beta).
 func (r *AccountMagicCloudOnrampService) Export(ctx context.Context, accountID string, onrampID string, opts ...option.RequestOption) (res *http.Response, err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "application/zip")}, opts...)
@@ -145,7 +145,7 @@ func (r *AccountMagicCloudOnrampService) Export(ctx context.Context, accountID s
 	return
 }
 
-// Update an On-ramp (Closed Beta)
+// Update an On-ramp (Closed Beta).
 func (r *AccountMagicCloudOnrampService) Patch(ctx context.Context, accountID string, onrampID string, body AccountMagicCloudOnrampPatchParams, opts ...option.RequestOption) (res *McnUpdateOnrampResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
@@ -161,7 +161,7 @@ func (r *AccountMagicCloudOnrampService) Patch(ctx context.Context, accountID st
 	return
 }
 
-// Plan an On-ramp (Closed Beta)
+// Plan an On-ramp (Closed Beta).
 func (r *AccountMagicCloudOnrampService) Plan(ctx context.Context, accountID string, onrampID string, opts ...option.RequestOption) (res *McnGoodResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
@@ -515,7 +515,7 @@ type McnOnramp struct {
 	Status                        McnOnrampStatus               `json:"status"`
 	Vpc                           string                        `json:"vpc" format:"uuid"`
 	VpcsByID                      map[string]McnResourceDetails `json:"vpcs_by_id"`
-	// The list of vpc IDs for which resource details could not be generated.
+	// The list of vpc IDs for which resource details failed to generate.
 	VpcsByIDUnavailable []string      `json:"vpcs_by_id_unavailable" format:"uuid"`
 	JSON                mcnOnrampJSON `json:"-"`
 }
@@ -788,15 +788,20 @@ func (r McnUpdateOnrampRequestParam) MarshalJSON() (data []byte, err error) {
 }
 
 type McnUpdateOnrampResponse struct {
-	Result McnOnramp                   `json:"result"`
-	JSON   mcnUpdateOnrampResponseJSON `json:"-"`
-	McnGoodResponse
+	Errors   []McnError                  `json:"errors,required"`
+	Messages []McnError                  `json:"messages,required"`
+	Result   McnOnramp                   `json:"result,required"`
+	Success  bool                        `json:"success,required"`
+	JSON     mcnUpdateOnrampResponseJSON `json:"-"`
 }
 
 // mcnUpdateOnrampResponseJSON contains the JSON metadata for the struct
 // [McnUpdateOnrampResponse]
 type mcnUpdateOnrampResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -838,15 +843,20 @@ func (r mcnYamlDiffJSON) RawJSON() string {
 }
 
 type AccountMagicCloudOnrampNewResponse struct {
-	Result McnOnramp                              `json:"result"`
-	JSON   accountMagicCloudOnrampNewResponseJSON `json:"-"`
-	McnGoodResponse
+	Errors   []McnError                             `json:"errors,required"`
+	Messages []McnError                             `json:"messages,required"`
+	Result   McnOnramp                              `json:"result,required"`
+	Success  bool                                   `json:"success,required"`
+	JSON     accountMagicCloudOnrampNewResponseJSON `json:"-"`
 }
 
 // accountMagicCloudOnrampNewResponseJSON contains the JSON metadata for the struct
 // [AccountMagicCloudOnrampNewResponse]
 type accountMagicCloudOnrampNewResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -860,15 +870,20 @@ func (r accountMagicCloudOnrampNewResponseJSON) RawJSON() string {
 }
 
 type AccountMagicCloudOnrampGetResponse struct {
-	Result McnOnramp                              `json:"result"`
-	JSON   accountMagicCloudOnrampGetResponseJSON `json:"-"`
-	McnGoodResponse
+	Errors   []McnError                             `json:"errors,required"`
+	Messages []McnError                             `json:"messages,required"`
+	Result   McnOnramp                              `json:"result,required"`
+	Success  bool                                   `json:"success,required"`
+	JSON     accountMagicCloudOnrampGetResponseJSON `json:"-"`
 }
 
 // accountMagicCloudOnrampGetResponseJSON contains the JSON metadata for the struct
 // [AccountMagicCloudOnrampGetResponse]
 type accountMagicCloudOnrampGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -882,15 +897,20 @@ func (r accountMagicCloudOnrampGetResponseJSON) RawJSON() string {
 }
 
 type AccountMagicCloudOnrampListResponse struct {
-	Result []McnOnramp                             `json:"result"`
-	JSON   accountMagicCloudOnrampListResponseJSON `json:"-"`
-	McnGoodResponse
+	Errors   []McnError                              `json:"errors,required"`
+	Messages []McnError                              `json:"messages,required"`
+	Result   []McnOnramp                             `json:"result,required"`
+	Success  bool                                    `json:"success,required"`
+	JSON     accountMagicCloudOnrampListResponseJSON `json:"-"`
 }
 
 // accountMagicCloudOnrampListResponseJSON contains the JSON metadata for the
 // struct [AccountMagicCloudOnrampListResponse]
 type accountMagicCloudOnrampListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -904,15 +924,20 @@ func (r accountMagicCloudOnrampListResponseJSON) RawJSON() string {
 }
 
 type AccountMagicCloudOnrampDeleteResponse struct {
-	Result AccountMagicCloudOnrampDeleteResponseResult `json:"result"`
-	JSON   accountMagicCloudOnrampDeleteResponseJSON   `json:"-"`
-	McnGoodResponse
+	Errors   []McnError                                  `json:"errors,required"`
+	Messages []McnError                                  `json:"messages,required"`
+	Result   AccountMagicCloudOnrampDeleteResponseResult `json:"result,required"`
+	Success  bool                                        `json:"success,required"`
+	JSON     accountMagicCloudOnrampDeleteResponseJSON   `json:"-"`
 }
 
 // accountMagicCloudOnrampDeleteResponseJSON contains the JSON metadata for the
 // struct [AccountMagicCloudOnrampDeleteResponse]
 type accountMagicCloudOnrampDeleteResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -994,7 +1019,7 @@ func (r AccountMagicCloudOnrampUpdateParams) MarshalJSON() (data []byte, err err
 
 type AccountMagicCloudOnrampListParams struct {
 	Desc param.Field[bool] `query:"desc"`
-	// one of ["updated_at", "id", "cloud_type", "name"]
+	// One of ["updated_at", "id", "cloud_type", "name"].
 	OrderBy param.Field[string] `query:"order_by"`
 	Status  param.Field[bool]   `query:"status"`
 	Vpcs    param.Field[bool]   `query:"vpcs"`

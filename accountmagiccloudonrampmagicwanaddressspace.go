@@ -34,7 +34,7 @@ func NewAccountMagicCloudOnrampMagicWanAddressSpaceService(opts ...option.Reques
 	return
 }
 
-// Read the Magic WAN Address Space (Closed Beta)
+// Read the Magic WAN Address Space (Closed Beta).
 func (r *AccountMagicCloudOnrampMagicWanAddressSpaceService) Get(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountMagicCloudOnrampMagicWanAddressSpaceGetResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
@@ -46,7 +46,7 @@ func (r *AccountMagicCloudOnrampMagicWanAddressSpaceService) Get(ctx context.Con
 	return
 }
 
-// Update the Magic WAN Address Space (Closed Beta)
+// Update the Magic WAN Address Space (Closed Beta).
 func (r *AccountMagicCloudOnrampMagicWanAddressSpaceService) Update(ctx context.Context, accountID string, body AccountMagicCloudOnrampMagicWanAddressSpaceUpdateParams, opts ...option.RequestOption) (res *McnUpdateMagicWanAddressSpaceResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
@@ -58,7 +58,7 @@ func (r *AccountMagicCloudOnrampMagicWanAddressSpaceService) Update(ctx context.
 	return
 }
 
-// Update the Magic WAN Address Space (Closed Beta)
+// Update the Magic WAN Address Space (Closed Beta).
 func (r *AccountMagicCloudOnrampMagicWanAddressSpaceService) Patch(ctx context.Context, accountID string, body AccountMagicCloudOnrampMagicWanAddressSpacePatchParams, opts ...option.RequestOption) (res *McnUpdateMagicWanAddressSpaceResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
@@ -100,15 +100,20 @@ func (r McnUpdateMagicWanAddressSpaceRequestParam) MarshalJSON() (data []byte, e
 }
 
 type McnUpdateMagicWanAddressSpaceResponse struct {
-	Result McnMagicWanAddressSpace                   `json:"result"`
-	JSON   mcnUpdateMagicWanAddressSpaceResponseJSON `json:"-"`
-	McnGoodResponse
+	Errors   []McnError                                `json:"errors,required"`
+	Messages []McnError                                `json:"messages,required"`
+	Result   McnMagicWanAddressSpace                   `json:"result,required"`
+	Success  bool                                      `json:"success,required"`
+	JSON     mcnUpdateMagicWanAddressSpaceResponseJSON `json:"-"`
 }
 
 // mcnUpdateMagicWanAddressSpaceResponseJSON contains the JSON metadata for the
 // struct [McnUpdateMagicWanAddressSpaceResponse]
 type mcnUpdateMagicWanAddressSpaceResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -122,15 +127,20 @@ func (r mcnUpdateMagicWanAddressSpaceResponseJSON) RawJSON() string {
 }
 
 type AccountMagicCloudOnrampMagicWanAddressSpaceGetResponse struct {
-	Result McnMagicWanAddressSpace                                    `json:"result"`
-	JSON   accountMagicCloudOnrampMagicWanAddressSpaceGetResponseJSON `json:"-"`
-	McnGoodResponse
+	Errors   []McnError                                                 `json:"errors,required"`
+	Messages []McnError                                                 `json:"messages,required"`
+	Result   McnMagicWanAddressSpace                                    `json:"result,required"`
+	Success  bool                                                       `json:"success,required"`
+	JSON     accountMagicCloudOnrampMagicWanAddressSpaceGetResponseJSON `json:"-"`
 }
 
 // accountMagicCloudOnrampMagicWanAddressSpaceGetResponseJSON contains the JSON
 // metadata for the struct [AccountMagicCloudOnrampMagicWanAddressSpaceGetResponse]
 type accountMagicCloudOnrampMagicWanAddressSpaceGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }

@@ -48,7 +48,7 @@ func (r *AccountDlpEntryService) New(ctx context.Context, accountID string, body
 	return
 }
 
-// Fetches a DLP entry by ID
+// Fetches a DLP entry by ID.
 func (r *AccountDlpEntryService) Get(ctx context.Context, accountID string, entryID string, opts ...option.RequestOption) (res *AccountDlpEntryGetResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
@@ -141,17 +141,20 @@ func (r customEntryJSON) RawJSON() string {
 }
 
 type DlpEntry struct {
-	ID string `json:"id" format:"uuid"`
+	ID      string       `json:"id,required" format:"uuid"`
+	Enabled bool         `json:"enabled,required"`
+	Name    string       `json:"name,required"`
+	Type    DlpEntryType `json:"type,required"`
+	// Only applies to custom word lists. Determines if the words should be matched in
+	// a case-sensitive manner Cannot be set to false if secret is true
+	CaseSensitive bool `json:"case_sensitive"`
 	// This field can have the runtime type of [DlpEntryPredefinedEntryConfidence].
-	Confidence interface{}  `json:"confidence"`
-	CreatedAt  time.Time    `json:"created_at" format:"date-time"`
-	Enabled    bool         `json:"enabled"`
-	Name       string       `json:"name"`
-	Pattern    Pattern      `json:"pattern"`
-	ProfileID  string       `json:"profile_id,nullable" format:"uuid"`
-	Secret     bool         `json:"secret"`
-	Type       DlpEntryType `json:"type"`
-	UpdatedAt  time.Time    `json:"updated_at" format:"date-time"`
+	Confidence interface{} `json:"confidence"`
+	CreatedAt  time.Time   `json:"created_at" format:"date-time"`
+	Pattern    Pattern     `json:"pattern"`
+	ProfileID  string      `json:"profile_id,nullable" format:"uuid"`
+	Secret     bool        `json:"secret"`
+	UpdatedAt  time.Time   `json:"updated_at" format:"date-time"`
 	// This field can have the runtime type of [interface{}].
 	WordList interface{}  `json:"word_list"`
 	JSON     dlpEntryJSON `json:"-"`
@@ -160,19 +163,20 @@ type DlpEntry struct {
 
 // dlpEntryJSON contains the JSON metadata for the struct [DlpEntry]
 type dlpEntryJSON struct {
-	ID          apijson.Field
-	Confidence  apijson.Field
-	CreatedAt   apijson.Field
-	Enabled     apijson.Field
-	Name        apijson.Field
-	Pattern     apijson.Field
-	ProfileID   apijson.Field
-	Secret      apijson.Field
-	Type        apijson.Field
-	UpdatedAt   apijson.Field
-	WordList    apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	ID            apijson.Field
+	Enabled       apijson.Field
+	Name          apijson.Field
+	Type          apijson.Field
+	CaseSensitive apijson.Field
+	Confidence    apijson.Field
+	CreatedAt     apijson.Field
+	Pattern       apijson.Field
+	ProfileID     apijson.Field
+	Secret        apijson.Field
+	UpdatedAt     apijson.Field
+	WordList      apijson.Field
+	raw           string
+	ExtraFields   map[string]apijson.Field
 }
 
 func (r dlpEntryJSON) RawJSON() string {
@@ -193,13 +197,14 @@ func (r *DlpEntry) UnmarshalJSON(data []byte) (err error) {
 //
 // Possible runtime types of the union are [DlpEntryCustomEntry],
 // [DlpEntryPredefinedEntry], [DlpEntryIntegrationEntry], [DlpEntryExactDataEntry],
-// [DlpEntryWordListEntry].
+// [DlpEntryDocumentFingerprintEntry], [DlpEntryWordListEntry].
 func (r DlpEntry) AsUnion() DlpEntryUnion {
 	return r.union
 }
 
 // Union satisfied by [DlpEntryCustomEntry], [DlpEntryPredefinedEntry],
-// [DlpEntryIntegrationEntry], [DlpEntryExactDataEntry] or [DlpEntryWordListEntry].
+// [DlpEntryIntegrationEntry], [DlpEntryExactDataEntry],
+// [DlpEntryDocumentFingerprintEntry] or [DlpEntryWordListEntry].
 type DlpEntryUnion interface {
 	implementsDlpEntry()
 }
@@ -226,21 +231,38 @@ func init() {
 		},
 		apijson.UnionVariant{
 			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(DlpEntryDocumentFingerprintEntry{}),
+		},
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
 			Type:       reflect.TypeOf(DlpEntryWordListEntry{}),
 		},
 	)
 }
 
 type DlpEntryCustomEntry struct {
-	Type DlpEntryCustomEntryType `json:"type,required"`
-	JSON dlpEntryCustomEntryJSON `json:"-"`
-	CustomEntry
+	ID        string                  `json:"id,required" format:"uuid"`
+	CreatedAt time.Time               `json:"created_at,required" format:"date-time"`
+	Enabled   bool                    `json:"enabled,required"`
+	Name      string                  `json:"name,required"`
+	Pattern   Pattern                 `json:"pattern,required"`
+	Type      DlpEntryCustomEntryType `json:"type,required"`
+	UpdatedAt time.Time               `json:"updated_at,required" format:"date-time"`
+	ProfileID string                  `json:"profile_id,nullable" format:"uuid"`
+	JSON      dlpEntryCustomEntryJSON `json:"-"`
 }
 
 // dlpEntryCustomEntryJSON contains the JSON metadata for the struct
 // [DlpEntryCustomEntry]
 type dlpEntryCustomEntryJSON struct {
+	ID          apijson.Field
+	CreatedAt   apijson.Field
+	Enabled     apijson.Field
+	Name        apijson.Field
+	Pattern     apijson.Field
 	Type        apijson.Field
+	UpdatedAt   apijson.Field
+	ProfileID   apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -303,10 +325,10 @@ func (r dlpEntryPredefinedEntryJSON) RawJSON() string {
 func (r DlpEntryPredefinedEntry) implementsDlpEntry() {}
 
 type DlpEntryPredefinedEntryConfidence struct {
-	// Indicates whether this entry has AI remote service validation
+	// Indicates whether this entry has AI remote service validation.
 	AIContextAvailable bool `json:"ai_context_available,required"`
 	// Indicates whether this entry has any form of validation that is not an AI remote
-	// service
+	// service.
 	Available bool                                  `json:"available,required"`
 	JSON      dlpEntryPredefinedEntryConfidenceJSON `json:"-"`
 }
@@ -392,28 +414,32 @@ func (r DlpEntryIntegrationEntryType) IsKnown() bool {
 }
 
 type DlpEntryExactDataEntry struct {
-	ID        string                     `json:"id,required" format:"uuid"`
-	CreatedAt time.Time                  `json:"created_at,required" format:"date-time"`
-	Enabled   bool                       `json:"enabled,required"`
-	Name      string                     `json:"name,required"`
-	Secret    bool                       `json:"secret,required"`
-	Type      DlpEntryExactDataEntryType `json:"type,required"`
-	UpdatedAt time.Time                  `json:"updated_at,required" format:"date-time"`
-	JSON      dlpEntryExactDataEntryJSON `json:"-"`
+	ID string `json:"id,required" format:"uuid"`
+	// Only applies to custom word lists. Determines if the words should be matched in
+	// a case-sensitive manner Cannot be set to false if secret is true
+	CaseSensitive bool                       `json:"case_sensitive,required"`
+	CreatedAt     time.Time                  `json:"created_at,required" format:"date-time"`
+	Enabled       bool                       `json:"enabled,required"`
+	Name          string                     `json:"name,required"`
+	Secret        bool                       `json:"secret,required"`
+	Type          DlpEntryExactDataEntryType `json:"type,required"`
+	UpdatedAt     time.Time                  `json:"updated_at,required" format:"date-time"`
+	JSON          dlpEntryExactDataEntryJSON `json:"-"`
 }
 
 // dlpEntryExactDataEntryJSON contains the JSON metadata for the struct
 // [DlpEntryExactDataEntry]
 type dlpEntryExactDataEntryJSON struct {
-	ID          apijson.Field
-	CreatedAt   apijson.Field
-	Enabled     apijson.Field
-	Name        apijson.Field
-	Secret      apijson.Field
-	Type        apijson.Field
-	UpdatedAt   apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	ID            apijson.Field
+	CaseSensitive apijson.Field
+	CreatedAt     apijson.Field
+	Enabled       apijson.Field
+	Name          apijson.Field
+	Secret        apijson.Field
+	Type          apijson.Field
+	UpdatedAt     apijson.Field
+	raw           string
+	ExtraFields   map[string]apijson.Field
 }
 
 func (r *DlpEntryExactDataEntry) UnmarshalJSON(data []byte) (err error) {
@@ -435,6 +461,53 @@ const (
 func (r DlpEntryExactDataEntryType) IsKnown() bool {
 	switch r {
 	case DlpEntryExactDataEntryTypeExactData:
+		return true
+	}
+	return false
+}
+
+type DlpEntryDocumentFingerprintEntry struct {
+	ID        string                               `json:"id,required" format:"uuid"`
+	CreatedAt time.Time                            `json:"created_at,required" format:"date-time"`
+	Enabled   bool                                 `json:"enabled,required"`
+	Name      string                               `json:"name,required"`
+	Type      DlpEntryDocumentFingerprintEntryType `json:"type,required"`
+	UpdatedAt time.Time                            `json:"updated_at,required" format:"date-time"`
+	JSON      dlpEntryDocumentFingerprintEntryJSON `json:"-"`
+}
+
+// dlpEntryDocumentFingerprintEntryJSON contains the JSON metadata for the struct
+// [DlpEntryDocumentFingerprintEntry]
+type dlpEntryDocumentFingerprintEntryJSON struct {
+	ID          apijson.Field
+	CreatedAt   apijson.Field
+	Enabled     apijson.Field
+	Name        apijson.Field
+	Type        apijson.Field
+	UpdatedAt   apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *DlpEntryDocumentFingerprintEntry) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r dlpEntryDocumentFingerprintEntryJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r DlpEntryDocumentFingerprintEntry) implementsDlpEntry() {}
+
+type DlpEntryDocumentFingerprintEntryType string
+
+const (
+	DlpEntryDocumentFingerprintEntryTypeDocumentFingerprint DlpEntryDocumentFingerprintEntryType = "document_fingerprint"
+)
+
+func (r DlpEntryDocumentFingerprintEntryType) IsKnown() bool {
+	switch r {
+	case DlpEntryDocumentFingerprintEntryTypeDocumentFingerprint:
 		return true
 	}
 	return false
@@ -494,16 +567,17 @@ func (r DlpEntryWordListEntryType) IsKnown() bool {
 type DlpEntryType string
 
 const (
-	DlpEntryTypeCustom      DlpEntryType = "custom"
-	DlpEntryTypePredefined  DlpEntryType = "predefined"
-	DlpEntryTypeIntegration DlpEntryType = "integration"
-	DlpEntryTypeExactData   DlpEntryType = "exact_data"
-	DlpEntryTypeWordList    DlpEntryType = "word_list"
+	DlpEntryTypeCustom              DlpEntryType = "custom"
+	DlpEntryTypePredefined          DlpEntryType = "predefined"
+	DlpEntryTypeIntegration         DlpEntryType = "integration"
+	DlpEntryTypeExactData           DlpEntryType = "exact_data"
+	DlpEntryTypeDocumentFingerprint DlpEntryType = "document_fingerprint"
+	DlpEntryTypeWordList            DlpEntryType = "word_list"
 )
 
 func (r DlpEntryType) IsKnown() bool {
 	switch r {
-	case DlpEntryTypeCustom, DlpEntryTypePredefined, DlpEntryTypeIntegration, DlpEntryTypeExactData, DlpEntryTypeWordList:
+	case DlpEntryTypeCustom, DlpEntryTypePredefined, DlpEntryTypeIntegration, DlpEntryTypeExactData, DlpEntryTypeDocumentFingerprint, DlpEntryTypeWordList:
 		return true
 	}
 	return false
@@ -557,14 +631,20 @@ func (r PatternParam) MarshalJSON() (data []byte, err error) {
 }
 
 type AccountDlpEntryNewResponse struct {
-	Result CustomEntry                    `json:"result"`
-	JSON   accountDlpEntryNewResponseJSON `json:"-"`
-	APIResponseSingleDlp
+	Errors   []MessagesDlpItems `json:"errors,required"`
+	Messages []MessagesDlpItems `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountDlpEntryNewResponseSuccess `json:"success,required"`
+	Result  CustomEntry                       `json:"result"`
+	JSON    accountDlpEntryNewResponseJSON    `json:"-"`
 }
 
 // accountDlpEntryNewResponseJSON contains the JSON metadata for the struct
 // [AccountDlpEntryNewResponse]
 type accountDlpEntryNewResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -578,15 +658,36 @@ func (r accountDlpEntryNewResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountDlpEntryNewResponseSuccess bool
+
+const (
+	AccountDlpEntryNewResponseSuccessTrue AccountDlpEntryNewResponseSuccess = true
+)
+
+func (r AccountDlpEntryNewResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountDlpEntryNewResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountDlpEntryGetResponse struct {
-	Result DlpEntry                       `json:"result"`
-	JSON   accountDlpEntryGetResponseJSON `json:"-"`
-	APIResponseSingleDlp
+	Errors   []MessagesDlpItems `json:"errors,required"`
+	Messages []MessagesDlpItems `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountDlpEntryGetResponseSuccess `json:"success,required"`
+	Result  DlpEntry                          `json:"result"`
+	JSON    accountDlpEntryGetResponseJSON    `json:"-"`
 }
 
 // accountDlpEntryGetResponseJSON contains the JSON metadata for the struct
 // [AccountDlpEntryGetResponse]
 type accountDlpEntryGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -600,15 +701,36 @@ func (r accountDlpEntryGetResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountDlpEntryGetResponseSuccess bool
+
+const (
+	AccountDlpEntryGetResponseSuccessTrue AccountDlpEntryGetResponseSuccess = true
+)
+
+func (r AccountDlpEntryGetResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountDlpEntryGetResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountDlpEntryUpdateResponse struct {
-	Result DlpEntry                          `json:"result"`
-	JSON   accountDlpEntryUpdateResponseJSON `json:"-"`
-	APIResponseSingleDlp
+	Errors   []MessagesDlpItems `json:"errors,required"`
+	Messages []MessagesDlpItems `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountDlpEntryUpdateResponseSuccess `json:"success,required"`
+	Result  DlpEntry                             `json:"result"`
+	JSON    accountDlpEntryUpdateResponseJSON    `json:"-"`
 }
 
 // accountDlpEntryUpdateResponseJSON contains the JSON metadata for the struct
 // [AccountDlpEntryUpdateResponse]
 type accountDlpEntryUpdateResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -622,15 +744,36 @@ func (r accountDlpEntryUpdateResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountDlpEntryUpdateResponseSuccess bool
+
+const (
+	AccountDlpEntryUpdateResponseSuccessTrue AccountDlpEntryUpdateResponseSuccess = true
+)
+
+func (r AccountDlpEntryUpdateResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountDlpEntryUpdateResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountDlpEntryListResponse struct {
-	Result []DlpEntry                      `json:"result"`
-	JSON   accountDlpEntryListResponseJSON `json:"-"`
-	APIResponseSingleDlp
+	Errors   []MessagesDlpItems `json:"errors,required"`
+	Messages []MessagesDlpItems `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountDlpEntryListResponseSuccess `json:"success,required"`
+	Result  []DlpEntry                         `json:"result"`
+	JSON    accountDlpEntryListResponseJSON    `json:"-"`
 }
 
 // accountDlpEntryListResponseJSON contains the JSON metadata for the struct
 // [AccountDlpEntryListResponse]
 type accountDlpEntryListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -644,15 +787,36 @@ func (r accountDlpEntryListResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountDlpEntryListResponseSuccess bool
+
+const (
+	AccountDlpEntryListResponseSuccessTrue AccountDlpEntryListResponseSuccess = true
+)
+
+func (r AccountDlpEntryListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountDlpEntryListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountDlpEntryDeleteResponse struct {
-	Result interface{}                       `json:"result,nullable"`
-	JSON   accountDlpEntryDeleteResponseJSON `json:"-"`
-	APIResponseSingleDlp
+	Errors   []MessagesDlpItems `json:"errors,required"`
+	Messages []MessagesDlpItems `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountDlpEntryDeleteResponseSuccess `json:"success,required"`
+	Result  interface{}                          `json:"result,nullable"`
+	JSON    accountDlpEntryDeleteResponseJSON    `json:"-"`
 }
 
 // accountDlpEntryDeleteResponseJSON contains the JSON metadata for the struct
 // [AccountDlpEntryDeleteResponse]
 type accountDlpEntryDeleteResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -664,6 +828,21 @@ func (r *AccountDlpEntryDeleteResponse) UnmarshalJSON(data []byte) (err error) {
 
 func (r accountDlpEntryDeleteResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountDlpEntryDeleteResponseSuccess bool
+
+const (
+	AccountDlpEntryDeleteResponseSuccessTrue AccountDlpEntryDeleteResponseSuccess = true
+)
+
+func (r AccountDlpEntryDeleteResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountDlpEntryDeleteResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountDlpEntryNewParams struct {
@@ -698,35 +877,86 @@ func (r AccountDlpEntryUpdateParamsBody) MarshalJSON() (data []byte, err error) 
 
 func (r AccountDlpEntryUpdateParamsBody) implementsAccountDlpEntryUpdateParamsBodyUnion() {}
 
-// Satisfied by [AccountDlpEntryUpdateParamsBodyObject],
-// [AccountDlpEntryUpdateParamsBodyObject],
-// [AccountDlpEntryUpdateParamsBodyObject], [AccountDlpEntryUpdateParamsBody].
+// Satisfied by [AccountDlpEntryUpdateParamsBodyCustom],
+// [AccountDlpEntryUpdateParamsBodyPredefined],
+// [AccountDlpEntryUpdateParamsBodyIntegration], [AccountDlpEntryUpdateParamsBody].
 type AccountDlpEntryUpdateParamsBodyUnion interface {
 	implementsAccountDlpEntryUpdateParamsBodyUnion()
 }
 
-type AccountDlpEntryUpdateParamsBodyObject struct {
+type AccountDlpEntryUpdateParamsBodyCustom struct {
 	Name    param.Field[string]                                    `json:"name,required"`
 	Pattern param.Field[PatternParam]                              `json:"pattern,required"`
-	Type    param.Field[AccountDlpEntryUpdateParamsBodyObjectType] `json:"type,required"`
+	Type    param.Field[AccountDlpEntryUpdateParamsBodyCustomType] `json:"type,required"`
 	Enabled param.Field[bool]                                      `json:"enabled"`
 }
 
-func (r AccountDlpEntryUpdateParamsBodyObject) MarshalJSON() (data []byte, err error) {
+func (r AccountDlpEntryUpdateParamsBodyCustom) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-func (r AccountDlpEntryUpdateParamsBodyObject) implementsAccountDlpEntryUpdateParamsBodyUnion() {}
+func (r AccountDlpEntryUpdateParamsBodyCustom) implementsAccountDlpEntryUpdateParamsBodyUnion() {}
 
-type AccountDlpEntryUpdateParamsBodyObjectType string
+type AccountDlpEntryUpdateParamsBodyCustomType string
 
 const (
-	AccountDlpEntryUpdateParamsBodyObjectTypeCustom AccountDlpEntryUpdateParamsBodyObjectType = "custom"
+	AccountDlpEntryUpdateParamsBodyCustomTypeCustom AccountDlpEntryUpdateParamsBodyCustomType = "custom"
 )
 
-func (r AccountDlpEntryUpdateParamsBodyObjectType) IsKnown() bool {
+func (r AccountDlpEntryUpdateParamsBodyCustomType) IsKnown() bool {
 	switch r {
-	case AccountDlpEntryUpdateParamsBodyObjectTypeCustom:
+	case AccountDlpEntryUpdateParamsBodyCustomTypeCustom:
+		return true
+	}
+	return false
+}
+
+type AccountDlpEntryUpdateParamsBodyPredefined struct {
+	Type    param.Field[AccountDlpEntryUpdateParamsBodyPredefinedType] `json:"type,required"`
+	Enabled param.Field[bool]                                          `json:"enabled"`
+}
+
+func (r AccountDlpEntryUpdateParamsBodyPredefined) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r AccountDlpEntryUpdateParamsBodyPredefined) implementsAccountDlpEntryUpdateParamsBodyUnion() {}
+
+type AccountDlpEntryUpdateParamsBodyPredefinedType string
+
+const (
+	AccountDlpEntryUpdateParamsBodyPredefinedTypePredefined AccountDlpEntryUpdateParamsBodyPredefinedType = "predefined"
+)
+
+func (r AccountDlpEntryUpdateParamsBodyPredefinedType) IsKnown() bool {
+	switch r {
+	case AccountDlpEntryUpdateParamsBodyPredefinedTypePredefined:
+		return true
+	}
+	return false
+}
+
+type AccountDlpEntryUpdateParamsBodyIntegration struct {
+	Type    param.Field[AccountDlpEntryUpdateParamsBodyIntegrationType] `json:"type,required"`
+	Enabled param.Field[bool]                                           `json:"enabled"`
+}
+
+func (r AccountDlpEntryUpdateParamsBodyIntegration) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r AccountDlpEntryUpdateParamsBodyIntegration) implementsAccountDlpEntryUpdateParamsBodyUnion() {
+}
+
+type AccountDlpEntryUpdateParamsBodyIntegrationType string
+
+const (
+	AccountDlpEntryUpdateParamsBodyIntegrationTypeIntegration AccountDlpEntryUpdateParamsBodyIntegrationType = "integration"
+)
+
+func (r AccountDlpEntryUpdateParamsBodyIntegrationType) IsKnown() bool {
+	switch r {
+	case AccountDlpEntryUpdateParamsBodyIntegrationTypeIntegration:
 		return true
 	}
 	return false

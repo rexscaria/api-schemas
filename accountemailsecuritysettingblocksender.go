@@ -98,15 +98,20 @@ func (r *AccountEmailSecuritySettingBlockSenderService) Delete(ctx context.Conte
 }
 
 type AccountEmailSecuritySettingBlockSenderNewResponse struct {
-	Result AccountEmailSecuritySettingBlockSenderNewResponseResult `json:"result,required"`
-	JSON   accountEmailSecuritySettingBlockSenderNewResponseJSON   `json:"-"`
-	APIResponseEmailSecurity
+	Errors   []EmailSecurityMessage                                  `json:"errors,required"`
+	Messages []EmailSecurityMessage                                  `json:"messages,required"`
+	Result   AccountEmailSecuritySettingBlockSenderNewResponseResult `json:"result,required"`
+	Success  bool                                                    `json:"success,required"`
+	JSON     accountEmailSecuritySettingBlockSenderNewResponseJSON   `json:"-"`
 }
 
 // accountEmailSecuritySettingBlockSenderNewResponseJSON contains the JSON metadata
 // for the struct [AccountEmailSecuritySettingBlockSenderNewResponse]
 type accountEmailSecuritySettingBlockSenderNewResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -155,15 +160,20 @@ func (r accountEmailSecuritySettingBlockSenderNewResponseResultJSON) RawJSON() s
 }
 
 type AccountEmailSecuritySettingBlockSenderGetResponse struct {
-	Result AccountEmailSecuritySettingBlockSenderGetResponseResult `json:"result,required"`
-	JSON   accountEmailSecuritySettingBlockSenderGetResponseJSON   `json:"-"`
-	APIResponseEmailSecurity
+	Errors   []EmailSecurityMessage                                  `json:"errors,required"`
+	Messages []EmailSecurityMessage                                  `json:"messages,required"`
+	Result   AccountEmailSecuritySettingBlockSenderGetResponseResult `json:"result,required"`
+	Success  bool                                                    `json:"success,required"`
+	JSON     accountEmailSecuritySettingBlockSenderGetResponseJSON   `json:"-"`
 }
 
 // accountEmailSecuritySettingBlockSenderGetResponseJSON contains the JSON metadata
 // for the struct [AccountEmailSecuritySettingBlockSenderGetResponse]
 type accountEmailSecuritySettingBlockSenderGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -212,15 +222,20 @@ func (r accountEmailSecuritySettingBlockSenderGetResponseResultJSON) RawJSON() s
 }
 
 type AccountEmailSecuritySettingBlockSenderUpdateResponse struct {
-	Result AccountEmailSecuritySettingBlockSenderUpdateResponseResult `json:"result,required"`
-	JSON   accountEmailSecuritySettingBlockSenderUpdateResponseJSON   `json:"-"`
-	APIResponseEmailSecurity
+	Errors   []EmailSecurityMessage                                     `json:"errors,required"`
+	Messages []EmailSecurityMessage                                     `json:"messages,required"`
+	Result   AccountEmailSecuritySettingBlockSenderUpdateResponseResult `json:"result,required"`
+	Success  bool                                                       `json:"success,required"`
+	JSON     accountEmailSecuritySettingBlockSenderUpdateResponseJSON   `json:"-"`
 }
 
 // accountEmailSecuritySettingBlockSenderUpdateResponseJSON contains the JSON
 // metadata for the struct [AccountEmailSecuritySettingBlockSenderUpdateResponse]
 type accountEmailSecuritySettingBlockSenderUpdateResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -269,17 +284,22 @@ func (r accountEmailSecuritySettingBlockSenderUpdateResponseResultJSON) RawJSON(
 }
 
 type AccountEmailSecuritySettingBlockSenderListResponse struct {
+	Errors     []EmailSecurityMessage                                     `json:"errors,required"`
+	Messages   []EmailSecurityMessage                                     `json:"messages,required"`
 	Result     []AccountEmailSecuritySettingBlockSenderListResponseResult `json:"result,required"`
 	ResultInfo ResultInfoEmailSecurity                                    `json:"result_info,required"`
+	Success    bool                                                       `json:"success,required"`
 	JSON       accountEmailSecuritySettingBlockSenderListResponseJSON     `json:"-"`
-	APIResponseEmailSecurity
 }
 
 // accountEmailSecuritySettingBlockSenderListResponseJSON contains the JSON
 // metadata for the struct [AccountEmailSecuritySettingBlockSenderListResponse]
 type accountEmailSecuritySettingBlockSenderListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
 	ResultInfo  apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -328,15 +348,20 @@ func (r accountEmailSecuritySettingBlockSenderListResponseResultJSON) RawJSON() 
 }
 
 type AccountEmailSecuritySettingBlockSenderDeleteResponse struct {
-	Result AccountEmailSecuritySettingBlockSenderDeleteResponseResult `json:"result,required"`
-	JSON   accountEmailSecuritySettingBlockSenderDeleteResponseJSON   `json:"-"`
-	APIResponseEmailSecurity
+	Errors   []EmailSecurityMessage                                     `json:"errors,required"`
+	Messages []EmailSecurityMessage                                     `json:"messages,required"`
+	Result   AccountEmailSecuritySettingBlockSenderDeleteResponseResult `json:"result,required"`
+	Success  bool                                                       `json:"success,required"`
+	JSON     accountEmailSecuritySettingBlockSenderDeleteResponseJSON   `json:"-"`
 }
 
 // accountEmailSecuritySettingBlockSenderDeleteResponseJSON contains the JSON
 // metadata for the struct [AccountEmailSecuritySettingBlockSenderDeleteResponse]
 type accountEmailSecuritySettingBlockSenderDeleteResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -384,31 +409,14 @@ func (r AccountEmailSecuritySettingBlockSenderNewParams) MarshalJSON() (data []b
 }
 
 type AccountEmailSecuritySettingBlockSenderUpdateParams struct {
-	Comments    param.Field[string]                                                        `json:"comments"`
-	IsRegex     param.Field[bool]                                                          `json:"is_regex"`
-	Pattern     param.Field[string]                                                        `json:"pattern"`
-	PatternType param.Field[AccountEmailSecuritySettingBlockSenderUpdateParamsPatternType] `json:"pattern_type"`
+	Comments    param.Field[string]      `json:"comments"`
+	IsRegex     param.Field[bool]        `json:"is_regex"`
+	Pattern     param.Field[string]      `json:"pattern"`
+	PatternType param.Field[PatternType] `json:"pattern_type"`
 }
 
 func (r AccountEmailSecuritySettingBlockSenderUpdateParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
-}
-
-type AccountEmailSecuritySettingBlockSenderUpdateParamsPatternType string
-
-const (
-	AccountEmailSecuritySettingBlockSenderUpdateParamsPatternTypeEmail   AccountEmailSecuritySettingBlockSenderUpdateParamsPatternType = "EMAIL"
-	AccountEmailSecuritySettingBlockSenderUpdateParamsPatternTypeDomain  AccountEmailSecuritySettingBlockSenderUpdateParamsPatternType = "DOMAIN"
-	AccountEmailSecuritySettingBlockSenderUpdateParamsPatternTypeIP      AccountEmailSecuritySettingBlockSenderUpdateParamsPatternType = "IP"
-	AccountEmailSecuritySettingBlockSenderUpdateParamsPatternTypeUnknown AccountEmailSecuritySettingBlockSenderUpdateParamsPatternType = "UNKNOWN"
-)
-
-func (r AccountEmailSecuritySettingBlockSenderUpdateParamsPatternType) IsKnown() bool {
-	switch r {
-	case AccountEmailSecuritySettingBlockSenderUpdateParamsPatternTypeEmail, AccountEmailSecuritySettingBlockSenderUpdateParamsPatternTypeDomain, AccountEmailSecuritySettingBlockSenderUpdateParamsPatternTypeIP, AccountEmailSecuritySettingBlockSenderUpdateParamsPatternTypeUnknown:
-		return true
-	}
-	return false
 }
 
 type AccountEmailSecuritySettingBlockSenderListParams struct {
@@ -418,6 +426,7 @@ type AccountEmailSecuritySettingBlockSenderListParams struct {
 	Order param.Field[AccountEmailSecuritySettingBlockSenderListParamsOrder] `query:"order"`
 	// The page number of paginated results.
 	Page        param.Field[int64]       `query:"page"`
+	Pattern     param.Field[string]      `query:"pattern"`
 	PatternType param.Field[PatternType] `query:"pattern_type"`
 	// The number of results per page.
 	PerPage param.Field[int64] `query:"per_page"`

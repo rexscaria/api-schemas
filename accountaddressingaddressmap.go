@@ -98,7 +98,7 @@ func (r *AccountAddressingAddressMapService) List(ctx context.Context, accountID
 
 // Delete a particular address map owned by the account. An Address Map must be
 // disabled before it can be deleted.
-func (r *AccountAddressingAddressMapService) Delete(ctx context.Context, accountID string, addressMapID string, body AccountAddressingAddressMapDeleteParams, opts ...option.RequestOption) (res *APIResponseCollectionAddressing, err error) {
+func (r *AccountAddressingAddressMapService) Delete(ctx context.Context, accountID string, addressMapID string, opts ...option.RequestOption) (res *APIResponseCollectionAddressing, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
@@ -109,7 +109,7 @@ func (r *AccountAddressingAddressMapService) Delete(ctx context.Context, account
 		return
 	}
 	path := fmt.Sprintf("accounts/%s/addressing/address_maps/%s", accountID, addressMapID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
@@ -162,14 +162,20 @@ func (r addressMapJSON) RawJSON() string {
 }
 
 type APIResponseCollectionAddressing struct {
+	Errors   []AddressingMessages `json:"errors,required"`
+	Messages []AddressingMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success    APIResponseCollectionAddressingSuccess    `json:"success,required"`
 	ResultInfo APIResponseCollectionAddressingResultInfo `json:"result_info"`
 	JSON       apiResponseCollectionAddressingJSON       `json:"-"`
-	APIResponseAddressing
 }
 
 // apiResponseCollectionAddressingJSON contains the JSON metadata for the struct
 // [APIResponseCollectionAddressing]
 type apiResponseCollectionAddressingJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -183,14 +189,29 @@ func (r apiResponseCollectionAddressingJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type APIResponseCollectionAddressingSuccess bool
+
+const (
+	APIResponseCollectionAddressingSuccessTrue APIResponseCollectionAddressingSuccess = true
+)
+
+func (r APIResponseCollectionAddressingSuccess) IsKnown() bool {
+	switch r {
+	case APIResponseCollectionAddressingSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type APIResponseCollectionAddressingResultInfo struct {
-	// Total number of results for the requested service
+	// Total number of results for the requested service.
 	Count float64 `json:"count"`
-	// Current page within paginated list of results
+	// Current page within paginated list of results.
 	Page float64 `json:"page"`
-	// Number of results per page of results
+	// Number of results per page of results.
 	PerPage float64 `json:"per_page"`
-	// Total results available without any search parameters
+	// Total results available without any search parameters.
 	TotalCount float64                                       `json:"total_count"`
 	JSON       apiResponseCollectionAddressingResultInfoJSON `json:"-"`
 }
@@ -215,13 +236,19 @@ func (r apiResponseCollectionAddressingResultInfoJSON) RawJSON() string {
 }
 
 type FullResponse struct {
-	Result FullResponseResult `json:"result"`
-	JSON   fullResponseJSON   `json:"-"`
-	AddressingAPIResponseSingle
+	Errors   []AddressingMessages `json:"errors,required"`
+	Messages []AddressingMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success FullResponseSuccess `json:"success,required"`
+	Result  FullResponseResult  `json:"result"`
+	JSON    fullResponseJSON    `json:"-"`
 }
 
 // fullResponseJSON contains the JSON metadata for the struct [FullResponse]
 type fullResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -235,23 +262,67 @@ func (r fullResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type FullResponseSuccess bool
+
+const (
+	FullResponseSuccessTrue FullResponseSuccess = true
+)
+
+func (r FullResponseSuccess) IsKnown() bool {
+	switch r {
+	case FullResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type FullResponseResult struct {
+	// Identifier of an Address Map.
+	ID string `json:"id"`
+	// If set to false, then the Address Map cannot be deleted via API. This is true
+	// for Cloudflare-managed maps.
+	CanDelete bool `json:"can_delete"`
+	// If set to false, then the IPs on the Address Map cannot be modified via the API.
+	// This is true for Cloudflare-managed maps.
+	CanModifyIPs bool      `json:"can_modify_ips"`
+	CreatedAt    time.Time `json:"created_at" format:"date-time"`
+	// If you have legacy TLS clients which do not send the TLS server name indicator,
+	// then you can specify one default SNI on the map. If Cloudflare receives a TLS
+	// handshake from a client without an SNI, it will respond with the default SNI on
+	// those IPs. The default SNI can be any valid zone or subdomain owned by the
+	// account.
+	DefaultSni string `json:"default_sni,nullable"`
+	// An optional description field which may be used to describe the types of IPs or
+	// zones on the map.
+	Description string `json:"description,nullable"`
+	// Whether the Address Map is enabled or not. Cloudflare's DNS will not respond
+	// with IP addresses on an Address Map until the map is enabled.
+	Enabled bool `json:"enabled,nullable"`
 	// The set of IPs on the Address Map.
 	IPs []FullResponseResultIP `json:"ips"`
 	// Zones and Accounts which will be assigned IPs on this Address Map. A zone
 	// membership will take priority over an account membership.
 	Memberships []Membership           `json:"memberships"`
+	ModifiedAt  time.Time              `json:"modified_at" format:"date-time"`
 	JSON        fullResponseResultJSON `json:"-"`
-	AddressMap
 }
 
 // fullResponseResultJSON contains the JSON metadata for the struct
 // [FullResponseResult]
 type fullResponseResultJSON struct {
-	IPs         apijson.Field
-	Memberships apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	ID           apijson.Field
+	CanDelete    apijson.Field
+	CanModifyIPs apijson.Field
+	CreatedAt    apijson.Field
+	DefaultSni   apijson.Field
+	Description  apijson.Field
+	Enabled      apijson.Field
+	IPs          apijson.Field
+	Memberships  apijson.Field
+	ModifiedAt   apijson.Field
+	raw          string
+	ExtraFields  map[string]apijson.Field
 }
 
 func (r *FullResponseResult) UnmarshalJSON(data []byte) (err error) {
@@ -332,7 +403,6 @@ func (r MembershipKind) IsKnown() bool {
 }
 
 type MembershipParam struct {
-	CreatedAt param.Field[time.Time] `json:"created_at" format:"date-time"`
 	// The identifier for the membership (eg. a zone or account tag).
 	Identifier param.Field[string] `json:"identifier"`
 	// The type of the membership.
@@ -344,14 +414,20 @@ func (r MembershipParam) MarshalJSON() (data []byte, err error) {
 }
 
 type AccountAddressingAddressMapUpdateResponse struct {
-	Result AddressMap                                    `json:"result"`
-	JSON   accountAddressingAddressMapUpdateResponseJSON `json:"-"`
-	AddressingAPIResponseSingle
+	Errors   []AddressingMessages `json:"errors,required"`
+	Messages []AddressingMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountAddressingAddressMapUpdateResponseSuccess `json:"success,required"`
+	Result  AddressMap                                       `json:"result"`
+	JSON    accountAddressingAddressMapUpdateResponseJSON    `json:"-"`
 }
 
 // accountAddressingAddressMapUpdateResponseJSON contains the JSON metadata for the
 // struct [AccountAddressingAddressMapUpdateResponse]
 type accountAddressingAddressMapUpdateResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -365,16 +441,39 @@ func (r accountAddressingAddressMapUpdateResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountAddressingAddressMapUpdateResponseSuccess bool
+
+const (
+	AccountAddressingAddressMapUpdateResponseSuccessTrue AccountAddressingAddressMapUpdateResponseSuccess = true
+)
+
+func (r AccountAddressingAddressMapUpdateResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountAddressingAddressMapUpdateResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountAddressingAddressMapListResponse struct {
-	Result []AddressMap                                `json:"result"`
-	JSON   accountAddressingAddressMapListResponseJSON `json:"-"`
-	APIResponseCollectionAddressing
+	Errors   []AddressingMessages `json:"errors,required"`
+	Messages []AddressingMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success    AccountAddressingAddressMapListResponseSuccess    `json:"success,required"`
+	Result     []AddressMap                                      `json:"result"`
+	ResultInfo AccountAddressingAddressMapListResponseResultInfo `json:"result_info"`
+	JSON       accountAddressingAddressMapListResponseJSON       `json:"-"`
 }
 
 // accountAddressingAddressMapListResponseJSON contains the JSON metadata for the
 // struct [AccountAddressingAddressMapListResponse]
 type accountAddressingAddressMapListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -384,6 +483,52 @@ func (r *AccountAddressingAddressMapListResponse) UnmarshalJSON(data []byte) (er
 }
 
 func (r accountAddressingAddressMapListResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountAddressingAddressMapListResponseSuccess bool
+
+const (
+	AccountAddressingAddressMapListResponseSuccessTrue AccountAddressingAddressMapListResponseSuccess = true
+)
+
+func (r AccountAddressingAddressMapListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountAddressingAddressMapListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type AccountAddressingAddressMapListResponseResultInfo struct {
+	// Total number of results for the requested service.
+	Count float64 `json:"count"`
+	// Current page within paginated list of results.
+	Page float64 `json:"page"`
+	// Number of results per page of results.
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters.
+	TotalCount float64                                               `json:"total_count"`
+	JSON       accountAddressingAddressMapListResponseResultInfoJSON `json:"-"`
+}
+
+// accountAddressingAddressMapListResponseResultInfoJSON contains the JSON metadata
+// for the struct [AccountAddressingAddressMapListResponseResultInfo]
+type accountAddressingAddressMapListResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountAddressingAddressMapListResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountAddressingAddressMapListResponseResultInfoJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -421,12 +566,4 @@ type AccountAddressingAddressMapUpdateParams struct {
 
 func (r AccountAddressingAddressMapUpdateParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
-}
-
-type AccountAddressingAddressMapDeleteParams struct {
-	Body interface{} `json:"body,required"`
-}
-
-func (r AccountAddressingAddressMapDeleteParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
 }

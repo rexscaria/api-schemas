@@ -59,26 +59,32 @@ func (r *ZoneCustomHostnameFallbackOriginService) Update(ctx context.Context, zo
 }
 
 // Delete Fallback Origin for Custom Hostnames
-func (r *ZoneCustomHostnameFallbackOriginService) Delete(ctx context.Context, zoneID string, body ZoneCustomHostnameFallbackOriginDeleteParams, opts ...option.RequestOption) (res *FallbackOriginResponse, err error) {
+func (r *ZoneCustomHostnameFallbackOriginService) Delete(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *FallbackOriginResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
 	}
 	path := fmt.Sprintf("zones/%s/custom_hostnames/fallback_origin", zoneID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
 type FallbackOriginResponse struct {
-	Result FallbackOriginResponseResult `json:"result"`
-	JSON   fallbackOriginResponseJSON   `json:"-"`
-	APIResponseSingleTlsCertificates
+	Errors   []MessagesTlsCertificatesItem `json:"errors,required"`
+	Messages []MessagesTlsCertificatesItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success FallbackOriginResponseSuccess `json:"success,required"`
+	Result  FallbackOriginResponseResult  `json:"result"`
+	JSON    fallbackOriginResponseJSON    `json:"-"`
 }
 
 // fallbackOriginResponseJSON contains the JSON metadata for the struct
 // [FallbackOriginResponse]
 type fallbackOriginResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -90,6 +96,21 @@ func (r *FallbackOriginResponse) UnmarshalJSON(data []byte) (err error) {
 
 func (r fallbackOriginResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type FallbackOriginResponseSuccess bool
+
+const (
+	FallbackOriginResponseSuccessTrue FallbackOriginResponseSuccess = true
+)
+
+func (r FallbackOriginResponseSuccess) IsKnown() bool {
+	switch r {
+	case FallbackOriginResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type FallbackOriginResponseResult struct {
@@ -154,12 +175,4 @@ type ZoneCustomHostnameFallbackOriginUpdateParams struct {
 
 func (r ZoneCustomHostnameFallbackOriginUpdateParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
-}
-
-type ZoneCustomHostnameFallbackOriginDeleteParams struct {
-	Body interface{} `json:"body,required"`
-}
-
-func (r ZoneCustomHostnameFallbackOriginDeleteParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
 }

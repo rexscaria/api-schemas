@@ -71,14 +71,20 @@ func (r *AccountIntelIndicatorFeedPermissionService) RemovePermission(ctx contex
 }
 
 type PermissionsResponse struct {
-	Result PermissionsResponseResult `json:"result"`
-	JSON   permissionsResponseJSON   `json:"-"`
-	SingleResponseFeed
+	Errors   []PermissionsResponseError   `json:"errors,required"`
+	Messages []PermissionsResponseMessage `json:"messages,required"`
+	// Whether the API call was successful.
+	Success PermissionsResponseSuccess `json:"success,required"`
+	Result  PermissionsResponseResult  `json:"result"`
+	JSON    permissionsResponseJSON    `json:"-"`
 }
 
 // permissionsResponseJSON contains the JSON metadata for the struct
 // [PermissionsResponse]
 type permissionsResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -90,6 +96,117 @@ func (r *PermissionsResponse) UnmarshalJSON(data []byte) (err error) {
 
 func (r permissionsResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+type PermissionsResponseError struct {
+	Code             int64                           `json:"code,required"`
+	Message          string                          `json:"message,required"`
+	DocumentationURL string                          `json:"documentation_url"`
+	Source           PermissionsResponseErrorsSource `json:"source"`
+	JSON             permissionsResponseErrorJSON    `json:"-"`
+}
+
+// permissionsResponseErrorJSON contains the JSON metadata for the struct
+// [PermissionsResponseError]
+type permissionsResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *PermissionsResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r permissionsResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type PermissionsResponseErrorsSource struct {
+	Pointer string                              `json:"pointer"`
+	JSON    permissionsResponseErrorsSourceJSON `json:"-"`
+}
+
+// permissionsResponseErrorsSourceJSON contains the JSON metadata for the struct
+// [PermissionsResponseErrorsSource]
+type permissionsResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *PermissionsResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r permissionsResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type PermissionsResponseMessage struct {
+	Code             int64                             `json:"code,required"`
+	Message          string                            `json:"message,required"`
+	DocumentationURL string                            `json:"documentation_url"`
+	Source           PermissionsResponseMessagesSource `json:"source"`
+	JSON             permissionsResponseMessageJSON    `json:"-"`
+}
+
+// permissionsResponseMessageJSON contains the JSON metadata for the struct
+// [PermissionsResponseMessage]
+type permissionsResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *PermissionsResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r permissionsResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type PermissionsResponseMessagesSource struct {
+	Pointer string                                `json:"pointer"`
+	JSON    permissionsResponseMessagesSourceJSON `json:"-"`
+}
+
+// permissionsResponseMessagesSourceJSON contains the JSON metadata for the struct
+// [PermissionsResponseMessagesSource]
+type permissionsResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *PermissionsResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r permissionsResponseMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful.
+type PermissionsResponseSuccess bool
+
+const (
+	PermissionsResponseSuccessTrue PermissionsResponseSuccess = true
+)
+
+func (r PermissionsResponseSuccess) IsKnown() bool {
+	switch r {
+	case PermissionsResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type PermissionsResponseResult struct {
@@ -126,15 +243,21 @@ func (r RequestParam) MarshalJSON() (data []byte, err error) {
 }
 
 type AccountIntelIndicatorFeedPermissionListPermissionsResponse struct {
-	Result []AccountIntelIndicatorFeedPermissionListPermissionsResponseResult `json:"result"`
-	JSON   accountIntelIndicatorFeedPermissionListPermissionsResponseJSON     `json:"-"`
-	CommonResponseIndicatorFeeds
+	Errors   []AccountIntelIndicatorFeedPermissionListPermissionsResponseError   `json:"errors,required"`
+	Messages []AccountIntelIndicatorFeedPermissionListPermissionsResponseMessage `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountIntelIndicatorFeedPermissionListPermissionsResponseSuccess  `json:"success,required"`
+	Result  []AccountIntelIndicatorFeedPermissionListPermissionsResponseResult `json:"result"`
+	JSON    accountIntelIndicatorFeedPermissionListPermissionsResponseJSON     `json:"-"`
 }
 
 // accountIntelIndicatorFeedPermissionListPermissionsResponseJSON contains the JSON
 // metadata for the struct
 // [AccountIntelIndicatorFeedPermissionListPermissionsResponse]
 type accountIntelIndicatorFeedPermissionListPermissionsResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -146,6 +269,121 @@ func (r *AccountIntelIndicatorFeedPermissionListPermissionsResponse) UnmarshalJS
 
 func (r accountIntelIndicatorFeedPermissionListPermissionsResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+type AccountIntelIndicatorFeedPermissionListPermissionsResponseError struct {
+	Code             int64                                                                  `json:"code,required"`
+	Message          string                                                                 `json:"message,required"`
+	DocumentationURL string                                                                 `json:"documentation_url"`
+	Source           AccountIntelIndicatorFeedPermissionListPermissionsResponseErrorsSource `json:"source"`
+	JSON             accountIntelIndicatorFeedPermissionListPermissionsResponseErrorJSON    `json:"-"`
+}
+
+// accountIntelIndicatorFeedPermissionListPermissionsResponseErrorJSON contains the
+// JSON metadata for the struct
+// [AccountIntelIndicatorFeedPermissionListPermissionsResponseError]
+type accountIntelIndicatorFeedPermissionListPermissionsResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountIntelIndicatorFeedPermissionListPermissionsResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountIntelIndicatorFeedPermissionListPermissionsResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountIntelIndicatorFeedPermissionListPermissionsResponseErrorsSource struct {
+	Pointer string                                                                     `json:"pointer"`
+	JSON    accountIntelIndicatorFeedPermissionListPermissionsResponseErrorsSourceJSON `json:"-"`
+}
+
+// accountIntelIndicatorFeedPermissionListPermissionsResponseErrorsSourceJSON
+// contains the JSON metadata for the struct
+// [AccountIntelIndicatorFeedPermissionListPermissionsResponseErrorsSource]
+type accountIntelIndicatorFeedPermissionListPermissionsResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountIntelIndicatorFeedPermissionListPermissionsResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountIntelIndicatorFeedPermissionListPermissionsResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountIntelIndicatorFeedPermissionListPermissionsResponseMessage struct {
+	Code             int64                                                                    `json:"code,required"`
+	Message          string                                                                   `json:"message,required"`
+	DocumentationURL string                                                                   `json:"documentation_url"`
+	Source           AccountIntelIndicatorFeedPermissionListPermissionsResponseMessagesSource `json:"source"`
+	JSON             accountIntelIndicatorFeedPermissionListPermissionsResponseMessageJSON    `json:"-"`
+}
+
+// accountIntelIndicatorFeedPermissionListPermissionsResponseMessageJSON contains
+// the JSON metadata for the struct
+// [AccountIntelIndicatorFeedPermissionListPermissionsResponseMessage]
+type accountIntelIndicatorFeedPermissionListPermissionsResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountIntelIndicatorFeedPermissionListPermissionsResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountIntelIndicatorFeedPermissionListPermissionsResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountIntelIndicatorFeedPermissionListPermissionsResponseMessagesSource struct {
+	Pointer string                                                                       `json:"pointer"`
+	JSON    accountIntelIndicatorFeedPermissionListPermissionsResponseMessagesSourceJSON `json:"-"`
+}
+
+// accountIntelIndicatorFeedPermissionListPermissionsResponseMessagesSourceJSON
+// contains the JSON metadata for the struct
+// [AccountIntelIndicatorFeedPermissionListPermissionsResponseMessagesSource]
+type accountIntelIndicatorFeedPermissionListPermissionsResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountIntelIndicatorFeedPermissionListPermissionsResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountIntelIndicatorFeedPermissionListPermissionsResponseMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountIntelIndicatorFeedPermissionListPermissionsResponseSuccess bool
+
+const (
+	AccountIntelIndicatorFeedPermissionListPermissionsResponseSuccessTrue AccountIntelIndicatorFeedPermissionListPermissionsResponseSuccess = true
+)
+
+func (r AccountIntelIndicatorFeedPermissionListPermissionsResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountIntelIndicatorFeedPermissionListPermissionsResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountIntelIndicatorFeedPermissionListPermissionsResponseResult struct {

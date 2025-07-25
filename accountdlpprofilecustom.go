@@ -7,14 +7,11 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"reflect"
-	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
 	"github.com/rexscaria/api-schemas/internal/requestconfig"
 	"github.com/rexscaria/api-schemas/option"
-	"github.com/tidwall/gjson"
 )
 
 // AccountDlpProfileCustomService contains methods and other services that help
@@ -98,6 +95,8 @@ func (r *AccountDlpProfileCustomService) Delete(ctx context.Context, accountID s
 
 // Scan the context of predefined entries to only return matches surrounded by
 // keywords.
+//
+// Deprecated: deprecated
 type ContextAwareness struct {
 	// If true, scan the context of predefined entries to only return matches
 	// surrounded by keywords.
@@ -149,6 +148,8 @@ func (r contextAwarenessSkipJSON) RawJSON() string {
 
 // Scan the context of predefined entries to only return matches surrounded by
 // keywords.
+//
+// Deprecated: deprecated
 type ContextAwarenessParam struct {
 	// If true, scan the context of predefined entries to only return matches
 	// surrounded by keywords.
@@ -194,8 +195,10 @@ type NewCustomProfileParam struct {
 	ConfidenceThreshold param.Field[string] `json:"confidence_threshold"`
 	// Scan the context of predefined entries to only return matches surrounded by
 	// keywords.
+	//
+	// Deprecated: deprecated
 	ContextAwareness param.Field[ContextAwarenessParam] `json:"context_awareness"`
-	// The description of the profile
+	// The description of the profile.
 	Description param.Field[string] `json:"description"`
 	OcrEnabled  param.Field[bool]   `json:"ocr_enabled"`
 	// Entries from other profiles (e.g. pre-defined Cloudflare profiles, or your
@@ -206,8 +209,6 @@ type NewCustomProfileParam struct {
 func (r NewCustomProfileParam) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
-
-func (r NewCustomProfileParam) implementsAccountDlpProfileCustomNewParamsBodyUnion() {}
 
 type NewCustomProfileEntryParam struct {
 	Enabled param.Field[bool]         `json:"enabled,required"`
@@ -253,12 +254,121 @@ func (r NewCustomProfileSharedEntryParam) MarshalJSON() (data []byte, err error)
 
 func (r NewCustomProfileSharedEntryParam) implementsNewCustomProfileSharedEntriesUnionParam() {}
 
-// Satisfied by [NewCustomProfileSharedEntriesObjectParam],
-// [NewCustomProfileSharedEntriesObjectParam],
-// [NewCustomProfileSharedEntriesObjectParam],
+// Satisfied by [NewCustomProfileSharedEntriesCustomParam],
+// [NewCustomProfileSharedEntriesPredefinedParam],
+// [NewCustomProfileSharedEntriesIntegrationParam],
+// [NewCustomProfileSharedEntriesExactDataParam],
 // [NewCustomProfileSharedEntriesObjectParam], [NewCustomProfileSharedEntryParam].
 type NewCustomProfileSharedEntriesUnionParam interface {
 	implementsNewCustomProfileSharedEntriesUnionParam()
+}
+
+type NewCustomProfileSharedEntriesCustomParam struct {
+	Enabled   param.Field[bool]                                         `json:"enabled,required"`
+	EntryID   param.Field[string]                                       `json:"entry_id,required" format:"uuid"`
+	EntryType param.Field[NewCustomProfileSharedEntriesCustomEntryType] `json:"entry_type,required"`
+}
+
+func (r NewCustomProfileSharedEntriesCustomParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r NewCustomProfileSharedEntriesCustomParam) implementsNewCustomProfileSharedEntriesUnionParam() {
+}
+
+type NewCustomProfileSharedEntriesCustomEntryType string
+
+const (
+	NewCustomProfileSharedEntriesCustomEntryTypeCustom NewCustomProfileSharedEntriesCustomEntryType = "custom"
+)
+
+func (r NewCustomProfileSharedEntriesCustomEntryType) IsKnown() bool {
+	switch r {
+	case NewCustomProfileSharedEntriesCustomEntryTypeCustom:
+		return true
+	}
+	return false
+}
+
+type NewCustomProfileSharedEntriesPredefinedParam struct {
+	Enabled   param.Field[bool]                                             `json:"enabled,required"`
+	EntryID   param.Field[string]                                           `json:"entry_id,required" format:"uuid"`
+	EntryType param.Field[NewCustomProfileSharedEntriesPredefinedEntryType] `json:"entry_type,required"`
+}
+
+func (r NewCustomProfileSharedEntriesPredefinedParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r NewCustomProfileSharedEntriesPredefinedParam) implementsNewCustomProfileSharedEntriesUnionParam() {
+}
+
+type NewCustomProfileSharedEntriesPredefinedEntryType string
+
+const (
+	NewCustomProfileSharedEntriesPredefinedEntryTypePredefined NewCustomProfileSharedEntriesPredefinedEntryType = "predefined"
+)
+
+func (r NewCustomProfileSharedEntriesPredefinedEntryType) IsKnown() bool {
+	switch r {
+	case NewCustomProfileSharedEntriesPredefinedEntryTypePredefined:
+		return true
+	}
+	return false
+}
+
+type NewCustomProfileSharedEntriesIntegrationParam struct {
+	Enabled   param.Field[bool]                                              `json:"enabled,required"`
+	EntryID   param.Field[string]                                            `json:"entry_id,required" format:"uuid"`
+	EntryType param.Field[NewCustomProfileSharedEntriesIntegrationEntryType] `json:"entry_type,required"`
+}
+
+func (r NewCustomProfileSharedEntriesIntegrationParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r NewCustomProfileSharedEntriesIntegrationParam) implementsNewCustomProfileSharedEntriesUnionParam() {
+}
+
+type NewCustomProfileSharedEntriesIntegrationEntryType string
+
+const (
+	NewCustomProfileSharedEntriesIntegrationEntryTypeIntegration NewCustomProfileSharedEntriesIntegrationEntryType = "integration"
+)
+
+func (r NewCustomProfileSharedEntriesIntegrationEntryType) IsKnown() bool {
+	switch r {
+	case NewCustomProfileSharedEntriesIntegrationEntryTypeIntegration:
+		return true
+	}
+	return false
+}
+
+type NewCustomProfileSharedEntriesExactDataParam struct {
+	Enabled   param.Field[bool]                                            `json:"enabled,required"`
+	EntryID   param.Field[string]                                          `json:"entry_id,required" format:"uuid"`
+	EntryType param.Field[NewCustomProfileSharedEntriesExactDataEntryType] `json:"entry_type,required"`
+}
+
+func (r NewCustomProfileSharedEntriesExactDataParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r NewCustomProfileSharedEntriesExactDataParam) implementsNewCustomProfileSharedEntriesUnionParam() {
+}
+
+type NewCustomProfileSharedEntriesExactDataEntryType string
+
+const (
+	NewCustomProfileSharedEntriesExactDataEntryTypeExactData NewCustomProfileSharedEntriesExactDataEntryType = "exact_data"
+)
+
+func (r NewCustomProfileSharedEntriesExactDataEntryType) IsKnown() bool {
+	switch r {
+	case NewCustomProfileSharedEntriesExactDataEntryTypeExactData:
+		return true
+	}
+	return false
 }
 
 type NewCustomProfileSharedEntriesObjectParam struct {
@@ -277,12 +387,12 @@ func (r NewCustomProfileSharedEntriesObjectParam) implementsNewCustomProfileShar
 type NewCustomProfileSharedEntriesObjectEntryType string
 
 const (
-	NewCustomProfileSharedEntriesObjectEntryTypeCustom NewCustomProfileSharedEntriesObjectEntryType = "custom"
+	NewCustomProfileSharedEntriesObjectEntryTypeDocumentFingerprint NewCustomProfileSharedEntriesObjectEntryType = "document_fingerprint"
 )
 
 func (r NewCustomProfileSharedEntriesObjectEntryType) IsKnown() bool {
 	switch r {
-	case NewCustomProfileSharedEntriesObjectEntryTypeCustom:
+	case NewCustomProfileSharedEntriesObjectEntryTypeDocumentFingerprint:
 		return true
 	}
 	return false
@@ -291,29 +401,36 @@ func (r NewCustomProfileSharedEntriesObjectEntryType) IsKnown() bool {
 type NewCustomProfileSharedEntriesEntryType string
 
 const (
-	NewCustomProfileSharedEntriesEntryTypeCustom      NewCustomProfileSharedEntriesEntryType = "custom"
-	NewCustomProfileSharedEntriesEntryTypePredefined  NewCustomProfileSharedEntriesEntryType = "predefined"
-	NewCustomProfileSharedEntriesEntryTypeIntegration NewCustomProfileSharedEntriesEntryType = "integration"
-	NewCustomProfileSharedEntriesEntryTypeExactData   NewCustomProfileSharedEntriesEntryType = "exact_data"
+	NewCustomProfileSharedEntriesEntryTypeCustom              NewCustomProfileSharedEntriesEntryType = "custom"
+	NewCustomProfileSharedEntriesEntryTypePredefined          NewCustomProfileSharedEntriesEntryType = "predefined"
+	NewCustomProfileSharedEntriesEntryTypeIntegration         NewCustomProfileSharedEntriesEntryType = "integration"
+	NewCustomProfileSharedEntriesEntryTypeExactData           NewCustomProfileSharedEntriesEntryType = "exact_data"
+	NewCustomProfileSharedEntriesEntryTypeDocumentFingerprint NewCustomProfileSharedEntriesEntryType = "document_fingerprint"
 )
 
 func (r NewCustomProfileSharedEntriesEntryType) IsKnown() bool {
 	switch r {
-	case NewCustomProfileSharedEntriesEntryTypeCustom, NewCustomProfileSharedEntriesEntryTypePredefined, NewCustomProfileSharedEntriesEntryTypeIntegration, NewCustomProfileSharedEntriesEntryTypeExactData:
+	case NewCustomProfileSharedEntriesEntryTypeCustom, NewCustomProfileSharedEntriesEntryTypePredefined, NewCustomProfileSharedEntriesEntryTypeIntegration, NewCustomProfileSharedEntriesEntryTypeExactData, NewCustomProfileSharedEntriesEntryTypeDocumentFingerprint:
 		return true
 	}
 	return false
 }
 
 type AccountDlpProfileCustomNewResponse struct {
-	Result AccountDlpProfileCustomNewResponseResultUnion `json:"result"`
-	JSON   accountDlpProfileCustomNewResponseJSON        `json:"-"`
-	APIResponseSingleDlp
+	Errors   []MessagesDlpItems `json:"errors,required"`
+	Messages []MessagesDlpItems `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountDlpProfileCustomNewResponseSuccess `json:"success,required"`
+	Result  Profile                                   `json:"result"`
+	JSON    accountDlpProfileCustomNewResponseJSON    `json:"-"`
 }
 
 // accountDlpProfileCustomNewResponseJSON contains the JSON metadata for the struct
 // [AccountDlpProfileCustomNewResponse]
 type accountDlpProfileCustomNewResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -327,233 +444,36 @@ func (r accountDlpProfileCustomNewResponseJSON) RawJSON() string {
 	return r.raw
 }
 
-// Union satisfied by [AccountDlpProfileCustomNewResponseResultCustomProfile],
-// [AccountDlpProfileCustomNewResponseResultPredefinedProfile],
-// [AccountDlpProfileCustomNewResponseResultIntegrationProfile] or
-// [AccountDlpProfileCustomNewResponseResultArray].
-type AccountDlpProfileCustomNewResponseResultUnion interface {
-	implementsAccountDlpProfileCustomNewResponseResultUnion()
-}
-
-func init() {
-	apijson.RegisterUnion(
-		reflect.TypeOf((*AccountDlpProfileCustomNewResponseResultUnion)(nil)).Elem(),
-		"",
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(AccountDlpProfileCustomNewResponseResultCustomProfile{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(AccountDlpProfileCustomNewResponseResultPredefinedProfile{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(AccountDlpProfileCustomNewResponseResultIntegrationProfile{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(AccountDlpProfileCustomNewResponseResultArray{}),
-		},
-	)
-}
-
-type AccountDlpProfileCustomNewResponseResultCustomProfile struct {
-	// The id of the profile (uuid)
-	ID string `json:"id,required" format:"uuid"`
-	// Related DLP policies will trigger when the match count exceeds the number set.
-	AllowedMatchCount int64 `json:"allowed_match_count,required"`
-	// Scan the context of predefined entries to only return matches surrounded by
-	// keywords.
-	ContextAwareness ContextAwareness `json:"context_awareness,required"`
-	// When the profile was created
-	CreatedAt time.Time  `json:"created_at,required" format:"date-time"`
-	Entries   []DlpEntry `json:"entries,required"`
-	// The name of the profile
-	Name       string                                                    `json:"name,required"`
-	OcrEnabled bool                                                      `json:"ocr_enabled,required"`
-	Type       AccountDlpProfileCustomNewResponseResultCustomProfileType `json:"type,required"`
-	// When the profile was lasted updated
-	UpdatedAt           time.Time  `json:"updated_at,required" format:"date-time"`
-	AIContextEnabled    bool       `json:"ai_context_enabled"`
-	ConfidenceThreshold Confidence `json:"confidence_threshold"`
-	// The description of the profile
-	Description string                                                    `json:"description,nullable"`
-	JSON        accountDlpProfileCustomNewResponseResultCustomProfileJSON `json:"-"`
-}
-
-// accountDlpProfileCustomNewResponseResultCustomProfileJSON contains the JSON
-// metadata for the struct [AccountDlpProfileCustomNewResponseResultCustomProfile]
-type accountDlpProfileCustomNewResponseResultCustomProfileJSON struct {
-	ID                  apijson.Field
-	AllowedMatchCount   apijson.Field
-	ContextAwareness    apijson.Field
-	CreatedAt           apijson.Field
-	Entries             apijson.Field
-	Name                apijson.Field
-	OcrEnabled          apijson.Field
-	Type                apijson.Field
-	UpdatedAt           apijson.Field
-	AIContextEnabled    apijson.Field
-	ConfidenceThreshold apijson.Field
-	Description         apijson.Field
-	raw                 string
-	ExtraFields         map[string]apijson.Field
-}
-
-func (r *AccountDlpProfileCustomNewResponseResultCustomProfile) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountDlpProfileCustomNewResponseResultCustomProfileJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r AccountDlpProfileCustomNewResponseResultCustomProfile) implementsAccountDlpProfileCustomNewResponseResultUnion() {
-}
-
-type AccountDlpProfileCustomNewResponseResultCustomProfileType string
+// Whether the API call was successful.
+type AccountDlpProfileCustomNewResponseSuccess bool
 
 const (
-	AccountDlpProfileCustomNewResponseResultCustomProfileTypeCustom AccountDlpProfileCustomNewResponseResultCustomProfileType = "custom"
+	AccountDlpProfileCustomNewResponseSuccessTrue AccountDlpProfileCustomNewResponseSuccess = true
 )
 
-func (r AccountDlpProfileCustomNewResponseResultCustomProfileType) IsKnown() bool {
+func (r AccountDlpProfileCustomNewResponseSuccess) IsKnown() bool {
 	switch r {
-	case AccountDlpProfileCustomNewResponseResultCustomProfileTypeCustom:
+	case AccountDlpProfileCustomNewResponseSuccessTrue:
 		return true
 	}
 	return false
-}
-
-type AccountDlpProfileCustomNewResponseResultPredefinedProfile struct {
-	// The id of the predefined profile (uuid)
-	ID                string     `json:"id,required" format:"uuid"`
-	AllowedMatchCount int64      `json:"allowed_match_count,required"`
-	Entries           []DlpEntry `json:"entries,required"`
-	// The name of the predefined profile
-	Name                string                                                        `json:"name,required"`
-	Type                AccountDlpProfileCustomNewResponseResultPredefinedProfileType `json:"type,required"`
-	AIContextEnabled    bool                                                          `json:"ai_context_enabled"`
-	ConfidenceThreshold Confidence                                                    `json:"confidence_threshold"`
-	// Scan the context of predefined entries to only return matches surrounded by
-	// keywords.
-	ContextAwareness ContextAwareness `json:"context_awareness"`
-	OcrEnabled       bool             `json:"ocr_enabled"`
-	// Whether this profile can be accessed by anyone
-	OpenAccess bool                                                          `json:"open_access"`
-	JSON       accountDlpProfileCustomNewResponseResultPredefinedProfileJSON `json:"-"`
-}
-
-// accountDlpProfileCustomNewResponseResultPredefinedProfileJSON contains the JSON
-// metadata for the struct
-// [AccountDlpProfileCustomNewResponseResultPredefinedProfile]
-type accountDlpProfileCustomNewResponseResultPredefinedProfileJSON struct {
-	ID                  apijson.Field
-	AllowedMatchCount   apijson.Field
-	Entries             apijson.Field
-	Name                apijson.Field
-	Type                apijson.Field
-	AIContextEnabled    apijson.Field
-	ConfidenceThreshold apijson.Field
-	ContextAwareness    apijson.Field
-	OcrEnabled          apijson.Field
-	OpenAccess          apijson.Field
-	raw                 string
-	ExtraFields         map[string]apijson.Field
-}
-
-func (r *AccountDlpProfileCustomNewResponseResultPredefinedProfile) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountDlpProfileCustomNewResponseResultPredefinedProfileJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r AccountDlpProfileCustomNewResponseResultPredefinedProfile) implementsAccountDlpProfileCustomNewResponseResultUnion() {
-}
-
-type AccountDlpProfileCustomNewResponseResultPredefinedProfileType string
-
-const (
-	AccountDlpProfileCustomNewResponseResultPredefinedProfileTypePredefined AccountDlpProfileCustomNewResponseResultPredefinedProfileType = "predefined"
-)
-
-func (r AccountDlpProfileCustomNewResponseResultPredefinedProfileType) IsKnown() bool {
-	switch r {
-	case AccountDlpProfileCustomNewResponseResultPredefinedProfileTypePredefined:
-		return true
-	}
-	return false
-}
-
-type AccountDlpProfileCustomNewResponseResultIntegrationProfile struct {
-	ID        string                                                         `json:"id,required" format:"uuid"`
-	CreatedAt time.Time                                                      `json:"created_at,required" format:"date-time"`
-	Entries   []DlpEntry                                                     `json:"entries,required"`
-	Name      string                                                         `json:"name,required"`
-	Type      AccountDlpProfileCustomNewResponseResultIntegrationProfileType `json:"type,required"`
-	UpdatedAt time.Time                                                      `json:"updated_at,required" format:"date-time"`
-	// The description of the profile
-	Description string                                                         `json:"description,nullable"`
-	JSON        accountDlpProfileCustomNewResponseResultIntegrationProfileJSON `json:"-"`
-}
-
-// accountDlpProfileCustomNewResponseResultIntegrationProfileJSON contains the JSON
-// metadata for the struct
-// [AccountDlpProfileCustomNewResponseResultIntegrationProfile]
-type accountDlpProfileCustomNewResponseResultIntegrationProfileJSON struct {
-	ID          apijson.Field
-	CreatedAt   apijson.Field
-	Entries     apijson.Field
-	Name        apijson.Field
-	Type        apijson.Field
-	UpdatedAt   apijson.Field
-	Description apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountDlpProfileCustomNewResponseResultIntegrationProfile) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountDlpProfileCustomNewResponseResultIntegrationProfileJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r AccountDlpProfileCustomNewResponseResultIntegrationProfile) implementsAccountDlpProfileCustomNewResponseResultUnion() {
-}
-
-type AccountDlpProfileCustomNewResponseResultIntegrationProfileType string
-
-const (
-	AccountDlpProfileCustomNewResponseResultIntegrationProfileTypeIntegration AccountDlpProfileCustomNewResponseResultIntegrationProfileType = "integration"
-)
-
-func (r AccountDlpProfileCustomNewResponseResultIntegrationProfileType) IsKnown() bool {
-	switch r {
-	case AccountDlpProfileCustomNewResponseResultIntegrationProfileTypeIntegration:
-		return true
-	}
-	return false
-}
-
-type AccountDlpProfileCustomNewResponseResultArray []Profile
-
-func (r AccountDlpProfileCustomNewResponseResultArray) implementsAccountDlpProfileCustomNewResponseResultUnion() {
 }
 
 type AccountDlpProfileCustomGetResponse struct {
-	Result Profile                                `json:"result"`
-	JSON   accountDlpProfileCustomGetResponseJSON `json:"-"`
-	APIResponseSingleDlp
+	Errors   []MessagesDlpItems `json:"errors,required"`
+	Messages []MessagesDlpItems `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountDlpProfileCustomGetResponseSuccess `json:"success,required"`
+	Result  Profile                                   `json:"result"`
+	JSON    accountDlpProfileCustomGetResponseJSON    `json:"-"`
 }
 
 // accountDlpProfileCustomGetResponseJSON contains the JSON metadata for the struct
 // [AccountDlpProfileCustomGetResponse]
 type accountDlpProfileCustomGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -567,15 +487,36 @@ func (r accountDlpProfileCustomGetResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountDlpProfileCustomGetResponseSuccess bool
+
+const (
+	AccountDlpProfileCustomGetResponseSuccessTrue AccountDlpProfileCustomGetResponseSuccess = true
+)
+
+func (r AccountDlpProfileCustomGetResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountDlpProfileCustomGetResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountDlpProfileCustomUpdateResponse struct {
-	Result Profile                                   `json:"result"`
-	JSON   accountDlpProfileCustomUpdateResponseJSON `json:"-"`
-	APIResponseSingleDlp
+	Errors   []MessagesDlpItems `json:"errors,required"`
+	Messages []MessagesDlpItems `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountDlpProfileCustomUpdateResponseSuccess `json:"success,required"`
+	Result  Profile                                      `json:"result"`
+	JSON    accountDlpProfileCustomUpdateResponseJSON    `json:"-"`
 }
 
 // accountDlpProfileCustomUpdateResponseJSON contains the JSON metadata for the
 // struct [AccountDlpProfileCustomUpdateResponse]
 type accountDlpProfileCustomUpdateResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -589,15 +530,36 @@ func (r accountDlpProfileCustomUpdateResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountDlpProfileCustomUpdateResponseSuccess bool
+
+const (
+	AccountDlpProfileCustomUpdateResponseSuccessTrue AccountDlpProfileCustomUpdateResponseSuccess = true
+)
+
+func (r AccountDlpProfileCustomUpdateResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountDlpProfileCustomUpdateResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountDlpProfileCustomDeleteResponse struct {
-	Result interface{}                               `json:"result,nullable"`
-	JSON   accountDlpProfileCustomDeleteResponseJSON `json:"-"`
-	APIResponseSingleDlp
+	Errors   []MessagesDlpItems `json:"errors,required"`
+	Messages []MessagesDlpItems `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountDlpProfileCustomDeleteResponseSuccess `json:"success,required"`
+	Result  interface{}                                  `json:"result,nullable"`
+	JSON    accountDlpProfileCustomDeleteResponseJSON    `json:"-"`
 }
 
 // accountDlpProfileCustomDeleteResponseJSON contains the JSON metadata for the
 // struct [AccountDlpProfileCustomDeleteResponse]
 type accountDlpProfileCustomDeleteResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -611,53 +573,27 @@ func (r accountDlpProfileCustomDeleteResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountDlpProfileCustomDeleteResponseSuccess bool
+
+const (
+	AccountDlpProfileCustomDeleteResponseSuccessTrue AccountDlpProfileCustomDeleteResponseSuccess = true
+)
+
+func (r AccountDlpProfileCustomDeleteResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountDlpProfileCustomDeleteResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountDlpProfileCustomNewParams struct {
-	Body AccountDlpProfileCustomNewParamsBodyUnion `json:"body,required"`
+	NewCustomProfile NewCustomProfileParam `json:"new_custom_profile,required"`
 }
 
 func (r AccountDlpProfileCustomNewParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
-}
-
-type AccountDlpProfileCustomNewParamsBody struct {
-	AIContextEnabled param.Field[bool] `json:"ai_context_enabled"`
-	// Related DLP policies will trigger when the match count exceeds the number set.
-	AllowedMatchCount   param.Field[int64]  `json:"allowed_match_count"`
-	ConfidenceThreshold param.Field[string] `json:"confidence_threshold"`
-	// Scan the context of predefined entries to only return matches surrounded by
-	// keywords.
-	ContextAwareness param.Field[ContextAwarenessParam] `json:"context_awareness"`
-	// The description of the profile
-	Description   param.Field[string]      `json:"description"`
-	Entries       param.Field[interface{}] `json:"entries"`
-	Name          param.Field[string]      `json:"name"`
-	OcrEnabled    param.Field[bool]        `json:"ocr_enabled"`
-	Profiles      param.Field[interface{}] `json:"profiles"`
-	SharedEntries param.Field[interface{}] `json:"shared_entries"`
-}
-
-func (r AccountDlpProfileCustomNewParamsBody) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r AccountDlpProfileCustomNewParamsBody) implementsAccountDlpProfileCustomNewParamsBodyUnion() {}
-
-// Satisfied by [AccountDlpProfileCustomNewParamsBodyProfiles],
-// [NewCustomProfileParam], [AccountDlpProfileCustomNewParamsBody].
-type AccountDlpProfileCustomNewParamsBodyUnion interface {
-	implementsAccountDlpProfileCustomNewParamsBodyUnion()
-}
-
-// Deprecated: deprecated
-type AccountDlpProfileCustomNewParamsBodyProfiles struct {
-	Profiles param.Field[[]NewCustomProfileParam] `json:"profiles,required"`
-}
-
-func (r AccountDlpProfileCustomNewParamsBodyProfiles) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r AccountDlpProfileCustomNewParamsBodyProfiles) implementsAccountDlpProfileCustomNewParamsBodyUnion() {
+	return apijson.MarshalRoot(r.NewCustomProfile)
 }
 
 type AccountDlpProfileCustomUpdateParams struct {
@@ -668,7 +604,7 @@ type AccountDlpProfileCustomUpdateParams struct {
 	// Scan the context of predefined entries to only return matches surrounded by
 	// keywords.
 	ContextAwareness param.Field[ContextAwarenessParam] `json:"context_awareness"`
-	// The description of the profile
+	// The description of the profile.
 	Description param.Field[string] `json:"description"`
 	// Custom entries from this profile. If this field is omitted, entries owned by
 	// this profile will not be changed.
@@ -682,16 +618,32 @@ func (r AccountDlpProfileCustomUpdateParams) MarshalJSON() (data []byte, err err
 	return apijson.MarshalRoot(r)
 }
 
+type AccountDlpProfileCustomUpdateParamsEntry struct {
+	Enabled param.Field[bool]         `json:"enabled,required"`
+	Name    param.Field[string]       `json:"name,required"`
+	Pattern param.Field[PatternParam] `json:"pattern,required"`
+	EntryID param.Field[string]       `json:"entry_id" format:"uuid"`
+}
+
+func (r AccountDlpProfileCustomUpdateParamsEntry) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r AccountDlpProfileCustomUpdateParamsEntry) implementsAccountDlpProfileCustomUpdateParamsEntryUnion() {
+}
+
 // Satisfied by
 // [AccountDlpProfileCustomUpdateParamsEntriesDlpNewCustomEntryWithID],
-// [NewCustomEntryParam].
+// [NewCustomEntryParam], [AccountDlpProfileCustomUpdateParamsEntry].
 type AccountDlpProfileCustomUpdateParamsEntryUnion interface {
 	implementsAccountDlpProfileCustomUpdateParamsEntryUnion()
 }
 
 type AccountDlpProfileCustomUpdateParamsEntriesDlpNewCustomEntryWithID struct {
-	EntryID param.Field[string] `json:"entry_id,required" format:"uuid"`
-	NewCustomEntryParam
+	Enabled param.Field[bool]         `json:"enabled,required"`
+	EntryID param.Field[string]       `json:"entry_id,required" format:"uuid"`
+	Name    param.Field[string]       `json:"name,required"`
+	Pattern param.Field[PatternParam] `json:"pattern,required"`
 }
 
 func (r AccountDlpProfileCustomUpdateParamsEntriesDlpNewCustomEntryWithID) MarshalJSON() (data []byte, err error) {
@@ -714,12 +666,94 @@ func (r AccountDlpProfileCustomUpdateParamsSharedEntry) MarshalJSON() (data []by
 func (r AccountDlpProfileCustomUpdateParamsSharedEntry) implementsAccountDlpProfileCustomUpdateParamsSharedEntryUnion() {
 }
 
-// Satisfied by [AccountDlpProfileCustomUpdateParamsSharedEntriesObject],
-// [AccountDlpProfileCustomUpdateParamsSharedEntriesObject],
+// Satisfied by [AccountDlpProfileCustomUpdateParamsSharedEntriesPredefined],
+// [AccountDlpProfileCustomUpdateParamsSharedEntriesIntegration],
+// [AccountDlpProfileCustomUpdateParamsSharedEntriesExactData],
 // [AccountDlpProfileCustomUpdateParamsSharedEntriesObject],
 // [AccountDlpProfileCustomUpdateParamsSharedEntry].
 type AccountDlpProfileCustomUpdateParamsSharedEntryUnion interface {
 	implementsAccountDlpProfileCustomUpdateParamsSharedEntryUnion()
+}
+
+type AccountDlpProfileCustomUpdateParamsSharedEntriesPredefined struct {
+	Enabled   param.Field[bool]                                                                `json:"enabled,required"`
+	EntryID   param.Field[string]                                                              `json:"entry_id,required" format:"uuid"`
+	EntryType param.Field[AccountDlpProfileCustomUpdateParamsSharedEntriesPredefinedEntryType] `json:"entry_type,required"`
+}
+
+func (r AccountDlpProfileCustomUpdateParamsSharedEntriesPredefined) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r AccountDlpProfileCustomUpdateParamsSharedEntriesPredefined) implementsAccountDlpProfileCustomUpdateParamsSharedEntryUnion() {
+}
+
+type AccountDlpProfileCustomUpdateParamsSharedEntriesPredefinedEntryType string
+
+const (
+	AccountDlpProfileCustomUpdateParamsSharedEntriesPredefinedEntryTypePredefined AccountDlpProfileCustomUpdateParamsSharedEntriesPredefinedEntryType = "predefined"
+)
+
+func (r AccountDlpProfileCustomUpdateParamsSharedEntriesPredefinedEntryType) IsKnown() bool {
+	switch r {
+	case AccountDlpProfileCustomUpdateParamsSharedEntriesPredefinedEntryTypePredefined:
+		return true
+	}
+	return false
+}
+
+type AccountDlpProfileCustomUpdateParamsSharedEntriesIntegration struct {
+	Enabled   param.Field[bool]                                                                 `json:"enabled,required"`
+	EntryID   param.Field[string]                                                               `json:"entry_id,required" format:"uuid"`
+	EntryType param.Field[AccountDlpProfileCustomUpdateParamsSharedEntriesIntegrationEntryType] `json:"entry_type,required"`
+}
+
+func (r AccountDlpProfileCustomUpdateParamsSharedEntriesIntegration) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r AccountDlpProfileCustomUpdateParamsSharedEntriesIntegration) implementsAccountDlpProfileCustomUpdateParamsSharedEntryUnion() {
+}
+
+type AccountDlpProfileCustomUpdateParamsSharedEntriesIntegrationEntryType string
+
+const (
+	AccountDlpProfileCustomUpdateParamsSharedEntriesIntegrationEntryTypeIntegration AccountDlpProfileCustomUpdateParamsSharedEntriesIntegrationEntryType = "integration"
+)
+
+func (r AccountDlpProfileCustomUpdateParamsSharedEntriesIntegrationEntryType) IsKnown() bool {
+	switch r {
+	case AccountDlpProfileCustomUpdateParamsSharedEntriesIntegrationEntryTypeIntegration:
+		return true
+	}
+	return false
+}
+
+type AccountDlpProfileCustomUpdateParamsSharedEntriesExactData struct {
+	Enabled   param.Field[bool]                                                               `json:"enabled,required"`
+	EntryID   param.Field[string]                                                             `json:"entry_id,required" format:"uuid"`
+	EntryType param.Field[AccountDlpProfileCustomUpdateParamsSharedEntriesExactDataEntryType] `json:"entry_type,required"`
+}
+
+func (r AccountDlpProfileCustomUpdateParamsSharedEntriesExactData) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r AccountDlpProfileCustomUpdateParamsSharedEntriesExactData) implementsAccountDlpProfileCustomUpdateParamsSharedEntryUnion() {
+}
+
+type AccountDlpProfileCustomUpdateParamsSharedEntriesExactDataEntryType string
+
+const (
+	AccountDlpProfileCustomUpdateParamsSharedEntriesExactDataEntryTypeExactData AccountDlpProfileCustomUpdateParamsSharedEntriesExactDataEntryType = "exact_data"
+)
+
+func (r AccountDlpProfileCustomUpdateParamsSharedEntriesExactDataEntryType) IsKnown() bool {
+	switch r {
+	case AccountDlpProfileCustomUpdateParamsSharedEntriesExactDataEntryTypeExactData:
+		return true
+	}
+	return false
 }
 
 type AccountDlpProfileCustomUpdateParamsSharedEntriesObject struct {
@@ -738,12 +772,12 @@ func (r AccountDlpProfileCustomUpdateParamsSharedEntriesObject) implementsAccoun
 type AccountDlpProfileCustomUpdateParamsSharedEntriesObjectEntryType string
 
 const (
-	AccountDlpProfileCustomUpdateParamsSharedEntriesObjectEntryTypePredefined AccountDlpProfileCustomUpdateParamsSharedEntriesObjectEntryType = "predefined"
+	AccountDlpProfileCustomUpdateParamsSharedEntriesObjectEntryTypeDocumentFingerprint AccountDlpProfileCustomUpdateParamsSharedEntriesObjectEntryType = "document_fingerprint"
 )
 
 func (r AccountDlpProfileCustomUpdateParamsSharedEntriesObjectEntryType) IsKnown() bool {
 	switch r {
-	case AccountDlpProfileCustomUpdateParamsSharedEntriesObjectEntryTypePredefined:
+	case AccountDlpProfileCustomUpdateParamsSharedEntriesObjectEntryTypeDocumentFingerprint:
 		return true
 	}
 	return false
@@ -752,14 +786,15 @@ func (r AccountDlpProfileCustomUpdateParamsSharedEntriesObjectEntryType) IsKnown
 type AccountDlpProfileCustomUpdateParamsSharedEntriesEntryType string
 
 const (
-	AccountDlpProfileCustomUpdateParamsSharedEntriesEntryTypePredefined  AccountDlpProfileCustomUpdateParamsSharedEntriesEntryType = "predefined"
-	AccountDlpProfileCustomUpdateParamsSharedEntriesEntryTypeIntegration AccountDlpProfileCustomUpdateParamsSharedEntriesEntryType = "integration"
-	AccountDlpProfileCustomUpdateParamsSharedEntriesEntryTypeExactData   AccountDlpProfileCustomUpdateParamsSharedEntriesEntryType = "exact_data"
+	AccountDlpProfileCustomUpdateParamsSharedEntriesEntryTypePredefined          AccountDlpProfileCustomUpdateParamsSharedEntriesEntryType = "predefined"
+	AccountDlpProfileCustomUpdateParamsSharedEntriesEntryTypeIntegration         AccountDlpProfileCustomUpdateParamsSharedEntriesEntryType = "integration"
+	AccountDlpProfileCustomUpdateParamsSharedEntriesEntryTypeExactData           AccountDlpProfileCustomUpdateParamsSharedEntriesEntryType = "exact_data"
+	AccountDlpProfileCustomUpdateParamsSharedEntriesEntryTypeDocumentFingerprint AccountDlpProfileCustomUpdateParamsSharedEntriesEntryType = "document_fingerprint"
 )
 
 func (r AccountDlpProfileCustomUpdateParamsSharedEntriesEntryType) IsKnown() bool {
 	switch r {
-	case AccountDlpProfileCustomUpdateParamsSharedEntriesEntryTypePredefined, AccountDlpProfileCustomUpdateParamsSharedEntriesEntryTypeIntegration, AccountDlpProfileCustomUpdateParamsSharedEntriesEntryTypeExactData:
+	case AccountDlpProfileCustomUpdateParamsSharedEntriesEntryTypePredefined, AccountDlpProfileCustomUpdateParamsSharedEntriesEntryTypeIntegration, AccountDlpProfileCustomUpdateParamsSharedEntriesEntryTypeExactData, AccountDlpProfileCustomUpdateParamsSharedEntriesEntryTypeDocumentFingerprint:
 		return true
 	}
 	return false

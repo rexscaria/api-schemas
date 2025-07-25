@@ -57,60 +57,23 @@ func (r *ZoneCloudConnectorRuleService) List(ctx context.Context, zoneID string,
 	return
 }
 
-type APIResponseCloudConnector struct {
-	Errors   []MessagesCloudConnectorItem `json:"errors,required"`
-	Messages []MessagesCloudConnectorItem `json:"messages,required"`
-	// Whether the API call was successful
-	Success APIResponseCloudConnectorSuccess `json:"success,required"`
-	JSON    apiResponseCloudConnectorJSON    `json:"-"`
-}
-
-// apiResponseCloudConnectorJSON contains the JSON metadata for the struct
-// [APIResponseCloudConnector]
-type apiResponseCloudConnectorJSON struct {
-	Errors      apijson.Field
-	Messages    apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *APIResponseCloudConnector) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r apiResponseCloudConnectorJSON) RawJSON() string {
-	return r.raw
-}
-
-// Whether the API call was successful
-type APIResponseCloudConnectorSuccess bool
-
-const (
-	APIResponseCloudConnectorSuccessTrue APIResponseCloudConnectorSuccess = true
-)
-
-func (r APIResponseCloudConnectorSuccess) IsKnown() bool {
-	switch r {
-	case APIResponseCloudConnectorSuccessTrue:
-		return true
-	}
-	return false
-}
-
 type MessagesCloudConnectorItem struct {
-	Code    int64                          `json:"code,required"`
-	Message string                         `json:"message,required"`
-	JSON    messagesCloudConnectorItemJSON `json:"-"`
+	Code             int64                            `json:"code,required"`
+	Message          string                           `json:"message,required"`
+	DocumentationURL string                           `json:"documentation_url"`
+	Source           MessagesCloudConnectorItemSource `json:"source"`
+	JSON             messagesCloudConnectorItemJSON   `json:"-"`
 }
 
 // messagesCloudConnectorItemJSON contains the JSON metadata for the struct
 // [MessagesCloudConnectorItem]
 type messagesCloudConnectorItemJSON struct {
-	Code        apijson.Field
-	Message     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
 }
 
 func (r *MessagesCloudConnectorItem) UnmarshalJSON(data []byte) (err error) {
@@ -118,6 +81,27 @@ func (r *MessagesCloudConnectorItem) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (r messagesCloudConnectorItemJSON) RawJSON() string {
+	return r.raw
+}
+
+type MessagesCloudConnectorItemSource struct {
+	Pointer string                               `json:"pointer"`
+	JSON    messagesCloudConnectorItemSourceJSON `json:"-"`
+}
+
+// messagesCloudConnectorItemSourceJSON contains the JSON metadata for the struct
+// [MessagesCloudConnectorItemSource]
+type messagesCloudConnectorItemSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *MessagesCloudConnectorItemSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r messagesCloudConnectorItemSourceJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -181,54 +165,35 @@ type RuleItemProvider string
 
 const (
 	RuleItemProviderAwsS3        RuleItemProvider = "aws_s3"
-	RuleItemProviderR2           RuleItemProvider = "r2"
+	RuleItemProviderCloudflareR2 RuleItemProvider = "cloudflare_r2"
 	RuleItemProviderGcpStorage   RuleItemProvider = "gcp_storage"
 	RuleItemProviderAzureStorage RuleItemProvider = "azure_storage"
 )
 
 func (r RuleItemProvider) IsKnown() bool {
 	switch r {
-	case RuleItemProviderAwsS3, RuleItemProviderR2, RuleItemProviderGcpStorage, RuleItemProviderAzureStorage:
+	case RuleItemProviderAwsS3, RuleItemProviderCloudflareR2, RuleItemProviderGcpStorage, RuleItemProviderAzureStorage:
 		return true
 	}
 	return false
 }
 
-type RuleItemParam struct {
-	ID          param.Field[string] `json:"id"`
-	Description param.Field[string] `json:"description"`
-	Enabled     param.Field[bool]   `json:"enabled"`
-	Expression  param.Field[string] `json:"expression"`
-	// Parameters of Cloud Connector Rule
-	Parameters param.Field[RuleItemParametersParam] `json:"parameters"`
-	// Cloud Provider type
-	Provider param.Field[RuleItemProvider] `json:"provider"`
-}
-
-func (r RuleItemParam) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-// Parameters of Cloud Connector Rule
-type RuleItemParametersParam struct {
-	// Host to perform Cloud Connection to
-	Host param.Field[string] `json:"host"`
-}
-
-func (r RuleItemParametersParam) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
 type ZoneCloudConnectorRuleUpdateResponse struct {
+	Errors   []MessagesCloudConnectorItem `json:"errors,required"`
+	Messages []MessagesCloudConnectorItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success ZoneCloudConnectorRuleUpdateResponseSuccess `json:"success,required"`
 	// List of Cloud Connector rules
 	Result []RuleItem                               `json:"result"`
 	JSON   zoneCloudConnectorRuleUpdateResponseJSON `json:"-"`
-	APIResponseCloudConnector
 }
 
 // zoneCloudConnectorRuleUpdateResponseJSON contains the JSON metadata for the
 // struct [ZoneCloudConnectorRuleUpdateResponse]
 type zoneCloudConnectorRuleUpdateResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -242,16 +207,37 @@ func (r zoneCloudConnectorRuleUpdateResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type ZoneCloudConnectorRuleUpdateResponseSuccess bool
+
+const (
+	ZoneCloudConnectorRuleUpdateResponseSuccessTrue ZoneCloudConnectorRuleUpdateResponseSuccess = true
+)
+
+func (r ZoneCloudConnectorRuleUpdateResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneCloudConnectorRuleUpdateResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type ZoneCloudConnectorRuleListResponse struct {
+	Errors   []MessagesCloudConnectorItem `json:"errors,required"`
+	Messages []MessagesCloudConnectorItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success ZoneCloudConnectorRuleListResponseSuccess `json:"success,required"`
 	// List of Cloud Connector rules
 	Result []RuleItem                             `json:"result"`
 	JSON   zoneCloudConnectorRuleListResponseJSON `json:"-"`
-	APIResponseCloudConnector
 }
 
 // zoneCloudConnectorRuleListResponseJSON contains the JSON metadata for the struct
 // [ZoneCloudConnectorRuleListResponse]
 type zoneCloudConnectorRuleListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -265,11 +251,68 @@ func (r zoneCloudConnectorRuleListResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type ZoneCloudConnectorRuleListResponseSuccess bool
+
+const (
+	ZoneCloudConnectorRuleListResponseSuccessTrue ZoneCloudConnectorRuleListResponseSuccess = true
+)
+
+func (r ZoneCloudConnectorRuleListResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneCloudConnectorRuleListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type ZoneCloudConnectorRuleUpdateParams struct {
-	// List of Cloud Connector rules
-	Body []RuleItemParam `json:"body"`
+	Body []ZoneCloudConnectorRuleUpdateParamsBody `json:"body"`
 }
 
 func (r ZoneCloudConnectorRuleUpdateParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r.Body)
+}
+
+type ZoneCloudConnectorRuleUpdateParamsBody struct {
+	ID          param.Field[string] `json:"id"`
+	Description param.Field[string] `json:"description"`
+	Enabled     param.Field[bool]   `json:"enabled"`
+	Expression  param.Field[string] `json:"expression"`
+	// Parameters of Cloud Connector Rule
+	Parameters param.Field[ZoneCloudConnectorRuleUpdateParamsBodyParameters] `json:"parameters"`
+	// Cloud Provider type
+	Provider param.Field[ZoneCloudConnectorRuleUpdateParamsBodyProvider] `json:"provider"`
+}
+
+func (r ZoneCloudConnectorRuleUpdateParamsBody) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// Parameters of Cloud Connector Rule
+type ZoneCloudConnectorRuleUpdateParamsBodyParameters struct {
+	// Host to perform Cloud Connection to
+	Host param.Field[string] `json:"host"`
+}
+
+func (r ZoneCloudConnectorRuleUpdateParamsBodyParameters) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// Cloud Provider type
+type ZoneCloudConnectorRuleUpdateParamsBodyProvider string
+
+const (
+	ZoneCloudConnectorRuleUpdateParamsBodyProviderAwsS3        ZoneCloudConnectorRuleUpdateParamsBodyProvider = "aws_s3"
+	ZoneCloudConnectorRuleUpdateParamsBodyProviderCloudflareR2 ZoneCloudConnectorRuleUpdateParamsBodyProvider = "cloudflare_r2"
+	ZoneCloudConnectorRuleUpdateParamsBodyProviderGcpStorage   ZoneCloudConnectorRuleUpdateParamsBodyProvider = "gcp_storage"
+	ZoneCloudConnectorRuleUpdateParamsBodyProviderAzureStorage ZoneCloudConnectorRuleUpdateParamsBodyProvider = "azure_storage"
+)
+
+func (r ZoneCloudConnectorRuleUpdateParamsBodyProvider) IsKnown() bool {
+	switch r {
+	case ZoneCloudConnectorRuleUpdateParamsBodyProviderAwsS3, ZoneCloudConnectorRuleUpdateParamsBodyProviderCloudflareR2, ZoneCloudConnectorRuleUpdateParamsBodyProviderGcpStorage, ZoneCloudConnectorRuleUpdateParamsBodyProviderAzureStorage:
+		return true
+	}
+	return false
 }

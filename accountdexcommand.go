@@ -109,15 +109,23 @@ func (r *AccountDexCommandService) ListEligibleDevices(ctx context.Context, acco
 }
 
 type AccountDexCommandNewResponse struct {
-	Result AccountDexCommandNewResponseResult `json:"result"`
-	JSON   accountDexCommandNewResponseJSON   `json:"-"`
-	APIResponseCollectionDigitalExperienceMonitoring
+	Errors   []Item `json:"errors,required"`
+	Messages []Item `json:"messages,required"`
+	// Whether the API call was successful.
+	Success    AccountDexCommandNewResponseSuccess    `json:"success,required"`
+	Result     AccountDexCommandNewResponseResult     `json:"result"`
+	ResultInfo AccountDexCommandNewResponseResultInfo `json:"result_info"`
+	JSON       accountDexCommandNewResponseJSON       `json:"-"`
 }
 
 // accountDexCommandNewResponseJSON contains the JSON metadata for the struct
 // [AccountDexCommandNewResponse]
 type accountDexCommandNewResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -128,6 +136,21 @@ func (r *AccountDexCommandNewResponse) UnmarshalJSON(data []byte) (err error) {
 
 func (r accountDexCommandNewResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountDexCommandNewResponseSuccess bool
+
+const (
+	AccountDexCommandNewResponseSuccessTrue AccountDexCommandNewResponseSuccess = true
+)
+
+func (r AccountDexCommandNewResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountDexCommandNewResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountDexCommandNewResponseResult struct {
@@ -204,16 +227,55 @@ func (r AccountDexCommandNewResponseResultCommandsStatus) IsKnown() bool {
 	return false
 }
 
+type AccountDexCommandNewResponseResultInfo struct {
+	// Total number of results for the requested service.
+	Count float64 `json:"count"`
+	// Current page within paginated list of results.
+	Page float64 `json:"page"`
+	// Number of results per page of results.
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters.
+	TotalCount float64                                    `json:"total_count"`
+	JSON       accountDexCommandNewResponseResultInfoJSON `json:"-"`
+}
+
+// accountDexCommandNewResponseResultInfoJSON contains the JSON metadata for the
+// struct [AccountDexCommandNewResponseResultInfo]
+type accountDexCommandNewResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountDexCommandNewResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountDexCommandNewResponseResultInfoJSON) RawJSON() string {
+	return r.raw
+}
+
 type AccountDexCommandListResponse struct {
-	Result AccountDexCommandListResponseResult `json:"result"`
-	JSON   accountDexCommandListResponseJSON   `json:"-"`
-	APIResponseCollectionDigitalExperienceMonitoring
+	Errors   []Item `json:"errors,required"`
+	Messages []Item `json:"messages,required"`
+	// Whether the API call was successful.
+	Success    AccountDexCommandListResponseSuccess    `json:"success,required"`
+	Result     AccountDexCommandListResponseResult     `json:"result"`
+	ResultInfo AccountDexCommandListResponseResultInfo `json:"result_info"`
+	JSON       accountDexCommandListResponseJSON       `json:"-"`
 }
 
 // accountDexCommandListResponseJSON contains the JSON metadata for the struct
 // [AccountDexCommandListResponse]
 type accountDexCommandListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -224,6 +286,21 @@ func (r *AccountDexCommandListResponse) UnmarshalJSON(data []byte) (err error) {
 
 func (r accountDexCommandListResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountDexCommandListResponseSuccess bool
+
+const (
+	AccountDexCommandListResponseSuccessTrue AccountDexCommandListResponseSuccess = true
+)
+
+func (r AccountDexCommandListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountDexCommandListResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountDexCommandListResponseResult struct {
@@ -282,16 +359,55 @@ func (r accountDexCommandListResponseResultCommandJSON) RawJSON() string {
 	return r.raw
 }
 
+type AccountDexCommandListResponseResultInfo struct {
+	// Total number of results for the requested service.
+	Count float64 `json:"count"`
+	// Current page within paginated list of results.
+	Page float64 `json:"page"`
+	// Number of results per page of results.
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters.
+	TotalCount float64                                     `json:"total_count"`
+	JSON       accountDexCommandListResponseResultInfoJSON `json:"-"`
+}
+
+// accountDexCommandListResponseResultInfoJSON contains the JSON metadata for the
+// struct [AccountDexCommandListResponseResultInfo]
+type accountDexCommandListResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountDexCommandListResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountDexCommandListResponseResultInfoJSON) RawJSON() string {
+	return r.raw
+}
+
 type AccountDexCommandGetQuotaResponse struct {
-	Result AccountDexCommandGetQuotaResponseResult `json:"result"`
-	JSON   accountDexCommandGetQuotaResponseJSON   `json:"-"`
-	APIResponseCollectionDigitalExperienceMonitoring
+	Errors   []Item `json:"errors,required"`
+	Messages []Item `json:"messages,required"`
+	// Whether the API call was successful.
+	Success    AccountDexCommandGetQuotaResponseSuccess    `json:"success,required"`
+	Result     AccountDexCommandGetQuotaResponseResult     `json:"result"`
+	ResultInfo AccountDexCommandGetQuotaResponseResultInfo `json:"result_info"`
+	JSON       accountDexCommandGetQuotaResponseJSON       `json:"-"`
 }
 
 // accountDexCommandGetQuotaResponseJSON contains the JSON metadata for the struct
 // [AccountDexCommandGetQuotaResponse]
 type accountDexCommandGetQuotaResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -302,6 +418,21 @@ func (r *AccountDexCommandGetQuotaResponse) UnmarshalJSON(data []byte) (err erro
 
 func (r accountDexCommandGetQuotaResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountDexCommandGetQuotaResponseSuccess bool
+
+const (
+	AccountDexCommandGetQuotaResponseSuccessTrue AccountDexCommandGetQuotaResponseSuccess = true
+)
+
+func (r AccountDexCommandGetQuotaResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountDexCommandGetQuotaResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountDexCommandGetQuotaResponseResult struct {
@@ -332,16 +463,55 @@ func (r accountDexCommandGetQuotaResponseResultJSON) RawJSON() string {
 	return r.raw
 }
 
+type AccountDexCommandGetQuotaResponseResultInfo struct {
+	// Total number of results for the requested service.
+	Count float64 `json:"count"`
+	// Current page within paginated list of results.
+	Page float64 `json:"page"`
+	// Number of results per page of results.
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters.
+	TotalCount float64                                         `json:"total_count"`
+	JSON       accountDexCommandGetQuotaResponseResultInfoJSON `json:"-"`
+}
+
+// accountDexCommandGetQuotaResponseResultInfoJSON contains the JSON metadata for
+// the struct [AccountDexCommandGetQuotaResponseResultInfo]
+type accountDexCommandGetQuotaResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountDexCommandGetQuotaResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountDexCommandGetQuotaResponseResultInfoJSON) RawJSON() string {
+	return r.raw
+}
+
 type AccountDexCommandListEligibleDevicesResponse struct {
-	Result AccountDexCommandListEligibleDevicesResponseResult `json:"result"`
-	JSON   accountDexCommandListEligibleDevicesResponseJSON   `json:"-"`
-	APIResponseCollectionDigitalExperienceMonitoring
+	Errors   []Item `json:"errors,required"`
+	Messages []Item `json:"messages,required"`
+	// Whether the API call was successful.
+	Success    AccountDexCommandListEligibleDevicesResponseSuccess    `json:"success,required"`
+	Result     AccountDexCommandListEligibleDevicesResponseResult     `json:"result"`
+	ResultInfo AccountDexCommandListEligibleDevicesResponseResultInfo `json:"result_info"`
+	JSON       accountDexCommandListEligibleDevicesResponseJSON       `json:"-"`
 }
 
 // accountDexCommandListEligibleDevicesResponseJSON contains the JSON metadata for
 // the struct [AccountDexCommandListEligibleDevicesResponse]
 type accountDexCommandListEligibleDevicesResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -352,6 +522,21 @@ func (r *AccountDexCommandListEligibleDevicesResponse) UnmarshalJSON(data []byte
 
 func (r accountDexCommandListEligibleDevicesResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountDexCommandListEligibleDevicesResponseSuccess bool
+
+const (
+	AccountDexCommandListEligibleDevicesResponseSuccessTrue AccountDexCommandListEligibleDevicesResponseSuccess = true
+)
+
+func (r AccountDexCommandListEligibleDevicesResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountDexCommandListEligibleDevicesResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountDexCommandListEligibleDevicesResponseResult struct {
@@ -420,6 +605,37 @@ func (r *AccountDexCommandListEligibleDevicesResponseResultDevice) UnmarshalJSON
 }
 
 func (r accountDexCommandListEligibleDevicesResponseResultDeviceJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountDexCommandListEligibleDevicesResponseResultInfo struct {
+	// Total number of results for the requested service.
+	Count float64 `json:"count"`
+	// Current page within paginated list of results.
+	Page float64 `json:"page"`
+	// Number of results per page of results.
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters.
+	TotalCount float64                                                    `json:"total_count"`
+	JSON       accountDexCommandListEligibleDevicesResponseResultInfoJSON `json:"-"`
+}
+
+// accountDexCommandListEligibleDevicesResponseResultInfoJSON contains the JSON
+// metadata for the struct [AccountDexCommandListEligibleDevicesResponseResultInfo]
+type accountDexCommandListEligibleDevicesResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountDexCommandListEligibleDevicesResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountDexCommandListEligibleDevicesResponseResultInfoJSON) RawJSON() string {
 	return r.raw
 }
 

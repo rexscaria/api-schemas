@@ -100,14 +100,20 @@ func (r MetricItem) IsKnown() bool {
 }
 
 type QueryResponseSingle struct {
-	Result QueryResponseSingleResult `json:"result"`
-	JSON   queryResponseSingleJSON   `json:"-"`
-	APIResponseSingleSpectrumAnalytics
+	Errors   []SpectrumAnalyticsMessageItem `json:"errors,required"`
+	Messages []SpectrumAnalyticsMessageItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success QueryResponseSingleSuccess `json:"success,required"`
+	Result  QueryResponseSingleResult  `json:"result"`
+	JSON    queryResponseSingleJSON    `json:"-"`
 }
 
 // queryResponseSingleJSON contains the JSON metadata for the struct
 // [QueryResponseSingle]
 type queryResponseSingleJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -119,6 +125,21 @@ func (r *QueryResponseSingle) UnmarshalJSON(data []byte) (err error) {
 
 func (r queryResponseSingleJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type QueryResponseSingleSuccess bool
+
+const (
+	QueryResponseSingleSuccessTrue QueryResponseSingleSuccess = true
+)
+
+func (r QueryResponseSingleSuccess) IsKnown() bool {
+	switch r {
+	case QueryResponseSingleSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type QueryResponseSingleResult struct {

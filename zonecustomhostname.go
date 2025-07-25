@@ -112,7 +112,7 @@ func (r *ZoneCustomHostnameService) List(ctx context.Context, zoneID string, que
 }
 
 // Delete Custom Hostname (and any issued SSL certificates)
-func (r *ZoneCustomHostnameService) Delete(ctx context.Context, zoneID string, customHostnameID string, body ZoneCustomHostnameDeleteParams, opts ...option.RequestOption) (res *ZoneCustomHostnameDeleteResponse, err error) {
+func (r *ZoneCustomHostnameService) Delete(ctx context.Context, zoneID string, customHostnameID string, opts ...option.RequestOption) (res *ZoneCustomHostnameDeleteResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
@@ -123,7 +123,7 @@ func (r *ZoneCustomHostnameService) Delete(ctx context.Context, zoneID string, c
 		return
 	}
 	path := fmt.Sprintf("zones/%s/custom_hostnames/%s", zoneID, customHostnameID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
@@ -146,7 +146,7 @@ func (r CertificateAuthorityCustomHostname) IsKnown() bool {
 }
 
 type CustomHostname struct {
-	// Identifier
+	// Identifier.
 	ID string `json:"id,required"`
 	// The custom hostname that will point to your hostname via CNAME.
 	Hostname string            `json:"hostname,required"`
@@ -633,14 +633,20 @@ func (r CustomHostnameStatus) IsKnown() bool {
 }
 
 type CustomHostnameResponseSingle struct {
-	Result CustomHostname                   `json:"result"`
-	JSON   customHostnameResponseSingleJSON `json:"-"`
-	APIResponseSingleTlsCertificates
+	Errors   []MessagesTlsCertificatesItem `json:"errors,required"`
+	Messages []MessagesTlsCertificatesItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success CustomHostnameResponseSingleSuccess `json:"success,required"`
+	Result  CustomHostname                      `json:"result"`
+	JSON    customHostnameResponseSingleJSON    `json:"-"`
 }
 
 // customHostnameResponseSingleJSON contains the JSON metadata for the struct
 // [CustomHostnameResponseSingle]
 type customHostnameResponseSingleJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -652,6 +658,21 @@ func (r *CustomHostnameResponseSingle) UnmarshalJSON(data []byte) (err error) {
 
 func (r customHostnameResponseSingleJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type CustomHostnameResponseSingleSuccess bool
+
+const (
+	CustomHostnameResponseSingleSuccessTrue CustomHostnameResponseSingleSuccess = true
+)
+
+func (r CustomHostnameResponseSingleSuccess) IsKnown() bool {
+	switch r {
+	case CustomHostnameResponseSingleSuccessTrue:
+		return true
+	}
+	return false
 }
 
 // SSL properties used when creating the custom hostname.
@@ -826,15 +847,23 @@ func (r SslSettingsTls1_3) IsKnown() bool {
 }
 
 type ZoneCustomHostnameListResponse struct {
-	Result []CustomHostname                   `json:"result"`
-	JSON   zoneCustomHostnameListResponseJSON `json:"-"`
-	APIResponseCollectionTlsCertificates
+	Errors   []MessagesTlsCertificatesItem `json:"errors,required"`
+	Messages []MessagesTlsCertificatesItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success    ZoneCustomHostnameListResponseSuccess    `json:"success,required"`
+	Result     []CustomHostname                         `json:"result"`
+	ResultInfo ZoneCustomHostnameListResponseResultInfo `json:"result_info"`
+	JSON       zoneCustomHostnameListResponseJSON       `json:"-"`
 }
 
 // zoneCustomHostnameListResponseJSON contains the JSON metadata for the struct
 // [ZoneCustomHostnameListResponse]
 type zoneCustomHostnameListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -847,8 +876,54 @@ func (r zoneCustomHostnameListResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type ZoneCustomHostnameListResponseSuccess bool
+
+const (
+	ZoneCustomHostnameListResponseSuccessTrue ZoneCustomHostnameListResponseSuccess = true
+)
+
+func (r ZoneCustomHostnameListResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneCustomHostnameListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type ZoneCustomHostnameListResponseResultInfo struct {
+	// Total number of results for the requested service.
+	Count float64 `json:"count"`
+	// Current page within paginated list of results.
+	Page float64 `json:"page"`
+	// Number of results per page of results.
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters.
+	TotalCount float64                                      `json:"total_count"`
+	JSON       zoneCustomHostnameListResponseResultInfoJSON `json:"-"`
+}
+
+// zoneCustomHostnameListResponseResultInfoJSON contains the JSON metadata for the
+// struct [ZoneCustomHostnameListResponseResultInfo]
+type zoneCustomHostnameListResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZoneCustomHostnameListResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneCustomHostnameListResponseResultInfoJSON) RawJSON() string {
+	return r.raw
+}
+
 type ZoneCustomHostnameDeleteResponse struct {
-	// Identifier
+	// Identifier.
 	ID   string                               `json:"id"`
 	JSON zoneCustomHostnameDeleteResponseJSON `json:"-"`
 }
@@ -979,12 +1054,4 @@ func (r ZoneCustomHostnameListParamsSsl) IsKnown() bool {
 		return true
 	}
 	return false
-}
-
-type ZoneCustomHostnameDeleteParams struct {
-	Body interface{} `json:"body,required"`
-}
-
-func (r ZoneCustomHostnameDeleteParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
 }

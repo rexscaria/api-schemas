@@ -8,15 +8,12 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
-	"reflect"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
 	"github.com/rexscaria/api-schemas/internal/param"
 	"github.com/rexscaria/api-schemas/internal/requestconfig"
 	"github.com/rexscaria/api-schemas/option"
-	"github.com/rexscaria/api-schemas/shared"
-	"github.com/tidwall/gjson"
 )
 
 // AccountAIRunHfGoogleService contains methods and other services that help with
@@ -50,137 +47,7 @@ func (r *AccountAIRunHfGoogleService) ExecuteGemma7bIt(ctx context.Context, acco
 	return
 }
 
-type AccountAIRunHfGoogleExecuteGemma7bItResponse struct {
-	Result  AccountAIRunHfGoogleExecuteGemma7bItResponseResultUnion `json:"result" format:"binary"`
-	Success bool                                                    `json:"success"`
-	JSON    accountAIRunHfGoogleExecuteGemma7bItResponseJSON        `json:"-"`
-}
-
-// accountAIRunHfGoogleExecuteGemma7bItResponseJSON contains the JSON metadata for
-// the struct [AccountAIRunHfGoogleExecuteGemma7bItResponse]
-type accountAIRunHfGoogleExecuteGemma7bItResponseJSON struct {
-	Result      apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountAIRunHfGoogleExecuteGemma7bItResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountAIRunHfGoogleExecuteGemma7bItResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-// Union satisfied by [AccountAIRunHfGoogleExecuteGemma7bItResponseResultObject] or
-// [shared.UnionString].
-type AccountAIRunHfGoogleExecuteGemma7bItResponseResultUnion interface {
-	ImplementsAccountAIRunHfGoogleExecuteGemma7bItResponseResultUnion()
-}
-
-func init() {
-	apijson.RegisterUnion(
-		reflect.TypeOf((*AccountAIRunHfGoogleExecuteGemma7bItResponseResultUnion)(nil)).Elem(),
-		"",
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(AccountAIRunHfGoogleExecuteGemma7bItResponseResultObject{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.String,
-			Type:       reflect.TypeOf(shared.UnionString("")),
-		},
-	)
-}
-
-type AccountAIRunHfGoogleExecuteGemma7bItResponseResultObject struct {
-	// The generated text response from the model
-	Response string `json:"response,required"`
-	// An array of tool calls requests made during the response generation
-	ToolCalls []AccountAIRunHfGoogleExecuteGemma7bItResponseResultObjectToolCall `json:"tool_calls"`
-	// Usage statistics for the inference request
-	Usage AccountAIRunHfGoogleExecuteGemma7bItResponseResultObjectUsage `json:"usage"`
-	JSON  accountAIRunHfGoogleExecuteGemma7bItResponseResultObjectJSON  `json:"-"`
-}
-
-// accountAIRunHfGoogleExecuteGemma7bItResponseResultObjectJSON contains the JSON
-// metadata for the struct
-// [AccountAIRunHfGoogleExecuteGemma7bItResponseResultObject]
-type accountAIRunHfGoogleExecuteGemma7bItResponseResultObjectJSON struct {
-	Response    apijson.Field
-	ToolCalls   apijson.Field
-	Usage       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountAIRunHfGoogleExecuteGemma7bItResponseResultObject) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountAIRunHfGoogleExecuteGemma7bItResponseResultObjectJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r AccountAIRunHfGoogleExecuteGemma7bItResponseResultObject) ImplementsAccountAIRunHfGoogleExecuteGemma7bItResponseResultUnion() {
-}
-
-type AccountAIRunHfGoogleExecuteGemma7bItResponseResultObjectToolCall struct {
-	// The arguments passed to be passed to the tool call request
-	Arguments interface{} `json:"arguments"`
-	// The name of the tool to be called
-	Name string                                                               `json:"name"`
-	JSON accountAIRunHfGoogleExecuteGemma7bItResponseResultObjectToolCallJSON `json:"-"`
-}
-
-// accountAIRunHfGoogleExecuteGemma7bItResponseResultObjectToolCallJSON contains
-// the JSON metadata for the struct
-// [AccountAIRunHfGoogleExecuteGemma7bItResponseResultObjectToolCall]
-type accountAIRunHfGoogleExecuteGemma7bItResponseResultObjectToolCallJSON struct {
-	Arguments   apijson.Field
-	Name        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountAIRunHfGoogleExecuteGemma7bItResponseResultObjectToolCall) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountAIRunHfGoogleExecuteGemma7bItResponseResultObjectToolCallJSON) RawJSON() string {
-	return r.raw
-}
-
-// Usage statistics for the inference request
-type AccountAIRunHfGoogleExecuteGemma7bItResponseResultObjectUsage struct {
-	// Total number of tokens in output
-	CompletionTokens float64 `json:"completion_tokens"`
-	// Total number of tokens in input
-	PromptTokens float64 `json:"prompt_tokens"`
-	// Total number of input and output tokens
-	TotalTokens float64                                                           `json:"total_tokens"`
-	JSON        accountAIRunHfGoogleExecuteGemma7bItResponseResultObjectUsageJSON `json:"-"`
-}
-
-// accountAIRunHfGoogleExecuteGemma7bItResponseResultObjectUsageJSON contains the
-// JSON metadata for the struct
-// [AccountAIRunHfGoogleExecuteGemma7bItResponseResultObjectUsage]
-type accountAIRunHfGoogleExecuteGemma7bItResponseResultObjectUsageJSON struct {
-	CompletionTokens apijson.Field
-	PromptTokens     apijson.Field
-	TotalTokens      apijson.Field
-	raw              string
-	ExtraFields      map[string]apijson.Field
-}
-
-func (r *AccountAIRunHfGoogleExecuteGemma7bItResponseResultObjectUsage) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountAIRunHfGoogleExecuteGemma7bItResponseResultObjectUsageJSON) RawJSON() string {
-	return r.raw
-}
+type AccountAIRunHfGoogleExecuteGemma7bItResponse = interface{}
 
 type AccountAIRunHfGoogleExecuteGemma7bItParams struct {
 	QueueRequest param.Field[string]                                 `query:"queueRequest"`

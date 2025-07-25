@@ -32,7 +32,7 @@ func TestAccountR2BucketLockGetWithOptionalParams(t *testing.T) {
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		"example-bucket",
 		cfrex.AccountR2BucketLockGetParams{
-			CfR2Jurisdiction: cfrex.F(cfrex.AccountR2BucketLockGetParamsCfR2JurisdictionDefault),
+			Jurisdiction: cfrex.F(cfrex.AccountR2BucketLockGetParamsCfR2JurisdictionDefault),
 		},
 	)
 	if err != nil {
@@ -72,7 +72,7 @@ func TestAccountR2BucketLockUpdateWithOptionalParams(t *testing.T) {
 				Enabled: cfrex.F(true),
 				Prefix:  cfrex.F("prefix"),
 			}}),
-			CfR2Jurisdiction: cfrex.F(cfrex.AccountR2BucketLockUpdateParamsCfR2JurisdictionDefault),
+			Jurisdiction: cfrex.F(cfrex.AccountR2BucketLockUpdateParamsCfR2JurisdictionDefault),
 		},
 	)
 	if err != nil {

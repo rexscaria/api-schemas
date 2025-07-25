@@ -65,41 +65,23 @@ func (r *ZonePageShieldService) Update(ctx context.Context, zoneID string, body 
 	return
 }
 
-type GetResponseCollection struct {
-	Result interface{}               `json:"result,nullable"`
-	JSON   getResponseCollectionJSON `json:"-"`
-	ResponseCommonShield
-}
-
-// getResponseCollectionJSON contains the JSON metadata for the struct
-// [GetResponseCollection]
-type getResponseCollectionJSON struct {
-	Result      apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *GetResponseCollection) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r getResponseCollectionJSON) RawJSON() string {
-	return r.raw
-}
-
 type MessagesPageShieldItem struct {
-	Code    int64                      `json:"code,required"`
-	Message string                     `json:"message,required"`
-	JSON    messagesPageShieldItemJSON `json:"-"`
+	Code             int64                        `json:"code,required"`
+	Message          string                       `json:"message,required"`
+	DocumentationURL string                       `json:"documentation_url"`
+	Source           MessagesPageShieldItemSource `json:"source"`
+	JSON             messagesPageShieldItemJSON   `json:"-"`
 }
 
 // messagesPageShieldItemJSON contains the JSON metadata for the struct
 // [MessagesPageShieldItem]
 type messagesPageShieldItemJSON struct {
-	Code        apijson.Field
-	Message     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
 }
 
 func (r *MessagesPageShieldItem) UnmarshalJSON(data []byte) (err error) {
@@ -110,56 +92,42 @@ func (r messagesPageShieldItemJSON) RawJSON() string {
 	return r.raw
 }
 
-type ResponseCommonShield struct {
-	// Whether the API call was successful
-	Success  ResponseCommonShieldSuccess `json:"success,required"`
-	Errors   []MessagesPageShieldItem    `json:"errors"`
-	Messages []MessagesPageShieldItem    `json:"messages"`
-	JSON     responseCommonShieldJSON    `json:"-"`
+type MessagesPageShieldItemSource struct {
+	Pointer string                           `json:"pointer"`
+	JSON    messagesPageShieldItemSourceJSON `json:"-"`
 }
 
-// responseCommonShieldJSON contains the JSON metadata for the struct
-// [ResponseCommonShield]
-type responseCommonShieldJSON struct {
-	Success     apijson.Field
-	Errors      apijson.Field
-	Messages    apijson.Field
+// messagesPageShieldItemSourceJSON contains the JSON metadata for the struct
+// [MessagesPageShieldItemSource]
+type messagesPageShieldItemSourceJSON struct {
+	Pointer     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *ResponseCommonShield) UnmarshalJSON(data []byte) (err error) {
+func (r *MessagesPageShieldItemSource) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r responseCommonShieldJSON) RawJSON() string {
+func (r messagesPageShieldItemSourceJSON) RawJSON() string {
 	return r.raw
 }
 
-// Whether the API call was successful
-type ResponseCommonShieldSuccess bool
-
-const (
-	ResponseCommonShieldSuccessTrue ResponseCommonShieldSuccess = true
-)
-
-func (r ResponseCommonShieldSuccess) IsKnown() bool {
-	switch r {
-	case ResponseCommonShieldSuccessTrue:
-		return true
-	}
-	return false
-}
-
 type ZonePageShieldGetResponse struct {
-	Result ZonePageShieldGetResponseResult `json:"result"`
-	JSON   zonePageShieldGetResponseJSON   `json:"-"`
-	GetResponseCollection
+	// Whether the API call was successful
+	Success  ZonePageShieldGetResponseSuccess `json:"success,required"`
+	Errors   []MessagesPageShieldItem         `json:"errors"`
+	Messages []MessagesPageShieldItem         `json:"messages"`
+	Result   ZonePageShieldGetResponseResult  `json:"result,nullable"`
+	JSON     zonePageShieldGetResponseJSON    `json:"-"`
 }
 
 // zonePageShieldGetResponseJSON contains the JSON metadata for the struct
 // [ZonePageShieldGetResponse]
 type zonePageShieldGetResponseJSON struct {
+	Success     apijson.Field
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -171,6 +139,21 @@ func (r *ZonePageShieldGetResponse) UnmarshalJSON(data []byte) (err error) {
 
 func (r zonePageShieldGetResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful
+type ZonePageShieldGetResponseSuccess bool
+
+const (
+	ZonePageShieldGetResponseSuccessTrue ZonePageShieldGetResponseSuccess = true
+)
+
+func (r ZonePageShieldGetResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZonePageShieldGetResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type ZonePageShieldGetResponseResult struct {
@@ -206,14 +189,20 @@ func (r zonePageShieldGetResponseResultJSON) RawJSON() string {
 }
 
 type ZonePageShieldUpdateResponse struct {
-	Result interface{}                      `json:"result"`
-	JSON   zonePageShieldUpdateResponseJSON `json:"-"`
-	ResponseCommonShield
+	// Whether the API call was successful
+	Success  ZonePageShieldUpdateResponseSuccess `json:"success,required"`
+	Errors   []MessagesPageShieldItem            `json:"errors"`
+	Messages []MessagesPageShieldItem            `json:"messages"`
+	Result   ZonePageShieldUpdateResponseResult  `json:"result"`
+	JSON     zonePageShieldUpdateResponseJSON    `json:"-"`
 }
 
 // zonePageShieldUpdateResponseJSON contains the JSON metadata for the struct
 // [ZonePageShieldUpdateResponse]
 type zonePageShieldUpdateResponseJSON struct {
+	Success     apijson.Field
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -224,6 +213,53 @@ func (r *ZonePageShieldUpdateResponse) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (r zonePageShieldUpdateResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful
+type ZonePageShieldUpdateResponseSuccess bool
+
+const (
+	ZonePageShieldUpdateResponseSuccessTrue ZonePageShieldUpdateResponseSuccess = true
+)
+
+func (r ZonePageShieldUpdateResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZonePageShieldUpdateResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type ZonePageShieldUpdateResponseResult struct {
+	// When true, indicates that Page Shield is enabled.
+	Enabled bool `json:"enabled,required"`
+	// The timestamp of when Page Shield was last updated.
+	UpdatedAt string `json:"updated_at,required"`
+	// When true, CSP reports will be sent to
+	// https://csp-reporting.cloudflare.com/cdn-cgi/script_monitor/report
+	UseCloudflareReportingEndpoint bool `json:"use_cloudflare_reporting_endpoint,required"`
+	// When true, the paths associated with connections URLs will also be analyzed.
+	UseConnectionURLPath bool                                   `json:"use_connection_url_path,required"`
+	JSON                 zonePageShieldUpdateResponseResultJSON `json:"-"`
+}
+
+// zonePageShieldUpdateResponseResultJSON contains the JSON metadata for the struct
+// [ZonePageShieldUpdateResponseResult]
+type zonePageShieldUpdateResponseResultJSON struct {
+	Enabled                        apijson.Field
+	UpdatedAt                      apijson.Field
+	UseCloudflareReportingEndpoint apijson.Field
+	UseConnectionURLPath           apijson.Field
+	raw                            string
+	ExtraFields                    map[string]apijson.Field
+}
+
+func (r *ZonePageShieldUpdateResponseResult) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zonePageShieldUpdateResponseResultJSON) RawJSON() string {
 	return r.raw
 }
 

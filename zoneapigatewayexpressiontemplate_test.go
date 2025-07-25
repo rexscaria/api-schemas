@@ -29,7 +29,7 @@ func TestZoneAPIGatewayExpressionTemplateGenerateFallthrough(t *testing.T) {
 	)
 	_, err := client.Zones.APIGateway.ExpressionTemplate.GenerateFallthrough(
 		context.TODO(),
-		"zone_id",
+		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.ZoneAPIGatewayExpressionTemplateGenerateFallthroughParams{
 			Hosts: cfrex.F([]string{"{zone}.domain1.tld", "domain2.tld"}),
 		},

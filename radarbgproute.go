@@ -57,8 +57,8 @@ func (r *RadarBgpRouteService) GetPrefixToAs(ctx context.Context, query RadarBgp
 	return
 }
 
-// Retrieves realtime routes for prefixes using public realtime data collectors
-// (RouteViews and RIPE RIS).
+// Retrieves real-time BGP routes for a prefix, using public real-time data
+// collectors (RouteViews and RIPE RIS).
 func (r *RadarBgpRouteService) GetRealtimeRoutes(ctx context.Context, query RadarBgpRouteGetRealtimeRoutesParams, opts ...option.RequestOption) (res *RadarBgpRouteGetRealtimeRoutesResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "radar/bgp/routes/realtime"
@@ -122,23 +122,23 @@ func (r radarBgpRouteListAsesResponseResultJSON) RawJSON() string {
 
 type RadarBgpRouteListAsesResponseResultAsn struct {
 	Asn int64 `json:"asn,required"`
-	// AS's customer cone size
+	// AS's customer cone size.
 	ConeSize int64 `json:"coneSize,required"`
-	// 2-letter country code for the AS's registration country
+	// Alpha-2 code for the AS's registration country.
 	Country string `json:"country,required"`
-	// number of IPv4 addresses originated by the AS
+	// Number of IPv4 addresses originated by the AS.
 	Ipv4Count int64 `json:"ipv4Count,required"`
-	// number of IPv6 addresses originated by the AS
+	// Number of IPv6 addresses originated by the AS.
 	Ipv6Count string `json:"ipv6Count,required"`
-	// name of the AS
+	// Name of the AS.
 	Name string `json:"name,required"`
-	// number of total IP prefixes originated by the AS
+	// Number of total IP prefixes originated by the AS.
 	PfxsCount int64 `json:"pfxsCount,required"`
-	// number of RPKI invalid prefixes originated by the AS
+	// Number of RPKI invalid prefixes originated by the AS.
 	RpkiInvalid int64 `json:"rpkiInvalid,required"`
-	// number of RPKI unknown prefixes originated by the AS
+	// Number of RPKI unknown prefixes originated by the AS.
 	RpkiUnknown int64 `json:"rpkiUnknown,required"`
-	// number of RPKI valid prefixes originated by the AS
+	// Number of RPKI valid prefixes originated by the AS.
 	RpkiValid int64                                      `json:"rpkiValid,required"`
 	JSON      radarBgpRouteListAsesResponseResultAsnJSON `json:"-"`
 }
@@ -169,11 +169,11 @@ func (r radarBgpRouteListAsesResponseResultAsnJSON) RawJSON() string {
 }
 
 type RadarBgpRouteListAsesResponseResultMeta struct {
-	// the timestamp of when the data is generated
+	// The timestamp of when the data is generated.
 	DataTime string `json:"dataTime,required"`
-	// the timestamp of the query
+	// The timestamp of the query.
 	QueryTime string `json:"queryTime,required"`
-	// total number of route collector peers used to generate this data
+	// Total number of route collector peers used to generate this data.
 	TotalPeers int64                                       `json:"totalPeers,required"`
 	JSON       radarBgpRouteListAsesResponseResultMetaJSON `json:"-"`
 }
@@ -460,16 +460,26 @@ func (r radarBgpRouteGetRealtimeRoutesResponseResultJSON) RawJSON() string {
 }
 
 type RadarBgpRouteGetRealtimeRoutesResponseResultMeta struct {
+	AsnInfo    []RadarBgpRouteGetRealtimeRoutesResponseResultMetaAsnInfo   `json:"asn_info,required"`
 	Collectors []RadarBgpRouteGetRealtimeRoutesResponseResultMetaCollector `json:"collectors,required"`
-	JSON       radarBgpRouteGetRealtimeRoutesResponseResultMetaJSON        `json:"-"`
+	// The most recent data timestamp for from the real-time sources.
+	DataTime      string                                                         `json:"data_time,required"`
+	PrefixOrigins []RadarBgpRouteGetRealtimeRoutesResponseResultMetaPrefixOrigin `json:"prefix_origins,required"`
+	// The timestamp of this query.
+	QueryTime string                                               `json:"query_time,required"`
+	JSON      radarBgpRouteGetRealtimeRoutesResponseResultMetaJSON `json:"-"`
 }
 
 // radarBgpRouteGetRealtimeRoutesResponseResultMetaJSON contains the JSON metadata
 // for the struct [RadarBgpRouteGetRealtimeRoutesResponseResultMeta]
 type radarBgpRouteGetRealtimeRoutesResponseResultMetaJSON struct {
-	Collectors  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	AsnInfo       apijson.Field
+	Collectors    apijson.Field
+	DataTime      apijson.Field
+	PrefixOrigins apijson.Field
+	QueryTime     apijson.Field
+	raw           string
+	ExtraFields   map[string]apijson.Field
 }
 
 func (r *RadarBgpRouteGetRealtimeRoutesResponseResultMeta) UnmarshalJSON(data []byte) (err error) {
@@ -480,16 +490,57 @@ func (r radarBgpRouteGetRealtimeRoutesResponseResultMetaJSON) RawJSON() string {
 	return r.raw
 }
 
+type RadarBgpRouteGetRealtimeRoutesResponseResultMetaAsnInfo struct {
+	// Name of the autonomous system.
+	AsName string `json:"as_name,required"`
+	// AS number.
+	Asn int64 `json:"asn,required"`
+	// Alpha-2 code for the AS's registration country.
+	CountryCode string `json:"country_code,required"`
+	// Organization ID.
+	OrgID string `json:"org_id,required"`
+	// Organization name.
+	OrgName string                                                      `json:"org_name,required"`
+	JSON    radarBgpRouteGetRealtimeRoutesResponseResultMetaAsnInfoJSON `json:"-"`
+}
+
+// radarBgpRouteGetRealtimeRoutesResponseResultMetaAsnInfoJSON contains the JSON
+// metadata for the struct
+// [RadarBgpRouteGetRealtimeRoutesResponseResultMetaAsnInfo]
+type radarBgpRouteGetRealtimeRoutesResponseResultMetaAsnInfoJSON struct {
+	AsName      apijson.Field
+	Asn         apijson.Field
+	CountryCode apijson.Field
+	OrgID       apijson.Field
+	OrgName     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *RadarBgpRouteGetRealtimeRoutesResponseResultMetaAsnInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarBgpRouteGetRealtimeRoutesResponseResultMetaAsnInfoJSON) RawJSON() string {
+	return r.raw
+}
+
 type RadarBgpRouteGetRealtimeRoutesResponseResultMetaCollector struct {
-	// public route collector ID
+	// Public route collector ID.
 	Collector string `json:"collector,required"`
-	// latest realtime stream timestamp for this collector
+	// Latest real-time stream timestamp for this collector.
 	LatestRealtimeTs string `json:"latest_realtime_ts,required"`
-	// latest RIB dump MRT file timestamp for this collector
+	// Latest RIB dump MRT file timestamp for this collector.
 	LatestRibTs string `json:"latest_rib_ts,required"`
-	// latest BGP updates MRT file timestamp for this collector
-	LatestUpdatesTs string                                                        `json:"latest_updates_ts,required"`
-	JSON            radarBgpRouteGetRealtimeRoutesResponseResultMetaCollectorJSON `json:"-"`
+	// Latest BGP updates MRT file timestamp for this collector.
+	LatestUpdatesTs string `json:"latest_updates_ts,required"`
+	// Total number of collector peers used from this collector.
+	PeersCount int64 `json:"peers_count,required"`
+	// Total number of collector peers used from this collector for IPv4 prefixes.
+	PeersV4Count int64 `json:"peers_v4_count,required"`
+	// Total number of collector peers used from this collector for IPv6 prefixes.
+	PeersV6Count int64                                                         `json:"peers_v6_count,required"`
+	JSON         radarBgpRouteGetRealtimeRoutesResponseResultMetaCollectorJSON `json:"-"`
 }
 
 // radarBgpRouteGetRealtimeRoutesResponseResultMetaCollectorJSON contains the JSON
@@ -500,6 +551,9 @@ type radarBgpRouteGetRealtimeRoutesResponseResultMetaCollectorJSON struct {
 	LatestRealtimeTs apijson.Field
 	LatestRibTs      apijson.Field
 	LatestUpdatesTs  apijson.Field
+	PeersCount       apijson.Field
+	PeersV4Count     apijson.Field
+	PeersV6Count     apijson.Field
 	raw              string
 	ExtraFields      map[string]apijson.Field
 }
@@ -512,16 +566,54 @@ func (r radarBgpRouteGetRealtimeRoutesResponseResultMetaCollectorJSON) RawJSON()
 	return r.raw
 }
 
-type RadarBgpRouteGetRealtimeRoutesResponseResultRoute struct {
-	// AS-level path for this route, from collector to origin
-	AsPath []int64 `json:"as_path,required"`
-	// public collector ID for this route
-	Collector string `json:"collector,required"`
-	// BGP community values
-	Communities []string `json:"communities,required"`
-	// IP prefix of this query
+type RadarBgpRouteGetRealtimeRoutesResponseResultMetaPrefixOrigin struct {
+	// Origin ASN.
+	Origin int64 `json:"origin,required"`
+	// IP prefix of this query.
 	Prefix string `json:"prefix,required"`
-	// latest timestamp of change for this route
+	// Prefix-origin RPKI validation: valid, invalid, unknown.
+	RpkiValidation string `json:"rpki_validation,required"`
+	// Total number of peers.
+	TotalPeers int64 `json:"total_peers,required"`
+	// Total number of peers seeing this prefix.
+	TotalVisible int64 `json:"total_visible,required"`
+	// Ratio of peers seeing this prefix to total number of peers.
+	Visibility float64                                                          `json:"visibility,required"`
+	JSON       radarBgpRouteGetRealtimeRoutesResponseResultMetaPrefixOriginJSON `json:"-"`
+}
+
+// radarBgpRouteGetRealtimeRoutesResponseResultMetaPrefixOriginJSON contains the
+// JSON metadata for the struct
+// [RadarBgpRouteGetRealtimeRoutesResponseResultMetaPrefixOrigin]
+type radarBgpRouteGetRealtimeRoutesResponseResultMetaPrefixOriginJSON struct {
+	Origin         apijson.Field
+	Prefix         apijson.Field
+	RpkiValidation apijson.Field
+	TotalPeers     apijson.Field
+	TotalVisible   apijson.Field
+	Visibility     apijson.Field
+	raw            string
+	ExtraFields    map[string]apijson.Field
+}
+
+func (r *RadarBgpRouteGetRealtimeRoutesResponseResultMetaPrefixOrigin) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarBgpRouteGetRealtimeRoutesResponseResultMetaPrefixOriginJSON) RawJSON() string {
+	return r.raw
+}
+
+type RadarBgpRouteGetRealtimeRoutesResponseResultRoute struct {
+	// AS-level path for this route, from collector to origin.
+	AsPath []int64 `json:"as_path,required"`
+	// Public collector ID for this route.
+	Collector string `json:"collector,required"`
+	// BGP community values.
+	Communities []string `json:"communities,required"`
+	// IP prefix of this query.
+	Prefix string `json:"prefix,required"`
+	// Latest timestamp of change for this route.
 	Timestamp string                                                `json:"timestamp,required"`
 	JSON      radarBgpRouteGetRealtimeRoutesResponseResultRouteJSON `json:"-"`
 }
@@ -677,7 +769,7 @@ type RadarBgpRouteListAsesParams struct {
 	Format param.Field[RadarBgpRouteListAsesParamsFormat] `query:"format"`
 	// Limits the number of objects returned in the response.
 	Limit param.Field[int64] `query:"limit"`
-	// Location alpha-2 code.
+	// Filters results by location. Specify an alpha-2 location code.
 	Location param.Field[string] `query:"location"`
 	// Sorts results by the specified field.
 	SortBy param.Field[RadarBgpRouteListAsesParamsSortBy] `query:"sortBy"`
@@ -872,11 +964,12 @@ func (r RadarBgpRouteGetRealtimeRoutesParamsFormat) IsKnown() bool {
 }
 
 type RadarBgpRouteGetStatsParams struct {
-	// Single Autonomous System Number (ASN) as integer.
+	// Filters results by Autonomous System. Specify a single Autonomous System Number
+	// (ASN) as integer.
 	Asn param.Field[int64] `query:"asn"`
 	// Format in which results will be returned.
 	Format param.Field[RadarBgpRouteGetStatsParamsFormat] `query:"format"`
-	// Location alpha-2 code.
+	// Filters results by location. Specify an alpha-2 location code.
 	Location param.Field[string] `query:"location"`
 }
 

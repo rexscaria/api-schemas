@@ -98,7 +98,7 @@ func (r *AccountStreamLiveInputService) List(ctx context.Context, accountID stri
 
 // Prevents a live input from being streamed to and makes the live input
 // inaccessible to any future API calls.
-func (r *AccountStreamLiveInputService) Delete(ctx context.Context, accountID string, liveInputIdentifier string, body AccountStreamLiveInputDeleteParams, opts ...option.RequestOption) (err error) {
+func (r *AccountStreamLiveInputService) Delete(ctx context.Context, accountID string, liveInputIdentifier string, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if accountID == "" {
@@ -110,20 +110,26 @@ func (r *AccountStreamLiveInputService) Delete(ctx context.Context, accountID st
 		return
 	}
 	path := fmt.Sprintf("accounts/%s/stream/live_inputs/%s", accountID, liveInputIdentifier)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, nil, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return
 }
 
 type LiveInputResponseSingle struct {
+	Errors   []StreamMessages `json:"errors,required"`
+	Messages []StreamMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success LiveInputResponseSingleSuccess `json:"success,required"`
 	// Details about a live input.
 	Result LiveInputResponseSingleResult `json:"result"`
 	JSON   liveInputResponseSingleJSON   `json:"-"`
-	APIResponseSingleStream
 }
 
 // liveInputResponseSingleJSON contains the JSON metadata for the struct
 // [LiveInputResponseSingle]
 type liveInputResponseSingleJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -135,6 +141,21 @@ func (r *LiveInputResponseSingle) UnmarshalJSON(data []byte) (err error) {
 
 func (r liveInputResponseSingleJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type LiveInputResponseSingleSuccess bool
+
+const (
+	LiveInputResponseSingleSuccessTrue LiveInputResponseSingleSuccess = true
+)
+
+func (r LiveInputResponseSingleSuccess) IsKnown() bool {
+	switch r {
+	case LiveInputResponseSingleSuccessTrue:
+		return true
+	}
+	return false
 }
 
 // Details about a live input.
@@ -475,14 +496,20 @@ func (r RecordingSettingsParam) MarshalJSON() (data []byte, err error) {
 }
 
 type AccountStreamLiveInputListResponse struct {
-	Result AccountStreamLiveInputListResponseResult `json:"result"`
-	JSON   accountStreamLiveInputListResponseJSON   `json:"-"`
-	APIResponseStream
+	Errors   []StreamMessages `json:"errors,required"`
+	Messages []StreamMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountStreamLiveInputListResponseSuccess `json:"success,required"`
+	Result  AccountStreamLiveInputListResponseResult  `json:"result"`
+	JSON    accountStreamLiveInputListResponseJSON    `json:"-"`
 }
 
 // accountStreamLiveInputListResponseJSON contains the JSON metadata for the struct
 // [AccountStreamLiveInputListResponse]
 type accountStreamLiveInputListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -494,6 +521,21 @@ func (r *AccountStreamLiveInputListResponse) UnmarshalJSON(data []byte) (err err
 
 func (r accountStreamLiveInputListResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountStreamLiveInputListResponseSuccess bool
+
+const (
+	AccountStreamLiveInputListResponseSuccessTrue AccountStreamLiveInputListResponseSuccess = true
+)
+
+func (r AccountStreamLiveInputListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountStreamLiveInputListResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountStreamLiveInputListResponseResult struct {
@@ -619,12 +661,4 @@ func (r AccountStreamLiveInputListParams) URLQuery() (v url.Values) {
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
-}
-
-type AccountStreamLiveInputDeleteParams struct {
-	Body interface{} `json:"body,required"`
-}
-
-func (r AccountStreamLiveInputDeleteParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
 }

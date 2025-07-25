@@ -107,7 +107,7 @@ func TestZoneLoadBalancerNewWithOptionalParams(t *testing.T) {
 					SessionAffinity: cfrex.F(cfrex.SessionAffinityCookie),
 					SessionAffinityAttributes: cfrex.F(cfrex.SessionAffinityAttributesParam{
 						DrainDuration:        cfrex.F(100.000000),
-						Headers:              cfrex.F([]string{"_1K--W2kIFj1"}),
+						Headers:              cfrex.F([]string{"x"}),
 						RequireAllHeaders:    cfrex.F(true),
 						Samesite:             cfrex.F(cfrex.SessionAffinityAttributesSamesiteAuto),
 						Secure:               cfrex.F(cfrex.SessionAffinityAttributesSecureAuto),
@@ -123,7 +123,7 @@ func TestZoneLoadBalancerNewWithOptionalParams(t *testing.T) {
 			SessionAffinity: cfrex.F(cfrex.SessionAffinityCookie),
 			SessionAffinityAttributes: cfrex.F(cfrex.SessionAffinityAttributesParam{
 				DrainDuration:        cfrex.F(100.000000),
-				Headers:              cfrex.F([]string{"_1K--W2kIFj1"}),
+				Headers:              cfrex.F([]string{"x"}),
 				RequireAllHeaders:    cfrex.F(true),
 				Samesite:             cfrex.F(cfrex.SessionAffinityAttributesSamesiteAuto),
 				Secure:               cfrex.F(cfrex.SessionAffinityAttributesSecureAuto),
@@ -267,7 +267,7 @@ func TestZoneLoadBalancerUpdateWithOptionalParams(t *testing.T) {
 					SessionAffinity: cfrex.F(cfrex.SessionAffinityCookie),
 					SessionAffinityAttributes: cfrex.F(cfrex.SessionAffinityAttributesParam{
 						DrainDuration:        cfrex.F(100.000000),
-						Headers:              cfrex.F([]string{"_1K--W2kIFj1"}),
+						Headers:              cfrex.F([]string{"x"}),
 						RequireAllHeaders:    cfrex.F(true),
 						Samesite:             cfrex.F(cfrex.SessionAffinityAttributesSamesiteAuto),
 						Secure:               cfrex.F(cfrex.SessionAffinityAttributesSecureAuto),
@@ -283,7 +283,7 @@ func TestZoneLoadBalancerUpdateWithOptionalParams(t *testing.T) {
 			SessionAffinity: cfrex.F(cfrex.SessionAffinityCookie),
 			SessionAffinityAttributes: cfrex.F(cfrex.SessionAffinityAttributesParam{
 				DrainDuration:        cfrex.F(100.000000),
-				Headers:              cfrex.F([]string{"_1K--W2kIFj1"}),
+				Headers:              cfrex.F([]string{"x"}),
 				RequireAllHeaders:    cfrex.F(true),
 				Samesite:             cfrex.F(cfrex.SessionAffinityAttributesSamesiteAuto),
 				Secure:               cfrex.F(cfrex.SessionAffinityAttributesSecureAuto),
@@ -345,9 +345,6 @@ func TestZoneLoadBalancerDelete(t *testing.T) {
 		context.TODO(),
 		"699d98642c564d2e855e9661899b7252",
 		"699d98642c564d2e855e9661899b7252",
-		cfrex.ZoneLoadBalancerDeleteParams{
-			Body: map[string]interface{}{},
-		},
 	)
 	if err != nil {
 		var apierr *cfrex.Error
@@ -453,7 +450,7 @@ func TestZoneLoadBalancerPatchWithOptionalParams(t *testing.T) {
 					SessionAffinity: cfrex.F(cfrex.SessionAffinityCookie),
 					SessionAffinityAttributes: cfrex.F(cfrex.SessionAffinityAttributesParam{
 						DrainDuration:        cfrex.F(100.000000),
-						Headers:              cfrex.F([]string{"_1K--W2kIFj1"}),
+						Headers:              cfrex.F([]string{"x"}),
 						RequireAllHeaders:    cfrex.F(true),
 						Samesite:             cfrex.F(cfrex.SessionAffinityAttributesSamesiteAuto),
 						Secure:               cfrex.F(cfrex.SessionAffinityAttributesSecureAuto),
@@ -469,7 +466,7 @@ func TestZoneLoadBalancerPatchWithOptionalParams(t *testing.T) {
 			SessionAffinity: cfrex.F(cfrex.SessionAffinityCookie),
 			SessionAffinityAttributes: cfrex.F(cfrex.SessionAffinityAttributesParam{
 				DrainDuration:        cfrex.F(100.000000),
-				Headers:              cfrex.F([]string{"_1K--W2kIFj1"}),
+				Headers:              cfrex.F([]string{"x"}),
 				RequireAllHeaders:    cfrex.F(true),
 				Samesite:             cfrex.F(cfrex.SessionAffinityAttributesSamesiteAuto),
 				Secure:               cfrex.F(cfrex.SessionAffinityAttributesSecureAuto),

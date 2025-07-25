@@ -64,7 +64,7 @@ func (r *ZoneAPIGatewayConfigurationService) Update(ctx context.Context, zoneID 
 type APIResponseAPIShield struct {
 	Errors   []MessagesAPIShieldItem `json:"errors,required"`
 	Messages []MessagesAPIShieldItem `json:"messages,required"`
-	// Whether the API call was successful
+	// Whether the API call was successful.
 	Success APIResponseAPIShieldSuccess `json:"success,required"`
 	JSON    apiResponseAPIShieldJSON    `json:"-"`
 }
@@ -87,7 +87,7 @@ func (r apiResponseAPIShieldJSON) RawJSON() string {
 	return r.raw
 }
 
-// Whether the API call was successful
+// Whether the API call was successful.
 type APIResponseAPIShieldSuccess bool
 
 const (
@@ -372,18 +372,22 @@ func (r ConfigurationAuthIDCharacteristicsAPIShieldAuthIDCharacteristicJwtClaimP
 }
 
 type MessagesAPIShieldItem struct {
-	Code    int64                     `json:"code,required"`
-	Message string                    `json:"message,required"`
-	JSON    messagesAPIShieldItemJSON `json:"-"`
+	Code             int64                       `json:"code,required"`
+	Message          string                      `json:"message,required"`
+	DocumentationURL string                      `json:"documentation_url"`
+	Source           MessagesAPIShieldItemSource `json:"source"`
+	JSON             messagesAPIShieldItemJSON   `json:"-"`
 }
 
 // messagesAPIShieldItemJSON contains the JSON metadata for the struct
 // [MessagesAPIShieldItem]
 type messagesAPIShieldItemJSON struct {
-	Code        apijson.Field
-	Message     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
 }
 
 func (r *MessagesAPIShieldItem) UnmarshalJSON(data []byte) (err error) {
@@ -394,16 +398,43 @@ func (r messagesAPIShieldItemJSON) RawJSON() string {
 	return r.raw
 }
 
+type MessagesAPIShieldItemSource struct {
+	Pointer string                          `json:"pointer"`
+	JSON    messagesAPIShieldItemSourceJSON `json:"-"`
+}
+
+// messagesAPIShieldItemSourceJSON contains the JSON metadata for the struct
+// [MessagesAPIShieldItemSource]
+type messagesAPIShieldItemSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *MessagesAPIShieldItemSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r messagesAPIShieldItemSourceJSON) RawJSON() string {
+	return r.raw
+}
+
 type ZoneAPIGatewayConfigurationGetResponse struct {
-	Result Configuration                              `json:"result,required"`
-	JSON   zoneAPIGatewayConfigurationGetResponseJSON `json:"-"`
-	APIResponseAPIShield
+	Errors   []MessagesAPIShieldItem `json:"errors,required"`
+	Messages []MessagesAPIShieldItem `json:"messages,required"`
+	Result   Configuration           `json:"result,required"`
+	// Whether the API call was successful.
+	Success ZoneAPIGatewayConfigurationGetResponseSuccess `json:"success,required"`
+	JSON    zoneAPIGatewayConfigurationGetResponseJSON    `json:"-"`
 }
 
 // zoneAPIGatewayConfigurationGetResponseJSON contains the JSON metadata for the
 // struct [ZoneAPIGatewayConfigurationGetResponse]
 type zoneAPIGatewayConfigurationGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -414,6 +445,21 @@ func (r *ZoneAPIGatewayConfigurationGetResponse) UnmarshalJSON(data []byte) (err
 
 func (r zoneAPIGatewayConfigurationGetResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type ZoneAPIGatewayConfigurationGetResponseSuccess bool
+
+const (
+	ZoneAPIGatewayConfigurationGetResponseSuccessTrue ZoneAPIGatewayConfigurationGetResponseSuccess = true
+)
+
+func (r ZoneAPIGatewayConfigurationGetResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneAPIGatewayConfigurationGetResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type ZoneAPIGatewayConfigurationGetParams struct {

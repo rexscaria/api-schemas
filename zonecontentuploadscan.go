@@ -7,13 +7,10 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"reflect"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/requestconfig"
 	"github.com/rexscaria/api-schemas/option"
-	"github.com/rexscaria/api-schemas/shared"
-	"github.com/tidwall/gjson"
 )
 
 // ZoneContentUploadScanService contains methods and other services that help with
@@ -37,7 +34,7 @@ func NewZoneContentUploadScanService(opts ...option.RequestOption) (r *ZoneConte
 	return
 }
 
-// Disable Content Scanning
+// Disable Content Scanning.
 func (r *ZoneContentUploadScanService) Disable(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *APIResponseCommon, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
@@ -49,7 +46,7 @@ func (r *ZoneContentUploadScanService) Disable(ctx context.Context, zoneID strin
 	return
 }
 
-// Enable Content Scanning
+// Enable Content Scanning.
 func (r *ZoneContentUploadScanService) Enable(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *APIResponseCommon, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
@@ -61,7 +58,7 @@ func (r *ZoneContentUploadScanService) Enable(ctx context.Context, zoneID string
 	return
 }
 
-// Retrieve the current status of Content Scanning
+// Retrieve the current status of Content Scanning.
 func (r *ZoneContentUploadScanService) GetStatus(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *ZoneContentUploadScanGetStatusResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
@@ -76,8 +73,8 @@ func (r *ZoneContentUploadScanService) GetStatus(ctx context.Context, zoneID str
 type APIResponseCommon struct {
 	Errors   []WafProductAPIBundleMessages `json:"errors,required"`
 	Messages []WafProductAPIBundleMessages `json:"messages,required"`
-	Result   APIResponseCommonResultUnion  `json:"result,required"`
-	// Whether the API call was successful
+	Result   interface{}                   `json:"result,required"`
+	// Whether the API call was successful.
 	Success APIResponseCommonSuccess `json:"success,required"`
 	JSON    apiResponseCommonJSON    `json:"-"`
 }
@@ -101,31 +98,7 @@ func (r apiResponseCommonJSON) RawJSON() string {
 	return r.raw
 }
 
-// Union satisfied by [APIResponseCommonResultArray] or [shared.UnionString].
-type APIResponseCommonResultUnion interface {
-	ImplementsAPIResponseCommonResultUnion()
-}
-
-func init() {
-	apijson.RegisterUnion(
-		reflect.TypeOf((*APIResponseCommonResultUnion)(nil)).Elem(),
-		"",
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(APIResponseCommonResultArray{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.String,
-			Type:       reflect.TypeOf(shared.UnionString("")),
-		},
-	)
-}
-
-type APIResponseCommonResultArray []interface{}
-
-func (r APIResponseCommonResultArray) ImplementsAPIResponseCommonResultUnion() {}
-
-// Whether the API call was successful
+// Whether the API call was successful.
 type APIResponseCommonSuccess bool
 
 const (
@@ -141,18 +114,22 @@ func (r APIResponseCommonSuccess) IsKnown() bool {
 }
 
 type WafProductAPIBundleMessages struct {
-	Code    int64                           `json:"code,required"`
-	Message string                          `json:"message,required"`
-	JSON    wafProductAPIBundleMessagesJSON `json:"-"`
+	Code             int64                             `json:"code,required"`
+	Message          string                            `json:"message,required"`
+	DocumentationURL string                            `json:"documentation_url"`
+	Source           WafProductAPIBundleMessagesSource `json:"source"`
+	JSON             wafProductAPIBundleMessagesJSON   `json:"-"`
 }
 
 // wafProductAPIBundleMessagesJSON contains the JSON metadata for the struct
 // [WafProductAPIBundleMessages]
 type wafProductAPIBundleMessagesJSON struct {
-	Code        apijson.Field
-	Message     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
 }
 
 func (r *WafProductAPIBundleMessages) UnmarshalJSON(data []byte) (err error) {
@@ -163,17 +140,44 @@ func (r wafProductAPIBundleMessagesJSON) RawJSON() string {
 	return r.raw
 }
 
+type WafProductAPIBundleMessagesSource struct {
+	Pointer string                                `json:"pointer"`
+	JSON    wafProductAPIBundleMessagesSourceJSON `json:"-"`
+}
+
+// wafProductAPIBundleMessagesSourceJSON contains the JSON metadata for the struct
+// [WafProductAPIBundleMessagesSource]
+type wafProductAPIBundleMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *WafProductAPIBundleMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r wafProductAPIBundleMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
 type ZoneContentUploadScanGetStatusResponse struct {
-	// The status for Content Scanning
-	Result interface{}                                `json:"result"`
-	JSON   zoneContentUploadScanGetStatusResponseJSON `json:"-"`
-	APIResponseCommon
+	Errors   []WafProductAPIBundleMessages `json:"errors,required"`
+	Messages []WafProductAPIBundleMessages `json:"messages,required"`
+	// Defines the status for Content Scanning.
+	Result ZoneContentUploadScanGetStatusResponseResult `json:"result,required"`
+	// Whether the API call was successful.
+	Success ZoneContentUploadScanGetStatusResponseSuccess `json:"success,required"`
+	JSON    zoneContentUploadScanGetStatusResponseJSON    `json:"-"`
 }
 
 // zoneContentUploadScanGetStatusResponseJSON contains the JSON metadata for the
 // struct [ZoneContentUploadScanGetStatusResponse]
 type zoneContentUploadScanGetStatusResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -184,4 +188,45 @@ func (r *ZoneContentUploadScanGetStatusResponse) UnmarshalJSON(data []byte) (err
 
 func (r zoneContentUploadScanGetStatusResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Defines the status for Content Scanning.
+type ZoneContentUploadScanGetStatusResponseResult struct {
+	// Defines the last modification date (ISO 8601) of the Content Scanning status.
+	Modified string `json:"modified"`
+	// Defines the status of Content Scanning.
+	Value string                                           `json:"value"`
+	JSON  zoneContentUploadScanGetStatusResponseResultJSON `json:"-"`
+}
+
+// zoneContentUploadScanGetStatusResponseResultJSON contains the JSON metadata for
+// the struct [ZoneContentUploadScanGetStatusResponseResult]
+type zoneContentUploadScanGetStatusResponseResultJSON struct {
+	Modified    apijson.Field
+	Value       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZoneContentUploadScanGetStatusResponseResult) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneContentUploadScanGetStatusResponseResultJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful.
+type ZoneContentUploadScanGetStatusResponseSuccess bool
+
+const (
+	ZoneContentUploadScanGetStatusResponseSuccessTrue ZoneContentUploadScanGetStatusResponseSuccess = true
+)
+
+func (r ZoneContentUploadScanGetStatusResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneContentUploadScanGetStatusResponseSuccessTrue:
+		return true
+	}
+	return false
 }

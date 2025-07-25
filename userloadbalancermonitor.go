@@ -73,14 +73,14 @@ func (r *UserLoadBalancerMonitorService) List(ctx context.Context, opts ...optio
 }
 
 // Delete a configured monitor.
-func (r *UserLoadBalancerMonitorService) Delete(ctx context.Context, monitorID string, body UserLoadBalancerMonitorDeleteParams, opts ...option.RequestOption) (res *IDResponseLoadBalancing, err error) {
+func (r *UserLoadBalancerMonitorService) Delete(ctx context.Context, monitorID string, opts ...option.RequestOption) (res *IDResponseLoadBalancing, err error) {
 	opts = append(r.Options[:], opts...)
 	if monitorID == "" {
 		err = errors.New("missing required monitor_id parameter")
 		return
 	}
 	path := fmt.Sprintf("user/load_balancers/monitors/%s", monitorID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
@@ -135,14 +135,6 @@ type UserLoadBalancerMonitorUpdateParams struct {
 
 func (r UserLoadBalancerMonitorUpdateParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r.EditableMonitor)
-}
-
-type UserLoadBalancerMonitorDeleteParams struct {
-	Body interface{} `json:"body,required"`
-}
-
-func (r UserLoadBalancerMonitorDeleteParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
 }
 
 type UserLoadBalancerMonitorPatchParams struct {

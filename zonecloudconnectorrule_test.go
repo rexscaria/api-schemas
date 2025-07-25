@@ -31,15 +31,15 @@ func TestZoneCloudConnectorRuleUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.ZoneCloudConnectorRuleUpdateParams{
-			Body: []cfrex.RuleItemParam{{
+			Body: []cfrex.ZoneCloudConnectorRuleUpdateParamsBody{{
 				ID:          cfrex.F("95c365e17e1b46599cd99e5b231fac4e"),
 				Description: cfrex.F("Rule description"),
 				Enabled:     cfrex.F(true),
 				Expression:  cfrex.F(`http.cookie eq "a=b"`),
-				Parameters: cfrex.F(cfrex.RuleItemParametersParam{
+				Parameters: cfrex.F(cfrex.ZoneCloudConnectorRuleUpdateParamsBodyParameters{
 					Host: cfrex.F("examplebucket.s3.eu-north-1.amazonaws.com"),
 				}),
-				Provider: cfrex.F(cfrex.RuleItemProviderAwsS3),
+				Provider: cfrex.F(cfrex.ZoneCloudConnectorRuleUpdateParamsBodyProviderAwsS3),
 			}},
 		},
 	)

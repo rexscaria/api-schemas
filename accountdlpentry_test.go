@@ -96,13 +96,13 @@ func TestAccountDlpEntryUpdateWithOptionalParams(t *testing.T) {
 		"account_id",
 		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		cfrex.AccountDlpEntryUpdateParams{
-			Body: cfrex.AccountDlpEntryUpdateParamsBodyObject{
+			Body: cfrex.AccountDlpEntryUpdateParamsBodyCustom{
 				Name: cfrex.F("name"),
 				Pattern: cfrex.F(cfrex.PatternParam{
 					Regex:      cfrex.F("regex"),
 					Validation: cfrex.F(cfrex.PatternValidationLuhn),
 				}),
-				Type:    cfrex.F(cfrex.AccountDlpEntryUpdateParamsBodyObjectTypeCustom),
+				Type:    cfrex.F(cfrex.AccountDlpEntryUpdateParamsBodyCustomTypeCustom),
 				Enabled: cfrex.F(true),
 			},
 		},

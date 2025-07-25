@@ -70,13 +70,14 @@ func (r *ZoneManagedHeaderService) Delete(ctx context.Context, zoneID string, op
 	return
 }
 
+// A response object.
 type ZoneManagedHeaderUpdateResponse struct {
 	// A list of error messages.
-	Errors interface{} `json:"errors,required"`
+	Errors []ZoneManagedHeaderUpdateResponseError `json:"errors,required"`
 	// A list of warning messages.
 	Messages []ZoneManagedHeaderUpdateResponseMessage `json:"messages,required"`
 	// A result.
-	Result interface{} `json:"result,required"`
+	Result ZoneManagedHeaderUpdateResponseResult `json:"result,required"`
 	// Whether the API call was successful.
 	Success ZoneManagedHeaderUpdateResponseSuccess `json:"success,required"`
 	JSON    zoneManagedHeaderUpdateResponseJSON    `json:"-"`
@@ -98,6 +99,58 @@ func (r *ZoneManagedHeaderUpdateResponse) UnmarshalJSON(data []byte) (err error)
 }
 
 func (r zoneManagedHeaderUpdateResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+// A message.
+type ZoneManagedHeaderUpdateResponseError struct {
+	// A text description of this message.
+	Message string `json:"message,required"`
+	// A unique code for this message.
+	Code int64 `json:"code"`
+	// The source of this message.
+	Source ZoneManagedHeaderUpdateResponseErrorsSource `json:"source"`
+	JSON   zoneManagedHeaderUpdateResponseErrorJSON    `json:"-"`
+}
+
+// zoneManagedHeaderUpdateResponseErrorJSON contains the JSON metadata for the
+// struct [ZoneManagedHeaderUpdateResponseError]
+type zoneManagedHeaderUpdateResponseErrorJSON struct {
+	Message     apijson.Field
+	Code        apijson.Field
+	Source      apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZoneManagedHeaderUpdateResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneManagedHeaderUpdateResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+// The source of this message.
+type ZoneManagedHeaderUpdateResponseErrorsSource struct {
+	// A JSON pointer to the field that is the source of the message.
+	Pointer string                                          `json:"pointer,required"`
+	JSON    zoneManagedHeaderUpdateResponseErrorsSourceJSON `json:"-"`
+}
+
+// zoneManagedHeaderUpdateResponseErrorsSourceJSON contains the JSON metadata for
+// the struct [ZoneManagedHeaderUpdateResponseErrorsSource]
+type zoneManagedHeaderUpdateResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZoneManagedHeaderUpdateResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneManagedHeaderUpdateResponseErrorsSourceJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -153,6 +206,100 @@ func (r zoneManagedHeaderUpdateResponseMessagesSourceJSON) RawJSON() string {
 	return r.raw
 }
 
+// A result.
+type ZoneManagedHeaderUpdateResponseResult struct {
+	// The list of Managed Request Transforms.
+	ManagedRequestHeaders []ZoneManagedHeaderUpdateResponseResultManagedRequestHeader `json:"managed_request_headers,required"`
+	// The list of Managed Response Transforms.
+	ManagedResponseHeaders []ZoneManagedHeaderUpdateResponseResultManagedResponseHeader `json:"managed_response_headers,required"`
+	JSON                   zoneManagedHeaderUpdateResponseResultJSON                    `json:"-"`
+}
+
+// zoneManagedHeaderUpdateResponseResultJSON contains the JSON metadata for the
+// struct [ZoneManagedHeaderUpdateResponseResult]
+type zoneManagedHeaderUpdateResponseResultJSON struct {
+	ManagedRequestHeaders  apijson.Field
+	ManagedResponseHeaders apijson.Field
+	raw                    string
+	ExtraFields            map[string]apijson.Field
+}
+
+func (r *ZoneManagedHeaderUpdateResponseResult) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneManagedHeaderUpdateResponseResultJSON) RawJSON() string {
+	return r.raw
+}
+
+// A Managed Transform object.
+type ZoneManagedHeaderUpdateResponseResultManagedRequestHeader struct {
+	// The human-readable identifier of the Managed Transform.
+	ID string `json:"id,required"`
+	// Whether the Managed Transform is enabled.
+	Enabled bool `json:"enabled,required"`
+	// Whether the Managed Transform conflicts with the currently-enabled Managed
+	// Transforms.
+	HasConflict bool `json:"has_conflict,required"`
+	// The Managed Transforms that this Managed Transform conflicts with.
+	ConflictsWith []string                                                      `json:"conflicts_with"`
+	JSON          zoneManagedHeaderUpdateResponseResultManagedRequestHeaderJSON `json:"-"`
+}
+
+// zoneManagedHeaderUpdateResponseResultManagedRequestHeaderJSON contains the JSON
+// metadata for the struct
+// [ZoneManagedHeaderUpdateResponseResultManagedRequestHeader]
+type zoneManagedHeaderUpdateResponseResultManagedRequestHeaderJSON struct {
+	ID            apijson.Field
+	Enabled       apijson.Field
+	HasConflict   apijson.Field
+	ConflictsWith apijson.Field
+	raw           string
+	ExtraFields   map[string]apijson.Field
+}
+
+func (r *ZoneManagedHeaderUpdateResponseResultManagedRequestHeader) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneManagedHeaderUpdateResponseResultManagedRequestHeaderJSON) RawJSON() string {
+	return r.raw
+}
+
+// A Managed Transform object.
+type ZoneManagedHeaderUpdateResponseResultManagedResponseHeader struct {
+	// The human-readable identifier of the Managed Transform.
+	ID string `json:"id,required"`
+	// Whether the Managed Transform is enabled.
+	Enabled bool `json:"enabled,required"`
+	// Whether the Managed Transform conflicts with the currently-enabled Managed
+	// Transforms.
+	HasConflict bool `json:"has_conflict,required"`
+	// The Managed Transforms that this Managed Transform conflicts with.
+	ConflictsWith []string                                                       `json:"conflicts_with"`
+	JSON          zoneManagedHeaderUpdateResponseResultManagedResponseHeaderJSON `json:"-"`
+}
+
+// zoneManagedHeaderUpdateResponseResultManagedResponseHeaderJSON contains the JSON
+// metadata for the struct
+// [ZoneManagedHeaderUpdateResponseResultManagedResponseHeader]
+type zoneManagedHeaderUpdateResponseResultManagedResponseHeaderJSON struct {
+	ID            apijson.Field
+	Enabled       apijson.Field
+	HasConflict   apijson.Field
+	ConflictsWith apijson.Field
+	raw           string
+	ExtraFields   map[string]apijson.Field
+}
+
+func (r *ZoneManagedHeaderUpdateResponseResultManagedResponseHeader) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneManagedHeaderUpdateResponseResultManagedResponseHeaderJSON) RawJSON() string {
+	return r.raw
+}
+
 // Whether the API call was successful.
 type ZoneManagedHeaderUpdateResponseSuccess bool
 
@@ -168,13 +315,14 @@ func (r ZoneManagedHeaderUpdateResponseSuccess) IsKnown() bool {
 	return false
 }
 
+// A response object.
 type ZoneManagedHeaderListResponse struct {
 	// A list of error messages.
-	Errors interface{} `json:"errors,required"`
+	Errors []ZoneManagedHeaderListResponseError `json:"errors,required"`
 	// A list of warning messages.
 	Messages []ZoneManagedHeaderListResponseMessage `json:"messages,required"`
 	// A result.
-	Result interface{} `json:"result,required"`
+	Result ZoneManagedHeaderListResponseResult `json:"result,required"`
 	// Whether the API call was successful.
 	Success ZoneManagedHeaderListResponseSuccess `json:"success,required"`
 	JSON    zoneManagedHeaderListResponseJSON    `json:"-"`
@@ -196,6 +344,58 @@ func (r *ZoneManagedHeaderListResponse) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (r zoneManagedHeaderListResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+// A message.
+type ZoneManagedHeaderListResponseError struct {
+	// A text description of this message.
+	Message string `json:"message,required"`
+	// A unique code for this message.
+	Code int64 `json:"code"`
+	// The source of this message.
+	Source ZoneManagedHeaderListResponseErrorsSource `json:"source"`
+	JSON   zoneManagedHeaderListResponseErrorJSON    `json:"-"`
+}
+
+// zoneManagedHeaderListResponseErrorJSON contains the JSON metadata for the struct
+// [ZoneManagedHeaderListResponseError]
+type zoneManagedHeaderListResponseErrorJSON struct {
+	Message     apijson.Field
+	Code        apijson.Field
+	Source      apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZoneManagedHeaderListResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneManagedHeaderListResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+// The source of this message.
+type ZoneManagedHeaderListResponseErrorsSource struct {
+	// A JSON pointer to the field that is the source of the message.
+	Pointer string                                        `json:"pointer,required"`
+	JSON    zoneManagedHeaderListResponseErrorsSourceJSON `json:"-"`
+}
+
+// zoneManagedHeaderListResponseErrorsSourceJSON contains the JSON metadata for the
+// struct [ZoneManagedHeaderListResponseErrorsSource]
+type zoneManagedHeaderListResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZoneManagedHeaderListResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneManagedHeaderListResponseErrorsSourceJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -251,6 +451,100 @@ func (r zoneManagedHeaderListResponseMessagesSourceJSON) RawJSON() string {
 	return r.raw
 }
 
+// A result.
+type ZoneManagedHeaderListResponseResult struct {
+	// The list of Managed Request Transforms.
+	ManagedRequestHeaders []ZoneManagedHeaderListResponseResultManagedRequestHeader `json:"managed_request_headers,required"`
+	// The list of Managed Response Transforms.
+	ManagedResponseHeaders []ZoneManagedHeaderListResponseResultManagedResponseHeader `json:"managed_response_headers,required"`
+	JSON                   zoneManagedHeaderListResponseResultJSON                    `json:"-"`
+}
+
+// zoneManagedHeaderListResponseResultJSON contains the JSON metadata for the
+// struct [ZoneManagedHeaderListResponseResult]
+type zoneManagedHeaderListResponseResultJSON struct {
+	ManagedRequestHeaders  apijson.Field
+	ManagedResponseHeaders apijson.Field
+	raw                    string
+	ExtraFields            map[string]apijson.Field
+}
+
+func (r *ZoneManagedHeaderListResponseResult) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneManagedHeaderListResponseResultJSON) RawJSON() string {
+	return r.raw
+}
+
+// A Managed Transform object.
+type ZoneManagedHeaderListResponseResultManagedRequestHeader struct {
+	// The human-readable identifier of the Managed Transform.
+	ID string `json:"id,required"`
+	// Whether the Managed Transform is enabled.
+	Enabled bool `json:"enabled,required"`
+	// Whether the Managed Transform conflicts with the currently-enabled Managed
+	// Transforms.
+	HasConflict bool `json:"has_conflict,required"`
+	// The Managed Transforms that this Managed Transform conflicts with.
+	ConflictsWith []string                                                    `json:"conflicts_with"`
+	JSON          zoneManagedHeaderListResponseResultManagedRequestHeaderJSON `json:"-"`
+}
+
+// zoneManagedHeaderListResponseResultManagedRequestHeaderJSON contains the JSON
+// metadata for the struct
+// [ZoneManagedHeaderListResponseResultManagedRequestHeader]
+type zoneManagedHeaderListResponseResultManagedRequestHeaderJSON struct {
+	ID            apijson.Field
+	Enabled       apijson.Field
+	HasConflict   apijson.Field
+	ConflictsWith apijson.Field
+	raw           string
+	ExtraFields   map[string]apijson.Field
+}
+
+func (r *ZoneManagedHeaderListResponseResultManagedRequestHeader) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneManagedHeaderListResponseResultManagedRequestHeaderJSON) RawJSON() string {
+	return r.raw
+}
+
+// A Managed Transform object.
+type ZoneManagedHeaderListResponseResultManagedResponseHeader struct {
+	// The human-readable identifier of the Managed Transform.
+	ID string `json:"id,required"`
+	// Whether the Managed Transform is enabled.
+	Enabled bool `json:"enabled,required"`
+	// Whether the Managed Transform conflicts with the currently-enabled Managed
+	// Transforms.
+	HasConflict bool `json:"has_conflict,required"`
+	// The Managed Transforms that this Managed Transform conflicts with.
+	ConflictsWith []string                                                     `json:"conflicts_with"`
+	JSON          zoneManagedHeaderListResponseResultManagedResponseHeaderJSON `json:"-"`
+}
+
+// zoneManagedHeaderListResponseResultManagedResponseHeaderJSON contains the JSON
+// metadata for the struct
+// [ZoneManagedHeaderListResponseResultManagedResponseHeader]
+type zoneManagedHeaderListResponseResultManagedResponseHeaderJSON struct {
+	ID            apijson.Field
+	Enabled       apijson.Field
+	HasConflict   apijson.Field
+	ConflictsWith apijson.Field
+	raw           string
+	ExtraFields   map[string]apijson.Field
+}
+
+func (r *ZoneManagedHeaderListResponseResultManagedResponseHeader) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneManagedHeaderListResponseResultManagedResponseHeaderJSON) RawJSON() string {
+	return r.raw
+}
+
 // Whether the API call was successful.
 type ZoneManagedHeaderListResponseSuccess bool
 
@@ -277,9 +571,10 @@ func (r ZoneManagedHeaderUpdateParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
+// A Managed Transform object.
 type ZoneManagedHeaderUpdateParamsManagedRequestHeader struct {
 	// The human-readable identifier of the Managed Transform.
-	ID param.Field[interface{}] `json:"id,required"`
+	ID param.Field[string] `json:"id,required"`
 	// Whether the Managed Transform is enabled.
 	Enabled param.Field[bool] `json:"enabled,required"`
 }
@@ -288,9 +583,10 @@ func (r ZoneManagedHeaderUpdateParamsManagedRequestHeader) MarshalJSON() (data [
 	return apijson.MarshalRoot(r)
 }
 
+// A Managed Transform object.
 type ZoneManagedHeaderUpdateParamsManagedResponseHeader struct {
 	// The human-readable identifier of the Managed Transform.
-	ID param.Field[interface{}] `json:"id,required"`
+	ID param.Field[string] `json:"id,required"`
 	// Whether the Managed Transform is enabled.
 	Enabled param.Field[bool] `json:"enabled,required"`
 }

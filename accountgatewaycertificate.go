@@ -76,7 +76,7 @@ func (r *AccountGatewayCertificateService) List(ctx context.Context, accountID s
 
 // Deletes a gateway-managed Zero Trust certificate. A certificate must be
 // deactivated from the edge (inactive) before it is deleted.
-func (r *AccountGatewayCertificateService) Delete(ctx context.Context, accountID string, certificateID string, body AccountGatewayCertificateDeleteParams, opts ...option.RequestOption) (res *SingleResponseCertificateGateway, err error) {
+func (r *AccountGatewayCertificateService) Delete(ctx context.Context, accountID string, certificateID string, opts ...option.RequestOption) (res *SingleResponseCertificateGateway, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
@@ -87,7 +87,7 @@ func (r *AccountGatewayCertificateService) Delete(ctx context.Context, accountID
 		return
 	}
 	path := fmt.Sprintf("accounts/%s/gateway/certificates/%s", accountID, certificateID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
@@ -212,14 +212,20 @@ func (r CertificateType) IsKnown() bool {
 }
 
 type SingleResponseCertificateGateway struct {
-	Result Certificate                          `json:"result"`
-	JSON   singleResponseCertificateGatewayJSON `json:"-"`
-	APIResponseSingleZeroTrustGateway
+	Errors   []ZeroTrustGatewayMessages `json:"errors,required"`
+	Messages []ZeroTrustGatewayMessages `json:"messages,required"`
+	// Whether the API call was successful
+	Success SingleResponseCertificateGatewaySuccess `json:"success,required"`
+	Result  Certificate                             `json:"result"`
+	JSON    singleResponseCertificateGatewayJSON    `json:"-"`
 }
 
 // singleResponseCertificateGatewayJSON contains the JSON metadata for the struct
 // [SingleResponseCertificateGateway]
 type singleResponseCertificateGatewayJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -233,16 +239,39 @@ func (r singleResponseCertificateGatewayJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful
+type SingleResponseCertificateGatewaySuccess bool
+
+const (
+	SingleResponseCertificateGatewaySuccessTrue SingleResponseCertificateGatewaySuccess = true
+)
+
+func (r SingleResponseCertificateGatewaySuccess) IsKnown() bool {
+	switch r {
+	case SingleResponseCertificateGatewaySuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountGatewayCertificateListResponse struct {
-	Result []Certificate                             `json:"result"`
-	JSON   accountGatewayCertificateListResponseJSON `json:"-"`
-	APIResponseCollectionZeroTrustGateway
+	Errors   []ZeroTrustGatewayMessages `json:"errors,required"`
+	Messages []ZeroTrustGatewayMessages `json:"messages,required"`
+	// Whether the API call was successful
+	Success    AccountGatewayCertificateListResponseSuccess    `json:"success,required"`
+	Result     []Certificate                                   `json:"result"`
+	ResultInfo AccountGatewayCertificateListResponseResultInfo `json:"result_info"`
+	JSON       accountGatewayCertificateListResponseJSON       `json:"-"`
 }
 
 // accountGatewayCertificateListResponseJSON contains the JSON metadata for the
 // struct [AccountGatewayCertificateListResponse]
 type accountGatewayCertificateListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -255,22 +284,62 @@ func (r accountGatewayCertificateListResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful
+type AccountGatewayCertificateListResponseSuccess bool
+
+const (
+	AccountGatewayCertificateListResponseSuccessTrue AccountGatewayCertificateListResponseSuccess = true
+)
+
+func (r AccountGatewayCertificateListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountGatewayCertificateListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type AccountGatewayCertificateListResponseResultInfo struct {
+	// Total number of results for the requested service
+	Count float64 `json:"count"`
+	// Current page within paginated list of results
+	Page float64 `json:"page"`
+	// Number of results per page of results
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters
+	TotalCount float64                                             `json:"total_count"`
+	JSON       accountGatewayCertificateListResponseResultInfoJSON `json:"-"`
+}
+
+// accountGatewayCertificateListResponseResultInfoJSON contains the JSON metadata
+// for the struct [AccountGatewayCertificateListResponseResultInfo]
+type accountGatewayCertificateListResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountGatewayCertificateListResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountGatewayCertificateListResponseResultInfoJSON) RawJSON() string {
+	return r.raw
+}
+
 type AccountGatewayCertificateNewParams struct {
 	// Number of days the generated certificate will be valid, minimum 1 day and
-	// maximum 30 years. Defaults to 5 years.
+	// maximum 30 years. Defaults to 5 years. In terraform, validity_period_days can
+	// only be used while creating a certificate, and this CAN NOT be used to extend
+	// the validity of an already generated certificate.
 	ValidityPeriodDays param.Field[int64] `json:"validity_period_days"`
 }
 
 func (r AccountGatewayCertificateNewParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
-}
-
-type AccountGatewayCertificateDeleteParams struct {
-	Body interface{} `json:"body,required"`
-}
-
-func (r AccountGatewayCertificateDeleteParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
 }
 
 type AccountGatewayCertificateActivateParams struct {

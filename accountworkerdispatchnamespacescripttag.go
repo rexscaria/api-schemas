@@ -102,14 +102,20 @@ func (r *AccountWorkerDispatchNamespaceScriptTagService) Put(ctx context.Context
 }
 
 type AccountWorkerDispatchNamespaceScriptTagGetResponse struct {
-	Result []string                                               `json:"result"`
-	JSON   accountWorkerDispatchNamespaceScriptTagGetResponseJSON `json:"-"`
-	CommonResponseWorkers
+	Errors   []WorkersMessages `json:"errors,required"`
+	Messages []WorkersMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountWorkerDispatchNamespaceScriptTagGetResponseSuccess `json:"success,required"`
+	Result  []string                                                  `json:"result"`
+	JSON    accountWorkerDispatchNamespaceScriptTagGetResponseJSON    `json:"-"`
 }
 
 // accountWorkerDispatchNamespaceScriptTagGetResponseJSON contains the JSON
 // metadata for the struct [AccountWorkerDispatchNamespaceScriptTagGetResponse]
 type accountWorkerDispatchNamespaceScriptTagGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -121,4 +127,19 @@ func (r *AccountWorkerDispatchNamespaceScriptTagGetResponse) UnmarshalJSON(data 
 
 func (r accountWorkerDispatchNamespaceScriptTagGetResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountWorkerDispatchNamespaceScriptTagGetResponseSuccess bool
+
+const (
+	AccountWorkerDispatchNamespaceScriptTagGetResponseSuccessTrue AccountWorkerDispatchNamespaceScriptTagGetResponseSuccess = true
+)
+
+func (r AccountWorkerDispatchNamespaceScriptTagGetResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountWorkerDispatchNamespaceScriptTagGetResponseSuccessTrue:
+		return true
+	}
+	return false
 }

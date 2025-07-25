@@ -29,7 +29,7 @@ func TestAccountCloudforceOneEventTagNew(t *testing.T) {
 	)
 	_, err := client.Accounts.CloudforceOne.Events.Tags.New(
 		context.TODO(),
-		0.000000,
+		"account_id",
 		cfrex.AccountCloudforceOneEventTagNewParams{
 			Name: cfrex.F("name"),
 		},

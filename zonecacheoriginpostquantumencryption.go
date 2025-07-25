@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -85,77 +86,22 @@ func (r OriginPostQuantumEncryptionValue) IsKnown() bool {
 	return false
 }
 
-type ResponseValueEncryption struct {
-	Result ResponseValueEncryptionResult `json:"result"`
-	JSON   responseValueEncryptionJSON   `json:"-"`
-}
-
-// responseValueEncryptionJSON contains the JSON metadata for the struct
-// [ResponseValueEncryption]
-type responseValueEncryptionJSON struct {
-	Result      apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ResponseValueEncryption) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r responseValueEncryptionJSON) RawJSON() string {
-	return r.raw
-}
-
-type ResponseValueEncryptionResult struct {
-	// Value of the Origin Post Quantum Encryption Setting.
-	Value OriginPostQuantumEncryptionValue `json:"value,required"`
-	// Value of the zone setting.
-	ID   ResponseValueEncryptionResultID   `json:"id"`
-	JSON responseValueEncryptionResultJSON `json:"-"`
-	BaseCacheRule
-}
-
-// responseValueEncryptionResultJSON contains the JSON metadata for the struct
-// [ResponseValueEncryptionResult]
-type responseValueEncryptionResultJSON struct {
-	Value       apijson.Field
-	ID          apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ResponseValueEncryptionResult) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r responseValueEncryptionResultJSON) RawJSON() string {
-	return r.raw
-}
-
-// Value of the zone setting.
-type ResponseValueEncryptionResultID string
-
-const (
-	ResponseValueEncryptionResultIDOriginPqe ResponseValueEncryptionResultID = "origin_pqe"
-)
-
-func (r ResponseValueEncryptionResultID) IsKnown() bool {
-	switch r {
-	case ResponseValueEncryptionResultIDOriginPqe:
-		return true
-	}
-	return false
-}
-
 type ZoneCacheOriginPostQuantumEncryptionGetResponse struct {
-	JSON zoneCacheOriginPostQuantumEncryptionGetResponseJSON `json:"-"`
-	CacheRulesZoneCacheSettingsResponse
-	ResponseValueEncryption
+	Errors   []MessagesCacheRulesItem `json:"errors,required"`
+	Messages []MessagesCacheRulesItem `json:"messages,required"`
+	// Whether the API call was successful
+	Success ZoneCacheOriginPostQuantumEncryptionGetResponseSuccess `json:"success,required"`
+	Result  ZoneCacheOriginPostQuantumEncryptionGetResponseResult  `json:"result"`
+	JSON    zoneCacheOriginPostQuantumEncryptionGetResponseJSON    `json:"-"`
 }
 
 // zoneCacheOriginPostQuantumEncryptionGetResponseJSON contains the JSON metadata
 // for the struct [ZoneCacheOriginPostQuantumEncryptionGetResponse]
 type zoneCacheOriginPostQuantumEncryptionGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
+	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -168,15 +114,83 @@ func (r zoneCacheOriginPostQuantumEncryptionGetResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful
+type ZoneCacheOriginPostQuantumEncryptionGetResponseSuccess bool
+
+const (
+	ZoneCacheOriginPostQuantumEncryptionGetResponseSuccessTrue ZoneCacheOriginPostQuantumEncryptionGetResponseSuccess = true
+)
+
+func (r ZoneCacheOriginPostQuantumEncryptionGetResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneCacheOriginPostQuantumEncryptionGetResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type ZoneCacheOriginPostQuantumEncryptionGetResponseResult struct {
+	// Value of the zone setting.
+	ID ZoneCacheOriginPostQuantumEncryptionGetResponseResultID `json:"id,required"`
+	// Whether the setting is editable
+	Editable bool `json:"editable,required"`
+	// The value of the feature
+	Value OriginPostQuantumEncryptionValue `json:"value,required"`
+	// Last time this setting was modified.
+	ModifiedOn time.Time                                                 `json:"modified_on,nullable" format:"date-time"`
+	JSON       zoneCacheOriginPostQuantumEncryptionGetResponseResultJSON `json:"-"`
+}
+
+// zoneCacheOriginPostQuantumEncryptionGetResponseResultJSON contains the JSON
+// metadata for the struct [ZoneCacheOriginPostQuantumEncryptionGetResponseResult]
+type zoneCacheOriginPostQuantumEncryptionGetResponseResultJSON struct {
+	ID          apijson.Field
+	Editable    apijson.Field
+	Value       apijson.Field
+	ModifiedOn  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZoneCacheOriginPostQuantumEncryptionGetResponseResult) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneCacheOriginPostQuantumEncryptionGetResponseResultJSON) RawJSON() string {
+	return r.raw
+}
+
+// Value of the zone setting.
+type ZoneCacheOriginPostQuantumEncryptionGetResponseResultID string
+
+const (
+	ZoneCacheOriginPostQuantumEncryptionGetResponseResultIDOriginPqe ZoneCacheOriginPostQuantumEncryptionGetResponseResultID = "origin_pqe"
+)
+
+func (r ZoneCacheOriginPostQuantumEncryptionGetResponseResultID) IsKnown() bool {
+	switch r {
+	case ZoneCacheOriginPostQuantumEncryptionGetResponseResultIDOriginPqe:
+		return true
+	}
+	return false
+}
+
 type ZoneCacheOriginPostQuantumEncryptionUpdateResponse struct {
-	JSON zoneCacheOriginPostQuantumEncryptionUpdateResponseJSON `json:"-"`
-	CacheRulesZoneCacheSettingsResponse
-	ResponseValueEncryption
+	Errors   []MessagesCacheRulesItem `json:"errors,required"`
+	Messages []MessagesCacheRulesItem `json:"messages,required"`
+	// Whether the API call was successful
+	Success ZoneCacheOriginPostQuantumEncryptionUpdateResponseSuccess `json:"success,required"`
+	Result  ZoneCacheOriginPostQuantumEncryptionUpdateResponseResult  `json:"result"`
+	JSON    zoneCacheOriginPostQuantumEncryptionUpdateResponseJSON    `json:"-"`
 }
 
 // zoneCacheOriginPostQuantumEncryptionUpdateResponseJSON contains the JSON
 // metadata for the struct [ZoneCacheOriginPostQuantumEncryptionUpdateResponse]
 type zoneCacheOriginPostQuantumEncryptionUpdateResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
+	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -187,6 +201,68 @@ func (r *ZoneCacheOriginPostQuantumEncryptionUpdateResponse) UnmarshalJSON(data 
 
 func (r zoneCacheOriginPostQuantumEncryptionUpdateResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful
+type ZoneCacheOriginPostQuantumEncryptionUpdateResponseSuccess bool
+
+const (
+	ZoneCacheOriginPostQuantumEncryptionUpdateResponseSuccessTrue ZoneCacheOriginPostQuantumEncryptionUpdateResponseSuccess = true
+)
+
+func (r ZoneCacheOriginPostQuantumEncryptionUpdateResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneCacheOriginPostQuantumEncryptionUpdateResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type ZoneCacheOriginPostQuantumEncryptionUpdateResponseResult struct {
+	// Value of the zone setting.
+	ID ZoneCacheOriginPostQuantumEncryptionUpdateResponseResultID `json:"id,required"`
+	// Whether the setting is editable
+	Editable bool `json:"editable,required"`
+	// The value of the feature
+	Value OriginPostQuantumEncryptionValue `json:"value,required"`
+	// Last time this setting was modified.
+	ModifiedOn time.Time                                                    `json:"modified_on,nullable" format:"date-time"`
+	JSON       zoneCacheOriginPostQuantumEncryptionUpdateResponseResultJSON `json:"-"`
+}
+
+// zoneCacheOriginPostQuantumEncryptionUpdateResponseResultJSON contains the JSON
+// metadata for the struct
+// [ZoneCacheOriginPostQuantumEncryptionUpdateResponseResult]
+type zoneCacheOriginPostQuantumEncryptionUpdateResponseResultJSON struct {
+	ID          apijson.Field
+	Editable    apijson.Field
+	Value       apijson.Field
+	ModifiedOn  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZoneCacheOriginPostQuantumEncryptionUpdateResponseResult) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneCacheOriginPostQuantumEncryptionUpdateResponseResultJSON) RawJSON() string {
+	return r.raw
+}
+
+// Value of the zone setting.
+type ZoneCacheOriginPostQuantumEncryptionUpdateResponseResultID string
+
+const (
+	ZoneCacheOriginPostQuantumEncryptionUpdateResponseResultIDOriginPqe ZoneCacheOriginPostQuantumEncryptionUpdateResponseResultID = "origin_pqe"
+)
+
+func (r ZoneCacheOriginPostQuantumEncryptionUpdateResponseResultID) IsKnown() bool {
+	switch r {
+	case ZoneCacheOriginPostQuantumEncryptionUpdateResponseResultIDOriginPqe:
+		return true
+	}
+	return false
 }
 
 type ZoneCacheOriginPostQuantumEncryptionUpdateParams struct {

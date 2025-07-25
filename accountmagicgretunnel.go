@@ -34,9 +34,9 @@ func NewAccountMagicGreTunnelService(opts ...option.RequestOption) (r *AccountMa
 	return
 }
 
-// Creates new GRE tunnels. Use `?validate_only=true` as an optional query
+// Creates a new GRE tunnel. Use `?validate_only=true` as an optional query
 // parameter to only run validation without persisting changes.
-func (r *AccountMagicGreTunnelService) New(ctx context.Context, accountID string, params AccountMagicGreTunnelNewParams, opts ...option.RequestOption) (res *MagicTunnelsCollectionResponse, err error) {
+func (r *AccountMagicGreTunnelService) New(ctx context.Context, accountID string, params AccountMagicGreTunnelNewParams, opts ...option.RequestOption) (res *AccountMagicGreTunnelNewResponse, err error) {
 	if params.XMagicNewHcTarget.Present {
 		opts = append(opts, option.WithHeader("x-magic-new-hc-target", fmt.Sprintf("%s", params.XMagicNewHcTarget)))
 	}
@@ -106,9 +106,9 @@ func (r *AccountMagicGreTunnelService) List(ctx context.Context, accountID strin
 
 // Disables and removes a specific static GRE tunnel. Use `?validate_only=true` as
 // an optional query parameter to only run validation without persisting changes.
-func (r *AccountMagicGreTunnelService) Delete(ctx context.Context, accountID string, greTunnelID string, params AccountMagicGreTunnelDeleteParams, opts ...option.RequestOption) (res *AccountMagicGreTunnelDeleteResponse, err error) {
-	if params.XMagicNewHcTarget.Present {
-		opts = append(opts, option.WithHeader("x-magic-new-hc-target", fmt.Sprintf("%s", params.XMagicNewHcTarget)))
+func (r *AccountMagicGreTunnelService) Delete(ctx context.Context, accountID string, greTunnelID string, body AccountMagicGreTunnelDeleteParams, opts ...option.RequestOption) (res *AccountMagicGreTunnelDeleteResponse, err error) {
+	if body.XMagicNewHcTarget.Present {
+		opts = append(opts, option.WithHeader("x-magic-new-hc-target", fmt.Sprintf("%s", body.XMagicNewHcTarget)))
 	}
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
@@ -120,11 +120,13 @@ func (r *AccountMagicGreTunnelService) Delete(ctx context.Context, accountID str
 		return
 	}
 	path := fmt.Sprintf("accounts/%s/magic/gre_tunnels/%s", accountID, greTunnelID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, params, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
 type MagicGreTunnel struct {
+	// Identifier
+	ID string `json:"id,required"`
 	// The IP address assigned to the Cloudflare side of the GRE tunnel.
 	CloudflareGreEndpoint string `json:"cloudflare_gre_endpoint,required"`
 	// The IP address assigned to the customer side of the GRE tunnel.
@@ -136,8 +138,6 @@ type MagicGreTunnel struct {
 	// The name of the tunnel. The name cannot contain spaces or special characters,
 	// must be 15 characters or less, and cannot share a name with another GRE tunnel.
 	Name string `json:"name,required"`
-	// Tunnel identifier tag.
-	ID string `json:"id"`
 	// The date and time the tunnel was created.
 	CreatedOn time.Time `json:"created_on" format:"date-time"`
 	// An optional description of the GRE tunnel.
@@ -155,11 +155,11 @@ type MagicGreTunnel struct {
 
 // magicGreTunnelJSON contains the JSON metadata for the struct [MagicGreTunnel]
 type magicGreTunnelJSON struct {
+	ID                    apijson.Field
 	CloudflareGreEndpoint apijson.Field
 	CustomerGreEndpoint   apijson.Field
 	InterfaceAddress      apijson.Field
 	Name                  apijson.Field
-	ID                    apijson.Field
 	CreatedOn             apijson.Field
 	Description           apijson.Field
 	HealthCheck           apijson.Field
@@ -179,15 +179,21 @@ func (r magicGreTunnelJSON) RawJSON() string {
 }
 
 type MagicTunnelsCollectionResponse struct {
-	Result MagicTunnelsCollectionResponseResult `json:"result"`
-	JSON   magicTunnelsCollectionResponseJSON   `json:"-"`
-	MagicAPIResponseSingle
+	Errors   []MagicMessageItem                   `json:"errors,required"`
+	Messages []MagicMessageItem                   `json:"messages,required"`
+	Result   MagicTunnelsCollectionResponseResult `json:"result,required"`
+	// Whether the API call was successful
+	Success MagicTunnelsCollectionResponseSuccess `json:"success,required"`
+	JSON    magicTunnelsCollectionResponseJSON    `json:"-"`
 }
 
 // magicTunnelsCollectionResponseJSON contains the JSON metadata for the struct
 // [MagicTunnelsCollectionResponse]
 type magicTunnelsCollectionResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -221,16 +227,176 @@ func (r magicTunnelsCollectionResponseResultJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful
+type MagicTunnelsCollectionResponseSuccess bool
+
+const (
+	MagicTunnelsCollectionResponseSuccessTrue MagicTunnelsCollectionResponseSuccess = true
+)
+
+func (r MagicTunnelsCollectionResponseSuccess) IsKnown() bool {
+	switch r {
+	case MagicTunnelsCollectionResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type AccountMagicGreTunnelNewResponse struct {
+	Errors   []AccountMagicGreTunnelNewResponseError   `json:"errors,required"`
+	Messages []AccountMagicGreTunnelNewResponseMessage `json:"messages,required"`
+	Result   MagicGreTunnel                            `json:"result,required"`
+	// Whether the API call was successful
+	Success AccountMagicGreTunnelNewResponseSuccess `json:"success,required"`
+	JSON    accountMagicGreTunnelNewResponseJSON    `json:"-"`
+}
+
+// accountMagicGreTunnelNewResponseJSON contains the JSON metadata for the struct
+// [AccountMagicGreTunnelNewResponse]
+type accountMagicGreTunnelNewResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Result      apijson.Field
+	Success     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountMagicGreTunnelNewResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountMagicGreTunnelNewResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountMagicGreTunnelNewResponseError struct {
+	Code             int64                                        `json:"code,required"`
+	Message          string                                       `json:"message,required"`
+	DocumentationURL string                                       `json:"documentation_url"`
+	Source           AccountMagicGreTunnelNewResponseErrorsSource `json:"source"`
+	JSON             accountMagicGreTunnelNewResponseErrorJSON    `json:"-"`
+}
+
+// accountMagicGreTunnelNewResponseErrorJSON contains the JSON metadata for the
+// struct [AccountMagicGreTunnelNewResponseError]
+type accountMagicGreTunnelNewResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountMagicGreTunnelNewResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountMagicGreTunnelNewResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountMagicGreTunnelNewResponseErrorsSource struct {
+	Pointer string                                           `json:"pointer"`
+	JSON    accountMagicGreTunnelNewResponseErrorsSourceJSON `json:"-"`
+}
+
+// accountMagicGreTunnelNewResponseErrorsSourceJSON contains the JSON metadata for
+// the struct [AccountMagicGreTunnelNewResponseErrorsSource]
+type accountMagicGreTunnelNewResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountMagicGreTunnelNewResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountMagicGreTunnelNewResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountMagicGreTunnelNewResponseMessage struct {
+	Code             int64                                          `json:"code,required"`
+	Message          string                                         `json:"message,required"`
+	DocumentationURL string                                         `json:"documentation_url"`
+	Source           AccountMagicGreTunnelNewResponseMessagesSource `json:"source"`
+	JSON             accountMagicGreTunnelNewResponseMessageJSON    `json:"-"`
+}
+
+// accountMagicGreTunnelNewResponseMessageJSON contains the JSON metadata for the
+// struct [AccountMagicGreTunnelNewResponseMessage]
+type accountMagicGreTunnelNewResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountMagicGreTunnelNewResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountMagicGreTunnelNewResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountMagicGreTunnelNewResponseMessagesSource struct {
+	Pointer string                                             `json:"pointer"`
+	JSON    accountMagicGreTunnelNewResponseMessagesSourceJSON `json:"-"`
+}
+
+// accountMagicGreTunnelNewResponseMessagesSourceJSON contains the JSON metadata
+// for the struct [AccountMagicGreTunnelNewResponseMessagesSource]
+type accountMagicGreTunnelNewResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountMagicGreTunnelNewResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountMagicGreTunnelNewResponseMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful
+type AccountMagicGreTunnelNewResponseSuccess bool
+
+const (
+	AccountMagicGreTunnelNewResponseSuccessTrue AccountMagicGreTunnelNewResponseSuccess = true
+)
+
+func (r AccountMagicGreTunnelNewResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountMagicGreTunnelNewResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountMagicGreTunnelGetResponse struct {
-	Result AccountMagicGreTunnelGetResponseResult `json:"result"`
-	JSON   accountMagicGreTunnelGetResponseJSON   `json:"-"`
-	MagicAPIResponseSingle
+	Errors   []MagicMessageItem                     `json:"errors,required"`
+	Messages []MagicMessageItem                     `json:"messages,required"`
+	Result   AccountMagicGreTunnelGetResponseResult `json:"result,required"`
+	// Whether the API call was successful
+	Success AccountMagicGreTunnelGetResponseSuccess `json:"success,required"`
+	JSON    accountMagicGreTunnelGetResponseJSON    `json:"-"`
 }
 
 // accountMagicGreTunnelGetResponseJSON contains the JSON metadata for the struct
 // [AccountMagicGreTunnelGetResponse]
 type accountMagicGreTunnelGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -264,16 +430,37 @@ func (r accountMagicGreTunnelGetResponseResultJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful
+type AccountMagicGreTunnelGetResponseSuccess bool
+
+const (
+	AccountMagicGreTunnelGetResponseSuccessTrue AccountMagicGreTunnelGetResponseSuccess = true
+)
+
+func (r AccountMagicGreTunnelGetResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountMagicGreTunnelGetResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountMagicGreTunnelUpdateResponse struct {
-	Result AccountMagicGreTunnelUpdateResponseResult `json:"result"`
-	JSON   accountMagicGreTunnelUpdateResponseJSON   `json:"-"`
-	MagicAPIResponseSingle
+	Errors   []MagicMessageItem                        `json:"errors,required"`
+	Messages []MagicMessageItem                        `json:"messages,required"`
+	Result   AccountMagicGreTunnelUpdateResponseResult `json:"result,required"`
+	// Whether the API call was successful
+	Success AccountMagicGreTunnelUpdateResponseSuccess `json:"success,required"`
+	JSON    accountMagicGreTunnelUpdateResponseJSON    `json:"-"`
 }
 
 // accountMagicGreTunnelUpdateResponseJSON contains the JSON metadata for the
 // struct [AccountMagicGreTunnelUpdateResponse]
 type accountMagicGreTunnelUpdateResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -309,16 +496,37 @@ func (r accountMagicGreTunnelUpdateResponseResultJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful
+type AccountMagicGreTunnelUpdateResponseSuccess bool
+
+const (
+	AccountMagicGreTunnelUpdateResponseSuccessTrue AccountMagicGreTunnelUpdateResponseSuccess = true
+)
+
+func (r AccountMagicGreTunnelUpdateResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountMagicGreTunnelUpdateResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountMagicGreTunnelDeleteResponse struct {
-	Result AccountMagicGreTunnelDeleteResponseResult `json:"result"`
-	JSON   accountMagicGreTunnelDeleteResponseJSON   `json:"-"`
-	MagicAPIResponseSingle
+	Errors   []MagicMessageItem                        `json:"errors,required"`
+	Messages []MagicMessageItem                        `json:"messages,required"`
+	Result   AccountMagicGreTunnelDeleteResponseResult `json:"result,required"`
+	// Whether the API call was successful
+	Success AccountMagicGreTunnelDeleteResponseSuccess `json:"success,required"`
+	JSON    accountMagicGreTunnelDeleteResponseJSON    `json:"-"`
 }
 
 // accountMagicGreTunnelDeleteResponseJSON contains the JSON metadata for the
 // struct [AccountMagicGreTunnelDeleteResponse]
 type accountMagicGreTunnelDeleteResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -354,13 +562,46 @@ func (r accountMagicGreTunnelDeleteResponseResultJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful
+type AccountMagicGreTunnelDeleteResponseSuccess bool
+
+const (
+	AccountMagicGreTunnelDeleteResponseSuccessTrue AccountMagicGreTunnelDeleteResponseSuccess = true
+)
+
+func (r AccountMagicGreTunnelDeleteResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountMagicGreTunnelDeleteResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountMagicGreTunnelNewParams struct {
-	Body              interface{}       `json:"body,required"`
-	XMagicNewHcTarget param.Field[bool] `header:"x-magic-new-hc-target"`
+	// The IP address assigned to the Cloudflare side of the GRE tunnel.
+	CloudflareGreEndpoint param.Field[string] `json:"cloudflare_gre_endpoint,required"`
+	// The IP address assigned to the customer side of the GRE tunnel.
+	CustomerGreEndpoint param.Field[string] `json:"customer_gre_endpoint,required"`
+	// A 31-bit prefix (/31 in CIDR notation) supporting two hosts, one for each side
+	// of the tunnel. Select the subnet from the following private IP space:
+	// 10.0.0.0–10.255.255.255, 172.16.0.0–172.31.255.255, 192.168.0.0–192.168.255.255.
+	InterfaceAddress param.Field[string] `json:"interface_address,required"`
+	// The name of the tunnel. The name cannot contain spaces or special characters,
+	// must be 15 characters or less, and cannot share a name with another GRE tunnel.
+	Name param.Field[string] `json:"name,required"`
+	// An optional description of the GRE tunnel.
+	Description param.Field[string]                      `json:"description"`
+	HealthCheck param.Field[MagicTunnelHealthCheckParam] `json:"health_check"`
+	// Maximum Transmission Unit (MTU) in bytes for the GRE tunnel. The minimum value
+	// is 576.
+	Mtu param.Field[int64] `json:"mtu"`
+	// Time To Live (TTL) in number of hops of the GRE tunnel.
+	Ttl               param.Field[int64] `json:"ttl"`
+	XMagicNewHcTarget param.Field[bool]  `header:"x-magic-new-hc-target"`
 }
 
 func (r AccountMagicGreTunnelNewParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
+	return apijson.MarshalRoot(r)
 }
 
 type AccountMagicGreTunnelGetParams struct {
@@ -399,10 +640,5 @@ type AccountMagicGreTunnelListParams struct {
 }
 
 type AccountMagicGreTunnelDeleteParams struct {
-	Body              interface{}       `json:"body,required"`
 	XMagicNewHcTarget param.Field[bool] `header:"x-magic-new-hc-target"`
-}
-
-func (r AccountMagicGreTunnelDeleteParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
 }

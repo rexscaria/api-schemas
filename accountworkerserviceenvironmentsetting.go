@@ -33,7 +33,7 @@ func NewAccountWorkerServiceEnvironmentSettingService(opts ...option.RequestOpti
 	return
 }
 
-// Get script settings from a worker with an environment
+// Get script settings from a worker with an environment.
 func (r *AccountWorkerServiceEnvironmentSettingService) Get(ctx context.Context, accountID string, serviceName string, environmentName string, opts ...option.RequestOption) (res *SettingsResponseScriptSettings, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
@@ -53,7 +53,7 @@ func (r *AccountWorkerServiceEnvironmentSettingService) Get(ctx context.Context,
 	return
 }
 
-// Patch script metadata, such as bindings
+// Patch script metadata, such as bindings.
 func (r *AccountWorkerServiceEnvironmentSettingService) Patch(ctx context.Context, accountID string, serviceName string, environmentName string, body AccountWorkerServiceEnvironmentSettingPatchParams, opts ...option.RequestOption) (res *SettingsResponseScriptSettings, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {

@@ -106,7 +106,7 @@ func (r *AccountMagicSiteWanService) List(ctx context.Context, accountID string,
 }
 
 // Remove a specific Site WAN.
-func (r *AccountMagicSiteWanService) Delete(ctx context.Context, accountID string, siteID string, wanID string, body AccountMagicSiteWanDeleteParams, opts ...option.RequestOption) (res *AccountMagicSiteWanDeleteResponse, err error) {
+func (r *AccountMagicSiteWanService) Delete(ctx context.Context, accountID string, siteID string, wanID string, opts ...option.RequestOption) (res *AccountMagicSiteWanDeleteResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
@@ -121,7 +121,7 @@ func (r *AccountMagicSiteWanService) Delete(ctx context.Context, accountID strin
 		return
 	}
 	path := fmt.Sprintf("accounts/%s/magic/sites/%s/wans/%s", accountID, siteID, wanID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
@@ -160,7 +160,7 @@ type MagicWan struct {
 	// (optional) if omitted, use DHCP. Submit secondary_address when site is in high
 	// availability mode.
 	StaticAddressing MagicWanStaticAddressing `json:"static_addressing"`
-	// VLAN port number.
+	// VLAN ID. Use zero for untagged.
 	VlanTag int64        `json:"vlan_tag"`
 	JSON    magicWanJSON `json:"-"`
 }
@@ -206,15 +206,21 @@ func (r MagicWanHealthCheckRate) IsKnown() bool {
 }
 
 type MagicWanModifiedResponse struct {
-	Result MagicWan                     `json:"result"`
-	JSON   magicWanModifiedResponseJSON `json:"-"`
-	MagicAPIResponseSingle
+	Errors   []MagicMessageItem `json:"errors,required"`
+	Messages []MagicMessageItem `json:"messages,required"`
+	Result   MagicWan           `json:"result,required"`
+	// Whether the API call was successful
+	Success MagicWanModifiedResponseSuccess `json:"success,required"`
+	JSON    magicWanModifiedResponseJSON    `json:"-"`
 }
 
 // magicWanModifiedResponseJSON contains the JSON metadata for the struct
 // [MagicWanModifiedResponse]
 type magicWanModifiedResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -225,6 +231,21 @@ func (r *MagicWanModifiedResponse) UnmarshalJSON(data []byte) (err error) {
 
 func (r magicWanModifiedResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful
+type MagicWanModifiedResponseSuccess bool
+
+const (
+	MagicWanModifiedResponseSuccessTrue MagicWanModifiedResponseSuccess = true
+)
+
+func (r MagicWanModifiedResponseSuccess) IsKnown() bool {
+	switch r {
+	case MagicWanModifiedResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 // (optional) if omitted, use DHCP. Submit secondary_address when site is in high
@@ -279,7 +300,7 @@ type MagicWanUpdateRequestParam struct {
 	// (optional) if omitted, use DHCP. Submit secondary_address when site is in high
 	// availability mode.
 	StaticAddressing param.Field[MagicWanStaticAddressingParam] `json:"static_addressing"`
-	// VLAN port number.
+	// VLAN ID. Use zero for untagged.
 	VlanTag param.Field[int64] `json:"vlan_tag"`
 }
 
@@ -288,15 +309,21 @@ func (r MagicWanUpdateRequestParam) MarshalJSON() (data []byte, err error) {
 }
 
 type MagicWansCollectionResponse struct {
-	Result []MagicWan                      `json:"result"`
-	JSON   magicWansCollectionResponseJSON `json:"-"`
-	MagicAPIResponseSingle
+	Errors   []MagicMessageItem `json:"errors,required"`
+	Messages []MagicMessageItem `json:"messages,required"`
+	Result   []MagicWan         `json:"result,required"`
+	// Whether the API call was successful
+	Success MagicWansCollectionResponseSuccess `json:"success,required"`
+	JSON    magicWansCollectionResponseJSON    `json:"-"`
 }
 
 // magicWansCollectionResponseJSON contains the JSON metadata for the struct
 // [MagicWansCollectionResponse]
 type magicWansCollectionResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -309,16 +336,37 @@ func (r magicWansCollectionResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful
+type MagicWansCollectionResponseSuccess bool
+
+const (
+	MagicWansCollectionResponseSuccessTrue MagicWansCollectionResponseSuccess = true
+)
+
+func (r MagicWansCollectionResponseSuccess) IsKnown() bool {
+	switch r {
+	case MagicWansCollectionResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountMagicSiteWanGetResponse struct {
-	Result MagicWan                           `json:"result"`
-	JSON   accountMagicSiteWanGetResponseJSON `json:"-"`
-	MagicAPIResponseSingle
+	Errors   []MagicMessageItem `json:"errors,required"`
+	Messages []MagicMessageItem `json:"messages,required"`
+	Result   MagicWan           `json:"result,required"`
+	// Whether the API call was successful
+	Success AccountMagicSiteWanGetResponseSuccess `json:"success,required"`
+	JSON    accountMagicSiteWanGetResponseJSON    `json:"-"`
 }
 
 // accountMagicSiteWanGetResponseJSON contains the JSON metadata for the struct
 // [AccountMagicSiteWanGetResponse]
 type accountMagicSiteWanGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -331,16 +379,37 @@ func (r accountMagicSiteWanGetResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful
+type AccountMagicSiteWanGetResponseSuccess bool
+
+const (
+	AccountMagicSiteWanGetResponseSuccessTrue AccountMagicSiteWanGetResponseSuccess = true
+)
+
+func (r AccountMagicSiteWanGetResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountMagicSiteWanGetResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountMagicSiteWanDeleteResponse struct {
-	Result MagicWan                              `json:"result"`
-	JSON   accountMagicSiteWanDeleteResponseJSON `json:"-"`
-	MagicAPIResponseSingle
+	Errors   []MagicMessageItem `json:"errors,required"`
+	Messages []MagicMessageItem `json:"messages,required"`
+	Result   MagicWan           `json:"result,required"`
+	// Whether the API call was successful
+	Success AccountMagicSiteWanDeleteResponseSuccess `json:"success,required"`
+	JSON    accountMagicSiteWanDeleteResponseJSON    `json:"-"`
 }
 
 // accountMagicSiteWanDeleteResponseJSON contains the JSON metadata for the struct
 // [AccountMagicSiteWanDeleteResponse]
 type accountMagicSiteWanDeleteResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -353,15 +422,30 @@ func (r accountMagicSiteWanDeleteResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful
+type AccountMagicSiteWanDeleteResponseSuccess bool
+
+const (
+	AccountMagicSiteWanDeleteResponseSuccessTrue AccountMagicSiteWanDeleteResponseSuccess = true
+)
+
+func (r AccountMagicSiteWanDeleteResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountMagicSiteWanDeleteResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountMagicSiteWanNewParams struct {
-	Physport param.Field[int64] `json:"physport,required"`
-	// VLAN port number.
-	VlanTag  param.Field[int64]  `json:"vlan_tag,required"`
+	Physport param.Field[int64]  `json:"physport,required"`
 	Name     param.Field[string] `json:"name"`
 	Priority param.Field[int64]  `json:"priority"`
 	// (optional) if omitted, use DHCP. Submit secondary_address when site is in high
 	// availability mode.
 	StaticAddressing param.Field[MagicWanStaticAddressingParam] `json:"static_addressing"`
+	// VLAN ID. Use zero for untagged.
+	VlanTag param.Field[int64] `json:"vlan_tag"`
 }
 
 func (r AccountMagicSiteWanNewParams) MarshalJSON() (data []byte, err error) {
@@ -374,14 +458,6 @@ type AccountMagicSiteWanUpdateParams struct {
 
 func (r AccountMagicSiteWanUpdateParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r.MagicWanUpdateRequest)
-}
-
-type AccountMagicSiteWanDeleteParams struct {
-	Body interface{} `json:"body,required"`
-}
-
-func (r AccountMagicSiteWanDeleteParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
 }
 
 type AccountMagicSiteWanPatchParams struct {

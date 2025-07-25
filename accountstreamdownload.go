@@ -81,14 +81,20 @@ func (r *AccountStreamDownloadService) Delete(ctx context.Context, accountID str
 }
 
 type DownloadsResponse struct {
-	Result interface{}           `json:"result"`
-	JSON   downloadsResponseJSON `json:"-"`
-	APIResponseSingleStream
+	Errors   []StreamMessages `json:"errors,required"`
+	Messages []StreamMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success DownloadsResponseSuccess `json:"success,required"`
+	Result  interface{}              `json:"result"`
+	JSON    downloadsResponseJSON    `json:"-"`
 }
 
 // downloadsResponseJSON contains the JSON metadata for the struct
 // [DownloadsResponse]
 type downloadsResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -100,6 +106,21 @@ func (r *DownloadsResponse) UnmarshalJSON(data []byte) (err error) {
 
 func (r downloadsResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type DownloadsResponseSuccess bool
+
+const (
+	DownloadsResponseSuccessTrue DownloadsResponseSuccess = true
+)
+
+func (r DownloadsResponseSuccess) IsKnown() bool {
+	switch r {
+	case DownloadsResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountStreamDownloadNewParams struct {

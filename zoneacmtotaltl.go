@@ -75,14 +75,20 @@ func (r CertificateAuthorityTotalTls) IsKnown() bool {
 }
 
 type SettingsResponseTotalTls struct {
-	Result SettingsResponseTotalTlsResult `json:"result"`
-	JSON   settingsResponseTotalTlsJSON   `json:"-"`
-	APIResponseSingleTlsCertificates
+	Errors   []MessagesTlsCertificatesItem `json:"errors,required"`
+	Messages []MessagesTlsCertificatesItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success SettingsResponseTotalTlsSuccess `json:"success,required"`
+	Result  SettingsResponseTotalTlsResult  `json:"result"`
+	JSON    settingsResponseTotalTlsJSON    `json:"-"`
 }
 
 // settingsResponseTotalTlsJSON contains the JSON metadata for the struct
 // [SettingsResponseTotalTls]
 type settingsResponseTotalTlsJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -94,6 +100,21 @@ func (r *SettingsResponseTotalTls) UnmarshalJSON(data []byte) (err error) {
 
 func (r settingsResponseTotalTlsJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type SettingsResponseTotalTlsSuccess bool
+
+const (
+	SettingsResponseTotalTlsSuccessTrue SettingsResponseTotalTlsSuccess = true
+)
+
+func (r SettingsResponseTotalTlsSuccess) IsKnown() bool {
+	switch r {
+	case SettingsResponseTotalTlsSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type SettingsResponseTotalTlsResult struct {

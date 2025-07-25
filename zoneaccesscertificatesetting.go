@@ -3,14 +3,6 @@
 package cfrex
 
 import (
-	"context"
-	"errors"
-	"fmt"
-	"net/http"
-
-	"github.com/rexscaria/api-schemas/internal/apijson"
-	"github.com/rexscaria/api-schemas/internal/param"
-	"github.com/rexscaria/api-schemas/internal/requestconfig"
 	"github.com/rexscaria/api-schemas/option"
 )
 
@@ -31,36 +23,4 @@ func NewZoneAccessCertificateSettingService(opts ...option.RequestOption) (r *Zo
 	r = &ZoneAccessCertificateSettingService{}
 	r.Options = opts
 	return
-}
-
-// Updates an mTLS certificate's hostname settings.
-func (r *ZoneAccessCertificateSettingService) Update(ctx context.Context, zoneID string, body ZoneAccessCertificateSettingUpdateParams, opts ...option.RequestOption) (res *ResponseCollectionHostnames, err error) {
-	opts = append(r.Options[:], opts...)
-	if zoneID == "" {
-		err = errors.New("missing required zone_id parameter")
-		return
-	}
-	path := fmt.Sprintf("zones/%s/access/certificates/settings", zoneID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
-}
-
-// List all mTLS hostname settings for this zone.
-func (r *ZoneAccessCertificateSettingService) List(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *ResponseCollectionHostnames, err error) {
-	opts = append(r.Options[:], opts...)
-	if zoneID == "" {
-		err = errors.New("missing required zone_id parameter")
-		return
-	}
-	path := fmt.Sprintf("zones/%s/access/certificates/settings", zoneID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
-}
-
-type ZoneAccessCertificateSettingUpdateParams struct {
-	Settings param.Field[[]AccessSettingsParam] `json:"settings,required"`
-}
-
-func (r ZoneAccessCertificateSettingUpdateParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
 }

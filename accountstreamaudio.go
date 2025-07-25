@@ -110,13 +110,19 @@ func (r *AccountStreamAudioService) Delete(ctx context.Context, accountID string
 }
 
 type AddAudioTrack struct {
-	Result AdditionalAudio   `json:"result"`
-	JSON   addAudioTrackJSON `json:"-"`
-	APIResponseStream
+	Errors   []StreamMessages `json:"errors,required"`
+	Messages []StreamMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AddAudioTrackSuccess `json:"success,required"`
+	Result  AdditionalAudio      `json:"result"`
+	JSON    addAudioTrackJSON    `json:"-"`
 }
 
 // addAudioTrackJSON contains the JSON metadata for the struct [AddAudioTrack]
 type addAudioTrackJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -128,6 +134,21 @@ func (r *AddAudioTrack) UnmarshalJSON(data []byte) (err error) {
 
 func (r addAudioTrackJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type AddAudioTrackSuccess bool
+
+const (
+	AddAudioTrackSuccessTrue AddAudioTrackSuccess = true
+)
+
+func (r AddAudioTrackSuccess) IsKnown() bool {
+	switch r {
+	case AddAudioTrackSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AdditionalAudio struct {
@@ -179,14 +200,20 @@ func (r AdditionalAudioStatus) IsKnown() bool {
 }
 
 type DeletedStreamResponse struct {
-	Result string                    `json:"result"`
-	JSON   deletedStreamResponseJSON `json:"-"`
-	APIResponseSingleStream
+	Errors   []StreamMessages `json:"errors,required"`
+	Messages []StreamMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success DeletedStreamResponseSuccess `json:"success,required"`
+	Result  string                       `json:"result"`
+	JSON    deletedStreamResponseJSON    `json:"-"`
 }
 
 // deletedStreamResponseJSON contains the JSON metadata for the struct
 // [DeletedStreamResponse]
 type deletedStreamResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -200,15 +227,36 @@ func (r deletedStreamResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type DeletedStreamResponseSuccess bool
+
+const (
+	DeletedStreamResponseSuccessTrue DeletedStreamResponseSuccess = true
+)
+
+func (r DeletedStreamResponseSuccess) IsKnown() bool {
+	switch r {
+	case DeletedStreamResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountStreamAudioListResponse struct {
-	Result []AdditionalAudio                  `json:"result"`
-	JSON   accountStreamAudioListResponseJSON `json:"-"`
-	APIResponseStream
+	Errors   []StreamMessages `json:"errors,required"`
+	Messages []StreamMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountStreamAudioListResponseSuccess `json:"success,required"`
+	Result  []AdditionalAudio                     `json:"result"`
+	JSON    accountStreamAudioListResponseJSON    `json:"-"`
 }
 
 // accountStreamAudioListResponseJSON contains the JSON metadata for the struct
 // [AccountStreamAudioListResponse]
 type accountStreamAudioListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -220,6 +268,21 @@ func (r *AccountStreamAudioListResponse) UnmarshalJSON(data []byte) (err error) 
 
 func (r accountStreamAudioListResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountStreamAudioListResponseSuccess bool
+
+const (
+	AccountStreamAudioListResponseSuccessTrue AccountStreamAudioListResponseSuccess = true
+)
+
+func (r AccountStreamAudioListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountStreamAudioListResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountStreamAudioNewParams struct {

@@ -53,17 +53,22 @@ func (r *AccountEmailSecurityService) GetSubmissions(ctx context.Context, accoun
 }
 
 type AccountEmailSecurityGetSubmissionsResponse struct {
+	Errors     []EmailSecurityMessage                             `json:"errors,required"`
+	Messages   []EmailSecurityMessage                             `json:"messages,required"`
 	Result     []AccountEmailSecurityGetSubmissionsResponseResult `json:"result,required"`
 	ResultInfo ResultInfoEmailSecurity                            `json:"result_info,required"`
+	Success    bool                                               `json:"success,required"`
 	JSON       accountEmailSecurityGetSubmissionsResponseJSON     `json:"-"`
-	APIResponseEmailSecurity
 }
 
 // accountEmailSecurityGetSubmissionsResponseJSON contains the JSON metadata for
 // the struct [AccountEmailSecurityGetSubmissionsResponse]
 type accountEmailSecurityGetSubmissionsResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
 	ResultInfo  apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -77,18 +82,18 @@ func (r accountEmailSecurityGetSubmissionsResponseJSON) RawJSON() string {
 }
 
 type AccountEmailSecurityGetSubmissionsResponseResult struct {
-	RequestedTs          time.Time                                                            `json:"requested_ts,required" format:"date-time"`
-	SubmissionID         string                                                               `json:"submission_id,required"`
-	OriginalDisposition  AccountEmailSecurityGetSubmissionsResponseResultOriginalDisposition  `json:"original_disposition,nullable"`
-	OriginalEdfHash      string                                                               `json:"original_edf_hash,nullable"`
-	Outcome              string                                                               `json:"outcome,nullable"`
-	OutcomeDisposition   AccountEmailSecurityGetSubmissionsResponseResultOutcomeDisposition   `json:"outcome_disposition,nullable"`
-	RequestedBy          string                                                               `json:"requested_by,nullable"`
-	RequestedDisposition AccountEmailSecurityGetSubmissionsResponseResultRequestedDisposition `json:"requested_disposition,nullable"`
-	Status               string                                                               `json:"status,nullable"`
-	Subject              string                                                               `json:"subject,nullable"`
-	Type                 string                                                               `json:"type,nullable"`
-	JSON                 accountEmailSecurityGetSubmissionsResponseResultJSON                 `json:"-"`
+	RequestedTs          time.Time                                            `json:"requested_ts,required" format:"date-time"`
+	SubmissionID         string                                               `json:"submission_id,required"`
+	OriginalDisposition  DispositionLabel                                     `json:"original_disposition,nullable"`
+	OriginalEdfHash      string                                               `json:"original_edf_hash,nullable"`
+	Outcome              string                                               `json:"outcome,nullable"`
+	OutcomeDisposition   DispositionLabel                                     `json:"outcome_disposition,nullable"`
+	RequestedBy          string                                               `json:"requested_by,nullable"`
+	RequestedDisposition DispositionLabel                                     `json:"requested_disposition,nullable"`
+	Status               string                                               `json:"status,nullable"`
+	Subject              string                                               `json:"subject,nullable"`
+	Type                 string                                               `json:"type,nullable"`
+	JSON                 accountEmailSecurityGetSubmissionsResponseResultJSON `json:"-"`
 }
 
 // accountEmailSecurityGetSubmissionsResponseResultJSON contains the JSON metadata
@@ -117,84 +122,20 @@ func (r accountEmailSecurityGetSubmissionsResponseResultJSON) RawJSON() string {
 	return r.raw
 }
 
-type AccountEmailSecurityGetSubmissionsResponseResultOriginalDisposition string
-
-const (
-	AccountEmailSecurityGetSubmissionsResponseResultOriginalDispositionMalicious    AccountEmailSecurityGetSubmissionsResponseResultOriginalDisposition = "MALICIOUS"
-	AccountEmailSecurityGetSubmissionsResponseResultOriginalDispositionMaliciousBec AccountEmailSecurityGetSubmissionsResponseResultOriginalDisposition = "MALICIOUS-BEC"
-	AccountEmailSecurityGetSubmissionsResponseResultOriginalDispositionSuspicious   AccountEmailSecurityGetSubmissionsResponseResultOriginalDisposition = "SUSPICIOUS"
-	AccountEmailSecurityGetSubmissionsResponseResultOriginalDispositionSpoof        AccountEmailSecurityGetSubmissionsResponseResultOriginalDisposition = "SPOOF"
-	AccountEmailSecurityGetSubmissionsResponseResultOriginalDispositionSpam         AccountEmailSecurityGetSubmissionsResponseResultOriginalDisposition = "SPAM"
-	AccountEmailSecurityGetSubmissionsResponseResultOriginalDispositionBulk         AccountEmailSecurityGetSubmissionsResponseResultOriginalDisposition = "BULK"
-	AccountEmailSecurityGetSubmissionsResponseResultOriginalDispositionEncrypted    AccountEmailSecurityGetSubmissionsResponseResultOriginalDisposition = "ENCRYPTED"
-	AccountEmailSecurityGetSubmissionsResponseResultOriginalDispositionExternal     AccountEmailSecurityGetSubmissionsResponseResultOriginalDisposition = "EXTERNAL"
-	AccountEmailSecurityGetSubmissionsResponseResultOriginalDispositionUnknown      AccountEmailSecurityGetSubmissionsResponseResultOriginalDisposition = "UNKNOWN"
-	AccountEmailSecurityGetSubmissionsResponseResultOriginalDispositionNone         AccountEmailSecurityGetSubmissionsResponseResultOriginalDisposition = "NONE"
-)
-
-func (r AccountEmailSecurityGetSubmissionsResponseResultOriginalDisposition) IsKnown() bool {
-	switch r {
-	case AccountEmailSecurityGetSubmissionsResponseResultOriginalDispositionMalicious, AccountEmailSecurityGetSubmissionsResponseResultOriginalDispositionMaliciousBec, AccountEmailSecurityGetSubmissionsResponseResultOriginalDispositionSuspicious, AccountEmailSecurityGetSubmissionsResponseResultOriginalDispositionSpoof, AccountEmailSecurityGetSubmissionsResponseResultOriginalDispositionSpam, AccountEmailSecurityGetSubmissionsResponseResultOriginalDispositionBulk, AccountEmailSecurityGetSubmissionsResponseResultOriginalDispositionEncrypted, AccountEmailSecurityGetSubmissionsResponseResultOriginalDispositionExternal, AccountEmailSecurityGetSubmissionsResponseResultOriginalDispositionUnknown, AccountEmailSecurityGetSubmissionsResponseResultOriginalDispositionNone:
-		return true
-	}
-	return false
-}
-
-type AccountEmailSecurityGetSubmissionsResponseResultOutcomeDisposition string
-
-const (
-	AccountEmailSecurityGetSubmissionsResponseResultOutcomeDispositionMalicious    AccountEmailSecurityGetSubmissionsResponseResultOutcomeDisposition = "MALICIOUS"
-	AccountEmailSecurityGetSubmissionsResponseResultOutcomeDispositionMaliciousBec AccountEmailSecurityGetSubmissionsResponseResultOutcomeDisposition = "MALICIOUS-BEC"
-	AccountEmailSecurityGetSubmissionsResponseResultOutcomeDispositionSuspicious   AccountEmailSecurityGetSubmissionsResponseResultOutcomeDisposition = "SUSPICIOUS"
-	AccountEmailSecurityGetSubmissionsResponseResultOutcomeDispositionSpoof        AccountEmailSecurityGetSubmissionsResponseResultOutcomeDisposition = "SPOOF"
-	AccountEmailSecurityGetSubmissionsResponseResultOutcomeDispositionSpam         AccountEmailSecurityGetSubmissionsResponseResultOutcomeDisposition = "SPAM"
-	AccountEmailSecurityGetSubmissionsResponseResultOutcomeDispositionBulk         AccountEmailSecurityGetSubmissionsResponseResultOutcomeDisposition = "BULK"
-	AccountEmailSecurityGetSubmissionsResponseResultOutcomeDispositionEncrypted    AccountEmailSecurityGetSubmissionsResponseResultOutcomeDisposition = "ENCRYPTED"
-	AccountEmailSecurityGetSubmissionsResponseResultOutcomeDispositionExternal     AccountEmailSecurityGetSubmissionsResponseResultOutcomeDisposition = "EXTERNAL"
-	AccountEmailSecurityGetSubmissionsResponseResultOutcomeDispositionUnknown      AccountEmailSecurityGetSubmissionsResponseResultOutcomeDisposition = "UNKNOWN"
-	AccountEmailSecurityGetSubmissionsResponseResultOutcomeDispositionNone         AccountEmailSecurityGetSubmissionsResponseResultOutcomeDisposition = "NONE"
-)
-
-func (r AccountEmailSecurityGetSubmissionsResponseResultOutcomeDisposition) IsKnown() bool {
-	switch r {
-	case AccountEmailSecurityGetSubmissionsResponseResultOutcomeDispositionMalicious, AccountEmailSecurityGetSubmissionsResponseResultOutcomeDispositionMaliciousBec, AccountEmailSecurityGetSubmissionsResponseResultOutcomeDispositionSuspicious, AccountEmailSecurityGetSubmissionsResponseResultOutcomeDispositionSpoof, AccountEmailSecurityGetSubmissionsResponseResultOutcomeDispositionSpam, AccountEmailSecurityGetSubmissionsResponseResultOutcomeDispositionBulk, AccountEmailSecurityGetSubmissionsResponseResultOutcomeDispositionEncrypted, AccountEmailSecurityGetSubmissionsResponseResultOutcomeDispositionExternal, AccountEmailSecurityGetSubmissionsResponseResultOutcomeDispositionUnknown, AccountEmailSecurityGetSubmissionsResponseResultOutcomeDispositionNone:
-		return true
-	}
-	return false
-}
-
-type AccountEmailSecurityGetSubmissionsResponseResultRequestedDisposition string
-
-const (
-	AccountEmailSecurityGetSubmissionsResponseResultRequestedDispositionMalicious    AccountEmailSecurityGetSubmissionsResponseResultRequestedDisposition = "MALICIOUS"
-	AccountEmailSecurityGetSubmissionsResponseResultRequestedDispositionMaliciousBec AccountEmailSecurityGetSubmissionsResponseResultRequestedDisposition = "MALICIOUS-BEC"
-	AccountEmailSecurityGetSubmissionsResponseResultRequestedDispositionSuspicious   AccountEmailSecurityGetSubmissionsResponseResultRequestedDisposition = "SUSPICIOUS"
-	AccountEmailSecurityGetSubmissionsResponseResultRequestedDispositionSpoof        AccountEmailSecurityGetSubmissionsResponseResultRequestedDisposition = "SPOOF"
-	AccountEmailSecurityGetSubmissionsResponseResultRequestedDispositionSpam         AccountEmailSecurityGetSubmissionsResponseResultRequestedDisposition = "SPAM"
-	AccountEmailSecurityGetSubmissionsResponseResultRequestedDispositionBulk         AccountEmailSecurityGetSubmissionsResponseResultRequestedDisposition = "BULK"
-	AccountEmailSecurityGetSubmissionsResponseResultRequestedDispositionEncrypted    AccountEmailSecurityGetSubmissionsResponseResultRequestedDisposition = "ENCRYPTED"
-	AccountEmailSecurityGetSubmissionsResponseResultRequestedDispositionExternal     AccountEmailSecurityGetSubmissionsResponseResultRequestedDisposition = "EXTERNAL"
-	AccountEmailSecurityGetSubmissionsResponseResultRequestedDispositionUnknown      AccountEmailSecurityGetSubmissionsResponseResultRequestedDisposition = "UNKNOWN"
-	AccountEmailSecurityGetSubmissionsResponseResultRequestedDispositionNone         AccountEmailSecurityGetSubmissionsResponseResultRequestedDisposition = "NONE"
-)
-
-func (r AccountEmailSecurityGetSubmissionsResponseResultRequestedDisposition) IsKnown() bool {
-	switch r {
-	case AccountEmailSecurityGetSubmissionsResponseResultRequestedDispositionMalicious, AccountEmailSecurityGetSubmissionsResponseResultRequestedDispositionMaliciousBec, AccountEmailSecurityGetSubmissionsResponseResultRequestedDispositionSuspicious, AccountEmailSecurityGetSubmissionsResponseResultRequestedDispositionSpoof, AccountEmailSecurityGetSubmissionsResponseResultRequestedDispositionSpam, AccountEmailSecurityGetSubmissionsResponseResultRequestedDispositionBulk, AccountEmailSecurityGetSubmissionsResponseResultRequestedDispositionEncrypted, AccountEmailSecurityGetSubmissionsResponseResultRequestedDispositionExternal, AccountEmailSecurityGetSubmissionsResponseResultRequestedDispositionUnknown, AccountEmailSecurityGetSubmissionsResponseResultRequestedDispositionNone:
-		return true
-	}
-	return false
-}
-
 type AccountEmailSecurityGetSubmissionsParams struct {
 	// The end of the search date range. Defaults to `now`.
-	End param.Field[time.Time] `query:"end" format:"date-time"`
+	End                 param.Field[time.Time]                                                   `query:"end" format:"date-time"`
+	OriginalDisposition param.Field[AccountEmailSecurityGetSubmissionsParamsOriginalDisposition] `query:"original_disposition"`
+	OutcomeDisposition  param.Field[AccountEmailSecurityGetSubmissionsParamsOutcomeDisposition]  `query:"outcome_disposition"`
 	// The page number of paginated results.
 	Page param.Field[int64] `query:"page"`
 	// The number of results per page.
-	PerPage param.Field[int64] `query:"per_page"`
+	PerPage              param.Field[int64]                                                        `query:"per_page"`
+	Query                param.Field[string]                                                       `query:"query"`
+	RequestedDisposition param.Field[AccountEmailSecurityGetSubmissionsParamsRequestedDisposition] `query:"requested_disposition"`
 	// The beginning of the search date range. Defaults to `now - 30 days`.
 	Start        param.Field[time.Time]                                    `query:"start" format:"date-time"`
+	Status       param.Field[string]                                       `query:"status"`
 	SubmissionID param.Field[string]                                       `query:"submission_id"`
 	Type         param.Field[AccountEmailSecurityGetSubmissionsParamsType] `query:"type"`
 }
@@ -206,6 +147,63 @@ func (r AccountEmailSecurityGetSubmissionsParams) URLQuery() (v url.Values) {
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
+}
+
+type AccountEmailSecurityGetSubmissionsParamsOriginalDisposition string
+
+const (
+	AccountEmailSecurityGetSubmissionsParamsOriginalDispositionMalicious  AccountEmailSecurityGetSubmissionsParamsOriginalDisposition = "MALICIOUS"
+	AccountEmailSecurityGetSubmissionsParamsOriginalDispositionSuspicious AccountEmailSecurityGetSubmissionsParamsOriginalDisposition = "SUSPICIOUS"
+	AccountEmailSecurityGetSubmissionsParamsOriginalDispositionSpoof      AccountEmailSecurityGetSubmissionsParamsOriginalDisposition = "SPOOF"
+	AccountEmailSecurityGetSubmissionsParamsOriginalDispositionSpam       AccountEmailSecurityGetSubmissionsParamsOriginalDisposition = "SPAM"
+	AccountEmailSecurityGetSubmissionsParamsOriginalDispositionBulk       AccountEmailSecurityGetSubmissionsParamsOriginalDisposition = "BULK"
+	AccountEmailSecurityGetSubmissionsParamsOriginalDispositionNone       AccountEmailSecurityGetSubmissionsParamsOriginalDisposition = "NONE"
+)
+
+func (r AccountEmailSecurityGetSubmissionsParamsOriginalDisposition) IsKnown() bool {
+	switch r {
+	case AccountEmailSecurityGetSubmissionsParamsOriginalDispositionMalicious, AccountEmailSecurityGetSubmissionsParamsOriginalDispositionSuspicious, AccountEmailSecurityGetSubmissionsParamsOriginalDispositionSpoof, AccountEmailSecurityGetSubmissionsParamsOriginalDispositionSpam, AccountEmailSecurityGetSubmissionsParamsOriginalDispositionBulk, AccountEmailSecurityGetSubmissionsParamsOriginalDispositionNone:
+		return true
+	}
+	return false
+}
+
+type AccountEmailSecurityGetSubmissionsParamsOutcomeDisposition string
+
+const (
+	AccountEmailSecurityGetSubmissionsParamsOutcomeDispositionMalicious  AccountEmailSecurityGetSubmissionsParamsOutcomeDisposition = "MALICIOUS"
+	AccountEmailSecurityGetSubmissionsParamsOutcomeDispositionSuspicious AccountEmailSecurityGetSubmissionsParamsOutcomeDisposition = "SUSPICIOUS"
+	AccountEmailSecurityGetSubmissionsParamsOutcomeDispositionSpoof      AccountEmailSecurityGetSubmissionsParamsOutcomeDisposition = "SPOOF"
+	AccountEmailSecurityGetSubmissionsParamsOutcomeDispositionSpam       AccountEmailSecurityGetSubmissionsParamsOutcomeDisposition = "SPAM"
+	AccountEmailSecurityGetSubmissionsParamsOutcomeDispositionBulk       AccountEmailSecurityGetSubmissionsParamsOutcomeDisposition = "BULK"
+	AccountEmailSecurityGetSubmissionsParamsOutcomeDispositionNone       AccountEmailSecurityGetSubmissionsParamsOutcomeDisposition = "NONE"
+)
+
+func (r AccountEmailSecurityGetSubmissionsParamsOutcomeDisposition) IsKnown() bool {
+	switch r {
+	case AccountEmailSecurityGetSubmissionsParamsOutcomeDispositionMalicious, AccountEmailSecurityGetSubmissionsParamsOutcomeDispositionSuspicious, AccountEmailSecurityGetSubmissionsParamsOutcomeDispositionSpoof, AccountEmailSecurityGetSubmissionsParamsOutcomeDispositionSpam, AccountEmailSecurityGetSubmissionsParamsOutcomeDispositionBulk, AccountEmailSecurityGetSubmissionsParamsOutcomeDispositionNone:
+		return true
+	}
+	return false
+}
+
+type AccountEmailSecurityGetSubmissionsParamsRequestedDisposition string
+
+const (
+	AccountEmailSecurityGetSubmissionsParamsRequestedDispositionMalicious  AccountEmailSecurityGetSubmissionsParamsRequestedDisposition = "MALICIOUS"
+	AccountEmailSecurityGetSubmissionsParamsRequestedDispositionSuspicious AccountEmailSecurityGetSubmissionsParamsRequestedDisposition = "SUSPICIOUS"
+	AccountEmailSecurityGetSubmissionsParamsRequestedDispositionSpoof      AccountEmailSecurityGetSubmissionsParamsRequestedDisposition = "SPOOF"
+	AccountEmailSecurityGetSubmissionsParamsRequestedDispositionSpam       AccountEmailSecurityGetSubmissionsParamsRequestedDisposition = "SPAM"
+	AccountEmailSecurityGetSubmissionsParamsRequestedDispositionBulk       AccountEmailSecurityGetSubmissionsParamsRequestedDisposition = "BULK"
+	AccountEmailSecurityGetSubmissionsParamsRequestedDispositionNone       AccountEmailSecurityGetSubmissionsParamsRequestedDisposition = "NONE"
+)
+
+func (r AccountEmailSecurityGetSubmissionsParamsRequestedDisposition) IsKnown() bool {
+	switch r {
+	case AccountEmailSecurityGetSubmissionsParamsRequestedDispositionMalicious, AccountEmailSecurityGetSubmissionsParamsRequestedDispositionSuspicious, AccountEmailSecurityGetSubmissionsParamsRequestedDispositionSpoof, AccountEmailSecurityGetSubmissionsParamsRequestedDispositionSpam, AccountEmailSecurityGetSubmissionsParamsRequestedDispositionBulk, AccountEmailSecurityGetSubmissionsParamsRequestedDispositionNone:
+		return true
+	}
+	return false
 }
 
 type AccountEmailSecurityGetSubmissionsParamsType string

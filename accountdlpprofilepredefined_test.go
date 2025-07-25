@@ -60,12 +60,8 @@ func TestAccountDlpProfilePredefinedUpdateWithOptionalParams(t *testing.T) {
 		"account_id",
 		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		cfrex.AccountDlpProfilePredefinedUpdateParams{
-			Entries: cfrex.F([]cfrex.AccountDlpProfilePredefinedUpdateParamsEntry{{
-				ID:      cfrex.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-				Enabled: cfrex.F(true),
-			}}),
 			AIContextEnabled:    cfrex.F(true),
-			AllowedMatchCount:   cfrex.F(int64(0)),
+			AllowedMatchCount:   cfrex.F(int64(5)),
 			ConfidenceThreshold: cfrex.F("confidence_threshold"),
 			ContextAwareness: cfrex.F(cfrex.ContextAwarenessParam{
 				Enabled: cfrex.F(true),
@@ -73,6 +69,10 @@ func TestAccountDlpProfilePredefinedUpdateWithOptionalParams(t *testing.T) {
 					Files: cfrex.F(true),
 				}),
 			}),
+			Entries: cfrex.F([]cfrex.AccountDlpProfilePredefinedUpdateParamsEntry{{
+				ID:      cfrex.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+				Enabled: cfrex.F(true),
+			}}),
 			OcrEnabled: cfrex.F(true),
 		},
 	)

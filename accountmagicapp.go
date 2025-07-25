@@ -97,8 +97,9 @@ type MagicAccountApp struct {
 	AccountAppID string `json:"account_app_id,required"`
 	// FQDNs to associate with traffic decisions.
 	Hostnames []string `json:"hostnames"`
-	// CIDRs to associate with traffic decisions.
-	IPSubnets []MagicAppSubnetItem `json:"ip_subnets"`
+	// IPv4 CIDRs to associate with traffic decisions. (IPv6 CIDRs are currently
+	// unsupported)
+	IPSubnets []string `json:"ip_subnets"`
 	// Display name for the app.
 	Name string `json:"name"`
 	// Category of the app.
@@ -128,16 +129,22 @@ func (r magicAccountAppJSON) RawJSON() string {
 func (r MagicAccountApp) implementsAccountMagicAppListResponseResult() {}
 
 type MagicAppSingleResponse struct {
+	Errors   []MagicAppSingleResponseError   `json:"errors,required"`
+	Messages []MagicAppSingleResponseMessage `json:"messages,required"`
 	// Custom app defined for an account.
-	Result MagicAccountApp            `json:"result"`
-	JSON   magicAppSingleResponseJSON `json:"-"`
-	MagicAppsResponseObject
+	Result MagicAccountApp `json:"result,required,nullable"`
+	// Whether the API call was successful
+	Success MagicAppSingleResponseSuccess `json:"success,required"`
+	JSON    magicAppSingleResponseJSON    `json:"-"`
 }
 
 // magicAppSingleResponseJSON contains the JSON metadata for the struct
 // [MagicAppSingleResponse]
 type magicAppSingleResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -150,66 +157,138 @@ func (r magicAppSingleResponseJSON) RawJSON() string {
 	return r.raw
 }
 
-type MagicAppSubnetItem = string
-
-type MagicAppSubnetItemParam = string
-
-type MagicAppsResponseObject struct {
-	Errors   []MagicMessageItem `json:"errors,required"`
-	Messages []MagicMessageItem `json:"messages,required"`
-	Result   interface{}        `json:"result,required,nullable"`
-	// Whether the API call was successful
-	Success MagicAppsResponseObjectSuccess `json:"success,required"`
-	JSON    magicAppsResponseObjectJSON    `json:"-"`
+type MagicAppSingleResponseError struct {
+	Code             int64                              `json:"code,required"`
+	Message          string                             `json:"message,required"`
+	DocumentationURL string                             `json:"documentation_url"`
+	Source           MagicAppSingleResponseErrorsSource `json:"source"`
+	JSON             magicAppSingleResponseErrorJSON    `json:"-"`
 }
 
-// magicAppsResponseObjectJSON contains the JSON metadata for the struct
-// [MagicAppsResponseObject]
-type magicAppsResponseObjectJSON struct {
-	Errors      apijson.Field
-	Messages    apijson.Field
-	Result      apijson.Field
-	Success     apijson.Field
+// magicAppSingleResponseErrorJSON contains the JSON metadata for the struct
+// [MagicAppSingleResponseError]
+type magicAppSingleResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *MagicAppSingleResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r magicAppSingleResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type MagicAppSingleResponseErrorsSource struct {
+	Pointer string                                 `json:"pointer"`
+	JSON    magicAppSingleResponseErrorsSourceJSON `json:"-"`
+}
+
+// magicAppSingleResponseErrorsSourceJSON contains the JSON metadata for the struct
+// [MagicAppSingleResponseErrorsSource]
+type magicAppSingleResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *MagicAppsResponseObject) UnmarshalJSON(data []byte) (err error) {
+func (r *MagicAppSingleResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r magicAppsResponseObjectJSON) RawJSON() string {
+func (r magicAppSingleResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type MagicAppSingleResponseMessage struct {
+	Code             int64                                `json:"code,required"`
+	Message          string                               `json:"message,required"`
+	DocumentationURL string                               `json:"documentation_url"`
+	Source           MagicAppSingleResponseMessagesSource `json:"source"`
+	JSON             magicAppSingleResponseMessageJSON    `json:"-"`
+}
+
+// magicAppSingleResponseMessageJSON contains the JSON metadata for the struct
+// [MagicAppSingleResponseMessage]
+type magicAppSingleResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *MagicAppSingleResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r magicAppSingleResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type MagicAppSingleResponseMessagesSource struct {
+	Pointer string                                   `json:"pointer"`
+	JSON    magicAppSingleResponseMessagesSourceJSON `json:"-"`
+}
+
+// magicAppSingleResponseMessagesSourceJSON contains the JSON metadata for the
+// struct [MagicAppSingleResponseMessagesSource]
+type magicAppSingleResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *MagicAppSingleResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r magicAppSingleResponseMessagesSourceJSON) RawJSON() string {
 	return r.raw
 }
 
 // Whether the API call was successful
-type MagicAppsResponseObjectSuccess bool
+type MagicAppSingleResponseSuccess bool
 
 const (
-	MagicAppsResponseObjectSuccessTrue MagicAppsResponseObjectSuccess = true
+	MagicAppSingleResponseSuccessTrue MagicAppSingleResponseSuccess = true
 )
 
-func (r MagicAppsResponseObjectSuccess) IsKnown() bool {
+func (r MagicAppSingleResponseSuccess) IsKnown() bool {
 	switch r {
-	case MagicAppsResponseObjectSuccessTrue:
+	case MagicAppSingleResponseSuccessTrue:
 		return true
 	}
 	return false
 }
 
+type MagicAppSubnetItem = string
+
+type MagicAppSubnetItemParam = string
+
 type MagicMessageItem struct {
-	Code    int64                `json:"code,required"`
-	Message string               `json:"message,required"`
-	JSON    magicMessageItemJSON `json:"-"`
+	Code             int64                  `json:"code,required"`
+	Message          string                 `json:"message,required"`
+	DocumentationURL string                 `json:"documentation_url"`
+	Source           MagicMessageItemSource `json:"source"`
+	JSON             magicMessageItemJSON   `json:"-"`
 }
 
 // magicMessageItemJSON contains the JSON metadata for the struct
 // [MagicMessageItem]
 type magicMessageItemJSON struct {
-	Code        apijson.Field
-	Message     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
 }
 
 func (r *MagicMessageItem) UnmarshalJSON(data []byte) (err error) {
@@ -220,10 +299,31 @@ func (r magicMessageItemJSON) RawJSON() string {
 	return r.raw
 }
 
+type MagicMessageItemSource struct {
+	Pointer string                     `json:"pointer"`
+	JSON    magicMessageItemSourceJSON `json:"-"`
+}
+
+// magicMessageItemSourceJSON contains the JSON metadata for the struct
+// [MagicMessageItemSource]
+type magicMessageItemSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *MagicMessageItemSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r magicMessageItemSourceJSON) RawJSON() string {
+	return r.raw
+}
+
 type AccountMagicAppListResponse struct {
-	Errors   []MagicMessageItem                  `json:"errors,required"`
-	Messages []MagicMessageItem                  `json:"messages,required"`
-	Result   []AccountMagicAppListResponseResult `json:"result,required,nullable"`
+	Errors   []AccountMagicAppListResponseError   `json:"errors,required"`
+	Messages []AccountMagicAppListResponseMessage `json:"messages,required"`
+	Result   []AccountMagicAppListResponseResult  `json:"result,required,nullable"`
 	// Whether the API call was successful
 	Success AccountMagicAppListResponseSuccess `json:"success,required"`
 	JSON    accountMagicAppListResponseJSON    `json:"-"`
@@ -248,13 +348,109 @@ func (r accountMagicAppListResponseJSON) RawJSON() string {
 	return r.raw
 }
 
-// Custom app defined for an account.
+type AccountMagicAppListResponseError struct {
+	Code             int64                                   `json:"code,required"`
+	Message          string                                  `json:"message,required"`
+	DocumentationURL string                                  `json:"documentation_url"`
+	Source           AccountMagicAppListResponseErrorsSource `json:"source"`
+	JSON             accountMagicAppListResponseErrorJSON    `json:"-"`
+}
+
+// accountMagicAppListResponseErrorJSON contains the JSON metadata for the struct
+// [AccountMagicAppListResponseError]
+type accountMagicAppListResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountMagicAppListResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountMagicAppListResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountMagicAppListResponseErrorsSource struct {
+	Pointer string                                      `json:"pointer"`
+	JSON    accountMagicAppListResponseErrorsSourceJSON `json:"-"`
+}
+
+// accountMagicAppListResponseErrorsSourceJSON contains the JSON metadata for the
+// struct [AccountMagicAppListResponseErrorsSource]
+type accountMagicAppListResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountMagicAppListResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountMagicAppListResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountMagicAppListResponseMessage struct {
+	Code             int64                                     `json:"code,required"`
+	Message          string                                    `json:"message,required"`
+	DocumentationURL string                                    `json:"documentation_url"`
+	Source           AccountMagicAppListResponseMessagesSource `json:"source"`
+	JSON             accountMagicAppListResponseMessageJSON    `json:"-"`
+}
+
+// accountMagicAppListResponseMessageJSON contains the JSON metadata for the struct
+// [AccountMagicAppListResponseMessage]
+type accountMagicAppListResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountMagicAppListResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountMagicAppListResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountMagicAppListResponseMessagesSource struct {
+	Pointer string                                        `json:"pointer"`
+	JSON    accountMagicAppListResponseMessagesSourceJSON `json:"-"`
+}
+
+// accountMagicAppListResponseMessagesSourceJSON contains the JSON metadata for the
+// struct [AccountMagicAppListResponseMessagesSource]
+type accountMagicAppListResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountMagicAppListResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountMagicAppListResponseMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Collection of Hostnames and/or IP Subnets to associate with traffic decisions.
 type AccountMagicAppListResponseResult struct {
 	// Magic account app ID.
 	AccountAppID string `json:"account_app_id"`
 	// This field can have the runtime type of [[]string].
 	Hostnames interface{} `json:"hostnames"`
-	// This field can have the runtime type of [[]MagicAppSubnetItem].
+	// This field can have the runtime type of [[]string], [[]MagicAppSubnetItem].
 	IPSubnets interface{} `json:"ip_subnets"`
 	// Managed app ID.
 	ManagedAppID string `json:"managed_app_id"`
@@ -301,7 +497,7 @@ func (r AccountMagicAppListResponseResult) AsUnion() AccountMagicAppListResponse
 	return r.union
 }
 
-// Custom app defined for an account.
+// Collection of Hostnames and/or IP Subnets to associate with traffic decisions.
 //
 // Union satisfied by [MagicAccountApp] or
 // [AccountMagicAppListResponseResultMagicManagedApp].
@@ -330,7 +526,8 @@ type AccountMagicAppListResponseResultMagicManagedApp struct {
 	ManagedAppID string `json:"managed_app_id,required"`
 	// FQDNs to associate with traffic decisions.
 	Hostnames []string `json:"hostnames"`
-	// CIDRs to associate with traffic decisions.
+	// IPv4 CIDRs to associate with traffic decisions. (IPv6 CIDRs are currently
+	// unsupported)
 	IPSubnets []MagicAppSubnetItem `json:"ip_subnets"`
 	// Display name for the app.
 	Name string `json:"name"`
@@ -384,8 +581,9 @@ type AccountMagicAppNewParams struct {
 	Type param.Field[string] `json:"type,required"`
 	// FQDNs to associate with traffic decisions.
 	Hostnames param.Field[[]string] `json:"hostnames"`
-	// CIDRs to associate with traffic decisions.
-	IPSubnets param.Field[[]MagicAppSubnetItemParam] `json:"ip_subnets"`
+	// IPv4 CIDRs to associate with traffic decisions. (IPv6 CIDRs are currently
+	// unsupported)
+	IPSubnets param.Field[[]string] `json:"ip_subnets"`
 }
 
 func (r AccountMagicAppNewParams) MarshalJSON() (data []byte, err error) {
@@ -395,7 +593,8 @@ func (r AccountMagicAppNewParams) MarshalJSON() (data []byte, err error) {
 type AccountMagicAppUpdateParams struct {
 	// FQDNs to associate with traffic decisions.
 	Hostnames param.Field[[]string] `json:"hostnames"`
-	// CIDRs to associate with traffic decisions.
+	// IPv4 CIDRs to associate with traffic decisions. (IPv6 CIDRs are currently
+	// unsupported)
 	IPSubnets param.Field[[]MagicAppSubnetItemParam] `json:"ip_subnets"`
 	// Display name for the app.
 	Name param.Field[string] `json:"name"`

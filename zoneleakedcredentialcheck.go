@@ -35,7 +35,7 @@ func NewZoneLeakedCredentialCheckService(opts ...option.RequestOption) (r *ZoneL
 	return
 }
 
-// Retrieves the current status of Leaked Credential Checks
+// Retrieves the current status of Leaked Credential Checks.
 func (r *ZoneLeakedCredentialCheckService) Get(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *ResponseStatus, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
@@ -47,7 +47,7 @@ func (r *ZoneLeakedCredentialCheckService) Get(ctx context.Context, zoneID strin
 	return
 }
 
-// Updates the current status of Leaked Credential Checks
+// Updates the current status of Leaked Credential Checks.
 func (r *ZoneLeakedCredentialCheckService) Update(ctx context.Context, zoneID string, body ZoneLeakedCredentialCheckUpdateParams, opts ...option.RequestOption) (res *ResponseStatus, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
@@ -59,38 +59,22 @@ func (r *ZoneLeakedCredentialCheckService) Update(ctx context.Context, zoneID st
 	return
 }
 
-type APIResponseSingleWafProductBundle struct {
-	Result interface{}                           `json:"result"`
-	JSON   apiResponseSingleWafProductBundleJSON `json:"-"`
-	APIResponseWafProductBundle
-}
-
-// apiResponseSingleWafProductBundleJSON contains the JSON metadata for the struct
-// [APIResponseSingleWafProductBundle]
-type apiResponseSingleWafProductBundleJSON struct {
-	Result      apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *APIResponseSingleWafProductBundle) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r apiResponseSingleWafProductBundleJSON) RawJSON() string {
-	return r.raw
-}
-
 type ResponseStatus struct {
-	// The overall status for Leaked Credential Checks
-	Result StatusLeakedCredentialChecks `json:"result"`
-	JSON   responseStatusJSON           `json:"-"`
-	APIResponseSingleWafProductBundle
+	Errors   []WafProductAPIBundleMessages `json:"errors,required"`
+	Messages []WafProductAPIBundleMessages `json:"messages,required"`
+	// Defines the overall status for Leaked Credential Checks.
+	Result StatusLeakedCredentialChecks `json:"result,required"`
+	// Defines whether the API call was successful.
+	Success ResponseStatusSuccess `json:"success,required"`
+	JSON    responseStatusJSON    `json:"-"`
 }
 
 // responseStatusJSON contains the JSON metadata for the struct [ResponseStatus]
 type responseStatusJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -103,9 +87,24 @@ func (r responseStatusJSON) RawJSON() string {
 	return r.raw
 }
 
-// The overall status for Leaked Credential Checks
+// Defines whether the API call was successful.
+type ResponseStatusSuccess bool
+
+const (
+	ResponseStatusSuccessTrue ResponseStatusSuccess = true
+)
+
+func (r ResponseStatusSuccess) IsKnown() bool {
+	switch r {
+	case ResponseStatusSuccessTrue:
+		return true
+	}
+	return false
+}
+
+// Defines the overall status for Leaked Credential Checks.
 type StatusLeakedCredentialChecks struct {
-	// Whether or not Leaked Credential Checks are enabled
+	// Determines whether or not Leaked Credential Checks are enabled.
 	Enabled bool                             `json:"enabled"`
 	JSON    statusLeakedCredentialChecksJSON `json:"-"`
 }
@@ -126,9 +125,9 @@ func (r statusLeakedCredentialChecksJSON) RawJSON() string {
 	return r.raw
 }
 
-// The overall status for Leaked Credential Checks
+// Defines the overall status for Leaked Credential Checks.
 type StatusLeakedCredentialChecksParam struct {
-	// Whether or not Leaked Credential Checks are enabled
+	// Determines whether or not Leaked Credential Checks are enabled.
 	Enabled param.Field[bool] `json:"enabled"`
 }
 
@@ -137,7 +136,7 @@ func (r StatusLeakedCredentialChecksParam) MarshalJSON() (data []byte, err error
 }
 
 type ZoneLeakedCredentialCheckUpdateParams struct {
-	// The overall status for Leaked Credential Checks
+	// Defines the overall status for Leaked Credential Checks.
 	StatusLeakedCredentialChecks StatusLeakedCredentialChecksParam `json:"status_leaked_credential_checks,required"`
 }
 

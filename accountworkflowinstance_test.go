@@ -31,10 +31,11 @@ func TestAccountWorkflowInstanceNewWithOptionalParams(t *testing.T) {
 	_, err := client.Accounts.Workflows.Instances.New(
 		context.TODO(),
 		"account_id",
-		"workflow_name",
+		"x",
 		cfrex.AccountWorkflowInstanceNewParams{
-			InstanceID: cfrex.F("instance_id"),
-			Params:     cfrex.F[any](map[string]interface{}{}),
+			InstanceID:        cfrex.F("instance_id"),
+			InstanceRetention: cfrex.F[any](map[string]interface{}{}),
+			Params:            cfrex.F[any](map[string]interface{}{}),
 		},
 	)
 	if err != nil {
@@ -63,8 +64,8 @@ func TestAccountWorkflowInstanceGet(t *testing.T) {
 	_, err := client.Accounts.Workflows.Instances.Get(
 		context.TODO(),
 		"account_id",
-		"workflow_name",
-		"instance_id",
+		"x",
+		"x",
 	)
 	if err != nil {
 		var apierr *cfrex.Error
@@ -92,7 +93,7 @@ func TestAccountWorkflowInstanceListWithOptionalParams(t *testing.T) {
 	_, err := client.Accounts.Workflows.Instances.List(
 		context.TODO(),
 		"account_id",
-		"workflow_name",
+		"x",
 		cfrex.AccountWorkflowInstanceListParams{
 			DateEnd:   cfrex.F(time.Now()),
 			DateStart: cfrex.F(time.Now()),
@@ -127,11 +128,12 @@ func TestAccountWorkflowInstanceBatchNewWithOptionalParams(t *testing.T) {
 	_, err := client.Accounts.Workflows.Instances.BatchNew(
 		context.TODO(),
 		"account_id",
-		"workflow_name",
+		"x",
 		cfrex.AccountWorkflowInstanceBatchNewParams{
 			Body: []cfrex.AccountWorkflowInstanceBatchNewParamsBody{{
-				InstanceID: cfrex.F("instance_id"),
-				Params:     cfrex.F[any](map[string]interface{}{}),
+				InstanceID:        cfrex.F("instance_id"),
+				InstanceRetention: cfrex.F[any](map[string]interface{}{}),
+				Params:            cfrex.F[any](map[string]interface{}{}),
 			}},
 		},
 	)
@@ -161,9 +163,9 @@ func TestAccountWorkflowInstanceSendEventWithOptionalParams(t *testing.T) {
 	_, err := client.Accounts.Workflows.Instances.SendEvent(
 		context.TODO(),
 		"account_id",
-		"workflow_name",
-		"instance_id",
-		"event_type",
+		"x",
+		"x",
+		"x",
 		cfrex.AccountWorkflowInstanceSendEventParams{
 			Body: map[string]interface{}{},
 		},
@@ -194,8 +196,8 @@ func TestAccountWorkflowInstanceUpdateStatus(t *testing.T) {
 	_, err := client.Accounts.Workflows.Instances.UpdateStatus(
 		context.TODO(),
 		"account_id",
-		"workflow_name",
-		"instance_id",
+		"x",
+		"x",
 		cfrex.AccountWorkflowInstanceUpdateStatusParams{
 			Status: cfrex.F(cfrex.AccountWorkflowInstanceUpdateStatusParamsStatusResume),
 		},

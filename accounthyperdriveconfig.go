@@ -80,7 +80,7 @@ func (r *AccountHyperdriveConfigService) Update(ctx context.Context, accountID s
 	return
 }
 
-// Returns a list of Hyperdrives
+// Returns a list of Hyperdrives.
 func (r *AccountHyperdriveConfigService) List(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountHyperdriveConfigListResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
@@ -125,100 +125,14 @@ func (r *AccountHyperdriveConfigService) Patch(ctx context.Context, accountID st
 	return
 }
 
-type HyperdriveAPIResponseCommon struct {
-	Errors   []HyperdriveMessagesItem `json:"errors,required"`
-	Messages []HyperdriveMessagesItem `json:"messages,required"`
-	Result   interface{}              `json:"result,required"`
-	// Whether the API call was successful
-	Success HyperdriveAPIResponseCommonSuccess `json:"success,required"`
-	JSON    hyperdriveAPIResponseCommonJSON    `json:"-"`
-}
-
-// hyperdriveAPIResponseCommonJSON contains the JSON metadata for the struct
-// [HyperdriveAPIResponseCommon]
-type hyperdriveAPIResponseCommonJSON struct {
-	Errors      apijson.Field
-	Messages    apijson.Field
-	Result      apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *HyperdriveAPIResponseCommon) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r hyperdriveAPIResponseCommonJSON) RawJSON() string {
-	return r.raw
-}
-
-// Whether the API call was successful
-type HyperdriveAPIResponseCommonSuccess bool
-
-const (
-	HyperdriveAPIResponseCommonSuccessTrue HyperdriveAPIResponseCommonSuccess = true
-)
-
-func (r HyperdriveAPIResponseCommonSuccess) IsKnown() bool {
-	switch r {
-	case HyperdriveAPIResponseCommonSuccessTrue:
-		return true
-	}
-	return false
-}
-
-type HyperdriveAPIResponseSingle struct {
-	Errors   []HyperdriveMessagesItem `json:"errors,required"`
-	Messages []HyperdriveMessagesItem `json:"messages,required"`
-	Result   interface{}              `json:"result,required"`
-	// Whether the API call was successful
-	Success HyperdriveAPIResponseSingleSuccess `json:"success,required"`
-	JSON    hyperdriveAPIResponseSingleJSON    `json:"-"`
-}
-
-// hyperdriveAPIResponseSingleJSON contains the JSON metadata for the struct
-// [HyperdriveAPIResponseSingle]
-type hyperdriveAPIResponseSingleJSON struct {
-	Errors      apijson.Field
-	Messages    apijson.Field
-	Result      apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *HyperdriveAPIResponseSingle) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r hyperdriveAPIResponseSingleJSON) RawJSON() string {
-	return r.raw
-}
-
-// Whether the API call was successful
-type HyperdriveAPIResponseSingleSuccess bool
-
-const (
-	HyperdriveAPIResponseSingleSuccessTrue HyperdriveAPIResponseSingleSuccess = true
-)
-
-func (r HyperdriveAPIResponseSingleSuccess) IsKnown() bool {
-	switch r {
-	case HyperdriveAPIResponseSingleSuccessTrue:
-		return true
-	}
-	return false
-}
-
 type HyperdriveHyperdriveCaching struct {
-	// When set to true, disables the caching of SQL responses. (Default: false)
+	// Set to true to disable caching of SQL responses. Default is false.
 	Disabled bool `json:"disabled"`
-	// When present, specifies max duration for which items should persist in the
-	// cache. Not returned if set to default. (Default: 60)
+	// Specify the maximum duration items should persist in the cache. Not returned if
+	// set to the default (60).
 	MaxAge int64 `json:"max_age"`
-	// When present, indicates the number of seconds cache may serve the response after
-	// it becomes stale. Not returned if set to default. (Default: 15)
+	// Specify the number of seconds the cache may serve a stale response. Omitted if
+	// set to the default (15).
 	StaleWhileRevalidate int64                           `json:"stale_while_revalidate"`
 	JSON                 hyperdriveHyperdriveCachingJSON `json:"-"`
 	union                HyperdriveHyperdriveCachingUnion
@@ -278,20 +192,22 @@ func init() {
 }
 
 type HyperdriveHyperdriveCachingHyperdriveHyperdriveCachingEnabled struct {
-	// When present, specifies max duration for which items should persist in the
-	// cache. Not returned if set to default. (Default: 60)
+	// Set to true to disable caching of SQL responses. Default is false.
+	Disabled bool `json:"disabled"`
+	// Specify the maximum duration items should persist in the cache. Not returned if
+	// set to the default (60).
 	MaxAge int64 `json:"max_age"`
-	// When present, indicates the number of seconds cache may serve the response after
-	// it becomes stale. Not returned if set to default. (Default: 15)
+	// Specify the number of seconds the cache may serve a stale response. Omitted if
+	// set to the default (15).
 	StaleWhileRevalidate int64                                                             `json:"stale_while_revalidate"`
 	JSON                 hyperdriveHyperdriveCachingHyperdriveHyperdriveCachingEnabledJSON `json:"-"`
-	HyperdriveHyperdriveCachingCommon
 }
 
 // hyperdriveHyperdriveCachingHyperdriveHyperdriveCachingEnabledJSON contains the
 // JSON metadata for the struct
 // [HyperdriveHyperdriveCachingHyperdriveHyperdriveCachingEnabled]
 type hyperdriveHyperdriveCachingHyperdriveHyperdriveCachingEnabledJSON struct {
+	Disabled             apijson.Field
 	MaxAge               apijson.Field
 	StaleWhileRevalidate apijson.Field
 	raw                  string
@@ -309,20 +225,39 @@ func (r hyperdriveHyperdriveCachingHyperdriveHyperdriveCachingEnabledJSON) RawJS
 func (r HyperdriveHyperdriveCachingHyperdriveHyperdriveCachingEnabled) implementsHyperdriveHyperdriveCaching() {
 }
 
+type HyperdriveHyperdriveCachingParam struct {
+	// Set to true to disable caching of SQL responses. Default is false.
+	Disabled param.Field[bool] `json:"disabled"`
+	// Specify the maximum duration items should persist in the cache. Not returned if
+	// set to the default (60).
+	MaxAge param.Field[int64] `json:"max_age"`
+	// Specify the number of seconds the cache may serve a stale response. Omitted if
+	// set to the default (15).
+	StaleWhileRevalidate param.Field[int64] `json:"stale_while_revalidate"`
+}
+
+func (r HyperdriveHyperdriveCachingParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r HyperdriveHyperdriveCachingParam) implementsHyperdriveHyperdriveCachingUnionParam() {}
+
 // Satisfied by [HyperdriveHyperdriveCachingCommonParam],
-// [HyperdriveHyperdriveCachingHyperdriveHyperdriveCachingEnabledParam].
+// [HyperdriveHyperdriveCachingHyperdriveHyperdriveCachingEnabledParam],
+// [HyperdriveHyperdriveCachingParam].
 type HyperdriveHyperdriveCachingUnionParam interface {
 	implementsHyperdriveHyperdriveCachingUnionParam()
 }
 
 type HyperdriveHyperdriveCachingHyperdriveHyperdriveCachingEnabledParam struct {
-	// When present, specifies max duration for which items should persist in the
-	// cache. Not returned if set to default. (Default: 60)
+	// Set to true to disable caching of SQL responses. Default is false.
+	Disabled param.Field[bool] `json:"disabled"`
+	// Specify the maximum duration items should persist in the cache. Not returned if
+	// set to the default (60).
 	MaxAge param.Field[int64] `json:"max_age"`
-	// When present, indicates the number of seconds cache may serve the response after
-	// it becomes stale. Not returned if set to default. (Default: 15)
+	// Specify the number of seconds the cache may serve a stale response. Omitted if
+	// set to the default (15).
 	StaleWhileRevalidate param.Field[int64] `json:"stale_while_revalidate"`
-	HyperdriveHyperdriveCachingCommonParam
 }
 
 func (r HyperdriveHyperdriveCachingHyperdriveHyperdriveCachingEnabledParam) MarshalJSON() (data []byte, err error) {
@@ -333,7 +268,7 @@ func (r HyperdriveHyperdriveCachingHyperdriveHyperdriveCachingEnabledParam) impl
 }
 
 type HyperdriveHyperdriveCachingCommon struct {
-	// When set to true, disables the caching of SQL responses. (Default: false)
+	// Set to true to disable caching of SQL responses. Default is false.
 	Disabled bool                                  `json:"disabled"`
 	JSON     hyperdriveHyperdriveCachingCommonJSON `json:"-"`
 }
@@ -357,7 +292,7 @@ func (r hyperdriveHyperdriveCachingCommonJSON) RawJSON() string {
 func (r HyperdriveHyperdriveCachingCommon) implementsHyperdriveHyperdriveCaching() {}
 
 type HyperdriveHyperdriveCachingCommonParam struct {
-	// When set to true, disables the caching of SQL responses. (Default: false)
+	// Set to true to disable caching of SQL responses. Default is false.
 	Disabled param.Field[bool] `json:"disabled"`
 }
 
@@ -371,21 +306,66 @@ type HyperdriveHyperdriveConfigParam struct {
 	Name    param.Field[string]                                     `json:"name,required"`
 	Origin  param.Field[HyperdriveHyperdriveConfigOriginUnionParam] `json:"origin,required"`
 	Caching param.Field[HyperdriveHyperdriveCachingUnionParam]      `json:"caching"`
+	Mtls    param.Field[HyperdriveHyperdriveConfigMtlsParam]        `json:"mtls"`
+	// The (soft) maximum number of connections the Hyperdrive is allowed to make to
+	// the origin database.
+	OriginConnectionLimit param.Field[int64] `json:"origin_connection_limit"`
 }
 
 func (r HyperdriveHyperdriveConfigParam) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
+type HyperdriveHyperdriveConfigOriginParam struct {
+	// Set the name of your origin database.
+	Database param.Field[string] `json:"database,required"`
+	// Defines the host (hostname or IP) of your origin database.
+	Host param.Field[string] `json:"host,required"`
+	// Set the password needed to access your origin database. The API never returns
+	// this write-only value.
+	Password param.Field[string] `json:"password,required"`
+	// Specifies the URL scheme used to connect to your origin database.
+	Scheme param.Field[HyperdriveHyperdriveConfigOriginScheme] `json:"scheme,required"`
+	// Set the user of your origin database.
+	User param.Field[string] `json:"user,required"`
+	// Defines the Client ID of the Access token to use when connecting to the origin
+	// database.
+	AccessClientID param.Field[string] `json:"access_client_id"`
+	// Defines the Client Secret of the Access Token to use when connecting to the
+	// origin database. The API never returns this write-only value.
+	AccessClientSecret param.Field[string] `json:"access_client_secret"`
+	// Defines the port (default: 5432 for Postgres) of your origin database.
+	Port param.Field[int64] `json:"port"`
+}
+
+func (r HyperdriveHyperdriveConfigOriginParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r HyperdriveHyperdriveConfigOriginParam) implementsHyperdriveHyperdriveConfigOriginUnionParam() {
+}
+
 // Satisfied by [HyperdriveHyperdriveConfigOriginPublicDatabaseParam],
-// [HyperdriveHyperdriveConfigOriginAccessProtectedDatabaseBehindCloudflareTunnelParam].
+// [HyperdriveHyperdriveConfigOriginAccessProtectedDatabaseBehindCloudflareTunnelParam],
+// [HyperdriveHyperdriveConfigOriginParam].
 type HyperdriveHyperdriveConfigOriginUnionParam interface {
 	implementsHyperdriveHyperdriveConfigOriginUnionParam()
 }
 
 type HyperdriveHyperdriveConfigOriginPublicDatabaseParam struct {
-	HyperdriveHyperdriveDatabaseFullParam
-	HyperdriveInternetOriginParam
+	// Set the name of your origin database.
+	Database param.Field[string] `json:"database,required"`
+	// Defines the host (hostname or IP) of your origin database.
+	Host param.Field[string] `json:"host,required"`
+	// Set the password needed to access your origin database. The API never returns
+	// this write-only value.
+	Password param.Field[string] `json:"password,required"`
+	// Defines the port (default: 5432 for Postgres) of your origin database.
+	Port param.Field[int64] `json:"port,required"`
+	// Specifies the URL scheme used to connect to your origin database.
+	Scheme param.Field[HyperdriveHyperdriveConfigOriginPublicDatabaseScheme] `json:"scheme,required"`
+	// Set the user of your origin database.
+	User param.Field[string] `json:"user,required"`
 }
 
 func (r HyperdriveHyperdriveConfigOriginPublicDatabaseParam) MarshalJSON() (data []byte, err error) {
@@ -395,9 +375,41 @@ func (r HyperdriveHyperdriveConfigOriginPublicDatabaseParam) MarshalJSON() (data
 func (r HyperdriveHyperdriveConfigOriginPublicDatabaseParam) implementsHyperdriveHyperdriveConfigOriginUnionParam() {
 }
 
+// Specifies the URL scheme used to connect to your origin database.
+type HyperdriveHyperdriveConfigOriginPublicDatabaseScheme string
+
+const (
+	HyperdriveHyperdriveConfigOriginPublicDatabaseSchemePostgres   HyperdriveHyperdriveConfigOriginPublicDatabaseScheme = "postgres"
+	HyperdriveHyperdriveConfigOriginPublicDatabaseSchemePostgresql HyperdriveHyperdriveConfigOriginPublicDatabaseScheme = "postgresql"
+	HyperdriveHyperdriveConfigOriginPublicDatabaseSchemeMysql      HyperdriveHyperdriveConfigOriginPublicDatabaseScheme = "mysql"
+)
+
+func (r HyperdriveHyperdriveConfigOriginPublicDatabaseScheme) IsKnown() bool {
+	switch r {
+	case HyperdriveHyperdriveConfigOriginPublicDatabaseSchemePostgres, HyperdriveHyperdriveConfigOriginPublicDatabaseSchemePostgresql, HyperdriveHyperdriveConfigOriginPublicDatabaseSchemeMysql:
+		return true
+	}
+	return false
+}
+
 type HyperdriveHyperdriveConfigOriginAccessProtectedDatabaseBehindCloudflareTunnelParam struct {
-	HyperdriveHyperdriveDatabaseFullParam
-	HyperdriveOverAccessOriginParam
+	// Defines the Client ID of the Access token to use when connecting to the origin
+	// database.
+	AccessClientID param.Field[string] `json:"access_client_id,required"`
+	// Defines the Client Secret of the Access Token to use when connecting to the
+	// origin database. The API never returns this write-only value.
+	AccessClientSecret param.Field[string] `json:"access_client_secret,required"`
+	// Set the name of your origin database.
+	Database param.Field[string] `json:"database,required"`
+	// Defines the host (hostname or IP) of your origin database.
+	Host param.Field[string] `json:"host,required"`
+	// Set the password needed to access your origin database. The API never returns
+	// this write-only value.
+	Password param.Field[string] `json:"password,required"`
+	// Specifies the URL scheme used to connect to your origin database.
+	Scheme param.Field[HyperdriveHyperdriveConfigOriginAccessProtectedDatabaseBehindCloudflareTunnelScheme] `json:"scheme,required"`
+	// Set the user of your origin database.
+	User param.Field[string] `json:"user,required"`
 }
 
 func (r HyperdriveHyperdriveConfigOriginAccessProtectedDatabaseBehindCloudflareTunnelParam) MarshalJSON() (data []byte, err error) {
@@ -407,30 +419,83 @@ func (r HyperdriveHyperdriveConfigOriginAccessProtectedDatabaseBehindCloudflareT
 func (r HyperdriveHyperdriveConfigOriginAccessProtectedDatabaseBehindCloudflareTunnelParam) implementsHyperdriveHyperdriveConfigOriginUnionParam() {
 }
 
+// Specifies the URL scheme used to connect to your origin database.
+type HyperdriveHyperdriveConfigOriginAccessProtectedDatabaseBehindCloudflareTunnelScheme string
+
+const (
+	HyperdriveHyperdriveConfigOriginAccessProtectedDatabaseBehindCloudflareTunnelSchemePostgres   HyperdriveHyperdriveConfigOriginAccessProtectedDatabaseBehindCloudflareTunnelScheme = "postgres"
+	HyperdriveHyperdriveConfigOriginAccessProtectedDatabaseBehindCloudflareTunnelSchemePostgresql HyperdriveHyperdriveConfigOriginAccessProtectedDatabaseBehindCloudflareTunnelScheme = "postgresql"
+	HyperdriveHyperdriveConfigOriginAccessProtectedDatabaseBehindCloudflareTunnelSchemeMysql      HyperdriveHyperdriveConfigOriginAccessProtectedDatabaseBehindCloudflareTunnelScheme = "mysql"
+)
+
+func (r HyperdriveHyperdriveConfigOriginAccessProtectedDatabaseBehindCloudflareTunnelScheme) IsKnown() bool {
+	switch r {
+	case HyperdriveHyperdriveConfigOriginAccessProtectedDatabaseBehindCloudflareTunnelSchemePostgres, HyperdriveHyperdriveConfigOriginAccessProtectedDatabaseBehindCloudflareTunnelSchemePostgresql, HyperdriveHyperdriveConfigOriginAccessProtectedDatabaseBehindCloudflareTunnelSchemeMysql:
+		return true
+	}
+	return false
+}
+
+// Specifies the URL scheme used to connect to your origin database.
+type HyperdriveHyperdriveConfigOriginScheme string
+
+const (
+	HyperdriveHyperdriveConfigOriginSchemePostgres   HyperdriveHyperdriveConfigOriginScheme = "postgres"
+	HyperdriveHyperdriveConfigOriginSchemePostgresql HyperdriveHyperdriveConfigOriginScheme = "postgresql"
+	HyperdriveHyperdriveConfigOriginSchemeMysql      HyperdriveHyperdriveConfigOriginScheme = "mysql"
+)
+
+func (r HyperdriveHyperdriveConfigOriginScheme) IsKnown() bool {
+	switch r {
+	case HyperdriveHyperdriveConfigOriginSchemePostgres, HyperdriveHyperdriveConfigOriginSchemePostgresql, HyperdriveHyperdriveConfigOriginSchemeMysql:
+		return true
+	}
+	return false
+}
+
+type HyperdriveHyperdriveConfigMtlsParam struct {
+	// Define CA certificate ID obtained after uploading CA cert.
+	CaCertificateID param.Field[string] `json:"ca_certificate_id"`
+	// Define mTLS certificate ID obtained after uploading client cert.
+	MtlsCertificateID param.Field[string] `json:"mtls_certificate_id"`
+	// Set SSL mode to 'require', 'verify-ca', or 'verify-full' to verify the CA.
+	Sslmode param.Field[string] `json:"sslmode"`
+}
+
+func (r HyperdriveHyperdriveConfigMtlsParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
 type HyperdriveHyperdriveConfigResponse struct {
-	// Identifier
-	ID      string                                   `json:"id,required"`
-	Name    string                                   `json:"name,required"`
-	Origin  HyperdriveHyperdriveConfigResponseOrigin `json:"origin,required"`
-	Caching HyperdriveHyperdriveCaching              `json:"caching"`
-	// When the Hyperdrive configuration was created.
+	Caching HyperdriveHyperdriveCaching `json:"caching,required"`
+	// Define configurations using a unique string identifier.
+	ID string `json:"id"`
+	// Defines the creation time of the Hyperdrive configuration.
 	CreatedOn time.Time `json:"created_on" format:"date-time"`
-	// When the Hyperdrive configuration was last modified.
-	ModifiedOn time.Time                              `json:"modified_on" format:"date-time"`
-	JSON       hyperdriveHyperdriveConfigResponseJSON `json:"-"`
+	// Defines the last modified time of the Hyperdrive configuration.
+	ModifiedOn time.Time                                `json:"modified_on" format:"date-time"`
+	Mtls       HyperdriveHyperdriveConfigResponseMtls   `json:"mtls"`
+	Name       string                                   `json:"name"`
+	Origin     HyperdriveHyperdriveConfigResponseOrigin `json:"origin"`
+	// The (soft) maximum number of connections the Hyperdrive is allowed to make to
+	// the origin database.
+	OriginConnectionLimit int64                                  `json:"origin_connection_limit"`
+	JSON                  hyperdriveHyperdriveConfigResponseJSON `json:"-"`
 }
 
 // hyperdriveHyperdriveConfigResponseJSON contains the JSON metadata for the struct
 // [HyperdriveHyperdriveConfigResponse]
 type hyperdriveHyperdriveConfigResponseJSON struct {
-	ID          apijson.Field
-	Name        apijson.Field
-	Origin      apijson.Field
-	Caching     apijson.Field
-	CreatedOn   apijson.Field
-	ModifiedOn  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	Caching               apijson.Field
+	ID                    apijson.Field
+	CreatedOn             apijson.Field
+	ModifiedOn            apijson.Field
+	Mtls                  apijson.Field
+	Name                  apijson.Field
+	Origin                apijson.Field
+	OriginConnectionLimit apijson.Field
+	raw                   string
+	ExtraFields           map[string]apijson.Field
 }
 
 func (r *HyperdriveHyperdriveConfigResponse) UnmarshalJSON(data []byte) (err error) {
@@ -441,19 +506,48 @@ func (r hyperdriveHyperdriveConfigResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+type HyperdriveHyperdriveConfigResponseMtls struct {
+	// Define CA certificate ID obtained after uploading CA cert.
+	CaCertificateID string `json:"ca_certificate_id"`
+	// Define mTLS certificate ID obtained after uploading client cert.
+	MtlsCertificateID string `json:"mtls_certificate_id"`
+	// Set SSL mode to 'require', 'verify-ca', or 'verify-full' to verify the CA.
+	Sslmode string                                     `json:"sslmode"`
+	JSON    hyperdriveHyperdriveConfigResponseMtlsJSON `json:"-"`
+}
+
+// hyperdriveHyperdriveConfigResponseMtlsJSON contains the JSON metadata for the
+// struct [HyperdriveHyperdriveConfigResponseMtls]
+type hyperdriveHyperdriveConfigResponseMtlsJSON struct {
+	CaCertificateID   apijson.Field
+	MtlsCertificateID apijson.Field
+	Sslmode           apijson.Field
+	raw               string
+	ExtraFields       map[string]apijson.Field
+}
+
+func (r *HyperdriveHyperdriveConfigResponseMtls) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r hyperdriveHyperdriveConfigResponseMtlsJSON) RawJSON() string {
+	return r.raw
+}
+
 type HyperdriveHyperdriveConfigResponseOrigin struct {
-	// The Client ID of the Access token to use when connecting to the origin database.
-	AccessClientID string `json:"access_client_id"`
-	// The name of your origin database.
-	Database string `json:"database"`
-	// The host (hostname or IP) of your origin database.
-	Host string `json:"host"`
-	// The port (default: 5432 for Postgres) of your origin database.
-	Port int64 `json:"port"`
+	// Set the name of your origin database.
+	Database string `json:"database,required"`
+	// Defines the host (hostname or IP) of your origin database.
+	Host string `json:"host,required"`
 	// Specifies the URL scheme used to connect to your origin database.
-	Scheme HyperdriveHyperdriveConfigResponseOriginScheme `json:"scheme"`
-	// The user of your origin database.
-	User  string                                       `json:"user"`
+	Scheme HyperdriveHyperdriveConfigResponseOriginScheme `json:"scheme,required"`
+	// Set the user of your origin database.
+	User string `json:"user,required"`
+	// Defines the Client ID of the Access token to use when connecting to the origin
+	// database.
+	AccessClientID string `json:"access_client_id"`
+	// Defines the port (default: 5432 for Postgres) of your origin database.
+	Port  int64                                        `json:"port"`
 	JSON  hyperdriveHyperdriveConfigResponseOriginJSON `json:"-"`
 	union HyperdriveHyperdriveConfigResponseOriginUnion
 }
@@ -461,12 +555,12 @@ type HyperdriveHyperdriveConfigResponseOrigin struct {
 // hyperdriveHyperdriveConfigResponseOriginJSON contains the JSON metadata for the
 // struct [HyperdriveHyperdriveConfigResponseOrigin]
 type hyperdriveHyperdriveConfigResponseOriginJSON struct {
-	AccessClientID apijson.Field
 	Database       apijson.Field
 	Host           apijson.Field
-	Port           apijson.Field
 	Scheme         apijson.Field
 	User           apijson.Field
+	AccessClientID apijson.Field
+	Port           apijson.Field
 	raw            string
 	ExtraFields    map[string]apijson.Field
 }
@@ -516,14 +610,27 @@ func init() {
 }
 
 type HyperdriveHyperdriveConfigResponseOriginPublicDatabase struct {
+	// Set the name of your origin database.
+	Database string `json:"database,required"`
+	// Defines the host (hostname or IP) of your origin database.
+	Host string `json:"host,required"`
+	// Defines the port (default: 5432 for Postgres) of your origin database.
+	Port int64 `json:"port,required"`
+	// Specifies the URL scheme used to connect to your origin database.
+	Scheme HyperdriveHyperdriveConfigResponseOriginPublicDatabaseScheme `json:"scheme,required"`
+	// Set the user of your origin database.
+	User string                                                     `json:"user,required"`
 	JSON hyperdriveHyperdriveConfigResponseOriginPublicDatabaseJSON `json:"-"`
-	HyperdriveHyperdriveDatabaseFull
-	HyperdriveInternetOrigin
 }
 
 // hyperdriveHyperdriveConfigResponseOriginPublicDatabaseJSON contains the JSON
 // metadata for the struct [HyperdriveHyperdriveConfigResponseOriginPublicDatabase]
 type hyperdriveHyperdriveConfigResponseOriginPublicDatabaseJSON struct {
+	Database    apijson.Field
+	Host        apijson.Field
+	Port        apijson.Field
+	Scheme      apijson.Field
+	User        apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -539,18 +646,49 @@ func (r hyperdriveHyperdriveConfigResponseOriginPublicDatabaseJSON) RawJSON() st
 func (r HyperdriveHyperdriveConfigResponseOriginPublicDatabase) implementsHyperdriveHyperdriveConfigResponseOrigin() {
 }
 
+// Specifies the URL scheme used to connect to your origin database.
+type HyperdriveHyperdriveConfigResponseOriginPublicDatabaseScheme string
+
+const (
+	HyperdriveHyperdriveConfigResponseOriginPublicDatabaseSchemePostgres   HyperdriveHyperdriveConfigResponseOriginPublicDatabaseScheme = "postgres"
+	HyperdriveHyperdriveConfigResponseOriginPublicDatabaseSchemePostgresql HyperdriveHyperdriveConfigResponseOriginPublicDatabaseScheme = "postgresql"
+	HyperdriveHyperdriveConfigResponseOriginPublicDatabaseSchemeMysql      HyperdriveHyperdriveConfigResponseOriginPublicDatabaseScheme = "mysql"
+)
+
+func (r HyperdriveHyperdriveConfigResponseOriginPublicDatabaseScheme) IsKnown() bool {
+	switch r {
+	case HyperdriveHyperdriveConfigResponseOriginPublicDatabaseSchemePostgres, HyperdriveHyperdriveConfigResponseOriginPublicDatabaseSchemePostgresql, HyperdriveHyperdriveConfigResponseOriginPublicDatabaseSchemeMysql:
+		return true
+	}
+	return false
+}
+
 type HyperdriveHyperdriveConfigResponseOriginAccessProtectedDatabaseBehindCloudflareTunnel struct {
+	// Defines the Client ID of the Access token to use when connecting to the origin
+	// database.
+	AccessClientID string `json:"access_client_id,required"`
+	// Set the name of your origin database.
+	Database string `json:"database,required"`
+	// Defines the host (hostname or IP) of your origin database.
+	Host string `json:"host,required"`
+	// Specifies the URL scheme used to connect to your origin database.
+	Scheme HyperdriveHyperdriveConfigResponseOriginAccessProtectedDatabaseBehindCloudflareTunnelScheme `json:"scheme,required"`
+	// Set the user of your origin database.
+	User string                                                                                    `json:"user,required"`
 	JSON hyperdriveHyperdriveConfigResponseOriginAccessProtectedDatabaseBehindCloudflareTunnelJSON `json:"-"`
-	HyperdriveHyperdriveDatabaseFull
-	HyperdriveOverAccessOrigin
 }
 
 // hyperdriveHyperdriveConfigResponseOriginAccessProtectedDatabaseBehindCloudflareTunnelJSON
 // contains the JSON metadata for the struct
 // [HyperdriveHyperdriveConfigResponseOriginAccessProtectedDatabaseBehindCloudflareTunnel]
 type hyperdriveHyperdriveConfigResponseOriginAccessProtectedDatabaseBehindCloudflareTunnelJSON struct {
-	raw         string
-	ExtraFields map[string]apijson.Field
+	AccessClientID apijson.Field
+	Database       apijson.Field
+	Host           apijson.Field
+	Scheme         apijson.Field
+	User           apijson.Field
+	raw            string
+	ExtraFields    map[string]apijson.Field
 }
 
 func (r *HyperdriveHyperdriveConfigResponseOriginAccessProtectedDatabaseBehindCloudflareTunnel) UnmarshalJSON(data []byte) (err error) {
@@ -565,30 +703,48 @@ func (r HyperdriveHyperdriveConfigResponseOriginAccessProtectedDatabaseBehindClo
 }
 
 // Specifies the URL scheme used to connect to your origin database.
+type HyperdriveHyperdriveConfigResponseOriginAccessProtectedDatabaseBehindCloudflareTunnelScheme string
+
+const (
+	HyperdriveHyperdriveConfigResponseOriginAccessProtectedDatabaseBehindCloudflareTunnelSchemePostgres   HyperdriveHyperdriveConfigResponseOriginAccessProtectedDatabaseBehindCloudflareTunnelScheme = "postgres"
+	HyperdriveHyperdriveConfigResponseOriginAccessProtectedDatabaseBehindCloudflareTunnelSchemePostgresql HyperdriveHyperdriveConfigResponseOriginAccessProtectedDatabaseBehindCloudflareTunnelScheme = "postgresql"
+	HyperdriveHyperdriveConfigResponseOriginAccessProtectedDatabaseBehindCloudflareTunnelSchemeMysql      HyperdriveHyperdriveConfigResponseOriginAccessProtectedDatabaseBehindCloudflareTunnelScheme = "mysql"
+)
+
+func (r HyperdriveHyperdriveConfigResponseOriginAccessProtectedDatabaseBehindCloudflareTunnelScheme) IsKnown() bool {
+	switch r {
+	case HyperdriveHyperdriveConfigResponseOriginAccessProtectedDatabaseBehindCloudflareTunnelSchemePostgres, HyperdriveHyperdriveConfigResponseOriginAccessProtectedDatabaseBehindCloudflareTunnelSchemePostgresql, HyperdriveHyperdriveConfigResponseOriginAccessProtectedDatabaseBehindCloudflareTunnelSchemeMysql:
+		return true
+	}
+	return false
+}
+
+// Specifies the URL scheme used to connect to your origin database.
 type HyperdriveHyperdriveConfigResponseOriginScheme string
 
 const (
 	HyperdriveHyperdriveConfigResponseOriginSchemePostgres   HyperdriveHyperdriveConfigResponseOriginScheme = "postgres"
 	HyperdriveHyperdriveConfigResponseOriginSchemePostgresql HyperdriveHyperdriveConfigResponseOriginScheme = "postgresql"
+	HyperdriveHyperdriveConfigResponseOriginSchemeMysql      HyperdriveHyperdriveConfigResponseOriginScheme = "mysql"
 )
 
 func (r HyperdriveHyperdriveConfigResponseOriginScheme) IsKnown() bool {
 	switch r {
-	case HyperdriveHyperdriveConfigResponseOriginSchemePostgres, HyperdriveHyperdriveConfigResponseOriginSchemePostgresql:
+	case HyperdriveHyperdriveConfigResponseOriginSchemePostgres, HyperdriveHyperdriveConfigResponseOriginSchemePostgresql, HyperdriveHyperdriveConfigResponseOriginSchemeMysql:
 		return true
 	}
 	return false
 }
 
 type HyperdriveHyperdriveDatabaseParam struct {
-	// The name of your origin database.
+	// Set the name of your origin database.
 	Database param.Field[string] `json:"database"`
-	// The password required to access your origin database. This value is write-only
-	// and never returned by the API.
+	// Set the password needed to access your origin database. The API never returns
+	// this write-only value.
 	Password param.Field[string] `json:"password"`
 	// Specifies the URL scheme used to connect to your origin database.
 	Scheme param.Field[HyperdriveHyperdriveDatabaseScheme] `json:"scheme"`
-	// The user of your origin database.
+	// Set the user of your origin database.
 	User param.Field[string] `json:"user"`
 }
 
@@ -605,105 +761,21 @@ type HyperdriveHyperdriveDatabaseScheme string
 const (
 	HyperdriveHyperdriveDatabaseSchemePostgres   HyperdriveHyperdriveDatabaseScheme = "postgres"
 	HyperdriveHyperdriveDatabaseSchemePostgresql HyperdriveHyperdriveDatabaseScheme = "postgresql"
+	HyperdriveHyperdriveDatabaseSchemeMysql      HyperdriveHyperdriveDatabaseScheme = "mysql"
 )
 
 func (r HyperdriveHyperdriveDatabaseScheme) IsKnown() bool {
 	switch r {
-	case HyperdriveHyperdriveDatabaseSchemePostgres, HyperdriveHyperdriveDatabaseSchemePostgresql:
+	case HyperdriveHyperdriveDatabaseSchemePostgres, HyperdriveHyperdriveDatabaseSchemePostgresql, HyperdriveHyperdriveDatabaseSchemeMysql:
 		return true
 	}
 	return false
-}
-
-type HyperdriveHyperdriveDatabaseFull struct {
-	// The name of your origin database.
-	Database string `json:"database,required"`
-	// Specifies the URL scheme used to connect to your origin database.
-	Scheme HyperdriveHyperdriveDatabaseFullScheme `json:"scheme,required"`
-	// The user of your origin database.
-	User string                               `json:"user,required"`
-	JSON hyperdriveHyperdriveDatabaseFullJSON `json:"-"`
-}
-
-// hyperdriveHyperdriveDatabaseFullJSON contains the JSON metadata for the struct
-// [HyperdriveHyperdriveDatabaseFull]
-type hyperdriveHyperdriveDatabaseFullJSON struct {
-	Database    apijson.Field
-	Scheme      apijson.Field
-	User        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *HyperdriveHyperdriveDatabaseFull) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r hyperdriveHyperdriveDatabaseFullJSON) RawJSON() string {
-	return r.raw
-}
-
-// Specifies the URL scheme used to connect to your origin database.
-type HyperdriveHyperdriveDatabaseFullScheme string
-
-const (
-	HyperdriveHyperdriveDatabaseFullSchemePostgres   HyperdriveHyperdriveDatabaseFullScheme = "postgres"
-	HyperdriveHyperdriveDatabaseFullSchemePostgresql HyperdriveHyperdriveDatabaseFullScheme = "postgresql"
-)
-
-func (r HyperdriveHyperdriveDatabaseFullScheme) IsKnown() bool {
-	switch r {
-	case HyperdriveHyperdriveDatabaseFullSchemePostgres, HyperdriveHyperdriveDatabaseFullSchemePostgresql:
-		return true
-	}
-	return false
-}
-
-type HyperdriveHyperdriveDatabaseFullParam struct {
-	// The name of your origin database.
-	Database param.Field[string] `json:"database,required"`
-	// The password required to access your origin database. This value is write-only
-	// and never returned by the API.
-	Password param.Field[string] `json:"password,required"`
-	// Specifies the URL scheme used to connect to your origin database.
-	Scheme param.Field[HyperdriveHyperdriveDatabaseFullScheme] `json:"scheme,required"`
-	// The user of your origin database.
-	User param.Field[string] `json:"user,required"`
-}
-
-func (r HyperdriveHyperdriveDatabaseFullParam) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-type HyperdriveInternetOrigin struct {
-	// The host (hostname or IP) of your origin database.
-	Host string `json:"host,required"`
-	// The port (default: 5432 for Postgres) of your origin database.
-	Port int64                        `json:"port,required"`
-	JSON hyperdriveInternetOriginJSON `json:"-"`
-}
-
-// hyperdriveInternetOriginJSON contains the JSON metadata for the struct
-// [HyperdriveInternetOrigin]
-type hyperdriveInternetOriginJSON struct {
-	Host        apijson.Field
-	Port        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *HyperdriveInternetOrigin) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r hyperdriveInternetOriginJSON) RawJSON() string {
-	return r.raw
 }
 
 type HyperdriveInternetOriginParam struct {
-	// The host (hostname or IP) of your origin database.
+	// Defines the host (hostname or IP) of your origin database.
 	Host param.Field[string] `json:"host,required"`
-	// The port (default: 5432 for Postgres) of your origin database.
+	// Defines the port (default: 5432 for Postgres) of your origin database.
 	Port param.Field[int64] `json:"port,required"`
 }
 
@@ -714,18 +786,22 @@ func (r HyperdriveInternetOriginParam) MarshalJSON() (data []byte, err error) {
 func (r HyperdriveInternetOriginParam) implementsAccountHyperdriveConfigPatchParamsOriginUnion() {}
 
 type HyperdriveMessagesItem struct {
-	Code    int64                      `json:"code,required"`
-	Message string                     `json:"message,required"`
-	JSON    hyperdriveMessagesItemJSON `json:"-"`
+	Code             int64                        `json:"code,required"`
+	Message          string                       `json:"message,required"`
+	DocumentationURL string                       `json:"documentation_url"`
+	Source           HyperdriveMessagesItemSource `json:"source"`
+	JSON             hyperdriveMessagesItemJSON   `json:"-"`
 }
 
 // hyperdriveMessagesItemJSON contains the JSON metadata for the struct
 // [HyperdriveMessagesItem]
 type hyperdriveMessagesItemJSON struct {
-	Code        apijson.Field
-	Message     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
 }
 
 func (r *HyperdriveMessagesItem) UnmarshalJSON(data []byte) (err error) {
@@ -736,38 +812,35 @@ func (r hyperdriveMessagesItemJSON) RawJSON() string {
 	return r.raw
 }
 
-type HyperdriveOverAccessOrigin struct {
-	// The Client ID of the Access token to use when connecting to the origin database.
-	AccessClientID string `json:"access_client_id,required"`
-	// The host (hostname or IP) of your origin database.
-	Host string                         `json:"host,required"`
-	JSON hyperdriveOverAccessOriginJSON `json:"-"`
+type HyperdriveMessagesItemSource struct {
+	Pointer string                           `json:"pointer"`
+	JSON    hyperdriveMessagesItemSourceJSON `json:"-"`
 }
 
-// hyperdriveOverAccessOriginJSON contains the JSON metadata for the struct
-// [HyperdriveOverAccessOrigin]
-type hyperdriveOverAccessOriginJSON struct {
-	AccessClientID apijson.Field
-	Host           apijson.Field
-	raw            string
-	ExtraFields    map[string]apijson.Field
+// hyperdriveMessagesItemSourceJSON contains the JSON metadata for the struct
+// [HyperdriveMessagesItemSource]
+type hyperdriveMessagesItemSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
 }
 
-func (r *HyperdriveOverAccessOrigin) UnmarshalJSON(data []byte) (err error) {
+func (r *HyperdriveMessagesItemSource) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r hyperdriveOverAccessOriginJSON) RawJSON() string {
+func (r hyperdriveMessagesItemSourceJSON) RawJSON() string {
 	return r.raw
 }
 
 type HyperdriveOverAccessOriginParam struct {
-	// The Client ID of the Access token to use when connecting to the origin database.
+	// Defines the Client ID of the Access token to use when connecting to the origin
+	// database.
 	AccessClientID param.Field[string] `json:"access_client_id,required"`
-	// The Client Secret of the Access token to use when connecting to the origin
-	// database. This value is write-only and never returned by the API.
+	// Defines the Client Secret of the Access Token to use when connecting to the
+	// origin database. The API never returns this write-only value.
 	AccessClientSecret param.Field[string] `json:"access_client_secret,required"`
-	// The host (hostname or IP) of your origin database.
+	// Defines the host (hostname or IP) of your origin database.
 	Host param.Field[string] `json:"host,required"`
 }
 
@@ -778,15 +851,21 @@ func (r HyperdriveOverAccessOriginParam) MarshalJSON() (data []byte, err error) 
 func (r HyperdriveOverAccessOriginParam) implementsAccountHyperdriveConfigPatchParamsOriginUnion() {}
 
 type AccountHyperdriveConfigNewResponse struct {
-	Result HyperdriveHyperdriveConfigResponse     `json:"result"`
-	JSON   accountHyperdriveConfigNewResponseJSON `json:"-"`
-	HyperdriveAPIResponseSingle
+	Errors   []HyperdriveMessagesItem           `json:"errors,required"`
+	Messages []HyperdriveMessagesItem           `json:"messages,required"`
+	Result   HyperdriveHyperdriveConfigResponse `json:"result,required"`
+	// Return the status of the API call success.
+	Success AccountHyperdriveConfigNewResponseSuccess `json:"success,required"`
+	JSON    accountHyperdriveConfigNewResponseJSON    `json:"-"`
 }
 
 // accountHyperdriveConfigNewResponseJSON contains the JSON metadata for the struct
 // [AccountHyperdriveConfigNewResponse]
 type accountHyperdriveConfigNewResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -799,16 +878,37 @@ func (r accountHyperdriveConfigNewResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Return the status of the API call success.
+type AccountHyperdriveConfigNewResponseSuccess bool
+
+const (
+	AccountHyperdriveConfigNewResponseSuccessTrue AccountHyperdriveConfigNewResponseSuccess = true
+)
+
+func (r AccountHyperdriveConfigNewResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountHyperdriveConfigNewResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountHyperdriveConfigGetResponse struct {
-	Result HyperdriveHyperdriveConfigResponse     `json:"result"`
-	JSON   accountHyperdriveConfigGetResponseJSON `json:"-"`
-	HyperdriveAPIResponseSingle
+	Errors   []HyperdriveMessagesItem           `json:"errors,required"`
+	Messages []HyperdriveMessagesItem           `json:"messages,required"`
+	Result   HyperdriveHyperdriveConfigResponse `json:"result,required"`
+	// Return the status of the API call success.
+	Success AccountHyperdriveConfigGetResponseSuccess `json:"success,required"`
+	JSON    accountHyperdriveConfigGetResponseJSON    `json:"-"`
 }
 
 // accountHyperdriveConfigGetResponseJSON contains the JSON metadata for the struct
 // [AccountHyperdriveConfigGetResponse]
 type accountHyperdriveConfigGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -821,16 +921,37 @@ func (r accountHyperdriveConfigGetResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Return the status of the API call success.
+type AccountHyperdriveConfigGetResponseSuccess bool
+
+const (
+	AccountHyperdriveConfigGetResponseSuccessTrue AccountHyperdriveConfigGetResponseSuccess = true
+)
+
+func (r AccountHyperdriveConfigGetResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountHyperdriveConfigGetResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountHyperdriveConfigUpdateResponse struct {
-	Result HyperdriveHyperdriveConfigResponse        `json:"result"`
-	JSON   accountHyperdriveConfigUpdateResponseJSON `json:"-"`
-	HyperdriveAPIResponseSingle
+	Errors   []HyperdriveMessagesItem           `json:"errors,required"`
+	Messages []HyperdriveMessagesItem           `json:"messages,required"`
+	Result   HyperdriveHyperdriveConfigResponse `json:"result,required"`
+	// Return the status of the API call success.
+	Success AccountHyperdriveConfigUpdateResponseSuccess `json:"success,required"`
+	JSON    accountHyperdriveConfigUpdateResponseJSON    `json:"-"`
 }
 
 // accountHyperdriveConfigUpdateResponseJSON contains the JSON metadata for the
 // struct [AccountHyperdriveConfigUpdateResponse]
 type accountHyperdriveConfigUpdateResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -843,17 +964,38 @@ func (r accountHyperdriveConfigUpdateResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Return the status of the API call success.
+type AccountHyperdriveConfigUpdateResponseSuccess bool
+
+const (
+	AccountHyperdriveConfigUpdateResponseSuccessTrue AccountHyperdriveConfigUpdateResponseSuccess = true
+)
+
+func (r AccountHyperdriveConfigUpdateResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountHyperdriveConfigUpdateResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountHyperdriveConfigListResponse struct {
-	Result     []HyperdriveHyperdriveConfigResponse          `json:"result"`
+	Errors   []HyperdriveMessagesItem             `json:"errors,required"`
+	Messages []HyperdriveMessagesItem             `json:"messages,required"`
+	Result   []HyperdriveHyperdriveConfigResponse `json:"result,required"`
+	// Return the status of the API call success.
+	Success    AccountHyperdriveConfigListResponseSuccess    `json:"success,required"`
 	ResultInfo AccountHyperdriveConfigListResponseResultInfo `json:"result_info"`
 	JSON       accountHyperdriveConfigListResponseJSON       `json:"-"`
-	HyperdriveAPIResponseCommon
 }
 
 // accountHyperdriveConfigListResponseJSON contains the JSON metadata for the
 // struct [AccountHyperdriveConfigListResponse]
 type accountHyperdriveConfigListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -867,14 +1009,29 @@ func (r accountHyperdriveConfigListResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Return the status of the API call success.
+type AccountHyperdriveConfigListResponseSuccess bool
+
+const (
+	AccountHyperdriveConfigListResponseSuccessTrue AccountHyperdriveConfigListResponseSuccess = true
+)
+
+func (r AccountHyperdriveConfigListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountHyperdriveConfigListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountHyperdriveConfigListResponseResultInfo struct {
-	// Total number of results for the requested service
+	// Defines the total number of results for the requested service.
 	Count float64 `json:"count"`
-	// Current page within paginated list of results
+	// Defines the current page within paginated list of results.
 	Page float64 `json:"page"`
-	// Number of results per page of results
+	// Defines the number of results per page of results.
 	PerPage float64 `json:"per_page"`
-	// Total results available without any search parameters
+	// Defines the total results available without any search parameters.
 	TotalCount float64                                           `json:"total_count"`
 	JSON       accountHyperdriveConfigListResponseResultInfoJSON `json:"-"`
 }
@@ -899,15 +1056,21 @@ func (r accountHyperdriveConfigListResponseResultInfoJSON) RawJSON() string {
 }
 
 type AccountHyperdriveConfigDeleteResponse struct {
-	Result interface{}                               `json:"result,nullable"`
-	JSON   accountHyperdriveConfigDeleteResponseJSON `json:"-"`
-	HyperdriveAPIResponseSingle
+	Errors   []HyperdriveMessagesItem `json:"errors,required"`
+	Messages []HyperdriveMessagesItem `json:"messages,required"`
+	Result   interface{}              `json:"result,required,nullable"`
+	// Return the status of the API call success.
+	Success AccountHyperdriveConfigDeleteResponseSuccess `json:"success,required"`
+	JSON    accountHyperdriveConfigDeleteResponseJSON    `json:"-"`
 }
 
 // accountHyperdriveConfigDeleteResponseJSON contains the JSON metadata for the
 // struct [AccountHyperdriveConfigDeleteResponse]
 type accountHyperdriveConfigDeleteResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -920,16 +1083,37 @@ func (r accountHyperdriveConfigDeleteResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Return the status of the API call success.
+type AccountHyperdriveConfigDeleteResponseSuccess bool
+
+const (
+	AccountHyperdriveConfigDeleteResponseSuccessTrue AccountHyperdriveConfigDeleteResponseSuccess = true
+)
+
+func (r AccountHyperdriveConfigDeleteResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountHyperdriveConfigDeleteResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountHyperdriveConfigPatchResponse struct {
-	Result HyperdriveHyperdriveConfigResponse       `json:"result"`
-	JSON   accountHyperdriveConfigPatchResponseJSON `json:"-"`
-	HyperdriveAPIResponseCommon
+	Errors   []HyperdriveMessagesItem           `json:"errors,required"`
+	Messages []HyperdriveMessagesItem           `json:"messages,required"`
+	Result   HyperdriveHyperdriveConfigResponse `json:"result,required"`
+	// Return the status of the API call success.
+	Success AccountHyperdriveConfigPatchResponseSuccess `json:"success,required"`
+	JSON    accountHyperdriveConfigPatchResponseJSON    `json:"-"`
 }
 
 // accountHyperdriveConfigPatchResponseJSON contains the JSON metadata for the
 // struct [AccountHyperdriveConfigPatchResponse]
 type accountHyperdriveConfigPatchResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -940,6 +1124,21 @@ func (r *AccountHyperdriveConfigPatchResponse) UnmarshalJSON(data []byte) (err e
 
 func (r accountHyperdriveConfigPatchResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Return the status of the API call success.
+type AccountHyperdriveConfigPatchResponseSuccess bool
+
+const (
+	AccountHyperdriveConfigPatchResponseSuccessTrue AccountHyperdriveConfigPatchResponseSuccess = true
+)
+
+func (r AccountHyperdriveConfigPatchResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountHyperdriveConfigPatchResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountHyperdriveConfigNewParams struct {
@@ -960,32 +1159,50 @@ func (r AccountHyperdriveConfigUpdateParams) MarshalJSON() (data []byte, err err
 
 type AccountHyperdriveConfigPatchParams struct {
 	Caching param.Field[HyperdriveHyperdriveCachingUnionParam]         `json:"caching"`
+	Mtls    param.Field[AccountHyperdriveConfigPatchParamsMtls]        `json:"mtls"`
 	Name    param.Field[string]                                        `json:"name"`
 	Origin  param.Field[AccountHyperdriveConfigPatchParamsOriginUnion] `json:"origin"`
+	// The (soft) maximum number of connections the Hyperdrive is allowed to make to
+	// the origin database.
+	OriginConnectionLimit param.Field[int64] `json:"origin_connection_limit"`
 }
 
 func (r AccountHyperdriveConfigPatchParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
+type AccountHyperdriveConfigPatchParamsMtls struct {
+	// Define CA certificate ID obtained after uploading CA cert.
+	CaCertificateID param.Field[string] `json:"ca_certificate_id"`
+	// Define mTLS certificate ID obtained after uploading client cert.
+	MtlsCertificateID param.Field[string] `json:"mtls_certificate_id"`
+	// Set SSL mode to 'require', 'verify-ca', or 'verify-full' to verify the CA.
+	Sslmode param.Field[string] `json:"sslmode"`
+}
+
+func (r AccountHyperdriveConfigPatchParamsMtls) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
 type AccountHyperdriveConfigPatchParamsOrigin struct {
-	// The Client ID of the Access token to use when connecting to the origin database.
+	// Defines the Client ID of the Access token to use when connecting to the origin
+	// database.
 	AccessClientID param.Field[string] `json:"access_client_id"`
-	// The Client Secret of the Access token to use when connecting to the origin
-	// database. This value is write-only and never returned by the API.
+	// Defines the Client Secret of the Access Token to use when connecting to the
+	// origin database. The API never returns this write-only value.
 	AccessClientSecret param.Field[string] `json:"access_client_secret"`
-	// The name of your origin database.
+	// Set the name of your origin database.
 	Database param.Field[string] `json:"database"`
-	// The host (hostname or IP) of your origin database.
+	// Defines the host (hostname or IP) of your origin database.
 	Host param.Field[string] `json:"host"`
-	// The password required to access your origin database. This value is write-only
-	// and never returned by the API.
+	// Set the password needed to access your origin database. The API never returns
+	// this write-only value.
 	Password param.Field[string] `json:"password"`
-	// The port (default: 5432 for Postgres) of your origin database.
+	// Defines the port (default: 5432 for Postgres) of your origin database.
 	Port param.Field[int64] `json:"port"`
 	// Specifies the URL scheme used to connect to your origin database.
 	Scheme param.Field[AccountHyperdriveConfigPatchParamsOriginScheme] `json:"scheme"`
-	// The user of your origin database.
+	// Set the user of your origin database.
 	User param.Field[string] `json:"user"`
 }
 
@@ -1009,11 +1226,12 @@ type AccountHyperdriveConfigPatchParamsOriginScheme string
 const (
 	AccountHyperdriveConfigPatchParamsOriginSchemePostgres   AccountHyperdriveConfigPatchParamsOriginScheme = "postgres"
 	AccountHyperdriveConfigPatchParamsOriginSchemePostgresql AccountHyperdriveConfigPatchParamsOriginScheme = "postgresql"
+	AccountHyperdriveConfigPatchParamsOriginSchemeMysql      AccountHyperdriveConfigPatchParamsOriginScheme = "mysql"
 )
 
 func (r AccountHyperdriveConfigPatchParamsOriginScheme) IsKnown() bool {
 	switch r {
-	case AccountHyperdriveConfigPatchParamsOriginSchemePostgres, AccountHyperdriveConfigPatchParamsOriginSchemePostgresql:
+	case AccountHyperdriveConfigPatchParamsOriginSchemePostgres, AccountHyperdriveConfigPatchParamsOriginSchemePostgresql, AccountHyperdriveConfigPatchParamsOriginSchemeMysql:
 		return true
 	}
 	return false

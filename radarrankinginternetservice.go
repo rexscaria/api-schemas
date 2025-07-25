@@ -152,6 +152,7 @@ func (r radarRankingInternetServiceGetTimeseriesGroupsResponseJSON) RawJSON() st
 }
 
 type RadarRankingInternetServiceGetTimeseriesGroupsResponseResult struct {
+	// Metadata for the results.
 	Meta   RadarRankingInternetServiceGetTimeseriesGroupsResponseResultMeta   `json:"meta,required"`
 	Serie0 RadarRankingInternetServiceGetTimeseriesGroupsResponseResultSerie0 `json:"serie_0,required"`
 	JSON   radarRankingInternetServiceGetTimeseriesGroupsResponseResultJSON   `json:"-"`
@@ -175,18 +176,36 @@ func (r radarRankingInternetServiceGetTimeseriesGroupsResponseResultJSON) RawJSO
 	return r.raw
 }
 
+// Metadata for the results.
 type RadarRankingInternetServiceGetTimeseriesGroupsResponseResultMeta struct {
-	DateRange []RadarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaDateRange `json:"dateRange,required"`
-	JSON      radarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaJSON        `json:"-"`
+	// Aggregation interval of the results (e.g., in 15 minutes or 1 hour intervals).
+	// Refer to
+	// [Aggregation intervals](https://developers.cloudflare.com/radar/concepts/aggregation-intervals/).
+	AggInterval    RadarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaAggInterval    `json:"aggInterval,required"`
+	ConfidenceInfo RadarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaConfidenceInfo `json:"confidenceInfo,required"`
+	DateRange      []RadarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaDateRange    `json:"dateRange,required"`
+	// Timestamp of the last dataset update.
+	LastUpdated time.Time `json:"lastUpdated,required" format:"date-time"`
+	// Normalization method applied to the results. Refer to
+	// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
+	Normalization RadarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaNormalization `json:"normalization,required"`
+	// Measurement units for the results.
+	Units []RadarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaUnit `json:"units,required"`
+	JSON  radarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaJSON   `json:"-"`
 }
 
 // radarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaJSON contains
 // the JSON metadata for the struct
 // [RadarRankingInternetServiceGetTimeseriesGroupsResponseResultMeta]
 type radarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaJSON struct {
-	DateRange   apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	AggInterval    apijson.Field
+	ConfidenceInfo apijson.Field
+	DateRange      apijson.Field
+	LastUpdated    apijson.Field
+	Normalization  apijson.Field
+	Units          apijson.Field
+	raw            string
+	ExtraFields    map[string]apijson.Field
 }
 
 func (r *RadarRankingInternetServiceGetTimeseriesGroupsResponseResultMeta) UnmarshalJSON(data []byte) (err error) {
@@ -194,6 +213,88 @@ func (r *RadarRankingInternetServiceGetTimeseriesGroupsResponseResultMeta) Unmar
 }
 
 func (r radarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaJSON) RawJSON() string {
+	return r.raw
+}
+
+// Aggregation interval of the results (e.g., in 15 minutes or 1 hour intervals).
+// Refer to
+// [Aggregation intervals](https://developers.cloudflare.com/radar/concepts/aggregation-intervals/).
+type RadarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaAggInterval string
+
+const (
+	RadarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaAggIntervalFifteenMinutes RadarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaAggInterval = "FIFTEEN_MINUTES"
+	RadarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaAggIntervalOneHour        RadarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaAggInterval = "ONE_HOUR"
+	RadarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaAggIntervalOneDay         RadarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaAggInterval = "ONE_DAY"
+	RadarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaAggIntervalOneWeek        RadarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaAggInterval = "ONE_WEEK"
+	RadarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaAggIntervalOneMonth       RadarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaAggInterval = "ONE_MONTH"
+)
+
+func (r RadarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaAggInterval) IsKnown() bool {
+	switch r {
+	case RadarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaAggIntervalFifteenMinutes, RadarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaAggIntervalOneHour, RadarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaAggIntervalOneDay, RadarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaAggIntervalOneWeek, RadarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaAggIntervalOneMonth:
+		return true
+	}
+	return false
+}
+
+type RadarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaConfidenceInfo struct {
+	Annotations []RadarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaConfidenceInfoAnnotation `json:"annotations,required"`
+	// Provides an indication of how much confidence Cloudflare has in the data.
+	Level int64                                                                              `json:"level,required"`
+	JSON  radarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaConfidenceInfoJSON `json:"-"`
+}
+
+// radarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaConfidenceInfoJSON
+// contains the JSON metadata for the struct
+// [RadarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaConfidenceInfo]
+type radarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaConfidenceInfoJSON struct {
+	Annotations apijson.Field
+	Level       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *RadarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaConfidenceInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaConfidenceInfoJSON) RawJSON() string {
+	return r.raw
+}
+
+// Annotation associated with the result (e.g. outage or other type of event).
+type RadarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaConfidenceInfoAnnotation struct {
+	DataSource  string    `json:"dataSource,required"`
+	Description string    `json:"description,required"`
+	EndDate     time.Time `json:"endDate,required" format:"date-time"`
+	EventType   string    `json:"eventType,required"`
+	// Whether event is a single point in time or a time range.
+	IsInstantaneous bool                                                                                         `json:"isInstantaneous,required"`
+	LinkedURL       string                                                                                       `json:"linkedUrl,required" format:"uri"`
+	StartDate       time.Time                                                                                    `json:"startDate,required" format:"date-time"`
+	JSON            radarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
+}
+
+// radarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaConfidenceInfoAnnotationJSON
+// contains the JSON metadata for the struct
+// [RadarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaConfidenceInfoAnnotation]
+type radarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaConfidenceInfoAnnotationJSON struct {
+	DataSource      apijson.Field
+	Description     apijson.Field
+	EndDate         apijson.Field
+	EventType       apijson.Field
+	IsInstantaneous apijson.Field
+	LinkedURL       apijson.Field
+	StartDate       apijson.Field
+	raw             string
+	ExtraFields     map[string]apijson.Field
+}
+
+func (r *RadarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaConfidenceInfoAnnotation) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaConfidenceInfoAnnotationJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -223,8 +324,55 @@ func (r radarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaDateRang
 	return r.raw
 }
 
+// Normalization method applied to the results. Refer to
+// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
+type RadarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaNormalization string
+
+const (
+	RadarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaNormalizationPercentage           RadarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaNormalization = "PERCENTAGE"
+	RadarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaNormalizationMin0Max              RadarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaNormalization = "MIN0_MAX"
+	RadarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaNormalizationMinMax               RadarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaNormalization = "MIN_MAX"
+	RadarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaNormalizationRawValues            RadarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaNormalization = "RAW_VALUES"
+	RadarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaNormalizationPercentageChange     RadarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaNormalization = "PERCENTAGE_CHANGE"
+	RadarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaNormalizationRollingAverage       RadarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaNormalization = "ROLLING_AVERAGE"
+	RadarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaNormalizationOverlappedPercentage RadarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaNormalization = "OVERLAPPED_PERCENTAGE"
+	RadarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaNormalizationRatio                RadarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaNormalization = "RATIO"
+)
+
+func (r RadarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaNormalization) IsKnown() bool {
+	switch r {
+	case RadarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaNormalizationPercentage, RadarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaNormalizationMin0Max, RadarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaNormalizationMinMax, RadarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaNormalizationRawValues, RadarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaNormalizationPercentageChange, RadarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaNormalizationRollingAverage, RadarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaNormalizationOverlappedPercentage, RadarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaNormalizationRatio:
+		return true
+	}
+	return false
+}
+
+type RadarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaUnit struct {
+	Name  string                                                                   `json:"name,required"`
+	Value string                                                                   `json:"value,required"`
+	JSON  radarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaUnitJSON `json:"-"`
+}
+
+// radarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaUnitJSON
+// contains the JSON metadata for the struct
+// [RadarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaUnit]
+type radarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaUnitJSON struct {
+	Name        apijson.Field
+	Value       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *RadarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaUnit) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarRankingInternetServiceGetTimeseriesGroupsResponseResultMetaUnitJSON) RawJSON() string {
+	return r.raw
+}
+
 type RadarRankingInternetServiceGetTimeseriesGroupsResponseResultSerie0 struct {
-	Timestamps  []string                                                                             `json:"timestamps,required"`
+	Timestamps  []time.Time                                                                          `json:"timestamps,required" format:"date-time"`
 	ExtraFields map[string][]RadarRankingInternetServiceGetTimeseriesGroupsResponseResultSerie0Union `json:"-,extras"`
 	JSON        radarRankingInternetServiceGetTimeseriesGroupsResponseResultSerie0JSON               `json:"-"`
 }
@@ -246,6 +394,8 @@ func (r radarRankingInternetServiceGetTimeseriesGroupsResponseResultSerie0JSON) 
 	return r.raw
 }
 
+// A numeric string.
+//
 // Union satisfied by [shared.UnionString] or [shared.UnionFloat].
 type RadarRankingInternetServiceGetTimeseriesGroupsResponseResultSerie0Union interface {
 	ImplementsRadarRankingInternetServiceGetTimeseriesGroupsResponseResultSerie0Union()
@@ -314,17 +464,29 @@ func (r radarRankingInternetServiceGetTopServicesResponseResultJSON) RawJSON() s
 }
 
 type RadarRankingInternetServiceGetTopServicesResponseResultMeta struct {
-	Top0 RadarRankingInternetServiceGetTopServicesResponseResultMetaTop0 `json:"top_0,required"`
-	JSON radarRankingInternetServiceGetTopServicesResponseResultMetaJSON `json:"-"`
+	ConfidenceInfo RadarRankingInternetServiceGetTopServicesResponseResultMetaConfidenceInfo `json:"confidenceInfo,required,nullable"`
+	DateRange      []RadarRankingInternetServiceGetTopServicesResponseResultMetaDateRange    `json:"dateRange,required"`
+	// Timestamp of the last dataset update.
+	LastUpdated time.Time `json:"lastUpdated,required" format:"date-time"`
+	// Normalization method applied to the results. Refer to
+	// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
+	Normalization RadarRankingInternetServiceGetTopServicesResponseResultMetaNormalization `json:"normalization,required"`
+	// Measurement units for the results.
+	Units []RadarRankingInternetServiceGetTopServicesResponseResultMetaUnit `json:"units,required"`
+	JSON  radarRankingInternetServiceGetTopServicesResponseResultMetaJSON   `json:"-"`
 }
 
 // radarRankingInternetServiceGetTopServicesResponseResultMetaJSON contains the
 // JSON metadata for the struct
 // [RadarRankingInternetServiceGetTopServicesResponseResultMeta]
 type radarRankingInternetServiceGetTopServicesResponseResultMetaJSON struct {
-	Top0        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	ConfidenceInfo apijson.Field
+	DateRange      apijson.Field
+	LastUpdated    apijson.Field
+	Normalization  apijson.Field
+	Units          apijson.Field
+	raw            string
+	ExtraFields    map[string]apijson.Field
 }
 
 func (r *RadarRankingInternetServiceGetTopServicesResponseResultMeta) UnmarshalJSON(data []byte) (err error) {
@@ -335,27 +497,137 @@ func (r radarRankingInternetServiceGetTopServicesResponseResultMetaJSON) RawJSON
 	return r.raw
 }
 
-type RadarRankingInternetServiceGetTopServicesResponseResultMetaTop0 struct {
-	Date            string                                                              `json:"date,required"`
-	ServiceCategory string                                                              `json:"serviceCategory,required"`
-	JSON            radarRankingInternetServiceGetTopServicesResponseResultMetaTop0JSON `json:"-"`
+type RadarRankingInternetServiceGetTopServicesResponseResultMetaConfidenceInfo struct {
+	Annotations []RadarRankingInternetServiceGetTopServicesResponseResultMetaConfidenceInfoAnnotation `json:"annotations,required"`
+	// Provides an indication of how much confidence Cloudflare has in the data.
+	Level int64                                                                         `json:"level,required"`
+	JSON  radarRankingInternetServiceGetTopServicesResponseResultMetaConfidenceInfoJSON `json:"-"`
 }
 
-// radarRankingInternetServiceGetTopServicesResponseResultMetaTop0JSON contains the
-// JSON metadata for the struct
-// [RadarRankingInternetServiceGetTopServicesResponseResultMetaTop0]
-type radarRankingInternetServiceGetTopServicesResponseResultMetaTop0JSON struct {
-	Date            apijson.Field
-	ServiceCategory apijson.Field
+// radarRankingInternetServiceGetTopServicesResponseResultMetaConfidenceInfoJSON
+// contains the JSON metadata for the struct
+// [RadarRankingInternetServiceGetTopServicesResponseResultMetaConfidenceInfo]
+type radarRankingInternetServiceGetTopServicesResponseResultMetaConfidenceInfoJSON struct {
+	Annotations apijson.Field
+	Level       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *RadarRankingInternetServiceGetTopServicesResponseResultMetaConfidenceInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarRankingInternetServiceGetTopServicesResponseResultMetaConfidenceInfoJSON) RawJSON() string {
+	return r.raw
+}
+
+// Annotation associated with the result (e.g. outage or other type of event).
+type RadarRankingInternetServiceGetTopServicesResponseResultMetaConfidenceInfoAnnotation struct {
+	DataSource  string    `json:"dataSource,required"`
+	Description string    `json:"description,required"`
+	EndDate     time.Time `json:"endDate,required" format:"date-time"`
+	EventType   string    `json:"eventType,required"`
+	// Whether event is a single point in time or a time range.
+	IsInstantaneous bool                                                                                    `json:"isInstantaneous,required"`
+	LinkedURL       string                                                                                  `json:"linkedUrl,required" format:"uri"`
+	StartDate       time.Time                                                                               `json:"startDate,required" format:"date-time"`
+	JSON            radarRankingInternetServiceGetTopServicesResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
+}
+
+// radarRankingInternetServiceGetTopServicesResponseResultMetaConfidenceInfoAnnotationJSON
+// contains the JSON metadata for the struct
+// [RadarRankingInternetServiceGetTopServicesResponseResultMetaConfidenceInfoAnnotation]
+type radarRankingInternetServiceGetTopServicesResponseResultMetaConfidenceInfoAnnotationJSON struct {
+	DataSource      apijson.Field
+	Description     apijson.Field
+	EndDate         apijson.Field
+	EventType       apijson.Field
+	IsInstantaneous apijson.Field
+	LinkedURL       apijson.Field
+	StartDate       apijson.Field
 	raw             string
 	ExtraFields     map[string]apijson.Field
 }
 
-func (r *RadarRankingInternetServiceGetTopServicesResponseResultMetaTop0) UnmarshalJSON(data []byte) (err error) {
+func (r *RadarRankingInternetServiceGetTopServicesResponseResultMetaConfidenceInfoAnnotation) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r radarRankingInternetServiceGetTopServicesResponseResultMetaTop0JSON) RawJSON() string {
+func (r radarRankingInternetServiceGetTopServicesResponseResultMetaConfidenceInfoAnnotationJSON) RawJSON() string {
+	return r.raw
+}
+
+type RadarRankingInternetServiceGetTopServicesResponseResultMetaDateRange struct {
+	// Adjusted end of date range.
+	EndTime time.Time `json:"endTime,required" format:"date-time"`
+	// Adjusted start of date range.
+	StartTime time.Time                                                                `json:"startTime,required" format:"date-time"`
+	JSON      radarRankingInternetServiceGetTopServicesResponseResultMetaDateRangeJSON `json:"-"`
+}
+
+// radarRankingInternetServiceGetTopServicesResponseResultMetaDateRangeJSON
+// contains the JSON metadata for the struct
+// [RadarRankingInternetServiceGetTopServicesResponseResultMetaDateRange]
+type radarRankingInternetServiceGetTopServicesResponseResultMetaDateRangeJSON struct {
+	EndTime     apijson.Field
+	StartTime   apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *RadarRankingInternetServiceGetTopServicesResponseResultMetaDateRange) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarRankingInternetServiceGetTopServicesResponseResultMetaDateRangeJSON) RawJSON() string {
+	return r.raw
+}
+
+// Normalization method applied to the results. Refer to
+// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
+type RadarRankingInternetServiceGetTopServicesResponseResultMetaNormalization string
+
+const (
+	RadarRankingInternetServiceGetTopServicesResponseResultMetaNormalizationPercentage           RadarRankingInternetServiceGetTopServicesResponseResultMetaNormalization = "PERCENTAGE"
+	RadarRankingInternetServiceGetTopServicesResponseResultMetaNormalizationMin0Max              RadarRankingInternetServiceGetTopServicesResponseResultMetaNormalization = "MIN0_MAX"
+	RadarRankingInternetServiceGetTopServicesResponseResultMetaNormalizationMinMax               RadarRankingInternetServiceGetTopServicesResponseResultMetaNormalization = "MIN_MAX"
+	RadarRankingInternetServiceGetTopServicesResponseResultMetaNormalizationRawValues            RadarRankingInternetServiceGetTopServicesResponseResultMetaNormalization = "RAW_VALUES"
+	RadarRankingInternetServiceGetTopServicesResponseResultMetaNormalizationPercentageChange     RadarRankingInternetServiceGetTopServicesResponseResultMetaNormalization = "PERCENTAGE_CHANGE"
+	RadarRankingInternetServiceGetTopServicesResponseResultMetaNormalizationRollingAverage       RadarRankingInternetServiceGetTopServicesResponseResultMetaNormalization = "ROLLING_AVERAGE"
+	RadarRankingInternetServiceGetTopServicesResponseResultMetaNormalizationOverlappedPercentage RadarRankingInternetServiceGetTopServicesResponseResultMetaNormalization = "OVERLAPPED_PERCENTAGE"
+	RadarRankingInternetServiceGetTopServicesResponseResultMetaNormalizationRatio                RadarRankingInternetServiceGetTopServicesResponseResultMetaNormalization = "RATIO"
+)
+
+func (r RadarRankingInternetServiceGetTopServicesResponseResultMetaNormalization) IsKnown() bool {
+	switch r {
+	case RadarRankingInternetServiceGetTopServicesResponseResultMetaNormalizationPercentage, RadarRankingInternetServiceGetTopServicesResponseResultMetaNormalizationMin0Max, RadarRankingInternetServiceGetTopServicesResponseResultMetaNormalizationMinMax, RadarRankingInternetServiceGetTopServicesResponseResultMetaNormalizationRawValues, RadarRankingInternetServiceGetTopServicesResponseResultMetaNormalizationPercentageChange, RadarRankingInternetServiceGetTopServicesResponseResultMetaNormalizationRollingAverage, RadarRankingInternetServiceGetTopServicesResponseResultMetaNormalizationOverlappedPercentage, RadarRankingInternetServiceGetTopServicesResponseResultMetaNormalizationRatio:
+		return true
+	}
+	return false
+}
+
+type RadarRankingInternetServiceGetTopServicesResponseResultMetaUnit struct {
+	Name  string                                                              `json:"name,required"`
+	Value string                                                              `json:"value,required"`
+	JSON  radarRankingInternetServiceGetTopServicesResponseResultMetaUnitJSON `json:"-"`
+}
+
+// radarRankingInternetServiceGetTopServicesResponseResultMetaUnitJSON contains the
+// JSON metadata for the struct
+// [RadarRankingInternetServiceGetTopServicesResponseResultMetaUnit]
+type radarRankingInternetServiceGetTopServicesResponseResultMetaUnitJSON struct {
+	Name        apijson.Field
+	Value       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *RadarRankingInternetServiceGetTopServicesResponseResultMetaUnit) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarRankingInternetServiceGetTopServicesResponseResultMetaUnitJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -384,7 +656,7 @@ func (r radarRankingInternetServiceGetTopServicesResponseResultTop0JSON) RawJSON
 }
 
 type RadarRankingInternetServiceListCategoriesParams struct {
-	// Array of dates to filter the results.
+	// Filters results by the specified array of dates.
 	Date param.Field[[]time.Time] `query:"date" format:"date"`
 	// Format in which results will be returned.
 	Format param.Field[RadarRankingInternetServiceListCategoriesParamsFormat] `query:"format"`
@@ -422,9 +694,9 @@ func (r RadarRankingInternetServiceListCategoriesParamsFormat) IsKnown() bool {
 type RadarRankingInternetServiceGetTimeseriesGroupsParams struct {
 	// End of the date range (inclusive).
 	DateEnd param.Field[[]time.Time] `query:"dateEnd" format:"date-time"`
-	// Filters results by the specified date range. For example, use `7d` and
-	// `7dcontrol` to compare this week with the previous week. Use this parameter or
-	// set specific start and end dates (`dateStart` and `dateEnd` parameters).
+	// Filters results by date range. For example, use `7d` and `7dcontrol` to compare
+	// this week with the previous week. Use this parameter or set specific start and
+	// end dates (`dateStart` and `dateEnd` parameters).
 	DateRange param.Field[[]string] `query:"dateRange"`
 	// Start of the date range.
 	DateStart param.Field[[]time.Time] `query:"dateStart" format:"date-time"`
@@ -464,7 +736,7 @@ func (r RadarRankingInternetServiceGetTimeseriesGroupsParamsFormat) IsKnown() bo
 }
 
 type RadarRankingInternetServiceGetTopServicesParams struct {
-	// Array of dates to filter the results.
+	// Filters results by the specified array of dates.
 	Date param.Field[[]time.Time] `query:"date" format:"date"`
 	// Format in which results will be returned.
 	Format param.Field[RadarRankingInternetServiceGetTopServicesParamsFormat] `query:"format"`

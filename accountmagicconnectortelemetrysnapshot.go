@@ -37,39 +37,52 @@ func NewAccountMagicConnectorTelemetrySnapshotService(opts ...option.RequestOpti
 }
 
 // List Snapshots
-func (r *AccountMagicConnectorTelemetrySnapshotService) List(ctx context.Context, accountID float64, connectorID string, query AccountMagicConnectorTelemetrySnapshotListParams, opts ...option.RequestOption) (res *AccountMagicConnectorTelemetrySnapshotListResponse, err error) {
+func (r *AccountMagicConnectorTelemetrySnapshotService) List(ctx context.Context, accountID string, connectorID string, query AccountMagicConnectorTelemetrySnapshotListParams, opts ...option.RequestOption) (res *AccountMagicConnectorTelemetrySnapshotListResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	if accountID == "" {
+		err = errors.New("missing required account_id parameter")
+		return
+	}
 	if connectorID == "" {
 		err = errors.New("missing required connector_id parameter")
 		return
 	}
-	path := fmt.Sprintf("accounts/%v/magic/connectors/%s/telemetry/snapshots", accountID, connectorID)
+	path := fmt.Sprintf("accounts/%s/magic/connectors/%s/telemetry/snapshots", accountID, connectorID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
 }
 
 // Get Snapshot
-func (r *AccountMagicConnectorTelemetrySnapshotService) Get(ctx context.Context, accountID float64, connectorID string, snapshotT float64, opts ...option.RequestOption) (res *AccountMagicConnectorTelemetrySnapshotGetResponse, err error) {
+func (r *AccountMagicConnectorTelemetrySnapshotService) Get(ctx context.Context, accountID string, connectorID string, snapshotT float64, opts ...option.RequestOption) (res *AccountMagicConnectorTelemetrySnapshotGetResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	if accountID == "" {
+		err = errors.New("missing required account_id parameter")
+		return
+	}
 	if connectorID == "" {
 		err = errors.New("missing required connector_id parameter")
 		return
 	}
-	path := fmt.Sprintf("accounts/%v/magic/connectors/%s/telemetry/snapshots/%v", accountID, connectorID, snapshotT)
+	path := fmt.Sprintf("accounts/%s/magic/connectors/%s/telemetry/snapshots/%v", accountID, connectorID, snapshotT)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
 
 type AccountMagicConnectorTelemetrySnapshotListResponse struct {
-	Result AccountMagicConnectorTelemetrySnapshotListResponseResult `json:"result,required"`
-	JSON   accountMagicConnectorTelemetrySnapshotListResponseJSON   `json:"-"`
-	MconnEnvelope
+	Result   AccountMagicConnectorTelemetrySnapshotListResponseResult `json:"result,required"`
+	Success  bool                                                     `json:"success,required"`
+	Errors   []MconnCodedMessage                                      `json:"errors"`
+	Messages []MconnCodedMessage                                      `json:"messages"`
+	JSON     accountMagicConnectorTelemetrySnapshotListResponseJSON   `json:"-"`
 }
 
 // accountMagicConnectorTelemetrySnapshotListResponseJSON contains the JSON
 // metadata for the struct [AccountMagicConnectorTelemetrySnapshotListResponse]
 type accountMagicConnectorTelemetrySnapshotListResponseJSON struct {
 	Result      apijson.Field
+	Success     apijson.Field
+	Errors      apijson.Field
+	Messages    apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -136,15 +149,20 @@ func (r accountMagicConnectorTelemetrySnapshotListResponseResultItemJSON) RawJSO
 
 type AccountMagicConnectorTelemetrySnapshotGetResponse struct {
 	// Snapshot
-	Result AccountMagicConnectorTelemetrySnapshotGetResponseResult `json:"result,required"`
-	JSON   accountMagicConnectorTelemetrySnapshotGetResponseJSON   `json:"-"`
-	MconnEnvelope
+	Result   AccountMagicConnectorTelemetrySnapshotGetResponseResult `json:"result,required"`
+	Success  bool                                                    `json:"success,required"`
+	Errors   []MconnCodedMessage                                     `json:"errors"`
+	Messages []MconnCodedMessage                                     `json:"messages"`
+	JSON     accountMagicConnectorTelemetrySnapshotGetResponseJSON   `json:"-"`
 }
 
 // accountMagicConnectorTelemetrySnapshotGetResponseJSON contains the JSON metadata
 // for the struct [AccountMagicConnectorTelemetrySnapshotGetResponse]
 type accountMagicConnectorTelemetrySnapshotGetResponseJSON struct {
 	Result      apijson.Field
+	Success     apijson.Field
+	Errors      apijson.Field
+	Messages    apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -200,13 +218,15 @@ type AccountMagicConnectorTelemetrySnapshotGetResponseResult struct {
 	// Time spent in system mode (milliseconds)
 	CPUTimeSystemMs float64 `json:"cpu_time_system_ms"`
 	// Time spent in user mode (milliseconds)
-	CPUTimeUserMs float64                                                       `json:"cpu_time_user_ms"`
-	Disks         []AccountMagicConnectorTelemetrySnapshotGetResponseResultDisk `json:"disks"`
+	CPUTimeUserMs float64                                                            `json:"cpu_time_user_ms"`
+	DhcpLeases    []AccountMagicConnectorTelemetrySnapshotGetResponseResultDhcpLease `json:"dhcp_leases"`
+	Disks         []AccountMagicConnectorTelemetrySnapshotGetResponseResultDisk      `json:"disks"`
 	// Name of high availability state
 	HaState string `json:"ha_state"`
-	// Numeric value associated with high availability state (0 = unknown, 1 = active,
-	// 2 = standby, 3 = disabled, 4 = fault)
-	HaValue float64 `json:"ha_value"`
+	// Numeric value associated with high availability state (0 = disabled, 1 = active,
+	// 2 = standby, 3 = stopped, 4 = fault)
+	HaValue    float64                                                            `json:"ha_value"`
+	Interfaces []AccountMagicConnectorTelemetrySnapshotGetResponseResultInterface `json:"interfaces"`
 	// Percentage of time over a 10 second window that all tasks were stalled
 	IoPressureFull10s float64 `json:"io_pressure_full_10s"`
 	// Percentage of time over a 5 minute window that all tasks were stalled
@@ -491,6 +511,7 @@ type AccountMagicConnectorTelemetrySnapshotGetResponseResult struct {
 	// Boottime of the system (seconds since the Unix epoch)
 	SystemBootTimeS float64                                                          `json:"system_boot_time_s"`
 	Thermals        []AccountMagicConnectorTelemetrySnapshotGetResponseResultThermal `json:"thermals"`
+	Tunnels         []AccountMagicConnectorTelemetrySnapshotGetResponseResultTunnel  `json:"tunnels"`
 	// Sum of how much time each core has spent idle
 	UptimeIdleMs float64 `json:"uptime_idle_ms"`
 	// Uptime of the system, including time spent in suspend
@@ -523,9 +544,11 @@ type accountMagicConnectorTelemetrySnapshotGetResponseResultJSON struct {
 	CPUTimeStealMs                 apijson.Field
 	CPUTimeSystemMs                apijson.Field
 	CPUTimeUserMs                  apijson.Field
+	DhcpLeases                     apijson.Field
 	Disks                          apijson.Field
 	HaState                        apijson.Field
 	HaValue                        apijson.Field
+	Interfaces                     apijson.Field
 	IoPressureFull10s              apijson.Field
 	IoPressureFull300s             apijson.Field
 	IoPressureFull60s              apijson.Field
@@ -666,6 +689,7 @@ type accountMagicConnectorTelemetrySnapshotGetResponseResultJSON struct {
 	SnmpUdpOutDatagrams            apijson.Field
 	SystemBootTimeS                apijson.Field
 	Thermals                       apijson.Field
+	Tunnels                        apijson.Field
 	UptimeIdleMs                   apijson.Field
 	UptimeTotalMs                  apijson.Field
 	raw                            string
@@ -677,6 +701,48 @@ func (r *AccountMagicConnectorTelemetrySnapshotGetResponseResult) UnmarshalJSON(
 }
 
 func (r accountMagicConnectorTelemetrySnapshotGetResponseResultJSON) RawJSON() string {
+	return r.raw
+}
+
+// Snapshot DHCP lease
+type AccountMagicConnectorTelemetrySnapshotGetResponseResultDhcpLease struct {
+	// Client ID of the device the IP Address was leased to
+	ClientID string `json:"client_id,required"`
+	// Expiry time of the DHCP lease (seconds since the Unix epoch)
+	ExpiryTime float64 `json:"expiry_time,required"`
+	// Hostname of the device the IP Address was leased to
+	Hostname string `json:"hostname,required"`
+	// Name of the network interface
+	InterfaceName string `json:"interface_name,required"`
+	// IP Address that was leased
+	IPAddress string `json:"ip_address,required"`
+	// MAC Address of the device the IP Address was leased to
+	MacAddress string `json:"mac_address,required"`
+	// Connector identifier
+	ConnectorID string                                                               `json:"connector_id"`
+	JSON        accountMagicConnectorTelemetrySnapshotGetResponseResultDhcpLeaseJSON `json:"-"`
+}
+
+// accountMagicConnectorTelemetrySnapshotGetResponseResultDhcpLeaseJSON contains
+// the JSON metadata for the struct
+// [AccountMagicConnectorTelemetrySnapshotGetResponseResultDhcpLease]
+type accountMagicConnectorTelemetrySnapshotGetResponseResultDhcpLeaseJSON struct {
+	ClientID      apijson.Field
+	ExpiryTime    apijson.Field
+	Hostname      apijson.Field
+	InterfaceName apijson.Field
+	IPAddress     apijson.Field
+	MacAddress    apijson.Field
+	ConnectorID   apijson.Field
+	raw           string
+	ExtraFields   map[string]apijson.Field
+}
+
+func (r *AccountMagicConnectorTelemetrySnapshotGetResponseResultDhcpLease) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountMagicConnectorTelemetrySnapshotGetResponseResultDhcpLeaseJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -761,6 +827,71 @@ func (r *AccountMagicConnectorTelemetrySnapshotGetResponseResultDisk) UnmarshalJ
 }
 
 func (r accountMagicConnectorTelemetrySnapshotGetResponseResultDiskJSON) RawJSON() string {
+	return r.raw
+}
+
+// Snapshot Interface
+type AccountMagicConnectorTelemetrySnapshotGetResponseResultInterface struct {
+	// Name of the network interface
+	Name string `json:"name,required"`
+	// UP/DOWN state of the network interface
+	Operstate string `json:"operstate,required"`
+	// Connector identifier
+	ConnectorID string                                                                       `json:"connector_id"`
+	IPAddresses []AccountMagicConnectorTelemetrySnapshotGetResponseResultInterfacesIPAddress `json:"ip_addresses"`
+	// Speed of the network interface (bits per second)
+	Speed float64                                                              `json:"speed"`
+	JSON  accountMagicConnectorTelemetrySnapshotGetResponseResultInterfaceJSON `json:"-"`
+}
+
+// accountMagicConnectorTelemetrySnapshotGetResponseResultInterfaceJSON contains
+// the JSON metadata for the struct
+// [AccountMagicConnectorTelemetrySnapshotGetResponseResultInterface]
+type accountMagicConnectorTelemetrySnapshotGetResponseResultInterfaceJSON struct {
+	Name        apijson.Field
+	Operstate   apijson.Field
+	ConnectorID apijson.Field
+	IPAddresses apijson.Field
+	Speed       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountMagicConnectorTelemetrySnapshotGetResponseResultInterface) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountMagicConnectorTelemetrySnapshotGetResponseResultInterfaceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Snapshot Interface Address
+type AccountMagicConnectorTelemetrySnapshotGetResponseResultInterfacesIPAddress struct {
+	// Name of the network interface
+	InterfaceName string `json:"interface_name,required"`
+	// IP address of the network interface
+	IPAddress string `json:"ip_address,required"`
+	// Connector identifier
+	ConnectorID string                                                                         `json:"connector_id"`
+	JSON        accountMagicConnectorTelemetrySnapshotGetResponseResultInterfacesIPAddressJSON `json:"-"`
+}
+
+// accountMagicConnectorTelemetrySnapshotGetResponseResultInterfacesIPAddressJSON
+// contains the JSON metadata for the struct
+// [AccountMagicConnectorTelemetrySnapshotGetResponseResultInterfacesIPAddress]
+type accountMagicConnectorTelemetrySnapshotGetResponseResultInterfacesIPAddressJSON struct {
+	InterfaceName apijson.Field
+	IPAddress     apijson.Field
+	ConnectorID   apijson.Field
+	raw           string
+	ExtraFields   map[string]apijson.Field
+}
+
+func (r *AccountMagicConnectorTelemetrySnapshotGetResponseResultInterfacesIPAddress) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountMagicConnectorTelemetrySnapshotGetResponseResultInterfacesIPAddressJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -920,6 +1051,43 @@ func (r *AccountMagicConnectorTelemetrySnapshotGetResponseResultThermal) Unmarsh
 }
 
 func (r accountMagicConnectorTelemetrySnapshotGetResponseResultThermalJSON) RawJSON() string {
+	return r.raw
+}
+
+// Snapshot Tunnels
+type AccountMagicConnectorTelemetrySnapshotGetResponseResultTunnel struct {
+	// Name of tunnel health state (unknown, healthy, degraded, down)
+	HealthState string `json:"health_state,required"`
+	// Numeric value associated with tunnel state (0 = unknown, 1 = healthy, 2 =
+	// degraded, 3 = down)
+	HealthValue float64 `json:"health_value,required"`
+	// The tunnel interface name (i.e. xfrm1, xfrm3.99, etc.)
+	InterfaceName string `json:"interface_name,required"`
+	// Tunnel identifier
+	TunnelID string `json:"tunnel_id,required"`
+	// Connector identifier
+	ConnectorID string                                                            `json:"connector_id"`
+	JSON        accountMagicConnectorTelemetrySnapshotGetResponseResultTunnelJSON `json:"-"`
+}
+
+// accountMagicConnectorTelemetrySnapshotGetResponseResultTunnelJSON contains the
+// JSON metadata for the struct
+// [AccountMagicConnectorTelemetrySnapshotGetResponseResultTunnel]
+type accountMagicConnectorTelemetrySnapshotGetResponseResultTunnelJSON struct {
+	HealthState   apijson.Field
+	HealthValue   apijson.Field
+	InterfaceName apijson.Field
+	TunnelID      apijson.Field
+	ConnectorID   apijson.Field
+	raw           string
+	ExtraFields   map[string]apijson.Field
+}
+
+func (r *AccountMagicConnectorTelemetrySnapshotGetResponseResultTunnel) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountMagicConnectorTelemetrySnapshotGetResponseResultTunnelJSON) RawJSON() string {
 	return r.raw
 }
 

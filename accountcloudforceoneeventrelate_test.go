@@ -29,7 +29,7 @@ func TestAccountCloudforceOneEventRelateNew(t *testing.T) {
 	)
 	_, err := client.Accounts.CloudforceOne.Events.Relate.New(
 		context.TODO(),
-		0.000000,
+		"account_id",
 		"event_id",
 		cfrex.AccountCloudforceOneEventRelateNewParams{
 			Events: cfrex.F([]string{"88888888-4444-4444-4444-121212121212"}),
@@ -60,11 +60,8 @@ func TestAccountCloudforceOneEventRelateRemove(t *testing.T) {
 	)
 	_, err := client.Accounts.CloudforceOne.Events.Relate.Remove(
 		context.TODO(),
-		0.000000,
+		"account_id",
 		"event_id",
-		cfrex.AccountCloudforceOneEventRelateRemoveParams{
-			Events: cfrex.F([]string{"88888888-4444-4444-4444-121212121212"}),
-		},
 	)
 	if err != nil {
 		var apierr *cfrex.Error

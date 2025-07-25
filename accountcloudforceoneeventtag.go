@@ -4,6 +4,7 @@ package cfrex
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net/http"
 
@@ -33,9 +34,13 @@ func NewAccountCloudforceOneEventTagService(opts ...option.RequestOption) (r *Ac
 }
 
 // Creates a new tag
-func (r *AccountCloudforceOneEventTagService) New(ctx context.Context, accountID float64, body AccountCloudforceOneEventTagNewParams, opts ...option.RequestOption) (res *AccountCloudforceOneEventTagNewResponse, err error) {
+func (r *AccountCloudforceOneEventTagService) New(ctx context.Context, accountID string, body AccountCloudforceOneEventTagNewParams, opts ...option.RequestOption) (res *AccountCloudforceOneEventTagNewResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	path := fmt.Sprintf("accounts/%v/cloudforce-one/events/tags/create", accountID)
+	if accountID == "" {
+		err = errors.New("missing required account_id parameter")
+		return
+	}
+	path := fmt.Sprintf("accounts/%s/cloudforce-one/events/tags/create", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }

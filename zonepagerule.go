@@ -143,90 +143,8 @@ func (r *ZonePageruleService) ListSettings(ctx context.Context, zoneID string, o
 	return
 }
 
-type APIResponseSingleZones struct {
-	Errors   []MessagesZonesItem `json:"errors,required"`
-	Messages []MessagesZonesItem `json:"messages,required"`
-	// Whether the API call was successful
-	Success APIResponseSingleZonesSuccess `json:"success,required"`
-	JSON    apiResponseSingleZonesJSON    `json:"-"`
-}
-
-// apiResponseSingleZonesJSON contains the JSON metadata for the struct
-// [APIResponseSingleZones]
-type apiResponseSingleZonesJSON struct {
-	Errors      apijson.Field
-	Messages    apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *APIResponseSingleZones) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r apiResponseSingleZonesJSON) RawJSON() string {
-	return r.raw
-}
-
-// Whether the API call was successful
-type APIResponseSingleZonesSuccess bool
-
-const (
-	APIResponseSingleZonesSuccessTrue APIResponseSingleZonesSuccess = true
-)
-
-func (r APIResponseSingleZonesSuccess) IsKnown() bool {
-	switch r {
-	case APIResponseSingleZonesSuccessTrue:
-		return true
-	}
-	return false
-}
-
-type APIResponseZonesSchemas struct {
-	Errors   []MessagesZonesItem `json:"errors,required"`
-	Messages []MessagesZonesItem `json:"messages,required"`
-	// Whether the API call was successful
-	Success APIResponseZonesSchemasSuccess `json:"success,required"`
-	JSON    apiResponseZonesSchemasJSON    `json:"-"`
-}
-
-// apiResponseZonesSchemasJSON contains the JSON metadata for the struct
-// [APIResponseZonesSchemas]
-type apiResponseZonesSchemasJSON struct {
-	Errors      apijson.Field
-	Messages    apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *APIResponseZonesSchemas) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r apiResponseZonesSchemasJSON) RawJSON() string {
-	return r.raw
-}
-
-// Whether the API call was successful
-type APIResponseZonesSchemasSuccess bool
-
-const (
-	APIResponseZonesSchemasSuccessTrue APIResponseZonesSchemasSuccess = true
-)
-
-func (r APIResponseZonesSchemasSuccess) IsKnown() bool {
-	switch r {
-	case APIResponseZonesSchemasSuccessTrue:
-		return true
-	}
-	return false
-}
-
 type PageRule struct {
-	// Identifier
+	// Identifier.
 	ID string `json:"id,required"`
 	// The set of actions to perform if the targets of this rule match the request.
 	// Actions can redirect to another URL or override settings, but not both.
@@ -244,8 +162,8 @@ type PageRule struct {
 	// The status of the Page Rule.
 	Status PageRuleStatus `json:"status,required"`
 	// The rule targets to evaluate on each request.
-	Targets []RequestConditionTarget `json:"targets,required"`
-	JSON    pageRuleJSON             `json:"-"`
+	Targets []PageRuleTarget `json:"targets,required"`
+	JSON    pageRuleJSON     `json:"-"`
 }
 
 // pageRuleJSON contains the JSON metadata for the struct [PageRule]
@@ -269,6 +187,92 @@ func (r pageRuleJSON) RawJSON() string {
 	return r.raw
 }
 
+// URL target.
+type PageRuleTarget struct {
+	// String constraint.
+	Constraint PageRuleTargetsConstraint `json:"constraint"`
+	// A target based on the URL of the request.
+	Target PageRuleTargetsTarget `json:"target"`
+	JSON   pageRuleTargetJSON    `json:"-"`
+}
+
+// pageRuleTargetJSON contains the JSON metadata for the struct [PageRuleTarget]
+type pageRuleTargetJSON struct {
+	Constraint  apijson.Field
+	Target      apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *PageRuleTarget) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r pageRuleTargetJSON) RawJSON() string {
+	return r.raw
+}
+
+// String constraint.
+type PageRuleTargetsConstraint struct {
+	// The matches operator can use asterisks and pipes as wildcard and 'or' operators.
+	Operator PageRuleTargetsConstraintOperator `json:"operator,required"`
+	// The URL pattern to match against the current request. The pattern may contain up
+	// to four asterisks ('\*') as placeholders.
+	Value string                        `json:"value,required"`
+	JSON  pageRuleTargetsConstraintJSON `json:"-"`
+}
+
+// pageRuleTargetsConstraintJSON contains the JSON metadata for the struct
+// [PageRuleTargetsConstraint]
+type pageRuleTargetsConstraintJSON struct {
+	Operator    apijson.Field
+	Value       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *PageRuleTargetsConstraint) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r pageRuleTargetsConstraintJSON) RawJSON() string {
+	return r.raw
+}
+
+// The matches operator can use asterisks and pipes as wildcard and 'or' operators.
+type PageRuleTargetsConstraintOperator string
+
+const (
+	PageRuleTargetsConstraintOperatorMatches    PageRuleTargetsConstraintOperator = "matches"
+	PageRuleTargetsConstraintOperatorContains   PageRuleTargetsConstraintOperator = "contains"
+	PageRuleTargetsConstraintOperatorEquals     PageRuleTargetsConstraintOperator = "equals"
+	PageRuleTargetsConstraintOperatorNotEqual   PageRuleTargetsConstraintOperator = "not_equal"
+	PageRuleTargetsConstraintOperatorNotContain PageRuleTargetsConstraintOperator = "not_contain"
+)
+
+func (r PageRuleTargetsConstraintOperator) IsKnown() bool {
+	switch r {
+	case PageRuleTargetsConstraintOperatorMatches, PageRuleTargetsConstraintOperatorContains, PageRuleTargetsConstraintOperatorEquals, PageRuleTargetsConstraintOperatorNotEqual, PageRuleTargetsConstraintOperatorNotContain:
+		return true
+	}
+	return false
+}
+
+// A target based on the URL of the request.
+type PageRuleTargetsTarget string
+
+const (
+	PageRuleTargetsTargetURL PageRuleTargetsTarget = "url"
+)
+
+func (r PageRuleTargetsTarget) IsKnown() bool {
+	switch r {
+	case PageRuleTargetsTargetURL:
+		return true
+	}
+	return false
+}
+
 // The status of the Page Rule.
 type PageRuleStatus string
 
@@ -285,56 +289,29 @@ func (r PageRuleStatus) IsKnown() bool {
 	return false
 }
 
-// URL target.
-type RequestConditionTarget struct {
-	// The constraint of a target.
-	Constraint RequestConditionTargetConstraint `json:"constraint,required"`
+// A request condition target.
+type RequestConditionTargetParam struct {
+	// String constraint.
+	Constraint param.Field[RequestConditionTargetConstraintParam] `json:"constraint,required"`
 	// A target based on the URL of the request.
-	Target RequestConditionTargetTarget `json:"target,required"`
-	JSON   requestConditionTargetJSON   `json:"-"`
+	Target param.Field[RequestConditionTargetTarget] `json:"target,required"`
 }
 
-// requestConditionTargetJSON contains the JSON metadata for the struct
-// [RequestConditionTarget]
-type requestConditionTargetJSON struct {
-	Constraint  apijson.Field
-	Target      apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+func (r RequestConditionTargetParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
 }
 
-func (r *RequestConditionTarget) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r requestConditionTargetJSON) RawJSON() string {
-	return r.raw
-}
-
-// The constraint of a target.
-type RequestConditionTargetConstraint struct {
+// String constraint.
+type RequestConditionTargetConstraintParam struct {
 	// The matches operator can use asterisks and pipes as wildcard and 'or' operators.
-	Operator RequestConditionTargetConstraintOperator `json:"operator,required"`
-	// The value to apply the operator to.
-	Value string                               `json:"value,required"`
-	JSON  requestConditionTargetConstraintJSON `json:"-"`
+	Operator param.Field[RequestConditionTargetConstraintOperator] `json:"operator,required"`
+	// The URL pattern to match against the current request. The pattern may contain up
+	// to four asterisks ('\*') as placeholders.
+	Value param.Field[string] `json:"value,required"`
 }
 
-// requestConditionTargetConstraintJSON contains the JSON metadata for the struct
-// [RequestConditionTargetConstraint]
-type requestConditionTargetConstraintJSON struct {
-	Operator    apijson.Field
-	Value       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *RequestConditionTargetConstraint) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r requestConditionTargetConstraintJSON) RawJSON() string {
-	return r.raw
+func (r RequestConditionTargetConstraintParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
 }
 
 // The matches operator can use asterisks and pipes as wildcard and 'or' operators.
@@ -369,30 +346,6 @@ func (r RequestConditionTargetTarget) IsKnown() bool {
 		return true
 	}
 	return false
-}
-
-// URL target.
-type RequestConditionTargetParam struct {
-	// The constraint of a target.
-	Constraint param.Field[RequestConditionTargetConstraintParam] `json:"constraint,required"`
-	// A target based on the URL of the request.
-	Target param.Field[RequestConditionTargetTarget] `json:"target,required"`
-}
-
-func (r RequestConditionTargetParam) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-// The constraint of a target.
-type RequestConditionTargetConstraintParam struct {
-	// The matches operator can use asterisks and pipes as wildcard and 'or' operators.
-	Operator param.Field[RequestConditionTargetConstraintOperator] `json:"operator,required"`
-	// The value to apply the operator to.
-	Value param.Field[string] `json:"value,required"`
-}
-
-func (r RequestConditionTargetConstraintParam) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
 }
 
 type ZoneAction struct {
@@ -3577,14 +3530,20 @@ func (r ZoneActionWafParam) MarshalJSON() (data []byte, err error) {
 func (r ZoneActionWafParam) implementsZoneActionUnionParam() {}
 
 type ZonePageruleNewResponse struct {
-	Result PageRule                    `json:"result"`
-	JSON   zonePageruleNewResponseJSON `json:"-"`
-	APIResponseSingleZones
+	Errors   []ZonePageruleNewResponseError   `json:"errors,required"`
+	Messages []ZonePageruleNewResponseMessage `json:"messages,required"`
+	// Whether the API call was successful.
+	Success ZonePageruleNewResponseSuccess `json:"success,required"`
+	Result  PageRule                       `json:"result"`
+	JSON    zonePageruleNewResponseJSON    `json:"-"`
 }
 
 // zonePageruleNewResponseJSON contains the JSON metadata for the struct
 // [ZonePageruleNewResponse]
 type zonePageruleNewResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -3598,15 +3557,132 @@ func (r zonePageruleNewResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+type ZonePageruleNewResponseError struct {
+	Code             int64                               `json:"code,required"`
+	Message          string                              `json:"message,required"`
+	DocumentationURL string                              `json:"documentation_url"`
+	Source           ZonePageruleNewResponseErrorsSource `json:"source"`
+	JSON             zonePageruleNewResponseErrorJSON    `json:"-"`
+}
+
+// zonePageruleNewResponseErrorJSON contains the JSON metadata for the struct
+// [ZonePageruleNewResponseError]
+type zonePageruleNewResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *ZonePageruleNewResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zonePageruleNewResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZonePageruleNewResponseErrorsSource struct {
+	Pointer string                                  `json:"pointer"`
+	JSON    zonePageruleNewResponseErrorsSourceJSON `json:"-"`
+}
+
+// zonePageruleNewResponseErrorsSourceJSON contains the JSON metadata for the
+// struct [ZonePageruleNewResponseErrorsSource]
+type zonePageruleNewResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZonePageruleNewResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zonePageruleNewResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZonePageruleNewResponseMessage struct {
+	Code             int64                                 `json:"code,required"`
+	Message          string                                `json:"message,required"`
+	DocumentationURL string                                `json:"documentation_url"`
+	Source           ZonePageruleNewResponseMessagesSource `json:"source"`
+	JSON             zonePageruleNewResponseMessageJSON    `json:"-"`
+}
+
+// zonePageruleNewResponseMessageJSON contains the JSON metadata for the struct
+// [ZonePageruleNewResponseMessage]
+type zonePageruleNewResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *ZonePageruleNewResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zonePageruleNewResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZonePageruleNewResponseMessagesSource struct {
+	Pointer string                                    `json:"pointer"`
+	JSON    zonePageruleNewResponseMessagesSourceJSON `json:"-"`
+}
+
+// zonePageruleNewResponseMessagesSourceJSON contains the JSON metadata for the
+// struct [ZonePageruleNewResponseMessagesSource]
+type zonePageruleNewResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZonePageruleNewResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zonePageruleNewResponseMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful.
+type ZonePageruleNewResponseSuccess bool
+
+const (
+	ZonePageruleNewResponseSuccessTrue ZonePageruleNewResponseSuccess = true
+)
+
+func (r ZonePageruleNewResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZonePageruleNewResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type ZonePageruleGetResponse struct {
-	Result PageRule                    `json:"result"`
-	JSON   zonePageruleGetResponseJSON `json:"-"`
-	APIResponseSingleZones
+	Errors   []ZonePageruleGetResponseError   `json:"errors,required"`
+	Messages []ZonePageruleGetResponseMessage `json:"messages,required"`
+	// Whether the API call was successful.
+	Success ZonePageruleGetResponseSuccess `json:"success,required"`
+	Result  PageRule                       `json:"result"`
+	JSON    zonePageruleGetResponseJSON    `json:"-"`
 }
 
 // zonePageruleGetResponseJSON contains the JSON metadata for the struct
 // [ZonePageruleGetResponse]
 type zonePageruleGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -3620,15 +3696,132 @@ func (r zonePageruleGetResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+type ZonePageruleGetResponseError struct {
+	Code             int64                               `json:"code,required"`
+	Message          string                              `json:"message,required"`
+	DocumentationURL string                              `json:"documentation_url"`
+	Source           ZonePageruleGetResponseErrorsSource `json:"source"`
+	JSON             zonePageruleGetResponseErrorJSON    `json:"-"`
+}
+
+// zonePageruleGetResponseErrorJSON contains the JSON metadata for the struct
+// [ZonePageruleGetResponseError]
+type zonePageruleGetResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *ZonePageruleGetResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zonePageruleGetResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZonePageruleGetResponseErrorsSource struct {
+	Pointer string                                  `json:"pointer"`
+	JSON    zonePageruleGetResponseErrorsSourceJSON `json:"-"`
+}
+
+// zonePageruleGetResponseErrorsSourceJSON contains the JSON metadata for the
+// struct [ZonePageruleGetResponseErrorsSource]
+type zonePageruleGetResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZonePageruleGetResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zonePageruleGetResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZonePageruleGetResponseMessage struct {
+	Code             int64                                 `json:"code,required"`
+	Message          string                                `json:"message,required"`
+	DocumentationURL string                                `json:"documentation_url"`
+	Source           ZonePageruleGetResponseMessagesSource `json:"source"`
+	JSON             zonePageruleGetResponseMessageJSON    `json:"-"`
+}
+
+// zonePageruleGetResponseMessageJSON contains the JSON metadata for the struct
+// [ZonePageruleGetResponseMessage]
+type zonePageruleGetResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *ZonePageruleGetResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zonePageruleGetResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZonePageruleGetResponseMessagesSource struct {
+	Pointer string                                    `json:"pointer"`
+	JSON    zonePageruleGetResponseMessagesSourceJSON `json:"-"`
+}
+
+// zonePageruleGetResponseMessagesSourceJSON contains the JSON metadata for the
+// struct [ZonePageruleGetResponseMessagesSource]
+type zonePageruleGetResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZonePageruleGetResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zonePageruleGetResponseMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful.
+type ZonePageruleGetResponseSuccess bool
+
+const (
+	ZonePageruleGetResponseSuccessTrue ZonePageruleGetResponseSuccess = true
+)
+
+func (r ZonePageruleGetResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZonePageruleGetResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type ZonePageruleUpdateResponse struct {
-	Result PageRule                       `json:"result"`
-	JSON   zonePageruleUpdateResponseJSON `json:"-"`
-	APIResponseSingleZones
+	Errors   []ZonePageruleUpdateResponseError   `json:"errors,required"`
+	Messages []ZonePageruleUpdateResponseMessage `json:"messages,required"`
+	// Whether the API call was successful.
+	Success ZonePageruleUpdateResponseSuccess `json:"success,required"`
+	Result  PageRule                          `json:"result"`
+	JSON    zonePageruleUpdateResponseJSON    `json:"-"`
 }
 
 // zonePageruleUpdateResponseJSON contains the JSON metadata for the struct
 // [ZonePageruleUpdateResponse]
 type zonePageruleUpdateResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -3642,15 +3835,132 @@ func (r zonePageruleUpdateResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+type ZonePageruleUpdateResponseError struct {
+	Code             int64                                  `json:"code,required"`
+	Message          string                                 `json:"message,required"`
+	DocumentationURL string                                 `json:"documentation_url"`
+	Source           ZonePageruleUpdateResponseErrorsSource `json:"source"`
+	JSON             zonePageruleUpdateResponseErrorJSON    `json:"-"`
+}
+
+// zonePageruleUpdateResponseErrorJSON contains the JSON metadata for the struct
+// [ZonePageruleUpdateResponseError]
+type zonePageruleUpdateResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *ZonePageruleUpdateResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zonePageruleUpdateResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZonePageruleUpdateResponseErrorsSource struct {
+	Pointer string                                     `json:"pointer"`
+	JSON    zonePageruleUpdateResponseErrorsSourceJSON `json:"-"`
+}
+
+// zonePageruleUpdateResponseErrorsSourceJSON contains the JSON metadata for the
+// struct [ZonePageruleUpdateResponseErrorsSource]
+type zonePageruleUpdateResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZonePageruleUpdateResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zonePageruleUpdateResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZonePageruleUpdateResponseMessage struct {
+	Code             int64                                    `json:"code,required"`
+	Message          string                                   `json:"message,required"`
+	DocumentationURL string                                   `json:"documentation_url"`
+	Source           ZonePageruleUpdateResponseMessagesSource `json:"source"`
+	JSON             zonePageruleUpdateResponseMessageJSON    `json:"-"`
+}
+
+// zonePageruleUpdateResponseMessageJSON contains the JSON metadata for the struct
+// [ZonePageruleUpdateResponseMessage]
+type zonePageruleUpdateResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *ZonePageruleUpdateResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zonePageruleUpdateResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZonePageruleUpdateResponseMessagesSource struct {
+	Pointer string                                       `json:"pointer"`
+	JSON    zonePageruleUpdateResponseMessagesSourceJSON `json:"-"`
+}
+
+// zonePageruleUpdateResponseMessagesSourceJSON contains the JSON metadata for the
+// struct [ZonePageruleUpdateResponseMessagesSource]
+type zonePageruleUpdateResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZonePageruleUpdateResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zonePageruleUpdateResponseMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful.
+type ZonePageruleUpdateResponseSuccess bool
+
+const (
+	ZonePageruleUpdateResponseSuccessTrue ZonePageruleUpdateResponseSuccess = true
+)
+
+func (r ZonePageruleUpdateResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZonePageruleUpdateResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type ZonePageruleListResponse struct {
-	Result []PageRule                   `json:"result"`
-	JSON   zonePageruleListResponseJSON `json:"-"`
-	APIResponseZonesSchemas
+	Errors   []ZonePageruleListResponseError   `json:"errors,required"`
+	Messages []ZonePageruleListResponseMessage `json:"messages,required"`
+	// Whether the API call was successful.
+	Success ZonePageruleListResponseSuccess `json:"success,required"`
+	Result  []PageRule                      `json:"result"`
+	JSON    zonePageruleListResponseJSON    `json:"-"`
 }
 
 // zonePageruleListResponseJSON contains the JSON metadata for the struct
 // [ZonePageruleListResponse]
 type zonePageruleListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -3664,15 +3974,132 @@ func (r zonePageruleListResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+type ZonePageruleListResponseError struct {
+	Code             int64                                `json:"code,required"`
+	Message          string                               `json:"message,required"`
+	DocumentationURL string                               `json:"documentation_url"`
+	Source           ZonePageruleListResponseErrorsSource `json:"source"`
+	JSON             zonePageruleListResponseErrorJSON    `json:"-"`
+}
+
+// zonePageruleListResponseErrorJSON contains the JSON metadata for the struct
+// [ZonePageruleListResponseError]
+type zonePageruleListResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *ZonePageruleListResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zonePageruleListResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZonePageruleListResponseErrorsSource struct {
+	Pointer string                                   `json:"pointer"`
+	JSON    zonePageruleListResponseErrorsSourceJSON `json:"-"`
+}
+
+// zonePageruleListResponseErrorsSourceJSON contains the JSON metadata for the
+// struct [ZonePageruleListResponseErrorsSource]
+type zonePageruleListResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZonePageruleListResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zonePageruleListResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZonePageruleListResponseMessage struct {
+	Code             int64                                  `json:"code,required"`
+	Message          string                                 `json:"message,required"`
+	DocumentationURL string                                 `json:"documentation_url"`
+	Source           ZonePageruleListResponseMessagesSource `json:"source"`
+	JSON             zonePageruleListResponseMessageJSON    `json:"-"`
+}
+
+// zonePageruleListResponseMessageJSON contains the JSON metadata for the struct
+// [ZonePageruleListResponseMessage]
+type zonePageruleListResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *ZonePageruleListResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zonePageruleListResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZonePageruleListResponseMessagesSource struct {
+	Pointer string                                     `json:"pointer"`
+	JSON    zonePageruleListResponseMessagesSourceJSON `json:"-"`
+}
+
+// zonePageruleListResponseMessagesSourceJSON contains the JSON metadata for the
+// struct [ZonePageruleListResponseMessagesSource]
+type zonePageruleListResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZonePageruleListResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zonePageruleListResponseMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful.
+type ZonePageruleListResponseSuccess bool
+
+const (
+	ZonePageruleListResponseSuccessTrue ZonePageruleListResponseSuccess = true
+)
+
+func (r ZonePageruleListResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZonePageruleListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type ZonePageruleDeleteResponse struct {
-	Result ZonePageruleDeleteResponseResult `json:"result,nullable"`
-	JSON   zonePageruleDeleteResponseJSON   `json:"-"`
-	APIResponseZonesSchemas
+	Errors   []ZonePageruleDeleteResponseError   `json:"errors,required"`
+	Messages []ZonePageruleDeleteResponseMessage `json:"messages,required"`
+	// Whether the API call was successful.
+	Success ZonePageruleDeleteResponseSuccess `json:"success,required"`
+	Result  ZonePageruleDeleteResponseResult  `json:"result,nullable"`
+	JSON    zonePageruleDeleteResponseJSON    `json:"-"`
 }
 
 // zonePageruleDeleteResponseJSON contains the JSON metadata for the struct
 // [ZonePageruleDeleteResponse]
 type zonePageruleDeleteResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -3686,8 +4113,119 @@ func (r zonePageruleDeleteResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+type ZonePageruleDeleteResponseError struct {
+	Code             int64                                  `json:"code,required"`
+	Message          string                                 `json:"message,required"`
+	DocumentationURL string                                 `json:"documentation_url"`
+	Source           ZonePageruleDeleteResponseErrorsSource `json:"source"`
+	JSON             zonePageruleDeleteResponseErrorJSON    `json:"-"`
+}
+
+// zonePageruleDeleteResponseErrorJSON contains the JSON metadata for the struct
+// [ZonePageruleDeleteResponseError]
+type zonePageruleDeleteResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *ZonePageruleDeleteResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zonePageruleDeleteResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZonePageruleDeleteResponseErrorsSource struct {
+	Pointer string                                     `json:"pointer"`
+	JSON    zonePageruleDeleteResponseErrorsSourceJSON `json:"-"`
+}
+
+// zonePageruleDeleteResponseErrorsSourceJSON contains the JSON metadata for the
+// struct [ZonePageruleDeleteResponseErrorsSource]
+type zonePageruleDeleteResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZonePageruleDeleteResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zonePageruleDeleteResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZonePageruleDeleteResponseMessage struct {
+	Code             int64                                    `json:"code,required"`
+	Message          string                                   `json:"message,required"`
+	DocumentationURL string                                   `json:"documentation_url"`
+	Source           ZonePageruleDeleteResponseMessagesSource `json:"source"`
+	JSON             zonePageruleDeleteResponseMessageJSON    `json:"-"`
+}
+
+// zonePageruleDeleteResponseMessageJSON contains the JSON metadata for the struct
+// [ZonePageruleDeleteResponseMessage]
+type zonePageruleDeleteResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *ZonePageruleDeleteResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zonePageruleDeleteResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZonePageruleDeleteResponseMessagesSource struct {
+	Pointer string                                       `json:"pointer"`
+	JSON    zonePageruleDeleteResponseMessagesSourceJSON `json:"-"`
+}
+
+// zonePageruleDeleteResponseMessagesSourceJSON contains the JSON metadata for the
+// struct [ZonePageruleDeleteResponseMessagesSource]
+type zonePageruleDeleteResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZonePageruleDeleteResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zonePageruleDeleteResponseMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful.
+type ZonePageruleDeleteResponseSuccess bool
+
+const (
+	ZonePageruleDeleteResponseSuccessTrue ZonePageruleDeleteResponseSuccess = true
+)
+
+func (r ZonePageruleDeleteResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZonePageruleDeleteResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type ZonePageruleDeleteResponseResult struct {
-	// Identifier
+	// Identifier.
 	ID   string                               `json:"id,required"`
 	JSON zonePageruleDeleteResponseResultJSON `json:"-"`
 }
@@ -3709,14 +4247,20 @@ func (r zonePageruleDeleteResponseResultJSON) RawJSON() string {
 }
 
 type ZonePageruleEditResponse struct {
-	Result PageRule                     `json:"result"`
-	JSON   zonePageruleEditResponseJSON `json:"-"`
-	APIResponseSingleZones
+	Errors   []ZonePageruleEditResponseError   `json:"errors,required"`
+	Messages []ZonePageruleEditResponseMessage `json:"messages,required"`
+	// Whether the API call was successful.
+	Success ZonePageruleEditResponseSuccess `json:"success,required"`
+	Result  PageRule                        `json:"result"`
+	JSON    zonePageruleEditResponseJSON    `json:"-"`
 }
 
 // zonePageruleEditResponseJSON contains the JSON metadata for the struct
 // [ZonePageruleEditResponse]
 type zonePageruleEditResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -3730,16 +4274,133 @@ func (r zonePageruleEditResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+type ZonePageruleEditResponseError struct {
+	Code             int64                                `json:"code,required"`
+	Message          string                               `json:"message,required"`
+	DocumentationURL string                               `json:"documentation_url"`
+	Source           ZonePageruleEditResponseErrorsSource `json:"source"`
+	JSON             zonePageruleEditResponseErrorJSON    `json:"-"`
+}
+
+// zonePageruleEditResponseErrorJSON contains the JSON metadata for the struct
+// [ZonePageruleEditResponseError]
+type zonePageruleEditResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *ZonePageruleEditResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zonePageruleEditResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZonePageruleEditResponseErrorsSource struct {
+	Pointer string                                   `json:"pointer"`
+	JSON    zonePageruleEditResponseErrorsSourceJSON `json:"-"`
+}
+
+// zonePageruleEditResponseErrorsSourceJSON contains the JSON metadata for the
+// struct [ZonePageruleEditResponseErrorsSource]
+type zonePageruleEditResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZonePageruleEditResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zonePageruleEditResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZonePageruleEditResponseMessage struct {
+	Code             int64                                  `json:"code,required"`
+	Message          string                                 `json:"message,required"`
+	DocumentationURL string                                 `json:"documentation_url"`
+	Source           ZonePageruleEditResponseMessagesSource `json:"source"`
+	JSON             zonePageruleEditResponseMessageJSON    `json:"-"`
+}
+
+// zonePageruleEditResponseMessageJSON contains the JSON metadata for the struct
+// [ZonePageruleEditResponseMessage]
+type zonePageruleEditResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *ZonePageruleEditResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zonePageruleEditResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZonePageruleEditResponseMessagesSource struct {
+	Pointer string                                     `json:"pointer"`
+	JSON    zonePageruleEditResponseMessagesSourceJSON `json:"-"`
+}
+
+// zonePageruleEditResponseMessagesSourceJSON contains the JSON metadata for the
+// struct [ZonePageruleEditResponseMessagesSource]
+type zonePageruleEditResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZonePageruleEditResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zonePageruleEditResponseMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful.
+type ZonePageruleEditResponseSuccess bool
+
+const (
+	ZonePageruleEditResponseSuccessTrue ZonePageruleEditResponseSuccess = true
+)
+
+func (r ZonePageruleEditResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZonePageruleEditResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type ZonePageruleListSettingsResponse struct {
+	Errors   []ZonePageruleListSettingsResponseError   `json:"errors,required"`
+	Messages []ZonePageruleListSettingsResponseMessage `json:"messages,required"`
+	// Whether the API call was successful.
+	Success ZonePageruleListSettingsResponseSuccess `json:"success,required"`
 	// Settings available for the zone.
 	Result []interface{}                        `json:"result"`
 	JSON   zonePageruleListSettingsResponseJSON `json:"-"`
-	APIResponseZonesSchemas
 }
 
 // zonePageruleListSettingsResponseJSON contains the JSON metadata for the struct
 // [ZonePageruleListSettingsResponse]
 type zonePageruleListSettingsResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -3751,6 +4412,117 @@ func (r *ZonePageruleListSettingsResponse) UnmarshalJSON(data []byte) (err error
 
 func (r zonePageruleListSettingsResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+type ZonePageruleListSettingsResponseError struct {
+	Code             int64                                        `json:"code,required"`
+	Message          string                                       `json:"message,required"`
+	DocumentationURL string                                       `json:"documentation_url"`
+	Source           ZonePageruleListSettingsResponseErrorsSource `json:"source"`
+	JSON             zonePageruleListSettingsResponseErrorJSON    `json:"-"`
+}
+
+// zonePageruleListSettingsResponseErrorJSON contains the JSON metadata for the
+// struct [ZonePageruleListSettingsResponseError]
+type zonePageruleListSettingsResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *ZonePageruleListSettingsResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zonePageruleListSettingsResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZonePageruleListSettingsResponseErrorsSource struct {
+	Pointer string                                           `json:"pointer"`
+	JSON    zonePageruleListSettingsResponseErrorsSourceJSON `json:"-"`
+}
+
+// zonePageruleListSettingsResponseErrorsSourceJSON contains the JSON metadata for
+// the struct [ZonePageruleListSettingsResponseErrorsSource]
+type zonePageruleListSettingsResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZonePageruleListSettingsResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zonePageruleListSettingsResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZonePageruleListSettingsResponseMessage struct {
+	Code             int64                                          `json:"code,required"`
+	Message          string                                         `json:"message,required"`
+	DocumentationURL string                                         `json:"documentation_url"`
+	Source           ZonePageruleListSettingsResponseMessagesSource `json:"source"`
+	JSON             zonePageruleListSettingsResponseMessageJSON    `json:"-"`
+}
+
+// zonePageruleListSettingsResponseMessageJSON contains the JSON metadata for the
+// struct [ZonePageruleListSettingsResponseMessage]
+type zonePageruleListSettingsResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *ZonePageruleListSettingsResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zonePageruleListSettingsResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZonePageruleListSettingsResponseMessagesSource struct {
+	Pointer string                                             `json:"pointer"`
+	JSON    zonePageruleListSettingsResponseMessagesSourceJSON `json:"-"`
+}
+
+// zonePageruleListSettingsResponseMessagesSourceJSON contains the JSON metadata
+// for the struct [ZonePageruleListSettingsResponseMessagesSource]
+type zonePageruleListSettingsResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZonePageruleListSettingsResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zonePageruleListSettingsResponseMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful.
+type ZonePageruleListSettingsResponseSuccess bool
+
+const (
+	ZonePageruleListSettingsResponseSuccessTrue ZonePageruleListSettingsResponseSuccess = true
+)
+
+func (r ZonePageruleListSettingsResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZonePageruleListSettingsResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type ZonePageruleNewParams struct {

@@ -68,7 +68,7 @@ func TestRadarRankingGetTimeseriesGroupsWithOptionalParams(t *testing.T) {
 		DateRange:      cfrex.F([]string{"7d"}),
 		DateStart:      cfrex.F([]time.Time{time.Now()}),
 		DomainCategory: cfrex.F([]string{"string"}),
-		Domains:        cfrex.F([]string{"sfNk.l.iJR-Bu.u9JV-.3.h.U.s.l4b-Jdq-.zk-H-8ASjA2.1vKx-qF-3v.0-NI-5P54N-n.keyk"}),
+		Domains:        cfrex.F([]string{"string"}),
 		Format:         cfrex.F(cfrex.RadarRankingGetTimeseriesGroupsParamsFormatJson),
 		Limit:          cfrex.F(int64(5)),
 		Location:       cfrex.F([]string{"string"}),

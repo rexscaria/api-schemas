@@ -61,7 +61,7 @@ func (r *ZoneHealthcheckPreviewService) Get(ctx context.Context, zoneID string, 
 }
 
 // Delete a health check.
-func (r *ZoneHealthcheckPreviewService) Delete(ctx context.Context, zoneID string, healthcheckID string, body ZoneHealthcheckPreviewDeleteParams, opts ...option.RequestOption) (res *HealthcheckIDResponse, err error) {
+func (r *ZoneHealthcheckPreviewService) Delete(ctx context.Context, zoneID string, healthcheckID string, opts ...option.RequestOption) (res *HealthcheckIDResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
@@ -72,7 +72,7 @@ func (r *ZoneHealthcheckPreviewService) Delete(ctx context.Context, zoneID strin
 		return
 	}
 	path := fmt.Sprintf("zones/%s/healthchecks/preview/%s", zoneID, healthcheckID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
@@ -82,12 +82,4 @@ type ZoneHealthcheckPreviewNewParams struct {
 
 func (r ZoneHealthcheckPreviewNewParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r.HealthcheckQuery)
-}
-
-type ZoneHealthcheckPreviewDeleteParams struct {
-	Body interface{} `json:"body,required"`
-}
-
-func (r ZoneHealthcheckPreviewDeleteParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
 }

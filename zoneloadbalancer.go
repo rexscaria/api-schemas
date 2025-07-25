@@ -7,7 +7,6 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -91,7 +90,7 @@ func (r *ZoneLoadBalancerService) List(ctx context.Context, zoneID string, opts 
 }
 
 // Delete a configured load balancer.
-func (r *ZoneLoadBalancerService) Delete(ctx context.Context, zoneID string, loadBalancerID string, body ZoneLoadBalancerDeleteParams, opts ...option.RequestOption) (res *ZoneLoadBalancerDeleteResponse, err error) {
+func (r *ZoneLoadBalancerService) Delete(ctx context.Context, zoneID string, loadBalancerID string, opts ...option.RequestOption) (res *ZoneLoadBalancerDeleteResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
@@ -102,7 +101,7 @@ func (r *ZoneLoadBalancerService) Delete(ctx context.Context, zoneID string, loa
 		return
 	}
 	path := fmt.Sprintf("zones/%s/load_balancers/%s", zoneID, loadBalancerID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
@@ -188,7 +187,7 @@ type LoadBalancer struct {
 	// back to using the corresponding region_pool mapping if it exists else to
 	// default_pools.
 	CountryPools map[string][]string `json:"country_pools"`
-	CreatedOn    time.Time           `json:"created_on" format:"date-time"`
+	CreatedOn    string              `json:"created_on"`
 	// A list of pool IDs ordered by their failover priority. Pools defined here are
 	// used by default, or when region_pools are not configured for a given region.
 	DefaultPools []string `json:"default_pools"`
@@ -201,7 +200,7 @@ type LoadBalancer struct {
 	// Controls location-based steering for non-proxied requests. See `steering_policy`
 	// to learn how steering is affected.
 	LocationStrategy LocationStrategy `json:"location_strategy"`
-	ModifiedOn       time.Time        `json:"modified_on" format:"date-time"`
+	ModifiedOn       string           `json:"modified_on"`
 	// The DNS hostname to associate with your Load Balancer. If this hostname already
 	// exists as a DNS record in Cloudflare's DNS, the Load Balancer will take
 	// precedence and the DNS record will not be used.
@@ -336,15 +335,21 @@ func (r loadBalancerJSON) RawJSON() string {
 }
 
 type LoadBalancerSingleResponse struct {
-	Result LoadBalancer                   `json:"result"`
-	JSON   loadBalancerSingleResponseJSON `json:"-"`
-	SingleResponseMonitor
+	Errors   []LoadBalancerSingleResponseError   `json:"errors,required"`
+	Messages []LoadBalancerSingleResponseMessage `json:"messages,required"`
+	Result   LoadBalancer                        `json:"result,required"`
+	// Whether the API call was successful
+	Success LoadBalancerSingleResponseSuccess `json:"success,required"`
+	JSON    loadBalancerSingleResponseJSON    `json:"-"`
 }
 
 // loadBalancerSingleResponseJSON contains the JSON metadata for the struct
 // [LoadBalancerSingleResponse]
 type loadBalancerSingleResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -355,6 +360,117 @@ func (r *LoadBalancerSingleResponse) UnmarshalJSON(data []byte) (err error) {
 
 func (r loadBalancerSingleResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+type LoadBalancerSingleResponseError struct {
+	Code             int64                                  `json:"code,required"`
+	Message          string                                 `json:"message,required"`
+	DocumentationURL string                                 `json:"documentation_url"`
+	Source           LoadBalancerSingleResponseErrorsSource `json:"source"`
+	JSON             loadBalancerSingleResponseErrorJSON    `json:"-"`
+}
+
+// loadBalancerSingleResponseErrorJSON contains the JSON metadata for the struct
+// [LoadBalancerSingleResponseError]
+type loadBalancerSingleResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *LoadBalancerSingleResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r loadBalancerSingleResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type LoadBalancerSingleResponseErrorsSource struct {
+	Pointer string                                     `json:"pointer"`
+	JSON    loadBalancerSingleResponseErrorsSourceJSON `json:"-"`
+}
+
+// loadBalancerSingleResponseErrorsSourceJSON contains the JSON metadata for the
+// struct [LoadBalancerSingleResponseErrorsSource]
+type loadBalancerSingleResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *LoadBalancerSingleResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r loadBalancerSingleResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type LoadBalancerSingleResponseMessage struct {
+	Code             int64                                    `json:"code,required"`
+	Message          string                                   `json:"message,required"`
+	DocumentationURL string                                   `json:"documentation_url"`
+	Source           LoadBalancerSingleResponseMessagesSource `json:"source"`
+	JSON             loadBalancerSingleResponseMessageJSON    `json:"-"`
+}
+
+// loadBalancerSingleResponseMessageJSON contains the JSON metadata for the struct
+// [LoadBalancerSingleResponseMessage]
+type loadBalancerSingleResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *LoadBalancerSingleResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r loadBalancerSingleResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type LoadBalancerSingleResponseMessagesSource struct {
+	Pointer string                                       `json:"pointer"`
+	JSON    loadBalancerSingleResponseMessagesSourceJSON `json:"-"`
+}
+
+// loadBalancerSingleResponseMessagesSourceJSON contains the JSON metadata for the
+// struct [LoadBalancerSingleResponseMessagesSource]
+type loadBalancerSingleResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *LoadBalancerSingleResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r loadBalancerSingleResponseMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful
+type LoadBalancerSingleResponseSuccess bool
+
+const (
+	LoadBalancerSingleResponseSuccessTrue LoadBalancerSingleResponseSuccess = true
+)
+
+func (r LoadBalancerSingleResponseSuccess) IsKnown() bool {
+	switch r {
+	case LoadBalancerSingleResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 // A rule object containing conditions and overrides for this load balancer to
@@ -1176,15 +1292,23 @@ func (r SteeringPolicy) IsKnown() bool {
 }
 
 type ZoneLoadBalancerListResponse struct {
-	Result []LoadBalancer                   `json:"result"`
-	JSON   zoneLoadBalancerListResponseJSON `json:"-"`
-	PaginatedResponseCollection
+	Errors   []ZoneLoadBalancerListResponseError   `json:"errors,required"`
+	Messages []ZoneLoadBalancerListResponseMessage `json:"messages,required"`
+	Result   []LoadBalancer                        `json:"result,required"`
+	// Whether the API call was successful
+	Success    ZoneLoadBalancerListResponseSuccess    `json:"success,required"`
+	ResultInfo ZoneLoadBalancerListResponseResultInfo `json:"result_info"`
+	JSON       zoneLoadBalancerListResponseJSON       `json:"-"`
 }
 
 // zoneLoadBalancerListResponseJSON contains the JSON metadata for the struct
 // [ZoneLoadBalancerListResponse]
 type zoneLoadBalancerListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -1197,16 +1321,167 @@ func (r zoneLoadBalancerListResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+type ZoneLoadBalancerListResponseError struct {
+	Code             int64                                    `json:"code,required"`
+	Message          string                                   `json:"message,required"`
+	DocumentationURL string                                   `json:"documentation_url"`
+	Source           ZoneLoadBalancerListResponseErrorsSource `json:"source"`
+	JSON             zoneLoadBalancerListResponseErrorJSON    `json:"-"`
+}
+
+// zoneLoadBalancerListResponseErrorJSON contains the JSON metadata for the struct
+// [ZoneLoadBalancerListResponseError]
+type zoneLoadBalancerListResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *ZoneLoadBalancerListResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneLoadBalancerListResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZoneLoadBalancerListResponseErrorsSource struct {
+	Pointer string                                       `json:"pointer"`
+	JSON    zoneLoadBalancerListResponseErrorsSourceJSON `json:"-"`
+}
+
+// zoneLoadBalancerListResponseErrorsSourceJSON contains the JSON metadata for the
+// struct [ZoneLoadBalancerListResponseErrorsSource]
+type zoneLoadBalancerListResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZoneLoadBalancerListResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneLoadBalancerListResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZoneLoadBalancerListResponseMessage struct {
+	Code             int64                                      `json:"code,required"`
+	Message          string                                     `json:"message,required"`
+	DocumentationURL string                                     `json:"documentation_url"`
+	Source           ZoneLoadBalancerListResponseMessagesSource `json:"source"`
+	JSON             zoneLoadBalancerListResponseMessageJSON    `json:"-"`
+}
+
+// zoneLoadBalancerListResponseMessageJSON contains the JSON metadata for the
+// struct [ZoneLoadBalancerListResponseMessage]
+type zoneLoadBalancerListResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *ZoneLoadBalancerListResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneLoadBalancerListResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZoneLoadBalancerListResponseMessagesSource struct {
+	Pointer string                                         `json:"pointer"`
+	JSON    zoneLoadBalancerListResponseMessagesSourceJSON `json:"-"`
+}
+
+// zoneLoadBalancerListResponseMessagesSourceJSON contains the JSON metadata for
+// the struct [ZoneLoadBalancerListResponseMessagesSource]
+type zoneLoadBalancerListResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZoneLoadBalancerListResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneLoadBalancerListResponseMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful
+type ZoneLoadBalancerListResponseSuccess bool
+
+const (
+	ZoneLoadBalancerListResponseSuccessTrue ZoneLoadBalancerListResponseSuccess = true
+)
+
+func (r ZoneLoadBalancerListResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneLoadBalancerListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type ZoneLoadBalancerListResponseResultInfo struct {
+	// Total number of results on the current page
+	Count float64 `json:"count"`
+	// Current page within paginated list of results
+	Page float64 `json:"page"`
+	// Number of results per page
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters
+	TotalCount float64 `json:"total_count"`
+	// Total number of pages available
+	TotalPages float64                                    `json:"total_pages"`
+	JSON       zoneLoadBalancerListResponseResultInfoJSON `json:"-"`
+}
+
+// zoneLoadBalancerListResponseResultInfoJSON contains the JSON metadata for the
+// struct [ZoneLoadBalancerListResponseResultInfo]
+type zoneLoadBalancerListResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	TotalPages  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZoneLoadBalancerListResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneLoadBalancerListResponseResultInfoJSON) RawJSON() string {
+	return r.raw
+}
+
 type ZoneLoadBalancerDeleteResponse struct {
-	Result ZoneLoadBalancerDeleteResponseResult `json:"result"`
-	JSON   zoneLoadBalancerDeleteResponseJSON   `json:"-"`
-	SingleResponseMonitor
+	Errors   []ZoneLoadBalancerDeleteResponseError   `json:"errors,required"`
+	Messages []ZoneLoadBalancerDeleteResponseMessage `json:"messages,required"`
+	Result   ZoneLoadBalancerDeleteResponseResult    `json:"result,required"`
+	// Whether the API call was successful
+	Success ZoneLoadBalancerDeleteResponseSuccess `json:"success,required"`
+	JSON    zoneLoadBalancerDeleteResponseJSON    `json:"-"`
 }
 
 // zoneLoadBalancerDeleteResponseJSON contains the JSON metadata for the struct
 // [ZoneLoadBalancerDeleteResponse]
 type zoneLoadBalancerDeleteResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -1216,6 +1491,102 @@ func (r *ZoneLoadBalancerDeleteResponse) UnmarshalJSON(data []byte) (err error) 
 }
 
 func (r zoneLoadBalancerDeleteResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZoneLoadBalancerDeleteResponseError struct {
+	Code             int64                                      `json:"code,required"`
+	Message          string                                     `json:"message,required"`
+	DocumentationURL string                                     `json:"documentation_url"`
+	Source           ZoneLoadBalancerDeleteResponseErrorsSource `json:"source"`
+	JSON             zoneLoadBalancerDeleteResponseErrorJSON    `json:"-"`
+}
+
+// zoneLoadBalancerDeleteResponseErrorJSON contains the JSON metadata for the
+// struct [ZoneLoadBalancerDeleteResponseError]
+type zoneLoadBalancerDeleteResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *ZoneLoadBalancerDeleteResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneLoadBalancerDeleteResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZoneLoadBalancerDeleteResponseErrorsSource struct {
+	Pointer string                                         `json:"pointer"`
+	JSON    zoneLoadBalancerDeleteResponseErrorsSourceJSON `json:"-"`
+}
+
+// zoneLoadBalancerDeleteResponseErrorsSourceJSON contains the JSON metadata for
+// the struct [ZoneLoadBalancerDeleteResponseErrorsSource]
+type zoneLoadBalancerDeleteResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZoneLoadBalancerDeleteResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneLoadBalancerDeleteResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZoneLoadBalancerDeleteResponseMessage struct {
+	Code             int64                                        `json:"code,required"`
+	Message          string                                       `json:"message,required"`
+	DocumentationURL string                                       `json:"documentation_url"`
+	Source           ZoneLoadBalancerDeleteResponseMessagesSource `json:"source"`
+	JSON             zoneLoadBalancerDeleteResponseMessageJSON    `json:"-"`
+}
+
+// zoneLoadBalancerDeleteResponseMessageJSON contains the JSON metadata for the
+// struct [ZoneLoadBalancerDeleteResponseMessage]
+type zoneLoadBalancerDeleteResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *ZoneLoadBalancerDeleteResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneLoadBalancerDeleteResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZoneLoadBalancerDeleteResponseMessagesSource struct {
+	Pointer string                                           `json:"pointer"`
+	JSON    zoneLoadBalancerDeleteResponseMessagesSourceJSON `json:"-"`
+}
+
+// zoneLoadBalancerDeleteResponseMessagesSourceJSON contains the JSON metadata for
+// the struct [ZoneLoadBalancerDeleteResponseMessagesSource]
+type zoneLoadBalancerDeleteResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZoneLoadBalancerDeleteResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneLoadBalancerDeleteResponseMessagesSourceJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -1238,6 +1609,21 @@ func (r *ZoneLoadBalancerDeleteResponseResult) UnmarshalJSON(data []byte) (err e
 
 func (r zoneLoadBalancerDeleteResponseResultJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful
+type ZoneLoadBalancerDeleteResponseSuccess bool
+
+const (
+	ZoneLoadBalancerDeleteResponseSuccessTrue ZoneLoadBalancerDeleteResponseSuccess = true
+)
+
+func (r ZoneLoadBalancerDeleteResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneLoadBalancerDeleteResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type ZoneLoadBalancerNewParams struct {
@@ -1482,14 +1868,6 @@ type ZoneLoadBalancerUpdateParams struct {
 
 func (r ZoneLoadBalancerUpdateParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
-}
-
-type ZoneLoadBalancerDeleteParams struct {
-	Body interface{} `json:"body,required"`
-}
-
-func (r ZoneLoadBalancerDeleteParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
 }
 
 type ZoneLoadBalancerPatchParams struct {

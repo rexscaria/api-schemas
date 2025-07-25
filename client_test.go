@@ -41,7 +41,7 @@ func TestUserAgentHeader(t *testing.T) {
 	)
 	client.Accounts.Access.UpdateSeats(
 		context.Background(),
-		"023e105f4ecef8ad9ca31a8372d0c353",
+		"699d98642c564d2e855e9661899b7252",
 		cfrex.AccountAccessUpdateSeatsParams{
 			Body: []cfrex.AccountAccessUpdateSeatsParamsBody{{
 				AccessSeat:  cfrex.F(false),
@@ -76,7 +76,7 @@ func TestRetryAfter(t *testing.T) {
 	)
 	_, err := client.Accounts.Access.UpdateSeats(
 		context.Background(),
-		"023e105f4ecef8ad9ca31a8372d0c353",
+		"699d98642c564d2e855e9661899b7252",
 		cfrex.AccountAccessUpdateSeatsParams{
 			Body: []cfrex.AccountAccessUpdateSeatsParamsBody{{
 				AccessSeat:  cfrex.F(false),
@@ -122,7 +122,7 @@ func TestDeleteRetryCountHeader(t *testing.T) {
 	)
 	_, err := client.Accounts.Access.UpdateSeats(
 		context.Background(),
-		"023e105f4ecef8ad9ca31a8372d0c353",
+		"699d98642c564d2e855e9661899b7252",
 		cfrex.AccountAccessUpdateSeatsParams{
 			Body: []cfrex.AccountAccessUpdateSeatsParamsBody{{
 				AccessSeat:  cfrex.F(false),
@@ -163,7 +163,7 @@ func TestOverwriteRetryCountHeader(t *testing.T) {
 	)
 	_, err := client.Accounts.Access.UpdateSeats(
 		context.Background(),
-		"023e105f4ecef8ad9ca31a8372d0c353",
+		"699d98642c564d2e855e9661899b7252",
 		cfrex.AccountAccessUpdateSeatsParams{
 			Body: []cfrex.AccountAccessUpdateSeatsParamsBody{{
 				AccessSeat:  cfrex.F(false),
@@ -203,7 +203,7 @@ func TestRetryAfterMs(t *testing.T) {
 	)
 	_, err := client.Accounts.Access.UpdateSeats(
 		context.Background(),
-		"023e105f4ecef8ad9ca31a8372d0c353",
+		"699d98642c564d2e855e9661899b7252",
 		cfrex.AccountAccessUpdateSeatsParams{
 			Body: []cfrex.AccountAccessUpdateSeatsParamsBody{{
 				AccessSeat:  cfrex.F(false),
@@ -237,7 +237,7 @@ func TestContextCancel(t *testing.T) {
 	cancel()
 	_, err := client.Accounts.Access.UpdateSeats(
 		cancelCtx,
-		"023e105f4ecef8ad9ca31a8372d0c353",
+		"699d98642c564d2e855e9661899b7252",
 		cfrex.AccountAccessUpdateSeatsParams{
 			Body: []cfrex.AccountAccessUpdateSeatsParamsBody{{
 				AccessSeat:  cfrex.F(false),
@@ -268,7 +268,7 @@ func TestContextCancelDelay(t *testing.T) {
 	defer cancel()
 	_, err := client.Accounts.Access.UpdateSeats(
 		cancelCtx,
-		"023e105f4ecef8ad9ca31a8372d0c353",
+		"699d98642c564d2e855e9661899b7252",
 		cfrex.AccountAccessUpdateSeatsParams{
 			Body: []cfrex.AccountAccessUpdateSeatsParamsBody{{
 				AccessSeat:  cfrex.F(false),
@@ -305,7 +305,7 @@ func TestContextDeadline(t *testing.T) {
 		)
 		_, err := client.Accounts.Access.UpdateSeats(
 			deadlineCtx,
-			"023e105f4ecef8ad9ca31a8372d0c353",
+			"699d98642c564d2e855e9661899b7252",
 			cfrex.AccountAccessUpdateSeatsParams{
 				Body: []cfrex.AccountAccessUpdateSeatsParamsBody{{
 					AccessSeat:  cfrex.F(false),

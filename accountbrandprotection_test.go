@@ -13,7 +13,7 @@ import (
 	"github.com/rexscaria/api-schemas/option"
 )
 
-func TestAccountBrandProtectionGetURLInfoWithOptionalParams(t *testing.T) {
+func TestAccountBrandProtectionGetURLInfo(t *testing.T) {
 	t.Skip("skipped: tests are disabled for the time being")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -27,14 +27,7 @@ func TestAccountBrandProtectionGetURLInfoWithOptionalParams(t *testing.T) {
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Accounts.BrandProtection.GetURLInfo(
-		context.TODO(),
-		"023e105f4ecef8ad9ca31a8372d0c353",
-		cfrex.AccountBrandProtectionGetURLInfoParams{
-			URL:   cfrex.F([]string{"string"}),
-			URLID: cfrex.F([]int64{int64(0)}),
-		},
-	)
+	_, err := client.Accounts.BrandProtection.GetURLInfo(context.TODO(), "x")
 	if err != nil {
 		var apierr *cfrex.Error
 		if errors.As(err, &apierr) {
@@ -44,7 +37,7 @@ func TestAccountBrandProtectionGetURLInfoWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestAccountBrandProtectionSubmitURLWithOptionalParams(t *testing.T) {
+func TestAccountBrandProtectionSubmitURL(t *testing.T) {
 	t.Skip("skipped: tests are disabled for the time being")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -58,13 +51,7 @@ func TestAccountBrandProtectionSubmitURLWithOptionalParams(t *testing.T) {
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Accounts.BrandProtection.SubmitURL(
-		context.TODO(),
-		"023e105f4ecef8ad9ca31a8372d0c353",
-		cfrex.AccountBrandProtectionSubmitURLParams{
-			URL: cfrex.F("https://www.cloudflare.com"),
-		},
-	)
+	_, err := client.Accounts.BrandProtection.SubmitURL(context.TODO(), "x")
 	if err != nil {
 		var apierr *cfrex.Error
 		if errors.As(err, &apierr) {

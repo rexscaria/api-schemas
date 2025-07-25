@@ -44,6 +44,10 @@ func NewZoneAPIGatewayUserSchemaService(opts ...option.RequestOption) (r *ZoneAP
 }
 
 // Retrieve information about a specific schema on a zone
+//
+// Deprecated: Use
+// [Schema Validation API](https://developers.cloudflare.com/api/resources/schema_validation/)
+// instead.
 func (r *ZoneAPIGatewayUserSchemaService) Get(ctx context.Context, zoneID string, schemaID string, query ZoneAPIGatewayUserSchemaGetParams, opts ...option.RequestOption) (res *ZoneAPIGatewayUserSchemaGetResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
@@ -60,6 +64,10 @@ func (r *ZoneAPIGatewayUserSchemaService) Get(ctx context.Context, zoneID string
 }
 
 // Retrieve information about all schemas on a zone
+//
+// Deprecated: Use
+// [Schema Validation API](https://developers.cloudflare.com/api/resources/schema_validation/)
+// instead.
 func (r *ZoneAPIGatewayUserSchemaService) List(ctx context.Context, zoneID string, query ZoneAPIGatewayUserSchemaListParams, opts ...option.RequestOption) (res *ZoneAPIGatewayUserSchemaListResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
@@ -72,6 +80,10 @@ func (r *ZoneAPIGatewayUserSchemaService) List(ctx context.Context, zoneID strin
 }
 
 // Delete a schema
+//
+// Deprecated: Use
+// [Schema Validation API](https://developers.cloudflare.com/api/resources/schema_validation/)
+// instead.
 func (r *ZoneAPIGatewayUserSchemaService) Delete(ctx context.Context, zoneID string, schemaID string, opts ...option.RequestOption) (res *APIResponseAPIShield, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
@@ -88,6 +100,10 @@ func (r *ZoneAPIGatewayUserSchemaService) Delete(ctx context.Context, zoneID str
 }
 
 // Enable validation for a schema
+//
+// Deprecated: Use
+// [Schema Validation API](https://developers.cloudflare.com/api/resources/schema_validation/)
+// instead.
 func (r *ZoneAPIGatewayUserSchemaService) EnableValidation(ctx context.Context, zoneID string, schemaID string, body ZoneAPIGatewayUserSchemaEnableValidationParams, opts ...option.RequestOption) (res *ZoneAPIGatewayUserSchemaEnableValidationResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
@@ -104,6 +120,10 @@ func (r *ZoneAPIGatewayUserSchemaService) EnableValidation(ctx context.Context, 
 }
 
 // Retrieve schema hosts in a zone
+//
+// Deprecated: Use
+// [Schema Validation API](https://developers.cloudflare.com/api/resources/schema_validation/)
+// instead.
 func (r *ZoneAPIGatewayUserSchemaService) GetHosts(ctx context.Context, zoneID string, query ZoneAPIGatewayUserSchemaGetHostsParams, opts ...option.RequestOption) (res *ZoneAPIGatewayUserSchemaGetHostsResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
@@ -117,6 +137,10 @@ func (r *ZoneAPIGatewayUserSchemaService) GetHosts(ctx context.Context, zoneID s
 
 // Retrieves all operations from the schema. Operations that already exist in API
 // Shield Endpoint Management will be returned as full operations.
+//
+// Deprecated: Use
+// [Schema Validation API](https://developers.cloudflare.com/api/resources/schema_validation/)
+// instead.
 func (r *ZoneAPIGatewayUserSchemaService) GetOperations(ctx context.Context, zoneID string, schemaID string, query ZoneAPIGatewayUserSchemaGetOperationsParams, opts ...option.RequestOption) (res *ZoneAPIGatewayUserSchemaGetOperationsResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
@@ -133,6 +157,10 @@ func (r *ZoneAPIGatewayUserSchemaService) GetOperations(ctx context.Context, zon
 }
 
 // Upload a schema to a zone
+//
+// Deprecated: Use
+// [Schema Validation API](https://developers.cloudflare.com/api/resources/schema_validation/)
+// instead.
 func (r *ZoneAPIGatewayUserSchemaService) Upload(ctx context.Context, zoneID string, body ZoneAPIGatewayUserSchemaUploadParams, opts ...option.RequestOption) (res *ZoneAPIGatewayUserSchemaUploadResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
@@ -186,17 +214,28 @@ func (r confidenceIntervalsBoundsJSON) RawJSON() string {
 }
 
 type Operation struct {
-	LastUpdated SchemasTimestamp `json:"last_updated,required"`
-	// UUID
+	// The endpoint which can contain path parameter templates in curly braces, each
+	// will be replaced from left to right with {varN}, starting with {var1}, during
+	// insertion. This will further be Cloudflare-normalized upon insertion. See:
+	// https://developers.cloudflare.com/rules/normalization/how-it-works/.
+	Endpoint string `json:"endpoint,required" format:"uri-template"`
+	// RFC3986-compliant host.
+	Host        string           `json:"host,required" format:"hostname"`
+	LastUpdated SchemasTimestamp `json:"last_updated,required" format:"date-time"`
+	// The HTTP method used to access the endpoint.
+	Method OperationMethod `json:"method,required"`
+	// UUID.
 	OperationID SchemasUuid       `json:"operation_id,required"`
 	Features    OperationFeatures `json:"features"`
 	JSON        operationJSON     `json:"-"`
-	BasicOperation
 }
 
 // operationJSON contains the JSON metadata for the struct [Operation]
 type operationJSON struct {
+	Endpoint    apijson.Field
+	Host        apijson.Field
 	LastUpdated apijson.Field
+	Method      apijson.Field
 	OperationID apijson.Field
 	Features    apijson.Field
 	raw         string
@@ -212,6 +251,29 @@ func (r operationJSON) RawJSON() string {
 }
 
 func (r Operation) implementsZoneAPIGatewayUserSchemaGetOperationsResponseResult() {}
+
+// The HTTP method used to access the endpoint.
+type OperationMethod string
+
+const (
+	OperationMethodGet     OperationMethod = "GET"
+	OperationMethodPost    OperationMethod = "POST"
+	OperationMethodHead    OperationMethod = "HEAD"
+	OperationMethodOptions OperationMethod = "OPTIONS"
+	OperationMethodPut     OperationMethod = "PUT"
+	OperationMethodDelete  OperationMethod = "DELETE"
+	OperationMethodConnect OperationMethod = "CONNECT"
+	OperationMethodPatch   OperationMethod = "PATCH"
+	OperationMethodTrace   OperationMethod = "TRACE"
+)
+
+func (r OperationMethod) IsKnown() bool {
+	switch r {
+	case OperationMethodGet, OperationMethodPost, OperationMethodHead, OperationMethodOptions, OperationMethodPut, OperationMethodDelete, OperationMethodConnect, OperationMethodPatch, OperationMethodTrace:
+		return true
+	}
+	return false
+}
 
 type OperationFeatures struct {
 	// This field can have the runtime type of
@@ -660,7 +722,7 @@ func (r operationFeaturesAPIShieldOperationFeatureSchemaInfoSchemaInfoJSON) RawJ
 
 // Schema active on endpoint.
 type OperationFeaturesAPIShieldOperationFeatureSchemaInfoSchemaInfoActiveSchema struct {
-	// UUID
+	// UUID.
 	ID        SchemasUuid `json:"id"`
 	CreatedAt time.Time   `json:"created_at" format:"date-time"`
 	// True if schema is Cloudflare-provided.
@@ -708,12 +770,12 @@ func (r OperationFeaturesAPIShieldOperationFeatureSchemaInfoSchemaInfoMitigation
 }
 
 type PublicSchema struct {
-	CreatedAt SchemasTimestamp `json:"created_at,required"`
+	CreatedAt SchemasTimestamp `json:"created_at,required" format:"date-time"`
 	// Kind of schema
 	Kind APIShieldKind `json:"kind,required"`
 	// Name of the schema
 	Name string `json:"name,required"`
-	// UUID
+	// UUID.
 	SchemaID SchemasUuid `json:"schema_id,required"`
 	// Source of the schema
 	Source string `json:"source"`
@@ -742,22 +804,26 @@ func (r publicSchemaJSON) RawJSON() string {
 	return r.raw
 }
 
-type SchemasTimestamp = string
-
 type SchemasUuid = string
 
 type SchemasUuidParam = string
 
 type ZoneAPIGatewayUserSchemaGetResponse struct {
-	Result PublicSchema                            `json:"result,required"`
-	JSON   zoneAPIGatewayUserSchemaGetResponseJSON `json:"-"`
-	APIResponseAPIShield
+	Errors   []MessagesAPIShieldItem `json:"errors,required"`
+	Messages []MessagesAPIShieldItem `json:"messages,required"`
+	Result   PublicSchema            `json:"result,required"`
+	// Whether the API call was successful.
+	Success ZoneAPIGatewayUserSchemaGetResponseSuccess `json:"success,required"`
+	JSON    zoneAPIGatewayUserSchemaGetResponseJSON    `json:"-"`
 }
 
 // zoneAPIGatewayUserSchemaGetResponseJSON contains the JSON metadata for the
 // struct [ZoneAPIGatewayUserSchemaGetResponse]
 type zoneAPIGatewayUserSchemaGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -770,16 +836,39 @@ func (r zoneAPIGatewayUserSchemaGetResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type ZoneAPIGatewayUserSchemaGetResponseSuccess bool
+
+const (
+	ZoneAPIGatewayUserSchemaGetResponseSuccessTrue ZoneAPIGatewayUserSchemaGetResponseSuccess = true
+)
+
+func (r ZoneAPIGatewayUserSchemaGetResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneAPIGatewayUserSchemaGetResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type ZoneAPIGatewayUserSchemaListResponse struct {
-	Result []PublicSchema                           `json:"result,required"`
-	JSON   zoneAPIGatewayUserSchemaListResponseJSON `json:"-"`
-	APIResponseCollectionAPIShield
+	Errors   []MessagesAPIShieldItem `json:"errors,required"`
+	Messages []MessagesAPIShieldItem `json:"messages,required"`
+	Result   []PublicSchema          `json:"result,required"`
+	// Whether the API call was successful.
+	Success    ZoneAPIGatewayUserSchemaListResponseSuccess    `json:"success,required"`
+	ResultInfo ZoneAPIGatewayUserSchemaListResponseResultInfo `json:"result_info"`
+	JSON       zoneAPIGatewayUserSchemaListResponseJSON       `json:"-"`
 }
 
 // zoneAPIGatewayUserSchemaListResponseJSON contains the JSON metadata for the
 // struct [ZoneAPIGatewayUserSchemaListResponse]
 type zoneAPIGatewayUserSchemaListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -792,16 +881,68 @@ func (r zoneAPIGatewayUserSchemaListResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type ZoneAPIGatewayUserSchemaListResponseSuccess bool
+
+const (
+	ZoneAPIGatewayUserSchemaListResponseSuccessTrue ZoneAPIGatewayUserSchemaListResponseSuccess = true
+)
+
+func (r ZoneAPIGatewayUserSchemaListResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneAPIGatewayUserSchemaListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type ZoneAPIGatewayUserSchemaListResponseResultInfo struct {
+	// Total number of results for the requested service.
+	Count float64 `json:"count"`
+	// Current page within paginated list of results.
+	Page float64 `json:"page"`
+	// Number of results per page of results.
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters.
+	TotalCount float64                                            `json:"total_count"`
+	JSON       zoneAPIGatewayUserSchemaListResponseResultInfoJSON `json:"-"`
+}
+
+// zoneAPIGatewayUserSchemaListResponseResultInfoJSON contains the JSON metadata
+// for the struct [ZoneAPIGatewayUserSchemaListResponseResultInfo]
+type zoneAPIGatewayUserSchemaListResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZoneAPIGatewayUserSchemaListResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneAPIGatewayUserSchemaListResponseResultInfoJSON) RawJSON() string {
+	return r.raw
+}
+
 type ZoneAPIGatewayUserSchemaEnableValidationResponse struct {
-	Result PublicSchema                                         `json:"result,required"`
-	JSON   zoneAPIGatewayUserSchemaEnableValidationResponseJSON `json:"-"`
-	APIResponseAPIShield
+	Errors   []MessagesAPIShieldItem `json:"errors,required"`
+	Messages []MessagesAPIShieldItem `json:"messages,required"`
+	Result   PublicSchema            `json:"result,required"`
+	// Whether the API call was successful.
+	Success ZoneAPIGatewayUserSchemaEnableValidationResponseSuccess `json:"success,required"`
+	JSON    zoneAPIGatewayUserSchemaEnableValidationResponseJSON    `json:"-"`
 }
 
 // zoneAPIGatewayUserSchemaEnableValidationResponseJSON contains the JSON metadata
 // for the struct [ZoneAPIGatewayUserSchemaEnableValidationResponse]
 type zoneAPIGatewayUserSchemaEnableValidationResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -814,16 +955,39 @@ func (r zoneAPIGatewayUserSchemaEnableValidationResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type ZoneAPIGatewayUserSchemaEnableValidationResponseSuccess bool
+
+const (
+	ZoneAPIGatewayUserSchemaEnableValidationResponseSuccessTrue ZoneAPIGatewayUserSchemaEnableValidationResponseSuccess = true
+)
+
+func (r ZoneAPIGatewayUserSchemaEnableValidationResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneAPIGatewayUserSchemaEnableValidationResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type ZoneAPIGatewayUserSchemaGetHostsResponse struct {
-	Result []ZoneAPIGatewayUserSchemaGetHostsResponseResult `json:"result"`
-	JSON   zoneAPIGatewayUserSchemaGetHostsResponseJSON     `json:"-"`
-	APIResponseCollectionAPIShield
+	Errors   []MessagesAPIShieldItem `json:"errors,required"`
+	Messages []MessagesAPIShieldItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success    ZoneAPIGatewayUserSchemaGetHostsResponseSuccess    `json:"success,required"`
+	Result     []ZoneAPIGatewayUserSchemaGetHostsResponseResult   `json:"result"`
+	ResultInfo ZoneAPIGatewayUserSchemaGetHostsResponseResultInfo `json:"result_info"`
+	JSON       zoneAPIGatewayUserSchemaGetHostsResponseJSON       `json:"-"`
 }
 
 // zoneAPIGatewayUserSchemaGetHostsResponseJSON contains the JSON metadata for the
 // struct [ZoneAPIGatewayUserSchemaGetHostsResponse]
 type zoneAPIGatewayUserSchemaGetHostsResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -836,13 +1000,28 @@ func (r zoneAPIGatewayUserSchemaGetHostsResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type ZoneAPIGatewayUserSchemaGetHostsResponseSuccess bool
+
+const (
+	ZoneAPIGatewayUserSchemaGetHostsResponseSuccessTrue ZoneAPIGatewayUserSchemaGetHostsResponseSuccess = true
+)
+
+func (r ZoneAPIGatewayUserSchemaGetHostsResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneAPIGatewayUserSchemaGetHostsResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type ZoneAPIGatewayUserSchemaGetHostsResponseResult struct {
-	CreatedAt SchemasTimestamp `json:"created_at,required"`
+	CreatedAt SchemasTimestamp `json:"created_at,required" format:"date-time"`
 	// Hosts serving the schema, e.g zone.host.com
 	Hosts []string `json:"hosts,required"`
 	// Name of the schema
 	Name string `json:"name,required"`
-	// UUID
+	// UUID.
 	SchemaID SchemasUuid                                        `json:"schema_id,required"`
 	JSON     zoneAPIGatewayUserSchemaGetHostsResponseResultJSON `json:"-"`
 }
@@ -866,16 +1045,55 @@ func (r zoneAPIGatewayUserSchemaGetHostsResponseResultJSON) RawJSON() string {
 	return r.raw
 }
 
+type ZoneAPIGatewayUserSchemaGetHostsResponseResultInfo struct {
+	// Total number of results for the requested service.
+	Count float64 `json:"count"`
+	// Current page within paginated list of results.
+	Page float64 `json:"page"`
+	// Number of results per page of results.
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters.
+	TotalCount float64                                                `json:"total_count"`
+	JSON       zoneAPIGatewayUserSchemaGetHostsResponseResultInfoJSON `json:"-"`
+}
+
+// zoneAPIGatewayUserSchemaGetHostsResponseResultInfoJSON contains the JSON
+// metadata for the struct [ZoneAPIGatewayUserSchemaGetHostsResponseResultInfo]
+type zoneAPIGatewayUserSchemaGetHostsResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZoneAPIGatewayUserSchemaGetHostsResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneAPIGatewayUserSchemaGetHostsResponseResultInfoJSON) RawJSON() string {
+	return r.raw
+}
+
 type ZoneAPIGatewayUserSchemaGetOperationsResponse struct {
-	Result []ZoneAPIGatewayUserSchemaGetOperationsResponseResult `json:"result,required"`
-	JSON   zoneAPIGatewayUserSchemaGetOperationsResponseJSON     `json:"-"`
-	APIResponseCollectionAPIShield
+	Errors   []MessagesAPIShieldItem                               `json:"errors,required"`
+	Messages []MessagesAPIShieldItem                               `json:"messages,required"`
+	Result   []ZoneAPIGatewayUserSchemaGetOperationsResponseResult `json:"result,required"`
+	// Whether the API call was successful.
+	Success    ZoneAPIGatewayUserSchemaGetOperationsResponseSuccess    `json:"success,required"`
+	ResultInfo ZoneAPIGatewayUserSchemaGetOperationsResponseResultInfo `json:"result_info"`
+	JSON       zoneAPIGatewayUserSchemaGetOperationsResponseJSON       `json:"-"`
 }
 
 // zoneAPIGatewayUserSchemaGetOperationsResponseJSON contains the JSON metadata for
 // the struct [ZoneAPIGatewayUserSchemaGetOperationsResponse]
 type zoneAPIGatewayUserSchemaGetOperationsResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -893,15 +1111,15 @@ type ZoneAPIGatewayUserSchemaGetOperationsResponseResult struct {
 	// will be replaced from left to right with {varN}, starting with {var1}, during
 	// insertion. This will further be Cloudflare-normalized upon insertion. See:
 	// https://developers.cloudflare.com/rules/normalization/how-it-works/.
-	Endpoint string `json:"endpoint" format:"uri-template"`
-	// This field can have the runtime type of [OperationFeatures].
-	Features interface{} `json:"features"`
+	Endpoint string `json:"endpoint,required" format:"uri-template"`
 	// RFC3986-compliant host.
-	Host        string             `json:"host" format:"hostname"`
-	LastUpdated shared.UnionString `json:"last_updated"`
+	Host string `json:"host,required" format:"hostname"`
 	// The HTTP method used to access the endpoint.
-	Method ZoneAPIGatewayUserSchemaGetOperationsResponseResultMethod `json:"method"`
-	// UUID
+	Method ZoneAPIGatewayUserSchemaGetOperationsResponseResultMethod `json:"method,required"`
+	// This field can have the runtime type of [OperationFeatures].
+	Features    interface{}      `json:"features"`
+	LastUpdated shared.UnionTime `json:"last_updated" format:"date-time"`
+	// UUID.
 	OperationID shared.UnionString                                      `json:"operation_id"`
 	JSON        zoneAPIGatewayUserSchemaGetOperationsResponseResultJSON `json:"-"`
 	union       ZoneAPIGatewayUserSchemaGetOperationsResponseResultUnion
@@ -911,10 +1129,10 @@ type ZoneAPIGatewayUserSchemaGetOperationsResponseResult struct {
 // metadata for the struct [ZoneAPIGatewayUserSchemaGetOperationsResponseResult]
 type zoneAPIGatewayUserSchemaGetOperationsResponseResultJSON struct {
 	Endpoint    apijson.Field
-	Features    apijson.Field
 	Host        apijson.Field
-	LastUpdated apijson.Field
 	Method      apijson.Field
+	Features    apijson.Field
+	LastUpdated apijson.Field
 	OperationID apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -984,16 +1202,69 @@ func (r ZoneAPIGatewayUserSchemaGetOperationsResponseResultMethod) IsKnown() boo
 	return false
 }
 
+// Whether the API call was successful.
+type ZoneAPIGatewayUserSchemaGetOperationsResponseSuccess bool
+
+const (
+	ZoneAPIGatewayUserSchemaGetOperationsResponseSuccessTrue ZoneAPIGatewayUserSchemaGetOperationsResponseSuccess = true
+)
+
+func (r ZoneAPIGatewayUserSchemaGetOperationsResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneAPIGatewayUserSchemaGetOperationsResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type ZoneAPIGatewayUserSchemaGetOperationsResponseResultInfo struct {
+	// Total number of results for the requested service.
+	Count float64 `json:"count"`
+	// Current page within paginated list of results.
+	Page float64 `json:"page"`
+	// Number of results per page of results.
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters.
+	TotalCount float64                                                     `json:"total_count"`
+	JSON       zoneAPIGatewayUserSchemaGetOperationsResponseResultInfoJSON `json:"-"`
+}
+
+// zoneAPIGatewayUserSchemaGetOperationsResponseResultInfoJSON contains the JSON
+// metadata for the struct
+// [ZoneAPIGatewayUserSchemaGetOperationsResponseResultInfo]
+type zoneAPIGatewayUserSchemaGetOperationsResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZoneAPIGatewayUserSchemaGetOperationsResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneAPIGatewayUserSchemaGetOperationsResponseResultInfoJSON) RawJSON() string {
+	return r.raw
+}
+
 type ZoneAPIGatewayUserSchemaUploadResponse struct {
-	Result ZoneAPIGatewayUserSchemaUploadResponseResult `json:"result,required"`
-	JSON   zoneAPIGatewayUserSchemaUploadResponseJSON   `json:"-"`
-	APIResponseAPIShield
+	Errors   []MessagesAPIShieldItem                      `json:"errors,required"`
+	Messages []MessagesAPIShieldItem                      `json:"messages,required"`
+	Result   ZoneAPIGatewayUserSchemaUploadResponseResult `json:"result,required"`
+	// Whether the API call was successful.
+	Success ZoneAPIGatewayUserSchemaUploadResponseSuccess `json:"success,required"`
+	JSON    zoneAPIGatewayUserSchemaUploadResponseJSON    `json:"-"`
 }
 
 // zoneAPIGatewayUserSchemaUploadResponseJSON contains the JSON metadata for the
 // struct [ZoneAPIGatewayUserSchemaUploadResponse]
 type zoneAPIGatewayUserSchemaUploadResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -1084,6 +1355,21 @@ func (r zoneAPIGatewayUserSchemaUploadResponseResultUploadDetailsWarningJSON) Ra
 	return r.raw
 }
 
+// Whether the API call was successful.
+type ZoneAPIGatewayUserSchemaUploadResponseSuccess bool
+
+const (
+	ZoneAPIGatewayUserSchemaUploadResponseSuccessTrue ZoneAPIGatewayUserSchemaUploadResponseSuccess = true
+)
+
+func (r ZoneAPIGatewayUserSchemaUploadResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneAPIGatewayUserSchemaUploadResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type ZoneAPIGatewayUserSchemaGetParams struct {
 	// Omit the source-files of schemas and only retrieve their meta-data.
 	OmitSource param.Field[bool] `query:"omit_source"`
@@ -1119,6 +1405,7 @@ func (r ZoneAPIGatewayUserSchemaListParams) URLQuery() (v url.Values) {
 }
 
 type ZoneAPIGatewayUserSchemaEnableValidationParams struct {
+	// Flag whether schema is enabled for validation.
 	ValidationEnabled param.Field[ZoneAPIGatewayUserSchemaEnableValidationParamsValidationEnabled] `json:"validation_enabled"`
 }
 
@@ -1126,6 +1413,7 @@ func (r ZoneAPIGatewayUserSchemaEnableValidationParams) MarshalJSON() (data []by
 	return apijson.MarshalRoot(r)
 }
 
+// Flag whether schema is enabled for validation.
 type ZoneAPIGatewayUserSchemaEnableValidationParamsValidationEnabled bool
 
 const (

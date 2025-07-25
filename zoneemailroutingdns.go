@@ -51,14 +51,14 @@ func (r *ZoneEmailRoutingDNSService) Get(ctx context.Context, zoneID string, que
 
 // Disable your Email Routing zone. Also removes additional MX records previously
 // required for Email Routing to work.
-func (r *ZoneEmailRoutingDNSService) Delete(ctx context.Context, zoneID string, body ZoneEmailRoutingDNSDeleteParams, opts ...option.RequestOption) (res *ZoneEmailRoutingDNSDeleteResponse, err error) {
+func (r *ZoneEmailRoutingDNSService) Delete(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *ZoneEmailRoutingDNSDeleteResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
 	}
 	path := fmt.Sprintf("zones/%s/email/routing/dns", zoneID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
@@ -86,51 +86,10 @@ func (r *ZoneEmailRoutingDNSService) Unlock(ctx context.Context, zoneID string, 
 	return
 }
 
-type EmailAPIResponseCommon struct {
-	Errors   []EmailMessagesItem `json:"errors,required"`
-	Messages []EmailMessagesItem `json:"messages,required"`
-	// Whether the API call was successful
-	Success EmailAPIResponseCommonSuccess `json:"success,required"`
-	JSON    emailAPIResponseCommonJSON    `json:"-"`
-}
-
-// emailAPIResponseCommonJSON contains the JSON metadata for the struct
-// [EmailAPIResponseCommon]
-type emailAPIResponseCommonJSON struct {
-	Errors      apijson.Field
-	Messages    apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *EmailAPIResponseCommon) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r emailAPIResponseCommonJSON) RawJSON() string {
-	return r.raw
-}
-
-// Whether the API call was successful
-type EmailAPIResponseCommonSuccess bool
-
-const (
-	EmailAPIResponseCommonSuccessTrue EmailAPIResponseCommonSuccess = true
-)
-
-func (r EmailAPIResponseCommonSuccess) IsKnown() bool {
-	switch r {
-	case EmailAPIResponseCommonSuccessTrue:
-		return true
-	}
-	return false
-}
-
 type EmailAPIResponseSingle struct {
 	Errors   []EmailMessagesItem `json:"errors,required"`
 	Messages []EmailMessagesItem `json:"messages,required"`
-	// Whether the API call was successful
+	// Whether the API call was successful.
 	Success EmailAPIResponseSingleSuccess `json:"success,required"`
 	JSON    emailAPIResponseSingleJSON    `json:"-"`
 }
@@ -155,7 +114,7 @@ func (r emailAPIResponseSingleJSON) RawJSON() string {
 
 func (r EmailAPIResponseSingle) implementsZoneEmailRoutingDNSDeleteResponse() {}
 
-// Whether the API call was successful
+// Whether the API call was successful.
 type EmailAPIResponseSingleSuccess bool
 
 const (
@@ -255,15 +214,23 @@ func (r EmailDNSRecordType) IsKnown() bool {
 }
 
 type EmailDNSSettingsResponseCollection struct {
-	Result []EmailDNSRecord                       `json:"result"`
-	JSON   emailDNSSettingsResponseCollectionJSON `json:"-"`
-	APIResponseCollectionEmail
+	Errors   []EmailMessagesItem `json:"errors,required"`
+	Messages []EmailMessagesItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success    EmailDNSSettingsResponseCollectionSuccess    `json:"success,required"`
+	Result     []EmailDNSRecord                             `json:"result"`
+	ResultInfo EmailDNSSettingsResponseCollectionResultInfo `json:"result_info"`
+	JSON       emailDNSSettingsResponseCollectionJSON       `json:"-"`
 }
 
 // emailDNSSettingsResponseCollectionJSON contains the JSON metadata for the struct
 // [EmailDNSSettingsResponseCollection]
 type emailDNSSettingsResponseCollectionJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -280,6 +247,52 @@ func (r EmailDNSSettingsResponseCollection) implementsZoneEmailRoutingDNSGetResp
 
 func (r EmailDNSSettingsResponseCollection) implementsZoneEmailRoutingDNSDeleteResponse() {}
 
+// Whether the API call was successful.
+type EmailDNSSettingsResponseCollectionSuccess bool
+
+const (
+	EmailDNSSettingsResponseCollectionSuccessTrue EmailDNSSettingsResponseCollectionSuccess = true
+)
+
+func (r EmailDNSSettingsResponseCollectionSuccess) IsKnown() bool {
+	switch r {
+	case EmailDNSSettingsResponseCollectionSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type EmailDNSSettingsResponseCollectionResultInfo struct {
+	// Total number of results for the requested service.
+	Count float64 `json:"count"`
+	// Current page within paginated list of results.
+	Page float64 `json:"page"`
+	// Number of results per page of results.
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters.
+	TotalCount float64                                          `json:"total_count"`
+	JSON       emailDNSSettingsResponseCollectionResultInfoJSON `json:"-"`
+}
+
+// emailDNSSettingsResponseCollectionResultInfoJSON contains the JSON metadata for
+// the struct [EmailDNSSettingsResponseCollectionResultInfo]
+type emailDNSSettingsResponseCollectionResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *EmailDNSSettingsResponseCollectionResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r emailDNSSettingsResponseCollectionResultInfoJSON) RawJSON() string {
+	return r.raw
+}
+
 type EmailEmailSettingDNSRequestBodyParam struct {
 	// Domain of your zone.
 	Name param.Field[string] `json:"name,required"`
@@ -290,18 +303,22 @@ func (r EmailEmailSettingDNSRequestBodyParam) MarshalJSON() (data []byte, err er
 }
 
 type EmailMessagesItem struct {
-	Code    int64                 `json:"code,required"`
-	Message string                `json:"message,required"`
-	JSON    emailMessagesItemJSON `json:"-"`
+	Code             int64                   `json:"code,required"`
+	Message          string                  `json:"message,required"`
+	DocumentationURL string                  `json:"documentation_url"`
+	Source           EmailMessagesItemSource `json:"source"`
+	JSON             emailMessagesItemJSON   `json:"-"`
 }
 
 // emailMessagesItemJSON contains the JSON metadata for the struct
 // [EmailMessagesItem]
 type emailMessagesItemJSON struct {
-	Code        apijson.Field
-	Message     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
 }
 
 func (r *EmailMessagesItem) UnmarshalJSON(data []byte) (err error) {
@@ -312,21 +329,44 @@ func (r emailMessagesItemJSON) RawJSON() string {
 	return r.raw
 }
 
+type EmailMessagesItemSource struct {
+	Pointer string                      `json:"pointer"`
+	JSON    emailMessagesItemSourceJSON `json:"-"`
+}
+
+// emailMessagesItemSourceJSON contains the JSON metadata for the struct
+// [EmailMessagesItemSource]
+type emailMessagesItemSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *EmailMessagesItemSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r emailMessagesItemSourceJSON) RawJSON() string {
+	return r.raw
+}
+
 type ZoneEmailRoutingDNSGetResponse struct {
 	// This field can have the runtime type of [[]EmailMessagesItem].
-	Errors interface{} `json:"errors"`
+	Errors interface{} `json:"errors,required"`
 	// This field can have the runtime type of [[]EmailMessagesItem].
-	Messages interface{} `json:"messages"`
+	Messages interface{} `json:"messages,required"`
+	// Whether the API call was successful.
+	Success ZoneEmailRoutingDNSGetResponseSuccess `json:"success,required"`
 	// This field can have the runtime type of
 	// [ZoneEmailRoutingDNSGetResponseEmailEmailRoutingDNSQueryResponseResult],
 	// [[]EmailDNSRecord].
 	Result interface{} `json:"result"`
-	// This field can have the runtime type of [APIResponseCollectionEmailResultInfo].
-	ResultInfo interface{} `json:"result_info"`
-	// Whether the API call was successful
-	Success ZoneEmailRoutingDNSGetResponseSuccess `json:"success"`
-	JSON    zoneEmailRoutingDNSGetResponseJSON    `json:"-"`
-	union   ZoneEmailRoutingDNSGetResponseUnion
+	// This field can have the runtime type of
+	// [ZoneEmailRoutingDNSGetResponseEmailEmailRoutingDNSQueryResponseResultInfo],
+	// [EmailDNSSettingsResponseCollectionResultInfo].
+	ResultInfo interface{}                        `json:"result_info"`
+	JSON       zoneEmailRoutingDNSGetResponseJSON `json:"-"`
+	union      ZoneEmailRoutingDNSGetResponseUnion
 }
 
 // zoneEmailRoutingDNSGetResponseJSON contains the JSON metadata for the struct
@@ -334,9 +374,9 @@ type ZoneEmailRoutingDNSGetResponse struct {
 type zoneEmailRoutingDNSGetResponseJSON struct {
 	Errors      apijson.Field
 	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	ResultInfo  apijson.Field
-	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -387,16 +427,24 @@ func init() {
 }
 
 type ZoneEmailRoutingDNSGetResponseEmailEmailRoutingDNSQueryResponse struct {
-	Result ZoneEmailRoutingDNSGetResponseEmailEmailRoutingDNSQueryResponseResult `json:"result"`
-	JSON   zoneEmailRoutingDNSGetResponseEmailEmailRoutingDNSQueryResponseJSON   `json:"-"`
-	APIResponseCollectionEmail
+	Errors   []EmailMessagesItem `json:"errors,required"`
+	Messages []EmailMessagesItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success    ZoneEmailRoutingDNSGetResponseEmailEmailRoutingDNSQueryResponseSuccess    `json:"success,required"`
+	Result     ZoneEmailRoutingDNSGetResponseEmailEmailRoutingDNSQueryResponseResult     `json:"result"`
+	ResultInfo ZoneEmailRoutingDNSGetResponseEmailEmailRoutingDNSQueryResponseResultInfo `json:"result_info"`
+	JSON       zoneEmailRoutingDNSGetResponseEmailEmailRoutingDNSQueryResponseJSON       `json:"-"`
 }
 
 // zoneEmailRoutingDNSGetResponseEmailEmailRoutingDNSQueryResponseJSON contains the
 // JSON metadata for the struct
 // [ZoneEmailRoutingDNSGetResponseEmailEmailRoutingDNSQueryResponse]
 type zoneEmailRoutingDNSGetResponseEmailEmailRoutingDNSQueryResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -410,6 +458,21 @@ func (r zoneEmailRoutingDNSGetResponseEmailEmailRoutingDNSQueryResponseJSON) Raw
 }
 
 func (r ZoneEmailRoutingDNSGetResponseEmailEmailRoutingDNSQueryResponse) implementsZoneEmailRoutingDNSGetResponse() {
+}
+
+// Whether the API call was successful.
+type ZoneEmailRoutingDNSGetResponseEmailEmailRoutingDNSQueryResponseSuccess bool
+
+const (
+	ZoneEmailRoutingDNSGetResponseEmailEmailRoutingDNSQueryResponseSuccessTrue ZoneEmailRoutingDNSGetResponseEmailEmailRoutingDNSQueryResponseSuccess = true
+)
+
+func (r ZoneEmailRoutingDNSGetResponseEmailEmailRoutingDNSQueryResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneEmailRoutingDNSGetResponseEmailEmailRoutingDNSQueryResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type ZoneEmailRoutingDNSGetResponseEmailEmailRoutingDNSQueryResponseResult struct {
@@ -461,7 +524,39 @@ func (r zoneEmailRoutingDNSGetResponseEmailEmailRoutingDNSQueryResponseResultErr
 	return r.raw
 }
 
-// Whether the API call was successful
+type ZoneEmailRoutingDNSGetResponseEmailEmailRoutingDNSQueryResponseResultInfo struct {
+	// Total number of results for the requested service.
+	Count float64 `json:"count"`
+	// Current page within paginated list of results.
+	Page float64 `json:"page"`
+	// Number of results per page of results.
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters.
+	TotalCount float64                                                                       `json:"total_count"`
+	JSON       zoneEmailRoutingDNSGetResponseEmailEmailRoutingDNSQueryResponseResultInfoJSON `json:"-"`
+}
+
+// zoneEmailRoutingDNSGetResponseEmailEmailRoutingDNSQueryResponseResultInfoJSON
+// contains the JSON metadata for the struct
+// [ZoneEmailRoutingDNSGetResponseEmailEmailRoutingDNSQueryResponseResultInfo]
+type zoneEmailRoutingDNSGetResponseEmailEmailRoutingDNSQueryResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZoneEmailRoutingDNSGetResponseEmailEmailRoutingDNSQueryResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneEmailRoutingDNSGetResponseEmailEmailRoutingDNSQueryResponseResultInfoJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful.
 type ZoneEmailRoutingDNSGetResponseSuccess bool
 
 const (
@@ -478,17 +573,18 @@ func (r ZoneEmailRoutingDNSGetResponseSuccess) IsKnown() bool {
 
 type ZoneEmailRoutingDNSDeleteResponse struct {
 	// This field can have the runtime type of [[]EmailMessagesItem].
-	Errors interface{} `json:"errors"`
+	Errors interface{} `json:"errors,required"`
 	// This field can have the runtime type of [[]EmailMessagesItem].
-	Messages interface{} `json:"messages"`
+	Messages interface{} `json:"messages,required"`
+	// Whether the API call was successful.
+	Success ZoneEmailRoutingDNSDeleteResponseSuccess `json:"success,required"`
 	// This field can have the runtime type of [[]EmailDNSRecord].
 	Result interface{} `json:"result"`
-	// This field can have the runtime type of [APIResponseCollectionEmailResultInfo].
-	ResultInfo interface{} `json:"result_info"`
-	// Whether the API call was successful
-	Success ZoneEmailRoutingDNSDeleteResponseSuccess `json:"success"`
-	JSON    zoneEmailRoutingDNSDeleteResponseJSON    `json:"-"`
-	union   ZoneEmailRoutingDNSDeleteResponseUnion
+	// This field can have the runtime type of
+	// [EmailDNSSettingsResponseCollectionResultInfo].
+	ResultInfo interface{}                           `json:"result_info"`
+	JSON       zoneEmailRoutingDNSDeleteResponseJSON `json:"-"`
+	union      ZoneEmailRoutingDNSDeleteResponseUnion
 }
 
 // zoneEmailRoutingDNSDeleteResponseJSON contains the JSON metadata for the struct
@@ -496,9 +592,9 @@ type ZoneEmailRoutingDNSDeleteResponse struct {
 type zoneEmailRoutingDNSDeleteResponseJSON struct {
 	Errors      apijson.Field
 	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	ResultInfo  apijson.Field
-	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -546,7 +642,7 @@ func init() {
 	)
 }
 
-// Whether the API call was successful
+// Whether the API call was successful.
 type ZoneEmailRoutingDNSDeleteResponseSuccess bool
 
 const (
@@ -573,14 +669,6 @@ func (r ZoneEmailRoutingDNSGetParams) URLQuery() (v url.Values) {
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
-}
-
-type ZoneEmailRoutingDNSDeleteParams struct {
-	EmailEmailSettingDNSRequestBody EmailEmailSettingDNSRequestBodyParam `json:"email_email_setting_dns_request_body,required"`
-}
-
-func (r ZoneEmailRoutingDNSDeleteParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.EmailEmailSettingDNSRequestBody)
 }
 
 type ZoneEmailRoutingDNSEnableParams struct {

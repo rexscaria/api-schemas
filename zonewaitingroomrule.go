@@ -68,7 +68,7 @@ func (r *ZoneWaitingRoomRuleService) List(ctx context.Context, zoneID string, wa
 }
 
 // Deletes a rule for a waiting room.
-func (r *ZoneWaitingRoomRuleService) Delete(ctx context.Context, zoneID string, waitingRoomID string, ruleID string, body ZoneWaitingRoomRuleDeleteParams, opts ...option.RequestOption) (res *ResponseCollectionWaitingRoomRules, err error) {
+func (r *ZoneWaitingRoomRuleService) Delete(ctx context.Context, zoneID string, waitingRoomID string, ruleID string, opts ...option.RequestOption) (res *ResponseCollectionWaitingRoomRules, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
@@ -83,7 +83,7 @@ func (r *ZoneWaitingRoomRuleService) Delete(ctx context.Context, zoneID string, 
 		return
 	}
 	path := fmt.Sprintf("zones/%s/waiting_rooms/%s/rules/%s", zoneID, waitingRoomID, ruleID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
@@ -140,15 +140,23 @@ func (r CreateWaitingRoomRuleParam) MarshalJSON() (data []byte, err error) {
 }
 
 type ResponseCollectionWaitingRoomRules struct {
-	Result []ResponseCollectionWaitingRoomRulesResult `json:"result"`
-	JSON   responseCollectionWaitingRoomRulesJSON     `json:"-"`
-	WaitingroomAPIResponseCollection
+	Errors   []WaitingroomMessage `json:"errors,required"`
+	Messages []WaitingroomMessage `json:"messages,required"`
+	// Whether the API call was successful.
+	Success    ResponseCollectionWaitingRoomRulesSuccess    `json:"success,required"`
+	Result     []ResponseCollectionWaitingRoomRulesResult   `json:"result"`
+	ResultInfo ResponseCollectionWaitingRoomRulesResultInfo `json:"result_info"`
+	JSON       responseCollectionWaitingRoomRulesJSON       `json:"-"`
 }
 
 // responseCollectionWaitingRoomRulesJSON contains the JSON metadata for the struct
 // [ResponseCollectionWaitingRoomRules]
 type responseCollectionWaitingRoomRulesJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -159,6 +167,21 @@ func (r *ResponseCollectionWaitingRoomRules) UnmarshalJSON(data []byte) (err err
 
 func (r responseCollectionWaitingRoomRulesJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type ResponseCollectionWaitingRoomRulesSuccess bool
+
+const (
+	ResponseCollectionWaitingRoomRulesSuccessTrue ResponseCollectionWaitingRoomRulesSuccess = true
+)
+
+func (r ResponseCollectionWaitingRoomRulesSuccess) IsKnown() bool {
+	switch r {
+	case ResponseCollectionWaitingRoomRulesSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type ResponseCollectionWaitingRoomRulesResult struct {
@@ -200,6 +223,37 @@ func (r responseCollectionWaitingRoomRulesResultJSON) RawJSON() string {
 	return r.raw
 }
 
+type ResponseCollectionWaitingRoomRulesResultInfo struct {
+	// Total number of results for the requested service.
+	Count float64 `json:"count"`
+	// Current page within paginated list of results.
+	Page float64 `json:"page"`
+	// Number of results per page of results.
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters.
+	TotalCount float64                                          `json:"total_count"`
+	JSON       responseCollectionWaitingRoomRulesResultInfoJSON `json:"-"`
+}
+
+// responseCollectionWaitingRoomRulesResultInfoJSON contains the JSON metadata for
+// the struct [ResponseCollectionWaitingRoomRulesResultInfo]
+type responseCollectionWaitingRoomRulesResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ResponseCollectionWaitingRoomRulesResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r responseCollectionWaitingRoomRulesResultInfoJSON) RawJSON() string {
+	return r.raw
+}
+
 // The action to take when the expression matches.
 type RuleAction string
 
@@ -221,14 +275,6 @@ type ZoneWaitingRoomRuleNewParams struct {
 
 func (r ZoneWaitingRoomRuleNewParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r.CreateWaitingRoomRule)
-}
-
-type ZoneWaitingRoomRuleDeleteParams struct {
-	Body interface{} `json:"body,required"`
-}
-
-func (r ZoneWaitingRoomRuleDeleteParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
 }
 
 type ZoneWaitingRoomRulePatchParams struct {

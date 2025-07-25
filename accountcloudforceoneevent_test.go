@@ -30,26 +30,28 @@ func TestAccountCloudforceOneEventNewWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Accounts.CloudforceOne.Events.New(
 		context.TODO(),
-		0.000000,
+		"account_id",
 		cfrex.AccountCloudforceOneEventNewParams{
-			Attacker:        cfrex.F("Flying Yeti"),
-			AttackerCountry: cfrex.F("CN"),
-			Category:        cfrex.F("Domain Resolution"),
-			Date:            cfrex.F(time.Now()),
-			Event:           cfrex.F("An attacker registered the domain domain.com"),
-			IndicatorType:   cfrex.F("domain"),
+			Category:      cfrex.F("Domain Resolution"),
+			Date:          cfrex.F(time.Now()),
+			Event:         cfrex.F("An attacker registered the domain domain.com"),
+			IndicatorType: cfrex.F("domain"),
 			Raw: cfrex.F(cfrex.AccountCloudforceOneEventNewParamsRaw{
-				Data:   cfrex.F[any](map[string]interface{}{}),
+				Data: cfrex.F(map[string]interface{}{
+					"foo": "bar",
+				}),
 				Source: cfrex.F("example.com"),
 				Tlp:    cfrex.F("amber"),
 			}),
-			Tlp:            cfrex.F("amber"),
-			AccountID:      cfrex.F(123456.000000),
-			DatasetID:      cfrex.F("durableObjectName"),
-			Indicator:      cfrex.F("domain.com"),
-			Tags:           cfrex.F([]string{"malware"}),
-			TargetCountry:  cfrex.F("US"),
-			TargetIndustry: cfrex.F("Agriculture"),
+			Tlp:             cfrex.F("amber"),
+			AccountID:       cfrex.F(123456.000000),
+			Attacker:        cfrex.F("Flying Yeti"),
+			AttackerCountry: cfrex.F("CN"),
+			DatasetID:       cfrex.F("durableObjectName"),
+			Indicator:       cfrex.F("domain.com"),
+			Tags:            cfrex.F([]string{"malware"}),
+			TargetCountry:   cfrex.F("US"),
+			TargetIndustry:  cfrex.F("Agriculture"),
 		},
 	)
 	if err != nil {
@@ -77,7 +79,7 @@ func TestAccountCloudforceOneEventGet(t *testing.T) {
 	)
 	_, err := client.Accounts.CloudforceOne.Events.Get(
 		context.TODO(),
-		0.000000,
+		"account_id",
 		"event_id",
 	)
 	if err != nil {
@@ -105,7 +107,7 @@ func TestAccountCloudforceOneEventUpdateWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Accounts.CloudforceOne.Events.Update(
 		context.TODO(),
-		0.000000,
+		"account_id",
 		"event_id",
 		cfrex.AccountCloudforceOneEventUpdateParams{
 			Attacker:        cfrex.F("Flying Yeti"),
@@ -115,9 +117,17 @@ func TestAccountCloudforceOneEventUpdateWithOptionalParams(t *testing.T) {
 			Event:           cfrex.F("An attacker registered the domain domain.com"),
 			Indicator:       cfrex.F("domain2.com"),
 			IndicatorType:   cfrex.F("sha256"),
-			TargetCountry:   cfrex.F("US"),
-			TargetIndustry:  cfrex.F("Insurance"),
-			Tlp:             cfrex.F("amber"),
+			Insight:         cfrex.F("new insight"),
+			Raw: cfrex.F(cfrex.AccountCloudforceOneEventUpdateParamsRaw{
+				Data: cfrex.F(map[string]interface{}{
+					"foo": "bar",
+				}),
+				Source: cfrex.F("example.com"),
+				Tlp:    cfrex.F("amber"),
+			}),
+			TargetCountry:  cfrex.F("US"),
+			TargetIndustry: cfrex.F("Insurance"),
+			Tlp:            cfrex.F("amber"),
 		},
 	)
 	if err != nil {
@@ -145,7 +155,7 @@ func TestAccountCloudforceOneEventDelete(t *testing.T) {
 	)
 	_, err := client.Accounts.CloudforceOne.Events.Delete(
 		context.TODO(),
-		0.000000,
+		"account_id",
 		"event_id",
 	)
 	if err != nil {
@@ -173,27 +183,29 @@ func TestAccountCloudforceOneEventNewBulk(t *testing.T) {
 	)
 	_, err := client.Accounts.CloudforceOne.Events.NewBulk(
 		context.TODO(),
-		0.000000,
+		"account_id",
 		cfrex.AccountCloudforceOneEventNewBulkParams{
 			Data: cfrex.F([]cfrex.AccountCloudforceOneEventNewBulkParamsData{{
-				Attacker:        cfrex.F("Flying Yeti"),
-				AttackerCountry: cfrex.F("CN"),
-				Category:        cfrex.F("Domain Resolution"),
-				Date:            cfrex.F(time.Now()),
-				Event:           cfrex.F("An attacker registered the domain domain.com"),
-				IndicatorType:   cfrex.F("domain"),
+				Category:      cfrex.F("Domain Resolution"),
+				Date:          cfrex.F(time.Now()),
+				Event:         cfrex.F("An attacker registered the domain domain.com"),
+				IndicatorType: cfrex.F("domain"),
 				Raw: cfrex.F(cfrex.AccountCloudforceOneEventNewBulkParamsDataRaw{
-					Data:   cfrex.F[any](map[string]interface{}{}),
+					Data: cfrex.F(map[string]interface{}{
+						"foo": "bar",
+					}),
 					Source: cfrex.F("example.com"),
 					Tlp:    cfrex.F("amber"),
 				}),
-				Tlp:            cfrex.F("amber"),
-				AccountID:      cfrex.F(123456.000000),
-				DatasetID:      cfrex.F("durableObjectName"),
-				Indicator:      cfrex.F("domain.com"),
-				Tags:           cfrex.F([]string{"malware"}),
-				TargetCountry:  cfrex.F("US"),
-				TargetIndustry: cfrex.F("Agriculture"),
+				Tlp:             cfrex.F("amber"),
+				AccountID:       cfrex.F(123456.000000),
+				Attacker:        cfrex.F("Flying Yeti"),
+				AttackerCountry: cfrex.F("CN"),
+				DatasetID:       cfrex.F("durableObjectName"),
+				Indicator:       cfrex.F("domain.com"),
+				Tags:            cfrex.F([]string{"malware"}),
+				TargetCountry:   cfrex.F("US"),
+				TargetIndustry:  cfrex.F("Agriculture"),
 			}}),
 			DatasetID: cfrex.F("durableObjectName"),
 		},
@@ -221,7 +233,7 @@ func TestAccountCloudforceOneEventListAttackers(t *testing.T) {
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Accounts.CloudforceOne.Events.ListAttackers(context.TODO(), 0.000000)
+	_, err := client.Accounts.CloudforceOne.Events.ListAttackers(context.TODO(), "account_id")
 	if err != nil {
 		var apierr *cfrex.Error
 		if errors.As(err, &apierr) {
@@ -245,7 +257,7 @@ func TestAccountCloudforceOneEventListCountries(t *testing.T) {
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Accounts.CloudforceOne.Events.ListCountries(context.TODO(), 0.000000)
+	_, err := client.Accounts.CloudforceOne.Events.ListCountries(context.TODO(), "account_id")
 	if err != nil {
 		var apierr *cfrex.Error
 		if errors.As(err, &apierr) {
@@ -269,7 +281,7 @@ func TestAccountCloudforceOneEventListIndicatorTypes(t *testing.T) {
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Accounts.CloudforceOne.Events.ListIndicatorTypes(context.TODO(), 0.000000)
+	_, err := client.Accounts.CloudforceOne.Events.ListIndicatorTypes(context.TODO(), "account_id")
 	if err != nil {
 		var apierr *cfrex.Error
 		if errors.As(err, &apierr) {
@@ -293,7 +305,7 @@ func TestAccountCloudforceOneEventListTargetIndustries(t *testing.T) {
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Accounts.CloudforceOne.Events.ListTargetIndustries(context.TODO(), 0.000000)
+	_, err := client.Accounts.CloudforceOne.Events.ListTargetIndustries(context.TODO(), "account_id")
 	if err != nil {
 		var apierr *cfrex.Error
 		if errors.As(err, &apierr) {

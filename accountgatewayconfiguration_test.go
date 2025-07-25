@@ -65,27 +65,28 @@ func TestAccountGatewayConfigurationUpdateWithOptionalParams(t *testing.T) {
 						EnabledUploadPhase:   cfrex.F(false),
 						FailClosed:           cfrex.F(false),
 						NotificationSettings: cfrex.F(cfrex.GatewayAccountSettingsSettingsAntivirusNotificationSettingsParam{
-							Enabled:    cfrex.F(true),
-							Msg:        cfrex.F("msg"),
-							SupportURL: cfrex.F("support_url"),
+							Enabled:        cfrex.F(true),
+							IncludeContext: cfrex.F(true),
+							Msg:            cfrex.F("msg"),
+							SupportURL:     cfrex.F("support_url"),
 						}),
 					}),
 					BlockPage: cfrex.F(cfrex.GatewayAccountSettingsSettingsBlockPageParam{
-						BackgroundColor: cfrex.F("background_color"),
 						Enabled:         cfrex.F(true),
+						Mode:            cfrex.F(cfrex.GatewayAccountSettingsSettingsBlockPageModeCustomizedBlockPage),
+						BackgroundColor: cfrex.F("background_color"),
 						FooterText:      cfrex.F("--footer--"),
 						HeaderText:      cfrex.F("--header--"),
 						IncludeContext:  cfrex.F(true),
 						LogoPath:        cfrex.F("https://logos.com/a.png"),
 						MailtoAddress:   cfrex.F("admin@example.com"),
 						MailtoSubject:   cfrex.F("Blocked User Inquiry"),
-						Mode:            cfrex.F(cfrex.GatewayAccountSettingsSettingsBlockPageModeCustomizedBlockPage),
 						Name:            cfrex.F("Cloudflare"),
 						SuppressFooter:  cfrex.F(false),
 						TargetUri:       cfrex.F("https://example.com"),
 					}),
 					BodyScanning: cfrex.F(cfrex.GatewayAccountSettingsSettingsBodyScanningParam{
-						InspectionMode: cfrex.F("deep"),
+						InspectionMode: cfrex.F(cfrex.GatewayAccountSettingsSettingsBodyScanningInspectionModeDeep),
 					}),
 					BrowserIsolation: cfrex.F(cfrex.GatewayAccountSettingsSettingsBrowserIsolationParam{
 						NonIdentityEnabled:         cfrex.F(true),
@@ -103,6 +104,12 @@ func TestAccountGatewayConfigurationUpdateWithOptionalParams(t *testing.T) {
 					}),
 					Fips: cfrex.F(cfrex.GatewayAccountSettingsSettingsFipsParam{
 						Tls: cfrex.F(true),
+					}),
+					HostSelector: cfrex.F(cfrex.GatewayAccountSettingsSettingsHostSelectorParam{
+						Enabled: cfrex.F(false),
+					}),
+					Inspection: cfrex.F(cfrex.GatewayAccountSettingsSettingsInspectionParam{
+						Mode: cfrex.F(cfrex.GatewayAccountSettingsSettingsInspectionModeStatic),
 					}),
 					ProtocolDetection: cfrex.F(cfrex.GatewayAccountSettingsSettingsProtocolDetectionParam{
 						Enabled: cfrex.F(true),
@@ -155,27 +162,28 @@ func TestAccountGatewayConfigurationPatchWithOptionalParams(t *testing.T) {
 						EnabledUploadPhase:   cfrex.F(false),
 						FailClosed:           cfrex.F(false),
 						NotificationSettings: cfrex.F(cfrex.GatewayAccountSettingsSettingsAntivirusNotificationSettingsParam{
-							Enabled:    cfrex.F(true),
-							Msg:        cfrex.F("msg"),
-							SupportURL: cfrex.F("support_url"),
+							Enabled:        cfrex.F(true),
+							IncludeContext: cfrex.F(true),
+							Msg:            cfrex.F("msg"),
+							SupportURL:     cfrex.F("support_url"),
 						}),
 					}),
 					BlockPage: cfrex.F(cfrex.GatewayAccountSettingsSettingsBlockPageParam{
-						BackgroundColor: cfrex.F("background_color"),
 						Enabled:         cfrex.F(true),
+						Mode:            cfrex.F(cfrex.GatewayAccountSettingsSettingsBlockPageModeCustomizedBlockPage),
+						BackgroundColor: cfrex.F("background_color"),
 						FooterText:      cfrex.F("--footer--"),
 						HeaderText:      cfrex.F("--header--"),
 						IncludeContext:  cfrex.F(true),
 						LogoPath:        cfrex.F("https://logos.com/a.png"),
 						MailtoAddress:   cfrex.F("admin@example.com"),
 						MailtoSubject:   cfrex.F("Blocked User Inquiry"),
-						Mode:            cfrex.F(cfrex.GatewayAccountSettingsSettingsBlockPageModeCustomizedBlockPage),
 						Name:            cfrex.F("Cloudflare"),
 						SuppressFooter:  cfrex.F(false),
 						TargetUri:       cfrex.F("https://example.com"),
 					}),
 					BodyScanning: cfrex.F(cfrex.GatewayAccountSettingsSettingsBodyScanningParam{
-						InspectionMode: cfrex.F("deep"),
+						InspectionMode: cfrex.F(cfrex.GatewayAccountSettingsSettingsBodyScanningInspectionModeDeep),
 					}),
 					BrowserIsolation: cfrex.F(cfrex.GatewayAccountSettingsSettingsBrowserIsolationParam{
 						NonIdentityEnabled:         cfrex.F(true),
@@ -193,6 +201,12 @@ func TestAccountGatewayConfigurationPatchWithOptionalParams(t *testing.T) {
 					}),
 					Fips: cfrex.F(cfrex.GatewayAccountSettingsSettingsFipsParam{
 						Tls: cfrex.F(true),
+					}),
+					HostSelector: cfrex.F(cfrex.GatewayAccountSettingsSettingsHostSelectorParam{
+						Enabled: cfrex.F(false),
+					}),
+					Inspection: cfrex.F(cfrex.GatewayAccountSettingsSettingsInspectionParam{
+						Mode: cfrex.F(cfrex.GatewayAccountSettingsSettingsInspectionModeStatic),
 					}),
 					ProtocolDetection: cfrex.F(cfrex.GatewayAccountSettingsSettingsProtocolDetectionParam{
 						Enabled: cfrex.F(true),

@@ -88,14 +88,20 @@ func (r FlagParam) MarshalJSON() (data []byte, err error) {
 }
 
 type FlagResponseSingle struct {
-	Result Flag                   `json:"result,nullable"`
-	JSON   flagResponseSingleJSON `json:"-"`
-	SingleResponseLogControl
+	Errors   []MessagesLogcontrolItem `json:"errors,required"`
+	Messages []MessagesLogcontrolItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success FlagResponseSingleSuccess `json:"success,required"`
+	Result  Flag                      `json:"result,nullable"`
+	JSON    flagResponseSingleJSON    `json:"-"`
 }
 
 // flagResponseSingleJSON contains the JSON metadata for the struct
 // [FlagResponseSingle]
 type flagResponseSingleJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -107,6 +113,21 @@ func (r *FlagResponseSingle) UnmarshalJSON(data []byte) (err error) {
 
 func (r flagResponseSingleJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type FlagResponseSingleSuccess bool
+
+const (
+	FlagResponseSingleSuccessTrue FlagResponseSingleSuccess = true
+)
+
+func (r FlagResponseSingleSuccess) IsKnown() bool {
+	switch r {
+	case FlagResponseSingleSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type ZoneLogControlRetentionFlagUpdateParams struct {

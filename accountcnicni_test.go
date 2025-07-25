@@ -147,9 +147,10 @@ func TestAccountCniCniListWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"account_id",
 		cfrex.AccountCniCniListParams{
-			Cursor: cfrex.F(int64(0)),
-			Limit:  cfrex.F(int64(0)),
-			Slot:   cfrex.F("slot"),
+			Cursor:   cfrex.F(int64(0)),
+			Limit:    cfrex.F(int64(0)),
+			Slot:     cfrex.F("slot"),
+			TunnelID: cfrex.F("tunnel_id"),
 		},
 	)
 	if err != nil {

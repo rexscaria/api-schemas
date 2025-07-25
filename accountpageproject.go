@@ -98,7 +98,7 @@ func (r *AccountPageProjectService) List(ctx context.Context, accountID string, 
 }
 
 // Delete a project by name.
-func (r *AccountPageProjectService) Delete(ctx context.Context, accountID string, projectName string, body AccountPageProjectDeleteParams, opts ...option.RequestOption) (res *AccountPageProjectDeleteResponse, err error) {
+func (r *AccountPageProjectService) Delete(ctx context.Context, accountID string, projectName string, opts ...option.RequestOption) (res *AccountPageProjectDeleteResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
@@ -109,7 +109,7 @@ func (r *AccountPageProjectService) Delete(ctx context.Context, accountID string
 		return
 	}
 	path := fmt.Sprintf("accounts/%s/pages/projects/%s", accountID, projectName)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
@@ -127,103 +127,6 @@ func (r *AccountPageProjectService) PurgeBuildCache(ctx context.Context, account
 	path := fmt.Sprintf("accounts/%s/pages/projects/%s/purge_build_cache", accountID, projectName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
 	return
-}
-
-type APIResponsePages struct {
-	Errors   []MessagesPageItem `json:"errors,required"`
-	Messages []MessagesPageItem `json:"messages,required"`
-	// Whether the API call was successful
-	Success APIResponsePagesSuccess `json:"success,required"`
-	JSON    apiResponsePagesJSON    `json:"-"`
-}
-
-// apiResponsePagesJSON contains the JSON metadata for the struct
-// [APIResponsePages]
-type apiResponsePagesJSON struct {
-	Errors      apijson.Field
-	Messages    apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *APIResponsePages) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r apiResponsePagesJSON) RawJSON() string {
-	return r.raw
-}
-
-// Whether the API call was successful
-type APIResponsePagesSuccess bool
-
-const (
-	APIResponsePagesSuccessFalse APIResponsePagesSuccess = false
-	APIResponsePagesSuccessTrue  APIResponsePagesSuccess = true
-)
-
-func (r APIResponsePagesSuccess) IsKnown() bool {
-	switch r {
-	case APIResponsePagesSuccessFalse, APIResponsePagesSuccessTrue:
-		return true
-	}
-	return false
-}
-
-type APIResponsePagination struct {
-	ResultInfo APIResponsePaginationResultInfo `json:"result_info"`
-	JSON       apiResponsePaginationJSON       `json:"-"`
-}
-
-// apiResponsePaginationJSON contains the JSON metadata for the struct
-// [APIResponsePagination]
-type apiResponsePaginationJSON struct {
-	ResultInfo  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *APIResponsePagination) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r apiResponsePaginationJSON) RawJSON() string {
-	return r.raw
-}
-
-type APIResponsePaginationResultInfo struct {
-	// The number of items on the current page.
-	Count int64 `json:"count,required"`
-	// The page currently being requested.
-	Page int64 `json:"page,required"`
-	// The number of items per page being returned.
-	PerPage int64 `json:"per_page,required"`
-	// The total count of items.
-	TotalCount int64 `json:"total_count,required"`
-	// The total count of pages.
-	TotalPages int64                               `json:"total_pages"`
-	JSON       apiResponsePaginationResultInfoJSON `json:"-"`
-}
-
-// apiResponsePaginationResultInfoJSON contains the JSON metadata for the struct
-// [APIResponsePaginationResultInfo]
-type apiResponsePaginationResultInfoJSON struct {
-	Count       apijson.Field
-	Page        apijson.Field
-	PerPage     apijson.Field
-	TotalCount  apijson.Field
-	TotalPages  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *APIResponsePaginationResultInfo) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r apiResponsePaginationResultInfoJSON) RawJSON() string {
-	return r.raw
 }
 
 // Configs for the project build process.
@@ -1355,6 +1258,7 @@ type DeploymentsParam struct {
 	BuildConfig param.Field[BuildConfigParam] `json:"build_config"`
 	// Environment variables used for builds and Pages Functions.
 	EnvVars param.Field[map[string]DeploymentsEnvVarsUnionParam] `json:"env_vars"`
+	Source  param.Field[SourceParam]                             `json:"source"`
 }
 
 func (r DeploymentsParam) MarshalJSON() (data []byte, err error) {
@@ -1427,18 +1331,22 @@ func (r DeploymentsEnvVarsPagesSecretTextEnvVarParam) MarshalJSON() (data []byte
 func (r DeploymentsEnvVarsPagesSecretTextEnvVarParam) implementsDeploymentsEnvVarsUnionParam() {}
 
 type MessagesPageItem struct {
-	Code    int64                `json:"code,required"`
-	Message string               `json:"message,required"`
-	JSON    messagesPageItemJSON `json:"-"`
+	Code             int64                  `json:"code,required"`
+	Message          string                 `json:"message,required"`
+	DocumentationURL string                 `json:"documentation_url"`
+	Source           MessagesPageItemSource `json:"source"`
+	JSON             messagesPageItemJSON   `json:"-"`
 }
 
 // messagesPageItemJSON contains the JSON metadata for the struct
 // [MessagesPageItem]
 type messagesPageItemJSON struct {
-	Code        apijson.Field
-	Message     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
 }
 
 func (r *MessagesPageItem) UnmarshalJSON(data []byte) (err error) {
@@ -1449,13 +1357,34 @@ func (r messagesPageItemJSON) RawJSON() string {
 	return r.raw
 }
 
+type MessagesPageItemSource struct {
+	Pointer string                     `json:"pointer"`
+	JSON    messagesPageItemSourceJSON `json:"-"`
+}
+
+// messagesPageItemSourceJSON contains the JSON metadata for the struct
+// [MessagesPageItemSource]
+type messagesPageItemSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *MessagesPageItemSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r messagesPageItemSourceJSON) RawJSON() string {
+	return r.raw
+}
+
 type Project struct {
 	// Id of the project.
 	ID string `json:"id"`
 	// Configs for the project build process.
 	BuildConfig BuildConfig `json:"build_config"`
 	// Most recent deployment to the repo.
-	CanonicalDeployment ProjectCanonicalDeployment `json:"canonical_deployment"`
+	CanonicalDeployment Deployments `json:"canonical_deployment,nullable"`
 	// When the project was created.
 	CreatedOn time.Time `json:"created_on" format:"date-time"`
 	// Configs for deployments in a project.
@@ -1463,7 +1392,7 @@ type Project struct {
 	// A list of associated custom domains for the project.
 	Domains []string `json:"domains"`
 	// Most recent deployment to the repo.
-	LatestDeployment ProjectLatestDeployment `json:"latest_deployment"`
+	LatestDeployment Deployments `json:"latest_deployment,nullable"`
 	// Name of the project.
 	Name string `json:"name"`
 	// Production branch of the project. Used to identify production deployments.
@@ -1499,27 +1428,6 @@ func (r projectJSON) RawJSON() string {
 	return r.raw
 }
 
-// Most recent deployment to the repo.
-type ProjectCanonicalDeployment struct {
-	JSON projectCanonicalDeploymentJSON `json:"-"`
-	Deployments
-}
-
-// projectCanonicalDeploymentJSON contains the JSON metadata for the struct
-// [ProjectCanonicalDeployment]
-type projectCanonicalDeploymentJSON struct {
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ProjectCanonicalDeployment) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r projectCanonicalDeploymentJSON) RawJSON() string {
-	return r.raw
-}
-
 // Configs for deployments in a project.
 type ProjectDeploymentConfigs struct {
 	// Configs for preview deploys.
@@ -1546,52 +1454,19 @@ func (r projectDeploymentConfigsJSON) RawJSON() string {
 	return r.raw
 }
 
-// Most recent deployment to the repo.
-type ProjectLatestDeployment struct {
-	JSON projectLatestDeploymentJSON `json:"-"`
-	Deployments
-}
-
-// projectLatestDeploymentJSON contains the JSON metadata for the struct
-// [ProjectLatestDeployment]
-type projectLatestDeploymentJSON struct {
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ProjectLatestDeployment) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r projectLatestDeploymentJSON) RawJSON() string {
-	return r.raw
-}
-
 type ProjectParam struct {
 	// Configs for the project build process.
 	BuildConfig param.Field[BuildConfigParam] `json:"build_config"`
-	// Most recent deployment to the repo.
-	CanonicalDeployment param.Field[ProjectCanonicalDeploymentParam] `json:"canonical_deployment"`
 	// Configs for deployments in a project.
 	DeploymentConfigs param.Field[ProjectDeploymentConfigsParam] `json:"deployment_configs"`
-	// Most recent deployment to the repo.
-	LatestDeployment param.Field[ProjectLatestDeploymentParam] `json:"latest_deployment"`
 	// Name of the project.
 	Name param.Field[string] `json:"name"`
 	// Production branch of the project. Used to identify production deployments.
-	ProductionBranch param.Field[string] `json:"production_branch"`
+	ProductionBranch param.Field[string]      `json:"production_branch"`
+	Source           param.Field[SourceParam] `json:"source"`
 }
 
 func (r ProjectParam) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-// Most recent deployment to the repo.
-type ProjectCanonicalDeploymentParam struct {
-	DeploymentsParam
-}
-
-func (r ProjectCanonicalDeploymentParam) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
@@ -1607,24 +1482,21 @@ func (r ProjectDeploymentConfigsParam) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-// Most recent deployment to the repo.
-type ProjectLatestDeploymentParam struct {
-	DeploymentsParam
-}
-
-func (r ProjectLatestDeploymentParam) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
 type ProjectResponse struct {
-	Result Project             `json:"result"`
-	JSON   projectResponseJSON `json:"-"`
-	APIResponsePages
+	Errors   []MessagesPageItem `json:"errors,required"`
+	Messages []MessagesPageItem `json:"messages,required"`
+	Result   Project            `json:"result,required"`
+	// Whether the API call was successful
+	Success ProjectResponseSuccess `json:"success,required"`
+	JSON    projectResponseJSON    `json:"-"`
 }
 
 // projectResponseJSON contains the JSON metadata for the struct [ProjectResponse]
 type projectResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -1635,6 +1507,22 @@ func (r *ProjectResponse) UnmarshalJSON(data []byte) (err error) {
 
 func (r projectResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful
+type ProjectResponseSuccess bool
+
+const (
+	ProjectResponseSuccessFalse ProjectResponseSuccess = false
+	ProjectResponseSuccessTrue  ProjectResponseSuccess = true
+)
+
+func (r ProjectResponseSuccess) IsKnown() bool {
+	switch r {
+	case ProjectResponseSuccessFalse, ProjectResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type Source struct {
@@ -1822,16 +1710,23 @@ func (r StageParam) MarshalJSON() (data []byte, err error) {
 }
 
 type AccountPageProjectListResponse struct {
-	Result []Deployments                      `json:"result"`
-	JSON   accountPageProjectListResponseJSON `json:"-"`
-	APIResponsePages
-	APIResponsePagination
+	Errors   []MessagesPageItem `json:"errors,required"`
+	Messages []MessagesPageItem `json:"messages,required"`
+	Result   []Deployments      `json:"result,required"`
+	// Whether the API call was successful
+	Success    AccountPageProjectListResponseSuccess    `json:"success,required"`
+	ResultInfo AccountPageProjectListResponseResultInfo `json:"result_info"`
+	JSON       accountPageProjectListResponseJSON       `json:"-"`
 }
 
 // accountPageProjectListResponseJSON contains the JSON metadata for the struct
 // [AccountPageProjectListResponse]
 type accountPageProjectListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -1844,16 +1739,72 @@ func (r accountPageProjectListResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful
+type AccountPageProjectListResponseSuccess bool
+
+const (
+	AccountPageProjectListResponseSuccessFalse AccountPageProjectListResponseSuccess = false
+	AccountPageProjectListResponseSuccessTrue  AccountPageProjectListResponseSuccess = true
+)
+
+func (r AccountPageProjectListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountPageProjectListResponseSuccessFalse, AccountPageProjectListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type AccountPageProjectListResponseResultInfo struct {
+	// The number of items on the current page.
+	Count int64 `json:"count,required"`
+	// The page currently being requested.
+	Page int64 `json:"page,required"`
+	// The number of items per page being returned.
+	PerPage int64 `json:"per_page,required"`
+	// The total count of items.
+	TotalCount int64 `json:"total_count,required"`
+	// The total count of pages.
+	TotalPages int64                                        `json:"total_pages"`
+	JSON       accountPageProjectListResponseResultInfoJSON `json:"-"`
+}
+
+// accountPageProjectListResponseResultInfoJSON contains the JSON metadata for the
+// struct [AccountPageProjectListResponseResultInfo]
+type accountPageProjectListResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	TotalPages  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountPageProjectListResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountPageProjectListResponseResultInfoJSON) RawJSON() string {
+	return r.raw
+}
+
 type AccountPageProjectDeleteResponse struct {
-	Result interface{}                          `json:"result,nullable"`
-	JSON   accountPageProjectDeleteResponseJSON `json:"-"`
-	APIResponsePages
+	Errors   []MessagesPageItem `json:"errors,required"`
+	Messages []MessagesPageItem `json:"messages,required"`
+	Result   interface{}        `json:"result,required,nullable"`
+	// Whether the API call was successful
+	Success AccountPageProjectDeleteResponseSuccess `json:"success,required"`
+	JSON    accountPageProjectDeleteResponseJSON    `json:"-"`
 }
 
 // accountPageProjectDeleteResponseJSON contains the JSON metadata for the struct
 // [AccountPageProjectDeleteResponse]
 type accountPageProjectDeleteResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -1866,16 +1817,38 @@ func (r accountPageProjectDeleteResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful
+type AccountPageProjectDeleteResponseSuccess bool
+
+const (
+	AccountPageProjectDeleteResponseSuccessFalse AccountPageProjectDeleteResponseSuccess = false
+	AccountPageProjectDeleteResponseSuccessTrue  AccountPageProjectDeleteResponseSuccess = true
+)
+
+func (r AccountPageProjectDeleteResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountPageProjectDeleteResponseSuccessFalse, AccountPageProjectDeleteResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountPageProjectPurgeBuildCacheResponse struct {
-	Result interface{}                                   `json:"result,nullable"`
-	JSON   accountPageProjectPurgeBuildCacheResponseJSON `json:"-"`
-	APIResponsePages
+	Errors   []MessagesPageItem `json:"errors,required"`
+	Messages []MessagesPageItem `json:"messages,required"`
+	Result   interface{}        `json:"result,required,nullable"`
+	// Whether the API call was successful
+	Success AccountPageProjectPurgeBuildCacheResponseSuccess `json:"success,required"`
+	JSON    accountPageProjectPurgeBuildCacheResponseJSON    `json:"-"`
 }
 
 // accountPageProjectPurgeBuildCacheResponseJSON contains the JSON metadata for the
 // struct [AccountPageProjectPurgeBuildCacheResponse]
 type accountPageProjectPurgeBuildCacheResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -1888,6 +1861,22 @@ func (r accountPageProjectPurgeBuildCacheResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful
+type AccountPageProjectPurgeBuildCacheResponseSuccess bool
+
+const (
+	AccountPageProjectPurgeBuildCacheResponseSuccessFalse AccountPageProjectPurgeBuildCacheResponseSuccess = false
+	AccountPageProjectPurgeBuildCacheResponseSuccessTrue  AccountPageProjectPurgeBuildCacheResponseSuccess = true
+)
+
+func (r AccountPageProjectPurgeBuildCacheResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountPageProjectPurgeBuildCacheResponseSuccessFalse, AccountPageProjectPurgeBuildCacheResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountPageProjectNewParams struct {
 	Project ProjectParam `json:"project,required"`
 }
@@ -1897,25 +1886,9 @@ func (r AccountPageProjectNewParams) MarshalJSON() (data []byte, err error) {
 }
 
 type AccountPageProjectUpdateParams struct {
-	Body AccountPageProjectUpdateParamsBody `json:"body,required"`
+	Project ProjectParam `json:"project,required"`
 }
 
 func (r AccountPageProjectUpdateParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
-}
-
-type AccountPageProjectUpdateParamsBody struct {
-	ProjectParam
-}
-
-func (r AccountPageProjectUpdateParamsBody) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-type AccountPageProjectDeleteParams struct {
-	Body interface{} `json:"body,required"`
-}
-
-func (r AccountPageProjectDeleteParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
+	return apijson.MarshalRoot(r.Project)
 }

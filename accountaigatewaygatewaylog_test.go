@@ -162,7 +162,7 @@ func TestAccountAIGatewayGatewayLogListGatewayLogsWithOptionalParams(t *testing.
 			Cached:    cfrex.F(true),
 			Direction: cfrex.F(cfrex.AccountAIGatewayGatewayLogListGatewayLogsParamsDirectionAsc),
 			EndDate:   cfrex.F(time.Now()),
-			Feedback:  cfrex.F(cfrex.AccountAIGatewayGatewayLogListGatewayLogsParamsFeedbackMinus1),
+			Feedback:  cfrex.F(cfrex.AccountAIGatewayGatewayLogListGatewayLogsParamsFeedback0),
 			Filters: cfrex.F([]cfrex.AccountAIGatewayGatewayLogListGatewayLogsParamsFilter{{
 				Key:      cfrex.F(cfrex.AccountAIGatewayGatewayLogListGatewayLogsParamsFiltersKeyID),
 				Operator: cfrex.F(cfrex.AccountAIGatewayGatewayLogListGatewayLogsParamsFiltersOperatorEq),

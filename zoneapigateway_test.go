@@ -29,7 +29,7 @@ func TestZoneAPIGatewayGetSchemasWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Zones.APIGateway.GetSchemas(
 		context.TODO(),
-		"zone_id",
+		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.ZoneAPIGatewayGetSchemasParams{
 			Feature: cfrex.F([]cfrex.ZoneAPIGatewayGetSchemasParamsFeature{cfrex.ZoneAPIGatewayGetSchemasParamsFeatureThresholds}),
 			Host:    cfrex.F([]string{"www.example.com"}),

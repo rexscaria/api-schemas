@@ -76,7 +76,7 @@ func (r *AccountWorkerDomainService) Attach(ctx context.Context, accountID strin
 }
 
 // Detaches a Worker from a zone and hostname.
-func (r *AccountWorkerDomainService) Detach(ctx context.Context, accountID string, domainID string, body AccountWorkerDomainDetachParams, opts ...option.RequestOption) (err error) {
+func (r *AccountWorkerDomainService) Detach(ctx context.Context, accountID string, domainID string, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if accountID == "" {
@@ -88,18 +88,24 @@ func (r *AccountWorkerDomainService) Detach(ctx context.Context, accountID strin
 		return
 	}
 	path := fmt.Sprintf("accounts/%s/workers/domains/%s", accountID, domainID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, nil, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return
 }
 
 type DomainResponse struct {
-	Result DomainWorker       `json:"result"`
-	JSON   domainResponseJSON `json:"-"`
-	CommonResponseWorkers
+	Errors   []WorkersMessages `json:"errors,required"`
+	Messages []WorkersMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success DomainResponseSuccess `json:"success,required"`
+	Result  DomainWorker          `json:"result"`
+	JSON    domainResponseJSON    `json:"-"`
 }
 
 // domainResponseJSON contains the JSON metadata for the struct [DomainResponse]
 type domainResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -111,6 +117,21 @@ func (r *DomainResponse) UnmarshalJSON(data []byte) (err error) {
 
 func (r domainResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type DomainResponseSuccess bool
+
+const (
+	DomainResponseSuccessTrue DomainResponseSuccess = true
+)
+
+func (r DomainResponseSuccess) IsKnown() bool {
+	switch r {
+	case DomainResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type DomainWorker struct {
@@ -150,14 +171,20 @@ func (r domainWorkerJSON) RawJSON() string {
 }
 
 type AccountWorkerDomainListResponse struct {
-	Result []DomainWorker                      `json:"result"`
-	JSON   accountWorkerDomainListResponseJSON `json:"-"`
-	CommonResponseWorkers
+	Errors   []WorkersMessages `json:"errors,required"`
+	Messages []WorkersMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountWorkerDomainListResponseSuccess `json:"success,required"`
+	Result  []DomainWorker                         `json:"result"`
+	JSON    accountWorkerDomainListResponseJSON    `json:"-"`
 }
 
 // accountWorkerDomainListResponseJSON contains the JSON metadata for the struct
 // [AccountWorkerDomainListResponse]
 type accountWorkerDomainListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -169,6 +196,21 @@ func (r *AccountWorkerDomainListResponse) UnmarshalJSON(data []byte) (err error)
 
 func (r accountWorkerDomainListResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountWorkerDomainListResponseSuccess bool
+
+const (
+	AccountWorkerDomainListResponseSuccessTrue AccountWorkerDomainListResponseSuccess = true
+)
+
+func (r AccountWorkerDomainListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountWorkerDomainListResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountWorkerDomainListParams struct {
@@ -206,12 +248,4 @@ type AccountWorkerDomainAttachParams struct {
 
 func (r AccountWorkerDomainAttachParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
-}
-
-type AccountWorkerDomainDetachParams struct {
-	Body interface{} `json:"body,required"`
-}
-
-func (r AccountWorkerDomainDetachParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
 }

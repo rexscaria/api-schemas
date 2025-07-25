@@ -184,44 +184,23 @@ func (r *AccountEmailSecurityInvestigateService) Release(ctx context.Context, ac
 	return
 }
 
-type APIResponseEmailSecurity struct {
-	Errors   []EmailSecurityMessage       `json:"errors,required"`
-	Messages []EmailSecurityMessage       `json:"messages,required"`
-	Success  bool                         `json:"success,required"`
-	JSON     apiResponseEmailSecurityJSON `json:"-"`
-}
-
-// apiResponseEmailSecurityJSON contains the JSON metadata for the struct
-// [APIResponseEmailSecurity]
-type apiResponseEmailSecurityJSON struct {
-	Errors      apijson.Field
-	Messages    apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *APIResponseEmailSecurity) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r apiResponseEmailSecurityJSON) RawJSON() string {
-	return r.raw
-}
-
 type EmailSecurityMessage struct {
-	Code    int64                    `json:"code,required"`
-	Message string                   `json:"message,required"`
-	JSON    emailSecurityMessageJSON `json:"-"`
+	Code             int64                      `json:"code,required"`
+	Message          string                     `json:"message,required"`
+	DocumentationURL string                     `json:"documentation_url"`
+	Source           EmailSecurityMessageSource `json:"source"`
+	JSON             emailSecurityMessageJSON   `json:"-"`
 }
 
 // emailSecurityMessageJSON contains the JSON metadata for the struct
 // [EmailSecurityMessage]
 type emailSecurityMessageJSON struct {
-	Code        apijson.Field
-	Message     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
 }
 
 func (r *EmailSecurityMessage) UnmarshalJSON(data []byte) (err error) {
@@ -230,6 +209,51 @@ func (r *EmailSecurityMessage) UnmarshalJSON(data []byte) (err error) {
 
 func (r emailSecurityMessageJSON) RawJSON() string {
 	return r.raw
+}
+
+type EmailSecurityMessageSource struct {
+	Pointer string                         `json:"pointer"`
+	JSON    emailSecurityMessageSourceJSON `json:"-"`
+}
+
+// emailSecurityMessageSourceJSON contains the JSON metadata for the struct
+// [EmailSecurityMessageSource]
+type emailSecurityMessageSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *EmailSecurityMessageSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r emailSecurityMessageSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type MessageDeliveryMode string
+
+const (
+	MessageDeliveryModeDirect                MessageDeliveryMode = "DIRECT"
+	MessageDeliveryModeBcc                   MessageDeliveryMode = "BCC"
+	MessageDeliveryModeJournal               MessageDeliveryMode = "JOURNAL"
+	MessageDeliveryModeReviewSubmission      MessageDeliveryMode = "REVIEW_SUBMISSION"
+	MessageDeliveryModeDmarcUnverified       MessageDeliveryMode = "DMARC_UNVERIFIED"
+	MessageDeliveryModeDmarcFailureReport    MessageDeliveryMode = "DMARC_FAILURE_REPORT"
+	MessageDeliveryModeDmarcAggregateReport  MessageDeliveryMode = "DMARC_AGGREGATE_REPORT"
+	MessageDeliveryModeThreatIntelSubmission MessageDeliveryMode = "THREAT_INTEL_SUBMISSION"
+	MessageDeliveryModeSimulationSubmission  MessageDeliveryMode = "SIMULATION_SUBMISSION"
+	MessageDeliveryModeAPI                   MessageDeliveryMode = "API"
+	MessageDeliveryModeRetroScan             MessageDeliveryMode = "RETRO_SCAN"
+)
+
+func (r MessageDeliveryMode) IsKnown() bool {
+	switch r {
+	case MessageDeliveryModeDirect, MessageDeliveryModeBcc, MessageDeliveryModeJournal, MessageDeliveryModeReviewSubmission, MessageDeliveryModeDmarcUnverified, MessageDeliveryModeDmarcFailureReport, MessageDeliveryModeDmarcAggregateReport, MessageDeliveryModeThreatIntelSubmission, MessageDeliveryModeSimulationSubmission, MessageDeliveryModeAPI, MessageDeliveryModeRetroScan:
+		return true
+	}
+	return false
 }
 
 type ResultInfoEmailSecurity struct {
@@ -287,16 +311,39 @@ func (r traceLineJSON) RawJSON() string {
 	return r.raw
 }
 
+type ValidationStatus string
+
+const (
+	ValidationStatusPass    ValidationStatus = "pass"
+	ValidationStatusNeutral ValidationStatus = "neutral"
+	ValidationStatusFail    ValidationStatus = "fail"
+	ValidationStatusError   ValidationStatus = "error"
+	ValidationStatusNone    ValidationStatus = "none"
+)
+
+func (r ValidationStatus) IsKnown() bool {
+	switch r {
+	case ValidationStatusPass, ValidationStatusNeutral, ValidationStatusFail, ValidationStatusError, ValidationStatusNone:
+		return true
+	}
+	return false
+}
+
 type AccountEmailSecurityInvestigateGetResponse struct {
-	Result AccountEmailSecurityInvestigateGetResponseResult `json:"result,required"`
-	JSON   accountEmailSecurityInvestigateGetResponseJSON   `json:"-"`
-	APIResponseEmailSecurity
+	Errors   []EmailSecurityMessage                           `json:"errors,required"`
+	Messages []EmailSecurityMessage                           `json:"messages,required"`
+	Result   AccountEmailSecurityInvestigateGetResponseResult `json:"result,required"`
+	Success  bool                                             `json:"success,required"`
+	JSON     accountEmailSecurityInvestigateGetResponseJSON   `json:"-"`
 }
 
 // accountEmailSecurityInvestigateGetResponseJSON contains the JSON metadata for
 // the struct [AccountEmailSecurityInvestigateGetResponse]
 type accountEmailSecurityInvestigateGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -317,22 +364,24 @@ type AccountEmailSecurityInvestigateGetResponseResult struct {
 	IsPhishSubmission bool        `json:"is_phish_submission,required"`
 	IsQuarantined     bool        `json:"is_quarantined,required"`
 	// The identifier of the message.
-	PostfixID        string                                                           `json:"postfix_id,required"`
-	Ts               string                                                           `json:"ts,required"`
-	AlertID          string                                                           `json:"alert_id,nullable"`
-	DeliveryMode     AccountEmailSecurityInvestigateGetResponseResultDeliveryMode     `json:"delivery_mode,nullable"`
-	EdfHash          string                                                           `json:"edf_hash,nullable"`
-	FinalDisposition AccountEmailSecurityInvestigateGetResponseResultFinalDisposition `json:"final_disposition,nullable"`
-	From             string                                                           `json:"from,nullable"`
-	FromName         string                                                           `json:"from_name,nullable"`
-	MessageID        string                                                           `json:"message_id,nullable"`
-	SentDate         string                                                           `json:"sent_date,nullable"`
-	Subject          string                                                           `json:"subject,nullable"`
-	ThreatCategories []string                                                         `json:"threat_categories,nullable"`
-	To               []string                                                         `json:"to,nullable"`
-	ToName           []string                                                         `json:"to_name,nullable"`
-	Validation       AccountEmailSecurityInvestigateGetResponseResultValidation       `json:"validation"`
-	JSON             accountEmailSecurityInvestigateGetResponseResultJSON             `json:"-"`
+	PostfixID        string                                                     `json:"postfix_id,required"`
+	Properties       AccountEmailSecurityInvestigateGetResponseResultProperties `json:"properties,required"`
+	Ts               string                                                     `json:"ts,required"`
+	AlertID          string                                                     `json:"alert_id,nullable"`
+	DeliveryMode     MessageDeliveryMode                                        `json:"delivery_mode,nullable"`
+	EdfHash          string                                                     `json:"edf_hash,nullable"`
+	FinalDisposition DispositionLabel                                           `json:"final_disposition,nullable"`
+	Findings         []AccountEmailSecurityInvestigateGetResponseResultFinding  `json:"findings,nullable"`
+	From             string                                                     `json:"from,nullable"`
+	FromName         string                                                     `json:"from_name,nullable"`
+	MessageID        string                                                     `json:"message_id,nullable"`
+	SentDate         string                                                     `json:"sent_date,nullable"`
+	Subject          string                                                     `json:"subject,nullable"`
+	ThreatCategories []string                                                   `json:"threat_categories,nullable"`
+	To               []string                                                   `json:"to,nullable"`
+	ToName           []string                                                   `json:"to_name,nullable"`
+	Validation       AccountEmailSecurityInvestigateGetResponseResultValidation `json:"validation,nullable"`
+	JSON             accountEmailSecurityInvestigateGetResponseResultJSON       `json:"-"`
 }
 
 // accountEmailSecurityInvestigateGetResponseResultJSON contains the JSON metadata
@@ -345,11 +394,13 @@ type accountEmailSecurityInvestigateGetResponseResultJSON struct {
 	IsPhishSubmission apijson.Field
 	IsQuarantined     apijson.Field
 	PostfixID         apijson.Field
+	Properties        apijson.Field
 	Ts                apijson.Field
 	AlertID           apijson.Field
 	DeliveryMode      apijson.Field
 	EdfHash           apijson.Field
 	FinalDisposition  apijson.Field
+	Findings          apijson.Field
 	From              apijson.Field
 	FromName          apijson.Field
 	MessageID         apijson.Field
@@ -371,59 +422,108 @@ func (r accountEmailSecurityInvestigateGetResponseResultJSON) RawJSON() string {
 	return r.raw
 }
 
-type AccountEmailSecurityInvestigateGetResponseResultDeliveryMode string
+type AccountEmailSecurityInvestigateGetResponseResultProperties struct {
+	AllowlistedPattern     string                                                                           `json:"allowlisted_pattern"`
+	AllowlistedPatternType AccountEmailSecurityInvestigateGetResponseResultPropertiesAllowlistedPatternType `json:"allowlisted_pattern_type"`
+	BlocklistedMessage     bool                                                                             `json:"blocklisted_message"`
+	BlocklistedPattern     string                                                                           `json:"blocklisted_pattern"`
+	WhitelistedPatternType AccountEmailSecurityInvestigateGetResponseResultPropertiesWhitelistedPatternType `json:"whitelisted_pattern_type"`
+	JSON                   accountEmailSecurityInvestigateGetResponseResultPropertiesJSON                   `json:"-"`
+}
+
+// accountEmailSecurityInvestigateGetResponseResultPropertiesJSON contains the JSON
+// metadata for the struct
+// [AccountEmailSecurityInvestigateGetResponseResultProperties]
+type accountEmailSecurityInvestigateGetResponseResultPropertiesJSON struct {
+	AllowlistedPattern     apijson.Field
+	AllowlistedPatternType apijson.Field
+	BlocklistedMessage     apijson.Field
+	BlocklistedPattern     apijson.Field
+	WhitelistedPatternType apijson.Field
+	raw                    string
+	ExtraFields            map[string]apijson.Field
+}
+
+func (r *AccountEmailSecurityInvestigateGetResponseResultProperties) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountEmailSecurityInvestigateGetResponseResultPropertiesJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountEmailSecurityInvestigateGetResponseResultPropertiesAllowlistedPatternType string
 
 const (
-	AccountEmailSecurityInvestigateGetResponseResultDeliveryModeDirect                AccountEmailSecurityInvestigateGetResponseResultDeliveryMode = "DIRECT"
-	AccountEmailSecurityInvestigateGetResponseResultDeliveryModeBcc                   AccountEmailSecurityInvestigateGetResponseResultDeliveryMode = "BCC"
-	AccountEmailSecurityInvestigateGetResponseResultDeliveryModeJournal               AccountEmailSecurityInvestigateGetResponseResultDeliveryMode = "JOURNAL"
-	AccountEmailSecurityInvestigateGetResponseResultDeliveryModeReviewSubmission      AccountEmailSecurityInvestigateGetResponseResultDeliveryMode = "REVIEW_SUBMISSION"
-	AccountEmailSecurityInvestigateGetResponseResultDeliveryModeDmarcUnverified       AccountEmailSecurityInvestigateGetResponseResultDeliveryMode = "DMARC_UNVERIFIED"
-	AccountEmailSecurityInvestigateGetResponseResultDeliveryModeDmarcFailureReport    AccountEmailSecurityInvestigateGetResponseResultDeliveryMode = "DMARC_FAILURE_REPORT"
-	AccountEmailSecurityInvestigateGetResponseResultDeliveryModeDmarcAggregateReport  AccountEmailSecurityInvestigateGetResponseResultDeliveryMode = "DMARC_AGGREGATE_REPORT"
-	AccountEmailSecurityInvestigateGetResponseResultDeliveryModeThreatIntelSubmission AccountEmailSecurityInvestigateGetResponseResultDeliveryMode = "THREAT_INTEL_SUBMISSION"
-	AccountEmailSecurityInvestigateGetResponseResultDeliveryModeSimulationSubmission  AccountEmailSecurityInvestigateGetResponseResultDeliveryMode = "SIMULATION_SUBMISSION"
-	AccountEmailSecurityInvestigateGetResponseResultDeliveryModeAPI                   AccountEmailSecurityInvestigateGetResponseResultDeliveryMode = "API"
-	AccountEmailSecurityInvestigateGetResponseResultDeliveryModeRetroScan             AccountEmailSecurityInvestigateGetResponseResultDeliveryMode = "RETRO_SCAN"
+	AccountEmailSecurityInvestigateGetResponseResultPropertiesAllowlistedPatternTypeQuarantineRelease       AccountEmailSecurityInvestigateGetResponseResultPropertiesAllowlistedPatternType = "quarantine_release"
+	AccountEmailSecurityInvestigateGetResponseResultPropertiesAllowlistedPatternTypeAcceptableSender        AccountEmailSecurityInvestigateGetResponseResultPropertiesAllowlistedPatternType = "acceptable_sender"
+	AccountEmailSecurityInvestigateGetResponseResultPropertiesAllowlistedPatternTypeAllowedSender           AccountEmailSecurityInvestigateGetResponseResultPropertiesAllowlistedPatternType = "allowed_sender"
+	AccountEmailSecurityInvestigateGetResponseResultPropertiesAllowlistedPatternTypeAllowedRecipient        AccountEmailSecurityInvestigateGetResponseResultPropertiesAllowlistedPatternType = "allowed_recipient"
+	AccountEmailSecurityInvestigateGetResponseResultPropertiesAllowlistedPatternTypeDomainSimilarity        AccountEmailSecurityInvestigateGetResponseResultPropertiesAllowlistedPatternType = "domain_similarity"
+	AccountEmailSecurityInvestigateGetResponseResultPropertiesAllowlistedPatternTypeDomainRecency           AccountEmailSecurityInvestigateGetResponseResultPropertiesAllowlistedPatternType = "domain_recency"
+	AccountEmailSecurityInvestigateGetResponseResultPropertiesAllowlistedPatternTypeManagedAcceptableSender AccountEmailSecurityInvestigateGetResponseResultPropertiesAllowlistedPatternType = "managed_acceptable_sender"
 )
 
-func (r AccountEmailSecurityInvestigateGetResponseResultDeliveryMode) IsKnown() bool {
+func (r AccountEmailSecurityInvestigateGetResponseResultPropertiesAllowlistedPatternType) IsKnown() bool {
 	switch r {
-	case AccountEmailSecurityInvestigateGetResponseResultDeliveryModeDirect, AccountEmailSecurityInvestigateGetResponseResultDeliveryModeBcc, AccountEmailSecurityInvestigateGetResponseResultDeliveryModeJournal, AccountEmailSecurityInvestigateGetResponseResultDeliveryModeReviewSubmission, AccountEmailSecurityInvestigateGetResponseResultDeliveryModeDmarcUnverified, AccountEmailSecurityInvestigateGetResponseResultDeliveryModeDmarcFailureReport, AccountEmailSecurityInvestigateGetResponseResultDeliveryModeDmarcAggregateReport, AccountEmailSecurityInvestigateGetResponseResultDeliveryModeThreatIntelSubmission, AccountEmailSecurityInvestigateGetResponseResultDeliveryModeSimulationSubmission, AccountEmailSecurityInvestigateGetResponseResultDeliveryModeAPI, AccountEmailSecurityInvestigateGetResponseResultDeliveryModeRetroScan:
+	case AccountEmailSecurityInvestigateGetResponseResultPropertiesAllowlistedPatternTypeQuarantineRelease, AccountEmailSecurityInvestigateGetResponseResultPropertiesAllowlistedPatternTypeAcceptableSender, AccountEmailSecurityInvestigateGetResponseResultPropertiesAllowlistedPatternTypeAllowedSender, AccountEmailSecurityInvestigateGetResponseResultPropertiesAllowlistedPatternTypeAllowedRecipient, AccountEmailSecurityInvestigateGetResponseResultPropertiesAllowlistedPatternTypeDomainSimilarity, AccountEmailSecurityInvestigateGetResponseResultPropertiesAllowlistedPatternTypeDomainRecency, AccountEmailSecurityInvestigateGetResponseResultPropertiesAllowlistedPatternTypeManagedAcceptableSender:
 		return true
 	}
 	return false
 }
 
-type AccountEmailSecurityInvestigateGetResponseResultFinalDisposition string
+type AccountEmailSecurityInvestigateGetResponseResultPropertiesWhitelistedPatternType string
 
 const (
-	AccountEmailSecurityInvestigateGetResponseResultFinalDispositionMalicious    AccountEmailSecurityInvestigateGetResponseResultFinalDisposition = "MALICIOUS"
-	AccountEmailSecurityInvestigateGetResponseResultFinalDispositionMaliciousBec AccountEmailSecurityInvestigateGetResponseResultFinalDisposition = "MALICIOUS-BEC"
-	AccountEmailSecurityInvestigateGetResponseResultFinalDispositionSuspicious   AccountEmailSecurityInvestigateGetResponseResultFinalDisposition = "SUSPICIOUS"
-	AccountEmailSecurityInvestigateGetResponseResultFinalDispositionSpoof        AccountEmailSecurityInvestigateGetResponseResultFinalDisposition = "SPOOF"
-	AccountEmailSecurityInvestigateGetResponseResultFinalDispositionSpam         AccountEmailSecurityInvestigateGetResponseResultFinalDisposition = "SPAM"
-	AccountEmailSecurityInvestigateGetResponseResultFinalDispositionBulk         AccountEmailSecurityInvestigateGetResponseResultFinalDisposition = "BULK"
-	AccountEmailSecurityInvestigateGetResponseResultFinalDispositionEncrypted    AccountEmailSecurityInvestigateGetResponseResultFinalDisposition = "ENCRYPTED"
-	AccountEmailSecurityInvestigateGetResponseResultFinalDispositionExternal     AccountEmailSecurityInvestigateGetResponseResultFinalDisposition = "EXTERNAL"
-	AccountEmailSecurityInvestigateGetResponseResultFinalDispositionUnknown      AccountEmailSecurityInvestigateGetResponseResultFinalDisposition = "UNKNOWN"
-	AccountEmailSecurityInvestigateGetResponseResultFinalDispositionNone         AccountEmailSecurityInvestigateGetResponseResultFinalDisposition = "NONE"
+	AccountEmailSecurityInvestigateGetResponseResultPropertiesWhitelistedPatternTypeQuarantineRelease       AccountEmailSecurityInvestigateGetResponseResultPropertiesWhitelistedPatternType = "quarantine_release"
+	AccountEmailSecurityInvestigateGetResponseResultPropertiesWhitelistedPatternTypeAcceptableSender        AccountEmailSecurityInvestigateGetResponseResultPropertiesWhitelistedPatternType = "acceptable_sender"
+	AccountEmailSecurityInvestigateGetResponseResultPropertiesWhitelistedPatternTypeAllowedSender           AccountEmailSecurityInvestigateGetResponseResultPropertiesWhitelistedPatternType = "allowed_sender"
+	AccountEmailSecurityInvestigateGetResponseResultPropertiesWhitelistedPatternTypeAllowedRecipient        AccountEmailSecurityInvestigateGetResponseResultPropertiesWhitelistedPatternType = "allowed_recipient"
+	AccountEmailSecurityInvestigateGetResponseResultPropertiesWhitelistedPatternTypeDomainSimilarity        AccountEmailSecurityInvestigateGetResponseResultPropertiesWhitelistedPatternType = "domain_similarity"
+	AccountEmailSecurityInvestigateGetResponseResultPropertiesWhitelistedPatternTypeDomainRecency           AccountEmailSecurityInvestigateGetResponseResultPropertiesWhitelistedPatternType = "domain_recency"
+	AccountEmailSecurityInvestigateGetResponseResultPropertiesWhitelistedPatternTypeManagedAcceptableSender AccountEmailSecurityInvestigateGetResponseResultPropertiesWhitelistedPatternType = "managed_acceptable_sender"
 )
 
-func (r AccountEmailSecurityInvestigateGetResponseResultFinalDisposition) IsKnown() bool {
+func (r AccountEmailSecurityInvestigateGetResponseResultPropertiesWhitelistedPatternType) IsKnown() bool {
 	switch r {
-	case AccountEmailSecurityInvestigateGetResponseResultFinalDispositionMalicious, AccountEmailSecurityInvestigateGetResponseResultFinalDispositionMaliciousBec, AccountEmailSecurityInvestigateGetResponseResultFinalDispositionSuspicious, AccountEmailSecurityInvestigateGetResponseResultFinalDispositionSpoof, AccountEmailSecurityInvestigateGetResponseResultFinalDispositionSpam, AccountEmailSecurityInvestigateGetResponseResultFinalDispositionBulk, AccountEmailSecurityInvestigateGetResponseResultFinalDispositionEncrypted, AccountEmailSecurityInvestigateGetResponseResultFinalDispositionExternal, AccountEmailSecurityInvestigateGetResponseResultFinalDispositionUnknown, AccountEmailSecurityInvestigateGetResponseResultFinalDispositionNone:
+	case AccountEmailSecurityInvestigateGetResponseResultPropertiesWhitelistedPatternTypeQuarantineRelease, AccountEmailSecurityInvestigateGetResponseResultPropertiesWhitelistedPatternTypeAcceptableSender, AccountEmailSecurityInvestigateGetResponseResultPropertiesWhitelistedPatternTypeAllowedSender, AccountEmailSecurityInvestigateGetResponseResultPropertiesWhitelistedPatternTypeAllowedRecipient, AccountEmailSecurityInvestigateGetResponseResultPropertiesWhitelistedPatternTypeDomainSimilarity, AccountEmailSecurityInvestigateGetResponseResultPropertiesWhitelistedPatternTypeDomainRecency, AccountEmailSecurityInvestigateGetResponseResultPropertiesWhitelistedPatternTypeManagedAcceptableSender:
 		return true
 	}
 	return false
+}
+
+type AccountEmailSecurityInvestigateGetResponseResultFinding struct {
+	Detail string                                                      `json:"detail,nullable"`
+	Name   string                                                      `json:"name,nullable"`
+	Value  string                                                      `json:"value,nullable"`
+	JSON   accountEmailSecurityInvestigateGetResponseResultFindingJSON `json:"-"`
+}
+
+// accountEmailSecurityInvestigateGetResponseResultFindingJSON contains the JSON
+// metadata for the struct
+// [AccountEmailSecurityInvestigateGetResponseResultFinding]
+type accountEmailSecurityInvestigateGetResponseResultFindingJSON struct {
+	Detail      apijson.Field
+	Name        apijson.Field
+	Value       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountEmailSecurityInvestigateGetResponseResultFinding) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountEmailSecurityInvestigateGetResponseResultFindingJSON) RawJSON() string {
+	return r.raw
 }
 
 type AccountEmailSecurityInvestigateGetResponseResultValidation struct {
-	Comment string                                                          `json:"comment,nullable"`
-	Dkim    AccountEmailSecurityInvestigateGetResponseResultValidationDkim  `json:"dkim,nullable"`
-	Dmarc   AccountEmailSecurityInvestigateGetResponseResultValidationDmarc `json:"dmarc,nullable"`
-	Spf     AccountEmailSecurityInvestigateGetResponseResultValidationSpf   `json:"spf,nullable"`
-	JSON    accountEmailSecurityInvestigateGetResponseResultValidationJSON  `json:"-"`
+	Comment string                                                         `json:"comment,nullable"`
+	Dkim    ValidationStatus                                               `json:"dkim,nullable"`
+	Dmarc   ValidationStatus                                               `json:"dmarc,nullable"`
+	Spf     ValidationStatus                                               `json:"spf,nullable"`
+	JSON    accountEmailSecurityInvestigateGetResponseResultValidationJSON `json:"-"`
 }
 
 // accountEmailSecurityInvestigateGetResponseResultValidationJSON contains the JSON
@@ -446,72 +546,23 @@ func (r accountEmailSecurityInvestigateGetResponseResultValidationJSON) RawJSON(
 	return r.raw
 }
 
-type AccountEmailSecurityInvestigateGetResponseResultValidationDkim string
-
-const (
-	AccountEmailSecurityInvestigateGetResponseResultValidationDkimPass    AccountEmailSecurityInvestigateGetResponseResultValidationDkim = "pass"
-	AccountEmailSecurityInvestigateGetResponseResultValidationDkimNeutral AccountEmailSecurityInvestigateGetResponseResultValidationDkim = "neutral"
-	AccountEmailSecurityInvestigateGetResponseResultValidationDkimFail    AccountEmailSecurityInvestigateGetResponseResultValidationDkim = "fail"
-	AccountEmailSecurityInvestigateGetResponseResultValidationDkimError   AccountEmailSecurityInvestigateGetResponseResultValidationDkim = "error"
-	AccountEmailSecurityInvestigateGetResponseResultValidationDkimNone    AccountEmailSecurityInvestigateGetResponseResultValidationDkim = "none"
-)
-
-func (r AccountEmailSecurityInvestigateGetResponseResultValidationDkim) IsKnown() bool {
-	switch r {
-	case AccountEmailSecurityInvestigateGetResponseResultValidationDkimPass, AccountEmailSecurityInvestigateGetResponseResultValidationDkimNeutral, AccountEmailSecurityInvestigateGetResponseResultValidationDkimFail, AccountEmailSecurityInvestigateGetResponseResultValidationDkimError, AccountEmailSecurityInvestigateGetResponseResultValidationDkimNone:
-		return true
-	}
-	return false
-}
-
-type AccountEmailSecurityInvestigateGetResponseResultValidationDmarc string
-
-const (
-	AccountEmailSecurityInvestigateGetResponseResultValidationDmarcPass    AccountEmailSecurityInvestigateGetResponseResultValidationDmarc = "pass"
-	AccountEmailSecurityInvestigateGetResponseResultValidationDmarcNeutral AccountEmailSecurityInvestigateGetResponseResultValidationDmarc = "neutral"
-	AccountEmailSecurityInvestigateGetResponseResultValidationDmarcFail    AccountEmailSecurityInvestigateGetResponseResultValidationDmarc = "fail"
-	AccountEmailSecurityInvestigateGetResponseResultValidationDmarcError   AccountEmailSecurityInvestigateGetResponseResultValidationDmarc = "error"
-	AccountEmailSecurityInvestigateGetResponseResultValidationDmarcNone    AccountEmailSecurityInvestigateGetResponseResultValidationDmarc = "none"
-)
-
-func (r AccountEmailSecurityInvestigateGetResponseResultValidationDmarc) IsKnown() bool {
-	switch r {
-	case AccountEmailSecurityInvestigateGetResponseResultValidationDmarcPass, AccountEmailSecurityInvestigateGetResponseResultValidationDmarcNeutral, AccountEmailSecurityInvestigateGetResponseResultValidationDmarcFail, AccountEmailSecurityInvestigateGetResponseResultValidationDmarcError, AccountEmailSecurityInvestigateGetResponseResultValidationDmarcNone:
-		return true
-	}
-	return false
-}
-
-type AccountEmailSecurityInvestigateGetResponseResultValidationSpf string
-
-const (
-	AccountEmailSecurityInvestigateGetResponseResultValidationSpfPass    AccountEmailSecurityInvestigateGetResponseResultValidationSpf = "pass"
-	AccountEmailSecurityInvestigateGetResponseResultValidationSpfNeutral AccountEmailSecurityInvestigateGetResponseResultValidationSpf = "neutral"
-	AccountEmailSecurityInvestigateGetResponseResultValidationSpfFail    AccountEmailSecurityInvestigateGetResponseResultValidationSpf = "fail"
-	AccountEmailSecurityInvestigateGetResponseResultValidationSpfError   AccountEmailSecurityInvestigateGetResponseResultValidationSpf = "error"
-	AccountEmailSecurityInvestigateGetResponseResultValidationSpfNone    AccountEmailSecurityInvestigateGetResponseResultValidationSpf = "none"
-)
-
-func (r AccountEmailSecurityInvestigateGetResponseResultValidationSpf) IsKnown() bool {
-	switch r {
-	case AccountEmailSecurityInvestigateGetResponseResultValidationSpfPass, AccountEmailSecurityInvestigateGetResponseResultValidationSpfNeutral, AccountEmailSecurityInvestigateGetResponseResultValidationSpfFail, AccountEmailSecurityInvestigateGetResponseResultValidationSpfError, AccountEmailSecurityInvestigateGetResponseResultValidationSpfNone:
-		return true
-	}
-	return false
-}
-
 type AccountEmailSecurityInvestigateListResponse struct {
+	Errors     []EmailSecurityMessage                              `json:"errors,required"`
+	Messages   []EmailSecurityMessage                              `json:"messages,required"`
 	Result     []AccountEmailSecurityInvestigateListResponseResult `json:"result,required"`
 	ResultInfo ResultInfoEmailSecurity                             `json:"result_info,required"`
+	Success    bool                                                `json:"success,required"`
 	JSON       accountEmailSecurityInvestigateListResponseJSON     `json:"-"`
-	APIResponseEmailSecurity
 }
 
 // accountEmailSecurityInvestigateListResponseJSON contains the JSON metadata for
 // the struct [AccountEmailSecurityInvestigateListResponse]
 type accountEmailSecurityInvestigateListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
 	ResultInfo  apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -532,22 +583,24 @@ type AccountEmailSecurityInvestigateListResponseResult struct {
 	IsPhishSubmission bool        `json:"is_phish_submission,required"`
 	IsQuarantined     bool        `json:"is_quarantined,required"`
 	// The identifier of the message.
-	PostfixID        string                                                            `json:"postfix_id,required"`
-	Ts               string                                                            `json:"ts,required"`
-	AlertID          string                                                            `json:"alert_id,nullable"`
-	DeliveryMode     AccountEmailSecurityInvestigateListResponseResultDeliveryMode     `json:"delivery_mode,nullable"`
-	EdfHash          string                                                            `json:"edf_hash,nullable"`
-	FinalDisposition AccountEmailSecurityInvestigateListResponseResultFinalDisposition `json:"final_disposition,nullable"`
-	From             string                                                            `json:"from,nullable"`
-	FromName         string                                                            `json:"from_name,nullable"`
-	MessageID        string                                                            `json:"message_id,nullable"`
-	SentDate         string                                                            `json:"sent_date,nullable"`
-	Subject          string                                                            `json:"subject,nullable"`
-	ThreatCategories []string                                                          `json:"threat_categories,nullable"`
-	To               []string                                                          `json:"to,nullable"`
-	ToName           []string                                                          `json:"to_name,nullable"`
-	Validation       AccountEmailSecurityInvestigateListResponseResultValidation       `json:"validation"`
-	JSON             accountEmailSecurityInvestigateListResponseResultJSON             `json:"-"`
+	PostfixID        string                                                      `json:"postfix_id,required"`
+	Properties       AccountEmailSecurityInvestigateListResponseResultProperties `json:"properties,required"`
+	Ts               string                                                      `json:"ts,required"`
+	AlertID          string                                                      `json:"alert_id,nullable"`
+	DeliveryMode     MessageDeliveryMode                                         `json:"delivery_mode,nullable"`
+	EdfHash          string                                                      `json:"edf_hash,nullable"`
+	FinalDisposition DispositionLabel                                            `json:"final_disposition,nullable"`
+	Findings         []AccountEmailSecurityInvestigateListResponseResultFinding  `json:"findings,nullable"`
+	From             string                                                      `json:"from,nullable"`
+	FromName         string                                                      `json:"from_name,nullable"`
+	MessageID        string                                                      `json:"message_id,nullable"`
+	SentDate         string                                                      `json:"sent_date,nullable"`
+	Subject          string                                                      `json:"subject,nullable"`
+	ThreatCategories []string                                                    `json:"threat_categories,nullable"`
+	To               []string                                                    `json:"to,nullable"`
+	ToName           []string                                                    `json:"to_name,nullable"`
+	Validation       AccountEmailSecurityInvestigateListResponseResultValidation `json:"validation,nullable"`
+	JSON             accountEmailSecurityInvestigateListResponseResultJSON       `json:"-"`
 }
 
 // accountEmailSecurityInvestigateListResponseResultJSON contains the JSON metadata
@@ -560,11 +613,13 @@ type accountEmailSecurityInvestigateListResponseResultJSON struct {
 	IsPhishSubmission apijson.Field
 	IsQuarantined     apijson.Field
 	PostfixID         apijson.Field
+	Properties        apijson.Field
 	Ts                apijson.Field
 	AlertID           apijson.Field
 	DeliveryMode      apijson.Field
 	EdfHash           apijson.Field
 	FinalDisposition  apijson.Field
+	Findings          apijson.Field
 	From              apijson.Field
 	FromName          apijson.Field
 	MessageID         apijson.Field
@@ -586,59 +641,108 @@ func (r accountEmailSecurityInvestigateListResponseResultJSON) RawJSON() string 
 	return r.raw
 }
 
-type AccountEmailSecurityInvestigateListResponseResultDeliveryMode string
+type AccountEmailSecurityInvestigateListResponseResultProperties struct {
+	AllowlistedPattern     string                                                                            `json:"allowlisted_pattern"`
+	AllowlistedPatternType AccountEmailSecurityInvestigateListResponseResultPropertiesAllowlistedPatternType `json:"allowlisted_pattern_type"`
+	BlocklistedMessage     bool                                                                              `json:"blocklisted_message"`
+	BlocklistedPattern     string                                                                            `json:"blocklisted_pattern"`
+	WhitelistedPatternType AccountEmailSecurityInvestigateListResponseResultPropertiesWhitelistedPatternType `json:"whitelisted_pattern_type"`
+	JSON                   accountEmailSecurityInvestigateListResponseResultPropertiesJSON                   `json:"-"`
+}
+
+// accountEmailSecurityInvestigateListResponseResultPropertiesJSON contains the
+// JSON metadata for the struct
+// [AccountEmailSecurityInvestigateListResponseResultProperties]
+type accountEmailSecurityInvestigateListResponseResultPropertiesJSON struct {
+	AllowlistedPattern     apijson.Field
+	AllowlistedPatternType apijson.Field
+	BlocklistedMessage     apijson.Field
+	BlocklistedPattern     apijson.Field
+	WhitelistedPatternType apijson.Field
+	raw                    string
+	ExtraFields            map[string]apijson.Field
+}
+
+func (r *AccountEmailSecurityInvestigateListResponseResultProperties) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountEmailSecurityInvestigateListResponseResultPropertiesJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountEmailSecurityInvestigateListResponseResultPropertiesAllowlistedPatternType string
 
 const (
-	AccountEmailSecurityInvestigateListResponseResultDeliveryModeDirect                AccountEmailSecurityInvestigateListResponseResultDeliveryMode = "DIRECT"
-	AccountEmailSecurityInvestigateListResponseResultDeliveryModeBcc                   AccountEmailSecurityInvestigateListResponseResultDeliveryMode = "BCC"
-	AccountEmailSecurityInvestigateListResponseResultDeliveryModeJournal               AccountEmailSecurityInvestigateListResponseResultDeliveryMode = "JOURNAL"
-	AccountEmailSecurityInvestigateListResponseResultDeliveryModeReviewSubmission      AccountEmailSecurityInvestigateListResponseResultDeliveryMode = "REVIEW_SUBMISSION"
-	AccountEmailSecurityInvestigateListResponseResultDeliveryModeDmarcUnverified       AccountEmailSecurityInvestigateListResponseResultDeliveryMode = "DMARC_UNVERIFIED"
-	AccountEmailSecurityInvestigateListResponseResultDeliveryModeDmarcFailureReport    AccountEmailSecurityInvestigateListResponseResultDeliveryMode = "DMARC_FAILURE_REPORT"
-	AccountEmailSecurityInvestigateListResponseResultDeliveryModeDmarcAggregateReport  AccountEmailSecurityInvestigateListResponseResultDeliveryMode = "DMARC_AGGREGATE_REPORT"
-	AccountEmailSecurityInvestigateListResponseResultDeliveryModeThreatIntelSubmission AccountEmailSecurityInvestigateListResponseResultDeliveryMode = "THREAT_INTEL_SUBMISSION"
-	AccountEmailSecurityInvestigateListResponseResultDeliveryModeSimulationSubmission  AccountEmailSecurityInvestigateListResponseResultDeliveryMode = "SIMULATION_SUBMISSION"
-	AccountEmailSecurityInvestigateListResponseResultDeliveryModeAPI                   AccountEmailSecurityInvestigateListResponseResultDeliveryMode = "API"
-	AccountEmailSecurityInvestigateListResponseResultDeliveryModeRetroScan             AccountEmailSecurityInvestigateListResponseResultDeliveryMode = "RETRO_SCAN"
+	AccountEmailSecurityInvestigateListResponseResultPropertiesAllowlistedPatternTypeQuarantineRelease       AccountEmailSecurityInvestigateListResponseResultPropertiesAllowlistedPatternType = "quarantine_release"
+	AccountEmailSecurityInvestigateListResponseResultPropertiesAllowlistedPatternTypeAcceptableSender        AccountEmailSecurityInvestigateListResponseResultPropertiesAllowlistedPatternType = "acceptable_sender"
+	AccountEmailSecurityInvestigateListResponseResultPropertiesAllowlistedPatternTypeAllowedSender           AccountEmailSecurityInvestigateListResponseResultPropertiesAllowlistedPatternType = "allowed_sender"
+	AccountEmailSecurityInvestigateListResponseResultPropertiesAllowlistedPatternTypeAllowedRecipient        AccountEmailSecurityInvestigateListResponseResultPropertiesAllowlistedPatternType = "allowed_recipient"
+	AccountEmailSecurityInvestigateListResponseResultPropertiesAllowlistedPatternTypeDomainSimilarity        AccountEmailSecurityInvestigateListResponseResultPropertiesAllowlistedPatternType = "domain_similarity"
+	AccountEmailSecurityInvestigateListResponseResultPropertiesAllowlistedPatternTypeDomainRecency           AccountEmailSecurityInvestigateListResponseResultPropertiesAllowlistedPatternType = "domain_recency"
+	AccountEmailSecurityInvestigateListResponseResultPropertiesAllowlistedPatternTypeManagedAcceptableSender AccountEmailSecurityInvestigateListResponseResultPropertiesAllowlistedPatternType = "managed_acceptable_sender"
 )
 
-func (r AccountEmailSecurityInvestigateListResponseResultDeliveryMode) IsKnown() bool {
+func (r AccountEmailSecurityInvestigateListResponseResultPropertiesAllowlistedPatternType) IsKnown() bool {
 	switch r {
-	case AccountEmailSecurityInvestigateListResponseResultDeliveryModeDirect, AccountEmailSecurityInvestigateListResponseResultDeliveryModeBcc, AccountEmailSecurityInvestigateListResponseResultDeliveryModeJournal, AccountEmailSecurityInvestigateListResponseResultDeliveryModeReviewSubmission, AccountEmailSecurityInvestigateListResponseResultDeliveryModeDmarcUnverified, AccountEmailSecurityInvestigateListResponseResultDeliveryModeDmarcFailureReport, AccountEmailSecurityInvestigateListResponseResultDeliveryModeDmarcAggregateReport, AccountEmailSecurityInvestigateListResponseResultDeliveryModeThreatIntelSubmission, AccountEmailSecurityInvestigateListResponseResultDeliveryModeSimulationSubmission, AccountEmailSecurityInvestigateListResponseResultDeliveryModeAPI, AccountEmailSecurityInvestigateListResponseResultDeliveryModeRetroScan:
+	case AccountEmailSecurityInvestigateListResponseResultPropertiesAllowlistedPatternTypeQuarantineRelease, AccountEmailSecurityInvestigateListResponseResultPropertiesAllowlistedPatternTypeAcceptableSender, AccountEmailSecurityInvestigateListResponseResultPropertiesAllowlistedPatternTypeAllowedSender, AccountEmailSecurityInvestigateListResponseResultPropertiesAllowlistedPatternTypeAllowedRecipient, AccountEmailSecurityInvestigateListResponseResultPropertiesAllowlistedPatternTypeDomainSimilarity, AccountEmailSecurityInvestigateListResponseResultPropertiesAllowlistedPatternTypeDomainRecency, AccountEmailSecurityInvestigateListResponseResultPropertiesAllowlistedPatternTypeManagedAcceptableSender:
 		return true
 	}
 	return false
 }
 
-type AccountEmailSecurityInvestigateListResponseResultFinalDisposition string
+type AccountEmailSecurityInvestigateListResponseResultPropertiesWhitelistedPatternType string
 
 const (
-	AccountEmailSecurityInvestigateListResponseResultFinalDispositionMalicious    AccountEmailSecurityInvestigateListResponseResultFinalDisposition = "MALICIOUS"
-	AccountEmailSecurityInvestigateListResponseResultFinalDispositionMaliciousBec AccountEmailSecurityInvestigateListResponseResultFinalDisposition = "MALICIOUS-BEC"
-	AccountEmailSecurityInvestigateListResponseResultFinalDispositionSuspicious   AccountEmailSecurityInvestigateListResponseResultFinalDisposition = "SUSPICIOUS"
-	AccountEmailSecurityInvestigateListResponseResultFinalDispositionSpoof        AccountEmailSecurityInvestigateListResponseResultFinalDisposition = "SPOOF"
-	AccountEmailSecurityInvestigateListResponseResultFinalDispositionSpam         AccountEmailSecurityInvestigateListResponseResultFinalDisposition = "SPAM"
-	AccountEmailSecurityInvestigateListResponseResultFinalDispositionBulk         AccountEmailSecurityInvestigateListResponseResultFinalDisposition = "BULK"
-	AccountEmailSecurityInvestigateListResponseResultFinalDispositionEncrypted    AccountEmailSecurityInvestigateListResponseResultFinalDisposition = "ENCRYPTED"
-	AccountEmailSecurityInvestigateListResponseResultFinalDispositionExternal     AccountEmailSecurityInvestigateListResponseResultFinalDisposition = "EXTERNAL"
-	AccountEmailSecurityInvestigateListResponseResultFinalDispositionUnknown      AccountEmailSecurityInvestigateListResponseResultFinalDisposition = "UNKNOWN"
-	AccountEmailSecurityInvestigateListResponseResultFinalDispositionNone         AccountEmailSecurityInvestigateListResponseResultFinalDisposition = "NONE"
+	AccountEmailSecurityInvestigateListResponseResultPropertiesWhitelistedPatternTypeQuarantineRelease       AccountEmailSecurityInvestigateListResponseResultPropertiesWhitelistedPatternType = "quarantine_release"
+	AccountEmailSecurityInvestigateListResponseResultPropertiesWhitelistedPatternTypeAcceptableSender        AccountEmailSecurityInvestigateListResponseResultPropertiesWhitelistedPatternType = "acceptable_sender"
+	AccountEmailSecurityInvestigateListResponseResultPropertiesWhitelistedPatternTypeAllowedSender           AccountEmailSecurityInvestigateListResponseResultPropertiesWhitelistedPatternType = "allowed_sender"
+	AccountEmailSecurityInvestigateListResponseResultPropertiesWhitelistedPatternTypeAllowedRecipient        AccountEmailSecurityInvestigateListResponseResultPropertiesWhitelistedPatternType = "allowed_recipient"
+	AccountEmailSecurityInvestigateListResponseResultPropertiesWhitelistedPatternTypeDomainSimilarity        AccountEmailSecurityInvestigateListResponseResultPropertiesWhitelistedPatternType = "domain_similarity"
+	AccountEmailSecurityInvestigateListResponseResultPropertiesWhitelistedPatternTypeDomainRecency           AccountEmailSecurityInvestigateListResponseResultPropertiesWhitelistedPatternType = "domain_recency"
+	AccountEmailSecurityInvestigateListResponseResultPropertiesWhitelistedPatternTypeManagedAcceptableSender AccountEmailSecurityInvestigateListResponseResultPropertiesWhitelistedPatternType = "managed_acceptable_sender"
 )
 
-func (r AccountEmailSecurityInvestigateListResponseResultFinalDisposition) IsKnown() bool {
+func (r AccountEmailSecurityInvestigateListResponseResultPropertiesWhitelistedPatternType) IsKnown() bool {
 	switch r {
-	case AccountEmailSecurityInvestigateListResponseResultFinalDispositionMalicious, AccountEmailSecurityInvestigateListResponseResultFinalDispositionMaliciousBec, AccountEmailSecurityInvestigateListResponseResultFinalDispositionSuspicious, AccountEmailSecurityInvestigateListResponseResultFinalDispositionSpoof, AccountEmailSecurityInvestigateListResponseResultFinalDispositionSpam, AccountEmailSecurityInvestigateListResponseResultFinalDispositionBulk, AccountEmailSecurityInvestigateListResponseResultFinalDispositionEncrypted, AccountEmailSecurityInvestigateListResponseResultFinalDispositionExternal, AccountEmailSecurityInvestigateListResponseResultFinalDispositionUnknown, AccountEmailSecurityInvestigateListResponseResultFinalDispositionNone:
+	case AccountEmailSecurityInvestigateListResponseResultPropertiesWhitelistedPatternTypeQuarantineRelease, AccountEmailSecurityInvestigateListResponseResultPropertiesWhitelistedPatternTypeAcceptableSender, AccountEmailSecurityInvestigateListResponseResultPropertiesWhitelistedPatternTypeAllowedSender, AccountEmailSecurityInvestigateListResponseResultPropertiesWhitelistedPatternTypeAllowedRecipient, AccountEmailSecurityInvestigateListResponseResultPropertiesWhitelistedPatternTypeDomainSimilarity, AccountEmailSecurityInvestigateListResponseResultPropertiesWhitelistedPatternTypeDomainRecency, AccountEmailSecurityInvestigateListResponseResultPropertiesWhitelistedPatternTypeManagedAcceptableSender:
 		return true
 	}
 	return false
+}
+
+type AccountEmailSecurityInvestigateListResponseResultFinding struct {
+	Detail string                                                       `json:"detail,nullable"`
+	Name   string                                                       `json:"name,nullable"`
+	Value  string                                                       `json:"value,nullable"`
+	JSON   accountEmailSecurityInvestigateListResponseResultFindingJSON `json:"-"`
+}
+
+// accountEmailSecurityInvestigateListResponseResultFindingJSON contains the JSON
+// metadata for the struct
+// [AccountEmailSecurityInvestigateListResponseResultFinding]
+type accountEmailSecurityInvestigateListResponseResultFindingJSON struct {
+	Detail      apijson.Field
+	Name        apijson.Field
+	Value       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountEmailSecurityInvestigateListResponseResultFinding) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountEmailSecurityInvestigateListResponseResultFindingJSON) RawJSON() string {
+	return r.raw
 }
 
 type AccountEmailSecurityInvestigateListResponseResultValidation struct {
-	Comment string                                                           `json:"comment,nullable"`
-	Dkim    AccountEmailSecurityInvestigateListResponseResultValidationDkim  `json:"dkim,nullable"`
-	Dmarc   AccountEmailSecurityInvestigateListResponseResultValidationDmarc `json:"dmarc,nullable"`
-	Spf     AccountEmailSecurityInvestigateListResponseResultValidationSpf   `json:"spf,nullable"`
-	JSON    accountEmailSecurityInvestigateListResponseResultValidationJSON  `json:"-"`
+	Comment string                                                          `json:"comment,nullable"`
+	Dkim    ValidationStatus                                                `json:"dkim,nullable"`
+	Dmarc   ValidationStatus                                                `json:"dmarc,nullable"`
+	Spf     ValidationStatus                                                `json:"spf,nullable"`
+	JSON    accountEmailSecurityInvestigateListResponseResultValidationJSON `json:"-"`
 }
 
 // accountEmailSecurityInvestigateListResponseResultValidationJSON contains the
@@ -661,70 +765,21 @@ func (r accountEmailSecurityInvestigateListResponseResultValidationJSON) RawJSON
 	return r.raw
 }
 
-type AccountEmailSecurityInvestigateListResponseResultValidationDkim string
-
-const (
-	AccountEmailSecurityInvestigateListResponseResultValidationDkimPass    AccountEmailSecurityInvestigateListResponseResultValidationDkim = "pass"
-	AccountEmailSecurityInvestigateListResponseResultValidationDkimNeutral AccountEmailSecurityInvestigateListResponseResultValidationDkim = "neutral"
-	AccountEmailSecurityInvestigateListResponseResultValidationDkimFail    AccountEmailSecurityInvestigateListResponseResultValidationDkim = "fail"
-	AccountEmailSecurityInvestigateListResponseResultValidationDkimError   AccountEmailSecurityInvestigateListResponseResultValidationDkim = "error"
-	AccountEmailSecurityInvestigateListResponseResultValidationDkimNone    AccountEmailSecurityInvestigateListResponseResultValidationDkim = "none"
-)
-
-func (r AccountEmailSecurityInvestigateListResponseResultValidationDkim) IsKnown() bool {
-	switch r {
-	case AccountEmailSecurityInvestigateListResponseResultValidationDkimPass, AccountEmailSecurityInvestigateListResponseResultValidationDkimNeutral, AccountEmailSecurityInvestigateListResponseResultValidationDkimFail, AccountEmailSecurityInvestigateListResponseResultValidationDkimError, AccountEmailSecurityInvestigateListResponseResultValidationDkimNone:
-		return true
-	}
-	return false
-}
-
-type AccountEmailSecurityInvestigateListResponseResultValidationDmarc string
-
-const (
-	AccountEmailSecurityInvestigateListResponseResultValidationDmarcPass    AccountEmailSecurityInvestigateListResponseResultValidationDmarc = "pass"
-	AccountEmailSecurityInvestigateListResponseResultValidationDmarcNeutral AccountEmailSecurityInvestigateListResponseResultValidationDmarc = "neutral"
-	AccountEmailSecurityInvestigateListResponseResultValidationDmarcFail    AccountEmailSecurityInvestigateListResponseResultValidationDmarc = "fail"
-	AccountEmailSecurityInvestigateListResponseResultValidationDmarcError   AccountEmailSecurityInvestigateListResponseResultValidationDmarc = "error"
-	AccountEmailSecurityInvestigateListResponseResultValidationDmarcNone    AccountEmailSecurityInvestigateListResponseResultValidationDmarc = "none"
-)
-
-func (r AccountEmailSecurityInvestigateListResponseResultValidationDmarc) IsKnown() bool {
-	switch r {
-	case AccountEmailSecurityInvestigateListResponseResultValidationDmarcPass, AccountEmailSecurityInvestigateListResponseResultValidationDmarcNeutral, AccountEmailSecurityInvestigateListResponseResultValidationDmarcFail, AccountEmailSecurityInvestigateListResponseResultValidationDmarcError, AccountEmailSecurityInvestigateListResponseResultValidationDmarcNone:
-		return true
-	}
-	return false
-}
-
-type AccountEmailSecurityInvestigateListResponseResultValidationSpf string
-
-const (
-	AccountEmailSecurityInvestigateListResponseResultValidationSpfPass    AccountEmailSecurityInvestigateListResponseResultValidationSpf = "pass"
-	AccountEmailSecurityInvestigateListResponseResultValidationSpfNeutral AccountEmailSecurityInvestigateListResponseResultValidationSpf = "neutral"
-	AccountEmailSecurityInvestigateListResponseResultValidationSpfFail    AccountEmailSecurityInvestigateListResponseResultValidationSpf = "fail"
-	AccountEmailSecurityInvestigateListResponseResultValidationSpfError   AccountEmailSecurityInvestigateListResponseResultValidationSpf = "error"
-	AccountEmailSecurityInvestigateListResponseResultValidationSpfNone    AccountEmailSecurityInvestigateListResponseResultValidationSpf = "none"
-)
-
-func (r AccountEmailSecurityInvestigateListResponseResultValidationSpf) IsKnown() bool {
-	switch r {
-	case AccountEmailSecurityInvestigateListResponseResultValidationSpfPass, AccountEmailSecurityInvestigateListResponseResultValidationSpfNeutral, AccountEmailSecurityInvestigateListResponseResultValidationSpfFail, AccountEmailSecurityInvestigateListResponseResultValidationSpfError, AccountEmailSecurityInvestigateListResponseResultValidationSpfNone:
-		return true
-	}
-	return false
-}
-
 type AccountEmailSecurityInvestigateGetDetectionsResponse struct {
-	Result AccountEmailSecurityInvestigateGetDetectionsResponseResult `json:"result,required"`
-	JSON   accountEmailSecurityInvestigateGetDetectionsResponseJSON   `json:"-"`
-	APIResponseEmailSecurity
+	Errors   []EmailSecurityMessage                                     `json:"errors,required"`
+	Messages []EmailSecurityMessage                                     `json:"messages,required"`
+	Result   AccountEmailSecurityInvestigateGetDetectionsResponseResult `json:"result,required"`
+	Success  bool                                                       `json:"success,required"`
+	JSON     accountEmailSecurityInvestigateGetDetectionsResponseJSON   `json:"-"`
 }
 
 // accountEmailSecurityInvestigateGetDetectionsResponseJSON contains the JSON
 // metadata for the struct [AccountEmailSecurityInvestigateGetDetectionsResponse]
 type accountEmailSecurityInvestigateGetDetectionsResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -745,7 +800,7 @@ type AccountEmailSecurityInvestigateGetDetectionsResponseResult struct {
 	SenderInfo       AccountEmailSecurityInvestigateGetDetectionsResponseResultSenderInfo       `json:"sender_info,required"`
 	ThreatCategories []AccountEmailSecurityInvestigateGetDetectionsResponseResultThreatCategory `json:"threat_categories,required"`
 	Validation       AccountEmailSecurityInvestigateGetDetectionsResponseResultValidation       `json:"validation,required"`
-	FinalDisposition AccountEmailSecurityInvestigateGetDetectionsResponseResultFinalDisposition `json:"final_disposition,nullable"`
+	FinalDisposition DispositionLabel                                                           `json:"final_disposition,nullable"`
 	JSON             accountEmailSecurityInvestigateGetDetectionsResponseResultJSON             `json:"-"`
 }
 
@@ -774,12 +829,12 @@ func (r accountEmailSecurityInvestigateGetDetectionsResponseResultJSON) RawJSON(
 }
 
 type AccountEmailSecurityInvestigateGetDetectionsResponseResultAttachment struct {
-	Size        int64                                                                          `json:"size,required"`
-	ContentType string                                                                         `json:"content_type,nullable"`
-	Detection   AccountEmailSecurityInvestigateGetDetectionsResponseResultAttachmentsDetection `json:"detection,nullable"`
-	Encrypted   bool                                                                           `json:"encrypted,nullable"`
-	Name        string                                                                         `json:"name,nullable"`
-	JSON        accountEmailSecurityInvestigateGetDetectionsResponseResultAttachmentJSON       `json:"-"`
+	Size        int64                                                                    `json:"size,required"`
+	ContentType string                                                                   `json:"content_type,nullable"`
+	Detection   DispositionLabel                                                         `json:"detection,nullable"`
+	Encrypted   bool                                                                     `json:"encrypted,nullable"`
+	Name        string                                                                   `json:"name,nullable"`
+	JSON        accountEmailSecurityInvestigateGetDetectionsResponseResultAttachmentJSON `json:"-"`
 }
 
 // accountEmailSecurityInvestigateGetDetectionsResponseResultAttachmentJSON
@@ -801,29 +856,6 @@ func (r *AccountEmailSecurityInvestigateGetDetectionsResponseResultAttachment) U
 
 func (r accountEmailSecurityInvestigateGetDetectionsResponseResultAttachmentJSON) RawJSON() string {
 	return r.raw
-}
-
-type AccountEmailSecurityInvestigateGetDetectionsResponseResultAttachmentsDetection string
-
-const (
-	AccountEmailSecurityInvestigateGetDetectionsResponseResultAttachmentsDetectionMalicious    AccountEmailSecurityInvestigateGetDetectionsResponseResultAttachmentsDetection = "MALICIOUS"
-	AccountEmailSecurityInvestigateGetDetectionsResponseResultAttachmentsDetectionMaliciousBec AccountEmailSecurityInvestigateGetDetectionsResponseResultAttachmentsDetection = "MALICIOUS-BEC"
-	AccountEmailSecurityInvestigateGetDetectionsResponseResultAttachmentsDetectionSuspicious   AccountEmailSecurityInvestigateGetDetectionsResponseResultAttachmentsDetection = "SUSPICIOUS"
-	AccountEmailSecurityInvestigateGetDetectionsResponseResultAttachmentsDetectionSpoof        AccountEmailSecurityInvestigateGetDetectionsResponseResultAttachmentsDetection = "SPOOF"
-	AccountEmailSecurityInvestigateGetDetectionsResponseResultAttachmentsDetectionSpam         AccountEmailSecurityInvestigateGetDetectionsResponseResultAttachmentsDetection = "SPAM"
-	AccountEmailSecurityInvestigateGetDetectionsResponseResultAttachmentsDetectionBulk         AccountEmailSecurityInvestigateGetDetectionsResponseResultAttachmentsDetection = "BULK"
-	AccountEmailSecurityInvestigateGetDetectionsResponseResultAttachmentsDetectionEncrypted    AccountEmailSecurityInvestigateGetDetectionsResponseResultAttachmentsDetection = "ENCRYPTED"
-	AccountEmailSecurityInvestigateGetDetectionsResponseResultAttachmentsDetectionExternal     AccountEmailSecurityInvestigateGetDetectionsResponseResultAttachmentsDetection = "EXTERNAL"
-	AccountEmailSecurityInvestigateGetDetectionsResponseResultAttachmentsDetectionUnknown      AccountEmailSecurityInvestigateGetDetectionsResponseResultAttachmentsDetection = "UNKNOWN"
-	AccountEmailSecurityInvestigateGetDetectionsResponseResultAttachmentsDetectionNone         AccountEmailSecurityInvestigateGetDetectionsResponseResultAttachmentsDetection = "NONE"
-)
-
-func (r AccountEmailSecurityInvestigateGetDetectionsResponseResultAttachmentsDetection) IsKnown() bool {
-	switch r {
-	case AccountEmailSecurityInvestigateGetDetectionsResponseResultAttachmentsDetectionMalicious, AccountEmailSecurityInvestigateGetDetectionsResponseResultAttachmentsDetectionMaliciousBec, AccountEmailSecurityInvestigateGetDetectionsResponseResultAttachmentsDetectionSuspicious, AccountEmailSecurityInvestigateGetDetectionsResponseResultAttachmentsDetectionSpoof, AccountEmailSecurityInvestigateGetDetectionsResponseResultAttachmentsDetectionSpam, AccountEmailSecurityInvestigateGetDetectionsResponseResultAttachmentsDetectionBulk, AccountEmailSecurityInvestigateGetDetectionsResponseResultAttachmentsDetectionEncrypted, AccountEmailSecurityInvestigateGetDetectionsResponseResultAttachmentsDetectionExternal, AccountEmailSecurityInvestigateGetDetectionsResponseResultAttachmentsDetectionUnknown, AccountEmailSecurityInvestigateGetDetectionsResponseResultAttachmentsDetectionNone:
-		return true
-	}
-	return false
 }
 
 type AccountEmailSecurityInvestigateGetDetectionsResponseResultHeader struct {
@@ -933,11 +965,11 @@ func (r accountEmailSecurityInvestigateGetDetectionsResponseResultThreatCategory
 }
 
 type AccountEmailSecurityInvestigateGetDetectionsResponseResultValidation struct {
-	Comment string                                                                    `json:"comment,nullable"`
-	Dkim    AccountEmailSecurityInvestigateGetDetectionsResponseResultValidationDkim  `json:"dkim,nullable"`
-	Dmarc   AccountEmailSecurityInvestigateGetDetectionsResponseResultValidationDmarc `json:"dmarc,nullable"`
-	Spf     AccountEmailSecurityInvestigateGetDetectionsResponseResultValidationSpf   `json:"spf,nullable"`
-	JSON    accountEmailSecurityInvestigateGetDetectionsResponseResultValidationJSON  `json:"-"`
+	Comment string                                                                   `json:"comment,nullable"`
+	Dkim    ValidationStatus                                                         `json:"dkim,nullable"`
+	Dmarc   ValidationStatus                                                         `json:"dmarc,nullable"`
+	Spf     ValidationStatus                                                         `json:"spf,nullable"`
+	JSON    accountEmailSecurityInvestigateGetDetectionsResponseResultValidationJSON `json:"-"`
 }
 
 // accountEmailSecurityInvestigateGetDetectionsResponseResultValidationJSON
@@ -960,93 +992,21 @@ func (r accountEmailSecurityInvestigateGetDetectionsResponseResultValidationJSON
 	return r.raw
 }
 
-type AccountEmailSecurityInvestigateGetDetectionsResponseResultValidationDkim string
-
-const (
-	AccountEmailSecurityInvestigateGetDetectionsResponseResultValidationDkimPass    AccountEmailSecurityInvestigateGetDetectionsResponseResultValidationDkim = "pass"
-	AccountEmailSecurityInvestigateGetDetectionsResponseResultValidationDkimNeutral AccountEmailSecurityInvestigateGetDetectionsResponseResultValidationDkim = "neutral"
-	AccountEmailSecurityInvestigateGetDetectionsResponseResultValidationDkimFail    AccountEmailSecurityInvestigateGetDetectionsResponseResultValidationDkim = "fail"
-	AccountEmailSecurityInvestigateGetDetectionsResponseResultValidationDkimError   AccountEmailSecurityInvestigateGetDetectionsResponseResultValidationDkim = "error"
-	AccountEmailSecurityInvestigateGetDetectionsResponseResultValidationDkimNone    AccountEmailSecurityInvestigateGetDetectionsResponseResultValidationDkim = "none"
-)
-
-func (r AccountEmailSecurityInvestigateGetDetectionsResponseResultValidationDkim) IsKnown() bool {
-	switch r {
-	case AccountEmailSecurityInvestigateGetDetectionsResponseResultValidationDkimPass, AccountEmailSecurityInvestigateGetDetectionsResponseResultValidationDkimNeutral, AccountEmailSecurityInvestigateGetDetectionsResponseResultValidationDkimFail, AccountEmailSecurityInvestigateGetDetectionsResponseResultValidationDkimError, AccountEmailSecurityInvestigateGetDetectionsResponseResultValidationDkimNone:
-		return true
-	}
-	return false
-}
-
-type AccountEmailSecurityInvestigateGetDetectionsResponseResultValidationDmarc string
-
-const (
-	AccountEmailSecurityInvestigateGetDetectionsResponseResultValidationDmarcPass    AccountEmailSecurityInvestigateGetDetectionsResponseResultValidationDmarc = "pass"
-	AccountEmailSecurityInvestigateGetDetectionsResponseResultValidationDmarcNeutral AccountEmailSecurityInvestigateGetDetectionsResponseResultValidationDmarc = "neutral"
-	AccountEmailSecurityInvestigateGetDetectionsResponseResultValidationDmarcFail    AccountEmailSecurityInvestigateGetDetectionsResponseResultValidationDmarc = "fail"
-	AccountEmailSecurityInvestigateGetDetectionsResponseResultValidationDmarcError   AccountEmailSecurityInvestigateGetDetectionsResponseResultValidationDmarc = "error"
-	AccountEmailSecurityInvestigateGetDetectionsResponseResultValidationDmarcNone    AccountEmailSecurityInvestigateGetDetectionsResponseResultValidationDmarc = "none"
-)
-
-func (r AccountEmailSecurityInvestigateGetDetectionsResponseResultValidationDmarc) IsKnown() bool {
-	switch r {
-	case AccountEmailSecurityInvestigateGetDetectionsResponseResultValidationDmarcPass, AccountEmailSecurityInvestigateGetDetectionsResponseResultValidationDmarcNeutral, AccountEmailSecurityInvestigateGetDetectionsResponseResultValidationDmarcFail, AccountEmailSecurityInvestigateGetDetectionsResponseResultValidationDmarcError, AccountEmailSecurityInvestigateGetDetectionsResponseResultValidationDmarcNone:
-		return true
-	}
-	return false
-}
-
-type AccountEmailSecurityInvestigateGetDetectionsResponseResultValidationSpf string
-
-const (
-	AccountEmailSecurityInvestigateGetDetectionsResponseResultValidationSpfPass    AccountEmailSecurityInvestigateGetDetectionsResponseResultValidationSpf = "pass"
-	AccountEmailSecurityInvestigateGetDetectionsResponseResultValidationSpfNeutral AccountEmailSecurityInvestigateGetDetectionsResponseResultValidationSpf = "neutral"
-	AccountEmailSecurityInvestigateGetDetectionsResponseResultValidationSpfFail    AccountEmailSecurityInvestigateGetDetectionsResponseResultValidationSpf = "fail"
-	AccountEmailSecurityInvestigateGetDetectionsResponseResultValidationSpfError   AccountEmailSecurityInvestigateGetDetectionsResponseResultValidationSpf = "error"
-	AccountEmailSecurityInvestigateGetDetectionsResponseResultValidationSpfNone    AccountEmailSecurityInvestigateGetDetectionsResponseResultValidationSpf = "none"
-)
-
-func (r AccountEmailSecurityInvestigateGetDetectionsResponseResultValidationSpf) IsKnown() bool {
-	switch r {
-	case AccountEmailSecurityInvestigateGetDetectionsResponseResultValidationSpfPass, AccountEmailSecurityInvestigateGetDetectionsResponseResultValidationSpfNeutral, AccountEmailSecurityInvestigateGetDetectionsResponseResultValidationSpfFail, AccountEmailSecurityInvestigateGetDetectionsResponseResultValidationSpfError, AccountEmailSecurityInvestigateGetDetectionsResponseResultValidationSpfNone:
-		return true
-	}
-	return false
-}
-
-type AccountEmailSecurityInvestigateGetDetectionsResponseResultFinalDisposition string
-
-const (
-	AccountEmailSecurityInvestigateGetDetectionsResponseResultFinalDispositionMalicious    AccountEmailSecurityInvestigateGetDetectionsResponseResultFinalDisposition = "MALICIOUS"
-	AccountEmailSecurityInvestigateGetDetectionsResponseResultFinalDispositionMaliciousBec AccountEmailSecurityInvestigateGetDetectionsResponseResultFinalDisposition = "MALICIOUS-BEC"
-	AccountEmailSecurityInvestigateGetDetectionsResponseResultFinalDispositionSuspicious   AccountEmailSecurityInvestigateGetDetectionsResponseResultFinalDisposition = "SUSPICIOUS"
-	AccountEmailSecurityInvestigateGetDetectionsResponseResultFinalDispositionSpoof        AccountEmailSecurityInvestigateGetDetectionsResponseResultFinalDisposition = "SPOOF"
-	AccountEmailSecurityInvestigateGetDetectionsResponseResultFinalDispositionSpam         AccountEmailSecurityInvestigateGetDetectionsResponseResultFinalDisposition = "SPAM"
-	AccountEmailSecurityInvestigateGetDetectionsResponseResultFinalDispositionBulk         AccountEmailSecurityInvestigateGetDetectionsResponseResultFinalDisposition = "BULK"
-	AccountEmailSecurityInvestigateGetDetectionsResponseResultFinalDispositionEncrypted    AccountEmailSecurityInvestigateGetDetectionsResponseResultFinalDisposition = "ENCRYPTED"
-	AccountEmailSecurityInvestigateGetDetectionsResponseResultFinalDispositionExternal     AccountEmailSecurityInvestigateGetDetectionsResponseResultFinalDisposition = "EXTERNAL"
-	AccountEmailSecurityInvestigateGetDetectionsResponseResultFinalDispositionUnknown      AccountEmailSecurityInvestigateGetDetectionsResponseResultFinalDisposition = "UNKNOWN"
-	AccountEmailSecurityInvestigateGetDetectionsResponseResultFinalDispositionNone         AccountEmailSecurityInvestigateGetDetectionsResponseResultFinalDisposition = "NONE"
-)
-
-func (r AccountEmailSecurityInvestigateGetDetectionsResponseResultFinalDisposition) IsKnown() bool {
-	switch r {
-	case AccountEmailSecurityInvestigateGetDetectionsResponseResultFinalDispositionMalicious, AccountEmailSecurityInvestigateGetDetectionsResponseResultFinalDispositionMaliciousBec, AccountEmailSecurityInvestigateGetDetectionsResponseResultFinalDispositionSuspicious, AccountEmailSecurityInvestigateGetDetectionsResponseResultFinalDispositionSpoof, AccountEmailSecurityInvestigateGetDetectionsResponseResultFinalDispositionSpam, AccountEmailSecurityInvestigateGetDetectionsResponseResultFinalDispositionBulk, AccountEmailSecurityInvestigateGetDetectionsResponseResultFinalDispositionEncrypted, AccountEmailSecurityInvestigateGetDetectionsResponseResultFinalDispositionExternal, AccountEmailSecurityInvestigateGetDetectionsResponseResultFinalDispositionUnknown, AccountEmailSecurityInvestigateGetDetectionsResponseResultFinalDispositionNone:
-		return true
-	}
-	return false
-}
-
 type AccountEmailSecurityInvestigateGetRawResponse struct {
-	Result AccountEmailSecurityInvestigateGetRawResponseResult `json:"result,required"`
-	JSON   accountEmailSecurityInvestigateGetRawResponseJSON   `json:"-"`
-	APIResponseEmailSecurity
+	Errors   []EmailSecurityMessage                              `json:"errors,required"`
+	Messages []EmailSecurityMessage                              `json:"messages,required"`
+	Result   AccountEmailSecurityInvestigateGetRawResponseResult `json:"result,required"`
+	Success  bool                                                `json:"success,required"`
+	JSON     accountEmailSecurityInvestigateGetRawResponseJSON   `json:"-"`
 }
 
 // accountEmailSecurityInvestigateGetRawResponseJSON contains the JSON metadata for
 // the struct [AccountEmailSecurityInvestigateGetRawResponse]
 type accountEmailSecurityInvestigateGetRawResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -1082,15 +1042,20 @@ func (r accountEmailSecurityInvestigateGetRawResponseResultJSON) RawJSON() strin
 }
 
 type AccountEmailSecurityInvestigateGetTraceResponse struct {
-	Result AccountEmailSecurityInvestigateGetTraceResponseResult `json:"result,required"`
-	JSON   accountEmailSecurityInvestigateGetTraceResponseJSON   `json:"-"`
-	APIResponseEmailSecurity
+	Errors   []EmailSecurityMessage                                `json:"errors,required"`
+	Messages []EmailSecurityMessage                                `json:"messages,required"`
+	Result   AccountEmailSecurityInvestigateGetTraceResponseResult `json:"result,required"`
+	Success  bool                                                  `json:"success,required"`
+	JSON     accountEmailSecurityInvestigateGetTraceResponseJSON   `json:"-"`
 }
 
 // accountEmailSecurityInvestigateGetTraceResponseJSON contains the JSON metadata
 // for the struct [AccountEmailSecurityInvestigateGetTraceResponse]
 type accountEmailSecurityInvestigateGetTraceResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -1127,8 +1092,9 @@ func (r accountEmailSecurityInvestigateGetTraceResponseResultJSON) RawJSON() str
 }
 
 type AccountEmailSecurityInvestigateGetTraceResponseResultInbound struct {
-	Lines []TraceLine                                                      `json:"lines,nullable"`
-	JSON  accountEmailSecurityInvestigateGetTraceResponseResultInboundJSON `json:"-"`
+	Lines   []TraceLine                                                      `json:"lines,nullable"`
+	Pending bool                                                             `json:"pending,nullable"`
+	JSON    accountEmailSecurityInvestigateGetTraceResponseResultInboundJSON `json:"-"`
 }
 
 // accountEmailSecurityInvestigateGetTraceResponseResultInboundJSON contains the
@@ -1136,6 +1102,7 @@ type AccountEmailSecurityInvestigateGetTraceResponseResultInbound struct {
 // [AccountEmailSecurityInvestigateGetTraceResponseResultInbound]
 type accountEmailSecurityInvestigateGetTraceResponseResultInboundJSON struct {
 	Lines       apijson.Field
+	Pending     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -1149,8 +1116,9 @@ func (r accountEmailSecurityInvestigateGetTraceResponseResultInboundJSON) RawJSO
 }
 
 type AccountEmailSecurityInvestigateGetTraceResponseResultOutbound struct {
-	Lines []TraceLine                                                       `json:"lines,nullable"`
-	JSON  accountEmailSecurityInvestigateGetTraceResponseResultOutboundJSON `json:"-"`
+	Lines   []TraceLine                                                       `json:"lines,nullable"`
+	Pending bool                                                              `json:"pending,nullable"`
+	JSON    accountEmailSecurityInvestigateGetTraceResponseResultOutboundJSON `json:"-"`
 }
 
 // accountEmailSecurityInvestigateGetTraceResponseResultOutboundJSON contains the
@@ -1158,6 +1126,7 @@ type AccountEmailSecurityInvestigateGetTraceResponseResultOutbound struct {
 // [AccountEmailSecurityInvestigateGetTraceResponseResultOutbound]
 type accountEmailSecurityInvestigateGetTraceResponseResultOutboundJSON struct {
 	Lines       apijson.Field
+	Pending     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -1171,15 +1140,20 @@ func (r accountEmailSecurityInvestigateGetTraceResponseResultOutboundJSON) RawJS
 }
 
 type AccountEmailSecurityInvestigateMoveMultipleResponse struct {
-	Result []RetractionResponseItem                                `json:"result,required"`
-	JSON   accountEmailSecurityInvestigateMoveMultipleResponseJSON `json:"-"`
-	APIResponseEmailSecurity
+	Errors   []EmailSecurityMessage                                  `json:"errors,required"`
+	Messages []EmailSecurityMessage                                  `json:"messages,required"`
+	Result   []RetractionResponseItem                                `json:"result,required"`
+	Success  bool                                                    `json:"success,required"`
+	JSON     accountEmailSecurityInvestigateMoveMultipleResponseJSON `json:"-"`
 }
 
 // accountEmailSecurityInvestigateMoveMultipleResponseJSON contains the JSON
 // metadata for the struct [AccountEmailSecurityInvestigateMoveMultipleResponse]
 type accountEmailSecurityInvestigateMoveMultipleResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -1193,15 +1167,20 @@ func (r accountEmailSecurityInvestigateMoveMultipleResponseJSON) RawJSON() strin
 }
 
 type AccountEmailSecurityInvestigatePreviewResponse struct {
-	Result AccountEmailSecurityInvestigatePreviewResponseResult `json:"result,required"`
-	JSON   accountEmailSecurityInvestigatePreviewResponseJSON   `json:"-"`
-	APIResponseEmailSecurity
+	Errors   []EmailSecurityMessage                               `json:"errors,required"`
+	Messages []EmailSecurityMessage                               `json:"messages,required"`
+	Result   AccountEmailSecurityInvestigatePreviewResponseResult `json:"result,required"`
+	Success  bool                                                 `json:"success,required"`
+	JSON     accountEmailSecurityInvestigatePreviewResponseJSON   `json:"-"`
 }
 
 // accountEmailSecurityInvestigatePreviewResponseJSON contains the JSON metadata
 // for the struct [AccountEmailSecurityInvestigatePreviewResponse]
 type accountEmailSecurityInvestigatePreviewResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -1237,15 +1216,20 @@ func (r accountEmailSecurityInvestigatePreviewResponseResultJSON) RawJSON() stri
 }
 
 type AccountEmailSecurityInvestigatePreviewMultipleResponse struct {
-	Result AccountEmailSecurityInvestigatePreviewMultipleResponseResult `json:"result,required"`
-	JSON   accountEmailSecurityInvestigatePreviewMultipleResponseJSON   `json:"-"`
-	APIResponseEmailSecurity
+	Errors   []EmailSecurityMessage                                       `json:"errors,required"`
+	Messages []EmailSecurityMessage                                       `json:"messages,required"`
+	Result   AccountEmailSecurityInvestigatePreviewMultipleResponseResult `json:"result,required"`
+	Success  bool                                                         `json:"success,required"`
+	JSON     accountEmailSecurityInvestigatePreviewMultipleResponseJSON   `json:"-"`
 }
 
 // accountEmailSecurityInvestigatePreviewMultipleResponseJSON contains the JSON
 // metadata for the struct [AccountEmailSecurityInvestigatePreviewMultipleResponse]
 type accountEmailSecurityInvestigatePreviewMultipleResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -1282,15 +1266,20 @@ func (r accountEmailSecurityInvestigatePreviewMultipleResponseResultJSON) RawJSO
 }
 
 type AccountEmailSecurityInvestigateReclassifyResponse struct {
-	Result interface{}                                           `json:"result,required"`
-	JSON   accountEmailSecurityInvestigateReclassifyResponseJSON `json:"-"`
-	APIResponseEmailSecurity
+	Errors   []EmailSecurityMessage                                `json:"errors,required"`
+	Messages []EmailSecurityMessage                                `json:"messages,required"`
+	Result   interface{}                                           `json:"result,required"`
+	Success  bool                                                  `json:"success,required"`
+	JSON     accountEmailSecurityInvestigateReclassifyResponseJSON `json:"-"`
 }
 
 // accountEmailSecurityInvestigateReclassifyResponseJSON contains the JSON metadata
 // for the struct [AccountEmailSecurityInvestigateReclassifyResponse]
 type accountEmailSecurityInvestigateReclassifyResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -1304,15 +1293,20 @@ func (r accountEmailSecurityInvestigateReclassifyResponseJSON) RawJSON() string 
 }
 
 type AccountEmailSecurityInvestigateReleaseResponse struct {
-	Result []AccountEmailSecurityInvestigateReleaseResponseResult `json:"result,required"`
-	JSON   accountEmailSecurityInvestigateReleaseResponseJSON     `json:"-"`
-	APIResponseEmailSecurity
+	Errors   []EmailSecurityMessage                                 `json:"errors,required"`
+	Messages []EmailSecurityMessage                                 `json:"messages,required"`
+	Result   []AccountEmailSecurityInvestigateReleaseResponseResult `json:"result,required"`
+	Success  bool                                                   `json:"success,required"`
+	JSON     accountEmailSecurityInvestigateReleaseResponseJSON     `json:"-"`
 }
 
 // accountEmailSecurityInvestigateReleaseResponseJSON contains the JSON metadata
 // for the struct [AccountEmailSecurityInvestigateReleaseResponse]
 type accountEmailSecurityInvestigateReleaseResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -1401,7 +1395,8 @@ type AccountEmailSecurityInvestigateListParams struct {
 	Recipient param.Field[string] `query:"recipient"`
 	Sender    param.Field[string] `query:"sender"`
 	// The beginning of the search date range. Defaults to `now - 30 days`.
-	Start param.Field[time.Time] `query:"start" format:"date-time"`
+	Start   param.Field[time.Time] `query:"start" format:"date-time"`
+	Subject param.Field[string]    `query:"subject"`
 }
 
 // URLQuery serializes [AccountEmailSecurityInvestigateListParams]'s query

@@ -33,7 +33,7 @@ func NewZoneArgoSmartRoutingService(opts ...option.RequestOption) (r *ZoneArgoSm
 	return
 }
 
-// Get Argo Smart Routing setting
+// Retrieves the value of Argo Smart Routing enablement setting.
 func (r *ZoneArgoSmartRoutingService) Get(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *ArgoConfigResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
@@ -45,7 +45,7 @@ func (r *ZoneArgoSmartRoutingService) Get(ctx context.Context, zoneID string, op
 	return
 }
 
-// Updates enablement of Argo Smart Routing.
+// Configures the value of the Argo Smart Routing enablement setting.
 func (r *ZoneArgoSmartRoutingService) Update(ctx context.Context, zoneID string, body ZoneArgoSmartRoutingUpdateParams, opts ...option.RequestOption) (res *ArgoConfigResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
@@ -58,18 +58,22 @@ func (r *ZoneArgoSmartRoutingService) Update(ctx context.Context, zoneID string,
 }
 
 type ArgoConfigMessage struct {
-	Code    int64                 `json:"code,required"`
-	Message string                `json:"message,required"`
-	JSON    argoConfigMessageJSON `json:"-"`
+	Code             int64                   `json:"code,required"`
+	Message          string                  `json:"message,required"`
+	DocumentationURL string                  `json:"documentation_url"`
+	Source           ArgoConfigMessageSource `json:"source"`
+	JSON             argoConfigMessageJSON   `json:"-"`
 }
 
 // argoConfigMessageJSON contains the JSON metadata for the struct
 // [ArgoConfigMessage]
 type argoConfigMessageJSON struct {
-	Code        apijson.Field
-	Message     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
 }
 
 func (r *ArgoConfigMessage) UnmarshalJSON(data []byte) (err error) {
@@ -80,12 +84,33 @@ func (r argoConfigMessageJSON) RawJSON() string {
 	return r.raw
 }
 
+type ArgoConfigMessageSource struct {
+	Pointer string                      `json:"pointer"`
+	JSON    argoConfigMessageSourceJSON `json:"-"`
+}
+
+// argoConfigMessageSourceJSON contains the JSON metadata for the struct
+// [ArgoConfigMessageSource]
+type argoConfigMessageSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ArgoConfigMessageSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r argoConfigMessageSourceJSON) RawJSON() string {
+	return r.raw
+}
+
 type ArgoConfigResponse struct {
 	Errors   []ArgoConfigMessage `json:"errors,required"`
 	Messages []ArgoConfigMessage `json:"messages,required"`
-	Result   interface{}         `json:"result,required"`
-	// Whether the API call was successful
+	// Describes a successful API response.
 	Success ArgoConfigResponseSuccess `json:"success,required"`
+	Result  interface{}               `json:"result"`
 	JSON    argoConfigResponseJSON    `json:"-"`
 }
 
@@ -94,8 +119,8 @@ type ArgoConfigResponse struct {
 type argoConfigResponseJSON struct {
 	Errors      apijson.Field
 	Messages    apijson.Field
-	Result      apijson.Field
 	Success     apijson.Field
+	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -108,7 +133,7 @@ func (r argoConfigResponseJSON) RawJSON() string {
 	return r.raw
 }
 
-// Whether the API call was successful
+// Describes a successful API response.
 type ArgoConfigResponseSuccess bool
 
 const (

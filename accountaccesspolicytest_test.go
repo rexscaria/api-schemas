@@ -13,7 +13,7 @@ import (
 	"github.com/rexscaria/api-schemas/option"
 )
 
-func TestAccountAccessPolicyTestGetWithOptionalParams(t *testing.T) {
+func TestAccountAccessPolicyTestGet(t *testing.T) {
 	t.Skip("skipped: tests are disabled for the time being")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -31,9 +31,6 @@ func TestAccountAccessPolicyTestGetWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		"f1a8b3c9d4e5f6789a0b1c2d3e4f5678a9b0c1d2e3f4a5b67890c1d2e3f4b5a6",
-		cfrex.AccountAccessPolicyTestGetParams{
-			Page: cfrex.F(int64(0)),
-		},
 	)
 	if err != nil {
 		var apierr *cfrex.Error
@@ -127,7 +124,9 @@ func TestAccountAccessPolicyTestUsersWithOptionalParams(t *testing.T) {
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		"f1a8b3c9d4e5f6789a0b1c2d3e4f5678a9b0c1d2e3f4a5b67890c1d2e3f4b5a6",
 		cfrex.AccountAccessPolicyTestUsersParams{
-			Status: cfrex.F(cfrex.AccountAccessPolicyTestUsersParamsStatusSuccess),
+			Page:    cfrex.F(int64(0)),
+			PerPage: cfrex.F(int64(0)),
+			Status:  cfrex.F(cfrex.AccountAccessPolicyTestUsersParamsStatusSuccess),
 		},
 	)
 	if err != nil {

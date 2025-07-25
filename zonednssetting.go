@@ -57,36 +57,39 @@ func (r *ZoneDNSSettingService) Show(ctx context.Context, zoneID string, opts ..
 	return
 }
 
-type DNSSettings struct {
+type SettingsZone struct {
 	// Whether to flatten all CNAME records in the zone. Note that, due to DNS
 	// limitations, a CNAME record at the zone apex will always be flattened.
 	FlattenAllCnames bool `json:"flatten_all_cnames"`
 	// Whether to enable Foundation DNS Advanced Nameservers on the zone.
 	FoundationDNS bool `json:"foundation_dns"`
 	// Settings for this internal zone.
-	InternalDNS DNSSettingsInternalDNS `json:"internal_dns"`
+	InternalDNS SettingsZoneInternalDNS `json:"internal_dns"`
 	// Whether to enable multi-provider DNS, which causes Cloudflare to activate the
 	// zone even when non-Cloudflare NS records exist, and to respect NS records at the
 	// zone apex during outbound zone transfers.
 	MultiProvider bool `json:"multi_provider"`
+	// Settings determining the nameservers through which the zone should be available.
+	Nameservers SettingsZoneNameservers `json:"nameservers"`
 	// The time to live (TTL) of the zone's nameserver (NS) records.
 	NsTtl float64 `json:"ns_ttl"`
 	// Allows a Secondary DNS zone to use (proxied) override records and CNAME
 	// flattening at the zone apex.
 	SecondaryOverrides bool `json:"secondary_overrides"`
 	// Components of the zone's SOA record.
-	Soa DNSSettingsSoa `json:"soa"`
+	Soa SettingsZoneSoa `json:"soa"`
 	// Whether the zone mode is a regular or CDN/DNS only zone.
-	ZoneMode DNSSettingsZoneMode `json:"zone_mode"`
-	JSON     dnsSettingsJSON     `json:"-"`
+	ZoneMode SettingsZoneZoneMode `json:"zone_mode"`
+	JSON     settingsZoneJSON     `json:"-"`
 }
 
-// dnsSettingsJSON contains the JSON metadata for the struct [DNSSettings]
-type dnsSettingsJSON struct {
+// settingsZoneJSON contains the JSON metadata for the struct [SettingsZone]
+type settingsZoneJSON struct {
 	FlattenAllCnames   apijson.Field
 	FoundationDNS      apijson.Field
 	InternalDNS        apijson.Field
 	MultiProvider      apijson.Field
+	Nameservers        apijson.Field
 	NsTtl              apijson.Field
 	SecondaryOverrides apijson.Field
 	Soa                apijson.Field
@@ -95,180 +98,34 @@ type dnsSettingsJSON struct {
 	ExtraFields        map[string]apijson.Field
 }
 
-func (r *DNSSettings) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r dnsSettingsJSON) RawJSON() string {
-	return r.raw
-}
-
-// Settings for this internal zone.
-type DNSSettingsInternalDNS struct {
-	// The ID of the zone to fallback to.
-	ReferenceZoneID string                     `json:"reference_zone_id"`
-	JSON            dnsSettingsInternalDNSJSON `json:"-"`
-}
-
-// dnsSettingsInternalDNSJSON contains the JSON metadata for the struct
-// [DNSSettingsInternalDNS]
-type dnsSettingsInternalDNSJSON struct {
-	ReferenceZoneID apijson.Field
-	raw             string
-	ExtraFields     map[string]apijson.Field
-}
-
-func (r *DNSSettingsInternalDNS) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r dnsSettingsInternalDNSJSON) RawJSON() string {
-	return r.raw
-}
-
-// Components of the zone's SOA record.
-type DNSSettingsSoa struct {
-	// Time in seconds of being unable to query the primary server after which
-	// secondary servers should stop serving the zone.
-	Expire float64 `json:"expire,required"`
-	// The time to live (TTL) for negative caching of records within the zone.
-	MinTtl float64 `json:"min_ttl,required"`
-	// The primary nameserver, which may be used for outbound zone transfers.
-	Mname string `json:"mname,required"`
-	// Time in seconds after which secondary servers should re-check the SOA record to
-	// see if the zone has been updated.
-	Refresh float64 `json:"refresh,required"`
-	// Time in seconds after which secondary servers should retry queries after the
-	// primary server was unresponsive.
-	Retry float64 `json:"retry,required"`
-	// The email address of the zone administrator, with the first label representing
-	// the local part of the email address.
-	Rname string `json:"rname,required"`
-	// The time to live (TTL) of the SOA record itself.
-	Ttl  float64            `json:"ttl,required"`
-	JSON dnsSettingsSoaJSON `json:"-"`
-}
-
-// dnsSettingsSoaJSON contains the JSON metadata for the struct [DNSSettingsSoa]
-type dnsSettingsSoaJSON struct {
-	Expire      apijson.Field
-	MinTtl      apijson.Field
-	Mname       apijson.Field
-	Refresh     apijson.Field
-	Retry       apijson.Field
-	Rname       apijson.Field
-	Ttl         apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *DNSSettingsSoa) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r dnsSettingsSoaJSON) RawJSON() string {
-	return r.raw
-}
-
-// Whether the zone mode is a regular or CDN/DNS only zone.
-type DNSSettingsZoneMode string
-
-const (
-	DNSSettingsZoneModeStandard DNSSettingsZoneMode = "standard"
-	DNSSettingsZoneModeCdnOnly  DNSSettingsZoneMode = "cdn_only"
-	DNSSettingsZoneModeDNSOnly  DNSSettingsZoneMode = "dns_only"
-)
-
-func (r DNSSettingsZoneMode) IsKnown() bool {
-	switch r {
-	case DNSSettingsZoneModeStandard, DNSSettingsZoneModeCdnOnly, DNSSettingsZoneModeDNSOnly:
-		return true
-	}
-	return false
-}
-
-type DNSSettingsParam struct {
-	// Whether to flatten all CNAME records in the zone. Note that, due to DNS
-	// limitations, a CNAME record at the zone apex will always be flattened.
-	FlattenAllCnames param.Field[bool] `json:"flatten_all_cnames"`
-	// Whether to enable Foundation DNS Advanced Nameservers on the zone.
-	FoundationDNS param.Field[bool] `json:"foundation_dns"`
-	// Settings for this internal zone.
-	InternalDNS param.Field[DNSSettingsInternalDNSParam] `json:"internal_dns"`
-	// Whether to enable multi-provider DNS, which causes Cloudflare to activate the
-	// zone even when non-Cloudflare NS records exist, and to respect NS records at the
-	// zone apex during outbound zone transfers.
-	MultiProvider param.Field[bool] `json:"multi_provider"`
-	// The time to live (TTL) of the zone's nameserver (NS) records.
-	NsTtl param.Field[float64] `json:"ns_ttl"`
-	// Allows a Secondary DNS zone to use (proxied) override records and CNAME
-	// flattening at the zone apex.
-	SecondaryOverrides param.Field[bool] `json:"secondary_overrides"`
-	// Components of the zone's SOA record.
-	Soa param.Field[DNSSettingsSoaParam] `json:"soa"`
-	// Whether the zone mode is a regular or CDN/DNS only zone.
-	ZoneMode param.Field[DNSSettingsZoneMode] `json:"zone_mode"`
-}
-
-func (r DNSSettingsParam) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-// Settings for this internal zone.
-type DNSSettingsInternalDNSParam struct {
-	// The ID of the zone to fallback to.
-	ReferenceZoneID param.Field[string] `json:"reference_zone_id"`
-}
-
-func (r DNSSettingsInternalDNSParam) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-// Components of the zone's SOA record.
-type DNSSettingsSoaParam struct {
-	// Time in seconds of being unable to query the primary server after which
-	// secondary servers should stop serving the zone.
-	Expire param.Field[float64] `json:"expire,required"`
-	// The time to live (TTL) for negative caching of records within the zone.
-	MinTtl param.Field[float64] `json:"min_ttl,required"`
-	// The primary nameserver, which may be used for outbound zone transfers.
-	Mname param.Field[string] `json:"mname,required"`
-	// Time in seconds after which secondary servers should re-check the SOA record to
-	// see if the zone has been updated.
-	Refresh param.Field[float64] `json:"refresh,required"`
-	// Time in seconds after which secondary servers should retry queries after the
-	// primary server was unresponsive.
-	Retry param.Field[float64] `json:"retry,required"`
-	// The email address of the zone administrator, with the first label representing
-	// the local part of the email address.
-	Rname param.Field[string] `json:"rname,required"`
-	// The time to live (TTL) of the SOA record itself.
-	Ttl param.Field[float64] `json:"ttl,required"`
-}
-
-func (r DNSSettingsSoaParam) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-type SettingsZone struct {
-	// Settings determining the nameservers through which the zone should be available.
-	Nameservers SettingsZoneNameservers `json:"nameservers"`
-	JSON        settingsZoneJSON        `json:"-"`
-	DNSSettings
-}
-
-// settingsZoneJSON contains the JSON metadata for the struct [SettingsZone]
-type settingsZoneJSON struct {
-	Nameservers apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
 func (r *SettingsZone) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 func (r settingsZoneJSON) RawJSON() string {
+	return r.raw
+}
+
+// Settings for this internal zone.
+type SettingsZoneInternalDNS struct {
+	// The ID of the zone to fallback to.
+	ReferenceZoneID string                      `json:"reference_zone_id"`
+	JSON            settingsZoneInternalDNSJSON `json:"-"`
+}
+
+// settingsZoneInternalDNSJSON contains the JSON metadata for the struct
+// [SettingsZoneInternalDNS]
+type settingsZoneInternalDNSJSON struct {
+	ReferenceZoneID apijson.Field
+	raw             string
+	ExtraFields     map[string]apijson.Field
+}
+
+func (r *SettingsZoneInternalDNS) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r settingsZoneInternalDNSJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -316,13 +173,103 @@ func (r SettingsZoneNameserversType) IsKnown() bool {
 	return false
 }
 
+// Components of the zone's SOA record.
+type SettingsZoneSoa struct {
+	// Time in seconds of being unable to query the primary server after which
+	// secondary servers should stop serving the zone.
+	Expire float64 `json:"expire,required"`
+	// The time to live (TTL) for negative caching of records within the zone.
+	MinTtl float64 `json:"min_ttl,required"`
+	// The primary nameserver, which may be used for outbound zone transfers.
+	Mname string `json:"mname,required"`
+	// Time in seconds after which secondary servers should re-check the SOA record to
+	// see if the zone has been updated.
+	Refresh float64 `json:"refresh,required"`
+	// Time in seconds after which secondary servers should retry queries after the
+	// primary server was unresponsive.
+	Retry float64 `json:"retry,required"`
+	// The email address of the zone administrator, with the first label representing
+	// the local part of the email address.
+	Rname string `json:"rname,required"`
+	// The time to live (TTL) of the SOA record itself.
+	Ttl  float64             `json:"ttl,required"`
+	JSON settingsZoneSoaJSON `json:"-"`
+}
+
+// settingsZoneSoaJSON contains the JSON metadata for the struct [SettingsZoneSoa]
+type settingsZoneSoaJSON struct {
+	Expire      apijson.Field
+	MinTtl      apijson.Field
+	Mname       apijson.Field
+	Refresh     apijson.Field
+	Retry       apijson.Field
+	Rname       apijson.Field
+	Ttl         apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *SettingsZoneSoa) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r settingsZoneSoaJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the zone mode is a regular or CDN/DNS only zone.
+type SettingsZoneZoneMode string
+
+const (
+	SettingsZoneZoneModeStandard SettingsZoneZoneMode = "standard"
+	SettingsZoneZoneModeCdnOnly  SettingsZoneZoneMode = "cdn_only"
+	SettingsZoneZoneModeDNSOnly  SettingsZoneZoneMode = "dns_only"
+)
+
+func (r SettingsZoneZoneMode) IsKnown() bool {
+	switch r {
+	case SettingsZoneZoneModeStandard, SettingsZoneZoneModeCdnOnly, SettingsZoneZoneModeDNSOnly:
+		return true
+	}
+	return false
+}
+
 type SettingsZoneParam struct {
+	// Whether to flatten all CNAME records in the zone. Note that, due to DNS
+	// limitations, a CNAME record at the zone apex will always be flattened.
+	FlattenAllCnames param.Field[bool] `json:"flatten_all_cnames"`
+	// Whether to enable Foundation DNS Advanced Nameservers on the zone.
+	FoundationDNS param.Field[bool] `json:"foundation_dns"`
+	// Settings for this internal zone.
+	InternalDNS param.Field[SettingsZoneInternalDNSParam] `json:"internal_dns"`
+	// Whether to enable multi-provider DNS, which causes Cloudflare to activate the
+	// zone even when non-Cloudflare NS records exist, and to respect NS records at the
+	// zone apex during outbound zone transfers.
+	MultiProvider param.Field[bool] `json:"multi_provider"`
 	// Settings determining the nameservers through which the zone should be available.
 	Nameservers param.Field[SettingsZoneNameserversParam] `json:"nameservers"`
-	DNSSettingsParam
+	// The time to live (TTL) of the zone's nameserver (NS) records.
+	NsTtl param.Field[float64] `json:"ns_ttl"`
+	// Allows a Secondary DNS zone to use (proxied) override records and CNAME
+	// flattening at the zone apex.
+	SecondaryOverrides param.Field[bool] `json:"secondary_overrides"`
+	// Components of the zone's SOA record.
+	Soa param.Field[SettingsZoneSoaParam] `json:"soa"`
+	// Whether the zone mode is a regular or CDN/DNS only zone.
+	ZoneMode param.Field[SettingsZoneZoneMode] `json:"zone_mode"`
 }
 
 func (r SettingsZoneParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// Settings for this internal zone.
+type SettingsZoneInternalDNSParam struct {
+	// The ID of the zone to fallback to.
+	ReferenceZoneID param.Field[string] `json:"reference_zone_id"`
+}
+
+func (r SettingsZoneInternalDNSParam) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
@@ -338,15 +285,47 @@ func (r SettingsZoneNameserversParam) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
+// Components of the zone's SOA record.
+type SettingsZoneSoaParam struct {
+	// Time in seconds of being unable to query the primary server after which
+	// secondary servers should stop serving the zone.
+	Expire param.Field[float64] `json:"expire,required"`
+	// The time to live (TTL) for negative caching of records within the zone.
+	MinTtl param.Field[float64] `json:"min_ttl,required"`
+	// The primary nameserver, which may be used for outbound zone transfers.
+	Mname param.Field[string] `json:"mname,required"`
+	// Time in seconds after which secondary servers should re-check the SOA record to
+	// see if the zone has been updated.
+	Refresh param.Field[float64] `json:"refresh,required"`
+	// Time in seconds after which secondary servers should retry queries after the
+	// primary server was unresponsive.
+	Retry param.Field[float64] `json:"retry,required"`
+	// The email address of the zone administrator, with the first label representing
+	// the local part of the email address.
+	Rname param.Field[string] `json:"rname,required"`
+	// The time to live (TTL) of the SOA record itself.
+	Ttl param.Field[float64] `json:"ttl,required"`
+}
+
+func (r SettingsZoneSoaParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
 type SingleResponseDNSSettingsZone struct {
-	Result SettingsZone                      `json:"result"`
-	JSON   singleResponseDNSSettingsZoneJSON `json:"-"`
-	SingleResponseDNSSettings
+	Errors   []DNSSettingsMessages `json:"errors,required"`
+	Messages []DNSSettingsMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success SingleResponseDNSSettingsZoneSuccess `json:"success,required"`
+	Result  SettingsZone                         `json:"result"`
+	JSON    singleResponseDNSSettingsZoneJSON    `json:"-"`
 }
 
 // singleResponseDNSSettingsZoneJSON contains the JSON metadata for the struct
 // [SingleResponseDNSSettingsZone]
 type singleResponseDNSSettingsZoneJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -358,6 +337,21 @@ func (r *SingleResponseDNSSettingsZone) UnmarshalJSON(data []byte) (err error) {
 
 func (r singleResponseDNSSettingsZoneJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type SingleResponseDNSSettingsZoneSuccess bool
+
+const (
+	SingleResponseDNSSettingsZoneSuccessTrue SingleResponseDNSSettingsZoneSuccess = true
+)
+
+func (r SingleResponseDNSSettingsZoneSuccess) IsKnown() bool {
+	switch r {
+	case SingleResponseDNSSettingsZoneSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type ZoneDNSSettingUpdateParams struct {

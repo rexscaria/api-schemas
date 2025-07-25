@@ -96,7 +96,7 @@ func TestAccountEmailSecuritySettingBlockSenderUpdateWithOptionalParams(t *testi
 			Comments:    cfrex.F("comments"),
 			IsRegex:     cfrex.F(true),
 			Pattern:     cfrex.F("x"),
-			PatternType: cfrex.F(cfrex.AccountEmailSecuritySettingBlockSenderUpdateParamsPatternTypeEmail),
+			PatternType: cfrex.F(cfrex.PatternTypeEmail),
 		},
 	)
 	if err != nil {
@@ -129,6 +129,7 @@ func TestAccountEmailSecuritySettingBlockSenderListWithOptionalParams(t *testing
 			Direction:   cfrex.F(cfrex.SortingDirectionAsc),
 			Order:       cfrex.F(cfrex.AccountEmailSecuritySettingBlockSenderListParamsOrderPattern),
 			Page:        cfrex.F(int64(1)),
+			Pattern:     cfrex.F("pattern"),
 			PatternType: cfrex.F(cfrex.PatternTypeEmail),
 			PerPage:     cfrex.F(int64(1)),
 			Search:      cfrex.F("search"),

@@ -32,9 +32,7 @@ func TestAccountWorkerScriptUsageModelUpdateWithOptionalParams(t *testing.T) {
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		"this-is_my_script-01",
 		cfrex.AccountWorkerScriptUsageModelUpdateParams{
-			UsageModelObject: cfrex.UsageModelObjectParam{
-				UsageModel: cfrex.F("usage_model"),
-			},
+			UsageModel: cfrex.F(cfrex.UsageModelStandard),
 		},
 	)
 	if err != nil {

@@ -123,7 +123,7 @@ func (r *AccountDlpEmailRuleService) UpdatePriorities(ctx context.Context, accou
 
 type CreateEmailRuleParam struct {
 	Action param.Field[EmailRuleActionRuleParam] `json:"action,required"`
-	// Rule is triggered if all conditions match
+	// Rule is triggered if all conditions match.
 	Conditions  param.Field[[]EmailRuleConditionParam] `json:"conditions,required"`
 	Enabled     param.Field[bool]                      `json:"enabled,required"`
 	Name        param.Field[string]                    `json:"name,required"`
@@ -136,7 +136,7 @@ func (r CreateEmailRuleParam) MarshalJSON() (data []byte, err error) {
 
 type EmailRule struct {
 	Action EmailRuleActionRule `json:"action,required"`
-	// Rule is triggered if all conditions match
+	// Rule is triggered if all conditions match.
 	Conditions  []EmailRuleCondition `json:"conditions,required"`
 	CreatedAt   time.Time            `json:"created_at,required" format:"date-time"`
 	Enabled     bool                 `json:"enabled,required"`
@@ -319,14 +319,20 @@ type EmailRuleConditionValueArrayParam []string
 func (r EmailRuleConditionValueArrayParam) ImplementsEmailRuleConditionValueUnionParam() {}
 
 type AccountDlpEmailRuleNewResponse struct {
-	Result EmailRule                          `json:"result"`
-	JSON   accountDlpEmailRuleNewResponseJSON `json:"-"`
-	APIResponseSingleDlp
+	Errors   []MessagesDlpItems `json:"errors,required"`
+	Messages []MessagesDlpItems `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountDlpEmailRuleNewResponseSuccess `json:"success,required"`
+	Result  EmailRule                             `json:"result"`
+	JSON    accountDlpEmailRuleNewResponseJSON    `json:"-"`
 }
 
 // accountDlpEmailRuleNewResponseJSON contains the JSON metadata for the struct
 // [AccountDlpEmailRuleNewResponse]
 type accountDlpEmailRuleNewResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -340,15 +346,36 @@ func (r accountDlpEmailRuleNewResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountDlpEmailRuleNewResponseSuccess bool
+
+const (
+	AccountDlpEmailRuleNewResponseSuccessTrue AccountDlpEmailRuleNewResponseSuccess = true
+)
+
+func (r AccountDlpEmailRuleNewResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountDlpEmailRuleNewResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountDlpEmailRuleGetResponse struct {
-	Result EmailRule                          `json:"result"`
-	JSON   accountDlpEmailRuleGetResponseJSON `json:"-"`
-	APIResponseSingleDlp
+	Errors   []MessagesDlpItems `json:"errors,required"`
+	Messages []MessagesDlpItems `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountDlpEmailRuleGetResponseSuccess `json:"success,required"`
+	Result  EmailRule                             `json:"result"`
+	JSON    accountDlpEmailRuleGetResponseJSON    `json:"-"`
 }
 
 // accountDlpEmailRuleGetResponseJSON contains the JSON metadata for the struct
 // [AccountDlpEmailRuleGetResponse]
 type accountDlpEmailRuleGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -362,15 +389,36 @@ func (r accountDlpEmailRuleGetResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountDlpEmailRuleGetResponseSuccess bool
+
+const (
+	AccountDlpEmailRuleGetResponseSuccessTrue AccountDlpEmailRuleGetResponseSuccess = true
+)
+
+func (r AccountDlpEmailRuleGetResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountDlpEmailRuleGetResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountDlpEmailRuleUpdateResponse struct {
-	Result EmailRule                             `json:"result"`
-	JSON   accountDlpEmailRuleUpdateResponseJSON `json:"-"`
-	APIResponseSingleDlp
+	Errors   []MessagesDlpItems `json:"errors,required"`
+	Messages []MessagesDlpItems `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountDlpEmailRuleUpdateResponseSuccess `json:"success,required"`
+	Result  EmailRule                                `json:"result"`
+	JSON    accountDlpEmailRuleUpdateResponseJSON    `json:"-"`
 }
 
 // accountDlpEmailRuleUpdateResponseJSON contains the JSON metadata for the struct
 // [AccountDlpEmailRuleUpdateResponse]
 type accountDlpEmailRuleUpdateResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -384,15 +432,36 @@ func (r accountDlpEmailRuleUpdateResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountDlpEmailRuleUpdateResponseSuccess bool
+
+const (
+	AccountDlpEmailRuleUpdateResponseSuccessTrue AccountDlpEmailRuleUpdateResponseSuccess = true
+)
+
+func (r AccountDlpEmailRuleUpdateResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountDlpEmailRuleUpdateResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountDlpEmailRuleListResponse struct {
-	Result []EmailRule                         `json:"result"`
-	JSON   accountDlpEmailRuleListResponseJSON `json:"-"`
-	APIResponseSingleDlp
+	Errors   []MessagesDlpItems `json:"errors,required"`
+	Messages []MessagesDlpItems `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountDlpEmailRuleListResponseSuccess `json:"success,required"`
+	Result  []EmailRule                            `json:"result"`
+	JSON    accountDlpEmailRuleListResponseJSON    `json:"-"`
 }
 
 // accountDlpEmailRuleListResponseJSON contains the JSON metadata for the struct
 // [AccountDlpEmailRuleListResponse]
 type accountDlpEmailRuleListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -406,15 +475,36 @@ func (r accountDlpEmailRuleListResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountDlpEmailRuleListResponseSuccess bool
+
+const (
+	AccountDlpEmailRuleListResponseSuccessTrue AccountDlpEmailRuleListResponseSuccess = true
+)
+
+func (r AccountDlpEmailRuleListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountDlpEmailRuleListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountDlpEmailRuleDeleteResponse struct {
-	Result EmailRule                             `json:"result"`
-	JSON   accountDlpEmailRuleDeleteResponseJSON `json:"-"`
-	APIResponseSingleDlp
+	Errors   []MessagesDlpItems `json:"errors,required"`
+	Messages []MessagesDlpItems `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountDlpEmailRuleDeleteResponseSuccess `json:"success,required"`
+	Result  EmailRule                                `json:"result"`
+	JSON    accountDlpEmailRuleDeleteResponseJSON    `json:"-"`
 }
 
 // accountDlpEmailRuleDeleteResponseJSON contains the JSON metadata for the struct
 // [AccountDlpEmailRuleDeleteResponse]
 type accountDlpEmailRuleDeleteResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -428,15 +518,36 @@ func (r accountDlpEmailRuleDeleteResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountDlpEmailRuleDeleteResponseSuccess bool
+
+const (
+	AccountDlpEmailRuleDeleteResponseSuccessTrue AccountDlpEmailRuleDeleteResponseSuccess = true
+)
+
+func (r AccountDlpEmailRuleDeleteResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountDlpEmailRuleDeleteResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountDlpEmailRuleUpdatePrioritiesResponse struct {
-	Result EmailRule                                       `json:"result"`
-	JSON   accountDlpEmailRuleUpdatePrioritiesResponseJSON `json:"-"`
-	APIResponseSingleDlp
+	Errors   []MessagesDlpItems `json:"errors,required"`
+	Messages []MessagesDlpItems `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountDlpEmailRuleUpdatePrioritiesResponseSuccess `json:"success,required"`
+	Result  EmailRule                                          `json:"result"`
+	JSON    accountDlpEmailRuleUpdatePrioritiesResponseJSON    `json:"-"`
 }
 
 // accountDlpEmailRuleUpdatePrioritiesResponseJSON contains the JSON metadata for
 // the struct [AccountDlpEmailRuleUpdatePrioritiesResponse]
 type accountDlpEmailRuleUpdatePrioritiesResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -448,6 +559,21 @@ func (r *AccountDlpEmailRuleUpdatePrioritiesResponse) UnmarshalJSON(data []byte)
 
 func (r accountDlpEmailRuleUpdatePrioritiesResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountDlpEmailRuleUpdatePrioritiesResponseSuccess bool
+
+const (
+	AccountDlpEmailRuleUpdatePrioritiesResponseSuccessTrue AccountDlpEmailRuleUpdatePrioritiesResponseSuccess = true
+)
+
+func (r AccountDlpEmailRuleUpdatePrioritiesResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountDlpEmailRuleUpdatePrioritiesResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountDlpEmailRuleNewParams struct {

@@ -55,14 +55,10 @@ func TestZoneSettingUpdate(t *testing.T) {
 		context.TODO(),
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.ZoneSettingUpdateParams{
-			Body: []cfrex.ZoneSettingUpdateParamsBodyUnion{cfrex.Zones0rttParam(cfrex.Zones0rttParam{
-				ZonesBaseParam: cfrex.ZonesBaseParam{
-					ID:    cfrex.F("0rtt"),
-					Value: cfrex.F[any]("on"),
-				},
-				ID:    cfrex.F("0rtt"),
-				Value: cfrex.F("on"),
-			})},
+			Body: []cfrex.ZoneSettingUpdateParamsBodyUnion{cfrex.Zones0rttParam{
+				ID:    cfrex.F(cfrex.Zones0rttID0rtt),
+				Value: cfrex.F(cfrex.Zones0rttValueOn),
+			}},
 		},
 	)
 	if err != nil {
@@ -121,14 +117,9 @@ func TestZoneSettingUpdateSettingWithOptionalParams(t *testing.T) {
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		"always_online",
 		cfrex.ZoneSettingUpdateSettingParams{
-			ZonesSetting: cfrex.Zones0rttParam(cfrex.Zones0rttParam{
-				ZonesBaseParam: cfrex.ZonesBaseParam{
-					ID:    cfrex.F("0rtt"),
-					Value: cfrex.F[any]("on"),
-				},
-				ID:    cfrex.F("0rtt"),
-				Value: cfrex.F("on"),
-			}),
+			Body: cfrex.ZoneSettingUpdateSettingParamsBodyEnabled{
+				Enabled: cfrex.F(true),
+			},
 		},
 	)
 	if err != nil {

@@ -88,7 +88,7 @@ func (r *AccountStreamLiveInputOutputService) List(ctx context.Context, accountI
 }
 
 // Deletes an output and removes it from the associated live input.
-func (r *AccountStreamLiveInputOutputService) Delete(ctx context.Context, accountID string, liveInputIdentifier string, outputIdentifier string, body AccountStreamLiveInputOutputDeleteParams, opts ...option.RequestOption) (err error) {
+func (r *AccountStreamLiveInputOutputService) Delete(ctx context.Context, accountID string, liveInputIdentifier string, outputIdentifier string, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if accountID == "" {
@@ -104,7 +104,7 @@ func (r *AccountStreamLiveInputOutputService) Delete(ctx context.Context, accoun
 		return
 	}
 	path := fmt.Sprintf("accounts/%s/stream/live_inputs/%s/outputs/%s", accountID, liveInputIdentifier, outputIdentifier)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, nil, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return
 }
 
@@ -143,14 +143,20 @@ func (r outputJSON) RawJSON() string {
 }
 
 type OutputResponseSingle struct {
-	Result Output                   `json:"result"`
-	JSON   outputResponseSingleJSON `json:"-"`
-	APIResponseSingleStream
+	Errors   []StreamMessages `json:"errors,required"`
+	Messages []StreamMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success OutputResponseSingleSuccess `json:"success,required"`
+	Result  Output                      `json:"result"`
+	JSON    outputResponseSingleJSON    `json:"-"`
 }
 
 // outputResponseSingleJSON contains the JSON metadata for the struct
 // [OutputResponseSingle]
 type outputResponseSingleJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -164,15 +170,36 @@ func (r outputResponseSingleJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type OutputResponseSingleSuccess bool
+
+const (
+	OutputResponseSingleSuccessTrue OutputResponseSingleSuccess = true
+)
+
+func (r OutputResponseSingleSuccess) IsKnown() bool {
+	switch r {
+	case OutputResponseSingleSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountStreamLiveInputOutputListResponse struct {
-	Result []Output                                     `json:"result"`
-	JSON   accountStreamLiveInputOutputListResponseJSON `json:"-"`
-	APIResponseStream
+	Errors   []StreamMessages `json:"errors,required"`
+	Messages []StreamMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountStreamLiveInputOutputListResponseSuccess `json:"success,required"`
+	Result  []Output                                        `json:"result"`
+	JSON    accountStreamLiveInputOutputListResponseJSON    `json:"-"`
 }
 
 // accountStreamLiveInputOutputListResponseJSON contains the JSON metadata for the
 // struct [AccountStreamLiveInputOutputListResponse]
 type accountStreamLiveInputOutputListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -184,6 +211,21 @@ func (r *AccountStreamLiveInputOutputListResponse) UnmarshalJSON(data []byte) (e
 
 func (r accountStreamLiveInputOutputListResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountStreamLiveInputOutputListResponseSuccess bool
+
+const (
+	AccountStreamLiveInputOutputListResponseSuccessTrue AccountStreamLiveInputOutputListResponseSuccess = true
+)
+
+func (r AccountStreamLiveInputOutputListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountStreamLiveInputOutputListResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountStreamLiveInputOutputNewParams struct {
@@ -214,12 +256,4 @@ type AccountStreamLiveInputOutputUpdateParams struct {
 
 func (r AccountStreamLiveInputOutputUpdateParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
-}
-
-type AccountStreamLiveInputOutputDeleteParams struct {
-	Body interface{} `json:"body,required"`
-}
-
-func (r AccountStreamLiveInputOutputDeleteParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
 }

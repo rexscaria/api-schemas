@@ -29,7 +29,7 @@ func TestAccountCloudforceOneEventCategoryNewWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Accounts.CloudforceOne.Events.Categories.New(
 		context.TODO(),
-		0.000000,
+		"account_id",
 		cfrex.AccountCloudforceOneEventCategoryNewParams{
 			KillChain:   cfrex.F(0.000000),
 			Name:        cfrex.F("name"),
@@ -62,8 +62,8 @@ func TestAccountCloudforceOneEventCategoryGet(t *testing.T) {
 	)
 	_, err := client.Accounts.CloudforceOne.Events.Categories.Get(
 		context.TODO(),
-		0.000000,
-		"category_id",
+		"account_id",
+		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 	)
 	if err != nil {
 		var apierr *cfrex.Error
@@ -90,8 +90,8 @@ func TestAccountCloudforceOneEventCategoryUpdateWithOptionalParams(t *testing.T)
 	)
 	_, err := client.Accounts.CloudforceOne.Events.Categories.Update(
 		context.TODO(),
-		0.000000,
-		"category_id",
+		"account_id",
+		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		cfrex.AccountCloudforceOneEventCategoryUpdateParams{
 			KillChain:   cfrex.F(0.000000),
 			MitreAttack: cfrex.F([]string{"T1234"}),
@@ -122,7 +122,7 @@ func TestAccountCloudforceOneEventCategoryList(t *testing.T) {
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Accounts.CloudforceOne.Events.Categories.List(context.TODO(), 0.000000)
+	_, err := client.Accounts.CloudforceOne.Events.Categories.List(context.TODO(), "account_id")
 	if err != nil {
 		var apierr *cfrex.Error
 		if errors.As(err, &apierr) {
@@ -148,8 +148,8 @@ func TestAccountCloudforceOneEventCategoryDelete(t *testing.T) {
 	)
 	_, err := client.Accounts.CloudforceOne.Events.Categories.Delete(
 		context.TODO(),
-		0.000000,
-		"category_id",
+		"account_id",
+		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 	)
 	if err != nil {
 		var apierr *cfrex.Error

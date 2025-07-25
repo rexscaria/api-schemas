@@ -34,10 +34,10 @@ func TestAccountAIRunCfMetaLlamaExecuteLlama2_7bChatHfLoraWithOptionalParams(t *
 			QueueRequest: cfrex.F("true"),
 			Body: cfrex.AccountAIRunCfMetaLlamaExecuteLlama2_7bChatHfLoraParamsBodyPrompt{
 				Prompt:            cfrex.F("x"),
-				FrequencyPenalty:  cfrex.F(0.000000),
+				FrequencyPenalty:  cfrex.F(-2.000000),
 				Lora:              cfrex.F("lora"),
 				MaxTokens:         cfrex.F(int64(0)),
-				PresencePenalty:   cfrex.F(0.000000),
+				PresencePenalty:   cfrex.F(-2.000000),
 				Raw:               cfrex.F(true),
 				RepetitionPenalty: cfrex.F(0.000000),
 				ResponseFormat: cfrex.F(cfrex.AccountAIRunCfMetaLlamaExecuteLlama2_7bChatHfLoraParamsBodyPromptResponseFormat{
@@ -48,7 +48,7 @@ func TestAccountAIRunCfMetaLlamaExecuteLlama2_7bChatHfLoraWithOptionalParams(t *
 				Stream:      cfrex.F(true),
 				Temperature: cfrex.F(0.000000),
 				TopK:        cfrex.F(int64(1)),
-				TopP:        cfrex.F(0.000000),
+				TopP:        cfrex.F(0.001000),
 			},
 		},
 	)

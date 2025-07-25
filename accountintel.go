@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
-	"reflect"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -16,8 +15,6 @@ import (
 	"github.com/rexscaria/api-schemas/internal/param"
 	"github.com/rexscaria/api-schemas/internal/requestconfig"
 	"github.com/rexscaria/api-schemas/option"
-	"github.com/rexscaria/api-schemas/shared"
-	"github.com/tidwall/gjson"
 )
 
 // AccountIntelService contains methods and other services that help with
@@ -73,7 +70,8 @@ func (r *AccountIntelService) GetDomainHistory(ctx context.Context, accountID st
 }
 
 // Gets the geolocation, ASN, infrastructure type of the ASN, and any security
-// threat categories of an IP address.
+// threat categories of an IP address. **Must provide ip query parameters.** For
+// example, `/intel/ip?ipv4=1.1.1.1` or `/intel/ip?ipv6=2001:db8::1`.
 func (r *AccountIntelService) GetIPOverview(ctx context.Context, accountID string, query AccountIntelGetIPOverviewParams, opts ...option.RequestOption) (res *AccountIntelGetIPOverviewResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
@@ -109,7 +107,7 @@ func (r *AccountIntelService) GetWhoisRecord(ctx context.Context, accountID stri
 	return
 }
 
-// Get IP Lists
+// Get IP Lists.
 func (r *AccountIntelService) ListIPLists(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountIntelListIPListsResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
@@ -133,128 +131,22 @@ func (r *AccountIntelService) ListSinkholes(ctx context.Context, accountID strin
 	return
 }
 
-type CollectionResponse struct {
-	Errors   []IntelMessage                `json:"errors,required"`
-	Messages []IntelMessage                `json:"messages,required"`
-	Result   CollectionResponseResultUnion `json:"result,required,nullable"`
-	// Whether the API call was successful
-	Success    CollectionResponseSuccess `json:"success,required"`
-	ResultInfo ResultInfoIntel           `json:"result_info"`
-	JSON       collectionResponseJSON    `json:"-"`
-}
-
-// collectionResponseJSON contains the JSON metadata for the struct
-// [CollectionResponse]
-type collectionResponseJSON struct {
-	Errors      apijson.Field
-	Messages    apijson.Field
-	Result      apijson.Field
-	Success     apijson.Field
-	ResultInfo  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *CollectionResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r collectionResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-// Union satisfied by [CollectionResponseResultArray] or [shared.UnionString].
-type CollectionResponseResultUnion interface {
-	ImplementsCollectionResponseResultUnion()
-}
-
-func init() {
-	apijson.RegisterUnion(
-		reflect.TypeOf((*CollectionResponseResultUnion)(nil)).Elem(),
-		"",
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(CollectionResponseResultArray{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.String,
-			Type:       reflect.TypeOf(shared.UnionString("")),
-		},
-	)
-}
-
-type CollectionResponseResultArray []interface{}
-
-func (r CollectionResponseResultArray) ImplementsCollectionResponseResultUnion() {}
-
-// Whether the API call was successful
-type CollectionResponseSuccess bool
-
-const (
-	CollectionResponseSuccessTrue CollectionResponseSuccess = true
-)
-
-func (r CollectionResponseSuccess) IsKnown() bool {
-	switch r {
-	case CollectionResponseSuccessTrue:
-		return true
-	}
-	return false
-}
-
-type CommonResponseIntel struct {
-	Errors   []IntelMessage `json:"errors,required"`
-	Messages []IntelMessage `json:"messages,required"`
-	// Whether the API call was successful
-	Success CommonResponseIntelSuccess `json:"success,required"`
-	JSON    commonResponseIntelJSON    `json:"-"`
-}
-
-// commonResponseIntelJSON contains the JSON metadata for the struct
-// [CommonResponseIntel]
-type commonResponseIntelJSON struct {
-	Errors      apijson.Field
-	Messages    apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *CommonResponseIntel) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r commonResponseIntelJSON) RawJSON() string {
-	return r.raw
-}
-
-// Whether the API call was successful
-type CommonResponseIntelSuccess bool
-
-const (
-	CommonResponseIntelSuccessTrue CommonResponseIntelSuccess = true
-)
-
-func (r CommonResponseIntelSuccess) IsKnown() bool {
-	switch r {
-	case CommonResponseIntelSuccessTrue:
-		return true
-	}
-	return false
-}
-
 type IntelMessage struct {
-	Code    int64            `json:"code,required"`
-	Message string           `json:"message,required"`
-	JSON    intelMessageJSON `json:"-"`
+	Code             int64              `json:"code,required"`
+	Message          string             `json:"message,required"`
+	DocumentationURL string             `json:"documentation_url"`
+	Source           IntelMessageSource `json:"source"`
+	JSON             intelMessageJSON   `json:"-"`
 }
 
 // intelMessageJSON contains the JSON metadata for the struct [IntelMessage]
 type intelMessageJSON struct {
-	Code        apijson.Field
-	Message     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
 }
 
 func (r *IntelMessage) UnmarshalJSON(data []byte) (err error) {
@@ -265,14 +157,35 @@ func (r intelMessageJSON) RawJSON() string {
 	return r.raw
 }
 
+type IntelMessageSource struct {
+	Pointer string                 `json:"pointer"`
+	JSON    intelMessageSourceJSON `json:"-"`
+}
+
+// intelMessageSourceJSON contains the JSON metadata for the struct
+// [IntelMessageSource]
+type intelMessageSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *IntelMessageSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r intelMessageSourceJSON) RawJSON() string {
+	return r.raw
+}
+
 type ResultInfoIntel struct {
-	// Total number of results for the requested service
+	// Total number of results for the requested service.
 	Count float64 `json:"count"`
-	// Current page within paginated list of results
+	// Current page within paginated list of results.
 	Page float64 `json:"page"`
-	// Number of results per page of results
+	// Number of results per page of results.
 	PerPage float64 `json:"per_page"`
-	// Total results available without any search parameters
+	// Total results available without any search parameters.
 	TotalCount float64             `json:"total_count"`
 	JSON       resultInfoIntelJSON `json:"-"`
 }
@@ -296,9 +209,9 @@ func (r resultInfoIntelJSON) RawJSON() string {
 }
 
 type SingleResponseIntel struct {
-	Errors   []IntelMessage `json:"errors,required"`
-	Messages []IntelMessage `json:"messages,required"`
-	// Whether the API call was successful
+	Errors   []SingleResponseIntelError   `json:"errors,required"`
+	Messages []SingleResponseIntelMessage `json:"messages,required"`
+	// Whether the API call was successful.
 	Success SingleResponseIntelSuccess `json:"success,required"`
 	JSON    singleResponseIntelJSON    `json:"-"`
 }
@@ -321,7 +234,103 @@ func (r singleResponseIntelJSON) RawJSON() string {
 	return r.raw
 }
 
-// Whether the API call was successful
+type SingleResponseIntelError struct {
+	Code             int64                           `json:"code,required"`
+	Message          string                          `json:"message,required"`
+	DocumentationURL string                          `json:"documentation_url"`
+	Source           SingleResponseIntelErrorsSource `json:"source"`
+	JSON             singleResponseIntelErrorJSON    `json:"-"`
+}
+
+// singleResponseIntelErrorJSON contains the JSON metadata for the struct
+// [SingleResponseIntelError]
+type singleResponseIntelErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *SingleResponseIntelError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r singleResponseIntelErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type SingleResponseIntelErrorsSource struct {
+	Pointer string                              `json:"pointer"`
+	JSON    singleResponseIntelErrorsSourceJSON `json:"-"`
+}
+
+// singleResponseIntelErrorsSourceJSON contains the JSON metadata for the struct
+// [SingleResponseIntelErrorsSource]
+type singleResponseIntelErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *SingleResponseIntelErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r singleResponseIntelErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type SingleResponseIntelMessage struct {
+	Code             int64                             `json:"code,required"`
+	Message          string                            `json:"message,required"`
+	DocumentationURL string                            `json:"documentation_url"`
+	Source           SingleResponseIntelMessagesSource `json:"source"`
+	JSON             singleResponseIntelMessageJSON    `json:"-"`
+}
+
+// singleResponseIntelMessageJSON contains the JSON metadata for the struct
+// [SingleResponseIntelMessage]
+type singleResponseIntelMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *SingleResponseIntelMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r singleResponseIntelMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type SingleResponseIntelMessagesSource struct {
+	Pointer string                                `json:"pointer"`
+	JSON    singleResponseIntelMessagesSourceJSON `json:"-"`
+}
+
+// singleResponseIntelMessagesSourceJSON contains the JSON metadata for the struct
+// [SingleResponseIntelMessagesSource]
+type singleResponseIntelMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *SingleResponseIntelMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r singleResponseIntelMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful.
 type SingleResponseIntelSuccess bool
 
 const (
@@ -337,18 +346,22 @@ func (r SingleResponseIntelSuccess) IsKnown() bool {
 }
 
 type SinkholesMessage struct {
-	Code    int64                `json:"code,required"`
-	Message string               `json:"message,required"`
-	JSON    sinkholesMessageJSON `json:"-"`
+	Code             int64                  `json:"code,required"`
+	Message          string                 `json:"message,required"`
+	DocumentationURL string                 `json:"documentation_url"`
+	Source           SinkholesMessageSource `json:"source"`
+	JSON             sinkholesMessageJSON   `json:"-"`
 }
 
 // sinkholesMessageJSON contains the JSON metadata for the struct
 // [SinkholesMessage]
 type sinkholesMessageJSON struct {
-	Code        apijson.Field
-	Message     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
 }
 
 func (r *SinkholesMessage) UnmarshalJSON(data []byte) (err error) {
@@ -359,38 +372,45 @@ func (r sinkholesMessageJSON) RawJSON() string {
 	return r.raw
 }
 
-type WhoisMessage struct {
-	Code    int64            `json:"code,required"`
-	Message string           `json:"message,required"`
-	JSON    whoisMessageJSON `json:"-"`
+type SinkholesMessageSource struct {
+	Pointer string                     `json:"pointer"`
+	JSON    sinkholesMessageSourceJSON `json:"-"`
 }
 
-// whoisMessageJSON contains the JSON metadata for the struct [WhoisMessage]
-type whoisMessageJSON struct {
-	Code        apijson.Field
-	Message     apijson.Field
+// sinkholesMessageSourceJSON contains the JSON metadata for the struct
+// [SinkholesMessageSource]
+type sinkholesMessageSourceJSON struct {
+	Pointer     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *WhoisMessage) UnmarshalJSON(data []byte) (err error) {
+func (r *SinkholesMessageSource) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r whoisMessageJSON) RawJSON() string {
+func (r sinkholesMessageSourceJSON) RawJSON() string {
 	return r.raw
 }
 
 type AccountIntelGetDomainHistoryResponse struct {
-	Result []AccountIntelGetDomainHistoryResponseResult `json:"result"`
-	JSON   accountIntelGetDomainHistoryResponseJSON     `json:"-"`
-	CollectionResponse
+	Errors   []IntelMessage                               `json:"errors,required"`
+	Messages []IntelMessage                               `json:"messages,required"`
+	Result   []AccountIntelGetDomainHistoryResponseResult `json:"result,required,nullable"`
+	// Whether the API call was successful.
+	Success    AccountIntelGetDomainHistoryResponseSuccess `json:"success,required"`
+	ResultInfo ResultInfoIntel                             `json:"result_info"`
+	JSON       accountIntelGetDomainHistoryResponseJSON    `json:"-"`
 }
 
 // accountIntelGetDomainHistoryResponseJSON contains the JSON metadata for the
 // struct [AccountIntelGetDomainHistoryResponse]
 type accountIntelGetDomainHistoryResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -427,10 +447,10 @@ func (r accountIntelGetDomainHistoryResponseResultJSON) RawJSON() string {
 }
 
 type AccountIntelGetDomainHistoryResponseResultCategorization struct {
-	Categories interface{}                                                  `json:"categories"`
-	End        time.Time                                                    `json:"end" format:"date"`
-	Start      time.Time                                                    `json:"start" format:"date"`
-	JSON       accountIntelGetDomainHistoryResponseResultCategorizationJSON `json:"-"`
+	Categories []AccountIntelGetDomainHistoryResponseResultCategorizationsCategory `json:"categories"`
+	End        time.Time                                                           `json:"end" format:"date"`
+	Start      time.Time                                                           `json:"start" format:"date"`
+	JSON       accountIntelGetDomainHistoryResponseResultCategorizationJSON        `json:"-"`
 }
 
 // accountIntelGetDomainHistoryResponseResultCategorizationJSON contains the JSON
@@ -452,16 +472,63 @@ func (r accountIntelGetDomainHistoryResponseResultCategorizationJSON) RawJSON() 
 	return r.raw
 }
 
+type AccountIntelGetDomainHistoryResponseResultCategorizationsCategory struct {
+	ID   int64                                                                 `json:"id"`
+	Name string                                                                `json:"name"`
+	JSON accountIntelGetDomainHistoryResponseResultCategorizationsCategoryJSON `json:"-"`
+}
+
+// accountIntelGetDomainHistoryResponseResultCategorizationsCategoryJSON contains
+// the JSON metadata for the struct
+// [AccountIntelGetDomainHistoryResponseResultCategorizationsCategory]
+type accountIntelGetDomainHistoryResponseResultCategorizationsCategoryJSON struct {
+	ID          apijson.Field
+	Name        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountIntelGetDomainHistoryResponseResultCategorizationsCategory) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountIntelGetDomainHistoryResponseResultCategorizationsCategoryJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountIntelGetDomainHistoryResponseSuccess bool
+
+const (
+	AccountIntelGetDomainHistoryResponseSuccessTrue AccountIntelGetDomainHistoryResponseSuccess = true
+)
+
+func (r AccountIntelGetDomainHistoryResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountIntelGetDomainHistoryResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountIntelGetIPOverviewResponse struct {
-	Result []AccountIntelGetIPOverviewResponseResult `json:"result"`
-	JSON   accountIntelGetIPOverviewResponseJSON     `json:"-"`
-	CollectionResponse
+	Errors   []IntelMessage                            `json:"errors,required"`
+	Messages []IntelMessage                            `json:"messages,required"`
+	Result   []AccountIntelGetIPOverviewResponseResult `json:"result,required,nullable"`
+	// Whether the API call was successful.
+	Success    AccountIntelGetIPOverviewResponseSuccess `json:"success,required"`
+	ResultInfo ResultInfoIntel                          `json:"result_info"`
+	JSON       accountIntelGetIPOverviewResponseJSON    `json:"-"`
 }
 
 // accountIntelGetIPOverviewResponseJSON contains the JSON metadata for the struct
 // [AccountIntelGetIPOverviewResponse]
 type accountIntelGetIPOverviewResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -575,16 +642,37 @@ func (r accountIntelGetIPOverviewResponseResultRiskTypeJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountIntelGetIPOverviewResponseSuccess bool
+
+const (
+	AccountIntelGetIPOverviewResponseSuccessTrue AccountIntelGetIPOverviewResponseSuccess = true
+)
+
+func (r AccountIntelGetIPOverviewResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountIntelGetIPOverviewResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountIntelGetPassiveDNSResponse struct {
-	Result     AccountIntelGetPassiveDNSResponseResult `json:"result"`
-	ResultInfo ResultInfoIntel                         `json:"result_info"`
-	JSON       accountIntelGetPassiveDNSResponseJSON   `json:"-"`
-	CommonResponseIntel
+	Errors   []AccountIntelGetPassiveDNSResponseError   `json:"errors,required"`
+	Messages []AccountIntelGetPassiveDNSResponseMessage `json:"messages,required"`
+	// Whether the API call was successful.
+	Success    AccountIntelGetPassiveDNSResponseSuccess    `json:"success,required"`
+	Result     AccountIntelGetPassiveDNSResponseResult     `json:"result"`
+	ResultInfo AccountIntelGetPassiveDNSResponseResultInfo `json:"result_info"`
+	JSON       accountIntelGetPassiveDNSResponseJSON       `json:"-"`
 }
 
 // accountIntelGetPassiveDNSResponseJSON contains the JSON metadata for the struct
 // [AccountIntelGetPassiveDNSResponse]
 type accountIntelGetPassiveDNSResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	ResultInfo  apijson.Field
 	raw         string
@@ -597,6 +685,117 @@ func (r *AccountIntelGetPassiveDNSResponse) UnmarshalJSON(data []byte) (err erro
 
 func (r accountIntelGetPassiveDNSResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+type AccountIntelGetPassiveDNSResponseError struct {
+	Code             int64                                         `json:"code,required"`
+	Message          string                                        `json:"message,required"`
+	DocumentationURL string                                        `json:"documentation_url"`
+	Source           AccountIntelGetPassiveDNSResponseErrorsSource `json:"source"`
+	JSON             accountIntelGetPassiveDNSResponseErrorJSON    `json:"-"`
+}
+
+// accountIntelGetPassiveDNSResponseErrorJSON contains the JSON metadata for the
+// struct [AccountIntelGetPassiveDNSResponseError]
+type accountIntelGetPassiveDNSResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountIntelGetPassiveDNSResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountIntelGetPassiveDNSResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountIntelGetPassiveDNSResponseErrorsSource struct {
+	Pointer string                                            `json:"pointer"`
+	JSON    accountIntelGetPassiveDNSResponseErrorsSourceJSON `json:"-"`
+}
+
+// accountIntelGetPassiveDNSResponseErrorsSourceJSON contains the JSON metadata for
+// the struct [AccountIntelGetPassiveDNSResponseErrorsSource]
+type accountIntelGetPassiveDNSResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountIntelGetPassiveDNSResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountIntelGetPassiveDNSResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountIntelGetPassiveDNSResponseMessage struct {
+	Code             int64                                           `json:"code,required"`
+	Message          string                                          `json:"message,required"`
+	DocumentationURL string                                          `json:"documentation_url"`
+	Source           AccountIntelGetPassiveDNSResponseMessagesSource `json:"source"`
+	JSON             accountIntelGetPassiveDNSResponseMessageJSON    `json:"-"`
+}
+
+// accountIntelGetPassiveDNSResponseMessageJSON contains the JSON metadata for the
+// struct [AccountIntelGetPassiveDNSResponseMessage]
+type accountIntelGetPassiveDNSResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountIntelGetPassiveDNSResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountIntelGetPassiveDNSResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountIntelGetPassiveDNSResponseMessagesSource struct {
+	Pointer string                                              `json:"pointer"`
+	JSON    accountIntelGetPassiveDNSResponseMessagesSourceJSON `json:"-"`
+}
+
+// accountIntelGetPassiveDNSResponseMessagesSourceJSON contains the JSON metadata
+// for the struct [AccountIntelGetPassiveDNSResponseMessagesSource]
+type accountIntelGetPassiveDNSResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountIntelGetPassiveDNSResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountIntelGetPassiveDNSResponseMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountIntelGetPassiveDNSResponseSuccess bool
+
+const (
+	AccountIntelGetPassiveDNSResponseSuccessTrue AccountIntelGetPassiveDNSResponseSuccess = true
+)
+
+func (r AccountIntelGetPassiveDNSResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountIntelGetPassiveDNSResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountIntelGetPassiveDNSResponseResult struct {
@@ -658,10 +857,41 @@ func (r accountIntelGetPassiveDNSResponseResultReverseRecordJSON) RawJSON() stri
 	return r.raw
 }
 
+type AccountIntelGetPassiveDNSResponseResultInfo struct {
+	// Total number of results for the requested service.
+	Count float64 `json:"count"`
+	// Current page within paginated list of results.
+	Page float64 `json:"page"`
+	// Number of results per page of results.
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters.
+	TotalCount float64                                         `json:"total_count"`
+	JSON       accountIntelGetPassiveDNSResponseResultInfoJSON `json:"-"`
+}
+
+// accountIntelGetPassiveDNSResponseResultInfoJSON contains the JSON metadata for
+// the struct [AccountIntelGetPassiveDNSResponseResultInfo]
+type accountIntelGetPassiveDNSResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountIntelGetPassiveDNSResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountIntelGetPassiveDNSResponseResultInfoJSON) RawJSON() string {
+	return r.raw
+}
+
 type AccountIntelGetWhoisRecordResponse struct {
-	Errors   []WhoisMessage `json:"errors,required"`
-	Messages []WhoisMessage `json:"messages,required"`
-	// Whether the API call was successful
+	Errors   []AccountIntelGetWhoisRecordResponseError   `json:"errors,required"`
+	Messages []AccountIntelGetWhoisRecordResponseMessage `json:"messages,required"`
+	// Returns a boolean for the success/failure of the API call.
 	Success AccountIntelGetWhoisRecordResponseSuccess `json:"success,required"`
 	Result  AccountIntelGetWhoisRecordResponseResult  `json:"result"`
 	JSON    accountIntelGetWhoisRecordResponseJSON    `json:"-"`
@@ -686,7 +916,103 @@ func (r accountIntelGetWhoisRecordResponseJSON) RawJSON() string {
 	return r.raw
 }
 
-// Whether the API call was successful
+type AccountIntelGetWhoisRecordResponseError struct {
+	Code             int64                                          `json:"code,required"`
+	Message          string                                         `json:"message,required"`
+	DocumentationURL string                                         `json:"documentation_url"`
+	Source           AccountIntelGetWhoisRecordResponseErrorsSource `json:"source"`
+	JSON             accountIntelGetWhoisRecordResponseErrorJSON    `json:"-"`
+}
+
+// accountIntelGetWhoisRecordResponseErrorJSON contains the JSON metadata for the
+// struct [AccountIntelGetWhoisRecordResponseError]
+type accountIntelGetWhoisRecordResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountIntelGetWhoisRecordResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountIntelGetWhoisRecordResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountIntelGetWhoisRecordResponseErrorsSource struct {
+	Pointer string                                             `json:"pointer"`
+	JSON    accountIntelGetWhoisRecordResponseErrorsSourceJSON `json:"-"`
+}
+
+// accountIntelGetWhoisRecordResponseErrorsSourceJSON contains the JSON metadata
+// for the struct [AccountIntelGetWhoisRecordResponseErrorsSource]
+type accountIntelGetWhoisRecordResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountIntelGetWhoisRecordResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountIntelGetWhoisRecordResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountIntelGetWhoisRecordResponseMessage struct {
+	Code             int64                                            `json:"code,required"`
+	Message          string                                           `json:"message,required"`
+	DocumentationURL string                                           `json:"documentation_url"`
+	Source           AccountIntelGetWhoisRecordResponseMessagesSource `json:"source"`
+	JSON             accountIntelGetWhoisRecordResponseMessageJSON    `json:"-"`
+}
+
+// accountIntelGetWhoisRecordResponseMessageJSON contains the JSON metadata for the
+// struct [AccountIntelGetWhoisRecordResponseMessage]
+type accountIntelGetWhoisRecordResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountIntelGetWhoisRecordResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountIntelGetWhoisRecordResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountIntelGetWhoisRecordResponseMessagesSource struct {
+	Pointer string                                               `json:"pointer"`
+	JSON    accountIntelGetWhoisRecordResponseMessagesSourceJSON `json:"-"`
+}
+
+// accountIntelGetWhoisRecordResponseMessagesSourceJSON contains the JSON metadata
+// for the struct [AccountIntelGetWhoisRecordResponseMessagesSource]
+type accountIntelGetWhoisRecordResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountIntelGetWhoisRecordResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountIntelGetWhoisRecordResponseMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Returns a boolean for the success/failure of the API call.
 type AccountIntelGetWhoisRecordResponseSuccess bool
 
 const (
@@ -702,6 +1028,7 @@ func (r AccountIntelGetWhoisRecordResponseSuccess) IsKnown() bool {
 }
 
 type AccountIntelGetWhoisRecordResponseResult struct {
+	Dnssec                    bool                                         `json:"dnssec,required"`
 	Domain                    string                                       `json:"domain,required"`
 	Extension                 string                                       `json:"extension,required"`
 	Found                     bool                                         `json:"found,required"`
@@ -740,7 +1067,6 @@ type AccountIntelGetWhoisRecordResponseResult struct {
 	BillingStreet             string                                       `json:"billing_street"`
 	CreatedDate               time.Time                                    `json:"created_date" format:"date-time"`
 	CreatedDateRaw            string                                       `json:"created_date_raw"`
-	Dnssec                    bool                                         `json:"dnssec"`
 	ExpirationDate            time.Time                                    `json:"expiration_date" format:"date-time"`
 	ExpirationDateRaw         string                                       `json:"expiration_date_raw"`
 	RegistrantCity            string                                       `json:"registrant_city"`
@@ -795,6 +1121,7 @@ type AccountIntelGetWhoisRecordResponseResult struct {
 // accountIntelGetWhoisRecordResponseResultJSON contains the JSON metadata for the
 // struct [AccountIntelGetWhoisRecordResponseResult]
 type accountIntelGetWhoisRecordResponseResultJSON struct {
+	Dnssec                    apijson.Field
 	Domain                    apijson.Field
 	Extension                 apijson.Field
 	Found                     apijson.Field
@@ -833,7 +1160,6 @@ type accountIntelGetWhoisRecordResponseResultJSON struct {
 	BillingStreet             apijson.Field
 	CreatedDate               apijson.Field
 	CreatedDateRaw            apijson.Field
-	Dnssec                    apijson.Field
 	ExpirationDate            apijson.Field
 	ExpirationDateRaw         apijson.Field
 	RegistrantCity            apijson.Field
@@ -895,15 +1221,23 @@ func (r accountIntelGetWhoisRecordResponseResultJSON) RawJSON() string {
 }
 
 type AccountIntelListIPListsResponse struct {
-	Result []AccountIntelListIPListsResponseResult `json:"result"`
-	JSON   accountIntelListIPListsResponseJSON     `json:"-"`
-	CollectionResponse
+	Errors   []AccountIntelListIPListsResponseError   `json:"errors,required"`
+	Messages []AccountIntelListIPListsResponseMessage `json:"messages,required"`
+	Result   []AccountIntelListIPListsResponseResult  `json:"result,required,nullable"`
+	// Whether the API call was successful.
+	Success    AccountIntelListIPListsResponseSuccess `json:"success,required"`
+	ResultInfo ResultInfoIntel                        `json:"result_info"`
+	JSON       accountIntelListIPListsResponseJSON    `json:"-"`
 }
 
 // accountIntelListIPListsResponseJSON contains the JSON metadata for the struct
 // [AccountIntelListIPListsResponse]
 type accountIntelListIPListsResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -913,6 +1247,102 @@ func (r *AccountIntelListIPListsResponse) UnmarshalJSON(data []byte) (err error)
 }
 
 func (r accountIntelListIPListsResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountIntelListIPListsResponseError struct {
+	Code             int64                                       `json:"code,required"`
+	Message          string                                      `json:"message,required"`
+	DocumentationURL string                                      `json:"documentation_url"`
+	Source           AccountIntelListIPListsResponseErrorsSource `json:"source"`
+	JSON             accountIntelListIPListsResponseErrorJSON    `json:"-"`
+}
+
+// accountIntelListIPListsResponseErrorJSON contains the JSON metadata for the
+// struct [AccountIntelListIPListsResponseError]
+type accountIntelListIPListsResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountIntelListIPListsResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountIntelListIPListsResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountIntelListIPListsResponseErrorsSource struct {
+	Pointer string                                          `json:"pointer"`
+	JSON    accountIntelListIPListsResponseErrorsSourceJSON `json:"-"`
+}
+
+// accountIntelListIPListsResponseErrorsSourceJSON contains the JSON metadata for
+// the struct [AccountIntelListIPListsResponseErrorsSource]
+type accountIntelListIPListsResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountIntelListIPListsResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountIntelListIPListsResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountIntelListIPListsResponseMessage struct {
+	Code             int64                                         `json:"code,required"`
+	Message          string                                        `json:"message,required"`
+	DocumentationURL string                                        `json:"documentation_url"`
+	Source           AccountIntelListIPListsResponseMessagesSource `json:"source"`
+	JSON             accountIntelListIPListsResponseMessageJSON    `json:"-"`
+}
+
+// accountIntelListIPListsResponseMessageJSON contains the JSON metadata for the
+// struct [AccountIntelListIPListsResponseMessage]
+type accountIntelListIPListsResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountIntelListIPListsResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountIntelListIPListsResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountIntelListIPListsResponseMessagesSource struct {
+	Pointer string                                            `json:"pointer"`
+	JSON    accountIntelListIPListsResponseMessagesSourceJSON `json:"-"`
+}
+
+// accountIntelListIPListsResponseMessagesSourceJSON contains the JSON metadata for
+// the struct [AccountIntelListIPListsResponseMessagesSource]
+type accountIntelListIPListsResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountIntelListIPListsResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountIntelListIPListsResponseMessagesSourceJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -941,10 +1371,25 @@ func (r accountIntelListIPListsResponseResultJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountIntelListIPListsResponseSuccess bool
+
+const (
+	AccountIntelListIPListsResponseSuccessTrue AccountIntelListIPListsResponseSuccess = true
+)
+
+func (r AccountIntelListIPListsResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountIntelListIPListsResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountIntelListSinkholesResponse struct {
 	Errors   []SinkholesMessage `json:"errors,required"`
 	Messages []SinkholesMessage `json:"messages,required"`
-	// Whether the API call was successful
+	// Whether the API call was successful.
 	Success AccountIntelListSinkholesResponseSuccess  `json:"success,required"`
 	Result  []AccountIntelListSinkholesResponseResult `json:"result"`
 	JSON    accountIntelListSinkholesResponseJSON     `json:"-"`
@@ -969,7 +1414,7 @@ func (r accountIntelListSinkholesResponseJSON) RawJSON() string {
 	return r.raw
 }
 
-// Whether the API call was successful
+// Whether the API call was successful.
 type AccountIntelListSinkholesResponseSuccess bool
 
 const (
@@ -1064,7 +1509,7 @@ func (r AccountIntelNewMiscategorizationParamsIndicatorType) IsKnown() bool {
 }
 
 type AccountIntelGetDomainHistoryParams struct {
-	Domain param.Field[interface{}] `query:"domain"`
+	Domain param.Field[string] `query:"domain"`
 }
 
 // URLQuery serializes [AccountIntelGetDomainHistoryParams]'s query parameters as

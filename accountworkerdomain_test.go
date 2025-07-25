@@ -126,9 +126,6 @@ func TestAccountWorkerDomainDetach(t *testing.T) {
 		context.TODO(),
 		"9a7806061c88ada191ed06f989cc3dac",
 		"dbe10b4bc17c295377eabd600e1787fd",
-		cfrex.AccountWorkerDomainDetachParams{
-			Body: map[string]interface{}{},
-		},
 	)
 	if err != nil {
 		var apierr *cfrex.Error

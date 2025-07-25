@@ -125,13 +125,7 @@ func TestUserFirewallAccessRuleRuleDelete(t *testing.T) {
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.User.Firewall.AccessRules.Rules.Delete(
-		context.TODO(),
-		"023e105f4ecef8ad9ca31a8372d0c353",
-		cfrex.UserFirewallAccessRuleRuleDeleteParams{
-			Body: map[string]interface{}{},
-		},
-	)
+	_, err := client.User.Firewall.AccessRules.Rules.Delete(context.TODO(), "023e105f4ecef8ad9ca31a8372d0c353")
 	if err != nil {
 		var apierr *cfrex.Error
 		if errors.As(err, &apierr) {

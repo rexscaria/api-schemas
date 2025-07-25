@@ -81,14 +81,20 @@ func (r settingJSON) RawJSON() string {
 }
 
 type AccountDlpPayloadLogGetResponse struct {
-	Result Setting                             `json:"result"`
-	JSON   accountDlpPayloadLogGetResponseJSON `json:"-"`
-	APIResponseSingleDlp
+	Errors   []MessagesDlpItems `json:"errors,required"`
+	Messages []MessagesDlpItems `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountDlpPayloadLogGetResponseSuccess `json:"success,required"`
+	Result  Setting                                `json:"result"`
+	JSON    accountDlpPayloadLogGetResponseJSON    `json:"-"`
 }
 
 // accountDlpPayloadLogGetResponseJSON contains the JSON metadata for the struct
 // [AccountDlpPayloadLogGetResponse]
 type accountDlpPayloadLogGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -102,15 +108,36 @@ func (r accountDlpPayloadLogGetResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountDlpPayloadLogGetResponseSuccess bool
+
+const (
+	AccountDlpPayloadLogGetResponseSuccessTrue AccountDlpPayloadLogGetResponseSuccess = true
+)
+
+func (r AccountDlpPayloadLogGetResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountDlpPayloadLogGetResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountDlpPayloadLogUpdateResponse struct {
-	Result Setting                                `json:"result"`
-	JSON   accountDlpPayloadLogUpdateResponseJSON `json:"-"`
-	APIResponseSingleDlp
+	Errors   []MessagesDlpItems `json:"errors,required"`
+	Messages []MessagesDlpItems `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountDlpPayloadLogUpdateResponseSuccess `json:"success,required"`
+	Result  Setting                                   `json:"result"`
+	JSON    accountDlpPayloadLogUpdateResponseJSON    `json:"-"`
 }
 
 // accountDlpPayloadLogUpdateResponseJSON contains the JSON metadata for the struct
 // [AccountDlpPayloadLogUpdateResponse]
 type accountDlpPayloadLogUpdateResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -122,6 +149,21 @@ func (r *AccountDlpPayloadLogUpdateResponse) UnmarshalJSON(data []byte) (err err
 
 func (r accountDlpPayloadLogUpdateResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountDlpPayloadLogUpdateResponseSuccess bool
+
+const (
+	AccountDlpPayloadLogUpdateResponseSuccessTrue AccountDlpPayloadLogUpdateResponseSuccess = true
+)
+
+func (r AccountDlpPayloadLogUpdateResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountDlpPayloadLogUpdateResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountDlpPayloadLogUpdateParams struct {

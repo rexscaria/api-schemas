@@ -68,6 +68,7 @@ func (r radarRobotsTxtTopGetTopDomainCategoriesResponseJSON) RawJSON() string {
 }
 
 type RadarRobotsTxtTopGetTopDomainCategoriesResponseResult struct {
+	// Metadata for the results.
 	Meta RadarRobotsTxtTopGetTopDomainCategoriesResponseResultMeta   `json:"meta,required"`
 	Top0 []RadarRobotsTxtTopGetTopDomainCategoriesResponseResultTop0 `json:"top_0,required"`
 	JSON radarRobotsTxtTopGetTopDomainCategoriesResponseResultJSON   `json:"-"`
@@ -90,23 +91,28 @@ func (r radarRobotsTxtTopGetTopDomainCategoriesResponseResultJSON) RawJSON() str
 	return r.raw
 }
 
+// Metadata for the results.
 type RadarRobotsTxtTopGetTopDomainCategoriesResponseResultMeta struct {
+	ConfidenceInfo RadarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaConfidenceInfo `json:"confidenceInfo,required,nullable"`
 	DateRange      []RadarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaDateRange    `json:"dateRange,required"`
-	LastUpdated    string                                                                  `json:"lastUpdated,required"`
-	Normalization  string                                                                  `json:"normalization,required"`
-	ConfidenceInfo RadarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaConfidenceInfo `json:"confidenceInfo"`
-	Units          []RadarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaUnit         `json:"units"`
-	JSON           radarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaJSON           `json:"-"`
+	// Timestamp of the last dataset update.
+	LastUpdated time.Time `json:"lastUpdated,required" format:"date-time"`
+	// Normalization method applied to the results. Refer to
+	// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
+	Normalization RadarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaNormalization `json:"normalization,required"`
+	// Measurement units for the results.
+	Units []RadarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaUnit `json:"units,required"`
+	JSON  radarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaJSON   `json:"-"`
 }
 
 // radarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaJSON contains the JSON
 // metadata for the struct
 // [RadarRobotsTxtTopGetTopDomainCategoriesResponseResultMeta]
 type radarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaJSON struct {
+	ConfidenceInfo apijson.Field
 	DateRange      apijson.Field
 	LastUpdated    apijson.Field
 	Normalization  apijson.Field
-	ConfidenceInfo apijson.Field
 	Units          apijson.Field
 	raw            string
 	ExtraFields    map[string]apijson.Field
@@ -117,6 +123,67 @@ func (r *RadarRobotsTxtTopGetTopDomainCategoriesResponseResultMeta) UnmarshalJSO
 }
 
 func (r radarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaJSON) RawJSON() string {
+	return r.raw
+}
+
+type RadarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaConfidenceInfo struct {
+	Annotations []RadarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaConfidenceInfoAnnotation `json:"annotations,required"`
+	// Provides an indication of how much confidence Cloudflare has in the data.
+	Level int64                                                                       `json:"level,required"`
+	JSON  radarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaConfidenceInfoJSON `json:"-"`
+}
+
+// radarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaConfidenceInfoJSON
+// contains the JSON metadata for the struct
+// [RadarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaConfidenceInfo]
+type radarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaConfidenceInfoJSON struct {
+	Annotations apijson.Field
+	Level       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *RadarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaConfidenceInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaConfidenceInfoJSON) RawJSON() string {
+	return r.raw
+}
+
+// Annotation associated with the result (e.g. outage or other type of event).
+type RadarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaConfidenceInfoAnnotation struct {
+	DataSource  string    `json:"dataSource,required"`
+	Description string    `json:"description,required"`
+	EndDate     time.Time `json:"endDate,required" format:"date-time"`
+	EventType   string    `json:"eventType,required"`
+	// Whether event is a single point in time or a time range.
+	IsInstantaneous bool                                                                                  `json:"isInstantaneous,required"`
+	LinkedURL       string                                                                                `json:"linkedUrl,required" format:"uri"`
+	StartDate       time.Time                                                                             `json:"startDate,required" format:"date-time"`
+	JSON            radarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
+}
+
+// radarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaConfidenceInfoAnnotationJSON
+// contains the JSON metadata for the struct
+// [RadarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaConfidenceInfoAnnotation]
+type radarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaConfidenceInfoAnnotationJSON struct {
+	DataSource      apijson.Field
+	Description     apijson.Field
+	EndDate         apijson.Field
+	EventType       apijson.Field
+	IsInstantaneous apijson.Field
+	LinkedURL       apijson.Field
+	StartDate       apijson.Field
+	raw             string
+	ExtraFields     map[string]apijson.Field
+}
+
+func (r *RadarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaConfidenceInfoAnnotation) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaConfidenceInfoAnnotationJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -146,62 +213,27 @@ func (r radarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaDateRangeJSON) 
 	return r.raw
 }
 
-type RadarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaConfidenceInfo struct {
-	Annotations []RadarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaConfidenceInfoAnnotation `json:"annotations"`
-	Level       int64                                                                               `json:"level"`
-	JSON        radarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaConfidenceInfoJSON         `json:"-"`
-}
+// Normalization method applied to the results. Refer to
+// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
+type RadarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaNormalization string
 
-// radarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaConfidenceInfoJSON
-// contains the JSON metadata for the struct
-// [RadarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaConfidenceInfo]
-type radarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaConfidenceInfoJSON struct {
-	Annotations apijson.Field
-	Level       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
+const (
+	RadarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaNormalizationPercentage           RadarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaNormalization = "PERCENTAGE"
+	RadarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaNormalizationMin0Max              RadarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaNormalization = "MIN0_MAX"
+	RadarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaNormalizationMinMax               RadarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaNormalization = "MIN_MAX"
+	RadarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaNormalizationRawValues            RadarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaNormalization = "RAW_VALUES"
+	RadarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaNormalizationPercentageChange     RadarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaNormalization = "PERCENTAGE_CHANGE"
+	RadarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaNormalizationRollingAverage       RadarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaNormalization = "ROLLING_AVERAGE"
+	RadarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaNormalizationOverlappedPercentage RadarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaNormalization = "OVERLAPPED_PERCENTAGE"
+	RadarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaNormalizationRatio                RadarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaNormalization = "RATIO"
+)
 
-func (r *RadarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaConfidenceInfo) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r radarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaConfidenceInfoJSON) RawJSON() string {
-	return r.raw
-}
-
-type RadarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaConfidenceInfoAnnotation struct {
-	DataSource      string                                                                                `json:"dataSource,required"`
-	Description     string                                                                                `json:"description,required"`
-	EventType       string                                                                                `json:"eventType,required"`
-	IsInstantaneous bool                                                                                  `json:"isInstantaneous,required"`
-	EndTime         time.Time                                                                             `json:"endTime" format:"date-time"`
-	LinkedURL       string                                                                                `json:"linkedUrl"`
-	StartTime       time.Time                                                                             `json:"startTime" format:"date-time"`
-	JSON            radarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
-}
-
-// radarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaConfidenceInfoAnnotationJSON
-// contains the JSON metadata for the struct
-// [RadarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaConfidenceInfoAnnotation]
-type radarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaConfidenceInfoAnnotationJSON struct {
-	DataSource      apijson.Field
-	Description     apijson.Field
-	EventType       apijson.Field
-	IsInstantaneous apijson.Field
-	EndTime         apijson.Field
-	LinkedURL       apijson.Field
-	StartTime       apijson.Field
-	raw             string
-	ExtraFields     map[string]apijson.Field
-}
-
-func (r *RadarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaConfidenceInfoAnnotation) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r radarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaConfidenceInfoAnnotationJSON) RawJSON() string {
-	return r.raw
+func (r RadarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaNormalization) IsKnown() bool {
+	switch r {
+	case RadarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaNormalizationPercentage, RadarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaNormalizationMin0Max, RadarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaNormalizationMinMax, RadarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaNormalizationRawValues, RadarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaNormalizationPercentageChange, RadarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaNormalizationRollingAverage, RadarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaNormalizationOverlappedPercentage, RadarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaNormalizationRatio:
+		return true
+	}
+	return false
 }
 
 type RadarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaUnit struct {
@@ -253,7 +285,7 @@ func (r radarRobotsTxtTopGetTopDomainCategoriesResponseResultTop0JSON) RawJSON()
 }
 
 type RadarRobotsTxtTopGetTopDomainCategoriesParams struct {
-	// Array of dates to filter the results.
+	// Filters results by the specified array of dates.
 	Date param.Field[[]time.Time] `query:"date" format:"date"`
 	// Format in which results will be returned.
 	Format param.Field[RadarRobotsTxtTopGetTopDomainCategoriesParamsFormat] `query:"format"`

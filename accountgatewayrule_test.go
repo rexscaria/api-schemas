@@ -7,6 +7,7 @@ import (
 	"errors"
 	"os"
 	"testing"
+	"time"
 
 	"github.com/rexscaria/api-schemas"
 	"github.com/rexscaria/api-schemas/internal/testutil"
@@ -37,17 +38,16 @@ func TestAccountGatewayRuleNewWithOptionalParams(t *testing.T) {
 			DevicePosture: cfrex.F(`any(device_posture.checks.passed[*] in {"1308749e-fcfb-4ebc-b051-fe022b632644"})`),
 			Enabled:       cfrex.F(true),
 			Expiration: cfrex.F(cfrex.ExpirationParam{
-				ExpiresAt: cfrex.F("2014-01-01T05:20:20Z"),
+				ExpiresAt: cfrex.F(time.Now()),
 				Duration:  cfrex.F(int64(10)),
-				Expired:   cfrex.F(false),
 			}),
 			Filters:    cfrex.F([]cfrex.GatewayFilters{cfrex.GatewayFiltersHTTP}),
 			Identity:   cfrex.F(`any(identity.groups.name[*] in {"finance"})`),
 			Precedence: cfrex.F(int64(0)),
 			RuleSettings: cfrex.F(cfrex.RuleSettingsParam{
-				AddHeaders: cfrex.F(map[string]string{
-					"My-Next-Header":       "string",
-					"X-Custom-Header-Name": "string",
+				AddHeaders: cfrex.F(map[string][]string{
+					"My-Next-Header":       {"foo", "bar"},
+					"X-Custom-Header-Name": {"somecustomvalue"},
 				}),
 				AllowChildBypass: cfrex.F(false),
 				AuditSSH: cfrex.F(cfrex.RuleSettingsAuditSSHParam{
@@ -66,6 +66,10 @@ func TestAccountGatewayRuleNewWithOptionalParams(t *testing.T) {
 					Printing: cfrex.F(cfrex.RuleSettingsBisoAdminControlsPrintingEnabled),
 					Upload:   cfrex.F(cfrex.RuleSettingsBisoAdminControlsUploadEnabled),
 					Version:  cfrex.F(cfrex.RuleSettingsBisoAdminControlsVersionV1),
+				}),
+				BlockPage: cfrex.F(cfrex.RuleSettingsBlockPageParam{
+					TargetUri:      cfrex.F("https://example.com"),
+					IncludeContext: cfrex.F(true),
 				}),
 				BlockPageEnabled: cfrex.F(true),
 				BlockReason:      cfrex.F("This website is a security risk"),
@@ -102,9 +106,10 @@ func TestAccountGatewayRuleNewWithOptionalParams(t *testing.T) {
 					Port: cfrex.F(int64(0)),
 				}),
 				NotificationSettings: cfrex.F(cfrex.RuleSettingsNotificationSettingsParam{
-					Enabled:    cfrex.F(true),
-					Msg:        cfrex.F("msg"),
-					SupportURL: cfrex.F("support_url"),
+					Enabled:        cfrex.F(true),
+					IncludeContext: cfrex.F(true),
+					Msg:            cfrex.F("msg"),
+					SupportURL:     cfrex.F("support_url"),
 				}),
 				OverrideHost: cfrex.F("example.com"),
 				OverrideIPs:  cfrex.F([]string{"1.1.1.1", "2.2.2.2"}),
@@ -116,6 +121,7 @@ func TestAccountGatewayRuleNewWithOptionalParams(t *testing.T) {
 				}),
 				Redirect: cfrex.F(cfrex.RuleSettingsRedirectParam{
 					TargetUri:            cfrex.F("https://example.com"),
+					IncludeContext:       cfrex.F(true),
 					PreservePathAndQuery: cfrex.F(true),
 				}),
 				ResolveDNSInternally: cfrex.F(cfrex.RuleSettingsResolveDNSInternallyParam{
@@ -202,17 +208,16 @@ func TestAccountGatewayRuleUpdateWithOptionalParams(t *testing.T) {
 			DevicePosture: cfrex.F(`any(device_posture.checks.passed[*] in {"1308749e-fcfb-4ebc-b051-fe022b632644"})`),
 			Enabled:       cfrex.F(true),
 			Expiration: cfrex.F(cfrex.ExpirationParam{
-				ExpiresAt: cfrex.F("2014-01-01T05:20:20Z"),
+				ExpiresAt: cfrex.F(time.Now()),
 				Duration:  cfrex.F(int64(10)),
-				Expired:   cfrex.F(false),
 			}),
 			Filters:    cfrex.F([]cfrex.GatewayFilters{cfrex.GatewayFiltersHTTP}),
 			Identity:   cfrex.F(`any(identity.groups.name[*] in {"finance"})`),
 			Precedence: cfrex.F(int64(0)),
 			RuleSettings: cfrex.F(cfrex.RuleSettingsParam{
-				AddHeaders: cfrex.F(map[string]string{
-					"My-Next-Header":       "string",
-					"X-Custom-Header-Name": "string",
+				AddHeaders: cfrex.F(map[string][]string{
+					"My-Next-Header":       {"foo", "bar"},
+					"X-Custom-Header-Name": {"somecustomvalue"},
 				}),
 				AllowChildBypass: cfrex.F(false),
 				AuditSSH: cfrex.F(cfrex.RuleSettingsAuditSSHParam{
@@ -231,6 +236,10 @@ func TestAccountGatewayRuleUpdateWithOptionalParams(t *testing.T) {
 					Printing: cfrex.F(cfrex.RuleSettingsBisoAdminControlsPrintingEnabled),
 					Upload:   cfrex.F(cfrex.RuleSettingsBisoAdminControlsUploadEnabled),
 					Version:  cfrex.F(cfrex.RuleSettingsBisoAdminControlsVersionV1),
+				}),
+				BlockPage: cfrex.F(cfrex.RuleSettingsBlockPageParam{
+					TargetUri:      cfrex.F("https://example.com"),
+					IncludeContext: cfrex.F(true),
 				}),
 				BlockPageEnabled: cfrex.F(true),
 				BlockReason:      cfrex.F("This website is a security risk"),
@@ -267,9 +276,10 @@ func TestAccountGatewayRuleUpdateWithOptionalParams(t *testing.T) {
 					Port: cfrex.F(int64(0)),
 				}),
 				NotificationSettings: cfrex.F(cfrex.RuleSettingsNotificationSettingsParam{
-					Enabled:    cfrex.F(true),
-					Msg:        cfrex.F("msg"),
-					SupportURL: cfrex.F("support_url"),
+					Enabled:        cfrex.F(true),
+					IncludeContext: cfrex.F(true),
+					Msg:            cfrex.F("msg"),
+					SupportURL:     cfrex.F("support_url"),
 				}),
 				OverrideHost: cfrex.F("example.com"),
 				OverrideIPs:  cfrex.F([]string{"1.1.1.1", "2.2.2.2"}),
@@ -281,6 +291,7 @@ func TestAccountGatewayRuleUpdateWithOptionalParams(t *testing.T) {
 				}),
 				Redirect: cfrex.F(cfrex.RuleSettingsRedirectParam{
 					TargetUri:            cfrex.F("https://example.com"),
+					IncludeContext:       cfrex.F(true),
 					PreservePathAndQuery: cfrex.F(true),
 				}),
 				ResolveDNSInternally: cfrex.F(cfrex.RuleSettingsResolveDNSInternallyParam{
@@ -356,9 +367,6 @@ func TestAccountGatewayRuleDelete(t *testing.T) {
 		context.TODO(),
 		"699d98642c564d2e855e9661899b7252",
 		"f174e90a-fafe-4643-bbbc-4a0ed4fc8415",
-		cfrex.AccountGatewayRuleDeleteParams{
-			Body: map[string]interface{}{},
-		},
 	)
 	if err != nil {
 		var apierr *cfrex.Error

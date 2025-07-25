@@ -60,15 +60,21 @@ func (r *ZoneAPIGatewayService) GetSchemas(ctx context.Context, zoneID string, q
 }
 
 type ZoneAPIGatewayGetSchemasResponse struct {
-	Result ZoneAPIGatewayGetSchemasResponseResult `json:"result,required"`
-	JSON   zoneAPIGatewayGetSchemasResponseJSON   `json:"-"`
-	APIResponseAPIShield
+	Errors   []MessagesAPIShieldItem                `json:"errors,required"`
+	Messages []MessagesAPIShieldItem                `json:"messages,required"`
+	Result   ZoneAPIGatewayGetSchemasResponseResult `json:"result,required"`
+	// Whether the API call was successful.
+	Success ZoneAPIGatewayGetSchemasResponseSuccess `json:"success,required"`
+	JSON    zoneAPIGatewayGetSchemasResponseJSON    `json:"-"`
 }
 
 // zoneAPIGatewayGetSchemasResponseJSON contains the JSON metadata for the struct
 // [ZoneAPIGatewayGetSchemasResponse]
 type zoneAPIGatewayGetSchemasResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -102,6 +108,21 @@ func (r *ZoneAPIGatewayGetSchemasResponseResult) UnmarshalJSON(data []byte) (err
 
 func (r zoneAPIGatewayGetSchemasResponseResultJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type ZoneAPIGatewayGetSchemasResponseSuccess bool
+
+const (
+	ZoneAPIGatewayGetSchemasResponseSuccessTrue ZoneAPIGatewayGetSchemasResponseSuccess = true
+)
+
+func (r ZoneAPIGatewayGetSchemasResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneAPIGatewayGetSchemasResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type ZoneAPIGatewayGetSchemasParams struct {

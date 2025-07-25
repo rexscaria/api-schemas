@@ -66,7 +66,7 @@ func TestZonePageShieldCookieListWithOptionalParams(t *testing.T) {
 			HTTPOnly:  cfrex.F(true),
 			Name:      cfrex.F("session_id"),
 			OrderBy:   cfrex.F(cfrex.ZonePageShieldCookieListParamsOrderByFirstSeenAt),
-			Page:      cfrex.F("page"),
+			Page:      cfrex.F("2"),
 			PageURL:   cfrex.F("example.com/page,*/checkout,example.com/*,*checkout*"),
 			Path:      cfrex.F("/"),
 			PerPage:   cfrex.F(100.000000),

@@ -250,14 +250,20 @@ func (r AuthTypeParam) MarshalJSON() (data []byte, err error) {
 func (r AuthTypeParam) implementsAuthUnionParam() {}
 
 type AccountDlpEmailAccountMappingNewResponse struct {
-	Result AccountMapping                               `json:"result"`
-	JSON   accountDlpEmailAccountMappingNewResponseJSON `json:"-"`
-	APIResponseSingleDlp
+	Errors   []MessagesDlpItems `json:"errors,required"`
+	Messages []MessagesDlpItems `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountDlpEmailAccountMappingNewResponseSuccess `json:"success,required"`
+	Result  AccountMapping                                  `json:"result"`
+	JSON    accountDlpEmailAccountMappingNewResponseJSON    `json:"-"`
 }
 
 // accountDlpEmailAccountMappingNewResponseJSON contains the JSON metadata for the
 // struct [AccountDlpEmailAccountMappingNewResponse]
 type accountDlpEmailAccountMappingNewResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -271,15 +277,36 @@ func (r accountDlpEmailAccountMappingNewResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountDlpEmailAccountMappingNewResponseSuccess bool
+
+const (
+	AccountDlpEmailAccountMappingNewResponseSuccessTrue AccountDlpEmailAccountMappingNewResponseSuccess = true
+)
+
+func (r AccountDlpEmailAccountMappingNewResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountDlpEmailAccountMappingNewResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountDlpEmailAccountMappingGetResponse struct {
-	Result AccountMapping                               `json:"result"`
-	JSON   accountDlpEmailAccountMappingGetResponseJSON `json:"-"`
-	APIResponseSingleDlp
+	Errors   []MessagesDlpItems `json:"errors,required"`
+	Messages []MessagesDlpItems `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountDlpEmailAccountMappingGetResponseSuccess `json:"success,required"`
+	Result  AccountMapping                                  `json:"result"`
+	JSON    accountDlpEmailAccountMappingGetResponseJSON    `json:"-"`
 }
 
 // accountDlpEmailAccountMappingGetResponseJSON contains the JSON metadata for the
 // struct [AccountDlpEmailAccountMappingGetResponse]
 type accountDlpEmailAccountMappingGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -291,6 +318,21 @@ func (r *AccountDlpEmailAccountMappingGetResponse) UnmarshalJSON(data []byte) (e
 
 func (r accountDlpEmailAccountMappingGetResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountDlpEmailAccountMappingGetResponseSuccess bool
+
+const (
+	AccountDlpEmailAccountMappingGetResponseSuccessTrue AccountDlpEmailAccountMappingGetResponseSuccess = true
+)
+
+func (r AccountDlpEmailAccountMappingGetResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountDlpEmailAccountMappingGetResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountDlpEmailAccountMappingNewParams struct {

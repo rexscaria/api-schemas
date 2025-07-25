@@ -8,15 +8,12 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
-	"reflect"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
 	"github.com/rexscaria/api-schemas/internal/param"
 	"github.com/rexscaria/api-schemas/internal/requestconfig"
 	"github.com/rexscaria/api-schemas/option"
-	"github.com/rexscaria/api-schemas/shared"
-	"github.com/tidwall/gjson"
 )
 
 // AccountAIRunHfNousresearchService contains methods and other services that help
@@ -50,139 +47,7 @@ func (r *AccountAIRunHfNousresearchService) ExecuteHermes2ProMistral7b(ctx conte
 	return
 }
 
-type AccountAIRunHfNousresearchExecuteHermes2ProMistral7bResponse struct {
-	Result  AccountAIRunHfNousresearchExecuteHermes2ProMistral7bResponseResultUnion `json:"result" format:"binary"`
-	Success bool                                                                    `json:"success"`
-	JSON    accountAIRunHfNousresearchExecuteHermes2ProMistral7bResponseJSON        `json:"-"`
-}
-
-// accountAIRunHfNousresearchExecuteHermes2ProMistral7bResponseJSON contains the
-// JSON metadata for the struct
-// [AccountAIRunHfNousresearchExecuteHermes2ProMistral7bResponse]
-type accountAIRunHfNousresearchExecuteHermes2ProMistral7bResponseJSON struct {
-	Result      apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountAIRunHfNousresearchExecuteHermes2ProMistral7bResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountAIRunHfNousresearchExecuteHermes2ProMistral7bResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-// Union satisfied by
-// [AccountAIRunHfNousresearchExecuteHermes2ProMistral7bResponseResultObject] or
-// [shared.UnionString].
-type AccountAIRunHfNousresearchExecuteHermes2ProMistral7bResponseResultUnion interface {
-	ImplementsAccountAIRunHfNousresearchExecuteHermes2ProMistral7bResponseResultUnion()
-}
-
-func init() {
-	apijson.RegisterUnion(
-		reflect.TypeOf((*AccountAIRunHfNousresearchExecuteHermes2ProMistral7bResponseResultUnion)(nil)).Elem(),
-		"",
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(AccountAIRunHfNousresearchExecuteHermes2ProMistral7bResponseResultObject{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.String,
-			Type:       reflect.TypeOf(shared.UnionString("")),
-		},
-	)
-}
-
-type AccountAIRunHfNousresearchExecuteHermes2ProMistral7bResponseResultObject struct {
-	// The generated text response from the model
-	Response string `json:"response,required"`
-	// An array of tool calls requests made during the response generation
-	ToolCalls []AccountAIRunHfNousresearchExecuteHermes2ProMistral7bResponseResultObjectToolCall `json:"tool_calls"`
-	// Usage statistics for the inference request
-	Usage AccountAIRunHfNousresearchExecuteHermes2ProMistral7bResponseResultObjectUsage `json:"usage"`
-	JSON  accountAIRunHfNousresearchExecuteHermes2ProMistral7bResponseResultObjectJSON  `json:"-"`
-}
-
-// accountAIRunHfNousresearchExecuteHermes2ProMistral7bResponseResultObjectJSON
-// contains the JSON metadata for the struct
-// [AccountAIRunHfNousresearchExecuteHermes2ProMistral7bResponseResultObject]
-type accountAIRunHfNousresearchExecuteHermes2ProMistral7bResponseResultObjectJSON struct {
-	Response    apijson.Field
-	ToolCalls   apijson.Field
-	Usage       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountAIRunHfNousresearchExecuteHermes2ProMistral7bResponseResultObject) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountAIRunHfNousresearchExecuteHermes2ProMistral7bResponseResultObjectJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r AccountAIRunHfNousresearchExecuteHermes2ProMistral7bResponseResultObject) ImplementsAccountAIRunHfNousresearchExecuteHermes2ProMistral7bResponseResultUnion() {
-}
-
-type AccountAIRunHfNousresearchExecuteHermes2ProMistral7bResponseResultObjectToolCall struct {
-	// The arguments passed to be passed to the tool call request
-	Arguments interface{} `json:"arguments"`
-	// The name of the tool to be called
-	Name string                                                                               `json:"name"`
-	JSON accountAIRunHfNousresearchExecuteHermes2ProMistral7bResponseResultObjectToolCallJSON `json:"-"`
-}
-
-// accountAIRunHfNousresearchExecuteHermes2ProMistral7bResponseResultObjectToolCallJSON
-// contains the JSON metadata for the struct
-// [AccountAIRunHfNousresearchExecuteHermes2ProMistral7bResponseResultObjectToolCall]
-type accountAIRunHfNousresearchExecuteHermes2ProMistral7bResponseResultObjectToolCallJSON struct {
-	Arguments   apijson.Field
-	Name        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountAIRunHfNousresearchExecuteHermes2ProMistral7bResponseResultObjectToolCall) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountAIRunHfNousresearchExecuteHermes2ProMistral7bResponseResultObjectToolCallJSON) RawJSON() string {
-	return r.raw
-}
-
-// Usage statistics for the inference request
-type AccountAIRunHfNousresearchExecuteHermes2ProMistral7bResponseResultObjectUsage struct {
-	// Total number of tokens in output
-	CompletionTokens float64 `json:"completion_tokens"`
-	// Total number of tokens in input
-	PromptTokens float64 `json:"prompt_tokens"`
-	// Total number of input and output tokens
-	TotalTokens float64                                                                           `json:"total_tokens"`
-	JSON        accountAIRunHfNousresearchExecuteHermes2ProMistral7bResponseResultObjectUsageJSON `json:"-"`
-}
-
-// accountAIRunHfNousresearchExecuteHermes2ProMistral7bResponseResultObjectUsageJSON
-// contains the JSON metadata for the struct
-// [AccountAIRunHfNousresearchExecuteHermes2ProMistral7bResponseResultObjectUsage]
-type accountAIRunHfNousresearchExecuteHermes2ProMistral7bResponseResultObjectUsageJSON struct {
-	CompletionTokens apijson.Field
-	PromptTokens     apijson.Field
-	TotalTokens      apijson.Field
-	raw              string
-	ExtraFields      map[string]apijson.Field
-}
-
-func (r *AccountAIRunHfNousresearchExecuteHermes2ProMistral7bResponseResultObjectUsage) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountAIRunHfNousresearchExecuteHermes2ProMistral7bResponseResultObjectUsageJSON) RawJSON() string {
-	return r.raw
-}
+type AccountAIRunHfNousresearchExecuteHermes2ProMistral7bResponse = interface{}
 
 type AccountAIRunHfNousresearchExecuteHermes2ProMistral7bParams struct {
 	QueueRequest param.Field[string]                                                 `query:"queueRequest"`

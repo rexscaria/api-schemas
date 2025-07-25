@@ -4,6 +4,7 @@ package cfrex
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net/http"
 
@@ -32,10 +33,14 @@ func NewZoneDevicePolicyCertificateService(opts ...option.RequestOption) (r *Zon
 	return
 }
 
-// Fetches device certificate provisioning
-func (r *ZoneDevicePolicyCertificateService) Get(ctx context.Context, zoneID interface{}, opts ...option.RequestOption) (res *DevicePolicyCertificate, err error) {
+// Fetches device certificate provisioning.
+func (r *ZoneDevicePolicyCertificateService) Get(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *DevicePolicyCertificate, err error) {
 	opts = append(r.Options[:], opts...)
-	path := fmt.Sprintf("zones/%v/devices/policy/certificates", zoneID)
+	if zoneID == "" {
+		err = errors.New("missing required zone_id parameter")
+		return
+	}
+	path := fmt.Sprintf("zones/%s/devices/policy/certificates", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
@@ -43,23 +48,33 @@ func (r *ZoneDevicePolicyCertificateService) Get(ctx context.Context, zoneID int
 // Enable Zero Trust Clients to provision a certificate, containing a x509 subject,
 // and referenced by Access device posture policies when the client visits MTLS
 // protected domains. This facilitates device posture without a WARP session.
-func (r *ZoneDevicePolicyCertificateService) Update(ctx context.Context, zoneID interface{}, body ZoneDevicePolicyCertificateUpdateParams, opts ...option.RequestOption) (res *DevicePolicyCertificate, err error) {
+func (r *ZoneDevicePolicyCertificateService) Update(ctx context.Context, zoneID string, body ZoneDevicePolicyCertificateUpdateParams, opts ...option.RequestOption) (res *DevicePolicyCertificate, err error) {
 	opts = append(r.Options[:], opts...)
-	path := fmt.Sprintf("zones/%v/devices/policy/certificates", zoneID)
+	if zoneID == "" {
+		err = errors.New("missing required zone_id parameter")
+		return
+	}
+	path := fmt.Sprintf("zones/%s/devices/policy/certificates", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return
 }
 
 type DevicePolicyCertificate struct {
-	Result interface{}                 `json:"result,nullable"`
-	JSON   devicePolicyCertificateJSON `json:"-"`
-	APIResponseTeamsDevices
+	Errors   []DevicePolicyCertificateError   `json:"errors,required"`
+	Messages []DevicePolicyCertificateMessage `json:"messages,required"`
+	Result   DevicePolicyCertificateResult    `json:"result,required,nullable"`
+	// Whether the API call was successful.
+	Success DevicePolicyCertificateSuccess `json:"success,required"`
+	JSON    devicePolicyCertificateJSON    `json:"-"`
 }
 
 // devicePolicyCertificateJSON contains the JSON metadata for the struct
 // [DevicePolicyCertificate]
 type devicePolicyCertificateJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -70,6 +85,140 @@ func (r *DevicePolicyCertificate) UnmarshalJSON(data []byte) (err error) {
 
 func (r devicePolicyCertificateJSON) RawJSON() string {
 	return r.raw
+}
+
+type DevicePolicyCertificateError struct {
+	Code             int64                               `json:"code,required"`
+	Message          string                              `json:"message,required"`
+	DocumentationURL string                              `json:"documentation_url"`
+	Source           DevicePolicyCertificateErrorsSource `json:"source"`
+	JSON             devicePolicyCertificateErrorJSON    `json:"-"`
+}
+
+// devicePolicyCertificateErrorJSON contains the JSON metadata for the struct
+// [DevicePolicyCertificateError]
+type devicePolicyCertificateErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *DevicePolicyCertificateError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r devicePolicyCertificateErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type DevicePolicyCertificateErrorsSource struct {
+	Pointer string                                  `json:"pointer"`
+	JSON    devicePolicyCertificateErrorsSourceJSON `json:"-"`
+}
+
+// devicePolicyCertificateErrorsSourceJSON contains the JSON metadata for the
+// struct [DevicePolicyCertificateErrorsSource]
+type devicePolicyCertificateErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *DevicePolicyCertificateErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r devicePolicyCertificateErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type DevicePolicyCertificateMessage struct {
+	Code             int64                                 `json:"code,required"`
+	Message          string                                `json:"message,required"`
+	DocumentationURL string                                `json:"documentation_url"`
+	Source           DevicePolicyCertificateMessagesSource `json:"source"`
+	JSON             devicePolicyCertificateMessageJSON    `json:"-"`
+}
+
+// devicePolicyCertificateMessageJSON contains the JSON metadata for the struct
+// [DevicePolicyCertificateMessage]
+type devicePolicyCertificateMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *DevicePolicyCertificateMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r devicePolicyCertificateMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type DevicePolicyCertificateMessagesSource struct {
+	Pointer string                                    `json:"pointer"`
+	JSON    devicePolicyCertificateMessagesSourceJSON `json:"-"`
+}
+
+// devicePolicyCertificateMessagesSourceJSON contains the JSON metadata for the
+// struct [DevicePolicyCertificateMessagesSource]
+type devicePolicyCertificateMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *DevicePolicyCertificateMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r devicePolicyCertificateMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type DevicePolicyCertificateResult struct {
+	// The current status of the device policy certificate provisioning feature for
+	// WARP clients.
+	Enabled bool                              `json:"enabled,required"`
+	JSON    devicePolicyCertificateResultJSON `json:"-"`
+}
+
+// devicePolicyCertificateResultJSON contains the JSON metadata for the struct
+// [DevicePolicyCertificateResult]
+type devicePolicyCertificateResultJSON struct {
+	Enabled     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *DevicePolicyCertificateResult) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r devicePolicyCertificateResultJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful.
+type DevicePolicyCertificateSuccess bool
+
+const (
+	DevicePolicyCertificateSuccessTrue DevicePolicyCertificateSuccess = true
+)
+
+func (r DevicePolicyCertificateSuccess) IsKnown() bool {
+	switch r {
+	case DevicePolicyCertificateSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type ZoneDevicePolicyCertificateUpdateParams struct {

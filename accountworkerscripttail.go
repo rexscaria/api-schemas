@@ -34,7 +34,7 @@ func NewAccountWorkerScriptTailService(opts ...option.RequestOption) (r *Account
 }
 
 // Get list of tails currently deployed on a Worker.
-func (r *AccountWorkerScriptTailService) List(ctx context.Context, accountID string, scriptName string, opts ...option.RequestOption) (res *TailResponse, err error) {
+func (r *AccountWorkerScriptTailService) List(ctx context.Context, accountID string, scriptName string, opts ...option.RequestOption) (res *AccountWorkerScriptTailListResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
@@ -50,7 +50,7 @@ func (r *AccountWorkerScriptTailService) List(ctx context.Context, accountID str
 }
 
 // Deletes a tail from a Worker.
-func (r *AccountWorkerScriptTailService) Delete(ctx context.Context, accountID string, scriptName string, id string, body AccountWorkerScriptTailDeleteParams, opts ...option.RequestOption) (res *CommonResponseWorkers, err error) {
+func (r *AccountWorkerScriptTailService) Delete(ctx context.Context, accountID string, scriptName string, id string, opts ...option.RequestOption) (res *CommonResponseWorkers, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
@@ -65,12 +65,12 @@ func (r *AccountWorkerScriptTailService) Delete(ctx context.Context, accountID s
 		return
 	}
 	path := fmt.Sprintf("accounts/%s/workers/scripts/%s/tails/%s", accountID, scriptName, id)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
 // Starts a tail that receives logs and exception from a Worker.
-func (r *AccountWorkerScriptTailService) Start(ctx context.Context, accountID string, scriptName string, body AccountWorkerScriptTailStartParams, opts ...option.RequestOption) (res *TailResponse, err error) {
+func (r *AccountWorkerScriptTailService) Start(ctx context.Context, accountID string, scriptName string, body AccountWorkerScriptTailStartParams, opts ...option.RequestOption) (res *AccountWorkerScriptTailStartResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
@@ -88,7 +88,7 @@ func (r *AccountWorkerScriptTailService) Start(ctx context.Context, accountID st
 type CommonResponseWorkers struct {
 	Errors   []WorkersMessages `json:"errors,required"`
 	Messages []WorkersMessages `json:"messages,required"`
-	// Whether the API call was successful
+	// Whether the API call was successful.
 	Success CommonResponseWorkersSuccess `json:"success,required"`
 	JSON    commonResponseWorkersJSON    `json:"-"`
 }
@@ -111,7 +111,7 @@ func (r commonResponseWorkersJSON) RawJSON() string {
 	return r.raw
 }
 
-// Whether the API call was successful
+// Whether the API call was successful.
 type CommonResponseWorkersSuccess bool
 
 const (
@@ -126,75 +126,22 @@ func (r CommonResponseWorkersSuccess) IsKnown() bool {
 	return false
 }
 
-type CommonResponseWorkersParam struct {
-	Errors   param.Field[[]WorkersMessagesParam] `json:"errors,required"`
-	Messages param.Field[[]WorkersMessagesParam] `json:"messages,required"`
-	// Whether the API call was successful
-	Success param.Field[CommonResponseWorkersSuccess] `json:"success,required"`
-}
-
-func (r CommonResponseWorkersParam) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-type TailResponse struct {
-	Result TailResponseResult `json:"result"`
-	JSON   tailResponseJSON   `json:"-"`
-	CommonResponseWorkers
-}
-
-// tailResponseJSON contains the JSON metadata for the struct [TailResponse]
-type tailResponseJSON struct {
-	Result      apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *TailResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r tailResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-type TailResponseResult struct {
-	ID        string                 `json:"id"`
-	ExpiresAt string                 `json:"expires_at"`
-	URL       string                 `json:"url"`
-	JSON      tailResponseResultJSON `json:"-"`
-}
-
-// tailResponseResultJSON contains the JSON metadata for the struct
-// [TailResponseResult]
-type tailResponseResultJSON struct {
-	ID          apijson.Field
-	ExpiresAt   apijson.Field
-	URL         apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *TailResponseResult) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r tailResponseResultJSON) RawJSON() string {
-	return r.raw
-}
-
 type WorkersMessages struct {
-	Code    int64               `json:"code,required"`
-	Message string              `json:"message,required"`
-	JSON    workersMessagesJSON `json:"-"`
+	Code             int64                 `json:"code,required"`
+	Message          string                `json:"message,required"`
+	DocumentationURL string                `json:"documentation_url"`
+	Source           WorkersMessagesSource `json:"source"`
+	JSON             workersMessagesJSON   `json:"-"`
 }
 
 // workersMessagesJSON contains the JSON metadata for the struct [WorkersMessages]
 type workersMessagesJSON struct {
-	Code        apijson.Field
-	Message     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
 }
 
 func (r *WorkersMessages) UnmarshalJSON(data []byte) (err error) {
@@ -205,21 +152,182 @@ func (r workersMessagesJSON) RawJSON() string {
 	return r.raw
 }
 
+type WorkersMessagesSource struct {
+	Pointer string                    `json:"pointer"`
+	JSON    workersMessagesSourceJSON `json:"-"`
+}
+
+// workersMessagesSourceJSON contains the JSON metadata for the struct
+// [WorkersMessagesSource]
+type workersMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *WorkersMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r workersMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
 type WorkersMessagesParam struct {
-	Code    param.Field[int64]  `json:"code,required"`
-	Message param.Field[string] `json:"message,required"`
+	Code             param.Field[int64]                      `json:"code,required"`
+	Message          param.Field[string]                     `json:"message,required"`
+	DocumentationURL param.Field[string]                     `json:"documentation_url"`
+	Source           param.Field[WorkersMessagesSourceParam] `json:"source"`
 }
 
 func (r WorkersMessagesParam) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-type AccountWorkerScriptTailDeleteParams struct {
-	Body interface{} `json:"body,required"`
+type WorkersMessagesSourceParam struct {
+	Pointer param.Field[string] `json:"pointer"`
 }
 
-func (r AccountWorkerScriptTailDeleteParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
+func (r WorkersMessagesSourceParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type AccountWorkerScriptTailListResponse struct {
+	Errors   []WorkersMessages                         `json:"errors,required"`
+	Messages []WorkersMessages                         `json:"messages,required"`
+	Result   AccountWorkerScriptTailListResponseResult `json:"result,required"`
+	// Whether the API call was successful.
+	Success AccountWorkerScriptTailListResponseSuccess `json:"success,required"`
+	JSON    accountWorkerScriptTailListResponseJSON    `json:"-"`
+}
+
+// accountWorkerScriptTailListResponseJSON contains the JSON metadata for the
+// struct [AccountWorkerScriptTailListResponse]
+type accountWorkerScriptTailListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Result      apijson.Field
+	Success     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountWorkerScriptTailListResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountWorkerScriptTailListResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountWorkerScriptTailListResponseResult struct {
+	// Identifier.
+	ID        string                                        `json:"id,required"`
+	ExpiresAt string                                        `json:"expires_at,required"`
+	URL       string                                        `json:"url,required"`
+	JSON      accountWorkerScriptTailListResponseResultJSON `json:"-"`
+}
+
+// accountWorkerScriptTailListResponseResultJSON contains the JSON metadata for the
+// struct [AccountWorkerScriptTailListResponseResult]
+type accountWorkerScriptTailListResponseResultJSON struct {
+	ID          apijson.Field
+	ExpiresAt   apijson.Field
+	URL         apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountWorkerScriptTailListResponseResult) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountWorkerScriptTailListResponseResultJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountWorkerScriptTailListResponseSuccess bool
+
+const (
+	AccountWorkerScriptTailListResponseSuccessTrue AccountWorkerScriptTailListResponseSuccess = true
+)
+
+func (r AccountWorkerScriptTailListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountWorkerScriptTailListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type AccountWorkerScriptTailStartResponse struct {
+	Errors   []WorkersMessages                          `json:"errors,required"`
+	Messages []WorkersMessages                          `json:"messages,required"`
+	Result   AccountWorkerScriptTailStartResponseResult `json:"result,required"`
+	// Whether the API call was successful.
+	Success AccountWorkerScriptTailStartResponseSuccess `json:"success,required"`
+	JSON    accountWorkerScriptTailStartResponseJSON    `json:"-"`
+}
+
+// accountWorkerScriptTailStartResponseJSON contains the JSON metadata for the
+// struct [AccountWorkerScriptTailStartResponse]
+type accountWorkerScriptTailStartResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Result      apijson.Field
+	Success     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountWorkerScriptTailStartResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountWorkerScriptTailStartResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountWorkerScriptTailStartResponseResult struct {
+	// Identifier.
+	ID        string                                         `json:"id,required"`
+	ExpiresAt string                                         `json:"expires_at,required"`
+	URL       string                                         `json:"url,required"`
+	JSON      accountWorkerScriptTailStartResponseResultJSON `json:"-"`
+}
+
+// accountWorkerScriptTailStartResponseResultJSON contains the JSON metadata for
+// the struct [AccountWorkerScriptTailStartResponseResult]
+type accountWorkerScriptTailStartResponseResultJSON struct {
+	ID          apijson.Field
+	ExpiresAt   apijson.Field
+	URL         apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountWorkerScriptTailStartResponseResult) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountWorkerScriptTailStartResponseResultJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountWorkerScriptTailStartResponseSuccess bool
+
+const (
+	AccountWorkerScriptTailStartResponseSuccessTrue AccountWorkerScriptTailStartResponseSuccess = true
+)
+
+func (r AccountWorkerScriptTailStartResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountWorkerScriptTailStartResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountWorkerScriptTailStartParams struct {

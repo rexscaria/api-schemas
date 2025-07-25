@@ -58,7 +58,7 @@ func (r *AccountCustomNService) List(ctx context.Context, accountID string, opts
 }
 
 // Delete Account Custom Nameserver
-func (r *AccountCustomNService) Delete(ctx context.Context, accountID string, customNsID string, body AccountCustomNDeleteParams, opts ...option.RequestOption) (res *AccountCustomNDeleteResponse, err error) {
+func (r *AccountCustomNService) Delete(ctx context.Context, accountID string, customNsID string, opts ...option.RequestOption) (res *AccountCustomNDeleteResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
@@ -69,49 +69,8 @@ func (r *AccountCustomNService) Delete(ctx context.Context, accountID string, cu
 		return
 	}
 	path := fmt.Sprintf("accounts/%s/custom_ns/%s", accountID, customNsID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
-}
-
-type CommonResponseCustomNs struct {
-	Errors   []CustomNsMessages `json:"errors,required"`
-	Messages []CustomNsMessages `json:"messages,required"`
-	// Whether the API call was successful
-	Success CommonResponseCustomNsSuccess `json:"success,required"`
-	JSON    commonResponseCustomNsJSON    `json:"-"`
-}
-
-// commonResponseCustomNsJSON contains the JSON metadata for the struct
-// [CommonResponseCustomNs]
-type commonResponseCustomNsJSON struct {
-	Errors      apijson.Field
-	Messages    apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *CommonResponseCustomNs) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r commonResponseCustomNsJSON) RawJSON() string {
-	return r.raw
-}
-
-// Whether the API call was successful
-type CommonResponseCustomNsSuccess bool
-
-const (
-	CommonResponseCustomNsSuccessTrue CommonResponseCustomNsSuccess = true
-)
-
-func (r CommonResponseCustomNsSuccess) IsKnown() bool {
-	switch r {
-	case CommonResponseCustomNsSuccessTrue:
-		return true
-	}
-	return false
 }
 
 // A single account custom nameserver.
@@ -208,72 +167,23 @@ func (r CustomNsStatus) IsKnown() bool {
 	return false
 }
 
-type CustomNsCollection struct {
-	ResultInfo CustomNsCollectionResultInfo `json:"result_info"`
-	JSON       customNsCollectionJSON       `json:"-"`
-	CommonResponseCustomNs
-}
-
-// customNsCollectionJSON contains the JSON metadata for the struct
-// [CustomNsCollection]
-type customNsCollectionJSON struct {
-	ResultInfo  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *CustomNsCollection) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r customNsCollectionJSON) RawJSON() string {
-	return r.raw
-}
-
-type CustomNsCollectionResultInfo struct {
-	// Total number of results for the requested service
-	Count float64 `json:"count"`
-	// Current page within paginated list of results
-	Page float64 `json:"page"`
-	// Number of results per page of results
-	PerPage float64 `json:"per_page"`
-	// Total results available without any search parameters
-	TotalCount float64                          `json:"total_count"`
-	JSON       customNsCollectionResultInfoJSON `json:"-"`
-}
-
-// customNsCollectionResultInfoJSON contains the JSON metadata for the struct
-// [CustomNsCollectionResultInfo]
-type customNsCollectionResultInfoJSON struct {
-	Count       apijson.Field
-	Page        apijson.Field
-	PerPage     apijson.Field
-	TotalCount  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *CustomNsCollectionResultInfo) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r customNsCollectionResultInfoJSON) RawJSON() string {
-	return r.raw
-}
-
 type CustomNsMessages struct {
-	Code    int64                `json:"code,required"`
-	Message string               `json:"message,required"`
-	JSON    customNsMessagesJSON `json:"-"`
+	Code             int64                  `json:"code,required"`
+	Message          string                 `json:"message,required"`
+	DocumentationURL string                 `json:"documentation_url"`
+	Source           CustomNsMessagesSource `json:"source"`
+	JSON             customNsMessagesJSON   `json:"-"`
 }
 
 // customNsMessagesJSON contains the JSON metadata for the struct
 // [CustomNsMessages]
 type customNsMessagesJSON struct {
-	Code        apijson.Field
-	Message     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
 }
 
 func (r *CustomNsMessages) UnmarshalJSON(data []byte) (err error) {
@@ -284,16 +194,43 @@ func (r customNsMessagesJSON) RawJSON() string {
 	return r.raw
 }
 
+type CustomNsMessagesSource struct {
+	Pointer string                     `json:"pointer"`
+	JSON    customNsMessagesSourceJSON `json:"-"`
+}
+
+// customNsMessagesSourceJSON contains the JSON metadata for the struct
+// [CustomNsMessagesSource]
+type customNsMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *CustomNsMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r customNsMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
 type AccountCustomNNewResponse struct {
+	Errors   []AccountCustomNNewResponseError   `json:"errors,required"`
+	Messages []AccountCustomNNewResponseMessage `json:"messages,required"`
+	// Whether the API call was successful
+	Success AccountCustomNNewResponseSuccess `json:"success,required"`
 	// A single account custom nameserver.
 	Result CustomNs                      `json:"result"`
 	JSON   accountCustomNNewResponseJSON `json:"-"`
-	CommonResponseCustomNs
 }
 
 // accountCustomNNewResponseJSON contains the JSON metadata for the struct
 // [AccountCustomNNewResponse]
 type accountCustomNNewResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -307,16 +244,135 @@ func (r accountCustomNNewResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+type AccountCustomNNewResponseError struct {
+	Code             int64                                 `json:"code,required"`
+	Message          string                                `json:"message,required"`
+	DocumentationURL string                                `json:"documentation_url"`
+	Source           AccountCustomNNewResponseErrorsSource `json:"source"`
+	JSON             accountCustomNNewResponseErrorJSON    `json:"-"`
+}
+
+// accountCustomNNewResponseErrorJSON contains the JSON metadata for the struct
+// [AccountCustomNNewResponseError]
+type accountCustomNNewResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountCustomNNewResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountCustomNNewResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountCustomNNewResponseErrorsSource struct {
+	Pointer string                                    `json:"pointer"`
+	JSON    accountCustomNNewResponseErrorsSourceJSON `json:"-"`
+}
+
+// accountCustomNNewResponseErrorsSourceJSON contains the JSON metadata for the
+// struct [AccountCustomNNewResponseErrorsSource]
+type accountCustomNNewResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountCustomNNewResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountCustomNNewResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountCustomNNewResponseMessage struct {
+	Code             int64                                   `json:"code,required"`
+	Message          string                                  `json:"message,required"`
+	DocumentationURL string                                  `json:"documentation_url"`
+	Source           AccountCustomNNewResponseMessagesSource `json:"source"`
+	JSON             accountCustomNNewResponseMessageJSON    `json:"-"`
+}
+
+// accountCustomNNewResponseMessageJSON contains the JSON metadata for the struct
+// [AccountCustomNNewResponseMessage]
+type accountCustomNNewResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountCustomNNewResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountCustomNNewResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountCustomNNewResponseMessagesSource struct {
+	Pointer string                                      `json:"pointer"`
+	JSON    accountCustomNNewResponseMessagesSourceJSON `json:"-"`
+}
+
+// accountCustomNNewResponseMessagesSourceJSON contains the JSON metadata for the
+// struct [AccountCustomNNewResponseMessagesSource]
+type accountCustomNNewResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountCustomNNewResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountCustomNNewResponseMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful
+type AccountCustomNNewResponseSuccess bool
+
+const (
+	AccountCustomNNewResponseSuccessTrue AccountCustomNNewResponseSuccess = true
+)
+
+func (r AccountCustomNNewResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountCustomNNewResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountCustomNListResponse struct {
-	Result []CustomNs                     `json:"result"`
-	JSON   accountCustomNListResponseJSON `json:"-"`
-	CustomNsCollection
+	Errors   []AccountCustomNListResponseError   `json:"errors,required"`
+	Messages []AccountCustomNListResponseMessage `json:"messages,required"`
+	// Whether the API call was successful
+	Success    AccountCustomNListResponseSuccess    `json:"success,required"`
+	Result     []CustomNs                           `json:"result"`
+	ResultInfo AccountCustomNListResponseResultInfo `json:"result_info"`
+	JSON       accountCustomNListResponseJSON       `json:"-"`
 }
 
 // accountCustomNListResponseJSON contains the JSON metadata for the struct
 // [AccountCustomNListResponse]
 type accountCustomNListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -329,16 +385,166 @@ func (r accountCustomNListResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+type AccountCustomNListResponseError struct {
+	Code             int64                                  `json:"code,required"`
+	Message          string                                 `json:"message,required"`
+	DocumentationURL string                                 `json:"documentation_url"`
+	Source           AccountCustomNListResponseErrorsSource `json:"source"`
+	JSON             accountCustomNListResponseErrorJSON    `json:"-"`
+}
+
+// accountCustomNListResponseErrorJSON contains the JSON metadata for the struct
+// [AccountCustomNListResponseError]
+type accountCustomNListResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountCustomNListResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountCustomNListResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountCustomNListResponseErrorsSource struct {
+	Pointer string                                     `json:"pointer"`
+	JSON    accountCustomNListResponseErrorsSourceJSON `json:"-"`
+}
+
+// accountCustomNListResponseErrorsSourceJSON contains the JSON metadata for the
+// struct [AccountCustomNListResponseErrorsSource]
+type accountCustomNListResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountCustomNListResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountCustomNListResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountCustomNListResponseMessage struct {
+	Code             int64                                    `json:"code,required"`
+	Message          string                                   `json:"message,required"`
+	DocumentationURL string                                   `json:"documentation_url"`
+	Source           AccountCustomNListResponseMessagesSource `json:"source"`
+	JSON             accountCustomNListResponseMessageJSON    `json:"-"`
+}
+
+// accountCustomNListResponseMessageJSON contains the JSON metadata for the struct
+// [AccountCustomNListResponseMessage]
+type accountCustomNListResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountCustomNListResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountCustomNListResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountCustomNListResponseMessagesSource struct {
+	Pointer string                                       `json:"pointer"`
+	JSON    accountCustomNListResponseMessagesSourceJSON `json:"-"`
+}
+
+// accountCustomNListResponseMessagesSourceJSON contains the JSON metadata for the
+// struct [AccountCustomNListResponseMessagesSource]
+type accountCustomNListResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountCustomNListResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountCustomNListResponseMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful
+type AccountCustomNListResponseSuccess bool
+
+const (
+	AccountCustomNListResponseSuccessTrue AccountCustomNListResponseSuccess = true
+)
+
+func (r AccountCustomNListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountCustomNListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type AccountCustomNListResponseResultInfo struct {
+	// Total number of results for the requested service
+	Count float64 `json:"count"`
+	// Current page within paginated list of results
+	Page float64 `json:"page"`
+	// Number of results per page of results
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters
+	TotalCount float64                                  `json:"total_count"`
+	JSON       accountCustomNListResponseResultInfoJSON `json:"-"`
+}
+
+// accountCustomNListResponseResultInfoJSON contains the JSON metadata for the
+// struct [AccountCustomNListResponseResultInfo]
+type accountCustomNListResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountCustomNListResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountCustomNListResponseResultInfoJSON) RawJSON() string {
+	return r.raw
+}
+
 type AccountCustomNDeleteResponse struct {
-	Result []string                         `json:"result"`
-	JSON   accountCustomNDeleteResponseJSON `json:"-"`
-	CustomNsCollection
+	Errors   []AccountCustomNDeleteResponseError   `json:"errors,required"`
+	Messages []AccountCustomNDeleteResponseMessage `json:"messages,required"`
+	// Whether the API call was successful
+	Success    AccountCustomNDeleteResponseSuccess    `json:"success,required"`
+	Result     []string                               `json:"result"`
+	ResultInfo AccountCustomNDeleteResponseResultInfo `json:"result_info"`
+	JSON       accountCustomNDeleteResponseJSON       `json:"-"`
 }
 
 // accountCustomNDeleteResponseJSON contains the JSON metadata for the struct
 // [AccountCustomNDeleteResponse]
 type accountCustomNDeleteResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -351,6 +557,148 @@ func (r accountCustomNDeleteResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+type AccountCustomNDeleteResponseError struct {
+	Code             int64                                    `json:"code,required"`
+	Message          string                                   `json:"message,required"`
+	DocumentationURL string                                   `json:"documentation_url"`
+	Source           AccountCustomNDeleteResponseErrorsSource `json:"source"`
+	JSON             accountCustomNDeleteResponseErrorJSON    `json:"-"`
+}
+
+// accountCustomNDeleteResponseErrorJSON contains the JSON metadata for the struct
+// [AccountCustomNDeleteResponseError]
+type accountCustomNDeleteResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountCustomNDeleteResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountCustomNDeleteResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountCustomNDeleteResponseErrorsSource struct {
+	Pointer string                                       `json:"pointer"`
+	JSON    accountCustomNDeleteResponseErrorsSourceJSON `json:"-"`
+}
+
+// accountCustomNDeleteResponseErrorsSourceJSON contains the JSON metadata for the
+// struct [AccountCustomNDeleteResponseErrorsSource]
+type accountCustomNDeleteResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountCustomNDeleteResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountCustomNDeleteResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountCustomNDeleteResponseMessage struct {
+	Code             int64                                      `json:"code,required"`
+	Message          string                                     `json:"message,required"`
+	DocumentationURL string                                     `json:"documentation_url"`
+	Source           AccountCustomNDeleteResponseMessagesSource `json:"source"`
+	JSON             accountCustomNDeleteResponseMessageJSON    `json:"-"`
+}
+
+// accountCustomNDeleteResponseMessageJSON contains the JSON metadata for the
+// struct [AccountCustomNDeleteResponseMessage]
+type accountCustomNDeleteResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountCustomNDeleteResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountCustomNDeleteResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountCustomNDeleteResponseMessagesSource struct {
+	Pointer string                                         `json:"pointer"`
+	JSON    accountCustomNDeleteResponseMessagesSourceJSON `json:"-"`
+}
+
+// accountCustomNDeleteResponseMessagesSourceJSON contains the JSON metadata for
+// the struct [AccountCustomNDeleteResponseMessagesSource]
+type accountCustomNDeleteResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountCustomNDeleteResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountCustomNDeleteResponseMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful
+type AccountCustomNDeleteResponseSuccess bool
+
+const (
+	AccountCustomNDeleteResponseSuccessTrue AccountCustomNDeleteResponseSuccess = true
+)
+
+func (r AccountCustomNDeleteResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountCustomNDeleteResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type AccountCustomNDeleteResponseResultInfo struct {
+	// Total number of results for the requested service
+	Count float64 `json:"count"`
+	// Current page within paginated list of results
+	Page float64 `json:"page"`
+	// Number of results per page of results
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters
+	TotalCount float64                                    `json:"total_count"`
+	JSON       accountCustomNDeleteResponseResultInfoJSON `json:"-"`
+}
+
+// accountCustomNDeleteResponseResultInfoJSON contains the JSON metadata for the
+// struct [AccountCustomNDeleteResponseResultInfo]
+type accountCustomNDeleteResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountCustomNDeleteResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountCustomNDeleteResponseResultInfoJSON) RawJSON() string {
+	return r.raw
+}
+
 type AccountCustomNNewParams struct {
 	// The FQDN of the name server.
 	NsName param.Field[string] `json:"ns_name,required" format:"hostname"`
@@ -360,12 +708,4 @@ type AccountCustomNNewParams struct {
 
 func (r AccountCustomNNewParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
-}
-
-type AccountCustomNDeleteParams struct {
-	Body interface{} `json:"body,required"`
-}
-
-func (r AccountCustomNDeleteParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
 }

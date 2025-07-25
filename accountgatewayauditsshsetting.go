@@ -74,14 +74,20 @@ func (r *AccountGatewayAuditSSHSettingService) RotateSeed(ctx context.Context, a
 }
 
 type SingleResponseAudit struct {
-	Result SingleResponseAuditResult `json:"result"`
-	JSON   singleResponseAuditJSON   `json:"-"`
-	APIResponseSingleZeroTrustGateway
+	Errors   []SingleResponseAuditError   `json:"errors,required"`
+	Messages []SingleResponseAuditMessage `json:"messages,required"`
+	// Whether the API call was successful
+	Success SingleResponseAuditSuccess `json:"success,required"`
+	Result  SingleResponseAuditResult  `json:"result"`
+	JSON    singleResponseAuditJSON    `json:"-"`
 }
 
 // singleResponseAuditJSON contains the JSON metadata for the struct
 // [SingleResponseAudit]
 type singleResponseAuditJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -93,6 +99,117 @@ func (r *SingleResponseAudit) UnmarshalJSON(data []byte) (err error) {
 
 func (r singleResponseAuditJSON) RawJSON() string {
 	return r.raw
+}
+
+type SingleResponseAuditError struct {
+	Code             int64                           `json:"code,required"`
+	Message          string                          `json:"message,required"`
+	DocumentationURL string                          `json:"documentation_url"`
+	Source           SingleResponseAuditErrorsSource `json:"source"`
+	JSON             singleResponseAuditErrorJSON    `json:"-"`
+}
+
+// singleResponseAuditErrorJSON contains the JSON metadata for the struct
+// [SingleResponseAuditError]
+type singleResponseAuditErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *SingleResponseAuditError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r singleResponseAuditErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type SingleResponseAuditErrorsSource struct {
+	Pointer string                              `json:"pointer"`
+	JSON    singleResponseAuditErrorsSourceJSON `json:"-"`
+}
+
+// singleResponseAuditErrorsSourceJSON contains the JSON metadata for the struct
+// [SingleResponseAuditErrorsSource]
+type singleResponseAuditErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *SingleResponseAuditErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r singleResponseAuditErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type SingleResponseAuditMessage struct {
+	Code             int64                             `json:"code,required"`
+	Message          string                            `json:"message,required"`
+	DocumentationURL string                            `json:"documentation_url"`
+	Source           SingleResponseAuditMessagesSource `json:"source"`
+	JSON             singleResponseAuditMessageJSON    `json:"-"`
+}
+
+// singleResponseAuditMessageJSON contains the JSON metadata for the struct
+// [SingleResponseAuditMessage]
+type singleResponseAuditMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *SingleResponseAuditMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r singleResponseAuditMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type SingleResponseAuditMessagesSource struct {
+	Pointer string                                `json:"pointer"`
+	JSON    singleResponseAuditMessagesSourceJSON `json:"-"`
+}
+
+// singleResponseAuditMessagesSourceJSON contains the JSON metadata for the struct
+// [SingleResponseAuditMessagesSource]
+type singleResponseAuditMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *SingleResponseAuditMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r singleResponseAuditMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful
+type SingleResponseAuditSuccess bool
+
+const (
+	SingleResponseAuditSuccessTrue SingleResponseAuditSuccess = true
+)
+
+func (r SingleResponseAuditSuccess) IsKnown() bool {
+	switch r {
+	case SingleResponseAuditSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type SingleResponseAuditResult struct {

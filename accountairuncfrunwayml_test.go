@@ -3,32 +3,31 @@
 package cfrex_test
 
 import (
-	"bytes"
 	"context"
 	"errors"
-	"io"
-	"net/http"
-	"net/http/httptest"
+	"os"
 	"testing"
 
 	"github.com/rexscaria/api-schemas"
+	"github.com/rexscaria/api-schemas/internal/testutil"
 	"github.com/rexscaria/api-schemas/option"
 )
 
 func TestAccountAIRunCfRunwaymlExecuteStableDiffusionV1_5Img2imgWithOptionalParams(t *testing.T) {
 	t.Skip("skipped: tests are disabled for the time being")
-	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(200)
-		w.Write([]byte("abc"))
-	}))
-	defer server.Close()
-	baseURL := server.URL
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
 	client := cfrex.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
 	)
-	resp, err := client.Accounts.AI.Run.Cf.Runwayml.ExecuteStableDiffusionV1_5Img2img(
+	_, err := client.Accounts.AI.Run.Cf.Runwayml.ExecuteStableDiffusionV1_5Img2img(
 		context.TODO(),
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.AccountAIRunCfRunwaymlExecuteStableDiffusionV1_5Img2imgParams{
@@ -53,35 +52,23 @@ func TestAccountAIRunCfRunwaymlExecuteStableDiffusionV1_5Img2imgWithOptionalPara
 		}
 		t.Fatalf("err should be nil: %s", err.Error())
 	}
-	defer resp.Body.Close()
-
-	b, err := io.ReadAll(resp.Body)
-	if err != nil {
-		var apierr *cfrex.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-	if !bytes.Equal(b, []byte("abc")) {
-		t.Fatalf("return value not %s: %s", "abc", b)
-	}
 }
 
 func TestAccountAIRunCfRunwaymlExecuteStableDiffusionV1_5InpaintingWithOptionalParams(t *testing.T) {
 	t.Skip("skipped: tests are disabled for the time being")
-	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(200)
-		w.Write([]byte("abc"))
-	}))
-	defer server.Close()
-	baseURL := server.URL
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
 	client := cfrex.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
 	)
-	resp, err := client.Accounts.AI.Run.Cf.Runwayml.ExecuteStableDiffusionV1_5Inpainting(
+	_, err := client.Accounts.AI.Run.Cf.Runwayml.ExecuteStableDiffusionV1_5Inpainting(
 		context.TODO(),
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.AccountAIRunCfRunwaymlExecuteStableDiffusionV1_5InpaintingParams{
@@ -105,18 +92,5 @@ func TestAccountAIRunCfRunwaymlExecuteStableDiffusionV1_5InpaintingWithOptionalP
 			t.Log(string(apierr.DumpRequest(true)))
 		}
 		t.Fatalf("err should be nil: %s", err.Error())
-	}
-	defer resp.Body.Close()
-
-	b, err := io.ReadAll(resp.Body)
-	if err != nil {
-		var apierr *cfrex.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-	if !bytes.Equal(b, []byte("abc")) {
-		t.Fatalf("return value not %s: %s", "abc", b)
 	}
 }

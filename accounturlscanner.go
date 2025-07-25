@@ -36,6 +36,10 @@ func NewAccountUrlscannerService(opts ...option.RequestOption) (r *AccountUrlsca
 }
 
 // Returns the plain response of the network request.
+//
+// Deprecated: Use
+// [V2](https://developers.cloudflare.com/api/resources/url_scanner/subresources/responses/methods/get/)
+// instead.
 func (r *AccountUrlscannerService) GetRawResponse(ctx context.Context, accountID string, responseID string, opts ...option.RequestOption) (res *string, err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "text/plain")}, opts...)

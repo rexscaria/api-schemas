@@ -71,7 +71,7 @@ func TestAccountInfrastructureTargetGet(t *testing.T) {
 	_, err := client.Accounts.Infrastructure.Targets.Get(
 		context.TODO(),
 		"023e105f4ecef8ad9ca31a8372d0c353",
-		"0191dce4-9ab4-7fce-b660-8e5dec5172da",
+		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 	)
 	if err != nil {
 		var apierr *cfrex.Error
@@ -99,7 +99,7 @@ func TestAccountInfrastructureTargetUpdateWithOptionalParams(t *testing.T) {
 	_, err := client.Accounts.Infrastructure.Targets.Update(
 		context.TODO(),
 		"023e105f4ecef8ad9ca31a8372d0c353",
-		"0191dce4-9ab4-7fce-b660-8e5dec5172da",
+		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		cfrex.AccountInfrastructureTargetUpdateParams{
 			Hostname: cfrex.F("infra-access-target"),
 			IP: cfrex.F(cfrex.IPInfoTargetParam{
@@ -189,7 +189,7 @@ func TestAccountInfrastructureTargetDelete(t *testing.T) {
 	err := client.Accounts.Infrastructure.Targets.Delete(
 		context.TODO(),
 		"023e105f4ecef8ad9ca31a8372d0c353",
-		"0191dce4-9ab4-7fce-b660-8e5dec5172da",
+		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 	)
 	if err != nil {
 		var apierr *cfrex.Error

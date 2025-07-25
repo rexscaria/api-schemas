@@ -86,187 +86,22 @@ func (r *ZoneCacheTieredCacheSmartTopologyEnableService) Delete(ctx context.Cont
 	return
 }
 
-type BaseCacheRule struct {
-	// Identifier of the zone setting.
-	ID string `json:"id,required"`
-	// Last time this setting was modified.
-	ModifiedOn time.Time         `json:"modified_on,nullable" format:"date-time"`
-	JSON       baseCacheRuleJSON `json:"-"`
-}
-
-// baseCacheRuleJSON contains the JSON metadata for the struct [BaseCacheRule]
-type baseCacheRuleJSON struct {
-	ID          apijson.Field
-	ModifiedOn  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *BaseCacheRule) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r baseCacheRuleJSON) RawJSON() string {
-	return r.raw
-}
-
-type DeleteResponseSingle struct {
-	Result DeleteResponseSingleResult `json:"result"`
-	JSON   deleteResponseSingleJSON   `json:"-"`
-	APIResponseCacheRules
-}
-
-// deleteResponseSingleJSON contains the JSON metadata for the struct
-// [DeleteResponseSingle]
-type deleteResponseSingleJSON struct {
-	Result      apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *DeleteResponseSingle) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r deleteResponseSingleJSON) RawJSON() string {
-	return r.raw
-}
-
-type DeleteResponseSingleResult struct {
-	// The identifier of the caching setting
-	ID string `json:"id,required"`
-	// Whether the setting is editable
-	Editable bool `json:"editable,required"`
-	// The time when the setting was last modified
-	ModifiedOn time.Time                      `json:"modified_on" format:"date-time"`
-	JSON       deleteResponseSingleResultJSON `json:"-"`
-}
-
-// deleteResponseSingleResultJSON contains the JSON metadata for the struct
-// [DeleteResponseSingleResult]
-type deleteResponseSingleResultJSON struct {
-	ID          apijson.Field
-	Editable    apijson.Field
-	ModifiedOn  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *DeleteResponseSingleResult) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r deleteResponseSingleResultJSON) RawJSON() string {
-	return r.raw
-}
-
-type SmartTieredCache struct {
-	// ID of the zone setting.
-	ID   SmartTieredCacheID   `json:"id"`
-	JSON smartTieredCacheJSON `json:"-"`
-	BaseCacheRule
-}
-
-// smartTieredCacheJSON contains the JSON metadata for the struct
-// [SmartTieredCache]
-type smartTieredCacheJSON struct {
-	ID          apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *SmartTieredCache) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r smartTieredCacheJSON) RawJSON() string {
-	return r.raw
-}
-
-// ID of the zone setting.
-type SmartTieredCacheID string
-
-const (
-	SmartTieredCacheIDTieredCacheSmartTopologyEnable SmartTieredCacheID = "tiered_cache_smart_topology_enable"
-)
-
-func (r SmartTieredCacheID) IsKnown() bool {
-	switch r {
-	case SmartTieredCacheIDTieredCacheSmartTopologyEnable:
-		return true
-	}
-	return false
-}
-
-type SmartTieredCacheResponseValue struct {
-	Result SmartTieredCacheResponseValueResult `json:"result"`
-	JSON   smartTieredCacheResponseValueJSON   `json:"-"`
-}
-
-// smartTieredCacheResponseValueJSON contains the JSON metadata for the struct
-// [SmartTieredCacheResponseValue]
-type smartTieredCacheResponseValueJSON struct {
-	Result      apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *SmartTieredCacheResponseValue) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r smartTieredCacheResponseValueJSON) RawJSON() string {
-	return r.raw
-}
-
-type SmartTieredCacheResponseValueResult struct {
-	// Value of the Smart Tiered Cache zone setting.
-	Value SmartTieredCacheResponseValueResultValue `json:"value,required"`
-	JSON  smartTieredCacheResponseValueResultJSON  `json:"-"`
-	SmartTieredCache
-}
-
-// smartTieredCacheResponseValueResultJSON contains the JSON metadata for the
-// struct [SmartTieredCacheResponseValueResult]
-type smartTieredCacheResponseValueResultJSON struct {
-	Value       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *SmartTieredCacheResponseValueResult) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r smartTieredCacheResponseValueResultJSON) RawJSON() string {
-	return r.raw
-}
-
-// Value of the Smart Tiered Cache zone setting.
-type SmartTieredCacheResponseValueResultValue string
-
-const (
-	SmartTieredCacheResponseValueResultValueOn  SmartTieredCacheResponseValueResultValue = "on"
-	SmartTieredCacheResponseValueResultValueOff SmartTieredCacheResponseValueResultValue = "off"
-)
-
-func (r SmartTieredCacheResponseValueResultValue) IsKnown() bool {
-	switch r {
-	case SmartTieredCacheResponseValueResultValueOn, SmartTieredCacheResponseValueResultValueOff:
-		return true
-	}
-	return false
-}
-
 type ZoneCacheTieredCacheSmartTopologyEnableGetResponse struct {
-	JSON zoneCacheTieredCacheSmartTopologyEnableGetResponseJSON `json:"-"`
-	CacheRulesZoneCacheSettingsResponse
-	SmartTieredCacheResponseValue
+	Errors   []MessagesCacheRulesItem `json:"errors,required"`
+	Messages []MessagesCacheRulesItem `json:"messages,required"`
+	// Whether the API call was successful
+	Success ZoneCacheTieredCacheSmartTopologyEnableGetResponseSuccess `json:"success,required"`
+	Result  ZoneCacheTieredCacheSmartTopologyEnableGetResponseResult  `json:"result"`
+	JSON    zoneCacheTieredCacheSmartTopologyEnableGetResponseJSON    `json:"-"`
 }
 
 // zoneCacheTieredCacheSmartTopologyEnableGetResponseJSON contains the JSON
 // metadata for the struct [ZoneCacheTieredCacheSmartTopologyEnableGetResponse]
 type zoneCacheTieredCacheSmartTopologyEnableGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
+	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -279,15 +114,100 @@ func (r zoneCacheTieredCacheSmartTopologyEnableGetResponseJSON) RawJSON() string
 	return r.raw
 }
 
+// Whether the API call was successful
+type ZoneCacheTieredCacheSmartTopologyEnableGetResponseSuccess bool
+
+const (
+	ZoneCacheTieredCacheSmartTopologyEnableGetResponseSuccessTrue ZoneCacheTieredCacheSmartTopologyEnableGetResponseSuccess = true
+)
+
+func (r ZoneCacheTieredCacheSmartTopologyEnableGetResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneCacheTieredCacheSmartTopologyEnableGetResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type ZoneCacheTieredCacheSmartTopologyEnableGetResponseResult struct {
+	// ID of the zone setting.
+	ID ZoneCacheTieredCacheSmartTopologyEnableGetResponseResultID `json:"id,required"`
+	// Whether the setting is editable
+	Editable bool `json:"editable,required"`
+	// The value of the feature
+	Value ZoneCacheTieredCacheSmartTopologyEnableGetResponseResultValue `json:"value,required"`
+	// Last time this setting was modified.
+	ModifiedOn time.Time                                                    `json:"modified_on,nullable" format:"date-time"`
+	JSON       zoneCacheTieredCacheSmartTopologyEnableGetResponseResultJSON `json:"-"`
+}
+
+// zoneCacheTieredCacheSmartTopologyEnableGetResponseResultJSON contains the JSON
+// metadata for the struct
+// [ZoneCacheTieredCacheSmartTopologyEnableGetResponseResult]
+type zoneCacheTieredCacheSmartTopologyEnableGetResponseResultJSON struct {
+	ID          apijson.Field
+	Editable    apijson.Field
+	Value       apijson.Field
+	ModifiedOn  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZoneCacheTieredCacheSmartTopologyEnableGetResponseResult) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneCacheTieredCacheSmartTopologyEnableGetResponseResultJSON) RawJSON() string {
+	return r.raw
+}
+
+// ID of the zone setting.
+type ZoneCacheTieredCacheSmartTopologyEnableGetResponseResultID string
+
+const (
+	ZoneCacheTieredCacheSmartTopologyEnableGetResponseResultIDTieredCacheSmartTopologyEnable ZoneCacheTieredCacheSmartTopologyEnableGetResponseResultID = "tiered_cache_smart_topology_enable"
+)
+
+func (r ZoneCacheTieredCacheSmartTopologyEnableGetResponseResultID) IsKnown() bool {
+	switch r {
+	case ZoneCacheTieredCacheSmartTopologyEnableGetResponseResultIDTieredCacheSmartTopologyEnable:
+		return true
+	}
+	return false
+}
+
+// The value of the feature
+type ZoneCacheTieredCacheSmartTopologyEnableGetResponseResultValue string
+
+const (
+	ZoneCacheTieredCacheSmartTopologyEnableGetResponseResultValueOn  ZoneCacheTieredCacheSmartTopologyEnableGetResponseResultValue = "on"
+	ZoneCacheTieredCacheSmartTopologyEnableGetResponseResultValueOff ZoneCacheTieredCacheSmartTopologyEnableGetResponseResultValue = "off"
+)
+
+func (r ZoneCacheTieredCacheSmartTopologyEnableGetResponseResultValue) IsKnown() bool {
+	switch r {
+	case ZoneCacheTieredCacheSmartTopologyEnableGetResponseResultValueOn, ZoneCacheTieredCacheSmartTopologyEnableGetResponseResultValueOff:
+		return true
+	}
+	return false
+}
+
 type ZoneCacheTieredCacheSmartTopologyEnableUpdateResponse struct {
-	JSON zoneCacheTieredCacheSmartTopologyEnableUpdateResponseJSON `json:"-"`
-	CacheRulesZoneCacheSettingsResponse
-	SmartTieredCacheResponseValue
+	Errors   []MessagesCacheRulesItem `json:"errors,required"`
+	Messages []MessagesCacheRulesItem `json:"messages,required"`
+	// Whether the API call was successful
+	Success ZoneCacheTieredCacheSmartTopologyEnableUpdateResponseSuccess `json:"success,required"`
+	Result  ZoneCacheTieredCacheSmartTopologyEnableUpdateResponseResult  `json:"result"`
+	JSON    zoneCacheTieredCacheSmartTopologyEnableUpdateResponseJSON    `json:"-"`
 }
 
 // zoneCacheTieredCacheSmartTopologyEnableUpdateResponseJSON contains the JSON
 // metadata for the struct [ZoneCacheTieredCacheSmartTopologyEnableUpdateResponse]
 type zoneCacheTieredCacheSmartTopologyEnableUpdateResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
+	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -300,15 +220,99 @@ func (r zoneCacheTieredCacheSmartTopologyEnableUpdateResponseJSON) RawJSON() str
 	return r.raw
 }
 
+// Whether the API call was successful
+type ZoneCacheTieredCacheSmartTopologyEnableUpdateResponseSuccess bool
+
+const (
+	ZoneCacheTieredCacheSmartTopologyEnableUpdateResponseSuccessTrue ZoneCacheTieredCacheSmartTopologyEnableUpdateResponseSuccess = true
+)
+
+func (r ZoneCacheTieredCacheSmartTopologyEnableUpdateResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneCacheTieredCacheSmartTopologyEnableUpdateResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type ZoneCacheTieredCacheSmartTopologyEnableUpdateResponseResult struct {
+	// ID of the zone setting.
+	ID ZoneCacheTieredCacheSmartTopologyEnableUpdateResponseResultID `json:"id,required"`
+	// Whether the setting is editable
+	Editable bool `json:"editable,required"`
+	// The value of the feature
+	Value ZoneCacheTieredCacheSmartTopologyEnableUpdateResponseResultValue `json:"value,required"`
+	// Last time this setting was modified.
+	ModifiedOn time.Time                                                       `json:"modified_on,nullable" format:"date-time"`
+	JSON       zoneCacheTieredCacheSmartTopologyEnableUpdateResponseResultJSON `json:"-"`
+}
+
+// zoneCacheTieredCacheSmartTopologyEnableUpdateResponseResultJSON contains the
+// JSON metadata for the struct
+// [ZoneCacheTieredCacheSmartTopologyEnableUpdateResponseResult]
+type zoneCacheTieredCacheSmartTopologyEnableUpdateResponseResultJSON struct {
+	ID          apijson.Field
+	Editable    apijson.Field
+	Value       apijson.Field
+	ModifiedOn  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZoneCacheTieredCacheSmartTopologyEnableUpdateResponseResult) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneCacheTieredCacheSmartTopologyEnableUpdateResponseResultJSON) RawJSON() string {
+	return r.raw
+}
+
+// ID of the zone setting.
+type ZoneCacheTieredCacheSmartTopologyEnableUpdateResponseResultID string
+
+const (
+	ZoneCacheTieredCacheSmartTopologyEnableUpdateResponseResultIDTieredCacheSmartTopologyEnable ZoneCacheTieredCacheSmartTopologyEnableUpdateResponseResultID = "tiered_cache_smart_topology_enable"
+)
+
+func (r ZoneCacheTieredCacheSmartTopologyEnableUpdateResponseResultID) IsKnown() bool {
+	switch r {
+	case ZoneCacheTieredCacheSmartTopologyEnableUpdateResponseResultIDTieredCacheSmartTopologyEnable:
+		return true
+	}
+	return false
+}
+
+// The value of the feature
+type ZoneCacheTieredCacheSmartTopologyEnableUpdateResponseResultValue string
+
+const (
+	ZoneCacheTieredCacheSmartTopologyEnableUpdateResponseResultValueOn  ZoneCacheTieredCacheSmartTopologyEnableUpdateResponseResultValue = "on"
+	ZoneCacheTieredCacheSmartTopologyEnableUpdateResponseResultValueOff ZoneCacheTieredCacheSmartTopologyEnableUpdateResponseResultValue = "off"
+)
+
+func (r ZoneCacheTieredCacheSmartTopologyEnableUpdateResponseResultValue) IsKnown() bool {
+	switch r {
+	case ZoneCacheTieredCacheSmartTopologyEnableUpdateResponseResultValueOn, ZoneCacheTieredCacheSmartTopologyEnableUpdateResponseResultValueOff:
+		return true
+	}
+	return false
+}
+
 type ZoneCacheTieredCacheSmartTopologyEnableDeleteResponse struct {
-	Result SmartTieredCache                                          `json:"result"`
-	JSON   zoneCacheTieredCacheSmartTopologyEnableDeleteResponseJSON `json:"-"`
-	DeleteResponseSingle
+	Errors   []MessagesCacheRulesItem `json:"errors,required"`
+	Messages []MessagesCacheRulesItem `json:"messages,required"`
+	// Whether the API call was successful
+	Success ZoneCacheTieredCacheSmartTopologyEnableDeleteResponseSuccess `json:"success,required"`
+	Result  ZoneCacheTieredCacheSmartTopologyEnableDeleteResponseResult  `json:"result"`
+	JSON    zoneCacheTieredCacheSmartTopologyEnableDeleteResponseJSON    `json:"-"`
 }
 
 // zoneCacheTieredCacheSmartTopologyEnableDeleteResponseJSON contains the JSON
 // metadata for the struct [ZoneCacheTieredCacheSmartTopologyEnableDeleteResponse]
 type zoneCacheTieredCacheSmartTopologyEnableDeleteResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -320,6 +324,65 @@ func (r *ZoneCacheTieredCacheSmartTopologyEnableDeleteResponse) UnmarshalJSON(da
 
 func (r zoneCacheTieredCacheSmartTopologyEnableDeleteResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful
+type ZoneCacheTieredCacheSmartTopologyEnableDeleteResponseSuccess bool
+
+const (
+	ZoneCacheTieredCacheSmartTopologyEnableDeleteResponseSuccessTrue ZoneCacheTieredCacheSmartTopologyEnableDeleteResponseSuccess = true
+)
+
+func (r ZoneCacheTieredCacheSmartTopologyEnableDeleteResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneCacheTieredCacheSmartTopologyEnableDeleteResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type ZoneCacheTieredCacheSmartTopologyEnableDeleteResponseResult struct {
+	// ID of the zone setting.
+	ID ZoneCacheTieredCacheSmartTopologyEnableDeleteResponseResultID `json:"id,required"`
+	// Whether the setting is editable
+	Editable bool `json:"editable,required"`
+	// Last time this setting was modified.
+	ModifiedOn time.Time                                                       `json:"modified_on,nullable" format:"date-time"`
+	JSON       zoneCacheTieredCacheSmartTopologyEnableDeleteResponseResultJSON `json:"-"`
+}
+
+// zoneCacheTieredCacheSmartTopologyEnableDeleteResponseResultJSON contains the
+// JSON metadata for the struct
+// [ZoneCacheTieredCacheSmartTopologyEnableDeleteResponseResult]
+type zoneCacheTieredCacheSmartTopologyEnableDeleteResponseResultJSON struct {
+	ID          apijson.Field
+	Editable    apijson.Field
+	ModifiedOn  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZoneCacheTieredCacheSmartTopologyEnableDeleteResponseResult) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneCacheTieredCacheSmartTopologyEnableDeleteResponseResultJSON) RawJSON() string {
+	return r.raw
+}
+
+// ID of the zone setting.
+type ZoneCacheTieredCacheSmartTopologyEnableDeleteResponseResultID string
+
+const (
+	ZoneCacheTieredCacheSmartTopologyEnableDeleteResponseResultIDTieredCacheSmartTopologyEnable ZoneCacheTieredCacheSmartTopologyEnableDeleteResponseResultID = "tiered_cache_smart_topology_enable"
+)
+
+func (r ZoneCacheTieredCacheSmartTopologyEnableDeleteResponseResultID) IsKnown() bool {
+	switch r {
+	case ZoneCacheTieredCacheSmartTopologyEnableDeleteResponseResultIDTieredCacheSmartTopologyEnable:
+		return true
+	}
+	return false
 }
 
 type ZoneCacheTieredCacheSmartTopologyEnableUpdateParams struct {

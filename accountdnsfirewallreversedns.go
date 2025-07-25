@@ -97,14 +97,20 @@ func (r DNSFirewallReverseDNSParam) MarshalJSON() (data []byte, err error) {
 }
 
 type DNSFirewallReverseDNSResponse struct {
-	Result DNSFirewallReverseDNS             `json:"result"`
-	JSON   dnsFirewallReverseDNSResponseJSON `json:"-"`
-	APIResponseSingleDNSFirewall
+	Errors   []MessagesDNSFirewallItem `json:"errors,required"`
+	Messages []MessagesDNSFirewallItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success DNSFirewallReverseDNSResponseSuccess `json:"success,required"`
+	Result  DNSFirewallReverseDNS                `json:"result"`
+	JSON    dnsFirewallReverseDNSResponseJSON    `json:"-"`
 }
 
 // dnsFirewallReverseDNSResponseJSON contains the JSON metadata for the struct
 // [DNSFirewallReverseDNSResponse]
 type dnsFirewallReverseDNSResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -116,6 +122,21 @@ func (r *DNSFirewallReverseDNSResponse) UnmarshalJSON(data []byte) (err error) {
 
 func (r dnsFirewallReverseDNSResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type DNSFirewallReverseDNSResponseSuccess bool
+
+const (
+	DNSFirewallReverseDNSResponseSuccessTrue DNSFirewallReverseDNSResponseSuccess = true
+)
+
+func (r DNSFirewallReverseDNSResponseSuccess) IsKnown() bool {
+	switch r {
+	case DNSFirewallReverseDNSResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountDNSFirewallReverseDNSUpdateParams struct {

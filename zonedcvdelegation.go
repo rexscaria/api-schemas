@@ -46,14 +46,20 @@ func (r *ZoneDcvDelegationService) Get(ctx context.Context, zoneID string, opts 
 }
 
 type ZoneDcvDelegationGetResponse struct {
-	Result ZoneDcvDelegationGetResponseResult `json:"result"`
-	JSON   zoneDcvDelegationGetResponseJSON   `json:"-"`
-	APIResponseSingleTlsCertificates
+	Errors   []MessagesTlsCertificatesItem `json:"errors,required"`
+	Messages []MessagesTlsCertificatesItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success ZoneDcvDelegationGetResponseSuccess `json:"success,required"`
+	Result  ZoneDcvDelegationGetResponseResult  `json:"result"`
+	JSON    zoneDcvDelegationGetResponseJSON    `json:"-"`
 }
 
 // zoneDcvDelegationGetResponseJSON contains the JSON metadata for the struct
 // [ZoneDcvDelegationGetResponse]
 type zoneDcvDelegationGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -65,6 +71,21 @@ func (r *ZoneDcvDelegationGetResponse) UnmarshalJSON(data []byte) (err error) {
 
 func (r zoneDcvDelegationGetResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type ZoneDcvDelegationGetResponseSuccess bool
+
+const (
+	ZoneDcvDelegationGetResponseSuccessTrue ZoneDcvDelegationGetResponseSuccess = true
+)
+
+func (r ZoneDcvDelegationGetResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneDcvDelegationGetResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type ZoneDcvDelegationGetResponseResult struct {

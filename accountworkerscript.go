@@ -3,12 +3,17 @@
 package cfrex
 
 import (
+	"bytes"
 	"context"
 	"errors"
 	"fmt"
+	"io"
+	"mime/multipart"
 	"net/http"
 	"net/url"
+	"time"
 
+	"github.com/rexscaria/api-schemas/internal/apiform"
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -68,9 +73,8 @@ func (r *AccountWorkerScriptService) List(ctx context.Context, accountID string,
 }
 
 // Delete your worker. This call has no response body on a successful delete.
-func (r *AccountWorkerScriptService) Delete(ctx context.Context, accountID string, scriptName string, params AccountWorkerScriptDeleteParams, opts ...option.RequestOption) (err error) {
+func (r *AccountWorkerScriptService) Delete(ctx context.Context, accountID string, scriptName string, body AccountWorkerScriptDeleteParams, opts ...option.RequestOption) (res *NullResult, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -80,13 +84,13 @@ func (r *AccountWorkerScriptService) Delete(ctx context.Context, accountID strin
 		return
 	}
 	path := fmt.Sprintf("accounts/%s/workers/scripts/%s", accountID, scriptName)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, params, nil, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
 	return
 }
 
 // Start uploading a collection of assets for use in a Worker version. To learn
 // more about the direct uploads of assets, see
-// https://developers.cloudflare.com/workers/static-assets/direct-upload/
+// https://developers.cloudflare.com/workers/static-assets/direct-upload/.
 func (r *AccountWorkerScriptService) NewAssetsUploadSession(ctx context.Context, accountID string, scriptName string, body AccountWorkerScriptNewAssetsUploadSessionParams, opts ...option.RequestOption) (res *UploadSessionResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
@@ -139,15 +143,21 @@ func (r *AccountWorkerScriptService) Upload(ctx context.Context, accountID strin
 }
 
 type AccountWorkerScriptListResponse struct {
-	Result []ScriptResponse                    `json:"result"`
-	JSON   accountWorkerScriptListResponseJSON `json:"-"`
-	CommonResponseWorkers
+	Errors   []WorkersMessages `json:"errors,required"`
+	Messages []WorkersMessages `json:"messages,required"`
+	Result   []ScriptResponse  `json:"result,required"`
+	// Whether the API call was successful.
+	Success AccountWorkerScriptListResponseSuccess `json:"success,required"`
+	JSON    accountWorkerScriptListResponseJSON    `json:"-"`
 }
 
 // accountWorkerScriptListResponseJSON contains the JSON metadata for the struct
 // [AccountWorkerScriptListResponse]
 type accountWorkerScriptListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -160,14 +170,37 @@ func (r accountWorkerScriptListResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountWorkerScriptListResponseSuccess bool
+
+const (
+	AccountWorkerScriptListResponseSuccessTrue AccountWorkerScriptListResponseSuccess = true
+)
+
+func (r AccountWorkerScriptListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountWorkerScriptListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountWorkerScriptUploadResponse struct {
-	JSON accountWorkerScriptUploadResponseJSON `json:"-"`
-	APIResponseSingleWorkers
+	Errors   []WorkersMessages                       `json:"errors,required"`
+	Messages []WorkersMessages                       `json:"messages,required"`
+	Result   AccountWorkerScriptUploadResponseResult `json:"result,required"`
+	// Whether the API call was successful.
+	Success AccountWorkerScriptUploadResponseSuccess `json:"success,required"`
+	JSON    accountWorkerScriptUploadResponseJSON    `json:"-"`
 }
 
 // accountWorkerScriptUploadResponseJSON contains the JSON metadata for the struct
 // [AccountWorkerScriptUploadResponse]
 type accountWorkerScriptUploadResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -180,16 +213,147 @@ func (r accountWorkerScriptUploadResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+type AccountWorkerScriptUploadResponseResult struct {
+	StartupTimeMs int64 `json:"startup_time_ms,required"`
+	// The id of the script in the Workers system. Usually the script name.
+	ID string `json:"id"`
+	// When the script was created.
+	CreatedOn time.Time `json:"created_on" format:"date-time"`
+	// Hashed script content, can be used in a If-None-Match header when updating.
+	Etag string `json:"etag"`
+	// Whether a Worker contains assets.
+	HasAssets bool `json:"has_assets"`
+	// Whether a Worker contains modules.
+	HasModules bool `json:"has_modules"`
+	// Whether Logpush is turned on for the Worker.
+	Logpush bool `json:"logpush"`
+	// When the script was last modified.
+	ModifiedOn time.Time `json:"modified_on" format:"date-time"`
+	// Configuration for
+	// [Smart Placement](https://developers.cloudflare.com/workers/configuration/smart-placement).
+	Placement AccountWorkerScriptUploadResponseResultPlacement `json:"placement"`
+	// Deprecated: deprecated
+	PlacementMode AccountWorkerScriptUploadResponseResultPlacementMode `json:"placement_mode"`
+	// Deprecated: deprecated
+	PlacementStatus AccountWorkerScriptUploadResponseResultPlacementStatus `json:"placement_status"`
+	// List of Workers that will consume logs from the attached Worker.
+	TailConsumers []TailConsumersScript `json:"tail_consumers"`
+	// Usage model for the Worker invocations.
+	UsageModel UsageModel                                  `json:"usage_model"`
+	JSON       accountWorkerScriptUploadResponseResultJSON `json:"-"`
+}
+
+// accountWorkerScriptUploadResponseResultJSON contains the JSON metadata for the
+// struct [AccountWorkerScriptUploadResponseResult]
+type accountWorkerScriptUploadResponseResultJSON struct {
+	StartupTimeMs   apijson.Field
+	ID              apijson.Field
+	CreatedOn       apijson.Field
+	Etag            apijson.Field
+	HasAssets       apijson.Field
+	HasModules      apijson.Field
+	Logpush         apijson.Field
+	ModifiedOn      apijson.Field
+	Placement       apijson.Field
+	PlacementMode   apijson.Field
+	PlacementStatus apijson.Field
+	TailConsumers   apijson.Field
+	UsageModel      apijson.Field
+	raw             string
+	ExtraFields     map[string]apijson.Field
+}
+
+func (r *AccountWorkerScriptUploadResponseResult) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountWorkerScriptUploadResponseResultJSON) RawJSON() string {
+	return r.raw
+}
+
+// Configuration for
+// [Smart Placement](https://developers.cloudflare.com/workers/configuration/smart-placement).
+type AccountWorkerScriptUploadResponseResultPlacement struct {
+	// The last time the script was analyzed for
+	// [Smart Placement](https://developers.cloudflare.com/workers/configuration/smart-placement).
+	LastAnalyzedAt time.Time `json:"last_analyzed_at" format:"date-time"`
+	// Enables
+	// [Smart Placement](https://developers.cloudflare.com/workers/configuration/smart-placement).
+	Mode PlacementMode `json:"mode"`
+	// Status of
+	// [Smart Placement](https://developers.cloudflare.com/workers/configuration/smart-placement).
+	Status PlacementStatus                                      `json:"status"`
+	JSON   accountWorkerScriptUploadResponseResultPlacementJSON `json:"-"`
+}
+
+// accountWorkerScriptUploadResponseResultPlacementJSON contains the JSON metadata
+// for the struct [AccountWorkerScriptUploadResponseResultPlacement]
+type accountWorkerScriptUploadResponseResultPlacementJSON struct {
+	LastAnalyzedAt apijson.Field
+	Mode           apijson.Field
+	Status         apijson.Field
+	raw            string
+	ExtraFields    map[string]apijson.Field
+}
+
+func (r *AccountWorkerScriptUploadResponseResultPlacement) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountWorkerScriptUploadResponseResultPlacementJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountWorkerScriptUploadResponseResultPlacementMode string
+
+const (
+	AccountWorkerScriptUploadResponseResultPlacementModeSmart AccountWorkerScriptUploadResponseResultPlacementMode = "smart"
+)
+
+func (r AccountWorkerScriptUploadResponseResultPlacementMode) IsKnown() bool {
+	switch r {
+	case AccountWorkerScriptUploadResponseResultPlacementModeSmart:
+		return true
+	}
+	return false
+}
+
+type AccountWorkerScriptUploadResponseResultPlacementStatus string
+
+const (
+	AccountWorkerScriptUploadResponseResultPlacementStatusSuccess                 AccountWorkerScriptUploadResponseResultPlacementStatus = "SUCCESS"
+	AccountWorkerScriptUploadResponseResultPlacementStatusUnsupportedApplication  AccountWorkerScriptUploadResponseResultPlacementStatus = "UNSUPPORTED_APPLICATION"
+	AccountWorkerScriptUploadResponseResultPlacementStatusInsufficientInvocations AccountWorkerScriptUploadResponseResultPlacementStatus = "INSUFFICIENT_INVOCATIONS"
+)
+
+func (r AccountWorkerScriptUploadResponseResultPlacementStatus) IsKnown() bool {
+	switch r {
+	case AccountWorkerScriptUploadResponseResultPlacementStatusSuccess, AccountWorkerScriptUploadResponseResultPlacementStatusUnsupportedApplication, AccountWorkerScriptUploadResponseResultPlacementStatusInsufficientInvocations:
+		return true
+	}
+	return false
+}
+
+// Whether the API call was successful.
+type AccountWorkerScriptUploadResponseSuccess bool
+
+const (
+	AccountWorkerScriptUploadResponseSuccessTrue AccountWorkerScriptUploadResponseSuccess = true
+)
+
+func (r AccountWorkerScriptUploadResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountWorkerScriptUploadResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountWorkerScriptDeleteParams struct {
-	Body interface{} `json:"body,required"`
 	// If set to true, delete will not be stopped by associated service binding,
 	// durable object, or other binding. Any of these associated bindings/durable
 	// objects will be deleted along with the script.
 	Force param.Field[bool] `query:"force"`
-}
-
-func (r AccountWorkerScriptDeleteParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
 }
 
 // URLQuery serializes [AccountWorkerScriptDeleteParams]'s query parameters as
@@ -212,15 +376,33 @@ func (r AccountWorkerScriptNewAssetsUploadSessionParams) MarshalJSON() (data []b
 type AccountWorkerScriptUploadParams struct {
 	// JSON encoded metadata about the uploaded parts and Worker configuration.
 	Metadata param.Field[AccountWorkerScriptUploadParamsMetadata] `json:"metadata,required"`
+	// An array of modules (often JavaScript files) comprising a Worker script. At
+	// least one module must be present and referenced in the metadata as `main_module`
+	// or `body_part` by filename.<br/>Possible Content-Type(s) are:
+	// `application/javascript+module`, `text/javascript+module`,
+	// `application/javascript`, `text/javascript`, `application/wasm`, `text/plain`,
+	// `application/octet-stream`, `application/source-map`.
+	Files param.Field[[]io.Reader] `json:"files" format:"binary"`
 }
 
-func (r AccountWorkerScriptUploadParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+func (r AccountWorkerScriptUploadParams) MarshalMultipart() (data []byte, contentType string, err error) {
+	buf := bytes.NewBuffer(nil)
+	writer := multipart.NewWriter(buf)
+	err = apiform.MarshalRoot(r, writer)
+	if err != nil {
+		writer.Close()
+		return nil, "", err
+	}
+	err = writer.Close()
+	if err != nil {
+		return nil, "", err
+	}
+	return buf.Bytes(), writer.FormDataContentType(), nil
 }
 
 // JSON encoded metadata about the uploaded parts and Worker configuration.
 type AccountWorkerScriptUploadParamsMetadata struct {
-	// Configuration for assets within a Worker
+	// Configuration for assets within a Worker.
 	Assets param.Field[AccountWorkerScriptUploadParamsMetadataAssets] `json:"assets"`
 	// List of bindings attached to a Worker. You can find more about bindings on our
 	// docs:
@@ -266,7 +448,7 @@ func (r AccountWorkerScriptUploadParamsMetadata) MarshalJSON() (data []byte, err
 	return apijson.MarshalRoot(r)
 }
 
-// Configuration for assets within a Worker
+// Configuration for assets within a Worker.
 type AccountWorkerScriptUploadParamsMetadataAssets struct {
 	// Configuration for assets within a Worker.
 	Config param.Field[AccountWorkerScriptUploadParamsMetadataAssetsConfig] `json:"config"`
@@ -281,19 +463,21 @@ func (r AccountWorkerScriptUploadParamsMetadataAssets) MarshalJSON() (data []byt
 // Configuration for assets within a Worker.
 type AccountWorkerScriptUploadParamsMetadataAssetsConfig struct {
 	// The contents of a \_headers file (used to attach custom headers on asset
-	// responses)
+	// responses).
 	Headers param.Field[string] `json:"_headers"`
 	// The contents of a \_redirects file (used to apply redirects or proxy paths ahead
-	// of asset serving)
+	// of asset serving).
 	Redirects param.Field[string] `json:"_redirects"`
 	// Determines the redirects and rewrites of requests for HTML content.
 	HTMLHandling param.Field[AccountWorkerScriptUploadParamsMetadataAssetsConfigHTMLHandling] `json:"html_handling"`
 	// Determines the response when a request does not match a static asset, and there
 	// is no Worker script.
 	NotFoundHandling param.Field[AccountWorkerScriptUploadParamsMetadataAssetsConfigNotFoundHandling] `json:"not_found_handling"`
-	// When true, requests will always invoke the Worker script. Otherwise, attempt to
-	// serve an asset matching the request, falling back to the Worker script.
-	RunWorkerFirst param.Field[bool] `json:"run_worker_first"`
+	// Contains a list path rules to control routing to either the Worker or assets.
+	// Glob (\*) and negative (!) rules are supported. Rules must start with either '/'
+	// or '!/'. At least one non-negative rule must be provided, and negative rules
+	// have higher precedence than non-negative rules.
+	RunWorkerFirst param.Field[AccountWorkerScriptUploadParamsMetadataAssetsConfigRunWorkerFirstUnion] `json:"run_worker_first"`
 	// When true and the incoming request matches an asset, that will be served instead
 	// of invoking the Worker script. When false, requests will always invoke the
 	// Worker script.
@@ -342,19 +526,73 @@ func (r AccountWorkerScriptUploadParamsMetadataAssetsConfigNotFoundHandling) IsK
 	return false
 }
 
+// Contains a list path rules to control routing to either the Worker or assets.
+// Glob (\*) and negative (!) rules are supported. Rules must start with either '/'
+// or '!/'. At least one non-negative rule must be provided, and negative rules
+// have higher precedence than non-negative rules.
+//
+// Satisfied by
+// [AccountWorkerScriptUploadParamsMetadataAssetsConfigRunWorkerFirstArray],
+// [shared.UnionBool].
+type AccountWorkerScriptUploadParamsMetadataAssetsConfigRunWorkerFirstUnion interface {
+	ImplementsAccountWorkerScriptUploadParamsMetadataAssetsConfigRunWorkerFirstUnion()
+}
+
+type AccountWorkerScriptUploadParamsMetadataAssetsConfigRunWorkerFirstArray []string
+
+func (r AccountWorkerScriptUploadParamsMetadataAssetsConfigRunWorkerFirstArray) ImplementsAccountWorkerScriptUploadParamsMetadataAssetsConfigRunWorkerFirstUnion() {
+}
+
+// Migrations to apply for Durable Objects associated with this Worker.
+type AccountWorkerScriptUploadParamsMetadataMigrations struct {
+	DeletedClasses   param.Field[interface{}] `json:"deleted_classes"`
+	NewClasses       param.Field[interface{}] `json:"new_classes"`
+	NewSqliteClasses param.Field[interface{}] `json:"new_sqlite_classes"`
+	// Tag to set as the latest migration tag.
+	NewTag param.Field[string] `json:"new_tag"`
+	// Tag used to verify against the latest migration tag for this Worker. If they
+	// don't match, the upload is rejected.
+	OldTag             param.Field[string]      `json:"old_tag"`
+	RenamedClasses     param.Field[interface{}] `json:"renamed_classes"`
+	Steps              param.Field[interface{}] `json:"steps"`
+	TransferredClasses param.Field[interface{}] `json:"transferred_classes"`
+}
+
+func (r AccountWorkerScriptUploadParamsMetadataMigrations) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r AccountWorkerScriptUploadParamsMetadataMigrations) implementsAccountWorkerScriptUploadParamsMetadataMigrationsUnion() {
+}
+
 // Migrations to apply for Durable Objects associated with this Worker.
 //
 // Satisfied by
 // [AccountWorkerScriptUploadParamsMetadataMigrationsWorkersSingleStepMigrations],
-// [AccountWorkerScriptUploadParamsMetadataMigrationsWorkersMultipleStepMigrations].
+// [AccountWorkerScriptUploadParamsMetadataMigrationsWorkersMultipleStepMigrations],
+// [AccountWorkerScriptUploadParamsMetadataMigrations].
 type AccountWorkerScriptUploadParamsMetadataMigrationsUnion interface {
 	implementsAccountWorkerScriptUploadParamsMetadataMigrationsUnion()
 }
 
 // A single set of migrations to apply.
 type AccountWorkerScriptUploadParamsMetadataMigrationsWorkersSingleStepMigrations struct {
-	MigrationTagConditionsParam
-	MigrationStepParam
+	// A list of classes to delete Durable Object namespaces from.
+	DeletedClasses param.Field[[]string] `json:"deleted_classes"`
+	// A list of classes to create Durable Object namespaces from.
+	NewClasses param.Field[[]string] `json:"new_classes"`
+	// A list of classes to create Durable Object namespaces with SQLite from.
+	NewSqliteClasses param.Field[[]string] `json:"new_sqlite_classes"`
+	// Tag to set as the latest migration tag.
+	NewTag param.Field[string] `json:"new_tag"`
+	// Tag used to verify against the latest migration tag for this Worker. If they
+	// don't match, the upload is rejected.
+	OldTag param.Field[string] `json:"old_tag"`
+	// A list of classes with Durable Object namespaces that were renamed.
+	RenamedClasses param.Field[[]AccountWorkerScriptUploadParamsMetadataMigrationsWorkersSingleStepMigrationsRenamedClass] `json:"renamed_classes"`
+	// A list of transfers for Durable Object namespaces from a different Worker and
+	// class to a class defined in this Worker.
+	TransferredClasses param.Field[[]AccountWorkerScriptUploadParamsMetadataMigrationsWorkersSingleStepMigrationsTransferredClass] `json:"transferred_classes"`
 }
 
 func (r AccountWorkerScriptUploadParamsMetadataMigrationsWorkersSingleStepMigrations) MarshalJSON() (data []byte, err error) {
@@ -364,10 +602,33 @@ func (r AccountWorkerScriptUploadParamsMetadataMigrationsWorkersSingleStepMigrat
 func (r AccountWorkerScriptUploadParamsMetadataMigrationsWorkersSingleStepMigrations) implementsAccountWorkerScriptUploadParamsMetadataMigrationsUnion() {
 }
 
+type AccountWorkerScriptUploadParamsMetadataMigrationsWorkersSingleStepMigrationsRenamedClass struct {
+	From param.Field[string] `json:"from"`
+	To   param.Field[string] `json:"to"`
+}
+
+func (r AccountWorkerScriptUploadParamsMetadataMigrationsWorkersSingleStepMigrationsRenamedClass) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type AccountWorkerScriptUploadParamsMetadataMigrationsWorkersSingleStepMigrationsTransferredClass struct {
+	From       param.Field[string] `json:"from"`
+	FromScript param.Field[string] `json:"from_script"`
+	To         param.Field[string] `json:"to"`
+}
+
+func (r AccountWorkerScriptUploadParamsMetadataMigrationsWorkersSingleStepMigrationsTransferredClass) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
 type AccountWorkerScriptUploadParamsMetadataMigrationsWorkersMultipleStepMigrations struct {
+	// Tag to set as the latest migration tag.
+	NewTag param.Field[string] `json:"new_tag"`
+	// Tag used to verify against the latest migration tag for this Worker. If they
+	// don't match, the upload is rejected.
+	OldTag param.Field[string] `json:"old_tag"`
 	// Migrations to apply in order.
 	Steps param.Field[[]MigrationStepParam] `json:"steps"`
-	MigrationTagConditionsParam
 }
 
 func (r AccountWorkerScriptUploadParamsMetadataMigrationsWorkersMultipleStepMigrations) MarshalJSON() (data []byte, err error) {

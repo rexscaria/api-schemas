@@ -80,18 +80,45 @@ func (r accountSettingsJSON) RawJSON() string {
 }
 
 type AccountSettingsZoneDefaults struct {
+	// Whether to flatten all CNAME records in the zone. Note that, due to DNS
+	// limitations, a CNAME record at the zone apex will always be flattened.
+	FlattenAllCnames bool `json:"flatten_all_cnames"`
+	// Whether to enable Foundation DNS Advanced Nameservers on the zone.
+	FoundationDNS bool `json:"foundation_dns"`
+	// Settings for this internal zone.
+	InternalDNS AccountSettingsZoneDefaultsInternalDNS `json:"internal_dns"`
+	// Whether to enable multi-provider DNS, which causes Cloudflare to activate the
+	// zone even when non-Cloudflare NS records exist, and to respect NS records at the
+	// zone apex during outbound zone transfers.
+	MultiProvider bool `json:"multi_provider"`
 	// Settings determining the nameservers through which the zone should be available.
 	Nameservers AccountSettingsZoneDefaultsNameservers `json:"nameservers"`
-	JSON        accountSettingsZoneDefaultsJSON        `json:"-"`
-	DNSSettings
+	// The time to live (TTL) of the zone's nameserver (NS) records.
+	NsTtl float64 `json:"ns_ttl"`
+	// Allows a Secondary DNS zone to use (proxied) override records and CNAME
+	// flattening at the zone apex.
+	SecondaryOverrides bool `json:"secondary_overrides"`
+	// Components of the zone's SOA record.
+	Soa AccountSettingsZoneDefaultsSoa `json:"soa"`
+	// Whether the zone mode is a regular or CDN/DNS only zone.
+	ZoneMode AccountSettingsZoneDefaultsZoneMode `json:"zone_mode"`
+	JSON     accountSettingsZoneDefaultsJSON     `json:"-"`
 }
 
 // accountSettingsZoneDefaultsJSON contains the JSON metadata for the struct
 // [AccountSettingsZoneDefaults]
 type accountSettingsZoneDefaultsJSON struct {
-	Nameservers apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	FlattenAllCnames   apijson.Field
+	FoundationDNS      apijson.Field
+	InternalDNS        apijson.Field
+	MultiProvider      apijson.Field
+	Nameservers        apijson.Field
+	NsTtl              apijson.Field
+	SecondaryOverrides apijson.Field
+	Soa                apijson.Field
+	ZoneMode           apijson.Field
+	raw                string
+	ExtraFields        map[string]apijson.Field
 }
 
 func (r *AccountSettingsZoneDefaults) UnmarshalJSON(data []byte) (err error) {
@@ -99,6 +126,29 @@ func (r *AccountSettingsZoneDefaults) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (r accountSettingsZoneDefaultsJSON) RawJSON() string {
+	return r.raw
+}
+
+// Settings for this internal zone.
+type AccountSettingsZoneDefaultsInternalDNS struct {
+	// The ID of the zone to fallback to.
+	ReferenceZoneID string                                     `json:"reference_zone_id"`
+	JSON            accountSettingsZoneDefaultsInternalDNSJSON `json:"-"`
+}
+
+// accountSettingsZoneDefaultsInternalDNSJSON contains the JSON metadata for the
+// struct [AccountSettingsZoneDefaultsInternalDNS]
+type accountSettingsZoneDefaultsInternalDNSJSON struct {
+	ReferenceZoneID apijson.Field
+	raw             string
+	ExtraFields     map[string]apijson.Field
+}
+
+func (r *AccountSettingsZoneDefaultsInternalDNS) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountSettingsZoneDefaultsInternalDNSJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -143,6 +193,68 @@ func (r AccountSettingsZoneDefaultsNameserversType) IsKnown() bool {
 	return false
 }
 
+// Components of the zone's SOA record.
+type AccountSettingsZoneDefaultsSoa struct {
+	// Time in seconds of being unable to query the primary server after which
+	// secondary servers should stop serving the zone.
+	Expire float64 `json:"expire,required"`
+	// The time to live (TTL) for negative caching of records within the zone.
+	MinTtl float64 `json:"min_ttl,required"`
+	// The primary nameserver, which may be used for outbound zone transfers.
+	Mname string `json:"mname,required"`
+	// Time in seconds after which secondary servers should re-check the SOA record to
+	// see if the zone has been updated.
+	Refresh float64 `json:"refresh,required"`
+	// Time in seconds after which secondary servers should retry queries after the
+	// primary server was unresponsive.
+	Retry float64 `json:"retry,required"`
+	// The email address of the zone administrator, with the first label representing
+	// the local part of the email address.
+	Rname string `json:"rname,required"`
+	// The time to live (TTL) of the SOA record itself.
+	Ttl  float64                            `json:"ttl,required"`
+	JSON accountSettingsZoneDefaultsSoaJSON `json:"-"`
+}
+
+// accountSettingsZoneDefaultsSoaJSON contains the JSON metadata for the struct
+// [AccountSettingsZoneDefaultsSoa]
+type accountSettingsZoneDefaultsSoaJSON struct {
+	Expire      apijson.Field
+	MinTtl      apijson.Field
+	Mname       apijson.Field
+	Refresh     apijson.Field
+	Retry       apijson.Field
+	Rname       apijson.Field
+	Ttl         apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountSettingsZoneDefaultsSoa) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountSettingsZoneDefaultsSoaJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the zone mode is a regular or CDN/DNS only zone.
+type AccountSettingsZoneDefaultsZoneMode string
+
+const (
+	AccountSettingsZoneDefaultsZoneModeStandard AccountSettingsZoneDefaultsZoneMode = "standard"
+	AccountSettingsZoneDefaultsZoneModeCdnOnly  AccountSettingsZoneDefaultsZoneMode = "cdn_only"
+	AccountSettingsZoneDefaultsZoneModeDNSOnly  AccountSettingsZoneDefaultsZoneMode = "dns_only"
+)
+
+func (r AccountSettingsZoneDefaultsZoneMode) IsKnown() bool {
+	switch r {
+	case AccountSettingsZoneDefaultsZoneModeStandard, AccountSettingsZoneDefaultsZoneModeCdnOnly, AccountSettingsZoneDefaultsZoneModeDNSOnly:
+		return true
+	}
+	return false
+}
+
 type AccountSettingsParam struct {
 	ZoneDefaults param.Field[AccountSettingsZoneDefaultsParam] `json:"zone_defaults"`
 }
@@ -152,12 +264,41 @@ func (r AccountSettingsParam) MarshalJSON() (data []byte, err error) {
 }
 
 type AccountSettingsZoneDefaultsParam struct {
+	// Whether to flatten all CNAME records in the zone. Note that, due to DNS
+	// limitations, a CNAME record at the zone apex will always be flattened.
+	FlattenAllCnames param.Field[bool] `json:"flatten_all_cnames"`
+	// Whether to enable Foundation DNS Advanced Nameservers on the zone.
+	FoundationDNS param.Field[bool] `json:"foundation_dns"`
+	// Settings for this internal zone.
+	InternalDNS param.Field[AccountSettingsZoneDefaultsInternalDNSParam] `json:"internal_dns"`
+	// Whether to enable multi-provider DNS, which causes Cloudflare to activate the
+	// zone even when non-Cloudflare NS records exist, and to respect NS records at the
+	// zone apex during outbound zone transfers.
+	MultiProvider param.Field[bool] `json:"multi_provider"`
 	// Settings determining the nameservers through which the zone should be available.
 	Nameservers param.Field[AccountSettingsZoneDefaultsNameserversParam] `json:"nameservers"`
-	DNSSettingsParam
+	// The time to live (TTL) of the zone's nameserver (NS) records.
+	NsTtl param.Field[float64] `json:"ns_ttl"`
+	// Allows a Secondary DNS zone to use (proxied) override records and CNAME
+	// flattening at the zone apex.
+	SecondaryOverrides param.Field[bool] `json:"secondary_overrides"`
+	// Components of the zone's SOA record.
+	Soa param.Field[AccountSettingsZoneDefaultsSoaParam] `json:"soa"`
+	// Whether the zone mode is a regular or CDN/DNS only zone.
+	ZoneMode param.Field[AccountSettingsZoneDefaultsZoneMode] `json:"zone_mode"`
 }
 
 func (r AccountSettingsZoneDefaultsParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// Settings for this internal zone.
+type AccountSettingsZoneDefaultsInternalDNSParam struct {
+	// The ID of the zone to fallback to.
+	ReferenceZoneID param.Field[string] `json:"reference_zone_id"`
+}
+
+func (r AccountSettingsZoneDefaultsInternalDNSParam) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
@@ -171,56 +312,47 @@ func (r AccountSettingsZoneDefaultsNameserversParam) MarshalJSON() (data []byte,
 	return apijson.MarshalRoot(r)
 }
 
-type CommonResponseDNSSettings struct {
-	Errors   []DNSSettingsMessages `json:"errors,required"`
-	Messages []DNSSettingsMessages `json:"messages,required"`
-	// Whether the API call was successful
-	Success CommonResponseDNSSettingsSuccess `json:"success,required"`
-	JSON    commonResponseDNSSettingsJSON    `json:"-"`
+// Components of the zone's SOA record.
+type AccountSettingsZoneDefaultsSoaParam struct {
+	// Time in seconds of being unable to query the primary server after which
+	// secondary servers should stop serving the zone.
+	Expire param.Field[float64] `json:"expire,required"`
+	// The time to live (TTL) for negative caching of records within the zone.
+	MinTtl param.Field[float64] `json:"min_ttl,required"`
+	// The primary nameserver, which may be used for outbound zone transfers.
+	Mname param.Field[string] `json:"mname,required"`
+	// Time in seconds after which secondary servers should re-check the SOA record to
+	// see if the zone has been updated.
+	Refresh param.Field[float64] `json:"refresh,required"`
+	// Time in seconds after which secondary servers should retry queries after the
+	// primary server was unresponsive.
+	Retry param.Field[float64] `json:"retry,required"`
+	// The email address of the zone administrator, with the first label representing
+	// the local part of the email address.
+	Rname param.Field[string] `json:"rname,required"`
+	// The time to live (TTL) of the SOA record itself.
+	Ttl param.Field[float64] `json:"ttl,required"`
 }
 
-// commonResponseDNSSettingsJSON contains the JSON metadata for the struct
-// [CommonResponseDNSSettings]
-type commonResponseDNSSettingsJSON struct {
-	Errors      apijson.Field
-	Messages    apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *CommonResponseDNSSettings) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r commonResponseDNSSettingsJSON) RawJSON() string {
-	return r.raw
-}
-
-// Whether the API call was successful
-type CommonResponseDNSSettingsSuccess bool
-
-const (
-	CommonResponseDNSSettingsSuccessTrue CommonResponseDNSSettingsSuccess = true
-)
-
-func (r CommonResponseDNSSettingsSuccess) IsKnown() bool {
-	switch r {
-	case CommonResponseDNSSettingsSuccessTrue:
-		return true
-	}
-	return false
+func (r AccountSettingsZoneDefaultsSoaParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
 }
 
 type DNSResponseSingle struct {
-	Result AccountSettings       `json:"result"`
-	JSON   dnsResponseSingleJSON `json:"-"`
-	SingleResponseDNSSettings
+	Errors   []DNSSettingsMessages `json:"errors,required"`
+	Messages []DNSSettingsMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success DNSResponseSingleSuccess `json:"success,required"`
+	Result  AccountSettings          `json:"result"`
+	JSON    dnsResponseSingleJSON    `json:"-"`
 }
 
 // dnsResponseSingleJSON contains the JSON metadata for the struct
 // [DNSResponseSingle]
 type dnsResponseSingleJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -234,19 +366,38 @@ func (r dnsResponseSingleJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type DNSResponseSingleSuccess bool
+
+const (
+	DNSResponseSingleSuccessTrue DNSResponseSingleSuccess = true
+)
+
+func (r DNSResponseSingleSuccess) IsKnown() bool {
+	switch r {
+	case DNSResponseSingleSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type DNSSettingsMessages struct {
-	Code    int64                   `json:"code,required"`
-	Message string                  `json:"message,required"`
-	JSON    dnsSettingsMessagesJSON `json:"-"`
+	Code             int64                     `json:"code,required"`
+	Message          string                    `json:"message,required"`
+	DocumentationURL string                    `json:"documentation_url"`
+	Source           DNSSettingsMessagesSource `json:"source"`
+	JSON             dnsSettingsMessagesJSON   `json:"-"`
 }
 
 // dnsSettingsMessagesJSON contains the JSON metadata for the struct
 // [DNSSettingsMessages]
 type dnsSettingsMessagesJSON struct {
-	Code        apijson.Field
-	Message     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
 }
 
 func (r *DNSSettingsMessages) UnmarshalJSON(data []byte) (err error) {
@@ -257,45 +408,25 @@ func (r dnsSettingsMessagesJSON) RawJSON() string {
 	return r.raw
 }
 
-type SingleResponseDNSSettings struct {
-	Errors   []DNSSettingsMessages `json:"errors,required"`
-	Messages []DNSSettingsMessages `json:"messages,required"`
-	// Whether the API call was successful
-	Success SingleResponseDNSSettingsSuccess `json:"success,required"`
-	JSON    singleResponseDNSSettingsJSON    `json:"-"`
+type DNSSettingsMessagesSource struct {
+	Pointer string                        `json:"pointer"`
+	JSON    dnsSettingsMessagesSourceJSON `json:"-"`
 }
 
-// singleResponseDNSSettingsJSON contains the JSON metadata for the struct
-// [SingleResponseDNSSettings]
-type singleResponseDNSSettingsJSON struct {
-	Errors      apijson.Field
-	Messages    apijson.Field
-	Success     apijson.Field
+// dnsSettingsMessagesSourceJSON contains the JSON metadata for the struct
+// [DNSSettingsMessagesSource]
+type dnsSettingsMessagesSourceJSON struct {
+	Pointer     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *SingleResponseDNSSettings) UnmarshalJSON(data []byte) (err error) {
+func (r *DNSSettingsMessagesSource) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r singleResponseDNSSettingsJSON) RawJSON() string {
+func (r dnsSettingsMessagesSourceJSON) RawJSON() string {
 	return r.raw
-}
-
-// Whether the API call was successful
-type SingleResponseDNSSettingsSuccess bool
-
-const (
-	SingleResponseDNSSettingsSuccessTrue SingleResponseDNSSettingsSuccess = true
-)
-
-func (r SingleResponseDNSSettingsSuccess) IsKnown() bool {
-	switch r {
-	case SingleResponseDNSSettingsSuccessTrue:
-		return true
-	}
-	return false
 }
 
 type AccountDNSSettingUpdateParams struct {

@@ -29,7 +29,7 @@ func TestAccountAccessUpdateSeats(t *testing.T) {
 	)
 	_, err := client.Accounts.Access.UpdateSeats(
 		context.TODO(),
-		"023e105f4ecef8ad9ca31a8372d0c353",
+		"699d98642c564d2e855e9661899b7252",
 		cfrex.AccountAccessUpdateSeatsParams{
 			Body: []cfrex.AccountAccessUpdateSeatsParamsBody{{
 				AccessSeat:  cfrex.F(false),

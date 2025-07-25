@@ -75,6 +75,8 @@ func (r *AccountGatewayConfigurationService) Patch(ctx context.Context, accountI
 }
 
 // Fetches the current Zero Trust certificate configuration.
+//
+// Deprecated: deprecated
 func (r *AccountGatewayConfigurationService) GetCustomCertificate(ctx context.Context, accountID string, opts ...option.RequestOption) (res *CustomCertificateSettings, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
@@ -92,7 +94,7 @@ func (r *AccountGatewayConfigurationService) GetCustomCertificate(ctx context.Co
 // Deprecated: deprecated
 type CustomCertificateSettings struct {
 	// Enable use of custom certificate authority for signing Gateway traffic.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled,required,nullable"`
 	// UUID of certificate (ID from MTLS certificate store).
 	ID string `json:"id"`
 	// Certificate status (internal).
@@ -136,15 +138,21 @@ func (r CustomCertificateSettingsParam) MarshalJSON() (data []byte, err error) {
 }
 
 type GatewayAccountConfig struct {
+	Errors   []GatewayAccountConfigError   `json:"errors,required"`
+	Messages []GatewayAccountConfigMessage `json:"messages,required"`
+	// Whether the API call was successful
+	Success GatewayAccountConfigSuccess `json:"success,required"`
 	// Account settings
 	Result GatewayAccountConfigResult `json:"result"`
 	JSON   gatewayAccountConfigJSON   `json:"-"`
-	APIResponseSingleZeroTrustGateway
 }
 
 // gatewayAccountConfigJSON contains the JSON metadata for the struct
 // [GatewayAccountConfig]
 type gatewayAccountConfigJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -158,18 +166,131 @@ func (r gatewayAccountConfigJSON) RawJSON() string {
 	return r.raw
 }
 
+type GatewayAccountConfigError struct {
+	Code             int64                            `json:"code,required"`
+	Message          string                           `json:"message,required"`
+	DocumentationURL string                           `json:"documentation_url"`
+	Source           GatewayAccountConfigErrorsSource `json:"source"`
+	JSON             gatewayAccountConfigErrorJSON    `json:"-"`
+}
+
+// gatewayAccountConfigErrorJSON contains the JSON metadata for the struct
+// [GatewayAccountConfigError]
+type gatewayAccountConfigErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *GatewayAccountConfigError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r gatewayAccountConfigErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type GatewayAccountConfigErrorsSource struct {
+	Pointer string                               `json:"pointer"`
+	JSON    gatewayAccountConfigErrorsSourceJSON `json:"-"`
+}
+
+// gatewayAccountConfigErrorsSourceJSON contains the JSON metadata for the struct
+// [GatewayAccountConfigErrorsSource]
+type gatewayAccountConfigErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *GatewayAccountConfigErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r gatewayAccountConfigErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type GatewayAccountConfigMessage struct {
+	Code             int64                              `json:"code,required"`
+	Message          string                             `json:"message,required"`
+	DocumentationURL string                             `json:"documentation_url"`
+	Source           GatewayAccountConfigMessagesSource `json:"source"`
+	JSON             gatewayAccountConfigMessageJSON    `json:"-"`
+}
+
+// gatewayAccountConfigMessageJSON contains the JSON metadata for the struct
+// [GatewayAccountConfigMessage]
+type gatewayAccountConfigMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *GatewayAccountConfigMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r gatewayAccountConfigMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type GatewayAccountConfigMessagesSource struct {
+	Pointer string                                 `json:"pointer"`
+	JSON    gatewayAccountConfigMessagesSourceJSON `json:"-"`
+}
+
+// gatewayAccountConfigMessagesSourceJSON contains the JSON metadata for the struct
+// [GatewayAccountConfigMessagesSource]
+type gatewayAccountConfigMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *GatewayAccountConfigMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r gatewayAccountConfigMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful
+type GatewayAccountConfigSuccess bool
+
+const (
+	GatewayAccountConfigSuccessTrue GatewayAccountConfigSuccess = true
+)
+
+func (r GatewayAccountConfigSuccess) IsKnown() bool {
+	switch r {
+	case GatewayAccountConfigSuccessTrue:
+		return true
+	}
+	return false
+}
+
 // Account settings
 type GatewayAccountConfigResult struct {
-	CreatedAt time.Time                      `json:"created_at" format:"date-time"`
-	UpdatedAt time.Time                      `json:"updated_at" format:"date-time"`
-	JSON      gatewayAccountConfigResultJSON `json:"-"`
-	GatewayAccountSettings
+	CreatedAt time.Time `json:"created_at" format:"date-time"`
+	// Account settings
+	Settings  GatewayAccountConfigResultSettings `json:"settings"`
+	UpdatedAt time.Time                          `json:"updated_at" format:"date-time"`
+	JSON      gatewayAccountConfigResultJSON     `json:"-"`
 }
 
 // gatewayAccountConfigResultJSON contains the JSON metadata for the struct
 // [GatewayAccountConfigResult]
 type gatewayAccountConfigResultJSON struct {
 	CreatedAt   apijson.Field
+	Settings    apijson.Field
 	UpdatedAt   apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -184,64 +305,45 @@ func (r gatewayAccountConfigResultJSON) RawJSON() string {
 }
 
 // Account settings
-type GatewayAccountSettings struct {
-	// Account settings
-	Settings GatewayAccountSettingsSettings `json:"settings"`
-	JSON     gatewayAccountSettingsJSON     `json:"-"`
-}
-
-// gatewayAccountSettingsJSON contains the JSON metadata for the struct
-// [GatewayAccountSettings]
-type gatewayAccountSettingsJSON struct {
-	Settings    apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *GatewayAccountSettings) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r gatewayAccountSettingsJSON) RawJSON() string {
-	return r.raw
-}
-
-// Account settings
-type GatewayAccountSettingsSettings struct {
+type GatewayAccountConfigResultSettings struct {
 	// Activity log settings.
-	ActivityLog GatewayAccountSettingsSettingsActivityLog `json:"activity_log"`
+	ActivityLog GatewayAccountConfigResultSettingsActivityLog `json:"activity_log,nullable"`
 	// Anti-virus settings.
-	Antivirus GatewayAccountSettingsSettingsAntivirus `json:"antivirus"`
+	Antivirus GatewayAccountConfigResultSettingsAntivirus `json:"antivirus,nullable"`
 	// Block page layout settings.
-	BlockPage GatewayAccountSettingsSettingsBlockPage `json:"block_page"`
+	BlockPage GatewayAccountConfigResultSettingsBlockPage `json:"block_page,nullable"`
 	// DLP body scanning settings.
-	BodyScanning GatewayAccountSettingsSettingsBodyScanning `json:"body_scanning"`
+	BodyScanning GatewayAccountConfigResultSettingsBodyScanning `json:"body_scanning,nullable"`
 	// Browser isolation settings.
-	BrowserIsolation GatewayAccountSettingsSettingsBrowserIsolation `json:"browser_isolation"`
+	BrowserIsolation GatewayAccountConfigResultSettingsBrowserIsolation `json:"browser_isolation,nullable"`
 	// Certificate settings for Gateway TLS interception. If not specified, the
 	// Cloudflare Root CA will be used.
-	Certificate GatewayAccountSettingsSettingsCertificate `json:"certificate"`
+	Certificate GatewayAccountConfigResultSettingsCertificate `json:"certificate,nullable"`
 	// Custom certificate settings for BYO-PKI. (deprecated and replaced by
 	// `certificate`)
 	//
 	// Deprecated: deprecated
-	CustomCertificate CustomCertificateSettings `json:"custom_certificate"`
+	CustomCertificate CustomCertificateSettings `json:"custom_certificate,nullable"`
 	// Extended e-mail matching settings.
-	ExtendedEmailMatching GatewayAccountSettingsSettingsExtendedEmailMatching `json:"extended_email_matching"`
+	ExtendedEmailMatching GatewayAccountConfigResultSettingsExtendedEmailMatching `json:"extended_email_matching,nullable"`
 	// FIPS settings.
-	Fips GatewayAccountSettingsSettingsFips `json:"fips"`
+	Fips GatewayAccountConfigResultSettingsFips `json:"fips,nullable"`
+	// Setting to enable host selector in egress policies.
+	HostSelector GatewayAccountConfigResultSettingsHostSelector `json:"host_selector,nullable"`
+	// Setting to define inspection settings
+	Inspection GatewayAccountConfigResultSettingsInspection `json:"inspection,nullable"`
 	// Protocol Detection settings.
-	ProtocolDetection GatewayAccountSettingsSettingsProtocolDetection `json:"protocol_detection"`
+	ProtocolDetection GatewayAccountConfigResultSettingsProtocolDetection `json:"protocol_detection,nullable"`
 	// Sandbox settings.
-	Sandbox GatewayAccountSettingsSettingsSandbox `json:"sandbox"`
+	Sandbox GatewayAccountConfigResultSettingsSandbox `json:"sandbox,nullable"`
 	// TLS interception settings.
-	TlsDecrypt GatewayAccountSettingsSettingsTlsDecrypt `json:"tls_decrypt"`
-	JSON       gatewayAccountSettingsSettingsJSON       `json:"-"`
+	TlsDecrypt GatewayAccountConfigResultSettingsTlsDecrypt `json:"tls_decrypt,nullable"`
+	JSON       gatewayAccountConfigResultSettingsJSON       `json:"-"`
 }
 
-// gatewayAccountSettingsSettingsJSON contains the JSON metadata for the struct
-// [GatewayAccountSettingsSettings]
-type gatewayAccountSettingsSettingsJSON struct {
+// gatewayAccountConfigResultSettingsJSON contains the JSON metadata for the struct
+// [GatewayAccountConfigResultSettings]
+type gatewayAccountConfigResultSettingsJSON struct {
 	ActivityLog           apijson.Field
 	Antivirus             apijson.Field
 	BlockPage             apijson.Field
@@ -251,6 +353,8 @@ type gatewayAccountSettingsSettingsJSON struct {
 	CustomCertificate     apijson.Field
 	ExtendedEmailMatching apijson.Field
 	Fips                  apijson.Field
+	HostSelector          apijson.Field
+	Inspection            apijson.Field
 	ProtocolDetection     apijson.Field
 	Sandbox               apijson.Field
 	TlsDecrypt            apijson.Field
@@ -258,54 +362,54 @@ type gatewayAccountSettingsSettingsJSON struct {
 	ExtraFields           map[string]apijson.Field
 }
 
-func (r *GatewayAccountSettingsSettings) UnmarshalJSON(data []byte) (err error) {
+func (r *GatewayAccountConfigResultSettings) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r gatewayAccountSettingsSettingsJSON) RawJSON() string {
+func (r gatewayAccountConfigResultSettingsJSON) RawJSON() string {
 	return r.raw
 }
 
 // Activity log settings.
-type GatewayAccountSettingsSettingsActivityLog struct {
+type GatewayAccountConfigResultSettingsActivityLog struct {
 	// Enable activity logging.
-	Enabled bool                                          `json:"enabled"`
-	JSON    gatewayAccountSettingsSettingsActivityLogJSON `json:"-"`
+	Enabled bool                                              `json:"enabled,nullable"`
+	JSON    gatewayAccountConfigResultSettingsActivityLogJSON `json:"-"`
 }
 
-// gatewayAccountSettingsSettingsActivityLogJSON contains the JSON metadata for the
-// struct [GatewayAccountSettingsSettingsActivityLog]
-type gatewayAccountSettingsSettingsActivityLogJSON struct {
+// gatewayAccountConfigResultSettingsActivityLogJSON contains the JSON metadata for
+// the struct [GatewayAccountConfigResultSettingsActivityLog]
+type gatewayAccountConfigResultSettingsActivityLogJSON struct {
 	Enabled     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *GatewayAccountSettingsSettingsActivityLog) UnmarshalJSON(data []byte) (err error) {
+func (r *GatewayAccountConfigResultSettingsActivityLog) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r gatewayAccountSettingsSettingsActivityLogJSON) RawJSON() string {
+func (r gatewayAccountConfigResultSettingsActivityLogJSON) RawJSON() string {
 	return r.raw
 }
 
 // Anti-virus settings.
-type GatewayAccountSettingsSettingsAntivirus struct {
+type GatewayAccountConfigResultSettingsAntivirus struct {
 	// Enable anti-virus scanning on downloads.
-	EnabledDownloadPhase bool `json:"enabled_download_phase"`
+	EnabledDownloadPhase bool `json:"enabled_download_phase,nullable"`
 	// Enable anti-virus scanning on uploads.
-	EnabledUploadPhase bool `json:"enabled_upload_phase"`
+	EnabledUploadPhase bool `json:"enabled_upload_phase,nullable"`
 	// Block requests for files that cannot be scanned.
-	FailClosed bool `json:"fail_closed"`
+	FailClosed bool `json:"fail_closed,nullable"`
 	// Configure a message to display on the user's device when an antivirus search is
 	// performed.
-	NotificationSettings GatewayAccountSettingsSettingsAntivirusNotificationSettings `json:"notification_settings"`
-	JSON                 gatewayAccountSettingsSettingsAntivirusJSON                 `json:"-"`
+	NotificationSettings GatewayAccountConfigResultSettingsAntivirusNotificationSettings `json:"notification_settings,nullable"`
+	JSON                 gatewayAccountConfigResultSettingsAntivirusJSON                 `json:"-"`
 }
 
-// gatewayAccountSettingsSettingsAntivirusJSON contains the JSON metadata for the
-// struct [GatewayAccountSettingsSettingsAntivirus]
-type gatewayAccountSettingsSettingsAntivirusJSON struct {
+// gatewayAccountConfigResultSettingsAntivirusJSON contains the JSON metadata for
+// the struct [GatewayAccountConfigResultSettingsAntivirus]
+type gatewayAccountConfigResultSettingsAntivirusJSON struct {
 	EnabledDownloadPhase apijson.Field
 	EnabledUploadPhase   apijson.Field
 	FailClosed           apijson.Field
@@ -314,52 +418,58 @@ type gatewayAccountSettingsSettingsAntivirusJSON struct {
 	ExtraFields          map[string]apijson.Field
 }
 
-func (r *GatewayAccountSettingsSettingsAntivirus) UnmarshalJSON(data []byte) (err error) {
+func (r *GatewayAccountConfigResultSettingsAntivirus) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r gatewayAccountSettingsSettingsAntivirusJSON) RawJSON() string {
+func (r gatewayAccountConfigResultSettingsAntivirusJSON) RawJSON() string {
 	return r.raw
 }
 
 // Configure a message to display on the user's device when an antivirus search is
 // performed.
-type GatewayAccountSettingsSettingsAntivirusNotificationSettings struct {
+type GatewayAccountConfigResultSettingsAntivirusNotificationSettings struct {
 	// Set notification on
 	Enabled bool `json:"enabled"`
+	// If true, context information will be passed as query parameters
+	IncludeContext bool `json:"include_context"`
 	// Customize the message shown in the notification.
 	Msg string `json:"msg"`
 	// Optional URL to direct users to additional information. If not set, the
 	// notification will open a block page.
-	SupportURL string                                                          `json:"support_url"`
-	JSON       gatewayAccountSettingsSettingsAntivirusNotificationSettingsJSON `json:"-"`
+	SupportURL string                                                              `json:"support_url"`
+	JSON       gatewayAccountConfigResultSettingsAntivirusNotificationSettingsJSON `json:"-"`
 }
 
-// gatewayAccountSettingsSettingsAntivirusNotificationSettingsJSON contains the
+// gatewayAccountConfigResultSettingsAntivirusNotificationSettingsJSON contains the
 // JSON metadata for the struct
-// [GatewayAccountSettingsSettingsAntivirusNotificationSettings]
-type gatewayAccountSettingsSettingsAntivirusNotificationSettingsJSON struct {
-	Enabled     apijson.Field
-	Msg         apijson.Field
-	SupportURL  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+// [GatewayAccountConfigResultSettingsAntivirusNotificationSettings]
+type gatewayAccountConfigResultSettingsAntivirusNotificationSettingsJSON struct {
+	Enabled        apijson.Field
+	IncludeContext apijson.Field
+	Msg            apijson.Field
+	SupportURL     apijson.Field
+	raw            string
+	ExtraFields    map[string]apijson.Field
 }
 
-func (r *GatewayAccountSettingsSettingsAntivirusNotificationSettings) UnmarshalJSON(data []byte) (err error) {
+func (r *GatewayAccountConfigResultSettingsAntivirusNotificationSettings) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r gatewayAccountSettingsSettingsAntivirusNotificationSettingsJSON) RawJSON() string {
+func (r gatewayAccountConfigResultSettingsAntivirusNotificationSettingsJSON) RawJSON() string {
 	return r.raw
 }
 
 // Block page layout settings.
-type GatewayAccountSettingsSettingsBlockPage struct {
+type GatewayAccountConfigResultSettingsBlockPage struct {
+	// Enable only cipher suites and TLS versions compliant with FIPS 140-2.
+	Enabled bool `json:"enabled,required,nullable"`
+	// Controls whether the user is redirected to a Cloudflare-hosted block page or to
+	// a customer-provided URI.
+	Mode GatewayAccountConfigResultSettingsBlockPageMode `json:"mode,required"`
 	// If mode is customized_block_page: block page background color in #rrggbb format.
 	BackgroundColor string `json:"background_color"`
-	// Enable only cipher suites and TLS versions compliant with FIPS 140-2.
-	Enabled bool `json:"enabled"`
 	// If mode is customized_block_page: block page footer text.
 	FooterText string `json:"footer_text"`
 	// If mode is customized_block_page: block page header text.
@@ -374,270 +484,376 @@ type GatewayAccountSettingsSettingsBlockPage struct {
 	// If mode is customized_block_page: subject line for emails created from block
 	// page.
 	MailtoSubject string `json:"mailto_subject"`
-	// Controls whether the user is redirected to a Cloudflare-hosted block page or to
-	// a customer-provided URI.
-	Mode GatewayAccountSettingsSettingsBlockPageMode `json:"mode"`
 	// If mode is customized_block_page: block page title.
 	Name string `json:"name"`
+	// This setting was shared via the Orgs API and cannot be edited by the current
+	// account
+	ReadOnly bool `json:"read_only,nullable"`
+	// Account tag of account that shared this setting
+	SourceAccount string `json:"source_account,nullable"`
 	// If mode is customized_block_page: suppress detailed info at the bottom of the
 	// block page.
 	SuppressFooter bool `json:"suppress_footer"`
 	// If mode is redirect_uri: URI to which the user should be redirected.
-	TargetUri string                                      `json:"target_uri" format:"uri"`
-	JSON      gatewayAccountSettingsSettingsBlockPageJSON `json:"-"`
+	TargetUri string `json:"target_uri" format:"uri"`
+	// Version number of the setting
+	Version int64                                           `json:"version,nullable"`
+	JSON    gatewayAccountConfigResultSettingsBlockPageJSON `json:"-"`
 }
 
-// gatewayAccountSettingsSettingsBlockPageJSON contains the JSON metadata for the
-// struct [GatewayAccountSettingsSettingsBlockPage]
-type gatewayAccountSettingsSettingsBlockPageJSON struct {
-	BackgroundColor apijson.Field
+// gatewayAccountConfigResultSettingsBlockPageJSON contains the JSON metadata for
+// the struct [GatewayAccountConfigResultSettingsBlockPage]
+type gatewayAccountConfigResultSettingsBlockPageJSON struct {
 	Enabled         apijson.Field
+	Mode            apijson.Field
+	BackgroundColor apijson.Field
 	FooterText      apijson.Field
 	HeaderText      apijson.Field
 	IncludeContext  apijson.Field
 	LogoPath        apijson.Field
 	MailtoAddress   apijson.Field
 	MailtoSubject   apijson.Field
-	Mode            apijson.Field
 	Name            apijson.Field
+	ReadOnly        apijson.Field
+	SourceAccount   apijson.Field
 	SuppressFooter  apijson.Field
 	TargetUri       apijson.Field
+	Version         apijson.Field
 	raw             string
 	ExtraFields     map[string]apijson.Field
 }
 
-func (r *GatewayAccountSettingsSettingsBlockPage) UnmarshalJSON(data []byte) (err error) {
+func (r *GatewayAccountConfigResultSettingsBlockPage) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r gatewayAccountSettingsSettingsBlockPageJSON) RawJSON() string {
+func (r gatewayAccountConfigResultSettingsBlockPageJSON) RawJSON() string {
 	return r.raw
 }
 
 // Controls whether the user is redirected to a Cloudflare-hosted block page or to
 // a customer-provided URI.
-type GatewayAccountSettingsSettingsBlockPageMode string
+type GatewayAccountConfigResultSettingsBlockPageMode string
 
 const (
-	GatewayAccountSettingsSettingsBlockPageModeCustomizedBlockPage GatewayAccountSettingsSettingsBlockPageMode = "customized_block_page"
-	GatewayAccountSettingsSettingsBlockPageModeRedirectUri         GatewayAccountSettingsSettingsBlockPageMode = "redirect_uri"
+	GatewayAccountConfigResultSettingsBlockPageModeCustomizedBlockPage GatewayAccountConfigResultSettingsBlockPageMode = "customized_block_page"
+	GatewayAccountConfigResultSettingsBlockPageModeRedirectUri         GatewayAccountConfigResultSettingsBlockPageMode = "redirect_uri"
 )
 
-func (r GatewayAccountSettingsSettingsBlockPageMode) IsKnown() bool {
+func (r GatewayAccountConfigResultSettingsBlockPageMode) IsKnown() bool {
 	switch r {
-	case GatewayAccountSettingsSettingsBlockPageModeCustomizedBlockPage, GatewayAccountSettingsSettingsBlockPageModeRedirectUri:
+	case GatewayAccountConfigResultSettingsBlockPageModeCustomizedBlockPage, GatewayAccountConfigResultSettingsBlockPageModeRedirectUri:
 		return true
 	}
 	return false
 }
 
 // DLP body scanning settings.
-type GatewayAccountSettingsSettingsBodyScanning struct {
+type GatewayAccountConfigResultSettingsBodyScanning struct {
 	// Set the inspection mode to either `deep` or `shallow`.
-	InspectionMode string                                         `json:"inspection_mode"`
-	JSON           gatewayAccountSettingsSettingsBodyScanningJSON `json:"-"`
+	InspectionMode GatewayAccountConfigResultSettingsBodyScanningInspectionMode `json:"inspection_mode"`
+	JSON           gatewayAccountConfigResultSettingsBodyScanningJSON           `json:"-"`
 }
 
-// gatewayAccountSettingsSettingsBodyScanningJSON contains the JSON metadata for
-// the struct [GatewayAccountSettingsSettingsBodyScanning]
-type gatewayAccountSettingsSettingsBodyScanningJSON struct {
+// gatewayAccountConfigResultSettingsBodyScanningJSON contains the JSON metadata
+// for the struct [GatewayAccountConfigResultSettingsBodyScanning]
+type gatewayAccountConfigResultSettingsBodyScanningJSON struct {
 	InspectionMode apijson.Field
 	raw            string
 	ExtraFields    map[string]apijson.Field
 }
 
-func (r *GatewayAccountSettingsSettingsBodyScanning) UnmarshalJSON(data []byte) (err error) {
+func (r *GatewayAccountConfigResultSettingsBodyScanning) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r gatewayAccountSettingsSettingsBodyScanningJSON) RawJSON() string {
+func (r gatewayAccountConfigResultSettingsBodyScanningJSON) RawJSON() string {
 	return r.raw
 }
 
+// Set the inspection mode to either `deep` or `shallow`.
+type GatewayAccountConfigResultSettingsBodyScanningInspectionMode string
+
+const (
+	GatewayAccountConfigResultSettingsBodyScanningInspectionModeDeep    GatewayAccountConfigResultSettingsBodyScanningInspectionMode = "deep"
+	GatewayAccountConfigResultSettingsBodyScanningInspectionModeShallow GatewayAccountConfigResultSettingsBodyScanningInspectionMode = "shallow"
+)
+
+func (r GatewayAccountConfigResultSettingsBodyScanningInspectionMode) IsKnown() bool {
+	switch r {
+	case GatewayAccountConfigResultSettingsBodyScanningInspectionModeDeep, GatewayAccountConfigResultSettingsBodyScanningInspectionModeShallow:
+		return true
+	}
+	return false
+}
+
 // Browser isolation settings.
-type GatewayAccountSettingsSettingsBrowserIsolation struct {
+type GatewayAccountConfigResultSettingsBrowserIsolation struct {
 	// Enable non-identity onramp support for Browser Isolation.
 	NonIdentityEnabled bool `json:"non_identity_enabled"`
 	// Enable Clientless Browser Isolation.
-	URLBrowserIsolationEnabled bool                                               `json:"url_browser_isolation_enabled"`
-	JSON                       gatewayAccountSettingsSettingsBrowserIsolationJSON `json:"-"`
+	URLBrowserIsolationEnabled bool                                                   `json:"url_browser_isolation_enabled"`
+	JSON                       gatewayAccountConfigResultSettingsBrowserIsolationJSON `json:"-"`
 }
 
-// gatewayAccountSettingsSettingsBrowserIsolationJSON contains the JSON metadata
-// for the struct [GatewayAccountSettingsSettingsBrowserIsolation]
-type gatewayAccountSettingsSettingsBrowserIsolationJSON struct {
+// gatewayAccountConfigResultSettingsBrowserIsolationJSON contains the JSON
+// metadata for the struct [GatewayAccountConfigResultSettingsBrowserIsolation]
+type gatewayAccountConfigResultSettingsBrowserIsolationJSON struct {
 	NonIdentityEnabled         apijson.Field
 	URLBrowserIsolationEnabled apijson.Field
 	raw                        string
 	ExtraFields                map[string]apijson.Field
 }
 
-func (r *GatewayAccountSettingsSettingsBrowserIsolation) UnmarshalJSON(data []byte) (err error) {
+func (r *GatewayAccountConfigResultSettingsBrowserIsolation) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r gatewayAccountSettingsSettingsBrowserIsolationJSON) RawJSON() string {
+func (r gatewayAccountConfigResultSettingsBrowserIsolationJSON) RawJSON() string {
 	return r.raw
 }
 
 // Certificate settings for Gateway TLS interception. If not specified, the
 // Cloudflare Root CA will be used.
-type GatewayAccountSettingsSettingsCertificate struct {
+type GatewayAccountConfigResultSettingsCertificate struct {
 	// UUID of certificate to be used for interception. Certificate must be available
 	// (previously called 'active') on the edge. A nil UUID will indicate the
 	// Cloudflare Root CA should be used.
-	ID   string                                        `json:"id,required"`
-	JSON gatewayAccountSettingsSettingsCertificateJSON `json:"-"`
+	ID   string                                            `json:"id,required"`
+	JSON gatewayAccountConfigResultSettingsCertificateJSON `json:"-"`
 }
 
-// gatewayAccountSettingsSettingsCertificateJSON contains the JSON metadata for the
-// struct [GatewayAccountSettingsSettingsCertificate]
-type gatewayAccountSettingsSettingsCertificateJSON struct {
+// gatewayAccountConfigResultSettingsCertificateJSON contains the JSON metadata for
+// the struct [GatewayAccountConfigResultSettingsCertificate]
+type gatewayAccountConfigResultSettingsCertificateJSON struct {
 	ID          apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *GatewayAccountSettingsSettingsCertificate) UnmarshalJSON(data []byte) (err error) {
+func (r *GatewayAccountConfigResultSettingsCertificate) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r gatewayAccountSettingsSettingsCertificateJSON) RawJSON() string {
+func (r gatewayAccountConfigResultSettingsCertificateJSON) RawJSON() string {
 	return r.raw
 }
 
 // Extended e-mail matching settings.
-type GatewayAccountSettingsSettingsExtendedEmailMatching struct {
+type GatewayAccountConfigResultSettingsExtendedEmailMatching struct {
 	// Enable matching all variants of user emails (with + or . modifiers) used as
 	// criteria in Firewall policies.
-	Enabled bool                                                    `json:"enabled"`
-	JSON    gatewayAccountSettingsSettingsExtendedEmailMatchingJSON `json:"-"`
+	Enabled bool `json:"enabled,nullable"`
+	// This setting was shared via the Orgs API and cannot be edited by the current
+	// account
+	ReadOnly bool `json:"read_only,nullable"`
+	// Account tag of account that shared this setting
+	SourceAccount string `json:"source_account,nullable"`
+	// Version number of the setting
+	Version int64                                                       `json:"version,nullable"`
+	JSON    gatewayAccountConfigResultSettingsExtendedEmailMatchingJSON `json:"-"`
 }
 
-// gatewayAccountSettingsSettingsExtendedEmailMatchingJSON contains the JSON
-// metadata for the struct [GatewayAccountSettingsSettingsExtendedEmailMatching]
-type gatewayAccountSettingsSettingsExtendedEmailMatchingJSON struct {
-	Enabled     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+// gatewayAccountConfigResultSettingsExtendedEmailMatchingJSON contains the JSON
+// metadata for the struct
+// [GatewayAccountConfigResultSettingsExtendedEmailMatching]
+type gatewayAccountConfigResultSettingsExtendedEmailMatchingJSON struct {
+	Enabled       apijson.Field
+	ReadOnly      apijson.Field
+	SourceAccount apijson.Field
+	Version       apijson.Field
+	raw           string
+	ExtraFields   map[string]apijson.Field
 }
 
-func (r *GatewayAccountSettingsSettingsExtendedEmailMatching) UnmarshalJSON(data []byte) (err error) {
+func (r *GatewayAccountConfigResultSettingsExtendedEmailMatching) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r gatewayAccountSettingsSettingsExtendedEmailMatchingJSON) RawJSON() string {
+func (r gatewayAccountConfigResultSettingsExtendedEmailMatchingJSON) RawJSON() string {
 	return r.raw
 }
 
 // FIPS settings.
-type GatewayAccountSettingsSettingsFips struct {
+type GatewayAccountConfigResultSettingsFips struct {
 	// Enable only cipher suites and TLS versions compliant with FIPS 140-2.
-	Tls  bool                                   `json:"tls"`
-	JSON gatewayAccountSettingsSettingsFipsJSON `json:"-"`
+	Tls  bool                                       `json:"tls"`
+	JSON gatewayAccountConfigResultSettingsFipsJSON `json:"-"`
 }
 
-// gatewayAccountSettingsSettingsFipsJSON contains the JSON metadata for the struct
-// [GatewayAccountSettingsSettingsFips]
-type gatewayAccountSettingsSettingsFipsJSON struct {
+// gatewayAccountConfigResultSettingsFipsJSON contains the JSON metadata for the
+// struct [GatewayAccountConfigResultSettingsFips]
+type gatewayAccountConfigResultSettingsFipsJSON struct {
 	Tls         apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *GatewayAccountSettingsSettingsFips) UnmarshalJSON(data []byte) (err error) {
+func (r *GatewayAccountConfigResultSettingsFips) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r gatewayAccountSettingsSettingsFipsJSON) RawJSON() string {
+func (r gatewayAccountConfigResultSettingsFipsJSON) RawJSON() string {
 	return r.raw
 }
 
-// Protocol Detection settings.
-type GatewayAccountSettingsSettingsProtocolDetection struct {
-	// Enable detecting protocol on initial bytes of client traffic.
-	Enabled bool                                                `json:"enabled"`
-	JSON    gatewayAccountSettingsSettingsProtocolDetectionJSON `json:"-"`
+// Setting to enable host selector in egress policies.
+type GatewayAccountConfigResultSettingsHostSelector struct {
+	// Enable filtering via hosts for egress policies.
+	Enabled bool                                               `json:"enabled,nullable"`
+	JSON    gatewayAccountConfigResultSettingsHostSelectorJSON `json:"-"`
 }
 
-// gatewayAccountSettingsSettingsProtocolDetectionJSON contains the JSON metadata
-// for the struct [GatewayAccountSettingsSettingsProtocolDetection]
-type gatewayAccountSettingsSettingsProtocolDetectionJSON struct {
+// gatewayAccountConfigResultSettingsHostSelectorJSON contains the JSON metadata
+// for the struct [GatewayAccountConfigResultSettingsHostSelector]
+type gatewayAccountConfigResultSettingsHostSelectorJSON struct {
 	Enabled     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *GatewayAccountSettingsSettingsProtocolDetection) UnmarshalJSON(data []byte) (err error) {
+func (r *GatewayAccountConfigResultSettingsHostSelector) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r gatewayAccountSettingsSettingsProtocolDetectionJSON) RawJSON() string {
+func (r gatewayAccountConfigResultSettingsHostSelectorJSON) RawJSON() string {
+	return r.raw
+}
+
+// Setting to define inspection settings
+type GatewayAccountConfigResultSettingsInspection struct {
+	// Defines the mode of inspection the proxy will use.
+	//
+	//   - static: Gateway will use static inspection to inspect HTTP on TCP(80). If TLS
+	//     decryption is on, Gateway will inspect HTTPS traffic on TCP(443) & UDP(443).
+	//   - dynamic: Gateway will use protocol detection to dynamically inspect HTTP and
+	//     HTTPS traffic on any port. TLS decryption must be on to inspect HTTPS traffic.
+	Mode GatewayAccountConfigResultSettingsInspectionMode `json:"mode"`
+	JSON gatewayAccountConfigResultSettingsInspectionJSON `json:"-"`
+}
+
+// gatewayAccountConfigResultSettingsInspectionJSON contains the JSON metadata for
+// the struct [GatewayAccountConfigResultSettingsInspection]
+type gatewayAccountConfigResultSettingsInspectionJSON struct {
+	Mode        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *GatewayAccountConfigResultSettingsInspection) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r gatewayAccountConfigResultSettingsInspectionJSON) RawJSON() string {
+	return r.raw
+}
+
+// Defines the mode of inspection the proxy will use.
+//
+//   - static: Gateway will use static inspection to inspect HTTP on TCP(80). If TLS
+//     decryption is on, Gateway will inspect HTTPS traffic on TCP(443) & UDP(443).
+//   - dynamic: Gateway will use protocol detection to dynamically inspect HTTP and
+//     HTTPS traffic on any port. TLS decryption must be on to inspect HTTPS traffic.
+type GatewayAccountConfigResultSettingsInspectionMode string
+
+const (
+	GatewayAccountConfigResultSettingsInspectionModeStatic  GatewayAccountConfigResultSettingsInspectionMode = "static"
+	GatewayAccountConfigResultSettingsInspectionModeDynamic GatewayAccountConfigResultSettingsInspectionMode = "dynamic"
+)
+
+func (r GatewayAccountConfigResultSettingsInspectionMode) IsKnown() bool {
+	switch r {
+	case GatewayAccountConfigResultSettingsInspectionModeStatic, GatewayAccountConfigResultSettingsInspectionModeDynamic:
+		return true
+	}
+	return false
+}
+
+// Protocol Detection settings.
+type GatewayAccountConfigResultSettingsProtocolDetection struct {
+	// Enable detecting protocol on initial bytes of client traffic.
+	Enabled bool                                                    `json:"enabled,nullable"`
+	JSON    gatewayAccountConfigResultSettingsProtocolDetectionJSON `json:"-"`
+}
+
+// gatewayAccountConfigResultSettingsProtocolDetectionJSON contains the JSON
+// metadata for the struct [GatewayAccountConfigResultSettingsProtocolDetection]
+type gatewayAccountConfigResultSettingsProtocolDetectionJSON struct {
+	Enabled     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *GatewayAccountConfigResultSettingsProtocolDetection) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r gatewayAccountConfigResultSettingsProtocolDetectionJSON) RawJSON() string {
 	return r.raw
 }
 
 // Sandbox settings.
-type GatewayAccountSettingsSettingsSandbox struct {
+type GatewayAccountConfigResultSettingsSandbox struct {
 	// Enable sandbox.
-	Enabled bool `json:"enabled"`
+	Enabled bool `json:"enabled,nullable"`
 	// Action to take when the file cannot be scanned.
-	FallbackAction GatewayAccountSettingsSettingsSandboxFallbackAction `json:"fallback_action"`
-	JSON           gatewayAccountSettingsSettingsSandboxJSON           `json:"-"`
+	FallbackAction GatewayAccountConfigResultSettingsSandboxFallbackAction `json:"fallback_action"`
+	JSON           gatewayAccountConfigResultSettingsSandboxJSON           `json:"-"`
 }
 
-// gatewayAccountSettingsSettingsSandboxJSON contains the JSON metadata for the
-// struct [GatewayAccountSettingsSettingsSandbox]
-type gatewayAccountSettingsSettingsSandboxJSON struct {
+// gatewayAccountConfigResultSettingsSandboxJSON contains the JSON metadata for the
+// struct [GatewayAccountConfigResultSettingsSandbox]
+type gatewayAccountConfigResultSettingsSandboxJSON struct {
 	Enabled        apijson.Field
 	FallbackAction apijson.Field
 	raw            string
 	ExtraFields    map[string]apijson.Field
 }
 
-func (r *GatewayAccountSettingsSettingsSandbox) UnmarshalJSON(data []byte) (err error) {
+func (r *GatewayAccountConfigResultSettingsSandbox) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r gatewayAccountSettingsSettingsSandboxJSON) RawJSON() string {
+func (r gatewayAccountConfigResultSettingsSandboxJSON) RawJSON() string {
 	return r.raw
 }
 
 // Action to take when the file cannot be scanned.
-type GatewayAccountSettingsSettingsSandboxFallbackAction string
+type GatewayAccountConfigResultSettingsSandboxFallbackAction string
 
 const (
-	GatewayAccountSettingsSettingsSandboxFallbackActionAllow GatewayAccountSettingsSettingsSandboxFallbackAction = "allow"
-	GatewayAccountSettingsSettingsSandboxFallbackActionBlock GatewayAccountSettingsSettingsSandboxFallbackAction = "block"
+	GatewayAccountConfigResultSettingsSandboxFallbackActionAllow GatewayAccountConfigResultSettingsSandboxFallbackAction = "allow"
+	GatewayAccountConfigResultSettingsSandboxFallbackActionBlock GatewayAccountConfigResultSettingsSandboxFallbackAction = "block"
 )
 
-func (r GatewayAccountSettingsSettingsSandboxFallbackAction) IsKnown() bool {
+func (r GatewayAccountConfigResultSettingsSandboxFallbackAction) IsKnown() bool {
 	switch r {
-	case GatewayAccountSettingsSettingsSandboxFallbackActionAllow, GatewayAccountSettingsSettingsSandboxFallbackActionBlock:
+	case GatewayAccountConfigResultSettingsSandboxFallbackActionAllow, GatewayAccountConfigResultSettingsSandboxFallbackActionBlock:
 		return true
 	}
 	return false
 }
 
 // TLS interception settings.
-type GatewayAccountSettingsSettingsTlsDecrypt struct {
+type GatewayAccountConfigResultSettingsTlsDecrypt struct {
 	// Enable inspecting encrypted HTTP traffic.
-	Enabled bool                                         `json:"enabled"`
-	JSON    gatewayAccountSettingsSettingsTlsDecryptJSON `json:"-"`
+	Enabled bool                                             `json:"enabled"`
+	JSON    gatewayAccountConfigResultSettingsTlsDecryptJSON `json:"-"`
 }
 
-// gatewayAccountSettingsSettingsTlsDecryptJSON contains the JSON metadata for the
-// struct [GatewayAccountSettingsSettingsTlsDecrypt]
-type gatewayAccountSettingsSettingsTlsDecryptJSON struct {
+// gatewayAccountConfigResultSettingsTlsDecryptJSON contains the JSON metadata for
+// the struct [GatewayAccountConfigResultSettingsTlsDecrypt]
+type gatewayAccountConfigResultSettingsTlsDecryptJSON struct {
 	Enabled     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *GatewayAccountSettingsSettingsTlsDecrypt) UnmarshalJSON(data []byte) (err error) {
+func (r *GatewayAccountConfigResultSettingsTlsDecrypt) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r gatewayAccountSettingsSettingsTlsDecryptJSON) RawJSON() string {
+func (r gatewayAccountConfigResultSettingsTlsDecryptJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -675,6 +891,10 @@ type GatewayAccountSettingsSettingsParam struct {
 	ExtendedEmailMatching param.Field[GatewayAccountSettingsSettingsExtendedEmailMatchingParam] `json:"extended_email_matching"`
 	// FIPS settings.
 	Fips param.Field[GatewayAccountSettingsSettingsFipsParam] `json:"fips"`
+	// Setting to enable host selector in egress policies.
+	HostSelector param.Field[GatewayAccountSettingsSettingsHostSelectorParam] `json:"host_selector"`
+	// Setting to define inspection settings
+	Inspection param.Field[GatewayAccountSettingsSettingsInspectionParam] `json:"inspection"`
 	// Protocol Detection settings.
 	ProtocolDetection param.Field[GatewayAccountSettingsSettingsProtocolDetectionParam] `json:"protocol_detection"`
 	// Sandbox settings.
@@ -719,6 +939,8 @@ func (r GatewayAccountSettingsSettingsAntivirusParam) MarshalJSON() (data []byte
 type GatewayAccountSettingsSettingsAntivirusNotificationSettingsParam struct {
 	// Set notification on
 	Enabled param.Field[bool] `json:"enabled"`
+	// If true, context information will be passed as query parameters
+	IncludeContext param.Field[bool] `json:"include_context"`
 	// Customize the message shown in the notification.
 	Msg param.Field[string] `json:"msg"`
 	// Optional URL to direct users to additional information. If not set, the
@@ -732,10 +954,13 @@ func (r GatewayAccountSettingsSettingsAntivirusNotificationSettingsParam) Marsha
 
 // Block page layout settings.
 type GatewayAccountSettingsSettingsBlockPageParam struct {
+	// Enable only cipher suites and TLS versions compliant with FIPS 140-2.
+	Enabled param.Field[bool] `json:"enabled,required"`
+	// Controls whether the user is redirected to a Cloudflare-hosted block page or to
+	// a customer-provided URI.
+	Mode param.Field[GatewayAccountSettingsSettingsBlockPageMode] `json:"mode,required"`
 	// If mode is customized_block_page: block page background color in #rrggbb format.
 	BackgroundColor param.Field[string] `json:"background_color"`
-	// Enable only cipher suites and TLS versions compliant with FIPS 140-2.
-	Enabled param.Field[bool] `json:"enabled"`
 	// If mode is customized_block_page: block page footer text.
 	FooterText param.Field[string] `json:"footer_text"`
 	// If mode is customized_block_page: block page header text.
@@ -750,9 +975,6 @@ type GatewayAccountSettingsSettingsBlockPageParam struct {
 	// If mode is customized_block_page: subject line for emails created from block
 	// page.
 	MailtoSubject param.Field[string] `json:"mailto_subject"`
-	// Controls whether the user is redirected to a Cloudflare-hosted block page or to
-	// a customer-provided URI.
-	Mode param.Field[GatewayAccountSettingsSettingsBlockPageMode] `json:"mode"`
 	// If mode is customized_block_page: block page title.
 	Name param.Field[string] `json:"name"`
 	// If mode is customized_block_page: suppress detailed info at the bottom of the
@@ -766,14 +988,47 @@ func (r GatewayAccountSettingsSettingsBlockPageParam) MarshalJSON() (data []byte
 	return apijson.MarshalRoot(r)
 }
 
+// Controls whether the user is redirected to a Cloudflare-hosted block page or to
+// a customer-provided URI.
+type GatewayAccountSettingsSettingsBlockPageMode string
+
+const (
+	GatewayAccountSettingsSettingsBlockPageModeCustomizedBlockPage GatewayAccountSettingsSettingsBlockPageMode = "customized_block_page"
+	GatewayAccountSettingsSettingsBlockPageModeRedirectUri         GatewayAccountSettingsSettingsBlockPageMode = "redirect_uri"
+)
+
+func (r GatewayAccountSettingsSettingsBlockPageMode) IsKnown() bool {
+	switch r {
+	case GatewayAccountSettingsSettingsBlockPageModeCustomizedBlockPage, GatewayAccountSettingsSettingsBlockPageModeRedirectUri:
+		return true
+	}
+	return false
+}
+
 // DLP body scanning settings.
 type GatewayAccountSettingsSettingsBodyScanningParam struct {
 	// Set the inspection mode to either `deep` or `shallow`.
-	InspectionMode param.Field[string] `json:"inspection_mode"`
+	InspectionMode param.Field[GatewayAccountSettingsSettingsBodyScanningInspectionMode] `json:"inspection_mode"`
 }
 
 func (r GatewayAccountSettingsSettingsBodyScanningParam) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
+}
+
+// Set the inspection mode to either `deep` or `shallow`.
+type GatewayAccountSettingsSettingsBodyScanningInspectionMode string
+
+const (
+	GatewayAccountSettingsSettingsBodyScanningInspectionModeDeep    GatewayAccountSettingsSettingsBodyScanningInspectionMode = "deep"
+	GatewayAccountSettingsSettingsBodyScanningInspectionModeShallow GatewayAccountSettingsSettingsBodyScanningInspectionMode = "shallow"
+)
+
+func (r GatewayAccountSettingsSettingsBodyScanningInspectionMode) IsKnown() bool {
+	switch r {
+	case GatewayAccountSettingsSettingsBodyScanningInspectionModeDeep, GatewayAccountSettingsSettingsBodyScanningInspectionModeShallow:
+		return true
+	}
+	return false
 }
 
 // Browser isolation settings.
@@ -822,6 +1077,52 @@ func (r GatewayAccountSettingsSettingsFipsParam) MarshalJSON() (data []byte, err
 	return apijson.MarshalRoot(r)
 }
 
+// Setting to enable host selector in egress policies.
+type GatewayAccountSettingsSettingsHostSelectorParam struct {
+	// Enable filtering via hosts for egress policies.
+	Enabled param.Field[bool] `json:"enabled"`
+}
+
+func (r GatewayAccountSettingsSettingsHostSelectorParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// Setting to define inspection settings
+type GatewayAccountSettingsSettingsInspectionParam struct {
+	// Defines the mode of inspection the proxy will use.
+	//
+	//   - static: Gateway will use static inspection to inspect HTTP on TCP(80). If TLS
+	//     decryption is on, Gateway will inspect HTTPS traffic on TCP(443) & UDP(443).
+	//   - dynamic: Gateway will use protocol detection to dynamically inspect HTTP and
+	//     HTTPS traffic on any port. TLS decryption must be on to inspect HTTPS traffic.
+	Mode param.Field[GatewayAccountSettingsSettingsInspectionMode] `json:"mode"`
+}
+
+func (r GatewayAccountSettingsSettingsInspectionParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// Defines the mode of inspection the proxy will use.
+//
+//   - static: Gateway will use static inspection to inspect HTTP on TCP(80). If TLS
+//     decryption is on, Gateway will inspect HTTPS traffic on TCP(443) & UDP(443).
+//   - dynamic: Gateway will use protocol detection to dynamically inspect HTTP and
+//     HTTPS traffic on any port. TLS decryption must be on to inspect HTTPS traffic.
+type GatewayAccountSettingsSettingsInspectionMode string
+
+const (
+	GatewayAccountSettingsSettingsInspectionModeStatic  GatewayAccountSettingsSettingsInspectionMode = "static"
+	GatewayAccountSettingsSettingsInspectionModeDynamic GatewayAccountSettingsSettingsInspectionMode = "dynamic"
+)
+
+func (r GatewayAccountSettingsSettingsInspectionMode) IsKnown() bool {
+	switch r {
+	case GatewayAccountSettingsSettingsInspectionModeStatic, GatewayAccountSettingsSettingsInspectionModeDynamic:
+		return true
+	}
+	return false
+}
+
 // Protocol Detection settings.
 type GatewayAccountSettingsSettingsProtocolDetectionParam struct {
 	// Enable detecting protocol on initial bytes of client traffic.
@@ -842,6 +1143,22 @@ type GatewayAccountSettingsSettingsSandboxParam struct {
 
 func (r GatewayAccountSettingsSettingsSandboxParam) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
+}
+
+// Action to take when the file cannot be scanned.
+type GatewayAccountSettingsSettingsSandboxFallbackAction string
+
+const (
+	GatewayAccountSettingsSettingsSandboxFallbackActionAllow GatewayAccountSettingsSettingsSandboxFallbackAction = "allow"
+	GatewayAccountSettingsSettingsSandboxFallbackActionBlock GatewayAccountSettingsSettingsSandboxFallbackAction = "block"
+)
+
+func (r GatewayAccountSettingsSettingsSandboxFallbackAction) IsKnown() bool {
+	switch r {
+	case GatewayAccountSettingsSettingsSandboxFallbackActionAllow, GatewayAccountSettingsSettingsSandboxFallbackActionBlock:
+		return true
+	}
+	return false
 }
 
 // TLS interception settings.

@@ -32,12 +32,17 @@ func TestAccountEmailSecurityGetSubmissionsWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.AccountEmailSecurityGetSubmissionsParams{
-			End:          cfrex.F(time.Now()),
-			Page:         cfrex.F(int64(1)),
-			PerPage:      cfrex.F(int64(1)),
-			Start:        cfrex.F(time.Now()),
-			SubmissionID: cfrex.F("submission_id"),
-			Type:         cfrex.F(cfrex.AccountEmailSecurityGetSubmissionsParamsTypeTeam),
+			End:                  cfrex.F(time.Now()),
+			OriginalDisposition:  cfrex.F(cfrex.AccountEmailSecurityGetSubmissionsParamsOriginalDispositionMalicious),
+			OutcomeDisposition:   cfrex.F(cfrex.AccountEmailSecurityGetSubmissionsParamsOutcomeDispositionMalicious),
+			Page:                 cfrex.F(int64(1)),
+			PerPage:              cfrex.F(int64(1)),
+			Query:                cfrex.F("query"),
+			RequestedDisposition: cfrex.F(cfrex.AccountEmailSecurityGetSubmissionsParamsRequestedDispositionMalicious),
+			Start:                cfrex.F(time.Now()),
+			Status:               cfrex.F("status"),
+			SubmissionID:         cfrex.F("submission_id"),
+			Type:                 cfrex.F(cfrex.AccountEmailSecurityGetSubmissionsParamsTypeTeam),
 		},
 	)
 	if err != nil {

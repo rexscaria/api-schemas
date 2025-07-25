@@ -75,6 +75,7 @@ func (r radarDNSTopGetTopAsesResponseJSON) RawJSON() string {
 }
 
 type RadarDNSTopGetTopAsesResponseResult struct {
+	// Metadata for the results.
 	Meta RadarDNSTopGetTopAsesResponseResultMeta   `json:"meta,required"`
 	Top0 []RadarDNSTopGetTopAsesResponseResultTop0 `json:"top_0,required"`
 	JSON radarDNSTopGetTopAsesResponseResultJSON   `json:"-"`
@@ -97,17 +98,28 @@ func (r radarDNSTopGetTopAsesResponseResultJSON) RawJSON() string {
 	return r.raw
 }
 
+// Metadata for the results.
 type RadarDNSTopGetTopAsesResponseResultMeta struct {
+	ConfidenceInfo RadarDNSTopGetTopAsesResponseResultMetaConfidenceInfo `json:"confidenceInfo,required,nullable"`
 	DateRange      []RadarDNSTopGetTopAsesResponseResultMetaDateRange    `json:"dateRange,required"`
-	ConfidenceInfo RadarDNSTopGetTopAsesResponseResultMetaConfidenceInfo `json:"confidenceInfo"`
-	JSON           radarDNSTopGetTopAsesResponseResultMetaJSON           `json:"-"`
+	// Timestamp of the last dataset update.
+	LastUpdated time.Time `json:"lastUpdated,required" format:"date-time"`
+	// Normalization method applied to the results. Refer to
+	// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
+	Normalization RadarDNSTopGetTopAsesResponseResultMetaNormalization `json:"normalization,required"`
+	// Measurement units for the results.
+	Units []RadarDNSTopGetTopAsesResponseResultMetaUnit `json:"units,required"`
+	JSON  radarDNSTopGetTopAsesResponseResultMetaJSON   `json:"-"`
 }
 
 // radarDNSTopGetTopAsesResponseResultMetaJSON contains the JSON metadata for the
 // struct [RadarDNSTopGetTopAsesResponseResultMeta]
 type radarDNSTopGetTopAsesResponseResultMetaJSON struct {
-	DateRange      apijson.Field
 	ConfidenceInfo apijson.Field
+	DateRange      apijson.Field
+	LastUpdated    apijson.Field
+	Normalization  apijson.Field
+	Units          apijson.Field
 	raw            string
 	ExtraFields    map[string]apijson.Field
 }
@@ -117,6 +129,66 @@ func (r *RadarDNSTopGetTopAsesResponseResultMeta) UnmarshalJSON(data []byte) (er
 }
 
 func (r radarDNSTopGetTopAsesResponseResultMetaJSON) RawJSON() string {
+	return r.raw
+}
+
+type RadarDNSTopGetTopAsesResponseResultMetaConfidenceInfo struct {
+	Annotations []RadarDNSTopGetTopAsesResponseResultMetaConfidenceInfoAnnotation `json:"annotations,required"`
+	// Provides an indication of how much confidence Cloudflare has in the data.
+	Level int64                                                     `json:"level,required"`
+	JSON  radarDNSTopGetTopAsesResponseResultMetaConfidenceInfoJSON `json:"-"`
+}
+
+// radarDNSTopGetTopAsesResponseResultMetaConfidenceInfoJSON contains the JSON
+// metadata for the struct [RadarDNSTopGetTopAsesResponseResultMetaConfidenceInfo]
+type radarDNSTopGetTopAsesResponseResultMetaConfidenceInfoJSON struct {
+	Annotations apijson.Field
+	Level       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *RadarDNSTopGetTopAsesResponseResultMetaConfidenceInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarDNSTopGetTopAsesResponseResultMetaConfidenceInfoJSON) RawJSON() string {
+	return r.raw
+}
+
+// Annotation associated with the result (e.g. outage or other type of event).
+type RadarDNSTopGetTopAsesResponseResultMetaConfidenceInfoAnnotation struct {
+	DataSource  string    `json:"dataSource,required"`
+	Description string    `json:"description,required"`
+	EndDate     time.Time `json:"endDate,required" format:"date-time"`
+	EventType   string    `json:"eventType,required"`
+	// Whether event is a single point in time or a time range.
+	IsInstantaneous bool                                                                `json:"isInstantaneous,required"`
+	LinkedURL       string                                                              `json:"linkedUrl,required" format:"uri"`
+	StartDate       time.Time                                                           `json:"startDate,required" format:"date-time"`
+	JSON            radarDNSTopGetTopAsesResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
+}
+
+// radarDNSTopGetTopAsesResponseResultMetaConfidenceInfoAnnotationJSON contains the
+// JSON metadata for the struct
+// [RadarDNSTopGetTopAsesResponseResultMetaConfidenceInfoAnnotation]
+type radarDNSTopGetTopAsesResponseResultMetaConfidenceInfoAnnotationJSON struct {
+	DataSource      apijson.Field
+	Description     apijson.Field
+	EndDate         apijson.Field
+	EventType       apijson.Field
+	IsInstantaneous apijson.Field
+	LinkedURL       apijson.Field
+	StartDate       apijson.Field
+	raw             string
+	ExtraFields     map[string]apijson.Field
+}
+
+func (r *RadarDNSTopGetTopAsesResponseResultMetaConfidenceInfoAnnotation) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarDNSTopGetTopAsesResponseResultMetaConfidenceInfoAnnotationJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -145,68 +217,58 @@ func (r radarDNSTopGetTopAsesResponseResultMetaDateRangeJSON) RawJSON() string {
 	return r.raw
 }
 
-type RadarDNSTopGetTopAsesResponseResultMetaConfidenceInfo struct {
-	Annotations []RadarDNSTopGetTopAsesResponseResultMetaConfidenceInfoAnnotation `json:"annotations"`
-	Level       int64                                                             `json:"level"`
-	JSON        radarDNSTopGetTopAsesResponseResultMetaConfidenceInfoJSON         `json:"-"`
+// Normalization method applied to the results. Refer to
+// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
+type RadarDNSTopGetTopAsesResponseResultMetaNormalization string
+
+const (
+	RadarDNSTopGetTopAsesResponseResultMetaNormalizationPercentage           RadarDNSTopGetTopAsesResponseResultMetaNormalization = "PERCENTAGE"
+	RadarDNSTopGetTopAsesResponseResultMetaNormalizationMin0Max              RadarDNSTopGetTopAsesResponseResultMetaNormalization = "MIN0_MAX"
+	RadarDNSTopGetTopAsesResponseResultMetaNormalizationMinMax               RadarDNSTopGetTopAsesResponseResultMetaNormalization = "MIN_MAX"
+	RadarDNSTopGetTopAsesResponseResultMetaNormalizationRawValues            RadarDNSTopGetTopAsesResponseResultMetaNormalization = "RAW_VALUES"
+	RadarDNSTopGetTopAsesResponseResultMetaNormalizationPercentageChange     RadarDNSTopGetTopAsesResponseResultMetaNormalization = "PERCENTAGE_CHANGE"
+	RadarDNSTopGetTopAsesResponseResultMetaNormalizationRollingAverage       RadarDNSTopGetTopAsesResponseResultMetaNormalization = "ROLLING_AVERAGE"
+	RadarDNSTopGetTopAsesResponseResultMetaNormalizationOverlappedPercentage RadarDNSTopGetTopAsesResponseResultMetaNormalization = "OVERLAPPED_PERCENTAGE"
+	RadarDNSTopGetTopAsesResponseResultMetaNormalizationRatio                RadarDNSTopGetTopAsesResponseResultMetaNormalization = "RATIO"
+)
+
+func (r RadarDNSTopGetTopAsesResponseResultMetaNormalization) IsKnown() bool {
+	switch r {
+	case RadarDNSTopGetTopAsesResponseResultMetaNormalizationPercentage, RadarDNSTopGetTopAsesResponseResultMetaNormalizationMin0Max, RadarDNSTopGetTopAsesResponseResultMetaNormalizationMinMax, RadarDNSTopGetTopAsesResponseResultMetaNormalizationRawValues, RadarDNSTopGetTopAsesResponseResultMetaNormalizationPercentageChange, RadarDNSTopGetTopAsesResponseResultMetaNormalizationRollingAverage, RadarDNSTopGetTopAsesResponseResultMetaNormalizationOverlappedPercentage, RadarDNSTopGetTopAsesResponseResultMetaNormalizationRatio:
+		return true
+	}
+	return false
 }
 
-// radarDNSTopGetTopAsesResponseResultMetaConfidenceInfoJSON contains the JSON
-// metadata for the struct [RadarDNSTopGetTopAsesResponseResultMetaConfidenceInfo]
-type radarDNSTopGetTopAsesResponseResultMetaConfidenceInfoJSON struct {
-	Annotations apijson.Field
-	Level       apijson.Field
+type RadarDNSTopGetTopAsesResponseResultMetaUnit struct {
+	Name  string                                          `json:"name,required"`
+	Value string                                          `json:"value,required"`
+	JSON  radarDNSTopGetTopAsesResponseResultMetaUnitJSON `json:"-"`
+}
+
+// radarDNSTopGetTopAsesResponseResultMetaUnitJSON contains the JSON metadata for
+// the struct [RadarDNSTopGetTopAsesResponseResultMetaUnit]
+type radarDNSTopGetTopAsesResponseResultMetaUnitJSON struct {
+	Name        apijson.Field
+	Value       apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *RadarDNSTopGetTopAsesResponseResultMetaConfidenceInfo) UnmarshalJSON(data []byte) (err error) {
+func (r *RadarDNSTopGetTopAsesResponseResultMetaUnit) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r radarDNSTopGetTopAsesResponseResultMetaConfidenceInfoJSON) RawJSON() string {
-	return r.raw
-}
-
-type RadarDNSTopGetTopAsesResponseResultMetaConfidenceInfoAnnotation struct {
-	DataSource      string                                                              `json:"dataSource,required"`
-	Description     string                                                              `json:"description,required"`
-	EventType       string                                                              `json:"eventType,required"`
-	IsInstantaneous bool                                                                `json:"isInstantaneous,required"`
-	EndTime         time.Time                                                           `json:"endTime" format:"date-time"`
-	LinkedURL       string                                                              `json:"linkedUrl"`
-	StartTime       time.Time                                                           `json:"startTime" format:"date-time"`
-	JSON            radarDNSTopGetTopAsesResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
-}
-
-// radarDNSTopGetTopAsesResponseResultMetaConfidenceInfoAnnotationJSON contains the
-// JSON metadata for the struct
-// [RadarDNSTopGetTopAsesResponseResultMetaConfidenceInfoAnnotation]
-type radarDNSTopGetTopAsesResponseResultMetaConfidenceInfoAnnotationJSON struct {
-	DataSource      apijson.Field
-	Description     apijson.Field
-	EventType       apijson.Field
-	IsInstantaneous apijson.Field
-	EndTime         apijson.Field
-	LinkedURL       apijson.Field
-	StartTime       apijson.Field
-	raw             string
-	ExtraFields     map[string]apijson.Field
-}
-
-func (r *RadarDNSTopGetTopAsesResponseResultMetaConfidenceInfoAnnotation) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r radarDNSTopGetTopAsesResponseResultMetaConfidenceInfoAnnotationJSON) RawJSON() string {
+func (r radarDNSTopGetTopAsesResponseResultMetaUnitJSON) RawJSON() string {
 	return r.raw
 }
 
 type RadarDNSTopGetTopAsesResponseResultTop0 struct {
-	ClientAsn    int64                                       `json:"clientASN,required"`
-	ClientAsName string                                      `json:"clientASName,required"`
-	Value        string                                      `json:"value,required"`
-	JSON         radarDNSTopGetTopAsesResponseResultTop0JSON `json:"-"`
+	ClientAsn    int64  `json:"clientASN,required"`
+	ClientAsName string `json:"clientASName,required"`
+	// A numeric string.
+	Value string                                      `json:"value,required"`
+	JSON  radarDNSTopGetTopAsesResponseResultTop0JSON `json:"-"`
 }
 
 // radarDNSTopGetTopAsesResponseResultTop0JSON contains the JSON metadata for the
@@ -251,6 +313,7 @@ func (r radarDNSTopGetTopLocationsResponseJSON) RawJSON() string {
 }
 
 type RadarDNSTopGetTopLocationsResponseResult struct {
+	// Metadata for the results.
 	Meta RadarDNSTopGetTopLocationsResponseResultMeta   `json:"meta,required"`
 	Top0 []RadarDNSTopGetTopLocationsResponseResultTop0 `json:"top_0,required"`
 	JSON radarDNSTopGetTopLocationsResponseResultJSON   `json:"-"`
@@ -273,17 +336,28 @@ func (r radarDNSTopGetTopLocationsResponseResultJSON) RawJSON() string {
 	return r.raw
 }
 
+// Metadata for the results.
 type RadarDNSTopGetTopLocationsResponseResultMeta struct {
+	ConfidenceInfo RadarDNSTopGetTopLocationsResponseResultMetaConfidenceInfo `json:"confidenceInfo,required,nullable"`
 	DateRange      []RadarDNSTopGetTopLocationsResponseResultMetaDateRange    `json:"dateRange,required"`
-	ConfidenceInfo RadarDNSTopGetTopLocationsResponseResultMetaConfidenceInfo `json:"confidenceInfo"`
-	JSON           radarDNSTopGetTopLocationsResponseResultMetaJSON           `json:"-"`
+	// Timestamp of the last dataset update.
+	LastUpdated time.Time `json:"lastUpdated,required" format:"date-time"`
+	// Normalization method applied to the results. Refer to
+	// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
+	Normalization RadarDNSTopGetTopLocationsResponseResultMetaNormalization `json:"normalization,required"`
+	// Measurement units for the results.
+	Units []RadarDNSTopGetTopLocationsResponseResultMetaUnit `json:"units,required"`
+	JSON  radarDNSTopGetTopLocationsResponseResultMetaJSON   `json:"-"`
 }
 
 // radarDNSTopGetTopLocationsResponseResultMetaJSON contains the JSON metadata for
 // the struct [RadarDNSTopGetTopLocationsResponseResultMeta]
 type radarDNSTopGetTopLocationsResponseResultMetaJSON struct {
-	DateRange      apijson.Field
 	ConfidenceInfo apijson.Field
+	DateRange      apijson.Field
+	LastUpdated    apijson.Field
+	Normalization  apijson.Field
+	Units          apijson.Field
 	raw            string
 	ExtraFields    map[string]apijson.Field
 }
@@ -293,6 +367,67 @@ func (r *RadarDNSTopGetTopLocationsResponseResultMeta) UnmarshalJSON(data []byte
 }
 
 func (r radarDNSTopGetTopLocationsResponseResultMetaJSON) RawJSON() string {
+	return r.raw
+}
+
+type RadarDNSTopGetTopLocationsResponseResultMetaConfidenceInfo struct {
+	Annotations []RadarDNSTopGetTopLocationsResponseResultMetaConfidenceInfoAnnotation `json:"annotations,required"`
+	// Provides an indication of how much confidence Cloudflare has in the data.
+	Level int64                                                          `json:"level,required"`
+	JSON  radarDNSTopGetTopLocationsResponseResultMetaConfidenceInfoJSON `json:"-"`
+}
+
+// radarDNSTopGetTopLocationsResponseResultMetaConfidenceInfoJSON contains the JSON
+// metadata for the struct
+// [RadarDNSTopGetTopLocationsResponseResultMetaConfidenceInfo]
+type radarDNSTopGetTopLocationsResponseResultMetaConfidenceInfoJSON struct {
+	Annotations apijson.Field
+	Level       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *RadarDNSTopGetTopLocationsResponseResultMetaConfidenceInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarDNSTopGetTopLocationsResponseResultMetaConfidenceInfoJSON) RawJSON() string {
+	return r.raw
+}
+
+// Annotation associated with the result (e.g. outage or other type of event).
+type RadarDNSTopGetTopLocationsResponseResultMetaConfidenceInfoAnnotation struct {
+	DataSource  string    `json:"dataSource,required"`
+	Description string    `json:"description,required"`
+	EndDate     time.Time `json:"endDate,required" format:"date-time"`
+	EventType   string    `json:"eventType,required"`
+	// Whether event is a single point in time or a time range.
+	IsInstantaneous bool                                                                     `json:"isInstantaneous,required"`
+	LinkedURL       string                                                                   `json:"linkedUrl,required" format:"uri"`
+	StartDate       time.Time                                                                `json:"startDate,required" format:"date-time"`
+	JSON            radarDNSTopGetTopLocationsResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
+}
+
+// radarDNSTopGetTopLocationsResponseResultMetaConfidenceInfoAnnotationJSON
+// contains the JSON metadata for the struct
+// [RadarDNSTopGetTopLocationsResponseResultMetaConfidenceInfoAnnotation]
+type radarDNSTopGetTopLocationsResponseResultMetaConfidenceInfoAnnotationJSON struct {
+	DataSource      apijson.Field
+	Description     apijson.Field
+	EndDate         apijson.Field
+	EventType       apijson.Field
+	IsInstantaneous apijson.Field
+	LinkedURL       apijson.Field
+	StartDate       apijson.Field
+	raw             string
+	ExtraFields     map[string]apijson.Field
+}
+
+func (r *RadarDNSTopGetTopLocationsResponseResultMetaConfidenceInfoAnnotation) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarDNSTopGetTopLocationsResponseResultMetaConfidenceInfoAnnotationJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -321,69 +456,58 @@ func (r radarDNSTopGetTopLocationsResponseResultMetaDateRangeJSON) RawJSON() str
 	return r.raw
 }
 
-type RadarDNSTopGetTopLocationsResponseResultMetaConfidenceInfo struct {
-	Annotations []RadarDNSTopGetTopLocationsResponseResultMetaConfidenceInfoAnnotation `json:"annotations"`
-	Level       int64                                                                  `json:"level"`
-	JSON        radarDNSTopGetTopLocationsResponseResultMetaConfidenceInfoJSON         `json:"-"`
+// Normalization method applied to the results. Refer to
+// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
+type RadarDNSTopGetTopLocationsResponseResultMetaNormalization string
+
+const (
+	RadarDNSTopGetTopLocationsResponseResultMetaNormalizationPercentage           RadarDNSTopGetTopLocationsResponseResultMetaNormalization = "PERCENTAGE"
+	RadarDNSTopGetTopLocationsResponseResultMetaNormalizationMin0Max              RadarDNSTopGetTopLocationsResponseResultMetaNormalization = "MIN0_MAX"
+	RadarDNSTopGetTopLocationsResponseResultMetaNormalizationMinMax               RadarDNSTopGetTopLocationsResponseResultMetaNormalization = "MIN_MAX"
+	RadarDNSTopGetTopLocationsResponseResultMetaNormalizationRawValues            RadarDNSTopGetTopLocationsResponseResultMetaNormalization = "RAW_VALUES"
+	RadarDNSTopGetTopLocationsResponseResultMetaNormalizationPercentageChange     RadarDNSTopGetTopLocationsResponseResultMetaNormalization = "PERCENTAGE_CHANGE"
+	RadarDNSTopGetTopLocationsResponseResultMetaNormalizationRollingAverage       RadarDNSTopGetTopLocationsResponseResultMetaNormalization = "ROLLING_AVERAGE"
+	RadarDNSTopGetTopLocationsResponseResultMetaNormalizationOverlappedPercentage RadarDNSTopGetTopLocationsResponseResultMetaNormalization = "OVERLAPPED_PERCENTAGE"
+	RadarDNSTopGetTopLocationsResponseResultMetaNormalizationRatio                RadarDNSTopGetTopLocationsResponseResultMetaNormalization = "RATIO"
+)
+
+func (r RadarDNSTopGetTopLocationsResponseResultMetaNormalization) IsKnown() bool {
+	switch r {
+	case RadarDNSTopGetTopLocationsResponseResultMetaNormalizationPercentage, RadarDNSTopGetTopLocationsResponseResultMetaNormalizationMin0Max, RadarDNSTopGetTopLocationsResponseResultMetaNormalizationMinMax, RadarDNSTopGetTopLocationsResponseResultMetaNormalizationRawValues, RadarDNSTopGetTopLocationsResponseResultMetaNormalizationPercentageChange, RadarDNSTopGetTopLocationsResponseResultMetaNormalizationRollingAverage, RadarDNSTopGetTopLocationsResponseResultMetaNormalizationOverlappedPercentage, RadarDNSTopGetTopLocationsResponseResultMetaNormalizationRatio:
+		return true
+	}
+	return false
 }
 
-// radarDNSTopGetTopLocationsResponseResultMetaConfidenceInfoJSON contains the JSON
-// metadata for the struct
-// [RadarDNSTopGetTopLocationsResponseResultMetaConfidenceInfo]
-type radarDNSTopGetTopLocationsResponseResultMetaConfidenceInfoJSON struct {
-	Annotations apijson.Field
-	Level       apijson.Field
+type RadarDNSTopGetTopLocationsResponseResultMetaUnit struct {
+	Name  string                                               `json:"name,required"`
+	Value string                                               `json:"value,required"`
+	JSON  radarDNSTopGetTopLocationsResponseResultMetaUnitJSON `json:"-"`
+}
+
+// radarDNSTopGetTopLocationsResponseResultMetaUnitJSON contains the JSON metadata
+// for the struct [RadarDNSTopGetTopLocationsResponseResultMetaUnit]
+type radarDNSTopGetTopLocationsResponseResultMetaUnitJSON struct {
+	Name        apijson.Field
+	Value       apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *RadarDNSTopGetTopLocationsResponseResultMetaConfidenceInfo) UnmarshalJSON(data []byte) (err error) {
+func (r *RadarDNSTopGetTopLocationsResponseResultMetaUnit) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r radarDNSTopGetTopLocationsResponseResultMetaConfidenceInfoJSON) RawJSON() string {
-	return r.raw
-}
-
-type RadarDNSTopGetTopLocationsResponseResultMetaConfidenceInfoAnnotation struct {
-	DataSource      string                                                                   `json:"dataSource,required"`
-	Description     string                                                                   `json:"description,required"`
-	EventType       string                                                                   `json:"eventType,required"`
-	IsInstantaneous bool                                                                     `json:"isInstantaneous,required"`
-	EndTime         time.Time                                                                `json:"endTime" format:"date-time"`
-	LinkedURL       string                                                                   `json:"linkedUrl"`
-	StartTime       time.Time                                                                `json:"startTime" format:"date-time"`
-	JSON            radarDNSTopGetTopLocationsResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
-}
-
-// radarDNSTopGetTopLocationsResponseResultMetaConfidenceInfoAnnotationJSON
-// contains the JSON metadata for the struct
-// [RadarDNSTopGetTopLocationsResponseResultMetaConfidenceInfoAnnotation]
-type radarDNSTopGetTopLocationsResponseResultMetaConfidenceInfoAnnotationJSON struct {
-	DataSource      apijson.Field
-	Description     apijson.Field
-	EventType       apijson.Field
-	IsInstantaneous apijson.Field
-	EndTime         apijson.Field
-	LinkedURL       apijson.Field
-	StartTime       apijson.Field
-	raw             string
-	ExtraFields     map[string]apijson.Field
-}
-
-func (r *RadarDNSTopGetTopLocationsResponseResultMetaConfidenceInfoAnnotation) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r radarDNSTopGetTopLocationsResponseResultMetaConfidenceInfoAnnotationJSON) RawJSON() string {
+func (r radarDNSTopGetTopLocationsResponseResultMetaUnitJSON) RawJSON() string {
 	return r.raw
 }
 
 type RadarDNSTopGetTopLocationsResponseResultTop0 struct {
-	ClientCountryAlpha2 string                                           `json:"clientCountryAlpha2,required"`
-	ClientCountryName   string                                           `json:"clientCountryName,required"`
-	Value               string                                           `json:"value,required"`
-	JSON                radarDNSTopGetTopLocationsResponseResultTop0JSON `json:"-"`
+	ClientCountryAlpha2 string `json:"clientCountryAlpha2,required"`
+	ClientCountryName   string `json:"clientCountryName,required"`
+	// A numeric string.
+	Value string                                           `json:"value,required"`
+	JSON  radarDNSTopGetTopLocationsResponseResultTop0JSON `json:"-"`
 }
 
 // radarDNSTopGetTopLocationsResponseResultTop0JSON contains the JSON metadata for
@@ -405,31 +529,32 @@ func (r radarDNSTopGetTopLocationsResponseResultTop0JSON) RawJSON() string {
 }
 
 type RadarDNSTopGetTopAsesParams struct {
-	// Comma-separated list of Autonomous System Numbers (ASNs). Prefix with `-` to
-	// exclude ASNs from results. For example, `-174, 3356` excludes results from
-	// AS174, but includes results from AS3356.
+	// Filters results by Autonomous System. Specify one or more Autonomous System
+	// Numbers (ASNs) as a comma-separated list. Prefix with `-` to exclude ASNs from
+	// results. For example, `-174, 3356` excludes results from AS174, but includes
+	// results from AS3356.
 	Asn param.Field[[]string] `query:"asn"`
-	// Comma-separated list of continents (alpha-2 continent codes). Prefix with `-` to
-	// exclude continents from results. For example, `-EU,NA` excludes results from EU,
-	// but includes results from NA.
+	// Filters results by continent. Specify a comma-separated list of alpha-2 codes.
+	// Prefix with `-` to exclude continents from results. For example, `-EU,NA`
+	// excludes results from EU, but includes results from NA.
 	Continent param.Field[[]string] `query:"continent"`
 	// End of the date range (inclusive).
 	DateEnd param.Field[[]time.Time] `query:"dateEnd" format:"date-time"`
-	// Filters results by the specified date range. For example, use `7d` and
-	// `7dcontrol` to compare this week with the previous week. Use this parameter or
-	// set specific start and end dates (`dateStart` and `dateEnd` parameters).
+	// Filters results by date range. For example, use `7d` and `7dcontrol` to compare
+	// this week with the previous week. Use this parameter or set specific start and
+	// end dates (`dateStart` and `dateEnd` parameters).
 	DateRange param.Field[[]string] `query:"dateRange"`
 	// Start of the date range.
 	DateStart param.Field[[]time.Time] `query:"dateStart" format:"date-time"`
-	// Array of domain names.
+	// Filters results by domain name.
 	Domain param.Field[[]string] `query:"domain"`
 	// Format in which results will be returned.
 	Format param.Field[RadarDNSTopGetTopAsesParamsFormat] `query:"format"`
 	// Limits the number of objects returned in the response.
 	Limit param.Field[int64] `query:"limit"`
-	// Comma-separated list of locations (alpha-2 codes). Prefix with `-` to exclude
-	// locations from results. For example, `-US,PT` excludes results from the US, but
-	// includes results from PT.
+	// Filters results by location. Specify a comma-separated list of alpha-2 codes.
+	// Prefix with `-` to exclude locations from results. For example, `-US,PT`
+	// excludes results from the US, but includes results from PT.
 	Location param.Field[[]string] `query:"location"`
 	// Array of names used to label the series in the response.
 	Name param.Field[[]string] `query:"name"`
@@ -461,31 +586,32 @@ func (r RadarDNSTopGetTopAsesParamsFormat) IsKnown() bool {
 }
 
 type RadarDNSTopGetTopLocationsParams struct {
-	// Comma-separated list of Autonomous System Numbers (ASNs). Prefix with `-` to
-	// exclude ASNs from results. For example, `-174, 3356` excludes results from
-	// AS174, but includes results from AS3356.
+	// Filters results by Autonomous System. Specify one or more Autonomous System
+	// Numbers (ASNs) as a comma-separated list. Prefix with `-` to exclude ASNs from
+	// results. For example, `-174, 3356` excludes results from AS174, but includes
+	// results from AS3356.
 	Asn param.Field[[]string] `query:"asn"`
-	// Comma-separated list of continents (alpha-2 continent codes). Prefix with `-` to
-	// exclude continents from results. For example, `-EU,NA` excludes results from EU,
-	// but includes results from NA.
+	// Filters results by continent. Specify a comma-separated list of alpha-2 codes.
+	// Prefix with `-` to exclude continents from results. For example, `-EU,NA`
+	// excludes results from EU, but includes results from NA.
 	Continent param.Field[[]string] `query:"continent"`
 	// End of the date range (inclusive).
 	DateEnd param.Field[[]time.Time] `query:"dateEnd" format:"date-time"`
-	// Filters results by the specified date range. For example, use `7d` and
-	// `7dcontrol` to compare this week with the previous week. Use this parameter or
-	// set specific start and end dates (`dateStart` and `dateEnd` parameters).
+	// Filters results by date range. For example, use `7d` and `7dcontrol` to compare
+	// this week with the previous week. Use this parameter or set specific start and
+	// end dates (`dateStart` and `dateEnd` parameters).
 	DateRange param.Field[[]string] `query:"dateRange"`
 	// Start of the date range.
 	DateStart param.Field[[]time.Time] `query:"dateStart" format:"date-time"`
-	// Array of domain names.
+	// Filters results by domain name.
 	Domain param.Field[[]string] `query:"domain"`
 	// Format in which results will be returned.
 	Format param.Field[RadarDNSTopGetTopLocationsParamsFormat] `query:"format"`
 	// Limits the number of objects returned in the response.
 	Limit param.Field[int64] `query:"limit"`
-	// Comma-separated list of locations (alpha-2 codes). Prefix with `-` to exclude
-	// locations from results. For example, `-US,PT` excludes results from the US, but
-	// includes results from PT.
+	// Filters results by location. Specify a comma-separated list of alpha-2 codes.
+	// Prefix with `-` to exclude locations from results. For example, `-US,PT`
+	// excludes results from the US, but includes results from PT.
 	Location param.Field[[]string] `query:"location"`
 	// Array of names used to label the series in the response.
 	Name param.Field[[]string] `query:"name"`

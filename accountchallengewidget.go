@@ -127,32 +127,6 @@ func (r *AccountChallengeWidgetService) RotateSecret(ctx context.Context, accoun
 	return
 }
 
-type TurnstileAPIResponseCommon struct {
-	Errors   []TurnstileMessages `json:"errors,required"`
-	Messages []TurnstileMessages `json:"messages,required"`
-	// Whether the API call was successful
-	Success bool                           `json:"success,required"`
-	JSON    turnstileAPIResponseCommonJSON `json:"-"`
-}
-
-// turnstileAPIResponseCommonJSON contains the JSON metadata for the struct
-// [TurnstileAPIResponseCommon]
-type turnstileAPIResponseCommonJSON struct {
-	Errors      apijson.Field
-	Messages    apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *TurnstileAPIResponseCommon) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r turnstileAPIResponseCommonJSON) RawJSON() string {
-	return r.raw
-}
-
 // If Turnstile is embedded on a Cloudflare site and the widget should grant
 // challenge clearance, this setting can determine the clearance level to be set
 type TurnstileClearanceLevel string
@@ -173,18 +147,22 @@ func (r TurnstileClearanceLevel) IsKnown() bool {
 }
 
 type TurnstileMessages struct {
-	Code    int64                 `json:"code,required"`
-	Message string                `json:"message,required"`
-	JSON    turnstileMessagesJSON `json:"-"`
+	Code             int64                   `json:"code,required"`
+	Message          string                  `json:"message,required"`
+	DocumentationURL string                  `json:"documentation_url"`
+	Source           TurnstileMessagesSource `json:"source"`
+	JSON             turnstileMessagesJSON   `json:"-"`
 }
 
 // turnstileMessagesJSON contains the JSON metadata for the struct
 // [TurnstileMessages]
 type turnstileMessagesJSON struct {
-	Code        apijson.Field
-	Message     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
 }
 
 func (r *TurnstileMessages) UnmarshalJSON(data []byte) (err error) {
@@ -195,16 +173,38 @@ func (r turnstileMessagesJSON) RawJSON() string {
 	return r.raw
 }
 
-// Region where this widget can be used.
+type TurnstileMessagesSource struct {
+	Pointer string                      `json:"pointer"`
+	JSON    turnstileMessagesSourceJSON `json:"-"`
+}
+
+// turnstileMessagesSourceJSON contains the JSON metadata for the struct
+// [TurnstileMessagesSource]
+type turnstileMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *TurnstileMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r turnstileMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Region where this widget can be used. This cannot be changed after creation.
 type TurnstileRegion string
 
 const (
 	TurnstileRegionWorld TurnstileRegion = "world"
+	TurnstileRegionChina TurnstileRegion = "china"
 )
 
 func (r TurnstileRegion) IsKnown() bool {
 	switch r {
-	case TurnstileRegionWorld:
+	case TurnstileRegionWorld, TurnstileRegionChina:
 		return true
 	}
 	return false
@@ -264,7 +264,7 @@ type TurnstileWidgetDetail struct {
 	Name string `json:"name,required"`
 	// Do not show any Cloudflare branding on the widget (ENT only).
 	Offlabel bool `json:"offlabel,required"`
-	// Region where this widget can be used.
+	// Region where this widget can be used. This cannot be changed after creation.
 	Region TurnstileRegion `json:"region,required"`
 	// Secret key for this widget.
 	Secret string `json:"secret,required"`
@@ -318,16 +318,22 @@ func (r TurnstileWidgetMode) IsKnown() bool {
 }
 
 type AccountChallengeWidgetNewResponse struct {
+	Errors   []TurnstileMessages `json:"errors,required"`
+	Messages []TurnstileMessages `json:"messages,required"`
+	// Whether the API call was successful
+	Success bool `json:"success,required"`
 	// A Turnstile widget's detailed configuration
 	Result     TurnstileWidgetDetail                 `json:"result"`
 	ResultInfo TurnstileResultInfo                   `json:"result_info"`
 	JSON       accountChallengeWidgetNewResponseJSON `json:"-"`
-	TurnstileAPIResponseCommon
 }
 
 // accountChallengeWidgetNewResponseJSON contains the JSON metadata for the struct
 // [AccountChallengeWidgetNewResponse]
 type accountChallengeWidgetNewResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	ResultInfo  apijson.Field
 	raw         string
@@ -343,15 +349,21 @@ func (r accountChallengeWidgetNewResponseJSON) RawJSON() string {
 }
 
 type AccountChallengeWidgetGetResponse struct {
+	Errors   []TurnstileMessages `json:"errors,required"`
+	Messages []TurnstileMessages `json:"messages,required"`
+	// Whether the API call was successful
+	Success bool `json:"success,required"`
 	// A Turnstile widget's detailed configuration
 	Result TurnstileWidgetDetail                 `json:"result"`
 	JSON   accountChallengeWidgetGetResponseJSON `json:"-"`
-	TurnstileAPIResponseCommon
 }
 
 // accountChallengeWidgetGetResponseJSON contains the JSON metadata for the struct
 // [AccountChallengeWidgetGetResponse]
 type accountChallengeWidgetGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -366,15 +378,21 @@ func (r accountChallengeWidgetGetResponseJSON) RawJSON() string {
 }
 
 type AccountChallengeWidgetUpdateResponse struct {
+	Errors   []TurnstileMessages `json:"errors,required"`
+	Messages []TurnstileMessages `json:"messages,required"`
+	// Whether the API call was successful
+	Success bool `json:"success,required"`
 	// A Turnstile widget's detailed configuration
 	Result TurnstileWidgetDetail                    `json:"result"`
 	JSON   accountChallengeWidgetUpdateResponseJSON `json:"-"`
-	TurnstileAPIResponseCommon
 }
 
 // accountChallengeWidgetUpdateResponseJSON contains the JSON metadata for the
 // struct [AccountChallengeWidgetUpdateResponse]
 type accountChallengeWidgetUpdateResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -389,15 +407,21 @@ func (r accountChallengeWidgetUpdateResponseJSON) RawJSON() string {
 }
 
 type AccountChallengeWidgetListResponse struct {
+	Errors   []TurnstileMessages `json:"errors,required"`
+	Messages []TurnstileMessages `json:"messages,required"`
+	// Whether the API call was successful
+	Success    bool                                       `json:"success,required"`
 	Result     []AccountChallengeWidgetListResponseResult `json:"result"`
 	ResultInfo TurnstileResultInfo                        `json:"result_info"`
 	JSON       accountChallengeWidgetListResponseJSON     `json:"-"`
-	TurnstileAPIResponseCommon
 }
 
 // accountChallengeWidgetListResponseJSON contains the JSON metadata for the struct
 // [AccountChallengeWidgetListResponse]
 type accountChallengeWidgetListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	ResultInfo  apijson.Field
 	raw         string
@@ -435,7 +459,7 @@ type AccountChallengeWidgetListResponseResult struct {
 	Name string `json:"name,required"`
 	// Do not show any Cloudflare branding on the widget (ENT only).
 	Offlabel bool `json:"offlabel,required"`
-	// Region where this widget can be used.
+	// Region where this widget can be used. This cannot be changed after creation.
 	Region TurnstileRegion `json:"region,required"`
 	// Widget item identifier tag.
 	Sitekey string                                       `json:"sitekey,required"`
@@ -469,15 +493,21 @@ func (r accountChallengeWidgetListResponseResultJSON) RawJSON() string {
 }
 
 type AccountChallengeWidgetDeleteResponse struct {
+	Errors   []TurnstileMessages `json:"errors,required"`
+	Messages []TurnstileMessages `json:"messages,required"`
+	// Whether the API call was successful
+	Success bool `json:"success,required"`
 	// A Turnstile widget's detailed configuration
 	Result TurnstileWidgetDetail                    `json:"result"`
 	JSON   accountChallengeWidgetDeleteResponseJSON `json:"-"`
-	TurnstileAPIResponseCommon
 }
 
 // accountChallengeWidgetDeleteResponseJSON contains the JSON metadata for the
 // struct [AccountChallengeWidgetDeleteResponse]
 type accountChallengeWidgetDeleteResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -492,15 +522,21 @@ func (r accountChallengeWidgetDeleteResponseJSON) RawJSON() string {
 }
 
 type AccountChallengeWidgetRotateSecretResponse struct {
+	Errors   []TurnstileMessages `json:"errors,required"`
+	Messages []TurnstileMessages `json:"messages,required"`
+	// Whether the API call was successful
+	Success bool `json:"success,required"`
 	// A Turnstile widget's detailed configuration
 	Result TurnstileWidgetDetail                          `json:"result"`
 	JSON   accountChallengeWidgetRotateSecretResponseJSON `json:"-"`
-	TurnstileAPIResponseCommon
 }
 
 // accountChallengeWidgetRotateSecretResponseJSON contains the JSON metadata for
 // the struct [AccountChallengeWidgetRotateSecretResponse]
 type accountChallengeWidgetRotateSecretResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -540,7 +576,7 @@ type AccountChallengeWidgetNewParams struct {
 	EphemeralID param.Field[bool] `json:"ephemeral_id"`
 	// Do not show any Cloudflare branding on the widget (ENT only).
 	Offlabel param.Field[bool] `json:"offlabel"`
-	// Region where this widget can be used.
+	// Region where this widget can be used. This cannot be changed after creation.
 	Region param.Field[TurnstileRegion] `json:"region"`
 }
 
@@ -610,6 +646,8 @@ type AccountChallengeWidgetUpdateParams struct {
 	EphemeralID param.Field[bool] `json:"ephemeral_id"`
 	// Do not show any Cloudflare branding on the widget (ENT only).
 	Offlabel param.Field[bool] `json:"offlabel"`
+	// Region where this widget can be used. This cannot be changed after creation.
+	Region param.Field[TurnstileRegion] `json:"region"`
 }
 
 func (r AccountChallengeWidgetUpdateParams) MarshalJSON() (data []byte, err error) {

@@ -90,7 +90,7 @@ func (r *AccountSecondaryDNSTsigService) List(ctx context.Context, accountID str
 }
 
 // Delete TSIG.
-func (r *AccountSecondaryDNSTsigService) Delete(ctx context.Context, accountID string, tsigID string, body AccountSecondaryDNSTsigDeleteParams, opts ...option.RequestOption) (res *AccountSecondaryDNSTsigDeleteResponse, err error) {
+func (r *AccountSecondaryDNSTsigService) Delete(ctx context.Context, accountID string, tsigID string, opts ...option.RequestOption) (res *AccountSecondaryDNSTsigDeleteResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
@@ -101,19 +101,25 @@ func (r *AccountSecondaryDNSTsigService) Delete(ctx context.Context, accountID s
 		return
 	}
 	path := fmt.Sprintf("accounts/%s/secondary_dns/tsigs/%s", accountID, tsigID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
 type SingleResponseTsigs struct {
-	Result Tsig                    `json:"result"`
-	JSON   singleResponseTsigsJSON `json:"-"`
-	ResponseSingleACL
+	Errors   []SecondaryDNSMessages `json:"errors,required"`
+	Messages []SecondaryDNSMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success SingleResponseTsigsSuccess `json:"success,required"`
+	Result  Tsig                       `json:"result"`
+	JSON    singleResponseTsigsJSON    `json:"-"`
 }
 
 // singleResponseTsigsJSON contains the JSON metadata for the struct
 // [SingleResponseTsigs]
 type singleResponseTsigsJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -125,6 +131,21 @@ func (r *SingleResponseTsigs) UnmarshalJSON(data []byte) (err error) {
 
 func (r singleResponseTsigsJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type SingleResponseTsigsSuccess bool
+
+const (
+	SingleResponseTsigsSuccessTrue SingleResponseTsigsSuccess = true
+)
+
+func (r SingleResponseTsigsSuccess) IsKnown() bool {
+	switch r {
+	case SingleResponseTsigsSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type Tsig struct {
@@ -170,15 +191,23 @@ func (r TsigParam) MarshalJSON() (data []byte, err error) {
 }
 
 type AccountSecondaryDNSTsigListResponse struct {
-	Result []Tsig                                  `json:"result"`
-	JSON   accountSecondaryDNSTsigListResponseJSON `json:"-"`
-	ResponseCollectionDNSACLs
+	Errors   []SecondaryDNSMessages `json:"errors,required"`
+	Messages []SecondaryDNSMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success    AccountSecondaryDNSTsigListResponseSuccess    `json:"success,required"`
+	Result     []Tsig                                        `json:"result"`
+	ResultInfo AccountSecondaryDNSTsigListResponseResultInfo `json:"result_info"`
+	JSON       accountSecondaryDNSTsigListResponseJSON       `json:"-"`
 }
 
 // accountSecondaryDNSTsigListResponseJSON contains the JSON metadata for the
 // struct [AccountSecondaryDNSTsigListResponse]
 type accountSecondaryDNSTsigListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -191,15 +220,67 @@ func (r accountSecondaryDNSTsigListResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountSecondaryDNSTsigListResponseSuccess bool
+
+const (
+	AccountSecondaryDNSTsigListResponseSuccessTrue AccountSecondaryDNSTsigListResponseSuccess = true
+)
+
+func (r AccountSecondaryDNSTsigListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountSecondaryDNSTsigListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type AccountSecondaryDNSTsigListResponseResultInfo struct {
+	// Total number of results for the requested service.
+	Count float64 `json:"count"`
+	// Current page within paginated list of results.
+	Page float64 `json:"page"`
+	// Number of results per page of results.
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters.
+	TotalCount float64                                           `json:"total_count"`
+	JSON       accountSecondaryDNSTsigListResponseResultInfoJSON `json:"-"`
+}
+
+// accountSecondaryDNSTsigListResponseResultInfoJSON contains the JSON metadata for
+// the struct [AccountSecondaryDNSTsigListResponseResultInfo]
+type accountSecondaryDNSTsigListResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountSecondaryDNSTsigListResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountSecondaryDNSTsigListResponseResultInfoJSON) RawJSON() string {
+	return r.raw
+}
+
 type AccountSecondaryDNSTsigDeleteResponse struct {
-	Result AccountSecondaryDNSTsigDeleteResponseResult `json:"result"`
-	JSON   accountSecondaryDNSTsigDeleteResponseJSON   `json:"-"`
-	ResponseSingleACL
+	Errors   []SecondaryDNSMessages `json:"errors,required"`
+	Messages []SecondaryDNSMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountSecondaryDNSTsigDeleteResponseSuccess `json:"success,required"`
+	Result  AccountSecondaryDNSTsigDeleteResponseResult  `json:"result"`
+	JSON    accountSecondaryDNSTsigDeleteResponseJSON    `json:"-"`
 }
 
 // accountSecondaryDNSTsigDeleteResponseJSON contains the JSON metadata for the
 // struct [AccountSecondaryDNSTsigDeleteResponse]
 type accountSecondaryDNSTsigDeleteResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -211,6 +292,21 @@ func (r *AccountSecondaryDNSTsigDeleteResponse) UnmarshalJSON(data []byte) (err 
 
 func (r accountSecondaryDNSTsigDeleteResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountSecondaryDNSTsigDeleteResponseSuccess bool
+
+const (
+	AccountSecondaryDNSTsigDeleteResponseSuccessTrue AccountSecondaryDNSTsigDeleteResponseSuccess = true
+)
+
+func (r AccountSecondaryDNSTsigDeleteResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountSecondaryDNSTsigDeleteResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountSecondaryDNSTsigDeleteResponseResult struct {
@@ -248,12 +344,4 @@ type AccountSecondaryDNSTsigUpdateParams struct {
 
 func (r AccountSecondaryDNSTsigUpdateParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r.Tsig)
-}
-
-type AccountSecondaryDNSTsigDeleteParams struct {
-	Body interface{} `json:"body,required"`
-}
-
-func (r AccountSecondaryDNSTsigDeleteParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
 }

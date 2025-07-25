@@ -107,88 +107,6 @@ func (r *AccountCallAppService) Delete(ctx context.Context, accountID string, ap
 	return
 }
 
-type CallsAPIResponseCommon struct {
-	Errors   []CallsMessageItem `json:"errors,required"`
-	Messages []CallsMessageItem `json:"messages,required"`
-	// Whether the API call was successful
-	Success CallsAPIResponseCommonSuccess `json:"success,required"`
-	JSON    callsAPIResponseCommonJSON    `json:"-"`
-}
-
-// callsAPIResponseCommonJSON contains the JSON metadata for the struct
-// [CallsAPIResponseCommon]
-type callsAPIResponseCommonJSON struct {
-	Errors      apijson.Field
-	Messages    apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *CallsAPIResponseCommon) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r callsAPIResponseCommonJSON) RawJSON() string {
-	return r.raw
-}
-
-// Whether the API call was successful
-type CallsAPIResponseCommonSuccess bool
-
-const (
-	CallsAPIResponseCommonSuccessTrue CallsAPIResponseCommonSuccess = true
-)
-
-func (r CallsAPIResponseCommonSuccess) IsKnown() bool {
-	switch r {
-	case CallsAPIResponseCommonSuccessTrue:
-		return true
-	}
-	return false
-}
-
-type CallsAPIResponseSingle struct {
-	Errors   []CallsMessageItem `json:"errors,required"`
-	Messages []CallsMessageItem `json:"messages,required"`
-	// Whether the API call was successful
-	Success CallsAPIResponseSingleSuccess `json:"success,required"`
-	JSON    callsAPIResponseSingleJSON    `json:"-"`
-}
-
-// callsAPIResponseSingleJSON contains the JSON metadata for the struct
-// [CallsAPIResponseSingle]
-type callsAPIResponseSingleJSON struct {
-	Errors      apijson.Field
-	Messages    apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *CallsAPIResponseSingle) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r callsAPIResponseSingleJSON) RawJSON() string {
-	return r.raw
-}
-
-// Whether the API call was successful
-type CallsAPIResponseSingleSuccess bool
-
-const (
-	CallsAPIResponseSingleSuccessTrue CallsAPIResponseSingleSuccess = true
-)
-
-func (r CallsAPIResponseSingleSuccess) IsKnown() bool {
-	switch r {
-	case CallsAPIResponseSingleSuccessTrue:
-		return true
-	}
-	return false
-}
-
 type CallsApp struct {
 	// The date and time the item was created.
 	Created time.Time `json:"created" format:"date-time"`
@@ -229,14 +147,20 @@ func (r CallsAppEditableFieldsParam) MarshalJSON() (data []byte, err error) {
 }
 
 type CallsAppResponseSingle struct {
-	Result CallsApp                   `json:"result"`
-	JSON   callsAppResponseSingleJSON `json:"-"`
-	CallsAPIResponseSingle
+	Errors   []CallsMessageItem `json:"errors,required"`
+	Messages []CallsMessageItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success CallsAppResponseSingleSuccess `json:"success,required"`
+	Result  CallsApp                      `json:"result"`
+	JSON    callsAppResponseSingleJSON    `json:"-"`
 }
 
 // callsAppResponseSingleJSON contains the JSON metadata for the struct
 // [CallsAppResponseSingle]
 type callsAppResponseSingleJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -250,19 +174,38 @@ func (r callsAppResponseSingleJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type CallsAppResponseSingleSuccess bool
+
+const (
+	CallsAppResponseSingleSuccessTrue CallsAppResponseSingleSuccess = true
+)
+
+func (r CallsAppResponseSingleSuccess) IsKnown() bool {
+	switch r {
+	case CallsAppResponseSingleSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type CallsMessageItem struct {
-	Code    int64                `json:"code,required"`
-	Message string               `json:"message,required"`
-	JSON    callsMessageItemJSON `json:"-"`
+	Code             int64                  `json:"code,required"`
+	Message          string                 `json:"message,required"`
+	DocumentationURL string                 `json:"documentation_url"`
+	Source           CallsMessageItemSource `json:"source"`
+	JSON             callsMessageItemJSON   `json:"-"`
 }
 
 // callsMessageItemJSON contains the JSON metadata for the struct
 // [CallsMessageItem]
 type callsMessageItemJSON struct {
-	Code        apijson.Field
-	Message     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
 }
 
 func (r *CallsMessageItem) UnmarshalJSON(data []byte) (err error) {
@@ -273,15 +216,42 @@ func (r callsMessageItemJSON) RawJSON() string {
 	return r.raw
 }
 
+type CallsMessageItemSource struct {
+	Pointer string                     `json:"pointer"`
+	JSON    callsMessageItemSourceJSON `json:"-"`
+}
+
+// callsMessageItemSourceJSON contains the JSON metadata for the struct
+// [CallsMessageItemSource]
+type callsMessageItemSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *CallsMessageItemSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r callsMessageItemSourceJSON) RawJSON() string {
+	return r.raw
+}
+
 type AccountCallAppNewResponse struct {
-	Result AccountCallAppNewResponseResult `json:"result"`
-	JSON   accountCallAppNewResponseJSON   `json:"-"`
-	CallsAPIResponseSingle
+	Errors   []CallsMessageItem `json:"errors,required"`
+	Messages []CallsMessageItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountCallAppNewResponseSuccess `json:"success,required"`
+	Result  AccountCallAppNewResponseResult  `json:"result"`
+	JSON    accountCallAppNewResponseJSON    `json:"-"`
 }
 
 // accountCallAppNewResponseJSON contains the JSON metadata for the struct
 // [AccountCallAppNewResponse]
 type accountCallAppNewResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -293,6 +263,21 @@ func (r *AccountCallAppNewResponse) UnmarshalJSON(data []byte) (err error) {
 
 func (r accountCallAppNewResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountCallAppNewResponseSuccess bool
+
+const (
+	AccountCallAppNewResponseSuccessTrue AccountCallAppNewResponseSuccess = true
+)
+
+func (r AccountCallAppNewResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountCallAppNewResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountCallAppNewResponseResult struct {
@@ -330,14 +315,20 @@ func (r accountCallAppNewResponseResultJSON) RawJSON() string {
 }
 
 type AccountCallAppListResponse struct {
-	Result []CallsApp                     `json:"result"`
-	JSON   accountCallAppListResponseJSON `json:"-"`
-	CallsAPIResponseCommon
+	Errors   []CallsMessageItem `json:"errors,required"`
+	Messages []CallsMessageItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountCallAppListResponseSuccess `json:"success,required"`
+	Result  []CallsApp                        `json:"result"`
+	JSON    accountCallAppListResponseJSON    `json:"-"`
 }
 
 // accountCallAppListResponseJSON contains the JSON metadata for the struct
 // [AccountCallAppListResponse]
 type accountCallAppListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -349,6 +340,21 @@ func (r *AccountCallAppListResponse) UnmarshalJSON(data []byte) (err error) {
 
 func (r accountCallAppListResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountCallAppListResponseSuccess bool
+
+const (
+	AccountCallAppListResponseSuccessTrue AccountCallAppListResponseSuccess = true
+)
+
+func (r AccountCallAppListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountCallAppListResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountCallAppNewParams struct {

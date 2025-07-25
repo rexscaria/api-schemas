@@ -65,6 +65,11 @@ func TestAccountWorkerScriptScriptSettingPatchWithOptionalParams(t *testing.T) {
 				Observability: cfrex.F(cfrex.ObservabilityParam{
 					Enabled:          cfrex.F(true),
 					HeadSamplingRate: cfrex.F(0.100000),
+					Logs: cfrex.F(cfrex.ObservabilityLogsParam{
+						Enabled:          cfrex.F(true),
+						InvocationLogs:   cfrex.F(true),
+						HeadSamplingRate: cfrex.F(0.100000),
+					}),
 				}),
 				TailConsumers: cfrex.F([]cfrex.TailConsumersScriptParam{{
 					Service:     cfrex.F("my-log-consumer"),

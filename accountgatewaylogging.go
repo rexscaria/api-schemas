@@ -169,14 +169,20 @@ func (r GatewayAccountLoggingSettingsSettingsByRuleTypeParam) MarshalJSON() (dat
 }
 
 type GatewayAccountLoggingSettingsResponse struct {
-	Result GatewayAccountLoggingSettings             `json:"result"`
-	JSON   gatewayAccountLoggingSettingsResponseJSON `json:"-"`
-	APIResponseSingleZeroTrustGateway
+	Errors   []GatewayAccountLoggingSettingsResponseError   `json:"errors,required"`
+	Messages []GatewayAccountLoggingSettingsResponseMessage `json:"messages,required"`
+	// Whether the API call was successful
+	Success GatewayAccountLoggingSettingsResponseSuccess `json:"success,required"`
+	Result  GatewayAccountLoggingSettings                `json:"result"`
+	JSON    gatewayAccountLoggingSettingsResponseJSON    `json:"-"`
 }
 
 // gatewayAccountLoggingSettingsResponseJSON contains the JSON metadata for the
 // struct [GatewayAccountLoggingSettingsResponse]
 type gatewayAccountLoggingSettingsResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -188,6 +194,117 @@ func (r *GatewayAccountLoggingSettingsResponse) UnmarshalJSON(data []byte) (err 
 
 func (r gatewayAccountLoggingSettingsResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+type GatewayAccountLoggingSettingsResponseError struct {
+	Code             int64                                             `json:"code,required"`
+	Message          string                                            `json:"message,required"`
+	DocumentationURL string                                            `json:"documentation_url"`
+	Source           GatewayAccountLoggingSettingsResponseErrorsSource `json:"source"`
+	JSON             gatewayAccountLoggingSettingsResponseErrorJSON    `json:"-"`
+}
+
+// gatewayAccountLoggingSettingsResponseErrorJSON contains the JSON metadata for
+// the struct [GatewayAccountLoggingSettingsResponseError]
+type gatewayAccountLoggingSettingsResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *GatewayAccountLoggingSettingsResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r gatewayAccountLoggingSettingsResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type GatewayAccountLoggingSettingsResponseErrorsSource struct {
+	Pointer string                                                `json:"pointer"`
+	JSON    gatewayAccountLoggingSettingsResponseErrorsSourceJSON `json:"-"`
+}
+
+// gatewayAccountLoggingSettingsResponseErrorsSourceJSON contains the JSON metadata
+// for the struct [GatewayAccountLoggingSettingsResponseErrorsSource]
+type gatewayAccountLoggingSettingsResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *GatewayAccountLoggingSettingsResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r gatewayAccountLoggingSettingsResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type GatewayAccountLoggingSettingsResponseMessage struct {
+	Code             int64                                               `json:"code,required"`
+	Message          string                                              `json:"message,required"`
+	DocumentationURL string                                              `json:"documentation_url"`
+	Source           GatewayAccountLoggingSettingsResponseMessagesSource `json:"source"`
+	JSON             gatewayAccountLoggingSettingsResponseMessageJSON    `json:"-"`
+}
+
+// gatewayAccountLoggingSettingsResponseMessageJSON contains the JSON metadata for
+// the struct [GatewayAccountLoggingSettingsResponseMessage]
+type gatewayAccountLoggingSettingsResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *GatewayAccountLoggingSettingsResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r gatewayAccountLoggingSettingsResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type GatewayAccountLoggingSettingsResponseMessagesSource struct {
+	Pointer string                                                  `json:"pointer"`
+	JSON    gatewayAccountLoggingSettingsResponseMessagesSourceJSON `json:"-"`
+}
+
+// gatewayAccountLoggingSettingsResponseMessagesSourceJSON contains the JSON
+// metadata for the struct [GatewayAccountLoggingSettingsResponseMessagesSource]
+type gatewayAccountLoggingSettingsResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *GatewayAccountLoggingSettingsResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r gatewayAccountLoggingSettingsResponseMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful
+type GatewayAccountLoggingSettingsResponseSuccess bool
+
+const (
+	GatewayAccountLoggingSettingsResponseSuccessTrue GatewayAccountLoggingSettingsResponseSuccess = true
+)
+
+func (r GatewayAccountLoggingSettingsResponseSuccess) IsKnown() bool {
+	switch r {
+	case GatewayAccountLoggingSettingsResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountGatewayLoggingUpdateParams struct {

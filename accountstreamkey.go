@@ -60,7 +60,7 @@ func (r *AccountStreamKeyService) List(ctx context.Context, accountID string, op
 }
 
 // Deletes signing keys and revokes all signed URLs generated with the key.
-func (r *AccountStreamKeyService) Delete(ctx context.Context, accountID string, identifier string, body AccountStreamKeyDeleteParams, opts ...option.RequestOption) (res *DeletedStreamResponse, err error) {
+func (r *AccountStreamKeyService) Delete(ctx context.Context, accountID string, identifier string, opts ...option.RequestOption) (res *DeletedStreamResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
@@ -71,19 +71,25 @@ func (r *AccountStreamKeyService) Delete(ctx context.Context, accountID string, 
 		return
 	}
 	path := fmt.Sprintf("accounts/%s/stream/keys/%s", accountID, identifier)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
 type AccountStreamKeyNewResponse struct {
-	Result AccountStreamKeyNewResponseResult `json:"result"`
-	JSON   accountStreamKeyNewResponseJSON   `json:"-"`
-	APIResponseStream
+	Errors   []StreamMessages `json:"errors,required"`
+	Messages []StreamMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountStreamKeyNewResponseSuccess `json:"success,required"`
+	Result  AccountStreamKeyNewResponseResult  `json:"result"`
+	JSON    accountStreamKeyNewResponseJSON    `json:"-"`
 }
 
 // accountStreamKeyNewResponseJSON contains the JSON metadata for the struct
 // [AccountStreamKeyNewResponse]
 type accountStreamKeyNewResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -97,8 +103,23 @@ func (r accountStreamKeyNewResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountStreamKeyNewResponseSuccess bool
+
+const (
+	AccountStreamKeyNewResponseSuccessTrue AccountStreamKeyNewResponseSuccess = true
+)
+
+func (r AccountStreamKeyNewResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountStreamKeyNewResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountStreamKeyNewResponseResult struct {
-	// Identifier
+	// Identifier.
 	ID string `json:"id"`
 	// The date and time a signing key was created.
 	Created time.Time `json:"created" format:"date-time"`
@@ -129,14 +150,20 @@ func (r accountStreamKeyNewResponseResultJSON) RawJSON() string {
 }
 
 type AccountStreamKeyListResponse struct {
-	Result []AccountStreamKeyListResponseResult `json:"result"`
-	JSON   accountStreamKeyListResponseJSON     `json:"-"`
-	APIResponseStream
+	Errors   []StreamMessages `json:"errors,required"`
+	Messages []StreamMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountStreamKeyListResponseSuccess  `json:"success,required"`
+	Result  []AccountStreamKeyListResponseResult `json:"result"`
+	JSON    accountStreamKeyListResponseJSON     `json:"-"`
 }
 
 // accountStreamKeyListResponseJSON contains the JSON metadata for the struct
 // [AccountStreamKeyListResponse]
 type accountStreamKeyListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -150,8 +177,23 @@ func (r accountStreamKeyListResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountStreamKeyListResponseSuccess bool
+
+const (
+	AccountStreamKeyListResponseSuccessTrue AccountStreamKeyListResponseSuccess = true
+)
+
+func (r AccountStreamKeyListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountStreamKeyListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountStreamKeyListResponseResult struct {
-	// Identifier
+	// Identifier.
 	ID string `json:"id"`
 	// The date and time a signing key was created.
 	Created time.Time                              `json:"created" format:"date-time"`
@@ -180,13 +222,5 @@ type AccountStreamKeyNewParams struct {
 }
 
 func (r AccountStreamKeyNewParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
-}
-
-type AccountStreamKeyDeleteParams struct {
-	Body interface{} `json:"body,required"`
-}
-
-func (r AccountStreamKeyDeleteParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r.Body)
 }

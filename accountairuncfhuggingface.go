@@ -47,57 +47,7 @@ func (r *AccountAIRunCfHuggingfaceService) ExecuteDistilbertSst2Int8(ctx context
 	return
 }
 
-type AccountAIRunCfHuggingfaceExecuteDistilbertSst2Int8Response struct {
-	// An array of classification results for the input text
-	Result  []AccountAIRunCfHuggingfaceExecuteDistilbertSst2Int8ResponseResult `json:"result"`
-	Success bool                                                               `json:"success"`
-	JSON    accountAIRunCfHuggingfaceExecuteDistilbertSst2Int8ResponseJSON     `json:"-"`
-}
-
-// accountAIRunCfHuggingfaceExecuteDistilbertSst2Int8ResponseJSON contains the JSON
-// metadata for the struct
-// [AccountAIRunCfHuggingfaceExecuteDistilbertSst2Int8Response]
-type accountAIRunCfHuggingfaceExecuteDistilbertSst2Int8ResponseJSON struct {
-	Result      apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountAIRunCfHuggingfaceExecuteDistilbertSst2Int8Response) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountAIRunCfHuggingfaceExecuteDistilbertSst2Int8ResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-type AccountAIRunCfHuggingfaceExecuteDistilbertSst2Int8ResponseResult struct {
-	// The classification label assigned to the text (e.g., 'POSITIVE' or 'NEGATIVE')
-	Label string `json:"label"`
-	// Confidence score indicating the likelihood that the text belongs to the
-	// specified label
-	Score float64                                                              `json:"score"`
-	JSON  accountAIRunCfHuggingfaceExecuteDistilbertSst2Int8ResponseResultJSON `json:"-"`
-}
-
-// accountAIRunCfHuggingfaceExecuteDistilbertSst2Int8ResponseResultJSON contains
-// the JSON metadata for the struct
-// [AccountAIRunCfHuggingfaceExecuteDistilbertSst2Int8ResponseResult]
-type accountAIRunCfHuggingfaceExecuteDistilbertSst2Int8ResponseResultJSON struct {
-	Label       apijson.Field
-	Score       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountAIRunCfHuggingfaceExecuteDistilbertSst2Int8ResponseResult) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountAIRunCfHuggingfaceExecuteDistilbertSst2Int8ResponseResultJSON) RawJSON() string {
-	return r.raw
-}
+type AccountAIRunCfHuggingfaceExecuteDistilbertSst2Int8Response = interface{}
 
 type AccountAIRunCfHuggingfaceExecuteDistilbertSst2Int8Params struct {
 	// The text that you want to classify

@@ -7,12 +7,15 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"reflect"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
 	"github.com/rexscaria/api-schemas/internal/requestconfig"
 	"github.com/rexscaria/api-schemas/option"
+	"github.com/rexscaria/api-schemas/shared"
+	"github.com/tidwall/gjson"
 )
 
 // AccountMagicIpsecTunnelService contains methods and other services that help
@@ -34,10 +37,10 @@ func NewAccountMagicIpsecTunnelService(opts ...option.RequestOption) (r *Account
 	return
 }
 
-// Creates new IPsec tunnels associated with an account. Use `?validate_only=true`
+// Creates a new IPsec tunnel associated with an account. Use `?validate_only=true`
 // as an optional query parameter to only run validation without persisting
 // changes.
-func (r *AccountMagicIpsecTunnelService) New(ctx context.Context, accountID string, params AccountMagicIpsecTunnelNewParams, opts ...option.RequestOption) (res *MagicSchemasTunnelsCollectionResponse, err error) {
+func (r *AccountMagicIpsecTunnelService) New(ctx context.Context, accountID string, params AccountMagicIpsecTunnelNewParams, opts ...option.RequestOption) (res *AccountMagicIpsecTunnelNewResponse, err error) {
 	if params.XMagicNewHcTarget.Present {
 		opts = append(opts, option.WithHeader("x-magic-new-hc-target", fmt.Sprintf("%s", params.XMagicNewHcTarget)))
 	}
@@ -109,9 +112,9 @@ func (r *AccountMagicIpsecTunnelService) List(ctx context.Context, accountID str
 // Disables and removes a specific static IPsec Tunnel associated with an account.
 // Use `?validate_only=true` as an optional query parameter to only run validation
 // without persisting changes.
-func (r *AccountMagicIpsecTunnelService) Delete(ctx context.Context, accountID string, ipsecTunnelID string, params AccountMagicIpsecTunnelDeleteParams, opts ...option.RequestOption) (res *AccountMagicIpsecTunnelDeleteResponse, err error) {
-	if params.XMagicNewHcTarget.Present {
-		opts = append(opts, option.WithHeader("x-magic-new-hc-target", fmt.Sprintf("%s", params.XMagicNewHcTarget)))
+func (r *AccountMagicIpsecTunnelService) Delete(ctx context.Context, accountID string, ipsecTunnelID string, body AccountMagicIpsecTunnelDeleteParams, opts ...option.RequestOption) (res *AccountMagicIpsecTunnelDeleteResponse, err error) {
+	if body.XMagicNewHcTarget.Present {
+		opts = append(opts, option.WithHeader("x-magic-new-hc-target", fmt.Sprintf("%s", body.XMagicNewHcTarget)))
 	}
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
@@ -123,7 +126,7 @@ func (r *AccountMagicIpsecTunnelService) Delete(ctx context.Context, accountID s
 		return
 	}
 	path := fmt.Sprintf("accounts/%s/magic/ipsec_tunnels/%s", accountID, ipsecTunnelID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, params, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
@@ -148,6 +151,8 @@ func (r *AccountMagicIpsecTunnelService) GeneratePsk(ctx context.Context, accoun
 }
 
 type MagicIpsecTunnel struct {
+	// Identifier
+	ID string `json:"id,required"`
 	// The IP address assigned to the Cloudflare side of the IPsec tunnel.
 	CloudflareEndpoint string `json:"cloudflare_endpoint,required"`
 	// A 31-bit prefix (/31 in CIDR notation) supporting two hosts, one for each side
@@ -156,8 +161,6 @@ type MagicIpsecTunnel struct {
 	InterfaceAddress string `json:"interface_address,required"`
 	// The name of the IPsec tunnel. The name cannot share a name with other tunnels.
 	Name string `json:"name,required"`
-	// Tunnel identifier tag.
-	ID string `json:"id"`
 	// When `true`, the tunnel can use a null-cipher (`ENCR_NULL`) in the ESP tunnel
 	// (Phase 2).
 	AllowNullCipher bool `json:"allow_null_cipher"`
@@ -182,10 +185,10 @@ type MagicIpsecTunnel struct {
 // magicIpsecTunnelJSON contains the JSON metadata for the struct
 // [MagicIpsecTunnel]
 type magicIpsecTunnelJSON struct {
+	ID                 apijson.Field
 	CloudflareEndpoint apijson.Field
 	InterfaceAddress   apijson.Field
 	Name               apijson.Field
-	ID                 apijson.Field
 	AllowNullCipher    apijson.Field
 	CreatedOn          apijson.Field
 	CustomerEndpoint   apijson.Field
@@ -256,15 +259,21 @@ func (r magicPskMetadataJSON) RawJSON() string {
 }
 
 type MagicSchemasTunnelsCollectionResponse struct {
-	Result MagicSchemasTunnelsCollectionResponseResult `json:"result"`
-	JSON   magicSchemasTunnelsCollectionResponseJSON   `json:"-"`
-	MagicAPIResponseSingle
+	Errors   []MagicMessageItem                          `json:"errors,required"`
+	Messages []MagicMessageItem                          `json:"messages,required"`
+	Result   MagicSchemasTunnelsCollectionResponseResult `json:"result,required"`
+	// Whether the API call was successful
+	Success MagicSchemasTunnelsCollectionResponseSuccess `json:"success,required"`
+	JSON    magicSchemasTunnelsCollectionResponseJSON    `json:"-"`
 }
 
 // magicSchemasTunnelsCollectionResponseJSON contains the JSON metadata for the
 // struct [MagicSchemasTunnelsCollectionResponse]
 type magicSchemasTunnelsCollectionResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -298,20 +307,52 @@ func (r magicSchemasTunnelsCollectionResponseResultJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful
+type MagicSchemasTunnelsCollectionResponseSuccess bool
+
+const (
+	MagicSchemasTunnelsCollectionResponseSuccessTrue MagicSchemasTunnelsCollectionResponseSuccess = true
+)
+
+func (r MagicSchemasTunnelsCollectionResponseSuccess) IsKnown() bool {
+	switch r {
+	case MagicSchemasTunnelsCollectionResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type MagicTunnelHealthCheck struct {
 	// The direction of the flow of the healthcheck. Either unidirectional, where the
 	// probe comes to you via the tunnel and the result comes back to Cloudflare via
 	// the open Internet, or bidirectional where both the probe and result come and go
 	// via the tunnel.
 	Direction MagicTunnelHealthCheckDirection `json:"direction"`
-	JSON      magicTunnelHealthCheckJSON      `json:"-"`
-	MagicHealthCheckBase
+	// Determines whether to run healthchecks for a tunnel.
+	Enabled bool `json:"enabled"`
+	// How frequent the health check is run. The default value is `mid`.
+	Rate MagicTunnelHealthCheckRate `json:"rate"`
+	// The destination address in a request type health check. After the healthcheck is
+	// decapsulated at the customer end of the tunnel, the ICMP echo will be forwarded
+	// to this address. This field defaults to `customer_gre_endpoint address`. This
+	// field is ignored for bidirectional healthchecks as the interface_address (not
+	// assigned to the Cloudflare side of the tunnel) is used as the target. Must be in
+	// object form if the x-magic-new-hc-target header is set to true and string form
+	// if x-magic-new-hc-target is absent or set to false.
+	Target MagicTunnelHealthCheckTargetUnion `json:"target"`
+	// The type of healthcheck to run, reply or request. The default value is `reply`.
+	Type MagicTunnelHealthCheckType `json:"type"`
+	JSON magicTunnelHealthCheckJSON `json:"-"`
 }
 
 // magicTunnelHealthCheckJSON contains the JSON metadata for the struct
 // [MagicTunnelHealthCheck]
 type magicTunnelHealthCheckJSON struct {
 	Direction   apijson.Field
+	Enabled     apijson.Field
+	Rate        apijson.Field
+	Target      apijson.Field
+	Type        apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -343,29 +384,221 @@ func (r MagicTunnelHealthCheckDirection) IsKnown() bool {
 	return false
 }
 
+// How frequent the health check is run. The default value is `mid`.
+type MagicTunnelHealthCheckRate string
+
+const (
+	MagicTunnelHealthCheckRateLow  MagicTunnelHealthCheckRate = "low"
+	MagicTunnelHealthCheckRateMid  MagicTunnelHealthCheckRate = "mid"
+	MagicTunnelHealthCheckRateHigh MagicTunnelHealthCheckRate = "high"
+)
+
+func (r MagicTunnelHealthCheckRate) IsKnown() bool {
+	switch r {
+	case MagicTunnelHealthCheckRateLow, MagicTunnelHealthCheckRateMid, MagicTunnelHealthCheckRateHigh:
+		return true
+	}
+	return false
+}
+
+// The destination address in a request type health check. After the healthcheck is
+// decapsulated at the customer end of the tunnel, the ICMP echo will be forwarded
+// to this address. This field defaults to `customer_gre_endpoint address`. This
+// field is ignored for bidirectional healthchecks as the interface_address (not
+// assigned to the Cloudflare side of the tunnel) is used as the target. Must be in
+// object form if the x-magic-new-hc-target header is set to true and string form
+// if x-magic-new-hc-target is absent or set to false.
+//
+// Union satisfied by [MagicTunnelHealthCheckTargetMagicHealthCheckTarget] or
+// [shared.UnionString].
+type MagicTunnelHealthCheckTargetUnion interface {
+	ImplementsMagicTunnelHealthCheckTargetUnion()
+}
+
+func init() {
+	apijson.RegisterUnion(
+		reflect.TypeOf((*MagicTunnelHealthCheckTargetUnion)(nil)).Elem(),
+		"",
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(MagicTunnelHealthCheckTargetMagicHealthCheckTarget{}),
+		},
+		apijson.UnionVariant{
+			TypeFilter: gjson.String,
+			Type:       reflect.TypeOf(shared.UnionString("")),
+		},
+	)
+}
+
+// The destination address in a request type health check. After the healthcheck is
+// decapsulated at the customer end of the tunnel, the ICMP echo will be forwarded
+// to this address. This field defaults to `customer_gre_endpoint address`. This
+// field is ignored for bidirectional healthchecks as the interface_address (not
+// assigned to the Cloudflare side of the tunnel) is used as the target.
+type MagicTunnelHealthCheckTargetMagicHealthCheckTarget struct {
+	// The effective health check target. If 'saved' is empty, then this field will be
+	// populated with the calculated default value on GET requests. Ignored in POST,
+	// PUT, and PATCH requests.
+	Effective string `json:"effective"`
+	// The saved health check target. Setting the value to the empty string indicates
+	// that the calculated default value will be used.
+	Saved string                                                 `json:"saved"`
+	JSON  magicTunnelHealthCheckTargetMagicHealthCheckTargetJSON `json:"-"`
+}
+
+// magicTunnelHealthCheckTargetMagicHealthCheckTargetJSON contains the JSON
+// metadata for the struct [MagicTunnelHealthCheckTargetMagicHealthCheckTarget]
+type magicTunnelHealthCheckTargetMagicHealthCheckTargetJSON struct {
+	Effective   apijson.Field
+	Saved       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *MagicTunnelHealthCheckTargetMagicHealthCheckTarget) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r magicTunnelHealthCheckTargetMagicHealthCheckTargetJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r MagicTunnelHealthCheckTargetMagicHealthCheckTarget) ImplementsMagicTunnelHealthCheckTargetUnion() {
+}
+
+// The type of healthcheck to run, reply or request. The default value is `reply`.
+type MagicTunnelHealthCheckType string
+
+const (
+	MagicTunnelHealthCheckTypeReply   MagicTunnelHealthCheckType = "reply"
+	MagicTunnelHealthCheckTypeRequest MagicTunnelHealthCheckType = "request"
+)
+
+func (r MagicTunnelHealthCheckType) IsKnown() bool {
+	switch r {
+	case MagicTunnelHealthCheckTypeReply, MagicTunnelHealthCheckTypeRequest:
+		return true
+	}
+	return false
+}
+
 type MagicTunnelHealthCheckParam struct {
 	// The direction of the flow of the healthcheck. Either unidirectional, where the
 	// probe comes to you via the tunnel and the result comes back to Cloudflare via
 	// the open Internet, or bidirectional where both the probe and result come and go
 	// via the tunnel.
 	Direction param.Field[MagicTunnelHealthCheckDirection] `json:"direction"`
-	MagicHealthCheckBaseParam
+	// Determines whether to run healthchecks for a tunnel.
+	Enabled param.Field[bool] `json:"enabled"`
+	// How frequent the health check is run. The default value is `mid`.
+	Rate param.Field[MagicTunnelHealthCheckRate] `json:"rate"`
+	// The destination address in a request type health check. After the healthcheck is
+	// decapsulated at the customer end of the tunnel, the ICMP echo will be forwarded
+	// to this address. This field defaults to `customer_gre_endpoint address`. This
+	// field is ignored for bidirectional healthchecks as the interface_address (not
+	// assigned to the Cloudflare side of the tunnel) is used as the target. Must be in
+	// object form if the x-magic-new-hc-target header is set to true and string form
+	// if x-magic-new-hc-target is absent or set to false.
+	Target param.Field[MagicTunnelHealthCheckTargetUnionParam] `json:"target"`
+	// The type of healthcheck to run, reply or request. The default value is `reply`.
+	Type param.Field[MagicTunnelHealthCheckType] `json:"type"`
 }
 
 func (r MagicTunnelHealthCheckParam) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
+// The destination address in a request type health check. After the healthcheck is
+// decapsulated at the customer end of the tunnel, the ICMP echo will be forwarded
+// to this address. This field defaults to `customer_gre_endpoint address`. This
+// field is ignored for bidirectional healthchecks as the interface_address (not
+// assigned to the Cloudflare side of the tunnel) is used as the target. Must be in
+// object form if the x-magic-new-hc-target header is set to true and string form
+// if x-magic-new-hc-target is absent or set to false.
+//
+// Satisfied by [MagicTunnelHealthCheckTargetMagicHealthCheckTargetParam],
+// [shared.UnionString].
+type MagicTunnelHealthCheckTargetUnionParam interface {
+	ImplementsMagicTunnelHealthCheckTargetUnionParam()
+}
+
+// The destination address in a request type health check. After the healthcheck is
+// decapsulated at the customer end of the tunnel, the ICMP echo will be forwarded
+// to this address. This field defaults to `customer_gre_endpoint address`. This
+// field is ignored for bidirectional healthchecks as the interface_address (not
+// assigned to the Cloudflare side of the tunnel) is used as the target.
+type MagicTunnelHealthCheckTargetMagicHealthCheckTargetParam struct {
+	// The saved health check target. Setting the value to the empty string indicates
+	// that the calculated default value will be used.
+	Saved param.Field[string] `json:"saved"`
+}
+
+func (r MagicTunnelHealthCheckTargetMagicHealthCheckTargetParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r MagicTunnelHealthCheckTargetMagicHealthCheckTargetParam) ImplementsMagicTunnelHealthCheckTargetUnionParam() {
+}
+
+type AccountMagicIpsecTunnelNewResponse struct {
+	Errors   []MagicMessageItem `json:"errors,required"`
+	Messages []MagicMessageItem `json:"messages,required"`
+	Result   MagicIpsecTunnel   `json:"result,required"`
+	// Whether the API call was successful
+	Success AccountMagicIpsecTunnelNewResponseSuccess `json:"success,required"`
+	JSON    accountMagicIpsecTunnelNewResponseJSON    `json:"-"`
+}
+
+// accountMagicIpsecTunnelNewResponseJSON contains the JSON metadata for the struct
+// [AccountMagicIpsecTunnelNewResponse]
+type accountMagicIpsecTunnelNewResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Result      apijson.Field
+	Success     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountMagicIpsecTunnelNewResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountMagicIpsecTunnelNewResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful
+type AccountMagicIpsecTunnelNewResponseSuccess bool
+
+const (
+	AccountMagicIpsecTunnelNewResponseSuccessTrue AccountMagicIpsecTunnelNewResponseSuccess = true
+)
+
+func (r AccountMagicIpsecTunnelNewResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountMagicIpsecTunnelNewResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountMagicIpsecTunnelGetResponse struct {
-	Result AccountMagicIpsecTunnelGetResponseResult `json:"result"`
-	JSON   accountMagicIpsecTunnelGetResponseJSON   `json:"-"`
-	MagicAPIResponseSingle
+	Errors   []MagicMessageItem                       `json:"errors,required"`
+	Messages []MagicMessageItem                       `json:"messages,required"`
+	Result   AccountMagicIpsecTunnelGetResponseResult `json:"result,required"`
+	// Whether the API call was successful
+	Success AccountMagicIpsecTunnelGetResponseSuccess `json:"success,required"`
+	JSON    accountMagicIpsecTunnelGetResponseJSON    `json:"-"`
 }
 
 // accountMagicIpsecTunnelGetResponseJSON contains the JSON metadata for the struct
 // [AccountMagicIpsecTunnelGetResponse]
 type accountMagicIpsecTunnelGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -399,16 +632,37 @@ func (r accountMagicIpsecTunnelGetResponseResultJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful
+type AccountMagicIpsecTunnelGetResponseSuccess bool
+
+const (
+	AccountMagicIpsecTunnelGetResponseSuccessTrue AccountMagicIpsecTunnelGetResponseSuccess = true
+)
+
+func (r AccountMagicIpsecTunnelGetResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountMagicIpsecTunnelGetResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountMagicIpsecTunnelUpdateResponse struct {
-	Result AccountMagicIpsecTunnelUpdateResponseResult `json:"result"`
-	JSON   accountMagicIpsecTunnelUpdateResponseJSON   `json:"-"`
-	MagicAPIResponseSingle
+	Errors   []MagicMessageItem                          `json:"errors,required"`
+	Messages []MagicMessageItem                          `json:"messages,required"`
+	Result   AccountMagicIpsecTunnelUpdateResponseResult `json:"result,required"`
+	// Whether the API call was successful
+	Success AccountMagicIpsecTunnelUpdateResponseSuccess `json:"success,required"`
+	JSON    accountMagicIpsecTunnelUpdateResponseJSON    `json:"-"`
 }
 
 // accountMagicIpsecTunnelUpdateResponseJSON contains the JSON metadata for the
 // struct [AccountMagicIpsecTunnelUpdateResponse]
 type accountMagicIpsecTunnelUpdateResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -444,16 +698,37 @@ func (r accountMagicIpsecTunnelUpdateResponseResultJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful
+type AccountMagicIpsecTunnelUpdateResponseSuccess bool
+
+const (
+	AccountMagicIpsecTunnelUpdateResponseSuccessTrue AccountMagicIpsecTunnelUpdateResponseSuccess = true
+)
+
+func (r AccountMagicIpsecTunnelUpdateResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountMagicIpsecTunnelUpdateResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountMagicIpsecTunnelDeleteResponse struct {
-	Result AccountMagicIpsecTunnelDeleteResponseResult `json:"result"`
-	JSON   accountMagicIpsecTunnelDeleteResponseJSON   `json:"-"`
-	MagicAPIResponseSingle
+	Errors   []MagicMessageItem                          `json:"errors,required"`
+	Messages []MagicMessageItem                          `json:"messages,required"`
+	Result   AccountMagicIpsecTunnelDeleteResponseResult `json:"result,required"`
+	// Whether the API call was successful
+	Success AccountMagicIpsecTunnelDeleteResponseSuccess `json:"success,required"`
+	JSON    accountMagicIpsecTunnelDeleteResponseJSON    `json:"-"`
 }
 
 // accountMagicIpsecTunnelDeleteResponseJSON contains the JSON metadata for the
 // struct [AccountMagicIpsecTunnelDeleteResponse]
 type accountMagicIpsecTunnelDeleteResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -489,16 +764,37 @@ func (r accountMagicIpsecTunnelDeleteResponseResultJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful
+type AccountMagicIpsecTunnelDeleteResponseSuccess bool
+
+const (
+	AccountMagicIpsecTunnelDeleteResponseSuccessTrue AccountMagicIpsecTunnelDeleteResponseSuccess = true
+)
+
+func (r AccountMagicIpsecTunnelDeleteResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountMagicIpsecTunnelDeleteResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountMagicIpsecTunnelGeneratePskResponse struct {
-	Result AccountMagicIpsecTunnelGeneratePskResponseResult `json:"result"`
-	JSON   accountMagicIpsecTunnelGeneratePskResponseJSON   `json:"-"`
-	MagicAPIResponseSingle
+	Errors   []MagicMessageItem                               `json:"errors,required"`
+	Messages []MagicMessageItem                               `json:"messages,required"`
+	Result   AccountMagicIpsecTunnelGeneratePskResponseResult `json:"result,required"`
+	// Whether the API call was successful
+	Success AccountMagicIpsecTunnelGeneratePskResponseSuccess `json:"success,required"`
+	JSON    accountMagicIpsecTunnelGeneratePskResponseJSON    `json:"-"`
 }
 
 // accountMagicIpsecTunnelGeneratePskResponseJSON contains the JSON metadata for
 // the struct [AccountMagicIpsecTunnelGeneratePskResponse]
 type accountMagicIpsecTunnelGeneratePskResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -539,6 +835,21 @@ func (r accountMagicIpsecTunnelGeneratePskResponseResultJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful
+type AccountMagicIpsecTunnelGeneratePskResponseSuccess bool
+
+const (
+	AccountMagicIpsecTunnelGeneratePskResponseSuccessTrue AccountMagicIpsecTunnelGeneratePskResponseSuccess = true
+)
+
+func (r AccountMagicIpsecTunnelGeneratePskResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountMagicIpsecTunnelGeneratePskResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountMagicIpsecTunnelNewParams struct {
 	MagicIpsecTunnelAddSingleRequest MagicIpsecTunnelAddSingleRequestParam `json:"magic_ipsec_tunnel_add_single_request,required"`
 	XMagicNewHcTarget                param.Field[bool]                     `header:"x-magic-new-hc-target"`
@@ -566,12 +877,7 @@ type AccountMagicIpsecTunnelListParams struct {
 }
 
 type AccountMagicIpsecTunnelDeleteParams struct {
-	Body              interface{}       `json:"body,required"`
 	XMagicNewHcTarget param.Field[bool] `header:"x-magic-new-hc-target"`
-}
-
-func (r AccountMagicIpsecTunnelDeleteParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
 }
 
 type AccountMagicIpsecTunnelGeneratePskParams struct {

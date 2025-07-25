@@ -33,7 +33,7 @@ func NewZoneContentUploadScanPayloadService(opts ...option.RequestOption) (r *Zo
 	return
 }
 
-// Add custom scan expressions for Content Scanning
+// Add custom scan expressions for Content Scanning.
 func (r *ZoneContentUploadScanPayloadService) New(ctx context.Context, zoneID string, body ZoneContentUploadScanPayloadNewParams, opts ...option.RequestOption) (res *CustomScanCollection, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
@@ -45,7 +45,7 @@ func (r *ZoneContentUploadScanPayloadService) New(ctx context.Context, zoneID st
 	return
 }
 
-// Get a list of existing custom scan expressions for Content Scanning
+// Get a list of existing custom scan expressions for Content Scanning.
 func (r *ZoneContentUploadScanPayloadService) List(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *CustomScanCollection, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
@@ -57,7 +57,7 @@ func (r *ZoneContentUploadScanPayloadService) List(ctx context.Context, zoneID s
 	return
 }
 
-// Delete a Content Scan Custom Expression
+// Delete a Content Scan Custom Expression.
 func (r *ZoneContentUploadScanPayloadService) Delete(ctx context.Context, zoneID string, expressionID CustomScanIDParam, opts ...option.RequestOption) (res *CustomScanCollection, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
@@ -74,15 +74,21 @@ func (r *ZoneContentUploadScanPayloadService) Delete(ctx context.Context, zoneID
 }
 
 type CustomScanCollection struct {
-	Result []interface{}            `json:"result,nullable"`
-	JSON   customScanCollectionJSON `json:"-"`
-	APIResponseCommon
+	Errors   []WafProductAPIBundleMessages `json:"errors,required"`
+	Messages []WafProductAPIBundleMessages `json:"messages,required"`
+	Result   []CustomScanCollectionResult  `json:"result,required,nullable"`
+	// Whether the API call was successful.
+	Success CustomScanCollectionSuccess `json:"success,required"`
+	JSON    customScanCollectionJSON    `json:"-"`
 }
 
 // customScanCollectionJSON contains the JSON metadata for the struct
 // [CustomScanCollection]
 type customScanCollectionJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -95,6 +101,49 @@ func (r customScanCollectionJSON) RawJSON() string {
 	return r.raw
 }
 
+// Defines a custom scan expression to match Content Scanning on.
+type CustomScanCollectionResult struct {
+	// defines the unique ID for this custom scan expression.
+	ID CustomScanID `json:"id"`
+	// Defines the ruleset expression to use in matching content objects.
+	Payload string                         `json:"payload"`
+	JSON    customScanCollectionResultJSON `json:"-"`
+}
+
+// customScanCollectionResultJSON contains the JSON metadata for the struct
+// [CustomScanCollectionResult]
+type customScanCollectionResultJSON struct {
+	ID          apijson.Field
+	Payload     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *CustomScanCollectionResult) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r customScanCollectionResultJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful.
+type CustomScanCollectionSuccess bool
+
+const (
+	CustomScanCollectionSuccessTrue CustomScanCollectionSuccess = true
+)
+
+func (r CustomScanCollectionSuccess) IsKnown() bool {
+	switch r {
+	case CustomScanCollectionSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type CustomScanID = string
+
 type CustomScanIDParam = string
 
 type ZoneContentUploadScanPayloadNewParams struct {
@@ -106,7 +155,7 @@ func (r ZoneContentUploadScanPayloadNewParams) MarshalJSON() (data []byte, err e
 }
 
 type ZoneContentUploadScanPayloadNewParamsBody struct {
-	// Ruleset expression to use in matching content objects
+	// Defines the ruleset expression to use in matching content objects.
 	Payload param.Field[string] `json:"payload,required"`
 }
 

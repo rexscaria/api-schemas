@@ -46,18 +46,22 @@ func (r *AccountRequestTracerService) Trace(ctx context.Context, accountID strin
 }
 
 type RequestTracerMessagesItems struct {
-	Code    int64                          `json:"code,required"`
-	Message string                         `json:"message,required"`
-	JSON    requestTracerMessagesItemsJSON `json:"-"`
+	Code             int64                            `json:"code,required"`
+	Message          string                           `json:"message,required"`
+	DocumentationURL string                           `json:"documentation_url"`
+	Source           RequestTracerMessagesItemsSource `json:"source"`
+	JSON             requestTracerMessagesItemsJSON   `json:"-"`
 }
 
 // requestTracerMessagesItemsJSON contains the JSON metadata for the struct
 // [RequestTracerMessagesItems]
 type requestTracerMessagesItemsJSON struct {
-	Code        apijson.Field
-	Message     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
 }
 
 func (r *RequestTracerMessagesItems) UnmarshalJSON(data []byte) (err error) {
@@ -65,6 +69,27 @@ func (r *RequestTracerMessagesItems) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (r requestTracerMessagesItemsJSON) RawJSON() string {
+	return r.raw
+}
+
+type RequestTracerMessagesItemsSource struct {
+	Pointer string                               `json:"pointer"`
+	JSON    requestTracerMessagesItemsSourceJSON `json:"-"`
+}
+
+// requestTracerMessagesItemsSourceJSON contains the JSON metadata for the struct
+// [RequestTracerMessagesItemsSource]
+type requestTracerMessagesItemsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *RequestTracerMessagesItemsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r requestTracerMessagesItemsSourceJSON) RawJSON() string {
 	return r.raw
 }
 

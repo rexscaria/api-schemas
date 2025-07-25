@@ -102,14 +102,16 @@ func (r radarEntityLocationGetResponseResultJSON) RawJSON() string {
 }
 
 type RadarEntityLocationGetResponseResultLocation struct {
-	Alpha2          string                                           `json:"alpha2,required"`
-	ConfidenceLevel int64                                            `json:"confidenceLevel,required"`
-	Latitude        string                                           `json:"latitude,required"`
-	Longitude       string                                           `json:"longitude,required"`
-	Name            string                                           `json:"name,required"`
-	Region          string                                           `json:"region,required"`
-	Subregion       string                                           `json:"subregion,required"`
-	JSON            radarEntityLocationGetResponseResultLocationJSON `json:"-"`
+	Alpha2          string `json:"alpha2,required"`
+	ConfidenceLevel int64  `json:"confidenceLevel,required"`
+	// A numeric string.
+	Latitude string `json:"latitude,required"`
+	// A numeric string.
+	Longitude string                                           `json:"longitude,required"`
+	Name      string                                           `json:"name,required"`
+	Region    string                                           `json:"region,required"`
+	Subregion string                                           `json:"subregion,required"`
+	JSON      radarEntityLocationGetResponseResultLocationJSON `json:"-"`
 }
 
 // radarEntityLocationGetResponseResultLocationJSON contains the JSON metadata for
@@ -179,8 +181,10 @@ func (r radarEntityLocationListResponseResultJSON) RawJSON() string {
 }
 
 type RadarEntityLocationListResponseResultLocation struct {
-	Alpha2    string                                            `json:"alpha2,required"`
-	Latitude  string                                            `json:"latitude,required"`
+	Alpha2 string `json:"alpha2,required"`
+	// A numeric string.
+	Latitude string `json:"latitude,required"`
+	// A numeric string.
 	Longitude string                                            `json:"longitude,required"`
 	Name      string                                            `json:"name,required"`
 	JSON      radarEntityLocationListResponseResultLocationJSON `json:"-"`
@@ -240,7 +244,8 @@ type RadarEntityLocationListParams struct {
 	Format param.Field[RadarEntityLocationListParamsFormat] `query:"format"`
 	// Limits the number of objects returned in the response.
 	Limit param.Field[int64] `query:"limit"`
-	// Comma-separated list of locations (alpha-2 location codes).
+	// Filters results by location. Specify a comma-separated list of alpha-2 location
+	// codes.
 	Location param.Field[string] `query:"location"`
 	// Skips the specified number of objects before fetching the results.
 	Offset param.Field[int64] `query:"offset"`

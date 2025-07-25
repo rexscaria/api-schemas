@@ -78,16 +78,16 @@ func (r accountCloudforceOneScanGetResultsResponseJSON) RawJSON() string {
 }
 
 type AccountCloudforceOneScanGetResultsResponseResult struct {
-	Number1_1_1_1 []AccountCloudforceOneScanGetResultsResponseResult1_1_1_1 `json:"1.1.1.1,required"`
-	JSON          accountCloudforceOneScanGetResultsResponseResultJSON      `json:"-"`
+	OneOneOneOne []AccountCloudforceOneScanGetResultsResponseResult1_1_1_1 `json:"1.1.1.1,required"`
+	JSON         accountCloudforceOneScanGetResultsResponseResultJSON      `json:"-"`
 }
 
 // accountCloudforceOneScanGetResultsResponseResultJSON contains the JSON metadata
 // for the struct [AccountCloudforceOneScanGetResultsResponseResult]
 type accountCloudforceOneScanGetResultsResponseResultJSON struct {
-	Number1_1_1_1 apijson.Field
-	raw           string
-	ExtraFields   map[string]apijson.Field
+	OneOneOneOne apijson.Field
+	raw          string
+	ExtraFields  map[string]apijson.Field
 }
 
 func (r *AccountCloudforceOneScanGetResultsResponseResult) UnmarshalJSON(data []byte) (err error) {

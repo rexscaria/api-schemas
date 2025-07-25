@@ -133,6 +133,7 @@ func (r radarHTTPTopLocationListResponseJSON) RawJSON() string {
 }
 
 type RadarHTTPTopLocationListResponseResult struct {
+	// Metadata for the results.
 	Meta RadarHTTPTopLocationListResponseResultMeta   `json:"meta,required"`
 	Top0 []RadarHTTPTopLocationListResponseResultTop0 `json:"top_0,required"`
 	JSON radarHTTPTopLocationListResponseResultJSON   `json:"-"`
@@ -155,19 +156,28 @@ func (r radarHTTPTopLocationListResponseResultJSON) RawJSON() string {
 	return r.raw
 }
 
+// Metadata for the results.
 type RadarHTTPTopLocationListResponseResultMeta struct {
+	ConfidenceInfo RadarHTTPTopLocationListResponseResultMetaConfidenceInfo `json:"confidenceInfo,required,nullable"`
 	DateRange      []RadarHTTPTopLocationListResponseResultMetaDateRange    `json:"dateRange,required"`
-	LastUpdated    string                                                   `json:"lastUpdated,required"`
-	ConfidenceInfo RadarHTTPTopLocationListResponseResultMetaConfidenceInfo `json:"confidenceInfo"`
-	JSON           radarHTTPTopLocationListResponseResultMetaJSON           `json:"-"`
+	// Timestamp of the last dataset update.
+	LastUpdated time.Time `json:"lastUpdated,required" format:"date-time"`
+	// Normalization method applied to the results. Refer to
+	// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
+	Normalization RadarHTTPTopLocationListResponseResultMetaNormalization `json:"normalization,required"`
+	// Measurement units for the results.
+	Units []RadarHTTPTopLocationListResponseResultMetaUnit `json:"units,required"`
+	JSON  radarHTTPTopLocationListResponseResultMetaJSON   `json:"-"`
 }
 
 // radarHTTPTopLocationListResponseResultMetaJSON contains the JSON metadata for
 // the struct [RadarHTTPTopLocationListResponseResultMeta]
 type radarHTTPTopLocationListResponseResultMetaJSON struct {
+	ConfidenceInfo apijson.Field
 	DateRange      apijson.Field
 	LastUpdated    apijson.Field
-	ConfidenceInfo apijson.Field
+	Normalization  apijson.Field
+	Units          apijson.Field
 	raw            string
 	ExtraFields    map[string]apijson.Field
 }
@@ -177,6 +187,67 @@ func (r *RadarHTTPTopLocationListResponseResultMeta) UnmarshalJSON(data []byte) 
 }
 
 func (r radarHTTPTopLocationListResponseResultMetaJSON) RawJSON() string {
+	return r.raw
+}
+
+type RadarHTTPTopLocationListResponseResultMetaConfidenceInfo struct {
+	Annotations []RadarHTTPTopLocationListResponseResultMetaConfidenceInfoAnnotation `json:"annotations,required"`
+	// Provides an indication of how much confidence Cloudflare has in the data.
+	Level int64                                                        `json:"level,required"`
+	JSON  radarHTTPTopLocationListResponseResultMetaConfidenceInfoJSON `json:"-"`
+}
+
+// radarHTTPTopLocationListResponseResultMetaConfidenceInfoJSON contains the JSON
+// metadata for the struct
+// [RadarHTTPTopLocationListResponseResultMetaConfidenceInfo]
+type radarHTTPTopLocationListResponseResultMetaConfidenceInfoJSON struct {
+	Annotations apijson.Field
+	Level       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *RadarHTTPTopLocationListResponseResultMetaConfidenceInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarHTTPTopLocationListResponseResultMetaConfidenceInfoJSON) RawJSON() string {
+	return r.raw
+}
+
+// Annotation associated with the result (e.g. outage or other type of event).
+type RadarHTTPTopLocationListResponseResultMetaConfidenceInfoAnnotation struct {
+	DataSource  string    `json:"dataSource,required"`
+	Description string    `json:"description,required"`
+	EndDate     time.Time `json:"endDate,required" format:"date-time"`
+	EventType   string    `json:"eventType,required"`
+	// Whether event is a single point in time or a time range.
+	IsInstantaneous bool                                                                   `json:"isInstantaneous,required"`
+	LinkedURL       string                                                                 `json:"linkedUrl,required" format:"uri"`
+	StartDate       time.Time                                                              `json:"startDate,required" format:"date-time"`
+	JSON            radarHTTPTopLocationListResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
+}
+
+// radarHTTPTopLocationListResponseResultMetaConfidenceInfoAnnotationJSON contains
+// the JSON metadata for the struct
+// [RadarHTTPTopLocationListResponseResultMetaConfidenceInfoAnnotation]
+type radarHTTPTopLocationListResponseResultMetaConfidenceInfoAnnotationJSON struct {
+	DataSource      apijson.Field
+	Description     apijson.Field
+	EndDate         apijson.Field
+	EventType       apijson.Field
+	IsInstantaneous apijson.Field
+	LinkedURL       apijson.Field
+	StartDate       apijson.Field
+	raw             string
+	ExtraFields     map[string]apijson.Field
+}
+
+func (r *RadarHTTPTopLocationListResponseResultMetaConfidenceInfoAnnotation) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarHTTPTopLocationListResponseResultMetaConfidenceInfoAnnotationJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -205,69 +276,58 @@ func (r radarHTTPTopLocationListResponseResultMetaDateRangeJSON) RawJSON() strin
 	return r.raw
 }
 
-type RadarHTTPTopLocationListResponseResultMetaConfidenceInfo struct {
-	Annotations []RadarHTTPTopLocationListResponseResultMetaConfidenceInfoAnnotation `json:"annotations"`
-	Level       int64                                                                `json:"level"`
-	JSON        radarHTTPTopLocationListResponseResultMetaConfidenceInfoJSON         `json:"-"`
+// Normalization method applied to the results. Refer to
+// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
+type RadarHTTPTopLocationListResponseResultMetaNormalization string
+
+const (
+	RadarHTTPTopLocationListResponseResultMetaNormalizationPercentage           RadarHTTPTopLocationListResponseResultMetaNormalization = "PERCENTAGE"
+	RadarHTTPTopLocationListResponseResultMetaNormalizationMin0Max              RadarHTTPTopLocationListResponseResultMetaNormalization = "MIN0_MAX"
+	RadarHTTPTopLocationListResponseResultMetaNormalizationMinMax               RadarHTTPTopLocationListResponseResultMetaNormalization = "MIN_MAX"
+	RadarHTTPTopLocationListResponseResultMetaNormalizationRawValues            RadarHTTPTopLocationListResponseResultMetaNormalization = "RAW_VALUES"
+	RadarHTTPTopLocationListResponseResultMetaNormalizationPercentageChange     RadarHTTPTopLocationListResponseResultMetaNormalization = "PERCENTAGE_CHANGE"
+	RadarHTTPTopLocationListResponseResultMetaNormalizationRollingAverage       RadarHTTPTopLocationListResponseResultMetaNormalization = "ROLLING_AVERAGE"
+	RadarHTTPTopLocationListResponseResultMetaNormalizationOverlappedPercentage RadarHTTPTopLocationListResponseResultMetaNormalization = "OVERLAPPED_PERCENTAGE"
+	RadarHTTPTopLocationListResponseResultMetaNormalizationRatio                RadarHTTPTopLocationListResponseResultMetaNormalization = "RATIO"
+)
+
+func (r RadarHTTPTopLocationListResponseResultMetaNormalization) IsKnown() bool {
+	switch r {
+	case RadarHTTPTopLocationListResponseResultMetaNormalizationPercentage, RadarHTTPTopLocationListResponseResultMetaNormalizationMin0Max, RadarHTTPTopLocationListResponseResultMetaNormalizationMinMax, RadarHTTPTopLocationListResponseResultMetaNormalizationRawValues, RadarHTTPTopLocationListResponseResultMetaNormalizationPercentageChange, RadarHTTPTopLocationListResponseResultMetaNormalizationRollingAverage, RadarHTTPTopLocationListResponseResultMetaNormalizationOverlappedPercentage, RadarHTTPTopLocationListResponseResultMetaNormalizationRatio:
+		return true
+	}
+	return false
 }
 
-// radarHTTPTopLocationListResponseResultMetaConfidenceInfoJSON contains the JSON
-// metadata for the struct
-// [RadarHTTPTopLocationListResponseResultMetaConfidenceInfo]
-type radarHTTPTopLocationListResponseResultMetaConfidenceInfoJSON struct {
-	Annotations apijson.Field
-	Level       apijson.Field
+type RadarHTTPTopLocationListResponseResultMetaUnit struct {
+	Name  string                                             `json:"name,required"`
+	Value string                                             `json:"value,required"`
+	JSON  radarHTTPTopLocationListResponseResultMetaUnitJSON `json:"-"`
+}
+
+// radarHTTPTopLocationListResponseResultMetaUnitJSON contains the JSON metadata
+// for the struct [RadarHTTPTopLocationListResponseResultMetaUnit]
+type radarHTTPTopLocationListResponseResultMetaUnitJSON struct {
+	Name        apijson.Field
+	Value       apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *RadarHTTPTopLocationListResponseResultMetaConfidenceInfo) UnmarshalJSON(data []byte) (err error) {
+func (r *RadarHTTPTopLocationListResponseResultMetaUnit) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r radarHTTPTopLocationListResponseResultMetaConfidenceInfoJSON) RawJSON() string {
-	return r.raw
-}
-
-type RadarHTTPTopLocationListResponseResultMetaConfidenceInfoAnnotation struct {
-	DataSource      string                                                                 `json:"dataSource,required"`
-	Description     string                                                                 `json:"description,required"`
-	EventType       string                                                                 `json:"eventType,required"`
-	IsInstantaneous bool                                                                   `json:"isInstantaneous,required"`
-	EndTime         time.Time                                                              `json:"endTime" format:"date-time"`
-	LinkedURL       string                                                                 `json:"linkedUrl"`
-	StartTime       time.Time                                                              `json:"startTime" format:"date-time"`
-	JSON            radarHTTPTopLocationListResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
-}
-
-// radarHTTPTopLocationListResponseResultMetaConfidenceInfoAnnotationJSON contains
-// the JSON metadata for the struct
-// [RadarHTTPTopLocationListResponseResultMetaConfidenceInfoAnnotation]
-type radarHTTPTopLocationListResponseResultMetaConfidenceInfoAnnotationJSON struct {
-	DataSource      apijson.Field
-	Description     apijson.Field
-	EventType       apijson.Field
-	IsInstantaneous apijson.Field
-	EndTime         apijson.Field
-	LinkedURL       apijson.Field
-	StartTime       apijson.Field
-	raw             string
-	ExtraFields     map[string]apijson.Field
-}
-
-func (r *RadarHTTPTopLocationListResponseResultMetaConfidenceInfoAnnotation) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r radarHTTPTopLocationListResponseResultMetaConfidenceInfoAnnotationJSON) RawJSON() string {
+func (r radarHTTPTopLocationListResponseResultMetaUnitJSON) RawJSON() string {
 	return r.raw
 }
 
 type RadarHTTPTopLocationListResponseResultTop0 struct {
-	ClientCountryAlpha2 string                                         `json:"clientCountryAlpha2,required"`
-	ClientCountryName   string                                         `json:"clientCountryName,required"`
-	Value               string                                         `json:"value,required"`
-	JSON                radarHTTPTopLocationListResponseResultTop0JSON `json:"-"`
+	ClientCountryAlpha2 string `json:"clientCountryAlpha2,required"`
+	ClientCountryName   string `json:"clientCountryName,required"`
+	// A numeric string.
+	Value string                                         `json:"value,required"`
+	JSON  radarHTTPTopLocationListResponseResultTop0JSON `json:"-"`
 }
 
 // radarHTTPTopLocationListResponseResultTop0JSON contains the JSON metadata for
@@ -312,6 +372,7 @@ func (r radarHTTPTopLocationListByBotClassResponseJSON) RawJSON() string {
 }
 
 type RadarHTTPTopLocationListByBotClassResponseResult struct {
+	// Metadata for the results.
 	Meta RadarHTTPTopLocationListByBotClassResponseResultMeta   `json:"meta,required"`
 	Top0 []RadarHTTPTopLocationListByBotClassResponseResultTop0 `json:"top_0,required"`
 	JSON radarHTTPTopLocationListByBotClassResponseResultJSON   `json:"-"`
@@ -334,19 +395,28 @@ func (r radarHTTPTopLocationListByBotClassResponseResultJSON) RawJSON() string {
 	return r.raw
 }
 
+// Metadata for the results.
 type RadarHTTPTopLocationListByBotClassResponseResultMeta struct {
+	ConfidenceInfo RadarHTTPTopLocationListByBotClassResponseResultMetaConfidenceInfo `json:"confidenceInfo,required,nullable"`
 	DateRange      []RadarHTTPTopLocationListByBotClassResponseResultMetaDateRange    `json:"dateRange,required"`
-	LastUpdated    string                                                             `json:"lastUpdated,required"`
-	ConfidenceInfo RadarHTTPTopLocationListByBotClassResponseResultMetaConfidenceInfo `json:"confidenceInfo"`
-	JSON           radarHTTPTopLocationListByBotClassResponseResultMetaJSON           `json:"-"`
+	// Timestamp of the last dataset update.
+	LastUpdated time.Time `json:"lastUpdated,required" format:"date-time"`
+	// Normalization method applied to the results. Refer to
+	// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
+	Normalization RadarHTTPTopLocationListByBotClassResponseResultMetaNormalization `json:"normalization,required"`
+	// Measurement units for the results.
+	Units []RadarHTTPTopLocationListByBotClassResponseResultMetaUnit `json:"units,required"`
+	JSON  radarHTTPTopLocationListByBotClassResponseResultMetaJSON   `json:"-"`
 }
 
 // radarHTTPTopLocationListByBotClassResponseResultMetaJSON contains the JSON
 // metadata for the struct [RadarHTTPTopLocationListByBotClassResponseResultMeta]
 type radarHTTPTopLocationListByBotClassResponseResultMetaJSON struct {
+	ConfidenceInfo apijson.Field
 	DateRange      apijson.Field
 	LastUpdated    apijson.Field
-	ConfidenceInfo apijson.Field
+	Normalization  apijson.Field
+	Units          apijson.Field
 	raw            string
 	ExtraFields    map[string]apijson.Field
 }
@@ -356,6 +426,67 @@ func (r *RadarHTTPTopLocationListByBotClassResponseResultMeta) UnmarshalJSON(dat
 }
 
 func (r radarHTTPTopLocationListByBotClassResponseResultMetaJSON) RawJSON() string {
+	return r.raw
+}
+
+type RadarHTTPTopLocationListByBotClassResponseResultMetaConfidenceInfo struct {
+	Annotations []RadarHTTPTopLocationListByBotClassResponseResultMetaConfidenceInfoAnnotation `json:"annotations,required"`
+	// Provides an indication of how much confidence Cloudflare has in the data.
+	Level int64                                                                  `json:"level,required"`
+	JSON  radarHTTPTopLocationListByBotClassResponseResultMetaConfidenceInfoJSON `json:"-"`
+}
+
+// radarHTTPTopLocationListByBotClassResponseResultMetaConfidenceInfoJSON contains
+// the JSON metadata for the struct
+// [RadarHTTPTopLocationListByBotClassResponseResultMetaConfidenceInfo]
+type radarHTTPTopLocationListByBotClassResponseResultMetaConfidenceInfoJSON struct {
+	Annotations apijson.Field
+	Level       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *RadarHTTPTopLocationListByBotClassResponseResultMetaConfidenceInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarHTTPTopLocationListByBotClassResponseResultMetaConfidenceInfoJSON) RawJSON() string {
+	return r.raw
+}
+
+// Annotation associated with the result (e.g. outage or other type of event).
+type RadarHTTPTopLocationListByBotClassResponseResultMetaConfidenceInfoAnnotation struct {
+	DataSource  string    `json:"dataSource,required"`
+	Description string    `json:"description,required"`
+	EndDate     time.Time `json:"endDate,required" format:"date-time"`
+	EventType   string    `json:"eventType,required"`
+	// Whether event is a single point in time or a time range.
+	IsInstantaneous bool                                                                             `json:"isInstantaneous,required"`
+	LinkedURL       string                                                                           `json:"linkedUrl,required" format:"uri"`
+	StartDate       time.Time                                                                        `json:"startDate,required" format:"date-time"`
+	JSON            radarHTTPTopLocationListByBotClassResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
+}
+
+// radarHTTPTopLocationListByBotClassResponseResultMetaConfidenceInfoAnnotationJSON
+// contains the JSON metadata for the struct
+// [RadarHTTPTopLocationListByBotClassResponseResultMetaConfidenceInfoAnnotation]
+type radarHTTPTopLocationListByBotClassResponseResultMetaConfidenceInfoAnnotationJSON struct {
+	DataSource      apijson.Field
+	Description     apijson.Field
+	EndDate         apijson.Field
+	EventType       apijson.Field
+	IsInstantaneous apijson.Field
+	LinkedURL       apijson.Field
+	StartDate       apijson.Field
+	raw             string
+	ExtraFields     map[string]apijson.Field
+}
+
+func (r *RadarHTTPTopLocationListByBotClassResponseResultMetaConfidenceInfoAnnotation) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarHTTPTopLocationListByBotClassResponseResultMetaConfidenceInfoAnnotationJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -385,69 +516,59 @@ func (r radarHTTPTopLocationListByBotClassResponseResultMetaDateRangeJSON) RawJS
 	return r.raw
 }
 
-type RadarHTTPTopLocationListByBotClassResponseResultMetaConfidenceInfo struct {
-	Annotations []RadarHTTPTopLocationListByBotClassResponseResultMetaConfidenceInfoAnnotation `json:"annotations"`
-	Level       int64                                                                          `json:"level"`
-	JSON        radarHTTPTopLocationListByBotClassResponseResultMetaConfidenceInfoJSON         `json:"-"`
+// Normalization method applied to the results. Refer to
+// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
+type RadarHTTPTopLocationListByBotClassResponseResultMetaNormalization string
+
+const (
+	RadarHTTPTopLocationListByBotClassResponseResultMetaNormalizationPercentage           RadarHTTPTopLocationListByBotClassResponseResultMetaNormalization = "PERCENTAGE"
+	RadarHTTPTopLocationListByBotClassResponseResultMetaNormalizationMin0Max              RadarHTTPTopLocationListByBotClassResponseResultMetaNormalization = "MIN0_MAX"
+	RadarHTTPTopLocationListByBotClassResponseResultMetaNormalizationMinMax               RadarHTTPTopLocationListByBotClassResponseResultMetaNormalization = "MIN_MAX"
+	RadarHTTPTopLocationListByBotClassResponseResultMetaNormalizationRawValues            RadarHTTPTopLocationListByBotClassResponseResultMetaNormalization = "RAW_VALUES"
+	RadarHTTPTopLocationListByBotClassResponseResultMetaNormalizationPercentageChange     RadarHTTPTopLocationListByBotClassResponseResultMetaNormalization = "PERCENTAGE_CHANGE"
+	RadarHTTPTopLocationListByBotClassResponseResultMetaNormalizationRollingAverage       RadarHTTPTopLocationListByBotClassResponseResultMetaNormalization = "ROLLING_AVERAGE"
+	RadarHTTPTopLocationListByBotClassResponseResultMetaNormalizationOverlappedPercentage RadarHTTPTopLocationListByBotClassResponseResultMetaNormalization = "OVERLAPPED_PERCENTAGE"
+	RadarHTTPTopLocationListByBotClassResponseResultMetaNormalizationRatio                RadarHTTPTopLocationListByBotClassResponseResultMetaNormalization = "RATIO"
+)
+
+func (r RadarHTTPTopLocationListByBotClassResponseResultMetaNormalization) IsKnown() bool {
+	switch r {
+	case RadarHTTPTopLocationListByBotClassResponseResultMetaNormalizationPercentage, RadarHTTPTopLocationListByBotClassResponseResultMetaNormalizationMin0Max, RadarHTTPTopLocationListByBotClassResponseResultMetaNormalizationMinMax, RadarHTTPTopLocationListByBotClassResponseResultMetaNormalizationRawValues, RadarHTTPTopLocationListByBotClassResponseResultMetaNormalizationPercentageChange, RadarHTTPTopLocationListByBotClassResponseResultMetaNormalizationRollingAverage, RadarHTTPTopLocationListByBotClassResponseResultMetaNormalizationOverlappedPercentage, RadarHTTPTopLocationListByBotClassResponseResultMetaNormalizationRatio:
+		return true
+	}
+	return false
 }
 
-// radarHTTPTopLocationListByBotClassResponseResultMetaConfidenceInfoJSON contains
-// the JSON metadata for the struct
-// [RadarHTTPTopLocationListByBotClassResponseResultMetaConfidenceInfo]
-type radarHTTPTopLocationListByBotClassResponseResultMetaConfidenceInfoJSON struct {
-	Annotations apijson.Field
-	Level       apijson.Field
+type RadarHTTPTopLocationListByBotClassResponseResultMetaUnit struct {
+	Name  string                                                       `json:"name,required"`
+	Value string                                                       `json:"value,required"`
+	JSON  radarHTTPTopLocationListByBotClassResponseResultMetaUnitJSON `json:"-"`
+}
+
+// radarHTTPTopLocationListByBotClassResponseResultMetaUnitJSON contains the JSON
+// metadata for the struct
+// [RadarHTTPTopLocationListByBotClassResponseResultMetaUnit]
+type radarHTTPTopLocationListByBotClassResponseResultMetaUnitJSON struct {
+	Name        apijson.Field
+	Value       apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *RadarHTTPTopLocationListByBotClassResponseResultMetaConfidenceInfo) UnmarshalJSON(data []byte) (err error) {
+func (r *RadarHTTPTopLocationListByBotClassResponseResultMetaUnit) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r radarHTTPTopLocationListByBotClassResponseResultMetaConfidenceInfoJSON) RawJSON() string {
-	return r.raw
-}
-
-type RadarHTTPTopLocationListByBotClassResponseResultMetaConfidenceInfoAnnotation struct {
-	DataSource      string                                                                           `json:"dataSource,required"`
-	Description     string                                                                           `json:"description,required"`
-	EventType       string                                                                           `json:"eventType,required"`
-	IsInstantaneous bool                                                                             `json:"isInstantaneous,required"`
-	EndTime         time.Time                                                                        `json:"endTime" format:"date-time"`
-	LinkedURL       string                                                                           `json:"linkedUrl"`
-	StartTime       time.Time                                                                        `json:"startTime" format:"date-time"`
-	JSON            radarHTTPTopLocationListByBotClassResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
-}
-
-// radarHTTPTopLocationListByBotClassResponseResultMetaConfidenceInfoAnnotationJSON
-// contains the JSON metadata for the struct
-// [RadarHTTPTopLocationListByBotClassResponseResultMetaConfidenceInfoAnnotation]
-type radarHTTPTopLocationListByBotClassResponseResultMetaConfidenceInfoAnnotationJSON struct {
-	DataSource      apijson.Field
-	Description     apijson.Field
-	EventType       apijson.Field
-	IsInstantaneous apijson.Field
-	EndTime         apijson.Field
-	LinkedURL       apijson.Field
-	StartTime       apijson.Field
-	raw             string
-	ExtraFields     map[string]apijson.Field
-}
-
-func (r *RadarHTTPTopLocationListByBotClassResponseResultMetaConfidenceInfoAnnotation) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r radarHTTPTopLocationListByBotClassResponseResultMetaConfidenceInfoAnnotationJSON) RawJSON() string {
+func (r radarHTTPTopLocationListByBotClassResponseResultMetaUnitJSON) RawJSON() string {
 	return r.raw
 }
 
 type RadarHTTPTopLocationListByBotClassResponseResultTop0 struct {
-	ClientCountryAlpha2 string                                                   `json:"clientCountryAlpha2,required"`
-	ClientCountryName   string                                                   `json:"clientCountryName,required"`
-	Value               string                                                   `json:"value,required"`
-	JSON                radarHTTPTopLocationListByBotClassResponseResultTop0JSON `json:"-"`
+	ClientCountryAlpha2 string `json:"clientCountryAlpha2,required"`
+	ClientCountryName   string `json:"clientCountryName,required"`
+	// A numeric string.
+	Value string                                                   `json:"value,required"`
+	JSON  radarHTTPTopLocationListByBotClassResponseResultTop0JSON `json:"-"`
 }
 
 // radarHTTPTopLocationListByBotClassResponseResultTop0JSON contains the JSON
@@ -492,6 +613,7 @@ func (r radarHTTPTopLocationListByBrowserFamilyResponseJSON) RawJSON() string {
 }
 
 type RadarHTTPTopLocationListByBrowserFamilyResponseResult struct {
+	// Metadata for the results.
 	Meta RadarHTTPTopLocationListByBrowserFamilyResponseResultMeta   `json:"meta,required"`
 	Top0 []RadarHTTPTopLocationListByBrowserFamilyResponseResultTop0 `json:"top_0,required"`
 	JSON radarHTTPTopLocationListByBrowserFamilyResponseResultJSON   `json:"-"`
@@ -514,20 +636,29 @@ func (r radarHTTPTopLocationListByBrowserFamilyResponseResultJSON) RawJSON() str
 	return r.raw
 }
 
+// Metadata for the results.
 type RadarHTTPTopLocationListByBrowserFamilyResponseResultMeta struct {
+	ConfidenceInfo RadarHTTPTopLocationListByBrowserFamilyResponseResultMetaConfidenceInfo `json:"confidenceInfo,required,nullable"`
 	DateRange      []RadarHTTPTopLocationListByBrowserFamilyResponseResultMetaDateRange    `json:"dateRange,required"`
-	LastUpdated    string                                                                  `json:"lastUpdated,required"`
-	ConfidenceInfo RadarHTTPTopLocationListByBrowserFamilyResponseResultMetaConfidenceInfo `json:"confidenceInfo"`
-	JSON           radarHTTPTopLocationListByBrowserFamilyResponseResultMetaJSON           `json:"-"`
+	// Timestamp of the last dataset update.
+	LastUpdated time.Time `json:"lastUpdated,required" format:"date-time"`
+	// Normalization method applied to the results. Refer to
+	// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
+	Normalization RadarHTTPTopLocationListByBrowserFamilyResponseResultMetaNormalization `json:"normalization,required"`
+	// Measurement units for the results.
+	Units []RadarHTTPTopLocationListByBrowserFamilyResponseResultMetaUnit `json:"units,required"`
+	JSON  radarHTTPTopLocationListByBrowserFamilyResponseResultMetaJSON   `json:"-"`
 }
 
 // radarHTTPTopLocationListByBrowserFamilyResponseResultMetaJSON contains the JSON
 // metadata for the struct
 // [RadarHTTPTopLocationListByBrowserFamilyResponseResultMeta]
 type radarHTTPTopLocationListByBrowserFamilyResponseResultMetaJSON struct {
+	ConfidenceInfo apijson.Field
 	DateRange      apijson.Field
 	LastUpdated    apijson.Field
-	ConfidenceInfo apijson.Field
+	Normalization  apijson.Field
+	Units          apijson.Field
 	raw            string
 	ExtraFields    map[string]apijson.Field
 }
@@ -537,6 +668,67 @@ func (r *RadarHTTPTopLocationListByBrowserFamilyResponseResultMeta) UnmarshalJSO
 }
 
 func (r radarHTTPTopLocationListByBrowserFamilyResponseResultMetaJSON) RawJSON() string {
+	return r.raw
+}
+
+type RadarHTTPTopLocationListByBrowserFamilyResponseResultMetaConfidenceInfo struct {
+	Annotations []RadarHTTPTopLocationListByBrowserFamilyResponseResultMetaConfidenceInfoAnnotation `json:"annotations,required"`
+	// Provides an indication of how much confidence Cloudflare has in the data.
+	Level int64                                                                       `json:"level,required"`
+	JSON  radarHTTPTopLocationListByBrowserFamilyResponseResultMetaConfidenceInfoJSON `json:"-"`
+}
+
+// radarHTTPTopLocationListByBrowserFamilyResponseResultMetaConfidenceInfoJSON
+// contains the JSON metadata for the struct
+// [RadarHTTPTopLocationListByBrowserFamilyResponseResultMetaConfidenceInfo]
+type radarHTTPTopLocationListByBrowserFamilyResponseResultMetaConfidenceInfoJSON struct {
+	Annotations apijson.Field
+	Level       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *RadarHTTPTopLocationListByBrowserFamilyResponseResultMetaConfidenceInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarHTTPTopLocationListByBrowserFamilyResponseResultMetaConfidenceInfoJSON) RawJSON() string {
+	return r.raw
+}
+
+// Annotation associated with the result (e.g. outage or other type of event).
+type RadarHTTPTopLocationListByBrowserFamilyResponseResultMetaConfidenceInfoAnnotation struct {
+	DataSource  string    `json:"dataSource,required"`
+	Description string    `json:"description,required"`
+	EndDate     time.Time `json:"endDate,required" format:"date-time"`
+	EventType   string    `json:"eventType,required"`
+	// Whether event is a single point in time or a time range.
+	IsInstantaneous bool                                                                                  `json:"isInstantaneous,required"`
+	LinkedURL       string                                                                                `json:"linkedUrl,required" format:"uri"`
+	StartDate       time.Time                                                                             `json:"startDate,required" format:"date-time"`
+	JSON            radarHTTPTopLocationListByBrowserFamilyResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
+}
+
+// radarHTTPTopLocationListByBrowserFamilyResponseResultMetaConfidenceInfoAnnotationJSON
+// contains the JSON metadata for the struct
+// [RadarHTTPTopLocationListByBrowserFamilyResponseResultMetaConfidenceInfoAnnotation]
+type radarHTTPTopLocationListByBrowserFamilyResponseResultMetaConfidenceInfoAnnotationJSON struct {
+	DataSource      apijson.Field
+	Description     apijson.Field
+	EndDate         apijson.Field
+	EventType       apijson.Field
+	IsInstantaneous apijson.Field
+	LinkedURL       apijson.Field
+	StartDate       apijson.Field
+	raw             string
+	ExtraFields     map[string]apijson.Field
+}
+
+func (r *RadarHTTPTopLocationListByBrowserFamilyResponseResultMetaConfidenceInfoAnnotation) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarHTTPTopLocationListByBrowserFamilyResponseResultMetaConfidenceInfoAnnotationJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -566,69 +758,59 @@ func (r radarHTTPTopLocationListByBrowserFamilyResponseResultMetaDateRangeJSON) 
 	return r.raw
 }
 
-type RadarHTTPTopLocationListByBrowserFamilyResponseResultMetaConfidenceInfo struct {
-	Annotations []RadarHTTPTopLocationListByBrowserFamilyResponseResultMetaConfidenceInfoAnnotation `json:"annotations"`
-	Level       int64                                                                               `json:"level"`
-	JSON        radarHTTPTopLocationListByBrowserFamilyResponseResultMetaConfidenceInfoJSON         `json:"-"`
+// Normalization method applied to the results. Refer to
+// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
+type RadarHTTPTopLocationListByBrowserFamilyResponseResultMetaNormalization string
+
+const (
+	RadarHTTPTopLocationListByBrowserFamilyResponseResultMetaNormalizationPercentage           RadarHTTPTopLocationListByBrowserFamilyResponseResultMetaNormalization = "PERCENTAGE"
+	RadarHTTPTopLocationListByBrowserFamilyResponseResultMetaNormalizationMin0Max              RadarHTTPTopLocationListByBrowserFamilyResponseResultMetaNormalization = "MIN0_MAX"
+	RadarHTTPTopLocationListByBrowserFamilyResponseResultMetaNormalizationMinMax               RadarHTTPTopLocationListByBrowserFamilyResponseResultMetaNormalization = "MIN_MAX"
+	RadarHTTPTopLocationListByBrowserFamilyResponseResultMetaNormalizationRawValues            RadarHTTPTopLocationListByBrowserFamilyResponseResultMetaNormalization = "RAW_VALUES"
+	RadarHTTPTopLocationListByBrowserFamilyResponseResultMetaNormalizationPercentageChange     RadarHTTPTopLocationListByBrowserFamilyResponseResultMetaNormalization = "PERCENTAGE_CHANGE"
+	RadarHTTPTopLocationListByBrowserFamilyResponseResultMetaNormalizationRollingAverage       RadarHTTPTopLocationListByBrowserFamilyResponseResultMetaNormalization = "ROLLING_AVERAGE"
+	RadarHTTPTopLocationListByBrowserFamilyResponseResultMetaNormalizationOverlappedPercentage RadarHTTPTopLocationListByBrowserFamilyResponseResultMetaNormalization = "OVERLAPPED_PERCENTAGE"
+	RadarHTTPTopLocationListByBrowserFamilyResponseResultMetaNormalizationRatio                RadarHTTPTopLocationListByBrowserFamilyResponseResultMetaNormalization = "RATIO"
+)
+
+func (r RadarHTTPTopLocationListByBrowserFamilyResponseResultMetaNormalization) IsKnown() bool {
+	switch r {
+	case RadarHTTPTopLocationListByBrowserFamilyResponseResultMetaNormalizationPercentage, RadarHTTPTopLocationListByBrowserFamilyResponseResultMetaNormalizationMin0Max, RadarHTTPTopLocationListByBrowserFamilyResponseResultMetaNormalizationMinMax, RadarHTTPTopLocationListByBrowserFamilyResponseResultMetaNormalizationRawValues, RadarHTTPTopLocationListByBrowserFamilyResponseResultMetaNormalizationPercentageChange, RadarHTTPTopLocationListByBrowserFamilyResponseResultMetaNormalizationRollingAverage, RadarHTTPTopLocationListByBrowserFamilyResponseResultMetaNormalizationOverlappedPercentage, RadarHTTPTopLocationListByBrowserFamilyResponseResultMetaNormalizationRatio:
+		return true
+	}
+	return false
 }
 
-// radarHTTPTopLocationListByBrowserFamilyResponseResultMetaConfidenceInfoJSON
-// contains the JSON metadata for the struct
-// [RadarHTTPTopLocationListByBrowserFamilyResponseResultMetaConfidenceInfo]
-type radarHTTPTopLocationListByBrowserFamilyResponseResultMetaConfidenceInfoJSON struct {
-	Annotations apijson.Field
-	Level       apijson.Field
+type RadarHTTPTopLocationListByBrowserFamilyResponseResultMetaUnit struct {
+	Name  string                                                            `json:"name,required"`
+	Value string                                                            `json:"value,required"`
+	JSON  radarHTTPTopLocationListByBrowserFamilyResponseResultMetaUnitJSON `json:"-"`
+}
+
+// radarHTTPTopLocationListByBrowserFamilyResponseResultMetaUnitJSON contains the
+// JSON metadata for the struct
+// [RadarHTTPTopLocationListByBrowserFamilyResponseResultMetaUnit]
+type radarHTTPTopLocationListByBrowserFamilyResponseResultMetaUnitJSON struct {
+	Name        apijson.Field
+	Value       apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *RadarHTTPTopLocationListByBrowserFamilyResponseResultMetaConfidenceInfo) UnmarshalJSON(data []byte) (err error) {
+func (r *RadarHTTPTopLocationListByBrowserFamilyResponseResultMetaUnit) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r radarHTTPTopLocationListByBrowserFamilyResponseResultMetaConfidenceInfoJSON) RawJSON() string {
-	return r.raw
-}
-
-type RadarHTTPTopLocationListByBrowserFamilyResponseResultMetaConfidenceInfoAnnotation struct {
-	DataSource      string                                                                                `json:"dataSource,required"`
-	Description     string                                                                                `json:"description,required"`
-	EventType       string                                                                                `json:"eventType,required"`
-	IsInstantaneous bool                                                                                  `json:"isInstantaneous,required"`
-	EndTime         time.Time                                                                             `json:"endTime" format:"date-time"`
-	LinkedURL       string                                                                                `json:"linkedUrl"`
-	StartTime       time.Time                                                                             `json:"startTime" format:"date-time"`
-	JSON            radarHTTPTopLocationListByBrowserFamilyResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
-}
-
-// radarHTTPTopLocationListByBrowserFamilyResponseResultMetaConfidenceInfoAnnotationJSON
-// contains the JSON metadata for the struct
-// [RadarHTTPTopLocationListByBrowserFamilyResponseResultMetaConfidenceInfoAnnotation]
-type radarHTTPTopLocationListByBrowserFamilyResponseResultMetaConfidenceInfoAnnotationJSON struct {
-	DataSource      apijson.Field
-	Description     apijson.Field
-	EventType       apijson.Field
-	IsInstantaneous apijson.Field
-	EndTime         apijson.Field
-	LinkedURL       apijson.Field
-	StartTime       apijson.Field
-	raw             string
-	ExtraFields     map[string]apijson.Field
-}
-
-func (r *RadarHTTPTopLocationListByBrowserFamilyResponseResultMetaConfidenceInfoAnnotation) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r radarHTTPTopLocationListByBrowserFamilyResponseResultMetaConfidenceInfoAnnotationJSON) RawJSON() string {
+func (r radarHTTPTopLocationListByBrowserFamilyResponseResultMetaUnitJSON) RawJSON() string {
 	return r.raw
 }
 
 type RadarHTTPTopLocationListByBrowserFamilyResponseResultTop0 struct {
-	ClientCountryAlpha2 string                                                        `json:"clientCountryAlpha2,required"`
-	ClientCountryName   string                                                        `json:"clientCountryName,required"`
-	Value               string                                                        `json:"value,required"`
-	JSON                radarHTTPTopLocationListByBrowserFamilyResponseResultTop0JSON `json:"-"`
+	ClientCountryAlpha2 string `json:"clientCountryAlpha2,required"`
+	ClientCountryName   string `json:"clientCountryName,required"`
+	// A numeric string.
+	Value string                                                        `json:"value,required"`
+	JSON  radarHTTPTopLocationListByBrowserFamilyResponseResultTop0JSON `json:"-"`
 }
 
 // radarHTTPTopLocationListByBrowserFamilyResponseResultTop0JSON contains the JSON
@@ -674,6 +856,7 @@ func (r radarHTTPTopLocationListByDeviceTypeResponseJSON) RawJSON() string {
 }
 
 type RadarHTTPTopLocationListByDeviceTypeResponseResult struct {
+	// Metadata for the results.
 	Meta RadarHTTPTopLocationListByDeviceTypeResponseResultMeta   `json:"meta,required"`
 	Top0 []RadarHTTPTopLocationListByDeviceTypeResponseResultTop0 `json:"top_0,required"`
 	JSON radarHTTPTopLocationListByDeviceTypeResponseResultJSON   `json:"-"`
@@ -696,19 +879,28 @@ func (r radarHTTPTopLocationListByDeviceTypeResponseResultJSON) RawJSON() string
 	return r.raw
 }
 
+// Metadata for the results.
 type RadarHTTPTopLocationListByDeviceTypeResponseResultMeta struct {
+	ConfidenceInfo RadarHTTPTopLocationListByDeviceTypeResponseResultMetaConfidenceInfo `json:"confidenceInfo,required,nullable"`
 	DateRange      []RadarHTTPTopLocationListByDeviceTypeResponseResultMetaDateRange    `json:"dateRange,required"`
-	LastUpdated    string                                                               `json:"lastUpdated,required"`
-	ConfidenceInfo RadarHTTPTopLocationListByDeviceTypeResponseResultMetaConfidenceInfo `json:"confidenceInfo"`
-	JSON           radarHTTPTopLocationListByDeviceTypeResponseResultMetaJSON           `json:"-"`
+	// Timestamp of the last dataset update.
+	LastUpdated time.Time `json:"lastUpdated,required" format:"date-time"`
+	// Normalization method applied to the results. Refer to
+	// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
+	Normalization RadarHTTPTopLocationListByDeviceTypeResponseResultMetaNormalization `json:"normalization,required"`
+	// Measurement units for the results.
+	Units []RadarHTTPTopLocationListByDeviceTypeResponseResultMetaUnit `json:"units,required"`
+	JSON  radarHTTPTopLocationListByDeviceTypeResponseResultMetaJSON   `json:"-"`
 }
 
 // radarHTTPTopLocationListByDeviceTypeResponseResultMetaJSON contains the JSON
 // metadata for the struct [RadarHTTPTopLocationListByDeviceTypeResponseResultMeta]
 type radarHTTPTopLocationListByDeviceTypeResponseResultMetaJSON struct {
+	ConfidenceInfo apijson.Field
 	DateRange      apijson.Field
 	LastUpdated    apijson.Field
-	ConfidenceInfo apijson.Field
+	Normalization  apijson.Field
+	Units          apijson.Field
 	raw            string
 	ExtraFields    map[string]apijson.Field
 }
@@ -718,6 +910,67 @@ func (r *RadarHTTPTopLocationListByDeviceTypeResponseResultMeta) UnmarshalJSON(d
 }
 
 func (r radarHTTPTopLocationListByDeviceTypeResponseResultMetaJSON) RawJSON() string {
+	return r.raw
+}
+
+type RadarHTTPTopLocationListByDeviceTypeResponseResultMetaConfidenceInfo struct {
+	Annotations []RadarHTTPTopLocationListByDeviceTypeResponseResultMetaConfidenceInfoAnnotation `json:"annotations,required"`
+	// Provides an indication of how much confidence Cloudflare has in the data.
+	Level int64                                                                    `json:"level,required"`
+	JSON  radarHTTPTopLocationListByDeviceTypeResponseResultMetaConfidenceInfoJSON `json:"-"`
+}
+
+// radarHTTPTopLocationListByDeviceTypeResponseResultMetaConfidenceInfoJSON
+// contains the JSON metadata for the struct
+// [RadarHTTPTopLocationListByDeviceTypeResponseResultMetaConfidenceInfo]
+type radarHTTPTopLocationListByDeviceTypeResponseResultMetaConfidenceInfoJSON struct {
+	Annotations apijson.Field
+	Level       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *RadarHTTPTopLocationListByDeviceTypeResponseResultMetaConfidenceInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarHTTPTopLocationListByDeviceTypeResponseResultMetaConfidenceInfoJSON) RawJSON() string {
+	return r.raw
+}
+
+// Annotation associated with the result (e.g. outage or other type of event).
+type RadarHTTPTopLocationListByDeviceTypeResponseResultMetaConfidenceInfoAnnotation struct {
+	DataSource  string    `json:"dataSource,required"`
+	Description string    `json:"description,required"`
+	EndDate     time.Time `json:"endDate,required" format:"date-time"`
+	EventType   string    `json:"eventType,required"`
+	// Whether event is a single point in time or a time range.
+	IsInstantaneous bool                                                                               `json:"isInstantaneous,required"`
+	LinkedURL       string                                                                             `json:"linkedUrl,required" format:"uri"`
+	StartDate       time.Time                                                                          `json:"startDate,required" format:"date-time"`
+	JSON            radarHTTPTopLocationListByDeviceTypeResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
+}
+
+// radarHTTPTopLocationListByDeviceTypeResponseResultMetaConfidenceInfoAnnotationJSON
+// contains the JSON metadata for the struct
+// [RadarHTTPTopLocationListByDeviceTypeResponseResultMetaConfidenceInfoAnnotation]
+type radarHTTPTopLocationListByDeviceTypeResponseResultMetaConfidenceInfoAnnotationJSON struct {
+	DataSource      apijson.Field
+	Description     apijson.Field
+	EndDate         apijson.Field
+	EventType       apijson.Field
+	IsInstantaneous apijson.Field
+	LinkedURL       apijson.Field
+	StartDate       apijson.Field
+	raw             string
+	ExtraFields     map[string]apijson.Field
+}
+
+func (r *RadarHTTPTopLocationListByDeviceTypeResponseResultMetaConfidenceInfoAnnotation) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarHTTPTopLocationListByDeviceTypeResponseResultMetaConfidenceInfoAnnotationJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -747,69 +1000,59 @@ func (r radarHTTPTopLocationListByDeviceTypeResponseResultMetaDateRangeJSON) Raw
 	return r.raw
 }
 
-type RadarHTTPTopLocationListByDeviceTypeResponseResultMetaConfidenceInfo struct {
-	Annotations []RadarHTTPTopLocationListByDeviceTypeResponseResultMetaConfidenceInfoAnnotation `json:"annotations"`
-	Level       int64                                                                            `json:"level"`
-	JSON        radarHTTPTopLocationListByDeviceTypeResponseResultMetaConfidenceInfoJSON         `json:"-"`
+// Normalization method applied to the results. Refer to
+// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
+type RadarHTTPTopLocationListByDeviceTypeResponseResultMetaNormalization string
+
+const (
+	RadarHTTPTopLocationListByDeviceTypeResponseResultMetaNormalizationPercentage           RadarHTTPTopLocationListByDeviceTypeResponseResultMetaNormalization = "PERCENTAGE"
+	RadarHTTPTopLocationListByDeviceTypeResponseResultMetaNormalizationMin0Max              RadarHTTPTopLocationListByDeviceTypeResponseResultMetaNormalization = "MIN0_MAX"
+	RadarHTTPTopLocationListByDeviceTypeResponseResultMetaNormalizationMinMax               RadarHTTPTopLocationListByDeviceTypeResponseResultMetaNormalization = "MIN_MAX"
+	RadarHTTPTopLocationListByDeviceTypeResponseResultMetaNormalizationRawValues            RadarHTTPTopLocationListByDeviceTypeResponseResultMetaNormalization = "RAW_VALUES"
+	RadarHTTPTopLocationListByDeviceTypeResponseResultMetaNormalizationPercentageChange     RadarHTTPTopLocationListByDeviceTypeResponseResultMetaNormalization = "PERCENTAGE_CHANGE"
+	RadarHTTPTopLocationListByDeviceTypeResponseResultMetaNormalizationRollingAverage       RadarHTTPTopLocationListByDeviceTypeResponseResultMetaNormalization = "ROLLING_AVERAGE"
+	RadarHTTPTopLocationListByDeviceTypeResponseResultMetaNormalizationOverlappedPercentage RadarHTTPTopLocationListByDeviceTypeResponseResultMetaNormalization = "OVERLAPPED_PERCENTAGE"
+	RadarHTTPTopLocationListByDeviceTypeResponseResultMetaNormalizationRatio                RadarHTTPTopLocationListByDeviceTypeResponseResultMetaNormalization = "RATIO"
+)
+
+func (r RadarHTTPTopLocationListByDeviceTypeResponseResultMetaNormalization) IsKnown() bool {
+	switch r {
+	case RadarHTTPTopLocationListByDeviceTypeResponseResultMetaNormalizationPercentage, RadarHTTPTopLocationListByDeviceTypeResponseResultMetaNormalizationMin0Max, RadarHTTPTopLocationListByDeviceTypeResponseResultMetaNormalizationMinMax, RadarHTTPTopLocationListByDeviceTypeResponseResultMetaNormalizationRawValues, RadarHTTPTopLocationListByDeviceTypeResponseResultMetaNormalizationPercentageChange, RadarHTTPTopLocationListByDeviceTypeResponseResultMetaNormalizationRollingAverage, RadarHTTPTopLocationListByDeviceTypeResponseResultMetaNormalizationOverlappedPercentage, RadarHTTPTopLocationListByDeviceTypeResponseResultMetaNormalizationRatio:
+		return true
+	}
+	return false
 }
 
-// radarHTTPTopLocationListByDeviceTypeResponseResultMetaConfidenceInfoJSON
-// contains the JSON metadata for the struct
-// [RadarHTTPTopLocationListByDeviceTypeResponseResultMetaConfidenceInfo]
-type radarHTTPTopLocationListByDeviceTypeResponseResultMetaConfidenceInfoJSON struct {
-	Annotations apijson.Field
-	Level       apijson.Field
+type RadarHTTPTopLocationListByDeviceTypeResponseResultMetaUnit struct {
+	Name  string                                                         `json:"name,required"`
+	Value string                                                         `json:"value,required"`
+	JSON  radarHTTPTopLocationListByDeviceTypeResponseResultMetaUnitJSON `json:"-"`
+}
+
+// radarHTTPTopLocationListByDeviceTypeResponseResultMetaUnitJSON contains the JSON
+// metadata for the struct
+// [RadarHTTPTopLocationListByDeviceTypeResponseResultMetaUnit]
+type radarHTTPTopLocationListByDeviceTypeResponseResultMetaUnitJSON struct {
+	Name        apijson.Field
+	Value       apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *RadarHTTPTopLocationListByDeviceTypeResponseResultMetaConfidenceInfo) UnmarshalJSON(data []byte) (err error) {
+func (r *RadarHTTPTopLocationListByDeviceTypeResponseResultMetaUnit) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r radarHTTPTopLocationListByDeviceTypeResponseResultMetaConfidenceInfoJSON) RawJSON() string {
-	return r.raw
-}
-
-type RadarHTTPTopLocationListByDeviceTypeResponseResultMetaConfidenceInfoAnnotation struct {
-	DataSource      string                                                                             `json:"dataSource,required"`
-	Description     string                                                                             `json:"description,required"`
-	EventType       string                                                                             `json:"eventType,required"`
-	IsInstantaneous bool                                                                               `json:"isInstantaneous,required"`
-	EndTime         time.Time                                                                          `json:"endTime" format:"date-time"`
-	LinkedURL       string                                                                             `json:"linkedUrl"`
-	StartTime       time.Time                                                                          `json:"startTime" format:"date-time"`
-	JSON            radarHTTPTopLocationListByDeviceTypeResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
-}
-
-// radarHTTPTopLocationListByDeviceTypeResponseResultMetaConfidenceInfoAnnotationJSON
-// contains the JSON metadata for the struct
-// [RadarHTTPTopLocationListByDeviceTypeResponseResultMetaConfidenceInfoAnnotation]
-type radarHTTPTopLocationListByDeviceTypeResponseResultMetaConfidenceInfoAnnotationJSON struct {
-	DataSource      apijson.Field
-	Description     apijson.Field
-	EventType       apijson.Field
-	IsInstantaneous apijson.Field
-	EndTime         apijson.Field
-	LinkedURL       apijson.Field
-	StartTime       apijson.Field
-	raw             string
-	ExtraFields     map[string]apijson.Field
-}
-
-func (r *RadarHTTPTopLocationListByDeviceTypeResponseResultMetaConfidenceInfoAnnotation) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r radarHTTPTopLocationListByDeviceTypeResponseResultMetaConfidenceInfoAnnotationJSON) RawJSON() string {
+func (r radarHTTPTopLocationListByDeviceTypeResponseResultMetaUnitJSON) RawJSON() string {
 	return r.raw
 }
 
 type RadarHTTPTopLocationListByDeviceTypeResponseResultTop0 struct {
-	ClientCountryAlpha2 string                                                     `json:"clientCountryAlpha2,required"`
-	ClientCountryName   string                                                     `json:"clientCountryName,required"`
-	Value               string                                                     `json:"value,required"`
-	JSON                radarHTTPTopLocationListByDeviceTypeResponseResultTop0JSON `json:"-"`
+	ClientCountryAlpha2 string `json:"clientCountryAlpha2,required"`
+	ClientCountryName   string `json:"clientCountryName,required"`
+	// A numeric string.
+	Value string                                                     `json:"value,required"`
+	JSON  radarHTTPTopLocationListByDeviceTypeResponseResultTop0JSON `json:"-"`
 }
 
 // radarHTTPTopLocationListByDeviceTypeResponseResultTop0JSON contains the JSON
@@ -854,6 +1097,7 @@ func (r radarHTTPTopLocationListByHTTPProtocolResponseJSON) RawJSON() string {
 }
 
 type RadarHTTPTopLocationListByHTTPProtocolResponseResult struct {
+	// Metadata for the results.
 	Meta RadarHTTPTopLocationListByHTTPProtocolResponseResultMeta   `json:"meta,required"`
 	Top0 []RadarHTTPTopLocationListByHTTPProtocolResponseResultTop0 `json:"top_0,required"`
 	JSON radarHTTPTopLocationListByHTTPProtocolResponseResultJSON   `json:"-"`
@@ -876,20 +1120,29 @@ func (r radarHTTPTopLocationListByHTTPProtocolResponseResultJSON) RawJSON() stri
 	return r.raw
 }
 
+// Metadata for the results.
 type RadarHTTPTopLocationListByHTTPProtocolResponseResultMeta struct {
+	ConfidenceInfo RadarHTTPTopLocationListByHTTPProtocolResponseResultMetaConfidenceInfo `json:"confidenceInfo,required,nullable"`
 	DateRange      []RadarHTTPTopLocationListByHTTPProtocolResponseResultMetaDateRange    `json:"dateRange,required"`
-	LastUpdated    string                                                                 `json:"lastUpdated,required"`
-	ConfidenceInfo RadarHTTPTopLocationListByHTTPProtocolResponseResultMetaConfidenceInfo `json:"confidenceInfo"`
-	JSON           radarHTTPTopLocationListByHTTPProtocolResponseResultMetaJSON           `json:"-"`
+	// Timestamp of the last dataset update.
+	LastUpdated time.Time `json:"lastUpdated,required" format:"date-time"`
+	// Normalization method applied to the results. Refer to
+	// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
+	Normalization RadarHTTPTopLocationListByHTTPProtocolResponseResultMetaNormalization `json:"normalization,required"`
+	// Measurement units for the results.
+	Units []RadarHTTPTopLocationListByHTTPProtocolResponseResultMetaUnit `json:"units,required"`
+	JSON  radarHTTPTopLocationListByHTTPProtocolResponseResultMetaJSON   `json:"-"`
 }
 
 // radarHTTPTopLocationListByHTTPProtocolResponseResultMetaJSON contains the JSON
 // metadata for the struct
 // [RadarHTTPTopLocationListByHTTPProtocolResponseResultMeta]
 type radarHTTPTopLocationListByHTTPProtocolResponseResultMetaJSON struct {
+	ConfidenceInfo apijson.Field
 	DateRange      apijson.Field
 	LastUpdated    apijson.Field
-	ConfidenceInfo apijson.Field
+	Normalization  apijson.Field
+	Units          apijson.Field
 	raw            string
 	ExtraFields    map[string]apijson.Field
 }
@@ -899,6 +1152,67 @@ func (r *RadarHTTPTopLocationListByHTTPProtocolResponseResultMeta) UnmarshalJSON
 }
 
 func (r radarHTTPTopLocationListByHTTPProtocolResponseResultMetaJSON) RawJSON() string {
+	return r.raw
+}
+
+type RadarHTTPTopLocationListByHTTPProtocolResponseResultMetaConfidenceInfo struct {
+	Annotations []RadarHTTPTopLocationListByHTTPProtocolResponseResultMetaConfidenceInfoAnnotation `json:"annotations,required"`
+	// Provides an indication of how much confidence Cloudflare has in the data.
+	Level int64                                                                      `json:"level,required"`
+	JSON  radarHTTPTopLocationListByHTTPProtocolResponseResultMetaConfidenceInfoJSON `json:"-"`
+}
+
+// radarHTTPTopLocationListByHTTPProtocolResponseResultMetaConfidenceInfoJSON
+// contains the JSON metadata for the struct
+// [RadarHTTPTopLocationListByHTTPProtocolResponseResultMetaConfidenceInfo]
+type radarHTTPTopLocationListByHTTPProtocolResponseResultMetaConfidenceInfoJSON struct {
+	Annotations apijson.Field
+	Level       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *RadarHTTPTopLocationListByHTTPProtocolResponseResultMetaConfidenceInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarHTTPTopLocationListByHTTPProtocolResponseResultMetaConfidenceInfoJSON) RawJSON() string {
+	return r.raw
+}
+
+// Annotation associated with the result (e.g. outage or other type of event).
+type RadarHTTPTopLocationListByHTTPProtocolResponseResultMetaConfidenceInfoAnnotation struct {
+	DataSource  string    `json:"dataSource,required"`
+	Description string    `json:"description,required"`
+	EndDate     time.Time `json:"endDate,required" format:"date-time"`
+	EventType   string    `json:"eventType,required"`
+	// Whether event is a single point in time or a time range.
+	IsInstantaneous bool                                                                                 `json:"isInstantaneous,required"`
+	LinkedURL       string                                                                               `json:"linkedUrl,required" format:"uri"`
+	StartDate       time.Time                                                                            `json:"startDate,required" format:"date-time"`
+	JSON            radarHTTPTopLocationListByHTTPProtocolResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
+}
+
+// radarHTTPTopLocationListByHTTPProtocolResponseResultMetaConfidenceInfoAnnotationJSON
+// contains the JSON metadata for the struct
+// [RadarHTTPTopLocationListByHTTPProtocolResponseResultMetaConfidenceInfoAnnotation]
+type radarHTTPTopLocationListByHTTPProtocolResponseResultMetaConfidenceInfoAnnotationJSON struct {
+	DataSource      apijson.Field
+	Description     apijson.Field
+	EndDate         apijson.Field
+	EventType       apijson.Field
+	IsInstantaneous apijson.Field
+	LinkedURL       apijson.Field
+	StartDate       apijson.Field
+	raw             string
+	ExtraFields     map[string]apijson.Field
+}
+
+func (r *RadarHTTPTopLocationListByHTTPProtocolResponseResultMetaConfidenceInfoAnnotation) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarHTTPTopLocationListByHTTPProtocolResponseResultMetaConfidenceInfoAnnotationJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -928,69 +1242,59 @@ func (r radarHTTPTopLocationListByHTTPProtocolResponseResultMetaDateRangeJSON) R
 	return r.raw
 }
 
-type RadarHTTPTopLocationListByHTTPProtocolResponseResultMetaConfidenceInfo struct {
-	Annotations []RadarHTTPTopLocationListByHTTPProtocolResponseResultMetaConfidenceInfoAnnotation `json:"annotations"`
-	Level       int64                                                                              `json:"level"`
-	JSON        radarHTTPTopLocationListByHTTPProtocolResponseResultMetaConfidenceInfoJSON         `json:"-"`
+// Normalization method applied to the results. Refer to
+// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
+type RadarHTTPTopLocationListByHTTPProtocolResponseResultMetaNormalization string
+
+const (
+	RadarHTTPTopLocationListByHTTPProtocolResponseResultMetaNormalizationPercentage           RadarHTTPTopLocationListByHTTPProtocolResponseResultMetaNormalization = "PERCENTAGE"
+	RadarHTTPTopLocationListByHTTPProtocolResponseResultMetaNormalizationMin0Max              RadarHTTPTopLocationListByHTTPProtocolResponseResultMetaNormalization = "MIN0_MAX"
+	RadarHTTPTopLocationListByHTTPProtocolResponseResultMetaNormalizationMinMax               RadarHTTPTopLocationListByHTTPProtocolResponseResultMetaNormalization = "MIN_MAX"
+	RadarHTTPTopLocationListByHTTPProtocolResponseResultMetaNormalizationRawValues            RadarHTTPTopLocationListByHTTPProtocolResponseResultMetaNormalization = "RAW_VALUES"
+	RadarHTTPTopLocationListByHTTPProtocolResponseResultMetaNormalizationPercentageChange     RadarHTTPTopLocationListByHTTPProtocolResponseResultMetaNormalization = "PERCENTAGE_CHANGE"
+	RadarHTTPTopLocationListByHTTPProtocolResponseResultMetaNormalizationRollingAverage       RadarHTTPTopLocationListByHTTPProtocolResponseResultMetaNormalization = "ROLLING_AVERAGE"
+	RadarHTTPTopLocationListByHTTPProtocolResponseResultMetaNormalizationOverlappedPercentage RadarHTTPTopLocationListByHTTPProtocolResponseResultMetaNormalization = "OVERLAPPED_PERCENTAGE"
+	RadarHTTPTopLocationListByHTTPProtocolResponseResultMetaNormalizationRatio                RadarHTTPTopLocationListByHTTPProtocolResponseResultMetaNormalization = "RATIO"
+)
+
+func (r RadarHTTPTopLocationListByHTTPProtocolResponseResultMetaNormalization) IsKnown() bool {
+	switch r {
+	case RadarHTTPTopLocationListByHTTPProtocolResponseResultMetaNormalizationPercentage, RadarHTTPTopLocationListByHTTPProtocolResponseResultMetaNormalizationMin0Max, RadarHTTPTopLocationListByHTTPProtocolResponseResultMetaNormalizationMinMax, RadarHTTPTopLocationListByHTTPProtocolResponseResultMetaNormalizationRawValues, RadarHTTPTopLocationListByHTTPProtocolResponseResultMetaNormalizationPercentageChange, RadarHTTPTopLocationListByHTTPProtocolResponseResultMetaNormalizationRollingAverage, RadarHTTPTopLocationListByHTTPProtocolResponseResultMetaNormalizationOverlappedPercentage, RadarHTTPTopLocationListByHTTPProtocolResponseResultMetaNormalizationRatio:
+		return true
+	}
+	return false
 }
 
-// radarHTTPTopLocationListByHTTPProtocolResponseResultMetaConfidenceInfoJSON
-// contains the JSON metadata for the struct
-// [RadarHTTPTopLocationListByHTTPProtocolResponseResultMetaConfidenceInfo]
-type radarHTTPTopLocationListByHTTPProtocolResponseResultMetaConfidenceInfoJSON struct {
-	Annotations apijson.Field
-	Level       apijson.Field
+type RadarHTTPTopLocationListByHTTPProtocolResponseResultMetaUnit struct {
+	Name  string                                                           `json:"name,required"`
+	Value string                                                           `json:"value,required"`
+	JSON  radarHTTPTopLocationListByHTTPProtocolResponseResultMetaUnitJSON `json:"-"`
+}
+
+// radarHTTPTopLocationListByHTTPProtocolResponseResultMetaUnitJSON contains the
+// JSON metadata for the struct
+// [RadarHTTPTopLocationListByHTTPProtocolResponseResultMetaUnit]
+type radarHTTPTopLocationListByHTTPProtocolResponseResultMetaUnitJSON struct {
+	Name        apijson.Field
+	Value       apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *RadarHTTPTopLocationListByHTTPProtocolResponseResultMetaConfidenceInfo) UnmarshalJSON(data []byte) (err error) {
+func (r *RadarHTTPTopLocationListByHTTPProtocolResponseResultMetaUnit) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r radarHTTPTopLocationListByHTTPProtocolResponseResultMetaConfidenceInfoJSON) RawJSON() string {
-	return r.raw
-}
-
-type RadarHTTPTopLocationListByHTTPProtocolResponseResultMetaConfidenceInfoAnnotation struct {
-	DataSource      string                                                                               `json:"dataSource,required"`
-	Description     string                                                                               `json:"description,required"`
-	EventType       string                                                                               `json:"eventType,required"`
-	IsInstantaneous bool                                                                                 `json:"isInstantaneous,required"`
-	EndTime         time.Time                                                                            `json:"endTime" format:"date-time"`
-	LinkedURL       string                                                                               `json:"linkedUrl"`
-	StartTime       time.Time                                                                            `json:"startTime" format:"date-time"`
-	JSON            radarHTTPTopLocationListByHTTPProtocolResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
-}
-
-// radarHTTPTopLocationListByHTTPProtocolResponseResultMetaConfidenceInfoAnnotationJSON
-// contains the JSON metadata for the struct
-// [RadarHTTPTopLocationListByHTTPProtocolResponseResultMetaConfidenceInfoAnnotation]
-type radarHTTPTopLocationListByHTTPProtocolResponseResultMetaConfidenceInfoAnnotationJSON struct {
-	DataSource      apijson.Field
-	Description     apijson.Field
-	EventType       apijson.Field
-	IsInstantaneous apijson.Field
-	EndTime         apijson.Field
-	LinkedURL       apijson.Field
-	StartTime       apijson.Field
-	raw             string
-	ExtraFields     map[string]apijson.Field
-}
-
-func (r *RadarHTTPTopLocationListByHTTPProtocolResponseResultMetaConfidenceInfoAnnotation) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r radarHTTPTopLocationListByHTTPProtocolResponseResultMetaConfidenceInfoAnnotationJSON) RawJSON() string {
+func (r radarHTTPTopLocationListByHTTPProtocolResponseResultMetaUnitJSON) RawJSON() string {
 	return r.raw
 }
 
 type RadarHTTPTopLocationListByHTTPProtocolResponseResultTop0 struct {
-	ClientCountryAlpha2 string                                                       `json:"clientCountryAlpha2,required"`
-	ClientCountryName   string                                                       `json:"clientCountryName,required"`
-	Value               string                                                       `json:"value,required"`
-	JSON                radarHTTPTopLocationListByHTTPProtocolResponseResultTop0JSON `json:"-"`
+	ClientCountryAlpha2 string `json:"clientCountryAlpha2,required"`
+	ClientCountryName   string `json:"clientCountryName,required"`
+	// A numeric string.
+	Value string                                                       `json:"value,required"`
+	JSON  radarHTTPTopLocationListByHTTPProtocolResponseResultTop0JSON `json:"-"`
 }
 
 // radarHTTPTopLocationListByHTTPProtocolResponseResultTop0JSON contains the JSON
@@ -1036,6 +1340,7 @@ func (r radarHTTPTopLocationListByHTTPVersionResponseJSON) RawJSON() string {
 }
 
 type RadarHTTPTopLocationListByHTTPVersionResponseResult struct {
+	// Metadata for the results.
 	Meta RadarHTTPTopLocationListByHTTPVersionResponseResultMeta   `json:"meta,required"`
 	Top0 []RadarHTTPTopLocationListByHTTPVersionResponseResultTop0 `json:"top_0,required"`
 	JSON radarHTTPTopLocationListByHTTPVersionResponseResultJSON   `json:"-"`
@@ -1058,20 +1363,29 @@ func (r radarHTTPTopLocationListByHTTPVersionResponseResultJSON) RawJSON() strin
 	return r.raw
 }
 
+// Metadata for the results.
 type RadarHTTPTopLocationListByHTTPVersionResponseResultMeta struct {
+	ConfidenceInfo RadarHTTPTopLocationListByHTTPVersionResponseResultMetaConfidenceInfo `json:"confidenceInfo,required,nullable"`
 	DateRange      []RadarHTTPTopLocationListByHTTPVersionResponseResultMetaDateRange    `json:"dateRange,required"`
-	LastUpdated    string                                                                `json:"lastUpdated,required"`
-	ConfidenceInfo RadarHTTPTopLocationListByHTTPVersionResponseResultMetaConfidenceInfo `json:"confidenceInfo"`
-	JSON           radarHTTPTopLocationListByHTTPVersionResponseResultMetaJSON           `json:"-"`
+	// Timestamp of the last dataset update.
+	LastUpdated time.Time `json:"lastUpdated,required" format:"date-time"`
+	// Normalization method applied to the results. Refer to
+	// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
+	Normalization RadarHTTPTopLocationListByHTTPVersionResponseResultMetaNormalization `json:"normalization,required"`
+	// Measurement units for the results.
+	Units []RadarHTTPTopLocationListByHTTPVersionResponseResultMetaUnit `json:"units,required"`
+	JSON  radarHTTPTopLocationListByHTTPVersionResponseResultMetaJSON   `json:"-"`
 }
 
 // radarHTTPTopLocationListByHTTPVersionResponseResultMetaJSON contains the JSON
 // metadata for the struct
 // [RadarHTTPTopLocationListByHTTPVersionResponseResultMeta]
 type radarHTTPTopLocationListByHTTPVersionResponseResultMetaJSON struct {
+	ConfidenceInfo apijson.Field
 	DateRange      apijson.Field
 	LastUpdated    apijson.Field
-	ConfidenceInfo apijson.Field
+	Normalization  apijson.Field
+	Units          apijson.Field
 	raw            string
 	ExtraFields    map[string]apijson.Field
 }
@@ -1081,6 +1395,67 @@ func (r *RadarHTTPTopLocationListByHTTPVersionResponseResultMeta) UnmarshalJSON(
 }
 
 func (r radarHTTPTopLocationListByHTTPVersionResponseResultMetaJSON) RawJSON() string {
+	return r.raw
+}
+
+type RadarHTTPTopLocationListByHTTPVersionResponseResultMetaConfidenceInfo struct {
+	Annotations []RadarHTTPTopLocationListByHTTPVersionResponseResultMetaConfidenceInfoAnnotation `json:"annotations,required"`
+	// Provides an indication of how much confidence Cloudflare has in the data.
+	Level int64                                                                     `json:"level,required"`
+	JSON  radarHTTPTopLocationListByHTTPVersionResponseResultMetaConfidenceInfoJSON `json:"-"`
+}
+
+// radarHTTPTopLocationListByHTTPVersionResponseResultMetaConfidenceInfoJSON
+// contains the JSON metadata for the struct
+// [RadarHTTPTopLocationListByHTTPVersionResponseResultMetaConfidenceInfo]
+type radarHTTPTopLocationListByHTTPVersionResponseResultMetaConfidenceInfoJSON struct {
+	Annotations apijson.Field
+	Level       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *RadarHTTPTopLocationListByHTTPVersionResponseResultMetaConfidenceInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarHTTPTopLocationListByHTTPVersionResponseResultMetaConfidenceInfoJSON) RawJSON() string {
+	return r.raw
+}
+
+// Annotation associated with the result (e.g. outage or other type of event).
+type RadarHTTPTopLocationListByHTTPVersionResponseResultMetaConfidenceInfoAnnotation struct {
+	DataSource  string    `json:"dataSource,required"`
+	Description string    `json:"description,required"`
+	EndDate     time.Time `json:"endDate,required" format:"date-time"`
+	EventType   string    `json:"eventType,required"`
+	// Whether event is a single point in time or a time range.
+	IsInstantaneous bool                                                                                `json:"isInstantaneous,required"`
+	LinkedURL       string                                                                              `json:"linkedUrl,required" format:"uri"`
+	StartDate       time.Time                                                                           `json:"startDate,required" format:"date-time"`
+	JSON            radarHTTPTopLocationListByHTTPVersionResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
+}
+
+// radarHTTPTopLocationListByHTTPVersionResponseResultMetaConfidenceInfoAnnotationJSON
+// contains the JSON metadata for the struct
+// [RadarHTTPTopLocationListByHTTPVersionResponseResultMetaConfidenceInfoAnnotation]
+type radarHTTPTopLocationListByHTTPVersionResponseResultMetaConfidenceInfoAnnotationJSON struct {
+	DataSource      apijson.Field
+	Description     apijson.Field
+	EndDate         apijson.Field
+	EventType       apijson.Field
+	IsInstantaneous apijson.Field
+	LinkedURL       apijson.Field
+	StartDate       apijson.Field
+	raw             string
+	ExtraFields     map[string]apijson.Field
+}
+
+func (r *RadarHTTPTopLocationListByHTTPVersionResponseResultMetaConfidenceInfoAnnotation) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarHTTPTopLocationListByHTTPVersionResponseResultMetaConfidenceInfoAnnotationJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -1110,69 +1485,59 @@ func (r radarHTTPTopLocationListByHTTPVersionResponseResultMetaDateRangeJSON) Ra
 	return r.raw
 }
 
-type RadarHTTPTopLocationListByHTTPVersionResponseResultMetaConfidenceInfo struct {
-	Annotations []RadarHTTPTopLocationListByHTTPVersionResponseResultMetaConfidenceInfoAnnotation `json:"annotations"`
-	Level       int64                                                                             `json:"level"`
-	JSON        radarHTTPTopLocationListByHTTPVersionResponseResultMetaConfidenceInfoJSON         `json:"-"`
+// Normalization method applied to the results. Refer to
+// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
+type RadarHTTPTopLocationListByHTTPVersionResponseResultMetaNormalization string
+
+const (
+	RadarHTTPTopLocationListByHTTPVersionResponseResultMetaNormalizationPercentage           RadarHTTPTopLocationListByHTTPVersionResponseResultMetaNormalization = "PERCENTAGE"
+	RadarHTTPTopLocationListByHTTPVersionResponseResultMetaNormalizationMin0Max              RadarHTTPTopLocationListByHTTPVersionResponseResultMetaNormalization = "MIN0_MAX"
+	RadarHTTPTopLocationListByHTTPVersionResponseResultMetaNormalizationMinMax               RadarHTTPTopLocationListByHTTPVersionResponseResultMetaNormalization = "MIN_MAX"
+	RadarHTTPTopLocationListByHTTPVersionResponseResultMetaNormalizationRawValues            RadarHTTPTopLocationListByHTTPVersionResponseResultMetaNormalization = "RAW_VALUES"
+	RadarHTTPTopLocationListByHTTPVersionResponseResultMetaNormalizationPercentageChange     RadarHTTPTopLocationListByHTTPVersionResponseResultMetaNormalization = "PERCENTAGE_CHANGE"
+	RadarHTTPTopLocationListByHTTPVersionResponseResultMetaNormalizationRollingAverage       RadarHTTPTopLocationListByHTTPVersionResponseResultMetaNormalization = "ROLLING_AVERAGE"
+	RadarHTTPTopLocationListByHTTPVersionResponseResultMetaNormalizationOverlappedPercentage RadarHTTPTopLocationListByHTTPVersionResponseResultMetaNormalization = "OVERLAPPED_PERCENTAGE"
+	RadarHTTPTopLocationListByHTTPVersionResponseResultMetaNormalizationRatio                RadarHTTPTopLocationListByHTTPVersionResponseResultMetaNormalization = "RATIO"
+)
+
+func (r RadarHTTPTopLocationListByHTTPVersionResponseResultMetaNormalization) IsKnown() bool {
+	switch r {
+	case RadarHTTPTopLocationListByHTTPVersionResponseResultMetaNormalizationPercentage, RadarHTTPTopLocationListByHTTPVersionResponseResultMetaNormalizationMin0Max, RadarHTTPTopLocationListByHTTPVersionResponseResultMetaNormalizationMinMax, RadarHTTPTopLocationListByHTTPVersionResponseResultMetaNormalizationRawValues, RadarHTTPTopLocationListByHTTPVersionResponseResultMetaNormalizationPercentageChange, RadarHTTPTopLocationListByHTTPVersionResponseResultMetaNormalizationRollingAverage, RadarHTTPTopLocationListByHTTPVersionResponseResultMetaNormalizationOverlappedPercentage, RadarHTTPTopLocationListByHTTPVersionResponseResultMetaNormalizationRatio:
+		return true
+	}
+	return false
 }
 
-// radarHTTPTopLocationListByHTTPVersionResponseResultMetaConfidenceInfoJSON
-// contains the JSON metadata for the struct
-// [RadarHTTPTopLocationListByHTTPVersionResponseResultMetaConfidenceInfo]
-type radarHTTPTopLocationListByHTTPVersionResponseResultMetaConfidenceInfoJSON struct {
-	Annotations apijson.Field
-	Level       apijson.Field
+type RadarHTTPTopLocationListByHTTPVersionResponseResultMetaUnit struct {
+	Name  string                                                          `json:"name,required"`
+	Value string                                                          `json:"value,required"`
+	JSON  radarHTTPTopLocationListByHTTPVersionResponseResultMetaUnitJSON `json:"-"`
+}
+
+// radarHTTPTopLocationListByHTTPVersionResponseResultMetaUnitJSON contains the
+// JSON metadata for the struct
+// [RadarHTTPTopLocationListByHTTPVersionResponseResultMetaUnit]
+type radarHTTPTopLocationListByHTTPVersionResponseResultMetaUnitJSON struct {
+	Name        apijson.Field
+	Value       apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *RadarHTTPTopLocationListByHTTPVersionResponseResultMetaConfidenceInfo) UnmarshalJSON(data []byte) (err error) {
+func (r *RadarHTTPTopLocationListByHTTPVersionResponseResultMetaUnit) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r radarHTTPTopLocationListByHTTPVersionResponseResultMetaConfidenceInfoJSON) RawJSON() string {
-	return r.raw
-}
-
-type RadarHTTPTopLocationListByHTTPVersionResponseResultMetaConfidenceInfoAnnotation struct {
-	DataSource      string                                                                              `json:"dataSource,required"`
-	Description     string                                                                              `json:"description,required"`
-	EventType       string                                                                              `json:"eventType,required"`
-	IsInstantaneous bool                                                                                `json:"isInstantaneous,required"`
-	EndTime         time.Time                                                                           `json:"endTime" format:"date-time"`
-	LinkedURL       string                                                                              `json:"linkedUrl"`
-	StartTime       time.Time                                                                           `json:"startTime" format:"date-time"`
-	JSON            radarHTTPTopLocationListByHTTPVersionResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
-}
-
-// radarHTTPTopLocationListByHTTPVersionResponseResultMetaConfidenceInfoAnnotationJSON
-// contains the JSON metadata for the struct
-// [RadarHTTPTopLocationListByHTTPVersionResponseResultMetaConfidenceInfoAnnotation]
-type radarHTTPTopLocationListByHTTPVersionResponseResultMetaConfidenceInfoAnnotationJSON struct {
-	DataSource      apijson.Field
-	Description     apijson.Field
-	EventType       apijson.Field
-	IsInstantaneous apijson.Field
-	EndTime         apijson.Field
-	LinkedURL       apijson.Field
-	StartTime       apijson.Field
-	raw             string
-	ExtraFields     map[string]apijson.Field
-}
-
-func (r *RadarHTTPTopLocationListByHTTPVersionResponseResultMetaConfidenceInfoAnnotation) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r radarHTTPTopLocationListByHTTPVersionResponseResultMetaConfidenceInfoAnnotationJSON) RawJSON() string {
+func (r radarHTTPTopLocationListByHTTPVersionResponseResultMetaUnitJSON) RawJSON() string {
 	return r.raw
 }
 
 type RadarHTTPTopLocationListByHTTPVersionResponseResultTop0 struct {
-	ClientCountryAlpha2 string                                                      `json:"clientCountryAlpha2,required"`
-	ClientCountryName   string                                                      `json:"clientCountryName,required"`
-	Value               string                                                      `json:"value,required"`
-	JSON                radarHTTPTopLocationListByHTTPVersionResponseResultTop0JSON `json:"-"`
+	ClientCountryAlpha2 string `json:"clientCountryAlpha2,required"`
+	ClientCountryName   string `json:"clientCountryName,required"`
+	// A numeric string.
+	Value string                                                      `json:"value,required"`
+	JSON  radarHTTPTopLocationListByHTTPVersionResponseResultTop0JSON `json:"-"`
 }
 
 // radarHTTPTopLocationListByHTTPVersionResponseResultTop0JSON contains the JSON
@@ -1218,6 +1583,7 @@ func (r radarHTTPTopLocationListByIPVersionResponseJSON) RawJSON() string {
 }
 
 type RadarHTTPTopLocationListByIPVersionResponseResult struct {
+	// Metadata for the results.
 	Meta RadarHTTPTopLocationListByIPVersionResponseResultMeta   `json:"meta,required"`
 	Top0 []RadarHTTPTopLocationListByIPVersionResponseResultTop0 `json:"top_0,required"`
 	JSON radarHTTPTopLocationListByIPVersionResponseResultJSON   `json:"-"`
@@ -1240,19 +1606,28 @@ func (r radarHTTPTopLocationListByIPVersionResponseResultJSON) RawJSON() string 
 	return r.raw
 }
 
+// Metadata for the results.
 type RadarHTTPTopLocationListByIPVersionResponseResultMeta struct {
+	ConfidenceInfo RadarHTTPTopLocationListByIPVersionResponseResultMetaConfidenceInfo `json:"confidenceInfo,required,nullable"`
 	DateRange      []RadarHTTPTopLocationListByIPVersionResponseResultMetaDateRange    `json:"dateRange,required"`
-	LastUpdated    string                                                              `json:"lastUpdated,required"`
-	ConfidenceInfo RadarHTTPTopLocationListByIPVersionResponseResultMetaConfidenceInfo `json:"confidenceInfo"`
-	JSON           radarHTTPTopLocationListByIPVersionResponseResultMetaJSON           `json:"-"`
+	// Timestamp of the last dataset update.
+	LastUpdated time.Time `json:"lastUpdated,required" format:"date-time"`
+	// Normalization method applied to the results. Refer to
+	// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
+	Normalization RadarHTTPTopLocationListByIPVersionResponseResultMetaNormalization `json:"normalization,required"`
+	// Measurement units for the results.
+	Units []RadarHTTPTopLocationListByIPVersionResponseResultMetaUnit `json:"units,required"`
+	JSON  radarHTTPTopLocationListByIPVersionResponseResultMetaJSON   `json:"-"`
 }
 
 // radarHTTPTopLocationListByIPVersionResponseResultMetaJSON contains the JSON
 // metadata for the struct [RadarHTTPTopLocationListByIPVersionResponseResultMeta]
 type radarHTTPTopLocationListByIPVersionResponseResultMetaJSON struct {
+	ConfidenceInfo apijson.Field
 	DateRange      apijson.Field
 	LastUpdated    apijson.Field
-	ConfidenceInfo apijson.Field
+	Normalization  apijson.Field
+	Units          apijson.Field
 	raw            string
 	ExtraFields    map[string]apijson.Field
 }
@@ -1262,6 +1637,67 @@ func (r *RadarHTTPTopLocationListByIPVersionResponseResultMeta) UnmarshalJSON(da
 }
 
 func (r radarHTTPTopLocationListByIPVersionResponseResultMetaJSON) RawJSON() string {
+	return r.raw
+}
+
+type RadarHTTPTopLocationListByIPVersionResponseResultMetaConfidenceInfo struct {
+	Annotations []RadarHTTPTopLocationListByIPVersionResponseResultMetaConfidenceInfoAnnotation `json:"annotations,required"`
+	// Provides an indication of how much confidence Cloudflare has in the data.
+	Level int64                                                                   `json:"level,required"`
+	JSON  radarHTTPTopLocationListByIPVersionResponseResultMetaConfidenceInfoJSON `json:"-"`
+}
+
+// radarHTTPTopLocationListByIPVersionResponseResultMetaConfidenceInfoJSON contains
+// the JSON metadata for the struct
+// [RadarHTTPTopLocationListByIPVersionResponseResultMetaConfidenceInfo]
+type radarHTTPTopLocationListByIPVersionResponseResultMetaConfidenceInfoJSON struct {
+	Annotations apijson.Field
+	Level       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *RadarHTTPTopLocationListByIPVersionResponseResultMetaConfidenceInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarHTTPTopLocationListByIPVersionResponseResultMetaConfidenceInfoJSON) RawJSON() string {
+	return r.raw
+}
+
+// Annotation associated with the result (e.g. outage or other type of event).
+type RadarHTTPTopLocationListByIPVersionResponseResultMetaConfidenceInfoAnnotation struct {
+	DataSource  string    `json:"dataSource,required"`
+	Description string    `json:"description,required"`
+	EndDate     time.Time `json:"endDate,required" format:"date-time"`
+	EventType   string    `json:"eventType,required"`
+	// Whether event is a single point in time or a time range.
+	IsInstantaneous bool                                                                              `json:"isInstantaneous,required"`
+	LinkedURL       string                                                                            `json:"linkedUrl,required" format:"uri"`
+	StartDate       time.Time                                                                         `json:"startDate,required" format:"date-time"`
+	JSON            radarHTTPTopLocationListByIPVersionResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
+}
+
+// radarHTTPTopLocationListByIPVersionResponseResultMetaConfidenceInfoAnnotationJSON
+// contains the JSON metadata for the struct
+// [RadarHTTPTopLocationListByIPVersionResponseResultMetaConfidenceInfoAnnotation]
+type radarHTTPTopLocationListByIPVersionResponseResultMetaConfidenceInfoAnnotationJSON struct {
+	DataSource      apijson.Field
+	Description     apijson.Field
+	EndDate         apijson.Field
+	EventType       apijson.Field
+	IsInstantaneous apijson.Field
+	LinkedURL       apijson.Field
+	StartDate       apijson.Field
+	raw             string
+	ExtraFields     map[string]apijson.Field
+}
+
+func (r *RadarHTTPTopLocationListByIPVersionResponseResultMetaConfidenceInfoAnnotation) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarHTTPTopLocationListByIPVersionResponseResultMetaConfidenceInfoAnnotationJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -1291,69 +1727,59 @@ func (r radarHTTPTopLocationListByIPVersionResponseResultMetaDateRangeJSON) RawJ
 	return r.raw
 }
 
-type RadarHTTPTopLocationListByIPVersionResponseResultMetaConfidenceInfo struct {
-	Annotations []RadarHTTPTopLocationListByIPVersionResponseResultMetaConfidenceInfoAnnotation `json:"annotations"`
-	Level       int64                                                                           `json:"level"`
-	JSON        radarHTTPTopLocationListByIPVersionResponseResultMetaConfidenceInfoJSON         `json:"-"`
+// Normalization method applied to the results. Refer to
+// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
+type RadarHTTPTopLocationListByIPVersionResponseResultMetaNormalization string
+
+const (
+	RadarHTTPTopLocationListByIPVersionResponseResultMetaNormalizationPercentage           RadarHTTPTopLocationListByIPVersionResponseResultMetaNormalization = "PERCENTAGE"
+	RadarHTTPTopLocationListByIPVersionResponseResultMetaNormalizationMin0Max              RadarHTTPTopLocationListByIPVersionResponseResultMetaNormalization = "MIN0_MAX"
+	RadarHTTPTopLocationListByIPVersionResponseResultMetaNormalizationMinMax               RadarHTTPTopLocationListByIPVersionResponseResultMetaNormalization = "MIN_MAX"
+	RadarHTTPTopLocationListByIPVersionResponseResultMetaNormalizationRawValues            RadarHTTPTopLocationListByIPVersionResponseResultMetaNormalization = "RAW_VALUES"
+	RadarHTTPTopLocationListByIPVersionResponseResultMetaNormalizationPercentageChange     RadarHTTPTopLocationListByIPVersionResponseResultMetaNormalization = "PERCENTAGE_CHANGE"
+	RadarHTTPTopLocationListByIPVersionResponseResultMetaNormalizationRollingAverage       RadarHTTPTopLocationListByIPVersionResponseResultMetaNormalization = "ROLLING_AVERAGE"
+	RadarHTTPTopLocationListByIPVersionResponseResultMetaNormalizationOverlappedPercentage RadarHTTPTopLocationListByIPVersionResponseResultMetaNormalization = "OVERLAPPED_PERCENTAGE"
+	RadarHTTPTopLocationListByIPVersionResponseResultMetaNormalizationRatio                RadarHTTPTopLocationListByIPVersionResponseResultMetaNormalization = "RATIO"
+)
+
+func (r RadarHTTPTopLocationListByIPVersionResponseResultMetaNormalization) IsKnown() bool {
+	switch r {
+	case RadarHTTPTopLocationListByIPVersionResponseResultMetaNormalizationPercentage, RadarHTTPTopLocationListByIPVersionResponseResultMetaNormalizationMin0Max, RadarHTTPTopLocationListByIPVersionResponseResultMetaNormalizationMinMax, RadarHTTPTopLocationListByIPVersionResponseResultMetaNormalizationRawValues, RadarHTTPTopLocationListByIPVersionResponseResultMetaNormalizationPercentageChange, RadarHTTPTopLocationListByIPVersionResponseResultMetaNormalizationRollingAverage, RadarHTTPTopLocationListByIPVersionResponseResultMetaNormalizationOverlappedPercentage, RadarHTTPTopLocationListByIPVersionResponseResultMetaNormalizationRatio:
+		return true
+	}
+	return false
 }
 
-// radarHTTPTopLocationListByIPVersionResponseResultMetaConfidenceInfoJSON contains
-// the JSON metadata for the struct
-// [RadarHTTPTopLocationListByIPVersionResponseResultMetaConfidenceInfo]
-type radarHTTPTopLocationListByIPVersionResponseResultMetaConfidenceInfoJSON struct {
-	Annotations apijson.Field
-	Level       apijson.Field
+type RadarHTTPTopLocationListByIPVersionResponseResultMetaUnit struct {
+	Name  string                                                        `json:"name,required"`
+	Value string                                                        `json:"value,required"`
+	JSON  radarHTTPTopLocationListByIPVersionResponseResultMetaUnitJSON `json:"-"`
+}
+
+// radarHTTPTopLocationListByIPVersionResponseResultMetaUnitJSON contains the JSON
+// metadata for the struct
+// [RadarHTTPTopLocationListByIPVersionResponseResultMetaUnit]
+type radarHTTPTopLocationListByIPVersionResponseResultMetaUnitJSON struct {
+	Name        apijson.Field
+	Value       apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *RadarHTTPTopLocationListByIPVersionResponseResultMetaConfidenceInfo) UnmarshalJSON(data []byte) (err error) {
+func (r *RadarHTTPTopLocationListByIPVersionResponseResultMetaUnit) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r radarHTTPTopLocationListByIPVersionResponseResultMetaConfidenceInfoJSON) RawJSON() string {
-	return r.raw
-}
-
-type RadarHTTPTopLocationListByIPVersionResponseResultMetaConfidenceInfoAnnotation struct {
-	DataSource      string                                                                            `json:"dataSource,required"`
-	Description     string                                                                            `json:"description,required"`
-	EventType       string                                                                            `json:"eventType,required"`
-	IsInstantaneous bool                                                                              `json:"isInstantaneous,required"`
-	EndTime         time.Time                                                                         `json:"endTime" format:"date-time"`
-	LinkedURL       string                                                                            `json:"linkedUrl"`
-	StartTime       time.Time                                                                         `json:"startTime" format:"date-time"`
-	JSON            radarHTTPTopLocationListByIPVersionResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
-}
-
-// radarHTTPTopLocationListByIPVersionResponseResultMetaConfidenceInfoAnnotationJSON
-// contains the JSON metadata for the struct
-// [RadarHTTPTopLocationListByIPVersionResponseResultMetaConfidenceInfoAnnotation]
-type radarHTTPTopLocationListByIPVersionResponseResultMetaConfidenceInfoAnnotationJSON struct {
-	DataSource      apijson.Field
-	Description     apijson.Field
-	EventType       apijson.Field
-	IsInstantaneous apijson.Field
-	EndTime         apijson.Field
-	LinkedURL       apijson.Field
-	StartTime       apijson.Field
-	raw             string
-	ExtraFields     map[string]apijson.Field
-}
-
-func (r *RadarHTTPTopLocationListByIPVersionResponseResultMetaConfidenceInfoAnnotation) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r radarHTTPTopLocationListByIPVersionResponseResultMetaConfidenceInfoAnnotationJSON) RawJSON() string {
+func (r radarHTTPTopLocationListByIPVersionResponseResultMetaUnitJSON) RawJSON() string {
 	return r.raw
 }
 
 type RadarHTTPTopLocationListByIPVersionResponseResultTop0 struct {
-	ClientCountryAlpha2 string                                                    `json:"clientCountryAlpha2,required"`
-	ClientCountryName   string                                                    `json:"clientCountryName,required"`
-	Value               string                                                    `json:"value,required"`
-	JSON                radarHTTPTopLocationListByIPVersionResponseResultTop0JSON `json:"-"`
+	ClientCountryAlpha2 string `json:"clientCountryAlpha2,required"`
+	ClientCountryName   string `json:"clientCountryName,required"`
+	// A numeric string.
+	Value string                                                    `json:"value,required"`
+	JSON  radarHTTPTopLocationListByIPVersionResponseResultTop0JSON `json:"-"`
 }
 
 // radarHTTPTopLocationListByIPVersionResponseResultTop0JSON contains the JSON
@@ -1398,6 +1824,7 @@ func (r radarHTTPTopLocationListByOsResponseJSON) RawJSON() string {
 }
 
 type RadarHTTPTopLocationListByOsResponseResult struct {
+	// Metadata for the results.
 	Meta RadarHTTPTopLocationListByOsResponseResultMeta   `json:"meta,required"`
 	Top0 []RadarHTTPTopLocationListByOsResponseResultTop0 `json:"top_0,required"`
 	JSON radarHTTPTopLocationListByOsResponseResultJSON   `json:"-"`
@@ -1420,19 +1847,28 @@ func (r radarHTTPTopLocationListByOsResponseResultJSON) RawJSON() string {
 	return r.raw
 }
 
+// Metadata for the results.
 type RadarHTTPTopLocationListByOsResponseResultMeta struct {
+	ConfidenceInfo RadarHTTPTopLocationListByOsResponseResultMetaConfidenceInfo `json:"confidenceInfo,required,nullable"`
 	DateRange      []RadarHTTPTopLocationListByOsResponseResultMetaDateRange    `json:"dateRange,required"`
-	LastUpdated    string                                                       `json:"lastUpdated,required"`
-	ConfidenceInfo RadarHTTPTopLocationListByOsResponseResultMetaConfidenceInfo `json:"confidenceInfo"`
-	JSON           radarHTTPTopLocationListByOsResponseResultMetaJSON           `json:"-"`
+	// Timestamp of the last dataset update.
+	LastUpdated time.Time `json:"lastUpdated,required" format:"date-time"`
+	// Normalization method applied to the results. Refer to
+	// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
+	Normalization RadarHTTPTopLocationListByOsResponseResultMetaNormalization `json:"normalization,required"`
+	// Measurement units for the results.
+	Units []RadarHTTPTopLocationListByOsResponseResultMetaUnit `json:"units,required"`
+	JSON  radarHTTPTopLocationListByOsResponseResultMetaJSON   `json:"-"`
 }
 
 // radarHTTPTopLocationListByOsResponseResultMetaJSON contains the JSON metadata
 // for the struct [RadarHTTPTopLocationListByOsResponseResultMeta]
 type radarHTTPTopLocationListByOsResponseResultMetaJSON struct {
+	ConfidenceInfo apijson.Field
 	DateRange      apijson.Field
 	LastUpdated    apijson.Field
-	ConfidenceInfo apijson.Field
+	Normalization  apijson.Field
+	Units          apijson.Field
 	raw            string
 	ExtraFields    map[string]apijson.Field
 }
@@ -1442,6 +1878,67 @@ func (r *RadarHTTPTopLocationListByOsResponseResultMeta) UnmarshalJSON(data []by
 }
 
 func (r radarHTTPTopLocationListByOsResponseResultMetaJSON) RawJSON() string {
+	return r.raw
+}
+
+type RadarHTTPTopLocationListByOsResponseResultMetaConfidenceInfo struct {
+	Annotations []RadarHTTPTopLocationListByOsResponseResultMetaConfidenceInfoAnnotation `json:"annotations,required"`
+	// Provides an indication of how much confidence Cloudflare has in the data.
+	Level int64                                                            `json:"level,required"`
+	JSON  radarHTTPTopLocationListByOsResponseResultMetaConfidenceInfoJSON `json:"-"`
+}
+
+// radarHTTPTopLocationListByOsResponseResultMetaConfidenceInfoJSON contains the
+// JSON metadata for the struct
+// [RadarHTTPTopLocationListByOsResponseResultMetaConfidenceInfo]
+type radarHTTPTopLocationListByOsResponseResultMetaConfidenceInfoJSON struct {
+	Annotations apijson.Field
+	Level       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *RadarHTTPTopLocationListByOsResponseResultMetaConfidenceInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarHTTPTopLocationListByOsResponseResultMetaConfidenceInfoJSON) RawJSON() string {
+	return r.raw
+}
+
+// Annotation associated with the result (e.g. outage or other type of event).
+type RadarHTTPTopLocationListByOsResponseResultMetaConfidenceInfoAnnotation struct {
+	DataSource  string    `json:"dataSource,required"`
+	Description string    `json:"description,required"`
+	EndDate     time.Time `json:"endDate,required" format:"date-time"`
+	EventType   string    `json:"eventType,required"`
+	// Whether event is a single point in time or a time range.
+	IsInstantaneous bool                                                                       `json:"isInstantaneous,required"`
+	LinkedURL       string                                                                     `json:"linkedUrl,required" format:"uri"`
+	StartDate       time.Time                                                                  `json:"startDate,required" format:"date-time"`
+	JSON            radarHTTPTopLocationListByOsResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
+}
+
+// radarHTTPTopLocationListByOsResponseResultMetaConfidenceInfoAnnotationJSON
+// contains the JSON metadata for the struct
+// [RadarHTTPTopLocationListByOsResponseResultMetaConfidenceInfoAnnotation]
+type radarHTTPTopLocationListByOsResponseResultMetaConfidenceInfoAnnotationJSON struct {
+	DataSource      apijson.Field
+	Description     apijson.Field
+	EndDate         apijson.Field
+	EventType       apijson.Field
+	IsInstantaneous apijson.Field
+	LinkedURL       apijson.Field
+	StartDate       apijson.Field
+	raw             string
+	ExtraFields     map[string]apijson.Field
+}
+
+func (r *RadarHTTPTopLocationListByOsResponseResultMetaConfidenceInfoAnnotation) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarHTTPTopLocationListByOsResponseResultMetaConfidenceInfoAnnotationJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -1471,69 +1968,58 @@ func (r radarHTTPTopLocationListByOsResponseResultMetaDateRangeJSON) RawJSON() s
 	return r.raw
 }
 
-type RadarHTTPTopLocationListByOsResponseResultMetaConfidenceInfo struct {
-	Annotations []RadarHTTPTopLocationListByOsResponseResultMetaConfidenceInfoAnnotation `json:"annotations"`
-	Level       int64                                                                    `json:"level"`
-	JSON        radarHTTPTopLocationListByOsResponseResultMetaConfidenceInfoJSON         `json:"-"`
+// Normalization method applied to the results. Refer to
+// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
+type RadarHTTPTopLocationListByOsResponseResultMetaNormalization string
+
+const (
+	RadarHTTPTopLocationListByOsResponseResultMetaNormalizationPercentage           RadarHTTPTopLocationListByOsResponseResultMetaNormalization = "PERCENTAGE"
+	RadarHTTPTopLocationListByOsResponseResultMetaNormalizationMin0Max              RadarHTTPTopLocationListByOsResponseResultMetaNormalization = "MIN0_MAX"
+	RadarHTTPTopLocationListByOsResponseResultMetaNormalizationMinMax               RadarHTTPTopLocationListByOsResponseResultMetaNormalization = "MIN_MAX"
+	RadarHTTPTopLocationListByOsResponseResultMetaNormalizationRawValues            RadarHTTPTopLocationListByOsResponseResultMetaNormalization = "RAW_VALUES"
+	RadarHTTPTopLocationListByOsResponseResultMetaNormalizationPercentageChange     RadarHTTPTopLocationListByOsResponseResultMetaNormalization = "PERCENTAGE_CHANGE"
+	RadarHTTPTopLocationListByOsResponseResultMetaNormalizationRollingAverage       RadarHTTPTopLocationListByOsResponseResultMetaNormalization = "ROLLING_AVERAGE"
+	RadarHTTPTopLocationListByOsResponseResultMetaNormalizationOverlappedPercentage RadarHTTPTopLocationListByOsResponseResultMetaNormalization = "OVERLAPPED_PERCENTAGE"
+	RadarHTTPTopLocationListByOsResponseResultMetaNormalizationRatio                RadarHTTPTopLocationListByOsResponseResultMetaNormalization = "RATIO"
+)
+
+func (r RadarHTTPTopLocationListByOsResponseResultMetaNormalization) IsKnown() bool {
+	switch r {
+	case RadarHTTPTopLocationListByOsResponseResultMetaNormalizationPercentage, RadarHTTPTopLocationListByOsResponseResultMetaNormalizationMin0Max, RadarHTTPTopLocationListByOsResponseResultMetaNormalizationMinMax, RadarHTTPTopLocationListByOsResponseResultMetaNormalizationRawValues, RadarHTTPTopLocationListByOsResponseResultMetaNormalizationPercentageChange, RadarHTTPTopLocationListByOsResponseResultMetaNormalizationRollingAverage, RadarHTTPTopLocationListByOsResponseResultMetaNormalizationOverlappedPercentage, RadarHTTPTopLocationListByOsResponseResultMetaNormalizationRatio:
+		return true
+	}
+	return false
 }
 
-// radarHTTPTopLocationListByOsResponseResultMetaConfidenceInfoJSON contains the
-// JSON metadata for the struct
-// [RadarHTTPTopLocationListByOsResponseResultMetaConfidenceInfo]
-type radarHTTPTopLocationListByOsResponseResultMetaConfidenceInfoJSON struct {
-	Annotations apijson.Field
-	Level       apijson.Field
+type RadarHTTPTopLocationListByOsResponseResultMetaUnit struct {
+	Name  string                                                 `json:"name,required"`
+	Value string                                                 `json:"value,required"`
+	JSON  radarHTTPTopLocationListByOsResponseResultMetaUnitJSON `json:"-"`
+}
+
+// radarHTTPTopLocationListByOsResponseResultMetaUnitJSON contains the JSON
+// metadata for the struct [RadarHTTPTopLocationListByOsResponseResultMetaUnit]
+type radarHTTPTopLocationListByOsResponseResultMetaUnitJSON struct {
+	Name        apijson.Field
+	Value       apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *RadarHTTPTopLocationListByOsResponseResultMetaConfidenceInfo) UnmarshalJSON(data []byte) (err error) {
+func (r *RadarHTTPTopLocationListByOsResponseResultMetaUnit) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r radarHTTPTopLocationListByOsResponseResultMetaConfidenceInfoJSON) RawJSON() string {
-	return r.raw
-}
-
-type RadarHTTPTopLocationListByOsResponseResultMetaConfidenceInfoAnnotation struct {
-	DataSource      string                                                                     `json:"dataSource,required"`
-	Description     string                                                                     `json:"description,required"`
-	EventType       string                                                                     `json:"eventType,required"`
-	IsInstantaneous bool                                                                       `json:"isInstantaneous,required"`
-	EndTime         time.Time                                                                  `json:"endTime" format:"date-time"`
-	LinkedURL       string                                                                     `json:"linkedUrl"`
-	StartTime       time.Time                                                                  `json:"startTime" format:"date-time"`
-	JSON            radarHTTPTopLocationListByOsResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
-}
-
-// radarHTTPTopLocationListByOsResponseResultMetaConfidenceInfoAnnotationJSON
-// contains the JSON metadata for the struct
-// [RadarHTTPTopLocationListByOsResponseResultMetaConfidenceInfoAnnotation]
-type radarHTTPTopLocationListByOsResponseResultMetaConfidenceInfoAnnotationJSON struct {
-	DataSource      apijson.Field
-	Description     apijson.Field
-	EventType       apijson.Field
-	IsInstantaneous apijson.Field
-	EndTime         apijson.Field
-	LinkedURL       apijson.Field
-	StartTime       apijson.Field
-	raw             string
-	ExtraFields     map[string]apijson.Field
-}
-
-func (r *RadarHTTPTopLocationListByOsResponseResultMetaConfidenceInfoAnnotation) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r radarHTTPTopLocationListByOsResponseResultMetaConfidenceInfoAnnotationJSON) RawJSON() string {
+func (r radarHTTPTopLocationListByOsResponseResultMetaUnitJSON) RawJSON() string {
 	return r.raw
 }
 
 type RadarHTTPTopLocationListByOsResponseResultTop0 struct {
-	ClientCountryAlpha2 string                                             `json:"clientCountryAlpha2,required"`
-	ClientCountryName   string                                             `json:"clientCountryName,required"`
-	Value               string                                             `json:"value,required"`
-	JSON                radarHTTPTopLocationListByOsResponseResultTop0JSON `json:"-"`
+	ClientCountryAlpha2 string `json:"clientCountryAlpha2,required"`
+	ClientCountryName   string `json:"clientCountryName,required"`
+	// A numeric string.
+	Value string                                             `json:"value,required"`
+	JSON  radarHTTPTopLocationListByOsResponseResultTop0JSON `json:"-"`
 }
 
 // radarHTTPTopLocationListByOsResponseResultTop0JSON contains the JSON metadata
@@ -1578,6 +2064,7 @@ func (r radarHTTPTopLocationListByTlsVersionResponseJSON) RawJSON() string {
 }
 
 type RadarHTTPTopLocationListByTlsVersionResponseResult struct {
+	// Metadata for the results.
 	Meta RadarHTTPTopLocationListByTlsVersionResponseResultMeta   `json:"meta,required"`
 	Top0 []RadarHTTPTopLocationListByTlsVersionResponseResultTop0 `json:"top_0,required"`
 	JSON radarHTTPTopLocationListByTlsVersionResponseResultJSON   `json:"-"`
@@ -1600,19 +2087,28 @@ func (r radarHTTPTopLocationListByTlsVersionResponseResultJSON) RawJSON() string
 	return r.raw
 }
 
+// Metadata for the results.
 type RadarHTTPTopLocationListByTlsVersionResponseResultMeta struct {
+	ConfidenceInfo RadarHTTPTopLocationListByTlsVersionResponseResultMetaConfidenceInfo `json:"confidenceInfo,required,nullable"`
 	DateRange      []RadarHTTPTopLocationListByTlsVersionResponseResultMetaDateRange    `json:"dateRange,required"`
-	LastUpdated    string                                                               `json:"lastUpdated,required"`
-	ConfidenceInfo RadarHTTPTopLocationListByTlsVersionResponseResultMetaConfidenceInfo `json:"confidenceInfo"`
-	JSON           radarHTTPTopLocationListByTlsVersionResponseResultMetaJSON           `json:"-"`
+	// Timestamp of the last dataset update.
+	LastUpdated time.Time `json:"lastUpdated,required" format:"date-time"`
+	// Normalization method applied to the results. Refer to
+	// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
+	Normalization RadarHTTPTopLocationListByTlsVersionResponseResultMetaNormalization `json:"normalization,required"`
+	// Measurement units for the results.
+	Units []RadarHTTPTopLocationListByTlsVersionResponseResultMetaUnit `json:"units,required"`
+	JSON  radarHTTPTopLocationListByTlsVersionResponseResultMetaJSON   `json:"-"`
 }
 
 // radarHTTPTopLocationListByTlsVersionResponseResultMetaJSON contains the JSON
 // metadata for the struct [RadarHTTPTopLocationListByTlsVersionResponseResultMeta]
 type radarHTTPTopLocationListByTlsVersionResponseResultMetaJSON struct {
+	ConfidenceInfo apijson.Field
 	DateRange      apijson.Field
 	LastUpdated    apijson.Field
-	ConfidenceInfo apijson.Field
+	Normalization  apijson.Field
+	Units          apijson.Field
 	raw            string
 	ExtraFields    map[string]apijson.Field
 }
@@ -1622,6 +2118,67 @@ func (r *RadarHTTPTopLocationListByTlsVersionResponseResultMeta) UnmarshalJSON(d
 }
 
 func (r radarHTTPTopLocationListByTlsVersionResponseResultMetaJSON) RawJSON() string {
+	return r.raw
+}
+
+type RadarHTTPTopLocationListByTlsVersionResponseResultMetaConfidenceInfo struct {
+	Annotations []RadarHTTPTopLocationListByTlsVersionResponseResultMetaConfidenceInfoAnnotation `json:"annotations,required"`
+	// Provides an indication of how much confidence Cloudflare has in the data.
+	Level int64                                                                    `json:"level,required"`
+	JSON  radarHTTPTopLocationListByTlsVersionResponseResultMetaConfidenceInfoJSON `json:"-"`
+}
+
+// radarHTTPTopLocationListByTlsVersionResponseResultMetaConfidenceInfoJSON
+// contains the JSON metadata for the struct
+// [RadarHTTPTopLocationListByTlsVersionResponseResultMetaConfidenceInfo]
+type radarHTTPTopLocationListByTlsVersionResponseResultMetaConfidenceInfoJSON struct {
+	Annotations apijson.Field
+	Level       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *RadarHTTPTopLocationListByTlsVersionResponseResultMetaConfidenceInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarHTTPTopLocationListByTlsVersionResponseResultMetaConfidenceInfoJSON) RawJSON() string {
+	return r.raw
+}
+
+// Annotation associated with the result (e.g. outage or other type of event).
+type RadarHTTPTopLocationListByTlsVersionResponseResultMetaConfidenceInfoAnnotation struct {
+	DataSource  string    `json:"dataSource,required"`
+	Description string    `json:"description,required"`
+	EndDate     time.Time `json:"endDate,required" format:"date-time"`
+	EventType   string    `json:"eventType,required"`
+	// Whether event is a single point in time or a time range.
+	IsInstantaneous bool                                                                               `json:"isInstantaneous,required"`
+	LinkedURL       string                                                                             `json:"linkedUrl,required" format:"uri"`
+	StartDate       time.Time                                                                          `json:"startDate,required" format:"date-time"`
+	JSON            radarHTTPTopLocationListByTlsVersionResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
+}
+
+// radarHTTPTopLocationListByTlsVersionResponseResultMetaConfidenceInfoAnnotationJSON
+// contains the JSON metadata for the struct
+// [RadarHTTPTopLocationListByTlsVersionResponseResultMetaConfidenceInfoAnnotation]
+type radarHTTPTopLocationListByTlsVersionResponseResultMetaConfidenceInfoAnnotationJSON struct {
+	DataSource      apijson.Field
+	Description     apijson.Field
+	EndDate         apijson.Field
+	EventType       apijson.Field
+	IsInstantaneous apijson.Field
+	LinkedURL       apijson.Field
+	StartDate       apijson.Field
+	raw             string
+	ExtraFields     map[string]apijson.Field
+}
+
+func (r *RadarHTTPTopLocationListByTlsVersionResponseResultMetaConfidenceInfoAnnotation) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarHTTPTopLocationListByTlsVersionResponseResultMetaConfidenceInfoAnnotationJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -1651,69 +2208,59 @@ func (r radarHTTPTopLocationListByTlsVersionResponseResultMetaDateRangeJSON) Raw
 	return r.raw
 }
 
-type RadarHTTPTopLocationListByTlsVersionResponseResultMetaConfidenceInfo struct {
-	Annotations []RadarHTTPTopLocationListByTlsVersionResponseResultMetaConfidenceInfoAnnotation `json:"annotations"`
-	Level       int64                                                                            `json:"level"`
-	JSON        radarHTTPTopLocationListByTlsVersionResponseResultMetaConfidenceInfoJSON         `json:"-"`
+// Normalization method applied to the results. Refer to
+// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
+type RadarHTTPTopLocationListByTlsVersionResponseResultMetaNormalization string
+
+const (
+	RadarHTTPTopLocationListByTlsVersionResponseResultMetaNormalizationPercentage           RadarHTTPTopLocationListByTlsVersionResponseResultMetaNormalization = "PERCENTAGE"
+	RadarHTTPTopLocationListByTlsVersionResponseResultMetaNormalizationMin0Max              RadarHTTPTopLocationListByTlsVersionResponseResultMetaNormalization = "MIN0_MAX"
+	RadarHTTPTopLocationListByTlsVersionResponseResultMetaNormalizationMinMax               RadarHTTPTopLocationListByTlsVersionResponseResultMetaNormalization = "MIN_MAX"
+	RadarHTTPTopLocationListByTlsVersionResponseResultMetaNormalizationRawValues            RadarHTTPTopLocationListByTlsVersionResponseResultMetaNormalization = "RAW_VALUES"
+	RadarHTTPTopLocationListByTlsVersionResponseResultMetaNormalizationPercentageChange     RadarHTTPTopLocationListByTlsVersionResponseResultMetaNormalization = "PERCENTAGE_CHANGE"
+	RadarHTTPTopLocationListByTlsVersionResponseResultMetaNormalizationRollingAverage       RadarHTTPTopLocationListByTlsVersionResponseResultMetaNormalization = "ROLLING_AVERAGE"
+	RadarHTTPTopLocationListByTlsVersionResponseResultMetaNormalizationOverlappedPercentage RadarHTTPTopLocationListByTlsVersionResponseResultMetaNormalization = "OVERLAPPED_PERCENTAGE"
+	RadarHTTPTopLocationListByTlsVersionResponseResultMetaNormalizationRatio                RadarHTTPTopLocationListByTlsVersionResponseResultMetaNormalization = "RATIO"
+)
+
+func (r RadarHTTPTopLocationListByTlsVersionResponseResultMetaNormalization) IsKnown() bool {
+	switch r {
+	case RadarHTTPTopLocationListByTlsVersionResponseResultMetaNormalizationPercentage, RadarHTTPTopLocationListByTlsVersionResponseResultMetaNormalizationMin0Max, RadarHTTPTopLocationListByTlsVersionResponseResultMetaNormalizationMinMax, RadarHTTPTopLocationListByTlsVersionResponseResultMetaNormalizationRawValues, RadarHTTPTopLocationListByTlsVersionResponseResultMetaNormalizationPercentageChange, RadarHTTPTopLocationListByTlsVersionResponseResultMetaNormalizationRollingAverage, RadarHTTPTopLocationListByTlsVersionResponseResultMetaNormalizationOverlappedPercentage, RadarHTTPTopLocationListByTlsVersionResponseResultMetaNormalizationRatio:
+		return true
+	}
+	return false
 }
 
-// radarHTTPTopLocationListByTlsVersionResponseResultMetaConfidenceInfoJSON
-// contains the JSON metadata for the struct
-// [RadarHTTPTopLocationListByTlsVersionResponseResultMetaConfidenceInfo]
-type radarHTTPTopLocationListByTlsVersionResponseResultMetaConfidenceInfoJSON struct {
-	Annotations apijson.Field
-	Level       apijson.Field
+type RadarHTTPTopLocationListByTlsVersionResponseResultMetaUnit struct {
+	Name  string                                                         `json:"name,required"`
+	Value string                                                         `json:"value,required"`
+	JSON  radarHTTPTopLocationListByTlsVersionResponseResultMetaUnitJSON `json:"-"`
+}
+
+// radarHTTPTopLocationListByTlsVersionResponseResultMetaUnitJSON contains the JSON
+// metadata for the struct
+// [RadarHTTPTopLocationListByTlsVersionResponseResultMetaUnit]
+type radarHTTPTopLocationListByTlsVersionResponseResultMetaUnitJSON struct {
+	Name        apijson.Field
+	Value       apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *RadarHTTPTopLocationListByTlsVersionResponseResultMetaConfidenceInfo) UnmarshalJSON(data []byte) (err error) {
+func (r *RadarHTTPTopLocationListByTlsVersionResponseResultMetaUnit) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r radarHTTPTopLocationListByTlsVersionResponseResultMetaConfidenceInfoJSON) RawJSON() string {
-	return r.raw
-}
-
-type RadarHTTPTopLocationListByTlsVersionResponseResultMetaConfidenceInfoAnnotation struct {
-	DataSource      string                                                                             `json:"dataSource,required"`
-	Description     string                                                                             `json:"description,required"`
-	EventType       string                                                                             `json:"eventType,required"`
-	IsInstantaneous bool                                                                               `json:"isInstantaneous,required"`
-	EndTime         time.Time                                                                          `json:"endTime" format:"date-time"`
-	LinkedURL       string                                                                             `json:"linkedUrl"`
-	StartTime       time.Time                                                                          `json:"startTime" format:"date-time"`
-	JSON            radarHTTPTopLocationListByTlsVersionResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
-}
-
-// radarHTTPTopLocationListByTlsVersionResponseResultMetaConfidenceInfoAnnotationJSON
-// contains the JSON metadata for the struct
-// [RadarHTTPTopLocationListByTlsVersionResponseResultMetaConfidenceInfoAnnotation]
-type radarHTTPTopLocationListByTlsVersionResponseResultMetaConfidenceInfoAnnotationJSON struct {
-	DataSource      apijson.Field
-	Description     apijson.Field
-	EventType       apijson.Field
-	IsInstantaneous apijson.Field
-	EndTime         apijson.Field
-	LinkedURL       apijson.Field
-	StartTime       apijson.Field
-	raw             string
-	ExtraFields     map[string]apijson.Field
-}
-
-func (r *RadarHTTPTopLocationListByTlsVersionResponseResultMetaConfidenceInfoAnnotation) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r radarHTTPTopLocationListByTlsVersionResponseResultMetaConfidenceInfoAnnotationJSON) RawJSON() string {
+func (r radarHTTPTopLocationListByTlsVersionResponseResultMetaUnitJSON) RawJSON() string {
 	return r.raw
 }
 
 type RadarHTTPTopLocationListByTlsVersionResponseResultTop0 struct {
-	ClientCountryAlpha2 string                                                     `json:"clientCountryAlpha2,required"`
-	ClientCountryName   string                                                     `json:"clientCountryName,required"`
-	Value               string                                                     `json:"value,required"`
-	JSON                radarHTTPTopLocationListByTlsVersionResponseResultTop0JSON `json:"-"`
+	ClientCountryAlpha2 string `json:"clientCountryAlpha2,required"`
+	ClientCountryName   string `json:"clientCountryName,required"`
+	// A numeric string.
+	Value string                                                     `json:"value,required"`
+	JSON  radarHTTPTopLocationListByTlsVersionResponseResultTop0JSON `json:"-"`
 }
 
 // radarHTTPTopLocationListByTlsVersionResponseResultTop0JSON contains the JSON
@@ -1735,24 +2282,25 @@ func (r radarHTTPTopLocationListByTlsVersionResponseResultTop0JSON) RawJSON() st
 }
 
 type RadarHTTPTopLocationListParams struct {
-	// Comma-separated list of Autonomous System Numbers (ASNs). Prefix with `-` to
-	// exclude ASNs from results. For example, `-174, 3356` excludes results from
-	// AS174, but includes results from AS3356.
+	// Filters results by Autonomous System. Specify one or more Autonomous System
+	// Numbers (ASNs) as a comma-separated list. Prefix with `-` to exclude ASNs from
+	// results. For example, `-174, 3356` excludes results from AS174, but includes
+	// results from AS3356.
 	Asn param.Field[[]string] `query:"asn"`
 	// Filters results by bot class. Refer to
 	// [Bot classes](https://developers.cloudflare.com/radar/concepts/bot-classes/).
 	BotClass param.Field[[]RadarHTTPTopLocationListParamsBotClass] `query:"botClass"`
 	// Filters results by browser family.
 	BrowserFamily param.Field[[]RadarHTTPTopLocationListParamsBrowserFamily] `query:"browserFamily"`
-	// Comma-separated list of continents (alpha-2 continent codes). Prefix with `-` to
-	// exclude continents from results. For example, `-EU,NA` excludes results from EU,
-	// but includes results from NA.
+	// Filters results by continent. Specify a comma-separated list of alpha-2 codes.
+	// Prefix with `-` to exclude continents from results. For example, `-EU,NA`
+	// excludes results from EU, but includes results from NA.
 	Continent param.Field[[]string] `query:"continent"`
 	// End of the date range (inclusive).
 	DateEnd param.Field[[]time.Time] `query:"dateEnd" format:"date-time"`
-	// Filters results by the specified date range. For example, use `7d` and
-	// `7dcontrol` to compare this week with the previous week. Use this parameter or
-	// set specific start and end dates (`dateStart` and `dateEnd` parameters).
+	// Filters results by date range. For example, use `7d` and `7dcontrol` to compare
+	// this week with the previous week. Use this parameter or set specific start and
+	// end dates (`dateStart` and `dateEnd` parameters).
 	DateRange param.Field[[]string] `query:"dateRange"`
 	// Start of the date range.
 	DateStart param.Field[[]time.Time] `query:"dateStart" format:"date-time"`
@@ -1768,9 +2316,9 @@ type RadarHTTPTopLocationListParams struct {
 	IPVersion param.Field[[]RadarHTTPTopLocationListParamsIPVersion] `query:"ipVersion"`
 	// Limits the number of objects returned in the response.
 	Limit param.Field[int64] `query:"limit"`
-	// Comma-separated list of locations (alpha-2 codes). Prefix with `-` to exclude
-	// locations from results. For example, `-US,PT` excludes results from the US, but
-	// includes results from PT.
+	// Filters results by location. Specify a comma-separated list of alpha-2 codes.
+	// Prefix with `-` to exclude locations from results. For example, `-US,PT`
+	// excludes results from the US, but includes results from PT.
 	Location param.Field[[]string] `query:"location"`
 	// Array of names used to label the series in the response.
 	Name param.Field[[]string] `query:"name"`
@@ -1938,21 +2486,22 @@ func (r RadarHTTPTopLocationListParamsTlsVersion) IsKnown() bool {
 }
 
 type RadarHTTPTopLocationListByBotClassParams struct {
-	// Comma-separated list of Autonomous System Numbers (ASNs). Prefix with `-` to
-	// exclude ASNs from results. For example, `-174, 3356` excludes results from
-	// AS174, but includes results from AS3356.
+	// Filters results by Autonomous System. Specify one or more Autonomous System
+	// Numbers (ASNs) as a comma-separated list. Prefix with `-` to exclude ASNs from
+	// results. For example, `-174, 3356` excludes results from AS174, but includes
+	// results from AS3356.
 	Asn param.Field[[]string] `query:"asn"`
 	// Filters results by browser family.
 	BrowserFamily param.Field[[]RadarHTTPTopLocationListByBotClassParamsBrowserFamily] `query:"browserFamily"`
-	// Comma-separated list of continents (alpha-2 continent codes). Prefix with `-` to
-	// exclude continents from results. For example, `-EU,NA` excludes results from EU,
-	// but includes results from NA.
+	// Filters results by continent. Specify a comma-separated list of alpha-2 codes.
+	// Prefix with `-` to exclude continents from results. For example, `-EU,NA`
+	// excludes results from EU, but includes results from NA.
 	Continent param.Field[[]string] `query:"continent"`
 	// End of the date range (inclusive).
 	DateEnd param.Field[[]time.Time] `query:"dateEnd" format:"date-time"`
-	// Filters results by the specified date range. For example, use `7d` and
-	// `7dcontrol` to compare this week with the previous week. Use this parameter or
-	// set specific start and end dates (`dateStart` and `dateEnd` parameters).
+	// Filters results by date range. For example, use `7d` and `7dcontrol` to compare
+	// this week with the previous week. Use this parameter or set specific start and
+	// end dates (`dateStart` and `dateEnd` parameters).
 	DateRange param.Field[[]string] `query:"dateRange"`
 	// Start of the date range.
 	DateStart param.Field[[]time.Time] `query:"dateStart" format:"date-time"`
@@ -1968,9 +2517,9 @@ type RadarHTTPTopLocationListByBotClassParams struct {
 	IPVersion param.Field[[]RadarHTTPTopLocationListByBotClassParamsIPVersion] `query:"ipVersion"`
 	// Limits the number of objects returned in the response.
 	Limit param.Field[int64] `query:"limit"`
-	// Comma-separated list of locations (alpha-2 codes). Prefix with `-` to exclude
-	// locations from results. For example, `-US,PT` excludes results from the US, but
-	// includes results from PT.
+	// Filters results by location. Specify a comma-separated list of alpha-2 codes.
+	// Prefix with `-` to exclude locations from results. For example, `-US,PT`
+	// excludes results from the US, but includes results from PT.
 	Location param.Field[[]string] `query:"location"`
 	// Array of names used to label the series in the response.
 	Name param.Field[[]string] `query:"name"`
@@ -2140,22 +2689,23 @@ func (r RadarHTTPTopLocationListByBotClassParamsTlsVersion) IsKnown() bool {
 }
 
 type RadarHTTPTopLocationListByBrowserFamilyParams struct {
-	// Comma-separated list of Autonomous System Numbers (ASNs). Prefix with `-` to
-	// exclude ASNs from results. For example, `-174, 3356` excludes results from
-	// AS174, but includes results from AS3356.
+	// Filters results by Autonomous System. Specify one or more Autonomous System
+	// Numbers (ASNs) as a comma-separated list. Prefix with `-` to exclude ASNs from
+	// results. For example, `-174, 3356` excludes results from AS174, but includes
+	// results from AS3356.
 	Asn param.Field[[]string] `query:"asn"`
 	// Filters results by bot class. Refer to
 	// [Bot classes](https://developers.cloudflare.com/radar/concepts/bot-classes/).
 	BotClass param.Field[[]RadarHTTPTopLocationListByBrowserFamilyParamsBotClass] `query:"botClass"`
-	// Comma-separated list of continents (alpha-2 continent codes). Prefix with `-` to
-	// exclude continents from results. For example, `-EU,NA` excludes results from EU,
-	// but includes results from NA.
+	// Filters results by continent. Specify a comma-separated list of alpha-2 codes.
+	// Prefix with `-` to exclude continents from results. For example, `-EU,NA`
+	// excludes results from EU, but includes results from NA.
 	Continent param.Field[[]string] `query:"continent"`
 	// End of the date range (inclusive).
 	DateEnd param.Field[[]time.Time] `query:"dateEnd" format:"date-time"`
-	// Filters results by the specified date range. For example, use `7d` and
-	// `7dcontrol` to compare this week with the previous week. Use this parameter or
-	// set specific start and end dates (`dateStart` and `dateEnd` parameters).
+	// Filters results by date range. For example, use `7d` and `7dcontrol` to compare
+	// this week with the previous week. Use this parameter or set specific start and
+	// end dates (`dateStart` and `dateEnd` parameters).
 	DateRange param.Field[[]string] `query:"dateRange"`
 	// Start of the date range.
 	DateStart param.Field[[]time.Time] `query:"dateStart" format:"date-time"`
@@ -2171,9 +2721,9 @@ type RadarHTTPTopLocationListByBrowserFamilyParams struct {
 	IPVersion param.Field[[]RadarHTTPTopLocationListByBrowserFamilyParamsIPVersion] `query:"ipVersion"`
 	// Limits the number of objects returned in the response.
 	Limit param.Field[int64] `query:"limit"`
-	// Comma-separated list of locations (alpha-2 codes). Prefix with `-` to exclude
-	// locations from results. For example, `-US,PT` excludes results from the US, but
-	// includes results from PT.
+	// Filters results by location. Specify a comma-separated list of alpha-2 codes.
+	// Prefix with `-` to exclude locations from results. For example, `-US,PT`
+	// excludes results from the US, but includes results from PT.
 	Location param.Field[[]string] `query:"location"`
 	// Array of names used to label the series in the response.
 	Name param.Field[[]string] `query:"name"`
@@ -2342,24 +2892,25 @@ func (r RadarHTTPTopLocationListByBrowserFamilyParamsTlsVersion) IsKnown() bool 
 }
 
 type RadarHTTPTopLocationListByDeviceTypeParams struct {
-	// Comma-separated list of Autonomous System Numbers (ASNs). Prefix with `-` to
-	// exclude ASNs from results. For example, `-174, 3356` excludes results from
-	// AS174, but includes results from AS3356.
+	// Filters results by Autonomous System. Specify one or more Autonomous System
+	// Numbers (ASNs) as a comma-separated list. Prefix with `-` to exclude ASNs from
+	// results. For example, `-174, 3356` excludes results from AS174, but includes
+	// results from AS3356.
 	Asn param.Field[[]string] `query:"asn"`
 	// Filters results by bot class. Refer to
 	// [Bot classes](https://developers.cloudflare.com/radar/concepts/bot-classes/).
 	BotClass param.Field[[]RadarHTTPTopLocationListByDeviceTypeParamsBotClass] `query:"botClass"`
 	// Filters results by browser family.
 	BrowserFamily param.Field[[]RadarHTTPTopLocationListByDeviceTypeParamsBrowserFamily] `query:"browserFamily"`
-	// Comma-separated list of continents (alpha-2 continent codes). Prefix with `-` to
-	// exclude continents from results. For example, `-EU,NA` excludes results from EU,
-	// but includes results from NA.
+	// Filters results by continent. Specify a comma-separated list of alpha-2 codes.
+	// Prefix with `-` to exclude continents from results. For example, `-EU,NA`
+	// excludes results from EU, but includes results from NA.
 	Continent param.Field[[]string] `query:"continent"`
 	// End of the date range (inclusive).
 	DateEnd param.Field[[]time.Time] `query:"dateEnd" format:"date-time"`
-	// Filters results by the specified date range. For example, use `7d` and
-	// `7dcontrol` to compare this week with the previous week. Use this parameter or
-	// set specific start and end dates (`dateStart` and `dateEnd` parameters).
+	// Filters results by date range. For example, use `7d` and `7dcontrol` to compare
+	// this week with the previous week. Use this parameter or set specific start and
+	// end dates (`dateStart` and `dateEnd` parameters).
 	DateRange param.Field[[]string] `query:"dateRange"`
 	// Start of the date range.
 	DateStart param.Field[[]time.Time] `query:"dateStart" format:"date-time"`
@@ -2373,9 +2924,9 @@ type RadarHTTPTopLocationListByDeviceTypeParams struct {
 	IPVersion param.Field[[]RadarHTTPTopLocationListByDeviceTypeParamsIPVersion] `query:"ipVersion"`
 	// Limits the number of objects returned in the response.
 	Limit param.Field[int64] `query:"limit"`
-	// Comma-separated list of locations (alpha-2 codes). Prefix with `-` to exclude
-	// locations from results. For example, `-US,PT` excludes results from the US, but
-	// includes results from PT.
+	// Filters results by location. Specify a comma-separated list of alpha-2 codes.
+	// Prefix with `-` to exclude locations from results. For example, `-US,PT`
+	// excludes results from the US, but includes results from PT.
 	Location param.Field[[]string] `query:"location"`
 	// Array of names used to label the series in the response.
 	Name param.Field[[]string] `query:"name"`
@@ -2544,24 +3095,25 @@ func (r RadarHTTPTopLocationListByDeviceTypeParamsTlsVersion) IsKnown() bool {
 }
 
 type RadarHTTPTopLocationListByHTTPProtocolParams struct {
-	// Comma-separated list of Autonomous System Numbers (ASNs). Prefix with `-` to
-	// exclude ASNs from results. For example, `-174, 3356` excludes results from
-	// AS174, but includes results from AS3356.
+	// Filters results by Autonomous System. Specify one or more Autonomous System
+	// Numbers (ASNs) as a comma-separated list. Prefix with `-` to exclude ASNs from
+	// results. For example, `-174, 3356` excludes results from AS174, but includes
+	// results from AS3356.
 	Asn param.Field[[]string] `query:"asn"`
 	// Filters results by bot class. Refer to
 	// [Bot classes](https://developers.cloudflare.com/radar/concepts/bot-classes/).
 	BotClass param.Field[[]RadarHTTPTopLocationListByHTTPProtocolParamsBotClass] `query:"botClass"`
 	// Filters results by browser family.
 	BrowserFamily param.Field[[]RadarHTTPTopLocationListByHTTPProtocolParamsBrowserFamily] `query:"browserFamily"`
-	// Comma-separated list of continents (alpha-2 continent codes). Prefix with `-` to
-	// exclude continents from results. For example, `-EU,NA` excludes results from EU,
-	// but includes results from NA.
+	// Filters results by continent. Specify a comma-separated list of alpha-2 codes.
+	// Prefix with `-` to exclude continents from results. For example, `-EU,NA`
+	// excludes results from EU, but includes results from NA.
 	Continent param.Field[[]string] `query:"continent"`
 	// End of the date range (inclusive).
 	DateEnd param.Field[[]time.Time] `query:"dateEnd" format:"date-time"`
-	// Filters results by the specified date range. For example, use `7d` and
-	// `7dcontrol` to compare this week with the previous week. Use this parameter or
-	// set specific start and end dates (`dateStart` and `dateEnd` parameters).
+	// Filters results by date range. For example, use `7d` and `7dcontrol` to compare
+	// this week with the previous week. Use this parameter or set specific start and
+	// end dates (`dateStart` and `dateEnd` parameters).
 	DateRange param.Field[[]string] `query:"dateRange"`
 	// Start of the date range.
 	DateStart param.Field[[]time.Time] `query:"dateStart" format:"date-time"`
@@ -2575,9 +3127,9 @@ type RadarHTTPTopLocationListByHTTPProtocolParams struct {
 	IPVersion param.Field[[]RadarHTTPTopLocationListByHTTPProtocolParamsIPVersion] `query:"ipVersion"`
 	// Limits the number of objects returned in the response.
 	Limit param.Field[int64] `query:"limit"`
-	// Comma-separated list of locations (alpha-2 codes). Prefix with `-` to exclude
-	// locations from results. For example, `-US,PT` excludes results from the US, but
-	// includes results from PT.
+	// Filters results by location. Specify a comma-separated list of alpha-2 codes.
+	// Prefix with `-` to exclude locations from results. For example, `-US,PT`
+	// excludes results from the US, but includes results from PT.
 	Location param.Field[[]string] `query:"location"`
 	// Array of names used to label the series in the response.
 	Name param.Field[[]string] `query:"name"`
@@ -2746,24 +3298,25 @@ func (r RadarHTTPTopLocationListByHTTPProtocolParamsTlsVersion) IsKnown() bool {
 }
 
 type RadarHTTPTopLocationListByHTTPVersionParams struct {
-	// Comma-separated list of Autonomous System Numbers (ASNs). Prefix with `-` to
-	// exclude ASNs from results. For example, `-174, 3356` excludes results from
-	// AS174, but includes results from AS3356.
+	// Filters results by Autonomous System. Specify one or more Autonomous System
+	// Numbers (ASNs) as a comma-separated list. Prefix with `-` to exclude ASNs from
+	// results. For example, `-174, 3356` excludes results from AS174, but includes
+	// results from AS3356.
 	Asn param.Field[[]string] `query:"asn"`
 	// Filters results by bot class. Refer to
 	// [Bot classes](https://developers.cloudflare.com/radar/concepts/bot-classes/).
 	BotClass param.Field[[]RadarHTTPTopLocationListByHTTPVersionParamsBotClass] `query:"botClass"`
 	// Filters results by browser family.
 	BrowserFamily param.Field[[]RadarHTTPTopLocationListByHTTPVersionParamsBrowserFamily] `query:"browserFamily"`
-	// Comma-separated list of continents (alpha-2 continent codes). Prefix with `-` to
-	// exclude continents from results. For example, `-EU,NA` excludes results from EU,
-	// but includes results from NA.
+	// Filters results by continent. Specify a comma-separated list of alpha-2 codes.
+	// Prefix with `-` to exclude continents from results. For example, `-EU,NA`
+	// excludes results from EU, but includes results from NA.
 	Continent param.Field[[]string] `query:"continent"`
 	// End of the date range (inclusive).
 	DateEnd param.Field[[]time.Time] `query:"dateEnd" format:"date-time"`
-	// Filters results by the specified date range. For example, use `7d` and
-	// `7dcontrol` to compare this week with the previous week. Use this parameter or
-	// set specific start and end dates (`dateStart` and `dateEnd` parameters).
+	// Filters results by date range. For example, use `7d` and `7dcontrol` to compare
+	// this week with the previous week. Use this parameter or set specific start and
+	// end dates (`dateStart` and `dateEnd` parameters).
 	DateRange param.Field[[]string] `query:"dateRange"`
 	// Start of the date range.
 	DateStart param.Field[[]time.Time] `query:"dateStart" format:"date-time"`
@@ -2777,9 +3330,9 @@ type RadarHTTPTopLocationListByHTTPVersionParams struct {
 	IPVersion param.Field[[]RadarHTTPTopLocationListByHTTPVersionParamsIPVersion] `query:"ipVersion"`
 	// Limits the number of objects returned in the response.
 	Limit param.Field[int64] `query:"limit"`
-	// Comma-separated list of locations (alpha-2 codes). Prefix with `-` to exclude
-	// locations from results. For example, `-US,PT` excludes results from the US, but
-	// includes results from PT.
+	// Filters results by location. Specify a comma-separated list of alpha-2 codes.
+	// Prefix with `-` to exclude locations from results. For example, `-US,PT`
+	// excludes results from the US, but includes results from PT.
 	Location param.Field[[]string] `query:"location"`
 	// Array of names used to label the series in the response.
 	Name param.Field[[]string] `query:"name"`
@@ -2948,24 +3501,25 @@ func (r RadarHTTPTopLocationListByHTTPVersionParamsTlsVersion) IsKnown() bool {
 }
 
 type RadarHTTPTopLocationListByIPVersionParams struct {
-	// Comma-separated list of Autonomous System Numbers (ASNs). Prefix with `-` to
-	// exclude ASNs from results. For example, `-174, 3356` excludes results from
-	// AS174, but includes results from AS3356.
+	// Filters results by Autonomous System. Specify one or more Autonomous System
+	// Numbers (ASNs) as a comma-separated list. Prefix with `-` to exclude ASNs from
+	// results. For example, `-174, 3356` excludes results from AS174, but includes
+	// results from AS3356.
 	Asn param.Field[[]string] `query:"asn"`
 	// Filters results by bot class. Refer to
 	// [Bot classes](https://developers.cloudflare.com/radar/concepts/bot-classes/).
 	BotClass param.Field[[]RadarHTTPTopLocationListByIPVersionParamsBotClass] `query:"botClass"`
 	// Filters results by browser family.
 	BrowserFamily param.Field[[]RadarHTTPTopLocationListByIPVersionParamsBrowserFamily] `query:"browserFamily"`
-	// Comma-separated list of continents (alpha-2 continent codes). Prefix with `-` to
-	// exclude continents from results. For example, `-EU,NA` excludes results from EU,
-	// but includes results from NA.
+	// Filters results by continent. Specify a comma-separated list of alpha-2 codes.
+	// Prefix with `-` to exclude continents from results. For example, `-EU,NA`
+	// excludes results from EU, but includes results from NA.
 	Continent param.Field[[]string] `query:"continent"`
 	// End of the date range (inclusive).
 	DateEnd param.Field[[]time.Time] `query:"dateEnd" format:"date-time"`
-	// Filters results by the specified date range. For example, use `7d` and
-	// `7dcontrol` to compare this week with the previous week. Use this parameter or
-	// set specific start and end dates (`dateStart` and `dateEnd` parameters).
+	// Filters results by date range. For example, use `7d` and `7dcontrol` to compare
+	// this week with the previous week. Use this parameter or set specific start and
+	// end dates (`dateStart` and `dateEnd` parameters).
 	DateRange param.Field[[]string] `query:"dateRange"`
 	// Start of the date range.
 	DateStart param.Field[[]time.Time] `query:"dateStart" format:"date-time"`
@@ -2979,9 +3533,9 @@ type RadarHTTPTopLocationListByIPVersionParams struct {
 	HTTPVersion param.Field[[]RadarHTTPTopLocationListByIPVersionParamsHTTPVersion] `query:"httpVersion"`
 	// Limits the number of objects returned in the response.
 	Limit param.Field[int64] `query:"limit"`
-	// Comma-separated list of locations (alpha-2 codes). Prefix with `-` to exclude
-	// locations from results. For example, `-US,PT` excludes results from the US, but
-	// includes results from PT.
+	// Filters results by location. Specify a comma-separated list of alpha-2 codes.
+	// Prefix with `-` to exclude locations from results. For example, `-US,PT`
+	// excludes results from the US, but includes results from PT.
 	Location param.Field[[]string] `query:"location"`
 	// Array of names used to label the series in the response.
 	Name param.Field[[]string] `query:"name"`
@@ -3150,24 +3704,25 @@ func (r RadarHTTPTopLocationListByIPVersionParamsTlsVersion) IsKnown() bool {
 }
 
 type RadarHTTPTopLocationListByOsParams struct {
-	// Comma-separated list of Autonomous System Numbers (ASNs). Prefix with `-` to
-	// exclude ASNs from results. For example, `-174, 3356` excludes results from
-	// AS174, but includes results from AS3356.
+	// Filters results by Autonomous System. Specify one or more Autonomous System
+	// Numbers (ASNs) as a comma-separated list. Prefix with `-` to exclude ASNs from
+	// results. For example, `-174, 3356` excludes results from AS174, but includes
+	// results from AS3356.
 	Asn param.Field[[]string] `query:"asn"`
 	// Filters results by bot class. Refer to
 	// [Bot classes](https://developers.cloudflare.com/radar/concepts/bot-classes/).
 	BotClass param.Field[[]RadarHTTPTopLocationListByOsParamsBotClass] `query:"botClass"`
 	// Filters results by browser family.
 	BrowserFamily param.Field[[]RadarHTTPTopLocationListByOsParamsBrowserFamily] `query:"browserFamily"`
-	// Comma-separated list of continents (alpha-2 continent codes). Prefix with `-` to
-	// exclude continents from results. For example, `-EU,NA` excludes results from EU,
-	// but includes results from NA.
+	// Filters results by continent. Specify a comma-separated list of alpha-2 codes.
+	// Prefix with `-` to exclude continents from results. For example, `-EU,NA`
+	// excludes results from EU, but includes results from NA.
 	Continent param.Field[[]string] `query:"continent"`
 	// End of the date range (inclusive).
 	DateEnd param.Field[[]time.Time] `query:"dateEnd" format:"date-time"`
-	// Filters results by the specified date range. For example, use `7d` and
-	// `7dcontrol` to compare this week with the previous week. Use this parameter or
-	// set specific start and end dates (`dateStart` and `dateEnd` parameters).
+	// Filters results by date range. For example, use `7d` and `7dcontrol` to compare
+	// this week with the previous week. Use this parameter or set specific start and
+	// end dates (`dateStart` and `dateEnd` parameters).
 	DateRange param.Field[[]string] `query:"dateRange"`
 	// Start of the date range.
 	DateStart param.Field[[]time.Time] `query:"dateStart" format:"date-time"`
@@ -3183,9 +3738,9 @@ type RadarHTTPTopLocationListByOsParams struct {
 	IPVersion param.Field[[]RadarHTTPTopLocationListByOsParamsIPVersion] `query:"ipVersion"`
 	// Limits the number of objects returned in the response.
 	Limit param.Field[int64] `query:"limit"`
-	// Comma-separated list of locations (alpha-2 codes). Prefix with `-` to exclude
-	// locations from results. For example, `-US,PT` excludes results from the US, but
-	// includes results from PT.
+	// Filters results by location. Specify a comma-separated list of alpha-2 codes.
+	// Prefix with `-` to exclude locations from results. For example, `-US,PT`
+	// excludes results from the US, but includes results from PT.
 	Location param.Field[[]string] `query:"location"`
 	// Array of names used to label the series in the response.
 	Name param.Field[[]string] `query:"name"`
@@ -3352,24 +3907,25 @@ func (r RadarHTTPTopLocationListByOsParamsTlsVersion) IsKnown() bool {
 }
 
 type RadarHTTPTopLocationListByTlsVersionParams struct {
-	// Comma-separated list of Autonomous System Numbers (ASNs). Prefix with `-` to
-	// exclude ASNs from results. For example, `-174, 3356` excludes results from
-	// AS174, but includes results from AS3356.
+	// Filters results by Autonomous System. Specify one or more Autonomous System
+	// Numbers (ASNs) as a comma-separated list. Prefix with `-` to exclude ASNs from
+	// results. For example, `-174, 3356` excludes results from AS174, but includes
+	// results from AS3356.
 	Asn param.Field[[]string] `query:"asn"`
 	// Filters results by bot class. Refer to
 	// [Bot classes](https://developers.cloudflare.com/radar/concepts/bot-classes/).
 	BotClass param.Field[[]RadarHTTPTopLocationListByTlsVersionParamsBotClass] `query:"botClass"`
 	// Filters results by browser family.
 	BrowserFamily param.Field[[]RadarHTTPTopLocationListByTlsVersionParamsBrowserFamily] `query:"browserFamily"`
-	// Comma-separated list of continents (alpha-2 continent codes). Prefix with `-` to
-	// exclude continents from results. For example, `-EU,NA` excludes results from EU,
-	// but includes results from NA.
+	// Filters results by continent. Specify a comma-separated list of alpha-2 codes.
+	// Prefix with `-` to exclude continents from results. For example, `-EU,NA`
+	// excludes results from EU, but includes results from NA.
 	Continent param.Field[[]string] `query:"continent"`
 	// End of the date range (inclusive).
 	DateEnd param.Field[[]time.Time] `query:"dateEnd" format:"date-time"`
-	// Filters results by the specified date range. For example, use `7d` and
-	// `7dcontrol` to compare this week with the previous week. Use this parameter or
-	// set specific start and end dates (`dateStart` and `dateEnd` parameters).
+	// Filters results by date range. For example, use `7d` and `7dcontrol` to compare
+	// this week with the previous week. Use this parameter or set specific start and
+	// end dates (`dateStart` and `dateEnd` parameters).
 	DateRange param.Field[[]string] `query:"dateRange"`
 	// Start of the date range.
 	DateStart param.Field[[]time.Time] `query:"dateStart" format:"date-time"`
@@ -3385,9 +3941,9 @@ type RadarHTTPTopLocationListByTlsVersionParams struct {
 	IPVersion param.Field[[]RadarHTTPTopLocationListByTlsVersionParamsIPVersion] `query:"ipVersion"`
 	// Limits the number of objects returned in the response.
 	Limit param.Field[int64] `query:"limit"`
-	// Comma-separated list of locations (alpha-2 codes). Prefix with `-` to exclude
-	// locations from results. For example, `-US,PT` excludes results from the US, but
-	// includes results from PT.
+	// Filters results by location. Specify a comma-separated list of alpha-2 codes.
+	// Prefix with `-` to exclude locations from results. For example, `-US,PT`
+	// excludes results from the US, but includes results from PT.
 	Location param.Field[[]string] `query:"location"`
 	// Array of names used to label the series in the response.
 	Name param.Field[[]string] `query:"name"`

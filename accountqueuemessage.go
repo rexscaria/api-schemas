@@ -66,15 +66,21 @@ func (r *AccountQueueMessageService) Pull(ctx context.Context, accountID string,
 }
 
 type AccountQueueMessageAcknowledgeResponse struct {
-	Result AccountQueueMessageAcknowledgeResponseResult `json:"result"`
-	JSON   accountQueueMessageAcknowledgeResponseJSON   `json:"-"`
-	MqAPIV4Success
+	Errors   []AccountQueueMessageAcknowledgeResponseError `json:"errors"`
+	Messages []string                                      `json:"messages"`
+	Result   AccountQueueMessageAcknowledgeResponseResult  `json:"result"`
+	// Indicates if the API call was successful or not.
+	Success AccountQueueMessageAcknowledgeResponseSuccess `json:"success"`
+	JSON    accountQueueMessageAcknowledgeResponseJSON    `json:"-"`
 }
 
 // accountQueueMessageAcknowledgeResponseJSON contains the JSON metadata for the
 // struct [AccountQueueMessageAcknowledgeResponse]
 type accountQueueMessageAcknowledgeResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -84,6 +90,54 @@ func (r *AccountQueueMessageAcknowledgeResponse) UnmarshalJSON(data []byte) (err
 }
 
 func (r accountQueueMessageAcknowledgeResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountQueueMessageAcknowledgeResponseError struct {
+	Code             int64                                              `json:"code,required"`
+	Message          string                                             `json:"message,required"`
+	DocumentationURL string                                             `json:"documentation_url"`
+	Source           AccountQueueMessageAcknowledgeResponseErrorsSource `json:"source"`
+	JSON             accountQueueMessageAcknowledgeResponseErrorJSON    `json:"-"`
+}
+
+// accountQueueMessageAcknowledgeResponseErrorJSON contains the JSON metadata for
+// the struct [AccountQueueMessageAcknowledgeResponseError]
+type accountQueueMessageAcknowledgeResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountQueueMessageAcknowledgeResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountQueueMessageAcknowledgeResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountQueueMessageAcknowledgeResponseErrorsSource struct {
+	Pointer string                                                 `json:"pointer"`
+	JSON    accountQueueMessageAcknowledgeResponseErrorsSourceJSON `json:"-"`
+}
+
+// accountQueueMessageAcknowledgeResponseErrorsSourceJSON contains the JSON
+// metadata for the struct [AccountQueueMessageAcknowledgeResponseErrorsSource]
+type accountQueueMessageAcknowledgeResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountQueueMessageAcknowledgeResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountQueueMessageAcknowledgeResponseErrorsSourceJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -114,16 +168,37 @@ func (r accountQueueMessageAcknowledgeResponseResultJSON) RawJSON() string {
 	return r.raw
 }
 
+// Indicates if the API call was successful or not.
+type AccountQueueMessageAcknowledgeResponseSuccess bool
+
+const (
+	AccountQueueMessageAcknowledgeResponseSuccessTrue AccountQueueMessageAcknowledgeResponseSuccess = true
+)
+
+func (r AccountQueueMessageAcknowledgeResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountQueueMessageAcknowledgeResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountQueueMessagePullResponse struct {
-	Result []AccountQueueMessagePullResponseResult `json:"result"`
-	JSON   accountQueueMessagePullResponseJSON     `json:"-"`
-	MqAPIV4Success
+	Errors   []AccountQueueMessagePullResponseError `json:"errors"`
+	Messages []string                               `json:"messages"`
+	Result   AccountQueueMessagePullResponseResult  `json:"result"`
+	// Indicates if the API call was successful or not.
+	Success AccountQueueMessagePullResponseSuccess `json:"success"`
+	JSON    accountQueueMessagePullResponseJSON    `json:"-"`
 }
 
 // accountQueueMessagePullResponseJSON contains the JSON metadata for the struct
 // [AccountQueueMessagePullResponse]
 type accountQueueMessagePullResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -136,21 +211,93 @@ func (r accountQueueMessagePullResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+type AccountQueueMessagePullResponseError struct {
+	Code             int64                                       `json:"code,required"`
+	Message          string                                      `json:"message,required"`
+	DocumentationURL string                                      `json:"documentation_url"`
+	Source           AccountQueueMessagePullResponseErrorsSource `json:"source"`
+	JSON             accountQueueMessagePullResponseErrorJSON    `json:"-"`
+}
+
+// accountQueueMessagePullResponseErrorJSON contains the JSON metadata for the
+// struct [AccountQueueMessagePullResponseError]
+type accountQueueMessagePullResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountQueueMessagePullResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountQueueMessagePullResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountQueueMessagePullResponseErrorsSource struct {
+	Pointer string                                          `json:"pointer"`
+	JSON    accountQueueMessagePullResponseErrorsSourceJSON `json:"-"`
+}
+
+// accountQueueMessagePullResponseErrorsSourceJSON contains the JSON metadata for
+// the struct [AccountQueueMessagePullResponseErrorsSource]
+type accountQueueMessagePullResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountQueueMessagePullResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountQueueMessagePullResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
 type AccountQueueMessagePullResponseResult struct {
-	ID       string  `json:"id"`
-	Attempts float64 `json:"attempts"`
-	Body     string  `json:"body"`
-	// An ID that represents an "in-flight" message that has been pulled from a Queue.
-	// You must hold on to this ID and use it to acknowledge this message.
-	LeaseID     string                                    `json:"lease_id"`
-	Metadata    interface{}                               `json:"metadata"`
-	TimestampMs float64                                   `json:"timestamp_ms"`
-	JSON        accountQueueMessagePullResponseResultJSON `json:"-"`
+	// The number of unacknowledged messages in the queue
+	MessageBacklogCount float64                                        `json:"message_backlog_count"`
+	Messages            []AccountQueueMessagePullResponseResultMessage `json:"messages"`
+	JSON                accountQueueMessagePullResponseResultJSON      `json:"-"`
 }
 
 // accountQueueMessagePullResponseResultJSON contains the JSON metadata for the
 // struct [AccountQueueMessagePullResponseResult]
 type accountQueueMessagePullResponseResultJSON struct {
+	MessageBacklogCount apijson.Field
+	Messages            apijson.Field
+	raw                 string
+	ExtraFields         map[string]apijson.Field
+}
+
+func (r *AccountQueueMessagePullResponseResult) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountQueueMessagePullResponseResultJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountQueueMessagePullResponseResultMessage struct {
+	ID       string  `json:"id"`
+	Attempts float64 `json:"attempts"`
+	Body     string  `json:"body"`
+	// An ID that represents an "in-flight" message that has been pulled from a Queue.
+	// You must hold on to this ID and use it to acknowledge this message.
+	LeaseID     string                                           `json:"lease_id"`
+	Metadata    interface{}                                      `json:"metadata"`
+	TimestampMs float64                                          `json:"timestamp_ms"`
+	JSON        accountQueueMessagePullResponseResultMessageJSON `json:"-"`
+}
+
+// accountQueueMessagePullResponseResultMessageJSON contains the JSON metadata for
+// the struct [AccountQueueMessagePullResponseResultMessage]
+type accountQueueMessagePullResponseResultMessageJSON struct {
 	ID          apijson.Field
 	Attempts    apijson.Field
 	Body        apijson.Field
@@ -161,12 +308,27 @@ type accountQueueMessagePullResponseResultJSON struct {
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *AccountQueueMessagePullResponseResult) UnmarshalJSON(data []byte) (err error) {
+func (r *AccountQueueMessagePullResponseResultMessage) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r accountQueueMessagePullResponseResultJSON) RawJSON() string {
+func (r accountQueueMessagePullResponseResultMessageJSON) RawJSON() string {
 	return r.raw
+}
+
+// Indicates if the API call was successful or not.
+type AccountQueueMessagePullResponseSuccess bool
+
+const (
+	AccountQueueMessagePullResponseSuccessTrue AccountQueueMessagePullResponseSuccess = true
+)
+
+func (r AccountQueueMessagePullResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountQueueMessagePullResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountQueueMessageAcknowledgeParams struct {

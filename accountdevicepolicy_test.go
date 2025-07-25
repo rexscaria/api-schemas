@@ -47,13 +47,14 @@ func TestAccountDevicePolicyNewWithOptionalParams(t *testing.T) {
 				Description: cfrex.F("Exclude testing domains from the tunnel"),
 			}}),
 			ExcludeOfficeIPs: cfrex.F(true),
-			Include: cfrex.F([]cfrex.SplitTunnelUnionParam{cfrex.SplitTunnelTeamsDevicesExcludeSplitTunnelWithAddressParam{
+			Include: cfrex.F([]cfrex.SplitTunnelIncludeUnionParam{cfrex.SplitTunnelIncludeTeamsDevicesIncludeSplitTunnelWithAddressParam{
 				Address:     cfrex.F("192.0.2.0/24"),
-				Description: cfrex.F("Exclude testing domains from the tunnel"),
+				Description: cfrex.F("Include testing domains in the tunnel"),
 			}}),
 			LanAllowMinutes:            cfrex.F(30.000000),
 			LanAllowSubnetSize:         cfrex.F(24.000000),
 			RegisterInterfaceIPWithDNS: cfrex.F(true),
+			SccmVpnBoundarySupport:     cfrex.F(false),
 			ServiceModeV2: cfrex.F(cfrex.ServiceModeV2Param{
 				Mode: cfrex.F("proxy"),
 				Port: cfrex.F(3000.000000),
@@ -125,11 +126,14 @@ func TestAccountDevicePolicyUpdateWithOptionalParams(t *testing.T) {
 				Description: cfrex.F("Exclude testing domains from the tunnel"),
 			}}),
 			ExcludeOfficeIPs: cfrex.F(true),
-			Include: cfrex.F([]cfrex.SplitTunnelUnionParam{cfrex.SplitTunnelTeamsDevicesExcludeSplitTunnelWithAddressParam{
+			Include: cfrex.F([]cfrex.SplitTunnelIncludeUnionParam{cfrex.SplitTunnelIncludeTeamsDevicesIncludeSplitTunnelWithAddressParam{
 				Address:     cfrex.F("192.0.2.0/24"),
-				Description: cfrex.F("Exclude testing domains from the tunnel"),
+				Description: cfrex.F("Include testing domains in the tunnel"),
 			}}),
+			LanAllowMinutes:            cfrex.F(30.000000),
+			LanAllowSubnetSize:         cfrex.F(24.000000),
 			RegisterInterfaceIPWithDNS: cfrex.F(true),
+			SccmVpnBoundarySupport:     cfrex.F(false),
 			ServiceModeV2: cfrex.F(cfrex.ServiceModeV2Param{
 				Mode: cfrex.F("proxy"),
 				Port: cfrex.F(3000.000000),
@@ -166,9 +170,6 @@ func TestAccountDevicePolicyDelete(t *testing.T) {
 		context.TODO(),
 		"699d98642c564d2e855e9661899b7252",
 		"f174e90a-fafe-4643-bbbc-4a0ed4fc8415",
-		cfrex.AccountDevicePolicyDeleteParams{
-			Body: map[string]interface{}{},
-		},
 	)
 	if err != nil {
 		var apierr *cfrex.Error
@@ -239,14 +240,17 @@ func TestAccountDevicePolicyUpdateByIDWithOptionalParams(t *testing.T) {
 				Description: cfrex.F("Exclude testing domains from the tunnel"),
 			}}),
 			ExcludeOfficeIPs: cfrex.F(true),
-			Include: cfrex.F([]cfrex.SplitTunnelUnionParam{cfrex.SplitTunnelTeamsDevicesExcludeSplitTunnelWithAddressParam{
+			Include: cfrex.F([]cfrex.SplitTunnelIncludeUnionParam{cfrex.SplitTunnelIncludeTeamsDevicesIncludeSplitTunnelWithAddressParam{
 				Address:     cfrex.F("192.0.2.0/24"),
-				Description: cfrex.F("Exclude testing domains from the tunnel"),
+				Description: cfrex.F("Include testing domains in the tunnel"),
 			}}),
+			LanAllowMinutes:            cfrex.F(30.000000),
+			LanAllowSubnetSize:         cfrex.F(24.000000),
 			Match:                      cfrex.F(`identity.email == "test@cloudflare.com"`),
 			Name:                       cfrex.F("Allow Developers"),
 			Precedence:                 cfrex.F(100.000000),
 			RegisterInterfaceIPWithDNS: cfrex.F(true),
+			SccmVpnBoundarySupport:     cfrex.F(false),
 			ServiceModeV2: cfrex.F(cfrex.ServiceModeV2Param{
 				Mode: cfrex.F("proxy"),
 				Port: cfrex.F(3000.000000),

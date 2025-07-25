@@ -48,15 +48,21 @@ func (r *AccountBillingService) GetProfile(ctx context.Context, accountID string
 }
 
 type BillingResponseSingle struct {
-	Result BillingResponseSingleResult `json:"result"`
-	JSON   billingResponseSingleJSON   `json:"-"`
-	APIResponseSingleBilling
+	Errors   []BillingResponseSingleError   `json:"errors,required"`
+	Messages []BillingResponseSingleMessage `json:"messages,required"`
+	Result   BillingResponseSingleResult    `json:"result,required"`
+	// Whether the API call was successful
+	Success BillingResponseSingleSuccess `json:"success,required"`
+	JSON    billingResponseSingleJSON    `json:"-"`
 }
 
 // billingResponseSingleJSON contains the JSON metadata for the struct
 // [BillingResponseSingle]
 type billingResponseSingleJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -66,6 +72,102 @@ func (r *BillingResponseSingle) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (r billingResponseSingleJSON) RawJSON() string {
+	return r.raw
+}
+
+type BillingResponseSingleError struct {
+	Code             int64                             `json:"code,required"`
+	Message          string                            `json:"message,required"`
+	DocumentationURL string                            `json:"documentation_url"`
+	Source           BillingResponseSingleErrorsSource `json:"source"`
+	JSON             billingResponseSingleErrorJSON    `json:"-"`
+}
+
+// billingResponseSingleErrorJSON contains the JSON metadata for the struct
+// [BillingResponseSingleError]
+type billingResponseSingleErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *BillingResponseSingleError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r billingResponseSingleErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type BillingResponseSingleErrorsSource struct {
+	Pointer string                                `json:"pointer"`
+	JSON    billingResponseSingleErrorsSourceJSON `json:"-"`
+}
+
+// billingResponseSingleErrorsSourceJSON contains the JSON metadata for the struct
+// [BillingResponseSingleErrorsSource]
+type billingResponseSingleErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *BillingResponseSingleErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r billingResponseSingleErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type BillingResponseSingleMessage struct {
+	Code             int64                               `json:"code,required"`
+	Message          string                              `json:"message,required"`
+	DocumentationURL string                              `json:"documentation_url"`
+	Source           BillingResponseSingleMessagesSource `json:"source"`
+	JSON             billingResponseSingleMessageJSON    `json:"-"`
+}
+
+// billingResponseSingleMessageJSON contains the JSON metadata for the struct
+// [BillingResponseSingleMessage]
+type billingResponseSingleMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *BillingResponseSingleMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r billingResponseSingleMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type BillingResponseSingleMessagesSource struct {
+	Pointer string                                  `json:"pointer"`
+	JSON    billingResponseSingleMessagesSourceJSON `json:"-"`
+}
+
+// billingResponseSingleMessagesSourceJSON contains the JSON metadata for the
+// struct [BillingResponseSingleMessagesSource]
+type billingResponseSingleMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *BillingResponseSingleMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r billingResponseSingleMessagesSourceJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -165,4 +267,19 @@ func (r *BillingResponseSingleResult) UnmarshalJSON(data []byte) (err error) {
 
 func (r billingResponseSingleResultJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful
+type BillingResponseSingleSuccess bool
+
+const (
+	BillingResponseSingleSuccessTrue BillingResponseSingleSuccess = true
+)
+
+func (r BillingResponseSingleSuccess) IsKnown() bool {
+	switch r {
+	case BillingResponseSingleSuccessTrue:
+		return true
+	}
+	return false
 }

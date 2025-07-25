@@ -135,14 +135,20 @@ func (r CreateRequestParam) MarshalJSON() (data []byte, err error) {
 }
 
 type ResponseCollectionRules struct {
-	Result ResponseCollectionRulesResult `json:"result"`
-	JSON   responseCollectionRulesJSON   `json:"-"`
-	Common
+	Errors   []RumMessages `json:"errors,required"`
+	Messages []RumMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success bool                          `json:"success,required"`
+	Result  ResponseCollectionRulesResult `json:"result"`
+	JSON    responseCollectionRulesJSON   `json:"-"`
 }
 
 // responseCollectionRulesJSON contains the JSON metadata for the struct
 // [ResponseCollectionRules]
 type responseCollectionRulesJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -181,14 +187,20 @@ func (r responseCollectionRulesResultJSON) RawJSON() string {
 }
 
 type ResponseSingleRule struct {
-	Result RumRule                `json:"result"`
-	JSON   responseSingleRuleJSON `json:"-"`
-	Common
+	Errors   []RumMessages `json:"errors,required"`
+	Messages []RumMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success bool                   `json:"success,required"`
+	Result  RumRule                `json:"result"`
+	JSON    responseSingleRuleJSON `json:"-"`
 }
 
 // responseSingleRuleJSON contains the JSON metadata for the struct
 // [ResponseSingleRule]
 type responseSingleRuleJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -232,14 +244,20 @@ func (r rulesetJSON) RawJSON() string {
 }
 
 type AccountRumV2RuleDeleteResponse struct {
-	Result AccountRumV2RuleDeleteResponseResult `json:"result"`
-	JSON   accountRumV2RuleDeleteResponseJSON   `json:"-"`
-	Common
+	Errors   []RumMessages `json:"errors,required"`
+	Messages []RumMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success bool                                 `json:"success,required"`
+	Result  AccountRumV2RuleDeleteResponseResult `json:"result"`
+	JSON    accountRumV2RuleDeleteResponseJSON   `json:"-"`
 }
 
 // accountRumV2RuleDeleteResponseJSON contains the JSON metadata for the struct
 // [AccountRumV2RuleDeleteResponse]
 type accountRumV2RuleDeleteResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field

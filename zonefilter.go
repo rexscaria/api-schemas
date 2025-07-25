@@ -99,21 +99,21 @@ func (r *ZoneFilterService) List(ctx context.Context, zoneID string, query ZoneF
 // Deletes one or more existing filters.
 //
 // Deprecated: deprecated
-func (r *ZoneFilterService) Delete(ctx context.Context, zoneID string, body ZoneFilterDeleteParams, opts ...option.RequestOption) (res *ZoneFilterDeleteResponse, err error) {
+func (r *ZoneFilterService) Delete(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *ZoneFilterDeleteResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
 	}
 	path := fmt.Sprintf("zones/%s/filters", zoneID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
 // Deletes an existing filter.
 //
 // Deprecated: deprecated
-func (r *ZoneFilterService) DeleteSingle(ctx context.Context, zoneID string, filterID string, body ZoneFilterDeleteSingleParams, opts ...option.RequestOption) (res *ZoneFilterDeleteSingleResponse, err error) {
+func (r *ZoneFilterService) DeleteSingle(ctx context.Context, zoneID string, filterID string, opts ...option.RequestOption) (res *ZoneFilterDeleteSingleResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
@@ -124,7 +124,7 @@ func (r *ZoneFilterService) DeleteSingle(ctx context.Context, zoneID string, fil
 		return
 	}
 	path := fmt.Sprintf("zones/%s/filters/%s", zoneID, filterID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
@@ -147,15 +147,23 @@ func (r *ZoneFilterService) UpdateSingle(ctx context.Context, zoneID string, fil
 }
 
 type FirewallFilterCollection struct {
-	Result []FirewallFilterCollectionResult `json:"result"`
-	JSON   firewallFilterCollectionJSON     `json:"-"`
-	FirewallAPIResponseCollection
+	Errors   []FirewallFilterCollectionError   `json:"errors,required"`
+	Messages []FirewallFilterCollectionMessage `json:"messages,required"`
+	Result   []FirewallFilter                  `json:"result,required,nullable"`
+	// Defines whether the API call was successful.
+	Success    FirewallFilterCollectionSuccess    `json:"success,required"`
+	ResultInfo FirewallFilterCollectionResultInfo `json:"result_info"`
+	JSON       firewallFilterCollectionJSON       `json:"-"`
 }
 
 // firewallFilterCollectionJSON contains the JSON metadata for the struct
 // [FirewallFilterCollection]
 type firewallFilterCollectionJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -168,36 +176,164 @@ func (r firewallFilterCollectionJSON) RawJSON() string {
 	return r.raw
 }
 
-type FirewallFilterCollectionResult struct {
-	JSON firewallFilterCollectionResultJSON `json:"-"`
-	FirewallFilter
+type FirewallFilterCollectionError struct {
+	Code             int64                                `json:"code,required"`
+	Message          string                               `json:"message,required"`
+	DocumentationURL string                               `json:"documentation_url"`
+	Source           FirewallFilterCollectionErrorsSource `json:"source"`
+	JSON             firewallFilterCollectionErrorJSON    `json:"-"`
 }
 
-// firewallFilterCollectionResultJSON contains the JSON metadata for the struct
-// [FirewallFilterCollectionResult]
-type firewallFilterCollectionResultJSON struct {
+// firewallFilterCollectionErrorJSON contains the JSON metadata for the struct
+// [FirewallFilterCollectionError]
+type firewallFilterCollectionErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *FirewallFilterCollectionError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r firewallFilterCollectionErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type FirewallFilterCollectionErrorsSource struct {
+	Pointer string                                   `json:"pointer"`
+	JSON    firewallFilterCollectionErrorsSourceJSON `json:"-"`
+}
+
+// firewallFilterCollectionErrorsSourceJSON contains the JSON metadata for the
+// struct [FirewallFilterCollectionErrorsSource]
+type firewallFilterCollectionErrorsSourceJSON struct {
+	Pointer     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *FirewallFilterCollectionResult) UnmarshalJSON(data []byte) (err error) {
+func (r *FirewallFilterCollectionErrorsSource) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r firewallFilterCollectionResultJSON) RawJSON() string {
+func (r firewallFilterCollectionErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type FirewallFilterCollectionMessage struct {
+	Code             int64                                  `json:"code,required"`
+	Message          string                                 `json:"message,required"`
+	DocumentationURL string                                 `json:"documentation_url"`
+	Source           FirewallFilterCollectionMessagesSource `json:"source"`
+	JSON             firewallFilterCollectionMessageJSON    `json:"-"`
+}
+
+// firewallFilterCollectionMessageJSON contains the JSON metadata for the struct
+// [FirewallFilterCollectionMessage]
+type firewallFilterCollectionMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *FirewallFilterCollectionMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r firewallFilterCollectionMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type FirewallFilterCollectionMessagesSource struct {
+	Pointer string                                     `json:"pointer"`
+	JSON    firewallFilterCollectionMessagesSourceJSON `json:"-"`
+}
+
+// firewallFilterCollectionMessagesSourceJSON contains the JSON metadata for the
+// struct [FirewallFilterCollectionMessagesSource]
+type firewallFilterCollectionMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *FirewallFilterCollectionMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r firewallFilterCollectionMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Defines whether the API call was successful.
+type FirewallFilterCollectionSuccess bool
+
+const (
+	FirewallFilterCollectionSuccessTrue FirewallFilterCollectionSuccess = true
+)
+
+func (r FirewallFilterCollectionSuccess) IsKnown() bool {
+	switch r {
+	case FirewallFilterCollectionSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type FirewallFilterCollectionResultInfo struct {
+	// Defines the total number of results for the requested service.
+	Count float64 `json:"count"`
+	// Defines the current page within paginated list of results.
+	Page float64 `json:"page"`
+	// Defines the number of results per page of results.
+	PerPage float64 `json:"per_page"`
+	// Defines the total results available without any search parameters.
+	TotalCount float64                                `json:"total_count"`
+	JSON       firewallFilterCollectionResultInfoJSON `json:"-"`
+}
+
+// firewallFilterCollectionResultInfoJSON contains the JSON metadata for the struct
+// [FirewallFilterCollectionResultInfo]
+type firewallFilterCollectionResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *FirewallFilterCollectionResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r firewallFilterCollectionResultInfoJSON) RawJSON() string {
 	return r.raw
 }
 
 type FirewallFilterSingle struct {
-	Result FirewallFilter           `json:"result,required"`
-	JSON   firewallFilterSingleJSON `json:"-"`
-	FirewallAPIResponseSingle
+	Errors   []FirewallFilterSingleError   `json:"errors,required"`
+	Messages []FirewallFilterSingleMessage `json:"messages,required"`
+	Result   FirewallFilter                `json:"result,required"`
+	// Defines whether the API call was successful.
+	Success FirewallFilterSingleSuccess `json:"success,required"`
+	JSON    firewallFilterSingleJSON    `json:"-"`
 }
 
 // firewallFilterSingleJSON contains the JSON metadata for the struct
 // [FirewallFilterSingle]
 type firewallFilterSingleJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -210,16 +346,135 @@ func (r firewallFilterSingleJSON) RawJSON() string {
 	return r.raw
 }
 
+type FirewallFilterSingleError struct {
+	Code             int64                            `json:"code,required"`
+	Message          string                           `json:"message,required"`
+	DocumentationURL string                           `json:"documentation_url"`
+	Source           FirewallFilterSingleErrorsSource `json:"source"`
+	JSON             firewallFilterSingleErrorJSON    `json:"-"`
+}
+
+// firewallFilterSingleErrorJSON contains the JSON metadata for the struct
+// [FirewallFilterSingleError]
+type firewallFilterSingleErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *FirewallFilterSingleError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r firewallFilterSingleErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type FirewallFilterSingleErrorsSource struct {
+	Pointer string                               `json:"pointer"`
+	JSON    firewallFilterSingleErrorsSourceJSON `json:"-"`
+}
+
+// firewallFilterSingleErrorsSourceJSON contains the JSON metadata for the struct
+// [FirewallFilterSingleErrorsSource]
+type firewallFilterSingleErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *FirewallFilterSingleErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r firewallFilterSingleErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type FirewallFilterSingleMessage struct {
+	Code             int64                              `json:"code,required"`
+	Message          string                             `json:"message,required"`
+	DocumentationURL string                             `json:"documentation_url"`
+	Source           FirewallFilterSingleMessagesSource `json:"source"`
+	JSON             firewallFilterSingleMessageJSON    `json:"-"`
+}
+
+// firewallFilterSingleMessageJSON contains the JSON metadata for the struct
+// [FirewallFilterSingleMessage]
+type firewallFilterSingleMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *FirewallFilterSingleMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r firewallFilterSingleMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type FirewallFilterSingleMessagesSource struct {
+	Pointer string                                 `json:"pointer"`
+	JSON    firewallFilterSingleMessagesSourceJSON `json:"-"`
+}
+
+// firewallFilterSingleMessagesSourceJSON contains the JSON metadata for the struct
+// [FirewallFilterSingleMessagesSource]
+type firewallFilterSingleMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *FirewallFilterSingleMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r firewallFilterSingleMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Defines whether the API call was successful.
+type FirewallFilterSingleSuccess bool
+
+const (
+	FirewallFilterSingleSuccessTrue FirewallFilterSingleSuccess = true
+)
+
+func (r FirewallFilterSingleSuccess) IsKnown() bool {
+	switch r {
+	case FirewallFilterSingleSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type ZoneFilterDeleteResponse struct {
-	Result []ZoneFilterDeleteResponseResult `json:"result"`
-	JSON   zoneFilterDeleteResponseJSON     `json:"-"`
-	FirewallAPIResponseCollection
+	Errors   []ZoneFilterDeleteResponseError   `json:"errors,required"`
+	Messages []ZoneFilterDeleteResponseMessage `json:"messages,required"`
+	Result   []FirewallFilter                  `json:"result,required,nullable"`
+	// Defines whether the API call was successful.
+	Success    ZoneFilterDeleteResponseSuccess    `json:"success,required"`
+	ResultInfo ZoneFilterDeleteResponseResultInfo `json:"result_info"`
+	JSON       zoneFilterDeleteResponseJSON       `json:"-"`
 }
 
 // zoneFilterDeleteResponseJSON contains the JSON metadata for the struct
 // [ZoneFilterDeleteResponse]
 type zoneFilterDeleteResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -232,36 +487,164 @@ func (r zoneFilterDeleteResponseJSON) RawJSON() string {
 	return r.raw
 }
 
-type ZoneFilterDeleteResponseResult struct {
-	JSON zoneFilterDeleteResponseResultJSON `json:"-"`
-	FirewallFilter
+type ZoneFilterDeleteResponseError struct {
+	Code             int64                                `json:"code,required"`
+	Message          string                               `json:"message,required"`
+	DocumentationURL string                               `json:"documentation_url"`
+	Source           ZoneFilterDeleteResponseErrorsSource `json:"source"`
+	JSON             zoneFilterDeleteResponseErrorJSON    `json:"-"`
 }
 
-// zoneFilterDeleteResponseResultJSON contains the JSON metadata for the struct
-// [ZoneFilterDeleteResponseResult]
-type zoneFilterDeleteResponseResultJSON struct {
+// zoneFilterDeleteResponseErrorJSON contains the JSON metadata for the struct
+// [ZoneFilterDeleteResponseError]
+type zoneFilterDeleteResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *ZoneFilterDeleteResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneFilterDeleteResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZoneFilterDeleteResponseErrorsSource struct {
+	Pointer string                                   `json:"pointer"`
+	JSON    zoneFilterDeleteResponseErrorsSourceJSON `json:"-"`
+}
+
+// zoneFilterDeleteResponseErrorsSourceJSON contains the JSON metadata for the
+// struct [ZoneFilterDeleteResponseErrorsSource]
+type zoneFilterDeleteResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *ZoneFilterDeleteResponseResult) UnmarshalJSON(data []byte) (err error) {
+func (r *ZoneFilterDeleteResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r zoneFilterDeleteResponseResultJSON) RawJSON() string {
+func (r zoneFilterDeleteResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZoneFilterDeleteResponseMessage struct {
+	Code             int64                                  `json:"code,required"`
+	Message          string                                 `json:"message,required"`
+	DocumentationURL string                                 `json:"documentation_url"`
+	Source           ZoneFilterDeleteResponseMessagesSource `json:"source"`
+	JSON             zoneFilterDeleteResponseMessageJSON    `json:"-"`
+}
+
+// zoneFilterDeleteResponseMessageJSON contains the JSON metadata for the struct
+// [ZoneFilterDeleteResponseMessage]
+type zoneFilterDeleteResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *ZoneFilterDeleteResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneFilterDeleteResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZoneFilterDeleteResponseMessagesSource struct {
+	Pointer string                                     `json:"pointer"`
+	JSON    zoneFilterDeleteResponseMessagesSourceJSON `json:"-"`
+}
+
+// zoneFilterDeleteResponseMessagesSourceJSON contains the JSON metadata for the
+// struct [ZoneFilterDeleteResponseMessagesSource]
+type zoneFilterDeleteResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZoneFilterDeleteResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneFilterDeleteResponseMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Defines whether the API call was successful.
+type ZoneFilterDeleteResponseSuccess bool
+
+const (
+	ZoneFilterDeleteResponseSuccessTrue ZoneFilterDeleteResponseSuccess = true
+)
+
+func (r ZoneFilterDeleteResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneFilterDeleteResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type ZoneFilterDeleteResponseResultInfo struct {
+	// Defines the total number of results for the requested service.
+	Count float64 `json:"count"`
+	// Defines the current page within paginated list of results.
+	Page float64 `json:"page"`
+	// Defines the number of results per page of results.
+	PerPage float64 `json:"per_page"`
+	// Defines the total results available without any search parameters.
+	TotalCount float64                                `json:"total_count"`
+	JSON       zoneFilterDeleteResponseResultInfoJSON `json:"-"`
+}
+
+// zoneFilterDeleteResponseResultInfoJSON contains the JSON metadata for the struct
+// [ZoneFilterDeleteResponseResultInfo]
+type zoneFilterDeleteResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZoneFilterDeleteResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneFilterDeleteResponseResultInfoJSON) RawJSON() string {
 	return r.raw
 }
 
 type ZoneFilterDeleteSingleResponse struct {
-	Result ZoneFilterDeleteSingleResponseResult `json:"result,required"`
-	JSON   zoneFilterDeleteSingleResponseJSON   `json:"-"`
-	FirewallAPIResponseSingle
+	Errors   []ZoneFilterDeleteSingleResponseError   `json:"errors,required"`
+	Messages []ZoneFilterDeleteSingleResponseMessage `json:"messages,required"`
+	Result   FirewallFilter                          `json:"result,required"`
+	// Defines whether the API call was successful.
+	Success ZoneFilterDeleteSingleResponseSuccess `json:"success,required"`
+	JSON    zoneFilterDeleteSingleResponseJSON    `json:"-"`
 }
 
 // zoneFilterDeleteSingleResponseJSON contains the JSON metadata for the struct
 // [ZoneFilterDeleteSingleResponse]
 type zoneFilterDeleteSingleResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -274,24 +657,115 @@ func (r zoneFilterDeleteSingleResponseJSON) RawJSON() string {
 	return r.raw
 }
 
-type ZoneFilterDeleteSingleResponseResult struct {
-	JSON zoneFilterDeleteSingleResponseResultJSON `json:"-"`
-	FirewallFilter
+type ZoneFilterDeleteSingleResponseError struct {
+	Code             int64                                      `json:"code,required"`
+	Message          string                                     `json:"message,required"`
+	DocumentationURL string                                     `json:"documentation_url"`
+	Source           ZoneFilterDeleteSingleResponseErrorsSource `json:"source"`
+	JSON             zoneFilterDeleteSingleResponseErrorJSON    `json:"-"`
 }
 
-// zoneFilterDeleteSingleResponseResultJSON contains the JSON metadata for the
-// struct [ZoneFilterDeleteSingleResponseResult]
-type zoneFilterDeleteSingleResponseResultJSON struct {
+// zoneFilterDeleteSingleResponseErrorJSON contains the JSON metadata for the
+// struct [ZoneFilterDeleteSingleResponseError]
+type zoneFilterDeleteSingleResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *ZoneFilterDeleteSingleResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneFilterDeleteSingleResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZoneFilterDeleteSingleResponseErrorsSource struct {
+	Pointer string                                         `json:"pointer"`
+	JSON    zoneFilterDeleteSingleResponseErrorsSourceJSON `json:"-"`
+}
+
+// zoneFilterDeleteSingleResponseErrorsSourceJSON contains the JSON metadata for
+// the struct [ZoneFilterDeleteSingleResponseErrorsSource]
+type zoneFilterDeleteSingleResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *ZoneFilterDeleteSingleResponseResult) UnmarshalJSON(data []byte) (err error) {
+func (r *ZoneFilterDeleteSingleResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r zoneFilterDeleteSingleResponseResultJSON) RawJSON() string {
+func (r zoneFilterDeleteSingleResponseErrorsSourceJSON) RawJSON() string {
 	return r.raw
+}
+
+type ZoneFilterDeleteSingleResponseMessage struct {
+	Code             int64                                        `json:"code,required"`
+	Message          string                                       `json:"message,required"`
+	DocumentationURL string                                       `json:"documentation_url"`
+	Source           ZoneFilterDeleteSingleResponseMessagesSource `json:"source"`
+	JSON             zoneFilterDeleteSingleResponseMessageJSON    `json:"-"`
+}
+
+// zoneFilterDeleteSingleResponseMessageJSON contains the JSON metadata for the
+// struct [ZoneFilterDeleteSingleResponseMessage]
+type zoneFilterDeleteSingleResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *ZoneFilterDeleteSingleResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneFilterDeleteSingleResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZoneFilterDeleteSingleResponseMessagesSource struct {
+	Pointer string                                           `json:"pointer"`
+	JSON    zoneFilterDeleteSingleResponseMessagesSourceJSON `json:"-"`
+}
+
+// zoneFilterDeleteSingleResponseMessagesSourceJSON contains the JSON metadata for
+// the struct [ZoneFilterDeleteSingleResponseMessagesSource]
+type zoneFilterDeleteSingleResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZoneFilterDeleteSingleResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneFilterDeleteSingleResponseMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Defines whether the API call was successful.
+type ZoneFilterDeleteSingleResponseSuccess bool
+
+const (
+	ZoneFilterDeleteSingleResponseSuccessTrue ZoneFilterDeleteSingleResponseSuccess = true
+)
+
+func (r ZoneFilterDeleteSingleResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneFilterDeleteSingleResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type ZoneFilterNewParams struct {
@@ -334,21 +808,6 @@ func (r ZoneFilterListParams) URLQuery() (v url.Values) {
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
-}
-
-type ZoneFilterDeleteParams struct {
-}
-
-func (r ZoneFilterDeleteParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-type ZoneFilterDeleteSingleParams struct {
-	Body interface{} `json:"body,required"`
-}
-
-func (r ZoneFilterDeleteSingleParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
 }
 
 type ZoneFilterUpdateSingleParams struct {

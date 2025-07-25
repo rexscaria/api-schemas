@@ -64,68 +64,24 @@ func (r *AccountWorkerDurableObjectNamespaceService) ListObjects(ctx context.Con
 	return
 }
 
-type Collection struct {
-	ResultInfo CollectionResultInfo `json:"result_info"`
-	JSON       collectionJSON       `json:"-"`
-	CommonResponseWorkers
-}
-
-// collectionJSON contains the JSON metadata for the struct [Collection]
-type collectionJSON struct {
-	ResultInfo  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *Collection) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r collectionJSON) RawJSON() string {
-	return r.raw
-}
-
-type CollectionResultInfo struct {
-	// Total number of results for the requested service
-	Count float64 `json:"count"`
-	// Current page within paginated list of results
-	Page float64 `json:"page"`
-	// Number of results per page of results
-	PerPage float64 `json:"per_page"`
-	// Total results available without any search parameters
-	TotalCount float64                  `json:"total_count"`
-	JSON       collectionResultInfoJSON `json:"-"`
-}
-
-// collectionResultInfoJSON contains the JSON metadata for the struct
-// [CollectionResultInfo]
-type collectionResultInfoJSON struct {
-	Count       apijson.Field
-	Page        apijson.Field
-	PerPage     apijson.Field
-	TotalCount  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *CollectionResultInfo) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r collectionResultInfoJSON) RawJSON() string {
-	return r.raw
-}
-
 type AccountWorkerDurableObjectNamespaceListResponse struct {
-	Result []AccountWorkerDurableObjectNamespaceListResponseResult `json:"result"`
-	JSON   accountWorkerDurableObjectNamespaceListResponseJSON     `json:"-"`
-	Collection
+	Errors   []WorkersMessages `json:"errors,required"`
+	Messages []WorkersMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success    AccountWorkerDurableObjectNamespaceListResponseSuccess    `json:"success,required"`
+	Result     []AccountWorkerDurableObjectNamespaceListResponseResult   `json:"result"`
+	ResultInfo AccountWorkerDurableObjectNamespaceListResponseResultInfo `json:"result_info"`
+	JSON       accountWorkerDurableObjectNamespaceListResponseJSON       `json:"-"`
 }
 
 // accountWorkerDurableObjectNamespaceListResponseJSON contains the JSON metadata
 // for the struct [AccountWorkerDurableObjectNamespaceListResponse]
 type accountWorkerDurableObjectNamespaceListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -136,6 +92,21 @@ func (r *AccountWorkerDurableObjectNamespaceListResponse) UnmarshalJSON(data []b
 
 func (r accountWorkerDurableObjectNamespaceListResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountWorkerDurableObjectNamespaceListResponseSuccess bool
+
+const (
+	AccountWorkerDurableObjectNamespaceListResponseSuccessTrue AccountWorkerDurableObjectNamespaceListResponseSuccess = true
+)
+
+func (r AccountWorkerDurableObjectNamespaceListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountWorkerDurableObjectNamespaceListResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountWorkerDurableObjectNamespaceListResponseResult struct {
@@ -167,16 +138,54 @@ func (r accountWorkerDurableObjectNamespaceListResponseResultJSON) RawJSON() str
 	return r.raw
 }
 
+type AccountWorkerDurableObjectNamespaceListResponseResultInfo struct {
+	// Total number of results for the requested service.
+	Count float64 `json:"count"`
+	// Current page within paginated list of results.
+	Page float64 `json:"page"`
+	// Number of results per page of results.
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters.
+	TotalCount float64                                                       `json:"total_count"`
+	JSON       accountWorkerDurableObjectNamespaceListResponseResultInfoJSON `json:"-"`
+}
+
+// accountWorkerDurableObjectNamespaceListResponseResultInfoJSON contains the JSON
+// metadata for the struct
+// [AccountWorkerDurableObjectNamespaceListResponseResultInfo]
+type accountWorkerDurableObjectNamespaceListResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountWorkerDurableObjectNamespaceListResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountWorkerDurableObjectNamespaceListResponseResultInfoJSON) RawJSON() string {
+	return r.raw
+}
+
 type AccountWorkerDurableObjectNamespaceListObjectsResponse struct {
+	Errors   []WorkersMessages `json:"errors,required"`
+	Messages []WorkersMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success    AccountWorkerDurableObjectNamespaceListObjectsResponseSuccess    `json:"success,required"`
 	Result     []AccountWorkerDurableObjectNamespaceListObjectsResponseResult   `json:"result"`
 	ResultInfo AccountWorkerDurableObjectNamespaceListObjectsResponseResultInfo `json:"result_info"`
 	JSON       accountWorkerDurableObjectNamespaceListObjectsResponseJSON       `json:"-"`
-	Collection
 }
 
 // accountWorkerDurableObjectNamespaceListObjectsResponseJSON contains the JSON
 // metadata for the struct [AccountWorkerDurableObjectNamespaceListObjectsResponse]
 type accountWorkerDurableObjectNamespaceListObjectsResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	ResultInfo  apijson.Field
 	raw         string
@@ -189,6 +198,21 @@ func (r *AccountWorkerDurableObjectNamespaceListObjectsResponse) UnmarshalJSON(d
 
 func (r accountWorkerDurableObjectNamespaceListObjectsResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountWorkerDurableObjectNamespaceListObjectsResponseSuccess bool
+
+const (
+	AccountWorkerDurableObjectNamespaceListObjectsResponseSuccessTrue AccountWorkerDurableObjectNamespaceListObjectsResponseSuccess = true
+)
+
+func (r AccountWorkerDurableObjectNamespaceListObjectsResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountWorkerDurableObjectNamespaceListObjectsResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountWorkerDurableObjectNamespaceListObjectsResponseResult struct {
@@ -223,8 +247,14 @@ type AccountWorkerDurableObjectNamespaceListObjectsResponseResultInfo struct {
 	// Opaque token indicating the position from which to continue when requesting the
 	// next set of records. A valid value for the cursor can be obtained from the
 	// cursors object in the result_info structure.
-	Cursor string                                                               `json:"cursor"`
-	JSON   accountWorkerDurableObjectNamespaceListObjectsResponseResultInfoJSON `json:"-"`
+	Cursor string `json:"cursor"`
+	// Current page within paginated list of results.
+	Page float64 `json:"page"`
+	// Number of results per page of results.
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters.
+	TotalCount float64                                                              `json:"total_count"`
+	JSON       accountWorkerDurableObjectNamespaceListObjectsResponseResultInfoJSON `json:"-"`
 }
 
 // accountWorkerDurableObjectNamespaceListObjectsResponseResultInfoJSON contains
@@ -233,6 +263,9 @@ type AccountWorkerDurableObjectNamespaceListObjectsResponseResultInfo struct {
 type accountWorkerDurableObjectNamespaceListObjectsResponseResultInfoJSON struct {
 	Count       apijson.Field
 	Cursor      apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }

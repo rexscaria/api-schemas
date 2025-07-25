@@ -67,9 +67,9 @@ func (r *AccountCfdTunnelConfigurationService) Update(ctx context.Context, accou
 }
 
 type ConfigurationResponse struct {
-	Errors   []MessagesTunnelItem `json:"errors,required"`
-	Messages []MessagesTunnelItem `json:"messages,required"`
-	// Whether the API call was successful
+	Errors   []ConfigurationResponseError   `json:"errors,required"`
+	Messages []ConfigurationResponseMessage `json:"messages,required"`
+	// Whether the API call was successful.
 	Success ConfigurationResponseSuccess `json:"success,required"`
 	// Cloudflare Tunnel configuration
 	Result ConfigurationResponseResult `json:"result"`
@@ -95,7 +95,103 @@ func (r configurationResponseJSON) RawJSON() string {
 	return r.raw
 }
 
-// Whether the API call was successful
+type ConfigurationResponseError struct {
+	Code             int64                             `json:"code,required"`
+	Message          string                            `json:"message,required"`
+	DocumentationURL string                            `json:"documentation_url"`
+	Source           ConfigurationResponseErrorsSource `json:"source"`
+	JSON             configurationResponseErrorJSON    `json:"-"`
+}
+
+// configurationResponseErrorJSON contains the JSON metadata for the struct
+// [ConfigurationResponseError]
+type configurationResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *ConfigurationResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r configurationResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type ConfigurationResponseErrorsSource struct {
+	Pointer string                                `json:"pointer"`
+	JSON    configurationResponseErrorsSourceJSON `json:"-"`
+}
+
+// configurationResponseErrorsSourceJSON contains the JSON metadata for the struct
+// [ConfigurationResponseErrorsSource]
+type configurationResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ConfigurationResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r configurationResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type ConfigurationResponseMessage struct {
+	Code             int64                               `json:"code,required"`
+	Message          string                              `json:"message,required"`
+	DocumentationURL string                              `json:"documentation_url"`
+	Source           ConfigurationResponseMessagesSource `json:"source"`
+	JSON             configurationResponseMessageJSON    `json:"-"`
+}
+
+// configurationResponseMessageJSON contains the JSON metadata for the struct
+// [ConfigurationResponseMessage]
+type configurationResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *ConfigurationResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r configurationResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type ConfigurationResponseMessagesSource struct {
+	Pointer string                                  `json:"pointer"`
+	JSON    configurationResponseMessagesSourceJSON `json:"-"`
+}
+
+// configurationResponseMessagesSourceJSON contains the JSON metadata for the
+// struct [ConfigurationResponseMessagesSource]
+type configurationResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ConfigurationResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r configurationResponseMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful.
 type ConfigurationResponseSuccess bool
 
 const (
@@ -112,7 +208,7 @@ func (r ConfigurationResponseSuccess) IsKnown() bool {
 
 // Cloudflare Tunnel configuration
 type ConfigurationResponseResult struct {
-	// Identifier
+	// Identifier.
 	AccountID string `json:"account_id"`
 	// The tunnel configuration and ingress rules.
 	Config    TunnelConfig `json:"config"`

@@ -71,15 +71,21 @@ func (r R2TargetSchemaVendor) IsKnown() bool {
 }
 
 type AccountSlurperTargetCheckConnectivityResponse struct {
-	Result ConnectivityResponse                              `json:"result"`
-	JSON   accountSlurperTargetCheckConnectivityResponseJSON `json:"-"`
-	APIV4Success
+	Errors   []AccountSlurperTargetCheckConnectivityResponseError `json:"errors"`
+	Messages []string                                             `json:"messages"`
+	Result   ConnectivityResponse                                 `json:"result"`
+	// Indicates if the API call was successful or not.
+	Success AccountSlurperTargetCheckConnectivityResponseSuccess `json:"success"`
+	JSON    accountSlurperTargetCheckConnectivityResponseJSON    `json:"-"`
 }
 
 // accountSlurperTargetCheckConnectivityResponseJSON contains the JSON metadata for
 // the struct [AccountSlurperTargetCheckConnectivityResponse]
 type accountSlurperTargetCheckConnectivityResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -90,6 +96,70 @@ func (r *AccountSlurperTargetCheckConnectivityResponse) UnmarshalJSON(data []byt
 
 func (r accountSlurperTargetCheckConnectivityResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+type AccountSlurperTargetCheckConnectivityResponseError struct {
+	Code             int64                                                     `json:"code,required"`
+	Message          string                                                    `json:"message,required"`
+	DocumentationURL string                                                    `json:"documentation_url"`
+	Source           AccountSlurperTargetCheckConnectivityResponseErrorsSource `json:"source"`
+	JSON             accountSlurperTargetCheckConnectivityResponseErrorJSON    `json:"-"`
+}
+
+// accountSlurperTargetCheckConnectivityResponseErrorJSON contains the JSON
+// metadata for the struct [AccountSlurperTargetCheckConnectivityResponseError]
+type accountSlurperTargetCheckConnectivityResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountSlurperTargetCheckConnectivityResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountSlurperTargetCheckConnectivityResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountSlurperTargetCheckConnectivityResponseErrorsSource struct {
+	Pointer string                                                        `json:"pointer"`
+	JSON    accountSlurperTargetCheckConnectivityResponseErrorsSourceJSON `json:"-"`
+}
+
+// accountSlurperTargetCheckConnectivityResponseErrorsSourceJSON contains the JSON
+// metadata for the struct
+// [AccountSlurperTargetCheckConnectivityResponseErrorsSource]
+type accountSlurperTargetCheckConnectivityResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountSlurperTargetCheckConnectivityResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountSlurperTargetCheckConnectivityResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Indicates if the API call was successful or not.
+type AccountSlurperTargetCheckConnectivityResponseSuccess bool
+
+const (
+	AccountSlurperTargetCheckConnectivityResponseSuccessTrue AccountSlurperTargetCheckConnectivityResponseSuccess = true
+)
+
+func (r AccountSlurperTargetCheckConnectivityResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountSlurperTargetCheckConnectivityResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountSlurperTargetCheckConnectivityParams struct {

@@ -29,7 +29,7 @@ func TestAccountCloudforceOneEventEventTagAdd(t *testing.T) {
 	)
 	_, err := client.Accounts.CloudforceOne.Events.EventTag.Add(
 		context.TODO(),
-		0.000000,
+		"account_id",
 		"event_id",
 		cfrex.AccountCloudforceOneEventEventTagAddParams{
 			Tags: cfrex.F([]string{"botnet"}),
@@ -60,11 +60,8 @@ func TestAccountCloudforceOneEventEventTagRemove(t *testing.T) {
 	)
 	_, err := client.Accounts.CloudforceOne.Events.EventTag.Remove(
 		context.TODO(),
-		0.000000,
+		"account_id",
 		"event_id",
-		cfrex.AccountCloudforceOneEventEventTagRemoveParams{
-			Tags: cfrex.F([]string{"malware"}),
-		},
 	)
 	if err != nil {
 		var apierr *cfrex.Error

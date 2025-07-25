@@ -30,7 +30,7 @@ func TestAccountWorkflowVersionGet(t *testing.T) {
 	_, err := client.Accounts.Workflows.Versions.Get(
 		context.TODO(),
 		"account_id",
-		"workflow_name",
+		"x",
 		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 	)
 	if err != nil {
@@ -59,7 +59,7 @@ func TestAccountWorkflowVersionListWithOptionalParams(t *testing.T) {
 	_, err := client.Accounts.Workflows.Versions.List(
 		context.TODO(),
 		"account_id",
-		"workflow_name",
+		"x",
 		cfrex.AccountWorkflowVersionListParams{
 			Page:    cfrex.F(1.000000),
 			PerPage: cfrex.F(1.000000),

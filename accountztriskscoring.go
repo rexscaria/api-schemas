@@ -81,59 +81,6 @@ func (r *AccountZtRiskScoringService) GetSummary(ctx context.Context, accountID 
 	return
 }
 
-type APIResponseCollectionDlp struct {
-	ResultInfo APIResponseCollectionDlpResultInfo `json:"result_info"`
-	JSON       apiResponseCollectionDlpJSON       `json:"-"`
-	APIResponseDlp
-}
-
-// apiResponseCollectionDlpJSON contains the JSON metadata for the struct
-// [APIResponseCollectionDlp]
-type apiResponseCollectionDlpJSON struct {
-	ResultInfo  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *APIResponseCollectionDlp) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r apiResponseCollectionDlpJSON) RawJSON() string {
-	return r.raw
-}
-
-type APIResponseCollectionDlpResultInfo struct {
-	// Total number of results for the requested service
-	Count float64 `json:"count"`
-	// Current page within paginated list of results
-	Page float64 `json:"page"`
-	// Number of results per page of results
-	PerPage float64 `json:"per_page"`
-	// Total results available without any search parameters
-	TotalCount float64                                `json:"total_count"`
-	JSON       apiResponseCollectionDlpResultInfoJSON `json:"-"`
-}
-
-// apiResponseCollectionDlpResultInfoJSON contains the JSON metadata for the struct
-// [APIResponseCollectionDlpResultInfo]
-type apiResponseCollectionDlpResultInfoJSON struct {
-	Count       apijson.Field
-	Page        apijson.Field
-	PerPage     apijson.Field
-	TotalCount  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *APIResponseCollectionDlpResultInfo) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r apiResponseCollectionDlpResultInfoJSON) RawJSON() string {
-	return r.raw
-}
-
 type RiskLevel string
 
 const (
@@ -151,14 +98,20 @@ func (r RiskLevel) IsKnown() bool {
 }
 
 type AccountZtRiskScoringResetRiskScoreResponse struct {
-	Result interface{}                                    `json:"result,nullable"`
-	JSON   accountZtRiskScoringResetRiskScoreResponseJSON `json:"-"`
-	APIResponseSingleDlp
+	Errors   []MessagesDlpItems `json:"errors,required"`
+	Messages []MessagesDlpItems `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountZtRiskScoringResetRiskScoreResponseSuccess `json:"success,required"`
+	Result  interface{}                                       `json:"result,nullable"`
+	JSON    accountZtRiskScoringResetRiskScoreResponseJSON    `json:"-"`
 }
 
 // accountZtRiskScoringResetRiskScoreResponseJSON contains the JSON metadata for
 // the struct [AccountZtRiskScoringResetRiskScoreResponse]
 type accountZtRiskScoringResetRiskScoreResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -172,16 +125,39 @@ func (r accountZtRiskScoringResetRiskScoreResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountZtRiskScoringResetRiskScoreResponseSuccess bool
+
+const (
+	AccountZtRiskScoringResetRiskScoreResponseSuccessTrue AccountZtRiskScoringResetRiskScoreResponseSuccess = true
+)
+
+func (r AccountZtRiskScoringResetRiskScoreResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountZtRiskScoringResetRiskScoreResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountZtRiskScoringGetRiskScoreResponse struct {
-	Result AccountZtRiskScoringGetRiskScoreResponseResult `json:"result"`
-	JSON   accountZtRiskScoringGetRiskScoreResponseJSON   `json:"-"`
-	APIResponseCollectionDlp
+	Errors   []MessagesDlpItems `json:"errors,required"`
+	Messages []MessagesDlpItems `json:"messages,required"`
+	// Whether the API call was successful.
+	Success    AccountZtRiskScoringGetRiskScoreResponseSuccess    `json:"success,required"`
+	Result     AccountZtRiskScoringGetRiskScoreResponseResult     `json:"result"`
+	ResultInfo AccountZtRiskScoringGetRiskScoreResponseResultInfo `json:"result_info"`
+	JSON       accountZtRiskScoringGetRiskScoreResponseJSON       `json:"-"`
 }
 
 // accountZtRiskScoringGetRiskScoreResponseJSON contains the JSON metadata for the
 // struct [AccountZtRiskScoringGetRiskScoreResponse]
 type accountZtRiskScoringGetRiskScoreResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -192,6 +168,21 @@ func (r *AccountZtRiskScoringGetRiskScoreResponse) UnmarshalJSON(data []byte) (e
 
 func (r accountZtRiskScoringGetRiskScoreResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountZtRiskScoringGetRiskScoreResponseSuccess bool
+
+const (
+	AccountZtRiskScoringGetRiskScoreResponseSuccessTrue AccountZtRiskScoringGetRiskScoreResponseSuccess = true
+)
+
+func (r AccountZtRiskScoringGetRiskScoreResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountZtRiskScoringGetRiskScoreResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountZtRiskScoringGetRiskScoreResponseResult struct {
@@ -252,16 +243,55 @@ func (r accountZtRiskScoringGetRiskScoreResponseResultEventJSON) RawJSON() strin
 	return r.raw
 }
 
+type AccountZtRiskScoringGetRiskScoreResponseResultInfo struct {
+	// Total number of results for the requested service.
+	Count float64 `json:"count"`
+	// Current page within paginated list of results.
+	Page float64 `json:"page"`
+	// Number of results per page of results.
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters.
+	TotalCount float64                                                `json:"total_count"`
+	JSON       accountZtRiskScoringGetRiskScoreResponseResultInfoJSON `json:"-"`
+}
+
+// accountZtRiskScoringGetRiskScoreResponseResultInfoJSON contains the JSON
+// metadata for the struct [AccountZtRiskScoringGetRiskScoreResponseResultInfo]
+type accountZtRiskScoringGetRiskScoreResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountZtRiskScoringGetRiskScoreResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountZtRiskScoringGetRiskScoreResponseResultInfoJSON) RawJSON() string {
+	return r.raw
+}
+
 type AccountZtRiskScoringGetSummaryResponse struct {
-	Result AccountZtRiskScoringGetSummaryResponseResult `json:"result"`
-	JSON   accountZtRiskScoringGetSummaryResponseJSON   `json:"-"`
-	APIResponseCollectionDlp
+	Errors   []MessagesDlpItems `json:"errors,required"`
+	Messages []MessagesDlpItems `json:"messages,required"`
+	// Whether the API call was successful.
+	Success    AccountZtRiskScoringGetSummaryResponseSuccess    `json:"success,required"`
+	Result     AccountZtRiskScoringGetSummaryResponseResult     `json:"result"`
+	ResultInfo AccountZtRiskScoringGetSummaryResponseResultInfo `json:"result_info"`
+	JSON       accountZtRiskScoringGetSummaryResponseJSON       `json:"-"`
 }
 
 // accountZtRiskScoringGetSummaryResponseJSON contains the JSON metadata for the
 // struct [AccountZtRiskScoringGetSummaryResponse]
 type accountZtRiskScoringGetSummaryResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -272,6 +302,21 @@ func (r *AccountZtRiskScoringGetSummaryResponse) UnmarshalJSON(data []byte) (err
 
 func (r accountZtRiskScoringGetSummaryResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountZtRiskScoringGetSummaryResponseSuccess bool
+
+const (
+	AccountZtRiskScoringGetSummaryResponseSuccessTrue AccountZtRiskScoringGetSummaryResponseSuccess = true
+)
+
+func (r AccountZtRiskScoringGetSummaryResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountZtRiskScoringGetSummaryResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountZtRiskScoringGetSummaryResponseResult struct {
@@ -323,5 +368,36 @@ func (r *AccountZtRiskScoringGetSummaryResponseResultUser) UnmarshalJSON(data []
 }
 
 func (r accountZtRiskScoringGetSummaryResponseResultUserJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountZtRiskScoringGetSummaryResponseResultInfo struct {
+	// Total number of results for the requested service.
+	Count float64 `json:"count"`
+	// Current page within paginated list of results.
+	Page float64 `json:"page"`
+	// Number of results per page of results.
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters.
+	TotalCount float64                                              `json:"total_count"`
+	JSON       accountZtRiskScoringGetSummaryResponseResultInfoJSON `json:"-"`
+}
+
+// accountZtRiskScoringGetSummaryResponseResultInfoJSON contains the JSON metadata
+// for the struct [AccountZtRiskScoringGetSummaryResponseResultInfo]
+type accountZtRiskScoringGetSummaryResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountZtRiskScoringGetSummaryResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountZtRiskScoringGetSummaryResponseResultInfoJSON) RawJSON() string {
 	return r.raw
 }

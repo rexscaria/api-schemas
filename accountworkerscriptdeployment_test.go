@@ -35,7 +35,7 @@ func TestAccountWorkerScriptDeploymentNewWithOptionalParams(t *testing.T) {
 			Strategy: cfrex.F(cfrex.AccountWorkerScriptDeploymentNewParamsStrategyPercentage),
 			Versions: cfrex.F([]cfrex.AccountWorkerScriptDeploymentNewParamsVersion{{
 				Percentage: cfrex.F(100.000000),
-				VersionID:  cfrex.F("bcf48806-b317-4351-9ee7-36e7d557d4de"),
+				VersionID:  cfrex.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 			}}),
 			Force: cfrex.F(true),
 			Annotations: cfrex.F(cfrex.AccountWorkerScriptDeploymentNewParamsAnnotations{

@@ -93,7 +93,7 @@ func (r *AccountLoadBalancerPoolService) List(ctx context.Context, accountID str
 }
 
 // Delete a configured pool.
-func (r *AccountLoadBalancerPoolService) Delete(ctx context.Context, accountID string, poolID string, body AccountLoadBalancerPoolDeleteParams, opts ...option.RequestOption) (res *SchemasIDResponseLoadBalancing, err error) {
+func (r *AccountLoadBalancerPoolService) Delete(ctx context.Context, accountID string, poolID string, opts ...option.RequestOption) (res *SchemasIDResponseLoadBalancing, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
@@ -104,7 +104,7 @@ func (r *AccountLoadBalancerPoolService) Delete(ctx context.Context, accountID s
 		return
 	}
 	path := fmt.Sprintf("accounts/%s/load_balancers/pools/%s", accountID, poolID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
@@ -247,16 +247,22 @@ func (r FilterOptionsParam) MarshalJSON() (data []byte, err error) {
 }
 
 type HealthDetails struct {
+	Errors   []HealthDetailsError   `json:"errors,required"`
+	Messages []HealthDetailsMessage `json:"messages,required"`
 	// A list of regions from which to run health checks. Null means every Cloudflare
 	// data center.
-	Result HealthDetailsResult `json:"result"`
-	JSON   healthDetailsJSON   `json:"-"`
-	SingleResponseMonitor
+	Result HealthDetailsResult `json:"result,required"`
+	// Whether the API call was successful
+	Success HealthDetailsSuccess `json:"success,required"`
+	JSON    healthDetailsJSON    `json:"-"`
 }
 
 // healthDetailsJSON contains the JSON metadata for the struct [HealthDetails]
 type healthDetailsJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -266,6 +272,102 @@ func (r *HealthDetails) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (r healthDetailsJSON) RawJSON() string {
+	return r.raw
+}
+
+type HealthDetailsError struct {
+	Code             int64                     `json:"code,required"`
+	Message          string                    `json:"message,required"`
+	DocumentationURL string                    `json:"documentation_url"`
+	Source           HealthDetailsErrorsSource `json:"source"`
+	JSON             healthDetailsErrorJSON    `json:"-"`
+}
+
+// healthDetailsErrorJSON contains the JSON metadata for the struct
+// [HealthDetailsError]
+type healthDetailsErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *HealthDetailsError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r healthDetailsErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type HealthDetailsErrorsSource struct {
+	Pointer string                        `json:"pointer"`
+	JSON    healthDetailsErrorsSourceJSON `json:"-"`
+}
+
+// healthDetailsErrorsSourceJSON contains the JSON metadata for the struct
+// [HealthDetailsErrorsSource]
+type healthDetailsErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *HealthDetailsErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r healthDetailsErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type HealthDetailsMessage struct {
+	Code             int64                       `json:"code,required"`
+	Message          string                      `json:"message,required"`
+	DocumentationURL string                      `json:"documentation_url"`
+	Source           HealthDetailsMessagesSource `json:"source"`
+	JSON             healthDetailsMessageJSON    `json:"-"`
+}
+
+// healthDetailsMessageJSON contains the JSON metadata for the struct
+// [HealthDetailsMessage]
+type healthDetailsMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *HealthDetailsMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r healthDetailsMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type HealthDetailsMessagesSource struct {
+	Pointer string                          `json:"pointer"`
+	JSON    healthDetailsMessagesSourceJSON `json:"-"`
+}
+
+// healthDetailsMessagesSourceJSON contains the JSON metadata for the struct
+// [HealthDetailsMessagesSource]
+type healthDetailsMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *HealthDetailsMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r healthDetailsMessagesSourceJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -371,6 +473,21 @@ func (r *HealthDetailsResultPopHealthOriginsIP) UnmarshalJSON(data []byte) (err 
 
 func (r healthDetailsResultPopHealthOriginsIPJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful
+type HealthDetailsSuccess bool
+
+const (
+	HealthDetailsSuccessTrue HealthDetailsSuccess = true
+)
+
+func (r HealthDetailsSuccess) IsKnown() bool {
+	switch r {
+	case HealthDetailsSuccessTrue:
+		return true
+	}
+	return false
 }
 
 // Configures load shedding policies and percentages for the pool.
@@ -529,6 +646,9 @@ type Origin struct {
 	Header OriginHeader `json:"header"`
 	// A human-identifiable name for the origin.
 	Name string `json:"name"`
+	// The port for upstream connections. A value of 0 means the default port for the
+	// protocol will be used.
+	Port int64 `json:"port"`
 	// The virtual network subnet ID the origin belongs in. Virtual network must also
 	// belong to the account.
 	VirtualNetworkID string `json:"virtual_network_id"`
@@ -551,6 +671,7 @@ type originJSON struct {
 	Enabled          apijson.Field
 	Header           apijson.Field
 	Name             apijson.Field
+	Port             apijson.Field
 	VirtualNetworkID apijson.Field
 	Weight           apijson.Field
 	raw              string
@@ -604,6 +725,9 @@ type OriginParam struct {
 	Header param.Field[OriginHeaderParam] `json:"header"`
 	// A human-identifiable name for the origin.
 	Name param.Field[string] `json:"name"`
+	// The port for upstream connections. A value of 0 means the default port for the
+	// protocol will be used.
+	Port param.Field[int64] `json:"port"`
 	// The virtual network subnet ID the origin belongs in. Virtual network must also
 	// belong to the account.
 	VirtualNetworkID param.Field[string] `json:"virtual_network_id"`
@@ -727,7 +851,7 @@ type Pool struct {
 	// A list of regions from which to run health checks. Null means every Cloudflare
 	// data center.
 	CheckRegions []CheckRegions `json:"check_regions,nullable"`
-	CreatedOn    time.Time      `json:"created_on" format:"date-time"`
+	CreatedOn    string         `json:"created_on"`
 	// A human-readable description of the pool.
 	Description string `json:"description"`
 	// This field shows up only if the pool is disabled. This field is set with the
@@ -748,8 +872,8 @@ type Pool struct {
 	// The minimum number of origins that must be healthy for this pool to serve
 	// traffic. If the number of healthy origins falls below this number, the pool will
 	// be marked unhealthy and will failover to the next available pool.
-	MinimumOrigins int64     `json:"minimum_origins"`
-	ModifiedOn     time.Time `json:"modified_on" format:"date-time"`
+	MinimumOrigins int64  `json:"minimum_origins"`
+	ModifiedOn     string `json:"modified_on"`
 	// The ID of the Monitor to use for checking the health of origins within this
 	// pool.
 	Monitor string `json:"monitor"`
@@ -809,16 +933,22 @@ func (r poolJSON) RawJSON() string {
 }
 
 type ReferencesPoolResponse struct {
+	Errors   []LoadBalancingMessages `json:"errors,required"`
+	Messages []LoadBalancingMessages `json:"messages,required"`
 	// List of resources that reference a given pool.
-	Result []ReferencesPoolResponseResult `json:"result"`
-	JSON   referencesPoolResponseJSON     `json:"-"`
-	CommonResponseLoadBalancers
+	Result []ReferencesPoolResponseResult `json:"result,required"`
+	// Whether the API call was successful
+	Success ReferencesPoolResponseSuccess `json:"success,required"`
+	JSON    referencesPoolResponseJSON    `json:"-"`
 }
 
 // referencesPoolResponseJSON contains the JSON metadata for the struct
 // [ReferencesPoolResponse]
 type referencesPoolResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -874,16 +1004,37 @@ func (r ReferencesPoolResponseResultReferenceType) IsKnown() bool {
 	return false
 }
 
+// Whether the API call was successful
+type ReferencesPoolResponseSuccess bool
+
+const (
+	ReferencesPoolResponseSuccessTrue ReferencesPoolResponseSuccess = true
+)
+
+func (r ReferencesPoolResponseSuccess) IsKnown() bool {
+	switch r {
+	case ReferencesPoolResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type SchemasIDResponseLoadBalancing struct {
-	Result SchemasIDResponseLoadBalancingResult `json:"result"`
-	JSON   schemasIDResponseLoadBalancingJSON   `json:"-"`
-	SingleResponseMonitor
+	Errors   []LoadBalancingMessages              `json:"errors,required"`
+	Messages []LoadBalancingMessages              `json:"messages,required"`
+	Result   SchemasIDResponseLoadBalancingResult `json:"result,required"`
+	// Whether the API call was successful
+	Success SchemasIDResponseLoadBalancingSuccess `json:"success,required"`
+	JSON    schemasIDResponseLoadBalancingJSON    `json:"-"`
 }
 
 // schemasIDResponseLoadBalancingJSON contains the JSON metadata for the struct
 // [SchemasIDResponseLoadBalancing]
 type schemasIDResponseLoadBalancingJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -917,16 +1068,37 @@ func (r schemasIDResponseLoadBalancingResultJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful
+type SchemasIDResponseLoadBalancingSuccess bool
+
+const (
+	SchemasIDResponseLoadBalancingSuccessTrue SchemasIDResponseLoadBalancingSuccess = true
+)
+
+func (r SchemasIDResponseLoadBalancingSuccess) IsKnown() bool {
+	switch r {
+	case SchemasIDResponseLoadBalancingSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type SchemasLoadBalancingSingleResponse struct {
-	Result Pool                                   `json:"result"`
-	JSON   schemasLoadBalancingSingleResponseJSON `json:"-"`
-	SingleResponseMonitor
+	Errors   []LoadBalancingMessages `json:"errors,required"`
+	Messages []LoadBalancingMessages `json:"messages,required"`
+	Result   Pool                    `json:"result,required"`
+	// Whether the API call was successful
+	Success SchemasLoadBalancingSingleResponseSuccess `json:"success,required"`
+	JSON    schemasLoadBalancingSingleResponseJSON    `json:"-"`
 }
 
 // schemasLoadBalancingSingleResponseJSON contains the JSON metadata for the struct
 // [SchemasLoadBalancingSingleResponse]
 type schemasLoadBalancingSingleResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -939,16 +1111,39 @@ func (r schemasLoadBalancingSingleResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful
+type SchemasLoadBalancingSingleResponseSuccess bool
+
+const (
+	SchemasLoadBalancingSingleResponseSuccessTrue SchemasLoadBalancingSingleResponseSuccess = true
+)
+
+func (r SchemasLoadBalancingSingleResponseSuccess) IsKnown() bool {
+	switch r {
+	case SchemasLoadBalancingSingleResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type SchemasResponseCollection struct {
-	Result []Pool                        `json:"result"`
-	JSON   schemasResponseCollectionJSON `json:"-"`
-	PaginatedResponseCollection
+	Errors   []LoadBalancingMessages `json:"errors,required"`
+	Messages []LoadBalancingMessages `json:"messages,required"`
+	Result   []Pool                  `json:"result,required"`
+	// Whether the API call was successful
+	Success    SchemasResponseCollectionSuccess    `json:"success,required"`
+	ResultInfo SchemasResponseCollectionResultInfo `json:"result_info"`
+	JSON       schemasResponseCollectionJSON       `json:"-"`
 }
 
 // schemasResponseCollectionJSON contains the JSON metadata for the struct
 // [SchemasResponseCollection]
 type schemasResponseCollectionJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -958,6 +1153,55 @@ func (r *SchemasResponseCollection) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (r schemasResponseCollectionJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful
+type SchemasResponseCollectionSuccess bool
+
+const (
+	SchemasResponseCollectionSuccessTrue SchemasResponseCollectionSuccess = true
+)
+
+func (r SchemasResponseCollectionSuccess) IsKnown() bool {
+	switch r {
+	case SchemasResponseCollectionSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type SchemasResponseCollectionResultInfo struct {
+	// Total number of results on the current page
+	Count float64 `json:"count"`
+	// Current page within paginated list of results
+	Page float64 `json:"page"`
+	// Number of results per page
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters
+	TotalCount float64 `json:"total_count"`
+	// Total number of pages available
+	TotalPages float64                                 `json:"total_pages"`
+	JSON       schemasResponseCollectionResultInfoJSON `json:"-"`
+}
+
+// schemasResponseCollectionResultInfoJSON contains the JSON metadata for the
+// struct [SchemasResponseCollectionResultInfo]
+type schemasResponseCollectionResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	TotalPages  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *SchemasResponseCollectionResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r schemasResponseCollectionResultInfoJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -1069,14 +1313,6 @@ func (r AccountLoadBalancerPoolListParams) URLQuery() (v url.Values) {
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
-}
-
-type AccountLoadBalancerPoolDeleteParams struct {
-	Body interface{} `json:"body,required"`
-}
-
-func (r AccountLoadBalancerPoolDeleteParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
 }
 
 type AccountLoadBalancerPoolPatchParams struct {

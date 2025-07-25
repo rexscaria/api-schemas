@@ -36,9 +36,8 @@ func NewAccountAIRunCfStabilityaiService(opts ...option.RequestOption) (r *Accou
 }
 
 // Execute @cf/stabilityai/stable-diffusion-xl-base-1.0 model.
-func (r *AccountAIRunCfStabilityaiService) ExecuteStableDiffusionXlBase1_0(ctx context.Context, accountID string, params AccountAIRunCfStabilityaiExecuteStableDiffusionXlBase1_0Params, opts ...option.RequestOption) (res *http.Response, err error) {
+func (r *AccountAIRunCfStabilityaiService) ExecuteStableDiffusionXlBase1_0(ctx context.Context, accountID string, params AccountAIRunCfStabilityaiExecuteStableDiffusionXlBase1_0Params, opts ...option.RequestOption) (res *AccountAIRunCfStabilityaiExecuteStableDiffusionXlBase1_0Response, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "image/png")}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -47,6 +46,8 @@ func (r *AccountAIRunCfStabilityaiService) ExecuteStableDiffusionXlBase1_0(ctx c
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
 }
+
+type AccountAIRunCfStabilityaiExecuteStableDiffusionXlBase1_0Response = interface{}
 
 type AccountAIRunCfStabilityaiExecuteStableDiffusionXlBase1_0Params struct {
 	// A text description of the image you want to generate

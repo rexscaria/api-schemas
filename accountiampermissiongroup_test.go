@@ -29,8 +29,8 @@ func TestAccountIamPermissionGroupGet(t *testing.T) {
 	)
 	_, err := client.Accounts.Iam.PermissionGroups.Get(
 		context.TODO(),
-		"eb78d65290b24279ba6f44721b3ea3c4",
-		"6d7f2f5f5b1d4a0e9081fdc98d432fd1",
+		"023e105f4ecef8ad9ca31a8372d0c353",
+		"023e105f4ecef8ad9ca31a8372d0c353",
 	)
 	if err != nil {
 		var apierr *cfrex.Error
@@ -57,7 +57,7 @@ func TestAccountIamPermissionGroupListWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Accounts.Iam.PermissionGroups.List(
 		context.TODO(),
-		"eb78d65290b24279ba6f44721b3ea3c4",
+		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.AccountIamPermissionGroupListParams{
 			ID:      cfrex.F("6d7f2f5f5b1d4a0e9081fdc98d432fd1"),
 			Label:   cfrex.F("labelOfThePermissionGroup"),

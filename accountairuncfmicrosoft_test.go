@@ -3,10 +3,8 @@
 package cfrex_test
 
 import (
-	"bytes"
 	"context"
 	"errors"
-	"io"
 	"os"
 	"testing"
 
@@ -36,10 +34,10 @@ func TestAccountAIRunCfMicrosoftExecutePhi2WithOptionalParams(t *testing.T) {
 			QueueRequest: cfrex.F("true"),
 			Body: cfrex.AccountAIRunCfMicrosoftExecutePhi2ParamsBodyPrompt{
 				Prompt:            cfrex.F("x"),
-				FrequencyPenalty:  cfrex.F(0.000000),
+				FrequencyPenalty:  cfrex.F(-2.000000),
 				Lora:              cfrex.F("lora"),
 				MaxTokens:         cfrex.F(int64(0)),
-				PresencePenalty:   cfrex.F(0.000000),
+				PresencePenalty:   cfrex.F(-2.000000),
 				Raw:               cfrex.F(true),
 				RepetitionPenalty: cfrex.F(0.000000),
 				ResponseFormat: cfrex.F(cfrex.AccountAIRunCfMicrosoftExecutePhi2ParamsBodyPromptResponseFormat{
@@ -50,39 +48,8 @@ func TestAccountAIRunCfMicrosoftExecutePhi2WithOptionalParams(t *testing.T) {
 				Stream:      cfrex.F(true),
 				Temperature: cfrex.F(0.000000),
 				TopK:        cfrex.F(int64(1)),
-				TopP:        cfrex.F(0.000000),
+				TopP:        cfrex.F(0.001000),
 			},
-		},
-	)
-	if err != nil {
-		var apierr *cfrex.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
-func TestAccountAIRunCfMicrosoftExecuteResnet50WithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := cfrex.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIEmail("My API Email"),
-		option.WithAPIKey("My API Key"),
-	)
-	_, err := client.Accounts.AI.Run.Cf.Microsoft.ExecuteResnet50(
-		context.TODO(),
-		"023e105f4ecef8ad9ca31a8372d0c353",
-		cfrex.AccountAIRunCfMicrosoftExecuteResnet50Params{
-			QueueRequest: cfrex.F("true"),
-			Body:         io.Reader(bytes.NewBuffer([]byte("some file contents"))),
 		},
 	)
 	if err != nil {

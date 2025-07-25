@@ -32,6 +32,7 @@ func TestAccountTeamnetRouteNetworkNewWithOptionalParams(t *testing.T) {
 		"699d98642c564d2e855e9661899b7252",
 		"172.16.0.0%2F16",
 		cfrex.AccountTeamnetRouteNetworkNewParams{
+			TunnelID:         cfrex.F("f70ff985-a4ef-4643-bbbc-4a0ed4fc8415"),
 			Comment:          cfrex.F("Example comment for this route."),
 			VirtualNetworkID: cfrex.F("f70ff985-a4ef-4643-bbbc-4a0ed4fc8415"),
 		},

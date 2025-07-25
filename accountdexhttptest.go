@@ -69,47 +69,6 @@ func (r *AccountDexHTTPTestService) GetPercentiles(ctx context.Context, accountI
 	return
 }
 
-type APIResponseSingleDigitalExperience struct {
-	Errors   []Item `json:"errors,required"`
-	Messages []Item `json:"messages,required"`
-	// Whether the API call was successful
-	Success APIResponseSingleDigitalExperienceSuccess `json:"success,required"`
-	JSON    apiResponseSingleDigitalExperienceJSON    `json:"-"`
-}
-
-// apiResponseSingleDigitalExperienceJSON contains the JSON metadata for the struct
-// [APIResponseSingleDigitalExperience]
-type apiResponseSingleDigitalExperienceJSON struct {
-	Errors      apijson.Field
-	Messages    apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *APIResponseSingleDigitalExperience) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r apiResponseSingleDigitalExperienceJSON) RawJSON() string {
-	return r.raw
-}
-
-// Whether the API call was successful
-type APIResponseSingleDigitalExperienceSuccess bool
-
-const (
-	APIResponseSingleDigitalExperienceSuccessTrue APIResponseSingleDigitalExperienceSuccess = true
-)
-
-func (r APIResponseSingleDigitalExperienceSuccess) IsKnown() bool {
-	switch r {
-	case APIResponseSingleDigitalExperienceSuccessTrue:
-		return true
-	}
-	return false
-}
-
 type Percentiles struct {
 	// p50 observed in the time period
 	P50 float64 `json:"p50,nullable"`
@@ -247,14 +206,20 @@ func (r testStatPctOverTimeSlotJSON) RawJSON() string {
 }
 
 type AccountDexHTTPTestGetResponse struct {
-	Result AccountDexHTTPTestGetResponseResult `json:"result"`
-	JSON   accountDexHTTPTestGetResponseJSON   `json:"-"`
-	APIResponseSingleDigitalExperience
+	Errors   []Item `json:"errors,required"`
+	Messages []Item `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountDexHTTPTestGetResponseSuccess `json:"success,required"`
+	Result  AccountDexHTTPTestGetResponseResult  `json:"result"`
+	JSON    accountDexHTTPTestGetResponseJSON    `json:"-"`
 }
 
 // accountDexHTTPTestGetResponseJSON contains the JSON metadata for the struct
 // [AccountDexHTTPTestGetResponse]
 type accountDexHTTPTestGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -266,6 +231,21 @@ func (r *AccountDexHTTPTestGetResponse) UnmarshalJSON(data []byte) (err error) {
 
 func (r accountDexHTTPTestGetResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountDexHTTPTestGetResponseSuccess bool
+
+const (
+	AccountDexHTTPTestGetResponseSuccessTrue AccountDexHTTPTestGetResponseSuccess = true
+)
+
+func (r AccountDexHTTPTestGetResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountDexHTTPTestGetResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountDexHTTPTestGetResponseResult struct {
@@ -476,14 +456,20 @@ func (r accountDexHTTPTestGetResponseResultTargetPolicyJSON) RawJSON() string {
 }
 
 type AccountDexHTTPTestGetPercentilesResponse struct {
-	Result AccountDexHTTPTestGetPercentilesResponseResult `json:"result"`
-	JSON   accountDexHTTPTestGetPercentilesResponseJSON   `json:"-"`
-	APIResponseSingleDigitalExperience
+	Errors   []Item `json:"errors,required"`
+	Messages []Item `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountDexHTTPTestGetPercentilesResponseSuccess `json:"success,required"`
+	Result  AccountDexHTTPTestGetPercentilesResponseResult  `json:"result"`
+	JSON    accountDexHTTPTestGetPercentilesResponseJSON    `json:"-"`
 }
 
 // accountDexHTTPTestGetPercentilesResponseJSON contains the JSON metadata for the
 // struct [AccountDexHTTPTestGetPercentilesResponse]
 type accountDexHTTPTestGetPercentilesResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -495,6 +481,21 @@ func (r *AccountDexHTTPTestGetPercentilesResponse) UnmarshalJSON(data []byte) (e
 
 func (r accountDexHTTPTestGetPercentilesResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountDexHTTPTestGetPercentilesResponseSuccess bool
+
+const (
+	AccountDexHTTPTestGetPercentilesResponseSuccessTrue AccountDexHTTPTestGetPercentilesResponseSuccess = true
+)
+
+func (r AccountDexHTTPTestGetPercentilesResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountDexHTTPTestGetPercentilesResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountDexHTTPTestGetPercentilesResponseResult struct {

@@ -3,7 +3,6 @@
 package cfrex
 
 import (
-	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/option"
 )
 
@@ -24,26 +23,4 @@ func NewZoneCachePurgeService(opts ...option.RequestOption) (r *ZoneCachePurgeSe
 	r = &ZoneCachePurgeService{}
 	r.Options = opts
 	return
-}
-
-type MessageItem struct {
-	Code    int64           `json:"code,required"`
-	Message string          `json:"message,required"`
-	JSON    messageItemJSON `json:"-"`
-}
-
-// messageItemJSON contains the JSON metadata for the struct [MessageItem]
-type messageItemJSON struct {
-	Code        apijson.Field
-	Message     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *MessageItem) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r messageItemJSON) RawJSON() string {
-	return r.raw
 }

@@ -163,9 +163,11 @@ func NewAccountService(opts ...option.RequestOption) (r *AccountService) {
 }
 
 type AaaAuditLogs struct {
-	// This field can have the runtime type of [[]AaaMessage].
+	// This field can have the runtime type of [[]AaaAuditLogsObjectError],
+	// [[]APIResponseAlertingError].
 	Errors interface{} `json:"errors"`
-	// This field can have the runtime type of [[]AaaMessage].
+	// This field can have the runtime type of [[]AaaAuditLogsObjectMessage],
+	// [[]APIResponseAlertingMessage].
 	Messages interface{} `json:"messages"`
 	// This field can have the runtime type of [[]AaaAuditLogsObjectResult].
 	Result  interface{}      `json:"result"`
@@ -227,11 +229,11 @@ func init() {
 }
 
 type AaaAuditLogsObject struct {
-	Errors   []AaaMessage               `json:"errors"`
-	Messages []AaaMessage               `json:"messages"`
-	Result   []AaaAuditLogsObjectResult `json:"result"`
-	Success  bool                       `json:"success"`
-	JSON     aaaAuditLogsObjectJSON     `json:"-"`
+	Errors   []AaaAuditLogsObjectError   `json:"errors"`
+	Messages []AaaAuditLogsObjectMessage `json:"messages"`
+	Result   []AaaAuditLogsObjectResult  `json:"result"`
+	Success  bool                        `json:"success"`
+	JSON     aaaAuditLogsObjectJSON      `json:"-"`
 }
 
 // aaaAuditLogsObjectJSON contains the JSON metadata for the struct
@@ -254,6 +256,102 @@ func (r aaaAuditLogsObjectJSON) RawJSON() string {
 }
 
 func (r AaaAuditLogsObject) implementsAaaAuditLogs() {}
+
+type AaaAuditLogsObjectError struct {
+	Code             int64                          `json:"code,required"`
+	Message          string                         `json:"message,required"`
+	DocumentationURL string                         `json:"documentation_url"`
+	Source           AaaAuditLogsObjectErrorsSource `json:"source"`
+	JSON             aaaAuditLogsObjectErrorJSON    `json:"-"`
+}
+
+// aaaAuditLogsObjectErrorJSON contains the JSON metadata for the struct
+// [AaaAuditLogsObjectError]
+type aaaAuditLogsObjectErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AaaAuditLogsObjectError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r aaaAuditLogsObjectErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type AaaAuditLogsObjectErrorsSource struct {
+	Pointer string                             `json:"pointer"`
+	JSON    aaaAuditLogsObjectErrorsSourceJSON `json:"-"`
+}
+
+// aaaAuditLogsObjectErrorsSourceJSON contains the JSON metadata for the struct
+// [AaaAuditLogsObjectErrorsSource]
+type aaaAuditLogsObjectErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AaaAuditLogsObjectErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r aaaAuditLogsObjectErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type AaaAuditLogsObjectMessage struct {
+	Code             int64                            `json:"code,required"`
+	Message          string                           `json:"message,required"`
+	DocumentationURL string                           `json:"documentation_url"`
+	Source           AaaAuditLogsObjectMessagesSource `json:"source"`
+	JSON             aaaAuditLogsObjectMessageJSON    `json:"-"`
+}
+
+// aaaAuditLogsObjectMessageJSON contains the JSON metadata for the struct
+// [AaaAuditLogsObjectMessage]
+type aaaAuditLogsObjectMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AaaAuditLogsObjectMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r aaaAuditLogsObjectMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type AaaAuditLogsObjectMessagesSource struct {
+	Pointer string                               `json:"pointer"`
+	JSON    aaaAuditLogsObjectMessagesSourceJSON `json:"-"`
+}
+
+// aaaAuditLogsObjectMessagesSourceJSON contains the JSON metadata for the struct
+// [AaaAuditLogsObjectMessagesSource]
+type aaaAuditLogsObjectMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AaaAuditLogsObjectMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r aaaAuditLogsObjectMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
 
 type AaaAuditLogsObjectResult struct {
 	// A string that uniquely identifies the audit log.
@@ -423,17 +521,21 @@ func (r aaaAuditLogsObjectResultResourceJSON) RawJSON() string {
 }
 
 type AaaMessage struct {
-	Code    int64          `json:"code,required"`
-	Message string         `json:"message,required"`
-	JSON    aaaMessageJSON `json:"-"`
+	Code             int64            `json:"code,required"`
+	Message          string           `json:"message,required"`
+	DocumentationURL string           `json:"documentation_url"`
+	Source           AaaMessageSource `json:"source"`
+	JSON             aaaMessageJSON   `json:"-"`
 }
 
 // aaaMessageJSON contains the JSON metadata for the struct [AaaMessage]
 type aaaMessageJSON struct {
-	Code        apijson.Field
-	Message     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
 }
 
 func (r *AaaMessage) UnmarshalJSON(data []byte) (err error) {
@@ -444,109 +546,42 @@ func (r aaaMessageJSON) RawJSON() string {
 	return r.raw
 }
 
-type IamAPIResponseCollection struct {
-	ResultInfo IamAPIResponseCollectionResultInfo `json:"result_info"`
-	JSON       iamAPIResponseCollectionJSON       `json:"-"`
-	IamAPIResponseCommon
+type AaaMessageSource struct {
+	Pointer string               `json:"pointer"`
+	JSON    aaaMessageSourceJSON `json:"-"`
 }
 
-// iamAPIResponseCollectionJSON contains the JSON metadata for the struct
-// [IamAPIResponseCollection]
-type iamAPIResponseCollectionJSON struct {
-	ResultInfo  apijson.Field
+// aaaMessageSourceJSON contains the JSON metadata for the struct
+// [AaaMessageSource]
+type aaaMessageSourceJSON struct {
+	Pointer     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *IamAPIResponseCollection) UnmarshalJSON(data []byte) (err error) {
+func (r *AaaMessageSource) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r iamAPIResponseCollectionJSON) RawJSON() string {
+func (r aaaMessageSourceJSON) RawJSON() string {
 	return r.raw
-}
-
-type IamAPIResponseCollectionResultInfo struct {
-	// Total number of results for the requested service
-	Count float64 `json:"count"`
-	// Current page within paginated list of results
-	Page float64 `json:"page"`
-	// Number of results per page of results
-	PerPage float64 `json:"per_page"`
-	// Total results available without any search parameters
-	TotalCount float64                                `json:"total_count"`
-	JSON       iamAPIResponseCollectionResultInfoJSON `json:"-"`
-}
-
-// iamAPIResponseCollectionResultInfoJSON contains the JSON metadata for the struct
-// [IamAPIResponseCollectionResultInfo]
-type iamAPIResponseCollectionResultInfoJSON struct {
-	Count       apijson.Field
-	Page        apijson.Field
-	PerPage     apijson.Field
-	TotalCount  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *IamAPIResponseCollectionResultInfo) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r iamAPIResponseCollectionResultInfoJSON) RawJSON() string {
-	return r.raw
-}
-
-type IamAPIResponseCommon struct {
-	Errors   []IamMessage `json:"errors,required"`
-	Messages []IamMessage `json:"messages,required"`
-	// Whether the API call was successful
-	Success IamAPIResponseCommonSuccess `json:"success,required"`
-	JSON    iamAPIResponseCommonJSON    `json:"-"`
-}
-
-// iamAPIResponseCommonJSON contains the JSON metadata for the struct
-// [IamAPIResponseCommon]
-type iamAPIResponseCommonJSON struct {
-	Errors      apijson.Field
-	Messages    apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *IamAPIResponseCommon) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r iamAPIResponseCommonJSON) RawJSON() string {
-	return r.raw
-}
-
-// Whether the API call was successful
-type IamAPIResponseCommonSuccess bool
-
-const (
-	IamAPIResponseCommonSuccessTrue IamAPIResponseCommonSuccess = true
-)
-
-func (r IamAPIResponseCommonSuccess) IsKnown() bool {
-	switch r {
-	case IamAPIResponseCommonSuccessTrue:
-		return true
-	}
-	return false
 }
 
 type IamAPIResponseSingleID struct {
-	Result IamAPIResponseSingleIDResult `json:"result,nullable"`
-	JSON   iamAPIResponseSingleIDJSON   `json:"-"`
-	IamAPIResponseCommon
+	Errors   []IamAPIResponseSingleIDError   `json:"errors,required"`
+	Messages []IamAPIResponseSingleIDMessage `json:"messages,required"`
+	// Whether the API call was successful.
+	Success IamAPIResponseSingleIDSuccess `json:"success,required"`
+	Result  IamAPIResponseSingleIDResult  `json:"result,nullable"`
+	JSON    iamAPIResponseSingleIDJSON    `json:"-"`
 }
 
 // iamAPIResponseSingleIDJSON contains the JSON metadata for the struct
 // [IamAPIResponseSingleID]
 type iamAPIResponseSingleIDJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -558,6 +593,117 @@ func (r *IamAPIResponseSingleID) UnmarshalJSON(data []byte) (err error) {
 
 func (r iamAPIResponseSingleIDJSON) RawJSON() string {
 	return r.raw
+}
+
+type IamAPIResponseSingleIDError struct {
+	Code             int64                              `json:"code,required"`
+	Message          string                             `json:"message,required"`
+	DocumentationURL string                             `json:"documentation_url"`
+	Source           IamAPIResponseSingleIDErrorsSource `json:"source"`
+	JSON             iamAPIResponseSingleIDErrorJSON    `json:"-"`
+}
+
+// iamAPIResponseSingleIDErrorJSON contains the JSON metadata for the struct
+// [IamAPIResponseSingleIDError]
+type iamAPIResponseSingleIDErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *IamAPIResponseSingleIDError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r iamAPIResponseSingleIDErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type IamAPIResponseSingleIDErrorsSource struct {
+	Pointer string                                 `json:"pointer"`
+	JSON    iamAPIResponseSingleIDErrorsSourceJSON `json:"-"`
+}
+
+// iamAPIResponseSingleIDErrorsSourceJSON contains the JSON metadata for the struct
+// [IamAPIResponseSingleIDErrorsSource]
+type iamAPIResponseSingleIDErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *IamAPIResponseSingleIDErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r iamAPIResponseSingleIDErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type IamAPIResponseSingleIDMessage struct {
+	Code             int64                                `json:"code,required"`
+	Message          string                               `json:"message,required"`
+	DocumentationURL string                               `json:"documentation_url"`
+	Source           IamAPIResponseSingleIDMessagesSource `json:"source"`
+	JSON             iamAPIResponseSingleIDMessageJSON    `json:"-"`
+}
+
+// iamAPIResponseSingleIDMessageJSON contains the JSON metadata for the struct
+// [IamAPIResponseSingleIDMessage]
+type iamAPIResponseSingleIDMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *IamAPIResponseSingleIDMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r iamAPIResponseSingleIDMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type IamAPIResponseSingleIDMessagesSource struct {
+	Pointer string                                   `json:"pointer"`
+	JSON    iamAPIResponseSingleIDMessagesSourceJSON `json:"-"`
+}
+
+// iamAPIResponseSingleIDMessagesSourceJSON contains the JSON metadata for the
+// struct [IamAPIResponseSingleIDMessagesSource]
+type iamAPIResponseSingleIDMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *IamAPIResponseSingleIDMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r iamAPIResponseSingleIDMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful.
+type IamAPIResponseSingleIDSuccess bool
+
+const (
+	IamAPIResponseSingleIDSuccessTrue IamAPIResponseSingleIDSuccess = true
+)
+
+func (r IamAPIResponseSingleIDSuccess) IsKnown() bool {
+	switch r {
+	case IamAPIResponseSingleIDSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type IamAPIResponseSingleIDResult struct {
@@ -582,115 +728,23 @@ func (r iamAPIResponseSingleIDResultJSON) RawJSON() string {
 	return r.raw
 }
 
-type IamMessage struct {
-	Code    int64          `json:"code,required"`
-	Message string         `json:"message,required"`
-	JSON    iamMessageJSON `json:"-"`
-}
-
-// iamMessageJSON contains the JSON metadata for the struct [IamMessage]
-type iamMessageJSON struct {
-	Code        apijson.Field
-	Message     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *IamMessage) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r iamMessageJSON) RawJSON() string {
-	return r.raw
-}
-
-type WaitingroomAPIResponseCollection struct {
-	Errors   []WaitingroomMessage `json:"errors,required"`
-	Messages []WaitingroomMessage `json:"messages,required"`
-	// Whether the API call was successful
-	Success    WaitingroomAPIResponseCollectionSuccess    `json:"success,required"`
-	ResultInfo WaitingroomAPIResponseCollectionResultInfo `json:"result_info"`
-	JSON       waitingroomAPIResponseCollectionJSON       `json:"-"`
-}
-
-// waitingroomAPIResponseCollectionJSON contains the JSON metadata for the struct
-// [WaitingroomAPIResponseCollection]
-type waitingroomAPIResponseCollectionJSON struct {
-	Errors      apijson.Field
-	Messages    apijson.Field
-	Success     apijson.Field
-	ResultInfo  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *WaitingroomAPIResponseCollection) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r waitingroomAPIResponseCollectionJSON) RawJSON() string {
-	return r.raw
-}
-
-// Whether the API call was successful
-type WaitingroomAPIResponseCollectionSuccess bool
-
-const (
-	WaitingroomAPIResponseCollectionSuccessTrue WaitingroomAPIResponseCollectionSuccess = true
-)
-
-func (r WaitingroomAPIResponseCollectionSuccess) IsKnown() bool {
-	switch r {
-	case WaitingroomAPIResponseCollectionSuccessTrue:
-		return true
-	}
-	return false
-}
-
-type WaitingroomAPIResponseCollectionResultInfo struct {
-	// Total number of results for the requested service
-	Count float64 `json:"count"`
-	// Current page within paginated list of results
-	Page float64 `json:"page"`
-	// Number of results per page of results
-	PerPage float64 `json:"per_page"`
-	// Total results available without any search parameters
-	TotalCount float64                                        `json:"total_count"`
-	JSON       waitingroomAPIResponseCollectionResultInfoJSON `json:"-"`
-}
-
-// waitingroomAPIResponseCollectionResultInfoJSON contains the JSON metadata for
-// the struct [WaitingroomAPIResponseCollectionResultInfo]
-type waitingroomAPIResponseCollectionResultInfoJSON struct {
-	Count       apijson.Field
-	Page        apijson.Field
-	PerPage     apijson.Field
-	TotalCount  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *WaitingroomAPIResponseCollectionResultInfo) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r waitingroomAPIResponseCollectionResultInfoJSON) RawJSON() string {
-	return r.raw
-}
-
 type WaitingroomMessage struct {
-	Code    int64                  `json:"code,required"`
-	Message string                 `json:"message,required"`
-	JSON    waitingroomMessageJSON `json:"-"`
+	Code             int64                    `json:"code,required"`
+	Message          string                   `json:"message,required"`
+	DocumentationURL string                   `json:"documentation_url"`
+	Source           WaitingroomMessageSource `json:"source"`
+	JSON             waitingroomMessageJSON   `json:"-"`
 }
 
 // waitingroomMessageJSON contains the JSON metadata for the struct
 // [WaitingroomMessage]
 type waitingroomMessageJSON struct {
-	Code        apijson.Field
-	Message     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
 }
 
 func (r *WaitingroomMessage) UnmarshalJSON(data []byte) (err error) {
@@ -701,24 +755,23 @@ func (r waitingroomMessageJSON) RawJSON() string {
 	return r.raw
 }
 
-type WaitingroomResponseCollection struct {
-	Result []Waitingroom                     `json:"result"`
-	JSON   waitingroomResponseCollectionJSON `json:"-"`
-	WaitingroomAPIResponseCollection
+type WaitingroomMessageSource struct {
+	Pointer string                       `json:"pointer"`
+	JSON    waitingroomMessageSourceJSON `json:"-"`
 }
 
-// waitingroomResponseCollectionJSON contains the JSON metadata for the struct
-// [WaitingroomResponseCollection]
-type waitingroomResponseCollectionJSON struct {
-	Result      apijson.Field
+// waitingroomMessageSourceJSON contains the JSON metadata for the struct
+// [WaitingroomMessageSource]
+type waitingroomMessageSourceJSON struct {
+	Pointer     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *WaitingroomResponseCollection) UnmarshalJSON(data []byte) (err error) {
+func (r *WaitingroomMessageSource) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r waitingroomResponseCollectionJSON) RawJSON() string {
+func (r waitingroomMessageSourceJSON) RawJSON() string {
 	return r.raw
 }

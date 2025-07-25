@@ -58,14 +58,20 @@ func (r *ZoneSslUniversalSettingService) Update(ctx context.Context, zoneID stri
 }
 
 type SslUniversalSettingsResponse struct {
-	Result Universal                        `json:"result"`
-	JSON   sslUniversalSettingsResponseJSON `json:"-"`
-	APIResponseSingleTlsCertificates
+	Errors   []MessagesTlsCertificatesItem `json:"errors,required"`
+	Messages []MessagesTlsCertificatesItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success SslUniversalSettingsResponseSuccess `json:"success,required"`
+	Result  Universal                           `json:"result"`
+	JSON    sslUniversalSettingsResponseJSON    `json:"-"`
 }
 
 // sslUniversalSettingsResponseJSON contains the JSON metadata for the struct
 // [SslUniversalSettingsResponse]
 type sslUniversalSettingsResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -77,6 +83,21 @@ func (r *SslUniversalSettingsResponse) UnmarshalJSON(data []byte) (err error) {
 
 func (r sslUniversalSettingsResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type SslUniversalSettingsResponseSuccess bool
+
+const (
+	SslUniversalSettingsResponseSuccessTrue SslUniversalSettingsResponseSuccess = true
+)
+
+func (r SslUniversalSettingsResponseSuccess) IsKnown() bool {
+	switch r {
+	case SslUniversalSettingsResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type Universal struct {

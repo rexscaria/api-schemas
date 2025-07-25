@@ -3,14 +3,18 @@
 package cfrex
 
 import (
+	"bytes"
 	"context"
 	"errors"
 	"fmt"
+	"io"
+	"mime/multipart"
 	"net/http"
 	"net/url"
 	"reflect"
 	"time"
 
+	"github.com/rexscaria/api-schemas/internal/apiform"
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -69,9 +73,8 @@ func (r *AccountWorkerDispatchNamespaceScriptService) Get(ctx context.Context, a
 
 // Delete a worker from a Workers for Platforms namespace. This call has no
 // response body on a successful delete.
-func (r *AccountWorkerDispatchNamespaceScriptService) Delete(ctx context.Context, accountID string, dispatchNamespace string, scriptName string, params AccountWorkerDispatchNamespaceScriptDeleteParams, opts ...option.RequestOption) (err error) {
+func (r *AccountWorkerDispatchNamespaceScriptService) Delete(ctx context.Context, accountID string, dispatchNamespace string, scriptName string, body AccountWorkerDispatchNamespaceScriptDeleteParams, opts ...option.RequestOption) (res *NullResult, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -85,13 +88,13 @@ func (r *AccountWorkerDispatchNamespaceScriptService) Delete(ctx context.Context
 		return
 	}
 	path := fmt.Sprintf("accounts/%s/workers/dispatch/namespaces/%s/scripts/%s", accountID, dispatchNamespace, scriptName)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, params, nil, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
 	return
 }
 
 // Start uploading a collection of assets for use in a Worker version. To learn
 // more about the direct uploads of assets, see
-// https://developers.cloudflare.com/workers/static-assets/direct-upload/
+// https://developers.cloudflare.com/workers/static-assets/direct-upload/.
 func (r *AccountWorkerDispatchNamespaceScriptService) NewAssetsUploadSession(ctx context.Context, accountID string, dispatchNamespace string, scriptName string, body AccountWorkerDispatchNamespaceScriptNewAssetsUploadSessionParams, opts ...option.RequestOption) (res *UploadSessionResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
@@ -154,13 +157,16 @@ func (r *AccountWorkerDispatchNamespaceScriptService) Upload(ctx context.Context
 	return
 }
 
-// A binding to allow the Worker to communicate with resources
+// A binding to allow the Worker to communicate with resources.
 type BindingItem struct {
 	// A JavaScript variable name for the binding.
-	Name string          `json:"name,required"`
+	Name string `json:"name,required"`
+	// The kind of resource that the binding provides.
 	Type BindingItemType `json:"type,required"`
 	// Identifier of the D1 database to bind to.
 	ID string `json:"id"`
+	// This field can have the runtime type of [interface{}].
+	Algorithm interface{} `json:"algorithm"`
 	// R2 bucket to bind to.
 	BucketName string `json:"bucket_name"`
 	// Identifier of the certificate to bind to.
@@ -171,10 +177,15 @@ type BindingItem struct {
 	Dataset string `json:"dataset"`
 	// The environment of the script_name to bind to.
 	Environment string `json:"environment"`
+	// Data format of the key.
+	// [Learn more](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/importKey#format).
+	Format BindingItemFormat `json:"format"`
 	// Name of the Vectorize index to bind to.
 	IndexName string `json:"index_name"`
+	// JSON data to use.
+	Json string `json:"json"`
 	// This field can have the runtime type of [interface{}].
-	Json interface{} `json:"json"`
+	KeyJwk interface{} `json:"key_jwk"`
 	// Namespace to bind to.
 	Namespace string `json:"namespace"`
 	// Namespace identifier tag.
@@ -182,17 +193,28 @@ type BindingItem struct {
 	// This field can have the runtime type of
 	// [BindingItemWorkersBindingKindDispatchNamespaceOutbound].
 	Outbound interface{} `json:"outbound"`
+	// Name of the Pipeline to bind to.
+	Pipeline string `json:"pipeline"`
 	// Name of the Queue to bind to.
 	QueueName string `json:"queue_name"`
 	// The script where the Durable Object is defined, if it is external to this
 	// Worker.
 	ScriptName string `json:"script_name"`
+	// Name of the secret in the store.
+	SecretName string `json:"secret_name"`
 	// Name of Worker to bind to.
 	Service string `json:"service"`
+	// ID of the store containing the secret.
+	StoreID string `json:"store_id"`
 	// The text value to use.
-	Text  string          `json:"text"`
-	JSON  bindingItemJSON `json:"-"`
-	union BindingItemUnion
+	Text string `json:"text"`
+	// This field can have the runtime type of
+	// [[]BindingItemWorkersBindingKindSecretKeyUsage].
+	Usages interface{} `json:"usages"`
+	// Name of the Workflow to bind to.
+	WorkflowName string          `json:"workflow_name"`
+	JSON         bindingItemJSON `json:"-"`
+	union        BindingItemUnion
 }
 
 // bindingItemJSON contains the JSON metadata for the struct [BindingItem]
@@ -200,20 +222,28 @@ type bindingItemJSON struct {
 	Name          apijson.Field
 	Type          apijson.Field
 	ID            apijson.Field
+	Algorithm     apijson.Field
 	BucketName    apijson.Field
 	CertificateID apijson.Field
 	ClassName     apijson.Field
 	Dataset       apijson.Field
 	Environment   apijson.Field
+	Format        apijson.Field
 	IndexName     apijson.Field
 	Json          apijson.Field
+	KeyJwk        apijson.Field
 	Namespace     apijson.Field
 	NamespaceID   apijson.Field
 	Outbound      apijson.Field
+	Pipeline      apijson.Field
 	QueueName     apijson.Field
 	ScriptName    apijson.Field
+	SecretName    apijson.Field
 	Service       apijson.Field
+	StoreID       apijson.Field
 	Text          apijson.Field
+	Usages        apijson.Field
+	WorkflowName  apijson.Field
 	raw           string
 	ExtraFields   map[string]apijson.Field
 }
@@ -236,44 +266,50 @@ func (r *BindingItem) UnmarshalJSON(data []byte) (err error) {
 //
 // Possible runtime types of the union are [BindingItemWorkersBindingKindAI],
 // [BindingItemWorkersBindingKindAnalyticsEngine],
-// [BindingItemWorkersBindingKindAssets],
-// [BindingItemWorkersBindingKindBrowserRendering],
+// [BindingItemWorkersBindingKindAssets], [BindingItemWorkersBindingKindBrowser],
 // [BindingItemWorkersBindingKindD1],
 // [BindingItemWorkersBindingKindDispatchNamespace],
 // [BindingItemWorkersBindingKindDurableObjectNamespace],
 // [BindingItemWorkersBindingKindHyperdrive], [BindingItemWorkersBindingKindJson],
 // [BindingItemWorkersBindingKindKvNamespace],
 // [BindingItemWorkersBindingKindMtlsCertificate],
-// [BindingItemWorkersBindingKindPlainText], [BindingItemWorkersBindingKindQueue],
+// [BindingItemWorkersBindingKindPlainText],
+// [BindingItemWorkersBindingKindPipelines], [BindingItemWorkersBindingKindQueue],
 // [BindingItemWorkersBindingKindR2Bucket],
 // [BindingItemWorkersBindingKindSecretText],
 // [BindingItemWorkersBindingKindService],
 // [BindingItemWorkersBindingKindTailConsumer],
 // [BindingItemWorkersBindingKindVectorize],
-// [BindingItemWorkersBindingKindVersionMetadata].
+// [BindingItemWorkersBindingKindVersionMetadata],
+// [BindingItemWorkersBindingKindSecretsStoreSecret],
+// [BindingItemWorkersBindingKindSecretKey],
+// [BindingItemWorkersBindingKindWorkflow].
 func (r BindingItem) AsUnion() BindingItemUnion {
 	return r.union
 }
 
-// A binding to allow the Worker to communicate with resources
+// A binding to allow the Worker to communicate with resources.
 //
 // Union satisfied by [BindingItemWorkersBindingKindAI],
 // [BindingItemWorkersBindingKindAnalyticsEngine],
-// [BindingItemWorkersBindingKindAssets],
-// [BindingItemWorkersBindingKindBrowserRendering],
+// [BindingItemWorkersBindingKindAssets], [BindingItemWorkersBindingKindBrowser],
 // [BindingItemWorkersBindingKindD1],
 // [BindingItemWorkersBindingKindDispatchNamespace],
 // [BindingItemWorkersBindingKindDurableObjectNamespace],
 // [BindingItemWorkersBindingKindHyperdrive], [BindingItemWorkersBindingKindJson],
 // [BindingItemWorkersBindingKindKvNamespace],
 // [BindingItemWorkersBindingKindMtlsCertificate],
-// [BindingItemWorkersBindingKindPlainText], [BindingItemWorkersBindingKindQueue],
+// [BindingItemWorkersBindingKindPlainText],
+// [BindingItemWorkersBindingKindPipelines], [BindingItemWorkersBindingKindQueue],
 // [BindingItemWorkersBindingKindR2Bucket],
 // [BindingItemWorkersBindingKindSecretText],
 // [BindingItemWorkersBindingKindService],
 // [BindingItemWorkersBindingKindTailConsumer],
-// [BindingItemWorkersBindingKindVectorize] or
-// [BindingItemWorkersBindingKindVersionMetadata].
+// [BindingItemWorkersBindingKindVectorize],
+// [BindingItemWorkersBindingKindVersionMetadata],
+// [BindingItemWorkersBindingKindSecretsStoreSecret],
+// [BindingItemWorkersBindingKindSecretKey] or
+// [BindingItemWorkersBindingKindWorkflow].
 type BindingItemUnion interface {
 	implementsBindingItem()
 }
@@ -289,188 +325,8 @@ func init() {
 		},
 		apijson.UnionVariant{
 			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindAI{}),
-			DiscriminatorValue: "analytics_engine",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindAI{}),
-			DiscriminatorValue: "assets",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindAI{}),
-			DiscriminatorValue: "browser_rendering",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindAI{}),
-			DiscriminatorValue: "d1",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindAI{}),
-			DiscriminatorValue: "dispatch_namespace",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindAI{}),
-			DiscriminatorValue: "durable_object_namespace",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindAI{}),
-			DiscriminatorValue: "hyperdrive",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindAI{}),
-			DiscriminatorValue: "json",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindAI{}),
-			DiscriminatorValue: "kv_namespace",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindAI{}),
-			DiscriminatorValue: "mtls_certificate",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindAI{}),
-			DiscriminatorValue: "plain_text",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindAI{}),
-			DiscriminatorValue: "queue",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindAI{}),
-			DiscriminatorValue: "r2_bucket",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindAI{}),
-			DiscriminatorValue: "secret_text",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindAI{}),
-			DiscriminatorValue: "service",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindAI{}),
-			DiscriminatorValue: "tail_consumer",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindAI{}),
-			DiscriminatorValue: "vectorize",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindAI{}),
-			DiscriminatorValue: "version_metadata",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
 			Type:               reflect.TypeOf(BindingItemWorkersBindingKindAnalyticsEngine{}),
 			DiscriminatorValue: "analytics_engine",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindAnalyticsEngine{}),
-			DiscriminatorValue: "ai",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindAnalyticsEngine{}),
-			DiscriminatorValue: "assets",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindAnalyticsEngine{}),
-			DiscriminatorValue: "browser_rendering",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindAnalyticsEngine{}),
-			DiscriminatorValue: "d1",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindAnalyticsEngine{}),
-			DiscriminatorValue: "dispatch_namespace",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindAnalyticsEngine{}),
-			DiscriminatorValue: "durable_object_namespace",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindAnalyticsEngine{}),
-			DiscriminatorValue: "hyperdrive",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindAnalyticsEngine{}),
-			DiscriminatorValue: "json",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindAnalyticsEngine{}),
-			DiscriminatorValue: "kv_namespace",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindAnalyticsEngine{}),
-			DiscriminatorValue: "mtls_certificate",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindAnalyticsEngine{}),
-			DiscriminatorValue: "plain_text",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindAnalyticsEngine{}),
-			DiscriminatorValue: "queue",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindAnalyticsEngine{}),
-			DiscriminatorValue: "r2_bucket",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindAnalyticsEngine{}),
-			DiscriminatorValue: "secret_text",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindAnalyticsEngine{}),
-			DiscriminatorValue: "service",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindAnalyticsEngine{}),
-			DiscriminatorValue: "tail_consumer",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindAnalyticsEngine{}),
-			DiscriminatorValue: "vectorize",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindAnalyticsEngine{}),
-			DiscriminatorValue: "version_metadata",
 		},
 		apijson.UnionVariant{
 			TypeFilter:         gjson.JSON,
@@ -479,188 +335,8 @@ func init() {
 		},
 		apijson.UnionVariant{
 			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindAssets{}),
-			DiscriminatorValue: "ai",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindAssets{}),
-			DiscriminatorValue: "analytics_engine",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindAssets{}),
-			DiscriminatorValue: "browser_rendering",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindAssets{}),
-			DiscriminatorValue: "d1",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindAssets{}),
-			DiscriminatorValue: "dispatch_namespace",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindAssets{}),
-			DiscriminatorValue: "durable_object_namespace",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindAssets{}),
-			DiscriminatorValue: "hyperdrive",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindAssets{}),
-			DiscriminatorValue: "json",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindAssets{}),
-			DiscriminatorValue: "kv_namespace",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindAssets{}),
-			DiscriminatorValue: "mtls_certificate",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindAssets{}),
-			DiscriminatorValue: "plain_text",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindAssets{}),
-			DiscriminatorValue: "queue",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindAssets{}),
-			DiscriminatorValue: "r2_bucket",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindAssets{}),
-			DiscriminatorValue: "secret_text",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindAssets{}),
-			DiscriminatorValue: "service",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindAssets{}),
-			DiscriminatorValue: "tail_consumer",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindAssets{}),
-			DiscriminatorValue: "vectorize",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindAssets{}),
-			DiscriminatorValue: "version_metadata",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindBrowserRendering{}),
-			DiscriminatorValue: "browser_rendering",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindBrowserRendering{}),
-			DiscriminatorValue: "ai",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindBrowserRendering{}),
-			DiscriminatorValue: "analytics_engine",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindBrowserRendering{}),
-			DiscriminatorValue: "assets",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindBrowserRendering{}),
-			DiscriminatorValue: "d1",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindBrowserRendering{}),
-			DiscriminatorValue: "dispatch_namespace",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindBrowserRendering{}),
-			DiscriminatorValue: "durable_object_namespace",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindBrowserRendering{}),
-			DiscriminatorValue: "hyperdrive",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindBrowserRendering{}),
-			DiscriminatorValue: "json",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindBrowserRendering{}),
-			DiscriminatorValue: "kv_namespace",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindBrowserRendering{}),
-			DiscriminatorValue: "mtls_certificate",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindBrowserRendering{}),
-			DiscriminatorValue: "plain_text",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindBrowserRendering{}),
-			DiscriminatorValue: "queue",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindBrowserRendering{}),
-			DiscriminatorValue: "r2_bucket",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindBrowserRendering{}),
-			DiscriminatorValue: "secret_text",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindBrowserRendering{}),
-			DiscriminatorValue: "service",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindBrowserRendering{}),
-			DiscriminatorValue: "tail_consumer",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindBrowserRendering{}),
-			DiscriminatorValue: "vectorize",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindBrowserRendering{}),
-			DiscriminatorValue: "version_metadata",
+			Type:               reflect.TypeOf(BindingItemWorkersBindingKindBrowser{}),
+			DiscriminatorValue: "browser",
 		},
 		apijson.UnionVariant{
 			TypeFilter:         gjson.JSON,
@@ -669,188 +345,8 @@ func init() {
 		},
 		apijson.UnionVariant{
 			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindD1{}),
-			DiscriminatorValue: "ai",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindD1{}),
-			DiscriminatorValue: "analytics_engine",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindD1{}),
-			DiscriminatorValue: "assets",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindD1{}),
-			DiscriminatorValue: "browser_rendering",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindD1{}),
-			DiscriminatorValue: "dispatch_namespace",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindD1{}),
-			DiscriminatorValue: "durable_object_namespace",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindD1{}),
-			DiscriminatorValue: "hyperdrive",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindD1{}),
-			DiscriminatorValue: "json",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindD1{}),
-			DiscriminatorValue: "kv_namespace",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindD1{}),
-			DiscriminatorValue: "mtls_certificate",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindD1{}),
-			DiscriminatorValue: "plain_text",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindD1{}),
-			DiscriminatorValue: "queue",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindD1{}),
-			DiscriminatorValue: "r2_bucket",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindD1{}),
-			DiscriminatorValue: "secret_text",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindD1{}),
-			DiscriminatorValue: "service",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindD1{}),
-			DiscriminatorValue: "tail_consumer",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindD1{}),
-			DiscriminatorValue: "vectorize",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindD1{}),
-			DiscriminatorValue: "version_metadata",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
 			Type:               reflect.TypeOf(BindingItemWorkersBindingKindDispatchNamespace{}),
 			DiscriminatorValue: "dispatch_namespace",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindDispatchNamespace{}),
-			DiscriminatorValue: "ai",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindDispatchNamespace{}),
-			DiscriminatorValue: "analytics_engine",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindDispatchNamespace{}),
-			DiscriminatorValue: "assets",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindDispatchNamespace{}),
-			DiscriminatorValue: "browser_rendering",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindDispatchNamespace{}),
-			DiscriminatorValue: "d1",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindDispatchNamespace{}),
-			DiscriminatorValue: "durable_object_namespace",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindDispatchNamespace{}),
-			DiscriminatorValue: "hyperdrive",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindDispatchNamespace{}),
-			DiscriminatorValue: "json",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindDispatchNamespace{}),
-			DiscriminatorValue: "kv_namespace",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindDispatchNamespace{}),
-			DiscriminatorValue: "mtls_certificate",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindDispatchNamespace{}),
-			DiscriminatorValue: "plain_text",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindDispatchNamespace{}),
-			DiscriminatorValue: "queue",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindDispatchNamespace{}),
-			DiscriminatorValue: "r2_bucket",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindDispatchNamespace{}),
-			DiscriminatorValue: "secret_text",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindDispatchNamespace{}),
-			DiscriminatorValue: "service",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindDispatchNamespace{}),
-			DiscriminatorValue: "tail_consumer",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindDispatchNamespace{}),
-			DiscriminatorValue: "vectorize",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindDispatchNamespace{}),
-			DiscriminatorValue: "version_metadata",
 		},
 		apijson.UnionVariant{
 			TypeFilter:         gjson.JSON,
@@ -859,188 +355,8 @@ func init() {
 		},
 		apijson.UnionVariant{
 			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindDurableObjectNamespace{}),
-			DiscriminatorValue: "ai",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindDurableObjectNamespace{}),
-			DiscriminatorValue: "analytics_engine",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindDurableObjectNamespace{}),
-			DiscriminatorValue: "assets",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindDurableObjectNamespace{}),
-			DiscriminatorValue: "browser_rendering",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindDurableObjectNamespace{}),
-			DiscriminatorValue: "d1",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindDurableObjectNamespace{}),
-			DiscriminatorValue: "dispatch_namespace",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindDurableObjectNamespace{}),
-			DiscriminatorValue: "hyperdrive",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindDurableObjectNamespace{}),
-			DiscriminatorValue: "json",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindDurableObjectNamespace{}),
-			DiscriminatorValue: "kv_namespace",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindDurableObjectNamespace{}),
-			DiscriminatorValue: "mtls_certificate",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindDurableObjectNamespace{}),
-			DiscriminatorValue: "plain_text",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindDurableObjectNamespace{}),
-			DiscriminatorValue: "queue",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindDurableObjectNamespace{}),
-			DiscriminatorValue: "r2_bucket",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindDurableObjectNamespace{}),
-			DiscriminatorValue: "secret_text",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindDurableObjectNamespace{}),
-			DiscriminatorValue: "service",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindDurableObjectNamespace{}),
-			DiscriminatorValue: "tail_consumer",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindDurableObjectNamespace{}),
-			DiscriminatorValue: "vectorize",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindDurableObjectNamespace{}),
-			DiscriminatorValue: "version_metadata",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
 			Type:               reflect.TypeOf(BindingItemWorkersBindingKindHyperdrive{}),
 			DiscriminatorValue: "hyperdrive",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindHyperdrive{}),
-			DiscriminatorValue: "ai",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindHyperdrive{}),
-			DiscriminatorValue: "analytics_engine",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindHyperdrive{}),
-			DiscriminatorValue: "assets",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindHyperdrive{}),
-			DiscriminatorValue: "browser_rendering",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindHyperdrive{}),
-			DiscriminatorValue: "d1",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindHyperdrive{}),
-			DiscriminatorValue: "dispatch_namespace",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindHyperdrive{}),
-			DiscriminatorValue: "durable_object_namespace",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindHyperdrive{}),
-			DiscriminatorValue: "json",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindHyperdrive{}),
-			DiscriminatorValue: "kv_namespace",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindHyperdrive{}),
-			DiscriminatorValue: "mtls_certificate",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindHyperdrive{}),
-			DiscriminatorValue: "plain_text",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindHyperdrive{}),
-			DiscriminatorValue: "queue",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindHyperdrive{}),
-			DiscriminatorValue: "r2_bucket",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindHyperdrive{}),
-			DiscriminatorValue: "secret_text",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindHyperdrive{}),
-			DiscriminatorValue: "service",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindHyperdrive{}),
-			DiscriminatorValue: "tail_consumer",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindHyperdrive{}),
-			DiscriminatorValue: "vectorize",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindHyperdrive{}),
-			DiscriminatorValue: "version_metadata",
 		},
 		apijson.UnionVariant{
 			TypeFilter:         gjson.JSON,
@@ -1049,188 +365,8 @@ func init() {
 		},
 		apijson.UnionVariant{
 			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindJson{}),
-			DiscriminatorValue: "ai",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindJson{}),
-			DiscriminatorValue: "analytics_engine",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindJson{}),
-			DiscriminatorValue: "assets",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindJson{}),
-			DiscriminatorValue: "browser_rendering",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindJson{}),
-			DiscriminatorValue: "d1",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindJson{}),
-			DiscriminatorValue: "dispatch_namespace",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindJson{}),
-			DiscriminatorValue: "durable_object_namespace",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindJson{}),
-			DiscriminatorValue: "hyperdrive",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindJson{}),
-			DiscriminatorValue: "kv_namespace",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindJson{}),
-			DiscriminatorValue: "mtls_certificate",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindJson{}),
-			DiscriminatorValue: "plain_text",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindJson{}),
-			DiscriminatorValue: "queue",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindJson{}),
-			DiscriminatorValue: "r2_bucket",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindJson{}),
-			DiscriminatorValue: "secret_text",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindJson{}),
-			DiscriminatorValue: "service",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindJson{}),
-			DiscriminatorValue: "tail_consumer",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindJson{}),
-			DiscriminatorValue: "vectorize",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindJson{}),
-			DiscriminatorValue: "version_metadata",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
 			Type:               reflect.TypeOf(BindingItemWorkersBindingKindKvNamespace{}),
 			DiscriminatorValue: "kv_namespace",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindKvNamespace{}),
-			DiscriminatorValue: "ai",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindKvNamespace{}),
-			DiscriminatorValue: "analytics_engine",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindKvNamespace{}),
-			DiscriminatorValue: "assets",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindKvNamespace{}),
-			DiscriminatorValue: "browser_rendering",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindKvNamespace{}),
-			DiscriminatorValue: "d1",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindKvNamespace{}),
-			DiscriminatorValue: "dispatch_namespace",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindKvNamespace{}),
-			DiscriminatorValue: "durable_object_namespace",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindKvNamespace{}),
-			DiscriminatorValue: "hyperdrive",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindKvNamespace{}),
-			DiscriminatorValue: "json",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindKvNamespace{}),
-			DiscriminatorValue: "mtls_certificate",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindKvNamespace{}),
-			DiscriminatorValue: "plain_text",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindKvNamespace{}),
-			DiscriminatorValue: "queue",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindKvNamespace{}),
-			DiscriminatorValue: "r2_bucket",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindKvNamespace{}),
-			DiscriminatorValue: "secret_text",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindKvNamespace{}),
-			DiscriminatorValue: "service",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindKvNamespace{}),
-			DiscriminatorValue: "tail_consumer",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindKvNamespace{}),
-			DiscriminatorValue: "vectorize",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindKvNamespace{}),
-			DiscriminatorValue: "version_metadata",
 		},
 		apijson.UnionVariant{
 			TypeFilter:         gjson.JSON,
@@ -1239,188 +375,13 @@ func init() {
 		},
 		apijson.UnionVariant{
 			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindMtlsCertificate{}),
-			DiscriminatorValue: "ai",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindMtlsCertificate{}),
-			DiscriminatorValue: "analytics_engine",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindMtlsCertificate{}),
-			DiscriminatorValue: "assets",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindMtlsCertificate{}),
-			DiscriminatorValue: "browser_rendering",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindMtlsCertificate{}),
-			DiscriminatorValue: "d1",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindMtlsCertificate{}),
-			DiscriminatorValue: "dispatch_namespace",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindMtlsCertificate{}),
-			DiscriminatorValue: "durable_object_namespace",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindMtlsCertificate{}),
-			DiscriminatorValue: "hyperdrive",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindMtlsCertificate{}),
-			DiscriminatorValue: "json",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindMtlsCertificate{}),
-			DiscriminatorValue: "kv_namespace",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindMtlsCertificate{}),
-			DiscriminatorValue: "plain_text",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindMtlsCertificate{}),
-			DiscriminatorValue: "queue",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindMtlsCertificate{}),
-			DiscriminatorValue: "r2_bucket",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindMtlsCertificate{}),
-			DiscriminatorValue: "secret_text",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindMtlsCertificate{}),
-			DiscriminatorValue: "service",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindMtlsCertificate{}),
-			DiscriminatorValue: "tail_consumer",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindMtlsCertificate{}),
-			DiscriminatorValue: "vectorize",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindMtlsCertificate{}),
-			DiscriminatorValue: "version_metadata",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
 			Type:               reflect.TypeOf(BindingItemWorkersBindingKindPlainText{}),
 			DiscriminatorValue: "plain_text",
 		},
 		apijson.UnionVariant{
 			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindPlainText{}),
-			DiscriminatorValue: "ai",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindPlainText{}),
-			DiscriminatorValue: "analytics_engine",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindPlainText{}),
-			DiscriminatorValue: "assets",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindPlainText{}),
-			DiscriminatorValue: "browser_rendering",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindPlainText{}),
-			DiscriminatorValue: "d1",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindPlainText{}),
-			DiscriminatorValue: "dispatch_namespace",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindPlainText{}),
-			DiscriminatorValue: "durable_object_namespace",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindPlainText{}),
-			DiscriminatorValue: "hyperdrive",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindPlainText{}),
-			DiscriminatorValue: "json",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindPlainText{}),
-			DiscriminatorValue: "kv_namespace",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindPlainText{}),
-			DiscriminatorValue: "mtls_certificate",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindPlainText{}),
-			DiscriminatorValue: "queue",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindPlainText{}),
-			DiscriminatorValue: "r2_bucket",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindPlainText{}),
-			DiscriminatorValue: "secret_text",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindPlainText{}),
-			DiscriminatorValue: "service",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindPlainText{}),
-			DiscriminatorValue: "tail_consumer",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindPlainText{}),
-			DiscriminatorValue: "vectorize",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindPlainText{}),
-			DiscriminatorValue: "version_metadata",
+			Type:               reflect.TypeOf(BindingItemWorkersBindingKindPipelines{}),
+			DiscriminatorValue: "pipelines",
 		},
 		apijson.UnionVariant{
 			TypeFilter:         gjson.JSON,
@@ -1429,188 +390,8 @@ func init() {
 		},
 		apijson.UnionVariant{
 			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindQueue{}),
-			DiscriminatorValue: "ai",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindQueue{}),
-			DiscriminatorValue: "analytics_engine",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindQueue{}),
-			DiscriminatorValue: "assets",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindQueue{}),
-			DiscriminatorValue: "browser_rendering",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindQueue{}),
-			DiscriminatorValue: "d1",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindQueue{}),
-			DiscriminatorValue: "dispatch_namespace",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindQueue{}),
-			DiscriminatorValue: "durable_object_namespace",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindQueue{}),
-			DiscriminatorValue: "hyperdrive",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindQueue{}),
-			DiscriminatorValue: "json",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindQueue{}),
-			DiscriminatorValue: "kv_namespace",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindQueue{}),
-			DiscriminatorValue: "mtls_certificate",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindQueue{}),
-			DiscriminatorValue: "plain_text",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindQueue{}),
-			DiscriminatorValue: "r2_bucket",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindQueue{}),
-			DiscriminatorValue: "secret_text",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindQueue{}),
-			DiscriminatorValue: "service",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindQueue{}),
-			DiscriminatorValue: "tail_consumer",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindQueue{}),
-			DiscriminatorValue: "vectorize",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindQueue{}),
-			DiscriminatorValue: "version_metadata",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
 			Type:               reflect.TypeOf(BindingItemWorkersBindingKindR2Bucket{}),
 			DiscriminatorValue: "r2_bucket",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindR2Bucket{}),
-			DiscriminatorValue: "ai",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindR2Bucket{}),
-			DiscriminatorValue: "analytics_engine",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindR2Bucket{}),
-			DiscriminatorValue: "assets",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindR2Bucket{}),
-			DiscriminatorValue: "browser_rendering",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindR2Bucket{}),
-			DiscriminatorValue: "d1",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindR2Bucket{}),
-			DiscriminatorValue: "dispatch_namespace",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindR2Bucket{}),
-			DiscriminatorValue: "durable_object_namespace",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindR2Bucket{}),
-			DiscriminatorValue: "hyperdrive",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindR2Bucket{}),
-			DiscriminatorValue: "json",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindR2Bucket{}),
-			DiscriminatorValue: "kv_namespace",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindR2Bucket{}),
-			DiscriminatorValue: "mtls_certificate",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindR2Bucket{}),
-			DiscriminatorValue: "plain_text",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindR2Bucket{}),
-			DiscriminatorValue: "queue",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindR2Bucket{}),
-			DiscriminatorValue: "secret_text",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindR2Bucket{}),
-			DiscriminatorValue: "service",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindR2Bucket{}),
-			DiscriminatorValue: "tail_consumer",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindR2Bucket{}),
-			DiscriminatorValue: "vectorize",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindR2Bucket{}),
-			DiscriminatorValue: "version_metadata",
 		},
 		apijson.UnionVariant{
 			TypeFilter:         gjson.JSON,
@@ -1619,188 +400,8 @@ func init() {
 		},
 		apijson.UnionVariant{
 			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindSecretText{}),
-			DiscriminatorValue: "ai",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindSecretText{}),
-			DiscriminatorValue: "analytics_engine",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindSecretText{}),
-			DiscriminatorValue: "assets",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindSecretText{}),
-			DiscriminatorValue: "browser_rendering",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindSecretText{}),
-			DiscriminatorValue: "d1",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindSecretText{}),
-			DiscriminatorValue: "dispatch_namespace",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindSecretText{}),
-			DiscriminatorValue: "durable_object_namespace",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindSecretText{}),
-			DiscriminatorValue: "hyperdrive",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindSecretText{}),
-			DiscriminatorValue: "json",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindSecretText{}),
-			DiscriminatorValue: "kv_namespace",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindSecretText{}),
-			DiscriminatorValue: "mtls_certificate",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindSecretText{}),
-			DiscriminatorValue: "plain_text",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindSecretText{}),
-			DiscriminatorValue: "queue",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindSecretText{}),
-			DiscriminatorValue: "r2_bucket",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindSecretText{}),
-			DiscriminatorValue: "service",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindSecretText{}),
-			DiscriminatorValue: "tail_consumer",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindSecretText{}),
-			DiscriminatorValue: "vectorize",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindSecretText{}),
-			DiscriminatorValue: "version_metadata",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
 			Type:               reflect.TypeOf(BindingItemWorkersBindingKindService{}),
 			DiscriminatorValue: "service",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindService{}),
-			DiscriminatorValue: "ai",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindService{}),
-			DiscriminatorValue: "analytics_engine",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindService{}),
-			DiscriminatorValue: "assets",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindService{}),
-			DiscriminatorValue: "browser_rendering",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindService{}),
-			DiscriminatorValue: "d1",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindService{}),
-			DiscriminatorValue: "dispatch_namespace",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindService{}),
-			DiscriminatorValue: "durable_object_namespace",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindService{}),
-			DiscriminatorValue: "hyperdrive",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindService{}),
-			DiscriminatorValue: "json",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindService{}),
-			DiscriminatorValue: "kv_namespace",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindService{}),
-			DiscriminatorValue: "mtls_certificate",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindService{}),
-			DiscriminatorValue: "plain_text",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindService{}),
-			DiscriminatorValue: "queue",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindService{}),
-			DiscriminatorValue: "r2_bucket",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindService{}),
-			DiscriminatorValue: "secret_text",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindService{}),
-			DiscriminatorValue: "tail_consumer",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindService{}),
-			DiscriminatorValue: "vectorize",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindService{}),
-			DiscriminatorValue: "version_metadata",
 		},
 		apijson.UnionVariant{
 			TypeFilter:         gjson.JSON,
@@ -1809,188 +410,8 @@ func init() {
 		},
 		apijson.UnionVariant{
 			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindTailConsumer{}),
-			DiscriminatorValue: "ai",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindTailConsumer{}),
-			DiscriminatorValue: "analytics_engine",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindTailConsumer{}),
-			DiscriminatorValue: "assets",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindTailConsumer{}),
-			DiscriminatorValue: "browser_rendering",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindTailConsumer{}),
-			DiscriminatorValue: "d1",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindTailConsumer{}),
-			DiscriminatorValue: "dispatch_namespace",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindTailConsumer{}),
-			DiscriminatorValue: "durable_object_namespace",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindTailConsumer{}),
-			DiscriminatorValue: "hyperdrive",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindTailConsumer{}),
-			DiscriminatorValue: "json",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindTailConsumer{}),
-			DiscriminatorValue: "kv_namespace",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindTailConsumer{}),
-			DiscriminatorValue: "mtls_certificate",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindTailConsumer{}),
-			DiscriminatorValue: "plain_text",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindTailConsumer{}),
-			DiscriminatorValue: "queue",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindTailConsumer{}),
-			DiscriminatorValue: "r2_bucket",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindTailConsumer{}),
-			DiscriminatorValue: "secret_text",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindTailConsumer{}),
-			DiscriminatorValue: "service",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindTailConsumer{}),
-			DiscriminatorValue: "vectorize",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindTailConsumer{}),
-			DiscriminatorValue: "version_metadata",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
 			Type:               reflect.TypeOf(BindingItemWorkersBindingKindVectorize{}),
 			DiscriminatorValue: "vectorize",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindVectorize{}),
-			DiscriminatorValue: "ai",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindVectorize{}),
-			DiscriminatorValue: "analytics_engine",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindVectorize{}),
-			DiscriminatorValue: "assets",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindVectorize{}),
-			DiscriminatorValue: "browser_rendering",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindVectorize{}),
-			DiscriminatorValue: "d1",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindVectorize{}),
-			DiscriminatorValue: "dispatch_namespace",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindVectorize{}),
-			DiscriminatorValue: "durable_object_namespace",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindVectorize{}),
-			DiscriminatorValue: "hyperdrive",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindVectorize{}),
-			DiscriminatorValue: "json",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindVectorize{}),
-			DiscriminatorValue: "kv_namespace",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindVectorize{}),
-			DiscriminatorValue: "mtls_certificate",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindVectorize{}),
-			DiscriminatorValue: "plain_text",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindVectorize{}),
-			DiscriminatorValue: "queue",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindVectorize{}),
-			DiscriminatorValue: "r2_bucket",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindVectorize{}),
-			DiscriminatorValue: "secret_text",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindVectorize{}),
-			DiscriminatorValue: "service",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindVectorize{}),
-			DiscriminatorValue: "tail_consumer",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindVectorize{}),
-			DiscriminatorValue: "version_metadata",
 		},
 		apijson.UnionVariant{
 			TypeFilter:         gjson.JSON,
@@ -1999,100 +420,26 @@ func init() {
 		},
 		apijson.UnionVariant{
 			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindVersionMetadata{}),
-			DiscriminatorValue: "ai",
+			Type:               reflect.TypeOf(BindingItemWorkersBindingKindSecretsStoreSecret{}),
+			DiscriminatorValue: "secrets_store_secret",
 		},
 		apijson.UnionVariant{
 			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindVersionMetadata{}),
-			DiscriminatorValue: "analytics_engine",
+			Type:               reflect.TypeOf(BindingItemWorkersBindingKindSecretKey{}),
+			DiscriminatorValue: "secret_key",
 		},
 		apijson.UnionVariant{
 			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindVersionMetadata{}),
-			DiscriminatorValue: "assets",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindVersionMetadata{}),
-			DiscriminatorValue: "browser_rendering",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindVersionMetadata{}),
-			DiscriminatorValue: "d1",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindVersionMetadata{}),
-			DiscriminatorValue: "dispatch_namespace",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindVersionMetadata{}),
-			DiscriminatorValue: "durable_object_namespace",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindVersionMetadata{}),
-			DiscriminatorValue: "hyperdrive",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindVersionMetadata{}),
-			DiscriminatorValue: "json",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindVersionMetadata{}),
-			DiscriminatorValue: "kv_namespace",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindVersionMetadata{}),
-			DiscriminatorValue: "mtls_certificate",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindVersionMetadata{}),
-			DiscriminatorValue: "plain_text",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindVersionMetadata{}),
-			DiscriminatorValue: "queue",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindVersionMetadata{}),
-			DiscriminatorValue: "r2_bucket",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindVersionMetadata{}),
-			DiscriminatorValue: "secret_text",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindVersionMetadata{}),
-			DiscriminatorValue: "service",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindVersionMetadata{}),
-			DiscriminatorValue: "tail_consumer",
-		},
-		apijson.UnionVariant{
-			TypeFilter:         gjson.JSON,
-			Type:               reflect.TypeOf(BindingItemWorkersBindingKindVersionMetadata{}),
-			DiscriminatorValue: "vectorize",
+			Type:               reflect.TypeOf(BindingItemWorkersBindingKindWorkflow{}),
+			DiscriminatorValue: "workflow",
 		},
 	)
 }
 
 type BindingItemWorkersBindingKindAI struct {
 	// A JavaScript variable name for the binding.
-	Name string                              `json:"name,required"`
+	Name string `json:"name,required"`
+	// The kind of resource that the binding provides.
 	Type BindingItemWorkersBindingKindAIType `json:"type,required"`
 	JSON bindingItemWorkersBindingKindAIJSON `json:"-"`
 }
@@ -2116,33 +463,16 @@ func (r bindingItemWorkersBindingKindAIJSON) RawJSON() string {
 
 func (r BindingItemWorkersBindingKindAI) implementsBindingItem() {}
 
+// The kind of resource that the binding provides.
 type BindingItemWorkersBindingKindAIType string
 
 const (
-	BindingItemWorkersBindingKindAITypeAI                     BindingItemWorkersBindingKindAIType = "ai"
-	BindingItemWorkersBindingKindAITypeAnalyticsEngine        BindingItemWorkersBindingKindAIType = "analytics_engine"
-	BindingItemWorkersBindingKindAITypeAssets                 BindingItemWorkersBindingKindAIType = "assets"
-	BindingItemWorkersBindingKindAITypeBrowserRendering       BindingItemWorkersBindingKindAIType = "browser_rendering"
-	BindingItemWorkersBindingKindAITypeD1                     BindingItemWorkersBindingKindAIType = "d1"
-	BindingItemWorkersBindingKindAITypeDispatchNamespace      BindingItemWorkersBindingKindAIType = "dispatch_namespace"
-	BindingItemWorkersBindingKindAITypeDurableObjectNamespace BindingItemWorkersBindingKindAIType = "durable_object_namespace"
-	BindingItemWorkersBindingKindAITypeHyperdrive             BindingItemWorkersBindingKindAIType = "hyperdrive"
-	BindingItemWorkersBindingKindAITypeJson                   BindingItemWorkersBindingKindAIType = "json"
-	BindingItemWorkersBindingKindAITypeKvNamespace            BindingItemWorkersBindingKindAIType = "kv_namespace"
-	BindingItemWorkersBindingKindAITypeMtlsCertificate        BindingItemWorkersBindingKindAIType = "mtls_certificate"
-	BindingItemWorkersBindingKindAITypePlainText              BindingItemWorkersBindingKindAIType = "plain_text"
-	BindingItemWorkersBindingKindAITypeQueue                  BindingItemWorkersBindingKindAIType = "queue"
-	BindingItemWorkersBindingKindAITypeR2Bucket               BindingItemWorkersBindingKindAIType = "r2_bucket"
-	BindingItemWorkersBindingKindAITypeSecretText             BindingItemWorkersBindingKindAIType = "secret_text"
-	BindingItemWorkersBindingKindAITypeService                BindingItemWorkersBindingKindAIType = "service"
-	BindingItemWorkersBindingKindAITypeTailConsumer           BindingItemWorkersBindingKindAIType = "tail_consumer"
-	BindingItemWorkersBindingKindAITypeVectorize              BindingItemWorkersBindingKindAIType = "vectorize"
-	BindingItemWorkersBindingKindAITypeVersionMetadata        BindingItemWorkersBindingKindAIType = "version_metadata"
+	BindingItemWorkersBindingKindAITypeAI BindingItemWorkersBindingKindAIType = "ai"
 )
 
 func (r BindingItemWorkersBindingKindAIType) IsKnown() bool {
 	switch r {
-	case BindingItemWorkersBindingKindAITypeAI, BindingItemWorkersBindingKindAITypeAnalyticsEngine, BindingItemWorkersBindingKindAITypeAssets, BindingItemWorkersBindingKindAITypeBrowserRendering, BindingItemWorkersBindingKindAITypeD1, BindingItemWorkersBindingKindAITypeDispatchNamespace, BindingItemWorkersBindingKindAITypeDurableObjectNamespace, BindingItemWorkersBindingKindAITypeHyperdrive, BindingItemWorkersBindingKindAITypeJson, BindingItemWorkersBindingKindAITypeKvNamespace, BindingItemWorkersBindingKindAITypeMtlsCertificate, BindingItemWorkersBindingKindAITypePlainText, BindingItemWorkersBindingKindAITypeQueue, BindingItemWorkersBindingKindAITypeR2Bucket, BindingItemWorkersBindingKindAITypeSecretText, BindingItemWorkersBindingKindAITypeService, BindingItemWorkersBindingKindAITypeTailConsumer, BindingItemWorkersBindingKindAITypeVectorize, BindingItemWorkersBindingKindAITypeVersionMetadata:
+	case BindingItemWorkersBindingKindAITypeAI:
 		return true
 	}
 	return false
@@ -2152,7 +482,8 @@ type BindingItemWorkersBindingKindAnalyticsEngine struct {
 	// The name of the dataset to bind to.
 	Dataset string `json:"dataset,required"`
 	// A JavaScript variable name for the binding.
-	Name string                                           `json:"name,required"`
+	Name string `json:"name,required"`
+	// The kind of resource that the binding provides.
 	Type BindingItemWorkersBindingKindAnalyticsEngineType `json:"type,required"`
 	JSON bindingItemWorkersBindingKindAnalyticsEngineJSON `json:"-"`
 }
@@ -2177,33 +508,16 @@ func (r bindingItemWorkersBindingKindAnalyticsEngineJSON) RawJSON() string {
 
 func (r BindingItemWorkersBindingKindAnalyticsEngine) implementsBindingItem() {}
 
+// The kind of resource that the binding provides.
 type BindingItemWorkersBindingKindAnalyticsEngineType string
 
 const (
-	BindingItemWorkersBindingKindAnalyticsEngineTypeAnalyticsEngine        BindingItemWorkersBindingKindAnalyticsEngineType = "analytics_engine"
-	BindingItemWorkersBindingKindAnalyticsEngineTypeAI                     BindingItemWorkersBindingKindAnalyticsEngineType = "ai"
-	BindingItemWorkersBindingKindAnalyticsEngineTypeAssets                 BindingItemWorkersBindingKindAnalyticsEngineType = "assets"
-	BindingItemWorkersBindingKindAnalyticsEngineTypeBrowserRendering       BindingItemWorkersBindingKindAnalyticsEngineType = "browser_rendering"
-	BindingItemWorkersBindingKindAnalyticsEngineTypeD1                     BindingItemWorkersBindingKindAnalyticsEngineType = "d1"
-	BindingItemWorkersBindingKindAnalyticsEngineTypeDispatchNamespace      BindingItemWorkersBindingKindAnalyticsEngineType = "dispatch_namespace"
-	BindingItemWorkersBindingKindAnalyticsEngineTypeDurableObjectNamespace BindingItemWorkersBindingKindAnalyticsEngineType = "durable_object_namespace"
-	BindingItemWorkersBindingKindAnalyticsEngineTypeHyperdrive             BindingItemWorkersBindingKindAnalyticsEngineType = "hyperdrive"
-	BindingItemWorkersBindingKindAnalyticsEngineTypeJson                   BindingItemWorkersBindingKindAnalyticsEngineType = "json"
-	BindingItemWorkersBindingKindAnalyticsEngineTypeKvNamespace            BindingItemWorkersBindingKindAnalyticsEngineType = "kv_namespace"
-	BindingItemWorkersBindingKindAnalyticsEngineTypeMtlsCertificate        BindingItemWorkersBindingKindAnalyticsEngineType = "mtls_certificate"
-	BindingItemWorkersBindingKindAnalyticsEngineTypePlainText              BindingItemWorkersBindingKindAnalyticsEngineType = "plain_text"
-	BindingItemWorkersBindingKindAnalyticsEngineTypeQueue                  BindingItemWorkersBindingKindAnalyticsEngineType = "queue"
-	BindingItemWorkersBindingKindAnalyticsEngineTypeR2Bucket               BindingItemWorkersBindingKindAnalyticsEngineType = "r2_bucket"
-	BindingItemWorkersBindingKindAnalyticsEngineTypeSecretText             BindingItemWorkersBindingKindAnalyticsEngineType = "secret_text"
-	BindingItemWorkersBindingKindAnalyticsEngineTypeService                BindingItemWorkersBindingKindAnalyticsEngineType = "service"
-	BindingItemWorkersBindingKindAnalyticsEngineTypeTailConsumer           BindingItemWorkersBindingKindAnalyticsEngineType = "tail_consumer"
-	BindingItemWorkersBindingKindAnalyticsEngineTypeVectorize              BindingItemWorkersBindingKindAnalyticsEngineType = "vectorize"
-	BindingItemWorkersBindingKindAnalyticsEngineTypeVersionMetadata        BindingItemWorkersBindingKindAnalyticsEngineType = "version_metadata"
+	BindingItemWorkersBindingKindAnalyticsEngineTypeAnalyticsEngine BindingItemWorkersBindingKindAnalyticsEngineType = "analytics_engine"
 )
 
 func (r BindingItemWorkersBindingKindAnalyticsEngineType) IsKnown() bool {
 	switch r {
-	case BindingItemWorkersBindingKindAnalyticsEngineTypeAnalyticsEngine, BindingItemWorkersBindingKindAnalyticsEngineTypeAI, BindingItemWorkersBindingKindAnalyticsEngineTypeAssets, BindingItemWorkersBindingKindAnalyticsEngineTypeBrowserRendering, BindingItemWorkersBindingKindAnalyticsEngineTypeD1, BindingItemWorkersBindingKindAnalyticsEngineTypeDispatchNamespace, BindingItemWorkersBindingKindAnalyticsEngineTypeDurableObjectNamespace, BindingItemWorkersBindingKindAnalyticsEngineTypeHyperdrive, BindingItemWorkersBindingKindAnalyticsEngineTypeJson, BindingItemWorkersBindingKindAnalyticsEngineTypeKvNamespace, BindingItemWorkersBindingKindAnalyticsEngineTypeMtlsCertificate, BindingItemWorkersBindingKindAnalyticsEngineTypePlainText, BindingItemWorkersBindingKindAnalyticsEngineTypeQueue, BindingItemWorkersBindingKindAnalyticsEngineTypeR2Bucket, BindingItemWorkersBindingKindAnalyticsEngineTypeSecretText, BindingItemWorkersBindingKindAnalyticsEngineTypeService, BindingItemWorkersBindingKindAnalyticsEngineTypeTailConsumer, BindingItemWorkersBindingKindAnalyticsEngineTypeVectorize, BindingItemWorkersBindingKindAnalyticsEngineTypeVersionMetadata:
+	case BindingItemWorkersBindingKindAnalyticsEngineTypeAnalyticsEngine:
 		return true
 	}
 	return false
@@ -2211,7 +525,8 @@ func (r BindingItemWorkersBindingKindAnalyticsEngineType) IsKnown() bool {
 
 type BindingItemWorkersBindingKindAssets struct {
 	// A JavaScript variable name for the binding.
-	Name string                                  `json:"name,required"`
+	Name string `json:"name,required"`
+	// The kind of resource that the binding provides.
 	Type BindingItemWorkersBindingKindAssetsType `json:"type,required"`
 	JSON bindingItemWorkersBindingKindAssetsJSON `json:"-"`
 }
@@ -2235,91 +550,58 @@ func (r bindingItemWorkersBindingKindAssetsJSON) RawJSON() string {
 
 func (r BindingItemWorkersBindingKindAssets) implementsBindingItem() {}
 
+// The kind of resource that the binding provides.
 type BindingItemWorkersBindingKindAssetsType string
 
 const (
-	BindingItemWorkersBindingKindAssetsTypeAssets                 BindingItemWorkersBindingKindAssetsType = "assets"
-	BindingItemWorkersBindingKindAssetsTypeAI                     BindingItemWorkersBindingKindAssetsType = "ai"
-	BindingItemWorkersBindingKindAssetsTypeAnalyticsEngine        BindingItemWorkersBindingKindAssetsType = "analytics_engine"
-	BindingItemWorkersBindingKindAssetsTypeBrowserRendering       BindingItemWorkersBindingKindAssetsType = "browser_rendering"
-	BindingItemWorkersBindingKindAssetsTypeD1                     BindingItemWorkersBindingKindAssetsType = "d1"
-	BindingItemWorkersBindingKindAssetsTypeDispatchNamespace      BindingItemWorkersBindingKindAssetsType = "dispatch_namespace"
-	BindingItemWorkersBindingKindAssetsTypeDurableObjectNamespace BindingItemWorkersBindingKindAssetsType = "durable_object_namespace"
-	BindingItemWorkersBindingKindAssetsTypeHyperdrive             BindingItemWorkersBindingKindAssetsType = "hyperdrive"
-	BindingItemWorkersBindingKindAssetsTypeJson                   BindingItemWorkersBindingKindAssetsType = "json"
-	BindingItemWorkersBindingKindAssetsTypeKvNamespace            BindingItemWorkersBindingKindAssetsType = "kv_namespace"
-	BindingItemWorkersBindingKindAssetsTypeMtlsCertificate        BindingItemWorkersBindingKindAssetsType = "mtls_certificate"
-	BindingItemWorkersBindingKindAssetsTypePlainText              BindingItemWorkersBindingKindAssetsType = "plain_text"
-	BindingItemWorkersBindingKindAssetsTypeQueue                  BindingItemWorkersBindingKindAssetsType = "queue"
-	BindingItemWorkersBindingKindAssetsTypeR2Bucket               BindingItemWorkersBindingKindAssetsType = "r2_bucket"
-	BindingItemWorkersBindingKindAssetsTypeSecretText             BindingItemWorkersBindingKindAssetsType = "secret_text"
-	BindingItemWorkersBindingKindAssetsTypeService                BindingItemWorkersBindingKindAssetsType = "service"
-	BindingItemWorkersBindingKindAssetsTypeTailConsumer           BindingItemWorkersBindingKindAssetsType = "tail_consumer"
-	BindingItemWorkersBindingKindAssetsTypeVectorize              BindingItemWorkersBindingKindAssetsType = "vectorize"
-	BindingItemWorkersBindingKindAssetsTypeVersionMetadata        BindingItemWorkersBindingKindAssetsType = "version_metadata"
+	BindingItemWorkersBindingKindAssetsTypeAssets BindingItemWorkersBindingKindAssetsType = "assets"
 )
 
 func (r BindingItemWorkersBindingKindAssetsType) IsKnown() bool {
 	switch r {
-	case BindingItemWorkersBindingKindAssetsTypeAssets, BindingItemWorkersBindingKindAssetsTypeAI, BindingItemWorkersBindingKindAssetsTypeAnalyticsEngine, BindingItemWorkersBindingKindAssetsTypeBrowserRendering, BindingItemWorkersBindingKindAssetsTypeD1, BindingItemWorkersBindingKindAssetsTypeDispatchNamespace, BindingItemWorkersBindingKindAssetsTypeDurableObjectNamespace, BindingItemWorkersBindingKindAssetsTypeHyperdrive, BindingItemWorkersBindingKindAssetsTypeJson, BindingItemWorkersBindingKindAssetsTypeKvNamespace, BindingItemWorkersBindingKindAssetsTypeMtlsCertificate, BindingItemWorkersBindingKindAssetsTypePlainText, BindingItemWorkersBindingKindAssetsTypeQueue, BindingItemWorkersBindingKindAssetsTypeR2Bucket, BindingItemWorkersBindingKindAssetsTypeSecretText, BindingItemWorkersBindingKindAssetsTypeService, BindingItemWorkersBindingKindAssetsTypeTailConsumer, BindingItemWorkersBindingKindAssetsTypeVectorize, BindingItemWorkersBindingKindAssetsTypeVersionMetadata:
+	case BindingItemWorkersBindingKindAssetsTypeAssets:
 		return true
 	}
 	return false
 }
 
-type BindingItemWorkersBindingKindBrowserRendering struct {
+type BindingItemWorkersBindingKindBrowser struct {
 	// A JavaScript variable name for the binding.
-	Name string                                            `json:"name,required"`
-	Type BindingItemWorkersBindingKindBrowserRenderingType `json:"type,required"`
-	JSON bindingItemWorkersBindingKindBrowserRenderingJSON `json:"-"`
+	Name string `json:"name,required"`
+	// The kind of resource that the binding provides.
+	Type BindingItemWorkersBindingKindBrowserType `json:"type,required"`
+	JSON bindingItemWorkersBindingKindBrowserJSON `json:"-"`
 }
 
-// bindingItemWorkersBindingKindBrowserRenderingJSON contains the JSON metadata for
-// the struct [BindingItemWorkersBindingKindBrowserRendering]
-type bindingItemWorkersBindingKindBrowserRenderingJSON struct {
+// bindingItemWorkersBindingKindBrowserJSON contains the JSON metadata for the
+// struct [BindingItemWorkersBindingKindBrowser]
+type bindingItemWorkersBindingKindBrowserJSON struct {
 	Name        apijson.Field
 	Type        apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *BindingItemWorkersBindingKindBrowserRendering) UnmarshalJSON(data []byte) (err error) {
+func (r *BindingItemWorkersBindingKindBrowser) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r bindingItemWorkersBindingKindBrowserRenderingJSON) RawJSON() string {
+func (r bindingItemWorkersBindingKindBrowserJSON) RawJSON() string {
 	return r.raw
 }
 
-func (r BindingItemWorkersBindingKindBrowserRendering) implementsBindingItem() {}
+func (r BindingItemWorkersBindingKindBrowser) implementsBindingItem() {}
 
-type BindingItemWorkersBindingKindBrowserRenderingType string
+// The kind of resource that the binding provides.
+type BindingItemWorkersBindingKindBrowserType string
 
 const (
-	BindingItemWorkersBindingKindBrowserRenderingTypeBrowserRendering       BindingItemWorkersBindingKindBrowserRenderingType = "browser_rendering"
-	BindingItemWorkersBindingKindBrowserRenderingTypeAI                     BindingItemWorkersBindingKindBrowserRenderingType = "ai"
-	BindingItemWorkersBindingKindBrowserRenderingTypeAnalyticsEngine        BindingItemWorkersBindingKindBrowserRenderingType = "analytics_engine"
-	BindingItemWorkersBindingKindBrowserRenderingTypeAssets                 BindingItemWorkersBindingKindBrowserRenderingType = "assets"
-	BindingItemWorkersBindingKindBrowserRenderingTypeD1                     BindingItemWorkersBindingKindBrowserRenderingType = "d1"
-	BindingItemWorkersBindingKindBrowserRenderingTypeDispatchNamespace      BindingItemWorkersBindingKindBrowserRenderingType = "dispatch_namespace"
-	BindingItemWorkersBindingKindBrowserRenderingTypeDurableObjectNamespace BindingItemWorkersBindingKindBrowserRenderingType = "durable_object_namespace"
-	BindingItemWorkersBindingKindBrowserRenderingTypeHyperdrive             BindingItemWorkersBindingKindBrowserRenderingType = "hyperdrive"
-	BindingItemWorkersBindingKindBrowserRenderingTypeJson                   BindingItemWorkersBindingKindBrowserRenderingType = "json"
-	BindingItemWorkersBindingKindBrowserRenderingTypeKvNamespace            BindingItemWorkersBindingKindBrowserRenderingType = "kv_namespace"
-	BindingItemWorkersBindingKindBrowserRenderingTypeMtlsCertificate        BindingItemWorkersBindingKindBrowserRenderingType = "mtls_certificate"
-	BindingItemWorkersBindingKindBrowserRenderingTypePlainText              BindingItemWorkersBindingKindBrowserRenderingType = "plain_text"
-	BindingItemWorkersBindingKindBrowserRenderingTypeQueue                  BindingItemWorkersBindingKindBrowserRenderingType = "queue"
-	BindingItemWorkersBindingKindBrowserRenderingTypeR2Bucket               BindingItemWorkersBindingKindBrowserRenderingType = "r2_bucket"
-	BindingItemWorkersBindingKindBrowserRenderingTypeSecretText             BindingItemWorkersBindingKindBrowserRenderingType = "secret_text"
-	BindingItemWorkersBindingKindBrowserRenderingTypeService                BindingItemWorkersBindingKindBrowserRenderingType = "service"
-	BindingItemWorkersBindingKindBrowserRenderingTypeTailConsumer           BindingItemWorkersBindingKindBrowserRenderingType = "tail_consumer"
-	BindingItemWorkersBindingKindBrowserRenderingTypeVectorize              BindingItemWorkersBindingKindBrowserRenderingType = "vectorize"
-	BindingItemWorkersBindingKindBrowserRenderingTypeVersionMetadata        BindingItemWorkersBindingKindBrowserRenderingType = "version_metadata"
+	BindingItemWorkersBindingKindBrowserTypeBrowser BindingItemWorkersBindingKindBrowserType = "browser"
 )
 
-func (r BindingItemWorkersBindingKindBrowserRenderingType) IsKnown() bool {
+func (r BindingItemWorkersBindingKindBrowserType) IsKnown() bool {
 	switch r {
-	case BindingItemWorkersBindingKindBrowserRenderingTypeBrowserRendering, BindingItemWorkersBindingKindBrowserRenderingTypeAI, BindingItemWorkersBindingKindBrowserRenderingTypeAnalyticsEngine, BindingItemWorkersBindingKindBrowserRenderingTypeAssets, BindingItemWorkersBindingKindBrowserRenderingTypeD1, BindingItemWorkersBindingKindBrowserRenderingTypeDispatchNamespace, BindingItemWorkersBindingKindBrowserRenderingTypeDurableObjectNamespace, BindingItemWorkersBindingKindBrowserRenderingTypeHyperdrive, BindingItemWorkersBindingKindBrowserRenderingTypeJson, BindingItemWorkersBindingKindBrowserRenderingTypeKvNamespace, BindingItemWorkersBindingKindBrowserRenderingTypeMtlsCertificate, BindingItemWorkersBindingKindBrowserRenderingTypePlainText, BindingItemWorkersBindingKindBrowserRenderingTypeQueue, BindingItemWorkersBindingKindBrowserRenderingTypeR2Bucket, BindingItemWorkersBindingKindBrowserRenderingTypeSecretText, BindingItemWorkersBindingKindBrowserRenderingTypeService, BindingItemWorkersBindingKindBrowserRenderingTypeTailConsumer, BindingItemWorkersBindingKindBrowserRenderingTypeVectorize, BindingItemWorkersBindingKindBrowserRenderingTypeVersionMetadata:
+	case BindingItemWorkersBindingKindBrowserTypeBrowser:
 		return true
 	}
 	return false
@@ -2329,7 +611,8 @@ type BindingItemWorkersBindingKindD1 struct {
 	// Identifier of the D1 database to bind to.
 	ID string `json:"id,required"`
 	// A JavaScript variable name for the binding.
-	Name string                              `json:"name,required"`
+	Name string `json:"name,required"`
+	// The kind of resource that the binding provides.
 	Type BindingItemWorkersBindingKindD1Type `json:"type,required"`
 	JSON bindingItemWorkersBindingKindD1JSON `json:"-"`
 }
@@ -2354,33 +637,16 @@ func (r bindingItemWorkersBindingKindD1JSON) RawJSON() string {
 
 func (r BindingItemWorkersBindingKindD1) implementsBindingItem() {}
 
+// The kind of resource that the binding provides.
 type BindingItemWorkersBindingKindD1Type string
 
 const (
-	BindingItemWorkersBindingKindD1TypeD1                     BindingItemWorkersBindingKindD1Type = "d1"
-	BindingItemWorkersBindingKindD1TypeAI                     BindingItemWorkersBindingKindD1Type = "ai"
-	BindingItemWorkersBindingKindD1TypeAnalyticsEngine        BindingItemWorkersBindingKindD1Type = "analytics_engine"
-	BindingItemWorkersBindingKindD1TypeAssets                 BindingItemWorkersBindingKindD1Type = "assets"
-	BindingItemWorkersBindingKindD1TypeBrowserRendering       BindingItemWorkersBindingKindD1Type = "browser_rendering"
-	BindingItemWorkersBindingKindD1TypeDispatchNamespace      BindingItemWorkersBindingKindD1Type = "dispatch_namespace"
-	BindingItemWorkersBindingKindD1TypeDurableObjectNamespace BindingItemWorkersBindingKindD1Type = "durable_object_namespace"
-	BindingItemWorkersBindingKindD1TypeHyperdrive             BindingItemWorkersBindingKindD1Type = "hyperdrive"
-	BindingItemWorkersBindingKindD1TypeJson                   BindingItemWorkersBindingKindD1Type = "json"
-	BindingItemWorkersBindingKindD1TypeKvNamespace            BindingItemWorkersBindingKindD1Type = "kv_namespace"
-	BindingItemWorkersBindingKindD1TypeMtlsCertificate        BindingItemWorkersBindingKindD1Type = "mtls_certificate"
-	BindingItemWorkersBindingKindD1TypePlainText              BindingItemWorkersBindingKindD1Type = "plain_text"
-	BindingItemWorkersBindingKindD1TypeQueue                  BindingItemWorkersBindingKindD1Type = "queue"
-	BindingItemWorkersBindingKindD1TypeR2Bucket               BindingItemWorkersBindingKindD1Type = "r2_bucket"
-	BindingItemWorkersBindingKindD1TypeSecretText             BindingItemWorkersBindingKindD1Type = "secret_text"
-	BindingItemWorkersBindingKindD1TypeService                BindingItemWorkersBindingKindD1Type = "service"
-	BindingItemWorkersBindingKindD1TypeTailConsumer           BindingItemWorkersBindingKindD1Type = "tail_consumer"
-	BindingItemWorkersBindingKindD1TypeVectorize              BindingItemWorkersBindingKindD1Type = "vectorize"
-	BindingItemWorkersBindingKindD1TypeVersionMetadata        BindingItemWorkersBindingKindD1Type = "version_metadata"
+	BindingItemWorkersBindingKindD1TypeD1 BindingItemWorkersBindingKindD1Type = "d1"
 )
 
 func (r BindingItemWorkersBindingKindD1Type) IsKnown() bool {
 	switch r {
-	case BindingItemWorkersBindingKindD1TypeD1, BindingItemWorkersBindingKindD1TypeAI, BindingItemWorkersBindingKindD1TypeAnalyticsEngine, BindingItemWorkersBindingKindD1TypeAssets, BindingItemWorkersBindingKindD1TypeBrowserRendering, BindingItemWorkersBindingKindD1TypeDispatchNamespace, BindingItemWorkersBindingKindD1TypeDurableObjectNamespace, BindingItemWorkersBindingKindD1TypeHyperdrive, BindingItemWorkersBindingKindD1TypeJson, BindingItemWorkersBindingKindD1TypeKvNamespace, BindingItemWorkersBindingKindD1TypeMtlsCertificate, BindingItemWorkersBindingKindD1TypePlainText, BindingItemWorkersBindingKindD1TypeQueue, BindingItemWorkersBindingKindD1TypeR2Bucket, BindingItemWorkersBindingKindD1TypeSecretText, BindingItemWorkersBindingKindD1TypeService, BindingItemWorkersBindingKindD1TypeTailConsumer, BindingItemWorkersBindingKindD1TypeVectorize, BindingItemWorkersBindingKindD1TypeVersionMetadata:
+	case BindingItemWorkersBindingKindD1TypeD1:
 		return true
 	}
 	return false
@@ -2390,8 +656,9 @@ type BindingItemWorkersBindingKindDispatchNamespace struct {
 	// A JavaScript variable name for the binding.
 	Name string `json:"name,required"`
 	// Namespace to bind to.
-	Namespace string                                             `json:"namespace,required"`
-	Type      BindingItemWorkersBindingKindDispatchNamespaceType `json:"type,required"`
+	Namespace string `json:"namespace,required"`
+	// The kind of resource that the binding provides.
+	Type BindingItemWorkersBindingKindDispatchNamespaceType `json:"type,required"`
 	// Outbound worker.
 	Outbound BindingItemWorkersBindingKindDispatchNamespaceOutbound `json:"outbound"`
 	JSON     bindingItemWorkersBindingKindDispatchNamespaceJSON     `json:"-"`
@@ -2418,33 +685,16 @@ func (r bindingItemWorkersBindingKindDispatchNamespaceJSON) RawJSON() string {
 
 func (r BindingItemWorkersBindingKindDispatchNamespace) implementsBindingItem() {}
 
+// The kind of resource that the binding provides.
 type BindingItemWorkersBindingKindDispatchNamespaceType string
 
 const (
-	BindingItemWorkersBindingKindDispatchNamespaceTypeDispatchNamespace      BindingItemWorkersBindingKindDispatchNamespaceType = "dispatch_namespace"
-	BindingItemWorkersBindingKindDispatchNamespaceTypeAI                     BindingItemWorkersBindingKindDispatchNamespaceType = "ai"
-	BindingItemWorkersBindingKindDispatchNamespaceTypeAnalyticsEngine        BindingItemWorkersBindingKindDispatchNamespaceType = "analytics_engine"
-	BindingItemWorkersBindingKindDispatchNamespaceTypeAssets                 BindingItemWorkersBindingKindDispatchNamespaceType = "assets"
-	BindingItemWorkersBindingKindDispatchNamespaceTypeBrowserRendering       BindingItemWorkersBindingKindDispatchNamespaceType = "browser_rendering"
-	BindingItemWorkersBindingKindDispatchNamespaceTypeD1                     BindingItemWorkersBindingKindDispatchNamespaceType = "d1"
-	BindingItemWorkersBindingKindDispatchNamespaceTypeDurableObjectNamespace BindingItemWorkersBindingKindDispatchNamespaceType = "durable_object_namespace"
-	BindingItemWorkersBindingKindDispatchNamespaceTypeHyperdrive             BindingItemWorkersBindingKindDispatchNamespaceType = "hyperdrive"
-	BindingItemWorkersBindingKindDispatchNamespaceTypeJson                   BindingItemWorkersBindingKindDispatchNamespaceType = "json"
-	BindingItemWorkersBindingKindDispatchNamespaceTypeKvNamespace            BindingItemWorkersBindingKindDispatchNamespaceType = "kv_namespace"
-	BindingItemWorkersBindingKindDispatchNamespaceTypeMtlsCertificate        BindingItemWorkersBindingKindDispatchNamespaceType = "mtls_certificate"
-	BindingItemWorkersBindingKindDispatchNamespaceTypePlainText              BindingItemWorkersBindingKindDispatchNamespaceType = "plain_text"
-	BindingItemWorkersBindingKindDispatchNamespaceTypeQueue                  BindingItemWorkersBindingKindDispatchNamespaceType = "queue"
-	BindingItemWorkersBindingKindDispatchNamespaceTypeR2Bucket               BindingItemWorkersBindingKindDispatchNamespaceType = "r2_bucket"
-	BindingItemWorkersBindingKindDispatchNamespaceTypeSecretText             BindingItemWorkersBindingKindDispatchNamespaceType = "secret_text"
-	BindingItemWorkersBindingKindDispatchNamespaceTypeService                BindingItemWorkersBindingKindDispatchNamespaceType = "service"
-	BindingItemWorkersBindingKindDispatchNamespaceTypeTailConsumer           BindingItemWorkersBindingKindDispatchNamespaceType = "tail_consumer"
-	BindingItemWorkersBindingKindDispatchNamespaceTypeVectorize              BindingItemWorkersBindingKindDispatchNamespaceType = "vectorize"
-	BindingItemWorkersBindingKindDispatchNamespaceTypeVersionMetadata        BindingItemWorkersBindingKindDispatchNamespaceType = "version_metadata"
+	BindingItemWorkersBindingKindDispatchNamespaceTypeDispatchNamespace BindingItemWorkersBindingKindDispatchNamespaceType = "dispatch_namespace"
 )
 
 func (r BindingItemWorkersBindingKindDispatchNamespaceType) IsKnown() bool {
 	switch r {
-	case BindingItemWorkersBindingKindDispatchNamespaceTypeDispatchNamespace, BindingItemWorkersBindingKindDispatchNamespaceTypeAI, BindingItemWorkersBindingKindDispatchNamespaceTypeAnalyticsEngine, BindingItemWorkersBindingKindDispatchNamespaceTypeAssets, BindingItemWorkersBindingKindDispatchNamespaceTypeBrowserRendering, BindingItemWorkersBindingKindDispatchNamespaceTypeD1, BindingItemWorkersBindingKindDispatchNamespaceTypeDurableObjectNamespace, BindingItemWorkersBindingKindDispatchNamespaceTypeHyperdrive, BindingItemWorkersBindingKindDispatchNamespaceTypeJson, BindingItemWorkersBindingKindDispatchNamespaceTypeKvNamespace, BindingItemWorkersBindingKindDispatchNamespaceTypeMtlsCertificate, BindingItemWorkersBindingKindDispatchNamespaceTypePlainText, BindingItemWorkersBindingKindDispatchNamespaceTypeQueue, BindingItemWorkersBindingKindDispatchNamespaceTypeR2Bucket, BindingItemWorkersBindingKindDispatchNamespaceTypeSecretText, BindingItemWorkersBindingKindDispatchNamespaceTypeService, BindingItemWorkersBindingKindDispatchNamespaceTypeTailConsumer, BindingItemWorkersBindingKindDispatchNamespaceTypeVectorize, BindingItemWorkersBindingKindDispatchNamespaceTypeVersionMetadata:
+	case BindingItemWorkersBindingKindDispatchNamespaceTypeDispatchNamespace:
 		return true
 	}
 	return false
@@ -2505,11 +755,12 @@ func (r bindingItemWorkersBindingKindDispatchNamespaceOutboundWorkerJSON) RawJSO
 }
 
 type BindingItemWorkersBindingKindDurableObjectNamespace struct {
-	// The exported class name of the Durable Object.
-	ClassName string `json:"class_name,required"`
 	// A JavaScript variable name for the binding.
-	Name string                                                  `json:"name,required"`
+	Name string `json:"name,required"`
+	// The kind of resource that the binding provides.
 	Type BindingItemWorkersBindingKindDurableObjectNamespaceType `json:"type,required"`
+	// The exported class name of the Durable Object.
+	ClassName string `json:"class_name"`
 	// The environment of the script_name to bind to.
 	Environment string `json:"environment"`
 	// Namespace identifier tag.
@@ -2523,9 +774,9 @@ type BindingItemWorkersBindingKindDurableObjectNamespace struct {
 // bindingItemWorkersBindingKindDurableObjectNamespaceJSON contains the JSON
 // metadata for the struct [BindingItemWorkersBindingKindDurableObjectNamespace]
 type bindingItemWorkersBindingKindDurableObjectNamespaceJSON struct {
-	ClassName   apijson.Field
 	Name        apijson.Field
 	Type        apijson.Field
+	ClassName   apijson.Field
 	Environment apijson.Field
 	NamespaceID apijson.Field
 	ScriptName  apijson.Field
@@ -2543,33 +794,16 @@ func (r bindingItemWorkersBindingKindDurableObjectNamespaceJSON) RawJSON() strin
 
 func (r BindingItemWorkersBindingKindDurableObjectNamespace) implementsBindingItem() {}
 
+// The kind of resource that the binding provides.
 type BindingItemWorkersBindingKindDurableObjectNamespaceType string
 
 const (
 	BindingItemWorkersBindingKindDurableObjectNamespaceTypeDurableObjectNamespace BindingItemWorkersBindingKindDurableObjectNamespaceType = "durable_object_namespace"
-	BindingItemWorkersBindingKindDurableObjectNamespaceTypeAI                     BindingItemWorkersBindingKindDurableObjectNamespaceType = "ai"
-	BindingItemWorkersBindingKindDurableObjectNamespaceTypeAnalyticsEngine        BindingItemWorkersBindingKindDurableObjectNamespaceType = "analytics_engine"
-	BindingItemWorkersBindingKindDurableObjectNamespaceTypeAssets                 BindingItemWorkersBindingKindDurableObjectNamespaceType = "assets"
-	BindingItemWorkersBindingKindDurableObjectNamespaceTypeBrowserRendering       BindingItemWorkersBindingKindDurableObjectNamespaceType = "browser_rendering"
-	BindingItemWorkersBindingKindDurableObjectNamespaceTypeD1                     BindingItemWorkersBindingKindDurableObjectNamespaceType = "d1"
-	BindingItemWorkersBindingKindDurableObjectNamespaceTypeDispatchNamespace      BindingItemWorkersBindingKindDurableObjectNamespaceType = "dispatch_namespace"
-	BindingItemWorkersBindingKindDurableObjectNamespaceTypeHyperdrive             BindingItemWorkersBindingKindDurableObjectNamespaceType = "hyperdrive"
-	BindingItemWorkersBindingKindDurableObjectNamespaceTypeJson                   BindingItemWorkersBindingKindDurableObjectNamespaceType = "json"
-	BindingItemWorkersBindingKindDurableObjectNamespaceTypeKvNamespace            BindingItemWorkersBindingKindDurableObjectNamespaceType = "kv_namespace"
-	BindingItemWorkersBindingKindDurableObjectNamespaceTypeMtlsCertificate        BindingItemWorkersBindingKindDurableObjectNamespaceType = "mtls_certificate"
-	BindingItemWorkersBindingKindDurableObjectNamespaceTypePlainText              BindingItemWorkersBindingKindDurableObjectNamespaceType = "plain_text"
-	BindingItemWorkersBindingKindDurableObjectNamespaceTypeQueue                  BindingItemWorkersBindingKindDurableObjectNamespaceType = "queue"
-	BindingItemWorkersBindingKindDurableObjectNamespaceTypeR2Bucket               BindingItemWorkersBindingKindDurableObjectNamespaceType = "r2_bucket"
-	BindingItemWorkersBindingKindDurableObjectNamespaceTypeSecretText             BindingItemWorkersBindingKindDurableObjectNamespaceType = "secret_text"
-	BindingItemWorkersBindingKindDurableObjectNamespaceTypeService                BindingItemWorkersBindingKindDurableObjectNamespaceType = "service"
-	BindingItemWorkersBindingKindDurableObjectNamespaceTypeTailConsumer           BindingItemWorkersBindingKindDurableObjectNamespaceType = "tail_consumer"
-	BindingItemWorkersBindingKindDurableObjectNamespaceTypeVectorize              BindingItemWorkersBindingKindDurableObjectNamespaceType = "vectorize"
-	BindingItemWorkersBindingKindDurableObjectNamespaceTypeVersionMetadata        BindingItemWorkersBindingKindDurableObjectNamespaceType = "version_metadata"
 )
 
 func (r BindingItemWorkersBindingKindDurableObjectNamespaceType) IsKnown() bool {
 	switch r {
-	case BindingItemWorkersBindingKindDurableObjectNamespaceTypeDurableObjectNamespace, BindingItemWorkersBindingKindDurableObjectNamespaceTypeAI, BindingItemWorkersBindingKindDurableObjectNamespaceTypeAnalyticsEngine, BindingItemWorkersBindingKindDurableObjectNamespaceTypeAssets, BindingItemWorkersBindingKindDurableObjectNamespaceTypeBrowserRendering, BindingItemWorkersBindingKindDurableObjectNamespaceTypeD1, BindingItemWorkersBindingKindDurableObjectNamespaceTypeDispatchNamespace, BindingItemWorkersBindingKindDurableObjectNamespaceTypeHyperdrive, BindingItemWorkersBindingKindDurableObjectNamespaceTypeJson, BindingItemWorkersBindingKindDurableObjectNamespaceTypeKvNamespace, BindingItemWorkersBindingKindDurableObjectNamespaceTypeMtlsCertificate, BindingItemWorkersBindingKindDurableObjectNamespaceTypePlainText, BindingItemWorkersBindingKindDurableObjectNamespaceTypeQueue, BindingItemWorkersBindingKindDurableObjectNamespaceTypeR2Bucket, BindingItemWorkersBindingKindDurableObjectNamespaceTypeSecretText, BindingItemWorkersBindingKindDurableObjectNamespaceTypeService, BindingItemWorkersBindingKindDurableObjectNamespaceTypeTailConsumer, BindingItemWorkersBindingKindDurableObjectNamespaceTypeVectorize, BindingItemWorkersBindingKindDurableObjectNamespaceTypeVersionMetadata:
+	case BindingItemWorkersBindingKindDurableObjectNamespaceTypeDurableObjectNamespace:
 		return true
 	}
 	return false
@@ -2579,7 +813,8 @@ type BindingItemWorkersBindingKindHyperdrive struct {
 	// Identifier of the Hyperdrive connection to bind to.
 	ID string `json:"id,required"`
 	// A JavaScript variable name for the binding.
-	Name string                                      `json:"name,required"`
+	Name string `json:"name,required"`
+	// The kind of resource that the binding provides.
 	Type BindingItemWorkersBindingKindHyperdriveType `json:"type,required"`
 	JSON bindingItemWorkersBindingKindHyperdriveJSON `json:"-"`
 }
@@ -2604,33 +839,16 @@ func (r bindingItemWorkersBindingKindHyperdriveJSON) RawJSON() string {
 
 func (r BindingItemWorkersBindingKindHyperdrive) implementsBindingItem() {}
 
+// The kind of resource that the binding provides.
 type BindingItemWorkersBindingKindHyperdriveType string
 
 const (
-	BindingItemWorkersBindingKindHyperdriveTypeHyperdrive             BindingItemWorkersBindingKindHyperdriveType = "hyperdrive"
-	BindingItemWorkersBindingKindHyperdriveTypeAI                     BindingItemWorkersBindingKindHyperdriveType = "ai"
-	BindingItemWorkersBindingKindHyperdriveTypeAnalyticsEngine        BindingItemWorkersBindingKindHyperdriveType = "analytics_engine"
-	BindingItemWorkersBindingKindHyperdriveTypeAssets                 BindingItemWorkersBindingKindHyperdriveType = "assets"
-	BindingItemWorkersBindingKindHyperdriveTypeBrowserRendering       BindingItemWorkersBindingKindHyperdriveType = "browser_rendering"
-	BindingItemWorkersBindingKindHyperdriveTypeD1                     BindingItemWorkersBindingKindHyperdriveType = "d1"
-	BindingItemWorkersBindingKindHyperdriveTypeDispatchNamespace      BindingItemWorkersBindingKindHyperdriveType = "dispatch_namespace"
-	BindingItemWorkersBindingKindHyperdriveTypeDurableObjectNamespace BindingItemWorkersBindingKindHyperdriveType = "durable_object_namespace"
-	BindingItemWorkersBindingKindHyperdriveTypeJson                   BindingItemWorkersBindingKindHyperdriveType = "json"
-	BindingItemWorkersBindingKindHyperdriveTypeKvNamespace            BindingItemWorkersBindingKindHyperdriveType = "kv_namespace"
-	BindingItemWorkersBindingKindHyperdriveTypeMtlsCertificate        BindingItemWorkersBindingKindHyperdriveType = "mtls_certificate"
-	BindingItemWorkersBindingKindHyperdriveTypePlainText              BindingItemWorkersBindingKindHyperdriveType = "plain_text"
-	BindingItemWorkersBindingKindHyperdriveTypeQueue                  BindingItemWorkersBindingKindHyperdriveType = "queue"
-	BindingItemWorkersBindingKindHyperdriveTypeR2Bucket               BindingItemWorkersBindingKindHyperdriveType = "r2_bucket"
-	BindingItemWorkersBindingKindHyperdriveTypeSecretText             BindingItemWorkersBindingKindHyperdriveType = "secret_text"
-	BindingItemWorkersBindingKindHyperdriveTypeService                BindingItemWorkersBindingKindHyperdriveType = "service"
-	BindingItemWorkersBindingKindHyperdriveTypeTailConsumer           BindingItemWorkersBindingKindHyperdriveType = "tail_consumer"
-	BindingItemWorkersBindingKindHyperdriveTypeVectorize              BindingItemWorkersBindingKindHyperdriveType = "vectorize"
-	BindingItemWorkersBindingKindHyperdriveTypeVersionMetadata        BindingItemWorkersBindingKindHyperdriveType = "version_metadata"
+	BindingItemWorkersBindingKindHyperdriveTypeHyperdrive BindingItemWorkersBindingKindHyperdriveType = "hyperdrive"
 )
 
 func (r BindingItemWorkersBindingKindHyperdriveType) IsKnown() bool {
 	switch r {
-	case BindingItemWorkersBindingKindHyperdriveTypeHyperdrive, BindingItemWorkersBindingKindHyperdriveTypeAI, BindingItemWorkersBindingKindHyperdriveTypeAnalyticsEngine, BindingItemWorkersBindingKindHyperdriveTypeAssets, BindingItemWorkersBindingKindHyperdriveTypeBrowserRendering, BindingItemWorkersBindingKindHyperdriveTypeD1, BindingItemWorkersBindingKindHyperdriveTypeDispatchNamespace, BindingItemWorkersBindingKindHyperdriveTypeDurableObjectNamespace, BindingItemWorkersBindingKindHyperdriveTypeJson, BindingItemWorkersBindingKindHyperdriveTypeKvNamespace, BindingItemWorkersBindingKindHyperdriveTypeMtlsCertificate, BindingItemWorkersBindingKindHyperdriveTypePlainText, BindingItemWorkersBindingKindHyperdriveTypeQueue, BindingItemWorkersBindingKindHyperdriveTypeR2Bucket, BindingItemWorkersBindingKindHyperdriveTypeSecretText, BindingItemWorkersBindingKindHyperdriveTypeService, BindingItemWorkersBindingKindHyperdriveTypeTailConsumer, BindingItemWorkersBindingKindHyperdriveTypeVectorize, BindingItemWorkersBindingKindHyperdriveTypeVersionMetadata:
+	case BindingItemWorkersBindingKindHyperdriveTypeHyperdrive:
 		return true
 	}
 	return false
@@ -2638,9 +856,10 @@ func (r BindingItemWorkersBindingKindHyperdriveType) IsKnown() bool {
 
 type BindingItemWorkersBindingKindJson struct {
 	// JSON data to use.
-	Json interface{} `json:"json,required"`
+	Json string `json:"json,required"`
 	// A JavaScript variable name for the binding.
-	Name string                                `json:"name,required"`
+	Name string `json:"name,required"`
+	// The kind of resource that the binding provides.
 	Type BindingItemWorkersBindingKindJsonType `json:"type,required"`
 	JSON bindingItemWorkersBindingKindJsonJSON `json:"-"`
 }
@@ -2665,33 +884,16 @@ func (r bindingItemWorkersBindingKindJsonJSON) RawJSON() string {
 
 func (r BindingItemWorkersBindingKindJson) implementsBindingItem() {}
 
+// The kind of resource that the binding provides.
 type BindingItemWorkersBindingKindJsonType string
 
 const (
-	BindingItemWorkersBindingKindJsonTypeJson                   BindingItemWorkersBindingKindJsonType = "json"
-	BindingItemWorkersBindingKindJsonTypeAI                     BindingItemWorkersBindingKindJsonType = "ai"
-	BindingItemWorkersBindingKindJsonTypeAnalyticsEngine        BindingItemWorkersBindingKindJsonType = "analytics_engine"
-	BindingItemWorkersBindingKindJsonTypeAssets                 BindingItemWorkersBindingKindJsonType = "assets"
-	BindingItemWorkersBindingKindJsonTypeBrowserRendering       BindingItemWorkersBindingKindJsonType = "browser_rendering"
-	BindingItemWorkersBindingKindJsonTypeD1                     BindingItemWorkersBindingKindJsonType = "d1"
-	BindingItemWorkersBindingKindJsonTypeDispatchNamespace      BindingItemWorkersBindingKindJsonType = "dispatch_namespace"
-	BindingItemWorkersBindingKindJsonTypeDurableObjectNamespace BindingItemWorkersBindingKindJsonType = "durable_object_namespace"
-	BindingItemWorkersBindingKindJsonTypeHyperdrive             BindingItemWorkersBindingKindJsonType = "hyperdrive"
-	BindingItemWorkersBindingKindJsonTypeKvNamespace            BindingItemWorkersBindingKindJsonType = "kv_namespace"
-	BindingItemWorkersBindingKindJsonTypeMtlsCertificate        BindingItemWorkersBindingKindJsonType = "mtls_certificate"
-	BindingItemWorkersBindingKindJsonTypePlainText              BindingItemWorkersBindingKindJsonType = "plain_text"
-	BindingItemWorkersBindingKindJsonTypeQueue                  BindingItemWorkersBindingKindJsonType = "queue"
-	BindingItemWorkersBindingKindJsonTypeR2Bucket               BindingItemWorkersBindingKindJsonType = "r2_bucket"
-	BindingItemWorkersBindingKindJsonTypeSecretText             BindingItemWorkersBindingKindJsonType = "secret_text"
-	BindingItemWorkersBindingKindJsonTypeService                BindingItemWorkersBindingKindJsonType = "service"
-	BindingItemWorkersBindingKindJsonTypeTailConsumer           BindingItemWorkersBindingKindJsonType = "tail_consumer"
-	BindingItemWorkersBindingKindJsonTypeVectorize              BindingItemWorkersBindingKindJsonType = "vectorize"
-	BindingItemWorkersBindingKindJsonTypeVersionMetadata        BindingItemWorkersBindingKindJsonType = "version_metadata"
+	BindingItemWorkersBindingKindJsonTypeJson BindingItemWorkersBindingKindJsonType = "json"
 )
 
 func (r BindingItemWorkersBindingKindJsonType) IsKnown() bool {
 	switch r {
-	case BindingItemWorkersBindingKindJsonTypeJson, BindingItemWorkersBindingKindJsonTypeAI, BindingItemWorkersBindingKindJsonTypeAnalyticsEngine, BindingItemWorkersBindingKindJsonTypeAssets, BindingItemWorkersBindingKindJsonTypeBrowserRendering, BindingItemWorkersBindingKindJsonTypeD1, BindingItemWorkersBindingKindJsonTypeDispatchNamespace, BindingItemWorkersBindingKindJsonTypeDurableObjectNamespace, BindingItemWorkersBindingKindJsonTypeHyperdrive, BindingItemWorkersBindingKindJsonTypeKvNamespace, BindingItemWorkersBindingKindJsonTypeMtlsCertificate, BindingItemWorkersBindingKindJsonTypePlainText, BindingItemWorkersBindingKindJsonTypeQueue, BindingItemWorkersBindingKindJsonTypeR2Bucket, BindingItemWorkersBindingKindJsonTypeSecretText, BindingItemWorkersBindingKindJsonTypeService, BindingItemWorkersBindingKindJsonTypeTailConsumer, BindingItemWorkersBindingKindJsonTypeVectorize, BindingItemWorkersBindingKindJsonTypeVersionMetadata:
+	case BindingItemWorkersBindingKindJsonTypeJson:
 		return true
 	}
 	return false
@@ -2701,9 +903,10 @@ type BindingItemWorkersBindingKindKvNamespace struct {
 	// A JavaScript variable name for the binding.
 	Name string `json:"name,required"`
 	// Namespace identifier tag.
-	NamespaceID string                                       `json:"namespace_id,required"`
-	Type        BindingItemWorkersBindingKindKvNamespaceType `json:"type,required"`
-	JSON        bindingItemWorkersBindingKindKvNamespaceJSON `json:"-"`
+	NamespaceID string `json:"namespace_id,required"`
+	// The kind of resource that the binding provides.
+	Type BindingItemWorkersBindingKindKvNamespaceType `json:"type,required"`
+	JSON bindingItemWorkersBindingKindKvNamespaceJSON `json:"-"`
 }
 
 // bindingItemWorkersBindingKindKvNamespaceJSON contains the JSON metadata for the
@@ -2726,33 +929,16 @@ func (r bindingItemWorkersBindingKindKvNamespaceJSON) RawJSON() string {
 
 func (r BindingItemWorkersBindingKindKvNamespace) implementsBindingItem() {}
 
+// The kind of resource that the binding provides.
 type BindingItemWorkersBindingKindKvNamespaceType string
 
 const (
-	BindingItemWorkersBindingKindKvNamespaceTypeKvNamespace            BindingItemWorkersBindingKindKvNamespaceType = "kv_namespace"
-	BindingItemWorkersBindingKindKvNamespaceTypeAI                     BindingItemWorkersBindingKindKvNamespaceType = "ai"
-	BindingItemWorkersBindingKindKvNamespaceTypeAnalyticsEngine        BindingItemWorkersBindingKindKvNamespaceType = "analytics_engine"
-	BindingItemWorkersBindingKindKvNamespaceTypeAssets                 BindingItemWorkersBindingKindKvNamespaceType = "assets"
-	BindingItemWorkersBindingKindKvNamespaceTypeBrowserRendering       BindingItemWorkersBindingKindKvNamespaceType = "browser_rendering"
-	BindingItemWorkersBindingKindKvNamespaceTypeD1                     BindingItemWorkersBindingKindKvNamespaceType = "d1"
-	BindingItemWorkersBindingKindKvNamespaceTypeDispatchNamespace      BindingItemWorkersBindingKindKvNamespaceType = "dispatch_namespace"
-	BindingItemWorkersBindingKindKvNamespaceTypeDurableObjectNamespace BindingItemWorkersBindingKindKvNamespaceType = "durable_object_namespace"
-	BindingItemWorkersBindingKindKvNamespaceTypeHyperdrive             BindingItemWorkersBindingKindKvNamespaceType = "hyperdrive"
-	BindingItemWorkersBindingKindKvNamespaceTypeJson                   BindingItemWorkersBindingKindKvNamespaceType = "json"
-	BindingItemWorkersBindingKindKvNamespaceTypeMtlsCertificate        BindingItemWorkersBindingKindKvNamespaceType = "mtls_certificate"
-	BindingItemWorkersBindingKindKvNamespaceTypePlainText              BindingItemWorkersBindingKindKvNamespaceType = "plain_text"
-	BindingItemWorkersBindingKindKvNamespaceTypeQueue                  BindingItemWorkersBindingKindKvNamespaceType = "queue"
-	BindingItemWorkersBindingKindKvNamespaceTypeR2Bucket               BindingItemWorkersBindingKindKvNamespaceType = "r2_bucket"
-	BindingItemWorkersBindingKindKvNamespaceTypeSecretText             BindingItemWorkersBindingKindKvNamespaceType = "secret_text"
-	BindingItemWorkersBindingKindKvNamespaceTypeService                BindingItemWorkersBindingKindKvNamespaceType = "service"
-	BindingItemWorkersBindingKindKvNamespaceTypeTailConsumer           BindingItemWorkersBindingKindKvNamespaceType = "tail_consumer"
-	BindingItemWorkersBindingKindKvNamespaceTypeVectorize              BindingItemWorkersBindingKindKvNamespaceType = "vectorize"
-	BindingItemWorkersBindingKindKvNamespaceTypeVersionMetadata        BindingItemWorkersBindingKindKvNamespaceType = "version_metadata"
+	BindingItemWorkersBindingKindKvNamespaceTypeKvNamespace BindingItemWorkersBindingKindKvNamespaceType = "kv_namespace"
 )
 
 func (r BindingItemWorkersBindingKindKvNamespaceType) IsKnown() bool {
 	switch r {
-	case BindingItemWorkersBindingKindKvNamespaceTypeKvNamespace, BindingItemWorkersBindingKindKvNamespaceTypeAI, BindingItemWorkersBindingKindKvNamespaceTypeAnalyticsEngine, BindingItemWorkersBindingKindKvNamespaceTypeAssets, BindingItemWorkersBindingKindKvNamespaceTypeBrowserRendering, BindingItemWorkersBindingKindKvNamespaceTypeD1, BindingItemWorkersBindingKindKvNamespaceTypeDispatchNamespace, BindingItemWorkersBindingKindKvNamespaceTypeDurableObjectNamespace, BindingItemWorkersBindingKindKvNamespaceTypeHyperdrive, BindingItemWorkersBindingKindKvNamespaceTypeJson, BindingItemWorkersBindingKindKvNamespaceTypeMtlsCertificate, BindingItemWorkersBindingKindKvNamespaceTypePlainText, BindingItemWorkersBindingKindKvNamespaceTypeQueue, BindingItemWorkersBindingKindKvNamespaceTypeR2Bucket, BindingItemWorkersBindingKindKvNamespaceTypeSecretText, BindingItemWorkersBindingKindKvNamespaceTypeService, BindingItemWorkersBindingKindKvNamespaceTypeTailConsumer, BindingItemWorkersBindingKindKvNamespaceTypeVectorize, BindingItemWorkersBindingKindKvNamespaceTypeVersionMetadata:
+	case BindingItemWorkersBindingKindKvNamespaceTypeKvNamespace:
 		return true
 	}
 	return false
@@ -2762,7 +948,8 @@ type BindingItemWorkersBindingKindMtlsCertificate struct {
 	// Identifier of the certificate to bind to.
 	CertificateID string `json:"certificate_id,required"`
 	// A JavaScript variable name for the binding.
-	Name string                                           `json:"name,required"`
+	Name string `json:"name,required"`
+	// The kind of resource that the binding provides.
 	Type BindingItemWorkersBindingKindMtlsCertificateType `json:"type,required"`
 	JSON bindingItemWorkersBindingKindMtlsCertificateJSON `json:"-"`
 }
@@ -2787,33 +974,16 @@ func (r bindingItemWorkersBindingKindMtlsCertificateJSON) RawJSON() string {
 
 func (r BindingItemWorkersBindingKindMtlsCertificate) implementsBindingItem() {}
 
+// The kind of resource that the binding provides.
 type BindingItemWorkersBindingKindMtlsCertificateType string
 
 const (
-	BindingItemWorkersBindingKindMtlsCertificateTypeMtlsCertificate        BindingItemWorkersBindingKindMtlsCertificateType = "mtls_certificate"
-	BindingItemWorkersBindingKindMtlsCertificateTypeAI                     BindingItemWorkersBindingKindMtlsCertificateType = "ai"
-	BindingItemWorkersBindingKindMtlsCertificateTypeAnalyticsEngine        BindingItemWorkersBindingKindMtlsCertificateType = "analytics_engine"
-	BindingItemWorkersBindingKindMtlsCertificateTypeAssets                 BindingItemWorkersBindingKindMtlsCertificateType = "assets"
-	BindingItemWorkersBindingKindMtlsCertificateTypeBrowserRendering       BindingItemWorkersBindingKindMtlsCertificateType = "browser_rendering"
-	BindingItemWorkersBindingKindMtlsCertificateTypeD1                     BindingItemWorkersBindingKindMtlsCertificateType = "d1"
-	BindingItemWorkersBindingKindMtlsCertificateTypeDispatchNamespace      BindingItemWorkersBindingKindMtlsCertificateType = "dispatch_namespace"
-	BindingItemWorkersBindingKindMtlsCertificateTypeDurableObjectNamespace BindingItemWorkersBindingKindMtlsCertificateType = "durable_object_namespace"
-	BindingItemWorkersBindingKindMtlsCertificateTypeHyperdrive             BindingItemWorkersBindingKindMtlsCertificateType = "hyperdrive"
-	BindingItemWorkersBindingKindMtlsCertificateTypeJson                   BindingItemWorkersBindingKindMtlsCertificateType = "json"
-	BindingItemWorkersBindingKindMtlsCertificateTypeKvNamespace            BindingItemWorkersBindingKindMtlsCertificateType = "kv_namespace"
-	BindingItemWorkersBindingKindMtlsCertificateTypePlainText              BindingItemWorkersBindingKindMtlsCertificateType = "plain_text"
-	BindingItemWorkersBindingKindMtlsCertificateTypeQueue                  BindingItemWorkersBindingKindMtlsCertificateType = "queue"
-	BindingItemWorkersBindingKindMtlsCertificateTypeR2Bucket               BindingItemWorkersBindingKindMtlsCertificateType = "r2_bucket"
-	BindingItemWorkersBindingKindMtlsCertificateTypeSecretText             BindingItemWorkersBindingKindMtlsCertificateType = "secret_text"
-	BindingItemWorkersBindingKindMtlsCertificateTypeService                BindingItemWorkersBindingKindMtlsCertificateType = "service"
-	BindingItemWorkersBindingKindMtlsCertificateTypeTailConsumer           BindingItemWorkersBindingKindMtlsCertificateType = "tail_consumer"
-	BindingItemWorkersBindingKindMtlsCertificateTypeVectorize              BindingItemWorkersBindingKindMtlsCertificateType = "vectorize"
-	BindingItemWorkersBindingKindMtlsCertificateTypeVersionMetadata        BindingItemWorkersBindingKindMtlsCertificateType = "version_metadata"
+	BindingItemWorkersBindingKindMtlsCertificateTypeMtlsCertificate BindingItemWorkersBindingKindMtlsCertificateType = "mtls_certificate"
 )
 
 func (r BindingItemWorkersBindingKindMtlsCertificateType) IsKnown() bool {
 	switch r {
-	case BindingItemWorkersBindingKindMtlsCertificateTypeMtlsCertificate, BindingItemWorkersBindingKindMtlsCertificateTypeAI, BindingItemWorkersBindingKindMtlsCertificateTypeAnalyticsEngine, BindingItemWorkersBindingKindMtlsCertificateTypeAssets, BindingItemWorkersBindingKindMtlsCertificateTypeBrowserRendering, BindingItemWorkersBindingKindMtlsCertificateTypeD1, BindingItemWorkersBindingKindMtlsCertificateTypeDispatchNamespace, BindingItemWorkersBindingKindMtlsCertificateTypeDurableObjectNamespace, BindingItemWorkersBindingKindMtlsCertificateTypeHyperdrive, BindingItemWorkersBindingKindMtlsCertificateTypeJson, BindingItemWorkersBindingKindMtlsCertificateTypeKvNamespace, BindingItemWorkersBindingKindMtlsCertificateTypePlainText, BindingItemWorkersBindingKindMtlsCertificateTypeQueue, BindingItemWorkersBindingKindMtlsCertificateTypeR2Bucket, BindingItemWorkersBindingKindMtlsCertificateTypeSecretText, BindingItemWorkersBindingKindMtlsCertificateTypeService, BindingItemWorkersBindingKindMtlsCertificateTypeTailConsumer, BindingItemWorkersBindingKindMtlsCertificateTypeVectorize, BindingItemWorkersBindingKindMtlsCertificateTypeVersionMetadata:
+	case BindingItemWorkersBindingKindMtlsCertificateTypeMtlsCertificate:
 		return true
 	}
 	return false
@@ -2823,7 +993,8 @@ type BindingItemWorkersBindingKindPlainText struct {
 	// A JavaScript variable name for the binding.
 	Name string `json:"name,required"`
 	// The text value to use.
-	Text string                                     `json:"text,required"`
+	Text string `json:"text,required"`
+	// The kind of resource that the binding provides.
 	Type BindingItemWorkersBindingKindPlainTextType `json:"type,required"`
 	JSON bindingItemWorkersBindingKindPlainTextJSON `json:"-"`
 }
@@ -2848,33 +1019,61 @@ func (r bindingItemWorkersBindingKindPlainTextJSON) RawJSON() string {
 
 func (r BindingItemWorkersBindingKindPlainText) implementsBindingItem() {}
 
+// The kind of resource that the binding provides.
 type BindingItemWorkersBindingKindPlainTextType string
 
 const (
-	BindingItemWorkersBindingKindPlainTextTypePlainText              BindingItemWorkersBindingKindPlainTextType = "plain_text"
-	BindingItemWorkersBindingKindPlainTextTypeAI                     BindingItemWorkersBindingKindPlainTextType = "ai"
-	BindingItemWorkersBindingKindPlainTextTypeAnalyticsEngine        BindingItemWorkersBindingKindPlainTextType = "analytics_engine"
-	BindingItemWorkersBindingKindPlainTextTypeAssets                 BindingItemWorkersBindingKindPlainTextType = "assets"
-	BindingItemWorkersBindingKindPlainTextTypeBrowserRendering       BindingItemWorkersBindingKindPlainTextType = "browser_rendering"
-	BindingItemWorkersBindingKindPlainTextTypeD1                     BindingItemWorkersBindingKindPlainTextType = "d1"
-	BindingItemWorkersBindingKindPlainTextTypeDispatchNamespace      BindingItemWorkersBindingKindPlainTextType = "dispatch_namespace"
-	BindingItemWorkersBindingKindPlainTextTypeDurableObjectNamespace BindingItemWorkersBindingKindPlainTextType = "durable_object_namespace"
-	BindingItemWorkersBindingKindPlainTextTypeHyperdrive             BindingItemWorkersBindingKindPlainTextType = "hyperdrive"
-	BindingItemWorkersBindingKindPlainTextTypeJson                   BindingItemWorkersBindingKindPlainTextType = "json"
-	BindingItemWorkersBindingKindPlainTextTypeKvNamespace            BindingItemWorkersBindingKindPlainTextType = "kv_namespace"
-	BindingItemWorkersBindingKindPlainTextTypeMtlsCertificate        BindingItemWorkersBindingKindPlainTextType = "mtls_certificate"
-	BindingItemWorkersBindingKindPlainTextTypeQueue                  BindingItemWorkersBindingKindPlainTextType = "queue"
-	BindingItemWorkersBindingKindPlainTextTypeR2Bucket               BindingItemWorkersBindingKindPlainTextType = "r2_bucket"
-	BindingItemWorkersBindingKindPlainTextTypeSecretText             BindingItemWorkersBindingKindPlainTextType = "secret_text"
-	BindingItemWorkersBindingKindPlainTextTypeService                BindingItemWorkersBindingKindPlainTextType = "service"
-	BindingItemWorkersBindingKindPlainTextTypeTailConsumer           BindingItemWorkersBindingKindPlainTextType = "tail_consumer"
-	BindingItemWorkersBindingKindPlainTextTypeVectorize              BindingItemWorkersBindingKindPlainTextType = "vectorize"
-	BindingItemWorkersBindingKindPlainTextTypeVersionMetadata        BindingItemWorkersBindingKindPlainTextType = "version_metadata"
+	BindingItemWorkersBindingKindPlainTextTypePlainText BindingItemWorkersBindingKindPlainTextType = "plain_text"
 )
 
 func (r BindingItemWorkersBindingKindPlainTextType) IsKnown() bool {
 	switch r {
-	case BindingItemWorkersBindingKindPlainTextTypePlainText, BindingItemWorkersBindingKindPlainTextTypeAI, BindingItemWorkersBindingKindPlainTextTypeAnalyticsEngine, BindingItemWorkersBindingKindPlainTextTypeAssets, BindingItemWorkersBindingKindPlainTextTypeBrowserRendering, BindingItemWorkersBindingKindPlainTextTypeD1, BindingItemWorkersBindingKindPlainTextTypeDispatchNamespace, BindingItemWorkersBindingKindPlainTextTypeDurableObjectNamespace, BindingItemWorkersBindingKindPlainTextTypeHyperdrive, BindingItemWorkersBindingKindPlainTextTypeJson, BindingItemWorkersBindingKindPlainTextTypeKvNamespace, BindingItemWorkersBindingKindPlainTextTypeMtlsCertificate, BindingItemWorkersBindingKindPlainTextTypeQueue, BindingItemWorkersBindingKindPlainTextTypeR2Bucket, BindingItemWorkersBindingKindPlainTextTypeSecretText, BindingItemWorkersBindingKindPlainTextTypeService, BindingItemWorkersBindingKindPlainTextTypeTailConsumer, BindingItemWorkersBindingKindPlainTextTypeVectorize, BindingItemWorkersBindingKindPlainTextTypeVersionMetadata:
+	case BindingItemWorkersBindingKindPlainTextTypePlainText:
+		return true
+	}
+	return false
+}
+
+type BindingItemWorkersBindingKindPipelines struct {
+	// A JavaScript variable name for the binding.
+	Name string `json:"name,required"`
+	// Name of the Pipeline to bind to.
+	Pipeline string `json:"pipeline,required"`
+	// The kind of resource that the binding provides.
+	Type BindingItemWorkersBindingKindPipelinesType `json:"type,required"`
+	JSON bindingItemWorkersBindingKindPipelinesJSON `json:"-"`
+}
+
+// bindingItemWorkersBindingKindPipelinesJSON contains the JSON metadata for the
+// struct [BindingItemWorkersBindingKindPipelines]
+type bindingItemWorkersBindingKindPipelinesJSON struct {
+	Name        apijson.Field
+	Pipeline    apijson.Field
+	Type        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *BindingItemWorkersBindingKindPipelines) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r bindingItemWorkersBindingKindPipelinesJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r BindingItemWorkersBindingKindPipelines) implementsBindingItem() {}
+
+// The kind of resource that the binding provides.
+type BindingItemWorkersBindingKindPipelinesType string
+
+const (
+	BindingItemWorkersBindingKindPipelinesTypePipelines BindingItemWorkersBindingKindPipelinesType = "pipelines"
+)
+
+func (r BindingItemWorkersBindingKindPipelinesType) IsKnown() bool {
+	switch r {
+	case BindingItemWorkersBindingKindPipelinesTypePipelines:
 		return true
 	}
 	return false
@@ -2884,9 +1083,10 @@ type BindingItemWorkersBindingKindQueue struct {
 	// A JavaScript variable name for the binding.
 	Name string `json:"name,required"`
 	// Name of the Queue to bind to.
-	QueueName string                                 `json:"queue_name,required"`
-	Type      BindingItemWorkersBindingKindQueueType `json:"type,required"`
-	JSON      bindingItemWorkersBindingKindQueueJSON `json:"-"`
+	QueueName string `json:"queue_name,required"`
+	// The kind of resource that the binding provides.
+	Type BindingItemWorkersBindingKindQueueType `json:"type,required"`
+	JSON bindingItemWorkersBindingKindQueueJSON `json:"-"`
 }
 
 // bindingItemWorkersBindingKindQueueJSON contains the JSON metadata for the struct
@@ -2909,33 +1109,16 @@ func (r bindingItemWorkersBindingKindQueueJSON) RawJSON() string {
 
 func (r BindingItemWorkersBindingKindQueue) implementsBindingItem() {}
 
+// The kind of resource that the binding provides.
 type BindingItemWorkersBindingKindQueueType string
 
 const (
-	BindingItemWorkersBindingKindQueueTypeQueue                  BindingItemWorkersBindingKindQueueType = "queue"
-	BindingItemWorkersBindingKindQueueTypeAI                     BindingItemWorkersBindingKindQueueType = "ai"
-	BindingItemWorkersBindingKindQueueTypeAnalyticsEngine        BindingItemWorkersBindingKindQueueType = "analytics_engine"
-	BindingItemWorkersBindingKindQueueTypeAssets                 BindingItemWorkersBindingKindQueueType = "assets"
-	BindingItemWorkersBindingKindQueueTypeBrowserRendering       BindingItemWorkersBindingKindQueueType = "browser_rendering"
-	BindingItemWorkersBindingKindQueueTypeD1                     BindingItemWorkersBindingKindQueueType = "d1"
-	BindingItemWorkersBindingKindQueueTypeDispatchNamespace      BindingItemWorkersBindingKindQueueType = "dispatch_namespace"
-	BindingItemWorkersBindingKindQueueTypeDurableObjectNamespace BindingItemWorkersBindingKindQueueType = "durable_object_namespace"
-	BindingItemWorkersBindingKindQueueTypeHyperdrive             BindingItemWorkersBindingKindQueueType = "hyperdrive"
-	BindingItemWorkersBindingKindQueueTypeJson                   BindingItemWorkersBindingKindQueueType = "json"
-	BindingItemWorkersBindingKindQueueTypeKvNamespace            BindingItemWorkersBindingKindQueueType = "kv_namespace"
-	BindingItemWorkersBindingKindQueueTypeMtlsCertificate        BindingItemWorkersBindingKindQueueType = "mtls_certificate"
-	BindingItemWorkersBindingKindQueueTypePlainText              BindingItemWorkersBindingKindQueueType = "plain_text"
-	BindingItemWorkersBindingKindQueueTypeR2Bucket               BindingItemWorkersBindingKindQueueType = "r2_bucket"
-	BindingItemWorkersBindingKindQueueTypeSecretText             BindingItemWorkersBindingKindQueueType = "secret_text"
-	BindingItemWorkersBindingKindQueueTypeService                BindingItemWorkersBindingKindQueueType = "service"
-	BindingItemWorkersBindingKindQueueTypeTailConsumer           BindingItemWorkersBindingKindQueueType = "tail_consumer"
-	BindingItemWorkersBindingKindQueueTypeVectorize              BindingItemWorkersBindingKindQueueType = "vectorize"
-	BindingItemWorkersBindingKindQueueTypeVersionMetadata        BindingItemWorkersBindingKindQueueType = "version_metadata"
+	BindingItemWorkersBindingKindQueueTypeQueue BindingItemWorkersBindingKindQueueType = "queue"
 )
 
 func (r BindingItemWorkersBindingKindQueueType) IsKnown() bool {
 	switch r {
-	case BindingItemWorkersBindingKindQueueTypeQueue, BindingItemWorkersBindingKindQueueTypeAI, BindingItemWorkersBindingKindQueueTypeAnalyticsEngine, BindingItemWorkersBindingKindQueueTypeAssets, BindingItemWorkersBindingKindQueueTypeBrowserRendering, BindingItemWorkersBindingKindQueueTypeD1, BindingItemWorkersBindingKindQueueTypeDispatchNamespace, BindingItemWorkersBindingKindQueueTypeDurableObjectNamespace, BindingItemWorkersBindingKindQueueTypeHyperdrive, BindingItemWorkersBindingKindQueueTypeJson, BindingItemWorkersBindingKindQueueTypeKvNamespace, BindingItemWorkersBindingKindQueueTypeMtlsCertificate, BindingItemWorkersBindingKindQueueTypePlainText, BindingItemWorkersBindingKindQueueTypeR2Bucket, BindingItemWorkersBindingKindQueueTypeSecretText, BindingItemWorkersBindingKindQueueTypeService, BindingItemWorkersBindingKindQueueTypeTailConsumer, BindingItemWorkersBindingKindQueueTypeVectorize, BindingItemWorkersBindingKindQueueTypeVersionMetadata:
+	case BindingItemWorkersBindingKindQueueTypeQueue:
 		return true
 	}
 	return false
@@ -2945,7 +1128,8 @@ type BindingItemWorkersBindingKindR2Bucket struct {
 	// R2 bucket to bind to.
 	BucketName string `json:"bucket_name,required"`
 	// A JavaScript variable name for the binding.
-	Name string                                    `json:"name,required"`
+	Name string `json:"name,required"`
+	// The kind of resource that the binding provides.
 	Type BindingItemWorkersBindingKindR2BucketType `json:"type,required"`
 	JSON bindingItemWorkersBindingKindR2BucketJSON `json:"-"`
 }
@@ -2970,33 +1154,16 @@ func (r bindingItemWorkersBindingKindR2BucketJSON) RawJSON() string {
 
 func (r BindingItemWorkersBindingKindR2Bucket) implementsBindingItem() {}
 
+// The kind of resource that the binding provides.
 type BindingItemWorkersBindingKindR2BucketType string
 
 const (
-	BindingItemWorkersBindingKindR2BucketTypeR2Bucket               BindingItemWorkersBindingKindR2BucketType = "r2_bucket"
-	BindingItemWorkersBindingKindR2BucketTypeAI                     BindingItemWorkersBindingKindR2BucketType = "ai"
-	BindingItemWorkersBindingKindR2BucketTypeAnalyticsEngine        BindingItemWorkersBindingKindR2BucketType = "analytics_engine"
-	BindingItemWorkersBindingKindR2BucketTypeAssets                 BindingItemWorkersBindingKindR2BucketType = "assets"
-	BindingItemWorkersBindingKindR2BucketTypeBrowserRendering       BindingItemWorkersBindingKindR2BucketType = "browser_rendering"
-	BindingItemWorkersBindingKindR2BucketTypeD1                     BindingItemWorkersBindingKindR2BucketType = "d1"
-	BindingItemWorkersBindingKindR2BucketTypeDispatchNamespace      BindingItemWorkersBindingKindR2BucketType = "dispatch_namespace"
-	BindingItemWorkersBindingKindR2BucketTypeDurableObjectNamespace BindingItemWorkersBindingKindR2BucketType = "durable_object_namespace"
-	BindingItemWorkersBindingKindR2BucketTypeHyperdrive             BindingItemWorkersBindingKindR2BucketType = "hyperdrive"
-	BindingItemWorkersBindingKindR2BucketTypeJson                   BindingItemWorkersBindingKindR2BucketType = "json"
-	BindingItemWorkersBindingKindR2BucketTypeKvNamespace            BindingItemWorkersBindingKindR2BucketType = "kv_namespace"
-	BindingItemWorkersBindingKindR2BucketTypeMtlsCertificate        BindingItemWorkersBindingKindR2BucketType = "mtls_certificate"
-	BindingItemWorkersBindingKindR2BucketTypePlainText              BindingItemWorkersBindingKindR2BucketType = "plain_text"
-	BindingItemWorkersBindingKindR2BucketTypeQueue                  BindingItemWorkersBindingKindR2BucketType = "queue"
-	BindingItemWorkersBindingKindR2BucketTypeSecretText             BindingItemWorkersBindingKindR2BucketType = "secret_text"
-	BindingItemWorkersBindingKindR2BucketTypeService                BindingItemWorkersBindingKindR2BucketType = "service"
-	BindingItemWorkersBindingKindR2BucketTypeTailConsumer           BindingItemWorkersBindingKindR2BucketType = "tail_consumer"
-	BindingItemWorkersBindingKindR2BucketTypeVectorize              BindingItemWorkersBindingKindR2BucketType = "vectorize"
-	BindingItemWorkersBindingKindR2BucketTypeVersionMetadata        BindingItemWorkersBindingKindR2BucketType = "version_metadata"
+	BindingItemWorkersBindingKindR2BucketTypeR2Bucket BindingItemWorkersBindingKindR2BucketType = "r2_bucket"
 )
 
 func (r BindingItemWorkersBindingKindR2BucketType) IsKnown() bool {
 	switch r {
-	case BindingItemWorkersBindingKindR2BucketTypeR2Bucket, BindingItemWorkersBindingKindR2BucketTypeAI, BindingItemWorkersBindingKindR2BucketTypeAnalyticsEngine, BindingItemWorkersBindingKindR2BucketTypeAssets, BindingItemWorkersBindingKindR2BucketTypeBrowserRendering, BindingItemWorkersBindingKindR2BucketTypeD1, BindingItemWorkersBindingKindR2BucketTypeDispatchNamespace, BindingItemWorkersBindingKindR2BucketTypeDurableObjectNamespace, BindingItemWorkersBindingKindR2BucketTypeHyperdrive, BindingItemWorkersBindingKindR2BucketTypeJson, BindingItemWorkersBindingKindR2BucketTypeKvNamespace, BindingItemWorkersBindingKindR2BucketTypeMtlsCertificate, BindingItemWorkersBindingKindR2BucketTypePlainText, BindingItemWorkersBindingKindR2BucketTypeQueue, BindingItemWorkersBindingKindR2BucketTypeSecretText, BindingItemWorkersBindingKindR2BucketTypeService, BindingItemWorkersBindingKindR2BucketTypeTailConsumer, BindingItemWorkersBindingKindR2BucketTypeVectorize, BindingItemWorkersBindingKindR2BucketTypeVersionMetadata:
+	case BindingItemWorkersBindingKindR2BucketTypeR2Bucket:
 		return true
 	}
 	return false
@@ -3005,8 +1172,7 @@ func (r BindingItemWorkersBindingKindR2BucketType) IsKnown() bool {
 type BindingItemWorkersBindingKindSecretText struct {
 	// A JavaScript variable name for the binding.
 	Name string `json:"name,required"`
-	// The secret value to use.
-	Text string                                      `json:"text,required"`
+	// The kind of resource that the binding provides.
 	Type BindingItemWorkersBindingKindSecretTextType `json:"type,required"`
 	JSON bindingItemWorkersBindingKindSecretTextJSON `json:"-"`
 }
@@ -3015,7 +1181,6 @@ type BindingItemWorkersBindingKindSecretText struct {
 // struct [BindingItemWorkersBindingKindSecretText]
 type bindingItemWorkersBindingKindSecretTextJSON struct {
 	Name        apijson.Field
-	Text        apijson.Field
 	Type        apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -3031,33 +1196,16 @@ func (r bindingItemWorkersBindingKindSecretTextJSON) RawJSON() string {
 
 func (r BindingItemWorkersBindingKindSecretText) implementsBindingItem() {}
 
+// The kind of resource that the binding provides.
 type BindingItemWorkersBindingKindSecretTextType string
 
 const (
-	BindingItemWorkersBindingKindSecretTextTypeSecretText             BindingItemWorkersBindingKindSecretTextType = "secret_text"
-	BindingItemWorkersBindingKindSecretTextTypeAI                     BindingItemWorkersBindingKindSecretTextType = "ai"
-	BindingItemWorkersBindingKindSecretTextTypeAnalyticsEngine        BindingItemWorkersBindingKindSecretTextType = "analytics_engine"
-	BindingItemWorkersBindingKindSecretTextTypeAssets                 BindingItemWorkersBindingKindSecretTextType = "assets"
-	BindingItemWorkersBindingKindSecretTextTypeBrowserRendering       BindingItemWorkersBindingKindSecretTextType = "browser_rendering"
-	BindingItemWorkersBindingKindSecretTextTypeD1                     BindingItemWorkersBindingKindSecretTextType = "d1"
-	BindingItemWorkersBindingKindSecretTextTypeDispatchNamespace      BindingItemWorkersBindingKindSecretTextType = "dispatch_namespace"
-	BindingItemWorkersBindingKindSecretTextTypeDurableObjectNamespace BindingItemWorkersBindingKindSecretTextType = "durable_object_namespace"
-	BindingItemWorkersBindingKindSecretTextTypeHyperdrive             BindingItemWorkersBindingKindSecretTextType = "hyperdrive"
-	BindingItemWorkersBindingKindSecretTextTypeJson                   BindingItemWorkersBindingKindSecretTextType = "json"
-	BindingItemWorkersBindingKindSecretTextTypeKvNamespace            BindingItemWorkersBindingKindSecretTextType = "kv_namespace"
-	BindingItemWorkersBindingKindSecretTextTypeMtlsCertificate        BindingItemWorkersBindingKindSecretTextType = "mtls_certificate"
-	BindingItemWorkersBindingKindSecretTextTypePlainText              BindingItemWorkersBindingKindSecretTextType = "plain_text"
-	BindingItemWorkersBindingKindSecretTextTypeQueue                  BindingItemWorkersBindingKindSecretTextType = "queue"
-	BindingItemWorkersBindingKindSecretTextTypeR2Bucket               BindingItemWorkersBindingKindSecretTextType = "r2_bucket"
-	BindingItemWorkersBindingKindSecretTextTypeService                BindingItemWorkersBindingKindSecretTextType = "service"
-	BindingItemWorkersBindingKindSecretTextTypeTailConsumer           BindingItemWorkersBindingKindSecretTextType = "tail_consumer"
-	BindingItemWorkersBindingKindSecretTextTypeVectorize              BindingItemWorkersBindingKindSecretTextType = "vectorize"
-	BindingItemWorkersBindingKindSecretTextTypeVersionMetadata        BindingItemWorkersBindingKindSecretTextType = "version_metadata"
+	BindingItemWorkersBindingKindSecretTextTypeSecretText BindingItemWorkersBindingKindSecretTextType = "secret_text"
 )
 
 func (r BindingItemWorkersBindingKindSecretTextType) IsKnown() bool {
 	switch r {
-	case BindingItemWorkersBindingKindSecretTextTypeSecretText, BindingItemWorkersBindingKindSecretTextTypeAI, BindingItemWorkersBindingKindSecretTextTypeAnalyticsEngine, BindingItemWorkersBindingKindSecretTextTypeAssets, BindingItemWorkersBindingKindSecretTextTypeBrowserRendering, BindingItemWorkersBindingKindSecretTextTypeD1, BindingItemWorkersBindingKindSecretTextTypeDispatchNamespace, BindingItemWorkersBindingKindSecretTextTypeDurableObjectNamespace, BindingItemWorkersBindingKindSecretTextTypeHyperdrive, BindingItemWorkersBindingKindSecretTextTypeJson, BindingItemWorkersBindingKindSecretTextTypeKvNamespace, BindingItemWorkersBindingKindSecretTextTypeMtlsCertificate, BindingItemWorkersBindingKindSecretTextTypePlainText, BindingItemWorkersBindingKindSecretTextTypeQueue, BindingItemWorkersBindingKindSecretTextTypeR2Bucket, BindingItemWorkersBindingKindSecretTextTypeService, BindingItemWorkersBindingKindSecretTextTypeTailConsumer, BindingItemWorkersBindingKindSecretTextTypeVectorize, BindingItemWorkersBindingKindSecretTextTypeVersionMetadata:
+	case BindingItemWorkersBindingKindSecretTextTypeSecretText:
 		return true
 	}
 	return false
@@ -3069,9 +1217,10 @@ type BindingItemWorkersBindingKindService struct {
 	// A JavaScript variable name for the binding.
 	Name string `json:"name,required"`
 	// Name of Worker to bind to.
-	Service string                                   `json:"service,required"`
-	Type    BindingItemWorkersBindingKindServiceType `json:"type,required"`
-	JSON    bindingItemWorkersBindingKindServiceJSON `json:"-"`
+	Service string `json:"service,required"`
+	// The kind of resource that the binding provides.
+	Type BindingItemWorkersBindingKindServiceType `json:"type,required"`
+	JSON bindingItemWorkersBindingKindServiceJSON `json:"-"`
 }
 
 // bindingItemWorkersBindingKindServiceJSON contains the JSON metadata for the
@@ -3095,33 +1244,16 @@ func (r bindingItemWorkersBindingKindServiceJSON) RawJSON() string {
 
 func (r BindingItemWorkersBindingKindService) implementsBindingItem() {}
 
+// The kind of resource that the binding provides.
 type BindingItemWorkersBindingKindServiceType string
 
 const (
-	BindingItemWorkersBindingKindServiceTypeService                BindingItemWorkersBindingKindServiceType = "service"
-	BindingItemWorkersBindingKindServiceTypeAI                     BindingItemWorkersBindingKindServiceType = "ai"
-	BindingItemWorkersBindingKindServiceTypeAnalyticsEngine        BindingItemWorkersBindingKindServiceType = "analytics_engine"
-	BindingItemWorkersBindingKindServiceTypeAssets                 BindingItemWorkersBindingKindServiceType = "assets"
-	BindingItemWorkersBindingKindServiceTypeBrowserRendering       BindingItemWorkersBindingKindServiceType = "browser_rendering"
-	BindingItemWorkersBindingKindServiceTypeD1                     BindingItemWorkersBindingKindServiceType = "d1"
-	BindingItemWorkersBindingKindServiceTypeDispatchNamespace      BindingItemWorkersBindingKindServiceType = "dispatch_namespace"
-	BindingItemWorkersBindingKindServiceTypeDurableObjectNamespace BindingItemWorkersBindingKindServiceType = "durable_object_namespace"
-	BindingItemWorkersBindingKindServiceTypeHyperdrive             BindingItemWorkersBindingKindServiceType = "hyperdrive"
-	BindingItemWorkersBindingKindServiceTypeJson                   BindingItemWorkersBindingKindServiceType = "json"
-	BindingItemWorkersBindingKindServiceTypeKvNamespace            BindingItemWorkersBindingKindServiceType = "kv_namespace"
-	BindingItemWorkersBindingKindServiceTypeMtlsCertificate        BindingItemWorkersBindingKindServiceType = "mtls_certificate"
-	BindingItemWorkersBindingKindServiceTypePlainText              BindingItemWorkersBindingKindServiceType = "plain_text"
-	BindingItemWorkersBindingKindServiceTypeQueue                  BindingItemWorkersBindingKindServiceType = "queue"
-	BindingItemWorkersBindingKindServiceTypeR2Bucket               BindingItemWorkersBindingKindServiceType = "r2_bucket"
-	BindingItemWorkersBindingKindServiceTypeSecretText             BindingItemWorkersBindingKindServiceType = "secret_text"
-	BindingItemWorkersBindingKindServiceTypeTailConsumer           BindingItemWorkersBindingKindServiceType = "tail_consumer"
-	BindingItemWorkersBindingKindServiceTypeVectorize              BindingItemWorkersBindingKindServiceType = "vectorize"
-	BindingItemWorkersBindingKindServiceTypeVersionMetadata        BindingItemWorkersBindingKindServiceType = "version_metadata"
+	BindingItemWorkersBindingKindServiceTypeService BindingItemWorkersBindingKindServiceType = "service"
 )
 
 func (r BindingItemWorkersBindingKindServiceType) IsKnown() bool {
 	switch r {
-	case BindingItemWorkersBindingKindServiceTypeService, BindingItemWorkersBindingKindServiceTypeAI, BindingItemWorkersBindingKindServiceTypeAnalyticsEngine, BindingItemWorkersBindingKindServiceTypeAssets, BindingItemWorkersBindingKindServiceTypeBrowserRendering, BindingItemWorkersBindingKindServiceTypeD1, BindingItemWorkersBindingKindServiceTypeDispatchNamespace, BindingItemWorkersBindingKindServiceTypeDurableObjectNamespace, BindingItemWorkersBindingKindServiceTypeHyperdrive, BindingItemWorkersBindingKindServiceTypeJson, BindingItemWorkersBindingKindServiceTypeKvNamespace, BindingItemWorkersBindingKindServiceTypeMtlsCertificate, BindingItemWorkersBindingKindServiceTypePlainText, BindingItemWorkersBindingKindServiceTypeQueue, BindingItemWorkersBindingKindServiceTypeR2Bucket, BindingItemWorkersBindingKindServiceTypeSecretText, BindingItemWorkersBindingKindServiceTypeTailConsumer, BindingItemWorkersBindingKindServiceTypeVectorize, BindingItemWorkersBindingKindServiceTypeVersionMetadata:
+	case BindingItemWorkersBindingKindServiceTypeService:
 		return true
 	}
 	return false
@@ -3131,9 +1263,10 @@ type BindingItemWorkersBindingKindTailConsumer struct {
 	// A JavaScript variable name for the binding.
 	Name string `json:"name,required"`
 	// Name of Tail Worker to bind to.
-	Service string                                        `json:"service,required"`
-	Type    BindingItemWorkersBindingKindTailConsumerType `json:"type,required"`
-	JSON    bindingItemWorkersBindingKindTailConsumerJSON `json:"-"`
+	Service string `json:"service,required"`
+	// The kind of resource that the binding provides.
+	Type BindingItemWorkersBindingKindTailConsumerType `json:"type,required"`
+	JSON bindingItemWorkersBindingKindTailConsumerJSON `json:"-"`
 }
 
 // bindingItemWorkersBindingKindTailConsumerJSON contains the JSON metadata for the
@@ -3156,33 +1289,16 @@ func (r bindingItemWorkersBindingKindTailConsumerJSON) RawJSON() string {
 
 func (r BindingItemWorkersBindingKindTailConsumer) implementsBindingItem() {}
 
+// The kind of resource that the binding provides.
 type BindingItemWorkersBindingKindTailConsumerType string
 
 const (
-	BindingItemWorkersBindingKindTailConsumerTypeTailConsumer           BindingItemWorkersBindingKindTailConsumerType = "tail_consumer"
-	BindingItemWorkersBindingKindTailConsumerTypeAI                     BindingItemWorkersBindingKindTailConsumerType = "ai"
-	BindingItemWorkersBindingKindTailConsumerTypeAnalyticsEngine        BindingItemWorkersBindingKindTailConsumerType = "analytics_engine"
-	BindingItemWorkersBindingKindTailConsumerTypeAssets                 BindingItemWorkersBindingKindTailConsumerType = "assets"
-	BindingItemWorkersBindingKindTailConsumerTypeBrowserRendering       BindingItemWorkersBindingKindTailConsumerType = "browser_rendering"
-	BindingItemWorkersBindingKindTailConsumerTypeD1                     BindingItemWorkersBindingKindTailConsumerType = "d1"
-	BindingItemWorkersBindingKindTailConsumerTypeDispatchNamespace      BindingItemWorkersBindingKindTailConsumerType = "dispatch_namespace"
-	BindingItemWorkersBindingKindTailConsumerTypeDurableObjectNamespace BindingItemWorkersBindingKindTailConsumerType = "durable_object_namespace"
-	BindingItemWorkersBindingKindTailConsumerTypeHyperdrive             BindingItemWorkersBindingKindTailConsumerType = "hyperdrive"
-	BindingItemWorkersBindingKindTailConsumerTypeJson                   BindingItemWorkersBindingKindTailConsumerType = "json"
-	BindingItemWorkersBindingKindTailConsumerTypeKvNamespace            BindingItemWorkersBindingKindTailConsumerType = "kv_namespace"
-	BindingItemWorkersBindingKindTailConsumerTypeMtlsCertificate        BindingItemWorkersBindingKindTailConsumerType = "mtls_certificate"
-	BindingItemWorkersBindingKindTailConsumerTypePlainText              BindingItemWorkersBindingKindTailConsumerType = "plain_text"
-	BindingItemWorkersBindingKindTailConsumerTypeQueue                  BindingItemWorkersBindingKindTailConsumerType = "queue"
-	BindingItemWorkersBindingKindTailConsumerTypeR2Bucket               BindingItemWorkersBindingKindTailConsumerType = "r2_bucket"
-	BindingItemWorkersBindingKindTailConsumerTypeSecretText             BindingItemWorkersBindingKindTailConsumerType = "secret_text"
-	BindingItemWorkersBindingKindTailConsumerTypeService                BindingItemWorkersBindingKindTailConsumerType = "service"
-	BindingItemWorkersBindingKindTailConsumerTypeVectorize              BindingItemWorkersBindingKindTailConsumerType = "vectorize"
-	BindingItemWorkersBindingKindTailConsumerTypeVersionMetadata        BindingItemWorkersBindingKindTailConsumerType = "version_metadata"
+	BindingItemWorkersBindingKindTailConsumerTypeTailConsumer BindingItemWorkersBindingKindTailConsumerType = "tail_consumer"
 )
 
 func (r BindingItemWorkersBindingKindTailConsumerType) IsKnown() bool {
 	switch r {
-	case BindingItemWorkersBindingKindTailConsumerTypeTailConsumer, BindingItemWorkersBindingKindTailConsumerTypeAI, BindingItemWorkersBindingKindTailConsumerTypeAnalyticsEngine, BindingItemWorkersBindingKindTailConsumerTypeAssets, BindingItemWorkersBindingKindTailConsumerTypeBrowserRendering, BindingItemWorkersBindingKindTailConsumerTypeD1, BindingItemWorkersBindingKindTailConsumerTypeDispatchNamespace, BindingItemWorkersBindingKindTailConsumerTypeDurableObjectNamespace, BindingItemWorkersBindingKindTailConsumerTypeHyperdrive, BindingItemWorkersBindingKindTailConsumerTypeJson, BindingItemWorkersBindingKindTailConsumerTypeKvNamespace, BindingItemWorkersBindingKindTailConsumerTypeMtlsCertificate, BindingItemWorkersBindingKindTailConsumerTypePlainText, BindingItemWorkersBindingKindTailConsumerTypeQueue, BindingItemWorkersBindingKindTailConsumerTypeR2Bucket, BindingItemWorkersBindingKindTailConsumerTypeSecretText, BindingItemWorkersBindingKindTailConsumerTypeService, BindingItemWorkersBindingKindTailConsumerTypeVectorize, BindingItemWorkersBindingKindTailConsumerTypeVersionMetadata:
+	case BindingItemWorkersBindingKindTailConsumerTypeTailConsumer:
 		return true
 	}
 	return false
@@ -3192,7 +1308,8 @@ type BindingItemWorkersBindingKindVectorize struct {
 	// Name of the Vectorize index to bind to.
 	IndexName string `json:"index_name,required"`
 	// A JavaScript variable name for the binding.
-	Name string                                     `json:"name,required"`
+	Name string `json:"name,required"`
+	// The kind of resource that the binding provides.
 	Type BindingItemWorkersBindingKindVectorizeType `json:"type,required"`
 	JSON bindingItemWorkersBindingKindVectorizeJSON `json:"-"`
 }
@@ -3217,33 +1334,16 @@ func (r bindingItemWorkersBindingKindVectorizeJSON) RawJSON() string {
 
 func (r BindingItemWorkersBindingKindVectorize) implementsBindingItem() {}
 
+// The kind of resource that the binding provides.
 type BindingItemWorkersBindingKindVectorizeType string
 
 const (
-	BindingItemWorkersBindingKindVectorizeTypeVectorize              BindingItemWorkersBindingKindVectorizeType = "vectorize"
-	BindingItemWorkersBindingKindVectorizeTypeAI                     BindingItemWorkersBindingKindVectorizeType = "ai"
-	BindingItemWorkersBindingKindVectorizeTypeAnalyticsEngine        BindingItemWorkersBindingKindVectorizeType = "analytics_engine"
-	BindingItemWorkersBindingKindVectorizeTypeAssets                 BindingItemWorkersBindingKindVectorizeType = "assets"
-	BindingItemWorkersBindingKindVectorizeTypeBrowserRendering       BindingItemWorkersBindingKindVectorizeType = "browser_rendering"
-	BindingItemWorkersBindingKindVectorizeTypeD1                     BindingItemWorkersBindingKindVectorizeType = "d1"
-	BindingItemWorkersBindingKindVectorizeTypeDispatchNamespace      BindingItemWorkersBindingKindVectorizeType = "dispatch_namespace"
-	BindingItemWorkersBindingKindVectorizeTypeDurableObjectNamespace BindingItemWorkersBindingKindVectorizeType = "durable_object_namespace"
-	BindingItemWorkersBindingKindVectorizeTypeHyperdrive             BindingItemWorkersBindingKindVectorizeType = "hyperdrive"
-	BindingItemWorkersBindingKindVectorizeTypeJson                   BindingItemWorkersBindingKindVectorizeType = "json"
-	BindingItemWorkersBindingKindVectorizeTypeKvNamespace            BindingItemWorkersBindingKindVectorizeType = "kv_namespace"
-	BindingItemWorkersBindingKindVectorizeTypeMtlsCertificate        BindingItemWorkersBindingKindVectorizeType = "mtls_certificate"
-	BindingItemWorkersBindingKindVectorizeTypePlainText              BindingItemWorkersBindingKindVectorizeType = "plain_text"
-	BindingItemWorkersBindingKindVectorizeTypeQueue                  BindingItemWorkersBindingKindVectorizeType = "queue"
-	BindingItemWorkersBindingKindVectorizeTypeR2Bucket               BindingItemWorkersBindingKindVectorizeType = "r2_bucket"
-	BindingItemWorkersBindingKindVectorizeTypeSecretText             BindingItemWorkersBindingKindVectorizeType = "secret_text"
-	BindingItemWorkersBindingKindVectorizeTypeService                BindingItemWorkersBindingKindVectorizeType = "service"
-	BindingItemWorkersBindingKindVectorizeTypeTailConsumer           BindingItemWorkersBindingKindVectorizeType = "tail_consumer"
-	BindingItemWorkersBindingKindVectorizeTypeVersionMetadata        BindingItemWorkersBindingKindVectorizeType = "version_metadata"
+	BindingItemWorkersBindingKindVectorizeTypeVectorize BindingItemWorkersBindingKindVectorizeType = "vectorize"
 )
 
 func (r BindingItemWorkersBindingKindVectorizeType) IsKnown() bool {
 	switch r {
-	case BindingItemWorkersBindingKindVectorizeTypeVectorize, BindingItemWorkersBindingKindVectorizeTypeAI, BindingItemWorkersBindingKindVectorizeTypeAnalyticsEngine, BindingItemWorkersBindingKindVectorizeTypeAssets, BindingItemWorkersBindingKindVectorizeTypeBrowserRendering, BindingItemWorkersBindingKindVectorizeTypeD1, BindingItemWorkersBindingKindVectorizeTypeDispatchNamespace, BindingItemWorkersBindingKindVectorizeTypeDurableObjectNamespace, BindingItemWorkersBindingKindVectorizeTypeHyperdrive, BindingItemWorkersBindingKindVectorizeTypeJson, BindingItemWorkersBindingKindVectorizeTypeKvNamespace, BindingItemWorkersBindingKindVectorizeTypeMtlsCertificate, BindingItemWorkersBindingKindVectorizeTypePlainText, BindingItemWorkersBindingKindVectorizeTypeQueue, BindingItemWorkersBindingKindVectorizeTypeR2Bucket, BindingItemWorkersBindingKindVectorizeTypeSecretText, BindingItemWorkersBindingKindVectorizeTypeService, BindingItemWorkersBindingKindVectorizeTypeTailConsumer, BindingItemWorkersBindingKindVectorizeTypeVersionMetadata:
+	case BindingItemWorkersBindingKindVectorizeTypeVectorize:
 		return true
 	}
 	return false
@@ -3251,7 +1351,8 @@ func (r BindingItemWorkersBindingKindVectorizeType) IsKnown() bool {
 
 type BindingItemWorkersBindingKindVersionMetadata struct {
 	// A JavaScript variable name for the binding.
-	Name string                                           `json:"name,required"`
+	Name string `json:"name,required"`
+	// The kind of resource that the binding provides.
 	Type BindingItemWorkersBindingKindVersionMetadataType `json:"type,required"`
 	JSON bindingItemWorkersBindingKindVersionMetadataJSON `json:"-"`
 }
@@ -3275,45 +1376,224 @@ func (r bindingItemWorkersBindingKindVersionMetadataJSON) RawJSON() string {
 
 func (r BindingItemWorkersBindingKindVersionMetadata) implementsBindingItem() {}
 
+// The kind of resource that the binding provides.
 type BindingItemWorkersBindingKindVersionMetadataType string
 
 const (
-	BindingItemWorkersBindingKindVersionMetadataTypeVersionMetadata        BindingItemWorkersBindingKindVersionMetadataType = "version_metadata"
-	BindingItemWorkersBindingKindVersionMetadataTypeAI                     BindingItemWorkersBindingKindVersionMetadataType = "ai"
-	BindingItemWorkersBindingKindVersionMetadataTypeAnalyticsEngine        BindingItemWorkersBindingKindVersionMetadataType = "analytics_engine"
-	BindingItemWorkersBindingKindVersionMetadataTypeAssets                 BindingItemWorkersBindingKindVersionMetadataType = "assets"
-	BindingItemWorkersBindingKindVersionMetadataTypeBrowserRendering       BindingItemWorkersBindingKindVersionMetadataType = "browser_rendering"
-	BindingItemWorkersBindingKindVersionMetadataTypeD1                     BindingItemWorkersBindingKindVersionMetadataType = "d1"
-	BindingItemWorkersBindingKindVersionMetadataTypeDispatchNamespace      BindingItemWorkersBindingKindVersionMetadataType = "dispatch_namespace"
-	BindingItemWorkersBindingKindVersionMetadataTypeDurableObjectNamespace BindingItemWorkersBindingKindVersionMetadataType = "durable_object_namespace"
-	BindingItemWorkersBindingKindVersionMetadataTypeHyperdrive             BindingItemWorkersBindingKindVersionMetadataType = "hyperdrive"
-	BindingItemWorkersBindingKindVersionMetadataTypeJson                   BindingItemWorkersBindingKindVersionMetadataType = "json"
-	BindingItemWorkersBindingKindVersionMetadataTypeKvNamespace            BindingItemWorkersBindingKindVersionMetadataType = "kv_namespace"
-	BindingItemWorkersBindingKindVersionMetadataTypeMtlsCertificate        BindingItemWorkersBindingKindVersionMetadataType = "mtls_certificate"
-	BindingItemWorkersBindingKindVersionMetadataTypePlainText              BindingItemWorkersBindingKindVersionMetadataType = "plain_text"
-	BindingItemWorkersBindingKindVersionMetadataTypeQueue                  BindingItemWorkersBindingKindVersionMetadataType = "queue"
-	BindingItemWorkersBindingKindVersionMetadataTypeR2Bucket               BindingItemWorkersBindingKindVersionMetadataType = "r2_bucket"
-	BindingItemWorkersBindingKindVersionMetadataTypeSecretText             BindingItemWorkersBindingKindVersionMetadataType = "secret_text"
-	BindingItemWorkersBindingKindVersionMetadataTypeService                BindingItemWorkersBindingKindVersionMetadataType = "service"
-	BindingItemWorkersBindingKindVersionMetadataTypeTailConsumer           BindingItemWorkersBindingKindVersionMetadataType = "tail_consumer"
-	BindingItemWorkersBindingKindVersionMetadataTypeVectorize              BindingItemWorkersBindingKindVersionMetadataType = "vectorize"
+	BindingItemWorkersBindingKindVersionMetadataTypeVersionMetadata BindingItemWorkersBindingKindVersionMetadataType = "version_metadata"
 )
 
 func (r BindingItemWorkersBindingKindVersionMetadataType) IsKnown() bool {
 	switch r {
-	case BindingItemWorkersBindingKindVersionMetadataTypeVersionMetadata, BindingItemWorkersBindingKindVersionMetadataTypeAI, BindingItemWorkersBindingKindVersionMetadataTypeAnalyticsEngine, BindingItemWorkersBindingKindVersionMetadataTypeAssets, BindingItemWorkersBindingKindVersionMetadataTypeBrowserRendering, BindingItemWorkersBindingKindVersionMetadataTypeD1, BindingItemWorkersBindingKindVersionMetadataTypeDispatchNamespace, BindingItemWorkersBindingKindVersionMetadataTypeDurableObjectNamespace, BindingItemWorkersBindingKindVersionMetadataTypeHyperdrive, BindingItemWorkersBindingKindVersionMetadataTypeJson, BindingItemWorkersBindingKindVersionMetadataTypeKvNamespace, BindingItemWorkersBindingKindVersionMetadataTypeMtlsCertificate, BindingItemWorkersBindingKindVersionMetadataTypePlainText, BindingItemWorkersBindingKindVersionMetadataTypeQueue, BindingItemWorkersBindingKindVersionMetadataTypeR2Bucket, BindingItemWorkersBindingKindVersionMetadataTypeSecretText, BindingItemWorkersBindingKindVersionMetadataTypeService, BindingItemWorkersBindingKindVersionMetadataTypeTailConsumer, BindingItemWorkersBindingKindVersionMetadataTypeVectorize:
+	case BindingItemWorkersBindingKindVersionMetadataTypeVersionMetadata:
 		return true
 	}
 	return false
 }
 
+type BindingItemWorkersBindingKindSecretsStoreSecret struct {
+	// A JavaScript variable name for the binding.
+	Name string `json:"name,required"`
+	// Name of the secret in the store.
+	SecretName string `json:"secret_name,required"`
+	// ID of the store containing the secret.
+	StoreID string `json:"store_id,required"`
+	// The kind of resource that the binding provides.
+	Type BindingItemWorkersBindingKindSecretsStoreSecretType `json:"type,required"`
+	JSON bindingItemWorkersBindingKindSecretsStoreSecretJSON `json:"-"`
+}
+
+// bindingItemWorkersBindingKindSecretsStoreSecretJSON contains the JSON metadata
+// for the struct [BindingItemWorkersBindingKindSecretsStoreSecret]
+type bindingItemWorkersBindingKindSecretsStoreSecretJSON struct {
+	Name        apijson.Field
+	SecretName  apijson.Field
+	StoreID     apijson.Field
+	Type        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *BindingItemWorkersBindingKindSecretsStoreSecret) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r bindingItemWorkersBindingKindSecretsStoreSecretJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r BindingItemWorkersBindingKindSecretsStoreSecret) implementsBindingItem() {}
+
+// The kind of resource that the binding provides.
+type BindingItemWorkersBindingKindSecretsStoreSecretType string
+
+const (
+	BindingItemWorkersBindingKindSecretsStoreSecretTypeSecretsStoreSecret BindingItemWorkersBindingKindSecretsStoreSecretType = "secrets_store_secret"
+)
+
+func (r BindingItemWorkersBindingKindSecretsStoreSecretType) IsKnown() bool {
+	switch r {
+	case BindingItemWorkersBindingKindSecretsStoreSecretTypeSecretsStoreSecret:
+		return true
+	}
+	return false
+}
+
+type BindingItemWorkersBindingKindSecretKey struct {
+	// Algorithm-specific key parameters.
+	// [Learn more](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/importKey#algorithm).
+	Algorithm interface{} `json:"algorithm,required"`
+	// Data format of the key.
+	// [Learn more](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/importKey#format).
+	Format BindingItemWorkersBindingKindSecretKeyFormat `json:"format,required"`
+	// A JavaScript variable name for the binding.
+	Name string `json:"name,required"`
+	// The kind of resource that the binding provides.
+	Type BindingItemWorkersBindingKindSecretKeyType `json:"type,required"`
+	// Allowed operations with the key.
+	// [Learn more](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/importKey#keyUsages).
+	Usages []BindingItemWorkersBindingKindSecretKeyUsage `json:"usages,required"`
+	JSON   bindingItemWorkersBindingKindSecretKeyJSON    `json:"-"`
+}
+
+// bindingItemWorkersBindingKindSecretKeyJSON contains the JSON metadata for the
+// struct [BindingItemWorkersBindingKindSecretKey]
+type bindingItemWorkersBindingKindSecretKeyJSON struct {
+	Algorithm   apijson.Field
+	Format      apijson.Field
+	Name        apijson.Field
+	Type        apijson.Field
+	Usages      apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *BindingItemWorkersBindingKindSecretKey) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r bindingItemWorkersBindingKindSecretKeyJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r BindingItemWorkersBindingKindSecretKey) implementsBindingItem() {}
+
+// Data format of the key.
+// [Learn more](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/importKey#format).
+type BindingItemWorkersBindingKindSecretKeyFormat string
+
+const (
+	BindingItemWorkersBindingKindSecretKeyFormatRaw   BindingItemWorkersBindingKindSecretKeyFormat = "raw"
+	BindingItemWorkersBindingKindSecretKeyFormatPkcs8 BindingItemWorkersBindingKindSecretKeyFormat = "pkcs8"
+	BindingItemWorkersBindingKindSecretKeyFormatSpki  BindingItemWorkersBindingKindSecretKeyFormat = "spki"
+	BindingItemWorkersBindingKindSecretKeyFormatJwk   BindingItemWorkersBindingKindSecretKeyFormat = "jwk"
+)
+
+func (r BindingItemWorkersBindingKindSecretKeyFormat) IsKnown() bool {
+	switch r {
+	case BindingItemWorkersBindingKindSecretKeyFormatRaw, BindingItemWorkersBindingKindSecretKeyFormatPkcs8, BindingItemWorkersBindingKindSecretKeyFormatSpki, BindingItemWorkersBindingKindSecretKeyFormatJwk:
+		return true
+	}
+	return false
+}
+
+// The kind of resource that the binding provides.
+type BindingItemWorkersBindingKindSecretKeyType string
+
+const (
+	BindingItemWorkersBindingKindSecretKeyTypeSecretKey BindingItemWorkersBindingKindSecretKeyType = "secret_key"
+)
+
+func (r BindingItemWorkersBindingKindSecretKeyType) IsKnown() bool {
+	switch r {
+	case BindingItemWorkersBindingKindSecretKeyTypeSecretKey:
+		return true
+	}
+	return false
+}
+
+type BindingItemWorkersBindingKindSecretKeyUsage string
+
+const (
+	BindingItemWorkersBindingKindSecretKeyUsageEncrypt    BindingItemWorkersBindingKindSecretKeyUsage = "encrypt"
+	BindingItemWorkersBindingKindSecretKeyUsageDecrypt    BindingItemWorkersBindingKindSecretKeyUsage = "decrypt"
+	BindingItemWorkersBindingKindSecretKeyUsageSign       BindingItemWorkersBindingKindSecretKeyUsage = "sign"
+	BindingItemWorkersBindingKindSecretKeyUsageVerify     BindingItemWorkersBindingKindSecretKeyUsage = "verify"
+	BindingItemWorkersBindingKindSecretKeyUsageDeriveKey  BindingItemWorkersBindingKindSecretKeyUsage = "deriveKey"
+	BindingItemWorkersBindingKindSecretKeyUsageDeriveBits BindingItemWorkersBindingKindSecretKeyUsage = "deriveBits"
+	BindingItemWorkersBindingKindSecretKeyUsageWrapKey    BindingItemWorkersBindingKindSecretKeyUsage = "wrapKey"
+	BindingItemWorkersBindingKindSecretKeyUsageUnwrapKey  BindingItemWorkersBindingKindSecretKeyUsage = "unwrapKey"
+)
+
+func (r BindingItemWorkersBindingKindSecretKeyUsage) IsKnown() bool {
+	switch r {
+	case BindingItemWorkersBindingKindSecretKeyUsageEncrypt, BindingItemWorkersBindingKindSecretKeyUsageDecrypt, BindingItemWorkersBindingKindSecretKeyUsageSign, BindingItemWorkersBindingKindSecretKeyUsageVerify, BindingItemWorkersBindingKindSecretKeyUsageDeriveKey, BindingItemWorkersBindingKindSecretKeyUsageDeriveBits, BindingItemWorkersBindingKindSecretKeyUsageWrapKey, BindingItemWorkersBindingKindSecretKeyUsageUnwrapKey:
+		return true
+	}
+	return false
+}
+
+type BindingItemWorkersBindingKindWorkflow struct {
+	// A JavaScript variable name for the binding.
+	Name string `json:"name,required"`
+	// The kind of resource that the binding provides.
+	Type BindingItemWorkersBindingKindWorkflowType `json:"type,required"`
+	// Name of the Workflow to bind to.
+	WorkflowName string `json:"workflow_name,required"`
+	// Class name of the Workflow. Should only be provided if the Workflow belongs to
+	// this script.
+	ClassName string `json:"class_name"`
+	// Script name that contains the Workflow. If not provided, defaults to this script
+	// name.
+	ScriptName string                                    `json:"script_name"`
+	JSON       bindingItemWorkersBindingKindWorkflowJSON `json:"-"`
+}
+
+// bindingItemWorkersBindingKindWorkflowJSON contains the JSON metadata for the
+// struct [BindingItemWorkersBindingKindWorkflow]
+type bindingItemWorkersBindingKindWorkflowJSON struct {
+	Name         apijson.Field
+	Type         apijson.Field
+	WorkflowName apijson.Field
+	ClassName    apijson.Field
+	ScriptName   apijson.Field
+	raw          string
+	ExtraFields  map[string]apijson.Field
+}
+
+func (r *BindingItemWorkersBindingKindWorkflow) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r bindingItemWorkersBindingKindWorkflowJSON) RawJSON() string {
+	return r.raw
+}
+
+func (r BindingItemWorkersBindingKindWorkflow) implementsBindingItem() {}
+
+// The kind of resource that the binding provides.
+type BindingItemWorkersBindingKindWorkflowType string
+
+const (
+	BindingItemWorkersBindingKindWorkflowTypeWorkflow BindingItemWorkersBindingKindWorkflowType = "workflow"
+)
+
+func (r BindingItemWorkersBindingKindWorkflowType) IsKnown() bool {
+	switch r {
+	case BindingItemWorkersBindingKindWorkflowTypeWorkflow:
+		return true
+	}
+	return false
+}
+
+// The kind of resource that the binding provides.
 type BindingItemType string
 
 const (
 	BindingItemTypeAI                     BindingItemType = "ai"
 	BindingItemTypeAnalyticsEngine        BindingItemType = "analytics_engine"
 	BindingItemTypeAssets                 BindingItemType = "assets"
-	BindingItemTypeBrowserRendering       BindingItemType = "browser_rendering"
+	BindingItemTypeBrowser                BindingItemType = "browser"
 	BindingItemTypeD1                     BindingItemType = "d1"
 	BindingItemTypeDispatchNamespace      BindingItemType = "dispatch_namespace"
 	BindingItemTypeDurableObjectNamespace BindingItemType = "durable_object_namespace"
@@ -3322,6 +1602,7 @@ const (
 	BindingItemTypeKvNamespace            BindingItemType = "kv_namespace"
 	BindingItemTypeMtlsCertificate        BindingItemType = "mtls_certificate"
 	BindingItemTypePlainText              BindingItemType = "plain_text"
+	BindingItemTypePipelines              BindingItemType = "pipelines"
 	BindingItemTypeQueue                  BindingItemType = "queue"
 	BindingItemTypeR2Bucket               BindingItemType = "r2_bucket"
 	BindingItemTypeSecretText             BindingItemType = "secret_text"
@@ -3329,23 +1610,47 @@ const (
 	BindingItemTypeTailConsumer           BindingItemType = "tail_consumer"
 	BindingItemTypeVectorize              BindingItemType = "vectorize"
 	BindingItemTypeVersionMetadata        BindingItemType = "version_metadata"
+	BindingItemTypeSecretsStoreSecret     BindingItemType = "secrets_store_secret"
+	BindingItemTypeSecretKey              BindingItemType = "secret_key"
+	BindingItemTypeWorkflow               BindingItemType = "workflow"
 )
 
 func (r BindingItemType) IsKnown() bool {
 	switch r {
-	case BindingItemTypeAI, BindingItemTypeAnalyticsEngine, BindingItemTypeAssets, BindingItemTypeBrowserRendering, BindingItemTypeD1, BindingItemTypeDispatchNamespace, BindingItemTypeDurableObjectNamespace, BindingItemTypeHyperdrive, BindingItemTypeJson, BindingItemTypeKvNamespace, BindingItemTypeMtlsCertificate, BindingItemTypePlainText, BindingItemTypeQueue, BindingItemTypeR2Bucket, BindingItemTypeSecretText, BindingItemTypeService, BindingItemTypeTailConsumer, BindingItemTypeVectorize, BindingItemTypeVersionMetadata:
+	case BindingItemTypeAI, BindingItemTypeAnalyticsEngine, BindingItemTypeAssets, BindingItemTypeBrowser, BindingItemTypeD1, BindingItemTypeDispatchNamespace, BindingItemTypeDurableObjectNamespace, BindingItemTypeHyperdrive, BindingItemTypeJson, BindingItemTypeKvNamespace, BindingItemTypeMtlsCertificate, BindingItemTypePlainText, BindingItemTypePipelines, BindingItemTypeQueue, BindingItemTypeR2Bucket, BindingItemTypeSecretText, BindingItemTypeService, BindingItemTypeTailConsumer, BindingItemTypeVectorize, BindingItemTypeVersionMetadata, BindingItemTypeSecretsStoreSecret, BindingItemTypeSecretKey, BindingItemTypeWorkflow:
 		return true
 	}
 	return false
 }
 
-// A binding to allow the Worker to communicate with resources
+// Data format of the key.
+// [Learn more](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/importKey#format).
+type BindingItemFormat string
+
+const (
+	BindingItemFormatRaw   BindingItemFormat = "raw"
+	BindingItemFormatPkcs8 BindingItemFormat = "pkcs8"
+	BindingItemFormatSpki  BindingItemFormat = "spki"
+	BindingItemFormatJwk   BindingItemFormat = "jwk"
+)
+
+func (r BindingItemFormat) IsKnown() bool {
+	switch r {
+	case BindingItemFormatRaw, BindingItemFormatPkcs8, BindingItemFormatSpki, BindingItemFormatJwk:
+		return true
+	}
+	return false
+}
+
+// A binding to allow the Worker to communicate with resources.
 type BindingItemParam struct {
 	// A JavaScript variable name for the binding.
-	Name param.Field[string]          `json:"name,required"`
+	Name param.Field[string] `json:"name,required"`
+	// The kind of resource that the binding provides.
 	Type param.Field[BindingItemType] `json:"type,required"`
 	// Identifier of the D1 database to bind to.
-	ID param.Field[string] `json:"id"`
+	ID        param.Field[string]      `json:"id"`
+	Algorithm param.Field[interface{}] `json:"algorithm"`
 	// R2 bucket to bind to.
 	BucketName param.Field[string] `json:"bucket_name"`
 	// Identifier of the certificate to bind to.
@@ -3356,23 +1661,39 @@ type BindingItemParam struct {
 	Dataset param.Field[string] `json:"dataset"`
 	// The environment of the script_name to bind to.
 	Environment param.Field[string] `json:"environment"`
+	// Data format of the key.
+	// [Learn more](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/importKey#format).
+	Format param.Field[BindingItemFormat] `json:"format"`
 	// Name of the Vectorize index to bind to.
-	IndexName param.Field[string]      `json:"index_name"`
-	Json      param.Field[interface{}] `json:"json"`
+	IndexName param.Field[string] `json:"index_name"`
+	// JSON data to use.
+	Json param.Field[string] `json:"json"`
+	// Base64-encoded key data. Required if `format` is "raw", "pkcs8", or "spki".
+	KeyBase64 param.Field[string]      `json:"key_base64"`
+	KeyJwk    param.Field[interface{}] `json:"key_jwk"`
 	// Namespace to bind to.
 	Namespace param.Field[string] `json:"namespace"`
 	// Namespace identifier tag.
 	NamespaceID param.Field[string]      `json:"namespace_id"`
 	Outbound    param.Field[interface{}] `json:"outbound"`
+	// Name of the Pipeline to bind to.
+	Pipeline param.Field[string] `json:"pipeline"`
 	// Name of the Queue to bind to.
 	QueueName param.Field[string] `json:"queue_name"`
 	// The script where the Durable Object is defined, if it is external to this
 	// Worker.
 	ScriptName param.Field[string] `json:"script_name"`
+	// Name of the secret in the store.
+	SecretName param.Field[string] `json:"secret_name"`
 	// Name of Worker to bind to.
 	Service param.Field[string] `json:"service"`
+	// ID of the store containing the secret.
+	StoreID param.Field[string] `json:"store_id"`
 	// The text value to use.
-	Text param.Field[string] `json:"text"`
+	Text   param.Field[string]      `json:"text"`
+	Usages param.Field[interface{}] `json:"usages"`
+	// Name of the Workflow to bind to.
+	WorkflowName param.Field[string] `json:"workflow_name"`
 }
 
 func (r BindingItemParam) MarshalJSON() (data []byte, err error) {
@@ -3381,12 +1702,12 @@ func (r BindingItemParam) MarshalJSON() (data []byte, err error) {
 
 func (r BindingItemParam) implementsBindingItemUnionParam() {}
 
-// A binding to allow the Worker to communicate with resources
+// A binding to allow the Worker to communicate with resources.
 //
 // Satisfied by [BindingItemWorkersBindingKindAIParam],
 // [BindingItemWorkersBindingKindAnalyticsEngineParam],
 // [BindingItemWorkersBindingKindAssetsParam],
-// [BindingItemWorkersBindingKindBrowserRenderingParam],
+// [BindingItemWorkersBindingKindBrowserParam],
 // [BindingItemWorkersBindingKindD1Param],
 // [BindingItemWorkersBindingKindDispatchNamespaceParam],
 // [BindingItemWorkersBindingKindDurableObjectNamespaceParam],
@@ -3395,20 +1716,25 @@ func (r BindingItemParam) implementsBindingItemUnionParam() {}
 // [BindingItemWorkersBindingKindKvNamespaceParam],
 // [BindingItemWorkersBindingKindMtlsCertificateParam],
 // [BindingItemWorkersBindingKindPlainTextParam],
+// [BindingItemWorkersBindingKindPipelinesParam],
 // [BindingItemWorkersBindingKindQueueParam],
 // [BindingItemWorkersBindingKindR2BucketParam],
 // [BindingItemWorkersBindingKindSecretTextParam],
 // [BindingItemWorkersBindingKindServiceParam],
 // [BindingItemWorkersBindingKindTailConsumerParam],
 // [BindingItemWorkersBindingKindVectorizeParam],
-// [BindingItemWorkersBindingKindVersionMetadataParam], [BindingItemParam].
+// [BindingItemWorkersBindingKindVersionMetadataParam],
+// [BindingItemWorkersBindingKindSecretsStoreSecretParam],
+// [BindingItemWorkersBindingKindSecretKeyParam],
+// [BindingItemWorkersBindingKindWorkflowParam], [BindingItemParam].
 type BindingItemUnionParam interface {
 	implementsBindingItemUnionParam()
 }
 
 type BindingItemWorkersBindingKindAIParam struct {
 	// A JavaScript variable name for the binding.
-	Name param.Field[string]                              `json:"name,required"`
+	Name param.Field[string] `json:"name,required"`
+	// The kind of resource that the binding provides.
 	Type param.Field[BindingItemWorkersBindingKindAIType] `json:"type,required"`
 }
 
@@ -3422,7 +1748,8 @@ type BindingItemWorkersBindingKindAnalyticsEngineParam struct {
 	// The name of the dataset to bind to.
 	Dataset param.Field[string] `json:"dataset,required"`
 	// A JavaScript variable name for the binding.
-	Name param.Field[string]                                           `json:"name,required"`
+	Name param.Field[string] `json:"name,required"`
+	// The kind of resource that the binding provides.
 	Type param.Field[BindingItemWorkersBindingKindAnalyticsEngineType] `json:"type,required"`
 }
 
@@ -3434,7 +1761,8 @@ func (r BindingItemWorkersBindingKindAnalyticsEngineParam) implementsBindingItem
 
 type BindingItemWorkersBindingKindAssetsParam struct {
 	// A JavaScript variable name for the binding.
-	Name param.Field[string]                                  `json:"name,required"`
+	Name param.Field[string] `json:"name,required"`
+	// The kind of resource that the binding provides.
 	Type param.Field[BindingItemWorkersBindingKindAssetsType] `json:"type,required"`
 }
 
@@ -3444,23 +1772,25 @@ func (r BindingItemWorkersBindingKindAssetsParam) MarshalJSON() (data []byte, er
 
 func (r BindingItemWorkersBindingKindAssetsParam) implementsBindingItemUnionParam() {}
 
-type BindingItemWorkersBindingKindBrowserRenderingParam struct {
+type BindingItemWorkersBindingKindBrowserParam struct {
 	// A JavaScript variable name for the binding.
-	Name param.Field[string]                                            `json:"name,required"`
-	Type param.Field[BindingItemWorkersBindingKindBrowserRenderingType] `json:"type,required"`
+	Name param.Field[string] `json:"name,required"`
+	// The kind of resource that the binding provides.
+	Type param.Field[BindingItemWorkersBindingKindBrowserType] `json:"type,required"`
 }
 
-func (r BindingItemWorkersBindingKindBrowserRenderingParam) MarshalJSON() (data []byte, err error) {
+func (r BindingItemWorkersBindingKindBrowserParam) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-func (r BindingItemWorkersBindingKindBrowserRenderingParam) implementsBindingItemUnionParam() {}
+func (r BindingItemWorkersBindingKindBrowserParam) implementsBindingItemUnionParam() {}
 
 type BindingItemWorkersBindingKindD1Param struct {
 	// Identifier of the D1 database to bind to.
 	ID param.Field[string] `json:"id,required"`
 	// A JavaScript variable name for the binding.
-	Name param.Field[string]                              `json:"name,required"`
+	Name param.Field[string] `json:"name,required"`
+	// The kind of resource that the binding provides.
 	Type param.Field[BindingItemWorkersBindingKindD1Type] `json:"type,required"`
 }
 
@@ -3474,8 +1804,9 @@ type BindingItemWorkersBindingKindDispatchNamespaceParam struct {
 	// A JavaScript variable name for the binding.
 	Name param.Field[string] `json:"name,required"`
 	// Namespace to bind to.
-	Namespace param.Field[string]                                             `json:"namespace,required"`
-	Type      param.Field[BindingItemWorkersBindingKindDispatchNamespaceType] `json:"type,required"`
+	Namespace param.Field[string] `json:"namespace,required"`
+	// The kind of resource that the binding provides.
+	Type param.Field[BindingItemWorkersBindingKindDispatchNamespaceType] `json:"type,required"`
 	// Outbound worker.
 	Outbound param.Field[BindingItemWorkersBindingKindDispatchNamespaceOutboundParam] `json:"outbound"`
 }
@@ -3512,11 +1843,12 @@ func (r BindingItemWorkersBindingKindDispatchNamespaceOutboundWorkerParam) Marsh
 }
 
 type BindingItemWorkersBindingKindDurableObjectNamespaceParam struct {
-	// The exported class name of the Durable Object.
-	ClassName param.Field[string] `json:"class_name,required"`
 	// A JavaScript variable name for the binding.
-	Name param.Field[string]                                                  `json:"name,required"`
+	Name param.Field[string] `json:"name,required"`
+	// The kind of resource that the binding provides.
 	Type param.Field[BindingItemWorkersBindingKindDurableObjectNamespaceType] `json:"type,required"`
+	// The exported class name of the Durable Object.
+	ClassName param.Field[string] `json:"class_name"`
 	// The environment of the script_name to bind to.
 	Environment param.Field[string] `json:"environment"`
 	// Namespace identifier tag.
@@ -3536,7 +1868,8 @@ type BindingItemWorkersBindingKindHyperdriveParam struct {
 	// Identifier of the Hyperdrive connection to bind to.
 	ID param.Field[string] `json:"id,required"`
 	// A JavaScript variable name for the binding.
-	Name param.Field[string]                                      `json:"name,required"`
+	Name param.Field[string] `json:"name,required"`
+	// The kind of resource that the binding provides.
 	Type param.Field[BindingItemWorkersBindingKindHyperdriveType] `json:"type,required"`
 }
 
@@ -3548,9 +1881,10 @@ func (r BindingItemWorkersBindingKindHyperdriveParam) implementsBindingItemUnion
 
 type BindingItemWorkersBindingKindJsonParam struct {
 	// JSON data to use.
-	Json param.Field[interface{}] `json:"json,required"`
+	Json param.Field[string] `json:"json,required"`
 	// A JavaScript variable name for the binding.
-	Name param.Field[string]                                `json:"name,required"`
+	Name param.Field[string] `json:"name,required"`
+	// The kind of resource that the binding provides.
 	Type param.Field[BindingItemWorkersBindingKindJsonType] `json:"type,required"`
 }
 
@@ -3564,8 +1898,9 @@ type BindingItemWorkersBindingKindKvNamespaceParam struct {
 	// A JavaScript variable name for the binding.
 	Name param.Field[string] `json:"name,required"`
 	// Namespace identifier tag.
-	NamespaceID param.Field[string]                                       `json:"namespace_id,required"`
-	Type        param.Field[BindingItemWorkersBindingKindKvNamespaceType] `json:"type,required"`
+	NamespaceID param.Field[string] `json:"namespace_id,required"`
+	// The kind of resource that the binding provides.
+	Type param.Field[BindingItemWorkersBindingKindKvNamespaceType] `json:"type,required"`
 }
 
 func (r BindingItemWorkersBindingKindKvNamespaceParam) MarshalJSON() (data []byte, err error) {
@@ -3578,7 +1913,8 @@ type BindingItemWorkersBindingKindMtlsCertificateParam struct {
 	// Identifier of the certificate to bind to.
 	CertificateID param.Field[string] `json:"certificate_id,required"`
 	// A JavaScript variable name for the binding.
-	Name param.Field[string]                                           `json:"name,required"`
+	Name param.Field[string] `json:"name,required"`
+	// The kind of resource that the binding provides.
 	Type param.Field[BindingItemWorkersBindingKindMtlsCertificateType] `json:"type,required"`
 }
 
@@ -3592,7 +1928,8 @@ type BindingItemWorkersBindingKindPlainTextParam struct {
 	// A JavaScript variable name for the binding.
 	Name param.Field[string] `json:"name,required"`
 	// The text value to use.
-	Text param.Field[string]                                     `json:"text,required"`
+	Text param.Field[string] `json:"text,required"`
+	// The kind of resource that the binding provides.
 	Type param.Field[BindingItemWorkersBindingKindPlainTextType] `json:"type,required"`
 }
 
@@ -3602,12 +1939,28 @@ func (r BindingItemWorkersBindingKindPlainTextParam) MarshalJSON() (data []byte,
 
 func (r BindingItemWorkersBindingKindPlainTextParam) implementsBindingItemUnionParam() {}
 
+type BindingItemWorkersBindingKindPipelinesParam struct {
+	// A JavaScript variable name for the binding.
+	Name param.Field[string] `json:"name,required"`
+	// Name of the Pipeline to bind to.
+	Pipeline param.Field[string] `json:"pipeline,required"`
+	// The kind of resource that the binding provides.
+	Type param.Field[BindingItemWorkersBindingKindPipelinesType] `json:"type,required"`
+}
+
+func (r BindingItemWorkersBindingKindPipelinesParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r BindingItemWorkersBindingKindPipelinesParam) implementsBindingItemUnionParam() {}
+
 type BindingItemWorkersBindingKindQueueParam struct {
 	// A JavaScript variable name for the binding.
 	Name param.Field[string] `json:"name,required"`
 	// Name of the Queue to bind to.
-	QueueName param.Field[string]                                 `json:"queue_name,required"`
-	Type      param.Field[BindingItemWorkersBindingKindQueueType] `json:"type,required"`
+	QueueName param.Field[string] `json:"queue_name,required"`
+	// The kind of resource that the binding provides.
+	Type param.Field[BindingItemWorkersBindingKindQueueType] `json:"type,required"`
 }
 
 func (r BindingItemWorkersBindingKindQueueParam) MarshalJSON() (data []byte, err error) {
@@ -3620,7 +1973,8 @@ type BindingItemWorkersBindingKindR2BucketParam struct {
 	// R2 bucket to bind to.
 	BucketName param.Field[string] `json:"bucket_name,required"`
 	// A JavaScript variable name for the binding.
-	Name param.Field[string]                                    `json:"name,required"`
+	Name param.Field[string] `json:"name,required"`
+	// The kind of resource that the binding provides.
 	Type param.Field[BindingItemWorkersBindingKindR2BucketType] `json:"type,required"`
 }
 
@@ -3634,7 +1988,8 @@ type BindingItemWorkersBindingKindSecretTextParam struct {
 	// A JavaScript variable name for the binding.
 	Name param.Field[string] `json:"name,required"`
 	// The secret value to use.
-	Text param.Field[string]                                      `json:"text,required"`
+	Text param.Field[string] `json:"text,required"`
+	// The kind of resource that the binding provides.
 	Type param.Field[BindingItemWorkersBindingKindSecretTextType] `json:"type,required"`
 }
 
@@ -3650,8 +2005,9 @@ type BindingItemWorkersBindingKindServiceParam struct {
 	// A JavaScript variable name for the binding.
 	Name param.Field[string] `json:"name,required"`
 	// Name of Worker to bind to.
-	Service param.Field[string]                                   `json:"service,required"`
-	Type    param.Field[BindingItemWorkersBindingKindServiceType] `json:"type,required"`
+	Service param.Field[string] `json:"service,required"`
+	// The kind of resource that the binding provides.
+	Type param.Field[BindingItemWorkersBindingKindServiceType] `json:"type,required"`
 }
 
 func (r BindingItemWorkersBindingKindServiceParam) MarshalJSON() (data []byte, err error) {
@@ -3664,8 +2020,9 @@ type BindingItemWorkersBindingKindTailConsumerParam struct {
 	// A JavaScript variable name for the binding.
 	Name param.Field[string] `json:"name,required"`
 	// Name of Tail Worker to bind to.
-	Service param.Field[string]                                        `json:"service,required"`
-	Type    param.Field[BindingItemWorkersBindingKindTailConsumerType] `json:"type,required"`
+	Service param.Field[string] `json:"service,required"`
+	// The kind of resource that the binding provides.
+	Type param.Field[BindingItemWorkersBindingKindTailConsumerType] `json:"type,required"`
 }
 
 func (r BindingItemWorkersBindingKindTailConsumerParam) MarshalJSON() (data []byte, err error) {
@@ -3678,7 +2035,8 @@ type BindingItemWorkersBindingKindVectorizeParam struct {
 	// Name of the Vectorize index to bind to.
 	IndexName param.Field[string] `json:"index_name,required"`
 	// A JavaScript variable name for the binding.
-	Name param.Field[string]                                     `json:"name,required"`
+	Name param.Field[string] `json:"name,required"`
+	// The kind of resource that the binding provides.
 	Type param.Field[BindingItemWorkersBindingKindVectorizeType] `json:"type,required"`
 }
 
@@ -3690,7 +2048,8 @@ func (r BindingItemWorkersBindingKindVectorizeParam) implementsBindingItemUnionP
 
 type BindingItemWorkersBindingKindVersionMetadataParam struct {
 	// A JavaScript variable name for the binding.
-	Name param.Field[string]                                           `json:"name,required"`
+	Name param.Field[string] `json:"name,required"`
+	// The kind of resource that the binding provides.
 	Type param.Field[BindingItemWorkersBindingKindVersionMetadataType] `json:"type,required"`
 }
 
@@ -3700,10 +2059,76 @@ func (r BindingItemWorkersBindingKindVersionMetadataParam) MarshalJSON() (data [
 
 func (r BindingItemWorkersBindingKindVersionMetadataParam) implementsBindingItemUnionParam() {}
 
+type BindingItemWorkersBindingKindSecretsStoreSecretParam struct {
+	// A JavaScript variable name for the binding.
+	Name param.Field[string] `json:"name,required"`
+	// Name of the secret in the store.
+	SecretName param.Field[string] `json:"secret_name,required"`
+	// ID of the store containing the secret.
+	StoreID param.Field[string] `json:"store_id,required"`
+	// The kind of resource that the binding provides.
+	Type param.Field[BindingItemWorkersBindingKindSecretsStoreSecretType] `json:"type,required"`
+}
+
+func (r BindingItemWorkersBindingKindSecretsStoreSecretParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r BindingItemWorkersBindingKindSecretsStoreSecretParam) implementsBindingItemUnionParam() {}
+
+type BindingItemWorkersBindingKindSecretKeyParam struct {
+	// Algorithm-specific key parameters.
+	// [Learn more](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/importKey#algorithm).
+	Algorithm param.Field[interface{}] `json:"algorithm,required"`
+	// Data format of the key.
+	// [Learn more](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/importKey#format).
+	Format param.Field[BindingItemWorkersBindingKindSecretKeyFormat] `json:"format,required"`
+	// A JavaScript variable name for the binding.
+	Name param.Field[string] `json:"name,required"`
+	// The kind of resource that the binding provides.
+	Type param.Field[BindingItemWorkersBindingKindSecretKeyType] `json:"type,required"`
+	// Allowed operations with the key.
+	// [Learn more](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/importKey#keyUsages).
+	Usages param.Field[[]BindingItemWorkersBindingKindSecretKeyUsage] `json:"usages,required"`
+	// Base64-encoded key data. Required if `format` is "raw", "pkcs8", or "spki".
+	KeyBase64 param.Field[string] `json:"key_base64"`
+	// Key data in
+	// [JSON Web Key](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/importKey#json_web_key)
+	// format. Required if `format` is "jwk".
+	KeyJwk param.Field[interface{}] `json:"key_jwk"`
+}
+
+func (r BindingItemWorkersBindingKindSecretKeyParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r BindingItemWorkersBindingKindSecretKeyParam) implementsBindingItemUnionParam() {}
+
+type BindingItemWorkersBindingKindWorkflowParam struct {
+	// A JavaScript variable name for the binding.
+	Name param.Field[string] `json:"name,required"`
+	// The kind of resource that the binding provides.
+	Type param.Field[BindingItemWorkersBindingKindWorkflowType] `json:"type,required"`
+	// Name of the Workflow to bind to.
+	WorkflowName param.Field[string] `json:"workflow_name,required"`
+	// Class name of the Workflow. Should only be provided if the Workflow belongs to
+	// this script.
+	ClassName param.Field[string] `json:"class_name"`
+	// Script name that contains the Workflow. If not provided, defaults to this script
+	// name.
+	ScriptName param.Field[string] `json:"script_name"`
+}
+
+func (r BindingItemWorkersBindingKindWorkflowParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r BindingItemWorkersBindingKindWorkflowParam) implementsBindingItemUnionParam() {}
+
 type UploadSessionObjectParam struct {
 	// A manifest ([path]: {hash, size}) map of files to upload. As an example,
 	// `/blog/hello-world.html` would be a valid path key.
-	Manifest param.Field[map[string]UploadSessionObjectManifestParam] `json:"manifest"`
+	Manifest param.Field[map[string]UploadSessionObjectManifestParam] `json:"manifest,required"`
 }
 
 func (r UploadSessionObjectParam) MarshalJSON() (data []byte, err error) {
@@ -3712,9 +2137,9 @@ func (r UploadSessionObjectParam) MarshalJSON() (data []byte, err error) {
 
 type UploadSessionObjectManifestParam struct {
 	// The hash of the file.
-	Hash param.Field[string] `json:"hash"`
+	Hash param.Field[string] `json:"hash,required"`
 	// The size of the file in bytes.
-	Size param.Field[int64] `json:"size"`
+	Size param.Field[int64] `json:"size,required"`
 }
 
 func (r UploadSessionObjectManifestParam) MarshalJSON() (data []byte, err error) {
@@ -3722,14 +2147,20 @@ func (r UploadSessionObjectManifestParam) MarshalJSON() (data []byte, err error)
 }
 
 type UploadSessionResponse struct {
-	Result UploadSessionResponseResult `json:"result"`
-	JSON   uploadSessionResponseJSON   `json:"-"`
-	CommonResponseWorkers
+	Errors   []WorkersMessages `json:"errors,required"`
+	Messages []WorkersMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success UploadSessionResponseSuccess `json:"success,required"`
+	Result  UploadSessionResponseResult  `json:"result"`
+	JSON    uploadSessionResponseJSON    `json:"-"`
 }
 
 // uploadSessionResponseJSON contains the JSON metadata for the struct
 // [UploadSessionResponse]
 type uploadSessionResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -3741,6 +2172,21 @@ func (r *UploadSessionResponse) UnmarshalJSON(data []byte) (err error) {
 
 func (r uploadSessionResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type UploadSessionResponseSuccess bool
+
+const (
+	UploadSessionResponseSuccessTrue UploadSessionResponseSuccess = true
+)
+
+func (r UploadSessionResponseSuccess) IsKnown() bool {
+	switch r {
+	case UploadSessionResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type UploadSessionResponseResult struct {
@@ -3769,16 +2215,22 @@ func (r uploadSessionResponseResultJSON) RawJSON() string {
 }
 
 type AccountWorkerDispatchNamespaceScriptGetResponse struct {
+	Errors   []WorkersMessages `json:"errors,required"`
+	Messages []WorkersMessages `json:"messages,required"`
 	// Details about a worker uploaded to a Workers for Platforms namespace.
-	Result AccountWorkerDispatchNamespaceScriptGetResponseResult `json:"result"`
-	JSON   accountWorkerDispatchNamespaceScriptGetResponseJSON   `json:"-"`
-	CommonResponseWorkers
+	Result AccountWorkerDispatchNamespaceScriptGetResponseResult `json:"result,required"`
+	// Whether the API call was successful.
+	Success AccountWorkerDispatchNamespaceScriptGetResponseSuccess `json:"success,required"`
+	JSON    accountWorkerDispatchNamespaceScriptGetResponseJSON    `json:"-"`
 }
 
 // accountWorkerDispatchNamespaceScriptGetResponseJSON contains the JSON metadata
 // for the struct [AccountWorkerDispatchNamespaceScriptGetResponse]
 type accountWorkerDispatchNamespaceScriptGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -3822,20 +2274,41 @@ func (r accountWorkerDispatchNamespaceScriptGetResponseResultJSON) RawJSON() str
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountWorkerDispatchNamespaceScriptGetResponseSuccess bool
+
+const (
+	AccountWorkerDispatchNamespaceScriptGetResponseSuccessTrue AccountWorkerDispatchNamespaceScriptGetResponseSuccess = true
+)
+
+func (r AccountWorkerDispatchNamespaceScriptGetResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountWorkerDispatchNamespaceScriptGetResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountWorkerDispatchNamespaceScriptGetBindingsResponse struct {
+	Errors   []WorkersMessages `json:"errors,required"`
+	Messages []WorkersMessages `json:"messages,required"`
 	// List of bindings attached to a Worker. You can find more about bindings on our
 	// docs:
 	// https://developers.cloudflare.com/workers/configuration/multipart-upload-metadata/#bindings.
-	Result []BindingItem                                               `json:"result"`
-	JSON   accountWorkerDispatchNamespaceScriptGetBindingsResponseJSON `json:"-"`
-	CommonResponseWorkers
+	Result []BindingItem `json:"result,required"`
+	// Whether the API call was successful.
+	Success AccountWorkerDispatchNamespaceScriptGetBindingsResponseSuccess `json:"success,required"`
+	JSON    accountWorkerDispatchNamespaceScriptGetBindingsResponseJSON    `json:"-"`
 }
 
 // accountWorkerDispatchNamespaceScriptGetBindingsResponseJSON contains the JSON
 // metadata for the struct
 // [AccountWorkerDispatchNamespaceScriptGetBindingsResponse]
 type accountWorkerDispatchNamespaceScriptGetBindingsResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -3848,14 +2321,37 @@ func (r accountWorkerDispatchNamespaceScriptGetBindingsResponseJSON) RawJSON() s
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountWorkerDispatchNamespaceScriptGetBindingsResponseSuccess bool
+
+const (
+	AccountWorkerDispatchNamespaceScriptGetBindingsResponseSuccessTrue AccountWorkerDispatchNamespaceScriptGetBindingsResponseSuccess = true
+)
+
+func (r AccountWorkerDispatchNamespaceScriptGetBindingsResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountWorkerDispatchNamespaceScriptGetBindingsResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountWorkerDispatchNamespaceScriptUploadResponse struct {
-	JSON accountWorkerDispatchNamespaceScriptUploadResponseJSON `json:"-"`
-	APIResponseSingleWorkers
+	Errors   []WorkersMessages                                        `json:"errors,required"`
+	Messages []WorkersMessages                                        `json:"messages,required"`
+	Result   AccountWorkerDispatchNamespaceScriptUploadResponseResult `json:"result,required"`
+	// Whether the API call was successful.
+	Success AccountWorkerDispatchNamespaceScriptUploadResponseSuccess `json:"success,required"`
+	JSON    accountWorkerDispatchNamespaceScriptUploadResponseJSON    `json:"-"`
 }
 
 // accountWorkerDispatchNamespaceScriptUploadResponseJSON contains the JSON
 // metadata for the struct [AccountWorkerDispatchNamespaceScriptUploadResponse]
 type accountWorkerDispatchNamespaceScriptUploadResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -3868,16 +2364,149 @@ func (r accountWorkerDispatchNamespaceScriptUploadResponseJSON) RawJSON() string
 	return r.raw
 }
 
+type AccountWorkerDispatchNamespaceScriptUploadResponseResult struct {
+	StartupTimeMs int64 `json:"startup_time_ms,required"`
+	// The id of the script in the Workers system. Usually the script name.
+	ID string `json:"id"`
+	// When the script was created.
+	CreatedOn time.Time `json:"created_on" format:"date-time"`
+	// Hashed script content, can be used in a If-None-Match header when updating.
+	Etag string `json:"etag"`
+	// Whether a Worker contains assets.
+	HasAssets bool `json:"has_assets"`
+	// Whether a Worker contains modules.
+	HasModules bool `json:"has_modules"`
+	// Whether Logpush is turned on for the Worker.
+	Logpush bool `json:"logpush"`
+	// When the script was last modified.
+	ModifiedOn time.Time `json:"modified_on" format:"date-time"`
+	// Configuration for
+	// [Smart Placement](https://developers.cloudflare.com/workers/configuration/smart-placement).
+	Placement AccountWorkerDispatchNamespaceScriptUploadResponseResultPlacement `json:"placement"`
+	// Deprecated: deprecated
+	PlacementMode AccountWorkerDispatchNamespaceScriptUploadResponseResultPlacementMode `json:"placement_mode"`
+	// Deprecated: deprecated
+	PlacementStatus AccountWorkerDispatchNamespaceScriptUploadResponseResultPlacementStatus `json:"placement_status"`
+	// List of Workers that will consume logs from the attached Worker.
+	TailConsumers []TailConsumersScript `json:"tail_consumers"`
+	// Usage model for the Worker invocations.
+	UsageModel UsageModel                                                   `json:"usage_model"`
+	JSON       accountWorkerDispatchNamespaceScriptUploadResponseResultJSON `json:"-"`
+}
+
+// accountWorkerDispatchNamespaceScriptUploadResponseResultJSON contains the JSON
+// metadata for the struct
+// [AccountWorkerDispatchNamespaceScriptUploadResponseResult]
+type accountWorkerDispatchNamespaceScriptUploadResponseResultJSON struct {
+	StartupTimeMs   apijson.Field
+	ID              apijson.Field
+	CreatedOn       apijson.Field
+	Etag            apijson.Field
+	HasAssets       apijson.Field
+	HasModules      apijson.Field
+	Logpush         apijson.Field
+	ModifiedOn      apijson.Field
+	Placement       apijson.Field
+	PlacementMode   apijson.Field
+	PlacementStatus apijson.Field
+	TailConsumers   apijson.Field
+	UsageModel      apijson.Field
+	raw             string
+	ExtraFields     map[string]apijson.Field
+}
+
+func (r *AccountWorkerDispatchNamespaceScriptUploadResponseResult) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountWorkerDispatchNamespaceScriptUploadResponseResultJSON) RawJSON() string {
+	return r.raw
+}
+
+// Configuration for
+// [Smart Placement](https://developers.cloudflare.com/workers/configuration/smart-placement).
+type AccountWorkerDispatchNamespaceScriptUploadResponseResultPlacement struct {
+	// The last time the script was analyzed for
+	// [Smart Placement](https://developers.cloudflare.com/workers/configuration/smart-placement).
+	LastAnalyzedAt time.Time `json:"last_analyzed_at" format:"date-time"`
+	// Enables
+	// [Smart Placement](https://developers.cloudflare.com/workers/configuration/smart-placement).
+	Mode PlacementMode `json:"mode"`
+	// Status of
+	// [Smart Placement](https://developers.cloudflare.com/workers/configuration/smart-placement).
+	Status PlacementStatus                                                       `json:"status"`
+	JSON   accountWorkerDispatchNamespaceScriptUploadResponseResultPlacementJSON `json:"-"`
+}
+
+// accountWorkerDispatchNamespaceScriptUploadResponseResultPlacementJSON contains
+// the JSON metadata for the struct
+// [AccountWorkerDispatchNamespaceScriptUploadResponseResultPlacement]
+type accountWorkerDispatchNamespaceScriptUploadResponseResultPlacementJSON struct {
+	LastAnalyzedAt apijson.Field
+	Mode           apijson.Field
+	Status         apijson.Field
+	raw            string
+	ExtraFields    map[string]apijson.Field
+}
+
+func (r *AccountWorkerDispatchNamespaceScriptUploadResponseResultPlacement) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountWorkerDispatchNamespaceScriptUploadResponseResultPlacementJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountWorkerDispatchNamespaceScriptUploadResponseResultPlacementMode string
+
+const (
+	AccountWorkerDispatchNamespaceScriptUploadResponseResultPlacementModeSmart AccountWorkerDispatchNamespaceScriptUploadResponseResultPlacementMode = "smart"
+)
+
+func (r AccountWorkerDispatchNamespaceScriptUploadResponseResultPlacementMode) IsKnown() bool {
+	switch r {
+	case AccountWorkerDispatchNamespaceScriptUploadResponseResultPlacementModeSmart:
+		return true
+	}
+	return false
+}
+
+type AccountWorkerDispatchNamespaceScriptUploadResponseResultPlacementStatus string
+
+const (
+	AccountWorkerDispatchNamespaceScriptUploadResponseResultPlacementStatusSuccess                 AccountWorkerDispatchNamespaceScriptUploadResponseResultPlacementStatus = "SUCCESS"
+	AccountWorkerDispatchNamespaceScriptUploadResponseResultPlacementStatusUnsupportedApplication  AccountWorkerDispatchNamespaceScriptUploadResponseResultPlacementStatus = "UNSUPPORTED_APPLICATION"
+	AccountWorkerDispatchNamespaceScriptUploadResponseResultPlacementStatusInsufficientInvocations AccountWorkerDispatchNamespaceScriptUploadResponseResultPlacementStatus = "INSUFFICIENT_INVOCATIONS"
+)
+
+func (r AccountWorkerDispatchNamespaceScriptUploadResponseResultPlacementStatus) IsKnown() bool {
+	switch r {
+	case AccountWorkerDispatchNamespaceScriptUploadResponseResultPlacementStatusSuccess, AccountWorkerDispatchNamespaceScriptUploadResponseResultPlacementStatusUnsupportedApplication, AccountWorkerDispatchNamespaceScriptUploadResponseResultPlacementStatusInsufficientInvocations:
+		return true
+	}
+	return false
+}
+
+// Whether the API call was successful.
+type AccountWorkerDispatchNamespaceScriptUploadResponseSuccess bool
+
+const (
+	AccountWorkerDispatchNamespaceScriptUploadResponseSuccessTrue AccountWorkerDispatchNamespaceScriptUploadResponseSuccess = true
+)
+
+func (r AccountWorkerDispatchNamespaceScriptUploadResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountWorkerDispatchNamespaceScriptUploadResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountWorkerDispatchNamespaceScriptDeleteParams struct {
-	Body interface{} `json:"body,required"`
 	// If set to true, delete will not be stopped by associated service binding,
 	// durable object, or other binding. Any of these associated bindings/durable
 	// objects will be deleted along with the script.
 	Force param.Field[bool] `query:"force"`
-}
-
-func (r AccountWorkerDispatchNamespaceScriptDeleteParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
 }
 
 // URLQuery serializes [AccountWorkerDispatchNamespaceScriptDeleteParams]'s query
@@ -3900,15 +2529,33 @@ func (r AccountWorkerDispatchNamespaceScriptNewAssetsUploadSessionParams) Marsha
 type AccountWorkerDispatchNamespaceScriptUploadParams struct {
 	// JSON encoded metadata about the uploaded parts and Worker configuration.
 	Metadata param.Field[AccountWorkerDispatchNamespaceScriptUploadParamsMetadata] `json:"metadata,required"`
+	// An array of modules (often JavaScript files) comprising a Worker script. At
+	// least one module must be present and referenced in the metadata as `main_module`
+	// or `body_part` by filename.<br/>Possible Content-Type(s) are:
+	// `application/javascript+module`, `text/javascript+module`,
+	// `application/javascript`, `text/javascript`, `application/wasm`, `text/plain`,
+	// `application/octet-stream`, `application/source-map`.
+	Files param.Field[[]io.Reader] `json:"files" format:"binary"`
 }
 
-func (r AccountWorkerDispatchNamespaceScriptUploadParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+func (r AccountWorkerDispatchNamespaceScriptUploadParams) MarshalMultipart() (data []byte, contentType string, err error) {
+	buf := bytes.NewBuffer(nil)
+	writer := multipart.NewWriter(buf)
+	err = apiform.MarshalRoot(r, writer)
+	if err != nil {
+		writer.Close()
+		return nil, "", err
+	}
+	err = writer.Close()
+	if err != nil {
+		return nil, "", err
+	}
+	return buf.Bytes(), writer.FormDataContentType(), nil
 }
 
 // JSON encoded metadata about the uploaded parts and Worker configuration.
 type AccountWorkerDispatchNamespaceScriptUploadParamsMetadata struct {
-	// Configuration for assets within a Worker
+	// Configuration for assets within a Worker.
 	Assets param.Field[AccountWorkerDispatchNamespaceScriptUploadParamsMetadataAssets] `json:"assets"`
 	// List of bindings attached to a Worker. You can find more about bindings on our
 	// docs:
@@ -3954,7 +2601,7 @@ func (r AccountWorkerDispatchNamespaceScriptUploadParamsMetadata) MarshalJSON() 
 	return apijson.MarshalRoot(r)
 }
 
-// Configuration for assets within a Worker
+// Configuration for assets within a Worker.
 type AccountWorkerDispatchNamespaceScriptUploadParamsMetadataAssets struct {
 	// Configuration for assets within a Worker.
 	Config param.Field[AccountWorkerDispatchNamespaceScriptUploadParamsMetadataAssetsConfig] `json:"config"`
@@ -3969,19 +2616,21 @@ func (r AccountWorkerDispatchNamespaceScriptUploadParamsMetadataAssets) MarshalJ
 // Configuration for assets within a Worker.
 type AccountWorkerDispatchNamespaceScriptUploadParamsMetadataAssetsConfig struct {
 	// The contents of a \_headers file (used to attach custom headers on asset
-	// responses)
+	// responses).
 	Headers param.Field[string] `json:"_headers"`
 	// The contents of a \_redirects file (used to apply redirects or proxy paths ahead
-	// of asset serving)
+	// of asset serving).
 	Redirects param.Field[string] `json:"_redirects"`
 	// Determines the redirects and rewrites of requests for HTML content.
 	HTMLHandling param.Field[AccountWorkerDispatchNamespaceScriptUploadParamsMetadataAssetsConfigHTMLHandling] `json:"html_handling"`
 	// Determines the response when a request does not match a static asset, and there
 	// is no Worker script.
 	NotFoundHandling param.Field[AccountWorkerDispatchNamespaceScriptUploadParamsMetadataAssetsConfigNotFoundHandling] `json:"not_found_handling"`
-	// When true, requests will always invoke the Worker script. Otherwise, attempt to
-	// serve an asset matching the request, falling back to the Worker script.
-	RunWorkerFirst param.Field[bool] `json:"run_worker_first"`
+	// Contains a list path rules to control routing to either the Worker or assets.
+	// Glob (\*) and negative (!) rules are supported. Rules must start with either '/'
+	// or '!/'. At least one non-negative rule must be provided, and negative rules
+	// have higher precedence than non-negative rules.
+	RunWorkerFirst param.Field[AccountWorkerDispatchNamespaceScriptUploadParamsMetadataAssetsConfigRunWorkerFirstUnion] `json:"run_worker_first"`
 	// When true and the incoming request matches an asset, that will be served instead
 	// of invoking the Worker script. When false, requests will always invoke the
 	// Worker script.
@@ -4030,19 +2679,73 @@ func (r AccountWorkerDispatchNamespaceScriptUploadParamsMetadataAssetsConfigNotF
 	return false
 }
 
+// Contains a list path rules to control routing to either the Worker or assets.
+// Glob (\*) and negative (!) rules are supported. Rules must start with either '/'
+// or '!/'. At least one non-negative rule must be provided, and negative rules
+// have higher precedence than non-negative rules.
+//
+// Satisfied by
+// [AccountWorkerDispatchNamespaceScriptUploadParamsMetadataAssetsConfigRunWorkerFirstArray],
+// [shared.UnionBool].
+type AccountWorkerDispatchNamespaceScriptUploadParamsMetadataAssetsConfigRunWorkerFirstUnion interface {
+	ImplementsAccountWorkerDispatchNamespaceScriptUploadParamsMetadataAssetsConfigRunWorkerFirstUnion()
+}
+
+type AccountWorkerDispatchNamespaceScriptUploadParamsMetadataAssetsConfigRunWorkerFirstArray []string
+
+func (r AccountWorkerDispatchNamespaceScriptUploadParamsMetadataAssetsConfigRunWorkerFirstArray) ImplementsAccountWorkerDispatchNamespaceScriptUploadParamsMetadataAssetsConfigRunWorkerFirstUnion() {
+}
+
+// Migrations to apply for Durable Objects associated with this Worker.
+type AccountWorkerDispatchNamespaceScriptUploadParamsMetadataMigrations struct {
+	DeletedClasses   param.Field[interface{}] `json:"deleted_classes"`
+	NewClasses       param.Field[interface{}] `json:"new_classes"`
+	NewSqliteClasses param.Field[interface{}] `json:"new_sqlite_classes"`
+	// Tag to set as the latest migration tag.
+	NewTag param.Field[string] `json:"new_tag"`
+	// Tag used to verify against the latest migration tag for this Worker. If they
+	// don't match, the upload is rejected.
+	OldTag             param.Field[string]      `json:"old_tag"`
+	RenamedClasses     param.Field[interface{}] `json:"renamed_classes"`
+	Steps              param.Field[interface{}] `json:"steps"`
+	TransferredClasses param.Field[interface{}] `json:"transferred_classes"`
+}
+
+func (r AccountWorkerDispatchNamespaceScriptUploadParamsMetadataMigrations) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r AccountWorkerDispatchNamespaceScriptUploadParamsMetadataMigrations) implementsAccountWorkerDispatchNamespaceScriptUploadParamsMetadataMigrationsUnion() {
+}
+
 // Migrations to apply for Durable Objects associated with this Worker.
 //
 // Satisfied by
 // [AccountWorkerDispatchNamespaceScriptUploadParamsMetadataMigrationsWorkersSingleStepMigrations],
-// [AccountWorkerDispatchNamespaceScriptUploadParamsMetadataMigrationsWorkersMultipleStepMigrations].
+// [AccountWorkerDispatchNamespaceScriptUploadParamsMetadataMigrationsWorkersMultipleStepMigrations],
+// [AccountWorkerDispatchNamespaceScriptUploadParamsMetadataMigrations].
 type AccountWorkerDispatchNamespaceScriptUploadParamsMetadataMigrationsUnion interface {
 	implementsAccountWorkerDispatchNamespaceScriptUploadParamsMetadataMigrationsUnion()
 }
 
 // A single set of migrations to apply.
 type AccountWorkerDispatchNamespaceScriptUploadParamsMetadataMigrationsWorkersSingleStepMigrations struct {
-	MigrationTagConditionsParam
-	MigrationStepParam
+	// A list of classes to delete Durable Object namespaces from.
+	DeletedClasses param.Field[[]string] `json:"deleted_classes"`
+	// A list of classes to create Durable Object namespaces from.
+	NewClasses param.Field[[]string] `json:"new_classes"`
+	// A list of classes to create Durable Object namespaces with SQLite from.
+	NewSqliteClasses param.Field[[]string] `json:"new_sqlite_classes"`
+	// Tag to set as the latest migration tag.
+	NewTag param.Field[string] `json:"new_tag"`
+	// Tag used to verify against the latest migration tag for this Worker. If they
+	// don't match, the upload is rejected.
+	OldTag param.Field[string] `json:"old_tag"`
+	// A list of classes with Durable Object namespaces that were renamed.
+	RenamedClasses param.Field[[]AccountWorkerDispatchNamespaceScriptUploadParamsMetadataMigrationsWorkersSingleStepMigrationsRenamedClass] `json:"renamed_classes"`
+	// A list of transfers for Durable Object namespaces from a different Worker and
+	// class to a class defined in this Worker.
+	TransferredClasses param.Field[[]AccountWorkerDispatchNamespaceScriptUploadParamsMetadataMigrationsWorkersSingleStepMigrationsTransferredClass] `json:"transferred_classes"`
 }
 
 func (r AccountWorkerDispatchNamespaceScriptUploadParamsMetadataMigrationsWorkersSingleStepMigrations) MarshalJSON() (data []byte, err error) {
@@ -4052,10 +2755,33 @@ func (r AccountWorkerDispatchNamespaceScriptUploadParamsMetadataMigrationsWorker
 func (r AccountWorkerDispatchNamespaceScriptUploadParamsMetadataMigrationsWorkersSingleStepMigrations) implementsAccountWorkerDispatchNamespaceScriptUploadParamsMetadataMigrationsUnion() {
 }
 
+type AccountWorkerDispatchNamespaceScriptUploadParamsMetadataMigrationsWorkersSingleStepMigrationsRenamedClass struct {
+	From param.Field[string] `json:"from"`
+	To   param.Field[string] `json:"to"`
+}
+
+func (r AccountWorkerDispatchNamespaceScriptUploadParamsMetadataMigrationsWorkersSingleStepMigrationsRenamedClass) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type AccountWorkerDispatchNamespaceScriptUploadParamsMetadataMigrationsWorkersSingleStepMigrationsTransferredClass struct {
+	From       param.Field[string] `json:"from"`
+	FromScript param.Field[string] `json:"from_script"`
+	To         param.Field[string] `json:"to"`
+}
+
+func (r AccountWorkerDispatchNamespaceScriptUploadParamsMetadataMigrationsWorkersSingleStepMigrationsTransferredClass) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
 type AccountWorkerDispatchNamespaceScriptUploadParamsMetadataMigrationsWorkersMultipleStepMigrations struct {
+	// Tag to set as the latest migration tag.
+	NewTag param.Field[string] `json:"new_tag"`
+	// Tag used to verify against the latest migration tag for this Worker. If they
+	// don't match, the upload is rejected.
+	OldTag param.Field[string] `json:"old_tag"`
 	// Migrations to apply in order.
 	Steps param.Field[[]MigrationStepParam] `json:"steps"`
-	MigrationTagConditionsParam
 }
 
 func (r AccountWorkerDispatchNamespaceScriptUploadParamsMetadataMigrationsWorkersMultipleStepMigrations) MarshalJSON() (data []byte, err error) {

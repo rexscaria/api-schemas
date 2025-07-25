@@ -29,7 +29,7 @@ func TestAccountRoleGet(t *testing.T) {
 	)
 	_, err := client.Accounts.Roles.Get(
 		context.TODO(),
-		"eb78d65290b24279ba6f44721b3ea3c4",
+		"023e105f4ecef8ad9ca31a8372d0c353",
 		"3536bcfad5faccb999b47003c79917fb",
 	)
 	if err != nil {
@@ -57,7 +57,7 @@ func TestAccountRoleListWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Accounts.Roles.List(
 		context.TODO(),
-		"eb78d65290b24279ba6f44721b3ea3c4",
+		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.AccountRoleListParams{
 			Page:    cfrex.F(1.000000),
 			PerPage: cfrex.F(5.000000),

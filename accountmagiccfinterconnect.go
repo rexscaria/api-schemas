@@ -92,73 +92,6 @@ func (r *AccountMagicCfInterconnectService) List(ctx context.Context, accountID 
 	return
 }
 
-type MagicAPIResponseSingle struct {
-	Errors   []MagicMessageItem                `json:"errors,required"`
-	Messages []MagicMessageItem                `json:"messages,required"`
-	Result   MagicAPIResponseSingleResultUnion `json:"result,required"`
-	// Whether the API call was successful
-	Success MagicAPIResponseSingleSuccess `json:"success,required"`
-	JSON    magicAPIResponseSingleJSON    `json:"-"`
-}
-
-// magicAPIResponseSingleJSON contains the JSON metadata for the struct
-// [MagicAPIResponseSingle]
-type magicAPIResponseSingleJSON struct {
-	Errors      apijson.Field
-	Messages    apijson.Field
-	Result      apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *MagicAPIResponseSingle) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r magicAPIResponseSingleJSON) RawJSON() string {
-	return r.raw
-}
-
-// Union satisfied by [MagicAPIResponseSingleResultArray] or [shared.UnionString].
-type MagicAPIResponseSingleResultUnion interface {
-	ImplementsMagicAPIResponseSingleResultUnion()
-}
-
-func init() {
-	apijson.RegisterUnion(
-		reflect.TypeOf((*MagicAPIResponseSingleResultUnion)(nil)).Elem(),
-		"",
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(MagicAPIResponseSingleResultArray{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.String,
-			Type:       reflect.TypeOf(shared.UnionString("")),
-		},
-	)
-}
-
-type MagicAPIResponseSingleResultArray []interface{}
-
-func (r MagicAPIResponseSingleResultArray) ImplementsMagicAPIResponseSingleResultUnion() {}
-
-// Whether the API call was successful
-type MagicAPIResponseSingleSuccess bool
-
-const (
-	MagicAPIResponseSingleSuccessTrue MagicAPIResponseSingleSuccess = true
-)
-
-func (r MagicAPIResponseSingleSuccess) IsKnown() bool {
-	switch r {
-	case MagicAPIResponseSingleSuccessTrue:
-		return true
-	}
-	return false
-}
-
 // The configuration specific to GRE interconnects.
 type MagicGre struct {
 	// The IP address assigned to the Cloudflare side of the GRE tunnel created as part
@@ -382,7 +315,7 @@ func (r MagicHealthCheckBaseTargetMagicHealthCheckTargetParam) ImplementsMagicHe
 }
 
 type MagicInterconnect struct {
-	// Tunnel identifier tag.
+	// Identifier
 	ID string `json:"id"`
 	// The name of the interconnect. The name cannot share a name with other tunnels.
 	ColoName string `json:"colo_name"`
@@ -433,15 +366,21 @@ func (r magicInterconnectJSON) RawJSON() string {
 }
 
 type AccountMagicCfInterconnectGetResponse struct {
-	Result AccountMagicCfInterconnectGetResponseResult `json:"result"`
-	JSON   accountMagicCfInterconnectGetResponseJSON   `json:"-"`
-	MagicAPIResponseSingle
+	Errors   []AccountMagicCfInterconnectGetResponseError   `json:"errors,required"`
+	Messages []AccountMagicCfInterconnectGetResponseMessage `json:"messages,required"`
+	Result   AccountMagicCfInterconnectGetResponseResult    `json:"result,required"`
+	// Whether the API call was successful
+	Success AccountMagicCfInterconnectGetResponseSuccess `json:"success,required"`
+	JSON    accountMagicCfInterconnectGetResponseJSON    `json:"-"`
 }
 
 // accountMagicCfInterconnectGetResponseJSON contains the JSON metadata for the
 // struct [AccountMagicCfInterconnectGetResponse]
 type accountMagicCfInterconnectGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -451,6 +390,102 @@ func (r *AccountMagicCfInterconnectGetResponse) UnmarshalJSON(data []byte) (err 
 }
 
 func (r accountMagicCfInterconnectGetResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountMagicCfInterconnectGetResponseError struct {
+	Code             int64                                             `json:"code,required"`
+	Message          string                                            `json:"message,required"`
+	DocumentationURL string                                            `json:"documentation_url"`
+	Source           AccountMagicCfInterconnectGetResponseErrorsSource `json:"source"`
+	JSON             accountMagicCfInterconnectGetResponseErrorJSON    `json:"-"`
+}
+
+// accountMagicCfInterconnectGetResponseErrorJSON contains the JSON metadata for
+// the struct [AccountMagicCfInterconnectGetResponseError]
+type accountMagicCfInterconnectGetResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountMagicCfInterconnectGetResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountMagicCfInterconnectGetResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountMagicCfInterconnectGetResponseErrorsSource struct {
+	Pointer string                                                `json:"pointer"`
+	JSON    accountMagicCfInterconnectGetResponseErrorsSourceJSON `json:"-"`
+}
+
+// accountMagicCfInterconnectGetResponseErrorsSourceJSON contains the JSON metadata
+// for the struct [AccountMagicCfInterconnectGetResponseErrorsSource]
+type accountMagicCfInterconnectGetResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountMagicCfInterconnectGetResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountMagicCfInterconnectGetResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountMagicCfInterconnectGetResponseMessage struct {
+	Code             int64                                               `json:"code,required"`
+	Message          string                                              `json:"message,required"`
+	DocumentationURL string                                              `json:"documentation_url"`
+	Source           AccountMagicCfInterconnectGetResponseMessagesSource `json:"source"`
+	JSON             accountMagicCfInterconnectGetResponseMessageJSON    `json:"-"`
+}
+
+// accountMagicCfInterconnectGetResponseMessageJSON contains the JSON metadata for
+// the struct [AccountMagicCfInterconnectGetResponseMessage]
+type accountMagicCfInterconnectGetResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountMagicCfInterconnectGetResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountMagicCfInterconnectGetResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountMagicCfInterconnectGetResponseMessagesSource struct {
+	Pointer string                                                  `json:"pointer"`
+	JSON    accountMagicCfInterconnectGetResponseMessagesSourceJSON `json:"-"`
+}
+
+// accountMagicCfInterconnectGetResponseMessagesSourceJSON contains the JSON
+// metadata for the struct [AccountMagicCfInterconnectGetResponseMessagesSource]
+type accountMagicCfInterconnectGetResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountMagicCfInterconnectGetResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountMagicCfInterconnectGetResponseMessagesSourceJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -475,16 +510,37 @@ func (r accountMagicCfInterconnectGetResponseResultJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful
+type AccountMagicCfInterconnectGetResponseSuccess bool
+
+const (
+	AccountMagicCfInterconnectGetResponseSuccessTrue AccountMagicCfInterconnectGetResponseSuccess = true
+)
+
+func (r AccountMagicCfInterconnectGetResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountMagicCfInterconnectGetResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountMagicCfInterconnectUpdateResponse struct {
-	Result AccountMagicCfInterconnectUpdateResponseResult `json:"result"`
-	JSON   accountMagicCfInterconnectUpdateResponseJSON   `json:"-"`
-	MagicAPIResponseSingle
+	Errors   []AccountMagicCfInterconnectUpdateResponseError   `json:"errors,required"`
+	Messages []AccountMagicCfInterconnectUpdateResponseMessage `json:"messages,required"`
+	Result   AccountMagicCfInterconnectUpdateResponseResult    `json:"result,required"`
+	// Whether the API call was successful
+	Success AccountMagicCfInterconnectUpdateResponseSuccess `json:"success,required"`
+	JSON    accountMagicCfInterconnectUpdateResponseJSON    `json:"-"`
 }
 
 // accountMagicCfInterconnectUpdateResponseJSON contains the JSON metadata for the
 // struct [AccountMagicCfInterconnectUpdateResponse]
 type accountMagicCfInterconnectUpdateResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -494,6 +550,102 @@ func (r *AccountMagicCfInterconnectUpdateResponse) UnmarshalJSON(data []byte) (e
 }
 
 func (r accountMagicCfInterconnectUpdateResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountMagicCfInterconnectUpdateResponseError struct {
+	Code             int64                                                `json:"code,required"`
+	Message          string                                               `json:"message,required"`
+	DocumentationURL string                                               `json:"documentation_url"`
+	Source           AccountMagicCfInterconnectUpdateResponseErrorsSource `json:"source"`
+	JSON             accountMagicCfInterconnectUpdateResponseErrorJSON    `json:"-"`
+}
+
+// accountMagicCfInterconnectUpdateResponseErrorJSON contains the JSON metadata for
+// the struct [AccountMagicCfInterconnectUpdateResponseError]
+type accountMagicCfInterconnectUpdateResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountMagicCfInterconnectUpdateResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountMagicCfInterconnectUpdateResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountMagicCfInterconnectUpdateResponseErrorsSource struct {
+	Pointer string                                                   `json:"pointer"`
+	JSON    accountMagicCfInterconnectUpdateResponseErrorsSourceJSON `json:"-"`
+}
+
+// accountMagicCfInterconnectUpdateResponseErrorsSourceJSON contains the JSON
+// metadata for the struct [AccountMagicCfInterconnectUpdateResponseErrorsSource]
+type accountMagicCfInterconnectUpdateResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountMagicCfInterconnectUpdateResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountMagicCfInterconnectUpdateResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountMagicCfInterconnectUpdateResponseMessage struct {
+	Code             int64                                                  `json:"code,required"`
+	Message          string                                                 `json:"message,required"`
+	DocumentationURL string                                                 `json:"documentation_url"`
+	Source           AccountMagicCfInterconnectUpdateResponseMessagesSource `json:"source"`
+	JSON             accountMagicCfInterconnectUpdateResponseMessageJSON    `json:"-"`
+}
+
+// accountMagicCfInterconnectUpdateResponseMessageJSON contains the JSON metadata
+// for the struct [AccountMagicCfInterconnectUpdateResponseMessage]
+type accountMagicCfInterconnectUpdateResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountMagicCfInterconnectUpdateResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountMagicCfInterconnectUpdateResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountMagicCfInterconnectUpdateResponseMessagesSource struct {
+	Pointer string                                                     `json:"pointer"`
+	JSON    accountMagicCfInterconnectUpdateResponseMessagesSourceJSON `json:"-"`
+}
+
+// accountMagicCfInterconnectUpdateResponseMessagesSourceJSON contains the JSON
+// metadata for the struct [AccountMagicCfInterconnectUpdateResponseMessagesSource]
+type accountMagicCfInterconnectUpdateResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountMagicCfInterconnectUpdateResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountMagicCfInterconnectUpdateResponseMessagesSourceJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -520,16 +672,37 @@ func (r accountMagicCfInterconnectUpdateResponseResultJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful
+type AccountMagicCfInterconnectUpdateResponseSuccess bool
+
+const (
+	AccountMagicCfInterconnectUpdateResponseSuccessTrue AccountMagicCfInterconnectUpdateResponseSuccess = true
+)
+
+func (r AccountMagicCfInterconnectUpdateResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountMagicCfInterconnectUpdateResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountMagicCfInterconnectListResponse struct {
-	Result AccountMagicCfInterconnectListResponseResult `json:"result"`
-	JSON   accountMagicCfInterconnectListResponseJSON   `json:"-"`
-	MagicAPIResponseSingle
+	Errors   []AccountMagicCfInterconnectListResponseError   `json:"errors,required"`
+	Messages []AccountMagicCfInterconnectListResponseMessage `json:"messages,required"`
+	Result   AccountMagicCfInterconnectListResponseResult    `json:"result,required"`
+	// Whether the API call was successful
+	Success AccountMagicCfInterconnectListResponseSuccess `json:"success,required"`
+	JSON    accountMagicCfInterconnectListResponseJSON    `json:"-"`
 }
 
 // accountMagicCfInterconnectListResponseJSON contains the JSON metadata for the
 // struct [AccountMagicCfInterconnectListResponse]
 type accountMagicCfInterconnectListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -539,6 +712,102 @@ func (r *AccountMagicCfInterconnectListResponse) UnmarshalJSON(data []byte) (err
 }
 
 func (r accountMagicCfInterconnectListResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountMagicCfInterconnectListResponseError struct {
+	Code             int64                                              `json:"code,required"`
+	Message          string                                             `json:"message,required"`
+	DocumentationURL string                                             `json:"documentation_url"`
+	Source           AccountMagicCfInterconnectListResponseErrorsSource `json:"source"`
+	JSON             accountMagicCfInterconnectListResponseErrorJSON    `json:"-"`
+}
+
+// accountMagicCfInterconnectListResponseErrorJSON contains the JSON metadata for
+// the struct [AccountMagicCfInterconnectListResponseError]
+type accountMagicCfInterconnectListResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountMagicCfInterconnectListResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountMagicCfInterconnectListResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountMagicCfInterconnectListResponseErrorsSource struct {
+	Pointer string                                                 `json:"pointer"`
+	JSON    accountMagicCfInterconnectListResponseErrorsSourceJSON `json:"-"`
+}
+
+// accountMagicCfInterconnectListResponseErrorsSourceJSON contains the JSON
+// metadata for the struct [AccountMagicCfInterconnectListResponseErrorsSource]
+type accountMagicCfInterconnectListResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountMagicCfInterconnectListResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountMagicCfInterconnectListResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountMagicCfInterconnectListResponseMessage struct {
+	Code             int64                                                `json:"code,required"`
+	Message          string                                               `json:"message,required"`
+	DocumentationURL string                                               `json:"documentation_url"`
+	Source           AccountMagicCfInterconnectListResponseMessagesSource `json:"source"`
+	JSON             accountMagicCfInterconnectListResponseMessageJSON    `json:"-"`
+}
+
+// accountMagicCfInterconnectListResponseMessageJSON contains the JSON metadata for
+// the struct [AccountMagicCfInterconnectListResponseMessage]
+type accountMagicCfInterconnectListResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountMagicCfInterconnectListResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountMagicCfInterconnectListResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountMagicCfInterconnectListResponseMessagesSource struct {
+	Pointer string                                                   `json:"pointer"`
+	JSON    accountMagicCfInterconnectListResponseMessagesSourceJSON `json:"-"`
+}
+
+// accountMagicCfInterconnectListResponseMessagesSourceJSON contains the JSON
+// metadata for the struct [AccountMagicCfInterconnectListResponseMessagesSource]
+type accountMagicCfInterconnectListResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountMagicCfInterconnectListResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountMagicCfInterconnectListResponseMessagesSourceJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -561,6 +830,21 @@ func (r *AccountMagicCfInterconnectListResponseResult) UnmarshalJSON(data []byte
 
 func (r accountMagicCfInterconnectListResponseResultJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful
+type AccountMagicCfInterconnectListResponseSuccess bool
+
+const (
+	AccountMagicCfInterconnectListResponseSuccessTrue AccountMagicCfInterconnectListResponseSuccess = true
+)
+
+func (r AccountMagicCfInterconnectListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountMagicCfInterconnectListResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountMagicCfInterconnectGetParams struct {

@@ -32,7 +32,11 @@ func TestAccountMagicSiteAppConfigNewWithOptionalParams(t *testing.T) {
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.AccountMagicSiteAppConfigNewParams{
-			Body: cfrex.AccountMagicSiteAppConfigNewParamsBody{},
+			Body: cfrex.AccountMagicSiteAppConfigNewParamsBodyAccountApp{
+				AccountAppID: cfrex.F("ac60d3d0435248289d446cedd870bcf4"),
+				Breakout:     cfrex.F(true),
+				Priority:     cfrex.F(int64(0)),
+			},
 		},
 	)
 	if err != nil {
