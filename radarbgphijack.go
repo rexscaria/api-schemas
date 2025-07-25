@@ -225,8 +225,7 @@ func (r radarBgpHijackListEventsResponseResultInfoJSON) RawJSON() string {
 type RadarBgpHijackListEventsParams struct {
 	// End of the date range (inclusive).
 	DateEnd param.Field[time.Time] `query:"dateEnd" format:"date-time"`
-	// Shorthand date ranges for the last X days - use when you don't need specific
-	// start and end dates.
+	// Filters results by date range.
 	DateRange param.Field[string] `query:"dateRange"`
 	// Start of the date range (inclusive).
 	DateStart param.Field[time.Time] `query:"dateStart" format:"date-time"`
@@ -240,9 +239,9 @@ type RadarBgpHijackListEventsParams struct {
 	InvolvedAsn param.Field[int64] `query:"involvedAsn"`
 	// The country code of the potential hijacker or victim AS of a BGP hijack event.
 	InvolvedCountry param.Field[string] `query:"involvedCountry"`
-	// The maximum confidence score to filter events (1-4 low, 5-7 mid, 8+ high).
+	// Filters events by maximum confidence score (1-4 low, 5-7 mid, 8+ high).
 	MaxConfidence param.Field[int64] `query:"maxConfidence"`
-	// The minimum confidence score to filter events (1-4 low, 5-7 mid, 8+ high).
+	// Filters events by minimum confidence score (1-4 low, 5-7 mid, 8+ high).
 	MinConfidence param.Field[int64] `query:"minConfidence"`
 	// Current page number, starting from 1.
 	Page param.Field[int64] `query:"page"`

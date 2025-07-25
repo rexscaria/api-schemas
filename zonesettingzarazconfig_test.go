@@ -78,20 +78,20 @@ func TestZoneSettingZarazConfigUpdateWithOptionalParams(t *testing.T) {
 				TrackPath:           cfrex.F("trackPath"),
 			}),
 			Tools: cfrex.F(map[string]cfrex.ZoneSettingZarazConfigUpdateParamsToolsUnion{
-				"foo": cfrex.ZoneSettingZarazConfigUpdateParamsToolsObject{
+				"foo": cfrex.ZoneSettingZarazConfigUpdateParamsToolsZarazManagedComponent{
 					BlockingTriggers: cfrex.F([]string{"string"}),
 					Component:        cfrex.F("component"),
-					DefaultFields: cfrex.F(map[string]cfrex.ZoneSettingZarazConfigUpdateParamsToolsObjectDefaultFieldsUnion{
+					DefaultFields: cfrex.F(map[string]cfrex.ZoneSettingZarazConfigUpdateParamsToolsZarazManagedComponentDefaultFieldsUnion{
 						"foo": shared.UnionString("string"),
 					}),
 					Enabled:     cfrex.F(true),
 					Name:        cfrex.F("name"),
 					Permissions: cfrex.F([]string{"string"}),
-					Settings: cfrex.F(map[string]cfrex.ZoneSettingZarazConfigUpdateParamsToolsObjectSettingsUnion{
+					Settings: cfrex.F(map[string]cfrex.ZoneSettingZarazConfigUpdateParamsToolsZarazManagedComponentSettingsUnion{
 						"foo": shared.UnionString("string"),
 					}),
-					Type: cfrex.F(cfrex.ZoneSettingZarazConfigUpdateParamsToolsObjectTypeComponent),
-					Actions: cfrex.F(map[string]cfrex.ZoneSettingZarazConfigUpdateParamsToolsObjectActions{
+					Type: cfrex.F(cfrex.ZoneSettingZarazConfigUpdateParamsToolsZarazManagedComponentTypeComponent),
+					Actions: cfrex.F(map[string]cfrex.ZoneSettingZarazConfigUpdateParamsToolsZarazManagedComponentActions{
 						"foo": {
 							ActionType:       cfrex.F("actionType"),
 							BlockingTriggers: cfrex.F([]string{"string"}),
@@ -100,7 +100,7 @@ func TestZoneSettingZarazConfigUpdateWithOptionalParams(t *testing.T) {
 						},
 					}),
 					DefaultPurpose: cfrex.F("defaultPurpose"),
-					NeoEvents: cfrex.F([]cfrex.ZoneSettingZarazConfigUpdateParamsToolsObjectNeoEvent{{
+					NeoEvents: cfrex.F([]cfrex.ZoneSettingZarazConfigUpdateParamsToolsZarazManagedComponentNeoEvent{{
 						ActionType:       cfrex.F("actionType"),
 						BlockingTriggers: cfrex.F([]string{"string"}),
 						Data:             cfrex.F[any](map[string]interface{}{}),

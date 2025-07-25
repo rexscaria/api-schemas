@@ -90,7 +90,7 @@ func (r *AccountSecondaryDNSACLService) List(ctx context.Context, accountID stri
 }
 
 // Delete ACL.
-func (r *AccountSecondaryDNSACLService) Delete(ctx context.Context, accountID string, aclID string, body AccountSecondaryDNSACLDeleteParams, opts ...option.RequestOption) (res *SchemasIDResponseSecondaryDNS, err error) {
+func (r *AccountSecondaryDNSACLService) Delete(ctx context.Context, accountID string, aclID string, opts ...option.RequestOption) (res *SchemasIDResponseSecondaryDNS, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
@@ -101,7 +101,7 @@ func (r *AccountSecondaryDNSACLService) Delete(ctx context.Context, accountID st
 		return
 	}
 	path := fmt.Sprintf("accounts/%s/secondary_dns/acls/%s", accountID, aclID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
@@ -150,150 +150,21 @@ func (r ACLParam) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-type ResponseCollectionDNSACLs struct {
-	ResultInfo ResponseCollectionDNSACLsResultInfo `json:"result_info"`
-	JSON       responseCollectionDnsacLsJSON       `json:"-"`
-	ResponseCommonACLs
-}
-
-// responseCollectionDnsacLsJSON contains the JSON metadata for the struct
-// [ResponseCollectionDNSACLs]
-type responseCollectionDnsacLsJSON struct {
-	ResultInfo  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ResponseCollectionDNSACLs) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r responseCollectionDnsacLsJSON) RawJSON() string {
-	return r.raw
-}
-
-type ResponseCollectionDNSACLsResultInfo struct {
-	// Total number of results for the requested service
-	Count float64 `json:"count"`
-	// Current page within paginated list of results
-	Page float64 `json:"page"`
-	// Number of results per page of results
-	PerPage float64 `json:"per_page"`
-	// Total results available without any search parameters
-	TotalCount float64                                 `json:"total_count"`
-	JSON       responseCollectionDnsacLsResultInfoJSON `json:"-"`
-}
-
-// responseCollectionDnsacLsResultInfoJSON contains the JSON metadata for the
-// struct [ResponseCollectionDNSACLsResultInfo]
-type responseCollectionDnsacLsResultInfoJSON struct {
-	Count       apijson.Field
-	Page        apijson.Field
-	PerPage     apijson.Field
-	TotalCount  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ResponseCollectionDNSACLsResultInfo) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r responseCollectionDnsacLsResultInfoJSON) RawJSON() string {
-	return r.raw
-}
-
-type ResponseCommonACLs struct {
-	Errors   []SecondaryDNSMessages `json:"errors,required"`
-	Messages []SecondaryDNSMessages `json:"messages,required"`
-	// Whether the API call was successful
-	Success ResponseCommonACLsSuccess `json:"success,required"`
-	JSON    responseCommonACLsJSON    `json:"-"`
-}
-
-// responseCommonACLsJSON contains the JSON metadata for the struct
-// [ResponseCommonACLs]
-type responseCommonACLsJSON struct {
-	Errors      apijson.Field
-	Messages    apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ResponseCommonACLs) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r responseCommonACLsJSON) RawJSON() string {
-	return r.raw
-}
-
-// Whether the API call was successful
-type ResponseCommonACLsSuccess bool
-
-const (
-	ResponseCommonACLsSuccessTrue ResponseCommonACLsSuccess = true
-)
-
-func (r ResponseCommonACLsSuccess) IsKnown() bool {
-	switch r {
-	case ResponseCommonACLsSuccessTrue:
-		return true
-	}
-	return false
-}
-
-type ResponseSingleACL struct {
-	Errors   []SecondaryDNSMessages `json:"errors,required"`
-	Messages []SecondaryDNSMessages `json:"messages,required"`
-	// Whether the API call was successful
-	Success ResponseSingleACLSuccess `json:"success,required"`
-	JSON    responseSingleACLJSON    `json:"-"`
-}
-
-// responseSingleACLJSON contains the JSON metadata for the struct
-// [ResponseSingleACL]
-type responseSingleACLJSON struct {
-	Errors      apijson.Field
-	Messages    apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ResponseSingleACL) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r responseSingleACLJSON) RawJSON() string {
-	return r.raw
-}
-
-// Whether the API call was successful
-type ResponseSingleACLSuccess bool
-
-const (
-	ResponseSingleACLSuccessTrue ResponseSingleACLSuccess = true
-)
-
-func (r ResponseSingleACLSuccess) IsKnown() bool {
-	switch r {
-	case ResponseSingleACLSuccessTrue:
-		return true
-	}
-	return false
-}
-
 type SchemasIDResponseSecondaryDNS struct {
-	Result SchemasIDResponseSecondaryDNSResult `json:"result"`
-	JSON   schemasIDResponseSecondaryDNSJSON   `json:"-"`
-	ResponseSingleACL
+	Errors   []SecondaryDNSMessages `json:"errors,required"`
+	Messages []SecondaryDNSMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success SchemasIDResponseSecondaryDNSSuccess `json:"success,required"`
+	Result  SchemasIDResponseSecondaryDNSResult  `json:"result"`
+	JSON    schemasIDResponseSecondaryDNSJSON    `json:"-"`
 }
 
 // schemasIDResponseSecondaryDNSJSON contains the JSON metadata for the struct
 // [SchemasIDResponseSecondaryDNS]
 type schemasIDResponseSecondaryDNSJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -305,6 +176,21 @@ func (r *SchemasIDResponseSecondaryDNS) UnmarshalJSON(data []byte) (err error) {
 
 func (r schemasIDResponseSecondaryDNSJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type SchemasIDResponseSecondaryDNSSuccess bool
+
+const (
+	SchemasIDResponseSecondaryDNSSuccessTrue SchemasIDResponseSecondaryDNSSuccess = true
+)
+
+func (r SchemasIDResponseSecondaryDNSSuccess) IsKnown() bool {
+	switch r {
+	case SchemasIDResponseSecondaryDNSSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type SchemasIDResponseSecondaryDNSResult struct {
@@ -329,14 +215,20 @@ func (r schemasIDResponseSecondaryDNSResultJSON) RawJSON() string {
 }
 
 type SchemasSecondaryDNSComponentsSingleResponse struct {
-	Result ACL                                             `json:"result"`
-	JSON   schemasSecondaryDNSComponentsSingleResponseJSON `json:"-"`
-	ResponseSingleACL
+	Errors   []SecondaryDNSMessages `json:"errors,required"`
+	Messages []SecondaryDNSMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success SchemasSecondaryDNSComponentsSingleResponseSuccess `json:"success,required"`
+	Result  ACL                                                `json:"result"`
+	JSON    schemasSecondaryDNSComponentsSingleResponseJSON    `json:"-"`
 }
 
 // schemasSecondaryDNSComponentsSingleResponseJSON contains the JSON metadata for
 // the struct [SchemasSecondaryDNSComponentsSingleResponse]
 type schemasSecondaryDNSComponentsSingleResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -350,19 +242,38 @@ func (r schemasSecondaryDNSComponentsSingleResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type SchemasSecondaryDNSComponentsSingleResponseSuccess bool
+
+const (
+	SchemasSecondaryDNSComponentsSingleResponseSuccessTrue SchemasSecondaryDNSComponentsSingleResponseSuccess = true
+)
+
+func (r SchemasSecondaryDNSComponentsSingleResponseSuccess) IsKnown() bool {
+	switch r {
+	case SchemasSecondaryDNSComponentsSingleResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type SecondaryDNSMessages struct {
-	Code    int64                    `json:"code,required"`
-	Message string                   `json:"message,required"`
-	JSON    secondaryDNSMessagesJSON `json:"-"`
+	Code             int64                      `json:"code,required"`
+	Message          string                     `json:"message,required"`
+	DocumentationURL string                     `json:"documentation_url"`
+	Source           SecondaryDNSMessagesSource `json:"source"`
+	JSON             secondaryDNSMessagesJSON   `json:"-"`
 }
 
 // secondaryDNSMessagesJSON contains the JSON metadata for the struct
 // [SecondaryDNSMessages]
 type secondaryDNSMessagesJSON struct {
-	Code        apijson.Field
-	Message     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
 }
 
 func (r *SecondaryDNSMessages) UnmarshalJSON(data []byte) (err error) {
@@ -373,16 +284,45 @@ func (r secondaryDNSMessagesJSON) RawJSON() string {
 	return r.raw
 }
 
+type SecondaryDNSMessagesSource struct {
+	Pointer string                         `json:"pointer"`
+	JSON    secondaryDNSMessagesSourceJSON `json:"-"`
+}
+
+// secondaryDNSMessagesSourceJSON contains the JSON metadata for the struct
+// [SecondaryDNSMessagesSource]
+type secondaryDNSMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *SecondaryDNSMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r secondaryDNSMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
 type AccountSecondaryDnsaclListResponse struct {
-	Result []ACL                                  `json:"result"`
-	JSON   accountSecondaryDnsaclListResponseJSON `json:"-"`
-	ResponseCollectionDNSACLs
+	Errors   []SecondaryDNSMessages `json:"errors,required"`
+	Messages []SecondaryDNSMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success    AccountSecondaryDnsaclListResponseSuccess    `json:"success,required"`
+	Result     []ACL                                        `json:"result"`
+	ResultInfo AccountSecondaryDnsaclListResponseResultInfo `json:"result_info"`
+	JSON       accountSecondaryDnsaclListResponseJSON       `json:"-"`
 }
 
 // accountSecondaryDnsaclListResponseJSON contains the JSON metadata for the struct
 // [AccountSecondaryDnsaclListResponse]
 type accountSecondaryDnsaclListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -392,6 +332,52 @@ func (r *AccountSecondaryDnsaclListResponse) UnmarshalJSON(data []byte) (err err
 }
 
 func (r accountSecondaryDnsaclListResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountSecondaryDnsaclListResponseSuccess bool
+
+const (
+	AccountSecondaryDnsaclListResponseSuccessTrue AccountSecondaryDnsaclListResponseSuccess = true
+)
+
+func (r AccountSecondaryDnsaclListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountSecondaryDnsaclListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type AccountSecondaryDnsaclListResponseResultInfo struct {
+	// Total number of results for the requested service.
+	Count float64 `json:"count"`
+	// Current page within paginated list of results.
+	Page float64 `json:"page"`
+	// Number of results per page of results.
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters.
+	TotalCount float64                                          `json:"total_count"`
+	JSON       accountSecondaryDnsaclListResponseResultInfoJSON `json:"-"`
+}
+
+// accountSecondaryDnsaclListResponseResultInfoJSON contains the JSON metadata for
+// the struct [AccountSecondaryDnsaclListResponseResultInfo]
+type accountSecondaryDnsaclListResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountSecondaryDnsaclListResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountSecondaryDnsaclListResponseResultInfoJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -416,12 +402,4 @@ type AccountSecondaryDNSACLUpdateParams struct {
 
 func (r AccountSecondaryDNSACLUpdateParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r.ACL)
-}
-
-type AccountSecondaryDNSACLDeleteParams struct {
-	Body interface{} `json:"body,required"`
-}
-
-func (r AccountSecondaryDNSACLDeleteParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
 }

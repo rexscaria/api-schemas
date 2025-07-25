@@ -47,52 +47,7 @@ func (r *AccountAIRunCfBlackForestLabService) ExecuteFlux1Schnell(ctx context.Co
 	return
 }
 
-type AccountAIRunCfBlackForestLabExecuteFlux1SchnellResponse struct {
-	Result  AccountAIRunCfBlackForestLabExecuteFlux1SchnellResponseResult `json:"result"`
-	Success bool                                                          `json:"success"`
-	JSON    accountAIRunCfBlackForestLabExecuteFlux1SchnellResponseJSON   `json:"-"`
-}
-
-// accountAIRunCfBlackForestLabExecuteFlux1SchnellResponseJSON contains the JSON
-// metadata for the struct
-// [AccountAIRunCfBlackForestLabExecuteFlux1SchnellResponse]
-type accountAIRunCfBlackForestLabExecuteFlux1SchnellResponseJSON struct {
-	Result      apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountAIRunCfBlackForestLabExecuteFlux1SchnellResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountAIRunCfBlackForestLabExecuteFlux1SchnellResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-type AccountAIRunCfBlackForestLabExecuteFlux1SchnellResponseResult struct {
-	// The generated image in Base64 format.
-	Image string                                                            `json:"image"`
-	JSON  accountAIRunCfBlackForestLabExecuteFlux1SchnellResponseResultJSON `json:"-"`
-}
-
-// accountAIRunCfBlackForestLabExecuteFlux1SchnellResponseResultJSON contains the
-// JSON metadata for the struct
-// [AccountAIRunCfBlackForestLabExecuteFlux1SchnellResponseResult]
-type accountAIRunCfBlackForestLabExecuteFlux1SchnellResponseResultJSON struct {
-	Image       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountAIRunCfBlackForestLabExecuteFlux1SchnellResponseResult) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountAIRunCfBlackForestLabExecuteFlux1SchnellResponseResultJSON) RawJSON() string {
-	return r.raw
-}
+type AccountAIRunCfBlackForestLabExecuteFlux1SchnellResponse = interface{}
 
 type AccountAIRunCfBlackForestLabExecuteFlux1SchnellParams struct {
 	// A text description of the image you want to generate.

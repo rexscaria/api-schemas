@@ -114,9 +114,6 @@ func TestAccountAddressingPrefixDelete(t *testing.T) {
 		context.TODO(),
 		"258def64c72dae45f3e4c8516e2111f2",
 		"2af39739cc4e3b5910c918468bb89828",
-		cfrex.AccountAddressingPrefixDeleteParams{
-			Body: map[string]interface{}{},
-		},
 	)
 	if err != nil {
 		var apierr *cfrex.Error

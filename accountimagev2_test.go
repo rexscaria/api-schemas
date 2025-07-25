@@ -33,6 +33,7 @@ func TestAccountImageV2ListWithOptionalParams(t *testing.T) {
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.AccountImageV2ListParams{
 			ContinuationToken: cfrex.F("continuation_token"),
+			Creator:           cfrex.F("creator"),
 			PerPage:           cfrex.F(10.000000),
 			SortOrder:         cfrex.F(cfrex.AccountImageV2ListParamsSortOrderAsc),
 		},
@@ -65,6 +66,7 @@ func TestAccountImageV2NewDirectUploadWithOptionalParams(t *testing.T) {
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.AccountImageV2NewDirectUploadParams{
 			ID:                cfrex.F("this/is/my-customid"),
+			Creator:           cfrex.F("creator"),
 			Expiry:            cfrex.F(time.Now()),
 			Metadata:          cfrex.F[any](map[string]interface{}{}),
 			RequireSignedURLs: cfrex.F(true),

@@ -8,15 +8,12 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
-	"reflect"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
 	"github.com/rexscaria/api-schemas/internal/param"
 	"github.com/rexscaria/api-schemas/internal/requestconfig"
 	"github.com/rexscaria/api-schemas/option"
-	"github.com/rexscaria/api-schemas/shared"
-	"github.com/tidwall/gjson"
 )
 
 // AccountAIRunHfMetaLlamaService contains methods and other services that help
@@ -50,139 +47,7 @@ func (r *AccountAIRunHfMetaLlamaService) ExecuteMetaLlama3_8bInstruct(ctx contex
 	return
 }
 
-type AccountAIRunHfMetaLlamaExecuteMetaLlama3_8bInstructResponse struct {
-	Result  AccountAIRunHfMetaLlamaExecuteMetaLlama3_8bInstructResponseResultUnion `json:"result" format:"binary"`
-	Success bool                                                                   `json:"success"`
-	JSON    accountAIRunHfMetaLlamaExecuteMetaLlama3_8bInstructResponseJSON        `json:"-"`
-}
-
-// accountAIRunHfMetaLlamaExecuteMetaLlama3_8bInstructResponseJSON contains the
-// JSON metadata for the struct
-// [AccountAIRunHfMetaLlamaExecuteMetaLlama3_8bInstructResponse]
-type accountAIRunHfMetaLlamaExecuteMetaLlama3_8bInstructResponseJSON struct {
-	Result      apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountAIRunHfMetaLlamaExecuteMetaLlama3_8bInstructResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountAIRunHfMetaLlamaExecuteMetaLlama3_8bInstructResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-// Union satisfied by
-// [AccountAIRunHfMetaLlamaExecuteMetaLlama3_8bInstructResponseResultObject] or
-// [shared.UnionString].
-type AccountAIRunHfMetaLlamaExecuteMetaLlama3_8bInstructResponseResultUnion interface {
-	ImplementsAccountAIRunHfMetaLlamaExecuteMetaLlama3_8bInstructResponseResultUnion()
-}
-
-func init() {
-	apijson.RegisterUnion(
-		reflect.TypeOf((*AccountAIRunHfMetaLlamaExecuteMetaLlama3_8bInstructResponseResultUnion)(nil)).Elem(),
-		"",
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(AccountAIRunHfMetaLlamaExecuteMetaLlama3_8bInstructResponseResultObject{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.String,
-			Type:       reflect.TypeOf(shared.UnionString("")),
-		},
-	)
-}
-
-type AccountAIRunHfMetaLlamaExecuteMetaLlama3_8bInstructResponseResultObject struct {
-	// The generated text response from the model
-	Response string `json:"response,required"`
-	// An array of tool calls requests made during the response generation
-	ToolCalls []AccountAIRunHfMetaLlamaExecuteMetaLlama3_8bInstructResponseResultObjectToolCall `json:"tool_calls"`
-	// Usage statistics for the inference request
-	Usage AccountAIRunHfMetaLlamaExecuteMetaLlama3_8bInstructResponseResultObjectUsage `json:"usage"`
-	JSON  accountAIRunHfMetaLlamaExecuteMetaLlama3_8bInstructResponseResultObjectJSON  `json:"-"`
-}
-
-// accountAIRunHfMetaLlamaExecuteMetaLlama3_8bInstructResponseResultObjectJSON
-// contains the JSON metadata for the struct
-// [AccountAIRunHfMetaLlamaExecuteMetaLlama3_8bInstructResponseResultObject]
-type accountAIRunHfMetaLlamaExecuteMetaLlama3_8bInstructResponseResultObjectJSON struct {
-	Response    apijson.Field
-	ToolCalls   apijson.Field
-	Usage       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountAIRunHfMetaLlamaExecuteMetaLlama3_8bInstructResponseResultObject) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountAIRunHfMetaLlamaExecuteMetaLlama3_8bInstructResponseResultObjectJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r AccountAIRunHfMetaLlamaExecuteMetaLlama3_8bInstructResponseResultObject) ImplementsAccountAIRunHfMetaLlamaExecuteMetaLlama3_8bInstructResponseResultUnion() {
-}
-
-type AccountAIRunHfMetaLlamaExecuteMetaLlama3_8bInstructResponseResultObjectToolCall struct {
-	// The arguments passed to be passed to the tool call request
-	Arguments interface{} `json:"arguments"`
-	// The name of the tool to be called
-	Name string                                                                              `json:"name"`
-	JSON accountAIRunHfMetaLlamaExecuteMetaLlama3_8bInstructResponseResultObjectToolCallJSON `json:"-"`
-}
-
-// accountAIRunHfMetaLlamaExecuteMetaLlama3_8bInstructResponseResultObjectToolCallJSON
-// contains the JSON metadata for the struct
-// [AccountAIRunHfMetaLlamaExecuteMetaLlama3_8bInstructResponseResultObjectToolCall]
-type accountAIRunHfMetaLlamaExecuteMetaLlama3_8bInstructResponseResultObjectToolCallJSON struct {
-	Arguments   apijson.Field
-	Name        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountAIRunHfMetaLlamaExecuteMetaLlama3_8bInstructResponseResultObjectToolCall) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountAIRunHfMetaLlamaExecuteMetaLlama3_8bInstructResponseResultObjectToolCallJSON) RawJSON() string {
-	return r.raw
-}
-
-// Usage statistics for the inference request
-type AccountAIRunHfMetaLlamaExecuteMetaLlama3_8bInstructResponseResultObjectUsage struct {
-	// Total number of tokens in output
-	CompletionTokens float64 `json:"completion_tokens"`
-	// Total number of tokens in input
-	PromptTokens float64 `json:"prompt_tokens"`
-	// Total number of input and output tokens
-	TotalTokens float64                                                                          `json:"total_tokens"`
-	JSON        accountAIRunHfMetaLlamaExecuteMetaLlama3_8bInstructResponseResultObjectUsageJSON `json:"-"`
-}
-
-// accountAIRunHfMetaLlamaExecuteMetaLlama3_8bInstructResponseResultObjectUsageJSON
-// contains the JSON metadata for the struct
-// [AccountAIRunHfMetaLlamaExecuteMetaLlama3_8bInstructResponseResultObjectUsage]
-type accountAIRunHfMetaLlamaExecuteMetaLlama3_8bInstructResponseResultObjectUsageJSON struct {
-	CompletionTokens apijson.Field
-	PromptTokens     apijson.Field
-	TotalTokens      apijson.Field
-	raw              string
-	ExtraFields      map[string]apijson.Field
-}
-
-func (r *AccountAIRunHfMetaLlamaExecuteMetaLlama3_8bInstructResponseResultObjectUsage) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountAIRunHfMetaLlamaExecuteMetaLlama3_8bInstructResponseResultObjectUsageJSON) RawJSON() string {
-	return r.raw
-}
+type AccountAIRunHfMetaLlamaExecuteMetaLlama3_8bInstructResponse = interface{}
 
 type AccountAIRunHfMetaLlamaExecuteMetaLlama3_8bInstructParams struct {
 	QueueRequest param.Field[string]                                                `query:"queueRequest"`

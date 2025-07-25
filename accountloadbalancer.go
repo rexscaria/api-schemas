@@ -69,73 +69,23 @@ func (r *AccountLoadBalancerService) Search(ctx context.Context, accountID strin
 	return
 }
 
-type PaginatedResponseCollection struct {
-	ResultInfo PaginatedResponseCollectionResultInfo `json:"result_info"`
-	JSON       paginatedResponseCollectionJSON       `json:"-"`
-	CommonResponseLoadBalancers
-}
-
-// paginatedResponseCollectionJSON contains the JSON metadata for the struct
-// [PaginatedResponseCollection]
-type paginatedResponseCollectionJSON struct {
-	ResultInfo  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *PaginatedResponseCollection) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r paginatedResponseCollectionJSON) RawJSON() string {
-	return r.raw
-}
-
-type PaginatedResponseCollectionResultInfo struct {
-	// Total number of results on the current page
-	Count float64 `json:"count"`
-	// Current page within paginated list of results
-	Page float64 `json:"page"`
-	// Number of results per page
-	PerPage float64 `json:"per_page"`
-	// Total results available without any search parameters
-	TotalCount float64 `json:"total_count"`
-	// Total number of pages available
-	TotalPages float64                                   `json:"total_pages"`
-	JSON       paginatedResponseCollectionResultInfoJSON `json:"-"`
-}
-
-// paginatedResponseCollectionResultInfoJSON contains the JSON metadata for the
-// struct [PaginatedResponseCollectionResultInfo]
-type paginatedResponseCollectionResultInfoJSON struct {
-	Count       apijson.Field
-	Page        apijson.Field
-	PerPage     apijson.Field
-	TotalCount  apijson.Field
-	TotalPages  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *PaginatedResponseCollectionResultInfo) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r paginatedResponseCollectionResultInfoJSON) RawJSON() string {
-	return r.raw
-}
-
 type PreviewResultResponse struct {
+	Errors   []LoadBalancingMessages `json:"errors,required"`
+	Messages []LoadBalancingMessages `json:"messages,required"`
 	// Resulting health data from a preview operation.
-	Result map[string]PreviewResultResponseResult `json:"result"`
-	JSON   previewResultResponseJSON              `json:"-"`
-	SingleResponseMonitor
+	Result map[string]PreviewResultResponseResult `json:"result,required"`
+	// Whether the API call was successful
+	Success PreviewResultResponseSuccess `json:"success,required"`
+	JSON    previewResultResponseJSON    `json:"-"`
 }
 
 // previewResultResponseJSON contains the JSON metadata for the struct
 // [PreviewResultResponse]
 type previewResultResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -199,16 +149,39 @@ func (r previewResultResponseResultOriginJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful
+type PreviewResultResponseSuccess bool
+
+const (
+	PreviewResultResponseSuccessTrue PreviewResultResponseSuccess = true
+)
+
+func (r PreviewResultResponseSuccess) IsKnown() bool {
+	switch r {
+	case PreviewResultResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountLoadBalancerSearchResponse struct {
-	Result AccountLoadBalancerSearchResponseResult `json:"result"`
-	JSON   accountLoadBalancerSearchResponseJSON   `json:"-"`
-	PaginatedResponseCollection
+	Errors   []LoadBalancingMessages                 `json:"errors,required"`
+	Messages []LoadBalancingMessages                 `json:"messages,required"`
+	Result   AccountLoadBalancerSearchResponseResult `json:"result,required"`
+	// Whether the API call was successful
+	Success    AccountLoadBalancerSearchResponseSuccess    `json:"success,required"`
+	ResultInfo AccountLoadBalancerSearchResponseResultInfo `json:"result_info"`
+	JSON       accountLoadBalancerSearchResponseJSON       `json:"-"`
 }
 
 // accountLoadBalancerSearchResponseJSON contains the JSON metadata for the struct
 // [AccountLoadBalancerSearchResponse]
 type accountLoadBalancerSearchResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -249,7 +222,7 @@ type AccountLoadBalancerSearchResponseResultResource struct {
 	ReferenceType AccountLoadBalancerSearchResponseResultResourcesReferenceType `json:"reference_type"`
 	// A list of references to (referrer) or from (referral) this resource.
 	References []interface{} `json:"references"`
-	ResourceID interface{}   `json:"resource_id"`
+	ResourceID string        `json:"resource_id"`
 	// The human-identifiable name of the resource.
 	ResourceName string `json:"resource_name"`
 	// The type of the resource.
@@ -310,10 +283,63 @@ func (r AccountLoadBalancerSearchResponseResultResourcesResourceType) IsKnown() 
 	return false
 }
 
+// Whether the API call was successful
+type AccountLoadBalancerSearchResponseSuccess bool
+
+const (
+	AccountLoadBalancerSearchResponseSuccessTrue AccountLoadBalancerSearchResponseSuccess = true
+)
+
+func (r AccountLoadBalancerSearchResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountLoadBalancerSearchResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type AccountLoadBalancerSearchResponseResultInfo struct {
+	// Total number of results on the current page
+	Count float64 `json:"count"`
+	// Current page within paginated list of results
+	Page float64 `json:"page"`
+	// Number of results per page
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters
+	TotalCount float64 `json:"total_count"`
+	// Total number of pages available
+	TotalPages float64                                         `json:"total_pages"`
+	JSON       accountLoadBalancerSearchResponseResultInfoJSON `json:"-"`
+}
+
+// accountLoadBalancerSearchResponseResultInfoJSON contains the JSON metadata for
+// the struct [AccountLoadBalancerSearchResponseResultInfo]
+type accountLoadBalancerSearchResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	TotalPages  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountLoadBalancerSearchResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountLoadBalancerSearchResponseResultInfoJSON) RawJSON() string {
+	return r.raw
+}
+
 type AccountLoadBalancerSearchParams struct {
-	Page         param.Field[float64]                                     `query:"page"`
-	PerPage      param.Field[float64]                                     `query:"per_page"`
-	SearchParams param.Field[AccountLoadBalancerSearchParamsSearchParams] `query:"search_params"`
+	Page    param.Field[float64] `query:"page"`
+	PerPage param.Field[float64] `query:"per_page"`
+	// Search query term.
+	Query param.Field[string] `query:"query"`
+	// The type of references to include. "\*" to include both referral and referrer
+	// references. "" to not include any reference information.
+	References param.Field[AccountLoadBalancerSearchParamsReferences] `query:"references"`
 }
 
 // URLQuery serializes [AccountLoadBalancerSearchParams]'s query parameters as
@@ -325,35 +351,20 @@ func (r AccountLoadBalancerSearchParams) URLQuery() (v url.Values) {
 	})
 }
 
-type AccountLoadBalancerSearchParamsSearchParams struct {
-	// Search query term.
-	Query param.Field[string] `query:"query"`
-	// The type of references to include ("\*" for all).
-	References param.Field[AccountLoadBalancerSearchParamsSearchParamsReferences] `query:"references"`
-}
-
-// URLQuery serializes [AccountLoadBalancerSearchParamsSearchParams]'s query
-// parameters as `url.Values`.
-func (r AccountLoadBalancerSearchParamsSearchParams) URLQuery() (v url.Values) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
-}
-
-// The type of references to include ("\*" for all).
-type AccountLoadBalancerSearchParamsSearchParamsReferences string
+// The type of references to include. "\*" to include both referral and referrer
+// references. "" to not include any reference information.
+type AccountLoadBalancerSearchParamsReferences string
 
 const (
-	AccountLoadBalancerSearchParamsSearchParamsReferencesEmpty    AccountLoadBalancerSearchParamsSearchParamsReferences = ""
-	AccountLoadBalancerSearchParamsSearchParamsReferencesStar     AccountLoadBalancerSearchParamsSearchParamsReferences = "*"
-	AccountLoadBalancerSearchParamsSearchParamsReferencesReferral AccountLoadBalancerSearchParamsSearchParamsReferences = "referral"
-	AccountLoadBalancerSearchParamsSearchParamsReferencesReferrer AccountLoadBalancerSearchParamsSearchParamsReferences = "referrer"
+	AccountLoadBalancerSearchParamsReferencesEmpty    AccountLoadBalancerSearchParamsReferences = ""
+	AccountLoadBalancerSearchParamsReferencesStar     AccountLoadBalancerSearchParamsReferences = "*"
+	AccountLoadBalancerSearchParamsReferencesReferral AccountLoadBalancerSearchParamsReferences = "referral"
+	AccountLoadBalancerSearchParamsReferencesReferrer AccountLoadBalancerSearchParamsReferences = "referrer"
 )
 
-func (r AccountLoadBalancerSearchParamsSearchParamsReferences) IsKnown() bool {
+func (r AccountLoadBalancerSearchParamsReferences) IsKnown() bool {
 	switch r {
-	case AccountLoadBalancerSearchParamsSearchParamsReferencesEmpty, AccountLoadBalancerSearchParamsSearchParamsReferencesStar, AccountLoadBalancerSearchParamsSearchParamsReferencesReferral, AccountLoadBalancerSearchParamsSearchParamsReferencesReferrer:
+	case AccountLoadBalancerSearchParamsReferencesEmpty, AccountLoadBalancerSearchParamsReferencesStar, AccountLoadBalancerSearchParamsReferencesReferral, AccountLoadBalancerSearchParamsReferencesReferrer:
 		return true
 	}
 	return false

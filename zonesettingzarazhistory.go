@@ -73,15 +73,21 @@ func (r *ZoneSettingZarazHistoryService) GetConfigs(ctx context.Context, zoneID 
 }
 
 type ZoneSettingZarazHistoryListResponse struct {
-	Result []ZoneSettingZarazHistoryListResponseResult `json:"result"`
-	JSON   zoneSettingZarazHistoryListResponseJSON     `json:"-"`
-	ZarazAPIResponseCommon
+	Errors   []ZarazMessagesItems                        `json:"errors,required"`
+	Messages []ZarazMessagesItems                        `json:"messages,required"`
+	Result   []ZoneSettingZarazHistoryListResponseResult `json:"result,required"`
+	// Whether the API call was successful
+	Success bool                                    `json:"success,required"`
+	JSON    zoneSettingZarazHistoryListResponseJSON `json:"-"`
 }
 
 // zoneSettingZarazHistoryListResponseJSON contains the JSON metadata for the
 // struct [ZoneSettingZarazHistoryListResponse]
 type zoneSettingZarazHistoryListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -129,16 +135,22 @@ func (r zoneSettingZarazHistoryListResponseResultJSON) RawJSON() string {
 }
 
 type ZoneSettingZarazHistoryGetConfigsResponse struct {
+	Errors   []ZarazMessagesItems `json:"errors,required"`
+	Messages []ZarazMessagesItems `json:"messages,required"`
 	// Object where keys are numericc onfiguration IDs
-	Result map[string]ZoneSettingZarazHistoryGetConfigsResponseResult `json:"result"`
-	JSON   zoneSettingZarazHistoryGetConfigsResponseJSON              `json:"-"`
-	ZarazAPIResponseCommon
+	Result map[string]ZoneSettingZarazHistoryGetConfigsResponseResult `json:"result,required"`
+	// Whether the API call was successful
+	Success bool                                          `json:"success,required"`
+	JSON    zoneSettingZarazHistoryGetConfigsResponseJSON `json:"-"`
 }
 
 // zoneSettingZarazHistoryGetConfigsResponseJSON contains the JSON metadata for the
 // struct [ZoneSettingZarazHistoryGetConfigsResponse]
 type zoneSettingZarazHistoryGetConfigsResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }

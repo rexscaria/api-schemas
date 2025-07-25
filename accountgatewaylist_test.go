@@ -7,7 +7,6 @@ import (
 	"errors"
 	"os"
 	"testing"
-	"time"
 
 	"github.com/rexscaria/api-schemas"
 	"github.com/rexscaria/api-schemas/internal/testutil"
@@ -35,8 +34,7 @@ func TestAccountGatewayListNewWithOptionalParams(t *testing.T) {
 			Name:        cfrex.F("Admin Serial Numbers"),
 			Type:        cfrex.F(cfrex.SchemasListTypeSerial),
 			Description: cfrex.F("The serial numbers for administrators"),
-			Items: cfrex.F([]cfrex.ItemsParam{{
-				CreatedAt:   cfrex.F(time.Now()),
+			Items: cfrex.F([]cfrex.AccountGatewayListNewParamsItem{{
 				Description: cfrex.F("Austin office IP"),
 				Value:       cfrex.F("8GE8721REF"),
 			}}),
@@ -100,8 +98,7 @@ func TestAccountGatewayListUpdateWithOptionalParams(t *testing.T) {
 		cfrex.AccountGatewayListUpdateParams{
 			Name:        cfrex.F("Admin Serial Numbers"),
 			Description: cfrex.F("The serial numbers for administrators"),
-			Items: cfrex.F([]cfrex.ItemsParam{{
-				CreatedAt:   cfrex.F(time.Now()),
+			Items: cfrex.F([]cfrex.AccountGatewayListUpdateParamsItem{{
 				Description: cfrex.F("Austin office IP"),
 				Value:       cfrex.F("8GE8721REF"),
 			}}),
@@ -164,9 +161,6 @@ func TestAccountGatewayListDelete(t *testing.T) {
 		context.TODO(),
 		"699d98642c564d2e855e9661899b7252",
 		"f174e90a-fafe-4643-bbbc-4a0ed4fc8415",
-		cfrex.AccountGatewayListDeleteParams{
-			Body: map[string]interface{}{},
-		},
 	)
 	if err != nil {
 		var apierr *cfrex.Error
@@ -224,8 +218,7 @@ func TestAccountGatewayListPatchWithOptionalParams(t *testing.T) {
 		"699d98642c564d2e855e9661899b7252",
 		"f174e90a-fafe-4643-bbbc-4a0ed4fc8415",
 		cfrex.AccountGatewayListPatchParams{
-			Append: cfrex.F([]cfrex.ItemsParam{{
-				CreatedAt:   cfrex.F(time.Now()),
+			Append: cfrex.F([]cfrex.AccountGatewayListPatchParamsAppend{{
 				Description: cfrex.F("Austin office IP"),
 				Value:       cfrex.F("8GE8721REF"),
 			}}),

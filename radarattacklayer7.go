@@ -72,6 +72,7 @@ func (r radarAttackLayer7GetTimeseriesResponseJSON) RawJSON() string {
 }
 
 type RadarAttackLayer7GetTimeseriesResponseResult struct {
+	// Metadata for the results.
 	Meta   RadarAttackLayer7GetTimeseriesResponseResultMeta   `json:"meta,required"`
 	Serie0 RadarAttackLayer7GetTimeseriesResponseResultSerie0 `json:"serie_0,required"`
 	JSON   radarAttackLayer7GetTimeseriesResponseResultJSON   `json:"-"`
@@ -94,21 +95,33 @@ func (r radarAttackLayer7GetTimeseriesResponseResultJSON) RawJSON() string {
 	return r.raw
 }
 
+// Metadata for the results.
 type RadarAttackLayer7GetTimeseriesResponseResultMeta struct {
-	AggInterval    string                                                         `json:"aggInterval,required"`
+	// Aggregation interval of the results (e.g., in 15 minutes or 1 hour intervals).
+	// Refer to
+	// [Aggregation intervals](https://developers.cloudflare.com/radar/concepts/aggregation-intervals/).
+	AggInterval    RadarAttackLayer7GetTimeseriesResponseResultMetaAggInterval    `json:"aggInterval,required"`
+	ConfidenceInfo RadarAttackLayer7GetTimeseriesResponseResultMetaConfidenceInfo `json:"confidenceInfo,required"`
 	DateRange      []RadarAttackLayer7GetTimeseriesResponseResultMetaDateRange    `json:"dateRange,required"`
-	LastUpdated    time.Time                                                      `json:"lastUpdated,required" format:"date-time"`
-	ConfidenceInfo RadarAttackLayer7GetTimeseriesResponseResultMetaConfidenceInfo `json:"confidenceInfo"`
-	JSON           radarAttackLayer7GetTimeseriesResponseResultMetaJSON           `json:"-"`
+	// Timestamp of the last dataset update.
+	LastUpdated time.Time `json:"lastUpdated,required" format:"date-time"`
+	// Normalization method applied to the results. Refer to
+	// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
+	Normalization RadarAttackLayer7GetTimeseriesResponseResultMetaNormalization `json:"normalization,required"`
+	// Measurement units for the results.
+	Units []RadarAttackLayer7GetTimeseriesResponseResultMetaUnit `json:"units,required"`
+	JSON  radarAttackLayer7GetTimeseriesResponseResultMetaJSON   `json:"-"`
 }
 
 // radarAttackLayer7GetTimeseriesResponseResultMetaJSON contains the JSON metadata
 // for the struct [RadarAttackLayer7GetTimeseriesResponseResultMeta]
 type radarAttackLayer7GetTimeseriesResponseResultMetaJSON struct {
 	AggInterval    apijson.Field
+	ConfidenceInfo apijson.Field
 	DateRange      apijson.Field
 	LastUpdated    apijson.Field
-	ConfidenceInfo apijson.Field
+	Normalization  apijson.Field
+	Units          apijson.Field
 	raw            string
 	ExtraFields    map[string]apijson.Field
 }
@@ -118,6 +131,88 @@ func (r *RadarAttackLayer7GetTimeseriesResponseResultMeta) UnmarshalJSON(data []
 }
 
 func (r radarAttackLayer7GetTimeseriesResponseResultMetaJSON) RawJSON() string {
+	return r.raw
+}
+
+// Aggregation interval of the results (e.g., in 15 minutes or 1 hour intervals).
+// Refer to
+// [Aggregation intervals](https://developers.cloudflare.com/radar/concepts/aggregation-intervals/).
+type RadarAttackLayer7GetTimeseriesResponseResultMetaAggInterval string
+
+const (
+	RadarAttackLayer7GetTimeseriesResponseResultMetaAggIntervalFifteenMinutes RadarAttackLayer7GetTimeseriesResponseResultMetaAggInterval = "FIFTEEN_MINUTES"
+	RadarAttackLayer7GetTimeseriesResponseResultMetaAggIntervalOneHour        RadarAttackLayer7GetTimeseriesResponseResultMetaAggInterval = "ONE_HOUR"
+	RadarAttackLayer7GetTimeseriesResponseResultMetaAggIntervalOneDay         RadarAttackLayer7GetTimeseriesResponseResultMetaAggInterval = "ONE_DAY"
+	RadarAttackLayer7GetTimeseriesResponseResultMetaAggIntervalOneWeek        RadarAttackLayer7GetTimeseriesResponseResultMetaAggInterval = "ONE_WEEK"
+	RadarAttackLayer7GetTimeseriesResponseResultMetaAggIntervalOneMonth       RadarAttackLayer7GetTimeseriesResponseResultMetaAggInterval = "ONE_MONTH"
+)
+
+func (r RadarAttackLayer7GetTimeseriesResponseResultMetaAggInterval) IsKnown() bool {
+	switch r {
+	case RadarAttackLayer7GetTimeseriesResponseResultMetaAggIntervalFifteenMinutes, RadarAttackLayer7GetTimeseriesResponseResultMetaAggIntervalOneHour, RadarAttackLayer7GetTimeseriesResponseResultMetaAggIntervalOneDay, RadarAttackLayer7GetTimeseriesResponseResultMetaAggIntervalOneWeek, RadarAttackLayer7GetTimeseriesResponseResultMetaAggIntervalOneMonth:
+		return true
+	}
+	return false
+}
+
+type RadarAttackLayer7GetTimeseriesResponseResultMetaConfidenceInfo struct {
+	Annotations []RadarAttackLayer7GetTimeseriesResponseResultMetaConfidenceInfoAnnotation `json:"annotations,required"`
+	// Provides an indication of how much confidence Cloudflare has in the data.
+	Level int64                                                              `json:"level,required"`
+	JSON  radarAttackLayer7GetTimeseriesResponseResultMetaConfidenceInfoJSON `json:"-"`
+}
+
+// radarAttackLayer7GetTimeseriesResponseResultMetaConfidenceInfoJSON contains the
+// JSON metadata for the struct
+// [RadarAttackLayer7GetTimeseriesResponseResultMetaConfidenceInfo]
+type radarAttackLayer7GetTimeseriesResponseResultMetaConfidenceInfoJSON struct {
+	Annotations apijson.Field
+	Level       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *RadarAttackLayer7GetTimeseriesResponseResultMetaConfidenceInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarAttackLayer7GetTimeseriesResponseResultMetaConfidenceInfoJSON) RawJSON() string {
+	return r.raw
+}
+
+// Annotation associated with the result (e.g. outage or other type of event).
+type RadarAttackLayer7GetTimeseriesResponseResultMetaConfidenceInfoAnnotation struct {
+	DataSource  string    `json:"dataSource,required"`
+	Description string    `json:"description,required"`
+	EndDate     time.Time `json:"endDate,required" format:"date-time"`
+	EventType   string    `json:"eventType,required"`
+	// Whether event is a single point in time or a time range.
+	IsInstantaneous bool                                                                         `json:"isInstantaneous,required"`
+	LinkedURL       string                                                                       `json:"linkedUrl,required" format:"uri"`
+	StartDate       time.Time                                                                    `json:"startDate,required" format:"date-time"`
+	JSON            radarAttackLayer7GetTimeseriesResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
+}
+
+// radarAttackLayer7GetTimeseriesResponseResultMetaConfidenceInfoAnnotationJSON
+// contains the JSON metadata for the struct
+// [RadarAttackLayer7GetTimeseriesResponseResultMetaConfidenceInfoAnnotation]
+type radarAttackLayer7GetTimeseriesResponseResultMetaConfidenceInfoAnnotationJSON struct {
+	DataSource      apijson.Field
+	Description     apijson.Field
+	EndDate         apijson.Field
+	EventType       apijson.Field
+	IsInstantaneous apijson.Field
+	LinkedURL       apijson.Field
+	StartDate       apijson.Field
+	raw             string
+	ExtraFields     map[string]apijson.Field
+}
+
+func (r *RadarAttackLayer7GetTimeseriesResponseResultMetaConfidenceInfoAnnotation) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarAttackLayer7GetTimeseriesResponseResultMetaConfidenceInfoAnnotationJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -147,61 +242,49 @@ func (r radarAttackLayer7GetTimeseriesResponseResultMetaDateRangeJSON) RawJSON()
 	return r.raw
 }
 
-type RadarAttackLayer7GetTimeseriesResponseResultMetaConfidenceInfo struct {
-	Annotations []RadarAttackLayer7GetTimeseriesResponseResultMetaConfidenceInfoAnnotation `json:"annotations"`
-	Level       int64                                                                      `json:"level"`
-	JSON        radarAttackLayer7GetTimeseriesResponseResultMetaConfidenceInfoJSON         `json:"-"`
+// Normalization method applied to the results. Refer to
+// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
+type RadarAttackLayer7GetTimeseriesResponseResultMetaNormalization string
+
+const (
+	RadarAttackLayer7GetTimeseriesResponseResultMetaNormalizationPercentage           RadarAttackLayer7GetTimeseriesResponseResultMetaNormalization = "PERCENTAGE"
+	RadarAttackLayer7GetTimeseriesResponseResultMetaNormalizationMin0Max              RadarAttackLayer7GetTimeseriesResponseResultMetaNormalization = "MIN0_MAX"
+	RadarAttackLayer7GetTimeseriesResponseResultMetaNormalizationMinMax               RadarAttackLayer7GetTimeseriesResponseResultMetaNormalization = "MIN_MAX"
+	RadarAttackLayer7GetTimeseriesResponseResultMetaNormalizationRawValues            RadarAttackLayer7GetTimeseriesResponseResultMetaNormalization = "RAW_VALUES"
+	RadarAttackLayer7GetTimeseriesResponseResultMetaNormalizationPercentageChange     RadarAttackLayer7GetTimeseriesResponseResultMetaNormalization = "PERCENTAGE_CHANGE"
+	RadarAttackLayer7GetTimeseriesResponseResultMetaNormalizationRollingAverage       RadarAttackLayer7GetTimeseriesResponseResultMetaNormalization = "ROLLING_AVERAGE"
+	RadarAttackLayer7GetTimeseriesResponseResultMetaNormalizationOverlappedPercentage RadarAttackLayer7GetTimeseriesResponseResultMetaNormalization = "OVERLAPPED_PERCENTAGE"
+	RadarAttackLayer7GetTimeseriesResponseResultMetaNormalizationRatio                RadarAttackLayer7GetTimeseriesResponseResultMetaNormalization = "RATIO"
+)
+
+func (r RadarAttackLayer7GetTimeseriesResponseResultMetaNormalization) IsKnown() bool {
+	switch r {
+	case RadarAttackLayer7GetTimeseriesResponseResultMetaNormalizationPercentage, RadarAttackLayer7GetTimeseriesResponseResultMetaNormalizationMin0Max, RadarAttackLayer7GetTimeseriesResponseResultMetaNormalizationMinMax, RadarAttackLayer7GetTimeseriesResponseResultMetaNormalizationRawValues, RadarAttackLayer7GetTimeseriesResponseResultMetaNormalizationPercentageChange, RadarAttackLayer7GetTimeseriesResponseResultMetaNormalizationRollingAverage, RadarAttackLayer7GetTimeseriesResponseResultMetaNormalizationOverlappedPercentage, RadarAttackLayer7GetTimeseriesResponseResultMetaNormalizationRatio:
+		return true
+	}
+	return false
 }
 
-// radarAttackLayer7GetTimeseriesResponseResultMetaConfidenceInfoJSON contains the
-// JSON metadata for the struct
-// [RadarAttackLayer7GetTimeseriesResponseResultMetaConfidenceInfo]
-type radarAttackLayer7GetTimeseriesResponseResultMetaConfidenceInfoJSON struct {
-	Annotations apijson.Field
-	Level       apijson.Field
+type RadarAttackLayer7GetTimeseriesResponseResultMetaUnit struct {
+	Name  string                                                   `json:"name,required"`
+	Value string                                                   `json:"value,required"`
+	JSON  radarAttackLayer7GetTimeseriesResponseResultMetaUnitJSON `json:"-"`
+}
+
+// radarAttackLayer7GetTimeseriesResponseResultMetaUnitJSON contains the JSON
+// metadata for the struct [RadarAttackLayer7GetTimeseriesResponseResultMetaUnit]
+type radarAttackLayer7GetTimeseriesResponseResultMetaUnitJSON struct {
+	Name        apijson.Field
+	Value       apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *RadarAttackLayer7GetTimeseriesResponseResultMetaConfidenceInfo) UnmarshalJSON(data []byte) (err error) {
+func (r *RadarAttackLayer7GetTimeseriesResponseResultMetaUnit) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r radarAttackLayer7GetTimeseriesResponseResultMetaConfidenceInfoJSON) RawJSON() string {
-	return r.raw
-}
-
-type RadarAttackLayer7GetTimeseriesResponseResultMetaConfidenceInfoAnnotation struct {
-	DataSource      string                                                                       `json:"dataSource,required"`
-	Description     string                                                                       `json:"description,required"`
-	EventType       string                                                                       `json:"eventType,required"`
-	IsInstantaneous bool                                                                         `json:"isInstantaneous,required"`
-	EndTime         time.Time                                                                    `json:"endTime" format:"date-time"`
-	LinkedURL       string                                                                       `json:"linkedUrl"`
-	StartTime       time.Time                                                                    `json:"startTime" format:"date-time"`
-	JSON            radarAttackLayer7GetTimeseriesResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
-}
-
-// radarAttackLayer7GetTimeseriesResponseResultMetaConfidenceInfoAnnotationJSON
-// contains the JSON metadata for the struct
-// [RadarAttackLayer7GetTimeseriesResponseResultMetaConfidenceInfoAnnotation]
-type radarAttackLayer7GetTimeseriesResponseResultMetaConfidenceInfoAnnotationJSON struct {
-	DataSource      apijson.Field
-	Description     apijson.Field
-	EventType       apijson.Field
-	IsInstantaneous apijson.Field
-	EndTime         apijson.Field
-	LinkedURL       apijson.Field
-	StartTime       apijson.Field
-	raw             string
-	ExtraFields     map[string]apijson.Field
-}
-
-func (r *RadarAttackLayer7GetTimeseriesResponseResultMetaConfidenceInfoAnnotation) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r radarAttackLayer7GetTimeseriesResponseResultMetaConfidenceInfoAnnotationJSON) RawJSON() string {
+func (r radarAttackLayer7GetTimeseriesResponseResultMetaUnitJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -229,23 +312,24 @@ func (r radarAttackLayer7GetTimeseriesResponseResultSerie0JSON) RawJSON() string
 }
 
 type RadarAttackLayer7GetTimeseriesParams struct {
-	// Aggregation interval results should be returned in (for example, in 15 minutes
-	// or 1 hour intervals). Refer to
+	// Aggregation interval of the results (e.g., in 15 minutes or 1 hour intervals).
+	// Refer to
 	// [Aggregation intervals](https://developers.cloudflare.com/radar/concepts/aggregation-intervals/).
 	AggInterval param.Field[RadarAttackLayer7GetTimeseriesParamsAggInterval] `query:"aggInterval"`
-	// Comma-separated list of Autonomous System Numbers (ASNs). Prefix with `-` to
-	// exclude ASNs from results. For example, `-174, 3356` excludes results from
-	// AS174, but includes results from AS3356.
+	// Filters results by Autonomous System. Specify one or more Autonomous System
+	// Numbers (ASNs) as a comma-separated list. Prefix with `-` to exclude ASNs from
+	// results. For example, `-174, 3356` excludes results from AS174, but includes
+	// results from AS3356.
 	Asn param.Field[[]string] `query:"asn"`
-	// Comma-separated list of continents (alpha-2 continent codes). Prefix with `-` to
-	// exclude continents from results. For example, `-EU,NA` excludes results from EU,
-	// but includes results from NA.
+	// Filters results by continent. Specify a comma-separated list of alpha-2 codes.
+	// Prefix with `-` to exclude continents from results. For example, `-EU,NA`
+	// excludes results from EU, but includes results from NA.
 	Continent param.Field[[]string] `query:"continent"`
 	// End of the date range (inclusive).
 	DateEnd param.Field[[]time.Time] `query:"dateEnd" format:"date-time"`
-	// Filters results by the specified date range. For example, use `7d` and
-	// `7dcontrol` to compare this week with the previous week. Use this parameter or
-	// set specific start and end dates (`dateStart` and `dateEnd` parameters).
+	// Filters results by date range. For example, use `7d` and `7dcontrol` to compare
+	// this week with the previous week. Use this parameter or set specific start and
+	// end dates (`dateStart` and `dateEnd` parameters).
 	DateRange param.Field[[]string] `query:"dateRange"`
 	// Start of the date range.
 	DateStart param.Field[[]time.Time] `query:"dateStart" format:"date-time"`
@@ -257,15 +341,15 @@ type RadarAttackLayer7GetTimeseriesParams struct {
 	HTTPVersion param.Field[[]RadarAttackLayer7GetTimeseriesParamsHTTPVersion] `query:"httpVersion"`
 	// Filters results by IP version (Ipv4 vs. IPv6).
 	IPVersion param.Field[[]RadarAttackLayer7GetTimeseriesParamsIPVersion] `query:"ipVersion"`
-	// Comma-separated list of locations (alpha-2 codes). Prefix with `-` to exclude
-	// locations from results. For example, `-US,PT` excludes results from the US, but
-	// includes results from PT.
+	// Filters results by location. Specify a comma-separated list of alpha-2 codes.
+	// Prefix with `-` to exclude locations from results. For example, `-US,PT`
+	// excludes results from the US, but includes results from PT.
 	Location param.Field[[]string] `query:"location"`
-	// Array of L7 mitigation products.
+	// Filters the results by layer 7 mitigation product.
 	MitigationProduct param.Field[[]RadarAttackLayer7GetTimeseriesParamsMitigationProduct] `query:"mitigationProduct"`
 	// Array of names used to label the series in the response.
 	Name param.Field[[]string] `query:"name"`
-	// Normalization method applied. Refer to
+	// Normalization method applied to the results. Refer to
 	// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
 	Normalization param.Field[RadarAttackLayer7GetTimeseriesParamsNormalization] `query:"normalization"`
 }
@@ -279,8 +363,8 @@ func (r RadarAttackLayer7GetTimeseriesParams) URLQuery() (v url.Values) {
 	})
 }
 
-// Aggregation interval results should be returned in (for example, in 15 minutes
-// or 1 hour intervals). Refer to
+// Aggregation interval of the results (e.g., in 15 minutes or 1 hour intervals).
+// Refer to
 // [Aggregation intervals](https://developers.cloudflare.com/radar/concepts/aggregation-intervals/).
 type RadarAttackLayer7GetTimeseriesParamsAggInterval string
 
@@ -425,7 +509,7 @@ func (r RadarAttackLayer7GetTimeseriesParamsMitigationProduct) IsKnown() bool {
 	return false
 }
 
-// Normalization method applied. Refer to
+// Normalization method applied to the results. Refer to
 // [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
 type RadarAttackLayer7GetTimeseriesParamsNormalization string
 

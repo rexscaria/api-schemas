@@ -89,9 +89,6 @@ func TestAccountStreamCaptionDelete(t *testing.T) {
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		"ea95132c15732412d22c1476fa83f27a",
 		"tr",
-		cfrex.AccountStreamCaptionDeleteParams{
-			Body: map[string]interface{}{},
-		},
 	)
 	if err != nil {
 		var apierr *cfrex.Error

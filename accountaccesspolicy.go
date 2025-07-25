@@ -217,19 +217,42 @@ func (r PolicyRequestForAccessParam) ImplementsAccountAccessPolicyTestStartParam
 
 type ReusablePolicyResponse struct {
 	// Number of access applications currently using this policy.
-	AppCount int64                          `json:"app_count"`
-	Reusable ReusablePolicyResponseReusable `json:"reusable"`
-	JSON     reusablePolicyResponseJSON     `json:"-"`
-	PolicyResponseGeneral
+	AppCount int64 `json:"app_count"`
+	// Administrators who can approve a temporary authentication request.
+	ApprovalGroups []ApprovalGroupEmail `json:"approval_groups"`
+	// Requires the user to request access from an administrator at the start of each
+	// session.
+	ApprovalRequired bool `json:"approval_required"`
+	// Require this application to be served in an isolated browser for users matching
+	// this policy. 'Client Web Isolation' must be on for the account in order to use
+	// this feature.
+	IsolationRequired bool `json:"isolation_required"`
+	// A custom message that will appear on the purpose justification screen.
+	PurposeJustificationPrompt string `json:"purpose_justification_prompt"`
+	// Require users to enter a justification when they log in to the application.
+	PurposeJustificationRequired bool                           `json:"purpose_justification_required"`
+	Reusable                     ReusablePolicyResponseReusable `json:"reusable"`
+	// The amount of time that tokens issued for the application will be valid. Must be
+	// in the format `300ms` or `2h45m`. Valid time units are: ns, us (or µs), ms, s,
+	// m, h.
+	SessionDuration string                     `json:"session_duration"`
+	JSON            reusablePolicyResponseJSON `json:"-"`
+	BasePolicyResponse
 }
 
 // reusablePolicyResponseJSON contains the JSON metadata for the struct
 // [ReusablePolicyResponse]
 type reusablePolicyResponseJSON struct {
-	AppCount    apijson.Field
-	Reusable    apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	AppCount                     apijson.Field
+	ApprovalGroups               apijson.Field
+	ApprovalRequired             apijson.Field
+	IsolationRequired            apijson.Field
+	PurposeJustificationPrompt   apijson.Field
+	PurposeJustificationRequired apijson.Field
+	Reusable                     apijson.Field
+	SessionDuration              apijson.Field
+	raw                          string
+	ExtraFields                  map[string]apijson.Field
 }
 
 func (r *ReusablePolicyResponse) UnmarshalJSON(data []byte) (err error) {
@@ -255,14 +278,20 @@ func (r ReusablePolicyResponseReusable) IsKnown() bool {
 }
 
 type ReusableSingleResponse struct {
-	Result ReusablePolicyResponse     `json:"result"`
-	JSON   reusableSingleResponseJSON `json:"-"`
-	APIResponseSingleAccess
+	Errors   []MessagesAccessItem `json:"errors,required"`
+	Messages []MessagesAccessItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success ReusableSingleResponseSuccess `json:"success,required"`
+	Result  ReusablePolicyResponse        `json:"result"`
+	JSON    reusableSingleResponseJSON    `json:"-"`
 }
 
 // reusableSingleResponseJSON contains the JSON metadata for the struct
 // [ReusableSingleResponse]
 type reusableSingleResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -276,16 +305,39 @@ func (r reusableSingleResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type ReusableSingleResponseSuccess bool
+
+const (
+	ReusableSingleResponseSuccessTrue ReusableSingleResponseSuccess = true
+)
+
+func (r ReusableSingleResponseSuccess) IsKnown() bool {
+	switch r {
+	case ReusableSingleResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountAccessPolicyListResponse struct {
-	Result []ReusablePolicyResponse            `json:"result"`
-	JSON   accountAccessPolicyListResponseJSON `json:"-"`
-	APIResponseCollectionAccess
+	Errors   []MessagesAccessItem `json:"errors,required"`
+	Messages []MessagesAccessItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success    AccountAccessPolicyListResponseSuccess    `json:"success,required"`
+	Result     []ReusablePolicyResponse                  `json:"result"`
+	ResultInfo AccountAccessPolicyListResponseResultInfo `json:"result_info"`
+	JSON       accountAccessPolicyListResponseJSON       `json:"-"`
 }
 
 // accountAccessPolicyListResponseJSON contains the JSON metadata for the struct
 // [AccountAccessPolicyListResponse]
 type accountAccessPolicyListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -298,15 +350,67 @@ func (r accountAccessPolicyListResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountAccessPolicyListResponseSuccess bool
+
+const (
+	AccountAccessPolicyListResponseSuccessTrue AccountAccessPolicyListResponseSuccess = true
+)
+
+func (r AccountAccessPolicyListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountAccessPolicyListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type AccountAccessPolicyListResponseResultInfo struct {
+	// Total number of results for the requested service.
+	Count float64 `json:"count"`
+	// Current page within paginated list of results.
+	Page float64 `json:"page"`
+	// Number of results per page of results.
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters.
+	TotalCount float64                                       `json:"total_count"`
+	JSON       accountAccessPolicyListResponseResultInfoJSON `json:"-"`
+}
+
+// accountAccessPolicyListResponseResultInfoJSON contains the JSON metadata for the
+// struct [AccountAccessPolicyListResponseResultInfo]
+type accountAccessPolicyListResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountAccessPolicyListResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountAccessPolicyListResponseResultInfoJSON) RawJSON() string {
+	return r.raw
+}
+
 type AccountAccessPolicyDeleteResponse struct {
-	Result AccountAccessPolicyDeleteResponseResult `json:"result"`
-	JSON   accountAccessPolicyDeleteResponseJSON   `json:"-"`
-	APIResponseSingleAccess
+	Errors   []MessagesAccessItem `json:"errors,required"`
+	Messages []MessagesAccessItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountAccessPolicyDeleteResponseSuccess `json:"success,required"`
+	Result  AccountAccessPolicyDeleteResponseResult  `json:"result"`
+	JSON    accountAccessPolicyDeleteResponseJSON    `json:"-"`
 }
 
 // accountAccessPolicyDeleteResponseJSON contains the JSON metadata for the struct
 // [AccountAccessPolicyDeleteResponse]
 type accountAccessPolicyDeleteResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -318,6 +422,21 @@ func (r *AccountAccessPolicyDeleteResponse) UnmarshalJSON(data []byte) (err erro
 
 func (r accountAccessPolicyDeleteResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountAccessPolicyDeleteResponseSuccess bool
+
+const (
+	AccountAccessPolicyDeleteResponseSuccessTrue AccountAccessPolicyDeleteResponseSuccess = true
+)
+
+func (r AccountAccessPolicyDeleteResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountAccessPolicyDeleteResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountAccessPolicyDeleteResponseResult struct {

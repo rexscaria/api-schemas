@@ -68,6 +68,7 @@ func (r radarAttackLayer7TopAseGetTopOriginAsResponseJSON) RawJSON() string {
 }
 
 type RadarAttackLayer7TopAseGetTopOriginAsResponseResult struct {
+	// Metadata for the results.
 	Meta RadarAttackLayer7TopAseGetTopOriginAsResponseResultMeta   `json:"meta,required"`
 	Top0 []RadarAttackLayer7TopAseGetTopOriginAsResponseResultTop0 `json:"top_0,required"`
 	JSON radarAttackLayer7TopAseGetTopOriginAsResponseResultJSON   `json:"-"`
@@ -90,20 +91,29 @@ func (r radarAttackLayer7TopAseGetTopOriginAsResponseResultJSON) RawJSON() strin
 	return r.raw
 }
 
+// Metadata for the results.
 type RadarAttackLayer7TopAseGetTopOriginAsResponseResultMeta struct {
+	ConfidenceInfo RadarAttackLayer7TopAseGetTopOriginAsResponseResultMetaConfidenceInfo `json:"confidenceInfo,required,nullable"`
 	DateRange      []RadarAttackLayer7TopAseGetTopOriginAsResponseResultMetaDateRange    `json:"dateRange,required"`
-	LastUpdated    string                                                                `json:"lastUpdated,required"`
-	ConfidenceInfo RadarAttackLayer7TopAseGetTopOriginAsResponseResultMetaConfidenceInfo `json:"confidenceInfo"`
-	JSON           radarAttackLayer7TopAseGetTopOriginAsResponseResultMetaJSON           `json:"-"`
+	// Timestamp of the last dataset update.
+	LastUpdated time.Time `json:"lastUpdated,required" format:"date-time"`
+	// Normalization method applied to the results. Refer to
+	// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
+	Normalization RadarAttackLayer7TopAseGetTopOriginAsResponseResultMetaNormalization `json:"normalization,required"`
+	// Measurement units for the results.
+	Units []RadarAttackLayer7TopAseGetTopOriginAsResponseResultMetaUnit `json:"units,required"`
+	JSON  radarAttackLayer7TopAseGetTopOriginAsResponseResultMetaJSON   `json:"-"`
 }
 
 // radarAttackLayer7TopAseGetTopOriginAsResponseResultMetaJSON contains the JSON
 // metadata for the struct
 // [RadarAttackLayer7TopAseGetTopOriginAsResponseResultMeta]
 type radarAttackLayer7TopAseGetTopOriginAsResponseResultMetaJSON struct {
+	ConfidenceInfo apijson.Field
 	DateRange      apijson.Field
 	LastUpdated    apijson.Field
-	ConfidenceInfo apijson.Field
+	Normalization  apijson.Field
+	Units          apijson.Field
 	raw            string
 	ExtraFields    map[string]apijson.Field
 }
@@ -113,6 +123,67 @@ func (r *RadarAttackLayer7TopAseGetTopOriginAsResponseResultMeta) UnmarshalJSON(
 }
 
 func (r radarAttackLayer7TopAseGetTopOriginAsResponseResultMetaJSON) RawJSON() string {
+	return r.raw
+}
+
+type RadarAttackLayer7TopAseGetTopOriginAsResponseResultMetaConfidenceInfo struct {
+	Annotations []RadarAttackLayer7TopAseGetTopOriginAsResponseResultMetaConfidenceInfoAnnotation `json:"annotations,required"`
+	// Provides an indication of how much confidence Cloudflare has in the data.
+	Level int64                                                                     `json:"level,required"`
+	JSON  radarAttackLayer7TopAseGetTopOriginAsResponseResultMetaConfidenceInfoJSON `json:"-"`
+}
+
+// radarAttackLayer7TopAseGetTopOriginAsResponseResultMetaConfidenceInfoJSON
+// contains the JSON metadata for the struct
+// [RadarAttackLayer7TopAseGetTopOriginAsResponseResultMetaConfidenceInfo]
+type radarAttackLayer7TopAseGetTopOriginAsResponseResultMetaConfidenceInfoJSON struct {
+	Annotations apijson.Field
+	Level       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *RadarAttackLayer7TopAseGetTopOriginAsResponseResultMetaConfidenceInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarAttackLayer7TopAseGetTopOriginAsResponseResultMetaConfidenceInfoJSON) RawJSON() string {
+	return r.raw
+}
+
+// Annotation associated with the result (e.g. outage or other type of event).
+type RadarAttackLayer7TopAseGetTopOriginAsResponseResultMetaConfidenceInfoAnnotation struct {
+	DataSource  string    `json:"dataSource,required"`
+	Description string    `json:"description,required"`
+	EndDate     time.Time `json:"endDate,required" format:"date-time"`
+	EventType   string    `json:"eventType,required"`
+	// Whether event is a single point in time or a time range.
+	IsInstantaneous bool                                                                                `json:"isInstantaneous,required"`
+	LinkedURL       string                                                                              `json:"linkedUrl,required" format:"uri"`
+	StartDate       time.Time                                                                           `json:"startDate,required" format:"date-time"`
+	JSON            radarAttackLayer7TopAseGetTopOriginAsResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
+}
+
+// radarAttackLayer7TopAseGetTopOriginAsResponseResultMetaConfidenceInfoAnnotationJSON
+// contains the JSON metadata for the struct
+// [RadarAttackLayer7TopAseGetTopOriginAsResponseResultMetaConfidenceInfoAnnotation]
+type radarAttackLayer7TopAseGetTopOriginAsResponseResultMetaConfidenceInfoAnnotationJSON struct {
+	DataSource      apijson.Field
+	Description     apijson.Field
+	EndDate         apijson.Field
+	EventType       apijson.Field
+	IsInstantaneous apijson.Field
+	LinkedURL       apijson.Field
+	StartDate       apijson.Field
+	raw             string
+	ExtraFields     map[string]apijson.Field
+}
+
+func (r *RadarAttackLayer7TopAseGetTopOriginAsResponseResultMetaConfidenceInfoAnnotation) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarAttackLayer7TopAseGetTopOriginAsResponseResultMetaConfidenceInfoAnnotationJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -142,61 +213,50 @@ func (r radarAttackLayer7TopAseGetTopOriginAsResponseResultMetaDateRangeJSON) Ra
 	return r.raw
 }
 
-type RadarAttackLayer7TopAseGetTopOriginAsResponseResultMetaConfidenceInfo struct {
-	Annotations []RadarAttackLayer7TopAseGetTopOriginAsResponseResultMetaConfidenceInfoAnnotation `json:"annotations"`
-	Level       int64                                                                             `json:"level"`
-	JSON        radarAttackLayer7TopAseGetTopOriginAsResponseResultMetaConfidenceInfoJSON         `json:"-"`
+// Normalization method applied to the results. Refer to
+// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
+type RadarAttackLayer7TopAseGetTopOriginAsResponseResultMetaNormalization string
+
+const (
+	RadarAttackLayer7TopAseGetTopOriginAsResponseResultMetaNormalizationPercentage           RadarAttackLayer7TopAseGetTopOriginAsResponseResultMetaNormalization = "PERCENTAGE"
+	RadarAttackLayer7TopAseGetTopOriginAsResponseResultMetaNormalizationMin0Max              RadarAttackLayer7TopAseGetTopOriginAsResponseResultMetaNormalization = "MIN0_MAX"
+	RadarAttackLayer7TopAseGetTopOriginAsResponseResultMetaNormalizationMinMax               RadarAttackLayer7TopAseGetTopOriginAsResponseResultMetaNormalization = "MIN_MAX"
+	RadarAttackLayer7TopAseGetTopOriginAsResponseResultMetaNormalizationRawValues            RadarAttackLayer7TopAseGetTopOriginAsResponseResultMetaNormalization = "RAW_VALUES"
+	RadarAttackLayer7TopAseGetTopOriginAsResponseResultMetaNormalizationPercentageChange     RadarAttackLayer7TopAseGetTopOriginAsResponseResultMetaNormalization = "PERCENTAGE_CHANGE"
+	RadarAttackLayer7TopAseGetTopOriginAsResponseResultMetaNormalizationRollingAverage       RadarAttackLayer7TopAseGetTopOriginAsResponseResultMetaNormalization = "ROLLING_AVERAGE"
+	RadarAttackLayer7TopAseGetTopOriginAsResponseResultMetaNormalizationOverlappedPercentage RadarAttackLayer7TopAseGetTopOriginAsResponseResultMetaNormalization = "OVERLAPPED_PERCENTAGE"
+	RadarAttackLayer7TopAseGetTopOriginAsResponseResultMetaNormalizationRatio                RadarAttackLayer7TopAseGetTopOriginAsResponseResultMetaNormalization = "RATIO"
+)
+
+func (r RadarAttackLayer7TopAseGetTopOriginAsResponseResultMetaNormalization) IsKnown() bool {
+	switch r {
+	case RadarAttackLayer7TopAseGetTopOriginAsResponseResultMetaNormalizationPercentage, RadarAttackLayer7TopAseGetTopOriginAsResponseResultMetaNormalizationMin0Max, RadarAttackLayer7TopAseGetTopOriginAsResponseResultMetaNormalizationMinMax, RadarAttackLayer7TopAseGetTopOriginAsResponseResultMetaNormalizationRawValues, RadarAttackLayer7TopAseGetTopOriginAsResponseResultMetaNormalizationPercentageChange, RadarAttackLayer7TopAseGetTopOriginAsResponseResultMetaNormalizationRollingAverage, RadarAttackLayer7TopAseGetTopOriginAsResponseResultMetaNormalizationOverlappedPercentage, RadarAttackLayer7TopAseGetTopOriginAsResponseResultMetaNormalizationRatio:
+		return true
+	}
+	return false
 }
 
-// radarAttackLayer7TopAseGetTopOriginAsResponseResultMetaConfidenceInfoJSON
-// contains the JSON metadata for the struct
-// [RadarAttackLayer7TopAseGetTopOriginAsResponseResultMetaConfidenceInfo]
-type radarAttackLayer7TopAseGetTopOriginAsResponseResultMetaConfidenceInfoJSON struct {
-	Annotations apijson.Field
-	Level       apijson.Field
+type RadarAttackLayer7TopAseGetTopOriginAsResponseResultMetaUnit struct {
+	Name  string                                                          `json:"name,required"`
+	Value string                                                          `json:"value,required"`
+	JSON  radarAttackLayer7TopAseGetTopOriginAsResponseResultMetaUnitJSON `json:"-"`
+}
+
+// radarAttackLayer7TopAseGetTopOriginAsResponseResultMetaUnitJSON contains the
+// JSON metadata for the struct
+// [RadarAttackLayer7TopAseGetTopOriginAsResponseResultMetaUnit]
+type radarAttackLayer7TopAseGetTopOriginAsResponseResultMetaUnitJSON struct {
+	Name        apijson.Field
+	Value       apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *RadarAttackLayer7TopAseGetTopOriginAsResponseResultMetaConfidenceInfo) UnmarshalJSON(data []byte) (err error) {
+func (r *RadarAttackLayer7TopAseGetTopOriginAsResponseResultMetaUnit) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r radarAttackLayer7TopAseGetTopOriginAsResponseResultMetaConfidenceInfoJSON) RawJSON() string {
-	return r.raw
-}
-
-type RadarAttackLayer7TopAseGetTopOriginAsResponseResultMetaConfidenceInfoAnnotation struct {
-	DataSource      string                                                                              `json:"dataSource,required"`
-	Description     string                                                                              `json:"description,required"`
-	EventType       string                                                                              `json:"eventType,required"`
-	IsInstantaneous bool                                                                                `json:"isInstantaneous,required"`
-	EndTime         time.Time                                                                           `json:"endTime" format:"date-time"`
-	LinkedURL       string                                                                              `json:"linkedUrl"`
-	StartTime       time.Time                                                                           `json:"startTime" format:"date-time"`
-	JSON            radarAttackLayer7TopAseGetTopOriginAsResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
-}
-
-// radarAttackLayer7TopAseGetTopOriginAsResponseResultMetaConfidenceInfoAnnotationJSON
-// contains the JSON metadata for the struct
-// [RadarAttackLayer7TopAseGetTopOriginAsResponseResultMetaConfidenceInfoAnnotation]
-type radarAttackLayer7TopAseGetTopOriginAsResponseResultMetaConfidenceInfoAnnotationJSON struct {
-	DataSource      apijson.Field
-	Description     apijson.Field
-	EventType       apijson.Field
-	IsInstantaneous apijson.Field
-	EndTime         apijson.Field
-	LinkedURL       apijson.Field
-	StartTime       apijson.Field
-	raw             string
-	ExtraFields     map[string]apijson.Field
-}
-
-func (r *RadarAttackLayer7TopAseGetTopOriginAsResponseResultMetaConfidenceInfoAnnotation) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r radarAttackLayer7TopAseGetTopOriginAsResponseResultMetaConfidenceInfoAnnotationJSON) RawJSON() string {
+func (r radarAttackLayer7TopAseGetTopOriginAsResponseResultMetaUnitJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -229,15 +289,15 @@ func (r radarAttackLayer7TopAseGetTopOriginAsResponseResultTop0JSON) RawJSON() s
 }
 
 type RadarAttackLayer7TopAseGetTopOriginAsParams struct {
-	// Comma-separated list of continents (alpha-2 continent codes). Prefix with `-` to
-	// exclude continents from results. For example, `-EU,NA` excludes results from EU,
-	// but includes results from NA.
+	// Filters results by continent. Specify a comma-separated list of alpha-2 codes.
+	// Prefix with `-` to exclude continents from results. For example, `-EU,NA`
+	// excludes results from EU, but includes results from NA.
 	Continent param.Field[[]string] `query:"continent"`
 	// End of the date range (inclusive).
 	DateEnd param.Field[[]time.Time] `query:"dateEnd" format:"date-time"`
-	// Filters results by the specified date range. For example, use `7d` and
-	// `7dcontrol` to compare this week with the previous week. Use this parameter or
-	// set specific start and end dates (`dateStart` and `dateEnd` parameters).
+	// Filters results by date range. For example, use `7d` and `7dcontrol` to compare
+	// this week with the previous week. Use this parameter or set specific start and
+	// end dates (`dateStart` and `dateEnd` parameters).
 	DateRange param.Field[[]string] `query:"dateRange"`
 	// Start of the date range.
 	DateStart param.Field[[]time.Time] `query:"dateStart" format:"date-time"`
@@ -251,11 +311,11 @@ type RadarAttackLayer7TopAseGetTopOriginAsParams struct {
 	IPVersion param.Field[[]RadarAttackLayer7TopAseGetTopOriginAsParamsIPVersion] `query:"ipVersion"`
 	// Limits the number of objects returned in the response.
 	Limit param.Field[int64] `query:"limit"`
-	// Comma-separated list of locations (alpha-2 codes). Prefix with `-` to exclude
-	// locations from results. For example, `-US,PT` excludes results from the US, but
-	// includes results from PT.
+	// Filters results by location. Specify a comma-separated list of alpha-2 codes.
+	// Prefix with `-` to exclude locations from results. For example, `-US,PT`
+	// excludes results from the US, but includes results from PT.
 	Location param.Field[[]string] `query:"location"`
-	// Array of L7 mitigation products.
+	// Filters the results by layer 7 mitigation product.
 	MitigationProduct param.Field[[]RadarAttackLayer7TopAseGetTopOriginAsParamsMitigationProduct] `query:"mitigationProduct"`
 	// Array of names used to label the series in the response.
 	Name param.Field[[]string] `query:"name"`

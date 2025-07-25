@@ -86,14 +86,20 @@ func (r speedCloudflareSpeedBrainResponseJSON) RawJSON() string {
 }
 
 type ZoneSettingSpeedBrainGetResponse struct {
-	Result SpeedCloudflareSpeedBrainResponse    `json:"result"`
-	JSON   zoneSettingSpeedBrainGetResponseJSON `json:"-"`
-	SpeedAPIResponseCommon
+	Errors   []SpeedMessagesItems `json:"errors,required"`
+	Messages []SpeedMessagesItems `json:"messages,required"`
+	// Whether the API call was successful
+	Success bool                                 `json:"success,required"`
+	Result  SpeedCloudflareSpeedBrainResponse    `json:"result"`
+	JSON    zoneSettingSpeedBrainGetResponseJSON `json:"-"`
 }
 
 // zoneSettingSpeedBrainGetResponseJSON contains the JSON metadata for the struct
 // [ZoneSettingSpeedBrainGetResponse]
 type zoneSettingSpeedBrainGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -108,14 +114,20 @@ func (r zoneSettingSpeedBrainGetResponseJSON) RawJSON() string {
 }
 
 type ZoneSettingSpeedBrainUpdateResponse struct {
-	Result SpeedCloudflareSpeedBrainResponse       `json:"result"`
-	JSON   zoneSettingSpeedBrainUpdateResponseJSON `json:"-"`
-	SpeedAPIResponseCommon
+	Errors   []SpeedMessagesItems `json:"errors,required"`
+	Messages []SpeedMessagesItems `json:"messages,required"`
+	// Whether the API call was successful
+	Success bool                                    `json:"success,required"`
+	Result  SpeedCloudflareSpeedBrainResponse       `json:"result"`
+	JSON    zoneSettingSpeedBrainUpdateResponseJSON `json:"-"`
 }
 
 // zoneSettingSpeedBrainUpdateResponseJSON contains the JSON metadata for the
 // struct [ZoneSettingSpeedBrainUpdateResponse]
 type zoneSettingSpeedBrainUpdateResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field

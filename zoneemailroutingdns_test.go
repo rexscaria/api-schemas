@@ -57,15 +57,7 @@ func TestZoneEmailRoutingDNSDelete(t *testing.T) {
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Zones.Email.Routing.DNS.Delete(
-		context.TODO(),
-		"023e105f4ecef8ad9ca31a8372d0c353",
-		cfrex.ZoneEmailRoutingDNSDeleteParams{
-			EmailEmailSettingDNSRequestBody: cfrex.EmailEmailSettingDNSRequestBodyParam{
-				Name: cfrex.F("example.net"),
-			},
-		},
-	)
+	_, err := client.Zones.Email.Routing.DNS.Delete(context.TODO(), "023e105f4ecef8ad9ca31a8372d0c353")
 	if err != nil {
 		var apierr *cfrex.Error
 		if errors.As(err, &apierr) {

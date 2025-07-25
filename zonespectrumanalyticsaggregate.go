@@ -48,60 +48,23 @@ func (r *ZoneSpectrumAnalyticsAggregateService) GetCurrent(ctx context.Context, 
 	return
 }
 
-type APIResponseSingleSpectrumAnalytics struct {
-	Errors   []SpectrumAnalyticsMessageItem `json:"errors,required"`
-	Messages []SpectrumAnalyticsMessageItem `json:"messages,required"`
-	// Whether the API call was successful
-	Success APIResponseSingleSpectrumAnalyticsSuccess `json:"success,required"`
-	JSON    apiResponseSingleSpectrumAnalyticsJSON    `json:"-"`
-}
-
-// apiResponseSingleSpectrumAnalyticsJSON contains the JSON metadata for the struct
-// [APIResponseSingleSpectrumAnalytics]
-type apiResponseSingleSpectrumAnalyticsJSON struct {
-	Errors      apijson.Field
-	Messages    apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *APIResponseSingleSpectrumAnalytics) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r apiResponseSingleSpectrumAnalyticsJSON) RawJSON() string {
-	return r.raw
-}
-
-// Whether the API call was successful
-type APIResponseSingleSpectrumAnalyticsSuccess bool
-
-const (
-	APIResponseSingleSpectrumAnalyticsSuccessTrue APIResponseSingleSpectrumAnalyticsSuccess = true
-)
-
-func (r APIResponseSingleSpectrumAnalyticsSuccess) IsKnown() bool {
-	switch r {
-	case APIResponseSingleSpectrumAnalyticsSuccessTrue:
-		return true
-	}
-	return false
-}
-
 type SpectrumAnalyticsMessageItem struct {
-	Code    int64                            `json:"code,required"`
-	Message string                           `json:"message,required"`
-	JSON    spectrumAnalyticsMessageItemJSON `json:"-"`
+	Code             int64                              `json:"code,required"`
+	Message          string                             `json:"message,required"`
+	DocumentationURL string                             `json:"documentation_url"`
+	Source           SpectrumAnalyticsMessageItemSource `json:"source"`
+	JSON             spectrumAnalyticsMessageItemJSON   `json:"-"`
 }
 
 // spectrumAnalyticsMessageItemJSON contains the JSON metadata for the struct
 // [SpectrumAnalyticsMessageItem]
 type spectrumAnalyticsMessageItemJSON struct {
-	Code        apijson.Field
-	Message     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
 }
 
 func (r *SpectrumAnalyticsMessageItem) UnmarshalJSON(data []byte) (err error) {
@@ -112,15 +75,42 @@ func (r spectrumAnalyticsMessageItemJSON) RawJSON() string {
 	return r.raw
 }
 
+type SpectrumAnalyticsMessageItemSource struct {
+	Pointer string                                 `json:"pointer"`
+	JSON    spectrumAnalyticsMessageItemSourceJSON `json:"-"`
+}
+
+// spectrumAnalyticsMessageItemSourceJSON contains the JSON metadata for the struct
+// [SpectrumAnalyticsMessageItemSource]
+type spectrumAnalyticsMessageItemSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *SpectrumAnalyticsMessageItemSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r spectrumAnalyticsMessageItemSourceJSON) RawJSON() string {
+	return r.raw
+}
+
 type ZoneSpectrumAnalyticsAggregateGetCurrentResponse struct {
-	Result []ZoneSpectrumAnalyticsAggregateGetCurrentResponseResult `json:"result"`
-	JSON   zoneSpectrumAnalyticsAggregateGetCurrentResponseJSON     `json:"-"`
-	APIResponseSingleSpectrumAnalytics
+	Errors   []SpectrumAnalyticsMessageItem `json:"errors,required"`
+	Messages []SpectrumAnalyticsMessageItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success ZoneSpectrumAnalyticsAggregateGetCurrentResponseSuccess  `json:"success,required"`
+	Result  []ZoneSpectrumAnalyticsAggregateGetCurrentResponseResult `json:"result"`
+	JSON    zoneSpectrumAnalyticsAggregateGetCurrentResponseJSON     `json:"-"`
 }
 
 // zoneSpectrumAnalyticsAggregateGetCurrentResponseJSON contains the JSON metadata
 // for the struct [ZoneSpectrumAnalyticsAggregateGetCurrentResponse]
 type zoneSpectrumAnalyticsAggregateGetCurrentResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -134,8 +124,23 @@ func (r zoneSpectrumAnalyticsAggregateGetCurrentResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type ZoneSpectrumAnalyticsAggregateGetCurrentResponseSuccess bool
+
+const (
+	ZoneSpectrumAnalyticsAggregateGetCurrentResponseSuccessTrue ZoneSpectrumAnalyticsAggregateGetCurrentResponseSuccess = true
+)
+
+func (r ZoneSpectrumAnalyticsAggregateGetCurrentResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneSpectrumAnalyticsAggregateGetCurrentResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type ZoneSpectrumAnalyticsAggregateGetCurrentResponseResult struct {
-	// Identifier
+	// Application identifier.
 	AppID string `json:"appID,required"`
 	// Number of bytes sent
 	BytesEgress float64 `json:"bytesEgress,required"`

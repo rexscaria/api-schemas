@@ -34,55 +34,75 @@ func NewAccountDeviceNetworkService(opts ...option.RequestOption) (r *AccountDev
 }
 
 // Creates a new device managed network.
-func (r *AccountDeviceNetworkService) New(ctx context.Context, accountID interface{}, body AccountDeviceNetworkNewParams, opts ...option.RequestOption) (res *SingleResponseNetwork, err error) {
+func (r *AccountDeviceNetworkService) New(ctx context.Context, accountID string, body AccountDeviceNetworkNewParams, opts ...option.RequestOption) (res *SingleResponseNetwork, err error) {
 	opts = append(r.Options[:], opts...)
-	path := fmt.Sprintf("accounts/%v/devices/networks", accountID)
+	if accountID == "" {
+		err = errors.New("missing required account_id parameter")
+		return
+	}
+	path := fmt.Sprintf("accounts/%s/devices/networks", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
 
 // Fetches details for a single managed network.
-func (r *AccountDeviceNetworkService) Get(ctx context.Context, accountID interface{}, networkID string, opts ...option.RequestOption) (res *SingleResponseNetwork, err error) {
+func (r *AccountDeviceNetworkService) Get(ctx context.Context, accountID string, networkID string, opts ...option.RequestOption) (res *SingleResponseNetwork, err error) {
 	opts = append(r.Options[:], opts...)
+	if accountID == "" {
+		err = errors.New("missing required account_id parameter")
+		return
+	}
 	if networkID == "" {
 		err = errors.New("missing required network_id parameter")
 		return
 	}
-	path := fmt.Sprintf("accounts/%v/devices/networks/%s", accountID, networkID)
+	path := fmt.Sprintf("accounts/%s/devices/networks/%s", accountID, networkID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
 
 // Updates a configured device managed network.
-func (r *AccountDeviceNetworkService) Update(ctx context.Context, accountID interface{}, networkID string, body AccountDeviceNetworkUpdateParams, opts ...option.RequestOption) (res *SingleResponseNetwork, err error) {
+func (r *AccountDeviceNetworkService) Update(ctx context.Context, accountID string, networkID string, body AccountDeviceNetworkUpdateParams, opts ...option.RequestOption) (res *SingleResponseNetwork, err error) {
 	opts = append(r.Options[:], opts...)
+	if accountID == "" {
+		err = errors.New("missing required account_id parameter")
+		return
+	}
 	if networkID == "" {
 		err = errors.New("missing required network_id parameter")
 		return
 	}
-	path := fmt.Sprintf("accounts/%v/devices/networks/%s", accountID, networkID)
+	path := fmt.Sprintf("accounts/%s/devices/networks/%s", accountID, networkID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
 	return
 }
 
 // Fetches a list of managed networks for an account.
-func (r *AccountDeviceNetworkService) List(ctx context.Context, accountID interface{}, opts ...option.RequestOption) (res *ResponseCollectionDevices, err error) {
+func (r *AccountDeviceNetworkService) List(ctx context.Context, accountID string, opts ...option.RequestOption) (res *ResponseCollectionDevices, err error) {
 	opts = append(r.Options[:], opts...)
-	path := fmt.Sprintf("accounts/%v/devices/networks", accountID)
+	if accountID == "" {
+		err = errors.New("missing required account_id parameter")
+		return
+	}
+	path := fmt.Sprintf("accounts/%s/devices/networks", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
 
 // Deletes a device managed network and fetches a list of the remaining device
 // managed networks for an account.
-func (r *AccountDeviceNetworkService) Delete(ctx context.Context, accountID interface{}, networkID string, body AccountDeviceNetworkDeleteParams, opts ...option.RequestOption) (res *ResponseCollectionDevices, err error) {
+func (r *AccountDeviceNetworkService) Delete(ctx context.Context, accountID string, networkID string, opts ...option.RequestOption) (res *ResponseCollectionDevices, err error) {
 	opts = append(r.Options[:], opts...)
+	if accountID == "" {
+		err = errors.New("missing required account_id parameter")
+		return
+	}
 	if networkID == "" {
 		err = errors.New("missing required network_id parameter")
 		return
 	}
-	path := fmt.Sprintf("accounts/%v/devices/networks/%s", accountID, networkID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	path := fmt.Sprintf("accounts/%s/devices/networks/%s", accountID, networkID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
@@ -103,7 +123,8 @@ func (r ConfigRequestNetworkParam) MarshalJSON() (data []byte, err error) {
 }
 
 type DeviceManagedNetworks struct {
-	// The Managed Network TLS Config Response.
+	// The configuration object containing information for the WARP client to detect
+	// the managed network.
 	Config DeviceManagedNetworksConfig `json:"config"`
 	// The name of the device managed network. This name must be unique.
 	Name string `json:"name"`
@@ -133,7 +154,8 @@ func (r deviceManagedNetworksJSON) RawJSON() string {
 	return r.raw
 }
 
-// The Managed Network TLS Config Response.
+// The configuration object containing information for the WARP client to detect
+// the managed network.
 type DeviceManagedNetworksConfig struct {
 	// A network address of the form "host:port" that the WARP client will use to
 	// detect the presence of a TLS host.
@@ -178,15 +200,23 @@ func (r DeviceTypeManagedNetwork) IsKnown() bool {
 }
 
 type ResponseCollectionDevices struct {
-	Result []DeviceManagedNetworks       `json:"result"`
-	JSON   responseCollectionDevicesJSON `json:"-"`
-	APIResponseCollectionTeamsDevices
+	Errors   []ResponseCollectionDevicesError   `json:"errors,required"`
+	Messages []ResponseCollectionDevicesMessage `json:"messages,required"`
+	Result   []DeviceManagedNetworks            `json:"result,required,nullable"`
+	// Whether the API call was successful.
+	Success    ResponseCollectionDevicesSuccess    `json:"success,required"`
+	ResultInfo ResponseCollectionDevicesResultInfo `json:"result_info"`
+	JSON       responseCollectionDevicesJSON       `json:"-"`
 }
 
 // responseCollectionDevicesJSON contains the JSON metadata for the struct
 // [ResponseCollectionDevices]
 type responseCollectionDevicesJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -199,16 +229,164 @@ func (r responseCollectionDevicesJSON) RawJSON() string {
 	return r.raw
 }
 
+type ResponseCollectionDevicesError struct {
+	Code             int64                                 `json:"code,required"`
+	Message          string                                `json:"message,required"`
+	DocumentationURL string                                `json:"documentation_url"`
+	Source           ResponseCollectionDevicesErrorsSource `json:"source"`
+	JSON             responseCollectionDevicesErrorJSON    `json:"-"`
+}
+
+// responseCollectionDevicesErrorJSON contains the JSON metadata for the struct
+// [ResponseCollectionDevicesError]
+type responseCollectionDevicesErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *ResponseCollectionDevicesError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r responseCollectionDevicesErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type ResponseCollectionDevicesErrorsSource struct {
+	Pointer string                                    `json:"pointer"`
+	JSON    responseCollectionDevicesErrorsSourceJSON `json:"-"`
+}
+
+// responseCollectionDevicesErrorsSourceJSON contains the JSON metadata for the
+// struct [ResponseCollectionDevicesErrorsSource]
+type responseCollectionDevicesErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ResponseCollectionDevicesErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r responseCollectionDevicesErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type ResponseCollectionDevicesMessage struct {
+	Code             int64                                   `json:"code,required"`
+	Message          string                                  `json:"message,required"`
+	DocumentationURL string                                  `json:"documentation_url"`
+	Source           ResponseCollectionDevicesMessagesSource `json:"source"`
+	JSON             responseCollectionDevicesMessageJSON    `json:"-"`
+}
+
+// responseCollectionDevicesMessageJSON contains the JSON metadata for the struct
+// [ResponseCollectionDevicesMessage]
+type responseCollectionDevicesMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *ResponseCollectionDevicesMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r responseCollectionDevicesMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type ResponseCollectionDevicesMessagesSource struct {
+	Pointer string                                      `json:"pointer"`
+	JSON    responseCollectionDevicesMessagesSourceJSON `json:"-"`
+}
+
+// responseCollectionDevicesMessagesSourceJSON contains the JSON metadata for the
+// struct [ResponseCollectionDevicesMessagesSource]
+type responseCollectionDevicesMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ResponseCollectionDevicesMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r responseCollectionDevicesMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful.
+type ResponseCollectionDevicesSuccess bool
+
+const (
+	ResponseCollectionDevicesSuccessTrue ResponseCollectionDevicesSuccess = true
+)
+
+func (r ResponseCollectionDevicesSuccess) IsKnown() bool {
+	switch r {
+	case ResponseCollectionDevicesSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type ResponseCollectionDevicesResultInfo struct {
+	// Total number of results for the requested service.
+	Count float64 `json:"count"`
+	// Current page within paginated list of results.
+	Page float64 `json:"page"`
+	// Number of results per page of results.
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters.
+	TotalCount float64                                 `json:"total_count"`
+	JSON       responseCollectionDevicesResultInfoJSON `json:"-"`
+}
+
+// responseCollectionDevicesResultInfoJSON contains the JSON metadata for the
+// struct [ResponseCollectionDevicesResultInfo]
+type responseCollectionDevicesResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ResponseCollectionDevicesResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r responseCollectionDevicesResultInfoJSON) RawJSON() string {
+	return r.raw
+}
+
 type SingleResponseNetwork struct {
-	Result DeviceManagedNetworks     `json:"result"`
-	JSON   singleResponseNetworkJSON `json:"-"`
-	APIResponseSingleTeamsDevices
+	Errors   []SingleResponseNetworkError   `json:"errors,required"`
+	Messages []SingleResponseNetworkMessage `json:"messages,required"`
+	Result   DeviceManagedNetworks          `json:"result,required,nullable"`
+	// Whether the API call was successful.
+	Success SingleResponseNetworkSuccess `json:"success,required"`
+	JSON    singleResponseNetworkJSON    `json:"-"`
 }
 
 // singleResponseNetworkJSON contains the JSON metadata for the struct
 // [SingleResponseNetwork]
 type singleResponseNetworkJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -219,6 +397,117 @@ func (r *SingleResponseNetwork) UnmarshalJSON(data []byte) (err error) {
 
 func (r singleResponseNetworkJSON) RawJSON() string {
 	return r.raw
+}
+
+type SingleResponseNetworkError struct {
+	Code             int64                             `json:"code,required"`
+	Message          string                            `json:"message,required"`
+	DocumentationURL string                            `json:"documentation_url"`
+	Source           SingleResponseNetworkErrorsSource `json:"source"`
+	JSON             singleResponseNetworkErrorJSON    `json:"-"`
+}
+
+// singleResponseNetworkErrorJSON contains the JSON metadata for the struct
+// [SingleResponseNetworkError]
+type singleResponseNetworkErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *SingleResponseNetworkError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r singleResponseNetworkErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type SingleResponseNetworkErrorsSource struct {
+	Pointer string                                `json:"pointer"`
+	JSON    singleResponseNetworkErrorsSourceJSON `json:"-"`
+}
+
+// singleResponseNetworkErrorsSourceJSON contains the JSON metadata for the struct
+// [SingleResponseNetworkErrorsSource]
+type singleResponseNetworkErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *SingleResponseNetworkErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r singleResponseNetworkErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type SingleResponseNetworkMessage struct {
+	Code             int64                               `json:"code,required"`
+	Message          string                              `json:"message,required"`
+	DocumentationURL string                              `json:"documentation_url"`
+	Source           SingleResponseNetworkMessagesSource `json:"source"`
+	JSON             singleResponseNetworkMessageJSON    `json:"-"`
+}
+
+// singleResponseNetworkMessageJSON contains the JSON metadata for the struct
+// [SingleResponseNetworkMessage]
+type singleResponseNetworkMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *SingleResponseNetworkMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r singleResponseNetworkMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type SingleResponseNetworkMessagesSource struct {
+	Pointer string                                  `json:"pointer"`
+	JSON    singleResponseNetworkMessagesSourceJSON `json:"-"`
+}
+
+// singleResponseNetworkMessagesSourceJSON contains the JSON metadata for the
+// struct [SingleResponseNetworkMessagesSource]
+type singleResponseNetworkMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *SingleResponseNetworkMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r singleResponseNetworkMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful.
+type SingleResponseNetworkSuccess bool
+
+const (
+	SingleResponseNetworkSuccessTrue SingleResponseNetworkSuccess = true
+)
+
+func (r SingleResponseNetworkSuccess) IsKnown() bool {
+	switch r {
+	case SingleResponseNetworkSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountDeviceNetworkNewParams struct {
@@ -247,12 +536,4 @@ type AccountDeviceNetworkUpdateParams struct {
 
 func (r AccountDeviceNetworkUpdateParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
-}
-
-type AccountDeviceNetworkDeleteParams struct {
-	Body interface{} `json:"body,required"`
-}
-
-func (r AccountDeviceNetworkDeleteParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
 }

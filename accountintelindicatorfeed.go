@@ -124,70 +124,6 @@ func (r *AccountIntelIndicatorFeedService) UpdateMetadata(ctx context.Context, a
 	return
 }
 
-type CommonResponseIndicatorFeeds struct {
-	Errors   []CustomIndicatorFeedMessage `json:"errors,required"`
-	Messages []CustomIndicatorFeedMessage `json:"messages,required"`
-	// Whether the API call was successful
-	Success CommonResponseIndicatorFeedsSuccess `json:"success,required"`
-	JSON    commonResponseIndicatorFeedsJSON    `json:"-"`
-}
-
-// commonResponseIndicatorFeedsJSON contains the JSON metadata for the struct
-// [CommonResponseIndicatorFeeds]
-type commonResponseIndicatorFeedsJSON struct {
-	Errors      apijson.Field
-	Messages    apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *CommonResponseIndicatorFeeds) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r commonResponseIndicatorFeedsJSON) RawJSON() string {
-	return r.raw
-}
-
-// Whether the API call was successful
-type CommonResponseIndicatorFeedsSuccess bool
-
-const (
-	CommonResponseIndicatorFeedsSuccessTrue CommonResponseIndicatorFeedsSuccess = true
-)
-
-func (r CommonResponseIndicatorFeedsSuccess) IsKnown() bool {
-	switch r {
-	case CommonResponseIndicatorFeedsSuccessTrue:
-		return true
-	}
-	return false
-}
-
-type CustomIndicatorFeedMessage struct {
-	Code    int64                          `json:"code,required"`
-	Message string                         `json:"message,required"`
-	JSON    customIndicatorFeedMessageJSON `json:"-"`
-}
-
-// customIndicatorFeedMessageJSON contains the JSON metadata for the struct
-// [CustomIndicatorFeedMessage]
-type customIndicatorFeedMessageJSON struct {
-	Code        apijson.Field
-	Message     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *CustomIndicatorFeedMessage) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r customIndicatorFeedMessageJSON) RawJSON() string {
-	return r.raw
-}
-
 type FeedItem struct {
 	// The unique identifier for the indicator feed
 	ID int64 `json:"id"`
@@ -230,56 +166,21 @@ func (r feedItemJSON) RawJSON() string {
 	return r.raw
 }
 
-type SingleResponseFeed struct {
-	Errors   []CustomIndicatorFeedMessage `json:"errors,required"`
-	Messages []CustomIndicatorFeedMessage `json:"messages,required"`
-	// Whether the API call was successful
-	Success SingleResponseFeedSuccess `json:"success,required"`
-	JSON    singleResponseFeedJSON    `json:"-"`
-}
-
-// singleResponseFeedJSON contains the JSON metadata for the struct
-// [SingleResponseFeed]
-type singleResponseFeedJSON struct {
-	Errors      apijson.Field
-	Messages    apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *SingleResponseFeed) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r singleResponseFeedJSON) RawJSON() string {
-	return r.raw
-}
-
-// Whether the API call was successful
-type SingleResponseFeedSuccess bool
-
-const (
-	SingleResponseFeedSuccessTrue SingleResponseFeedSuccess = true
-)
-
-func (r SingleResponseFeedSuccess) IsKnown() bool {
-	switch r {
-	case SingleResponseFeedSuccessTrue:
-		return true
-	}
-	return false
-}
-
 type UpdateFeedResponse struct {
-	Result UpdateFeedResponseResult `json:"result"`
-	JSON   updateFeedResponseJSON   `json:"-"`
-	SingleResponseFeed
+	Errors   []UpdateFeedResponseError   `json:"errors,required"`
+	Messages []UpdateFeedResponseMessage `json:"messages,required"`
+	// Whether the API call was successful.
+	Success UpdateFeedResponseSuccess `json:"success,required"`
+	Result  UpdateFeedResponseResult  `json:"result"`
+	JSON    updateFeedResponseJSON    `json:"-"`
 }
 
 // updateFeedResponseJSON contains the JSON metadata for the struct
 // [UpdateFeedResponse]
 type updateFeedResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -291,6 +192,117 @@ func (r *UpdateFeedResponse) UnmarshalJSON(data []byte) (err error) {
 
 func (r updateFeedResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+type UpdateFeedResponseError struct {
+	Code             int64                          `json:"code,required"`
+	Message          string                         `json:"message,required"`
+	DocumentationURL string                         `json:"documentation_url"`
+	Source           UpdateFeedResponseErrorsSource `json:"source"`
+	JSON             updateFeedResponseErrorJSON    `json:"-"`
+}
+
+// updateFeedResponseErrorJSON contains the JSON metadata for the struct
+// [UpdateFeedResponseError]
+type updateFeedResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *UpdateFeedResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r updateFeedResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type UpdateFeedResponseErrorsSource struct {
+	Pointer string                             `json:"pointer"`
+	JSON    updateFeedResponseErrorsSourceJSON `json:"-"`
+}
+
+// updateFeedResponseErrorsSourceJSON contains the JSON metadata for the struct
+// [UpdateFeedResponseErrorsSource]
+type updateFeedResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *UpdateFeedResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r updateFeedResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type UpdateFeedResponseMessage struct {
+	Code             int64                            `json:"code,required"`
+	Message          string                           `json:"message,required"`
+	DocumentationURL string                           `json:"documentation_url"`
+	Source           UpdateFeedResponseMessagesSource `json:"source"`
+	JSON             updateFeedResponseMessageJSON    `json:"-"`
+}
+
+// updateFeedResponseMessageJSON contains the JSON metadata for the struct
+// [UpdateFeedResponseMessage]
+type updateFeedResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *UpdateFeedResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r updateFeedResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type UpdateFeedResponseMessagesSource struct {
+	Pointer string                               `json:"pointer"`
+	JSON    updateFeedResponseMessagesSourceJSON `json:"-"`
+}
+
+// updateFeedResponseMessagesSourceJSON contains the JSON metadata for the struct
+// [UpdateFeedResponseMessagesSource]
+type updateFeedResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *UpdateFeedResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r updateFeedResponseMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful.
+type UpdateFeedResponseSuccess bool
+
+const (
+	UpdateFeedResponseSuccessTrue UpdateFeedResponseSuccess = true
+)
+
+func (r UpdateFeedResponseSuccess) IsKnown() bool {
+	switch r {
+	case UpdateFeedResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type UpdateFeedResponseResult struct {
@@ -322,14 +334,20 @@ func (r updateFeedResponseResultJSON) RawJSON() string {
 }
 
 type AccountIntelIndicatorFeedNewFeedResponse struct {
-	Result FeedItem                                     `json:"result"`
-	JSON   accountIntelIndicatorFeedNewFeedResponseJSON `json:"-"`
-	SingleResponseFeed
+	Errors   []AccountIntelIndicatorFeedNewFeedResponseError   `json:"errors,required"`
+	Messages []AccountIntelIndicatorFeedNewFeedResponseMessage `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountIntelIndicatorFeedNewFeedResponseSuccess `json:"success,required"`
+	Result  FeedItem                                        `json:"result"`
+	JSON    accountIntelIndicatorFeedNewFeedResponseJSON    `json:"-"`
 }
 
 // accountIntelIndicatorFeedNewFeedResponseJSON contains the JSON metadata for the
 // struct [AccountIntelIndicatorFeedNewFeedResponse]
 type accountIntelIndicatorFeedNewFeedResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -343,15 +361,132 @@ func (r accountIntelIndicatorFeedNewFeedResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+type AccountIntelIndicatorFeedNewFeedResponseError struct {
+	Code             int64                                                `json:"code,required"`
+	Message          string                                               `json:"message,required"`
+	DocumentationURL string                                               `json:"documentation_url"`
+	Source           AccountIntelIndicatorFeedNewFeedResponseErrorsSource `json:"source"`
+	JSON             accountIntelIndicatorFeedNewFeedResponseErrorJSON    `json:"-"`
+}
+
+// accountIntelIndicatorFeedNewFeedResponseErrorJSON contains the JSON metadata for
+// the struct [AccountIntelIndicatorFeedNewFeedResponseError]
+type accountIntelIndicatorFeedNewFeedResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountIntelIndicatorFeedNewFeedResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountIntelIndicatorFeedNewFeedResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountIntelIndicatorFeedNewFeedResponseErrorsSource struct {
+	Pointer string                                                   `json:"pointer"`
+	JSON    accountIntelIndicatorFeedNewFeedResponseErrorsSourceJSON `json:"-"`
+}
+
+// accountIntelIndicatorFeedNewFeedResponseErrorsSourceJSON contains the JSON
+// metadata for the struct [AccountIntelIndicatorFeedNewFeedResponseErrorsSource]
+type accountIntelIndicatorFeedNewFeedResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountIntelIndicatorFeedNewFeedResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountIntelIndicatorFeedNewFeedResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountIntelIndicatorFeedNewFeedResponseMessage struct {
+	Code             int64                                                  `json:"code,required"`
+	Message          string                                                 `json:"message,required"`
+	DocumentationURL string                                                 `json:"documentation_url"`
+	Source           AccountIntelIndicatorFeedNewFeedResponseMessagesSource `json:"source"`
+	JSON             accountIntelIndicatorFeedNewFeedResponseMessageJSON    `json:"-"`
+}
+
+// accountIntelIndicatorFeedNewFeedResponseMessageJSON contains the JSON metadata
+// for the struct [AccountIntelIndicatorFeedNewFeedResponseMessage]
+type accountIntelIndicatorFeedNewFeedResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountIntelIndicatorFeedNewFeedResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountIntelIndicatorFeedNewFeedResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountIntelIndicatorFeedNewFeedResponseMessagesSource struct {
+	Pointer string                                                     `json:"pointer"`
+	JSON    accountIntelIndicatorFeedNewFeedResponseMessagesSourceJSON `json:"-"`
+}
+
+// accountIntelIndicatorFeedNewFeedResponseMessagesSourceJSON contains the JSON
+// metadata for the struct [AccountIntelIndicatorFeedNewFeedResponseMessagesSource]
+type accountIntelIndicatorFeedNewFeedResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountIntelIndicatorFeedNewFeedResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountIntelIndicatorFeedNewFeedResponseMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountIntelIndicatorFeedNewFeedResponseSuccess bool
+
+const (
+	AccountIntelIndicatorFeedNewFeedResponseSuccessTrue AccountIntelIndicatorFeedNewFeedResponseSuccess = true
+)
+
+func (r AccountIntelIndicatorFeedNewFeedResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountIntelIndicatorFeedNewFeedResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountIntelIndicatorFeedListFeedsResponse struct {
-	Result []FeedItem                                     `json:"result"`
-	JSON   accountIntelIndicatorFeedListFeedsResponseJSON `json:"-"`
-	CommonResponseIndicatorFeeds
+	Errors   []AccountIntelIndicatorFeedListFeedsResponseError   `json:"errors,required"`
+	Messages []AccountIntelIndicatorFeedListFeedsResponseMessage `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountIntelIndicatorFeedListFeedsResponseSuccess `json:"success,required"`
+	Result  []FeedItem                                        `json:"result"`
+	JSON    accountIntelIndicatorFeedListFeedsResponseJSON    `json:"-"`
 }
 
 // accountIntelIndicatorFeedListFeedsResponseJSON contains the JSON metadata for
 // the struct [AccountIntelIndicatorFeedListFeedsResponse]
 type accountIntelIndicatorFeedListFeedsResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -365,15 +500,133 @@ func (r accountIntelIndicatorFeedListFeedsResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+type AccountIntelIndicatorFeedListFeedsResponseError struct {
+	Code             int64                                                  `json:"code,required"`
+	Message          string                                                 `json:"message,required"`
+	DocumentationURL string                                                 `json:"documentation_url"`
+	Source           AccountIntelIndicatorFeedListFeedsResponseErrorsSource `json:"source"`
+	JSON             accountIntelIndicatorFeedListFeedsResponseErrorJSON    `json:"-"`
+}
+
+// accountIntelIndicatorFeedListFeedsResponseErrorJSON contains the JSON metadata
+// for the struct [AccountIntelIndicatorFeedListFeedsResponseError]
+type accountIntelIndicatorFeedListFeedsResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountIntelIndicatorFeedListFeedsResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountIntelIndicatorFeedListFeedsResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountIntelIndicatorFeedListFeedsResponseErrorsSource struct {
+	Pointer string                                                     `json:"pointer"`
+	JSON    accountIntelIndicatorFeedListFeedsResponseErrorsSourceJSON `json:"-"`
+}
+
+// accountIntelIndicatorFeedListFeedsResponseErrorsSourceJSON contains the JSON
+// metadata for the struct [AccountIntelIndicatorFeedListFeedsResponseErrorsSource]
+type accountIntelIndicatorFeedListFeedsResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountIntelIndicatorFeedListFeedsResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountIntelIndicatorFeedListFeedsResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountIntelIndicatorFeedListFeedsResponseMessage struct {
+	Code             int64                                                    `json:"code,required"`
+	Message          string                                                   `json:"message,required"`
+	DocumentationURL string                                                   `json:"documentation_url"`
+	Source           AccountIntelIndicatorFeedListFeedsResponseMessagesSource `json:"source"`
+	JSON             accountIntelIndicatorFeedListFeedsResponseMessageJSON    `json:"-"`
+}
+
+// accountIntelIndicatorFeedListFeedsResponseMessageJSON contains the JSON metadata
+// for the struct [AccountIntelIndicatorFeedListFeedsResponseMessage]
+type accountIntelIndicatorFeedListFeedsResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountIntelIndicatorFeedListFeedsResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountIntelIndicatorFeedListFeedsResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountIntelIndicatorFeedListFeedsResponseMessagesSource struct {
+	Pointer string                                                       `json:"pointer"`
+	JSON    accountIntelIndicatorFeedListFeedsResponseMessagesSourceJSON `json:"-"`
+}
+
+// accountIntelIndicatorFeedListFeedsResponseMessagesSourceJSON contains the JSON
+// metadata for the struct
+// [AccountIntelIndicatorFeedListFeedsResponseMessagesSource]
+type accountIntelIndicatorFeedListFeedsResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountIntelIndicatorFeedListFeedsResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountIntelIndicatorFeedListFeedsResponseMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountIntelIndicatorFeedListFeedsResponseSuccess bool
+
+const (
+	AccountIntelIndicatorFeedListFeedsResponseSuccessTrue AccountIntelIndicatorFeedListFeedsResponseSuccess = true
+)
+
+func (r AccountIntelIndicatorFeedListFeedsResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountIntelIndicatorFeedListFeedsResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountIntelIndicatorFeedGetMetadataResponse struct {
-	Result AccountIntelIndicatorFeedGetMetadataResponseResult `json:"result"`
-	JSON   accountIntelIndicatorFeedGetMetadataResponseJSON   `json:"-"`
-	SingleResponseFeed
+	Errors   []AccountIntelIndicatorFeedGetMetadataResponseError   `json:"errors,required"`
+	Messages []AccountIntelIndicatorFeedGetMetadataResponseMessage `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountIntelIndicatorFeedGetMetadataResponseSuccess `json:"success,required"`
+	Result  AccountIntelIndicatorFeedGetMetadataResponseResult  `json:"result"`
+	JSON    accountIntelIndicatorFeedGetMetadataResponseJSON    `json:"-"`
 }
 
 // accountIntelIndicatorFeedGetMetadataResponseJSON contains the JSON metadata for
 // the struct [AccountIntelIndicatorFeedGetMetadataResponse]
 type accountIntelIndicatorFeedGetMetadataResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -385,6 +638,119 @@ func (r *AccountIntelIndicatorFeedGetMetadataResponse) UnmarshalJSON(data []byte
 
 func (r accountIntelIndicatorFeedGetMetadataResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+type AccountIntelIndicatorFeedGetMetadataResponseError struct {
+	Code             int64                                                    `json:"code,required"`
+	Message          string                                                   `json:"message,required"`
+	DocumentationURL string                                                   `json:"documentation_url"`
+	Source           AccountIntelIndicatorFeedGetMetadataResponseErrorsSource `json:"source"`
+	JSON             accountIntelIndicatorFeedGetMetadataResponseErrorJSON    `json:"-"`
+}
+
+// accountIntelIndicatorFeedGetMetadataResponseErrorJSON contains the JSON metadata
+// for the struct [AccountIntelIndicatorFeedGetMetadataResponseError]
+type accountIntelIndicatorFeedGetMetadataResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountIntelIndicatorFeedGetMetadataResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountIntelIndicatorFeedGetMetadataResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountIntelIndicatorFeedGetMetadataResponseErrorsSource struct {
+	Pointer string                                                       `json:"pointer"`
+	JSON    accountIntelIndicatorFeedGetMetadataResponseErrorsSourceJSON `json:"-"`
+}
+
+// accountIntelIndicatorFeedGetMetadataResponseErrorsSourceJSON contains the JSON
+// metadata for the struct
+// [AccountIntelIndicatorFeedGetMetadataResponseErrorsSource]
+type accountIntelIndicatorFeedGetMetadataResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountIntelIndicatorFeedGetMetadataResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountIntelIndicatorFeedGetMetadataResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountIntelIndicatorFeedGetMetadataResponseMessage struct {
+	Code             int64                                                      `json:"code,required"`
+	Message          string                                                     `json:"message,required"`
+	DocumentationURL string                                                     `json:"documentation_url"`
+	Source           AccountIntelIndicatorFeedGetMetadataResponseMessagesSource `json:"source"`
+	JSON             accountIntelIndicatorFeedGetMetadataResponseMessageJSON    `json:"-"`
+}
+
+// accountIntelIndicatorFeedGetMetadataResponseMessageJSON contains the JSON
+// metadata for the struct [AccountIntelIndicatorFeedGetMetadataResponseMessage]
+type accountIntelIndicatorFeedGetMetadataResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountIntelIndicatorFeedGetMetadataResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountIntelIndicatorFeedGetMetadataResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountIntelIndicatorFeedGetMetadataResponseMessagesSource struct {
+	Pointer string                                                         `json:"pointer"`
+	JSON    accountIntelIndicatorFeedGetMetadataResponseMessagesSourceJSON `json:"-"`
+}
+
+// accountIntelIndicatorFeedGetMetadataResponseMessagesSourceJSON contains the JSON
+// metadata for the struct
+// [AccountIntelIndicatorFeedGetMetadataResponseMessagesSource]
+type accountIntelIndicatorFeedGetMetadataResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountIntelIndicatorFeedGetMetadataResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountIntelIndicatorFeedGetMetadataResponseMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountIntelIndicatorFeedGetMetadataResponseSuccess bool
+
+const (
+	AccountIntelIndicatorFeedGetMetadataResponseSuccessTrue AccountIntelIndicatorFeedGetMetadataResponseSuccess = true
+)
+
+func (r AccountIntelIndicatorFeedGetMetadataResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountIntelIndicatorFeedGetMetadataResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountIntelIndicatorFeedGetMetadataResponseResult struct {
@@ -460,14 +826,20 @@ func (r AccountIntelIndicatorFeedGetMetadataResponseResultLatestUploadStatus) Is
 }
 
 type AccountIntelIndicatorFeedUpdateMetadataResponse struct {
-	Result FeedItem                                            `json:"result"`
-	JSON   accountIntelIndicatorFeedUpdateMetadataResponseJSON `json:"-"`
-	SingleResponseFeed
+	Errors   []AccountIntelIndicatorFeedUpdateMetadataResponseError   `json:"errors,required"`
+	Messages []AccountIntelIndicatorFeedUpdateMetadataResponseMessage `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountIntelIndicatorFeedUpdateMetadataResponseSuccess `json:"success,required"`
+	Result  FeedItem                                               `json:"result"`
+	JSON    accountIntelIndicatorFeedUpdateMetadataResponseJSON    `json:"-"`
 }
 
 // accountIntelIndicatorFeedUpdateMetadataResponseJSON contains the JSON metadata
 // for the struct [AccountIntelIndicatorFeedUpdateMetadataResponse]
 type accountIntelIndicatorFeedUpdateMetadataResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -479,6 +851,119 @@ func (r *AccountIntelIndicatorFeedUpdateMetadataResponse) UnmarshalJSON(data []b
 
 func (r accountIntelIndicatorFeedUpdateMetadataResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+type AccountIntelIndicatorFeedUpdateMetadataResponseError struct {
+	Code             int64                                                       `json:"code,required"`
+	Message          string                                                      `json:"message,required"`
+	DocumentationURL string                                                      `json:"documentation_url"`
+	Source           AccountIntelIndicatorFeedUpdateMetadataResponseErrorsSource `json:"source"`
+	JSON             accountIntelIndicatorFeedUpdateMetadataResponseErrorJSON    `json:"-"`
+}
+
+// accountIntelIndicatorFeedUpdateMetadataResponseErrorJSON contains the JSON
+// metadata for the struct [AccountIntelIndicatorFeedUpdateMetadataResponseError]
+type accountIntelIndicatorFeedUpdateMetadataResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountIntelIndicatorFeedUpdateMetadataResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountIntelIndicatorFeedUpdateMetadataResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountIntelIndicatorFeedUpdateMetadataResponseErrorsSource struct {
+	Pointer string                                                          `json:"pointer"`
+	JSON    accountIntelIndicatorFeedUpdateMetadataResponseErrorsSourceJSON `json:"-"`
+}
+
+// accountIntelIndicatorFeedUpdateMetadataResponseErrorsSourceJSON contains the
+// JSON metadata for the struct
+// [AccountIntelIndicatorFeedUpdateMetadataResponseErrorsSource]
+type accountIntelIndicatorFeedUpdateMetadataResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountIntelIndicatorFeedUpdateMetadataResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountIntelIndicatorFeedUpdateMetadataResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountIntelIndicatorFeedUpdateMetadataResponseMessage struct {
+	Code             int64                                                         `json:"code,required"`
+	Message          string                                                        `json:"message,required"`
+	DocumentationURL string                                                        `json:"documentation_url"`
+	Source           AccountIntelIndicatorFeedUpdateMetadataResponseMessagesSource `json:"source"`
+	JSON             accountIntelIndicatorFeedUpdateMetadataResponseMessageJSON    `json:"-"`
+}
+
+// accountIntelIndicatorFeedUpdateMetadataResponseMessageJSON contains the JSON
+// metadata for the struct [AccountIntelIndicatorFeedUpdateMetadataResponseMessage]
+type accountIntelIndicatorFeedUpdateMetadataResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountIntelIndicatorFeedUpdateMetadataResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountIntelIndicatorFeedUpdateMetadataResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountIntelIndicatorFeedUpdateMetadataResponseMessagesSource struct {
+	Pointer string                                                            `json:"pointer"`
+	JSON    accountIntelIndicatorFeedUpdateMetadataResponseMessagesSourceJSON `json:"-"`
+}
+
+// accountIntelIndicatorFeedUpdateMetadataResponseMessagesSourceJSON contains the
+// JSON metadata for the struct
+// [AccountIntelIndicatorFeedUpdateMetadataResponseMessagesSource]
+type accountIntelIndicatorFeedUpdateMetadataResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountIntelIndicatorFeedUpdateMetadataResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountIntelIndicatorFeedUpdateMetadataResponseMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountIntelIndicatorFeedUpdateMetadataResponseSuccess bool
+
+const (
+	AccountIntelIndicatorFeedUpdateMetadataResponseSuccessTrue AccountIntelIndicatorFeedUpdateMetadataResponseSuccess = true
+)
+
+func (r AccountIntelIndicatorFeedUpdateMetadataResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountIntelIndicatorFeedUpdateMetadataResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountIntelIndicatorFeedNewFeedParams struct {

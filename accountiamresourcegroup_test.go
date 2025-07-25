@@ -13,7 +13,7 @@ import (
 	"github.com/rexscaria/api-schemas/option"
 )
 
-func TestAccountIamResourceGroupNewWithOptionalParams(t *testing.T) {
+func TestAccountIamResourceGroupNew(t *testing.T) {
 	t.Skip("skipped: tests are disabled for the time being")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -29,19 +29,15 @@ func TestAccountIamResourceGroupNewWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Accounts.Iam.ResourceGroups.New(
 		context.TODO(),
-		"eb78d65290b24279ba6f44721b3ea3c4",
+		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.AccountIamResourceGroupNewParams{
-			IamCreateResourceGroup: cfrex.IamCreateResourceGroupParam{
-				Scope: cfrex.F(cfrex.IamCreateScopeParam{
-					Key: cfrex.F[any]("com.cloudflare.api.account.eb78d65290b24279ba6f44721b3ea3c4"),
-					Objects: cfrex.F([]cfrex.IamCreateScopeObjectParam{{
-						Key: cfrex.F[any]("com.cloudflare.api.account.zone.23f8d65290b24279ba6f44721b3eaad5"),
-					}}),
-				}),
-				Meta: cfrex.F[any](map[string]interface{}{
-					"editable": "false",
-				}),
-			},
+			Name: cfrex.F("NewResourceGroup"),
+			Scope: cfrex.F(cfrex.IamCreateScopeParam{
+				Key: cfrex.F("com.cloudflare.api.account.eb78d65290b24279ba6f44721b3ea3c4"),
+				Objects: cfrex.F([]cfrex.IamCreateScopeObjectParam{{
+					Key: cfrex.F("com.cloudflare.api.account.zone.23f8d65290b24279ba6f44721b3eaad5"),
+				}}),
+			}),
 		},
 	)
 	if err != nil {
@@ -69,8 +65,8 @@ func TestAccountIamResourceGroupGet(t *testing.T) {
 	)
 	_, err := client.Accounts.Iam.ResourceGroups.Get(
 		context.TODO(),
-		"eb78d65290b24279ba6f44721b3ea3c4",
-		"6d7f2f5f5b1d4a0e9081fdc98d432fd1",
+		"023e105f4ecef8ad9ca31a8372d0c353",
+		"023e105f4ecef8ad9ca31a8372d0c353",
 	)
 	if err != nil {
 		var apierr *cfrex.Error
@@ -97,20 +93,16 @@ func TestAccountIamResourceGroupUpdateWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Accounts.Iam.ResourceGroups.Update(
 		context.TODO(),
-		"eb78d65290b24279ba6f44721b3ea3c4",
-		"6d7f2f5f5b1d4a0e9081fdc98d432fd1",
+		"023e105f4ecef8ad9ca31a8372d0c353",
+		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.AccountIamResourceGroupUpdateParams{
-			IamCreateResourceGroup: cfrex.IamCreateResourceGroupParam{
-				Scope: cfrex.F(cfrex.IamCreateScopeParam{
-					Key: cfrex.F[any]("com.cloudflare.api.account.eb78d65290b24279ba6f44721b3ea3c4"),
-					Objects: cfrex.F([]cfrex.IamCreateScopeObjectParam{{
-						Key: cfrex.F[any]("com.cloudflare.api.account.zone.23f8d65290b24279ba6f44721b3eaad5"),
-					}}),
-				}),
-				Meta: cfrex.F[any](map[string]interface{}{
-					"editable": "false",
-				}),
-			},
+			Name: cfrex.F("UpdatedResourceGroup"),
+			Scope: cfrex.F(cfrex.IamCreateScopeParam{
+				Key: cfrex.F("com.cloudflare.api.account.eb78d65290b24279ba6f44721b3ea3c4"),
+				Objects: cfrex.F([]cfrex.IamCreateScopeObjectParam{{
+					Key: cfrex.F("com.cloudflare.api.account.zone.23f8d65290b24279ba6f44721b3eaad5"),
+				}}),
+			}),
 		},
 	)
 	if err != nil {
@@ -138,9 +130,9 @@ func TestAccountIamResourceGroupListWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Accounts.Iam.ResourceGroups.List(
 		context.TODO(),
-		"eb78d65290b24279ba6f44721b3ea3c4",
+		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.AccountIamResourceGroupListParams{
-			ID:      cfrex.F("6d7f2f5f5b1d4a0e9081fdc98d432fd1"),
+			ID:      cfrex.F("023e105f4ecef8ad9ca31a8372d0c353"),
 			Name:    cfrex.F("NameOfTheResourceGroup"),
 			Page:    cfrex.F(1.000000),
 			PerPage: cfrex.F(5.000000),
@@ -171,11 +163,8 @@ func TestAccountIamResourceGroupDelete(t *testing.T) {
 	)
 	_, err := client.Accounts.Iam.ResourceGroups.Delete(
 		context.TODO(),
-		"eb78d65290b24279ba6f44721b3ea3c4",
-		"6d7f2f5f5b1d4a0e9081fdc98d432fd1",
-		cfrex.AccountIamResourceGroupDeleteParams{
-			Body: map[string]interface{}{},
-		},
+		"023e105f4ecef8ad9ca31a8372d0c353",
+		"023e105f4ecef8ad9ca31a8372d0c353",
 	)
 	if err != nil {
 		var apierr *cfrex.Error

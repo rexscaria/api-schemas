@@ -31,21 +31,19 @@ func TestZoneDNSRecordNewWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.ZoneDNSRecordNewParams{
-			DNSRecordPost: cfrex.DNSRecordPostDNSRecordsARecordParam(cfrex.DNSRecordPostDNSRecordsARecordParam{
-				SharedFieldsParam: cfrex.SharedFieldsParam{
-					Comment: cfrex.F("Domain verification record"),
-					Name:    cfrex.F("example.com"),
-					Proxied: cfrex.F(true),
-					Settings: cfrex.F(cfrex.SharedFieldsSettingsParam{
-						Ipv4Only: cfrex.F(true),
-						Ipv6Only: cfrex.F(true),
-					}),
-					Tags: cfrex.F([]string{"owner:dns-team"}),
-					Ttl:  cfrex.F(cfrex.SharedFieldsTtl1),
-				},
-				Content: cfrex.F("198.51.100.4"),
+			DNSRecordPost: cfrex.DNSRecordPostDNSRecordsARecordParam{
+				Name:    cfrex.F("example.com"),
+				Ttl:     cfrex.F(cfrex.DNSRecordPostDNSRecordsARecordTtl1),
 				Type:    cfrex.F(cfrex.DNSRecordPostDNSRecordsARecordTypeA),
-			}),
+				Comment: cfrex.F("Domain verification record"),
+				Content: cfrex.F("198.51.100.4"),
+				Proxied: cfrex.F(true),
+				Settings: cfrex.F(cfrex.DNSRecordPostDNSRecordsARecordSettingsParam{
+					Ipv4Only: cfrex.F(true),
+					Ipv6Only: cfrex.F(true),
+				}),
+				Tags: cfrex.F([]string{"owner:dns-team"}),
+			},
 		},
 	)
 	if err != nil {
@@ -104,21 +102,19 @@ func TestZoneDNSRecordUpdateWithOptionalParams(t *testing.T) {
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.ZoneDNSRecordUpdateParams{
-			DNSRecordPatch: cfrex.DNSRecordPatchDNSRecordsARecordParam(cfrex.DNSRecordPatchDNSRecordsARecordParam{
-				SharedFieldsParam: cfrex.SharedFieldsParam{
-					Comment: cfrex.F("Domain verification record"),
-					Name:    cfrex.F("example.com"),
-					Proxied: cfrex.F(true),
-					Settings: cfrex.F(cfrex.SharedFieldsSettingsParam{
-						Ipv4Only: cfrex.F(true),
-						Ipv6Only: cfrex.F(true),
-					}),
-					Tags: cfrex.F([]string{"owner:dns-team"}),
-					Ttl:  cfrex.F(cfrex.SharedFieldsTtl1),
-				},
-				Content: cfrex.F("198.51.100.4"),
+			DNSRecordPatch: cfrex.DNSRecordPatchDNSRecordsARecordParam{
+				Name:    cfrex.F("example.com"),
+				Ttl:     cfrex.F(cfrex.DNSRecordPatchDNSRecordsARecordTtl1),
 				Type:    cfrex.F(cfrex.DNSRecordPatchDNSRecordsARecordTypeA),
-			}),
+				Comment: cfrex.F("Domain verification record"),
+				Content: cfrex.F("198.51.100.4"),
+				Proxied: cfrex.F(true),
+				Settings: cfrex.F(cfrex.DNSRecordPatchDNSRecordsARecordSettingsParam{
+					Ipv4Only: cfrex.F(true),
+					Ipv6Only: cfrex.F(true),
+				}),
+				Tags: cfrex.F([]string{"owner:dns-team"}),
+			},
 		},
 	)
 	if err != nil {
@@ -214,9 +210,6 @@ func TestZoneDNSRecordDelete(t *testing.T) {
 		context.TODO(),
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		"023e105f4ecef8ad9ca31a8372d0c353",
-		cfrex.ZoneDNSRecordDeleteParams{
-			Body: map[string]interface{}{},
-		},
 	)
 	if err != nil {
 		var apierr *cfrex.Error
@@ -248,53 +241,47 @@ func TestZoneDNSRecordBatchWithOptionalParams(t *testing.T) {
 			Deletes: cfrex.F([]cfrex.ZoneDNSRecordBatchParamsDelete{{
 				ID: cfrex.F("023e105f4ecef8ad9ca31a8372d0c353"),
 			}}),
-			Patches: cfrex.F([]cfrex.ZoneDNSRecordBatchParamsPatchUnion{cfrex.ZoneDNSRecordBatchParamsPatchesDNSRecordsARecord(cfrex.ZoneDNSRecordBatchParamsPatchesDNSRecordsARecord{
-				SharedFieldsParam: cfrex.SharedFieldsParam{
-					Comment: cfrex.F("Domain verification record"),
-					Name:    cfrex.F("example.com"),
-					Proxied: cfrex.F(true),
-					Settings: cfrex.F(cfrex.SharedFieldsSettingsParam{
-						Ipv4Only: cfrex.F(true),
-						Ipv6Only: cfrex.F(true),
-					}),
-					Tags: cfrex.F([]string{"owner:dns-team"}),
-					Ttl:  cfrex.F(cfrex.SharedFieldsTtl1),
-				},
-				ID:      cfrex.F("023e105f4ecef8ad9ca31a8372d0c353"),
-				Content: cfrex.F("198.51.100.4"),
+			Patches: cfrex.F([]cfrex.ZoneDNSRecordBatchParamsPatchUnion{cfrex.ZoneDNSRecordBatchParamsPatchesDNSRecordsARecord{
+				Name:    cfrex.F("example.com"),
+				Ttl:     cfrex.F(cfrex.ZoneDNSRecordBatchParamsPatchesDNSRecordsARecordTtl1),
 				Type:    cfrex.F(cfrex.ZoneDNSRecordBatchParamsPatchesDNSRecordsARecordTypeA),
-			})}),
-			Posts: cfrex.F([]cfrex.DNSRecordPostUnionParam{cfrex.DNSRecordPostDNSRecordsARecordParam(cfrex.DNSRecordPostDNSRecordsARecordParam{
-				SharedFieldsParam: cfrex.SharedFieldsParam{
-					Comment: cfrex.F("Domain verification record"),
-					Name:    cfrex.F("example.com"),
-					Proxied: cfrex.F(true),
-					Settings: cfrex.F(cfrex.SharedFieldsSettingsParam{
-						Ipv4Only: cfrex.F(true),
-						Ipv6Only: cfrex.F(true),
-					}),
-					Tags: cfrex.F([]string{"owner:dns-team"}),
-					Ttl:  cfrex.F(cfrex.SharedFieldsTtl1),
-				},
-				Content: cfrex.F("198.51.100.4"),
-				Type:    cfrex.F(cfrex.DNSRecordPostDNSRecordsARecordTypeA),
-			})}),
-			Puts: cfrex.F([]cfrex.ZoneDNSRecordBatchParamsPutUnion{cfrex.ZoneDNSRecordBatchParamsPutsDNSRecordsARecord(cfrex.ZoneDNSRecordBatchParamsPutsDNSRecordsARecord{
-				SharedFieldsParam: cfrex.SharedFieldsParam{
-					Comment: cfrex.F("Domain verification record"),
-					Name:    cfrex.F("example.com"),
-					Proxied: cfrex.F(true),
-					Settings: cfrex.F(cfrex.SharedFieldsSettingsParam{
-						Ipv4Only: cfrex.F(true),
-						Ipv6Only: cfrex.F(true),
-					}),
-					Tags: cfrex.F([]string{"owner:dns-team"}),
-					Ttl:  cfrex.F(cfrex.SharedFieldsTtl1),
-				},
 				ID:      cfrex.F("023e105f4ecef8ad9ca31a8372d0c353"),
+				Comment: cfrex.F("Domain verification record"),
 				Content: cfrex.F("198.51.100.4"),
+				Proxied: cfrex.F(true),
+				Settings: cfrex.F(cfrex.ZoneDNSRecordBatchParamsPatchesDNSRecordsARecordSettings{
+					Ipv4Only: cfrex.F(true),
+					Ipv6Only: cfrex.F(true),
+				}),
+				Tags: cfrex.F([]string{"owner:dns-team"}),
+			}}),
+			Posts: cfrex.F([]cfrex.DNSRecordPostUnionParam{cfrex.DNSRecordPostDNSRecordsARecordParam{
+				Name:    cfrex.F("example.com"),
+				Ttl:     cfrex.F(cfrex.DNSRecordPostDNSRecordsARecordTtl1),
+				Type:    cfrex.F(cfrex.DNSRecordPostDNSRecordsARecordTypeA),
+				Comment: cfrex.F("Domain verification record"),
+				Content: cfrex.F("198.51.100.4"),
+				Proxied: cfrex.F(true),
+				Settings: cfrex.F(cfrex.DNSRecordPostDNSRecordsARecordSettingsParam{
+					Ipv4Only: cfrex.F(true),
+					Ipv6Only: cfrex.F(true),
+				}),
+				Tags: cfrex.F([]string{"owner:dns-team"}),
+			}}),
+			Puts: cfrex.F([]cfrex.ZoneDNSRecordBatchParamsPutUnion{cfrex.ZoneDNSRecordBatchParamsPutsDNSRecordsARecord{
+				Name:    cfrex.F("example.com"),
+				Ttl:     cfrex.F(cfrex.ZoneDNSRecordBatchParamsPutsDNSRecordsARecordTtl1),
 				Type:    cfrex.F(cfrex.ZoneDNSRecordBatchParamsPutsDNSRecordsARecordTypeA),
-			})}),
+				ID:      cfrex.F("023e105f4ecef8ad9ca31a8372d0c353"),
+				Comment: cfrex.F("Domain verification record"),
+				Content: cfrex.F("198.51.100.4"),
+				Proxied: cfrex.F(true),
+				Settings: cfrex.F(cfrex.ZoneDNSRecordBatchParamsPutsDNSRecordsARecordSettings{
+					Ipv4Only: cfrex.F(true),
+					Ipv6Only: cfrex.F(true),
+				}),
+				Tags: cfrex.F([]string{"owner:dns-team"}),
+			}}),
 		},
 	)
 	if err != nil {
@@ -380,21 +367,19 @@ func TestZoneDNSRecordOverwriteWithOptionalParams(t *testing.T) {
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.ZoneDNSRecordOverwriteParams{
-			DNSRecordPost: cfrex.DNSRecordPostDNSRecordsARecordParam(cfrex.DNSRecordPostDNSRecordsARecordParam{
-				SharedFieldsParam: cfrex.SharedFieldsParam{
-					Comment: cfrex.F("Domain verification record"),
-					Name:    cfrex.F("example.com"),
-					Proxied: cfrex.F(true),
-					Settings: cfrex.F(cfrex.SharedFieldsSettingsParam{
-						Ipv4Only: cfrex.F(true),
-						Ipv6Only: cfrex.F(true),
-					}),
-					Tags: cfrex.F([]string{"owner:dns-team"}),
-					Ttl:  cfrex.F(cfrex.SharedFieldsTtl1),
-				},
-				Content: cfrex.F("198.51.100.4"),
+			DNSRecordPost: cfrex.DNSRecordPostDNSRecordsARecordParam{
+				Name:    cfrex.F("example.com"),
+				Ttl:     cfrex.F(cfrex.DNSRecordPostDNSRecordsARecordTtl1),
 				Type:    cfrex.F(cfrex.DNSRecordPostDNSRecordsARecordTypeA),
-			}),
+				Comment: cfrex.F("Domain verification record"),
+				Content: cfrex.F("198.51.100.4"),
+				Proxied: cfrex.F(true),
+				Settings: cfrex.F(cfrex.DNSRecordPostDNSRecordsARecordSettingsParam{
+					Ipv4Only: cfrex.F(true),
+					Ipv6Only: cfrex.F(true),
+				}),
+				Tags: cfrex.F([]string{"owner:dns-team"}),
+			},
 		},
 	)
 	if err != nil {

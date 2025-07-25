@@ -72,14 +72,20 @@ func (r *AccountDlpDatasetUploadService) Version(ctx context.Context, accountID 
 }
 
 type AccountDlpDatasetUploadPrepareResponse struct {
-	Result AccountDlpDatasetUploadPrepareResponseResult `json:"result"`
-	JSON   accountDlpDatasetUploadPrepareResponseJSON   `json:"-"`
-	APIResponseSingleDlp
+	Errors   []MessagesDlpItems `json:"errors,required"`
+	Messages []MessagesDlpItems `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountDlpDatasetUploadPrepareResponseSuccess `json:"success,required"`
+	Result  AccountDlpDatasetUploadPrepareResponseResult  `json:"result"`
+	JSON    accountDlpDatasetUploadPrepareResponseJSON    `json:"-"`
 }
 
 // accountDlpDatasetUploadPrepareResponseJSON contains the JSON metadata for the
 // struct [AccountDlpDatasetUploadPrepareResponse]
 type accountDlpDatasetUploadPrepareResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -93,10 +99,26 @@ func (r accountDlpDatasetUploadPrepareResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountDlpDatasetUploadPrepareResponseSuccess bool
+
+const (
+	AccountDlpDatasetUploadPrepareResponseSuccessTrue AccountDlpDatasetUploadPrepareResponseSuccess = true
+)
+
+func (r AccountDlpDatasetUploadPrepareResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountDlpDatasetUploadPrepareResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountDlpDatasetUploadPrepareResponseResult struct {
 	EncodingVersion int64                                            `json:"encoding_version,required"`
 	MaxCells        int64                                            `json:"max_cells,required"`
 	Version         int64                                            `json:"version,required"`
+	CaseSensitive   bool                                             `json:"case_sensitive"`
 	Columns         []DatasetColumn                                  `json:"columns"`
 	Secret          string                                           `json:"secret" format:"password"`
 	JSON            accountDlpDatasetUploadPrepareResponseResultJSON `json:"-"`
@@ -108,6 +130,7 @@ type accountDlpDatasetUploadPrepareResponseResultJSON struct {
 	EncodingVersion apijson.Field
 	MaxCells        apijson.Field
 	Version         apijson.Field
+	CaseSensitive   apijson.Field
 	Columns         apijson.Field
 	Secret          apijson.Field
 	raw             string
@@ -123,14 +146,20 @@ func (r accountDlpDatasetUploadPrepareResponseResultJSON) RawJSON() string {
 }
 
 type AccountDlpDatasetUploadVersionResponse struct {
-	Result Dataset                                    `json:"result"`
-	JSON   accountDlpDatasetUploadVersionResponseJSON `json:"-"`
-	APIResponseSingleDlp
+	Errors   []MessagesDlpItems `json:"errors,required"`
+	Messages []MessagesDlpItems `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountDlpDatasetUploadVersionResponseSuccess `json:"success,required"`
+	Result  Dataset                                       `json:"result"`
+	JSON    accountDlpDatasetUploadVersionResponseJSON    `json:"-"`
 }
 
 // accountDlpDatasetUploadVersionResponseJSON contains the JSON metadata for the
 // struct [AccountDlpDatasetUploadVersionResponse]
 type accountDlpDatasetUploadVersionResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -142,6 +171,21 @@ func (r *AccountDlpDatasetUploadVersionResponse) UnmarshalJSON(data []byte) (err
 
 func (r accountDlpDatasetUploadVersionResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountDlpDatasetUploadVersionResponseSuccess bool
+
+const (
+	AccountDlpDatasetUploadVersionResponseSuccessTrue AccountDlpDatasetUploadVersionResponseSuccess = true
+)
+
+func (r AccountDlpDatasetUploadVersionResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountDlpDatasetUploadVersionResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountDlpDatasetUploadVersionParams struct {

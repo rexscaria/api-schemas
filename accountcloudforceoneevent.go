@@ -50,37 +50,49 @@ func NewAccountCloudforceOneEventService(opts ...option.RequestOption) (r *Accou
 	return
 }
 
-// Events must be created in a client-specific dataset, which means the `datasetId`
-// parameter must be defined. To create a dataset, see the
+// To create a dataset, see the
 // [`Create Dataset`](https://developers.cloudflare.com/api/resources/cloudforce_one/subresources/threat_events/subresources/datasets/methods/create/)
-// endpoint.
-func (r *AccountCloudforceOneEventService) New(ctx context.Context, accountID float64, body AccountCloudforceOneEventNewParams, opts ...option.RequestOption) (res *AccountCloudforceOneEventNewResponse, err error) {
+// endpoint. When `datasetId` parameter is unspecified, it will be created in a
+// default dataset named `Cloudforce One Threat Events`.
+func (r *AccountCloudforceOneEventService) New(ctx context.Context, accountID string, body AccountCloudforceOneEventNewParams, opts ...option.RequestOption) (res *AccountCloudforceOneEventNewResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	path := fmt.Sprintf("accounts/%v/cloudforce-one/events/create", accountID)
+	if accountID == "" {
+		err = errors.New("missing required account_id parameter")
+		return
+	}
+	path := fmt.Sprintf("accounts/%s/cloudforce-one/events/create", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
 
 // Reads an event
-func (r *AccountCloudforceOneEventService) Get(ctx context.Context, accountID float64, eventID string, opts ...option.RequestOption) (res *AccountCloudforceOneEventGetResponse, err error) {
+func (r *AccountCloudforceOneEventService) Get(ctx context.Context, accountID string, eventID string, opts ...option.RequestOption) (res *AccountCloudforceOneEventGetResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	if accountID == "" {
+		err = errors.New("missing required account_id parameter")
+		return
+	}
 	if eventID == "" {
 		err = errors.New("missing required event_id parameter")
 		return
 	}
-	path := fmt.Sprintf("accounts/%v/cloudforce-one/events/%s", accountID, eventID)
+	path := fmt.Sprintf("accounts/%s/cloudforce-one/events/%s", accountID, eventID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
 
 // Updates an event
-func (r *AccountCloudforceOneEventService) Update(ctx context.Context, accountID float64, eventID string, body AccountCloudforceOneEventUpdateParams, opts ...option.RequestOption) (res *AccountCloudforceOneEventUpdateResponse, err error) {
+func (r *AccountCloudforceOneEventService) Update(ctx context.Context, accountID string, eventID string, body AccountCloudforceOneEventUpdateParams, opts ...option.RequestOption) (res *AccountCloudforceOneEventUpdateResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	if accountID == "" {
+		err = errors.New("missing required account_id parameter")
+		return
+	}
 	if eventID == "" {
 		err = errors.New("missing required event_id parameter")
 		return
 	}
-	path := fmt.Sprintf("accounts/%v/cloudforce-one/events/%s", accountID, eventID)
+	path := fmt.Sprintf("accounts/%s/cloudforce-one/events/%s", accountID, eventID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
@@ -89,13 +101,17 @@ func (r *AccountCloudforceOneEventService) Update(ctx context.Context, accountID
 // IDs) in your account, use the
 // [`List Datasets`](https://developers.cloudflare.com/api/resources/cloudforce_one/subresources/threat_events/subresources/datasets/methods/list/)
 // endpoint.
-func (r *AccountCloudforceOneEventService) Delete(ctx context.Context, accountID float64, eventID string, opts ...option.RequestOption) (res *AccountCloudforceOneEventDeleteResponse, err error) {
+func (r *AccountCloudforceOneEventService) Delete(ctx context.Context, accountID string, eventID string, opts ...option.RequestOption) (res *AccountCloudforceOneEventDeleteResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	if accountID == "" {
+		err = errors.New("missing required account_id parameter")
+		return
+	}
 	if eventID == "" {
 		err = errors.New("missing required event_id parameter")
 		return
 	}
-	path := fmt.Sprintf("accounts/%v/cloudforce-one/events/%s", accountID, eventID)
+	path := fmt.Sprintf("accounts/%s/cloudforce-one/events/%s", accountID, eventID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
@@ -104,41 +120,61 @@ func (r *AccountCloudforceOneEventService) Delete(ctx context.Context, accountID
 // IDs) in your account, use the
 // [`List Datasets`](https://developers.cloudflare.com/api/resources/cloudforce_one/subresources/threat_events/subresources/datasets/methods/list/)
 // endpoint.
-func (r *AccountCloudforceOneEventService) NewBulk(ctx context.Context, accountID float64, body AccountCloudforceOneEventNewBulkParams, opts ...option.RequestOption) (res *[]AccountCloudforceOneEventNewBulkResponse, err error) {
+func (r *AccountCloudforceOneEventService) NewBulk(ctx context.Context, accountID string, body AccountCloudforceOneEventNewBulkParams, opts ...option.RequestOption) (res *float64, err error) {
 	opts = append(r.Options[:], opts...)
-	path := fmt.Sprintf("accounts/%v/cloudforce-one/events/create/bulk", accountID)
+	if accountID == "" {
+		err = errors.New("missing required account_id parameter")
+		return
+	}
+	path := fmt.Sprintf("accounts/%s/cloudforce-one/events/create/bulk", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
 
 // Lists attackers
-func (r *AccountCloudforceOneEventService) ListAttackers(ctx context.Context, accountID float64, opts ...option.RequestOption) (res *AccountCloudforceOneEventListAttackersResponse, err error) {
+func (r *AccountCloudforceOneEventService) ListAttackers(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountCloudforceOneEventListAttackersResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	path := fmt.Sprintf("accounts/%v/cloudforce-one/events/attackers", accountID)
+	if accountID == "" {
+		err = errors.New("missing required account_id parameter")
+		return
+	}
+	path := fmt.Sprintf("accounts/%s/cloudforce-one/events/attackers", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
 
 // Retrieves countries information for all countries
-func (r *AccountCloudforceOneEventService) ListCountries(ctx context.Context, accountID float64, opts ...option.RequestOption) (res *[]AccountCloudforceOneEventListCountriesResponse, err error) {
+func (r *AccountCloudforceOneEventService) ListCountries(ctx context.Context, accountID string, opts ...option.RequestOption) (res *[]AccountCloudforceOneEventListCountriesResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	path := fmt.Sprintf("accounts/%v/cloudforce-one/events/countries", accountID)
+	if accountID == "" {
+		err = errors.New("missing required account_id parameter")
+		return
+	}
+	path := fmt.Sprintf("accounts/%s/cloudforce-one/events/countries", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
 
 // Lists all indicator types
-func (r *AccountCloudforceOneEventService) ListIndicatorTypes(ctx context.Context, accountID float64, opts ...option.RequestOption) (res *AccountCloudforceOneEventListIndicatorTypesResponse, err error) {
+func (r *AccountCloudforceOneEventService) ListIndicatorTypes(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountCloudforceOneEventListIndicatorTypesResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	path := fmt.Sprintf("accounts/%v/cloudforce-one/events/indicatorTypes", accountID)
+	if accountID == "" {
+		err = errors.New("missing required account_id parameter")
+		return
+	}
+	path := fmt.Sprintf("accounts/%s/cloudforce-one/events/indicatorTypes", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
 
 // Lists all target industries
-func (r *AccountCloudforceOneEventService) ListTargetIndustries(ctx context.Context, accountID float64, opts ...option.RequestOption) (res *AccountCloudforceOneEventListTargetIndustriesResponse, err error) {
+func (r *AccountCloudforceOneEventService) ListTargetIndustries(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountCloudforceOneEventListTargetIndustriesResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	path := fmt.Sprintf("accounts/%v/cloudforce-one/events/targetIndustries", accountID)
+	if accountID == "" {
+		err = errors.New("missing required account_id parameter")
+		return
+	}
+	path := fmt.Sprintf("accounts/%s/cloudforce-one/events/targetIndustries", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
@@ -149,7 +185,6 @@ type AccountCloudforceOneEventNewResponse struct {
 	Attacker        string                                   `json:"attacker,required"`
 	AttackerCountry string                                   `json:"attackerCountry,required"`
 	Category        string                                   `json:"category,required"`
-	CategoryID      float64                                  `json:"categoryId,required"`
 	Date            string                                   `json:"date,required"`
 	Event           string                                   `json:"event,required"`
 	Indicator       string                                   `json:"indicator,required"`
@@ -182,7 +217,6 @@ type accountCloudforceOneEventNewResponseJSON struct {
 	Attacker        apijson.Field
 	AttackerCountry apijson.Field
 	Category        apijson.Field
-	CategoryID      apijson.Field
 	Date            apijson.Field
 	Event           apijson.Field
 	Indicator       apijson.Field
@@ -222,7 +256,6 @@ type AccountCloudforceOneEventGetResponse struct {
 	Attacker        string                                   `json:"attacker,required"`
 	AttackerCountry string                                   `json:"attackerCountry,required"`
 	Category        string                                   `json:"category,required"`
-	CategoryID      float64                                  `json:"categoryId,required"`
 	Date            string                                   `json:"date,required"`
 	Event           string                                   `json:"event,required"`
 	Indicator       string                                   `json:"indicator,required"`
@@ -255,7 +288,6 @@ type accountCloudforceOneEventGetResponseJSON struct {
 	Attacker        apijson.Field
 	AttackerCountry apijson.Field
 	Category        apijson.Field
-	CategoryID      apijson.Field
 	Date            apijson.Field
 	Event           apijson.Field
 	Indicator       apijson.Field
@@ -295,7 +327,6 @@ type AccountCloudforceOneEventUpdateResponse struct {
 	Attacker        string                                      `json:"attacker,required"`
 	AttackerCountry string                                      `json:"attackerCountry,required"`
 	Category        string                                      `json:"category,required"`
-	CategoryID      float64                                     `json:"categoryId,required"`
 	Date            string                                      `json:"date,required"`
 	Event           string                                      `json:"event,required"`
 	Indicator       string                                      `json:"indicator,required"`
@@ -328,7 +359,6 @@ type accountCloudforceOneEventUpdateResponseJSON struct {
 	Attacker        apijson.Field
 	AttackerCountry apijson.Field
 	Category        apijson.Field
-	CategoryID      apijson.Field
 	Date            apijson.Field
 	Event           apijson.Field
 	Indicator       apijson.Field
@@ -380,79 +410,6 @@ func (r *AccountCloudforceOneEventDeleteResponse) UnmarshalJSON(data []byte) (er
 }
 
 func (r accountCloudforceOneEventDeleteResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-type AccountCloudforceOneEventNewBulkResponse struct {
-	ID              float64                                      `json:"id,required"`
-	AccountID       float64                                      `json:"accountId,required"`
-	Attacker        string                                       `json:"attacker,required"`
-	AttackerCountry string                                       `json:"attackerCountry,required"`
-	Category        string                                       `json:"category,required"`
-	CategoryID      float64                                      `json:"categoryId,required"`
-	Date            string                                       `json:"date,required"`
-	Event           string                                       `json:"event,required"`
-	Indicator       string                                       `json:"indicator,required"`
-	IndicatorType   string                                       `json:"indicatorType,required"`
-	IndicatorTypeID float64                                      `json:"indicatorTypeId,required"`
-	KillChain       float64                                      `json:"killChain,required"`
-	MitreAttack     []string                                     `json:"mitreAttack,required"`
-	NumReferenced   float64                                      `json:"numReferenced,required"`
-	NumReferences   float64                                      `json:"numReferences,required"`
-	RawID           string                                       `json:"rawId,required"`
-	Referenced      []string                                     `json:"referenced,required"`
-	ReferencedIDs   []float64                                    `json:"referencedIds,required"`
-	References      []string                                     `json:"references,required"`
-	ReferencesIDs   []float64                                    `json:"referencesIds,required"`
-	Tags            []string                                     `json:"tags,required"`
-	TargetCountry   string                                       `json:"targetCountry,required"`
-	TargetIndustry  string                                       `json:"targetIndustry,required"`
-	Tlp             string                                       `json:"tlp,required"`
-	Uuid            string                                       `json:"uuid,required"`
-	Insight         string                                       `json:"insight"`
-	ReleasabilityID string                                       `json:"releasabilityId"`
-	JSON            accountCloudforceOneEventNewBulkResponseJSON `json:"-"`
-}
-
-// accountCloudforceOneEventNewBulkResponseJSON contains the JSON metadata for the
-// struct [AccountCloudforceOneEventNewBulkResponse]
-type accountCloudforceOneEventNewBulkResponseJSON struct {
-	ID              apijson.Field
-	AccountID       apijson.Field
-	Attacker        apijson.Field
-	AttackerCountry apijson.Field
-	Category        apijson.Field
-	CategoryID      apijson.Field
-	Date            apijson.Field
-	Event           apijson.Field
-	Indicator       apijson.Field
-	IndicatorType   apijson.Field
-	IndicatorTypeID apijson.Field
-	KillChain       apijson.Field
-	MitreAttack     apijson.Field
-	NumReferenced   apijson.Field
-	NumReferences   apijson.Field
-	RawID           apijson.Field
-	Referenced      apijson.Field
-	ReferencedIDs   apijson.Field
-	References      apijson.Field
-	ReferencesIDs   apijson.Field
-	Tags            apijson.Field
-	TargetCountry   apijson.Field
-	TargetIndustry  apijson.Field
-	Tlp             apijson.Field
-	Uuid            apijson.Field
-	Insight         apijson.Field
-	ReleasabilityID apijson.Field
-	raw             string
-	ExtraFields     map[string]apijson.Field
-}
-
-func (r *AccountCloudforceOneEventNewBulkResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountCloudforceOneEventNewBulkResponseJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -637,8 +594,6 @@ func (r accountCloudforceOneEventListTargetIndustriesResponseItemsJSON) RawJSON(
 }
 
 type AccountCloudforceOneEventNewParams struct {
-	Attacker        param.Field[string]                                `json:"attacker,required"`
-	AttackerCountry param.Field[string]                                `json:"attackerCountry,required"`
 	Category        param.Field[string]                                `json:"category,required"`
 	Date            param.Field[time.Time]                             `json:"date,required" format:"date-time"`
 	Event           param.Field[string]                                `json:"event,required"`
@@ -646,6 +601,8 @@ type AccountCloudforceOneEventNewParams struct {
 	Raw             param.Field[AccountCloudforceOneEventNewParamsRaw] `json:"raw,required"`
 	Tlp             param.Field[string]                                `json:"tlp,required"`
 	AccountID       param.Field[float64]                               `json:"accountId"`
+	Attacker        param.Field[string]                                `json:"attacker"`
+	AttackerCountry param.Field[string]                                `json:"attackerCountry"`
 	DatasetID       param.Field[string]                                `json:"datasetId"`
 	Indicator       param.Field[string]                                `json:"indicator"`
 	Tags            param.Field[[]string]                              `json:"tags"`
@@ -658,9 +615,9 @@ func (r AccountCloudforceOneEventNewParams) MarshalJSON() (data []byte, err erro
 }
 
 type AccountCloudforceOneEventNewParamsRaw struct {
-	Data   param.Field[interface{}] `json:"data"`
-	Source param.Field[string]      `json:"source"`
-	Tlp    param.Field[string]      `json:"tlp"`
+	Data   param.Field[map[string]interface{}] `json:"data,required"`
+	Source param.Field[string]                 `json:"source"`
+	Tlp    param.Field[string]                 `json:"tlp"`
 }
 
 func (r AccountCloudforceOneEventNewParamsRaw) MarshalJSON() (data []byte, err error) {
@@ -668,19 +625,31 @@ func (r AccountCloudforceOneEventNewParamsRaw) MarshalJSON() (data []byte, err e
 }
 
 type AccountCloudforceOneEventUpdateParams struct {
-	Attacker        param.Field[string]    `json:"attacker"`
-	AttackerCountry param.Field[string]    `json:"attackerCountry"`
-	Category        param.Field[string]    `json:"category"`
-	Date            param.Field[time.Time] `json:"date" format:"date-time"`
-	Event           param.Field[string]    `json:"event"`
-	Indicator       param.Field[string]    `json:"indicator"`
-	IndicatorType   param.Field[string]    `json:"indicatorType"`
-	TargetCountry   param.Field[string]    `json:"targetCountry"`
-	TargetIndustry  param.Field[string]    `json:"targetIndustry"`
-	Tlp             param.Field[string]    `json:"tlp"`
+	Attacker        param.Field[string]                                   `json:"attacker"`
+	AttackerCountry param.Field[string]                                   `json:"attackerCountry"`
+	Category        param.Field[string]                                   `json:"category"`
+	Date            param.Field[time.Time]                                `json:"date" format:"date-time"`
+	Event           param.Field[string]                                   `json:"event"`
+	Indicator       param.Field[string]                                   `json:"indicator"`
+	IndicatorType   param.Field[string]                                   `json:"indicatorType"`
+	Insight         param.Field[string]                                   `json:"insight"`
+	Raw             param.Field[AccountCloudforceOneEventUpdateParamsRaw] `json:"raw"`
+	TargetCountry   param.Field[string]                                   `json:"targetCountry"`
+	TargetIndustry  param.Field[string]                                   `json:"targetIndustry"`
+	Tlp             param.Field[string]                                   `json:"tlp"`
 }
 
 func (r AccountCloudforceOneEventUpdateParams) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type AccountCloudforceOneEventUpdateParamsRaw struct {
+	Data   param.Field[map[string]interface{}] `json:"data"`
+	Source param.Field[string]                 `json:"source"`
+	Tlp    param.Field[string]                 `json:"tlp"`
+}
+
+func (r AccountCloudforceOneEventUpdateParamsRaw) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
@@ -694,8 +663,6 @@ func (r AccountCloudforceOneEventNewBulkParams) MarshalJSON() (data []byte, err 
 }
 
 type AccountCloudforceOneEventNewBulkParamsData struct {
-	Attacker        param.Field[string]                                        `json:"attacker,required"`
-	AttackerCountry param.Field[string]                                        `json:"attackerCountry,required"`
 	Category        param.Field[string]                                        `json:"category,required"`
 	Date            param.Field[time.Time]                                     `json:"date,required" format:"date-time"`
 	Event           param.Field[string]                                        `json:"event,required"`
@@ -703,6 +670,8 @@ type AccountCloudforceOneEventNewBulkParamsData struct {
 	Raw             param.Field[AccountCloudforceOneEventNewBulkParamsDataRaw] `json:"raw,required"`
 	Tlp             param.Field[string]                                        `json:"tlp,required"`
 	AccountID       param.Field[float64]                                       `json:"accountId"`
+	Attacker        param.Field[string]                                        `json:"attacker"`
+	AttackerCountry param.Field[string]                                        `json:"attackerCountry"`
 	DatasetID       param.Field[string]                                        `json:"datasetId"`
 	Indicator       param.Field[string]                                        `json:"indicator"`
 	Tags            param.Field[[]string]                                      `json:"tags"`
@@ -715,9 +684,9 @@ func (r AccountCloudforceOneEventNewBulkParamsData) MarshalJSON() (data []byte, 
 }
 
 type AccountCloudforceOneEventNewBulkParamsDataRaw struct {
-	Data   param.Field[interface{}] `json:"data"`
-	Source param.Field[string]      `json:"source"`
-	Tlp    param.Field[string]      `json:"tlp"`
+	Data   param.Field[map[string]interface{}] `json:"data,required"`
+	Source param.Field[string]                 `json:"source"`
+	Tlp    param.Field[string]                 `json:"tlp"`
 }
 
 func (r AccountCloudforceOneEventNewBulkParamsDataRaw) MarshalJSON() (data []byte, err error) {

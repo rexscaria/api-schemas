@@ -64,6 +64,7 @@ func TestAccountImageV1UpdateWithOptionalParams(t *testing.T) {
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		"image_id",
 		cfrex.AccountImageV1UpdateParams{
+			Creator:           cfrex.F("creator"),
 			Metadata:          cfrex.F[any](map[string]interface{}{}),
 			RequireSignedURLs: cfrex.F(true),
 		},
@@ -95,6 +96,7 @@ func TestAccountImageV1ListWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.AccountImageV1ListParams{
+			Creator: cfrex.F("creator"),
 			Page:    cfrex.F(1.000000),
 			PerPage: cfrex.F(10.000000),
 		},
@@ -126,9 +128,6 @@ func TestAccountImageV1Delete(t *testing.T) {
 		context.TODO(),
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		"image_id",
-		cfrex.AccountImageV1DeleteParams{
-			Body: map[string]interface{}{},
-		},
 	)
 	if err != nil {
 		var apierr *cfrex.Error
@@ -221,7 +220,9 @@ func TestAccountImageV1UploadWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.AccountImageV1UploadParams{
-			File:              cfrex.F[any](map[string]interface{}{}),
+			ID:                cfrex.F("id"),
+			Creator:           cfrex.F("creator"),
+			File:              cfrex.F(io.Reader(bytes.NewBuffer([]byte("some file contents")))),
 			Metadata:          cfrex.F[any](map[string]interface{}{}),
 			RequireSignedURLs: cfrex.F(true),
 			URL:               cfrex.F("https://example.com/path/to/logo.png"),

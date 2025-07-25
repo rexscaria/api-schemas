@@ -3,8 +3,10 @@
 package cfrex_test
 
 import (
+	"bytes"
 	"context"
 	"errors"
+	"io"
 	"os"
 	"testing"
 
@@ -100,15 +102,17 @@ func TestAccountWorkerScriptVersionUploadWithOptionalParams(t *testing.T) {
 					WorkersMessage: cfrex.F("Fixed worker code."),
 					WorkersTag:     cfrex.F("workers/tag"),
 				}),
-				Bindings: cfrex.F([]cfrex.BindingItemUnionParam{cfrex.BindingItemWorkersBindingKindAIParam{
+				Bindings: cfrex.F([]cfrex.BindingItemUnionParam{cfrex.BindingItemWorkersBindingKindPlainTextParam{
 					Name: cfrex.F("MY_ENV_VAR"),
-					Type: cfrex.F(cfrex.BindingItemWorkersBindingKindAITypePlainText),
+					Text: cfrex.F("my_data"),
+					Type: cfrex.F(cfrex.BindingItemWorkersBindingKindPlainTextTypePlainText),
 				}}),
 				CompatibilityDate:  cfrex.F("2021-01-01"),
 				CompatibilityFlags: cfrex.F([]string{"nodejs_compat"}),
 				KeepBindings:       cfrex.F([]string{"string"}),
 				UsageModel:         cfrex.F(cfrex.UsageModelStandard),
 			}),
+			Files: cfrex.F([]io.Reader{io.Reader(bytes.NewBuffer([]byte("some file contents")))}),
 		},
 	)
 	if err != nil {

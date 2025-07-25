@@ -71,7 +71,6 @@ func TestAccountEventNotificationR2ConfigurationQueueDeleteWithOptionalParams(t 
 		"example-bucket",
 		"queue_id",
 		cfrex.AccountEventNotificationR2ConfigurationQueueDeleteParams{
-			RuleIDs:      cfrex.F([]string{"string"}),
 			Jurisdiction: cfrex.F(cfrex.AccountEventNotificationR2ConfigurationQueueDeleteParamsCfR2JurisdictionDefault),
 		},
 	)

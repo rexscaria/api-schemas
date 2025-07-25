@@ -70,7 +70,7 @@ func TestAccountAIRunCfOpenAIExecuteWhisperLargeV3TurboWithOptionalParams(t *tes
 			Language:      cfrex.F("language"),
 			Prefix:        cfrex.F("prefix"),
 			Task:          cfrex.F("task"),
-			VadFilter:     cfrex.F("vad_filter"),
+			VadFilter:     cfrex.F(true),
 		},
 	)
 	if err != nil {

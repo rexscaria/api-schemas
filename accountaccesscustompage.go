@@ -116,7 +116,7 @@ type CustomPage struct {
 	// Number of apps the custom page is assigned to.
 	AppCount  int64     `json:"app_count"`
 	CreatedAt time.Time `json:"created_at" format:"date-time"`
-	// UUID
+	// UUID.
 	Uid       string         `json:"uid"`
 	UpdatedAt time.Time      `json:"updated_at" format:"date-time"`
 	JSON      customPageJSON `json:"-"`
@@ -151,11 +151,7 @@ type CustomPageParam struct {
 	// Custom page type.
 	Type param.Field[SchemasCustomPageType] `json:"type,required"`
 	// Number of apps the custom page is assigned to.
-	AppCount  param.Field[int64]     `json:"app_count"`
-	CreatedAt param.Field[time.Time] `json:"created_at" format:"date-time"`
-	// UUID
-	Uid       param.Field[string]    `json:"uid"`
-	UpdatedAt param.Field[time.Time] `json:"updated_at" format:"date-time"`
+	AppCount param.Field[int64] `json:"app_count"`
 }
 
 func (r CustomPageParam) MarshalJSON() (data []byte, err error) {
@@ -170,7 +166,7 @@ type CustomPageWithoutHTML struct {
 	// Number of apps the custom page is assigned to.
 	AppCount  int64     `json:"app_count"`
 	CreatedAt time.Time `json:"created_at" format:"date-time"`
-	// UUID
+	// UUID.
 	Uid       string                    `json:"uid"`
 	UpdatedAt time.Time                 `json:"updated_at" format:"date-time"`
 	JSON      customPageWithoutHTMLJSON `json:"-"`
@@ -214,14 +210,20 @@ func (r SchemasCustomPageType) IsKnown() bool {
 }
 
 type SingleResponseWithoutHTML struct {
-	Result CustomPageWithoutHTML         `json:"result"`
-	JSON   singleResponseWithoutHTMLJSON `json:"-"`
-	APIResponseSingleAccess
+	Errors   []MessagesAccessItem `json:"errors,required"`
+	Messages []MessagesAccessItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success SingleResponseWithoutHTMLSuccess `json:"success,required"`
+	Result  CustomPageWithoutHTML            `json:"result"`
+	JSON    singleResponseWithoutHTMLJSON    `json:"-"`
 }
 
 // singleResponseWithoutHTMLJSON contains the JSON metadata for the struct
 // [SingleResponseWithoutHTML]
 type singleResponseWithoutHTMLJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -235,15 +237,36 @@ func (r singleResponseWithoutHTMLJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type SingleResponseWithoutHTMLSuccess bool
+
+const (
+	SingleResponseWithoutHTMLSuccessTrue SingleResponseWithoutHTMLSuccess = true
+)
+
+func (r SingleResponseWithoutHTMLSuccess) IsKnown() bool {
+	switch r {
+	case SingleResponseWithoutHTMLSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountAccessCustomPageGetResponse struct {
-	Result CustomPage                             `json:"result"`
-	JSON   accountAccessCustomPageGetResponseJSON `json:"-"`
-	APIResponseSingleAccess
+	Errors   []MessagesAccessItem `json:"errors,required"`
+	Messages []MessagesAccessItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountAccessCustomPageGetResponseSuccess `json:"success,required"`
+	Result  CustomPage                                `json:"result"`
+	JSON    accountAccessCustomPageGetResponseJSON    `json:"-"`
 }
 
 // accountAccessCustomPageGetResponseJSON contains the JSON metadata for the struct
 // [AccountAccessCustomPageGetResponse]
 type accountAccessCustomPageGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -257,16 +280,39 @@ func (r accountAccessCustomPageGetResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountAccessCustomPageGetResponseSuccess bool
+
+const (
+	AccountAccessCustomPageGetResponseSuccessTrue AccountAccessCustomPageGetResponseSuccess = true
+)
+
+func (r AccountAccessCustomPageGetResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountAccessCustomPageGetResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountAccessCustomPageListResponse struct {
-	Result []CustomPageWithoutHTML                 `json:"result"`
-	JSON   accountAccessCustomPageListResponseJSON `json:"-"`
-	APIResponseCollectionAccess
+	Errors   []MessagesAccessItem `json:"errors,required"`
+	Messages []MessagesAccessItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success    AccountAccessCustomPageListResponseSuccess    `json:"success,required"`
+	Result     []CustomPageWithoutHTML                       `json:"result"`
+	ResultInfo AccountAccessCustomPageListResponseResultInfo `json:"result_info"`
+	JSON       accountAccessCustomPageListResponseJSON       `json:"-"`
 }
 
 // accountAccessCustomPageListResponseJSON contains the JSON metadata for the
 // struct [AccountAccessCustomPageListResponse]
 type accountAccessCustomPageListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -276,6 +322,52 @@ func (r *AccountAccessCustomPageListResponse) UnmarshalJSON(data []byte) (err er
 }
 
 func (r accountAccessCustomPageListResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountAccessCustomPageListResponseSuccess bool
+
+const (
+	AccountAccessCustomPageListResponseSuccessTrue AccountAccessCustomPageListResponseSuccess = true
+)
+
+func (r AccountAccessCustomPageListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountAccessCustomPageListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type AccountAccessCustomPageListResponseResultInfo struct {
+	// Total number of results for the requested service.
+	Count float64 `json:"count"`
+	// Current page within paginated list of results.
+	Page float64 `json:"page"`
+	// Number of results per page of results.
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters.
+	TotalCount float64                                           `json:"total_count"`
+	JSON       accountAccessCustomPageListResponseResultInfoJSON `json:"-"`
+}
+
+// accountAccessCustomPageListResponseResultInfoJSON contains the JSON metadata for
+// the struct [AccountAccessCustomPageListResponseResultInfo]
+type accountAccessCustomPageListResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountAccessCustomPageListResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountAccessCustomPageListResponseResultInfoJSON) RawJSON() string {
 	return r.raw
 }
 

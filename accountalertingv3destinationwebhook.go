@@ -167,14 +167,20 @@ func (r WebhooksType) IsKnown() bool {
 }
 
 type AccountAlertingV3DestinationWebhookGetResponse struct {
-	Result Webhooks                                           `json:"result"`
-	JSON   accountAlertingV3DestinationWebhookGetResponseJSON `json:"-"`
-	APIResponseSingleAlerting
+	Errors   []AaaMessage `json:"errors,required"`
+	Messages []AaaMessage `json:"messages,required"`
+	// Whether the API call was successful
+	Success AccountAlertingV3DestinationWebhookGetResponseSuccess `json:"success,required"`
+	Result  Webhooks                                              `json:"result"`
+	JSON    accountAlertingV3DestinationWebhookGetResponseJSON    `json:"-"`
 }
 
 // accountAlertingV3DestinationWebhookGetResponseJSON contains the JSON metadata
 // for the struct [AccountAlertingV3DestinationWebhookGetResponse]
 type accountAlertingV3DestinationWebhookGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -188,16 +194,39 @@ func (r accountAlertingV3DestinationWebhookGetResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful
+type AccountAlertingV3DestinationWebhookGetResponseSuccess bool
+
+const (
+	AccountAlertingV3DestinationWebhookGetResponseSuccessTrue AccountAlertingV3DestinationWebhookGetResponseSuccess = true
+)
+
+func (r AccountAlertingV3DestinationWebhookGetResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountAlertingV3DestinationWebhookGetResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountAlertingV3DestinationWebhookListResponse struct {
-	Result []Webhooks                                          `json:"result"`
-	JSON   accountAlertingV3DestinationWebhookListResponseJSON `json:"-"`
-	APIResponseCollectionAlerting
+	Errors   []AaaMessage `json:"errors,required"`
+	Messages []AaaMessage `json:"messages,required"`
+	// Whether the API call was successful
+	Success    AccountAlertingV3DestinationWebhookListResponseSuccess    `json:"success,required"`
+	Result     []Webhooks                                                `json:"result"`
+	ResultInfo AccountAlertingV3DestinationWebhookListResponseResultInfo `json:"result_info"`
+	JSON       accountAlertingV3DestinationWebhookListResponseJSON       `json:"-"`
 }
 
 // accountAlertingV3DestinationWebhookListResponseJSON contains the JSON metadata
 // for the struct [AccountAlertingV3DestinationWebhookListResponse]
 type accountAlertingV3DestinationWebhookListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -207,6 +236,53 @@ func (r *AccountAlertingV3DestinationWebhookListResponse) UnmarshalJSON(data []b
 }
 
 func (r accountAlertingV3DestinationWebhookListResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful
+type AccountAlertingV3DestinationWebhookListResponseSuccess bool
+
+const (
+	AccountAlertingV3DestinationWebhookListResponseSuccessTrue AccountAlertingV3DestinationWebhookListResponseSuccess = true
+)
+
+func (r AccountAlertingV3DestinationWebhookListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountAlertingV3DestinationWebhookListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type AccountAlertingV3DestinationWebhookListResponseResultInfo struct {
+	// Total number of results for the requested service
+	Count float64 `json:"count"`
+	// Current page within paginated list of results
+	Page float64 `json:"page"`
+	// Number of results per page of results
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters
+	TotalCount float64                                                       `json:"total_count"`
+	JSON       accountAlertingV3DestinationWebhookListResponseResultInfoJSON `json:"-"`
+}
+
+// accountAlertingV3DestinationWebhookListResponseResultInfoJSON contains the JSON
+// metadata for the struct
+// [AccountAlertingV3DestinationWebhookListResponseResultInfo]
+type accountAlertingV3DestinationWebhookListResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountAlertingV3DestinationWebhookListResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountAlertingV3DestinationWebhookListResponseResultInfoJSON) RawJSON() string {
 	return r.raw
 }
 

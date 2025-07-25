@@ -106,7 +106,7 @@ func (r *AccountMagicSiteACLService) List(ctx context.Context, accountID string,
 }
 
 // Remove a specific Site ACL.
-func (r *AccountMagicSiteACLService) Delete(ctx context.Context, accountID string, siteID string, aclID string, body AccountMagicSiteACLDeleteParams, opts ...option.RequestOption) (res *AccountMagicSiteACLDeleteResponse, err error) {
+func (r *AccountMagicSiteACLService) Delete(ctx context.Context, accountID string, siteID string, aclID string, opts ...option.RequestOption) (res *AccountMagicSiteACLDeleteResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
@@ -121,7 +121,7 @@ func (r *AccountMagicSiteACLService) Delete(ctx context.Context, accountID strin
 		return
 	}
 	path := fmt.Sprintf("accounts/%s/magic/sites/%s/acls/%s", accountID, siteID, aclID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
@@ -209,16 +209,22 @@ func (r MagicACLProtocol) IsKnown() bool {
 }
 
 type MagicACLModifiedResponse struct {
+	Errors   []MagicACLModifiedResponseError   `json:"errors,required"`
+	Messages []MagicACLModifiedResponseMessage `json:"messages,required"`
 	// Bidirectional ACL policy for network traffic within a site.
-	Result MagicACL                     `json:"result"`
-	JSON   magicACLModifiedResponseJSON `json:"-"`
-	MagicAPIResponseSingle
+	Result MagicACL `json:"result,required"`
+	// Whether the API call was successful
+	Success MagicACLModifiedResponseSuccess `json:"success,required"`
+	JSON    magicACLModifiedResponseJSON    `json:"-"`
 }
 
 // magicACLModifiedResponseJSON contains the JSON metadata for the struct
 // [MagicACLModifiedResponse]
 type magicACLModifiedResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -231,17 +237,134 @@ func (r magicACLModifiedResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+type MagicACLModifiedResponseError struct {
+	Code             int64                                `json:"code,required"`
+	Message          string                               `json:"message,required"`
+	DocumentationURL string                               `json:"documentation_url"`
+	Source           MagicACLModifiedResponseErrorsSource `json:"source"`
+	JSON             magicACLModifiedResponseErrorJSON    `json:"-"`
+}
+
+// magicACLModifiedResponseErrorJSON contains the JSON metadata for the struct
+// [MagicACLModifiedResponseError]
+type magicACLModifiedResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *MagicACLModifiedResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r magicACLModifiedResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type MagicACLModifiedResponseErrorsSource struct {
+	Pointer string                                   `json:"pointer"`
+	JSON    magicACLModifiedResponseErrorsSourceJSON `json:"-"`
+}
+
+// magicACLModifiedResponseErrorsSourceJSON contains the JSON metadata for the
+// struct [MagicACLModifiedResponseErrorsSource]
+type magicACLModifiedResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *MagicACLModifiedResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r magicACLModifiedResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type MagicACLModifiedResponseMessage struct {
+	Code             int64                                  `json:"code,required"`
+	Message          string                                 `json:"message,required"`
+	DocumentationURL string                                 `json:"documentation_url"`
+	Source           MagicACLModifiedResponseMessagesSource `json:"source"`
+	JSON             magicACLModifiedResponseMessageJSON    `json:"-"`
+}
+
+// magicACLModifiedResponseMessageJSON contains the JSON metadata for the struct
+// [MagicACLModifiedResponseMessage]
+type magicACLModifiedResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *MagicACLModifiedResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r magicACLModifiedResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type MagicACLModifiedResponseMessagesSource struct {
+	Pointer string                                     `json:"pointer"`
+	JSON    magicACLModifiedResponseMessagesSourceJSON `json:"-"`
+}
+
+// magicACLModifiedResponseMessagesSourceJSON contains the JSON metadata for the
+// struct [MagicACLModifiedResponseMessagesSource]
+type magicACLModifiedResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *MagicACLModifiedResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r magicACLModifiedResponseMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful
+type MagicACLModifiedResponseSuccess bool
+
+const (
+	MagicACLModifiedResponseSuccessTrue MagicACLModifiedResponseSuccess = true
+)
+
+func (r MagicACLModifiedResponseSuccess) IsKnown() bool {
+	switch r {
+	case MagicACLModifiedResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type MagicACLSingleResponse struct {
+	Errors   []MagicACLSingleResponseError   `json:"errors,required"`
+	Messages []MagicACLSingleResponseMessage `json:"messages,required"`
 	// Bidirectional ACL policy for network traffic within a site.
-	Result MagicACL                   `json:"result"`
-	JSON   magicACLSingleResponseJSON `json:"-"`
-	MagicAPIResponseSingle
+	Result MagicACL `json:"result,required"`
+	// Whether the API call was successful
+	Success MagicACLSingleResponseSuccess `json:"success,required"`
+	JSON    magicACLSingleResponseJSON    `json:"-"`
 }
 
 // magicACLSingleResponseJSON contains the JSON metadata for the struct
 // [MagicACLSingleResponse]
 type magicACLSingleResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -252,6 +375,117 @@ func (r *MagicACLSingleResponse) UnmarshalJSON(data []byte) (err error) {
 
 func (r magicACLSingleResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+type MagicACLSingleResponseError struct {
+	Code             int64                              `json:"code,required"`
+	Message          string                             `json:"message,required"`
+	DocumentationURL string                             `json:"documentation_url"`
+	Source           MagicACLSingleResponseErrorsSource `json:"source"`
+	JSON             magicACLSingleResponseErrorJSON    `json:"-"`
+}
+
+// magicACLSingleResponseErrorJSON contains the JSON metadata for the struct
+// [MagicACLSingleResponseError]
+type magicACLSingleResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *MagicACLSingleResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r magicACLSingleResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type MagicACLSingleResponseErrorsSource struct {
+	Pointer string                                 `json:"pointer"`
+	JSON    magicACLSingleResponseErrorsSourceJSON `json:"-"`
+}
+
+// magicACLSingleResponseErrorsSourceJSON contains the JSON metadata for the struct
+// [MagicACLSingleResponseErrorsSource]
+type magicACLSingleResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *MagicACLSingleResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r magicACLSingleResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type MagicACLSingleResponseMessage struct {
+	Code             int64                                `json:"code,required"`
+	Message          string                               `json:"message,required"`
+	DocumentationURL string                               `json:"documentation_url"`
+	Source           MagicACLSingleResponseMessagesSource `json:"source"`
+	JSON             magicACLSingleResponseMessageJSON    `json:"-"`
+}
+
+// magicACLSingleResponseMessageJSON contains the JSON metadata for the struct
+// [MagicACLSingleResponseMessage]
+type magicACLSingleResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *MagicACLSingleResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r magicACLSingleResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type MagicACLSingleResponseMessagesSource struct {
+	Pointer string                                   `json:"pointer"`
+	JSON    magicACLSingleResponseMessagesSourceJSON `json:"-"`
+}
+
+// magicACLSingleResponseMessagesSourceJSON contains the JSON metadata for the
+// struct [MagicACLSingleResponseMessagesSource]
+type magicACLSingleResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *MagicACLSingleResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r magicACLSingleResponseMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful
+type MagicACLSingleResponseSuccess bool
+
+const (
+	MagicACLSingleResponseSuccessTrue MagicACLSingleResponseSuccess = true
+)
+
+func (r MagicACLSingleResponseSuccess) IsKnown() bool {
+	switch r {
+	case MagicACLSingleResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type MagicACLUpdateRequestParam struct {
@@ -355,15 +589,21 @@ func (r MagicLanACLConfigurationParam) MarshalJSON() (data []byte, err error) {
 }
 
 type AccountMagicSiteACLListResponse struct {
-	Result []MagicACL                          `json:"result"`
-	JSON   accountMagicSiteACLListResponseJSON `json:"-"`
-	MagicAPIResponseSingle
+	Errors   []AccountMagicSiteACLListResponseError   `json:"errors,required"`
+	Messages []AccountMagicSiteACLListResponseMessage `json:"messages,required"`
+	Result   []MagicACL                               `json:"result,required"`
+	// Whether the API call was successful
+	Success AccountMagicSiteACLListResponseSuccess `json:"success,required"`
+	JSON    accountMagicSiteACLListResponseJSON    `json:"-"`
 }
 
 // accountMagicSiteACLListResponseJSON contains the JSON metadata for the struct
 // [AccountMagicSiteACLListResponse]
 type accountMagicSiteACLListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -376,17 +616,134 @@ func (r accountMagicSiteACLListResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+type AccountMagicSiteACLListResponseError struct {
+	Code             int64                                       `json:"code,required"`
+	Message          string                                      `json:"message,required"`
+	DocumentationURL string                                      `json:"documentation_url"`
+	Source           AccountMagicSiteACLListResponseErrorsSource `json:"source"`
+	JSON             accountMagicSiteACLListResponseErrorJSON    `json:"-"`
+}
+
+// accountMagicSiteACLListResponseErrorJSON contains the JSON metadata for the
+// struct [AccountMagicSiteACLListResponseError]
+type accountMagicSiteACLListResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountMagicSiteACLListResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountMagicSiteACLListResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountMagicSiteACLListResponseErrorsSource struct {
+	Pointer string                                          `json:"pointer"`
+	JSON    accountMagicSiteACLListResponseErrorsSourceJSON `json:"-"`
+}
+
+// accountMagicSiteACLListResponseErrorsSourceJSON contains the JSON metadata for
+// the struct [AccountMagicSiteACLListResponseErrorsSource]
+type accountMagicSiteACLListResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountMagicSiteACLListResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountMagicSiteACLListResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountMagicSiteACLListResponseMessage struct {
+	Code             int64                                         `json:"code,required"`
+	Message          string                                        `json:"message,required"`
+	DocumentationURL string                                        `json:"documentation_url"`
+	Source           AccountMagicSiteACLListResponseMessagesSource `json:"source"`
+	JSON             accountMagicSiteACLListResponseMessageJSON    `json:"-"`
+}
+
+// accountMagicSiteACLListResponseMessageJSON contains the JSON metadata for the
+// struct [AccountMagicSiteACLListResponseMessage]
+type accountMagicSiteACLListResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountMagicSiteACLListResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountMagicSiteACLListResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountMagicSiteACLListResponseMessagesSource struct {
+	Pointer string                                            `json:"pointer"`
+	JSON    accountMagicSiteACLListResponseMessagesSourceJSON `json:"-"`
+}
+
+// accountMagicSiteACLListResponseMessagesSourceJSON contains the JSON metadata for
+// the struct [AccountMagicSiteACLListResponseMessagesSource]
+type accountMagicSiteACLListResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountMagicSiteACLListResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountMagicSiteACLListResponseMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful
+type AccountMagicSiteACLListResponseSuccess bool
+
+const (
+	AccountMagicSiteACLListResponseSuccessTrue AccountMagicSiteACLListResponseSuccess = true
+)
+
+func (r AccountMagicSiteACLListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountMagicSiteACLListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountMagicSiteACLDeleteResponse struct {
+	Errors   []AccountMagicSiteACLDeleteResponseError   `json:"errors,required"`
+	Messages []AccountMagicSiteACLDeleteResponseMessage `json:"messages,required"`
 	// Bidirectional ACL policy for network traffic within a site.
-	Result MagicACL                              `json:"result"`
-	JSON   accountMagicSiteACLDeleteResponseJSON `json:"-"`
-	MagicAPIResponseSingle
+	Result MagicACL `json:"result,required"`
+	// Whether the API call was successful
+	Success AccountMagicSiteACLDeleteResponseSuccess `json:"success,required"`
+	JSON    accountMagicSiteACLDeleteResponseJSON    `json:"-"`
 }
 
 // accountMagicSiteACLDeleteResponseJSON contains the JSON metadata for the struct
 // [AccountMagicSiteACLDeleteResponse]
 type accountMagicSiteACLDeleteResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -397,6 +754,117 @@ func (r *AccountMagicSiteACLDeleteResponse) UnmarshalJSON(data []byte) (err erro
 
 func (r accountMagicSiteACLDeleteResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+type AccountMagicSiteACLDeleteResponseError struct {
+	Code             int64                                         `json:"code,required"`
+	Message          string                                        `json:"message,required"`
+	DocumentationURL string                                        `json:"documentation_url"`
+	Source           AccountMagicSiteACLDeleteResponseErrorsSource `json:"source"`
+	JSON             accountMagicSiteACLDeleteResponseErrorJSON    `json:"-"`
+}
+
+// accountMagicSiteACLDeleteResponseErrorJSON contains the JSON metadata for the
+// struct [AccountMagicSiteACLDeleteResponseError]
+type accountMagicSiteACLDeleteResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountMagicSiteACLDeleteResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountMagicSiteACLDeleteResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountMagicSiteACLDeleteResponseErrorsSource struct {
+	Pointer string                                            `json:"pointer"`
+	JSON    accountMagicSiteACLDeleteResponseErrorsSourceJSON `json:"-"`
+}
+
+// accountMagicSiteACLDeleteResponseErrorsSourceJSON contains the JSON metadata for
+// the struct [AccountMagicSiteACLDeleteResponseErrorsSource]
+type accountMagicSiteACLDeleteResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountMagicSiteACLDeleteResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountMagicSiteACLDeleteResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountMagicSiteACLDeleteResponseMessage struct {
+	Code             int64                                           `json:"code,required"`
+	Message          string                                          `json:"message,required"`
+	DocumentationURL string                                          `json:"documentation_url"`
+	Source           AccountMagicSiteACLDeleteResponseMessagesSource `json:"source"`
+	JSON             accountMagicSiteACLDeleteResponseMessageJSON    `json:"-"`
+}
+
+// accountMagicSiteACLDeleteResponseMessageJSON contains the JSON metadata for the
+// struct [AccountMagicSiteACLDeleteResponseMessage]
+type accountMagicSiteACLDeleteResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountMagicSiteACLDeleteResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountMagicSiteACLDeleteResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountMagicSiteACLDeleteResponseMessagesSource struct {
+	Pointer string                                              `json:"pointer"`
+	JSON    accountMagicSiteACLDeleteResponseMessagesSourceJSON `json:"-"`
+}
+
+// accountMagicSiteACLDeleteResponseMessagesSourceJSON contains the JSON metadata
+// for the struct [AccountMagicSiteACLDeleteResponseMessagesSource]
+type accountMagicSiteACLDeleteResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountMagicSiteACLDeleteResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountMagicSiteACLDeleteResponseMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful
+type AccountMagicSiteACLDeleteResponseSuccess bool
+
+const (
+	AccountMagicSiteACLDeleteResponseSuccessTrue AccountMagicSiteACLDeleteResponseSuccess = true
+)
+
+func (r AccountMagicSiteACLDeleteResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountMagicSiteACLDeleteResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountMagicSiteACLNewParams struct {
@@ -446,14 +914,6 @@ type AccountMagicSiteACLUpdateParams struct {
 
 func (r AccountMagicSiteACLUpdateParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r.MagicACLUpdateRequest)
-}
-
-type AccountMagicSiteACLDeleteParams struct {
-	Body interface{} `json:"body,required"`
-}
-
-func (r AccountMagicSiteACLDeleteParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
 }
 
 type AccountMagicSiteACLPatchParams struct {

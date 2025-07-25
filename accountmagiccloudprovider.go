@@ -37,7 +37,7 @@ func NewAccountMagicCloudProviderService(opts ...option.RequestOption) (r *Accou
 	return
 }
 
-// Create a new Cloud Integration (Closed Beta)
+// Create a new Cloud Integration (Closed Beta).
 func (r *AccountMagicCloudProviderService) New(ctx context.Context, accountID string, params AccountMagicCloudProviderNewParams, opts ...option.RequestOption) (res *AccountMagicCloudProviderNewResponse, err error) {
 	if params.Forwarded.Present {
 		opts = append(opts, option.WithHeader("forwarded", fmt.Sprintf("%s", params.Forwarded)))
@@ -52,7 +52,7 @@ func (r *AccountMagicCloudProviderService) New(ctx context.Context, accountID st
 	return
 }
 
-// Read a Cloud Integration (Closed Beta)
+// Read a Cloud Integration (Closed Beta).
 func (r *AccountMagicCloudProviderService) Get(ctx context.Context, accountID string, providerID string, query AccountMagicCloudProviderGetParams, opts ...option.RequestOption) (res *AccountMagicCloudProviderGetResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
@@ -68,7 +68,7 @@ func (r *AccountMagicCloudProviderService) Get(ctx context.Context, accountID st
 	return
 }
 
-// Update a Cloud Integration (Closed Beta)
+// Update a Cloud Integration (Closed Beta).
 func (r *AccountMagicCloudProviderService) Update(ctx context.Context, accountID string, providerID string, body AccountMagicCloudProviderUpdateParams, opts ...option.RequestOption) (res *McnUpdateProviderResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
@@ -84,7 +84,7 @@ func (r *AccountMagicCloudProviderService) Update(ctx context.Context, accountID
 	return
 }
 
-// List Cloud Integrations (Closed Beta)
+// List Cloud Integrations (Closed Beta).
 func (r *AccountMagicCloudProviderService) List(ctx context.Context, accountID string, query AccountMagicCloudProviderListParams, opts ...option.RequestOption) (res *AccountMagicCloudProviderListResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
@@ -96,7 +96,7 @@ func (r *AccountMagicCloudProviderService) List(ctx context.Context, accountID s
 	return
 }
 
-// Delete a Cloud Integration (Closed Beta)
+// Delete a Cloud Integration (Closed Beta).
 func (r *AccountMagicCloudProviderService) Delete(ctx context.Context, accountID string, providerID string, opts ...option.RequestOption) (res *AccountMagicCloudProviderDeleteResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
@@ -112,7 +112,7 @@ func (r *AccountMagicCloudProviderService) Delete(ctx context.Context, accountID
 	return
 }
 
-// Run discovery for a Cloud Integration (Closed Beta)
+// Run discovery for a Cloud Integration (Closed Beta).
 func (r *AccountMagicCloudProviderService) Discover(ctx context.Context, accountID string, providerID string, body AccountMagicCloudProviderDiscoverParams, opts ...option.RequestOption) (res *McnGoodResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
@@ -128,7 +128,7 @@ func (r *AccountMagicCloudProviderService) Discover(ctx context.Context, account
 	return
 }
 
-// Run discovery for all Cloud Integrations in an account (Closed Beta)
+// Run discovery for all Cloud Integrations in an account (Closed Beta).
 func (r *AccountMagicCloudProviderService) DiscoverAll(ctx context.Context, accountID string, opts ...option.RequestOption) (res *McnGoodResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
@@ -140,7 +140,7 @@ func (r *AccountMagicCloudProviderService) DiscoverAll(ctx context.Context, acco
 	return
 }
 
-// Get initial configuration to complete Cloud Integration setup (Closed Beta)
+// Get initial configuration to complete Cloud Integration setup (Closed Beta).
 func (r *AccountMagicCloudProviderService) GetSetupConfig(ctx context.Context, accountID string, providerID string, opts ...option.RequestOption) (res *AccountMagicCloudProviderGetSetupConfigResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
@@ -156,7 +156,7 @@ func (r *AccountMagicCloudProviderService) GetSetupConfig(ctx context.Context, a
 	return
 }
 
-// Update a Cloud Integration (Closed Beta)
+// Update a Cloud Integration (Closed Beta).
 func (r *AccountMagicCloudProviderService) Patch(ctx context.Context, accountID string, providerID string, body AccountMagicCloudProviderPatchParams, opts ...option.RequestOption) (res *McnUpdateProviderResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
@@ -360,15 +360,20 @@ func (r McnUpdateProviderRequestParam) MarshalJSON() (data []byte, err error) {
 }
 
 type McnUpdateProviderResponse struct {
-	Result McnProvider                   `json:"result"`
-	JSON   mcnUpdateProviderResponseJSON `json:"-"`
-	McnGoodResponse
+	Errors   []McnError                    `json:"errors,required"`
+	Messages []McnError                    `json:"messages,required"`
+	Result   McnProvider                   `json:"result,required"`
+	Success  bool                          `json:"success,required"`
+	JSON     mcnUpdateProviderResponseJSON `json:"-"`
 }
 
 // mcnUpdateProviderResponseJSON contains the JSON metadata for the struct
 // [McnUpdateProviderResponse]
 type mcnUpdateProviderResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -382,15 +387,20 @@ func (r mcnUpdateProviderResponseJSON) RawJSON() string {
 }
 
 type AccountMagicCloudProviderNewResponse struct {
-	Result McnProvider                              `json:"result"`
-	JSON   accountMagicCloudProviderNewResponseJSON `json:"-"`
-	McnGoodResponse
+	Errors   []McnError                               `json:"errors,required"`
+	Messages []McnError                               `json:"messages,required"`
+	Result   McnProvider                              `json:"result,required"`
+	Success  bool                                     `json:"success,required"`
+	JSON     accountMagicCloudProviderNewResponseJSON `json:"-"`
 }
 
 // accountMagicCloudProviderNewResponseJSON contains the JSON metadata for the
 // struct [AccountMagicCloudProviderNewResponse]
 type accountMagicCloudProviderNewResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -404,15 +414,20 @@ func (r accountMagicCloudProviderNewResponseJSON) RawJSON() string {
 }
 
 type AccountMagicCloudProviderGetResponse struct {
-	Result McnProvider                              `json:"result"`
-	JSON   accountMagicCloudProviderGetResponseJSON `json:"-"`
-	McnGoodResponse
+	Errors   []McnError                               `json:"errors,required"`
+	Messages []McnError                               `json:"messages,required"`
+	Result   McnProvider                              `json:"result,required"`
+	Success  bool                                     `json:"success,required"`
+	JSON     accountMagicCloudProviderGetResponseJSON `json:"-"`
 }
 
 // accountMagicCloudProviderGetResponseJSON contains the JSON metadata for the
 // struct [AccountMagicCloudProviderGetResponse]
 type accountMagicCloudProviderGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -426,15 +441,20 @@ func (r accountMagicCloudProviderGetResponseJSON) RawJSON() string {
 }
 
 type AccountMagicCloudProviderListResponse struct {
-	Result []McnProvider                             `json:"result"`
-	JSON   accountMagicCloudProviderListResponseJSON `json:"-"`
-	McnGoodResponse
+	Errors   []McnError                                `json:"errors,required"`
+	Messages []McnError                                `json:"messages,required"`
+	Result   []McnProvider                             `json:"result,required"`
+	Success  bool                                      `json:"success,required"`
+	JSON     accountMagicCloudProviderListResponseJSON `json:"-"`
 }
 
 // accountMagicCloudProviderListResponseJSON contains the JSON metadata for the
 // struct [AccountMagicCloudProviderListResponse]
 type accountMagicCloudProviderListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -448,15 +468,20 @@ func (r accountMagicCloudProviderListResponseJSON) RawJSON() string {
 }
 
 type AccountMagicCloudProviderDeleteResponse struct {
-	Result AccountMagicCloudProviderDeleteResponseResult `json:"result"`
-	JSON   accountMagicCloudProviderDeleteResponseJSON   `json:"-"`
-	McnGoodResponse
+	Errors   []McnError                                    `json:"errors,required"`
+	Messages []McnError                                    `json:"messages,required"`
+	Result   AccountMagicCloudProviderDeleteResponseResult `json:"result,required"`
+	Success  bool                                          `json:"success,required"`
+	JSON     accountMagicCloudProviderDeleteResponseJSON   `json:"-"`
 }
 
 // accountMagicCloudProviderDeleteResponseJSON contains the JSON metadata for the
 // struct [AccountMagicCloudProviderDeleteResponse]
 type accountMagicCloudProviderDeleteResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -491,15 +516,20 @@ func (r accountMagicCloudProviderDeleteResponseResultJSON) RawJSON() string {
 }
 
 type AccountMagicCloudProviderGetSetupConfigResponse struct {
-	Result AccountMagicCloudProviderGetSetupConfigResponseResult `json:"result"`
-	JSON   accountMagicCloudProviderGetSetupConfigResponseJSON   `json:"-"`
-	McnGoodResponse
+	Errors   []McnError                                            `json:"errors,required"`
+	Messages []McnError                                            `json:"messages,required"`
+	Result   AccountMagicCloudProviderGetSetupConfigResponseResult `json:"result,required"`
+	Success  bool                                                  `json:"success,required"`
+	JSON     accountMagicCloudProviderGetSetupConfigResponseJSON   `json:"-"`
 }
 
 // accountMagicCloudProviderGetSetupConfigResponseJSON contains the JSON metadata
 // for the struct [AccountMagicCloudProviderGetSetupConfigResponse]
 type accountMagicCloudProviderGetSetupConfigResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -707,7 +737,7 @@ func (r AccountMagicCloudProviderUpdateParams) MarshalJSON() (data []byte, err e
 type AccountMagicCloudProviderListParams struct {
 	Cloudflare param.Field[bool] `query:"cloudflare"`
 	Desc       param.Field[bool] `query:"desc"`
-	// one of ["updated_at", "id", "cloud_type", "name"]
+	// One of ["updated_at", "id", "cloud_type", "name"].
 	OrderBy param.Field[string] `query:"order_by"`
 	Status  param.Field[bool]   `query:"status"`
 }

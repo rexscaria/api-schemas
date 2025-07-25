@@ -119,30 +119,39 @@ func (r FirewallActionMode) IsKnown() bool {
 }
 
 type FirewallAnomalyPackage struct {
-	// The default action performed by the rules in the WAF package.
-	ActionMode FirewallActionMode `json:"action_mode"`
+	// Defines an identifier.
+	ID string `json:"id,required"`
 	// A summary of the purpose/function of the WAF package.
-	Description string `json:"description"`
+	Description string `json:"description,required"`
 	// When a WAF package uses anomaly detection, each rule is given a score when
 	// triggered. If the total score of all triggered rules exceeds the sensitivity
 	// defined on the WAF package, the action defined on the package will be taken.
-	DetectionMode string `json:"detection_mode"`
+	DetectionMode FirewallAnomalyPackageDetectionMode `json:"detection_mode,required"`
 	// The name of the WAF package.
-	Name string `json:"name"`
+	Name string `json:"name,required"`
+	// Defines an identifier.
+	ZoneID string `json:"zone_id,required"`
+	// The default action performed by the rules in the WAF package.
+	ActionMode FirewallActionMode `json:"action_mode"`
 	// The sensitivity of the WAF package.
-	Sensitivity FirewallSensitivity        `json:"sensitivity"`
-	JSON        firewallAnomalyPackageJSON `json:"-"`
-	FirewallPackageDefinition
+	Sensitivity FirewallSensitivity `json:"sensitivity"`
+	// When set to `active`, indicates that the WAF package will be applied to the
+	// zone.
+	Status FirewallAnomalyPackageStatus `json:"status"`
+	JSON   firewallAnomalyPackageJSON   `json:"-"`
 }
 
 // firewallAnomalyPackageJSON contains the JSON metadata for the struct
 // [FirewallAnomalyPackage]
 type firewallAnomalyPackageJSON struct {
-	ActionMode    apijson.Field
+	ID            apijson.Field
 	Description   apijson.Field
 	DetectionMode apijson.Field
 	Name          apijson.Field
+	ZoneID        apijson.Field
+	ActionMode    apijson.Field
 	Sensitivity   apijson.Field
+	Status        apijson.Field
 	raw           string
 	ExtraFields   map[string]apijson.Field
 }
@@ -157,8 +166,42 @@ func (r firewallAnomalyPackageJSON) RawJSON() string {
 
 func (r FirewallAnomalyPackage) implementsZoneFirewallWafPackageListResponseResultResult() {}
 
+// When a WAF package uses anomaly detection, each rule is given a score when
+// triggered. If the total score of all triggered rules exceeds the sensitivity
+// defined on the WAF package, the action defined on the package will be taken.
+type FirewallAnomalyPackageDetectionMode string
+
+const (
+	FirewallAnomalyPackageDetectionModeAnomaly     FirewallAnomalyPackageDetectionMode = "anomaly"
+	FirewallAnomalyPackageDetectionModeTraditional FirewallAnomalyPackageDetectionMode = "traditional"
+)
+
+func (r FirewallAnomalyPackageDetectionMode) IsKnown() bool {
+	switch r {
+	case FirewallAnomalyPackageDetectionModeAnomaly, FirewallAnomalyPackageDetectionModeTraditional:
+		return true
+	}
+	return false
+}
+
+// When set to `active`, indicates that the WAF package will be applied to the
+// zone.
+type FirewallAnomalyPackageStatus string
+
+const (
+	FirewallAnomalyPackageStatusActive FirewallAnomalyPackageStatus = "active"
+)
+
+func (r FirewallAnomalyPackageStatus) IsKnown() bool {
+	switch r {
+	case FirewallAnomalyPackageStatusActive:
+		return true
+	}
+	return false
+}
+
 type FirewallPackageDefinition struct {
-	// Identifier
+	// Defines an identifier.
 	ID string `json:"id,required"`
 	// A summary of the purpose/function of the WAF package.
 	Description string `json:"description,required"`
@@ -174,7 +217,7 @@ type FirewallPackageDefinition struct {
 	DetectionMode FirewallPackageDefinitionDetectionMode `json:"detection_mode,required"`
 	// The name of the WAF package.
 	Name string `json:"name,required"`
-	// Identifier
+	// Defines an identifier.
 	ZoneID string `json:"zone_id,required"`
 	// When set to `active`, indicates that the WAF package will be applied to the
 	// zone.
@@ -246,14 +289,13 @@ func (r FirewallPackageDefinitionStatus) IsKnown() bool {
 }
 
 type FirewallPackageResponseSingle struct {
-	// This field can have the runtime type of [[]FirewallMessagesItem].
+	// This field can have the runtime type of [[]FirewallAPIResponseSingleError].
 	Errors interface{} `json:"errors"`
-	// This field can have the runtime type of [[]FirewallMessagesItem].
+	// This field can have the runtime type of [[]FirewallAPIResponseSingleMessage].
 	Messages interface{} `json:"messages"`
-	// This field can have the runtime type of [FirewallAPIResponseCommonResultUnion],
-	// [interface{}].
+	// This field can have the runtime type of [interface{}].
 	Result interface{} `json:"result"`
-	// Whether the API call was successful
+	// Defines whether the API call was successful.
 	Success FirewallPackageResponseSingleSuccess `json:"success"`
 	JSON    firewallPackageResponseSingleJSON    `json:"-"`
 	union   FirewallPackageResponseSingleUnion
@@ -336,7 +378,7 @@ func (r firewallPackageResponseSingleResultJSON) RawJSON() string {
 
 func (r FirewallPackageResponseSingleResult) implementsFirewallPackageResponseSingle() {}
 
-// Whether the API call was successful
+// Defines whether the API call was successful.
 type FirewallPackageResponseSingleSuccess bool
 
 const (
@@ -370,14 +412,14 @@ func (r FirewallSensitivity) IsKnown() bool {
 }
 
 type ZoneFirewallWafPackageUpdateResponse struct {
-	// This field can have the runtime type of [[]FirewallMessagesItem].
+	// This field can have the runtime type of [[]FirewallAPIResponseSingleError].
 	Errors interface{} `json:"errors"`
-	// This field can have the runtime type of [[]FirewallMessagesItem].
+	// This field can have the runtime type of [[]FirewallAPIResponseSingleMessage].
 	Messages interface{} `json:"messages"`
-	// This field can have the runtime type of [FirewallAPIResponseCommonResultUnion],
-	// [FirewallAnomalyPackage].
+	// This field can have the runtime type of [interface{}],
+	// [ZoneFirewallWafPackageUpdateResponseResultResult].
 	Result interface{} `json:"result"`
-	// Whether the API call was successful
+	// Defines whether the API call was successful.
 	Success ZoneFirewallWafPackageUpdateResponseSuccess `json:"success"`
 	JSON    zoneFirewallWafPackageUpdateResponseJSON    `json:"-"`
 	union   ZoneFirewallWafPackageUpdateResponseUnion
@@ -466,8 +508,8 @@ func (r ZoneFirewallWafPackageUpdateResponseAccountsFirewallAccessRulesRulesFire
 }
 
 type ZoneFirewallWafPackageUpdateResponseResult struct {
-	Result FirewallAnomalyPackage                         `json:"result"`
-	JSON   zoneFirewallWafPackageUpdateResponseResultJSON `json:"-"`
+	Result ZoneFirewallWafPackageUpdateResponseResultResult `json:"result"`
+	JSON   zoneFirewallWafPackageUpdateResponseResultJSON   `json:"-"`
 }
 
 // zoneFirewallWafPackageUpdateResponseResultJSON contains the JSON metadata for
@@ -489,7 +531,87 @@ func (r zoneFirewallWafPackageUpdateResponseResultJSON) RawJSON() string {
 func (r ZoneFirewallWafPackageUpdateResponseResult) implementsZoneFirewallWafPackageUpdateResponse() {
 }
 
-// Whether the API call was successful
+type ZoneFirewallWafPackageUpdateResponseResultResult struct {
+	// Defines an identifier.
+	ID string `json:"id,required"`
+	// A summary of the purpose/function of the WAF package.
+	Description string `json:"description,required"`
+	// When a WAF package uses anomaly detection, each rule is given a score when
+	// triggered. If the total score of all triggered rules exceeds the sensitivity
+	// defined on the WAF package, the action defined on the package will be taken.
+	DetectionMode ZoneFirewallWafPackageUpdateResponseResultResultDetectionMode `json:"detection_mode,required"`
+	// The name of the WAF package.
+	Name string `json:"name,required"`
+	// Defines an identifier.
+	ZoneID string `json:"zone_id,required"`
+	// The default action performed by the rules in the WAF package.
+	ActionMode FirewallActionMode `json:"action_mode"`
+	// The sensitivity of the WAF package.
+	Sensitivity FirewallSensitivity `json:"sensitivity"`
+	// When set to `active`, indicates that the WAF package will be applied to the
+	// zone.
+	Status ZoneFirewallWafPackageUpdateResponseResultResultStatus `json:"status"`
+	JSON   zoneFirewallWafPackageUpdateResponseResultResultJSON   `json:"-"`
+}
+
+// zoneFirewallWafPackageUpdateResponseResultResultJSON contains the JSON metadata
+// for the struct [ZoneFirewallWafPackageUpdateResponseResultResult]
+type zoneFirewallWafPackageUpdateResponseResultResultJSON struct {
+	ID            apijson.Field
+	Description   apijson.Field
+	DetectionMode apijson.Field
+	Name          apijson.Field
+	ZoneID        apijson.Field
+	ActionMode    apijson.Field
+	Sensitivity   apijson.Field
+	Status        apijson.Field
+	raw           string
+	ExtraFields   map[string]apijson.Field
+}
+
+func (r *ZoneFirewallWafPackageUpdateResponseResultResult) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneFirewallWafPackageUpdateResponseResultResultJSON) RawJSON() string {
+	return r.raw
+}
+
+// When a WAF package uses anomaly detection, each rule is given a score when
+// triggered. If the total score of all triggered rules exceeds the sensitivity
+// defined on the WAF package, the action defined on the package will be taken.
+type ZoneFirewallWafPackageUpdateResponseResultResultDetectionMode string
+
+const (
+	ZoneFirewallWafPackageUpdateResponseResultResultDetectionModeAnomaly     ZoneFirewallWafPackageUpdateResponseResultResultDetectionMode = "anomaly"
+	ZoneFirewallWafPackageUpdateResponseResultResultDetectionModeTraditional ZoneFirewallWafPackageUpdateResponseResultResultDetectionMode = "traditional"
+)
+
+func (r ZoneFirewallWafPackageUpdateResponseResultResultDetectionMode) IsKnown() bool {
+	switch r {
+	case ZoneFirewallWafPackageUpdateResponseResultResultDetectionModeAnomaly, ZoneFirewallWafPackageUpdateResponseResultResultDetectionModeTraditional:
+		return true
+	}
+	return false
+}
+
+// When set to `active`, indicates that the WAF package will be applied to the
+// zone.
+type ZoneFirewallWafPackageUpdateResponseResultResultStatus string
+
+const (
+	ZoneFirewallWafPackageUpdateResponseResultResultStatusActive ZoneFirewallWafPackageUpdateResponseResultResultStatus = "active"
+)
+
+func (r ZoneFirewallWafPackageUpdateResponseResultResultStatus) IsKnown() bool {
+	switch r {
+	case ZoneFirewallWafPackageUpdateResponseResultResultStatusActive:
+		return true
+	}
+	return false
+}
+
+// Defines whether the API call was successful.
 type ZoneFirewallWafPackageUpdateResponseSuccess bool
 
 const (
@@ -505,17 +627,18 @@ func (r ZoneFirewallWafPackageUpdateResponseSuccess) IsKnown() bool {
 }
 
 type ZoneFirewallWafPackageListResponse struct {
-	// This field can have the runtime type of [[]FirewallMessagesItem].
+	// This field can have the runtime type of [[]FirewallAPIResponseCollectionError].
 	Errors interface{} `json:"errors"`
-	// This field can have the runtime type of [[]FirewallMessagesItem].
+	// This field can have the runtime type of
+	// [[]FirewallAPIResponseCollectionMessage].
 	Messages interface{} `json:"messages"`
-	// This field can have the runtime type of [FirewallAPIResponseCommonResultUnion],
+	// This field can have the runtime type of [[]interface{}],
 	// [[]ZoneFirewallWafPackageListResponseResultResult].
 	Result interface{} `json:"result"`
 	// This field can have the runtime type of
 	// [FirewallAPIResponseCollectionResultInfo].
 	ResultInfo interface{} `json:"result_info"`
-	// Whether the API call was successful
+	// Defines whether the API call was successful.
 	Success ZoneFirewallWafPackageListResponseSuccess `json:"success"`
 	JSON    zoneFirewallWafPackageListResponseJSON    `json:"-"`
 	union   ZoneFirewallWafPackageListResponseUnion
@@ -600,12 +723,10 @@ func (r zoneFirewallWafPackageListResponseResultJSON) RawJSON() string {
 func (r ZoneFirewallWafPackageListResponseResult) implementsZoneFirewallWafPackageListResponse() {}
 
 type ZoneFirewallWafPackageListResponseResultResult struct {
-	// Identifier
-	ID string `json:"id"`
-	// The default action performed by the rules in the WAF package.
-	ActionMode FirewallActionMode `json:"action_mode"`
+	// Defines an identifier.
+	ID string `json:"id,required"`
 	// A summary of the purpose/function of the WAF package.
-	Description string `json:"description"`
+	Description string `json:"description,required"`
 	// The mode that defines how rules within the package are evaluated during the
 	// course of a request. When a package uses anomaly detection mode (`anomaly`
 	// value), each rule is given a score when triggered. If the total score of all
@@ -615,17 +736,19 @@ type ZoneFirewallWafPackageListResponseResultResult struct {
 	// request. If multiple rules are triggered, the action providing the highest
 	// protection will be applied (for example, a 'block' action will win over a
 	// 'challenge' action).
-	DetectionMode string `json:"detection_mode"`
+	DetectionMode ZoneFirewallWafPackageListResponseResultResultDetectionMode `json:"detection_mode,required"`
 	// The name of the WAF package.
-	Name string `json:"name"`
+	Name string `json:"name,required"`
+	// Defines an identifier.
+	ZoneID string `json:"zone_id,required"`
+	// The default action performed by the rules in the WAF package.
+	ActionMode FirewallActionMode `json:"action_mode"`
 	// The sensitivity of the WAF package.
 	Sensitivity FirewallSensitivity `json:"sensitivity"`
 	// When set to `active`, indicates that the WAF package will be applied to the
 	// zone.
 	Status ZoneFirewallWafPackageListResponseResultResultStatus `json:"status"`
-	// Identifier
-	ZoneID string                                             `json:"zone_id"`
-	JSON   zoneFirewallWafPackageListResponseResultResultJSON `json:"-"`
+	JSON   zoneFirewallWafPackageListResponseResultResultJSON   `json:"-"`
 	union  ZoneFirewallWafPackageListResponseResultResultUnion
 }
 
@@ -633,13 +756,13 @@ type ZoneFirewallWafPackageListResponseResultResult struct {
 // for the struct [ZoneFirewallWafPackageListResponseResultResult]
 type zoneFirewallWafPackageListResponseResultResultJSON struct {
 	ID            apijson.Field
-	ActionMode    apijson.Field
 	Description   apijson.Field
 	DetectionMode apijson.Field
 	Name          apijson.Field
+	ZoneID        apijson.Field
+	ActionMode    apijson.Field
 	Sensitivity   apijson.Field
 	Status        apijson.Field
-	ZoneID        apijson.Field
 	raw           string
 	ExtraFields   map[string]apijson.Field
 }
@@ -686,6 +809,30 @@ func init() {
 	)
 }
 
+// The mode that defines how rules within the package are evaluated during the
+// course of a request. When a package uses anomaly detection mode (`anomaly`
+// value), each rule is given a score when triggered. If the total score of all
+// triggered rules exceeds the sensitivity defined in the WAF package, the action
+// configured in the package will be performed. Traditional detection mode
+// (`traditional` value) will decide the action to take when it is triggered by the
+// request. If multiple rules are triggered, the action providing the highest
+// protection will be applied (for example, a 'block' action will win over a
+// 'challenge' action).
+type ZoneFirewallWafPackageListResponseResultResultDetectionMode string
+
+const (
+	ZoneFirewallWafPackageListResponseResultResultDetectionModeAnomaly     ZoneFirewallWafPackageListResponseResultResultDetectionMode = "anomaly"
+	ZoneFirewallWafPackageListResponseResultResultDetectionModeTraditional ZoneFirewallWafPackageListResponseResultResultDetectionMode = "traditional"
+)
+
+func (r ZoneFirewallWafPackageListResponseResultResultDetectionMode) IsKnown() bool {
+	switch r {
+	case ZoneFirewallWafPackageListResponseResultResultDetectionModeAnomaly, ZoneFirewallWafPackageListResponseResultResultDetectionModeTraditional:
+		return true
+	}
+	return false
+}
+
 // When set to `active`, indicates that the WAF package will be applied to the
 // zone.
 type ZoneFirewallWafPackageListResponseResultResultStatus string
@@ -702,7 +849,7 @@ func (r ZoneFirewallWafPackageListResponseResultResultStatus) IsKnown() bool {
 	return false
 }
 
-// Whether the API call was successful
+// Defines whether the API call was successful.
 type ZoneFirewallWafPackageListResponseSuccess bool
 
 const (

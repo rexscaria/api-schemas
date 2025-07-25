@@ -118,14 +118,20 @@ func (r UpdateBehaviorsBehaviorParam) MarshalJSON() (data []byte, err error) {
 }
 
 type AccountZtRiskScoringBehaviorListBehaviorsResponse struct {
-	Result AccountZtRiskScoringBehaviorListBehaviorsResponseResult `json:"result"`
-	JSON   accountZtRiskScoringBehaviorListBehaviorsResponseJSON   `json:"-"`
-	APIResponseSingleDlp
+	Errors   []MessagesDlpItems `json:"errors,required"`
+	Messages []MessagesDlpItems `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountZtRiskScoringBehaviorListBehaviorsResponseSuccess `json:"success,required"`
+	Result  AccountZtRiskScoringBehaviorListBehaviorsResponseResult  `json:"result"`
+	JSON    accountZtRiskScoringBehaviorListBehaviorsResponseJSON    `json:"-"`
 }
 
 // accountZtRiskScoringBehaviorListBehaviorsResponseJSON contains the JSON metadata
 // for the struct [AccountZtRiskScoringBehaviorListBehaviorsResponse]
 type accountZtRiskScoringBehaviorListBehaviorsResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -137,6 +143,21 @@ func (r *AccountZtRiskScoringBehaviorListBehaviorsResponse) UnmarshalJSON(data [
 
 func (r accountZtRiskScoringBehaviorListBehaviorsResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountZtRiskScoringBehaviorListBehaviorsResponseSuccess bool
+
+const (
+	AccountZtRiskScoringBehaviorListBehaviorsResponseSuccessTrue AccountZtRiskScoringBehaviorListBehaviorsResponseSuccess = true
+)
+
+func (r AccountZtRiskScoringBehaviorListBehaviorsResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountZtRiskScoringBehaviorListBehaviorsResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountZtRiskScoringBehaviorListBehaviorsResponseResult struct {
@@ -190,14 +211,20 @@ func (r accountZtRiskScoringBehaviorListBehaviorsResponseResultBehaviorJSON) Raw
 }
 
 type AccountZtRiskScoringBehaviorUpdateBehaviorsResponse struct {
-	Result UpdateBehaviors                                         `json:"result"`
-	JSON   accountZtRiskScoringBehaviorUpdateBehaviorsResponseJSON `json:"-"`
-	APIResponseSingleDlp
+	Errors   []MessagesDlpItems `json:"errors,required"`
+	Messages []MessagesDlpItems `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountZtRiskScoringBehaviorUpdateBehaviorsResponseSuccess `json:"success,required"`
+	Result  UpdateBehaviors                                            `json:"result"`
+	JSON    accountZtRiskScoringBehaviorUpdateBehaviorsResponseJSON    `json:"-"`
 }
 
 // accountZtRiskScoringBehaviorUpdateBehaviorsResponseJSON contains the JSON
 // metadata for the struct [AccountZtRiskScoringBehaviorUpdateBehaviorsResponse]
 type accountZtRiskScoringBehaviorUpdateBehaviorsResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -209,6 +236,21 @@ func (r *AccountZtRiskScoringBehaviorUpdateBehaviorsResponse) UnmarshalJSON(data
 
 func (r accountZtRiskScoringBehaviorUpdateBehaviorsResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountZtRiskScoringBehaviorUpdateBehaviorsResponseSuccess bool
+
+const (
+	AccountZtRiskScoringBehaviorUpdateBehaviorsResponseSuccessTrue AccountZtRiskScoringBehaviorUpdateBehaviorsResponseSuccess = true
+)
+
+func (r AccountZtRiskScoringBehaviorUpdateBehaviorsResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountZtRiskScoringBehaviorUpdateBehaviorsResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountZtRiskScoringBehaviorUpdateBehaviorsParams struct {

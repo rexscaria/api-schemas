@@ -259,15 +259,13 @@ func (r accountAIFinetuneListPublicResponseResultJSON) RawJSON() string {
 }
 
 type AccountAIFinetuneUploadAssetResponse struct {
-	Result  AccountAIFinetuneUploadAssetResponseResult `json:"result,required"`
-	Success bool                                       `json:"success,required"`
-	JSON    accountAIFinetuneUploadAssetResponseJSON   `json:"-"`
+	Success bool                                     `json:"success,required"`
+	JSON    accountAIFinetuneUploadAssetResponseJSON `json:"-"`
 }
 
 // accountAIFinetuneUploadAssetResponseJSON contains the JSON metadata for the
 // struct [AccountAIFinetuneUploadAssetResponse]
 type accountAIFinetuneUploadAssetResponseJSON struct {
-	Result      apijson.Field
 	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -278,37 +276,6 @@ func (r *AccountAIFinetuneUploadAssetResponse) UnmarshalJSON(data []byte) (err e
 }
 
 func (r accountAIFinetuneUploadAssetResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-type AccountAIFinetuneUploadAssetResponseResult struct {
-	ID         string                                         `json:"id,required" format:"uuid"`
-	BucketName string                                         `json:"bucket_name,required"`
-	CreatedAt  time.Time                                      `json:"created_at,required" format:"date-time"`
-	FileName   string                                         `json:"file_name,required"`
-	FinetuneID string                                         `json:"finetune_id,required"`
-	ModifiedAt time.Time                                      `json:"modified_at,required" format:"date-time"`
-	JSON       accountAIFinetuneUploadAssetResponseResultJSON `json:"-"`
-}
-
-// accountAIFinetuneUploadAssetResponseResultJSON contains the JSON metadata for
-// the struct [AccountAIFinetuneUploadAssetResponseResult]
-type accountAIFinetuneUploadAssetResponseResultJSON struct {
-	ID          apijson.Field
-	BucketName  apijson.Field
-	CreatedAt   apijson.Field
-	FileName    apijson.Field
-	FinetuneID  apijson.Field
-	ModifiedAt  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountAIFinetuneUploadAssetResponseResult) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountAIFinetuneUploadAssetResponseResultJSON) RawJSON() string {
 	return r.raw
 }
 

@@ -162,48 +162,7 @@ func (r *AccountD1DatabaseService) RawQuery(ctx context.Context, accountID strin
 	return
 }
 
-type APIResponseD1 struct {
-	Errors   []MessagesD1Item `json:"errors,required"`
-	Messages []MessagesD1Item `json:"messages,required"`
-	Result   interface{}      `json:"result,required"`
-	// Whether the API call was successful
-	Success APIResponseD1Success `json:"success,required"`
-	JSON    apiResponseD1JSON    `json:"-"`
-}
-
-// apiResponseD1JSON contains the JSON metadata for the struct [APIResponseD1]
-type apiResponseD1JSON struct {
-	Errors      apijson.Field
-	Messages    apijson.Field
-	Result      apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *APIResponseD1) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r apiResponseD1JSON) RawJSON() string {
-	return r.raw
-}
-
-// Whether the API call was successful
-type APIResponseD1Success bool
-
-const (
-	APIResponseD1SuccessTrue APIResponseD1Success = true
-)
-
-func (r APIResponseD1Success) IsKnown() bool {
-	switch r {
-	case APIResponseD1SuccessTrue:
-		return true
-	}
-	return false
-}
-
+// The details of the D1 database.
 type DatabaseDetailsResponse struct {
 	// Specifies the timestamp the resource was created as an ISO8601 string.
 	CreatedAt time.Time `json:"created_at" format:"date-time"`
@@ -212,6 +171,8 @@ type DatabaseDetailsResponse struct {
 	// D1 database name.
 	Name      string  `json:"name"`
 	NumTables float64 `json:"num_tables"`
+	// Configuration for D1 read replication.
+	ReadReplication DatabaseDetailsResponseReadReplication `json:"read_replication"`
 	// D1 database identifier (UUID).
 	Uuid    string                      `json:"uuid"`
 	Version string                      `json:"version"`
@@ -221,14 +182,15 @@ type DatabaseDetailsResponse struct {
 // databaseDetailsResponseJSON contains the JSON metadata for the struct
 // [DatabaseDetailsResponse]
 type databaseDetailsResponseJSON struct {
-	CreatedAt   apijson.Field
-	FileSize    apijson.Field
-	Name        apijson.Field
-	NumTables   apijson.Field
-	Uuid        apijson.Field
-	Version     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	CreatedAt       apijson.Field
+	FileSize        apijson.Field
+	Name            apijson.Field
+	NumTables       apijson.Field
+	ReadReplication apijson.Field
+	Uuid            apijson.Field
+	Version         apijson.Field
+	raw             string
+	ExtraFields     map[string]apijson.Field
 }
 
 func (r *DatabaseDetailsResponse) UnmarshalJSON(data []byte) (err error) {
@@ -239,18 +201,65 @@ func (r databaseDetailsResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Configuration for D1 read replication.
+type DatabaseDetailsResponseReadReplication struct {
+	// The read replication mode for the database. Use 'auto' to create replicas and
+	// allow D1 automatically place them around the world, or 'disabled' to not use any
+	// database replicas (it can take a few hours for all replicas to be deleted).
+	Mode DatabaseDetailsResponseReadReplicationMode `json:"mode,required"`
+	JSON databaseDetailsResponseReadReplicationJSON `json:"-"`
+}
+
+// databaseDetailsResponseReadReplicationJSON contains the JSON metadata for the
+// struct [DatabaseDetailsResponseReadReplication]
+type databaseDetailsResponseReadReplicationJSON struct {
+	Mode        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *DatabaseDetailsResponseReadReplication) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r databaseDetailsResponseReadReplicationJSON) RawJSON() string {
+	return r.raw
+}
+
+// The read replication mode for the database. Use 'auto' to create replicas and
+// allow D1 automatically place them around the world, or 'disabled' to not use any
+// database replicas (it can take a few hours for all replicas to be deleted).
+type DatabaseDetailsResponseReadReplicationMode string
+
+const (
+	DatabaseDetailsResponseReadReplicationModeAuto     DatabaseDetailsResponseReadReplicationMode = "auto"
+	DatabaseDetailsResponseReadReplicationModeDisabled DatabaseDetailsResponseReadReplicationMode = "disabled"
+)
+
+func (r DatabaseDetailsResponseReadReplicationMode) IsKnown() bool {
+	switch r {
+	case DatabaseDetailsResponseReadReplicationModeAuto, DatabaseDetailsResponseReadReplicationModeDisabled:
+		return true
+	}
+	return false
+}
+
 type MessagesD1Item struct {
-	Code    int64              `json:"code,required"`
-	Message string             `json:"message,required"`
-	JSON    messagesD1ItemJSON `json:"-"`
+	Code             int64                `json:"code,required"`
+	Message          string               `json:"message,required"`
+	DocumentationURL string               `json:"documentation_url"`
+	Source           MessagesD1ItemSource `json:"source"`
+	JSON             messagesD1ItemJSON   `json:"-"`
 }
 
 // messagesD1ItemJSON contains the JSON metadata for the struct [MessagesD1Item]
 type messagesD1ItemJSON struct {
-	Code        apijson.Field
-	Message     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
 }
 
 func (r *MessagesD1Item) UnmarshalJSON(data []byte) (err error) {
@@ -261,28 +270,69 @@ func (r messagesD1ItemJSON) RawJSON() string {
 	return r.raw
 }
 
+type MessagesD1ItemSource struct {
+	Pointer string                   `json:"pointer"`
+	JSON    messagesD1ItemSourceJSON `json:"-"`
+}
+
+// messagesD1ItemSourceJSON contains the JSON metadata for the struct
+// [MessagesD1ItemSource]
+type messagesD1ItemSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *MessagesD1ItemSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r messagesD1ItemSourceJSON) RawJSON() string {
+	return r.raw
+}
+
 type QueryMeta struct {
-	ChangedDB   bool          `json:"changed_db"`
-	Changes     float64       `json:"changes"`
-	Duration    float64       `json:"duration"`
-	LastRowID   float64       `json:"last_row_id"`
-	RowsRead    float64       `json:"rows_read"`
-	RowsWritten float64       `json:"rows_written"`
-	SizeAfter   float64       `json:"size_after"`
-	JSON        queryMetaJSON `json:"-"`
+	// Denotes if the database has been altered in some way, like deleting rows.
+	ChangedDB bool `json:"changed_db"`
+	// Rough indication of how many rows were modified by the query, as provided by
+	// SQLite's `sqlite3_total_changes()`.
+	Changes float64 `json:"changes"`
+	// The duration of the SQL query execution inside the database. Does not include
+	// any network communication.
+	Duration float64 `json:"duration"`
+	// The row ID of the last inserted row in a table with an `INTEGER PRIMARY KEY` as
+	// provided by SQLite. Tables created with `WITHOUT ROWID` do not populate this.
+	LastRowID float64 `json:"last_row_id"`
+	// Number of rows read during the SQL query execution, including indices (not all
+	// rows are necessarily returned).
+	RowsRead float64 `json:"rows_read"`
+	// Number of rows written during the SQL query execution, including indices.
+	RowsWritten float64 `json:"rows_written"`
+	// Denotes if the query has been handled by the database primary instance.
+	ServedByPrimary bool `json:"served_by_primary"`
+	// Region location hint of the database instance that handled the query.
+	ServedByRegion QueryMetaServedByRegion `json:"served_by_region"`
+	// Size of the database after the query committed, in bytes.
+	SizeAfter float64 `json:"size_after"`
+	// Various durations for the query.
+	Timings QueryMetaTimings `json:"timings"`
+	JSON    queryMetaJSON    `json:"-"`
 }
 
 // queryMetaJSON contains the JSON metadata for the struct [QueryMeta]
 type queryMetaJSON struct {
-	ChangedDB   apijson.Field
-	Changes     apijson.Field
-	Duration    apijson.Field
-	LastRowID   apijson.Field
-	RowsRead    apijson.Field
-	RowsWritten apijson.Field
-	SizeAfter   apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	ChangedDB       apijson.Field
+	Changes         apijson.Field
+	Duration        apijson.Field
+	LastRowID       apijson.Field
+	RowsRead        apijson.Field
+	RowsWritten     apijson.Field
+	ServedByPrimary apijson.Field
+	ServedByRegion  apijson.Field
+	SizeAfter       apijson.Field
+	Timings         apijson.Field
+	raw             string
+	ExtraFields     map[string]apijson.Field
 }
 
 func (r *QueryMeta) UnmarshalJSON(data []byte) (err error) {
@@ -293,16 +343,67 @@ func (r queryMetaJSON) RawJSON() string {
 	return r.raw
 }
 
+// Region location hint of the database instance that handled the query.
+type QueryMetaServedByRegion string
+
+const (
+	QueryMetaServedByRegionWnam QueryMetaServedByRegion = "WNAM"
+	QueryMetaServedByRegionEnam QueryMetaServedByRegion = "ENAM"
+	QueryMetaServedByRegionWeur QueryMetaServedByRegion = "WEUR"
+	QueryMetaServedByRegionEeur QueryMetaServedByRegion = "EEUR"
+	QueryMetaServedByRegionApac QueryMetaServedByRegion = "APAC"
+	QueryMetaServedByRegionOc   QueryMetaServedByRegion = "OC"
+)
+
+func (r QueryMetaServedByRegion) IsKnown() bool {
+	switch r {
+	case QueryMetaServedByRegionWnam, QueryMetaServedByRegionEnam, QueryMetaServedByRegionWeur, QueryMetaServedByRegionEeur, QueryMetaServedByRegionApac, QueryMetaServedByRegionOc:
+		return true
+	}
+	return false
+}
+
+// Various durations for the query.
+type QueryMetaTimings struct {
+	// The duration of the SQL query execution inside the database. Does not include
+	// any network communication.
+	SqlDurationMs float64              `json:"sql_duration_ms"`
+	JSON          queryMetaTimingsJSON `json:"-"`
+}
+
+// queryMetaTimingsJSON contains the JSON metadata for the struct
+// [QueryMetaTimings]
+type queryMetaTimingsJSON struct {
+	SqlDurationMs apijson.Field
+	raw           string
+	ExtraFields   map[string]apijson.Field
+}
+
+func (r *QueryMetaTimings) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r queryMetaTimingsJSON) RawJSON() string {
+	return r.raw
+}
+
 type AccountD1DatabaseNewResponse struct {
-	Result DatabaseDetailsResponse          `json:"result"`
-	JSON   accountD1DatabaseNewResponseJSON `json:"-"`
-	APIResponseD1
+	Errors   []MessagesD1Item `json:"errors,required"`
+	Messages []MessagesD1Item `json:"messages,required"`
+	// The details of the D1 database.
+	Result DatabaseDetailsResponse `json:"result,required"`
+	// Whether the API call was successful
+	Success AccountD1DatabaseNewResponseSuccess `json:"success,required"`
+	JSON    accountD1DatabaseNewResponseJSON    `json:"-"`
 }
 
 // accountD1DatabaseNewResponseJSON contains the JSON metadata for the struct
 // [AccountD1DatabaseNewResponse]
 type accountD1DatabaseNewResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -315,16 +416,38 @@ func (r accountD1DatabaseNewResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful
+type AccountD1DatabaseNewResponseSuccess bool
+
+const (
+	AccountD1DatabaseNewResponseSuccessTrue AccountD1DatabaseNewResponseSuccess = true
+)
+
+func (r AccountD1DatabaseNewResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountD1DatabaseNewResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountD1DatabaseGetResponse struct {
-	Result DatabaseDetailsResponse          `json:"result"`
-	JSON   accountD1DatabaseGetResponseJSON `json:"-"`
-	APIResponseD1
+	Errors   []MessagesD1Item `json:"errors,required"`
+	Messages []MessagesD1Item `json:"messages,required"`
+	// The details of the D1 database.
+	Result DatabaseDetailsResponse `json:"result,required"`
+	// Whether the API call was successful
+	Success AccountD1DatabaseGetResponseSuccess `json:"success,required"`
+	JSON    accountD1DatabaseGetResponseJSON    `json:"-"`
 }
 
 // accountD1DatabaseGetResponseJSON contains the JSON metadata for the struct
 // [AccountD1DatabaseGetResponse]
 type accountD1DatabaseGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -337,17 +460,38 @@ func (r accountD1DatabaseGetResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful
+type AccountD1DatabaseGetResponseSuccess bool
+
+const (
+	AccountD1DatabaseGetResponseSuccessTrue AccountD1DatabaseGetResponseSuccess = true
+)
+
+func (r AccountD1DatabaseGetResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountD1DatabaseGetResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountD1DatabaseListResponse struct {
-	Result     []AccountD1DatabaseListResponseResult   `json:"result"`
+	Errors   []MessagesD1Item                      `json:"errors,required"`
+	Messages []MessagesD1Item                      `json:"messages,required"`
+	Result   []AccountD1DatabaseListResponseResult `json:"result,required"`
+	// Whether the API call was successful
+	Success    AccountD1DatabaseListResponseSuccess    `json:"success,required"`
 	ResultInfo AccountD1DatabaseListResponseResultInfo `json:"result_info"`
 	JSON       accountD1DatabaseListResponseJSON       `json:"-"`
-	APIResponseD1
 }
 
 // accountD1DatabaseListResponseJSON contains the JSON metadata for the struct
 // [AccountD1DatabaseListResponse]
 type accountD1DatabaseListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -391,6 +535,21 @@ func (r accountD1DatabaseListResponseResultJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful
+type AccountD1DatabaseListResponseSuccess bool
+
+const (
+	AccountD1DatabaseListResponseSuccessTrue AccountD1DatabaseListResponseSuccess = true
+)
+
+func (r AccountD1DatabaseListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountD1DatabaseListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountD1DatabaseListResponseResultInfo struct {
 	// Total number of results for the requested service
 	Count float64 `json:"count"`
@@ -423,15 +582,21 @@ func (r accountD1DatabaseListResponseResultInfoJSON) RawJSON() string {
 }
 
 type AccountD1DatabaseDeleteResponse struct {
-	Result interface{}                         `json:"result,nullable"`
-	JSON   accountD1DatabaseDeleteResponseJSON `json:"-"`
-	APIResponseD1
+	Errors   []MessagesD1Item `json:"errors,required"`
+	Messages []MessagesD1Item `json:"messages,required"`
+	Result   interface{}      `json:"result,required,nullable"`
+	// Whether the API call was successful
+	Success AccountD1DatabaseDeleteResponseSuccess `json:"success,required"`
+	JSON    accountD1DatabaseDeleteResponseJSON    `json:"-"`
 }
 
 // accountD1DatabaseDeleteResponseJSON contains the JSON metadata for the struct
 // [AccountD1DatabaseDeleteResponse]
 type accountD1DatabaseDeleteResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -444,16 +609,37 @@ func (r accountD1DatabaseDeleteResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful
+type AccountD1DatabaseDeleteResponseSuccess bool
+
+const (
+	AccountD1DatabaseDeleteResponseSuccessTrue AccountD1DatabaseDeleteResponseSuccess = true
+)
+
+func (r AccountD1DatabaseDeleteResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountD1DatabaseDeleteResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountD1DatabaseExportResponse struct {
-	Result AccountD1DatabaseExportResponseResult `json:"result"`
-	JSON   accountD1DatabaseExportResponseJSON   `json:"-"`
-	APIResponseD1
+	Errors   []MessagesD1Item                      `json:"errors,required"`
+	Messages []MessagesD1Item                      `json:"messages,required"`
+	Result   AccountD1DatabaseExportResponseResult `json:"result,required"`
+	// Whether the API call was successful
+	Success AccountD1DatabaseExportResponseSuccess `json:"success,required"`
+	JSON    accountD1DatabaseExportResponseJSON    `json:"-"`
 }
 
 // accountD1DatabaseExportResponseJSON contains the JSON metadata for the struct
 // [AccountD1DatabaseExportResponse]
 type accountD1DatabaseExportResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -559,16 +745,37 @@ func (r AccountD1DatabaseExportResponseResultType) IsKnown() bool {
 	return false
 }
 
+// Whether the API call was successful
+type AccountD1DatabaseExportResponseSuccess bool
+
+const (
+	AccountD1DatabaseExportResponseSuccessTrue AccountD1DatabaseExportResponseSuccess = true
+)
+
+func (r AccountD1DatabaseExportResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountD1DatabaseExportResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountD1DatabaseImportResponse struct {
-	Result AccountD1DatabaseImportResponseResult `json:"result"`
-	JSON   accountD1DatabaseImportResponseJSON   `json:"-"`
-	APIResponseD1
+	Errors   []MessagesD1Item                      `json:"errors,required"`
+	Messages []MessagesD1Item                      `json:"messages,required"`
+	Result   AccountD1DatabaseImportResponseResult `json:"result,required"`
+	// Whether the API call was successful
+	Success AccountD1DatabaseImportResponseSuccess `json:"success,required"`
+	JSON    accountD1DatabaseImportResponseJSON    `json:"-"`
 }
 
 // accountD1DatabaseImportResponseJSON contains the JSON metadata for the struct
 // [AccountD1DatabaseImportResponse]
 type accountD1DatabaseImportResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -687,16 +894,37 @@ func (r AccountD1DatabaseImportResponseResultType) IsKnown() bool {
 	return false
 }
 
+// Whether the API call was successful
+type AccountD1DatabaseImportResponseSuccess bool
+
+const (
+	AccountD1DatabaseImportResponseSuccessTrue AccountD1DatabaseImportResponseSuccess = true
+)
+
+func (r AccountD1DatabaseImportResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountD1DatabaseImportResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountD1DatabaseQueryResponse struct {
-	Result []AccountD1DatabaseQueryResponseResult `json:"result"`
-	JSON   accountD1DatabaseQueryResponseJSON     `json:"-"`
-	APIResponseD1
+	Errors   []MessagesD1Item                       `json:"errors,required"`
+	Messages []MessagesD1Item                       `json:"messages,required"`
+	Result   []AccountD1DatabaseQueryResponseResult `json:"result,required"`
+	// Whether the API call was successful
+	Success AccountD1DatabaseQueryResponseSuccess `json:"success,required"`
+	JSON    accountD1DatabaseQueryResponseJSON    `json:"-"`
 }
 
 // accountD1DatabaseQueryResponseJSON contains the JSON metadata for the struct
 // [AccountD1DatabaseQueryResponse]
 type accountD1DatabaseQueryResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -734,16 +962,37 @@ func (r accountD1DatabaseQueryResponseResultJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful
+type AccountD1DatabaseQueryResponseSuccess bool
+
+const (
+	AccountD1DatabaseQueryResponseSuccessTrue AccountD1DatabaseQueryResponseSuccess = true
+)
+
+func (r AccountD1DatabaseQueryResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountD1DatabaseQueryResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountD1DatabaseRawQueryResponse struct {
-	Result []AccountD1DatabaseRawQueryResponseResult `json:"result"`
-	JSON   accountD1DatabaseRawQueryResponseJSON     `json:"-"`
-	APIResponseD1
+	Errors   []MessagesD1Item                          `json:"errors,required"`
+	Messages []MessagesD1Item                          `json:"messages,required"`
+	Result   []AccountD1DatabaseRawQueryResponseResult `json:"result,required"`
+	// Whether the API call was successful
+	Success AccountD1DatabaseRawQueryResponseSuccess `json:"success,required"`
+	JSON    accountD1DatabaseRawQueryResponseJSON    `json:"-"`
 }
 
 // accountD1DatabaseRawQueryResponseJSON contains the JSON metadata for the struct
 // [AccountD1DatabaseRawQueryResponse]
 type accountD1DatabaseRawQueryResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -802,6 +1051,21 @@ func (r *AccountD1DatabaseRawQueryResponseResultResults) UnmarshalJSON(data []by
 
 func (r accountD1DatabaseRawQueryResponseResultResultsJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful
+type AccountD1DatabaseRawQueryResponseSuccess bool
+
+const (
+	AccountD1DatabaseRawQueryResponseSuccessTrue AccountD1DatabaseRawQueryResponseSuccess = true
+)
+
+func (r AccountD1DatabaseRawQueryResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountD1DatabaseRawQueryResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountD1DatabaseNewParams struct {
@@ -924,38 +1188,97 @@ func (r AccountD1DatabaseImportParamsBody) MarshalJSON() (data []byte, err error
 
 func (r AccountD1DatabaseImportParamsBody) implementsAccountD1DatabaseImportParamsBodyUnion() {}
 
-// Satisfied by [AccountD1DatabaseImportParamsBodyObject],
-// [AccountD1DatabaseImportParamsBodyObject],
-// [AccountD1DatabaseImportParamsBodyObject], [AccountD1DatabaseImportParamsBody].
+// Satisfied by [AccountD1DatabaseImportParamsBodyInit],
+// [AccountD1DatabaseImportParamsBodyIngest],
+// [AccountD1DatabaseImportParamsBodyPoll], [AccountD1DatabaseImportParamsBody].
 type AccountD1DatabaseImportParamsBodyUnion interface {
 	implementsAccountD1DatabaseImportParamsBodyUnion()
 }
 
-type AccountD1DatabaseImportParamsBodyObject struct {
+type AccountD1DatabaseImportParamsBodyInit struct {
 	// Indicates you have a new SQL file to upload.
-	Action param.Field[AccountD1DatabaseImportParamsBodyObjectAction] `json:"action,required"`
+	Action param.Field[AccountD1DatabaseImportParamsBodyInitAction] `json:"action,required"`
 	// Required when action is 'init' or 'ingest'. An md5 hash of the file you're
 	// uploading. Used to check if it already exists, and validate its contents before
 	// ingesting.
 	Etag param.Field[string] `json:"etag,required"`
 }
 
-func (r AccountD1DatabaseImportParamsBodyObject) MarshalJSON() (data []byte, err error) {
+func (r AccountD1DatabaseImportParamsBodyInit) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-func (r AccountD1DatabaseImportParamsBodyObject) implementsAccountD1DatabaseImportParamsBodyUnion() {}
+func (r AccountD1DatabaseImportParamsBodyInit) implementsAccountD1DatabaseImportParamsBodyUnion() {}
 
 // Indicates you have a new SQL file to upload.
-type AccountD1DatabaseImportParamsBodyObjectAction string
+type AccountD1DatabaseImportParamsBodyInitAction string
 
 const (
-	AccountD1DatabaseImportParamsBodyObjectActionInit AccountD1DatabaseImportParamsBodyObjectAction = "init"
+	AccountD1DatabaseImportParamsBodyInitActionInit AccountD1DatabaseImportParamsBodyInitAction = "init"
 )
 
-func (r AccountD1DatabaseImportParamsBodyObjectAction) IsKnown() bool {
+func (r AccountD1DatabaseImportParamsBodyInitAction) IsKnown() bool {
 	switch r {
-	case AccountD1DatabaseImportParamsBodyObjectActionInit:
+	case AccountD1DatabaseImportParamsBodyInitActionInit:
+		return true
+	}
+	return false
+}
+
+type AccountD1DatabaseImportParamsBodyIngest struct {
+	// Indicates you've finished uploading to tell the D1 to start consuming it
+	Action param.Field[AccountD1DatabaseImportParamsBodyIngestAction] `json:"action,required"`
+	// An md5 hash of the file you're uploading. Used to check if it already exists,
+	// and validate its contents before ingesting.
+	Etag param.Field[string] `json:"etag,required"`
+	// The filename you have successfully uploaded.
+	Filename param.Field[string] `json:"filename,required"`
+}
+
+func (r AccountD1DatabaseImportParamsBodyIngest) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r AccountD1DatabaseImportParamsBodyIngest) implementsAccountD1DatabaseImportParamsBodyUnion() {}
+
+// Indicates you've finished uploading to tell the D1 to start consuming it
+type AccountD1DatabaseImportParamsBodyIngestAction string
+
+const (
+	AccountD1DatabaseImportParamsBodyIngestActionIngest AccountD1DatabaseImportParamsBodyIngestAction = "ingest"
+)
+
+func (r AccountD1DatabaseImportParamsBodyIngestAction) IsKnown() bool {
+	switch r {
+	case AccountD1DatabaseImportParamsBodyIngestActionIngest:
+		return true
+	}
+	return false
+}
+
+type AccountD1DatabaseImportParamsBodyPoll struct {
+	// Indicates you've finished uploading to tell the D1 to start consuming it
+	Action param.Field[AccountD1DatabaseImportParamsBodyPollAction] `json:"action,required"`
+	// This identifies the currently-running import, checking its status.
+	CurrentBookmark param.Field[string] `json:"current_bookmark,required"`
+}
+
+func (r AccountD1DatabaseImportParamsBodyPoll) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r AccountD1DatabaseImportParamsBodyPoll) implementsAccountD1DatabaseImportParamsBodyUnion() {}
+
+// Indicates you've finished uploading to tell the D1 to start consuming it
+type AccountD1DatabaseImportParamsBodyPollAction string
+
+const (
+	AccountD1DatabaseImportParamsBodyPollActionPoll AccountD1DatabaseImportParamsBodyPollAction = "poll"
+)
+
+func (r AccountD1DatabaseImportParamsBodyPollAction) IsKnown() bool {
+	switch r {
+	case AccountD1DatabaseImportParamsBodyPollActionPoll:
 		return true
 	}
 	return false

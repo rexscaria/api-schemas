@@ -48,45 +48,23 @@ func (r *ZoneSpeedAPIService) GetAvailabilities(ctx context.Context, zoneID stri
 	return
 }
 
-type ObservatoryAPIResponseSingle struct {
-	Errors   []ObservatoryMessagesItem `json:"errors,required"`
-	Messages []ObservatoryMessagesItem `json:"messages,required"`
-	// Whether the API call was successful.
-	Success bool                             `json:"success,required"`
-	JSON    observatoryAPIResponseSingleJSON `json:"-"`
-}
-
-// observatoryAPIResponseSingleJSON contains the JSON metadata for the struct
-// [ObservatoryAPIResponseSingle]
-type observatoryAPIResponseSingleJSON struct {
-	Errors      apijson.Field
-	Messages    apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ObservatoryAPIResponseSingle) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r observatoryAPIResponseSingleJSON) RawJSON() string {
-	return r.raw
-}
-
 type ObservatoryMessagesItem struct {
-	Code    int64                       `json:"code,required"`
-	Message string                      `json:"message,required"`
-	JSON    observatoryMessagesItemJSON `json:"-"`
+	Code             int64                         `json:"code,required"`
+	Message          string                        `json:"message,required"`
+	DocumentationURL string                        `json:"documentation_url"`
+	Source           ObservatoryMessagesItemSource `json:"source"`
+	JSON             observatoryMessagesItemJSON   `json:"-"`
 }
 
 // observatoryMessagesItemJSON contains the JSON metadata for the struct
 // [ObservatoryMessagesItem]
 type observatoryMessagesItemJSON struct {
-	Code        apijson.Field
-	Message     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
 }
 
 func (r *ObservatoryMessagesItem) UnmarshalJSON(data []byte) (err error) {
@@ -94,6 +72,27 @@ func (r *ObservatoryMessagesItem) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (r observatoryMessagesItemJSON) RawJSON() string {
+	return r.raw
+}
+
+type ObservatoryMessagesItemSource struct {
+	Pointer string                            `json:"pointer"`
+	JSON    observatoryMessagesItemSourceJSON `json:"-"`
+}
+
+// observatoryMessagesItemSourceJSON contains the JSON metadata for the struct
+// [ObservatoryMessagesItemSource]
+type observatoryMessagesItemSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ObservatoryMessagesItemSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r observatoryMessagesItemSourceJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -126,14 +125,20 @@ func (r observatoryPlanPropertiesInfoJSON) RawJSON() string {
 }
 
 type ZoneSpeedAPIGetAvailabilitiesResponse struct {
-	Result ZoneSpeedAPIGetAvailabilitiesResponseResult `json:"result"`
-	JSON   zoneSpeedAPIGetAvailabilitiesResponseJSON   `json:"-"`
-	ObservatoryAPIResponseSingle
+	Errors   []ZoneSpeedAPIGetAvailabilitiesResponseError   `json:"errors,required"`
+	Messages []ZoneSpeedAPIGetAvailabilitiesResponseMessage `json:"messages,required"`
+	// Whether the API call was successful.
+	Success bool                                        `json:"success,required"`
+	Result  ZoneSpeedAPIGetAvailabilitiesResponseResult `json:"result"`
+	JSON    zoneSpeedAPIGetAvailabilitiesResponseJSON   `json:"-"`
 }
 
 // zoneSpeedAPIGetAvailabilitiesResponseJSON contains the JSON metadata for the
 // struct [ZoneSpeedAPIGetAvailabilitiesResponse]
 type zoneSpeedAPIGetAvailabilitiesResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -144,6 +149,102 @@ func (r *ZoneSpeedAPIGetAvailabilitiesResponse) UnmarshalJSON(data []byte) (err 
 }
 
 func (r zoneSpeedAPIGetAvailabilitiesResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZoneSpeedAPIGetAvailabilitiesResponseError struct {
+	Code             int64                                             `json:"code,required"`
+	Message          string                                            `json:"message,required"`
+	DocumentationURL string                                            `json:"documentation_url"`
+	Source           ZoneSpeedAPIGetAvailabilitiesResponseErrorsSource `json:"source"`
+	JSON             zoneSpeedAPIGetAvailabilitiesResponseErrorJSON    `json:"-"`
+}
+
+// zoneSpeedAPIGetAvailabilitiesResponseErrorJSON contains the JSON metadata for
+// the struct [ZoneSpeedAPIGetAvailabilitiesResponseError]
+type zoneSpeedAPIGetAvailabilitiesResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *ZoneSpeedAPIGetAvailabilitiesResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneSpeedAPIGetAvailabilitiesResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZoneSpeedAPIGetAvailabilitiesResponseErrorsSource struct {
+	Pointer string                                                `json:"pointer"`
+	JSON    zoneSpeedAPIGetAvailabilitiesResponseErrorsSourceJSON `json:"-"`
+}
+
+// zoneSpeedAPIGetAvailabilitiesResponseErrorsSourceJSON contains the JSON metadata
+// for the struct [ZoneSpeedAPIGetAvailabilitiesResponseErrorsSource]
+type zoneSpeedAPIGetAvailabilitiesResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZoneSpeedAPIGetAvailabilitiesResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneSpeedAPIGetAvailabilitiesResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZoneSpeedAPIGetAvailabilitiesResponseMessage struct {
+	Code             int64                                               `json:"code,required"`
+	Message          string                                              `json:"message,required"`
+	DocumentationURL string                                              `json:"documentation_url"`
+	Source           ZoneSpeedAPIGetAvailabilitiesResponseMessagesSource `json:"source"`
+	JSON             zoneSpeedAPIGetAvailabilitiesResponseMessageJSON    `json:"-"`
+}
+
+// zoneSpeedAPIGetAvailabilitiesResponseMessageJSON contains the JSON metadata for
+// the struct [ZoneSpeedAPIGetAvailabilitiesResponseMessage]
+type zoneSpeedAPIGetAvailabilitiesResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *ZoneSpeedAPIGetAvailabilitiesResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneSpeedAPIGetAvailabilitiesResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZoneSpeedAPIGetAvailabilitiesResponseMessagesSource struct {
+	Pointer string                                                  `json:"pointer"`
+	JSON    zoneSpeedAPIGetAvailabilitiesResponseMessagesSourceJSON `json:"-"`
+}
+
+// zoneSpeedAPIGetAvailabilitiesResponseMessagesSourceJSON contains the JSON
+// metadata for the struct [ZoneSpeedAPIGetAvailabilitiesResponseMessagesSource]
+type zoneSpeedAPIGetAvailabilitiesResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZoneSpeedAPIGetAvailabilitiesResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneSpeedAPIGetAvailabilitiesResponseMessagesSourceJSON) RawJSON() string {
 	return r.raw
 }
 

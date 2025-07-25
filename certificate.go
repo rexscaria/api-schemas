@@ -72,14 +72,14 @@ func (r *CertificateService) List(ctx context.Context, query CertificateListPara
 // Revoke an existing Origin CA certificate by its serial number. You can use an
 // Origin CA Key as your User Service Key or an API token when calling this
 // endpoint ([see above](#requests)).
-func (r *CertificateService) Revoke(ctx context.Context, certificateID string, body CertificateRevokeParams, opts ...option.RequestOption) (res *CertificateRevokeResponse, err error) {
+func (r *CertificateService) Revoke(ctx context.Context, certificateID string, opts ...option.RequestOption) (res *CertificateRevokeResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if certificateID == "" {
 		err = errors.New("missing required certificate_id parameter")
 		return
 	}
 	path := fmt.Sprintf("certificates/%s", certificateID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
@@ -123,14 +123,20 @@ func (r RequestedValidity) IsKnown() bool {
 }
 
 type SingleCertificateResponse struct {
-	Result TlsCertificates               `json:"result"`
-	JSON   singleCertificateResponseJSON `json:"-"`
-	APIResponseSingleTlsCertificates
+	Errors   []MessagesTlsCertificatesItem `json:"errors,required"`
+	Messages []MessagesTlsCertificatesItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success SingleCertificateResponseSuccess `json:"success,required"`
+	Result  TlsCertificates                  `json:"result"`
+	JSON    singleCertificateResponseJSON    `json:"-"`
 }
 
 // singleCertificateResponseJSON contains the JSON metadata for the struct
 // [SingleCertificateResponse]
 type singleCertificateResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -144,6 +150,21 @@ func (r singleCertificateResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type SingleCertificateResponseSuccess bool
+
+const (
+	SingleCertificateResponseSuccessTrue SingleCertificateResponseSuccess = true
+)
+
+func (r SingleCertificateResponseSuccess) IsKnown() bool {
+	switch r {
+	case SingleCertificateResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type TlsCertificates struct {
 	// The Certificate Signing Request (CSR). Must be newline-encoded.
 	Csr string `json:"csr,required"`
@@ -155,7 +176,7 @@ type TlsCertificates struct {
 	RequestType RequestType `json:"request_type,required"`
 	// The number of days for which the certificate should be valid.
 	RequestedValidity RequestedValidity `json:"requested_validity,required"`
-	// Identifier
+	// Identifier.
 	ID string `json:"id"`
 	// The Origin CA certificate. Will be newline-encoded.
 	Certificate string `json:"certificate"`
@@ -186,15 +207,23 @@ func (r tlsCertificatesJSON) RawJSON() string {
 }
 
 type CertificateListResponse struct {
-	Result []TlsCertificates           `json:"result"`
-	JSON   certificateListResponseJSON `json:"-"`
-	APIResponseCollectionTlsCertificates
+	Errors   []MessagesTlsCertificatesItem `json:"errors,required"`
+	Messages []MessagesTlsCertificatesItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success    CertificateListResponseSuccess    `json:"success,required"`
+	Result     []TlsCertificates                 `json:"result"`
+	ResultInfo CertificateListResponseResultInfo `json:"result_info"`
+	JSON       certificateListResponseJSON       `json:"-"`
 }
 
 // certificateListResponseJSON contains the JSON metadata for the struct
 // [CertificateListResponse]
 type certificateListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -204,6 +233,52 @@ func (r *CertificateListResponse) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (r certificateListResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful.
+type CertificateListResponseSuccess bool
+
+const (
+	CertificateListResponseSuccessTrue CertificateListResponseSuccess = true
+)
+
+func (r CertificateListResponseSuccess) IsKnown() bool {
+	switch r {
+	case CertificateListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type CertificateListResponseResultInfo struct {
+	// Total number of results for the requested service.
+	Count float64 `json:"count"`
+	// Current page within paginated list of results.
+	Page float64 `json:"page"`
+	// Number of results per page of results.
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters.
+	TotalCount float64                               `json:"total_count"`
+	JSON       certificateListResponseResultInfoJSON `json:"-"`
+}
+
+// certificateListResponseResultInfoJSON contains the JSON metadata for the struct
+// [CertificateListResponseResultInfo]
+type certificateListResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *CertificateListResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r certificateListResponseResultInfoJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -229,7 +304,7 @@ func (r certificateRevokeResponseJSON) RawJSON() string {
 }
 
 type CertificateRevokeResponseResult struct {
-	// Identifier
+	// Identifier.
 	ID string `json:"id"`
 	// When the certificate was revoked.
 	RevokedAt time.Time                           `json:"revoked_at" format:"date-time"`
@@ -271,8 +346,16 @@ func (r CertificateNewParams) MarshalJSON() (data []byte, err error) {
 }
 
 type CertificateListParams struct {
-	// Identifier
+	// Identifier.
 	ZoneID param.Field[string] `query:"zone_id,required"`
+	// Limit to the number of records returned.
+	Limit param.Field[int64] `query:"limit"`
+	// Offset the results
+	Offset param.Field[int64] `query:"offset"`
+	// Page number of paginated results.
+	Page param.Field[float64] `query:"page"`
+	// Number of records per page.
+	PerPage param.Field[float64] `query:"per_page"`
 }
 
 // URLQuery serializes [CertificateListParams]'s query parameters as `url.Values`.
@@ -281,12 +364,4 @@ func (r CertificateListParams) URLQuery() (v url.Values) {
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
-}
-
-type CertificateRevokeParams struct {
-	Body interface{} `json:"body,required"`
-}
-
-func (r CertificateRevokeParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
 }

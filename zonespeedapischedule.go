@@ -113,14 +113,20 @@ func (r observatoryScheduleJSON) RawJSON() string {
 }
 
 type ZoneSpeedAPIScheduleNewResponse struct {
-	Result ZoneSpeedAPIScheduleNewResponseResult `json:"result"`
-	JSON   zoneSpeedAPIScheduleNewResponseJSON   `json:"-"`
-	ObservatoryAPIResponseSingle
+	Errors   []ZoneSpeedAPIScheduleNewResponseError   `json:"errors,required"`
+	Messages []ZoneSpeedAPIScheduleNewResponseMessage `json:"messages,required"`
+	// Whether the API call was successful.
+	Success bool                                  `json:"success,required"`
+	Result  ZoneSpeedAPIScheduleNewResponseResult `json:"result"`
+	JSON    zoneSpeedAPIScheduleNewResponseJSON   `json:"-"`
 }
 
 // zoneSpeedAPIScheduleNewResponseJSON contains the JSON metadata for the struct
 // [ZoneSpeedAPIScheduleNewResponse]
 type zoneSpeedAPIScheduleNewResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -131,6 +137,102 @@ func (r *ZoneSpeedAPIScheduleNewResponse) UnmarshalJSON(data []byte) (err error)
 }
 
 func (r zoneSpeedAPIScheduleNewResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZoneSpeedAPIScheduleNewResponseError struct {
+	Code             int64                                       `json:"code,required"`
+	Message          string                                      `json:"message,required"`
+	DocumentationURL string                                      `json:"documentation_url"`
+	Source           ZoneSpeedAPIScheduleNewResponseErrorsSource `json:"source"`
+	JSON             zoneSpeedAPIScheduleNewResponseErrorJSON    `json:"-"`
+}
+
+// zoneSpeedAPIScheduleNewResponseErrorJSON contains the JSON metadata for the
+// struct [ZoneSpeedAPIScheduleNewResponseError]
+type zoneSpeedAPIScheduleNewResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *ZoneSpeedAPIScheduleNewResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneSpeedAPIScheduleNewResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZoneSpeedAPIScheduleNewResponseErrorsSource struct {
+	Pointer string                                          `json:"pointer"`
+	JSON    zoneSpeedAPIScheduleNewResponseErrorsSourceJSON `json:"-"`
+}
+
+// zoneSpeedAPIScheduleNewResponseErrorsSourceJSON contains the JSON metadata for
+// the struct [ZoneSpeedAPIScheduleNewResponseErrorsSource]
+type zoneSpeedAPIScheduleNewResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZoneSpeedAPIScheduleNewResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneSpeedAPIScheduleNewResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZoneSpeedAPIScheduleNewResponseMessage struct {
+	Code             int64                                         `json:"code,required"`
+	Message          string                                        `json:"message,required"`
+	DocumentationURL string                                        `json:"documentation_url"`
+	Source           ZoneSpeedAPIScheduleNewResponseMessagesSource `json:"source"`
+	JSON             zoneSpeedAPIScheduleNewResponseMessageJSON    `json:"-"`
+}
+
+// zoneSpeedAPIScheduleNewResponseMessageJSON contains the JSON metadata for the
+// struct [ZoneSpeedAPIScheduleNewResponseMessage]
+type zoneSpeedAPIScheduleNewResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *ZoneSpeedAPIScheduleNewResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneSpeedAPIScheduleNewResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZoneSpeedAPIScheduleNewResponseMessagesSource struct {
+	Pointer string                                            `json:"pointer"`
+	JSON    zoneSpeedAPIScheduleNewResponseMessagesSourceJSON `json:"-"`
+}
+
+// zoneSpeedAPIScheduleNewResponseMessagesSourceJSON contains the JSON metadata for
+// the struct [ZoneSpeedAPIScheduleNewResponseMessagesSource]
+type zoneSpeedAPIScheduleNewResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZoneSpeedAPIScheduleNewResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneSpeedAPIScheduleNewResponseMessagesSourceJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -159,15 +261,21 @@ func (r zoneSpeedAPIScheduleNewResponseResultJSON) RawJSON() string {
 }
 
 type ZoneSpeedAPIScheduleGetResponse struct {
+	Errors   []ObservatoryMessagesItem `json:"errors,required"`
+	Messages []ObservatoryMessagesItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success bool `json:"success,required"`
 	// The test schedule.
 	Result ObservatorySchedule                 `json:"result"`
 	JSON   zoneSpeedAPIScheduleGetResponseJSON `json:"-"`
-	ObservatoryAPIResponseSingle
 }
 
 // zoneSpeedAPIScheduleGetResponseJSON contains the JSON metadata for the struct
 // [ZoneSpeedAPIScheduleGetResponse]
 type zoneSpeedAPIScheduleGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field

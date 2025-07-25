@@ -87,7 +87,7 @@ func (r *AccountMnmRuleService) List(ctx context.Context, accountID string, opts
 }
 
 // Delete a network monitoring rule for account.
-func (r *AccountMnmRuleService) Delete(ctx context.Context, accountID string, ruleID string, body AccountMnmRuleDeleteParams, opts ...option.RequestOption) (res *RulesSingleResponse, err error) {
+func (r *AccountMnmRuleService) Delete(ctx context.Context, accountID string, ruleID string, opts ...option.RequestOption) (res *RulesSingleResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
@@ -98,7 +98,7 @@ func (r *AccountMnmRuleService) Delete(ctx context.Context, accountID string, ru
 		return
 	}
 	path := fmt.Sprintf("accounts/%s/mnm/rules/%s", accountID, ruleID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
@@ -286,15 +286,21 @@ func (r RuleDuration) IsKnown() bool {
 }
 
 type RulesSingleResponse struct {
-	Result MnmRule                 `json:"result,nullable"`
-	JSON   rulesSingleResponseJSON `json:"-"`
-	APIResponseSingleMagicVisibility
+	Errors   []MessagesMagicVisibilityMnmItem `json:"errors,required"`
+	Messages []MessagesMagicVisibilityMnmItem `json:"messages,required"`
+	Result   MnmRule                          `json:"result,required,nullable"`
+	// Whether the API call was successful
+	Success RulesSingleResponseSuccess `json:"success,required"`
+	JSON    rulesSingleResponseJSON    `json:"-"`
 }
 
 // rulesSingleResponseJSON contains the JSON metadata for the struct
 // [RulesSingleResponse]
 type rulesSingleResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -307,17 +313,38 @@ func (r rulesSingleResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful
+type RulesSingleResponseSuccess bool
+
+const (
+	RulesSingleResponseSuccessTrue RulesSingleResponseSuccess = true
+)
+
+func (r RulesSingleResponseSuccess) IsKnown() bool {
+	switch r {
+	case RulesSingleResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountMnmRuleListResponse struct {
-	Result     []MnmRule                            `json:"result,nullable"`
+	Errors   []MessagesMagicVisibilityMnmItem `json:"errors,required"`
+	Messages []MessagesMagicVisibilityMnmItem `json:"messages,required"`
+	Result   []MnmRule                        `json:"result,required,nullable"`
+	// Whether the API call was successful
+	Success    AccountMnmRuleListResponseSuccess    `json:"success,required"`
 	ResultInfo AccountMnmRuleListResponseResultInfo `json:"result_info"`
 	JSON       accountMnmRuleListResponseJSON       `json:"-"`
-	APIResponseMagicVisibilityMnm
 }
 
 // accountMnmRuleListResponseJSON contains the JSON metadata for the struct
 // [AccountMnmRuleListResponse]
 type accountMnmRuleListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -329,6 +356,21 @@ func (r *AccountMnmRuleListResponse) UnmarshalJSON(data []byte) (err error) {
 
 func (r accountMnmRuleListResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful
+type AccountMnmRuleListResponseSuccess bool
+
+const (
+	AccountMnmRuleListResponseSuccessTrue AccountMnmRuleListResponseSuccess = true
+)
+
+func (r AccountMnmRuleListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountMnmRuleListResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountMnmRuleListResponseResultInfo struct {
@@ -363,15 +405,21 @@ func (r accountMnmRuleListResponseResultInfoJSON) RawJSON() string {
 }
 
 type AccountMnmRuleUpdateAdvertisementResponse struct {
-	Result AccountMnmRuleUpdateAdvertisementResponseResult `json:"result,nullable"`
-	JSON   accountMnmRuleUpdateAdvertisementResponseJSON   `json:"-"`
-	APIResponseSingleMagicVisibility
+	Errors   []MessagesMagicVisibilityMnmItem                `json:"errors,required"`
+	Messages []MessagesMagicVisibilityMnmItem                `json:"messages,required"`
+	Result   AccountMnmRuleUpdateAdvertisementResponseResult `json:"result,required,nullable"`
+	// Whether the API call was successful
+	Success AccountMnmRuleUpdateAdvertisementResponseSuccess `json:"success,required"`
+	JSON    accountMnmRuleUpdateAdvertisementResponseJSON    `json:"-"`
 }
 
 // accountMnmRuleUpdateAdvertisementResponseJSON contains the JSON metadata for the
 // struct [AccountMnmRuleUpdateAdvertisementResponse]
 type accountMnmRuleUpdateAdvertisementResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -406,6 +454,21 @@ func (r *AccountMnmRuleUpdateAdvertisementResponseResult) UnmarshalJSON(data []b
 
 func (r accountMnmRuleUpdateAdvertisementResponseResultJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful
+type AccountMnmRuleUpdateAdvertisementResponseSuccess bool
+
+const (
+	AccountMnmRuleUpdateAdvertisementResponseSuccessTrue AccountMnmRuleUpdateAdvertisementResponseSuccess = true
+)
+
+func (r AccountMnmRuleUpdateAdvertisementResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountMnmRuleUpdateAdvertisementResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountMnmRuleNewParams struct {
@@ -460,14 +523,6 @@ type AccountMnmRuleUpdateParams struct {
 
 func (r AccountMnmRuleUpdateParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
-}
-
-type AccountMnmRuleDeleteParams struct {
-	Body interface{} `json:"body,required"`
-}
-
-func (r AccountMnmRuleDeleteParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
 }
 
 type AccountMnmRuleUpdateAdvertisementParams struct {

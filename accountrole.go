@@ -194,14 +194,20 @@ func (r IamRoleParam) MarshalJSON() (data []byte, err error) {
 }
 
 type AccountRoleGetResponse struct {
-	Result IamRole                    `json:"result"`
-	JSON   accountRoleGetResponseJSON `json:"-"`
-	APIResponseSingleIam
+	Errors   []AccountRoleGetResponseError   `json:"errors,required"`
+	Messages []AccountRoleGetResponseMessage `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountRoleGetResponseSuccess `json:"success,required"`
+	Result  IamRole                       `json:"result"`
+	JSON    accountRoleGetResponseJSON    `json:"-"`
 }
 
 // accountRoleGetResponseJSON contains the JSON metadata for the struct
 // [AccountRoleGetResponse]
 type accountRoleGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -215,16 +221,135 @@ func (r accountRoleGetResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+type AccountRoleGetResponseError struct {
+	Code             int64                              `json:"code,required"`
+	Message          string                             `json:"message,required"`
+	DocumentationURL string                             `json:"documentation_url"`
+	Source           AccountRoleGetResponseErrorsSource `json:"source"`
+	JSON             accountRoleGetResponseErrorJSON    `json:"-"`
+}
+
+// accountRoleGetResponseErrorJSON contains the JSON metadata for the struct
+// [AccountRoleGetResponseError]
+type accountRoleGetResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountRoleGetResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountRoleGetResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountRoleGetResponseErrorsSource struct {
+	Pointer string                                 `json:"pointer"`
+	JSON    accountRoleGetResponseErrorsSourceJSON `json:"-"`
+}
+
+// accountRoleGetResponseErrorsSourceJSON contains the JSON metadata for the struct
+// [AccountRoleGetResponseErrorsSource]
+type accountRoleGetResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountRoleGetResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountRoleGetResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountRoleGetResponseMessage struct {
+	Code             int64                                `json:"code,required"`
+	Message          string                               `json:"message,required"`
+	DocumentationURL string                               `json:"documentation_url"`
+	Source           AccountRoleGetResponseMessagesSource `json:"source"`
+	JSON             accountRoleGetResponseMessageJSON    `json:"-"`
+}
+
+// accountRoleGetResponseMessageJSON contains the JSON metadata for the struct
+// [AccountRoleGetResponseMessage]
+type accountRoleGetResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountRoleGetResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountRoleGetResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountRoleGetResponseMessagesSource struct {
+	Pointer string                                   `json:"pointer"`
+	JSON    accountRoleGetResponseMessagesSourceJSON `json:"-"`
+}
+
+// accountRoleGetResponseMessagesSourceJSON contains the JSON metadata for the
+// struct [AccountRoleGetResponseMessagesSource]
+type accountRoleGetResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountRoleGetResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountRoleGetResponseMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountRoleGetResponseSuccess bool
+
+const (
+	AccountRoleGetResponseSuccessTrue AccountRoleGetResponseSuccess = true
+)
+
+func (r AccountRoleGetResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountRoleGetResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountRoleListResponse struct {
-	Result []IamRole                   `json:"result"`
-	JSON   accountRoleListResponseJSON `json:"-"`
-	IamAPIResponseCollection
+	Errors   []AccountRoleListResponseError   `json:"errors,required"`
+	Messages []AccountRoleListResponseMessage `json:"messages,required"`
+	// Whether the API call was successful.
+	Success    AccountRoleListResponseSuccess    `json:"success,required"`
+	Result     []IamRole                         `json:"result"`
+	ResultInfo AccountRoleListResponseResultInfo `json:"result_info"`
+	JSON       accountRoleListResponseJSON       `json:"-"`
 }
 
 // accountRoleListResponseJSON contains the JSON metadata for the struct
 // [AccountRoleListResponse]
 type accountRoleListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -234,6 +359,148 @@ func (r *AccountRoleListResponse) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (r accountRoleListResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountRoleListResponseError struct {
+	Code             int64                               `json:"code,required"`
+	Message          string                              `json:"message,required"`
+	DocumentationURL string                              `json:"documentation_url"`
+	Source           AccountRoleListResponseErrorsSource `json:"source"`
+	JSON             accountRoleListResponseErrorJSON    `json:"-"`
+}
+
+// accountRoleListResponseErrorJSON contains the JSON metadata for the struct
+// [AccountRoleListResponseError]
+type accountRoleListResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountRoleListResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountRoleListResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountRoleListResponseErrorsSource struct {
+	Pointer string                                  `json:"pointer"`
+	JSON    accountRoleListResponseErrorsSourceJSON `json:"-"`
+}
+
+// accountRoleListResponseErrorsSourceJSON contains the JSON metadata for the
+// struct [AccountRoleListResponseErrorsSource]
+type accountRoleListResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountRoleListResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountRoleListResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountRoleListResponseMessage struct {
+	Code             int64                                 `json:"code,required"`
+	Message          string                                `json:"message,required"`
+	DocumentationURL string                                `json:"documentation_url"`
+	Source           AccountRoleListResponseMessagesSource `json:"source"`
+	JSON             accountRoleListResponseMessageJSON    `json:"-"`
+}
+
+// accountRoleListResponseMessageJSON contains the JSON metadata for the struct
+// [AccountRoleListResponseMessage]
+type accountRoleListResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountRoleListResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountRoleListResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountRoleListResponseMessagesSource struct {
+	Pointer string                                    `json:"pointer"`
+	JSON    accountRoleListResponseMessagesSourceJSON `json:"-"`
+}
+
+// accountRoleListResponseMessagesSourceJSON contains the JSON metadata for the
+// struct [AccountRoleListResponseMessagesSource]
+type accountRoleListResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountRoleListResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountRoleListResponseMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountRoleListResponseSuccess bool
+
+const (
+	AccountRoleListResponseSuccessTrue AccountRoleListResponseSuccess = true
+)
+
+func (r AccountRoleListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountRoleListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type AccountRoleListResponseResultInfo struct {
+	// Total number of results for the requested service
+	Count float64 `json:"count"`
+	// Current page within paginated list of results
+	Page float64 `json:"page"`
+	// Number of results per page of results
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters
+	TotalCount float64                               `json:"total_count"`
+	JSON       accountRoleListResponseResultInfoJSON `json:"-"`
+}
+
+// accountRoleListResponseResultInfoJSON contains the JSON metadata for the struct
+// [AccountRoleListResponseResultInfo]
+type accountRoleListResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountRoleListResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountRoleListResponseResultInfoJSON) RawJSON() string {
 	return r.raw
 }
 

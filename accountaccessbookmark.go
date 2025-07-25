@@ -104,7 +104,7 @@ func (r *AccountAccessBookmarkService) List(ctx context.Context, accountID strin
 // Deletes a Bookmark application.
 //
 // Deprecated: deprecated
-func (r *AccountAccessBookmarkService) Delete(ctx context.Context, accountID string, bookmarkID string, body AccountAccessBookmarkDeleteParams, opts ...option.RequestOption) (res *IDResponseApps, err error) {
+func (r *AccountAccessBookmarkService) Delete(ctx context.Context, accountID string, bookmarkID string, opts ...option.RequestOption) (res *IDResponseApps, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
@@ -115,7 +115,7 @@ func (r *AccountAccessBookmarkService) Delete(ctx context.Context, accountID str
 		return
 	}
 	path := fmt.Sprintf("accounts/%s/access/bookmarks/%s", accountID, bookmarkID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
@@ -157,14 +157,20 @@ func (r bookmarksJSON) RawJSON() string {
 }
 
 type SingleResponseBookmark struct {
-	Result Bookmarks                  `json:"result"`
-	JSON   singleResponseBookmarkJSON `json:"-"`
-	APIResponseSingleAccess
+	Errors   []MessagesAccessItem `json:"errors,required"`
+	Messages []MessagesAccessItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success SingleResponseBookmarkSuccess `json:"success,required"`
+	Result  Bookmarks                     `json:"result"`
+	JSON    singleResponseBookmarkJSON    `json:"-"`
 }
 
 // singleResponseBookmarkJSON contains the JSON metadata for the struct
 // [SingleResponseBookmark]
 type singleResponseBookmarkJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -178,16 +184,39 @@ func (r singleResponseBookmarkJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type SingleResponseBookmarkSuccess bool
+
+const (
+	SingleResponseBookmarkSuccessTrue SingleResponseBookmarkSuccess = true
+)
+
+func (r SingleResponseBookmarkSuccess) IsKnown() bool {
+	switch r {
+	case SingleResponseBookmarkSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountAccessBookmarkListResponse struct {
-	Result []Bookmarks                           `json:"result"`
-	JSON   accountAccessBookmarkListResponseJSON `json:"-"`
-	APIResponseCollectionAccess
+	Errors   []MessagesAccessItem `json:"errors,required"`
+	Messages []MessagesAccessItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success    AccountAccessBookmarkListResponseSuccess    `json:"success,required"`
+	Result     []Bookmarks                                 `json:"result"`
+	ResultInfo AccountAccessBookmarkListResponseResultInfo `json:"result_info"`
+	JSON       accountAccessBookmarkListResponseJSON       `json:"-"`
 }
 
 // accountAccessBookmarkListResponseJSON contains the JSON metadata for the struct
 // [AccountAccessBookmarkListResponse]
 type accountAccessBookmarkListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -197,6 +226,52 @@ func (r *AccountAccessBookmarkListResponse) UnmarshalJSON(data []byte) (err erro
 }
 
 func (r accountAccessBookmarkListResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountAccessBookmarkListResponseSuccess bool
+
+const (
+	AccountAccessBookmarkListResponseSuccessTrue AccountAccessBookmarkListResponseSuccess = true
+)
+
+func (r AccountAccessBookmarkListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountAccessBookmarkListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type AccountAccessBookmarkListResponseResultInfo struct {
+	// Total number of results for the requested service.
+	Count float64 `json:"count"`
+	// Current page within paginated list of results.
+	Page float64 `json:"page"`
+	// Number of results per page of results.
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters.
+	TotalCount float64                                         `json:"total_count"`
+	JSON       accountAccessBookmarkListResponseResultInfoJSON `json:"-"`
+}
+
+// accountAccessBookmarkListResponseResultInfoJSON contains the JSON metadata for
+// the struct [AccountAccessBookmarkListResponseResultInfo]
+type accountAccessBookmarkListResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountAccessBookmarkListResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountAccessBookmarkListResponseResultInfoJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -213,13 +288,5 @@ type AccountAccessBookmarkUpdateParams struct {
 }
 
 func (r AccountAccessBookmarkUpdateParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
-}
-
-type AccountAccessBookmarkDeleteParams struct {
-	Body interface{} `json:"body,required"`
-}
-
-func (r AccountAccessBookmarkDeleteParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r.Body)
 }

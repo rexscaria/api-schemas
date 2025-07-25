@@ -10,7 +10,6 @@ import (
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
-	"github.com/rexscaria/api-schemas/internal/param"
 	"github.com/rexscaria/api-schemas/internal/requestconfig"
 	"github.com/rexscaria/api-schemas/option"
 )
@@ -31,105 +30,6 @@ type AccountAccessAppPolicyService struct {
 func NewAccountAccessAppPolicyService(opts ...option.RequestOption) (r *AccountAccessAppPolicyService) {
 	r = &AccountAccessAppPolicyService{}
 	r.Options = opts
-	return
-}
-
-// Creates a policy applying exclusive to a single application that defines the
-// users or groups who can reach it. We recommend creating a reusable policy
-// instead and subsequently referencing its ID in the application's 'policies'
-// array.
-func (r *AccountAccessAppPolicyService) New(ctx context.Context, accountID string, appID string, body AccountAccessAppPolicyNewParams, opts ...option.RequestOption) (res *SingleResponsePolicy, err error) {
-	opts = append(r.Options[:], opts...)
-	if accountID == "" {
-		err = errors.New("missing required account_id parameter")
-		return
-	}
-	if appID == "" {
-		err = errors.New("missing required app_id parameter")
-		return
-	}
-	path := fmt.Sprintf("accounts/%s/access/apps/%s/policies", accountID, appID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
-}
-
-// Fetches a single Access policy configured for an application. Returns both
-// exclusively owned and reusable policies used by the application.
-func (r *AccountAccessAppPolicyService) Get(ctx context.Context, accountID string, appID string, policyID string, opts ...option.RequestOption) (res *SingleResponsePolicy, err error) {
-	opts = append(r.Options[:], opts...)
-	if accountID == "" {
-		err = errors.New("missing required account_id parameter")
-		return
-	}
-	if appID == "" {
-		err = errors.New("missing required app_id parameter")
-		return
-	}
-	if policyID == "" {
-		err = errors.New("missing required policy_id parameter")
-		return
-	}
-	path := fmt.Sprintf("accounts/%s/access/apps/%s/policies/%s", accountID, appID, policyID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
-}
-
-// Updates an Access policy specific to an application. To update a reusable
-// policy, use the /accounts/{account_id}/policies/{uid} endpoint.
-func (r *AccountAccessAppPolicyService) Update(ctx context.Context, accountID string, appID string, policyID string, body AccountAccessAppPolicyUpdateParams, opts ...option.RequestOption) (res *SingleResponsePolicy, err error) {
-	opts = append(r.Options[:], opts...)
-	if accountID == "" {
-		err = errors.New("missing required account_id parameter")
-		return
-	}
-	if appID == "" {
-		err = errors.New("missing required app_id parameter")
-		return
-	}
-	if policyID == "" {
-		err = errors.New("missing required policy_id parameter")
-		return
-	}
-	path := fmt.Sprintf("accounts/%s/access/apps/%s/policies/%s", accountID, appID, policyID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
-}
-
-// Lists Access policies configured for an application. Returns both exclusively
-// scoped and reusable policies used by the application.
-func (r *AccountAccessAppPolicyService) List(ctx context.Context, accountID string, appID string, opts ...option.RequestOption) (res *ResponseCollectionAppPolicies, err error) {
-	opts = append(r.Options[:], opts...)
-	if accountID == "" {
-		err = errors.New("missing required account_id parameter")
-		return
-	}
-	if appID == "" {
-		err = errors.New("missing required app_id parameter")
-		return
-	}
-	path := fmt.Sprintf("accounts/%s/access/apps/%s/policies", accountID, appID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
-}
-
-// Deletes an Access policy specific to an application. To delete a reusable
-// policy, use the /accounts/{account_id}/policies/{uid} endpoint.
-func (r *AccountAccessAppPolicyService) Delete(ctx context.Context, accountID string, appID string, policyID string, opts ...option.RequestOption) (res *IDResponseApps, err error) {
-	opts = append(r.Options[:], opts...)
-	if accountID == "" {
-		err = errors.New("missing required account_id parameter")
-		return
-	}
-	if appID == "" {
-		err = errors.New("missing required app_id parameter")
-		return
-	}
-	if policyID == "" {
-		err = errors.New("missing required policy_id parameter")
-		return
-	}
-	path := fmt.Sprintf("accounts/%s/access/apps/%s/policies/%s", accountID, appID, policyID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
@@ -200,31 +100,43 @@ func (r basePolicyResponseJSON) RawJSON() string {
 	return r.raw
 }
 
-type PolicyRequestForAppParam struct {
-	// The order of execution for this policy. Must be unique for each policy within an
-	// app.
-	Precedence param.Field[int64] `json:"precedence"`
-	PolicyRequestForAccessParam
-}
-
-func (r PolicyRequestForAppParam) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
 type PolicyResponseApp struct {
+	// Administrators who can approve a temporary authentication request.
+	ApprovalGroups []ApprovalGroupEmail `json:"approval_groups"`
+	// Requires the user to request access from an administrator at the start of each
+	// session.
+	ApprovalRequired bool `json:"approval_required"`
+	// Require this application to be served in an isolated browser for users matching
+	// this policy. 'Client Web Isolation' must be on for the account in order to use
+	// this feature.
+	IsolationRequired bool `json:"isolation_required"`
 	// The order of execution for this policy. Must be unique for each policy within an
 	// app.
-	Precedence int64                 `json:"precedence"`
-	JSON       policyResponseAppJSON `json:"-"`
-	PolicyResponseGeneral
+	Precedence int64 `json:"precedence"`
+	// A custom message that will appear on the purpose justification screen.
+	PurposeJustificationPrompt string `json:"purpose_justification_prompt"`
+	// Require users to enter a justification when they log in to the application.
+	PurposeJustificationRequired bool `json:"purpose_justification_required"`
+	// The amount of time that tokens issued for the application will be valid. Must be
+	// in the format `300ms` or `2h45m`. Valid time units are: ns, us (or µs), ms, s,
+	// m, h.
+	SessionDuration string                `json:"session_duration"`
+	JSON            policyResponseAppJSON `json:"-"`
+	BasePolicyResponse
 }
 
 // policyResponseAppJSON contains the JSON metadata for the struct
 // [PolicyResponseApp]
 type policyResponseAppJSON struct {
-	Precedence  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	ApprovalGroups               apijson.Field
+	ApprovalRequired             apijson.Field
+	IsolationRequired            apijson.Field
+	Precedence                   apijson.Field
+	PurposeJustificationPrompt   apijson.Field
+	PurposeJustificationRequired apijson.Field
+	SessionDuration              apijson.Field
+	raw                          string
+	ExtraFields                  map[string]apijson.Field
 }
 
 func (r *PolicyResponseApp) UnmarshalJSON(data []byte) (err error) {
@@ -235,59 +147,24 @@ func (r policyResponseAppJSON) RawJSON() string {
 	return r.raw
 }
 
-type PolicyResponseGeneral struct {
-	// Administrators who can approve a temporary authentication request.
-	ApprovalGroups []ApprovalGroupEmail `json:"approval_groups"`
-	// Requires the user to request access from an administrator at the start of each
-	// session.
-	ApprovalRequired bool `json:"approval_required"`
-	// Require this application to be served in an isolated browser for users matching
-	// this policy. 'Client Web Isolation' must be on for the account in order to use
-	// this feature.
-	IsolationRequired bool `json:"isolation_required"`
-	// A custom message that will appear on the purpose justification screen.
-	PurposeJustificationPrompt string `json:"purpose_justification_prompt"`
-	// Require users to enter a justification when they log in to the application.
-	PurposeJustificationRequired bool `json:"purpose_justification_required"`
-	// The amount of time that tokens issued for the application will be valid. Must be
-	// in the format `300ms` or `2h45m`. Valid time units are: ns, us (or µs), ms, s,
-	// m, h.
-	SessionDuration string                    `json:"session_duration"`
-	JSON            policyResponseGeneralJSON `json:"-"`
-	BasePolicyResponse
-}
-
-// policyResponseGeneralJSON contains the JSON metadata for the struct
-// [PolicyResponseGeneral]
-type policyResponseGeneralJSON struct {
-	ApprovalGroups               apijson.Field
-	ApprovalRequired             apijson.Field
-	IsolationRequired            apijson.Field
-	PurposeJustificationPrompt   apijson.Field
-	PurposeJustificationRequired apijson.Field
-	SessionDuration              apijson.Field
-	raw                          string
-	ExtraFields                  map[string]apijson.Field
-}
-
-func (r *PolicyResponseGeneral) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r policyResponseGeneralJSON) RawJSON() string {
-	return r.raw
-}
-
 type ResponseCollectionAppPolicies struct {
-	Result []PolicyResponseApp               `json:"result"`
-	JSON   responseCollectionAppPoliciesJSON `json:"-"`
-	APIResponseCollectionAccess
+	Errors   []MessagesAccessItem `json:"errors,required"`
+	Messages []MessagesAccessItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success    ResponseCollectionAppPoliciesSuccess    `json:"success,required"`
+	Result     []PolicyResponseApp                     `json:"result"`
+	ResultInfo ResponseCollectionAppPoliciesResultInfo `json:"result_info"`
+	JSON       responseCollectionAppPoliciesJSON       `json:"-"`
 }
 
 // responseCollectionAppPoliciesJSON contains the JSON metadata for the struct
 // [ResponseCollectionAppPolicies]
 type responseCollectionAppPoliciesJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -300,40 +177,48 @@ func (r responseCollectionAppPoliciesJSON) RawJSON() string {
 	return r.raw
 }
 
-type SingleResponsePolicy struct {
-	Result PolicyResponseApp        `json:"result"`
-	JSON   singleResponsePolicyJSON `json:"-"`
-	APIResponseSingleAccess
+// Whether the API call was successful.
+type ResponseCollectionAppPoliciesSuccess bool
+
+const (
+	ResponseCollectionAppPoliciesSuccessTrue ResponseCollectionAppPoliciesSuccess = true
+)
+
+func (r ResponseCollectionAppPoliciesSuccess) IsKnown() bool {
+	switch r {
+	case ResponseCollectionAppPoliciesSuccessTrue:
+		return true
+	}
+	return false
 }
 
-// singleResponsePolicyJSON contains the JSON metadata for the struct
-// [SingleResponsePolicy]
-type singleResponsePolicyJSON struct {
-	Result      apijson.Field
+type ResponseCollectionAppPoliciesResultInfo struct {
+	// Total number of results for the requested service.
+	Count float64 `json:"count"`
+	// Current page within paginated list of results.
+	Page float64 `json:"page"`
+	// Number of results per page of results.
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters.
+	TotalCount float64                                     `json:"total_count"`
+	JSON       responseCollectionAppPoliciesResultInfoJSON `json:"-"`
+}
+
+// responseCollectionAppPoliciesResultInfoJSON contains the JSON metadata for the
+// struct [ResponseCollectionAppPoliciesResultInfo]
+type responseCollectionAppPoliciesResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *SingleResponsePolicy) UnmarshalJSON(data []byte) (err error) {
+func (r *ResponseCollectionAppPoliciesResultInfo) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r singleResponsePolicyJSON) RawJSON() string {
+func (r responseCollectionAppPoliciesResultInfoJSON) RawJSON() string {
 	return r.raw
-}
-
-type AccountAccessAppPolicyNewParams struct {
-	PolicyRequestForApp PolicyRequestForAppParam `json:"policy_request_for_app,required"`
-}
-
-func (r AccountAccessAppPolicyNewParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.PolicyRequestForApp)
-}
-
-type AccountAccessAppPolicyUpdateParams struct {
-	PolicyRequestForApp PolicyRequestForAppParam `json:"policy_request_for_app,required"`
-}
-
-func (r AccountAccessAppPolicyUpdateParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.PolicyRequestForApp)
 }

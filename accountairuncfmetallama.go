@@ -8,15 +8,12 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
-	"reflect"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
 	"github.com/rexscaria/api-schemas/internal/param"
 	"github.com/rexscaria/api-schemas/internal/requestconfig"
 	"github.com/rexscaria/api-schemas/option"
-	"github.com/rexscaria/api-schemas/shared"
-	"github.com/tidwall/gjson"
 )
 
 // AccountAIRunCfMetaLlamaService contains methods and other services that help
@@ -50,139 +47,7 @@ func (r *AccountAIRunCfMetaLlamaService) ExecuteLlama2_7bChatHfLora(ctx context.
 	return
 }
 
-type AccountAIRunCfMetaLlamaExecuteLlama2_7bChatHfLoraResponse struct {
-	Result  AccountAIRunCfMetaLlamaExecuteLlama2_7bChatHfLoraResponseResultUnion `json:"result" format:"binary"`
-	Success bool                                                                 `json:"success"`
-	JSON    accountAIRunCfMetaLlamaExecuteLlama2_7bChatHfLoraResponseJSON        `json:"-"`
-}
-
-// accountAIRunCfMetaLlamaExecuteLlama2_7bChatHfLoraResponseJSON contains the JSON
-// metadata for the struct
-// [AccountAIRunCfMetaLlamaExecuteLlama2_7bChatHfLoraResponse]
-type accountAIRunCfMetaLlamaExecuteLlama2_7bChatHfLoraResponseJSON struct {
-	Result      apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountAIRunCfMetaLlamaExecuteLlama2_7bChatHfLoraResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountAIRunCfMetaLlamaExecuteLlama2_7bChatHfLoraResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-// Union satisfied by
-// [AccountAIRunCfMetaLlamaExecuteLlama2_7bChatHfLoraResponseResultObject] or
-// [shared.UnionString].
-type AccountAIRunCfMetaLlamaExecuteLlama2_7bChatHfLoraResponseResultUnion interface {
-	ImplementsAccountAIRunCfMetaLlamaExecuteLlama2_7bChatHfLoraResponseResultUnion()
-}
-
-func init() {
-	apijson.RegisterUnion(
-		reflect.TypeOf((*AccountAIRunCfMetaLlamaExecuteLlama2_7bChatHfLoraResponseResultUnion)(nil)).Elem(),
-		"",
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(AccountAIRunCfMetaLlamaExecuteLlama2_7bChatHfLoraResponseResultObject{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.String,
-			Type:       reflect.TypeOf(shared.UnionString("")),
-		},
-	)
-}
-
-type AccountAIRunCfMetaLlamaExecuteLlama2_7bChatHfLoraResponseResultObject struct {
-	// The generated text response from the model
-	Response string `json:"response,required"`
-	// An array of tool calls requests made during the response generation
-	ToolCalls []AccountAIRunCfMetaLlamaExecuteLlama2_7bChatHfLoraResponseResultObjectToolCall `json:"tool_calls"`
-	// Usage statistics for the inference request
-	Usage AccountAIRunCfMetaLlamaExecuteLlama2_7bChatHfLoraResponseResultObjectUsage `json:"usage"`
-	JSON  accountAIRunCfMetaLlamaExecuteLlama2_7bChatHfLoraResponseResultObjectJSON  `json:"-"`
-}
-
-// accountAIRunCfMetaLlamaExecuteLlama2_7bChatHfLoraResponseResultObjectJSON
-// contains the JSON metadata for the struct
-// [AccountAIRunCfMetaLlamaExecuteLlama2_7bChatHfLoraResponseResultObject]
-type accountAIRunCfMetaLlamaExecuteLlama2_7bChatHfLoraResponseResultObjectJSON struct {
-	Response    apijson.Field
-	ToolCalls   apijson.Field
-	Usage       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountAIRunCfMetaLlamaExecuteLlama2_7bChatHfLoraResponseResultObject) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountAIRunCfMetaLlamaExecuteLlama2_7bChatHfLoraResponseResultObjectJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r AccountAIRunCfMetaLlamaExecuteLlama2_7bChatHfLoraResponseResultObject) ImplementsAccountAIRunCfMetaLlamaExecuteLlama2_7bChatHfLoraResponseResultUnion() {
-}
-
-type AccountAIRunCfMetaLlamaExecuteLlama2_7bChatHfLoraResponseResultObjectToolCall struct {
-	// The arguments passed to be passed to the tool call request
-	Arguments interface{} `json:"arguments"`
-	// The name of the tool to be called
-	Name string                                                                            `json:"name"`
-	JSON accountAIRunCfMetaLlamaExecuteLlama2_7bChatHfLoraResponseResultObjectToolCallJSON `json:"-"`
-}
-
-// accountAIRunCfMetaLlamaExecuteLlama2_7bChatHfLoraResponseResultObjectToolCallJSON
-// contains the JSON metadata for the struct
-// [AccountAIRunCfMetaLlamaExecuteLlama2_7bChatHfLoraResponseResultObjectToolCall]
-type accountAIRunCfMetaLlamaExecuteLlama2_7bChatHfLoraResponseResultObjectToolCallJSON struct {
-	Arguments   apijson.Field
-	Name        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountAIRunCfMetaLlamaExecuteLlama2_7bChatHfLoraResponseResultObjectToolCall) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountAIRunCfMetaLlamaExecuteLlama2_7bChatHfLoraResponseResultObjectToolCallJSON) RawJSON() string {
-	return r.raw
-}
-
-// Usage statistics for the inference request
-type AccountAIRunCfMetaLlamaExecuteLlama2_7bChatHfLoraResponseResultObjectUsage struct {
-	// Total number of tokens in output
-	CompletionTokens float64 `json:"completion_tokens"`
-	// Total number of tokens in input
-	PromptTokens float64 `json:"prompt_tokens"`
-	// Total number of input and output tokens
-	TotalTokens float64                                                                        `json:"total_tokens"`
-	JSON        accountAIRunCfMetaLlamaExecuteLlama2_7bChatHfLoraResponseResultObjectUsageJSON `json:"-"`
-}
-
-// accountAIRunCfMetaLlamaExecuteLlama2_7bChatHfLoraResponseResultObjectUsageJSON
-// contains the JSON metadata for the struct
-// [AccountAIRunCfMetaLlamaExecuteLlama2_7bChatHfLoraResponseResultObjectUsage]
-type accountAIRunCfMetaLlamaExecuteLlama2_7bChatHfLoraResponseResultObjectUsageJSON struct {
-	CompletionTokens apijson.Field
-	PromptTokens     apijson.Field
-	TotalTokens      apijson.Field
-	raw              string
-	ExtraFields      map[string]apijson.Field
-}
-
-func (r *AccountAIRunCfMetaLlamaExecuteLlama2_7bChatHfLoraResponseResultObjectUsage) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountAIRunCfMetaLlamaExecuteLlama2_7bChatHfLoraResponseResultObjectUsageJSON) RawJSON() string {
-	return r.raw
-}
+type AccountAIRunCfMetaLlamaExecuteLlama2_7bChatHfLoraResponse = interface{}
 
 type AccountAIRunCfMetaLlamaExecuteLlama2_7bChatHfLoraParams struct {
 	QueueRequest param.Field[string]                                              `query:"queueRequest"`

@@ -108,6 +108,7 @@ func TestAccountChallengeWidgetUpdateWithOptionalParams(t *testing.T) {
 			ClearanceLevel: cfrex.F(cfrex.TurnstileClearanceLevelInteractive),
 			EphemeralID:    cfrex.F(false),
 			Offlabel:       cfrex.F(false),
+			Region:         cfrex.F(cfrex.TurnstileRegionWorld),
 		},
 	)
 	if err != nil {

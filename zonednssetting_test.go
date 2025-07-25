@@ -32,30 +32,28 @@ func TestZoneDNSSettingUpdateWithOptionalParams(t *testing.T) {
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.ZoneDNSSettingUpdateParams{
 			SettingsZone: cfrex.SettingsZoneParam{
-				DNSSettingsParam: cfrex.DNSSettingsParam{
-					FlattenAllCnames: cfrex.F(false),
-					FoundationDNS:    cfrex.F(false),
-					InternalDNS: cfrex.F(cfrex.DNSSettingsInternalDNSParam{
-						ReferenceZoneID: cfrex.F("reference_zone_id"),
-					}),
-					MultiProvider:      cfrex.F(false),
-					NsTtl:              cfrex.F(86400.000000),
-					SecondaryOverrides: cfrex.F(false),
-					Soa: cfrex.F(cfrex.DNSSettingsSoaParam{
-						Expire:  cfrex.F(604800.000000),
-						MinTtl:  cfrex.F(1800.000000),
-						Mname:   cfrex.F("kristina.ns.cloudflare.com"),
-						Refresh: cfrex.F(10000.000000),
-						Retry:   cfrex.F(2400.000000),
-						Rname:   cfrex.F("admin.example.com"),
-						Ttl:     cfrex.F(3600.000000),
-					}),
-					ZoneMode: cfrex.F(cfrex.DNSSettingsZoneModeDNSOnly),
-				},
+				FlattenAllCnames: cfrex.F(false),
+				FoundationDNS:    cfrex.F(false),
+				InternalDNS: cfrex.F(cfrex.SettingsZoneInternalDNSParam{
+					ReferenceZoneID: cfrex.F("reference_zone_id"),
+				}),
+				MultiProvider: cfrex.F(false),
 				Nameservers: cfrex.F(cfrex.SettingsZoneNameserversParam{
 					Type:  cfrex.F(cfrex.SettingsZoneNameserversTypeCloudflareStandard),
 					NsSet: cfrex.F(int64(1)),
 				}),
+				NsTtl:              cfrex.F(86400.000000),
+				SecondaryOverrides: cfrex.F(false),
+				Soa: cfrex.F(cfrex.SettingsZoneSoaParam{
+					Expire:  cfrex.F(604800.000000),
+					MinTtl:  cfrex.F(1800.000000),
+					Mname:   cfrex.F("kristina.ns.cloudflare.com"),
+					Refresh: cfrex.F(10000.000000),
+					Retry:   cfrex.F(2400.000000),
+					Rname:   cfrex.F("admin.example.com"),
+					Ttl:     cfrex.F(3600.000000),
+				}),
+				ZoneMode: cfrex.F(cfrex.SettingsZoneZoneModeDNSOnly),
 			},
 		},
 	)

@@ -60,18 +60,22 @@ func (r *ZoneAnalyticsLatencyService) ListColos(ctx context.Context, zoneID stri
 }
 
 type ArgoAnalyticsMessage struct {
-	Code    int64                    `json:"code,required"`
-	Message string                   `json:"message,required"`
-	JSON    argoAnalyticsMessageJSON `json:"-"`
+	Code             int64                      `json:"code,required"`
+	Message          string                     `json:"message,required"`
+	DocumentationURL string                     `json:"documentation_url"`
+	Source           ArgoAnalyticsMessageSource `json:"source"`
+	JSON             argoAnalyticsMessageJSON   `json:"-"`
 }
 
 // argoAnalyticsMessageJSON contains the JSON metadata for the struct
 // [ArgoAnalyticsMessage]
 type argoAnalyticsMessageJSON struct {
-	Code        apijson.Field
-	Message     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
 }
 
 func (r *ArgoAnalyticsMessage) UnmarshalJSON(data []byte) (err error) {
@@ -79,6 +83,27 @@ func (r *ArgoAnalyticsMessage) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (r argoAnalyticsMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type ArgoAnalyticsMessageSource struct {
+	Pointer string                         `json:"pointer"`
+	JSON    argoAnalyticsMessageSourceJSON `json:"-"`
+}
+
+// argoAnalyticsMessageSourceJSON contains the JSON metadata for the struct
+// [ArgoAnalyticsMessageSource]
+type argoAnalyticsMessageSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ArgoAnalyticsMessageSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r argoAnalyticsMessageSourceJSON) RawJSON() string {
 	return r.raw
 }
 

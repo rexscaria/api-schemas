@@ -124,7 +124,7 @@ func (r *AccountStreamService) List(ctx context.Context, accountID string, query
 }
 
 // Deletes a video and its copies from Cloudflare Stream.
-func (r *AccountStreamService) Delete(ctx context.Context, accountID string, identifier string, body AccountStreamDeleteParams, opts ...option.RequestOption) (err error) {
+func (r *AccountStreamService) Delete(ctx context.Context, accountID string, identifier string, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if accountID == "" {
@@ -136,7 +136,7 @@ func (r *AccountStreamService) Delete(ctx context.Context, accountID string, ide
 		return
 	}
 	path := fmt.Sprintf("accounts/%s/stream/%s", accountID, identifier)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, nil, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return
 }
 
@@ -202,7 +202,7 @@ func (r *AccountStreamService) DirectUpload(ctx context.Context, accountID strin
 // Fetches an HTML code snippet to embed a video in a web page delivered through
 // Cloudflare. On success, returns an HTML fragment for use on web pages to display
 // a video. On failure, returns a JSON response body.
-func (r *AccountStreamService) GetEmbedCode(ctx context.Context, accountID string, identifier string, opts ...option.RequestOption) (res *AccountStreamGetEmbedCodeResponse, err error) {
+func (r *AccountStreamService) GetEmbedCode(ctx context.Context, accountID string, identifier string, opts ...option.RequestOption) (res *string, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
@@ -233,17 +233,18 @@ func (r *AccountStreamService) GetStorageUsage(ctx context.Context, accountID st
 type MediaState string
 
 const (
-	MediaStatePendingupload MediaState = "pendingupload"
-	MediaStateDownloading   MediaState = "downloading"
-	MediaStateQueued        MediaState = "queued"
-	MediaStateInprogress    MediaState = "inprogress"
-	MediaStateReady         MediaState = "ready"
-	MediaStateError         MediaState = "error"
+	MediaStatePendingupload  MediaState = "pendingupload"
+	MediaStateDownloading    MediaState = "downloading"
+	MediaStateQueued         MediaState = "queued"
+	MediaStateInprogress     MediaState = "inprogress"
+	MediaStateReady          MediaState = "ready"
+	MediaStateError          MediaState = "error"
+	MediaStateLiveInprogress MediaState = "live-inprogress"
 )
 
 func (r MediaState) IsKnown() bool {
 	switch r {
-	case MediaStatePendingupload, MediaStateDownloading, MediaStateQueued, MediaStateInprogress, MediaStateReady, MediaStateError:
+	case MediaStatePendingupload, MediaStateDownloading, MediaStateQueued, MediaStateInprogress, MediaStateReady, MediaStateError, MediaStateLiveInprogress:
 		return true
 	}
 	return false
@@ -274,14 +275,20 @@ func (r playbackJSON) RawJSON() string {
 }
 
 type VideoResponseSingle struct {
-	Result Videos                  `json:"result"`
-	JSON   videoResponseSingleJSON `json:"-"`
-	APIResponseSingleStream
+	Errors   []StreamMessages `json:"errors,required"`
+	Messages []StreamMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success VideoResponseSingleSuccess `json:"success,required"`
+	Result  Videos                     `json:"result"`
+	JSON    videoResponseSingleJSON    `json:"-"`
 }
 
 // videoResponseSingleJSON contains the JSON metadata for the struct
 // [VideoResponseSingle]
 type videoResponseSingleJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -293,6 +300,21 @@ func (r *VideoResponseSingle) UnmarshalJSON(data []byte) (err error) {
 
 func (r videoResponseSingleJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type VideoResponseSingleSuccess bool
+
+const (
+	VideoResponseSingleSuccessTrue VideoResponseSingleSuccess = true
+)
+
+func (r VideoResponseSingleSuccess) IsKnown() bool {
+	switch r {
+	case VideoResponseSingleSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type Videos struct {
@@ -506,18 +528,24 @@ func (r WatermarkAtUploadStreamParam) MarshalJSON() (data []byte, err error) {
 }
 
 type AccountStreamListResponse struct {
+	Errors   []StreamMessages `json:"errors,required"`
+	Messages []StreamMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountStreamListResponseSuccess `json:"success,required"`
 	// The total number of remaining videos based on cursor position.
 	Range  int64    `json:"range"`
 	Result []Videos `json:"result"`
 	// The total number of videos that match the provided filters.
 	Total int64                         `json:"total"`
 	JSON  accountStreamListResponseJSON `json:"-"`
-	APIResponseStream
 }
 
 // accountStreamListResponseJSON contains the JSON metadata for the struct
 // [AccountStreamListResponse]
 type accountStreamListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Range       apijson.Field
 	Result      apijson.Field
 	Total       apijson.Field
@@ -533,15 +561,36 @@ func (r accountStreamListResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountStreamListResponseSuccess bool
+
+const (
+	AccountStreamListResponseSuccessTrue AccountStreamListResponseSuccess = true
+)
+
+func (r AccountStreamListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountStreamListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountStreamClipResponse struct {
-	Result AccountStreamClipResponseResult `json:"result"`
-	JSON   accountStreamClipResponseJSON   `json:"-"`
-	APIResponseStream
+	Errors   []StreamMessages `json:"errors,required"`
+	Messages []StreamMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountStreamClipResponseSuccess `json:"success,required"`
+	Result  AccountStreamClipResponseResult  `json:"result"`
+	JSON    accountStreamClipResponseJSON    `json:"-"`
 }
 
 // accountStreamClipResponseJSON contains the JSON metadata for the struct
 // [AccountStreamClipResponse]
 type accountStreamClipResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -553,6 +602,21 @@ func (r *AccountStreamClipResponse) UnmarshalJSON(data []byte) (err error) {
 
 func (r accountStreamClipResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountStreamClipResponseSuccess bool
+
+const (
+	AccountStreamClipResponseSuccessTrue AccountStreamClipResponseSuccess = true
+)
+
+func (r AccountStreamClipResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountStreamClipResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountStreamClipResponseResult struct {
@@ -628,14 +692,20 @@ func (r accountStreamClipResponseResultJSON) RawJSON() string {
 }
 
 type AccountStreamNewSignedURLResponse struct {
-	Result AccountStreamNewSignedURLResponseResult `json:"result"`
-	JSON   accountStreamNewSignedURLResponseJSON   `json:"-"`
-	APIResponseSingleStream
+	Errors   []StreamMessages `json:"errors,required"`
+	Messages []StreamMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountStreamNewSignedURLResponseSuccess `json:"success,required"`
+	Result  AccountStreamNewSignedURLResponseResult  `json:"result"`
+	JSON    accountStreamNewSignedURLResponseJSON    `json:"-"`
 }
 
 // accountStreamNewSignedURLResponseJSON contains the JSON metadata for the struct
 // [AccountStreamNewSignedURLResponse]
 type accountStreamNewSignedURLResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -647,6 +717,21 @@ func (r *AccountStreamNewSignedURLResponse) UnmarshalJSON(data []byte) (err erro
 
 func (r accountStreamNewSignedURLResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountStreamNewSignedURLResponseSuccess bool
+
+const (
+	AccountStreamNewSignedURLResponseSuccessTrue AccountStreamNewSignedURLResponseSuccess = true
+)
+
+func (r AccountStreamNewSignedURLResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountStreamNewSignedURLResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountStreamNewSignedURLResponseResult struct {
@@ -672,14 +757,20 @@ func (r accountStreamNewSignedURLResponseResultJSON) RawJSON() string {
 }
 
 type AccountStreamDirectUploadResponse struct {
-	Result AccountStreamDirectUploadResponseResult `json:"result"`
-	JSON   accountStreamDirectUploadResponseJSON   `json:"-"`
-	APIResponseSingleStream
+	Errors   []StreamMessages `json:"errors,required"`
+	Messages []StreamMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountStreamDirectUploadResponseSuccess `json:"success,required"`
+	Result  AccountStreamDirectUploadResponseResult  `json:"result"`
+	JSON    accountStreamDirectUploadResponseJSON    `json:"-"`
 }
 
 // accountStreamDirectUploadResponseJSON contains the JSON metadata for the struct
 // [AccountStreamDirectUploadResponse]
 type accountStreamDirectUploadResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -691,6 +782,21 @@ func (r *AccountStreamDirectUploadResponse) UnmarshalJSON(data []byte) (err erro
 
 func (r accountStreamDirectUploadResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountStreamDirectUploadResponseSuccess bool
+
+const (
+	AccountStreamDirectUploadResponseSuccessTrue AccountStreamDirectUploadResponseSuccess = true
+)
+
+func (r AccountStreamDirectUploadResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountStreamDirectUploadResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountStreamDirectUploadResponseResult struct {
@@ -726,17 +832,21 @@ func (r accountStreamDirectUploadResponseResultJSON) RawJSON() string {
 	return r.raw
 }
 
-type AccountStreamGetEmbedCodeResponse = interface{}
-
 type AccountStreamGetStorageUsageResponse struct {
-	Result AccountStreamGetStorageUsageResponseResult `json:"result"`
-	JSON   accountStreamGetStorageUsageResponseJSON   `json:"-"`
-	APIResponseSingleStream
+	Errors   []StreamMessages `json:"errors,required"`
+	Messages []StreamMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountStreamGetStorageUsageResponseSuccess `json:"success,required"`
+	Result  AccountStreamGetStorageUsageResponseResult  `json:"result"`
+	JSON    accountStreamGetStorageUsageResponseJSON    `json:"-"`
 }
 
 // accountStreamGetStorageUsageResponseJSON contains the JSON metadata for the
 // struct [AccountStreamGetStorageUsageResponse]
 type accountStreamGetStorageUsageResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -748,6 +858,21 @@ func (r *AccountStreamGetStorageUsageResponse) UnmarshalJSON(data []byte) (err e
 
 func (r accountStreamGetStorageUsageResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountStreamGetStorageUsageResponseSuccess bool
+
+const (
+	AccountStreamGetStorageUsageResponseSuccessTrue AccountStreamGetStorageUsageResponseSuccess = true
+)
+
+func (r AccountStreamGetStorageUsageResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountStreamGetStorageUsageResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountStreamGetStorageUsageResponseResult struct {
@@ -893,14 +1018,6 @@ func (r AccountStreamListParams) URLQuery() (v url.Values) {
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
-}
-
-type AccountStreamDeleteParams struct {
-	Body interface{} `json:"body,required"`
-}
-
-func (r AccountStreamDeleteParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
 }
 
 type AccountStreamClipParams struct {

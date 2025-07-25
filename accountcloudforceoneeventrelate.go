@@ -34,26 +34,34 @@ func NewAccountCloudforceOneEventRelateService(opts ...option.RequestOption) (r 
 }
 
 // Creates event references for a event
-func (r *AccountCloudforceOneEventRelateService) New(ctx context.Context, accountID float64, eventID string, body AccountCloudforceOneEventRelateNewParams, opts ...option.RequestOption) (res *AccountCloudforceOneEventRelateNewResponse, err error) {
+func (r *AccountCloudforceOneEventRelateService) New(ctx context.Context, accountID string, eventID string, body AccountCloudforceOneEventRelateNewParams, opts ...option.RequestOption) (res *AccountCloudforceOneEventRelateNewResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	if accountID == "" {
+		err = errors.New("missing required account_id parameter")
+		return
+	}
 	if eventID == "" {
 		err = errors.New("missing required event_id parameter")
 		return
 	}
-	path := fmt.Sprintf("accounts/%v/cloudforce-one/events/relate/%s/create", accountID, eventID)
+	path := fmt.Sprintf("accounts/%s/cloudforce-one/events/relate/%s/create", accountID, eventID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
 
 // Removes an event reference
-func (r *AccountCloudforceOneEventRelateService) Remove(ctx context.Context, accountID float64, eventID string, body AccountCloudforceOneEventRelateRemoveParams, opts ...option.RequestOption) (res *AccountCloudforceOneEventRelateRemoveResponse, err error) {
+func (r *AccountCloudforceOneEventRelateService) Remove(ctx context.Context, accountID string, eventID string, opts ...option.RequestOption) (res *AccountCloudforceOneEventRelateRemoveResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	if accountID == "" {
+		err = errors.New("missing required account_id parameter")
+		return
+	}
 	if eventID == "" {
 		err = errors.New("missing required event_id parameter")
 		return
 	}
-	path := fmt.Sprintf("accounts/%v/cloudforce-one/events/relate/%s", accountID, eventID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	path := fmt.Sprintf("accounts/%s/cloudforce-one/events/relate/%s", accountID, eventID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
@@ -150,13 +158,5 @@ type AccountCloudforceOneEventRelateNewParams struct {
 }
 
 func (r AccountCloudforceOneEventRelateNewParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-type AccountCloudforceOneEventRelateRemoveParams struct {
-	Events param.Field[[]string] `json:"events,required"`
-}
-
-func (r AccountCloudforceOneEventRelateRemoveParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }

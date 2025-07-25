@@ -66,45 +66,22 @@ func (r *AccountWorkerScriptUsageModelService) Get(ctx context.Context, accountI
 	return
 }
 
-type UsageModelObject struct {
-	UsageModel string               `json:"usage_model"`
-	JSON       usageModelObjectJSON `json:"-"`
-}
-
-// usageModelObjectJSON contains the JSON metadata for the struct
-// [UsageModelObject]
-type usageModelObjectJSON struct {
-	UsageModel  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *UsageModelObject) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r usageModelObjectJSON) RawJSON() string {
-	return r.raw
-}
-
-type UsageModelObjectParam struct {
-	UsageModel param.Field[string] `json:"usage_model"`
-}
-
-func (r UsageModelObjectParam) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
 type UsageModelResponse struct {
-	Result UsageModelObject       `json:"result"`
-	JSON   usageModelResponseJSON `json:"-"`
-	CommonResponseWorkers
+	Errors   []WorkersMessages        `json:"errors,required"`
+	Messages []WorkersMessages        `json:"messages,required"`
+	Result   UsageModelResponseResult `json:"result,required"`
+	// Whether the API call was successful.
+	Success UsageModelResponseSuccess `json:"success,required"`
+	JSON    usageModelResponseJSON    `json:"-"`
 }
 
 // usageModelResponseJSON contains the JSON metadata for the struct
 // [UsageModelResponse]
 type usageModelResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -117,10 +94,48 @@ func (r usageModelResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+type UsageModelResponseResult struct {
+	// Usage model for the Worker invocations.
+	UsageModel UsageModel                   `json:"usage_model"`
+	JSON       usageModelResponseResultJSON `json:"-"`
+}
+
+// usageModelResponseResultJSON contains the JSON metadata for the struct
+// [UsageModelResponseResult]
+type usageModelResponseResultJSON struct {
+	UsageModel  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *UsageModelResponseResult) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r usageModelResponseResultJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful.
+type UsageModelResponseSuccess bool
+
+const (
+	UsageModelResponseSuccessTrue UsageModelResponseSuccess = true
+)
+
+func (r UsageModelResponseSuccess) IsKnown() bool {
+	switch r {
+	case UsageModelResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountWorkerScriptUsageModelUpdateParams struct {
-	UsageModelObject UsageModelObjectParam `json:"usage_model_object,required"`
+	// Usage model for the Worker invocations.
+	UsageModel param.Field[UsageModel] `json:"usage_model"`
 }
 
 func (r AccountWorkerScriptUsageModelUpdateParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.UsageModelObject)
+	return apijson.MarshalRoot(r)
 }

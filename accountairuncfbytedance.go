@@ -36,9 +36,8 @@ func NewAccountAIRunCfBytedanceService(opts ...option.RequestOption) (r *Account
 }
 
 // Execute @cf/bytedance/stable-diffusion-xl-lightning model.
-func (r *AccountAIRunCfBytedanceService) ExecuteStableDiffusionXlLightning(ctx context.Context, accountID string, params AccountAIRunCfBytedanceExecuteStableDiffusionXlLightningParams, opts ...option.RequestOption) (res *http.Response, err error) {
+func (r *AccountAIRunCfBytedanceService) ExecuteStableDiffusionXlLightning(ctx context.Context, accountID string, params AccountAIRunCfBytedanceExecuteStableDiffusionXlLightningParams, opts ...option.RequestOption) (res *AccountAIRunCfBytedanceExecuteStableDiffusionXlLightningResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "image/png")}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -47,6 +46,8 @@ func (r *AccountAIRunCfBytedanceService) ExecuteStableDiffusionXlLightning(ctx c
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
 }
+
+type AccountAIRunCfBytedanceExecuteStableDiffusionXlLightningResponse = interface{}
 
 type AccountAIRunCfBytedanceExecuteStableDiffusionXlLightningParams struct {
 	// A text description of the image you want to generate

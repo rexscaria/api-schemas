@@ -3,20 +3,12 @@
 package cfrex
 
 import (
-	"context"
-	"errors"
-	"fmt"
-	"net/http"
-	"net/url"
 	"reflect"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
-	"github.com/rexscaria/api-schemas/internal/apiquery"
 	"github.com/rexscaria/api-schemas/internal/param"
-	"github.com/rexscaria/api-schemas/internal/requestconfig"
 	"github.com/rexscaria/api-schemas/option"
-	"github.com/rexscaria/api-schemas/shared"
 	"github.com/tidwall/gjson"
 )
 
@@ -39,98 +31,23 @@ func NewAccountFirewallAccessRuleRuleService(opts ...option.RequestOption) (r *A
 	return
 }
 
-// Creates a new IP Access rule for an account. The rule will apply to all zones in
-// the account.
-//
-// Note: To create an IP Access rule that applies to a single zone, refer to the
-// [IP Access rules for a zone](#ip-access-rules-for-a-zone) endpoints.
-func (r *AccountFirewallAccessRuleRuleService) New(ctx context.Context, accountID string, body AccountFirewallAccessRuleRuleNewParams, opts ...option.RequestOption) (res *FirewallResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
-	if accountID == "" {
-		err = errors.New("missing required account_id parameter")
-		return
-	}
-	path := fmt.Sprintf("accounts/%s/firewall/access_rules/rules", accountID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
-}
-
-// Fetches the details of an IP Access rule defined at the account level.
-func (r *AccountFirewallAccessRuleRuleService) Get(ctx context.Context, accountID string, ruleID string, opts ...option.RequestOption) (res *FirewallResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
-	if accountID == "" {
-		err = errors.New("missing required account_id parameter")
-		return
-	}
-	if ruleID == "" {
-		err = errors.New("missing required rule_id parameter")
-		return
-	}
-	path := fmt.Sprintf("accounts/%s/firewall/access_rules/rules/%s", accountID, ruleID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
-}
-
-// Updates an IP Access rule defined at the account level.
-//
-// Note: This operation will affect all zones in the account.
-func (r *AccountFirewallAccessRuleRuleService) Update(ctx context.Context, accountID string, ruleID string, body AccountFirewallAccessRuleRuleUpdateParams, opts ...option.RequestOption) (res *FirewallResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
-	if accountID == "" {
-		err = errors.New("missing required account_id parameter")
-		return
-	}
-	if ruleID == "" {
-		err = errors.New("missing required rule_id parameter")
-		return
-	}
-	path := fmt.Sprintf("accounts/%s/firewall/access_rules/rules/%s", accountID, ruleID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
-}
-
-// Fetches IP Access rules of an account. These rules apply to all the zones in the
-// account. You can filter the results using several optional parameters.
-func (r *AccountFirewallAccessRuleRuleService) List(ctx context.Context, accountID string, query AccountFirewallAccessRuleRuleListParams, opts ...option.RequestOption) (res *AccountFirewallAccessRuleRuleListResponse, err error) {
-	opts = append(r.Options[:], opts...)
-	if accountID == "" {
-		err = errors.New("missing required account_id parameter")
-		return
-	}
-	path := fmt.Sprintf("accounts/%s/firewall/access_rules/rules", accountID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
-}
-
-// Deletes an existing IP Access rule defined at the account level.
-//
-// Note: This operation will affect all zones in the account.
-func (r *AccountFirewallAccessRuleRuleService) Delete(ctx context.Context, accountID string, ruleID string, body AccountFirewallAccessRuleRuleDeleteParams, opts ...option.RequestOption) (res *AccountFirewallAccessRuleRuleDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
-	if accountID == "" {
-		err = errors.New("missing required account_id parameter")
-		return
-	}
-	if ruleID == "" {
-		err = errors.New("missing required rule_id parameter")
-		return
-	}
-	path := fmt.Sprintf("accounts/%s/firewall/access_rules/rules/%s", accountID, ruleID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
-	return
-}
-
 type FirewallAPIResponseCollection struct {
-	Result     []interface{}                           `json:"result,nullable"`
+	Errors   []FirewallAPIResponseCollectionError   `json:"errors,required"`
+	Messages []FirewallAPIResponseCollectionMessage `json:"messages,required"`
+	Result   []interface{}                          `json:"result,required,nullable"`
+	// Defines whether the API call was successful.
+	Success    FirewallAPIResponseCollectionSuccess    `json:"success,required"`
 	ResultInfo FirewallAPIResponseCollectionResultInfo `json:"result_info"`
 	JSON       firewallAPIResponseCollectionJSON       `json:"-"`
-	FirewallAPIResponseCommon
 }
 
 // firewallAPIResponseCollectionJSON contains the JSON metadata for the struct
 // [FirewallAPIResponseCollection]
 type firewallAPIResponseCollectionJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -146,14 +63,125 @@ func (r firewallAPIResponseCollectionJSON) RawJSON() string {
 
 func (r FirewallAPIResponseCollection) implementsZoneFirewallWafPackageListResponse() {}
 
+type FirewallAPIResponseCollectionError struct {
+	Code             int64                                     `json:"code,required"`
+	Message          string                                    `json:"message,required"`
+	DocumentationURL string                                    `json:"documentation_url"`
+	Source           FirewallAPIResponseCollectionErrorsSource `json:"source"`
+	JSON             firewallAPIResponseCollectionErrorJSON    `json:"-"`
+}
+
+// firewallAPIResponseCollectionErrorJSON contains the JSON metadata for the struct
+// [FirewallAPIResponseCollectionError]
+type firewallAPIResponseCollectionErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *FirewallAPIResponseCollectionError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r firewallAPIResponseCollectionErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type FirewallAPIResponseCollectionErrorsSource struct {
+	Pointer string                                        `json:"pointer"`
+	JSON    firewallAPIResponseCollectionErrorsSourceJSON `json:"-"`
+}
+
+// firewallAPIResponseCollectionErrorsSourceJSON contains the JSON metadata for the
+// struct [FirewallAPIResponseCollectionErrorsSource]
+type firewallAPIResponseCollectionErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *FirewallAPIResponseCollectionErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r firewallAPIResponseCollectionErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type FirewallAPIResponseCollectionMessage struct {
+	Code             int64                                       `json:"code,required"`
+	Message          string                                      `json:"message,required"`
+	DocumentationURL string                                      `json:"documentation_url"`
+	Source           FirewallAPIResponseCollectionMessagesSource `json:"source"`
+	JSON             firewallAPIResponseCollectionMessageJSON    `json:"-"`
+}
+
+// firewallAPIResponseCollectionMessageJSON contains the JSON metadata for the
+// struct [FirewallAPIResponseCollectionMessage]
+type firewallAPIResponseCollectionMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *FirewallAPIResponseCollectionMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r firewallAPIResponseCollectionMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type FirewallAPIResponseCollectionMessagesSource struct {
+	Pointer string                                          `json:"pointer"`
+	JSON    firewallAPIResponseCollectionMessagesSourceJSON `json:"-"`
+}
+
+// firewallAPIResponseCollectionMessagesSourceJSON contains the JSON metadata for
+// the struct [FirewallAPIResponseCollectionMessagesSource]
+type firewallAPIResponseCollectionMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *FirewallAPIResponseCollectionMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r firewallAPIResponseCollectionMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Defines whether the API call was successful.
+type FirewallAPIResponseCollectionSuccess bool
+
+const (
+	FirewallAPIResponseCollectionSuccessTrue FirewallAPIResponseCollectionSuccess = true
+)
+
+func (r FirewallAPIResponseCollectionSuccess) IsKnown() bool {
+	switch r {
+	case FirewallAPIResponseCollectionSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type FirewallAPIResponseCollectionResultInfo struct {
-	// Total number of results for the requested service
+	// Defines the total number of results for the requested service.
 	Count float64 `json:"count"`
-	// Current page within paginated list of results
+	// Defines the current page within paginated list of results.
 	Page float64 `json:"page"`
-	// Number of results per page of results
+	// Defines the number of results per page of results.
 	PerPage float64 `json:"per_page"`
-	// Total results available without any search parameters
+	// Defines the total results available without any search parameters.
 	TotalCount float64                                     `json:"total_count"`
 	JSON       firewallAPIResponseCollectionResultInfoJSON `json:"-"`
 }
@@ -177,84 +205,22 @@ func (r firewallAPIResponseCollectionResultInfoJSON) RawJSON() string {
 	return r.raw
 }
 
-type FirewallAPIResponseCommon struct {
-	Errors   []FirewallMessagesItem               `json:"errors,required"`
-	Messages []FirewallMessagesItem               `json:"messages,required"`
-	Result   FirewallAPIResponseCommonResultUnion `json:"result,required"`
-	// Whether the API call was successful
-	Success FirewallAPIResponseCommonSuccess `json:"success,required"`
-	JSON    firewallAPIResponseCommonJSON    `json:"-"`
-}
-
-// firewallAPIResponseCommonJSON contains the JSON metadata for the struct
-// [FirewallAPIResponseCommon]
-type firewallAPIResponseCommonJSON struct {
-	Errors      apijson.Field
-	Messages    apijson.Field
-	Result      apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *FirewallAPIResponseCommon) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r firewallAPIResponseCommonJSON) RawJSON() string {
-	return r.raw
-}
-
-// Union satisfied by [FirewallAPIResponseCommonResultArray] or
-// [shared.UnionString].
-type FirewallAPIResponseCommonResultUnion interface {
-	ImplementsFirewallAPIResponseCommonResultUnion()
-}
-
-func init() {
-	apijson.RegisterUnion(
-		reflect.TypeOf((*FirewallAPIResponseCommonResultUnion)(nil)).Elem(),
-		"",
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(FirewallAPIResponseCommonResultArray{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.String,
-			Type:       reflect.TypeOf(shared.UnionString("")),
-		},
-	)
-}
-
-type FirewallAPIResponseCommonResultArray []interface{}
-
-func (r FirewallAPIResponseCommonResultArray) ImplementsFirewallAPIResponseCommonResultUnion() {}
-
-// Whether the API call was successful
-type FirewallAPIResponseCommonSuccess bool
-
-const (
-	FirewallAPIResponseCommonSuccessTrue FirewallAPIResponseCommonSuccess = true
-)
-
-func (r FirewallAPIResponseCommonSuccess) IsKnown() bool {
-	switch r {
-	case FirewallAPIResponseCommonSuccessTrue:
-		return true
-	}
-	return false
-}
-
 type FirewallAPIResponseSingle struct {
-	Result interface{}                   `json:"result"`
-	JSON   firewallAPIResponseSingleJSON `json:"-"`
-	FirewallAPIResponseCommon
+	Errors   []FirewallAPIResponseSingleError   `json:"errors,required"`
+	Messages []FirewallAPIResponseSingleMessage `json:"messages,required"`
+	Result   interface{}                        `json:"result,required"`
+	// Defines whether the API call was successful.
+	Success FirewallAPIResponseSingleSuccess `json:"success,required"`
+	JSON    firewallAPIResponseSingleJSON    `json:"-"`
 }
 
 // firewallAPIResponseSingleJSON contains the JSON metadata for the struct
 // [FirewallAPIResponseSingle]
 type firewallAPIResponseSingleJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -269,19 +235,134 @@ func (r firewallAPIResponseSingleJSON) RawJSON() string {
 
 func (r FirewallAPIResponseSingle) implementsFirewallPackageResponseSingle() {}
 
+type FirewallAPIResponseSingleError struct {
+	Code             int64                                 `json:"code,required"`
+	Message          string                                `json:"message,required"`
+	DocumentationURL string                                `json:"documentation_url"`
+	Source           FirewallAPIResponseSingleErrorsSource `json:"source"`
+	JSON             firewallAPIResponseSingleErrorJSON    `json:"-"`
+}
+
+// firewallAPIResponseSingleErrorJSON contains the JSON metadata for the struct
+// [FirewallAPIResponseSingleError]
+type firewallAPIResponseSingleErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *FirewallAPIResponseSingleError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r firewallAPIResponseSingleErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type FirewallAPIResponseSingleErrorsSource struct {
+	Pointer string                                    `json:"pointer"`
+	JSON    firewallAPIResponseSingleErrorsSourceJSON `json:"-"`
+}
+
+// firewallAPIResponseSingleErrorsSourceJSON contains the JSON metadata for the
+// struct [FirewallAPIResponseSingleErrorsSource]
+type firewallAPIResponseSingleErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *FirewallAPIResponseSingleErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r firewallAPIResponseSingleErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type FirewallAPIResponseSingleMessage struct {
+	Code             int64                                   `json:"code,required"`
+	Message          string                                  `json:"message,required"`
+	DocumentationURL string                                  `json:"documentation_url"`
+	Source           FirewallAPIResponseSingleMessagesSource `json:"source"`
+	JSON             firewallAPIResponseSingleMessageJSON    `json:"-"`
+}
+
+// firewallAPIResponseSingleMessageJSON contains the JSON metadata for the struct
+// [FirewallAPIResponseSingleMessage]
+type firewallAPIResponseSingleMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *FirewallAPIResponseSingleMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r firewallAPIResponseSingleMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type FirewallAPIResponseSingleMessagesSource struct {
+	Pointer string                                      `json:"pointer"`
+	JSON    firewallAPIResponseSingleMessagesSourceJSON `json:"-"`
+}
+
+// firewallAPIResponseSingleMessagesSourceJSON contains the JSON metadata for the
+// struct [FirewallAPIResponseSingleMessagesSource]
+type firewallAPIResponseSingleMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *FirewallAPIResponseSingleMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r firewallAPIResponseSingleMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Defines whether the API call was successful.
+type FirewallAPIResponseSingleSuccess bool
+
+const (
+	FirewallAPIResponseSingleSuccessTrue FirewallAPIResponseSingleSuccess = true
+)
+
+func (r FirewallAPIResponseSingleSuccess) IsKnown() bool {
+	switch r {
+	case FirewallAPIResponseSingleSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type FirewallMessagesItem struct {
-	Code    int64                    `json:"code,required"`
-	Message string                   `json:"message,required"`
-	JSON    firewallMessagesItemJSON `json:"-"`
+	Code             int64                      `json:"code,required"`
+	Message          string                     `json:"message,required"`
+	DocumentationURL string                     `json:"documentation_url"`
+	Source           FirewallMessagesItemSource `json:"source"`
+	JSON             firewallMessagesItemJSON   `json:"-"`
 }
 
 // firewallMessagesItemJSON contains the JSON metadata for the struct
 // [FirewallMessagesItem]
 type firewallMessagesItemJSON struct {
-	Code        apijson.Field
-	Message     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
 }
 
 func (r *FirewallMessagesItem) UnmarshalJSON(data []byte) (err error) {
@@ -292,25 +373,24 @@ func (r firewallMessagesItemJSON) RawJSON() string {
 	return r.raw
 }
 
-type FirewallResponseSingle struct {
-	Result FirewallSchemasRule        `json:"result"`
-	JSON   firewallResponseSingleJSON `json:"-"`
-	FirewallAPIResponseSingle
+type FirewallMessagesItemSource struct {
+	Pointer string                         `json:"pointer"`
+	JSON    firewallMessagesItemSourceJSON `json:"-"`
 }
 
-// firewallResponseSingleJSON contains the JSON metadata for the struct
-// [FirewallResponseSingle]
-type firewallResponseSingleJSON struct {
-	Result      apijson.Field
+// firewallMessagesItemSourceJSON contains the JSON metadata for the struct
+// [FirewallMessagesItemSource]
+type firewallMessagesItemSourceJSON struct {
+	Pointer     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *FirewallResponseSingle) UnmarshalJSON(data []byte) (err error) {
+func (r *FirewallMessagesItemSource) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r firewallResponseSingleJSON) RawJSON() string {
+func (r firewallMessagesItemSourceJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -351,19 +431,6 @@ func (r *FirewallRule) UnmarshalJSON(data []byte) (err error) {
 
 func (r firewallRuleJSON) RawJSON() string {
 	return r.raw
-}
-
-type FirewallRuleParam struct {
-	// The rule configuration.
-	Configuration param.Field[FirewallRuleConfigurationUnionParam] `json:"configuration,required"`
-	// The action to apply to a matched request.
-	Mode param.Field[FirewallSchemasMode] `json:"mode,required"`
-	// An informative summary of the rule, typically used as a reminder or explanation.
-	Notes param.Field[string] `json:"notes"`
-}
-
-func (r FirewallRuleParam) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
 }
 
 // The rule configuration.
@@ -818,302 +885,4 @@ func (r FirewallSchemasMode) IsKnown() bool {
 		return true
 	}
 	return false
-}
-
-type FirewallSchemasRule struct {
-	// All zones owned by the user will have the rule applied.
-	Scope FirewallSchemasRuleScope `json:"scope"`
-	JSON  firewallSchemasRuleJSON  `json:"-"`
-	FirewallRule
-}
-
-// firewallSchemasRuleJSON contains the JSON metadata for the struct
-// [FirewallSchemasRule]
-type firewallSchemasRuleJSON struct {
-	Scope       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *FirewallSchemasRule) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r firewallSchemasRuleJSON) RawJSON() string {
-	return r.raw
-}
-
-// All zones owned by the user will have the rule applied.
-type FirewallSchemasRuleScope struct {
-	// Identifier
-	ID string `json:"id"`
-	// The contact email address of the user.
-	Email string `json:"email"`
-	// The scope of the rule.
-	Type FirewallSchemasRuleScopeType `json:"type"`
-	JSON firewallSchemasRuleScopeJSON `json:"-"`
-}
-
-// firewallSchemasRuleScopeJSON contains the JSON metadata for the struct
-// [FirewallSchemasRuleScope]
-type firewallSchemasRuleScopeJSON struct {
-	ID          apijson.Field
-	Email       apijson.Field
-	Type        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *FirewallSchemasRuleScope) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r firewallSchemasRuleScopeJSON) RawJSON() string {
-	return r.raw
-}
-
-// The scope of the rule.
-type FirewallSchemasRuleScopeType string
-
-const (
-	FirewallSchemasRuleScopeTypeUser         FirewallSchemasRuleScopeType = "user"
-	FirewallSchemasRuleScopeTypeOrganization FirewallSchemasRuleScopeType = "organization"
-)
-
-func (r FirewallSchemasRuleScopeType) IsKnown() bool {
-	switch r {
-	case FirewallSchemasRuleScopeTypeUser, FirewallSchemasRuleScopeTypeOrganization:
-		return true
-	}
-	return false
-}
-
-type FirewallSchemasRuleParam struct {
-	FirewallRuleParam
-}
-
-func (r FirewallSchemasRuleParam) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-// All zones owned by the user will have the rule applied.
-type FirewallSchemasRuleScopeParam struct {
-	// The contact email address of the user.
-	Email param.Field[string] `json:"email"`
-}
-
-func (r FirewallSchemasRuleScopeParam) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-type AccountFirewallAccessRuleRuleListResponse struct {
-	Result []FirewallSchemasRule                         `json:"result"`
-	JSON   accountFirewallAccessRuleRuleListResponseJSON `json:"-"`
-	FirewallAPIResponseCollection
-}
-
-// accountFirewallAccessRuleRuleListResponseJSON contains the JSON metadata for the
-// struct [AccountFirewallAccessRuleRuleListResponse]
-type accountFirewallAccessRuleRuleListResponseJSON struct {
-	Result      apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountFirewallAccessRuleRuleListResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountFirewallAccessRuleRuleListResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-type AccountFirewallAccessRuleRuleDeleteResponse struct {
-	Result AccountFirewallAccessRuleRuleDeleteResponseResult `json:"result,nullable"`
-	JSON   accountFirewallAccessRuleRuleDeleteResponseJSON   `json:"-"`
-	FirewallAPIResponseCommon
-}
-
-// accountFirewallAccessRuleRuleDeleteResponseJSON contains the JSON metadata for
-// the struct [AccountFirewallAccessRuleRuleDeleteResponse]
-type accountFirewallAccessRuleRuleDeleteResponseJSON struct {
-	Result      apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountFirewallAccessRuleRuleDeleteResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountFirewallAccessRuleRuleDeleteResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-type AccountFirewallAccessRuleRuleDeleteResponseResult struct {
-	// Identifier
-	ID   string                                                `json:"id,required"`
-	JSON accountFirewallAccessRuleRuleDeleteResponseResultJSON `json:"-"`
-}
-
-// accountFirewallAccessRuleRuleDeleteResponseResultJSON contains the JSON metadata
-// for the struct [AccountFirewallAccessRuleRuleDeleteResponseResult]
-type accountFirewallAccessRuleRuleDeleteResponseResultJSON struct {
-	ID          apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountFirewallAccessRuleRuleDeleteResponseResult) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountFirewallAccessRuleRuleDeleteResponseResultJSON) RawJSON() string {
-	return r.raw
-}
-
-type AccountFirewallAccessRuleRuleNewParams struct {
-	// The rule configuration.
-	Configuration param.Field[FirewallRuleConfigurationUnionParam] `json:"configuration,required"`
-	// The action to apply to a matched request.
-	Mode param.Field[FirewallSchemasMode] `json:"mode,required"`
-	// An informative summary of the rule, typically used as a reminder or explanation.
-	Notes param.Field[string] `json:"notes"`
-}
-
-func (r AccountFirewallAccessRuleRuleNewParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-type AccountFirewallAccessRuleRuleUpdateParams struct {
-	FirewallSchemasRule FirewallSchemasRuleParam `json:"firewall_schemas_rule,required"`
-}
-
-func (r AccountFirewallAccessRuleRuleUpdateParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.FirewallSchemasRule)
-}
-
-type AccountFirewallAccessRuleRuleListParams struct {
-	Configuration param.Field[AccountFirewallAccessRuleRuleListParamsConfiguration] `query:"configuration"`
-	// The direction used to sort returned rules.
-	Direction param.Field[AccountFirewallAccessRuleRuleListParamsDirection] `query:"direction"`
-	// When set to `all`, all the search requirements must match. When set to `any`,
-	// only one of the search requirements has to match.
-	Match param.Field[AccountFirewallAccessRuleRuleListParamsMatch] `query:"match"`
-	// The action to apply to a matched request.
-	Mode param.Field[FirewallSchemasMode] `query:"mode"`
-	// The string to search for in the notes of existing IP Access rules. Notes: For
-	// example, the string 'attack' would match IP Access rules with notes 'Attack
-	// 26/02' and 'Attack 27/02'. The search is case insensitive.
-	Notes param.Field[string] `query:"notes"`
-	// The field used to sort returned rules.
-	Order param.Field[AccountFirewallAccessRuleRuleListParamsOrder] `query:"order"`
-	// Requested page within paginated list of results.
-	Page param.Field[float64] `query:"page"`
-	// Maximum number of results requested.
-	PerPage param.Field[float64] `query:"per_page"`
-}
-
-// URLQuery serializes [AccountFirewallAccessRuleRuleListParams]'s query parameters
-// as `url.Values`.
-func (r AccountFirewallAccessRuleRuleListParams) URLQuery() (v url.Values) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
-}
-
-type AccountFirewallAccessRuleRuleListParamsConfiguration struct {
-	// The target to search in existing rules.
-	Target param.Field[AccountFirewallAccessRuleRuleListParamsConfigurationTarget] `query:"target"`
-	// The target value to search for in existing rules: an IP address, an IP address
-	// range, or a country code, depending on the provided `configuration.target`.
-	// Notes: You can search for a single IPv4 address, an IP address range with a
-	// subnet of '/16' or '/24', or a two-letter ISO-3166-1 alpha-2 country code.
-	Value param.Field[string] `query:"value"`
-}
-
-// URLQuery serializes [AccountFirewallAccessRuleRuleListParamsConfiguration]'s
-// query parameters as `url.Values`.
-func (r AccountFirewallAccessRuleRuleListParamsConfiguration) URLQuery() (v url.Values) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
-}
-
-// The target to search in existing rules.
-type AccountFirewallAccessRuleRuleListParamsConfigurationTarget string
-
-const (
-	AccountFirewallAccessRuleRuleListParamsConfigurationTargetIP      AccountFirewallAccessRuleRuleListParamsConfigurationTarget = "ip"
-	AccountFirewallAccessRuleRuleListParamsConfigurationTargetIPRange AccountFirewallAccessRuleRuleListParamsConfigurationTarget = "ip_range"
-	AccountFirewallAccessRuleRuleListParamsConfigurationTargetAsn     AccountFirewallAccessRuleRuleListParamsConfigurationTarget = "asn"
-	AccountFirewallAccessRuleRuleListParamsConfigurationTargetCountry AccountFirewallAccessRuleRuleListParamsConfigurationTarget = "country"
-)
-
-func (r AccountFirewallAccessRuleRuleListParamsConfigurationTarget) IsKnown() bool {
-	switch r {
-	case AccountFirewallAccessRuleRuleListParamsConfigurationTargetIP, AccountFirewallAccessRuleRuleListParamsConfigurationTargetIPRange, AccountFirewallAccessRuleRuleListParamsConfigurationTargetAsn, AccountFirewallAccessRuleRuleListParamsConfigurationTargetCountry:
-		return true
-	}
-	return false
-}
-
-// The direction used to sort returned rules.
-type AccountFirewallAccessRuleRuleListParamsDirection string
-
-const (
-	AccountFirewallAccessRuleRuleListParamsDirectionAsc  AccountFirewallAccessRuleRuleListParamsDirection = "asc"
-	AccountFirewallAccessRuleRuleListParamsDirectionDesc AccountFirewallAccessRuleRuleListParamsDirection = "desc"
-)
-
-func (r AccountFirewallAccessRuleRuleListParamsDirection) IsKnown() bool {
-	switch r {
-	case AccountFirewallAccessRuleRuleListParamsDirectionAsc, AccountFirewallAccessRuleRuleListParamsDirectionDesc:
-		return true
-	}
-	return false
-}
-
-// When set to `all`, all the search requirements must match. When set to `any`,
-// only one of the search requirements has to match.
-type AccountFirewallAccessRuleRuleListParamsMatch string
-
-const (
-	AccountFirewallAccessRuleRuleListParamsMatchAny AccountFirewallAccessRuleRuleListParamsMatch = "any"
-	AccountFirewallAccessRuleRuleListParamsMatchAll AccountFirewallAccessRuleRuleListParamsMatch = "all"
-)
-
-func (r AccountFirewallAccessRuleRuleListParamsMatch) IsKnown() bool {
-	switch r {
-	case AccountFirewallAccessRuleRuleListParamsMatchAny, AccountFirewallAccessRuleRuleListParamsMatchAll:
-		return true
-	}
-	return false
-}
-
-// The field used to sort returned rules.
-type AccountFirewallAccessRuleRuleListParamsOrder string
-
-const (
-	AccountFirewallAccessRuleRuleListParamsOrderConfigurationTarget AccountFirewallAccessRuleRuleListParamsOrder = "configuration.target"
-	AccountFirewallAccessRuleRuleListParamsOrderConfigurationValue  AccountFirewallAccessRuleRuleListParamsOrder = "configuration.value"
-	AccountFirewallAccessRuleRuleListParamsOrderMode                AccountFirewallAccessRuleRuleListParamsOrder = "mode"
-)
-
-func (r AccountFirewallAccessRuleRuleListParamsOrder) IsKnown() bool {
-	switch r {
-	case AccountFirewallAccessRuleRuleListParamsOrderConfigurationTarget, AccountFirewallAccessRuleRuleListParamsOrderConfigurationValue, AccountFirewallAccessRuleRuleListParamsOrderMode:
-		return true
-	}
-	return false
-}
-
-type AccountFirewallAccessRuleRuleDeleteParams struct {
-	Body interface{} `json:"body,required"`
-}
-
-func (r AccountFirewallAccessRuleRuleDeleteParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
 }

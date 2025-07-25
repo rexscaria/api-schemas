@@ -147,14 +147,20 @@ func (r callsTurnKeyObjectJSON) RawJSON() string {
 }
 
 type CallsTurnKeyResponseSingle struct {
-	Result CallsTurnKeyObject             `json:"result"`
-	JSON   callsTurnKeyResponseSingleJSON `json:"-"`
-	CallsAPIResponseSingle
+	Errors   []CallsMessageItem `json:"errors,required"`
+	Messages []CallsMessageItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success CallsTurnKeyResponseSingleSuccess `json:"success,required"`
+	Result  CallsTurnKeyObject                `json:"result"`
+	JSON    callsTurnKeyResponseSingleJSON    `json:"-"`
 }
 
 // callsTurnKeyResponseSingleJSON contains the JSON metadata for the struct
 // [CallsTurnKeyResponseSingle]
 type callsTurnKeyResponseSingleJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -166,6 +172,21 @@ func (r *CallsTurnKeyResponseSingle) UnmarshalJSON(data []byte) (err error) {
 
 func (r callsTurnKeyResponseSingleJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type CallsTurnKeyResponseSingleSuccess bool
+
+const (
+	CallsTurnKeyResponseSingleSuccessTrue CallsTurnKeyResponseSingleSuccess = true
+)
+
+func (r CallsTurnKeyResponseSingleSuccess) IsKnown() bool {
+	switch r {
+	case CallsTurnKeyResponseSingleSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountCallTurnKeyNewResponse struct {
@@ -203,14 +224,20 @@ func (r accountCallTurnKeyNewResponseJSON) RawJSON() string {
 }
 
 type AccountCallTurnKeyListResponse struct {
-	Result []CallsTurnKeyObject               `json:"result"`
-	JSON   accountCallTurnKeyListResponseJSON `json:"-"`
-	CallsAPIResponseCommon
+	Errors   []CallsMessageItem `json:"errors,required"`
+	Messages []CallsMessageItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountCallTurnKeyListResponseSuccess `json:"success,required"`
+	Result  []CallsTurnKeyObject                  `json:"result"`
+	JSON    accountCallTurnKeyListResponseJSON    `json:"-"`
 }
 
 // accountCallTurnKeyListResponseJSON contains the JSON metadata for the struct
 // [AccountCallTurnKeyListResponse]
 type accountCallTurnKeyListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -222,6 +249,21 @@ func (r *AccountCallTurnKeyListResponse) UnmarshalJSON(data []byte) (err error) 
 
 func (r accountCallTurnKeyListResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountCallTurnKeyListResponseSuccess bool
+
+const (
+	AccountCallTurnKeyListResponseSuccessTrue AccountCallTurnKeyListResponseSuccess = true
+)
+
+func (r AccountCallTurnKeyListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountCallTurnKeyListResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountCallTurnKeyNewParams struct {

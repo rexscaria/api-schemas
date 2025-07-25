@@ -31,10 +31,8 @@ func TestZoneWorkerRouteNewWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.ZoneWorkerRouteNewParams{
-			RouteNoID: cfrex.RouteNoIDParam{
-				Pattern: cfrex.F("example.net/*"),
-				Script:  cfrex.F("this-is_my_script-01"),
-			},
+			Pattern: cfrex.F("example.com/*"),
+			Script:  cfrex.F("my-workers-script"),
 		},
 	)
 	if err != nil {
@@ -93,10 +91,8 @@ func TestZoneWorkerRouteUpdateWithOptionalParams(t *testing.T) {
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.ZoneWorkerRouteUpdateParams{
-			RouteNoID: cfrex.RouteNoIDParam{
-				Pattern: cfrex.F("example.net/*"),
-				Script:  cfrex.F("this-is_my_script-01"),
-			},
+			Pattern: cfrex.F("example.com/*"),
+			Script:  cfrex.F("my-workers-script"),
 		},
 	)
 	if err != nil {
@@ -150,9 +146,6 @@ func TestZoneWorkerRouteDelete(t *testing.T) {
 		context.TODO(),
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		"023e105f4ecef8ad9ca31a8372d0c353",
-		cfrex.ZoneWorkerRouteDeleteParams{
-			Body: map[string]interface{}{},
-		},
 	)
 	if err != nil {
 		var apierr *cfrex.Error

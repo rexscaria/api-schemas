@@ -77,9 +77,6 @@ func TestAccountStorageKvNamespaceValueDelete(t *testing.T) {
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		"0f2ac74b498b48028cb68387c421e279",
 		"My-Key",
-		cfrex.AccountStorageKvNamespaceValueDeleteParams{
-			Body: map[string]interface{}{},
-		},
 	)
 	if err != nil {
 		var apierr *cfrex.Error
@@ -110,10 +107,12 @@ func TestAccountStorageKvNamespaceValueWriteWithOptionalParams(t *testing.T) {
 		"0f2ac74b498b48028cb68387c421e279",
 		"My-Key",
 		cfrex.AccountStorageKvNamespaceValueWriteParams{
-			Metadata:      cfrex.F(`{"someMetadataKey": "someMetadataValue"}`),
 			Value:         cfrex.F("Some Value"),
 			Expiration:    cfrex.F(1578435000.000000),
 			ExpirationTtl: cfrex.F(300.000000),
+			Metadata: cfrex.F[any](map[string]interface{}{
+				"someMetadataKey": "someMetadataValue",
+			}),
 		},
 	)
 	if err != nil {

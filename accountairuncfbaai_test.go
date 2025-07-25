@@ -32,8 +32,11 @@ func TestAccountAIRunCfBaaiExecuteBgeBaseEnV1_5WithOptionalParams(t *testing.T) 
 		context.TODO(),
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.AccountAIRunCfBaaiExecuteBgeBaseEnV1_5Params{
-			Text:         cfrex.F[cfrex.AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsTextUnion](shared.UnionString("x")),
 			QueueRequest: cfrex.F("true"),
+			Body: cfrex.AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyObject{
+				Text:    cfrex.F[cfrex.AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyObjectTextUnion](shared.UnionString("x")),
+				Pooling: cfrex.F(cfrex.AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyObjectPoolingMean),
+			},
 		},
 	)
 	if err != nil {
@@ -63,8 +66,11 @@ func TestAccountAIRunCfBaaiExecuteBgeLargeEnV1_5WithOptionalParams(t *testing.T)
 		context.TODO(),
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.AccountAIRunCfBaaiExecuteBgeLargeEnV1_5Params{
-			Text:         cfrex.F[cfrex.AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsTextUnion](shared.UnionString("x")),
 			QueueRequest: cfrex.F("true"),
+			Body: cfrex.AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyObject{
+				Text:    cfrex.F[cfrex.AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyObjectTextUnion](shared.UnionString("x")),
+				Pooling: cfrex.F(cfrex.AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyObjectPoolingMean),
+			},
 		},
 	)
 	if err != nil {
@@ -166,8 +172,11 @@ func TestAccountAIRunCfBaaiExecuteBgeSmallEnV1_5WithOptionalParams(t *testing.T)
 		context.TODO(),
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.AccountAIRunCfBaaiExecuteBgeSmallEnV1_5Params{
-			Text:         cfrex.F[cfrex.AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsTextUnion](shared.UnionString("x")),
 			QueueRequest: cfrex.F("true"),
+			Body: cfrex.AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyObject{
+				Text:    cfrex.F[cfrex.AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyObjectTextUnion](shared.UnionString("x")),
+				Pooling: cfrex.F(cfrex.AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyObjectPoolingMean),
+			},
 		},
 	)
 	if err != nil {

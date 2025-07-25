@@ -62,26 +62,32 @@ func (r *UserOrganizationService) List(ctx context.Context, query UserOrganizati
 // Removes association to an organization.
 //
 // Deprecated: deprecated
-func (r *UserOrganizationService) Leave(ctx context.Context, organizationID string, body UserOrganizationLeaveParams, opts ...option.RequestOption) (res *UserOrganizationLeaveResponse, err error) {
+func (r *UserOrganizationService) Leave(ctx context.Context, organizationID string, opts ...option.RequestOption) (res *UserOrganizationLeaveResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if organizationID == "" {
 		err = errors.New("missing required organization_id parameter")
 		return
 	}
 	path := fmt.Sprintf("user/organizations/%s", organizationID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
 type UserOrganizationGetResponse struct {
-	Result interface{}                     `json:"result"`
-	JSON   userOrganizationGetResponseJSON `json:"-"`
-	APIResponseSingleIam
+	Errors   []UserOrganizationGetResponseError   `json:"errors,required"`
+	Messages []UserOrganizationGetResponseMessage `json:"messages,required"`
+	// Whether the API call was successful.
+	Success UserOrganizationGetResponseSuccess `json:"success,required"`
+	Result  interface{}                        `json:"result"`
+	JSON    userOrganizationGetResponseJSON    `json:"-"`
 }
 
 // userOrganizationGetResponseJSON contains the JSON metadata for the struct
 // [UserOrganizationGetResponse]
 type userOrganizationGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -95,16 +101,135 @@ func (r userOrganizationGetResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+type UserOrganizationGetResponseError struct {
+	Code             int64                                   `json:"code,required"`
+	Message          string                                  `json:"message,required"`
+	DocumentationURL string                                  `json:"documentation_url"`
+	Source           UserOrganizationGetResponseErrorsSource `json:"source"`
+	JSON             userOrganizationGetResponseErrorJSON    `json:"-"`
+}
+
+// userOrganizationGetResponseErrorJSON contains the JSON metadata for the struct
+// [UserOrganizationGetResponseError]
+type userOrganizationGetResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *UserOrganizationGetResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r userOrganizationGetResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type UserOrganizationGetResponseErrorsSource struct {
+	Pointer string                                      `json:"pointer"`
+	JSON    userOrganizationGetResponseErrorsSourceJSON `json:"-"`
+}
+
+// userOrganizationGetResponseErrorsSourceJSON contains the JSON metadata for the
+// struct [UserOrganizationGetResponseErrorsSource]
+type userOrganizationGetResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *UserOrganizationGetResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r userOrganizationGetResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type UserOrganizationGetResponseMessage struct {
+	Code             int64                                     `json:"code,required"`
+	Message          string                                    `json:"message,required"`
+	DocumentationURL string                                    `json:"documentation_url"`
+	Source           UserOrganizationGetResponseMessagesSource `json:"source"`
+	JSON             userOrganizationGetResponseMessageJSON    `json:"-"`
+}
+
+// userOrganizationGetResponseMessageJSON contains the JSON metadata for the struct
+// [UserOrganizationGetResponseMessage]
+type userOrganizationGetResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *UserOrganizationGetResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r userOrganizationGetResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type UserOrganizationGetResponseMessagesSource struct {
+	Pointer string                                        `json:"pointer"`
+	JSON    userOrganizationGetResponseMessagesSourceJSON `json:"-"`
+}
+
+// userOrganizationGetResponseMessagesSourceJSON contains the JSON metadata for the
+// struct [UserOrganizationGetResponseMessagesSource]
+type userOrganizationGetResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *UserOrganizationGetResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r userOrganizationGetResponseMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful.
+type UserOrganizationGetResponseSuccess bool
+
+const (
+	UserOrganizationGetResponseSuccessTrue UserOrganizationGetResponseSuccess = true
+)
+
+func (r UserOrganizationGetResponseSuccess) IsKnown() bool {
+	switch r {
+	case UserOrganizationGetResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type UserOrganizationListResponse struct {
-	Result []UserOrganizationListResponseResult `json:"result"`
-	JSON   userOrganizationListResponseJSON     `json:"-"`
-	IamAPIResponseCollection
+	Errors   []UserOrganizationListResponseError   `json:"errors,required"`
+	Messages []UserOrganizationListResponseMessage `json:"messages,required"`
+	// Whether the API call was successful.
+	Success    UserOrganizationListResponseSuccess    `json:"success,required"`
+	Result     []UserOrganizationListResponseResult   `json:"result"`
+	ResultInfo UserOrganizationListResponseResultInfo `json:"result_info"`
+	JSON       userOrganizationListResponseJSON       `json:"-"`
 }
 
 // userOrganizationListResponseJSON contains the JSON metadata for the struct
 // [UserOrganizationListResponse]
 type userOrganizationListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -115,6 +240,117 @@ func (r *UserOrganizationListResponse) UnmarshalJSON(data []byte) (err error) {
 
 func (r userOrganizationListResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+type UserOrganizationListResponseError struct {
+	Code             int64                                    `json:"code,required"`
+	Message          string                                   `json:"message,required"`
+	DocumentationURL string                                   `json:"documentation_url"`
+	Source           UserOrganizationListResponseErrorsSource `json:"source"`
+	JSON             userOrganizationListResponseErrorJSON    `json:"-"`
+}
+
+// userOrganizationListResponseErrorJSON contains the JSON metadata for the struct
+// [UserOrganizationListResponseError]
+type userOrganizationListResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *UserOrganizationListResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r userOrganizationListResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type UserOrganizationListResponseErrorsSource struct {
+	Pointer string                                       `json:"pointer"`
+	JSON    userOrganizationListResponseErrorsSourceJSON `json:"-"`
+}
+
+// userOrganizationListResponseErrorsSourceJSON contains the JSON metadata for the
+// struct [UserOrganizationListResponseErrorsSource]
+type userOrganizationListResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *UserOrganizationListResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r userOrganizationListResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type UserOrganizationListResponseMessage struct {
+	Code             int64                                      `json:"code,required"`
+	Message          string                                     `json:"message,required"`
+	DocumentationURL string                                     `json:"documentation_url"`
+	Source           UserOrganizationListResponseMessagesSource `json:"source"`
+	JSON             userOrganizationListResponseMessageJSON    `json:"-"`
+}
+
+// userOrganizationListResponseMessageJSON contains the JSON metadata for the
+// struct [UserOrganizationListResponseMessage]
+type userOrganizationListResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *UserOrganizationListResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r userOrganizationListResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type UserOrganizationListResponseMessagesSource struct {
+	Pointer string                                         `json:"pointer"`
+	JSON    userOrganizationListResponseMessagesSourceJSON `json:"-"`
+}
+
+// userOrganizationListResponseMessagesSourceJSON contains the JSON metadata for
+// the struct [UserOrganizationListResponseMessagesSource]
+type userOrganizationListResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *UserOrganizationListResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r userOrganizationListResponseMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful.
+type UserOrganizationListResponseSuccess bool
+
+const (
+	UserOrganizationListResponseSuccessTrue UserOrganizationListResponseSuccess = true
+)
+
+func (r UserOrganizationListResponseSuccess) IsKnown() bool {
+	switch r {
+	case UserOrganizationListResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type UserOrganizationListResponseResult struct {
@@ -165,6 +401,37 @@ func (r UserOrganizationListResponseResultStatus) IsKnown() bool {
 		return true
 	}
 	return false
+}
+
+type UserOrganizationListResponseResultInfo struct {
+	// Total number of results for the requested service
+	Count float64 `json:"count"`
+	// Current page within paginated list of results
+	Page float64 `json:"page"`
+	// Number of results per page of results
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters
+	TotalCount float64                                    `json:"total_count"`
+	JSON       userOrganizationListResponseResultInfoJSON `json:"-"`
+}
+
+// userOrganizationListResponseResultInfoJSON contains the JSON metadata for the
+// struct [UserOrganizationListResponseResultInfo]
+type userOrganizationListResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *UserOrganizationListResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r userOrganizationListResponseResultInfoJSON) RawJSON() string {
+	return r.raw
 }
 
 type UserOrganizationLeaveResponse struct {
@@ -278,12 +545,4 @@ func (r UserOrganizationListParamsStatus) IsKnown() bool {
 		return true
 	}
 	return false
-}
-
-type UserOrganizationLeaveParams struct {
-	Body interface{} `json:"body,required"`
-}
-
-func (r UserOrganizationLeaveParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
 }

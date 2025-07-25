@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
-	"reflect"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -16,8 +15,6 @@ import (
 	"github.com/rexscaria/api-schemas/internal/param"
 	"github.com/rexscaria/api-schemas/internal/requestconfig"
 	"github.com/rexscaria/api-schemas/option"
-	"github.com/rexscaria/api-schemas/shared"
-	"github.com/tidwall/gjson"
 )
 
 // ZoneHealthcheckService contains methods and other services that help with
@@ -98,7 +95,7 @@ func (r *ZoneHealthcheckService) List(ctx context.Context, zoneID string, query 
 }
 
 // Delete a health check.
-func (r *ZoneHealthcheckService) Delete(ctx context.Context, zoneID string, healthcheckID string, body ZoneHealthcheckDeleteParams, opts ...option.RequestOption) (res *HealthcheckIDResponse, err error) {
+func (r *ZoneHealthcheckService) Delete(ctx context.Context, zoneID string, healthcheckID string, opts ...option.RequestOption) (res *HealthcheckIDResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
@@ -109,7 +106,7 @@ func (r *ZoneHealthcheckService) Delete(ctx context.Context, zoneID string, heal
 		return
 	}
 	path := fmt.Sprintf("zones/%s/healthchecks/%s", zoneID, healthcheckID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
@@ -223,95 +220,6 @@ func (r HealthcheckStatus) IsKnown() bool {
 		return true
 	}
 	return false
-}
-
-type HealthcheckAPICommon struct {
-	Errors   []HealthcheckMessage            `json:"errors,required"`
-	Messages []HealthcheckMessage            `json:"messages,required"`
-	Result   HealthcheckAPICommonResultUnion `json:"result,required"`
-	// Whether the API call was successful
-	Success HealthcheckAPICommonSuccess `json:"success,required"`
-	JSON    healthcheckAPICommonJSON    `json:"-"`
-}
-
-// healthcheckAPICommonJSON contains the JSON metadata for the struct
-// [HealthcheckAPICommon]
-type healthcheckAPICommonJSON struct {
-	Errors      apijson.Field
-	Messages    apijson.Field
-	Result      apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *HealthcheckAPICommon) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r healthcheckAPICommonJSON) RawJSON() string {
-	return r.raw
-}
-
-// Union satisfied by [HealthcheckAPICommonResultArray] or [shared.UnionString].
-type HealthcheckAPICommonResultUnion interface {
-	ImplementsHealthcheckAPICommonResultUnion()
-}
-
-func init() {
-	apijson.RegisterUnion(
-		reflect.TypeOf((*HealthcheckAPICommonResultUnion)(nil)).Elem(),
-		"",
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(HealthcheckAPICommonResultArray{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.String,
-			Type:       reflect.TypeOf(shared.UnionString("")),
-		},
-	)
-}
-
-type HealthcheckAPICommonResultArray []interface{}
-
-func (r HealthcheckAPICommonResultArray) ImplementsHealthcheckAPICommonResultUnion() {}
-
-// Whether the API call was successful
-type HealthcheckAPICommonSuccess bool
-
-const (
-	HealthcheckAPICommonSuccessTrue HealthcheckAPICommonSuccess = true
-)
-
-func (r HealthcheckAPICommonSuccess) IsKnown() bool {
-	switch r {
-	case HealthcheckAPICommonSuccessTrue:
-		return true
-	}
-	return false
-}
-
-type HealthcheckAPISingle struct {
-	Result interface{}              `json:"result"`
-	JSON   healthcheckAPISingleJSON `json:"-"`
-	HealthcheckAPICommon
-}
-
-// healthcheckAPISingleJSON contains the JSON metadata for the struct
-// [HealthcheckAPISingle]
-type healthcheckAPISingleJSON struct {
-	Result      apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *HealthcheckAPISingle) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r healthcheckAPISingleJSON) RawJSON() string {
-	return r.raw
 }
 
 // WNAM: Western North America, ENAM: Eastern North America, WEU: Western Europe,
@@ -439,15 +347,21 @@ func (r HealthcheckHTTPConfigParam) MarshalJSON() (data []byte, err error) {
 }
 
 type HealthcheckIDResponse struct {
-	Result HealthcheckIDResponseResult `json:"result"`
-	JSON   healthcheckIDResponseJSON   `json:"-"`
-	HealthcheckAPISingle
+	Errors   []HealthcheckIDResponseError   `json:"errors,required"`
+	Messages []HealthcheckIDResponseMessage `json:"messages,required"`
+	Result   HealthcheckIDResponseResult    `json:"result,required"`
+	// Whether the API call was successful
+	Success HealthcheckIDResponseSuccess `json:"success,required"`
+	JSON    healthcheckIDResponseJSON    `json:"-"`
 }
 
 // healthcheckIDResponseJSON contains the JSON metadata for the struct
 // [HealthcheckIDResponse]
 type healthcheckIDResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -457,6 +371,102 @@ func (r *HealthcheckIDResponse) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (r healthcheckIDResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+type HealthcheckIDResponseError struct {
+	Code             int64                             `json:"code,required"`
+	Message          string                            `json:"message,required"`
+	DocumentationURL string                            `json:"documentation_url"`
+	Source           HealthcheckIDResponseErrorsSource `json:"source"`
+	JSON             healthcheckIDResponseErrorJSON    `json:"-"`
+}
+
+// healthcheckIDResponseErrorJSON contains the JSON metadata for the struct
+// [HealthcheckIDResponseError]
+type healthcheckIDResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *HealthcheckIDResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r healthcheckIDResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type HealthcheckIDResponseErrorsSource struct {
+	Pointer string                                `json:"pointer"`
+	JSON    healthcheckIDResponseErrorsSourceJSON `json:"-"`
+}
+
+// healthcheckIDResponseErrorsSourceJSON contains the JSON metadata for the struct
+// [HealthcheckIDResponseErrorsSource]
+type healthcheckIDResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *HealthcheckIDResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r healthcheckIDResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type HealthcheckIDResponseMessage struct {
+	Code             int64                               `json:"code,required"`
+	Message          string                              `json:"message,required"`
+	DocumentationURL string                              `json:"documentation_url"`
+	Source           HealthcheckIDResponseMessagesSource `json:"source"`
+	JSON             healthcheckIDResponseMessageJSON    `json:"-"`
+}
+
+// healthcheckIDResponseMessageJSON contains the JSON metadata for the struct
+// [HealthcheckIDResponseMessage]
+type healthcheckIDResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *HealthcheckIDResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r healthcheckIDResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type HealthcheckIDResponseMessagesSource struct {
+	Pointer string                                  `json:"pointer"`
+	JSON    healthcheckIDResponseMessagesSourceJSON `json:"-"`
+}
+
+// healthcheckIDResponseMessagesSourceJSON contains the JSON metadata for the
+// struct [HealthcheckIDResponseMessagesSource]
+type healthcheckIDResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *HealthcheckIDResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r healthcheckIDResponseMessagesSourceJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -482,19 +492,38 @@ func (r healthcheckIDResponseResultJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful
+type HealthcheckIDResponseSuccess bool
+
+const (
+	HealthcheckIDResponseSuccessTrue HealthcheckIDResponseSuccess = true
+)
+
+func (r HealthcheckIDResponseSuccess) IsKnown() bool {
+	switch r {
+	case HealthcheckIDResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type HealthcheckMessage struct {
-	Code    int64                  `json:"code,required"`
-	Message string                 `json:"message,required"`
-	JSON    healthcheckMessageJSON `json:"-"`
+	Code             int64                    `json:"code,required"`
+	Message          string                   `json:"message,required"`
+	DocumentationURL string                   `json:"documentation_url"`
+	Source           HealthcheckMessageSource `json:"source"`
+	JSON             healthcheckMessageJSON   `json:"-"`
 }
 
 // healthcheckMessageJSON contains the JSON metadata for the struct
 // [HealthcheckMessage]
 type healthcheckMessageJSON struct {
-	Code        apijson.Field
-	Message     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
 }
 
 func (r *HealthcheckMessage) UnmarshalJSON(data []byte) (err error) {
@@ -502,6 +531,27 @@ func (r *HealthcheckMessage) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (r healthcheckMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type HealthcheckMessageSource struct {
+	Pointer string                       `json:"pointer"`
+	JSON    healthcheckMessageSourceJSON `json:"-"`
+}
+
+// healthcheckMessageSourceJSON contains the JSON metadata for the struct
+// [HealthcheckMessageSource]
+type healthcheckMessageSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *HealthcheckMessageSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r healthcheckMessageSourceJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -547,15 +597,21 @@ func (r HealthcheckQueryParam) MarshalJSON() (data []byte, err error) {
 }
 
 type HealthcheckSingleResponse struct {
-	Result Healthcheck                   `json:"result"`
-	JSON   healthcheckSingleResponseJSON `json:"-"`
-	HealthcheckAPISingle
+	Errors   []HealthcheckMessage `json:"errors,required"`
+	Messages []HealthcheckMessage `json:"messages,required"`
+	Result   Healthcheck          `json:"result,required"`
+	// Whether the API call was successful
+	Success HealthcheckSingleResponseSuccess `json:"success,required"`
+	JSON    healthcheckSingleResponseJSON    `json:"-"`
 }
 
 // healthcheckSingleResponseJSON contains the JSON metadata for the struct
 // [HealthcheckSingleResponse]
 type healthcheckSingleResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -566,6 +622,21 @@ func (r *HealthcheckSingleResponse) UnmarshalJSON(data []byte) (err error) {
 
 func (r healthcheckSingleResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful
+type HealthcheckSingleResponseSuccess bool
+
+const (
+	HealthcheckSingleResponseSuccessTrue HealthcheckSingleResponseSuccess = true
+)
+
+func (r HealthcheckSingleResponseSuccess) IsKnown() bool {
+	switch r {
+	case HealthcheckSingleResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 // Parameters specific to TCP health check.
@@ -622,16 +693,22 @@ func (r HealthcheckTcpConfigParam) MarshalJSON() (data []byte, err error) {
 }
 
 type ZoneHealthcheckListResponse struct {
-	Result     []Healthcheck                         `json:"result,nullable"`
+	Errors   []HealthcheckMessage `json:"errors,required"`
+	Messages []HealthcheckMessage `json:"messages,required"`
+	Result   []Healthcheck        `json:"result,required,nullable"`
+	// Whether the API call was successful
+	Success    ZoneHealthcheckListResponseSuccess    `json:"success,required"`
 	ResultInfo ZoneHealthcheckListResponseResultInfo `json:"result_info"`
 	JSON       zoneHealthcheckListResponseJSON       `json:"-"`
-	HealthcheckAPICommon
 }
 
 // zoneHealthcheckListResponseJSON contains the JSON metadata for the struct
 // [ZoneHealthcheckListResponse]
 type zoneHealthcheckListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -643,6 +720,21 @@ func (r *ZoneHealthcheckListResponse) UnmarshalJSON(data []byte) (err error) {
 
 func (r zoneHealthcheckListResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful
+type ZoneHealthcheckListResponseSuccess bool
+
+const (
+	ZoneHealthcheckListResponseSuccessTrue ZoneHealthcheckListResponseSuccess = true
+)
+
+func (r ZoneHealthcheckListResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneHealthcheckListResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type ZoneHealthcheckListResponseResultInfo struct {
@@ -706,14 +798,6 @@ func (r ZoneHealthcheckListParams) URLQuery() (v url.Values) {
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
-}
-
-type ZoneHealthcheckDeleteParams struct {
-	Body interface{} `json:"body,required"`
-}
-
-func (r ZoneHealthcheckDeleteParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
 }
 
 type ZoneHealthcheckPatchParams struct {

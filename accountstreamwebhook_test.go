@@ -81,13 +81,7 @@ func TestAccountStreamWebhookDelete(t *testing.T) {
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Accounts.Stream.Webhook.Delete(
-		context.TODO(),
-		"023e105f4ecef8ad9ca31a8372d0c353",
-		cfrex.AccountStreamWebhookDeleteParams{
-			Body: map[string]interface{}{},
-		},
-	)
+	_, err := client.Accounts.Stream.Webhook.Delete(context.TODO(), "023e105f4ecef8ad9ca31a8372d0c353")
 	if err != nil {
 		var apierr *cfrex.Error
 		if errors.As(err, &apierr) {

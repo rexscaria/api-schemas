@@ -136,15 +136,23 @@ func (r SubnetSubnetType) IsKnown() bool {
 }
 
 type AccountZerotrustSubnetListResponse struct {
-	Result []Subnet                               `json:"result"`
-	JSON   accountZerotrustSubnetListResponseJSON `json:"-"`
-	APIResponseCollectionTunnel
+	Errors   []MessagesTunnelItem `json:"errors,required"`
+	Messages []MessagesTunnelItem `json:"messages,required"`
+	Result   []Subnet             `json:"result,required,nullable"`
+	// Whether the API call was successful
+	Success    AccountZerotrustSubnetListResponseSuccess    `json:"success,required"`
+	ResultInfo AccountZerotrustSubnetListResponseResultInfo `json:"result_info"`
+	JSON       accountZerotrustSubnetListResponseJSON       `json:"-"`
 }
 
 // accountZerotrustSubnetListResponseJSON contains the JSON metadata for the struct
 // [AccountZerotrustSubnetListResponse]
 type accountZerotrustSubnetListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -157,16 +165,68 @@ func (r accountZerotrustSubnetListResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful
+type AccountZerotrustSubnetListResponseSuccess bool
+
+const (
+	AccountZerotrustSubnetListResponseSuccessTrue AccountZerotrustSubnetListResponseSuccess = true
+)
+
+func (r AccountZerotrustSubnetListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountZerotrustSubnetListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type AccountZerotrustSubnetListResponseResultInfo struct {
+	// Total number of results for the requested service
+	Count float64 `json:"count"`
+	// Current page within paginated list of results
+	Page float64 `json:"page"`
+	// Number of results per page of results
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters
+	TotalCount float64                                          `json:"total_count"`
+	JSON       accountZerotrustSubnetListResponseResultInfoJSON `json:"-"`
+}
+
+// accountZerotrustSubnetListResponseResultInfoJSON contains the JSON metadata for
+// the struct [AccountZerotrustSubnetListResponseResultInfo]
+type accountZerotrustSubnetListResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountZerotrustSubnetListResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountZerotrustSubnetListResponseResultInfoJSON) RawJSON() string {
+	return r.raw
+}
+
 type AccountZerotrustSubnetUpdateCloudflareSourceResponse struct {
-	Result Subnet                                                   `json:"result"`
-	JSON   accountZerotrustSubnetUpdateCloudflareSourceResponseJSON `json:"-"`
-	APIResponseTunnel
+	Errors   []MessagesTunnelItem `json:"errors,required"`
+	Messages []MessagesTunnelItem `json:"messages,required"`
+	Result   Subnet               `json:"result,required"`
+	// Whether the API call was successful
+	Success AccountZerotrustSubnetUpdateCloudflareSourceResponseSuccess `json:"success,required"`
+	JSON    accountZerotrustSubnetUpdateCloudflareSourceResponseJSON    `json:"-"`
 }
 
 // accountZerotrustSubnetUpdateCloudflareSourceResponseJSON contains the JSON
 // metadata for the struct [AccountZerotrustSubnetUpdateCloudflareSourceResponse]
 type accountZerotrustSubnetUpdateCloudflareSourceResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -177,6 +237,21 @@ func (r *AccountZerotrustSubnetUpdateCloudflareSourceResponse) UnmarshalJSON(dat
 
 func (r accountZerotrustSubnetUpdateCloudflareSourceResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful
+type AccountZerotrustSubnetUpdateCloudflareSourceResponseSuccess bool
+
+const (
+	AccountZerotrustSubnetUpdateCloudflareSourceResponseSuccessTrue AccountZerotrustSubnetUpdateCloudflareSourceResponseSuccess = true
+)
+
+func (r AccountZerotrustSubnetUpdateCloudflareSourceResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountZerotrustSubnetUpdateCloudflareSourceResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountZerotrustSubnetListParams struct {
@@ -195,7 +270,7 @@ type AccountZerotrustSubnetListParams struct {
 	IsDeleted param.Field[bool] `query:"is_deleted"`
 	// If set, only list subnets with the given name
 	Name param.Field[string] `query:"name"`
-	// IP/CIDR range in URL-encoded format
+	// If set, only list the subnet whose network exactly matches the given CIDR.
 	Network param.Field[string] `query:"network"`
 	// Page number of paginated results.
 	Page param.Field[float64] `query:"page"`

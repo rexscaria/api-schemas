@@ -92,14 +92,20 @@ func (r instantLogsJobJSON) RawJSON() string {
 }
 
 type ZoneLogpushEdgeNewJobResponse struct {
-	Result InstantLogsJob                    `json:"result,nullable"`
-	JSON   zoneLogpushEdgeNewJobResponseJSON `json:"-"`
-	SingleResponseJob
+	Errors   []MessagesLogpushItem `json:"errors,required"`
+	Messages []MessagesLogpushItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success ZoneLogpushEdgeNewJobResponseSuccess `json:"success,required"`
+	Result  InstantLogsJob                       `json:"result,nullable"`
+	JSON    zoneLogpushEdgeNewJobResponseJSON    `json:"-"`
 }
 
 // zoneLogpushEdgeNewJobResponseJSON contains the JSON metadata for the struct
 // [ZoneLogpushEdgeNewJobResponse]
 type zoneLogpushEdgeNewJobResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -113,15 +119,36 @@ func (r zoneLogpushEdgeNewJobResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type ZoneLogpushEdgeNewJobResponseSuccess bool
+
+const (
+	ZoneLogpushEdgeNewJobResponseSuccessTrue ZoneLogpushEdgeNewJobResponseSuccess = true
+)
+
+func (r ZoneLogpushEdgeNewJobResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneLogpushEdgeNewJobResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type ZoneLogpushEdgeListJobsResponse struct {
-	Result []InstantLogsJob                    `json:"result"`
-	JSON   zoneLogpushEdgeListJobsResponseJSON `json:"-"`
-	CommonResponseLogPush
+	Errors   []MessagesLogpushItem `json:"errors,required"`
+	Messages []MessagesLogpushItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success ZoneLogpushEdgeListJobsResponseSuccess `json:"success,required"`
+	Result  []InstantLogsJob                       `json:"result"`
+	JSON    zoneLogpushEdgeListJobsResponseJSON    `json:"-"`
 }
 
 // zoneLogpushEdgeListJobsResponseJSON contains the JSON metadata for the struct
 // [ZoneLogpushEdgeListJobsResponse]
 type zoneLogpushEdgeListJobsResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -133,6 +160,21 @@ func (r *ZoneLogpushEdgeListJobsResponse) UnmarshalJSON(data []byte) (err error)
 
 func (r zoneLogpushEdgeListJobsResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type ZoneLogpushEdgeListJobsResponseSuccess bool
+
+const (
+	ZoneLogpushEdgeListJobsResponseSuccessTrue ZoneLogpushEdgeListJobsResponseSuccess = true
+)
+
+func (r ZoneLogpushEdgeListJobsResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneLogpushEdgeListJobsResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type ZoneLogpushEdgeNewJobParams struct {

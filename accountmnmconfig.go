@@ -7,14 +7,11 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"reflect"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
 	"github.com/rexscaria/api-schemas/internal/requestconfig"
 	"github.com/rexscaria/api-schemas/option"
-	"github.com/rexscaria/api-schemas/shared"
-	"github.com/tidwall/gjson"
 )
 
 // AccountMnmConfigService contains methods and other services that help with
@@ -74,14 +71,14 @@ func (r *AccountMnmConfigService) List(ctx context.Context, accountID string, op
 }
 
 // Delete an existing network monitoring configuration.
-func (r *AccountMnmConfigService) Delete(ctx context.Context, accountID string, body AccountMnmConfigDeleteParams, opts ...option.RequestOption) (res *ConfigSingleResponse, err error) {
+func (r *AccountMnmConfigService) Delete(ctx context.Context, accountID string, opts ...option.RequestOption) (res *ConfigSingleResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
 	}
 	path := fmt.Sprintf("accounts/%s/mnm/config", accountID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
@@ -109,107 +106,22 @@ func (r *AccountMnmConfigService) UpdateFields(ctx context.Context, accountID st
 	return
 }
 
-type APIResponseMagicVisibilityMnm struct {
-	Errors   []MessagesMagicVisibilityMnmItem         `json:"errors,required"`
-	Messages []MessagesMagicVisibilityMnmItem         `json:"messages,required"`
-	Result   APIResponseMagicVisibilityMnmResultUnion `json:"result,required"`
-	// Whether the API call was successful
-	Success APIResponseMagicVisibilityMnmSuccess `json:"success,required"`
-	JSON    apiResponseMagicVisibilityMnmJSON    `json:"-"`
-}
-
-// apiResponseMagicVisibilityMnmJSON contains the JSON metadata for the struct
-// [APIResponseMagicVisibilityMnm]
-type apiResponseMagicVisibilityMnmJSON struct {
-	Errors      apijson.Field
-	Messages    apijson.Field
-	Result      apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *APIResponseMagicVisibilityMnm) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r apiResponseMagicVisibilityMnmJSON) RawJSON() string {
-	return r.raw
-}
-
-// Union satisfied by [APIResponseMagicVisibilityMnmResultArray] or
-// [shared.UnionString].
-type APIResponseMagicVisibilityMnmResultUnion interface {
-	ImplementsAPIResponseMagicVisibilityMnmResultUnion()
-}
-
-func init() {
-	apijson.RegisterUnion(
-		reflect.TypeOf((*APIResponseMagicVisibilityMnmResultUnion)(nil)).Elem(),
-		"",
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(APIResponseMagicVisibilityMnmResultArray{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.String,
-			Type:       reflect.TypeOf(shared.UnionString("")),
-		},
-	)
-}
-
-type APIResponseMagicVisibilityMnmResultArray []interface{}
-
-func (r APIResponseMagicVisibilityMnmResultArray) ImplementsAPIResponseMagicVisibilityMnmResultUnion() {
-}
-
-// Whether the API call was successful
-type APIResponseMagicVisibilityMnmSuccess bool
-
-const (
-	APIResponseMagicVisibilityMnmSuccessTrue APIResponseMagicVisibilityMnmSuccess = true
-)
-
-func (r APIResponseMagicVisibilityMnmSuccess) IsKnown() bool {
-	switch r {
-	case APIResponseMagicVisibilityMnmSuccessTrue:
-		return true
-	}
-	return false
-}
-
-type APIResponseSingleMagicVisibility struct {
-	Result interface{}                          `json:"result"`
-	JSON   apiResponseSingleMagicVisibilityJSON `json:"-"`
-	APIResponseMagicVisibilityMnm
-}
-
-// apiResponseSingleMagicVisibilityJSON contains the JSON metadata for the struct
-// [APIResponseSingleMagicVisibility]
-type apiResponseSingleMagicVisibilityJSON struct {
-	Result      apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *APIResponseSingleMagicVisibility) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r apiResponseSingleMagicVisibilityJSON) RawJSON() string {
-	return r.raw
-}
-
 type ConfigSingleResponse struct {
-	Result ConfigSingleResponseResult `json:"result"`
-	JSON   configSingleResponseJSON   `json:"-"`
-	APIResponseSingleMagicVisibility
+	Errors   []MessagesMagicVisibilityMnmItem `json:"errors,required"`
+	Messages []MessagesMagicVisibilityMnmItem `json:"messages,required"`
+	Result   ConfigSingleResponseResult       `json:"result,required"`
+	// Whether the API call was successful
+	Success ConfigSingleResponseSuccess `json:"success,required"`
+	JSON    configSingleResponseJSON    `json:"-"`
 }
 
 // configSingleResponseJSON contains the JSON metadata for the struct
 // [ConfigSingleResponse]
 type configSingleResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -252,19 +164,38 @@ func (r configSingleResponseResultJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful
+type ConfigSingleResponseSuccess bool
+
+const (
+	ConfigSingleResponseSuccessTrue ConfigSingleResponseSuccess = true
+)
+
+func (r ConfigSingleResponseSuccess) IsKnown() bool {
+	switch r {
+	case ConfigSingleResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type MessagesMagicVisibilityMnmItem struct {
-	Code    int64                              `json:"code,required"`
-	Message string                             `json:"message,required"`
-	JSON    messagesMagicVisibilityMnmItemJSON `json:"-"`
+	Code             int64                                `json:"code,required"`
+	Message          string                               `json:"message,required"`
+	DocumentationURL string                               `json:"documentation_url"`
+	Source           MessagesMagicVisibilityMnmItemSource `json:"source"`
+	JSON             messagesMagicVisibilityMnmItemJSON   `json:"-"`
 }
 
 // messagesMagicVisibilityMnmItemJSON contains the JSON metadata for the struct
 // [MessagesMagicVisibilityMnmItem]
 type messagesMagicVisibilityMnmItemJSON struct {
-	Code        apijson.Field
-	Message     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
 }
 
 func (r *MessagesMagicVisibilityMnmItem) UnmarshalJSON(data []byte) (err error) {
@@ -272,6 +203,27 @@ func (r *MessagesMagicVisibilityMnmItem) UnmarshalJSON(data []byte) (err error) 
 }
 
 func (r messagesMagicVisibilityMnmItemJSON) RawJSON() string {
+	return r.raw
+}
+
+type MessagesMagicVisibilityMnmItemSource struct {
+	Pointer string                                   `json:"pointer"`
+	JSON    messagesMagicVisibilityMnmItemSourceJSON `json:"-"`
+}
+
+// messagesMagicVisibilityMnmItemSourceJSON contains the JSON metadata for the
+// struct [MessagesMagicVisibilityMnmItemSource]
+type messagesMagicVisibilityMnmItemSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *MessagesMagicVisibilityMnmItemSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r messagesMagicVisibilityMnmItemSourceJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -345,14 +297,6 @@ type AccountMnmConfigUpdateParams struct {
 
 func (r AccountMnmConfigUpdateParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
-}
-
-type AccountMnmConfigDeleteParams struct {
-	Body interface{} `json:"body,required"`
-}
-
-func (r AccountMnmConfigDeleteParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
 }
 
 type AccountMnmConfigUpdateFieldsParams struct {

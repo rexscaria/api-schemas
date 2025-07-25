@@ -79,7 +79,7 @@ func (r *AccountStreamWatermarkService) List(ctx context.Context, accountID stri
 }
 
 // Deletes a watermark profile.
-func (r *AccountStreamWatermarkService) Delete(ctx context.Context, accountID string, identifier string, body AccountStreamWatermarkDeleteParams, opts ...option.RequestOption) (res *AccountStreamWatermarkDeleteResponse, err error) {
+func (r *AccountStreamWatermarkService) Delete(ctx context.Context, accountID string, identifier string, opts ...option.RequestOption) (res *AccountStreamWatermarkDeleteResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
@@ -90,60 +90,25 @@ func (r *AccountStreamWatermarkService) Delete(ctx context.Context, accountID st
 		return
 	}
 	path := fmt.Sprintf("accounts/%s/stream/watermarks/%s", accountID, identifier)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
-type APIResponseSingleStream struct {
+type WatermarkResponseSingle struct {
 	Errors   []StreamMessages `json:"errors,required"`
 	Messages []StreamMessages `json:"messages,required"`
-	// Whether the API call was successful
-	Success APIResponseSingleStreamSuccess `json:"success,required"`
-	JSON    apiResponseSingleStreamJSON    `json:"-"`
-}
-
-// apiResponseSingleStreamJSON contains the JSON metadata for the struct
-// [APIResponseSingleStream]
-type apiResponseSingleStreamJSON struct {
-	Errors      apijson.Field
-	Messages    apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *APIResponseSingleStream) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r apiResponseSingleStreamJSON) RawJSON() string {
-	return r.raw
-}
-
-// Whether the API call was successful
-type APIResponseSingleStreamSuccess bool
-
-const (
-	APIResponseSingleStreamSuccessTrue APIResponseSingleStreamSuccess = true
-)
-
-func (r APIResponseSingleStreamSuccess) IsKnown() bool {
-	switch r {
-	case APIResponseSingleStreamSuccessTrue:
-		return true
-	}
-	return false
-}
-
-type WatermarkResponseSingle struct {
-	Result Watermarks                  `json:"result"`
-	JSON   watermarkResponseSingleJSON `json:"-"`
-	APIResponseSingleStream
+	// Whether the API call was successful.
+	Success WatermarkResponseSingleSuccess `json:"success,required"`
+	Result  Watermarks                     `json:"result"`
+	JSON    watermarkResponseSingleJSON    `json:"-"`
 }
 
 // watermarkResponseSingleJSON contains the JSON metadata for the struct
 // [WatermarkResponseSingle]
 type watermarkResponseSingleJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -155,6 +120,21 @@ func (r *WatermarkResponseSingle) UnmarshalJSON(data []byte) (err error) {
 
 func (r watermarkResponseSingleJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type WatermarkResponseSingleSuccess bool
+
+const (
+	WatermarkResponseSingleSuccessTrue WatermarkResponseSingleSuccess = true
+)
+
+func (r WatermarkResponseSingleSuccess) IsKnown() bool {
+	switch r {
+	case WatermarkResponseSingleSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type Watermarks struct {
@@ -219,14 +199,20 @@ func (r watermarksJSON) RawJSON() string {
 }
 
 type AccountStreamWatermarkListResponse struct {
-	Result []Watermarks                           `json:"result"`
-	JSON   accountStreamWatermarkListResponseJSON `json:"-"`
-	APIResponseStream
+	Errors   []StreamMessages `json:"errors,required"`
+	Messages []StreamMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountStreamWatermarkListResponseSuccess `json:"success,required"`
+	Result  []Watermarks                              `json:"result"`
+	JSON    accountStreamWatermarkListResponseJSON    `json:"-"`
 }
 
 // accountStreamWatermarkListResponseJSON contains the JSON metadata for the struct
 // [AccountStreamWatermarkListResponse]
 type accountStreamWatermarkListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -240,15 +226,36 @@ func (r accountStreamWatermarkListResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountStreamWatermarkListResponseSuccess bool
+
+const (
+	AccountStreamWatermarkListResponseSuccessTrue AccountStreamWatermarkListResponseSuccess = true
+)
+
+func (r AccountStreamWatermarkListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountStreamWatermarkListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountStreamWatermarkDeleteResponse struct {
-	Result string                                   `json:"result"`
-	JSON   accountStreamWatermarkDeleteResponseJSON `json:"-"`
-	APIResponseSingleStream
+	Errors   []StreamMessages `json:"errors,required"`
+	Messages []StreamMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountStreamWatermarkDeleteResponseSuccess `json:"success,required"`
+	Result  string                                      `json:"result"`
+	JSON    accountStreamWatermarkDeleteResponseJSON    `json:"-"`
 }
 
 // accountStreamWatermarkDeleteResponseJSON contains the JSON metadata for the
 // struct [AccountStreamWatermarkDeleteResponse]
 type accountStreamWatermarkDeleteResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -260,6 +267,21 @@ func (r *AccountStreamWatermarkDeleteResponse) UnmarshalJSON(data []byte) (err e
 
 func (r accountStreamWatermarkDeleteResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountStreamWatermarkDeleteResponseSuccess bool
+
+const (
+	AccountStreamWatermarkDeleteResponseSuccessTrue AccountStreamWatermarkDeleteResponseSuccess = true
+)
+
+func (r AccountStreamWatermarkDeleteResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountStreamWatermarkDeleteResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountStreamWatermarkNewParams struct {
@@ -299,12 +321,4 @@ func (r AccountStreamWatermarkNewParams) MarshalMultipart() (data []byte, conten
 		return nil, "", err
 	}
 	return buf.Bytes(), writer.FormDataContentType(), nil
-}
-
-type AccountStreamWatermarkDeleteParams struct {
-	Body interface{} `json:"body,required"`
-}
-
-func (r AccountStreamWatermarkDeleteParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
 }

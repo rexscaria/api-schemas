@@ -115,18 +115,22 @@ func (r *AccountAddressingPrefixBindingService) Delete(ctx context.Context, acco
 }
 
 type AddressingMessages struct {
-	Code    int64                  `json:"code,required"`
-	Message string                 `json:"message,required"`
-	JSON    addressingMessagesJSON `json:"-"`
+	Code             int64                    `json:"code,required"`
+	Message          string                   `json:"message,required"`
+	DocumentationURL string                   `json:"documentation_url"`
+	Source           AddressingMessagesSource `json:"source"`
+	JSON             addressingMessagesJSON   `json:"-"`
 }
 
 // addressingMessagesJSON contains the JSON metadata for the struct
 // [AddressingMessages]
 type addressingMessagesJSON struct {
-	Code        apijson.Field
-	Message     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
 }
 
 func (r *AddressingMessages) UnmarshalJSON(data []byte) (err error) {
@@ -137,10 +141,31 @@ func (r addressingMessagesJSON) RawJSON() string {
 	return r.raw
 }
 
+type AddressingMessagesSource struct {
+	Pointer string                       `json:"pointer"`
+	JSON    addressingMessagesSourceJSON `json:"-"`
+}
+
+// addressingMessagesSourceJSON contains the JSON metadata for the struct
+// [AddressingMessagesSource]
+type addressingMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AddressingMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r addressingMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
 type APIResponseAddressing struct {
 	Errors   []AddressingMessages `json:"errors,required"`
 	Messages []AddressingMessages `json:"messages,required"`
-	// Whether the API call was successful
+	// Whether the API call was successful.
 	Success APIResponseAddressingSuccess `json:"success,required"`
 	JSON    apiResponseAddressingJSON    `json:"-"`
 }
@@ -163,7 +188,7 @@ func (r apiResponseAddressingJSON) RawJSON() string {
 	return r.raw
 }
 
-// Whether the API call was successful
+// Whether the API call was successful.
 type APIResponseAddressingSuccess bool
 
 const (
@@ -254,14 +279,20 @@ func (r ServiceBindingProvisioningState) IsKnown() bool {
 }
 
 type AccountAddressingPrefixBindingNewResponse struct {
-	Result ServiceBinding                                `json:"result"`
-	JSON   accountAddressingPrefixBindingNewResponseJSON `json:"-"`
-	APIResponseAddressing
+	Errors   []AddressingMessages `json:"errors,required"`
+	Messages []AddressingMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountAddressingPrefixBindingNewResponseSuccess `json:"success,required"`
+	Result  ServiceBinding                                   `json:"result"`
+	JSON    accountAddressingPrefixBindingNewResponseJSON    `json:"-"`
 }
 
 // accountAddressingPrefixBindingNewResponseJSON contains the JSON metadata for the
 // struct [AccountAddressingPrefixBindingNewResponse]
 type accountAddressingPrefixBindingNewResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -275,15 +306,36 @@ func (r accountAddressingPrefixBindingNewResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountAddressingPrefixBindingNewResponseSuccess bool
+
+const (
+	AccountAddressingPrefixBindingNewResponseSuccessTrue AccountAddressingPrefixBindingNewResponseSuccess = true
+)
+
+func (r AccountAddressingPrefixBindingNewResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountAddressingPrefixBindingNewResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountAddressingPrefixBindingGetResponse struct {
-	Result ServiceBinding                                `json:"result"`
-	JSON   accountAddressingPrefixBindingGetResponseJSON `json:"-"`
-	APIResponseAddressing
+	Errors   []AddressingMessages `json:"errors,required"`
+	Messages []AddressingMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountAddressingPrefixBindingGetResponseSuccess `json:"success,required"`
+	Result  ServiceBinding                                   `json:"result"`
+	JSON    accountAddressingPrefixBindingGetResponseJSON    `json:"-"`
 }
 
 // accountAddressingPrefixBindingGetResponseJSON contains the JSON metadata for the
 // struct [AccountAddressingPrefixBindingGetResponse]
 type accountAddressingPrefixBindingGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -297,15 +349,36 @@ func (r accountAddressingPrefixBindingGetResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountAddressingPrefixBindingGetResponseSuccess bool
+
+const (
+	AccountAddressingPrefixBindingGetResponseSuccessTrue AccountAddressingPrefixBindingGetResponseSuccess = true
+)
+
+func (r AccountAddressingPrefixBindingGetResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountAddressingPrefixBindingGetResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountAddressingPrefixBindingListResponse struct {
-	Result []ServiceBinding                               `json:"result"`
-	JSON   accountAddressingPrefixBindingListResponseJSON `json:"-"`
-	APIResponseAddressing
+	Errors   []AddressingMessages `json:"errors,required"`
+	Messages []AddressingMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountAddressingPrefixBindingListResponseSuccess `json:"success,required"`
+	Result  []ServiceBinding                                  `json:"result"`
+	JSON    accountAddressingPrefixBindingListResponseJSON    `json:"-"`
 }
 
 // accountAddressingPrefixBindingListResponseJSON contains the JSON metadata for
 // the struct [AccountAddressingPrefixBindingListResponse]
 type accountAddressingPrefixBindingListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -317,6 +390,21 @@ func (r *AccountAddressingPrefixBindingListResponse) UnmarshalJSON(data []byte) 
 
 func (r accountAddressingPrefixBindingListResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountAddressingPrefixBindingListResponseSuccess bool
+
+const (
+	AccountAddressingPrefixBindingListResponseSuccessTrue AccountAddressingPrefixBindingListResponseSuccess = true
+)
+
+func (r AccountAddressingPrefixBindingListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountAddressingPrefixBindingListResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountAddressingPrefixBindingNewParams struct {

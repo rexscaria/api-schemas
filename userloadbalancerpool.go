@@ -76,14 +76,14 @@ func (r *UserLoadBalancerPoolService) List(ctx context.Context, query UserLoadBa
 }
 
 // Delete a configured pool.
-func (r *UserLoadBalancerPoolService) Delete(ctx context.Context, poolID string, body UserLoadBalancerPoolDeleteParams, opts ...option.RequestOption) (res *SchemasIDResponseLoadBalancing, err error) {
+func (r *UserLoadBalancerPoolService) Delete(ctx context.Context, poolID string, opts ...option.RequestOption) (res *SchemasIDResponseLoadBalancing, err error) {
 	opts = append(r.Options[:], opts...)
 	if poolID == "" {
 		err = errors.New("missing required pool_id parameter")
 		return
 	}
 	path := fmt.Sprintf("user/load_balancers/pools/%s", poolID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
@@ -251,14 +251,6 @@ func (r UserLoadBalancerPoolListParams) URLQuery() (v url.Values) {
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
-}
-
-type UserLoadBalancerPoolDeleteParams struct {
-	Body interface{} `json:"body,required"`
-}
-
-func (r UserLoadBalancerPoolDeleteParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
 }
 
 type UserLoadBalancerPoolPatchParams struct {

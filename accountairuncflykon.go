@@ -36,9 +36,8 @@ func NewAccountAIRunCfLykonService(opts ...option.RequestOption) (r *AccountAIRu
 }
 
 // Execute @cf/lykon/dreamshaper-8-lcm model.
-func (r *AccountAIRunCfLykonService) ExecuteDreamshaper8Lcm(ctx context.Context, accountID string, params AccountAIRunCfLykonExecuteDreamshaper8LcmParams, opts ...option.RequestOption) (res *http.Response, err error) {
+func (r *AccountAIRunCfLykonService) ExecuteDreamshaper8Lcm(ctx context.Context, accountID string, params AccountAIRunCfLykonExecuteDreamshaper8LcmParams, opts ...option.RequestOption) (res *AccountAIRunCfLykonExecuteDreamshaper8LcmResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "image/png")}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -47,6 +46,8 @@ func (r *AccountAIRunCfLykonService) ExecuteDreamshaper8Lcm(ctx context.Context,
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
 }
+
+type AccountAIRunCfLykonExecuteDreamshaper8LcmResponse = interface{}
 
 type AccountAIRunCfLykonExecuteDreamshaper8LcmParams struct {
 	// A text description of the image you want to generate

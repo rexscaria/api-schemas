@@ -38,7 +38,7 @@ func NewZoneCustomHostnameCertificatePackCertificateService(opts ...option.Reque
 // bundled certificates. Deletion is subject to the following constraints. You
 // cannot delete a certificate if it is the only remaining certificate in the pack.
 // At least one certificate must remain in the pack.
-func (r *ZoneCustomHostnameCertificatePackCertificateService) Delete(ctx context.Context, zoneID string, customHostnameID string, certificatePackID string, certificateID string, body ZoneCustomHostnameCertificatePackCertificateDeleteParams, opts ...option.RequestOption) (res *ZoneCustomHostnameCertificatePackCertificateDeleteResponse, err error) {
+func (r *ZoneCustomHostnameCertificatePackCertificateService) Delete(ctx context.Context, zoneID string, customHostnameID string, certificatePackID string, certificateID string, opts ...option.RequestOption) (res *ZoneCustomHostnameCertificatePackCertificateDeleteResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
@@ -57,7 +57,7 @@ func (r *ZoneCustomHostnameCertificatePackCertificateService) Delete(ctx context
 		return
 	}
 	path := fmt.Sprintf("zones/%s/custom_hostnames/%s/certificate_pack/%s/certificates/%s", zoneID, customHostnameID, certificatePackID, certificateID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
@@ -100,7 +100,7 @@ func (r CustomCertAndKeyParam) MarshalJSON() (data []byte, err error) {
 }
 
 type ZoneCustomHostnameCertificatePackCertificateDeleteResponse struct {
-	// Identifier
+	// Identifier.
 	ID   string                                                         `json:"id"`
 	JSON zoneCustomHostnameCertificatePackCertificateDeleteResponseJSON `json:"-"`
 }
@@ -120,14 +120,6 @@ func (r *ZoneCustomHostnameCertificatePackCertificateDeleteResponse) UnmarshalJS
 
 func (r zoneCustomHostnameCertificatePackCertificateDeleteResponseJSON) RawJSON() string {
 	return r.raw
-}
-
-type ZoneCustomHostnameCertificatePackCertificateDeleteParams struct {
-	Body interface{} `json:"body,required"`
-}
-
-func (r ZoneCustomHostnameCertificatePackCertificateDeleteParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
 }
 
 type ZoneCustomHostnameCertificatePackCertificateReplaceParams struct {

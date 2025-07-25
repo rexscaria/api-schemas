@@ -71,56 +71,15 @@ func (r *MembershipService) List(ctx context.Context, query MembershipListParams
 }
 
 // Remove the associated member from an account.
-func (r *MembershipService) Remove(ctx context.Context, membershipID string, body MembershipRemoveParams, opts ...option.RequestOption) (res *MembershipRemoveResponse, err error) {
+func (r *MembershipService) Remove(ctx context.Context, membershipID string, opts ...option.RequestOption) (res *MembershipRemoveResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if membershipID == "" {
 		err = errors.New("missing required membership_id parameter")
 		return
 	}
 	path := fmt.Sprintf("memberships/%s", membershipID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
-}
-
-type APIResponseSingleIam struct {
-	Errors   []IamMessage `json:"errors,required"`
-	Messages []IamMessage `json:"messages,required"`
-	// Whether the API call was successful
-	Success APIResponseSingleIamSuccess `json:"success,required"`
-	JSON    apiResponseSingleIamJSON    `json:"-"`
-}
-
-// apiResponseSingleIamJSON contains the JSON metadata for the struct
-// [APIResponseSingleIam]
-type apiResponseSingleIamJSON struct {
-	Errors      apijson.Field
-	Messages    apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *APIResponseSingleIam) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r apiResponseSingleIamJSON) RawJSON() string {
-	return r.raw
-}
-
-// Whether the API call was successful
-type APIResponseSingleIamSuccess bool
-
-const (
-	APIResponseSingleIamSuccessTrue APIResponseSingleIamSuccess = true
-)
-
-func (r APIResponseSingleIamSuccess) IsKnown() bool {
-	switch r {
-	case APIResponseSingleIamSuccessTrue:
-		return true
-	}
-	return false
 }
 
 type MembershipWithPolicies struct {
@@ -197,45 +156,19 @@ func (r schemasAccountJSON) RawJSON() string {
 type SchemasAccountSettings struct {
 	// Sets an abuse contact email to notify for abuse reports.
 	AbuseContactEmail string `json:"abuse_contact_email"`
-	// Specifies the default nameservers to be used for new zones added to this
-	// account.
-	//
-	// - `cloudflare.standard` for Cloudflare-branded nameservers
-	// - `custom.account` for account custom nameservers
-	// - `custom.tenant` for tenant custom nameservers
-	//
-	// See
-	// [Custom Nameservers](https://developers.cloudflare.com/dns/additional-options/custom-nameservers/)
-	// for more information.
-	//
-	// Deprecated in favor of
-	// [DNS Settings](https://developers.cloudflare.com/api/operations/dns-settings-for-an-account-update-dns-settings).
-	//
-	// Deprecated: deprecated
-	DefaultNameservers SchemasAccountSettingsDefaultNameservers `json:"default_nameservers"`
 	// Indicates whether membership in this account requires that Two-Factor
 	// Authentication is enabled
-	EnforceTwofactor bool `json:"enforce_twofactor"`
-	// Indicates whether new zones should use the account-level custom nameservers by
-	// default.
-	//
-	// Deprecated in favor of
-	// [DNS Settings](https://developers.cloudflare.com/api/operations/dns-settings-for-an-account-update-dns-settings).
-	//
-	// Deprecated: deprecated
-	UseAccountCustomNsByDefault bool                       `json:"use_account_custom_ns_by_default"`
-	JSON                        schemasAccountSettingsJSON `json:"-"`
+	EnforceTwofactor bool                       `json:"enforce_twofactor"`
+	JSON             schemasAccountSettingsJSON `json:"-"`
 }
 
 // schemasAccountSettingsJSON contains the JSON metadata for the struct
 // [SchemasAccountSettings]
 type schemasAccountSettingsJSON struct {
-	AbuseContactEmail           apijson.Field
-	DefaultNameservers          apijson.Field
-	EnforceTwofactor            apijson.Field
-	UseAccountCustomNsByDefault apijson.Field
-	raw                         string
-	ExtraFields                 map[string]apijson.Field
+	AbuseContactEmail apijson.Field
+	EnforceTwofactor  apijson.Field
+	raw               string
+	ExtraFields       map[string]apijson.Field
 }
 
 func (r *SchemasAccountSettings) UnmarshalJSON(data []byte) (err error) {
@@ -244,35 +177,6 @@ func (r *SchemasAccountSettings) UnmarshalJSON(data []byte) (err error) {
 
 func (r schemasAccountSettingsJSON) RawJSON() string {
 	return r.raw
-}
-
-// Specifies the default nameservers to be used for new zones added to this
-// account.
-//
-// - `cloudflare.standard` for Cloudflare-branded nameservers
-// - `custom.account` for account custom nameservers
-// - `custom.tenant` for tenant custom nameservers
-//
-// See
-// [Custom Nameservers](https://developers.cloudflare.com/dns/additional-options/custom-nameservers/)
-// for more information.
-//
-// Deprecated in favor of
-// [DNS Settings](https://developers.cloudflare.com/api/operations/dns-settings-for-an-account-update-dns-settings).
-type SchemasAccountSettingsDefaultNameservers string
-
-const (
-	SchemasAccountSettingsDefaultNameserversCloudflareStandard SchemasAccountSettingsDefaultNameservers = "cloudflare.standard"
-	SchemasAccountSettingsDefaultNameserversCustomAccount      SchemasAccountSettingsDefaultNameservers = "custom.account"
-	SchemasAccountSettingsDefaultNameserversCustomTenant       SchemasAccountSettingsDefaultNameservers = "custom.tenant"
-)
-
-func (r SchemasAccountSettingsDefaultNameservers) IsKnown() bool {
-	switch r {
-	case SchemasAccountSettingsDefaultNameserversCloudflareStandard, SchemasAccountSettingsDefaultNameserversCustomAccount, SchemasAccountSettingsDefaultNameserversCustomTenant:
-		return true
-	}
-	return false
 }
 
 // Status of this membership.
@@ -293,14 +197,20 @@ func (r SchemasStatus) IsKnown() bool {
 }
 
 type SingleMembershipResponseWithPolicies struct {
-	Result MembershipWithPolicies                   `json:"result"`
-	JSON   singleMembershipResponseWithPoliciesJSON `json:"-"`
-	APIResponseSingleIam
+	Errors   []SingleMembershipResponseWithPoliciesError   `json:"errors,required"`
+	Messages []SingleMembershipResponseWithPoliciesMessage `json:"messages,required"`
+	// Whether the API call was successful.
+	Success SingleMembershipResponseWithPoliciesSuccess `json:"success,required"`
+	Result  MembershipWithPolicies                      `json:"result"`
+	JSON    singleMembershipResponseWithPoliciesJSON    `json:"-"`
 }
 
 // singleMembershipResponseWithPoliciesJSON contains the JSON metadata for the
 // struct [SingleMembershipResponseWithPolicies]
 type singleMembershipResponseWithPoliciesJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -314,21 +224,138 @@ func (r singleMembershipResponseWithPoliciesJSON) RawJSON() string {
 	return r.raw
 }
 
+type SingleMembershipResponseWithPoliciesError struct {
+	Code             int64                                            `json:"code,required"`
+	Message          string                                           `json:"message,required"`
+	DocumentationURL string                                           `json:"documentation_url"`
+	Source           SingleMembershipResponseWithPoliciesErrorsSource `json:"source"`
+	JSON             singleMembershipResponseWithPoliciesErrorJSON    `json:"-"`
+}
+
+// singleMembershipResponseWithPoliciesErrorJSON contains the JSON metadata for the
+// struct [SingleMembershipResponseWithPoliciesError]
+type singleMembershipResponseWithPoliciesErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *SingleMembershipResponseWithPoliciesError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r singleMembershipResponseWithPoliciesErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type SingleMembershipResponseWithPoliciesErrorsSource struct {
+	Pointer string                                               `json:"pointer"`
+	JSON    singleMembershipResponseWithPoliciesErrorsSourceJSON `json:"-"`
+}
+
+// singleMembershipResponseWithPoliciesErrorsSourceJSON contains the JSON metadata
+// for the struct [SingleMembershipResponseWithPoliciesErrorsSource]
+type singleMembershipResponseWithPoliciesErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *SingleMembershipResponseWithPoliciesErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r singleMembershipResponseWithPoliciesErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type SingleMembershipResponseWithPoliciesMessage struct {
+	Code             int64                                              `json:"code,required"`
+	Message          string                                             `json:"message,required"`
+	DocumentationURL string                                             `json:"documentation_url"`
+	Source           SingleMembershipResponseWithPoliciesMessagesSource `json:"source"`
+	JSON             singleMembershipResponseWithPoliciesMessageJSON    `json:"-"`
+}
+
+// singleMembershipResponseWithPoliciesMessageJSON contains the JSON metadata for
+// the struct [SingleMembershipResponseWithPoliciesMessage]
+type singleMembershipResponseWithPoliciesMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *SingleMembershipResponseWithPoliciesMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r singleMembershipResponseWithPoliciesMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type SingleMembershipResponseWithPoliciesMessagesSource struct {
+	Pointer string                                                 `json:"pointer"`
+	JSON    singleMembershipResponseWithPoliciesMessagesSourceJSON `json:"-"`
+}
+
+// singleMembershipResponseWithPoliciesMessagesSourceJSON contains the JSON
+// metadata for the struct [SingleMembershipResponseWithPoliciesMessagesSource]
+type singleMembershipResponseWithPoliciesMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *SingleMembershipResponseWithPoliciesMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r singleMembershipResponseWithPoliciesMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful.
+type SingleMembershipResponseWithPoliciesSuccess bool
+
+const (
+	SingleMembershipResponseWithPoliciesSuccessTrue SingleMembershipResponseWithPoliciesSuccess = true
+)
+
+func (r SingleMembershipResponseWithPoliciesSuccess) IsKnown() bool {
+	switch r {
+	case SingleMembershipResponseWithPoliciesSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type MembershipListResponse struct {
-	// This field can have the runtime type of [[]IamMessage].
-	Errors interface{} `json:"errors"`
-	// This field can have the runtime type of [[]IamMessage].
-	Messages interface{} `json:"messages"`
+	// This field can have the runtime type of
+	// [[]MembershipListResponseIamCollectionMembershipResponseError],
+	// [[]MembershipListResponseIamCollectionMembershipResponseWithPoliciesError].
+	Errors interface{} `json:"errors,required"`
+	// This field can have the runtime type of
+	// [[]MembershipListResponseIamCollectionMembershipResponseMessage],
+	// [[]MembershipListResponseIamCollectionMembershipResponseWithPoliciesMessage].
+	Messages interface{} `json:"messages,required"`
+	// Whether the API call was successful.
+	Success MembershipListResponseSuccess `json:"success,required"`
 	// This field can have the runtime type of
 	// [[]MembershipListResponseIamCollectionMembershipResponseResult],
 	// [[]MembershipWithPolicies].
 	Result interface{} `json:"result"`
-	// This field can have the runtime type of [IamAPIResponseCollectionResultInfo].
-	ResultInfo interface{} `json:"result_info"`
-	// Whether the API call was successful
-	Success MembershipListResponseSuccess `json:"success"`
-	JSON    membershipListResponseJSON    `json:"-"`
-	union   MembershipListResponseUnion
+	// This field can have the runtime type of
+	// [MembershipListResponseIamCollectionMembershipResponseResultInfo],
+	// [MembershipListResponseIamCollectionMembershipResponseWithPoliciesResultInfo].
+	ResultInfo interface{}                `json:"result_info"`
+	JSON       membershipListResponseJSON `json:"-"`
+	union      MembershipListResponseUnion
 }
 
 // membershipListResponseJSON contains the JSON metadata for the struct
@@ -336,9 +363,9 @@ type MembershipListResponse struct {
 type membershipListResponseJSON struct {
 	Errors      apijson.Field
 	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	ResultInfo  apijson.Field
-	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -388,15 +415,23 @@ func init() {
 }
 
 type MembershipListResponseIamCollectionMembershipResponse struct {
-	Result []MembershipListResponseIamCollectionMembershipResponseResult `json:"result"`
-	JSON   membershipListResponseIamCollectionMembershipResponseJSON     `json:"-"`
-	IamAPIResponseCollection
+	Errors   []MembershipListResponseIamCollectionMembershipResponseError   `json:"errors,required"`
+	Messages []MembershipListResponseIamCollectionMembershipResponseMessage `json:"messages,required"`
+	// Whether the API call was successful.
+	Success    MembershipListResponseIamCollectionMembershipResponseSuccess    `json:"success,required"`
+	Result     []MembershipListResponseIamCollectionMembershipResponseResult   `json:"result"`
+	ResultInfo MembershipListResponseIamCollectionMembershipResponseResultInfo `json:"result_info"`
+	JSON       membershipListResponseIamCollectionMembershipResponseJSON       `json:"-"`
 }
 
 // membershipListResponseIamCollectionMembershipResponseJSON contains the JSON
 // metadata for the struct [MembershipListResponseIamCollectionMembershipResponse]
 type membershipListResponseIamCollectionMembershipResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -410,6 +445,121 @@ func (r membershipListResponseIamCollectionMembershipResponseJSON) RawJSON() str
 }
 
 func (r MembershipListResponseIamCollectionMembershipResponse) implementsMembershipListResponse() {}
+
+type MembershipListResponseIamCollectionMembershipResponseError struct {
+	Code             int64                                                             `json:"code,required"`
+	Message          string                                                            `json:"message,required"`
+	DocumentationURL string                                                            `json:"documentation_url"`
+	Source           MembershipListResponseIamCollectionMembershipResponseErrorsSource `json:"source"`
+	JSON             membershipListResponseIamCollectionMembershipResponseErrorJSON    `json:"-"`
+}
+
+// membershipListResponseIamCollectionMembershipResponseErrorJSON contains the JSON
+// metadata for the struct
+// [MembershipListResponseIamCollectionMembershipResponseError]
+type membershipListResponseIamCollectionMembershipResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *MembershipListResponseIamCollectionMembershipResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r membershipListResponseIamCollectionMembershipResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type MembershipListResponseIamCollectionMembershipResponseErrorsSource struct {
+	Pointer string                                                                `json:"pointer"`
+	JSON    membershipListResponseIamCollectionMembershipResponseErrorsSourceJSON `json:"-"`
+}
+
+// membershipListResponseIamCollectionMembershipResponseErrorsSourceJSON contains
+// the JSON metadata for the struct
+// [MembershipListResponseIamCollectionMembershipResponseErrorsSource]
+type membershipListResponseIamCollectionMembershipResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *MembershipListResponseIamCollectionMembershipResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r membershipListResponseIamCollectionMembershipResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type MembershipListResponseIamCollectionMembershipResponseMessage struct {
+	Code             int64                                                               `json:"code,required"`
+	Message          string                                                              `json:"message,required"`
+	DocumentationURL string                                                              `json:"documentation_url"`
+	Source           MembershipListResponseIamCollectionMembershipResponseMessagesSource `json:"source"`
+	JSON             membershipListResponseIamCollectionMembershipResponseMessageJSON    `json:"-"`
+}
+
+// membershipListResponseIamCollectionMembershipResponseMessageJSON contains the
+// JSON metadata for the struct
+// [MembershipListResponseIamCollectionMembershipResponseMessage]
+type membershipListResponseIamCollectionMembershipResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *MembershipListResponseIamCollectionMembershipResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r membershipListResponseIamCollectionMembershipResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type MembershipListResponseIamCollectionMembershipResponseMessagesSource struct {
+	Pointer string                                                                  `json:"pointer"`
+	JSON    membershipListResponseIamCollectionMembershipResponseMessagesSourceJSON `json:"-"`
+}
+
+// membershipListResponseIamCollectionMembershipResponseMessagesSourceJSON contains
+// the JSON metadata for the struct
+// [MembershipListResponseIamCollectionMembershipResponseMessagesSource]
+type membershipListResponseIamCollectionMembershipResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *MembershipListResponseIamCollectionMembershipResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r membershipListResponseIamCollectionMembershipResponseMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful.
+type MembershipListResponseIamCollectionMembershipResponseSuccess bool
+
+const (
+	MembershipListResponseIamCollectionMembershipResponseSuccessTrue MembershipListResponseIamCollectionMembershipResponseSuccess = true
+)
+
+func (r MembershipListResponseIamCollectionMembershipResponseSuccess) IsKnown() bool {
+	switch r {
+	case MembershipListResponseIamCollectionMembershipResponseSuccessTrue:
+		return true
+	}
+	return false
+}
 
 type MembershipListResponseIamCollectionMembershipResponseResult struct {
 	// Membership identifier tag.
@@ -449,17 +599,57 @@ func (r membershipListResponseIamCollectionMembershipResponseResultJSON) RawJSON
 	return r.raw
 }
 
+type MembershipListResponseIamCollectionMembershipResponseResultInfo struct {
+	// Total number of results for the requested service
+	Count float64 `json:"count"`
+	// Current page within paginated list of results
+	Page float64 `json:"page"`
+	// Number of results per page of results
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters
+	TotalCount float64                                                             `json:"total_count"`
+	JSON       membershipListResponseIamCollectionMembershipResponseResultInfoJSON `json:"-"`
+}
+
+// membershipListResponseIamCollectionMembershipResponseResultInfoJSON contains the
+// JSON metadata for the struct
+// [MembershipListResponseIamCollectionMembershipResponseResultInfo]
+type membershipListResponseIamCollectionMembershipResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *MembershipListResponseIamCollectionMembershipResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r membershipListResponseIamCollectionMembershipResponseResultInfoJSON) RawJSON() string {
+	return r.raw
+}
+
 type MembershipListResponseIamCollectionMembershipResponseWithPolicies struct {
-	Result []MembershipWithPolicies                                              `json:"result"`
-	JSON   membershipListResponseIamCollectionMembershipResponseWithPoliciesJSON `json:"-"`
-	IamAPIResponseCollection
+	Errors   []MembershipListResponseIamCollectionMembershipResponseWithPoliciesError   `json:"errors,required"`
+	Messages []MembershipListResponseIamCollectionMembershipResponseWithPoliciesMessage `json:"messages,required"`
+	// Whether the API call was successful.
+	Success    MembershipListResponseIamCollectionMembershipResponseWithPoliciesSuccess    `json:"success,required"`
+	Result     []MembershipWithPolicies                                                    `json:"result"`
+	ResultInfo MembershipListResponseIamCollectionMembershipResponseWithPoliciesResultInfo `json:"result_info"`
+	JSON       membershipListResponseIamCollectionMembershipResponseWithPoliciesJSON       `json:"-"`
 }
 
 // membershipListResponseIamCollectionMembershipResponseWithPoliciesJSON contains
 // the JSON metadata for the struct
 // [MembershipListResponseIamCollectionMembershipResponseWithPolicies]
 type membershipListResponseIamCollectionMembershipResponseWithPoliciesJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -475,7 +665,154 @@ func (r membershipListResponseIamCollectionMembershipResponseWithPoliciesJSON) R
 func (r MembershipListResponseIamCollectionMembershipResponseWithPolicies) implementsMembershipListResponse() {
 }
 
-// Whether the API call was successful
+type MembershipListResponseIamCollectionMembershipResponseWithPoliciesError struct {
+	Code             int64                                                                         `json:"code,required"`
+	Message          string                                                                        `json:"message,required"`
+	DocumentationURL string                                                                        `json:"documentation_url"`
+	Source           MembershipListResponseIamCollectionMembershipResponseWithPoliciesErrorsSource `json:"source"`
+	JSON             membershipListResponseIamCollectionMembershipResponseWithPoliciesErrorJSON    `json:"-"`
+}
+
+// membershipListResponseIamCollectionMembershipResponseWithPoliciesErrorJSON
+// contains the JSON metadata for the struct
+// [MembershipListResponseIamCollectionMembershipResponseWithPoliciesError]
+type membershipListResponseIamCollectionMembershipResponseWithPoliciesErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *MembershipListResponseIamCollectionMembershipResponseWithPoliciesError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r membershipListResponseIamCollectionMembershipResponseWithPoliciesErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type MembershipListResponseIamCollectionMembershipResponseWithPoliciesErrorsSource struct {
+	Pointer string                                                                            `json:"pointer"`
+	JSON    membershipListResponseIamCollectionMembershipResponseWithPoliciesErrorsSourceJSON `json:"-"`
+}
+
+// membershipListResponseIamCollectionMembershipResponseWithPoliciesErrorsSourceJSON
+// contains the JSON metadata for the struct
+// [MembershipListResponseIamCollectionMembershipResponseWithPoliciesErrorsSource]
+type membershipListResponseIamCollectionMembershipResponseWithPoliciesErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *MembershipListResponseIamCollectionMembershipResponseWithPoliciesErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r membershipListResponseIamCollectionMembershipResponseWithPoliciesErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type MembershipListResponseIamCollectionMembershipResponseWithPoliciesMessage struct {
+	Code             int64                                                                           `json:"code,required"`
+	Message          string                                                                          `json:"message,required"`
+	DocumentationURL string                                                                          `json:"documentation_url"`
+	Source           MembershipListResponseIamCollectionMembershipResponseWithPoliciesMessagesSource `json:"source"`
+	JSON             membershipListResponseIamCollectionMembershipResponseWithPoliciesMessageJSON    `json:"-"`
+}
+
+// membershipListResponseIamCollectionMembershipResponseWithPoliciesMessageJSON
+// contains the JSON metadata for the struct
+// [MembershipListResponseIamCollectionMembershipResponseWithPoliciesMessage]
+type membershipListResponseIamCollectionMembershipResponseWithPoliciesMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *MembershipListResponseIamCollectionMembershipResponseWithPoliciesMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r membershipListResponseIamCollectionMembershipResponseWithPoliciesMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type MembershipListResponseIamCollectionMembershipResponseWithPoliciesMessagesSource struct {
+	Pointer string                                                                              `json:"pointer"`
+	JSON    membershipListResponseIamCollectionMembershipResponseWithPoliciesMessagesSourceJSON `json:"-"`
+}
+
+// membershipListResponseIamCollectionMembershipResponseWithPoliciesMessagesSourceJSON
+// contains the JSON metadata for the struct
+// [MembershipListResponseIamCollectionMembershipResponseWithPoliciesMessagesSource]
+type membershipListResponseIamCollectionMembershipResponseWithPoliciesMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *MembershipListResponseIamCollectionMembershipResponseWithPoliciesMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r membershipListResponseIamCollectionMembershipResponseWithPoliciesMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful.
+type MembershipListResponseIamCollectionMembershipResponseWithPoliciesSuccess bool
+
+const (
+	MembershipListResponseIamCollectionMembershipResponseWithPoliciesSuccessTrue MembershipListResponseIamCollectionMembershipResponseWithPoliciesSuccess = true
+)
+
+func (r MembershipListResponseIamCollectionMembershipResponseWithPoliciesSuccess) IsKnown() bool {
+	switch r {
+	case MembershipListResponseIamCollectionMembershipResponseWithPoliciesSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type MembershipListResponseIamCollectionMembershipResponseWithPoliciesResultInfo struct {
+	// Total number of results for the requested service
+	Count float64 `json:"count"`
+	// Current page within paginated list of results
+	Page float64 `json:"page"`
+	// Number of results per page of results
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters
+	TotalCount float64                                                                         `json:"total_count"`
+	JSON       membershipListResponseIamCollectionMembershipResponseWithPoliciesResultInfoJSON `json:"-"`
+}
+
+// membershipListResponseIamCollectionMembershipResponseWithPoliciesResultInfoJSON
+// contains the JSON metadata for the struct
+// [MembershipListResponseIamCollectionMembershipResponseWithPoliciesResultInfo]
+type membershipListResponseIamCollectionMembershipResponseWithPoliciesResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *MembershipListResponseIamCollectionMembershipResponseWithPoliciesResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r membershipListResponseIamCollectionMembershipResponseWithPoliciesResultInfoJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful.
 type MembershipListResponseSuccess bool
 
 const (
@@ -491,14 +828,20 @@ func (r MembershipListResponseSuccess) IsKnown() bool {
 }
 
 type MembershipRemoveResponse struct {
-	Result MembershipRemoveResponseResult `json:"result"`
-	JSON   membershipRemoveResponseJSON   `json:"-"`
-	APIResponseSingleIam
+	Errors   []MembershipRemoveResponseError   `json:"errors,required"`
+	Messages []MembershipRemoveResponseMessage `json:"messages,required"`
+	// Whether the API call was successful.
+	Success MembershipRemoveResponseSuccess `json:"success,required"`
+	Result  MembershipRemoveResponseResult  `json:"result"`
+	JSON    membershipRemoveResponseJSON    `json:"-"`
 }
 
 // membershipRemoveResponseJSON contains the JSON metadata for the struct
 // [MembershipRemoveResponse]
 type membershipRemoveResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -510,6 +853,117 @@ func (r *MembershipRemoveResponse) UnmarshalJSON(data []byte) (err error) {
 
 func (r membershipRemoveResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+type MembershipRemoveResponseError struct {
+	Code             int64                                `json:"code,required"`
+	Message          string                               `json:"message,required"`
+	DocumentationURL string                               `json:"documentation_url"`
+	Source           MembershipRemoveResponseErrorsSource `json:"source"`
+	JSON             membershipRemoveResponseErrorJSON    `json:"-"`
+}
+
+// membershipRemoveResponseErrorJSON contains the JSON metadata for the struct
+// [MembershipRemoveResponseError]
+type membershipRemoveResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *MembershipRemoveResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r membershipRemoveResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type MembershipRemoveResponseErrorsSource struct {
+	Pointer string                                   `json:"pointer"`
+	JSON    membershipRemoveResponseErrorsSourceJSON `json:"-"`
+}
+
+// membershipRemoveResponseErrorsSourceJSON contains the JSON metadata for the
+// struct [MembershipRemoveResponseErrorsSource]
+type membershipRemoveResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *MembershipRemoveResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r membershipRemoveResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type MembershipRemoveResponseMessage struct {
+	Code             int64                                  `json:"code,required"`
+	Message          string                                 `json:"message,required"`
+	DocumentationURL string                                 `json:"documentation_url"`
+	Source           MembershipRemoveResponseMessagesSource `json:"source"`
+	JSON             membershipRemoveResponseMessageJSON    `json:"-"`
+}
+
+// membershipRemoveResponseMessageJSON contains the JSON metadata for the struct
+// [MembershipRemoveResponseMessage]
+type membershipRemoveResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *MembershipRemoveResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r membershipRemoveResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type MembershipRemoveResponseMessagesSource struct {
+	Pointer string                                     `json:"pointer"`
+	JSON    membershipRemoveResponseMessagesSourceJSON `json:"-"`
+}
+
+// membershipRemoveResponseMessagesSourceJSON contains the JSON metadata for the
+// struct [MembershipRemoveResponseMessagesSource]
+type membershipRemoveResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *MembershipRemoveResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r membershipRemoveResponseMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful.
+type MembershipRemoveResponseSuccess bool
+
+const (
+	MembershipRemoveResponseSuccessTrue MembershipRemoveResponseSuccess = true
+)
+
+func (r MembershipRemoveResponseSuccess) IsKnown() bool {
+	switch r {
+	case MembershipRemoveResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type MembershipRemoveResponseResult struct {
@@ -645,12 +1099,4 @@ func (r MembershipListParamsStatus) IsKnown() bool {
 		return true
 	}
 	return false
-}
-
-type MembershipRemoveParams struct {
-	Body interface{} `json:"body,required"`
-}
-
-func (r MembershipRemoveParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
 }

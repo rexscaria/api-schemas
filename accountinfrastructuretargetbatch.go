@@ -35,7 +35,7 @@ func NewAccountInfrastructureTargetBatchService(opts ...option.RequestOption) (r
 }
 
 // Adds one or more targets.
-func (r *AccountInfrastructureTargetBatchService) New(ctx context.Context, accountID string, body AccountInfrastructureTargetBatchNewParams, opts ...option.RequestOption) (res *[]TargetBatch, err error) {
+func (r *AccountInfrastructureTargetBatchService) New(ctx context.Context, accountID string, body AccountInfrastructureTargetBatchNewParams, opts ...option.RequestOption) (res *AccountInfrastructureTargetBatchNewResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
@@ -47,7 +47,9 @@ func (r *AccountInfrastructureTargetBatchService) New(ctx context.Context, accou
 }
 
 // Removes one or more targets.
-func (r *AccountInfrastructureTargetBatchService) Delete(ctx context.Context, accountID string, body AccountInfrastructureTargetBatchDeleteParams, opts ...option.RequestOption) (err error) {
+//
+// Deprecated: deprecated
+func (r *AccountInfrastructureTargetBatchService) Delete(ctx context.Context, accountID string, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if accountID == "" {
@@ -55,7 +57,7 @@ func (r *AccountInfrastructureTargetBatchService) Delete(ctx context.Context, ac
 		return
 	}
 	path := fmt.Sprintf("accounts/%s/infrastructure/targets/batch", accountID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, nil, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return
 }
 
@@ -92,6 +94,49 @@ func (r targetBatchJSON) RawJSON() string {
 	return r.raw
 }
 
+type AccountInfrastructureTargetBatchNewResponse struct {
+	Errors   []MessagesInfraItem `json:"errors,required"`
+	Messages []MessagesInfraItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountInfrastructureTargetBatchNewResponseSuccess `json:"success,required"`
+	Result  []TargetBatch                                      `json:"result"`
+	JSON    accountInfrastructureTargetBatchNewResponseJSON    `json:"-"`
+}
+
+// accountInfrastructureTargetBatchNewResponseJSON contains the JSON metadata for
+// the struct [AccountInfrastructureTargetBatchNewResponse]
+type accountInfrastructureTargetBatchNewResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
+	Result      apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountInfrastructureTargetBatchNewResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountInfrastructureTargetBatchNewResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountInfrastructureTargetBatchNewResponseSuccess bool
+
+const (
+	AccountInfrastructureTargetBatchNewResponseSuccessTrue AccountInfrastructureTargetBatchNewResponseSuccess = true
+)
+
+func (r AccountInfrastructureTargetBatchNewResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountInfrastructureTargetBatchNewResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountInfrastructureTargetBatchNewParams struct {
 	Body []AccountInfrastructureTargetBatchNewParamsBody `json:"body,required"`
 }
@@ -110,13 +155,5 @@ type AccountInfrastructureTargetBatchNewParamsBody struct {
 }
 
 func (r AccountInfrastructureTargetBatchNewParamsBody) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-type AccountInfrastructureTargetBatchDeleteParams struct {
-	TargetIDs param.Field[[]string] `json:"target_ids,required" format:"uuid"`
-}
-
-func (r AccountInfrastructureTargetBatchDeleteParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }

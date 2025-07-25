@@ -8,15 +8,12 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
-	"reflect"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
 	"github.com/rexscaria/api-schemas/internal/param"
 	"github.com/rexscaria/api-schemas/internal/requestconfig"
 	"github.com/rexscaria/api-schemas/option"
-	"github.com/rexscaria/api-schemas/shared"
-	"github.com/tidwall/gjson"
 )
 
 // AccountAIRunCfTheblokeService contains methods and other services that help with
@@ -50,139 +47,7 @@ func (r *AccountAIRunCfTheblokeService) ExecuteDiscolmGerman7bV1Awq(ctx context.
 	return
 }
 
-type AccountAIRunCfTheblokeExecuteDiscolmGerman7bV1AwqResponse struct {
-	Result  AccountAIRunCfTheblokeExecuteDiscolmGerman7bV1AwqResponseResultUnion `json:"result" format:"binary"`
-	Success bool                                                                 `json:"success"`
-	JSON    accountAIRunCfTheblokeExecuteDiscolmGerman7bV1AwqResponseJSON        `json:"-"`
-}
-
-// accountAIRunCfTheblokeExecuteDiscolmGerman7bV1AwqResponseJSON contains the JSON
-// metadata for the struct
-// [AccountAIRunCfTheblokeExecuteDiscolmGerman7bV1AwqResponse]
-type accountAIRunCfTheblokeExecuteDiscolmGerman7bV1AwqResponseJSON struct {
-	Result      apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountAIRunCfTheblokeExecuteDiscolmGerman7bV1AwqResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountAIRunCfTheblokeExecuteDiscolmGerman7bV1AwqResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-// Union satisfied by
-// [AccountAIRunCfTheblokeExecuteDiscolmGerman7bV1AwqResponseResultObject] or
-// [shared.UnionString].
-type AccountAIRunCfTheblokeExecuteDiscolmGerman7bV1AwqResponseResultUnion interface {
-	ImplementsAccountAIRunCfTheblokeExecuteDiscolmGerman7bV1AwqResponseResultUnion()
-}
-
-func init() {
-	apijson.RegisterUnion(
-		reflect.TypeOf((*AccountAIRunCfTheblokeExecuteDiscolmGerman7bV1AwqResponseResultUnion)(nil)).Elem(),
-		"",
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(AccountAIRunCfTheblokeExecuteDiscolmGerman7bV1AwqResponseResultObject{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.String,
-			Type:       reflect.TypeOf(shared.UnionString("")),
-		},
-	)
-}
-
-type AccountAIRunCfTheblokeExecuteDiscolmGerman7bV1AwqResponseResultObject struct {
-	// The generated text response from the model
-	Response string `json:"response,required"`
-	// An array of tool calls requests made during the response generation
-	ToolCalls []AccountAIRunCfTheblokeExecuteDiscolmGerman7bV1AwqResponseResultObjectToolCall `json:"tool_calls"`
-	// Usage statistics for the inference request
-	Usage AccountAIRunCfTheblokeExecuteDiscolmGerman7bV1AwqResponseResultObjectUsage `json:"usage"`
-	JSON  accountAIRunCfTheblokeExecuteDiscolmGerman7bV1AwqResponseResultObjectJSON  `json:"-"`
-}
-
-// accountAIRunCfTheblokeExecuteDiscolmGerman7bV1AwqResponseResultObjectJSON
-// contains the JSON metadata for the struct
-// [AccountAIRunCfTheblokeExecuteDiscolmGerman7bV1AwqResponseResultObject]
-type accountAIRunCfTheblokeExecuteDiscolmGerman7bV1AwqResponseResultObjectJSON struct {
-	Response    apijson.Field
-	ToolCalls   apijson.Field
-	Usage       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountAIRunCfTheblokeExecuteDiscolmGerman7bV1AwqResponseResultObject) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountAIRunCfTheblokeExecuteDiscolmGerman7bV1AwqResponseResultObjectJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r AccountAIRunCfTheblokeExecuteDiscolmGerman7bV1AwqResponseResultObject) ImplementsAccountAIRunCfTheblokeExecuteDiscolmGerman7bV1AwqResponseResultUnion() {
-}
-
-type AccountAIRunCfTheblokeExecuteDiscolmGerman7bV1AwqResponseResultObjectToolCall struct {
-	// The arguments passed to be passed to the tool call request
-	Arguments interface{} `json:"arguments"`
-	// The name of the tool to be called
-	Name string                                                                            `json:"name"`
-	JSON accountAIRunCfTheblokeExecuteDiscolmGerman7bV1AwqResponseResultObjectToolCallJSON `json:"-"`
-}
-
-// accountAIRunCfTheblokeExecuteDiscolmGerman7bV1AwqResponseResultObjectToolCallJSON
-// contains the JSON metadata for the struct
-// [AccountAIRunCfTheblokeExecuteDiscolmGerman7bV1AwqResponseResultObjectToolCall]
-type accountAIRunCfTheblokeExecuteDiscolmGerman7bV1AwqResponseResultObjectToolCallJSON struct {
-	Arguments   apijson.Field
-	Name        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountAIRunCfTheblokeExecuteDiscolmGerman7bV1AwqResponseResultObjectToolCall) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountAIRunCfTheblokeExecuteDiscolmGerman7bV1AwqResponseResultObjectToolCallJSON) RawJSON() string {
-	return r.raw
-}
-
-// Usage statistics for the inference request
-type AccountAIRunCfTheblokeExecuteDiscolmGerman7bV1AwqResponseResultObjectUsage struct {
-	// Total number of tokens in output
-	CompletionTokens float64 `json:"completion_tokens"`
-	// Total number of tokens in input
-	PromptTokens float64 `json:"prompt_tokens"`
-	// Total number of input and output tokens
-	TotalTokens float64                                                                        `json:"total_tokens"`
-	JSON        accountAIRunCfTheblokeExecuteDiscolmGerman7bV1AwqResponseResultObjectUsageJSON `json:"-"`
-}
-
-// accountAIRunCfTheblokeExecuteDiscolmGerman7bV1AwqResponseResultObjectUsageJSON
-// contains the JSON metadata for the struct
-// [AccountAIRunCfTheblokeExecuteDiscolmGerman7bV1AwqResponseResultObjectUsage]
-type accountAIRunCfTheblokeExecuteDiscolmGerman7bV1AwqResponseResultObjectUsageJSON struct {
-	CompletionTokens apijson.Field
-	PromptTokens     apijson.Field
-	TotalTokens      apijson.Field
-	raw              string
-	ExtraFields      map[string]apijson.Field
-}
-
-func (r *AccountAIRunCfTheblokeExecuteDiscolmGerman7bV1AwqResponseResultObjectUsage) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountAIRunCfTheblokeExecuteDiscolmGerman7bV1AwqResponseResultObjectUsageJSON) RawJSON() string {
-	return r.raw
-}
+type AccountAIRunCfTheblokeExecuteDiscolmGerman7bV1AwqResponse = interface{}
 
 type AccountAIRunCfTheblokeExecuteDiscolmGerman7bV1AwqParams struct {
 	QueueRequest param.Field[string]                                              `query:"queueRequest"`

@@ -69,14 +69,20 @@ func (r *ZoneDNSAnalyticReportService) ByTime(ctx context.Context, zoneID string
 }
 
 type ZoneDNSAnalyticReportGetResponse struct {
-	Result DataReport                           `json:"result"`
-	JSON   zoneDNSAnalyticReportGetResponseJSON `json:"-"`
-	APIResponseSingleDNSAnalytics
+	Errors   []MessagesDNSAnalyticsItem `json:"errors,required"`
+	Messages []MessagesDNSAnalyticsItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success ZoneDNSAnalyticReportGetResponseSuccess `json:"success,required"`
+	Result  DataReport                              `json:"result"`
+	JSON    zoneDNSAnalyticReportGetResponseJSON    `json:"-"`
 }
 
 // zoneDNSAnalyticReportGetResponseJSON contains the JSON metadata for the struct
 // [ZoneDNSAnalyticReportGetResponse]
 type zoneDNSAnalyticReportGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -90,15 +96,36 @@ func (r zoneDNSAnalyticReportGetResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type ZoneDNSAnalyticReportGetResponseSuccess bool
+
+const (
+	ZoneDNSAnalyticReportGetResponseSuccessTrue ZoneDNSAnalyticReportGetResponseSuccess = true
+)
+
+func (r ZoneDNSAnalyticReportGetResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneDNSAnalyticReportGetResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type ZoneDNSAnalyticReportByTimeResponse struct {
-	Result ReportByTime                            `json:"result"`
-	JSON   zoneDNSAnalyticReportByTimeResponseJSON `json:"-"`
-	APIResponseSingleDNSAnalytics
+	Errors   []MessagesDNSAnalyticsItem `json:"errors,required"`
+	Messages []MessagesDNSAnalyticsItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success ZoneDNSAnalyticReportByTimeResponseSuccess `json:"success,required"`
+	Result  ReportByTime                               `json:"result"`
+	JSON    zoneDNSAnalyticReportByTimeResponseJSON    `json:"-"`
 }
 
 // zoneDNSAnalyticReportByTimeResponseJSON contains the JSON metadata for the
 // struct [ZoneDNSAnalyticReportByTimeResponse]
 type zoneDNSAnalyticReportByTimeResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -110,6 +137,21 @@ func (r *ZoneDNSAnalyticReportByTimeResponse) UnmarshalJSON(data []byte) (err er
 
 func (r zoneDNSAnalyticReportByTimeResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type ZoneDNSAnalyticReportByTimeResponseSuccess bool
+
+const (
+	ZoneDNSAnalyticReportByTimeResponseSuccessTrue ZoneDNSAnalyticReportByTimeResponseSuccess = true
+)
+
+func (r ZoneDNSAnalyticReportByTimeResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneDNSAnalyticReportByTimeResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type ZoneDNSAnalyticReportGetParams struct {

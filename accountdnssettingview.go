@@ -108,36 +108,6 @@ func (r *AccountDNSSettingViewService) Delete(ctx context.Context, accountID str
 	return
 }
 
-type DNSView struct {
-	// When the view was created.
-	CreatedTime time.Time `json:"created_time" format:"date-time"`
-	// When the view was last modified.
-	ModifiedTime time.Time `json:"modified_time" format:"date-time"`
-	// The name of the view.
-	Name string `json:"name"`
-	// The list of zones linked to this view.
-	Zones []string    `json:"zones"`
-	JSON  dnsViewJSON `json:"-"`
-}
-
-// dnsViewJSON contains the JSON metadata for the struct [DNSView]
-type dnsViewJSON struct {
-	CreatedTime  apijson.Field
-	ModifiedTime apijson.Field
-	Name         apijson.Field
-	Zones        apijson.Field
-	raw          string
-	ExtraFields  map[string]apijson.Field
-}
-
-func (r *DNSView) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r dnsViewJSON) RawJSON() string {
-	return r.raw
-}
-
 type DNSViewParam struct {
 	// The name of the view.
 	Name param.Field[string] `json:"name"`
@@ -150,17 +120,28 @@ func (r DNSViewParam) MarshalJSON() (data []byte, err error) {
 }
 
 type DNSViewResponse struct {
-	// Identifier
-	ID   string              `json:"id,required"`
-	JSON dnsViewResponseJSON `json:"-"`
-	DNSView
+	// Identifier.
+	ID string `json:"id,required"`
+	// When the view was created.
+	CreatedTime time.Time `json:"created_time,required" format:"date-time"`
+	// When the view was last modified.
+	ModifiedTime time.Time `json:"modified_time,required" format:"date-time"`
+	// The name of the view.
+	Name string `json:"name,required"`
+	// The list of zones linked to this view.
+	Zones []string            `json:"zones,required"`
+	JSON  dnsViewResponseJSON `json:"-"`
 }
 
 // dnsViewResponseJSON contains the JSON metadata for the struct [DNSViewResponse]
 type dnsViewResponseJSON struct {
-	ID          apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	ID           apijson.Field
+	CreatedTime  apijson.Field
+	ModifiedTime apijson.Field
+	Name         apijson.Field
+	Zones        apijson.Field
+	raw          string
+	ExtraFields  map[string]apijson.Field
 }
 
 func (r *DNSViewResponse) UnmarshalJSON(data []byte) (err error) {
@@ -172,14 +153,20 @@ func (r dnsViewResponseJSON) RawJSON() string {
 }
 
 type DNSViewResponseSingle struct {
-	Result DNSViewResponse           `json:"result"`
-	JSON   dnsViewResponseSingleJSON `json:"-"`
-	SingleResponseDNSSettings
+	Errors   []DNSSettingsMessages `json:"errors,required"`
+	Messages []DNSSettingsMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success DNSViewResponseSingleSuccess `json:"success,required"`
+	Result  DNSViewResponse              `json:"result"`
+	JSON    dnsViewResponseSingleJSON    `json:"-"`
 }
 
 // dnsViewResponseSingleJSON contains the JSON metadata for the struct
 // [DNSViewResponseSingle]
 type dnsViewResponseSingleJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -193,16 +180,37 @@ func (r dnsViewResponseSingleJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type DNSViewResponseSingleSuccess bool
+
+const (
+	DNSViewResponseSingleSuccessTrue DNSViewResponseSingleSuccess = true
+)
+
+func (r DNSViewResponseSingleSuccess) IsKnown() bool {
+	switch r {
+	case DNSViewResponseSingleSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountDNSSettingViewListResponse struct {
+	Errors   []DNSSettingsMessages `json:"errors,required"`
+	Messages []DNSSettingsMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success    AccountDNSSettingViewListResponseSuccess    `json:"success,required"`
 	Result     []DNSViewResponse                           `json:"result"`
 	ResultInfo AccountDNSSettingViewListResponseResultInfo `json:"result_info"`
 	JSON       accountDNSSettingViewListResponseJSON       `json:"-"`
-	CommonResponseDNSSettings
 }
 
 // accountDNSSettingViewListResponseJSON contains the JSON metadata for the struct
 // [AccountDNSSettingViewListResponse]
 type accountDNSSettingViewListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	ResultInfo  apijson.Field
 	raw         string
@@ -217,14 +225,29 @@ func (r accountDNSSettingViewListResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountDNSSettingViewListResponseSuccess bool
+
+const (
+	AccountDNSSettingViewListResponseSuccessTrue AccountDNSSettingViewListResponseSuccess = true
+)
+
+func (r AccountDNSSettingViewListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountDNSSettingViewListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountDNSSettingViewListResponseResultInfo struct {
-	// Total number of results for the requested service
+	// Total number of results for the requested service.
 	Count float64 `json:"count"`
-	// Current page within paginated list of results
+	// Current page within paginated list of results.
 	Page float64 `json:"page"`
-	// Number of results per page of results
+	// Number of results per page of results.
 	PerPage float64 `json:"per_page"`
-	// Total results available without any search parameters
+	// Total results available without any search parameters.
 	TotalCount float64                                         `json:"total_count"`
 	JSON       accountDNSSettingViewListResponseResultInfoJSON `json:"-"`
 }
@@ -270,7 +293,7 @@ func (r accountDNSSettingViewDeleteResponseJSON) RawJSON() string {
 }
 
 type AccountDNSSettingViewDeleteResponseResult struct {
-	// Identifier
+	// Identifier.
 	ID   string                                        `json:"id"`
 	JSON accountDNSSettingViewDeleteResponseResultJSON `json:"-"`
 }

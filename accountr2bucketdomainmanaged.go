@@ -72,11 +72,11 @@ func (r *AccountR2BucketDomainManagedService) Update(ctx context.Context, accoun
 }
 
 type R2ManagedDomainResponse struct {
-	// Bucket ID
+	// Bucket ID.
 	BucketID string `json:"bucketId,required"`
-	// Domain name of the bucket's r2.dev domain
+	// Domain name of the bucket's r2.dev domain.
 	Domain string `json:"domain,required"`
-	// Whether this bucket is publicly accessible at the r2.dev domain
+	// Whether this bucket is publicly accessible at the r2.dev domain.
 	Enabled bool                        `json:"enabled,required"`
 	JSON    r2ManagedDomainResponseJSON `json:"-"`
 }
@@ -100,15 +100,21 @@ func (r r2ManagedDomainResponseJSON) RawJSON() string {
 }
 
 type AccountR2BucketDomainManagedGetResponse struct {
-	Result R2ManagedDomainResponse                     `json:"result"`
-	JSON   accountR2BucketDomainManagedGetResponseJSON `json:"-"`
-	R2V4Response
+	Errors   []AccountR2BucketDomainManagedGetResponseError `json:"errors,required"`
+	Messages []string                                       `json:"messages,required"`
+	Result   R2ManagedDomainResponse                        `json:"result,required"`
+	// Whether the API call was successful.
+	Success AccountR2BucketDomainManagedGetResponseSuccess `json:"success,required"`
+	JSON    accountR2BucketDomainManagedGetResponseJSON    `json:"-"`
 }
 
 // accountR2BucketDomainManagedGetResponseJSON contains the JSON metadata for the
 // struct [AccountR2BucketDomainManagedGetResponse]
 type accountR2BucketDomainManagedGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -121,16 +127,85 @@ func (r accountR2BucketDomainManagedGetResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+type AccountR2BucketDomainManagedGetResponseError struct {
+	Code             int64                                               `json:"code,required"`
+	Message          string                                              `json:"message,required"`
+	DocumentationURL string                                              `json:"documentation_url"`
+	Source           AccountR2BucketDomainManagedGetResponseErrorsSource `json:"source"`
+	JSON             accountR2BucketDomainManagedGetResponseErrorJSON    `json:"-"`
+}
+
+// accountR2BucketDomainManagedGetResponseErrorJSON contains the JSON metadata for
+// the struct [AccountR2BucketDomainManagedGetResponseError]
+type accountR2BucketDomainManagedGetResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountR2BucketDomainManagedGetResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountR2BucketDomainManagedGetResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountR2BucketDomainManagedGetResponseErrorsSource struct {
+	Pointer string                                                  `json:"pointer"`
+	JSON    accountR2BucketDomainManagedGetResponseErrorsSourceJSON `json:"-"`
+}
+
+// accountR2BucketDomainManagedGetResponseErrorsSourceJSON contains the JSON
+// metadata for the struct [AccountR2BucketDomainManagedGetResponseErrorsSource]
+type accountR2BucketDomainManagedGetResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountR2BucketDomainManagedGetResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountR2BucketDomainManagedGetResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountR2BucketDomainManagedGetResponseSuccess bool
+
+const (
+	AccountR2BucketDomainManagedGetResponseSuccessTrue AccountR2BucketDomainManagedGetResponseSuccess = true
+)
+
+func (r AccountR2BucketDomainManagedGetResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountR2BucketDomainManagedGetResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountR2BucketDomainManagedUpdateResponse struct {
-	Result R2ManagedDomainResponse                        `json:"result"`
-	JSON   accountR2BucketDomainManagedUpdateResponseJSON `json:"-"`
-	R2V4Response
+	Errors   []AccountR2BucketDomainManagedUpdateResponseError `json:"errors,required"`
+	Messages []string                                          `json:"messages,required"`
+	Result   R2ManagedDomainResponse                           `json:"result,required"`
+	// Whether the API call was successful.
+	Success AccountR2BucketDomainManagedUpdateResponseSuccess `json:"success,required"`
+	JSON    accountR2BucketDomainManagedUpdateResponseJSON    `json:"-"`
 }
 
 // accountR2BucketDomainManagedUpdateResponseJSON contains the JSON metadata for
 // the struct [AccountR2BucketDomainManagedUpdateResponse]
 type accountR2BucketDomainManagedUpdateResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -143,12 +218,75 @@ func (r accountR2BucketDomainManagedUpdateResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+type AccountR2BucketDomainManagedUpdateResponseError struct {
+	Code             int64                                                  `json:"code,required"`
+	Message          string                                                 `json:"message,required"`
+	DocumentationURL string                                                 `json:"documentation_url"`
+	Source           AccountR2BucketDomainManagedUpdateResponseErrorsSource `json:"source"`
+	JSON             accountR2BucketDomainManagedUpdateResponseErrorJSON    `json:"-"`
+}
+
+// accountR2BucketDomainManagedUpdateResponseErrorJSON contains the JSON metadata
+// for the struct [AccountR2BucketDomainManagedUpdateResponseError]
+type accountR2BucketDomainManagedUpdateResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountR2BucketDomainManagedUpdateResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountR2BucketDomainManagedUpdateResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountR2BucketDomainManagedUpdateResponseErrorsSource struct {
+	Pointer string                                                     `json:"pointer"`
+	JSON    accountR2BucketDomainManagedUpdateResponseErrorsSourceJSON `json:"-"`
+}
+
+// accountR2BucketDomainManagedUpdateResponseErrorsSourceJSON contains the JSON
+// metadata for the struct [AccountR2BucketDomainManagedUpdateResponseErrorsSource]
+type accountR2BucketDomainManagedUpdateResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountR2BucketDomainManagedUpdateResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountR2BucketDomainManagedUpdateResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountR2BucketDomainManagedUpdateResponseSuccess bool
+
+const (
+	AccountR2BucketDomainManagedUpdateResponseSuccessTrue AccountR2BucketDomainManagedUpdateResponseSuccess = true
+)
+
+func (r AccountR2BucketDomainManagedUpdateResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountR2BucketDomainManagedUpdateResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountR2BucketDomainManagedGetParams struct {
-	// The bucket jurisdiction
+	// Jurisdiction where objects in this bucket are guaranteed to be stored.
 	Jurisdiction param.Field[AccountR2BucketDomainManagedGetParamsCfR2Jurisdiction] `header:"cf-r2-jurisdiction"`
 }
 
-// The bucket jurisdiction
+// Jurisdiction where objects in this bucket are guaranteed to be stored.
 type AccountR2BucketDomainManagedGetParamsCfR2Jurisdiction string
 
 const (
@@ -166,9 +304,9 @@ func (r AccountR2BucketDomainManagedGetParamsCfR2Jurisdiction) IsKnown() bool {
 }
 
 type AccountR2BucketDomainManagedUpdateParams struct {
-	// Whether to enable public bucket access at the r2.dev domain
+	// Whether to enable public bucket access at the r2.dev domain.
 	Enabled param.Field[bool] `json:"enabled,required"`
-	// The bucket jurisdiction
+	// Jurisdiction where objects in this bucket are guaranteed to be stored.
 	Jurisdiction param.Field[AccountR2BucketDomainManagedUpdateParamsCfR2Jurisdiction] `header:"cf-r2-jurisdiction"`
 }
 
@@ -176,7 +314,7 @@ func (r AccountR2BucketDomainManagedUpdateParams) MarshalJSON() (data []byte, er
 	return apijson.MarshalRoot(r)
 }
 
-// The bucket jurisdiction
+// Jurisdiction where objects in this bucket are guaranteed to be stored.
 type AccountR2BucketDomainManagedUpdateParamsCfR2Jurisdiction string
 
 const (

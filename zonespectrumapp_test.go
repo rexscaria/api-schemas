@@ -30,14 +30,9 @@ func TestZoneSpectrumAppNewWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Zones.Spectrum.Apps.New(
 		context.TODO(),
-		map[string]interface{}{},
+		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.ZoneSpectrumAppNewParams{
-			UpdateAppConfig: cfrex.AppConfigParam(cfrex.AppConfigParam{
-				BaseAppConfigParam: cfrex.BaseAppConfigParam{
-					ID:         cfrex.F(cfrex.AppIdentifierParam{}),
-					CreatedOn:  cfrex.F(cfrex.BaseAppConfigCreatedOnParam{}),
-					ModifiedOn: cfrex.F(cfrex.BaseAppConfigModifiedOnParam{}),
-				},
+			UpdateAppConfig: cfrex.AppConfigParam{
 				DNS: cfrex.F(cfrex.DNSParam{
 					Name: cfrex.F("ssh.example.com"),
 					Type: cfrex.F(cfrex.DNSTypeCname),
@@ -48,9 +43,9 @@ func TestZoneSpectrumAppNewWithOptionalParams(t *testing.T) {
 				Tls:              cfrex.F(cfrex.AppConfigTlsFull),
 				TrafficType:      cfrex.F(cfrex.AppConfigTrafficTypeDirect),
 				ArgoSmartRouting: cfrex.F(true),
-				EdgeIPs: cfrex.F[cfrex.AppConfigEdgeIPsUnionParam](cfrex.AppConfigEdgeIPsObjectParam{
-					Connectivity: cfrex.F(cfrex.AppConfigEdgeIPsObjectConnectivityAll),
-					Type:         cfrex.F(cfrex.AppConfigEdgeIPsObjectTypeDynamic),
+				EdgeIPs: cfrex.F[cfrex.AppConfigEdgeIPsUnionParam](cfrex.AppConfigEdgeIPsDynamicParam{
+					Connectivity: cfrex.F(cfrex.AppConfigEdgeIPsDynamicConnectivityAll),
+					Type:         cfrex.F(cfrex.AppConfigEdgeIPsDynamicTypeDynamic),
 				}),
 				OriginDirect: cfrex.F([]string{"tcp://127.0.0.1:8080"}),
 				OriginDNS: cfrex.F(cfrex.AppConfigOriginDNSParam{
@@ -59,7 +54,7 @@ func TestZoneSpectrumAppNewWithOptionalParams(t *testing.T) {
 					Type: cfrex.F(cfrex.AppConfigOriginDNSTypeEmpty),
 				}),
 				OriginPort: cfrex.F[cfrex.AppConfigOriginPortUnionParam](shared.UnionInt(int64(22))),
-			}),
+			},
 		},
 	)
 	if err != nil {
@@ -87,8 +82,8 @@ func TestZoneSpectrumAppGet(t *testing.T) {
 	)
 	_, err := client.Zones.Spectrum.Apps.Get(
 		context.TODO(),
-		map[string]interface{}{},
-		map[string]interface{}{},
+		"023e105f4ecef8ad9ca31a8372d0c353",
+		"023e105f4ecef8ad9ca31a8372d0c353",
 	)
 	if err != nil {
 		var apierr *cfrex.Error
@@ -115,15 +110,10 @@ func TestZoneSpectrumAppUpdateWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Zones.Spectrum.Apps.Update(
 		context.TODO(),
-		map[string]interface{}{},
-		map[string]interface{}{},
+		"023e105f4ecef8ad9ca31a8372d0c353",
+		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.ZoneSpectrumAppUpdateParams{
-			UpdateAppConfig: cfrex.AppConfigParam(cfrex.AppConfigParam{
-				BaseAppConfigParam: cfrex.BaseAppConfigParam{
-					ID:         cfrex.F(cfrex.AppIdentifierParam{}),
-					CreatedOn:  cfrex.F(cfrex.BaseAppConfigCreatedOnParam{}),
-					ModifiedOn: cfrex.F(cfrex.BaseAppConfigModifiedOnParam{}),
-				},
+			UpdateAppConfig: cfrex.AppConfigParam{
 				DNS: cfrex.F(cfrex.DNSParam{
 					Name: cfrex.F("ssh.example.com"),
 					Type: cfrex.F(cfrex.DNSTypeCname),
@@ -134,9 +124,9 @@ func TestZoneSpectrumAppUpdateWithOptionalParams(t *testing.T) {
 				Tls:              cfrex.F(cfrex.AppConfigTlsFull),
 				TrafficType:      cfrex.F(cfrex.AppConfigTrafficTypeDirect),
 				ArgoSmartRouting: cfrex.F(true),
-				EdgeIPs: cfrex.F[cfrex.AppConfigEdgeIPsUnionParam](cfrex.AppConfigEdgeIPsObjectParam{
-					Connectivity: cfrex.F(cfrex.AppConfigEdgeIPsObjectConnectivityAll),
-					Type:         cfrex.F(cfrex.AppConfigEdgeIPsObjectTypeDynamic),
+				EdgeIPs: cfrex.F[cfrex.AppConfigEdgeIPsUnionParam](cfrex.AppConfigEdgeIPsDynamicParam{
+					Connectivity: cfrex.F(cfrex.AppConfigEdgeIPsDynamicConnectivityAll),
+					Type:         cfrex.F(cfrex.AppConfigEdgeIPsDynamicTypeDynamic),
 				}),
 				OriginDirect: cfrex.F([]string{"tcp://127.0.0.1:8080"}),
 				OriginDNS: cfrex.F(cfrex.AppConfigOriginDNSParam{
@@ -145,7 +135,7 @@ func TestZoneSpectrumAppUpdateWithOptionalParams(t *testing.T) {
 					Type: cfrex.F(cfrex.AppConfigOriginDNSTypeEmpty),
 				}),
 				OriginPort: cfrex.F[cfrex.AppConfigOriginPortUnionParam](shared.UnionInt(int64(22))),
-			}),
+			},
 		},
 	)
 	if err != nil {
@@ -173,7 +163,7 @@ func TestZoneSpectrumAppListWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Zones.Spectrum.Apps.List(
 		context.TODO(),
-		map[string]interface{}{},
+		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.ZoneSpectrumAppListParams{
 			Direction: cfrex.F(cfrex.ZoneSpectrumAppListParamsDirectionDesc),
 			Order:     cfrex.F(cfrex.ZoneSpectrumAppListParamsOrderProtocol),
@@ -206,11 +196,8 @@ func TestZoneSpectrumAppDelete(t *testing.T) {
 	)
 	_, err := client.Zones.Spectrum.Apps.Delete(
 		context.TODO(),
-		map[string]interface{}{},
-		map[string]interface{}{},
-		cfrex.ZoneSpectrumAppDeleteParams{
-			Body: map[string]interface{}{},
-		},
+		"023e105f4ecef8ad9ca31a8372d0c353",
+		"023e105f4ecef8ad9ca31a8372d0c353",
 	)
 	if err != nil {
 		var apierr *cfrex.Error

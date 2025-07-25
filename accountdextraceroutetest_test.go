@@ -32,9 +32,9 @@ func TestAccountDexTracerouteTestGetWithOptionalParams(t *testing.T) {
 		"01a7362d577a6c3019a474fd6f485823",
 		"f174e90a-fafe-4643-bbbc-4a0ed4fc8415",
 		cfrex.AccountDexTracerouteTestGetParams{
-			From:     cfrex.F("from"),
+			From:     cfrex.F("1689520412000"),
 			Interval: cfrex.F(cfrex.AccountDexTracerouteTestGetParamsIntervalMinute),
-			To:       cfrex.F("to"),
+			To:       cfrex.F("1689606812000"),
 			Colo:     cfrex.F("colo"),
 			DeviceID: cfrex.F([]string{"string"}),
 		},
@@ -68,9 +68,9 @@ func TestAccountDexTracerouteTestGetNetworkPath(t *testing.T) {
 		"f174e90a-fafe-4643-bbbc-4a0ed4fc8415",
 		cfrex.AccountDexTracerouteTestGetNetworkPathParams{
 			DeviceID: cfrex.F("deviceId"),
-			From:     cfrex.F("from"),
+			From:     cfrex.F("1689520412000"),
 			Interval: cfrex.F(cfrex.AccountDexTracerouteTestGetNetworkPathParamsIntervalMinute),
-			To:       cfrex.F("to"),
+			To:       cfrex.F("1689606812000"),
 		},
 	)
 	if err != nil {

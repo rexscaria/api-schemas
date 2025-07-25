@@ -57,14 +57,20 @@ func (r *AccountBotnetFeedConfigAsnService) ListAsns(ctx context.Context, accoun
 }
 
 type AccountBotnetFeedConfigAsnDeleteAsnResponse struct {
-	Result AccountBotnetFeedConfigAsnDeleteAsnResponseResult `json:"result"`
-	JSON   accountBotnetFeedConfigAsnDeleteAsnResponseJSON   `json:"-"`
-	CommonResponseBotnetAsn
+	Errors   []DosMessages `json:"errors,required"`
+	Messages []DosMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountBotnetFeedConfigAsnDeleteAsnResponseSuccess `json:"success,required"`
+	Result  AccountBotnetFeedConfigAsnDeleteAsnResponseResult  `json:"result"`
+	JSON    accountBotnetFeedConfigAsnDeleteAsnResponseJSON    `json:"-"`
 }
 
 // accountBotnetFeedConfigAsnDeleteAsnResponseJSON contains the JSON metadata for
 // the struct [AccountBotnetFeedConfigAsnDeleteAsnResponse]
 type accountBotnetFeedConfigAsnDeleteAsnResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -76,6 +82,21 @@ func (r *AccountBotnetFeedConfigAsnDeleteAsnResponse) UnmarshalJSON(data []byte)
 
 func (r accountBotnetFeedConfigAsnDeleteAsnResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountBotnetFeedConfigAsnDeleteAsnResponseSuccess bool
+
+const (
+	AccountBotnetFeedConfigAsnDeleteAsnResponseSuccessTrue AccountBotnetFeedConfigAsnDeleteAsnResponseSuccess = true
+)
+
+func (r AccountBotnetFeedConfigAsnDeleteAsnResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountBotnetFeedConfigAsnDeleteAsnResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountBotnetFeedConfigAsnDeleteAsnResponseResult struct {
@@ -100,14 +121,20 @@ func (r accountBotnetFeedConfigAsnDeleteAsnResponseResultJSON) RawJSON() string 
 }
 
 type AccountBotnetFeedConfigAsnListAsnsResponse struct {
-	Result AccountBotnetFeedConfigAsnListAsnsResponseResult `json:"result"`
-	JSON   accountBotnetFeedConfigAsnListAsnsResponseJSON   `json:"-"`
-	CommonResponseBotnetAsn
+	Errors   []DosMessages `json:"errors,required"`
+	Messages []DosMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountBotnetFeedConfigAsnListAsnsResponseSuccess `json:"success,required"`
+	Result  AccountBotnetFeedConfigAsnListAsnsResponseResult  `json:"result"`
+	JSON    accountBotnetFeedConfigAsnListAsnsResponseJSON    `json:"-"`
 }
 
 // accountBotnetFeedConfigAsnListAsnsResponseJSON contains the JSON metadata for
 // the struct [AccountBotnetFeedConfigAsnListAsnsResponse]
 type accountBotnetFeedConfigAsnListAsnsResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -119,6 +146,21 @@ func (r *AccountBotnetFeedConfigAsnListAsnsResponse) UnmarshalJSON(data []byte) 
 
 func (r accountBotnetFeedConfigAsnListAsnsResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountBotnetFeedConfigAsnListAsnsResponseSuccess bool
+
+const (
+	AccountBotnetFeedConfigAsnListAsnsResponseSuccessTrue AccountBotnetFeedConfigAsnListAsnsResponseSuccess = true
+)
+
+func (r AccountBotnetFeedConfigAsnListAsnsResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountBotnetFeedConfigAsnListAsnsResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountBotnetFeedConfigAsnListAsnsResponseResult struct {

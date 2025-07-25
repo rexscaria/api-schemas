@@ -188,9 +188,6 @@ func TestZoneWaitingRoomEventDelete(t *testing.T) {
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		"699d98642c564d2e855e9661899b7252",
 		"25756b2dfe6e378a06b033b670413757",
-		cfrex.ZoneWaitingRoomEventDeleteParams{
-			Body: map[string]interface{}{},
-		},
 	)
 	if err != nil {
 		var apierr *cfrex.Error

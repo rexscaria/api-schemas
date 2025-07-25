@@ -36,6 +36,7 @@ func TestUserLoadBalancerPoolNewWithOptionalParams(t *testing.T) {
 				Host: cfrex.F([]string{"example.com"}),
 			}),
 			Name:             cfrex.F("app-server-1"),
+			Port:             cfrex.F(int64(0)),
 			VirtualNetworkID: cfrex.F("a5624d4e-044a-4ff0-b3e1-e2465353d4b4"),
 			Weight:           cfrex.F(0.600000),
 		}}),
@@ -127,6 +128,7 @@ func TestUserLoadBalancerPoolUpdateWithOptionalParams(t *testing.T) {
 					Host: cfrex.F([]string{"example.com"}),
 				}),
 				Name:             cfrex.F("app-server-1"),
+				Port:             cfrex.F(int64(0)),
 				VirtualNetworkID: cfrex.F("a5624d4e-044a-4ff0-b3e1-e2465353d4b4"),
 				Weight:           cfrex.F(0.600000),
 			}}),
@@ -209,13 +211,7 @@ func TestUserLoadBalancerPoolDelete(t *testing.T) {
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.User.LoadBalancers.Pools.Delete(
-		context.TODO(),
-		"17b5962d775c646f3f9725cbc7a53df4",
-		cfrex.UserLoadBalancerPoolDeleteParams{
-			Body: map[string]interface{}{},
-		},
-	)
+	_, err := client.User.LoadBalancers.Pools.Delete(context.TODO(), "17b5962d775c646f3f9725cbc7a53df4")
 	if err != nil {
 		var apierr *cfrex.Error
 		if errors.As(err, &apierr) {
@@ -326,6 +322,7 @@ func TestUserLoadBalancerPoolPatchWithOptionalParams(t *testing.T) {
 					Host: cfrex.F([]string{"example.com"}),
 				}),
 				Name:             cfrex.F("app-server-1"),
+				Port:             cfrex.F(int64(0)),
 				VirtualNetworkID: cfrex.F("a5624d4e-044a-4ff0-b3e1-e2465353d4b4"),
 				Weight:           cfrex.F(0.600000),
 			}}),

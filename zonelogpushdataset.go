@@ -3,12 +3,6 @@
 package cfrex
 
 import (
-	"context"
-	"errors"
-	"fmt"
-	"net/http"
-
-	"github.com/rexscaria/api-schemas/internal/requestconfig"
 	"github.com/rexscaria/api-schemas/option"
 )
 
@@ -28,38 +22,5 @@ type ZoneLogpushDatasetService struct {
 func NewZoneLogpushDatasetService(opts ...option.RequestOption) (r *ZoneLogpushDatasetService) {
 	r = &ZoneLogpushDatasetService{}
 	r.Options = opts
-	return
-}
-
-// Lists all fields available for a dataset. The response result is an object with
-// key-value pairs, where keys are field names, and values are descriptions.
-func (r *ZoneLogpushDatasetService) ListFields(ctx context.Context, zoneID string, datasetID string, opts ...option.RequestOption) (res *FieldResponseCollection, err error) {
-	opts = append(r.Options[:], opts...)
-	if zoneID == "" {
-		err = errors.New("missing required zone_id parameter")
-		return
-	}
-	if datasetID == "" {
-		err = errors.New("missing required dataset_id parameter")
-		return
-	}
-	path := fmt.Sprintf("zones/%s/logpush/datasets/%s/fields", zoneID, datasetID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
-}
-
-// Lists Logpush jobs for a zone for a dataset.
-func (r *ZoneLogpushDatasetService) ListJobs(ctx context.Context, zoneID string, datasetID string, opts ...option.RequestOption) (res *JobResponseCollection, err error) {
-	opts = append(r.Options[:], opts...)
-	if zoneID == "" {
-		err = errors.New("missing required zone_id parameter")
-		return
-	}
-	if datasetID == "" {
-		err = errors.New("missing required dataset_id parameter")
-		return
-	}
-	path := fmt.Sprintf("zones/%s/logpush/datasets/%s/jobs", zoneID, datasetID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }

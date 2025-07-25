@@ -33,21 +33,23 @@ func TestAccountHyperdriveConfigNewWithOptionalParams(t *testing.T) {
 		cfrex.AccountHyperdriveConfigNewParams{
 			HyperdriveHyperdriveConfig: cfrex.HyperdriveHyperdriveConfigParam{
 				Name: cfrex.F("example-hyperdrive"),
-				Origin: cfrex.F[cfrex.HyperdriveHyperdriveConfigOriginUnionParam](cfrex.HyperdriveHyperdriveConfigOriginPublicDatabaseParam(cfrex.HyperdriveHyperdriveConfigOriginPublicDatabaseParam{
-					HyperdriveHyperdriveDatabaseFullParam: cfrex.HyperdriveHyperdriveDatabaseFullParam{
-						Database: cfrex.F("postgres"),
-						Password: cfrex.F("password"),
-						Scheme:   cfrex.F(cfrex.HyperdriveHyperdriveDatabaseFullSchemePostgres),
-						User:     cfrex.F("postgres"),
-					},
-					HyperdriveInternetOriginParam: cfrex.HyperdriveInternetOriginParam{
-						Host: cfrex.F("database.example.com"),
-						Port: cfrex.F(int64(0)),
-					},
-				})),
+				Origin: cfrex.F[cfrex.HyperdriveHyperdriveConfigOriginUnionParam](cfrex.HyperdriveHyperdriveConfigOriginPublicDatabaseParam{
+					Database: cfrex.F("postgres"),
+					Host:     cfrex.F("database.example.com"),
+					Password: cfrex.F("password"),
+					Port:     cfrex.F(int64(5432)),
+					Scheme:   cfrex.F(cfrex.HyperdriveHyperdriveConfigOriginPublicDatabaseSchemePostgres),
+					User:     cfrex.F("postgres"),
+				}),
 				Caching: cfrex.F[cfrex.HyperdriveHyperdriveCachingUnionParam](cfrex.HyperdriveHyperdriveCachingCommonParam{
 					Disabled: cfrex.F(true),
 				}),
+				Mtls: cfrex.F(cfrex.HyperdriveHyperdriveConfigMtlsParam{
+					CaCertificateID:   cfrex.F("00000000-0000-0000-0000-0000000000"),
+					MtlsCertificateID: cfrex.F("00000000-0000-0000-0000-0000000000"),
+					Sslmode:           cfrex.F("verify-full"),
+				}),
+				OriginConnectionLimit: cfrex.F(int64(60)),
 			},
 		},
 	)
@@ -109,21 +111,23 @@ func TestAccountHyperdriveConfigUpdateWithOptionalParams(t *testing.T) {
 		cfrex.AccountHyperdriveConfigUpdateParams{
 			HyperdriveHyperdriveConfig: cfrex.HyperdriveHyperdriveConfigParam{
 				Name: cfrex.F("example-hyperdrive"),
-				Origin: cfrex.F[cfrex.HyperdriveHyperdriveConfigOriginUnionParam](cfrex.HyperdriveHyperdriveConfigOriginPublicDatabaseParam(cfrex.HyperdriveHyperdriveConfigOriginPublicDatabaseParam{
-					HyperdriveHyperdriveDatabaseFullParam: cfrex.HyperdriveHyperdriveDatabaseFullParam{
-						Database: cfrex.F("postgres"),
-						Password: cfrex.F("password"),
-						Scheme:   cfrex.F(cfrex.HyperdriveHyperdriveDatabaseFullSchemePostgres),
-						User:     cfrex.F("postgres"),
-					},
-					HyperdriveInternetOriginParam: cfrex.HyperdriveInternetOriginParam{
-						Host: cfrex.F("database.example.com"),
-						Port: cfrex.F(int64(0)),
-					},
-				})),
+				Origin: cfrex.F[cfrex.HyperdriveHyperdriveConfigOriginUnionParam](cfrex.HyperdriveHyperdriveConfigOriginPublicDatabaseParam{
+					Database: cfrex.F("postgres"),
+					Host:     cfrex.F("database.example.com"),
+					Password: cfrex.F("password"),
+					Port:     cfrex.F(int64(5432)),
+					Scheme:   cfrex.F(cfrex.HyperdriveHyperdriveConfigOriginPublicDatabaseSchemePostgres),
+					User:     cfrex.F("postgres"),
+				}),
 				Caching: cfrex.F[cfrex.HyperdriveHyperdriveCachingUnionParam](cfrex.HyperdriveHyperdriveCachingCommonParam{
 					Disabled: cfrex.F(true),
 				}),
+				Mtls: cfrex.F(cfrex.HyperdriveHyperdriveConfigMtlsParam{
+					CaCertificateID:   cfrex.F("00000000-0000-0000-0000-0000000000"),
+					MtlsCertificateID: cfrex.F("00000000-0000-0000-0000-0000000000"),
+					Sslmode:           cfrex.F("verify-full"),
+				}),
+				OriginConnectionLimit: cfrex.F(int64(60)),
 			},
 		},
 	)
@@ -210,6 +214,11 @@ func TestAccountHyperdriveConfigPatchWithOptionalParams(t *testing.T) {
 			Caching: cfrex.F[cfrex.HyperdriveHyperdriveCachingUnionParam](cfrex.HyperdriveHyperdriveCachingCommonParam{
 				Disabled: cfrex.F(true),
 			}),
+			Mtls: cfrex.F(cfrex.AccountHyperdriveConfigPatchParamsMtls{
+				CaCertificateID:   cfrex.F("00000000-0000-0000-0000-0000000000"),
+				MtlsCertificateID: cfrex.F("00000000-0000-0000-0000-0000000000"),
+				Sslmode:           cfrex.F("verify-full"),
+			}),
 			Name: cfrex.F("example-hyperdrive"),
 			Origin: cfrex.F[cfrex.AccountHyperdriveConfigPatchParamsOriginUnion](cfrex.HyperdriveHyperdriveDatabaseParam{
 				Database: cfrex.F("postgres"),
@@ -217,6 +226,7 @@ func TestAccountHyperdriveConfigPatchWithOptionalParams(t *testing.T) {
 				Scheme:   cfrex.F(cfrex.HyperdriveHyperdriveDatabaseSchemePostgres),
 				User:     cfrex.F("postgres"),
 			}),
+			OriginConnectionLimit: cfrex.F(int64(60)),
 		},
 	)
 	if err != nil {

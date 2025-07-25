@@ -150,9 +150,6 @@ func TestAccountSecondaryDNSPeerDelete(t *testing.T) {
 		context.TODO(),
 		"01a7362d577a6c3019a474fd6f485823",
 		"23ff594956f20c2a721606e94745a8aa",
-		cfrex.AccountSecondaryDNSPeerDeleteParams{
-			Body: map[string]interface{}{},
-		},
 	)
 	if err != nil {
 		var apierr *cfrex.Error

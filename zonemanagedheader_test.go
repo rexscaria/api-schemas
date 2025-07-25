@@ -32,11 +32,11 @@ func TestZoneManagedHeaderUpdate(t *testing.T) {
 		"9f1839b6152d298aca64c4e906b6d074",
 		cfrex.ZoneManagedHeaderUpdateParams{
 			ManagedRequestHeaders: cfrex.F([]cfrex.ZoneManagedHeaderUpdateParamsManagedRequestHeader{{
-				ID:      cfrex.F[any](map[string]interface{}{}),
+				ID:      cfrex.F("add_bot_protection_headers"),
 				Enabled: cfrex.F(true),
 			}}),
 			ManagedResponseHeaders: cfrex.F([]cfrex.ZoneManagedHeaderUpdateParamsManagedResponseHeader{{
-				ID:      cfrex.F[any](map[string]interface{}{}),
+				ID:      cfrex.F("add_security_headers"),
 				Enabled: cfrex.F(true),
 			}}),
 		},

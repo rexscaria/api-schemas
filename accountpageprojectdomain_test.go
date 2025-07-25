@@ -152,9 +152,6 @@ func TestAccountPageProjectDomainDelete(t *testing.T) {
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		"this-is-my-project-01",
 		"this-is-my-domain-01.com",
-		cfrex.AccountPageProjectDomainDeleteParams{
-			Body: map[string]interface{}{},
-		},
 	)
 	if err != nil {
 		var apierr *cfrex.Error

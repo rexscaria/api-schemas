@@ -83,7 +83,6 @@ func (r ZoneSettingsParam) MarshalJSON() (data []byte, err error) {
 type ZoneSettingsResponse struct {
 	Result ZoneSettingsResponseResult `json:"result,required"`
 	JSON   zoneSettingsResponseJSON   `json:"-"`
-	APIResponseSingle
 }
 
 // zoneSettingsResponseJSON contains the JSON metadata for the struct

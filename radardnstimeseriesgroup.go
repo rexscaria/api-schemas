@@ -141,7 +141,8 @@ func (r radarDNSTimeseriesGroupGetCacheHitResponseJSON) RawJSON() string {
 }
 
 type RadarDNSTimeseriesGroupGetCacheHitResponseResult struct {
-	Meta   interface{}                                            `json:"meta,required"`
+	// Metadata for the results.
+	Meta   RadarDNSTimeseriesGroupGetCacheHitResponseResultMeta   `json:"meta,required"`
 	Serie0 RadarDNSTimeseriesGroupGetCacheHitResponseResultSerie0 `json:"serie_0,required"`
 	JSON   radarDNSTimeseriesGroupGetCacheHitResponseResultJSON   `json:"-"`
 }
@@ -160,6 +161,200 @@ func (r *RadarDNSTimeseriesGroupGetCacheHitResponseResult) UnmarshalJSON(data []
 }
 
 func (r radarDNSTimeseriesGroupGetCacheHitResponseResultJSON) RawJSON() string {
+	return r.raw
+}
+
+// Metadata for the results.
+type RadarDNSTimeseriesGroupGetCacheHitResponseResultMeta struct {
+	// Aggregation interval of the results (e.g., in 15 minutes or 1 hour intervals).
+	// Refer to
+	// [Aggregation intervals](https://developers.cloudflare.com/radar/concepts/aggregation-intervals/).
+	AggInterval    RadarDNSTimeseriesGroupGetCacheHitResponseResultMetaAggInterval    `json:"aggInterval,required"`
+	ConfidenceInfo RadarDNSTimeseriesGroupGetCacheHitResponseResultMetaConfidenceInfo `json:"confidenceInfo,required"`
+	DateRange      []RadarDNSTimeseriesGroupGetCacheHitResponseResultMetaDateRange    `json:"dateRange,required"`
+	// Timestamp of the last dataset update.
+	LastUpdated time.Time `json:"lastUpdated,required" format:"date-time"`
+	// Normalization method applied to the results. Refer to
+	// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
+	Normalization RadarDNSTimeseriesGroupGetCacheHitResponseResultMetaNormalization `json:"normalization,required"`
+	// Measurement units for the results.
+	Units []RadarDNSTimeseriesGroupGetCacheHitResponseResultMetaUnit `json:"units,required"`
+	JSON  radarDNSTimeseriesGroupGetCacheHitResponseResultMetaJSON   `json:"-"`
+}
+
+// radarDNSTimeseriesGroupGetCacheHitResponseResultMetaJSON contains the JSON
+// metadata for the struct [RadarDNSTimeseriesGroupGetCacheHitResponseResultMeta]
+type radarDNSTimeseriesGroupGetCacheHitResponseResultMetaJSON struct {
+	AggInterval    apijson.Field
+	ConfidenceInfo apijson.Field
+	DateRange      apijson.Field
+	LastUpdated    apijson.Field
+	Normalization  apijson.Field
+	Units          apijson.Field
+	raw            string
+	ExtraFields    map[string]apijson.Field
+}
+
+func (r *RadarDNSTimeseriesGroupGetCacheHitResponseResultMeta) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarDNSTimeseriesGroupGetCacheHitResponseResultMetaJSON) RawJSON() string {
+	return r.raw
+}
+
+// Aggregation interval of the results (e.g., in 15 minutes or 1 hour intervals).
+// Refer to
+// [Aggregation intervals](https://developers.cloudflare.com/radar/concepts/aggregation-intervals/).
+type RadarDNSTimeseriesGroupGetCacheHitResponseResultMetaAggInterval string
+
+const (
+	RadarDNSTimeseriesGroupGetCacheHitResponseResultMetaAggIntervalFifteenMinutes RadarDNSTimeseriesGroupGetCacheHitResponseResultMetaAggInterval = "FIFTEEN_MINUTES"
+	RadarDNSTimeseriesGroupGetCacheHitResponseResultMetaAggIntervalOneHour        RadarDNSTimeseriesGroupGetCacheHitResponseResultMetaAggInterval = "ONE_HOUR"
+	RadarDNSTimeseriesGroupGetCacheHitResponseResultMetaAggIntervalOneDay         RadarDNSTimeseriesGroupGetCacheHitResponseResultMetaAggInterval = "ONE_DAY"
+	RadarDNSTimeseriesGroupGetCacheHitResponseResultMetaAggIntervalOneWeek        RadarDNSTimeseriesGroupGetCacheHitResponseResultMetaAggInterval = "ONE_WEEK"
+	RadarDNSTimeseriesGroupGetCacheHitResponseResultMetaAggIntervalOneMonth       RadarDNSTimeseriesGroupGetCacheHitResponseResultMetaAggInterval = "ONE_MONTH"
+)
+
+func (r RadarDNSTimeseriesGroupGetCacheHitResponseResultMetaAggInterval) IsKnown() bool {
+	switch r {
+	case RadarDNSTimeseriesGroupGetCacheHitResponseResultMetaAggIntervalFifteenMinutes, RadarDNSTimeseriesGroupGetCacheHitResponseResultMetaAggIntervalOneHour, RadarDNSTimeseriesGroupGetCacheHitResponseResultMetaAggIntervalOneDay, RadarDNSTimeseriesGroupGetCacheHitResponseResultMetaAggIntervalOneWeek, RadarDNSTimeseriesGroupGetCacheHitResponseResultMetaAggIntervalOneMonth:
+		return true
+	}
+	return false
+}
+
+type RadarDNSTimeseriesGroupGetCacheHitResponseResultMetaConfidenceInfo struct {
+	Annotations []RadarDNSTimeseriesGroupGetCacheHitResponseResultMetaConfidenceInfoAnnotation `json:"annotations,required"`
+	// Provides an indication of how much confidence Cloudflare has in the data.
+	Level int64                                                                  `json:"level,required"`
+	JSON  radarDNSTimeseriesGroupGetCacheHitResponseResultMetaConfidenceInfoJSON `json:"-"`
+}
+
+// radarDNSTimeseriesGroupGetCacheHitResponseResultMetaConfidenceInfoJSON contains
+// the JSON metadata for the struct
+// [RadarDNSTimeseriesGroupGetCacheHitResponseResultMetaConfidenceInfo]
+type radarDNSTimeseriesGroupGetCacheHitResponseResultMetaConfidenceInfoJSON struct {
+	Annotations apijson.Field
+	Level       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *RadarDNSTimeseriesGroupGetCacheHitResponseResultMetaConfidenceInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarDNSTimeseriesGroupGetCacheHitResponseResultMetaConfidenceInfoJSON) RawJSON() string {
+	return r.raw
+}
+
+// Annotation associated with the result (e.g. outage or other type of event).
+type RadarDNSTimeseriesGroupGetCacheHitResponseResultMetaConfidenceInfoAnnotation struct {
+	DataSource  string    `json:"dataSource,required"`
+	Description string    `json:"description,required"`
+	EndDate     time.Time `json:"endDate,required" format:"date-time"`
+	EventType   string    `json:"eventType,required"`
+	// Whether event is a single point in time or a time range.
+	IsInstantaneous bool                                                                             `json:"isInstantaneous,required"`
+	LinkedURL       string                                                                           `json:"linkedUrl,required" format:"uri"`
+	StartDate       time.Time                                                                        `json:"startDate,required" format:"date-time"`
+	JSON            radarDNSTimeseriesGroupGetCacheHitResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
+}
+
+// radarDNSTimeseriesGroupGetCacheHitResponseResultMetaConfidenceInfoAnnotationJSON
+// contains the JSON metadata for the struct
+// [RadarDNSTimeseriesGroupGetCacheHitResponseResultMetaConfidenceInfoAnnotation]
+type radarDNSTimeseriesGroupGetCacheHitResponseResultMetaConfidenceInfoAnnotationJSON struct {
+	DataSource      apijson.Field
+	Description     apijson.Field
+	EndDate         apijson.Field
+	EventType       apijson.Field
+	IsInstantaneous apijson.Field
+	LinkedURL       apijson.Field
+	StartDate       apijson.Field
+	raw             string
+	ExtraFields     map[string]apijson.Field
+}
+
+func (r *RadarDNSTimeseriesGroupGetCacheHitResponseResultMetaConfidenceInfoAnnotation) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarDNSTimeseriesGroupGetCacheHitResponseResultMetaConfidenceInfoAnnotationJSON) RawJSON() string {
+	return r.raw
+}
+
+type RadarDNSTimeseriesGroupGetCacheHitResponseResultMetaDateRange struct {
+	// Adjusted end of date range.
+	EndTime time.Time `json:"endTime,required" format:"date-time"`
+	// Adjusted start of date range.
+	StartTime time.Time                                                         `json:"startTime,required" format:"date-time"`
+	JSON      radarDNSTimeseriesGroupGetCacheHitResponseResultMetaDateRangeJSON `json:"-"`
+}
+
+// radarDNSTimeseriesGroupGetCacheHitResponseResultMetaDateRangeJSON contains the
+// JSON metadata for the struct
+// [RadarDNSTimeseriesGroupGetCacheHitResponseResultMetaDateRange]
+type radarDNSTimeseriesGroupGetCacheHitResponseResultMetaDateRangeJSON struct {
+	EndTime     apijson.Field
+	StartTime   apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *RadarDNSTimeseriesGroupGetCacheHitResponseResultMetaDateRange) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarDNSTimeseriesGroupGetCacheHitResponseResultMetaDateRangeJSON) RawJSON() string {
+	return r.raw
+}
+
+// Normalization method applied to the results. Refer to
+// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
+type RadarDNSTimeseriesGroupGetCacheHitResponseResultMetaNormalization string
+
+const (
+	RadarDNSTimeseriesGroupGetCacheHitResponseResultMetaNormalizationPercentage           RadarDNSTimeseriesGroupGetCacheHitResponseResultMetaNormalization = "PERCENTAGE"
+	RadarDNSTimeseriesGroupGetCacheHitResponseResultMetaNormalizationMin0Max              RadarDNSTimeseriesGroupGetCacheHitResponseResultMetaNormalization = "MIN0_MAX"
+	RadarDNSTimeseriesGroupGetCacheHitResponseResultMetaNormalizationMinMax               RadarDNSTimeseriesGroupGetCacheHitResponseResultMetaNormalization = "MIN_MAX"
+	RadarDNSTimeseriesGroupGetCacheHitResponseResultMetaNormalizationRawValues            RadarDNSTimeseriesGroupGetCacheHitResponseResultMetaNormalization = "RAW_VALUES"
+	RadarDNSTimeseriesGroupGetCacheHitResponseResultMetaNormalizationPercentageChange     RadarDNSTimeseriesGroupGetCacheHitResponseResultMetaNormalization = "PERCENTAGE_CHANGE"
+	RadarDNSTimeseriesGroupGetCacheHitResponseResultMetaNormalizationRollingAverage       RadarDNSTimeseriesGroupGetCacheHitResponseResultMetaNormalization = "ROLLING_AVERAGE"
+	RadarDNSTimeseriesGroupGetCacheHitResponseResultMetaNormalizationOverlappedPercentage RadarDNSTimeseriesGroupGetCacheHitResponseResultMetaNormalization = "OVERLAPPED_PERCENTAGE"
+	RadarDNSTimeseriesGroupGetCacheHitResponseResultMetaNormalizationRatio                RadarDNSTimeseriesGroupGetCacheHitResponseResultMetaNormalization = "RATIO"
+)
+
+func (r RadarDNSTimeseriesGroupGetCacheHitResponseResultMetaNormalization) IsKnown() bool {
+	switch r {
+	case RadarDNSTimeseriesGroupGetCacheHitResponseResultMetaNormalizationPercentage, RadarDNSTimeseriesGroupGetCacheHitResponseResultMetaNormalizationMin0Max, RadarDNSTimeseriesGroupGetCacheHitResponseResultMetaNormalizationMinMax, RadarDNSTimeseriesGroupGetCacheHitResponseResultMetaNormalizationRawValues, RadarDNSTimeseriesGroupGetCacheHitResponseResultMetaNormalizationPercentageChange, RadarDNSTimeseriesGroupGetCacheHitResponseResultMetaNormalizationRollingAverage, RadarDNSTimeseriesGroupGetCacheHitResponseResultMetaNormalizationOverlappedPercentage, RadarDNSTimeseriesGroupGetCacheHitResponseResultMetaNormalizationRatio:
+		return true
+	}
+	return false
+}
+
+type RadarDNSTimeseriesGroupGetCacheHitResponseResultMetaUnit struct {
+	Name  string                                                       `json:"name,required"`
+	Value string                                                       `json:"value,required"`
+	JSON  radarDNSTimeseriesGroupGetCacheHitResponseResultMetaUnitJSON `json:"-"`
+}
+
+// radarDNSTimeseriesGroupGetCacheHitResponseResultMetaUnitJSON contains the JSON
+// metadata for the struct
+// [RadarDNSTimeseriesGroupGetCacheHitResponseResultMetaUnit]
+type radarDNSTimeseriesGroupGetCacheHitResponseResultMetaUnitJSON struct {
+	Name        apijson.Field
+	Value       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *RadarDNSTimeseriesGroupGetCacheHitResponseResultMetaUnit) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarDNSTimeseriesGroupGetCacheHitResponseResultMetaUnitJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -210,7 +405,8 @@ func (r radarDNSTimeseriesGroupGetDnssecResponseJSON) RawJSON() string {
 }
 
 type RadarDNSTimeseriesGroupGetDnssecResponseResult struct {
-	Meta   interface{}                                          `json:"meta,required"`
+	// Metadata for the results.
+	Meta   RadarDNSTimeseriesGroupGetDnssecResponseResultMeta   `json:"meta,required"`
 	Serie0 RadarDNSTimeseriesGroupGetDnssecResponseResultSerie0 `json:"serie_0,required"`
 	JSON   radarDNSTimeseriesGroupGetDnssecResponseResultJSON   `json:"-"`
 }
@@ -229,6 +425,199 @@ func (r *RadarDNSTimeseriesGroupGetDnssecResponseResult) UnmarshalJSON(data []by
 }
 
 func (r radarDNSTimeseriesGroupGetDnssecResponseResultJSON) RawJSON() string {
+	return r.raw
+}
+
+// Metadata for the results.
+type RadarDNSTimeseriesGroupGetDnssecResponseResultMeta struct {
+	// Aggregation interval of the results (e.g., in 15 minutes or 1 hour intervals).
+	// Refer to
+	// [Aggregation intervals](https://developers.cloudflare.com/radar/concepts/aggregation-intervals/).
+	AggInterval    RadarDNSTimeseriesGroupGetDnssecResponseResultMetaAggInterval    `json:"aggInterval,required"`
+	ConfidenceInfo RadarDNSTimeseriesGroupGetDnssecResponseResultMetaConfidenceInfo `json:"confidenceInfo,required"`
+	DateRange      []RadarDNSTimeseriesGroupGetDnssecResponseResultMetaDateRange    `json:"dateRange,required"`
+	// Timestamp of the last dataset update.
+	LastUpdated time.Time `json:"lastUpdated,required" format:"date-time"`
+	// Normalization method applied to the results. Refer to
+	// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
+	Normalization RadarDNSTimeseriesGroupGetDnssecResponseResultMetaNormalization `json:"normalization,required"`
+	// Measurement units for the results.
+	Units []RadarDNSTimeseriesGroupGetDnssecResponseResultMetaUnit `json:"units,required"`
+	JSON  radarDNSTimeseriesGroupGetDnssecResponseResultMetaJSON   `json:"-"`
+}
+
+// radarDNSTimeseriesGroupGetDnssecResponseResultMetaJSON contains the JSON
+// metadata for the struct [RadarDNSTimeseriesGroupGetDnssecResponseResultMeta]
+type radarDNSTimeseriesGroupGetDnssecResponseResultMetaJSON struct {
+	AggInterval    apijson.Field
+	ConfidenceInfo apijson.Field
+	DateRange      apijson.Field
+	LastUpdated    apijson.Field
+	Normalization  apijson.Field
+	Units          apijson.Field
+	raw            string
+	ExtraFields    map[string]apijson.Field
+}
+
+func (r *RadarDNSTimeseriesGroupGetDnssecResponseResultMeta) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarDNSTimeseriesGroupGetDnssecResponseResultMetaJSON) RawJSON() string {
+	return r.raw
+}
+
+// Aggregation interval of the results (e.g., in 15 minutes or 1 hour intervals).
+// Refer to
+// [Aggregation intervals](https://developers.cloudflare.com/radar/concepts/aggregation-intervals/).
+type RadarDNSTimeseriesGroupGetDnssecResponseResultMetaAggInterval string
+
+const (
+	RadarDNSTimeseriesGroupGetDnssecResponseResultMetaAggIntervalFifteenMinutes RadarDNSTimeseriesGroupGetDnssecResponseResultMetaAggInterval = "FIFTEEN_MINUTES"
+	RadarDNSTimeseriesGroupGetDnssecResponseResultMetaAggIntervalOneHour        RadarDNSTimeseriesGroupGetDnssecResponseResultMetaAggInterval = "ONE_HOUR"
+	RadarDNSTimeseriesGroupGetDnssecResponseResultMetaAggIntervalOneDay         RadarDNSTimeseriesGroupGetDnssecResponseResultMetaAggInterval = "ONE_DAY"
+	RadarDNSTimeseriesGroupGetDnssecResponseResultMetaAggIntervalOneWeek        RadarDNSTimeseriesGroupGetDnssecResponseResultMetaAggInterval = "ONE_WEEK"
+	RadarDNSTimeseriesGroupGetDnssecResponseResultMetaAggIntervalOneMonth       RadarDNSTimeseriesGroupGetDnssecResponseResultMetaAggInterval = "ONE_MONTH"
+)
+
+func (r RadarDNSTimeseriesGroupGetDnssecResponseResultMetaAggInterval) IsKnown() bool {
+	switch r {
+	case RadarDNSTimeseriesGroupGetDnssecResponseResultMetaAggIntervalFifteenMinutes, RadarDNSTimeseriesGroupGetDnssecResponseResultMetaAggIntervalOneHour, RadarDNSTimeseriesGroupGetDnssecResponseResultMetaAggIntervalOneDay, RadarDNSTimeseriesGroupGetDnssecResponseResultMetaAggIntervalOneWeek, RadarDNSTimeseriesGroupGetDnssecResponseResultMetaAggIntervalOneMonth:
+		return true
+	}
+	return false
+}
+
+type RadarDNSTimeseriesGroupGetDnssecResponseResultMetaConfidenceInfo struct {
+	Annotations []RadarDNSTimeseriesGroupGetDnssecResponseResultMetaConfidenceInfoAnnotation `json:"annotations,required"`
+	// Provides an indication of how much confidence Cloudflare has in the data.
+	Level int64                                                                `json:"level,required"`
+	JSON  radarDNSTimeseriesGroupGetDnssecResponseResultMetaConfidenceInfoJSON `json:"-"`
+}
+
+// radarDNSTimeseriesGroupGetDnssecResponseResultMetaConfidenceInfoJSON contains
+// the JSON metadata for the struct
+// [RadarDNSTimeseriesGroupGetDnssecResponseResultMetaConfidenceInfo]
+type radarDNSTimeseriesGroupGetDnssecResponseResultMetaConfidenceInfoJSON struct {
+	Annotations apijson.Field
+	Level       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *RadarDNSTimeseriesGroupGetDnssecResponseResultMetaConfidenceInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarDNSTimeseriesGroupGetDnssecResponseResultMetaConfidenceInfoJSON) RawJSON() string {
+	return r.raw
+}
+
+// Annotation associated with the result (e.g. outage or other type of event).
+type RadarDNSTimeseriesGroupGetDnssecResponseResultMetaConfidenceInfoAnnotation struct {
+	DataSource  string    `json:"dataSource,required"`
+	Description string    `json:"description,required"`
+	EndDate     time.Time `json:"endDate,required" format:"date-time"`
+	EventType   string    `json:"eventType,required"`
+	// Whether event is a single point in time or a time range.
+	IsInstantaneous bool                                                                           `json:"isInstantaneous,required"`
+	LinkedURL       string                                                                         `json:"linkedUrl,required" format:"uri"`
+	StartDate       time.Time                                                                      `json:"startDate,required" format:"date-time"`
+	JSON            radarDNSTimeseriesGroupGetDnssecResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
+}
+
+// radarDNSTimeseriesGroupGetDnssecResponseResultMetaConfidenceInfoAnnotationJSON
+// contains the JSON metadata for the struct
+// [RadarDNSTimeseriesGroupGetDnssecResponseResultMetaConfidenceInfoAnnotation]
+type radarDNSTimeseriesGroupGetDnssecResponseResultMetaConfidenceInfoAnnotationJSON struct {
+	DataSource      apijson.Field
+	Description     apijson.Field
+	EndDate         apijson.Field
+	EventType       apijson.Field
+	IsInstantaneous apijson.Field
+	LinkedURL       apijson.Field
+	StartDate       apijson.Field
+	raw             string
+	ExtraFields     map[string]apijson.Field
+}
+
+func (r *RadarDNSTimeseriesGroupGetDnssecResponseResultMetaConfidenceInfoAnnotation) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarDNSTimeseriesGroupGetDnssecResponseResultMetaConfidenceInfoAnnotationJSON) RawJSON() string {
+	return r.raw
+}
+
+type RadarDNSTimeseriesGroupGetDnssecResponseResultMetaDateRange struct {
+	// Adjusted end of date range.
+	EndTime time.Time `json:"endTime,required" format:"date-time"`
+	// Adjusted start of date range.
+	StartTime time.Time                                                       `json:"startTime,required" format:"date-time"`
+	JSON      radarDNSTimeseriesGroupGetDnssecResponseResultMetaDateRangeJSON `json:"-"`
+}
+
+// radarDNSTimeseriesGroupGetDnssecResponseResultMetaDateRangeJSON contains the
+// JSON metadata for the struct
+// [RadarDNSTimeseriesGroupGetDnssecResponseResultMetaDateRange]
+type radarDNSTimeseriesGroupGetDnssecResponseResultMetaDateRangeJSON struct {
+	EndTime     apijson.Field
+	StartTime   apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *RadarDNSTimeseriesGroupGetDnssecResponseResultMetaDateRange) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarDNSTimeseriesGroupGetDnssecResponseResultMetaDateRangeJSON) RawJSON() string {
+	return r.raw
+}
+
+// Normalization method applied to the results. Refer to
+// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
+type RadarDNSTimeseriesGroupGetDnssecResponseResultMetaNormalization string
+
+const (
+	RadarDNSTimeseriesGroupGetDnssecResponseResultMetaNormalizationPercentage           RadarDNSTimeseriesGroupGetDnssecResponseResultMetaNormalization = "PERCENTAGE"
+	RadarDNSTimeseriesGroupGetDnssecResponseResultMetaNormalizationMin0Max              RadarDNSTimeseriesGroupGetDnssecResponseResultMetaNormalization = "MIN0_MAX"
+	RadarDNSTimeseriesGroupGetDnssecResponseResultMetaNormalizationMinMax               RadarDNSTimeseriesGroupGetDnssecResponseResultMetaNormalization = "MIN_MAX"
+	RadarDNSTimeseriesGroupGetDnssecResponseResultMetaNormalizationRawValues            RadarDNSTimeseriesGroupGetDnssecResponseResultMetaNormalization = "RAW_VALUES"
+	RadarDNSTimeseriesGroupGetDnssecResponseResultMetaNormalizationPercentageChange     RadarDNSTimeseriesGroupGetDnssecResponseResultMetaNormalization = "PERCENTAGE_CHANGE"
+	RadarDNSTimeseriesGroupGetDnssecResponseResultMetaNormalizationRollingAverage       RadarDNSTimeseriesGroupGetDnssecResponseResultMetaNormalization = "ROLLING_AVERAGE"
+	RadarDNSTimeseriesGroupGetDnssecResponseResultMetaNormalizationOverlappedPercentage RadarDNSTimeseriesGroupGetDnssecResponseResultMetaNormalization = "OVERLAPPED_PERCENTAGE"
+	RadarDNSTimeseriesGroupGetDnssecResponseResultMetaNormalizationRatio                RadarDNSTimeseriesGroupGetDnssecResponseResultMetaNormalization = "RATIO"
+)
+
+func (r RadarDNSTimeseriesGroupGetDnssecResponseResultMetaNormalization) IsKnown() bool {
+	switch r {
+	case RadarDNSTimeseriesGroupGetDnssecResponseResultMetaNormalizationPercentage, RadarDNSTimeseriesGroupGetDnssecResponseResultMetaNormalizationMin0Max, RadarDNSTimeseriesGroupGetDnssecResponseResultMetaNormalizationMinMax, RadarDNSTimeseriesGroupGetDnssecResponseResultMetaNormalizationRawValues, RadarDNSTimeseriesGroupGetDnssecResponseResultMetaNormalizationPercentageChange, RadarDNSTimeseriesGroupGetDnssecResponseResultMetaNormalizationRollingAverage, RadarDNSTimeseriesGroupGetDnssecResponseResultMetaNormalizationOverlappedPercentage, RadarDNSTimeseriesGroupGetDnssecResponseResultMetaNormalizationRatio:
+		return true
+	}
+	return false
+}
+
+type RadarDNSTimeseriesGroupGetDnssecResponseResultMetaUnit struct {
+	Name  string                                                     `json:"name,required"`
+	Value string                                                     `json:"value,required"`
+	JSON  radarDNSTimeseriesGroupGetDnssecResponseResultMetaUnitJSON `json:"-"`
+}
+
+// radarDNSTimeseriesGroupGetDnssecResponseResultMetaUnitJSON contains the JSON
+// metadata for the struct [RadarDNSTimeseriesGroupGetDnssecResponseResultMetaUnit]
+type radarDNSTimeseriesGroupGetDnssecResponseResultMetaUnitJSON struct {
+	Name        apijson.Field
+	Value       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *RadarDNSTimeseriesGroupGetDnssecResponseResultMetaUnit) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarDNSTimeseriesGroupGetDnssecResponseResultMetaUnitJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -283,7 +672,8 @@ func (r radarDNSTimeseriesGroupGetDnssecAwareResponseJSON) RawJSON() string {
 }
 
 type RadarDNSTimeseriesGroupGetDnssecAwareResponseResult struct {
-	Meta   interface{}                                               `json:"meta,required"`
+	// Metadata for the results.
+	Meta   RadarDNSTimeseriesGroupGetDnssecAwareResponseResultMeta   `json:"meta,required"`
 	Serie0 RadarDNSTimeseriesGroupGetDnssecAwareResponseResultSerie0 `json:"serie_0,required"`
 	JSON   radarDNSTimeseriesGroupGetDnssecAwareResponseResultJSON   `json:"-"`
 }
@@ -302,6 +692,201 @@ func (r *RadarDNSTimeseriesGroupGetDnssecAwareResponseResult) UnmarshalJSON(data
 }
 
 func (r radarDNSTimeseriesGroupGetDnssecAwareResponseResultJSON) RawJSON() string {
+	return r.raw
+}
+
+// Metadata for the results.
+type RadarDNSTimeseriesGroupGetDnssecAwareResponseResultMeta struct {
+	// Aggregation interval of the results (e.g., in 15 minutes or 1 hour intervals).
+	// Refer to
+	// [Aggregation intervals](https://developers.cloudflare.com/radar/concepts/aggregation-intervals/).
+	AggInterval    RadarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaAggInterval    `json:"aggInterval,required"`
+	ConfidenceInfo RadarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaConfidenceInfo `json:"confidenceInfo,required"`
+	DateRange      []RadarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaDateRange    `json:"dateRange,required"`
+	// Timestamp of the last dataset update.
+	LastUpdated time.Time `json:"lastUpdated,required" format:"date-time"`
+	// Normalization method applied to the results. Refer to
+	// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
+	Normalization RadarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaNormalization `json:"normalization,required"`
+	// Measurement units for the results.
+	Units []RadarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaUnit `json:"units,required"`
+	JSON  radarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaJSON   `json:"-"`
+}
+
+// radarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaJSON contains the JSON
+// metadata for the struct
+// [RadarDNSTimeseriesGroupGetDnssecAwareResponseResultMeta]
+type radarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaJSON struct {
+	AggInterval    apijson.Field
+	ConfidenceInfo apijson.Field
+	DateRange      apijson.Field
+	LastUpdated    apijson.Field
+	Normalization  apijson.Field
+	Units          apijson.Field
+	raw            string
+	ExtraFields    map[string]apijson.Field
+}
+
+func (r *RadarDNSTimeseriesGroupGetDnssecAwareResponseResultMeta) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaJSON) RawJSON() string {
+	return r.raw
+}
+
+// Aggregation interval of the results (e.g., in 15 minutes or 1 hour intervals).
+// Refer to
+// [Aggregation intervals](https://developers.cloudflare.com/radar/concepts/aggregation-intervals/).
+type RadarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaAggInterval string
+
+const (
+	RadarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaAggIntervalFifteenMinutes RadarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaAggInterval = "FIFTEEN_MINUTES"
+	RadarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaAggIntervalOneHour        RadarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaAggInterval = "ONE_HOUR"
+	RadarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaAggIntervalOneDay         RadarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaAggInterval = "ONE_DAY"
+	RadarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaAggIntervalOneWeek        RadarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaAggInterval = "ONE_WEEK"
+	RadarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaAggIntervalOneMonth       RadarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaAggInterval = "ONE_MONTH"
+)
+
+func (r RadarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaAggInterval) IsKnown() bool {
+	switch r {
+	case RadarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaAggIntervalFifteenMinutes, RadarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaAggIntervalOneHour, RadarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaAggIntervalOneDay, RadarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaAggIntervalOneWeek, RadarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaAggIntervalOneMonth:
+		return true
+	}
+	return false
+}
+
+type RadarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaConfidenceInfo struct {
+	Annotations []RadarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaConfidenceInfoAnnotation `json:"annotations,required"`
+	// Provides an indication of how much confidence Cloudflare has in the data.
+	Level int64                                                                     `json:"level,required"`
+	JSON  radarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaConfidenceInfoJSON `json:"-"`
+}
+
+// radarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaConfidenceInfoJSON
+// contains the JSON metadata for the struct
+// [RadarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaConfidenceInfo]
+type radarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaConfidenceInfoJSON struct {
+	Annotations apijson.Field
+	Level       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *RadarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaConfidenceInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaConfidenceInfoJSON) RawJSON() string {
+	return r.raw
+}
+
+// Annotation associated with the result (e.g. outage or other type of event).
+type RadarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaConfidenceInfoAnnotation struct {
+	DataSource  string    `json:"dataSource,required"`
+	Description string    `json:"description,required"`
+	EndDate     time.Time `json:"endDate,required" format:"date-time"`
+	EventType   string    `json:"eventType,required"`
+	// Whether event is a single point in time or a time range.
+	IsInstantaneous bool                                                                                `json:"isInstantaneous,required"`
+	LinkedURL       string                                                                              `json:"linkedUrl,required" format:"uri"`
+	StartDate       time.Time                                                                           `json:"startDate,required" format:"date-time"`
+	JSON            radarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
+}
+
+// radarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaConfidenceInfoAnnotationJSON
+// contains the JSON metadata for the struct
+// [RadarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaConfidenceInfoAnnotation]
+type radarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaConfidenceInfoAnnotationJSON struct {
+	DataSource      apijson.Field
+	Description     apijson.Field
+	EndDate         apijson.Field
+	EventType       apijson.Field
+	IsInstantaneous apijson.Field
+	LinkedURL       apijson.Field
+	StartDate       apijson.Field
+	raw             string
+	ExtraFields     map[string]apijson.Field
+}
+
+func (r *RadarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaConfidenceInfoAnnotation) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaConfidenceInfoAnnotationJSON) RawJSON() string {
+	return r.raw
+}
+
+type RadarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaDateRange struct {
+	// Adjusted end of date range.
+	EndTime time.Time `json:"endTime,required" format:"date-time"`
+	// Adjusted start of date range.
+	StartTime time.Time                                                            `json:"startTime,required" format:"date-time"`
+	JSON      radarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaDateRangeJSON `json:"-"`
+}
+
+// radarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaDateRangeJSON contains
+// the JSON metadata for the struct
+// [RadarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaDateRange]
+type radarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaDateRangeJSON struct {
+	EndTime     apijson.Field
+	StartTime   apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *RadarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaDateRange) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaDateRangeJSON) RawJSON() string {
+	return r.raw
+}
+
+// Normalization method applied to the results. Refer to
+// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
+type RadarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaNormalization string
+
+const (
+	RadarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaNormalizationPercentage           RadarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaNormalization = "PERCENTAGE"
+	RadarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaNormalizationMin0Max              RadarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaNormalization = "MIN0_MAX"
+	RadarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaNormalizationMinMax               RadarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaNormalization = "MIN_MAX"
+	RadarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaNormalizationRawValues            RadarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaNormalization = "RAW_VALUES"
+	RadarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaNormalizationPercentageChange     RadarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaNormalization = "PERCENTAGE_CHANGE"
+	RadarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaNormalizationRollingAverage       RadarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaNormalization = "ROLLING_AVERAGE"
+	RadarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaNormalizationOverlappedPercentage RadarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaNormalization = "OVERLAPPED_PERCENTAGE"
+	RadarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaNormalizationRatio                RadarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaNormalization = "RATIO"
+)
+
+func (r RadarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaNormalization) IsKnown() bool {
+	switch r {
+	case RadarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaNormalizationPercentage, RadarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaNormalizationMin0Max, RadarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaNormalizationMinMax, RadarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaNormalizationRawValues, RadarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaNormalizationPercentageChange, RadarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaNormalizationRollingAverage, RadarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaNormalizationOverlappedPercentage, RadarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaNormalizationRatio:
+		return true
+	}
+	return false
+}
+
+type RadarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaUnit struct {
+	Name  string                                                          `json:"name,required"`
+	Value string                                                          `json:"value,required"`
+	JSON  radarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaUnitJSON `json:"-"`
+}
+
+// radarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaUnitJSON contains the
+// JSON metadata for the struct
+// [RadarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaUnit]
+type radarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaUnitJSON struct {
+	Name        apijson.Field
+	Value       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *RadarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaUnit) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarDNSTimeseriesGroupGetDnssecAwareResponseResultMetaUnitJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -353,7 +938,8 @@ func (r radarDNSTimeseriesGroupGetDnssecE2EResponseJSON) RawJSON() string {
 }
 
 type RadarDNSTimeseriesGroupGetDnssecE2EResponseResult struct {
-	Meta   interface{}                                             `json:"meta,required"`
+	// Metadata for the results.
+	Meta   RadarDNSTimeseriesGroupGetDnssecE2EResponseResultMeta   `json:"meta,required"`
 	Serie0 RadarDNSTimeseriesGroupGetDnssecE2EResponseResultSerie0 `json:"serie_0,required"`
 	JSON   radarDNSTimeseriesGroupGetDnssecE2EResponseResultJSON   `json:"-"`
 }
@@ -372,6 +958,200 @@ func (r *RadarDNSTimeseriesGroupGetDnssecE2EResponseResult) UnmarshalJSON(data [
 }
 
 func (r radarDNSTimeseriesGroupGetDnssecE2EResponseResultJSON) RawJSON() string {
+	return r.raw
+}
+
+// Metadata for the results.
+type RadarDNSTimeseriesGroupGetDnssecE2EResponseResultMeta struct {
+	// Aggregation interval of the results (e.g., in 15 minutes or 1 hour intervals).
+	// Refer to
+	// [Aggregation intervals](https://developers.cloudflare.com/radar/concepts/aggregation-intervals/).
+	AggInterval    RadarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaAggInterval    `json:"aggInterval,required"`
+	ConfidenceInfo RadarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaConfidenceInfo `json:"confidenceInfo,required"`
+	DateRange      []RadarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaDateRange    `json:"dateRange,required"`
+	// Timestamp of the last dataset update.
+	LastUpdated time.Time `json:"lastUpdated,required" format:"date-time"`
+	// Normalization method applied to the results. Refer to
+	// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
+	Normalization RadarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaNormalization `json:"normalization,required"`
+	// Measurement units for the results.
+	Units []RadarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaUnit `json:"units,required"`
+	JSON  radarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaJSON   `json:"-"`
+}
+
+// radarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaJSON contains the JSON
+// metadata for the struct [RadarDNSTimeseriesGroupGetDnssecE2EResponseResultMeta]
+type radarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaJSON struct {
+	AggInterval    apijson.Field
+	ConfidenceInfo apijson.Field
+	DateRange      apijson.Field
+	LastUpdated    apijson.Field
+	Normalization  apijson.Field
+	Units          apijson.Field
+	raw            string
+	ExtraFields    map[string]apijson.Field
+}
+
+func (r *RadarDNSTimeseriesGroupGetDnssecE2EResponseResultMeta) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaJSON) RawJSON() string {
+	return r.raw
+}
+
+// Aggregation interval of the results (e.g., in 15 minutes or 1 hour intervals).
+// Refer to
+// [Aggregation intervals](https://developers.cloudflare.com/radar/concepts/aggregation-intervals/).
+type RadarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaAggInterval string
+
+const (
+	RadarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaAggIntervalFifteenMinutes RadarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaAggInterval = "FIFTEEN_MINUTES"
+	RadarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaAggIntervalOneHour        RadarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaAggInterval = "ONE_HOUR"
+	RadarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaAggIntervalOneDay         RadarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaAggInterval = "ONE_DAY"
+	RadarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaAggIntervalOneWeek        RadarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaAggInterval = "ONE_WEEK"
+	RadarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaAggIntervalOneMonth       RadarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaAggInterval = "ONE_MONTH"
+)
+
+func (r RadarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaAggInterval) IsKnown() bool {
+	switch r {
+	case RadarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaAggIntervalFifteenMinutes, RadarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaAggIntervalOneHour, RadarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaAggIntervalOneDay, RadarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaAggIntervalOneWeek, RadarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaAggIntervalOneMonth:
+		return true
+	}
+	return false
+}
+
+type RadarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaConfidenceInfo struct {
+	Annotations []RadarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaConfidenceInfoAnnotation `json:"annotations,required"`
+	// Provides an indication of how much confidence Cloudflare has in the data.
+	Level int64                                                                   `json:"level,required"`
+	JSON  radarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaConfidenceInfoJSON `json:"-"`
+}
+
+// radarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaConfidenceInfoJSON contains
+// the JSON metadata for the struct
+// [RadarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaConfidenceInfo]
+type radarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaConfidenceInfoJSON struct {
+	Annotations apijson.Field
+	Level       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *RadarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaConfidenceInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaConfidenceInfoJSON) RawJSON() string {
+	return r.raw
+}
+
+// Annotation associated with the result (e.g. outage or other type of event).
+type RadarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaConfidenceInfoAnnotation struct {
+	DataSource  string    `json:"dataSource,required"`
+	Description string    `json:"description,required"`
+	EndDate     time.Time `json:"endDate,required" format:"date-time"`
+	EventType   string    `json:"eventType,required"`
+	// Whether event is a single point in time or a time range.
+	IsInstantaneous bool                                                                              `json:"isInstantaneous,required"`
+	LinkedURL       string                                                                            `json:"linkedUrl,required" format:"uri"`
+	StartDate       time.Time                                                                         `json:"startDate,required" format:"date-time"`
+	JSON            radarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
+}
+
+// radarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaConfidenceInfoAnnotationJSON
+// contains the JSON metadata for the struct
+// [RadarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaConfidenceInfoAnnotation]
+type radarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaConfidenceInfoAnnotationJSON struct {
+	DataSource      apijson.Field
+	Description     apijson.Field
+	EndDate         apijson.Field
+	EventType       apijson.Field
+	IsInstantaneous apijson.Field
+	LinkedURL       apijson.Field
+	StartDate       apijson.Field
+	raw             string
+	ExtraFields     map[string]apijson.Field
+}
+
+func (r *RadarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaConfidenceInfoAnnotation) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaConfidenceInfoAnnotationJSON) RawJSON() string {
+	return r.raw
+}
+
+type RadarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaDateRange struct {
+	// Adjusted end of date range.
+	EndTime time.Time `json:"endTime,required" format:"date-time"`
+	// Adjusted start of date range.
+	StartTime time.Time                                                          `json:"startTime,required" format:"date-time"`
+	JSON      radarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaDateRangeJSON `json:"-"`
+}
+
+// radarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaDateRangeJSON contains the
+// JSON metadata for the struct
+// [RadarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaDateRange]
+type radarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaDateRangeJSON struct {
+	EndTime     apijson.Field
+	StartTime   apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *RadarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaDateRange) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaDateRangeJSON) RawJSON() string {
+	return r.raw
+}
+
+// Normalization method applied to the results. Refer to
+// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
+type RadarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaNormalization string
+
+const (
+	RadarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaNormalizationPercentage           RadarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaNormalization = "PERCENTAGE"
+	RadarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaNormalizationMin0Max              RadarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaNormalization = "MIN0_MAX"
+	RadarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaNormalizationMinMax               RadarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaNormalization = "MIN_MAX"
+	RadarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaNormalizationRawValues            RadarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaNormalization = "RAW_VALUES"
+	RadarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaNormalizationPercentageChange     RadarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaNormalization = "PERCENTAGE_CHANGE"
+	RadarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaNormalizationRollingAverage       RadarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaNormalization = "ROLLING_AVERAGE"
+	RadarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaNormalizationOverlappedPercentage RadarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaNormalization = "OVERLAPPED_PERCENTAGE"
+	RadarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaNormalizationRatio                RadarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaNormalization = "RATIO"
+)
+
+func (r RadarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaNormalization) IsKnown() bool {
+	switch r {
+	case RadarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaNormalizationPercentage, RadarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaNormalizationMin0Max, RadarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaNormalizationMinMax, RadarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaNormalizationRawValues, RadarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaNormalizationPercentageChange, RadarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaNormalizationRollingAverage, RadarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaNormalizationOverlappedPercentage, RadarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaNormalizationRatio:
+		return true
+	}
+	return false
+}
+
+type RadarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaUnit struct {
+	Name  string                                                        `json:"name,required"`
+	Value string                                                        `json:"value,required"`
+	JSON  radarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaUnitJSON `json:"-"`
+}
+
+// radarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaUnitJSON contains the JSON
+// metadata for the struct
+// [RadarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaUnit]
+type radarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaUnitJSON struct {
+	Name        apijson.Field
+	Value       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *RadarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaUnit) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarDNSTimeseriesGroupGetDnssecE2EResponseResultMetaUnitJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -423,7 +1203,8 @@ func (r radarDNSTimeseriesGroupGetIPVersionResponseJSON) RawJSON() string {
 }
 
 type RadarDNSTimeseriesGroupGetIPVersionResponseResult struct {
-	Meta   interface{}                                             `json:"meta,required"`
+	// Metadata for the results.
+	Meta   RadarDNSTimeseriesGroupGetIPVersionResponseResultMeta   `json:"meta,required"`
 	Serie0 RadarDNSTimeseriesGroupGetIPVersionResponseResultSerie0 `json:"serie_0,required"`
 	JSON   radarDNSTimeseriesGroupGetIPVersionResponseResultJSON   `json:"-"`
 }
@@ -442,6 +1223,200 @@ func (r *RadarDNSTimeseriesGroupGetIPVersionResponseResult) UnmarshalJSON(data [
 }
 
 func (r radarDNSTimeseriesGroupGetIPVersionResponseResultJSON) RawJSON() string {
+	return r.raw
+}
+
+// Metadata for the results.
+type RadarDNSTimeseriesGroupGetIPVersionResponseResultMeta struct {
+	// Aggregation interval of the results (e.g., in 15 minutes or 1 hour intervals).
+	// Refer to
+	// [Aggregation intervals](https://developers.cloudflare.com/radar/concepts/aggregation-intervals/).
+	AggInterval    RadarDNSTimeseriesGroupGetIPVersionResponseResultMetaAggInterval    `json:"aggInterval,required"`
+	ConfidenceInfo RadarDNSTimeseriesGroupGetIPVersionResponseResultMetaConfidenceInfo `json:"confidenceInfo,required"`
+	DateRange      []RadarDNSTimeseriesGroupGetIPVersionResponseResultMetaDateRange    `json:"dateRange,required"`
+	// Timestamp of the last dataset update.
+	LastUpdated time.Time `json:"lastUpdated,required" format:"date-time"`
+	// Normalization method applied to the results. Refer to
+	// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
+	Normalization RadarDNSTimeseriesGroupGetIPVersionResponseResultMetaNormalization `json:"normalization,required"`
+	// Measurement units for the results.
+	Units []RadarDNSTimeseriesGroupGetIPVersionResponseResultMetaUnit `json:"units,required"`
+	JSON  radarDNSTimeseriesGroupGetIPVersionResponseResultMetaJSON   `json:"-"`
+}
+
+// radarDNSTimeseriesGroupGetIPVersionResponseResultMetaJSON contains the JSON
+// metadata for the struct [RadarDNSTimeseriesGroupGetIPVersionResponseResultMeta]
+type radarDNSTimeseriesGroupGetIPVersionResponseResultMetaJSON struct {
+	AggInterval    apijson.Field
+	ConfidenceInfo apijson.Field
+	DateRange      apijson.Field
+	LastUpdated    apijson.Field
+	Normalization  apijson.Field
+	Units          apijson.Field
+	raw            string
+	ExtraFields    map[string]apijson.Field
+}
+
+func (r *RadarDNSTimeseriesGroupGetIPVersionResponseResultMeta) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarDNSTimeseriesGroupGetIPVersionResponseResultMetaJSON) RawJSON() string {
+	return r.raw
+}
+
+// Aggregation interval of the results (e.g., in 15 minutes or 1 hour intervals).
+// Refer to
+// [Aggregation intervals](https://developers.cloudflare.com/radar/concepts/aggregation-intervals/).
+type RadarDNSTimeseriesGroupGetIPVersionResponseResultMetaAggInterval string
+
+const (
+	RadarDNSTimeseriesGroupGetIPVersionResponseResultMetaAggIntervalFifteenMinutes RadarDNSTimeseriesGroupGetIPVersionResponseResultMetaAggInterval = "FIFTEEN_MINUTES"
+	RadarDNSTimeseriesGroupGetIPVersionResponseResultMetaAggIntervalOneHour        RadarDNSTimeseriesGroupGetIPVersionResponseResultMetaAggInterval = "ONE_HOUR"
+	RadarDNSTimeseriesGroupGetIPVersionResponseResultMetaAggIntervalOneDay         RadarDNSTimeseriesGroupGetIPVersionResponseResultMetaAggInterval = "ONE_DAY"
+	RadarDNSTimeseriesGroupGetIPVersionResponseResultMetaAggIntervalOneWeek        RadarDNSTimeseriesGroupGetIPVersionResponseResultMetaAggInterval = "ONE_WEEK"
+	RadarDNSTimeseriesGroupGetIPVersionResponseResultMetaAggIntervalOneMonth       RadarDNSTimeseriesGroupGetIPVersionResponseResultMetaAggInterval = "ONE_MONTH"
+)
+
+func (r RadarDNSTimeseriesGroupGetIPVersionResponseResultMetaAggInterval) IsKnown() bool {
+	switch r {
+	case RadarDNSTimeseriesGroupGetIPVersionResponseResultMetaAggIntervalFifteenMinutes, RadarDNSTimeseriesGroupGetIPVersionResponseResultMetaAggIntervalOneHour, RadarDNSTimeseriesGroupGetIPVersionResponseResultMetaAggIntervalOneDay, RadarDNSTimeseriesGroupGetIPVersionResponseResultMetaAggIntervalOneWeek, RadarDNSTimeseriesGroupGetIPVersionResponseResultMetaAggIntervalOneMonth:
+		return true
+	}
+	return false
+}
+
+type RadarDNSTimeseriesGroupGetIPVersionResponseResultMetaConfidenceInfo struct {
+	Annotations []RadarDNSTimeseriesGroupGetIPVersionResponseResultMetaConfidenceInfoAnnotation `json:"annotations,required"`
+	// Provides an indication of how much confidence Cloudflare has in the data.
+	Level int64                                                                   `json:"level,required"`
+	JSON  radarDNSTimeseriesGroupGetIPVersionResponseResultMetaConfidenceInfoJSON `json:"-"`
+}
+
+// radarDNSTimeseriesGroupGetIPVersionResponseResultMetaConfidenceInfoJSON contains
+// the JSON metadata for the struct
+// [RadarDNSTimeseriesGroupGetIPVersionResponseResultMetaConfidenceInfo]
+type radarDNSTimeseriesGroupGetIPVersionResponseResultMetaConfidenceInfoJSON struct {
+	Annotations apijson.Field
+	Level       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *RadarDNSTimeseriesGroupGetIPVersionResponseResultMetaConfidenceInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarDNSTimeseriesGroupGetIPVersionResponseResultMetaConfidenceInfoJSON) RawJSON() string {
+	return r.raw
+}
+
+// Annotation associated with the result (e.g. outage or other type of event).
+type RadarDNSTimeseriesGroupGetIPVersionResponseResultMetaConfidenceInfoAnnotation struct {
+	DataSource  string    `json:"dataSource,required"`
+	Description string    `json:"description,required"`
+	EndDate     time.Time `json:"endDate,required" format:"date-time"`
+	EventType   string    `json:"eventType,required"`
+	// Whether event is a single point in time or a time range.
+	IsInstantaneous bool                                                                              `json:"isInstantaneous,required"`
+	LinkedURL       string                                                                            `json:"linkedUrl,required" format:"uri"`
+	StartDate       time.Time                                                                         `json:"startDate,required" format:"date-time"`
+	JSON            radarDNSTimeseriesGroupGetIPVersionResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
+}
+
+// radarDNSTimeseriesGroupGetIPVersionResponseResultMetaConfidenceInfoAnnotationJSON
+// contains the JSON metadata for the struct
+// [RadarDNSTimeseriesGroupGetIPVersionResponseResultMetaConfidenceInfoAnnotation]
+type radarDNSTimeseriesGroupGetIPVersionResponseResultMetaConfidenceInfoAnnotationJSON struct {
+	DataSource      apijson.Field
+	Description     apijson.Field
+	EndDate         apijson.Field
+	EventType       apijson.Field
+	IsInstantaneous apijson.Field
+	LinkedURL       apijson.Field
+	StartDate       apijson.Field
+	raw             string
+	ExtraFields     map[string]apijson.Field
+}
+
+func (r *RadarDNSTimeseriesGroupGetIPVersionResponseResultMetaConfidenceInfoAnnotation) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarDNSTimeseriesGroupGetIPVersionResponseResultMetaConfidenceInfoAnnotationJSON) RawJSON() string {
+	return r.raw
+}
+
+type RadarDNSTimeseriesGroupGetIPVersionResponseResultMetaDateRange struct {
+	// Adjusted end of date range.
+	EndTime time.Time `json:"endTime,required" format:"date-time"`
+	// Adjusted start of date range.
+	StartTime time.Time                                                          `json:"startTime,required" format:"date-time"`
+	JSON      radarDNSTimeseriesGroupGetIPVersionResponseResultMetaDateRangeJSON `json:"-"`
+}
+
+// radarDNSTimeseriesGroupGetIPVersionResponseResultMetaDateRangeJSON contains the
+// JSON metadata for the struct
+// [RadarDNSTimeseriesGroupGetIPVersionResponseResultMetaDateRange]
+type radarDNSTimeseriesGroupGetIPVersionResponseResultMetaDateRangeJSON struct {
+	EndTime     apijson.Field
+	StartTime   apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *RadarDNSTimeseriesGroupGetIPVersionResponseResultMetaDateRange) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarDNSTimeseriesGroupGetIPVersionResponseResultMetaDateRangeJSON) RawJSON() string {
+	return r.raw
+}
+
+// Normalization method applied to the results. Refer to
+// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
+type RadarDNSTimeseriesGroupGetIPVersionResponseResultMetaNormalization string
+
+const (
+	RadarDNSTimeseriesGroupGetIPVersionResponseResultMetaNormalizationPercentage           RadarDNSTimeseriesGroupGetIPVersionResponseResultMetaNormalization = "PERCENTAGE"
+	RadarDNSTimeseriesGroupGetIPVersionResponseResultMetaNormalizationMin0Max              RadarDNSTimeseriesGroupGetIPVersionResponseResultMetaNormalization = "MIN0_MAX"
+	RadarDNSTimeseriesGroupGetIPVersionResponseResultMetaNormalizationMinMax               RadarDNSTimeseriesGroupGetIPVersionResponseResultMetaNormalization = "MIN_MAX"
+	RadarDNSTimeseriesGroupGetIPVersionResponseResultMetaNormalizationRawValues            RadarDNSTimeseriesGroupGetIPVersionResponseResultMetaNormalization = "RAW_VALUES"
+	RadarDNSTimeseriesGroupGetIPVersionResponseResultMetaNormalizationPercentageChange     RadarDNSTimeseriesGroupGetIPVersionResponseResultMetaNormalization = "PERCENTAGE_CHANGE"
+	RadarDNSTimeseriesGroupGetIPVersionResponseResultMetaNormalizationRollingAverage       RadarDNSTimeseriesGroupGetIPVersionResponseResultMetaNormalization = "ROLLING_AVERAGE"
+	RadarDNSTimeseriesGroupGetIPVersionResponseResultMetaNormalizationOverlappedPercentage RadarDNSTimeseriesGroupGetIPVersionResponseResultMetaNormalization = "OVERLAPPED_PERCENTAGE"
+	RadarDNSTimeseriesGroupGetIPVersionResponseResultMetaNormalizationRatio                RadarDNSTimeseriesGroupGetIPVersionResponseResultMetaNormalization = "RATIO"
+)
+
+func (r RadarDNSTimeseriesGroupGetIPVersionResponseResultMetaNormalization) IsKnown() bool {
+	switch r {
+	case RadarDNSTimeseriesGroupGetIPVersionResponseResultMetaNormalizationPercentage, RadarDNSTimeseriesGroupGetIPVersionResponseResultMetaNormalizationMin0Max, RadarDNSTimeseriesGroupGetIPVersionResponseResultMetaNormalizationMinMax, RadarDNSTimeseriesGroupGetIPVersionResponseResultMetaNormalizationRawValues, RadarDNSTimeseriesGroupGetIPVersionResponseResultMetaNormalizationPercentageChange, RadarDNSTimeseriesGroupGetIPVersionResponseResultMetaNormalizationRollingAverage, RadarDNSTimeseriesGroupGetIPVersionResponseResultMetaNormalizationOverlappedPercentage, RadarDNSTimeseriesGroupGetIPVersionResponseResultMetaNormalizationRatio:
+		return true
+	}
+	return false
+}
+
+type RadarDNSTimeseriesGroupGetIPVersionResponseResultMetaUnit struct {
+	Name  string                                                        `json:"name,required"`
+	Value string                                                        `json:"value,required"`
+	JSON  radarDNSTimeseriesGroupGetIPVersionResponseResultMetaUnitJSON `json:"-"`
+}
+
+// radarDNSTimeseriesGroupGetIPVersionResponseResultMetaUnitJSON contains the JSON
+// metadata for the struct
+// [RadarDNSTimeseriesGroupGetIPVersionResponseResultMetaUnit]
+type radarDNSTimeseriesGroupGetIPVersionResponseResultMetaUnitJSON struct {
+	Name        apijson.Field
+	Value       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *RadarDNSTimeseriesGroupGetIPVersionResponseResultMetaUnit) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarDNSTimeseriesGroupGetIPVersionResponseResultMetaUnitJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -493,7 +1468,8 @@ func (r radarDNSTimeseriesGroupGetMatchingAnswerResponseJSON) RawJSON() string {
 }
 
 type RadarDNSTimeseriesGroupGetMatchingAnswerResponseResult struct {
-	Meta   interface{}                                                  `json:"meta,required"`
+	// Metadata for the results.
+	Meta   RadarDNSTimeseriesGroupGetMatchingAnswerResponseResultMeta   `json:"meta,required"`
 	Serie0 RadarDNSTimeseriesGroupGetMatchingAnswerResponseResultSerie0 `json:"serie_0,required"`
 	JSON   radarDNSTimeseriesGroupGetMatchingAnswerResponseResultJSON   `json:"-"`
 }
@@ -512,6 +1488,201 @@ func (r *RadarDNSTimeseriesGroupGetMatchingAnswerResponseResult) UnmarshalJSON(d
 }
 
 func (r radarDNSTimeseriesGroupGetMatchingAnswerResponseResultJSON) RawJSON() string {
+	return r.raw
+}
+
+// Metadata for the results.
+type RadarDNSTimeseriesGroupGetMatchingAnswerResponseResultMeta struct {
+	// Aggregation interval of the results (e.g., in 15 minutes or 1 hour intervals).
+	// Refer to
+	// [Aggregation intervals](https://developers.cloudflare.com/radar/concepts/aggregation-intervals/).
+	AggInterval    RadarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaAggInterval    `json:"aggInterval,required"`
+	ConfidenceInfo RadarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaConfidenceInfo `json:"confidenceInfo,required"`
+	DateRange      []RadarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaDateRange    `json:"dateRange,required"`
+	// Timestamp of the last dataset update.
+	LastUpdated time.Time `json:"lastUpdated,required" format:"date-time"`
+	// Normalization method applied to the results. Refer to
+	// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
+	Normalization RadarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaNormalization `json:"normalization,required"`
+	// Measurement units for the results.
+	Units []RadarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaUnit `json:"units,required"`
+	JSON  radarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaJSON   `json:"-"`
+}
+
+// radarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaJSON contains the JSON
+// metadata for the struct
+// [RadarDNSTimeseriesGroupGetMatchingAnswerResponseResultMeta]
+type radarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaJSON struct {
+	AggInterval    apijson.Field
+	ConfidenceInfo apijson.Field
+	DateRange      apijson.Field
+	LastUpdated    apijson.Field
+	Normalization  apijson.Field
+	Units          apijson.Field
+	raw            string
+	ExtraFields    map[string]apijson.Field
+}
+
+func (r *RadarDNSTimeseriesGroupGetMatchingAnswerResponseResultMeta) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaJSON) RawJSON() string {
+	return r.raw
+}
+
+// Aggregation interval of the results (e.g., in 15 minutes or 1 hour intervals).
+// Refer to
+// [Aggregation intervals](https://developers.cloudflare.com/radar/concepts/aggregation-intervals/).
+type RadarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaAggInterval string
+
+const (
+	RadarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaAggIntervalFifteenMinutes RadarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaAggInterval = "FIFTEEN_MINUTES"
+	RadarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaAggIntervalOneHour        RadarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaAggInterval = "ONE_HOUR"
+	RadarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaAggIntervalOneDay         RadarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaAggInterval = "ONE_DAY"
+	RadarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaAggIntervalOneWeek        RadarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaAggInterval = "ONE_WEEK"
+	RadarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaAggIntervalOneMonth       RadarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaAggInterval = "ONE_MONTH"
+)
+
+func (r RadarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaAggInterval) IsKnown() bool {
+	switch r {
+	case RadarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaAggIntervalFifteenMinutes, RadarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaAggIntervalOneHour, RadarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaAggIntervalOneDay, RadarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaAggIntervalOneWeek, RadarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaAggIntervalOneMonth:
+		return true
+	}
+	return false
+}
+
+type RadarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaConfidenceInfo struct {
+	Annotations []RadarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaConfidenceInfoAnnotation `json:"annotations,required"`
+	// Provides an indication of how much confidence Cloudflare has in the data.
+	Level int64                                                                        `json:"level,required"`
+	JSON  radarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaConfidenceInfoJSON `json:"-"`
+}
+
+// radarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaConfidenceInfoJSON
+// contains the JSON metadata for the struct
+// [RadarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaConfidenceInfo]
+type radarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaConfidenceInfoJSON struct {
+	Annotations apijson.Field
+	Level       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *RadarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaConfidenceInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaConfidenceInfoJSON) RawJSON() string {
+	return r.raw
+}
+
+// Annotation associated with the result (e.g. outage or other type of event).
+type RadarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaConfidenceInfoAnnotation struct {
+	DataSource  string    `json:"dataSource,required"`
+	Description string    `json:"description,required"`
+	EndDate     time.Time `json:"endDate,required" format:"date-time"`
+	EventType   string    `json:"eventType,required"`
+	// Whether event is a single point in time or a time range.
+	IsInstantaneous bool                                                                                   `json:"isInstantaneous,required"`
+	LinkedURL       string                                                                                 `json:"linkedUrl,required" format:"uri"`
+	StartDate       time.Time                                                                              `json:"startDate,required" format:"date-time"`
+	JSON            radarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
+}
+
+// radarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaConfidenceInfoAnnotationJSON
+// contains the JSON metadata for the struct
+// [RadarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaConfidenceInfoAnnotation]
+type radarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaConfidenceInfoAnnotationJSON struct {
+	DataSource      apijson.Field
+	Description     apijson.Field
+	EndDate         apijson.Field
+	EventType       apijson.Field
+	IsInstantaneous apijson.Field
+	LinkedURL       apijson.Field
+	StartDate       apijson.Field
+	raw             string
+	ExtraFields     map[string]apijson.Field
+}
+
+func (r *RadarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaConfidenceInfoAnnotation) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaConfidenceInfoAnnotationJSON) RawJSON() string {
+	return r.raw
+}
+
+type RadarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaDateRange struct {
+	// Adjusted end of date range.
+	EndTime time.Time `json:"endTime,required" format:"date-time"`
+	// Adjusted start of date range.
+	StartTime time.Time                                                               `json:"startTime,required" format:"date-time"`
+	JSON      radarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaDateRangeJSON `json:"-"`
+}
+
+// radarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaDateRangeJSON contains
+// the JSON metadata for the struct
+// [RadarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaDateRange]
+type radarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaDateRangeJSON struct {
+	EndTime     apijson.Field
+	StartTime   apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *RadarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaDateRange) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaDateRangeJSON) RawJSON() string {
+	return r.raw
+}
+
+// Normalization method applied to the results. Refer to
+// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
+type RadarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaNormalization string
+
+const (
+	RadarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaNormalizationPercentage           RadarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaNormalization = "PERCENTAGE"
+	RadarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaNormalizationMin0Max              RadarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaNormalization = "MIN0_MAX"
+	RadarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaNormalizationMinMax               RadarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaNormalization = "MIN_MAX"
+	RadarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaNormalizationRawValues            RadarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaNormalization = "RAW_VALUES"
+	RadarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaNormalizationPercentageChange     RadarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaNormalization = "PERCENTAGE_CHANGE"
+	RadarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaNormalizationRollingAverage       RadarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaNormalization = "ROLLING_AVERAGE"
+	RadarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaNormalizationOverlappedPercentage RadarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaNormalization = "OVERLAPPED_PERCENTAGE"
+	RadarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaNormalizationRatio                RadarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaNormalization = "RATIO"
+)
+
+func (r RadarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaNormalization) IsKnown() bool {
+	switch r {
+	case RadarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaNormalizationPercentage, RadarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaNormalizationMin0Max, RadarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaNormalizationMinMax, RadarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaNormalizationRawValues, RadarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaNormalizationPercentageChange, RadarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaNormalizationRollingAverage, RadarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaNormalizationOverlappedPercentage, RadarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaNormalizationRatio:
+		return true
+	}
+	return false
+}
+
+type RadarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaUnit struct {
+	Name  string                                                             `json:"name,required"`
+	Value string                                                             `json:"value,required"`
+	JSON  radarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaUnitJSON `json:"-"`
+}
+
+// radarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaUnitJSON contains the
+// JSON metadata for the struct
+// [RadarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaUnit]
+type radarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaUnitJSON struct {
+	Name        apijson.Field
+	Value       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *RadarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaUnit) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarDNSTimeseriesGroupGetMatchingAnswerResponseResultMetaUnitJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -563,7 +1734,8 @@ func (r radarDNSTimeseriesGroupGetProtocolResponseJSON) RawJSON() string {
 }
 
 type RadarDNSTimeseriesGroupGetProtocolResponseResult struct {
-	Meta   interface{}                                            `json:"meta,required"`
+	// Metadata for the results.
+	Meta   RadarDNSTimeseriesGroupGetProtocolResponseResultMeta   `json:"meta,required"`
 	Serie0 RadarDNSTimeseriesGroupGetProtocolResponseResultSerie0 `json:"serie_0,required"`
 	JSON   radarDNSTimeseriesGroupGetProtocolResponseResultJSON   `json:"-"`
 }
@@ -582,6 +1754,200 @@ func (r *RadarDNSTimeseriesGroupGetProtocolResponseResult) UnmarshalJSON(data []
 }
 
 func (r radarDNSTimeseriesGroupGetProtocolResponseResultJSON) RawJSON() string {
+	return r.raw
+}
+
+// Metadata for the results.
+type RadarDNSTimeseriesGroupGetProtocolResponseResultMeta struct {
+	// Aggregation interval of the results (e.g., in 15 minutes or 1 hour intervals).
+	// Refer to
+	// [Aggregation intervals](https://developers.cloudflare.com/radar/concepts/aggregation-intervals/).
+	AggInterval    RadarDNSTimeseriesGroupGetProtocolResponseResultMetaAggInterval    `json:"aggInterval,required"`
+	ConfidenceInfo RadarDNSTimeseriesGroupGetProtocolResponseResultMetaConfidenceInfo `json:"confidenceInfo,required"`
+	DateRange      []RadarDNSTimeseriesGroupGetProtocolResponseResultMetaDateRange    `json:"dateRange,required"`
+	// Timestamp of the last dataset update.
+	LastUpdated time.Time `json:"lastUpdated,required" format:"date-time"`
+	// Normalization method applied to the results. Refer to
+	// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
+	Normalization RadarDNSTimeseriesGroupGetProtocolResponseResultMetaNormalization `json:"normalization,required"`
+	// Measurement units for the results.
+	Units []RadarDNSTimeseriesGroupGetProtocolResponseResultMetaUnit `json:"units,required"`
+	JSON  radarDNSTimeseriesGroupGetProtocolResponseResultMetaJSON   `json:"-"`
+}
+
+// radarDNSTimeseriesGroupGetProtocolResponseResultMetaJSON contains the JSON
+// metadata for the struct [RadarDNSTimeseriesGroupGetProtocolResponseResultMeta]
+type radarDNSTimeseriesGroupGetProtocolResponseResultMetaJSON struct {
+	AggInterval    apijson.Field
+	ConfidenceInfo apijson.Field
+	DateRange      apijson.Field
+	LastUpdated    apijson.Field
+	Normalization  apijson.Field
+	Units          apijson.Field
+	raw            string
+	ExtraFields    map[string]apijson.Field
+}
+
+func (r *RadarDNSTimeseriesGroupGetProtocolResponseResultMeta) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarDNSTimeseriesGroupGetProtocolResponseResultMetaJSON) RawJSON() string {
+	return r.raw
+}
+
+// Aggregation interval of the results (e.g., in 15 minutes or 1 hour intervals).
+// Refer to
+// [Aggregation intervals](https://developers.cloudflare.com/radar/concepts/aggregation-intervals/).
+type RadarDNSTimeseriesGroupGetProtocolResponseResultMetaAggInterval string
+
+const (
+	RadarDNSTimeseriesGroupGetProtocolResponseResultMetaAggIntervalFifteenMinutes RadarDNSTimeseriesGroupGetProtocolResponseResultMetaAggInterval = "FIFTEEN_MINUTES"
+	RadarDNSTimeseriesGroupGetProtocolResponseResultMetaAggIntervalOneHour        RadarDNSTimeseriesGroupGetProtocolResponseResultMetaAggInterval = "ONE_HOUR"
+	RadarDNSTimeseriesGroupGetProtocolResponseResultMetaAggIntervalOneDay         RadarDNSTimeseriesGroupGetProtocolResponseResultMetaAggInterval = "ONE_DAY"
+	RadarDNSTimeseriesGroupGetProtocolResponseResultMetaAggIntervalOneWeek        RadarDNSTimeseriesGroupGetProtocolResponseResultMetaAggInterval = "ONE_WEEK"
+	RadarDNSTimeseriesGroupGetProtocolResponseResultMetaAggIntervalOneMonth       RadarDNSTimeseriesGroupGetProtocolResponseResultMetaAggInterval = "ONE_MONTH"
+)
+
+func (r RadarDNSTimeseriesGroupGetProtocolResponseResultMetaAggInterval) IsKnown() bool {
+	switch r {
+	case RadarDNSTimeseriesGroupGetProtocolResponseResultMetaAggIntervalFifteenMinutes, RadarDNSTimeseriesGroupGetProtocolResponseResultMetaAggIntervalOneHour, RadarDNSTimeseriesGroupGetProtocolResponseResultMetaAggIntervalOneDay, RadarDNSTimeseriesGroupGetProtocolResponseResultMetaAggIntervalOneWeek, RadarDNSTimeseriesGroupGetProtocolResponseResultMetaAggIntervalOneMonth:
+		return true
+	}
+	return false
+}
+
+type RadarDNSTimeseriesGroupGetProtocolResponseResultMetaConfidenceInfo struct {
+	Annotations []RadarDNSTimeseriesGroupGetProtocolResponseResultMetaConfidenceInfoAnnotation `json:"annotations,required"`
+	// Provides an indication of how much confidence Cloudflare has in the data.
+	Level int64                                                                  `json:"level,required"`
+	JSON  radarDNSTimeseriesGroupGetProtocolResponseResultMetaConfidenceInfoJSON `json:"-"`
+}
+
+// radarDNSTimeseriesGroupGetProtocolResponseResultMetaConfidenceInfoJSON contains
+// the JSON metadata for the struct
+// [RadarDNSTimeseriesGroupGetProtocolResponseResultMetaConfidenceInfo]
+type radarDNSTimeseriesGroupGetProtocolResponseResultMetaConfidenceInfoJSON struct {
+	Annotations apijson.Field
+	Level       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *RadarDNSTimeseriesGroupGetProtocolResponseResultMetaConfidenceInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarDNSTimeseriesGroupGetProtocolResponseResultMetaConfidenceInfoJSON) RawJSON() string {
+	return r.raw
+}
+
+// Annotation associated with the result (e.g. outage or other type of event).
+type RadarDNSTimeseriesGroupGetProtocolResponseResultMetaConfidenceInfoAnnotation struct {
+	DataSource  string    `json:"dataSource,required"`
+	Description string    `json:"description,required"`
+	EndDate     time.Time `json:"endDate,required" format:"date-time"`
+	EventType   string    `json:"eventType,required"`
+	// Whether event is a single point in time or a time range.
+	IsInstantaneous bool                                                                             `json:"isInstantaneous,required"`
+	LinkedURL       string                                                                           `json:"linkedUrl,required" format:"uri"`
+	StartDate       time.Time                                                                        `json:"startDate,required" format:"date-time"`
+	JSON            radarDNSTimeseriesGroupGetProtocolResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
+}
+
+// radarDNSTimeseriesGroupGetProtocolResponseResultMetaConfidenceInfoAnnotationJSON
+// contains the JSON metadata for the struct
+// [RadarDNSTimeseriesGroupGetProtocolResponseResultMetaConfidenceInfoAnnotation]
+type radarDNSTimeseriesGroupGetProtocolResponseResultMetaConfidenceInfoAnnotationJSON struct {
+	DataSource      apijson.Field
+	Description     apijson.Field
+	EndDate         apijson.Field
+	EventType       apijson.Field
+	IsInstantaneous apijson.Field
+	LinkedURL       apijson.Field
+	StartDate       apijson.Field
+	raw             string
+	ExtraFields     map[string]apijson.Field
+}
+
+func (r *RadarDNSTimeseriesGroupGetProtocolResponseResultMetaConfidenceInfoAnnotation) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarDNSTimeseriesGroupGetProtocolResponseResultMetaConfidenceInfoAnnotationJSON) RawJSON() string {
+	return r.raw
+}
+
+type RadarDNSTimeseriesGroupGetProtocolResponseResultMetaDateRange struct {
+	// Adjusted end of date range.
+	EndTime time.Time `json:"endTime,required" format:"date-time"`
+	// Adjusted start of date range.
+	StartTime time.Time                                                         `json:"startTime,required" format:"date-time"`
+	JSON      radarDNSTimeseriesGroupGetProtocolResponseResultMetaDateRangeJSON `json:"-"`
+}
+
+// radarDNSTimeseriesGroupGetProtocolResponseResultMetaDateRangeJSON contains the
+// JSON metadata for the struct
+// [RadarDNSTimeseriesGroupGetProtocolResponseResultMetaDateRange]
+type radarDNSTimeseriesGroupGetProtocolResponseResultMetaDateRangeJSON struct {
+	EndTime     apijson.Field
+	StartTime   apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *RadarDNSTimeseriesGroupGetProtocolResponseResultMetaDateRange) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarDNSTimeseriesGroupGetProtocolResponseResultMetaDateRangeJSON) RawJSON() string {
+	return r.raw
+}
+
+// Normalization method applied to the results. Refer to
+// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
+type RadarDNSTimeseriesGroupGetProtocolResponseResultMetaNormalization string
+
+const (
+	RadarDNSTimeseriesGroupGetProtocolResponseResultMetaNormalizationPercentage           RadarDNSTimeseriesGroupGetProtocolResponseResultMetaNormalization = "PERCENTAGE"
+	RadarDNSTimeseriesGroupGetProtocolResponseResultMetaNormalizationMin0Max              RadarDNSTimeseriesGroupGetProtocolResponseResultMetaNormalization = "MIN0_MAX"
+	RadarDNSTimeseriesGroupGetProtocolResponseResultMetaNormalizationMinMax               RadarDNSTimeseriesGroupGetProtocolResponseResultMetaNormalization = "MIN_MAX"
+	RadarDNSTimeseriesGroupGetProtocolResponseResultMetaNormalizationRawValues            RadarDNSTimeseriesGroupGetProtocolResponseResultMetaNormalization = "RAW_VALUES"
+	RadarDNSTimeseriesGroupGetProtocolResponseResultMetaNormalizationPercentageChange     RadarDNSTimeseriesGroupGetProtocolResponseResultMetaNormalization = "PERCENTAGE_CHANGE"
+	RadarDNSTimeseriesGroupGetProtocolResponseResultMetaNormalizationRollingAverage       RadarDNSTimeseriesGroupGetProtocolResponseResultMetaNormalization = "ROLLING_AVERAGE"
+	RadarDNSTimeseriesGroupGetProtocolResponseResultMetaNormalizationOverlappedPercentage RadarDNSTimeseriesGroupGetProtocolResponseResultMetaNormalization = "OVERLAPPED_PERCENTAGE"
+	RadarDNSTimeseriesGroupGetProtocolResponseResultMetaNormalizationRatio                RadarDNSTimeseriesGroupGetProtocolResponseResultMetaNormalization = "RATIO"
+)
+
+func (r RadarDNSTimeseriesGroupGetProtocolResponseResultMetaNormalization) IsKnown() bool {
+	switch r {
+	case RadarDNSTimeseriesGroupGetProtocolResponseResultMetaNormalizationPercentage, RadarDNSTimeseriesGroupGetProtocolResponseResultMetaNormalizationMin0Max, RadarDNSTimeseriesGroupGetProtocolResponseResultMetaNormalizationMinMax, RadarDNSTimeseriesGroupGetProtocolResponseResultMetaNormalizationRawValues, RadarDNSTimeseriesGroupGetProtocolResponseResultMetaNormalizationPercentageChange, RadarDNSTimeseriesGroupGetProtocolResponseResultMetaNormalizationRollingAverage, RadarDNSTimeseriesGroupGetProtocolResponseResultMetaNormalizationOverlappedPercentage, RadarDNSTimeseriesGroupGetProtocolResponseResultMetaNormalizationRatio:
+		return true
+	}
+	return false
+}
+
+type RadarDNSTimeseriesGroupGetProtocolResponseResultMetaUnit struct {
+	Name  string                                                       `json:"name,required"`
+	Value string                                                       `json:"value,required"`
+	JSON  radarDNSTimeseriesGroupGetProtocolResponseResultMetaUnitJSON `json:"-"`
+}
+
+// radarDNSTimeseriesGroupGetProtocolResponseResultMetaUnitJSON contains the JSON
+// metadata for the struct
+// [RadarDNSTimeseriesGroupGetProtocolResponseResultMetaUnit]
+type radarDNSTimeseriesGroupGetProtocolResponseResultMetaUnitJSON struct {
+	Name        apijson.Field
+	Value       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *RadarDNSTimeseriesGroupGetProtocolResponseResultMetaUnit) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarDNSTimeseriesGroupGetProtocolResponseResultMetaUnitJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -636,7 +2002,8 @@ func (r radarDNSTimeseriesGroupGetQueryTypeResponseJSON) RawJSON() string {
 }
 
 type RadarDNSTimeseriesGroupGetQueryTypeResponseResult struct {
-	Meta   interface{}                                             `json:"meta,required"`
+	// Metadata for the results.
+	Meta   RadarDNSTimeseriesGroupGetQueryTypeResponseResultMeta   `json:"meta,required"`
 	Serie0 RadarDNSTimeseriesGroupGetQueryTypeResponseResultSerie0 `json:"serie_0,required"`
 	JSON   radarDNSTimeseriesGroupGetQueryTypeResponseResultJSON   `json:"-"`
 }
@@ -658,8 +2025,202 @@ func (r radarDNSTimeseriesGroupGetQueryTypeResponseResultJSON) RawJSON() string 
 	return r.raw
 }
 
+// Metadata for the results.
+type RadarDNSTimeseriesGroupGetQueryTypeResponseResultMeta struct {
+	// Aggregation interval of the results (e.g., in 15 minutes or 1 hour intervals).
+	// Refer to
+	// [Aggregation intervals](https://developers.cloudflare.com/radar/concepts/aggregation-intervals/).
+	AggInterval    RadarDNSTimeseriesGroupGetQueryTypeResponseResultMetaAggInterval    `json:"aggInterval,required"`
+	ConfidenceInfo RadarDNSTimeseriesGroupGetQueryTypeResponseResultMetaConfidenceInfo `json:"confidenceInfo,required"`
+	DateRange      []RadarDNSTimeseriesGroupGetQueryTypeResponseResultMetaDateRange    `json:"dateRange,required"`
+	// Timestamp of the last dataset update.
+	LastUpdated time.Time `json:"lastUpdated,required" format:"date-time"`
+	// Normalization method applied to the results. Refer to
+	// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
+	Normalization RadarDNSTimeseriesGroupGetQueryTypeResponseResultMetaNormalization `json:"normalization,required"`
+	// Measurement units for the results.
+	Units []RadarDNSTimeseriesGroupGetQueryTypeResponseResultMetaUnit `json:"units,required"`
+	JSON  radarDNSTimeseriesGroupGetQueryTypeResponseResultMetaJSON   `json:"-"`
+}
+
+// radarDNSTimeseriesGroupGetQueryTypeResponseResultMetaJSON contains the JSON
+// metadata for the struct [RadarDNSTimeseriesGroupGetQueryTypeResponseResultMeta]
+type radarDNSTimeseriesGroupGetQueryTypeResponseResultMetaJSON struct {
+	AggInterval    apijson.Field
+	ConfidenceInfo apijson.Field
+	DateRange      apijson.Field
+	LastUpdated    apijson.Field
+	Normalization  apijson.Field
+	Units          apijson.Field
+	raw            string
+	ExtraFields    map[string]apijson.Field
+}
+
+func (r *RadarDNSTimeseriesGroupGetQueryTypeResponseResultMeta) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarDNSTimeseriesGroupGetQueryTypeResponseResultMetaJSON) RawJSON() string {
+	return r.raw
+}
+
+// Aggregation interval of the results (e.g., in 15 minutes or 1 hour intervals).
+// Refer to
+// [Aggregation intervals](https://developers.cloudflare.com/radar/concepts/aggregation-intervals/).
+type RadarDNSTimeseriesGroupGetQueryTypeResponseResultMetaAggInterval string
+
+const (
+	RadarDNSTimeseriesGroupGetQueryTypeResponseResultMetaAggIntervalFifteenMinutes RadarDNSTimeseriesGroupGetQueryTypeResponseResultMetaAggInterval = "FIFTEEN_MINUTES"
+	RadarDNSTimeseriesGroupGetQueryTypeResponseResultMetaAggIntervalOneHour        RadarDNSTimeseriesGroupGetQueryTypeResponseResultMetaAggInterval = "ONE_HOUR"
+	RadarDNSTimeseriesGroupGetQueryTypeResponseResultMetaAggIntervalOneDay         RadarDNSTimeseriesGroupGetQueryTypeResponseResultMetaAggInterval = "ONE_DAY"
+	RadarDNSTimeseriesGroupGetQueryTypeResponseResultMetaAggIntervalOneWeek        RadarDNSTimeseriesGroupGetQueryTypeResponseResultMetaAggInterval = "ONE_WEEK"
+	RadarDNSTimeseriesGroupGetQueryTypeResponseResultMetaAggIntervalOneMonth       RadarDNSTimeseriesGroupGetQueryTypeResponseResultMetaAggInterval = "ONE_MONTH"
+)
+
+func (r RadarDNSTimeseriesGroupGetQueryTypeResponseResultMetaAggInterval) IsKnown() bool {
+	switch r {
+	case RadarDNSTimeseriesGroupGetQueryTypeResponseResultMetaAggIntervalFifteenMinutes, RadarDNSTimeseriesGroupGetQueryTypeResponseResultMetaAggIntervalOneHour, RadarDNSTimeseriesGroupGetQueryTypeResponseResultMetaAggIntervalOneDay, RadarDNSTimeseriesGroupGetQueryTypeResponseResultMetaAggIntervalOneWeek, RadarDNSTimeseriesGroupGetQueryTypeResponseResultMetaAggIntervalOneMonth:
+		return true
+	}
+	return false
+}
+
+type RadarDNSTimeseriesGroupGetQueryTypeResponseResultMetaConfidenceInfo struct {
+	Annotations []RadarDNSTimeseriesGroupGetQueryTypeResponseResultMetaConfidenceInfoAnnotation `json:"annotations,required"`
+	// Provides an indication of how much confidence Cloudflare has in the data.
+	Level int64                                                                   `json:"level,required"`
+	JSON  radarDNSTimeseriesGroupGetQueryTypeResponseResultMetaConfidenceInfoJSON `json:"-"`
+}
+
+// radarDNSTimeseriesGroupGetQueryTypeResponseResultMetaConfidenceInfoJSON contains
+// the JSON metadata for the struct
+// [RadarDNSTimeseriesGroupGetQueryTypeResponseResultMetaConfidenceInfo]
+type radarDNSTimeseriesGroupGetQueryTypeResponseResultMetaConfidenceInfoJSON struct {
+	Annotations apijson.Field
+	Level       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *RadarDNSTimeseriesGroupGetQueryTypeResponseResultMetaConfidenceInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarDNSTimeseriesGroupGetQueryTypeResponseResultMetaConfidenceInfoJSON) RawJSON() string {
+	return r.raw
+}
+
+// Annotation associated with the result (e.g. outage or other type of event).
+type RadarDNSTimeseriesGroupGetQueryTypeResponseResultMetaConfidenceInfoAnnotation struct {
+	DataSource  string    `json:"dataSource,required"`
+	Description string    `json:"description,required"`
+	EndDate     time.Time `json:"endDate,required" format:"date-time"`
+	EventType   string    `json:"eventType,required"`
+	// Whether event is a single point in time or a time range.
+	IsInstantaneous bool                                                                              `json:"isInstantaneous,required"`
+	LinkedURL       string                                                                            `json:"linkedUrl,required" format:"uri"`
+	StartDate       time.Time                                                                         `json:"startDate,required" format:"date-time"`
+	JSON            radarDNSTimeseriesGroupGetQueryTypeResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
+}
+
+// radarDNSTimeseriesGroupGetQueryTypeResponseResultMetaConfidenceInfoAnnotationJSON
+// contains the JSON metadata for the struct
+// [RadarDNSTimeseriesGroupGetQueryTypeResponseResultMetaConfidenceInfoAnnotation]
+type radarDNSTimeseriesGroupGetQueryTypeResponseResultMetaConfidenceInfoAnnotationJSON struct {
+	DataSource      apijson.Field
+	Description     apijson.Field
+	EndDate         apijson.Field
+	EventType       apijson.Field
+	IsInstantaneous apijson.Field
+	LinkedURL       apijson.Field
+	StartDate       apijson.Field
+	raw             string
+	ExtraFields     map[string]apijson.Field
+}
+
+func (r *RadarDNSTimeseriesGroupGetQueryTypeResponseResultMetaConfidenceInfoAnnotation) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarDNSTimeseriesGroupGetQueryTypeResponseResultMetaConfidenceInfoAnnotationJSON) RawJSON() string {
+	return r.raw
+}
+
+type RadarDNSTimeseriesGroupGetQueryTypeResponseResultMetaDateRange struct {
+	// Adjusted end of date range.
+	EndTime time.Time `json:"endTime,required" format:"date-time"`
+	// Adjusted start of date range.
+	StartTime time.Time                                                          `json:"startTime,required" format:"date-time"`
+	JSON      radarDNSTimeseriesGroupGetQueryTypeResponseResultMetaDateRangeJSON `json:"-"`
+}
+
+// radarDNSTimeseriesGroupGetQueryTypeResponseResultMetaDateRangeJSON contains the
+// JSON metadata for the struct
+// [RadarDNSTimeseriesGroupGetQueryTypeResponseResultMetaDateRange]
+type radarDNSTimeseriesGroupGetQueryTypeResponseResultMetaDateRangeJSON struct {
+	EndTime     apijson.Field
+	StartTime   apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *RadarDNSTimeseriesGroupGetQueryTypeResponseResultMetaDateRange) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarDNSTimeseriesGroupGetQueryTypeResponseResultMetaDateRangeJSON) RawJSON() string {
+	return r.raw
+}
+
+// Normalization method applied to the results. Refer to
+// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
+type RadarDNSTimeseriesGroupGetQueryTypeResponseResultMetaNormalization string
+
+const (
+	RadarDNSTimeseriesGroupGetQueryTypeResponseResultMetaNormalizationPercentage           RadarDNSTimeseriesGroupGetQueryTypeResponseResultMetaNormalization = "PERCENTAGE"
+	RadarDNSTimeseriesGroupGetQueryTypeResponseResultMetaNormalizationMin0Max              RadarDNSTimeseriesGroupGetQueryTypeResponseResultMetaNormalization = "MIN0_MAX"
+	RadarDNSTimeseriesGroupGetQueryTypeResponseResultMetaNormalizationMinMax               RadarDNSTimeseriesGroupGetQueryTypeResponseResultMetaNormalization = "MIN_MAX"
+	RadarDNSTimeseriesGroupGetQueryTypeResponseResultMetaNormalizationRawValues            RadarDNSTimeseriesGroupGetQueryTypeResponseResultMetaNormalization = "RAW_VALUES"
+	RadarDNSTimeseriesGroupGetQueryTypeResponseResultMetaNormalizationPercentageChange     RadarDNSTimeseriesGroupGetQueryTypeResponseResultMetaNormalization = "PERCENTAGE_CHANGE"
+	RadarDNSTimeseriesGroupGetQueryTypeResponseResultMetaNormalizationRollingAverage       RadarDNSTimeseriesGroupGetQueryTypeResponseResultMetaNormalization = "ROLLING_AVERAGE"
+	RadarDNSTimeseriesGroupGetQueryTypeResponseResultMetaNormalizationOverlappedPercentage RadarDNSTimeseriesGroupGetQueryTypeResponseResultMetaNormalization = "OVERLAPPED_PERCENTAGE"
+	RadarDNSTimeseriesGroupGetQueryTypeResponseResultMetaNormalizationRatio                RadarDNSTimeseriesGroupGetQueryTypeResponseResultMetaNormalization = "RATIO"
+)
+
+func (r RadarDNSTimeseriesGroupGetQueryTypeResponseResultMetaNormalization) IsKnown() bool {
+	switch r {
+	case RadarDNSTimeseriesGroupGetQueryTypeResponseResultMetaNormalizationPercentage, RadarDNSTimeseriesGroupGetQueryTypeResponseResultMetaNormalizationMin0Max, RadarDNSTimeseriesGroupGetQueryTypeResponseResultMetaNormalizationMinMax, RadarDNSTimeseriesGroupGetQueryTypeResponseResultMetaNormalizationRawValues, RadarDNSTimeseriesGroupGetQueryTypeResponseResultMetaNormalizationPercentageChange, RadarDNSTimeseriesGroupGetQueryTypeResponseResultMetaNormalizationRollingAverage, RadarDNSTimeseriesGroupGetQueryTypeResponseResultMetaNormalizationOverlappedPercentage, RadarDNSTimeseriesGroupGetQueryTypeResponseResultMetaNormalizationRatio:
+		return true
+	}
+	return false
+}
+
+type RadarDNSTimeseriesGroupGetQueryTypeResponseResultMetaUnit struct {
+	Name  string                                                        `json:"name,required"`
+	Value string                                                        `json:"value,required"`
+	JSON  radarDNSTimeseriesGroupGetQueryTypeResponseResultMetaUnitJSON `json:"-"`
+}
+
+// radarDNSTimeseriesGroupGetQueryTypeResponseResultMetaUnitJSON contains the JSON
+// metadata for the struct
+// [RadarDNSTimeseriesGroupGetQueryTypeResponseResultMetaUnit]
+type radarDNSTimeseriesGroupGetQueryTypeResponseResultMetaUnitJSON struct {
+	Name        apijson.Field
+	Value       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *RadarDNSTimeseriesGroupGetQueryTypeResponseResultMetaUnit) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarDNSTimeseriesGroupGetQueryTypeResponseResultMetaUnitJSON) RawJSON() string {
+	return r.raw
+}
+
 type RadarDNSTimeseriesGroupGetQueryTypeResponseResultSerie0 struct {
-	Timestamps  []string                                                    `json:"timestamps,required"`
+	Timestamps  []time.Time                                                 `json:"timestamps,required" format:"date-time"`
 	ExtraFields map[string][]string                                         `json:"-,extras"`
 	JSON        radarDNSTimeseriesGroupGetQueryTypeResponseResultSerie0JSON `json:"-"`
 }
@@ -705,7 +2266,8 @@ func (r radarDNSTimeseriesGroupGetResponseCodeResponseJSON) RawJSON() string {
 }
 
 type RadarDNSTimeseriesGroupGetResponseCodeResponseResult struct {
-	Meta   interface{}                                                `json:"meta,required"`
+	// Metadata for the results.
+	Meta   RadarDNSTimeseriesGroupGetResponseCodeResponseResultMeta   `json:"meta,required"`
 	Serie0 RadarDNSTimeseriesGroupGetResponseCodeResponseResultSerie0 `json:"serie_0,required"`
 	JSON   radarDNSTimeseriesGroupGetResponseCodeResponseResultJSON   `json:"-"`
 }
@@ -727,8 +2289,203 @@ func (r radarDNSTimeseriesGroupGetResponseCodeResponseResultJSON) RawJSON() stri
 	return r.raw
 }
 
+// Metadata for the results.
+type RadarDNSTimeseriesGroupGetResponseCodeResponseResultMeta struct {
+	// Aggregation interval of the results (e.g., in 15 minutes or 1 hour intervals).
+	// Refer to
+	// [Aggregation intervals](https://developers.cloudflare.com/radar/concepts/aggregation-intervals/).
+	AggInterval    RadarDNSTimeseriesGroupGetResponseCodeResponseResultMetaAggInterval    `json:"aggInterval,required"`
+	ConfidenceInfo RadarDNSTimeseriesGroupGetResponseCodeResponseResultMetaConfidenceInfo `json:"confidenceInfo,required"`
+	DateRange      []RadarDNSTimeseriesGroupGetResponseCodeResponseResultMetaDateRange    `json:"dateRange,required"`
+	// Timestamp of the last dataset update.
+	LastUpdated time.Time `json:"lastUpdated,required" format:"date-time"`
+	// Normalization method applied to the results. Refer to
+	// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
+	Normalization RadarDNSTimeseriesGroupGetResponseCodeResponseResultMetaNormalization `json:"normalization,required"`
+	// Measurement units for the results.
+	Units []RadarDNSTimeseriesGroupGetResponseCodeResponseResultMetaUnit `json:"units,required"`
+	JSON  radarDNSTimeseriesGroupGetResponseCodeResponseResultMetaJSON   `json:"-"`
+}
+
+// radarDNSTimeseriesGroupGetResponseCodeResponseResultMetaJSON contains the JSON
+// metadata for the struct
+// [RadarDNSTimeseriesGroupGetResponseCodeResponseResultMeta]
+type radarDNSTimeseriesGroupGetResponseCodeResponseResultMetaJSON struct {
+	AggInterval    apijson.Field
+	ConfidenceInfo apijson.Field
+	DateRange      apijson.Field
+	LastUpdated    apijson.Field
+	Normalization  apijson.Field
+	Units          apijson.Field
+	raw            string
+	ExtraFields    map[string]apijson.Field
+}
+
+func (r *RadarDNSTimeseriesGroupGetResponseCodeResponseResultMeta) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarDNSTimeseriesGroupGetResponseCodeResponseResultMetaJSON) RawJSON() string {
+	return r.raw
+}
+
+// Aggregation interval of the results (e.g., in 15 minutes or 1 hour intervals).
+// Refer to
+// [Aggregation intervals](https://developers.cloudflare.com/radar/concepts/aggregation-intervals/).
+type RadarDNSTimeseriesGroupGetResponseCodeResponseResultMetaAggInterval string
+
+const (
+	RadarDNSTimeseriesGroupGetResponseCodeResponseResultMetaAggIntervalFifteenMinutes RadarDNSTimeseriesGroupGetResponseCodeResponseResultMetaAggInterval = "FIFTEEN_MINUTES"
+	RadarDNSTimeseriesGroupGetResponseCodeResponseResultMetaAggIntervalOneHour        RadarDNSTimeseriesGroupGetResponseCodeResponseResultMetaAggInterval = "ONE_HOUR"
+	RadarDNSTimeseriesGroupGetResponseCodeResponseResultMetaAggIntervalOneDay         RadarDNSTimeseriesGroupGetResponseCodeResponseResultMetaAggInterval = "ONE_DAY"
+	RadarDNSTimeseriesGroupGetResponseCodeResponseResultMetaAggIntervalOneWeek        RadarDNSTimeseriesGroupGetResponseCodeResponseResultMetaAggInterval = "ONE_WEEK"
+	RadarDNSTimeseriesGroupGetResponseCodeResponseResultMetaAggIntervalOneMonth       RadarDNSTimeseriesGroupGetResponseCodeResponseResultMetaAggInterval = "ONE_MONTH"
+)
+
+func (r RadarDNSTimeseriesGroupGetResponseCodeResponseResultMetaAggInterval) IsKnown() bool {
+	switch r {
+	case RadarDNSTimeseriesGroupGetResponseCodeResponseResultMetaAggIntervalFifteenMinutes, RadarDNSTimeseriesGroupGetResponseCodeResponseResultMetaAggIntervalOneHour, RadarDNSTimeseriesGroupGetResponseCodeResponseResultMetaAggIntervalOneDay, RadarDNSTimeseriesGroupGetResponseCodeResponseResultMetaAggIntervalOneWeek, RadarDNSTimeseriesGroupGetResponseCodeResponseResultMetaAggIntervalOneMonth:
+		return true
+	}
+	return false
+}
+
+type RadarDNSTimeseriesGroupGetResponseCodeResponseResultMetaConfidenceInfo struct {
+	Annotations []RadarDNSTimeseriesGroupGetResponseCodeResponseResultMetaConfidenceInfoAnnotation `json:"annotations,required"`
+	// Provides an indication of how much confidence Cloudflare has in the data.
+	Level int64                                                                      `json:"level,required"`
+	JSON  radarDNSTimeseriesGroupGetResponseCodeResponseResultMetaConfidenceInfoJSON `json:"-"`
+}
+
+// radarDNSTimeseriesGroupGetResponseCodeResponseResultMetaConfidenceInfoJSON
+// contains the JSON metadata for the struct
+// [RadarDNSTimeseriesGroupGetResponseCodeResponseResultMetaConfidenceInfo]
+type radarDNSTimeseriesGroupGetResponseCodeResponseResultMetaConfidenceInfoJSON struct {
+	Annotations apijson.Field
+	Level       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *RadarDNSTimeseriesGroupGetResponseCodeResponseResultMetaConfidenceInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarDNSTimeseriesGroupGetResponseCodeResponseResultMetaConfidenceInfoJSON) RawJSON() string {
+	return r.raw
+}
+
+// Annotation associated with the result (e.g. outage or other type of event).
+type RadarDNSTimeseriesGroupGetResponseCodeResponseResultMetaConfidenceInfoAnnotation struct {
+	DataSource  string    `json:"dataSource,required"`
+	Description string    `json:"description,required"`
+	EndDate     time.Time `json:"endDate,required" format:"date-time"`
+	EventType   string    `json:"eventType,required"`
+	// Whether event is a single point in time or a time range.
+	IsInstantaneous bool                                                                                 `json:"isInstantaneous,required"`
+	LinkedURL       string                                                                               `json:"linkedUrl,required" format:"uri"`
+	StartDate       time.Time                                                                            `json:"startDate,required" format:"date-time"`
+	JSON            radarDNSTimeseriesGroupGetResponseCodeResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
+}
+
+// radarDNSTimeseriesGroupGetResponseCodeResponseResultMetaConfidenceInfoAnnotationJSON
+// contains the JSON metadata for the struct
+// [RadarDNSTimeseriesGroupGetResponseCodeResponseResultMetaConfidenceInfoAnnotation]
+type radarDNSTimeseriesGroupGetResponseCodeResponseResultMetaConfidenceInfoAnnotationJSON struct {
+	DataSource      apijson.Field
+	Description     apijson.Field
+	EndDate         apijson.Field
+	EventType       apijson.Field
+	IsInstantaneous apijson.Field
+	LinkedURL       apijson.Field
+	StartDate       apijson.Field
+	raw             string
+	ExtraFields     map[string]apijson.Field
+}
+
+func (r *RadarDNSTimeseriesGroupGetResponseCodeResponseResultMetaConfidenceInfoAnnotation) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarDNSTimeseriesGroupGetResponseCodeResponseResultMetaConfidenceInfoAnnotationJSON) RawJSON() string {
+	return r.raw
+}
+
+type RadarDNSTimeseriesGroupGetResponseCodeResponseResultMetaDateRange struct {
+	// Adjusted end of date range.
+	EndTime time.Time `json:"endTime,required" format:"date-time"`
+	// Adjusted start of date range.
+	StartTime time.Time                                                             `json:"startTime,required" format:"date-time"`
+	JSON      radarDNSTimeseriesGroupGetResponseCodeResponseResultMetaDateRangeJSON `json:"-"`
+}
+
+// radarDNSTimeseriesGroupGetResponseCodeResponseResultMetaDateRangeJSON contains
+// the JSON metadata for the struct
+// [RadarDNSTimeseriesGroupGetResponseCodeResponseResultMetaDateRange]
+type radarDNSTimeseriesGroupGetResponseCodeResponseResultMetaDateRangeJSON struct {
+	EndTime     apijson.Field
+	StartTime   apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *RadarDNSTimeseriesGroupGetResponseCodeResponseResultMetaDateRange) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarDNSTimeseriesGroupGetResponseCodeResponseResultMetaDateRangeJSON) RawJSON() string {
+	return r.raw
+}
+
+// Normalization method applied to the results. Refer to
+// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
+type RadarDNSTimeseriesGroupGetResponseCodeResponseResultMetaNormalization string
+
+const (
+	RadarDNSTimeseriesGroupGetResponseCodeResponseResultMetaNormalizationPercentage           RadarDNSTimeseriesGroupGetResponseCodeResponseResultMetaNormalization = "PERCENTAGE"
+	RadarDNSTimeseriesGroupGetResponseCodeResponseResultMetaNormalizationMin0Max              RadarDNSTimeseriesGroupGetResponseCodeResponseResultMetaNormalization = "MIN0_MAX"
+	RadarDNSTimeseriesGroupGetResponseCodeResponseResultMetaNormalizationMinMax               RadarDNSTimeseriesGroupGetResponseCodeResponseResultMetaNormalization = "MIN_MAX"
+	RadarDNSTimeseriesGroupGetResponseCodeResponseResultMetaNormalizationRawValues            RadarDNSTimeseriesGroupGetResponseCodeResponseResultMetaNormalization = "RAW_VALUES"
+	RadarDNSTimeseriesGroupGetResponseCodeResponseResultMetaNormalizationPercentageChange     RadarDNSTimeseriesGroupGetResponseCodeResponseResultMetaNormalization = "PERCENTAGE_CHANGE"
+	RadarDNSTimeseriesGroupGetResponseCodeResponseResultMetaNormalizationRollingAverage       RadarDNSTimeseriesGroupGetResponseCodeResponseResultMetaNormalization = "ROLLING_AVERAGE"
+	RadarDNSTimeseriesGroupGetResponseCodeResponseResultMetaNormalizationOverlappedPercentage RadarDNSTimeseriesGroupGetResponseCodeResponseResultMetaNormalization = "OVERLAPPED_PERCENTAGE"
+	RadarDNSTimeseriesGroupGetResponseCodeResponseResultMetaNormalizationRatio                RadarDNSTimeseriesGroupGetResponseCodeResponseResultMetaNormalization = "RATIO"
+)
+
+func (r RadarDNSTimeseriesGroupGetResponseCodeResponseResultMetaNormalization) IsKnown() bool {
+	switch r {
+	case RadarDNSTimeseriesGroupGetResponseCodeResponseResultMetaNormalizationPercentage, RadarDNSTimeseriesGroupGetResponseCodeResponseResultMetaNormalizationMin0Max, RadarDNSTimeseriesGroupGetResponseCodeResponseResultMetaNormalizationMinMax, RadarDNSTimeseriesGroupGetResponseCodeResponseResultMetaNormalizationRawValues, RadarDNSTimeseriesGroupGetResponseCodeResponseResultMetaNormalizationPercentageChange, RadarDNSTimeseriesGroupGetResponseCodeResponseResultMetaNormalizationRollingAverage, RadarDNSTimeseriesGroupGetResponseCodeResponseResultMetaNormalizationOverlappedPercentage, RadarDNSTimeseriesGroupGetResponseCodeResponseResultMetaNormalizationRatio:
+		return true
+	}
+	return false
+}
+
+type RadarDNSTimeseriesGroupGetResponseCodeResponseResultMetaUnit struct {
+	Name  string                                                           `json:"name,required"`
+	Value string                                                           `json:"value,required"`
+	JSON  radarDNSTimeseriesGroupGetResponseCodeResponseResultMetaUnitJSON `json:"-"`
+}
+
+// radarDNSTimeseriesGroupGetResponseCodeResponseResultMetaUnitJSON contains the
+// JSON metadata for the struct
+// [RadarDNSTimeseriesGroupGetResponseCodeResponseResultMetaUnit]
+type radarDNSTimeseriesGroupGetResponseCodeResponseResultMetaUnitJSON struct {
+	Name        apijson.Field
+	Value       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *RadarDNSTimeseriesGroupGetResponseCodeResponseResultMetaUnit) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarDNSTimeseriesGroupGetResponseCodeResponseResultMetaUnitJSON) RawJSON() string {
+	return r.raw
+}
+
 type RadarDNSTimeseriesGroupGetResponseCodeResponseResultSerie0 struct {
-	Timestamps  []string                                                       `json:"timestamps,required"`
+	Timestamps  []time.Time                                                    `json:"timestamps,required" format:"date-time"`
 	ExtraFields map[string][]string                                            `json:"-,extras"`
 	JSON        radarDNSTimeseriesGroupGetResponseCodeResponseResultSerie0JSON `json:"-"`
 }
@@ -774,7 +2531,8 @@ func (r radarDNSTimeseriesGroupGetResponseTtlResponseJSON) RawJSON() string {
 }
 
 type RadarDNSTimeseriesGroupGetResponseTtlResponseResult struct {
-	Meta   interface{}                                               `json:"meta,required"`
+	// Metadata for the results.
+	Meta   RadarDNSTimeseriesGroupGetResponseTtlResponseResultMeta   `json:"meta,required"`
 	Serie0 RadarDNSTimeseriesGroupGetResponseTtlResponseResultSerie0 `json:"serie_0,required"`
 	JSON   radarDNSTimeseriesGroupGetResponseTtlResponseResultJSON   `json:"-"`
 }
@@ -793,6 +2551,201 @@ func (r *RadarDNSTimeseriesGroupGetResponseTtlResponseResult) UnmarshalJSON(data
 }
 
 func (r radarDNSTimeseriesGroupGetResponseTtlResponseResultJSON) RawJSON() string {
+	return r.raw
+}
+
+// Metadata for the results.
+type RadarDNSTimeseriesGroupGetResponseTtlResponseResultMeta struct {
+	// Aggregation interval of the results (e.g., in 15 minutes or 1 hour intervals).
+	// Refer to
+	// [Aggregation intervals](https://developers.cloudflare.com/radar/concepts/aggregation-intervals/).
+	AggInterval    RadarDNSTimeseriesGroupGetResponseTtlResponseResultMetaAggInterval    `json:"aggInterval,required"`
+	ConfidenceInfo RadarDNSTimeseriesGroupGetResponseTtlResponseResultMetaConfidenceInfo `json:"confidenceInfo,required"`
+	DateRange      []RadarDNSTimeseriesGroupGetResponseTtlResponseResultMetaDateRange    `json:"dateRange,required"`
+	// Timestamp of the last dataset update.
+	LastUpdated time.Time `json:"lastUpdated,required" format:"date-time"`
+	// Normalization method applied to the results. Refer to
+	// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
+	Normalization RadarDNSTimeseriesGroupGetResponseTtlResponseResultMetaNormalization `json:"normalization,required"`
+	// Measurement units for the results.
+	Units []RadarDNSTimeseriesGroupGetResponseTtlResponseResultMetaUnit `json:"units,required"`
+	JSON  radarDNSTimeseriesGroupGetResponseTtlResponseResultMetaJSON   `json:"-"`
+}
+
+// radarDNSTimeseriesGroupGetResponseTtlResponseResultMetaJSON contains the JSON
+// metadata for the struct
+// [RadarDNSTimeseriesGroupGetResponseTtlResponseResultMeta]
+type radarDNSTimeseriesGroupGetResponseTtlResponseResultMetaJSON struct {
+	AggInterval    apijson.Field
+	ConfidenceInfo apijson.Field
+	DateRange      apijson.Field
+	LastUpdated    apijson.Field
+	Normalization  apijson.Field
+	Units          apijson.Field
+	raw            string
+	ExtraFields    map[string]apijson.Field
+}
+
+func (r *RadarDNSTimeseriesGroupGetResponseTtlResponseResultMeta) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarDNSTimeseriesGroupGetResponseTtlResponseResultMetaJSON) RawJSON() string {
+	return r.raw
+}
+
+// Aggregation interval of the results (e.g., in 15 minutes or 1 hour intervals).
+// Refer to
+// [Aggregation intervals](https://developers.cloudflare.com/radar/concepts/aggregation-intervals/).
+type RadarDNSTimeseriesGroupGetResponseTtlResponseResultMetaAggInterval string
+
+const (
+	RadarDNSTimeseriesGroupGetResponseTtlResponseResultMetaAggIntervalFifteenMinutes RadarDNSTimeseriesGroupGetResponseTtlResponseResultMetaAggInterval = "FIFTEEN_MINUTES"
+	RadarDNSTimeseriesGroupGetResponseTtlResponseResultMetaAggIntervalOneHour        RadarDNSTimeseriesGroupGetResponseTtlResponseResultMetaAggInterval = "ONE_HOUR"
+	RadarDNSTimeseriesGroupGetResponseTtlResponseResultMetaAggIntervalOneDay         RadarDNSTimeseriesGroupGetResponseTtlResponseResultMetaAggInterval = "ONE_DAY"
+	RadarDNSTimeseriesGroupGetResponseTtlResponseResultMetaAggIntervalOneWeek        RadarDNSTimeseriesGroupGetResponseTtlResponseResultMetaAggInterval = "ONE_WEEK"
+	RadarDNSTimeseriesGroupGetResponseTtlResponseResultMetaAggIntervalOneMonth       RadarDNSTimeseriesGroupGetResponseTtlResponseResultMetaAggInterval = "ONE_MONTH"
+)
+
+func (r RadarDNSTimeseriesGroupGetResponseTtlResponseResultMetaAggInterval) IsKnown() bool {
+	switch r {
+	case RadarDNSTimeseriesGroupGetResponseTtlResponseResultMetaAggIntervalFifteenMinutes, RadarDNSTimeseriesGroupGetResponseTtlResponseResultMetaAggIntervalOneHour, RadarDNSTimeseriesGroupGetResponseTtlResponseResultMetaAggIntervalOneDay, RadarDNSTimeseriesGroupGetResponseTtlResponseResultMetaAggIntervalOneWeek, RadarDNSTimeseriesGroupGetResponseTtlResponseResultMetaAggIntervalOneMonth:
+		return true
+	}
+	return false
+}
+
+type RadarDNSTimeseriesGroupGetResponseTtlResponseResultMetaConfidenceInfo struct {
+	Annotations []RadarDNSTimeseriesGroupGetResponseTtlResponseResultMetaConfidenceInfoAnnotation `json:"annotations,required"`
+	// Provides an indication of how much confidence Cloudflare has in the data.
+	Level int64                                                                     `json:"level,required"`
+	JSON  radarDNSTimeseriesGroupGetResponseTtlResponseResultMetaConfidenceInfoJSON `json:"-"`
+}
+
+// radarDNSTimeseriesGroupGetResponseTtlResponseResultMetaConfidenceInfoJSON
+// contains the JSON metadata for the struct
+// [RadarDNSTimeseriesGroupGetResponseTtlResponseResultMetaConfidenceInfo]
+type radarDNSTimeseriesGroupGetResponseTtlResponseResultMetaConfidenceInfoJSON struct {
+	Annotations apijson.Field
+	Level       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *RadarDNSTimeseriesGroupGetResponseTtlResponseResultMetaConfidenceInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarDNSTimeseriesGroupGetResponseTtlResponseResultMetaConfidenceInfoJSON) RawJSON() string {
+	return r.raw
+}
+
+// Annotation associated with the result (e.g. outage or other type of event).
+type RadarDNSTimeseriesGroupGetResponseTtlResponseResultMetaConfidenceInfoAnnotation struct {
+	DataSource  string    `json:"dataSource,required"`
+	Description string    `json:"description,required"`
+	EndDate     time.Time `json:"endDate,required" format:"date-time"`
+	EventType   string    `json:"eventType,required"`
+	// Whether event is a single point in time or a time range.
+	IsInstantaneous bool                                                                                `json:"isInstantaneous,required"`
+	LinkedURL       string                                                                              `json:"linkedUrl,required" format:"uri"`
+	StartDate       time.Time                                                                           `json:"startDate,required" format:"date-time"`
+	JSON            radarDNSTimeseriesGroupGetResponseTtlResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
+}
+
+// radarDNSTimeseriesGroupGetResponseTtlResponseResultMetaConfidenceInfoAnnotationJSON
+// contains the JSON metadata for the struct
+// [RadarDNSTimeseriesGroupGetResponseTtlResponseResultMetaConfidenceInfoAnnotation]
+type radarDNSTimeseriesGroupGetResponseTtlResponseResultMetaConfidenceInfoAnnotationJSON struct {
+	DataSource      apijson.Field
+	Description     apijson.Field
+	EndDate         apijson.Field
+	EventType       apijson.Field
+	IsInstantaneous apijson.Field
+	LinkedURL       apijson.Field
+	StartDate       apijson.Field
+	raw             string
+	ExtraFields     map[string]apijson.Field
+}
+
+func (r *RadarDNSTimeseriesGroupGetResponseTtlResponseResultMetaConfidenceInfoAnnotation) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarDNSTimeseriesGroupGetResponseTtlResponseResultMetaConfidenceInfoAnnotationJSON) RawJSON() string {
+	return r.raw
+}
+
+type RadarDNSTimeseriesGroupGetResponseTtlResponseResultMetaDateRange struct {
+	// Adjusted end of date range.
+	EndTime time.Time `json:"endTime,required" format:"date-time"`
+	// Adjusted start of date range.
+	StartTime time.Time                                                            `json:"startTime,required" format:"date-time"`
+	JSON      radarDNSTimeseriesGroupGetResponseTtlResponseResultMetaDateRangeJSON `json:"-"`
+}
+
+// radarDNSTimeseriesGroupGetResponseTtlResponseResultMetaDateRangeJSON contains
+// the JSON metadata for the struct
+// [RadarDNSTimeseriesGroupGetResponseTtlResponseResultMetaDateRange]
+type radarDNSTimeseriesGroupGetResponseTtlResponseResultMetaDateRangeJSON struct {
+	EndTime     apijson.Field
+	StartTime   apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *RadarDNSTimeseriesGroupGetResponseTtlResponseResultMetaDateRange) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarDNSTimeseriesGroupGetResponseTtlResponseResultMetaDateRangeJSON) RawJSON() string {
+	return r.raw
+}
+
+// Normalization method applied to the results. Refer to
+// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
+type RadarDNSTimeseriesGroupGetResponseTtlResponseResultMetaNormalization string
+
+const (
+	RadarDNSTimeseriesGroupGetResponseTtlResponseResultMetaNormalizationPercentage           RadarDNSTimeseriesGroupGetResponseTtlResponseResultMetaNormalization = "PERCENTAGE"
+	RadarDNSTimeseriesGroupGetResponseTtlResponseResultMetaNormalizationMin0Max              RadarDNSTimeseriesGroupGetResponseTtlResponseResultMetaNormalization = "MIN0_MAX"
+	RadarDNSTimeseriesGroupGetResponseTtlResponseResultMetaNormalizationMinMax               RadarDNSTimeseriesGroupGetResponseTtlResponseResultMetaNormalization = "MIN_MAX"
+	RadarDNSTimeseriesGroupGetResponseTtlResponseResultMetaNormalizationRawValues            RadarDNSTimeseriesGroupGetResponseTtlResponseResultMetaNormalization = "RAW_VALUES"
+	RadarDNSTimeseriesGroupGetResponseTtlResponseResultMetaNormalizationPercentageChange     RadarDNSTimeseriesGroupGetResponseTtlResponseResultMetaNormalization = "PERCENTAGE_CHANGE"
+	RadarDNSTimeseriesGroupGetResponseTtlResponseResultMetaNormalizationRollingAverage       RadarDNSTimeseriesGroupGetResponseTtlResponseResultMetaNormalization = "ROLLING_AVERAGE"
+	RadarDNSTimeseriesGroupGetResponseTtlResponseResultMetaNormalizationOverlappedPercentage RadarDNSTimeseriesGroupGetResponseTtlResponseResultMetaNormalization = "OVERLAPPED_PERCENTAGE"
+	RadarDNSTimeseriesGroupGetResponseTtlResponseResultMetaNormalizationRatio                RadarDNSTimeseriesGroupGetResponseTtlResponseResultMetaNormalization = "RATIO"
+)
+
+func (r RadarDNSTimeseriesGroupGetResponseTtlResponseResultMetaNormalization) IsKnown() bool {
+	switch r {
+	case RadarDNSTimeseriesGroupGetResponseTtlResponseResultMetaNormalizationPercentage, RadarDNSTimeseriesGroupGetResponseTtlResponseResultMetaNormalizationMin0Max, RadarDNSTimeseriesGroupGetResponseTtlResponseResultMetaNormalizationMinMax, RadarDNSTimeseriesGroupGetResponseTtlResponseResultMetaNormalizationRawValues, RadarDNSTimeseriesGroupGetResponseTtlResponseResultMetaNormalizationPercentageChange, RadarDNSTimeseriesGroupGetResponseTtlResponseResultMetaNormalizationRollingAverage, RadarDNSTimeseriesGroupGetResponseTtlResponseResultMetaNormalizationOverlappedPercentage, RadarDNSTimeseriesGroupGetResponseTtlResponseResultMetaNormalizationRatio:
+		return true
+	}
+	return false
+}
+
+type RadarDNSTimeseriesGroupGetResponseTtlResponseResultMetaUnit struct {
+	Name  string                                                          `json:"name,required"`
+	Value string                                                          `json:"value,required"`
+	JSON  radarDNSTimeseriesGroupGetResponseTtlResponseResultMetaUnitJSON `json:"-"`
+}
+
+// radarDNSTimeseriesGroupGetResponseTtlResponseResultMetaUnitJSON contains the
+// JSON metadata for the struct
+// [RadarDNSTimeseriesGroupGetResponseTtlResponseResultMetaUnit]
+type radarDNSTimeseriesGroupGetResponseTtlResponseResultMetaUnitJSON struct {
+	Name        apijson.Field
+	Value       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *RadarDNSTimeseriesGroupGetResponseTtlResponseResultMetaUnit) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarDNSTimeseriesGroupGetResponseTtlResponseResultMetaUnitJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -831,35 +2784,36 @@ func (r radarDNSTimeseriesGroupGetResponseTtlResponseResultSerie0JSON) RawJSON()
 }
 
 type RadarDNSTimeseriesGroupGetCacheHitParams struct {
-	// Aggregation interval results should be returned in (for example, in 15 minutes
-	// or 1 hour intervals). Refer to
+	// Aggregation interval of the results (e.g., in 15 minutes or 1 hour intervals).
+	// Refer to
 	// [Aggregation intervals](https://developers.cloudflare.com/radar/concepts/aggregation-intervals/).
 	AggInterval param.Field[RadarDNSTimeseriesGroupGetCacheHitParamsAggInterval] `query:"aggInterval"`
-	// Comma-separated list of Autonomous System Numbers (ASNs). Prefix with `-` to
-	// exclude ASNs from results. For example, `-174, 3356` excludes results from
-	// AS174, but includes results from AS3356.
+	// Filters results by Autonomous System. Specify one or more Autonomous System
+	// Numbers (ASNs) as a comma-separated list. Prefix with `-` to exclude ASNs from
+	// results. For example, `-174, 3356` excludes results from AS174, but includes
+	// results from AS3356.
 	Asn param.Field[[]string] `query:"asn"`
-	// Comma-separated list of continents (alpha-2 continent codes). Prefix with `-` to
-	// exclude continents from results. For example, `-EU,NA` excludes results from EU,
-	// but includes results from NA.
+	// Filters results by continent. Specify a comma-separated list of alpha-2 codes.
+	// Prefix with `-` to exclude continents from results. For example, `-EU,NA`
+	// excludes results from EU, but includes results from NA.
 	Continent param.Field[[]string] `query:"continent"`
 	// End of the date range (inclusive).
 	DateEnd param.Field[[]time.Time] `query:"dateEnd" format:"date-time"`
-	// Filters results by the specified date range. For example, use `7d` and
-	// `7dcontrol` to compare this week with the previous week. Use this parameter or
-	// set specific start and end dates (`dateStart` and `dateEnd` parameters).
+	// Filters results by date range. For example, use `7d` and `7dcontrol` to compare
+	// this week with the previous week. Use this parameter or set specific start and
+	// end dates (`dateStart` and `dateEnd` parameters).
 	DateRange param.Field[[]string] `query:"dateRange"`
 	// Start of the date range.
 	DateStart param.Field[[]time.Time] `query:"dateStart" format:"date-time"`
 	// Format in which results will be returned.
 	Format param.Field[RadarDNSTimeseriesGroupGetCacheHitParamsFormat] `query:"format"`
-	// Comma-separated list of locations (alpha-2 codes). Prefix with `-` to exclude
-	// locations from results. For example, `-US,PT` excludes results from the US, but
-	// includes results from PT.
+	// Filters results by location. Specify a comma-separated list of alpha-2 codes.
+	// Prefix with `-` to exclude locations from results. For example, `-US,PT`
+	// excludes results from the US, but includes results from PT.
 	Location param.Field[[]string] `query:"location"`
 	// Array of names used to label the series in the response.
 	Name param.Field[[]string] `query:"name"`
-	// Includes empty DNS responses (NODATA).
+	// Specifies whether the response includes empty DNS responses (NODATA).
 	Nodata param.Field[bool] `query:"nodata"`
 	// Filters results by DNS transport protocol.
 	Protocol param.Field[RadarDNSTimeseriesGroupGetCacheHitParamsProtocol] `query:"protocol"`
@@ -880,8 +2834,8 @@ func (r RadarDNSTimeseriesGroupGetCacheHitParams) URLQuery() (v url.Values) {
 	})
 }
 
-// Aggregation interval results should be returned in (for example, in 15 minutes
-// or 1 hour intervals). Refer to
+// Aggregation interval of the results (e.g., in 15 minutes or 1 hour intervals).
+// Refer to
 // [Aggregation intervals](https://developers.cloudflare.com/radar/concepts/aggregation-intervals/).
 type RadarDNSTimeseriesGroupGetCacheHitParamsAggInterval string
 
@@ -1070,35 +3024,36 @@ func (r RadarDNSTimeseriesGroupGetCacheHitParamsResponseCode) IsKnown() bool {
 }
 
 type RadarDNSTimeseriesGroupGetDnssecParams struct {
-	// Aggregation interval results should be returned in (for example, in 15 minutes
-	// or 1 hour intervals). Refer to
+	// Aggregation interval of the results (e.g., in 15 minutes or 1 hour intervals).
+	// Refer to
 	// [Aggregation intervals](https://developers.cloudflare.com/radar/concepts/aggregation-intervals/).
 	AggInterval param.Field[RadarDNSTimeseriesGroupGetDnssecParamsAggInterval] `query:"aggInterval"`
-	// Comma-separated list of Autonomous System Numbers (ASNs). Prefix with `-` to
-	// exclude ASNs from results. For example, `-174, 3356` excludes results from
-	// AS174, but includes results from AS3356.
+	// Filters results by Autonomous System. Specify one or more Autonomous System
+	// Numbers (ASNs) as a comma-separated list. Prefix with `-` to exclude ASNs from
+	// results. For example, `-174, 3356` excludes results from AS174, but includes
+	// results from AS3356.
 	Asn param.Field[[]string] `query:"asn"`
-	// Comma-separated list of continents (alpha-2 continent codes). Prefix with `-` to
-	// exclude continents from results. For example, `-EU,NA` excludes results from EU,
-	// but includes results from NA.
+	// Filters results by continent. Specify a comma-separated list of alpha-2 codes.
+	// Prefix with `-` to exclude continents from results. For example, `-EU,NA`
+	// excludes results from EU, but includes results from NA.
 	Continent param.Field[[]string] `query:"continent"`
 	// End of the date range (inclusive).
 	DateEnd param.Field[[]time.Time] `query:"dateEnd" format:"date-time"`
-	// Filters results by the specified date range. For example, use `7d` and
-	// `7dcontrol` to compare this week with the previous week. Use this parameter or
-	// set specific start and end dates (`dateStart` and `dateEnd` parameters).
+	// Filters results by date range. For example, use `7d` and `7dcontrol` to compare
+	// this week with the previous week. Use this parameter or set specific start and
+	// end dates (`dateStart` and `dateEnd` parameters).
 	DateRange param.Field[[]string] `query:"dateRange"`
 	// Start of the date range.
 	DateStart param.Field[[]time.Time] `query:"dateStart" format:"date-time"`
 	// Format in which results will be returned.
 	Format param.Field[RadarDNSTimeseriesGroupGetDnssecParamsFormat] `query:"format"`
-	// Comma-separated list of locations (alpha-2 codes). Prefix with `-` to exclude
-	// locations from results. For example, `-US,PT` excludes results from the US, but
-	// includes results from PT.
+	// Filters results by location. Specify a comma-separated list of alpha-2 codes.
+	// Prefix with `-` to exclude locations from results. For example, `-US,PT`
+	// excludes results from the US, but includes results from PT.
 	Location param.Field[[]string] `query:"location"`
 	// Array of names used to label the series in the response.
 	Name param.Field[[]string] `query:"name"`
-	// Includes empty DNS responses (NODATA).
+	// Specifies whether the response includes empty DNS responses (NODATA).
 	Nodata param.Field[bool] `query:"nodata"`
 	// Filters results by DNS transport protocol.
 	Protocol param.Field[RadarDNSTimeseriesGroupGetDnssecParamsProtocol] `query:"protocol"`
@@ -1119,8 +3074,8 @@ func (r RadarDNSTimeseriesGroupGetDnssecParams) URLQuery() (v url.Values) {
 	})
 }
 
-// Aggregation interval results should be returned in (for example, in 15 minutes
-// or 1 hour intervals). Refer to
+// Aggregation interval of the results (e.g., in 15 minutes or 1 hour intervals).
+// Refer to
 // [Aggregation intervals](https://developers.cloudflare.com/radar/concepts/aggregation-intervals/).
 type RadarDNSTimeseriesGroupGetDnssecParamsAggInterval string
 
@@ -1309,35 +3264,36 @@ func (r RadarDNSTimeseriesGroupGetDnssecParamsResponseCode) IsKnown() bool {
 }
 
 type RadarDNSTimeseriesGroupGetDnssecAwareParams struct {
-	// Aggregation interval results should be returned in (for example, in 15 minutes
-	// or 1 hour intervals). Refer to
+	// Aggregation interval of the results (e.g., in 15 minutes or 1 hour intervals).
+	// Refer to
 	// [Aggregation intervals](https://developers.cloudflare.com/radar/concepts/aggregation-intervals/).
 	AggInterval param.Field[RadarDNSTimeseriesGroupGetDnssecAwareParamsAggInterval] `query:"aggInterval"`
-	// Comma-separated list of Autonomous System Numbers (ASNs). Prefix with `-` to
-	// exclude ASNs from results. For example, `-174, 3356` excludes results from
-	// AS174, but includes results from AS3356.
+	// Filters results by Autonomous System. Specify one or more Autonomous System
+	// Numbers (ASNs) as a comma-separated list. Prefix with `-` to exclude ASNs from
+	// results. For example, `-174, 3356` excludes results from AS174, but includes
+	// results from AS3356.
 	Asn param.Field[[]string] `query:"asn"`
-	// Comma-separated list of continents (alpha-2 continent codes). Prefix with `-` to
-	// exclude continents from results. For example, `-EU,NA` excludes results from EU,
-	// but includes results from NA.
+	// Filters results by continent. Specify a comma-separated list of alpha-2 codes.
+	// Prefix with `-` to exclude continents from results. For example, `-EU,NA`
+	// excludes results from EU, but includes results from NA.
 	Continent param.Field[[]string] `query:"continent"`
 	// End of the date range (inclusive).
 	DateEnd param.Field[[]time.Time] `query:"dateEnd" format:"date-time"`
-	// Filters results by the specified date range. For example, use `7d` and
-	// `7dcontrol` to compare this week with the previous week. Use this parameter or
-	// set specific start and end dates (`dateStart` and `dateEnd` parameters).
+	// Filters results by date range. For example, use `7d` and `7dcontrol` to compare
+	// this week with the previous week. Use this parameter or set specific start and
+	// end dates (`dateStart` and `dateEnd` parameters).
 	DateRange param.Field[[]string] `query:"dateRange"`
 	// Start of the date range.
 	DateStart param.Field[[]time.Time] `query:"dateStart" format:"date-time"`
 	// Format in which results will be returned.
 	Format param.Field[RadarDNSTimeseriesGroupGetDnssecAwareParamsFormat] `query:"format"`
-	// Comma-separated list of locations (alpha-2 codes). Prefix with `-` to exclude
-	// locations from results. For example, `-US,PT` excludes results from the US, but
-	// includes results from PT.
+	// Filters results by location. Specify a comma-separated list of alpha-2 codes.
+	// Prefix with `-` to exclude locations from results. For example, `-US,PT`
+	// excludes results from the US, but includes results from PT.
 	Location param.Field[[]string] `query:"location"`
 	// Array of names used to label the series in the response.
 	Name param.Field[[]string] `query:"name"`
-	// Includes empty DNS responses (NODATA).
+	// Specifies whether the response includes empty DNS responses (NODATA).
 	Nodata param.Field[bool] `query:"nodata"`
 	// Filters results by DNS transport protocol.
 	Protocol param.Field[RadarDNSTimeseriesGroupGetDnssecAwareParamsProtocol] `query:"protocol"`
@@ -1358,8 +3314,8 @@ func (r RadarDNSTimeseriesGroupGetDnssecAwareParams) URLQuery() (v url.Values) {
 	})
 }
 
-// Aggregation interval results should be returned in (for example, in 15 minutes
-// or 1 hour intervals). Refer to
+// Aggregation interval of the results (e.g., in 15 minutes or 1 hour intervals).
+// Refer to
 // [Aggregation intervals](https://developers.cloudflare.com/radar/concepts/aggregation-intervals/).
 type RadarDNSTimeseriesGroupGetDnssecAwareParamsAggInterval string
 
@@ -1548,35 +3504,36 @@ func (r RadarDNSTimeseriesGroupGetDnssecAwareParamsResponseCode) IsKnown() bool 
 }
 
 type RadarDNSTimeseriesGroupGetDnssecE2EParams struct {
-	// Aggregation interval results should be returned in (for example, in 15 minutes
-	// or 1 hour intervals). Refer to
+	// Aggregation interval of the results (e.g., in 15 minutes or 1 hour intervals).
+	// Refer to
 	// [Aggregation intervals](https://developers.cloudflare.com/radar/concepts/aggregation-intervals/).
 	AggInterval param.Field[RadarDNSTimeseriesGroupGetDnssecE2EParamsAggInterval] `query:"aggInterval"`
-	// Comma-separated list of Autonomous System Numbers (ASNs). Prefix with `-` to
-	// exclude ASNs from results. For example, `-174, 3356` excludes results from
-	// AS174, but includes results from AS3356.
+	// Filters results by Autonomous System. Specify one or more Autonomous System
+	// Numbers (ASNs) as a comma-separated list. Prefix with `-` to exclude ASNs from
+	// results. For example, `-174, 3356` excludes results from AS174, but includes
+	// results from AS3356.
 	Asn param.Field[[]string] `query:"asn"`
-	// Comma-separated list of continents (alpha-2 continent codes). Prefix with `-` to
-	// exclude continents from results. For example, `-EU,NA` excludes results from EU,
-	// but includes results from NA.
+	// Filters results by continent. Specify a comma-separated list of alpha-2 codes.
+	// Prefix with `-` to exclude continents from results. For example, `-EU,NA`
+	// excludes results from EU, but includes results from NA.
 	Continent param.Field[[]string] `query:"continent"`
 	// End of the date range (inclusive).
 	DateEnd param.Field[[]time.Time] `query:"dateEnd" format:"date-time"`
-	// Filters results by the specified date range. For example, use `7d` and
-	// `7dcontrol` to compare this week with the previous week. Use this parameter or
-	// set specific start and end dates (`dateStart` and `dateEnd` parameters).
+	// Filters results by date range. For example, use `7d` and `7dcontrol` to compare
+	// this week with the previous week. Use this parameter or set specific start and
+	// end dates (`dateStart` and `dateEnd` parameters).
 	DateRange param.Field[[]string] `query:"dateRange"`
 	// Start of the date range.
 	DateStart param.Field[[]time.Time] `query:"dateStart" format:"date-time"`
 	// Format in which results will be returned.
 	Format param.Field[RadarDNSTimeseriesGroupGetDnssecE2EParamsFormat] `query:"format"`
-	// Comma-separated list of locations (alpha-2 codes). Prefix with `-` to exclude
-	// locations from results. For example, `-US,PT` excludes results from the US, but
-	// includes results from PT.
+	// Filters results by location. Specify a comma-separated list of alpha-2 codes.
+	// Prefix with `-` to exclude locations from results. For example, `-US,PT`
+	// excludes results from the US, but includes results from PT.
 	Location param.Field[[]string] `query:"location"`
 	// Array of names used to label the series in the response.
 	Name param.Field[[]string] `query:"name"`
-	// Includes empty DNS responses (NODATA).
+	// Specifies whether the response includes empty DNS responses (NODATA).
 	Nodata param.Field[bool] `query:"nodata"`
 	// Filters results by DNS transport protocol.
 	Protocol param.Field[RadarDNSTimeseriesGroupGetDnssecE2EParamsProtocol] `query:"protocol"`
@@ -1597,8 +3554,8 @@ func (r RadarDNSTimeseriesGroupGetDnssecE2EParams) URLQuery() (v url.Values) {
 	})
 }
 
-// Aggregation interval results should be returned in (for example, in 15 minutes
-// or 1 hour intervals). Refer to
+// Aggregation interval of the results (e.g., in 15 minutes or 1 hour intervals).
+// Refer to
 // [Aggregation intervals](https://developers.cloudflare.com/radar/concepts/aggregation-intervals/).
 type RadarDNSTimeseriesGroupGetDnssecE2EParamsAggInterval string
 
@@ -1787,35 +3744,36 @@ func (r RadarDNSTimeseriesGroupGetDnssecE2EParamsResponseCode) IsKnown() bool {
 }
 
 type RadarDNSTimeseriesGroupGetIPVersionParams struct {
-	// Aggregation interval results should be returned in (for example, in 15 minutes
-	// or 1 hour intervals). Refer to
+	// Aggregation interval of the results (e.g., in 15 minutes or 1 hour intervals).
+	// Refer to
 	// [Aggregation intervals](https://developers.cloudflare.com/radar/concepts/aggregation-intervals/).
 	AggInterval param.Field[RadarDNSTimeseriesGroupGetIPVersionParamsAggInterval] `query:"aggInterval"`
-	// Comma-separated list of Autonomous System Numbers (ASNs). Prefix with `-` to
-	// exclude ASNs from results. For example, `-174, 3356` excludes results from
-	// AS174, but includes results from AS3356.
+	// Filters results by Autonomous System. Specify one or more Autonomous System
+	// Numbers (ASNs) as a comma-separated list. Prefix with `-` to exclude ASNs from
+	// results. For example, `-174, 3356` excludes results from AS174, but includes
+	// results from AS3356.
 	Asn param.Field[[]string] `query:"asn"`
-	// Comma-separated list of continents (alpha-2 continent codes). Prefix with `-` to
-	// exclude continents from results. For example, `-EU,NA` excludes results from EU,
-	// but includes results from NA.
+	// Filters results by continent. Specify a comma-separated list of alpha-2 codes.
+	// Prefix with `-` to exclude continents from results. For example, `-EU,NA`
+	// excludes results from EU, but includes results from NA.
 	Continent param.Field[[]string] `query:"continent"`
 	// End of the date range (inclusive).
 	DateEnd param.Field[[]time.Time] `query:"dateEnd" format:"date-time"`
-	// Filters results by the specified date range. For example, use `7d` and
-	// `7dcontrol` to compare this week with the previous week. Use this parameter or
-	// set specific start and end dates (`dateStart` and `dateEnd` parameters).
+	// Filters results by date range. For example, use `7d` and `7dcontrol` to compare
+	// this week with the previous week. Use this parameter or set specific start and
+	// end dates (`dateStart` and `dateEnd` parameters).
 	DateRange param.Field[[]string] `query:"dateRange"`
 	// Start of the date range.
 	DateStart param.Field[[]time.Time] `query:"dateStart" format:"date-time"`
 	// Format in which results will be returned.
 	Format param.Field[RadarDNSTimeseriesGroupGetIPVersionParamsFormat] `query:"format"`
-	// Comma-separated list of locations (alpha-2 codes). Prefix with `-` to exclude
-	// locations from results. For example, `-US,PT` excludes results from the US, but
-	// includes results from PT.
+	// Filters results by location. Specify a comma-separated list of alpha-2 codes.
+	// Prefix with `-` to exclude locations from results. For example, `-US,PT`
+	// excludes results from the US, but includes results from PT.
 	Location param.Field[[]string] `query:"location"`
 	// Array of names used to label the series in the response.
 	Name param.Field[[]string] `query:"name"`
-	// Includes empty DNS responses (NODATA).
+	// Specifies whether the response includes empty DNS responses (NODATA).
 	Nodata param.Field[bool] `query:"nodata"`
 	// Filters results by DNS transport protocol.
 	Protocol param.Field[RadarDNSTimeseriesGroupGetIPVersionParamsProtocol] `query:"protocol"`
@@ -1836,8 +3794,8 @@ func (r RadarDNSTimeseriesGroupGetIPVersionParams) URLQuery() (v url.Values) {
 	})
 }
 
-// Aggregation interval results should be returned in (for example, in 15 minutes
-// or 1 hour intervals). Refer to
+// Aggregation interval of the results (e.g., in 15 minutes or 1 hour intervals).
+// Refer to
 // [Aggregation intervals](https://developers.cloudflare.com/radar/concepts/aggregation-intervals/).
 type RadarDNSTimeseriesGroupGetIPVersionParamsAggInterval string
 
@@ -2026,35 +3984,36 @@ func (r RadarDNSTimeseriesGroupGetIPVersionParamsResponseCode) IsKnown() bool {
 }
 
 type RadarDNSTimeseriesGroupGetMatchingAnswerParams struct {
-	// Aggregation interval results should be returned in (for example, in 15 minutes
-	// or 1 hour intervals). Refer to
+	// Aggregation interval of the results (e.g., in 15 minutes or 1 hour intervals).
+	// Refer to
 	// [Aggregation intervals](https://developers.cloudflare.com/radar/concepts/aggregation-intervals/).
 	AggInterval param.Field[RadarDNSTimeseriesGroupGetMatchingAnswerParamsAggInterval] `query:"aggInterval"`
-	// Comma-separated list of Autonomous System Numbers (ASNs). Prefix with `-` to
-	// exclude ASNs from results. For example, `-174, 3356` excludes results from
-	// AS174, but includes results from AS3356.
+	// Filters results by Autonomous System. Specify one or more Autonomous System
+	// Numbers (ASNs) as a comma-separated list. Prefix with `-` to exclude ASNs from
+	// results. For example, `-174, 3356` excludes results from AS174, but includes
+	// results from AS3356.
 	Asn param.Field[[]string] `query:"asn"`
-	// Comma-separated list of continents (alpha-2 continent codes). Prefix with `-` to
-	// exclude continents from results. For example, `-EU,NA` excludes results from EU,
-	// but includes results from NA.
+	// Filters results by continent. Specify a comma-separated list of alpha-2 codes.
+	// Prefix with `-` to exclude continents from results. For example, `-EU,NA`
+	// excludes results from EU, but includes results from NA.
 	Continent param.Field[[]string] `query:"continent"`
 	// End of the date range (inclusive).
 	DateEnd param.Field[[]time.Time] `query:"dateEnd" format:"date-time"`
-	// Filters results by the specified date range. For example, use `7d` and
-	// `7dcontrol` to compare this week with the previous week. Use this parameter or
-	// set specific start and end dates (`dateStart` and `dateEnd` parameters).
+	// Filters results by date range. For example, use `7d` and `7dcontrol` to compare
+	// this week with the previous week. Use this parameter or set specific start and
+	// end dates (`dateStart` and `dateEnd` parameters).
 	DateRange param.Field[[]string] `query:"dateRange"`
 	// Start of the date range.
 	DateStart param.Field[[]time.Time] `query:"dateStart" format:"date-time"`
 	// Format in which results will be returned.
 	Format param.Field[RadarDNSTimeseriesGroupGetMatchingAnswerParamsFormat] `query:"format"`
-	// Comma-separated list of locations (alpha-2 codes). Prefix with `-` to exclude
-	// locations from results. For example, `-US,PT` excludes results from the US, but
-	// includes results from PT.
+	// Filters results by location. Specify a comma-separated list of alpha-2 codes.
+	// Prefix with `-` to exclude locations from results. For example, `-US,PT`
+	// excludes results from the US, but includes results from PT.
 	Location param.Field[[]string] `query:"location"`
 	// Array of names used to label the series in the response.
 	Name param.Field[[]string] `query:"name"`
-	// Includes empty DNS responses (NODATA).
+	// Specifies whether the response includes empty DNS responses (NODATA).
 	Nodata param.Field[bool] `query:"nodata"`
 	// Filters results by DNS transport protocol.
 	Protocol param.Field[RadarDNSTimeseriesGroupGetMatchingAnswerParamsProtocol] `query:"protocol"`
@@ -2075,8 +4034,8 @@ func (r RadarDNSTimeseriesGroupGetMatchingAnswerParams) URLQuery() (v url.Values
 	})
 }
 
-// Aggregation interval results should be returned in (for example, in 15 minutes
-// or 1 hour intervals). Refer to
+// Aggregation interval of the results (e.g., in 15 minutes or 1 hour intervals).
+// Refer to
 // [Aggregation intervals](https://developers.cloudflare.com/radar/concepts/aggregation-intervals/).
 type RadarDNSTimeseriesGroupGetMatchingAnswerParamsAggInterval string
 
@@ -2265,35 +4224,36 @@ func (r RadarDNSTimeseriesGroupGetMatchingAnswerParamsResponseCode) IsKnown() bo
 }
 
 type RadarDNSTimeseriesGroupGetProtocolParams struct {
-	// Aggregation interval results should be returned in (for example, in 15 minutes
-	// or 1 hour intervals). Refer to
+	// Aggregation interval of the results (e.g., in 15 minutes or 1 hour intervals).
+	// Refer to
 	// [Aggregation intervals](https://developers.cloudflare.com/radar/concepts/aggregation-intervals/).
 	AggInterval param.Field[RadarDNSTimeseriesGroupGetProtocolParamsAggInterval] `query:"aggInterval"`
-	// Comma-separated list of Autonomous System Numbers (ASNs). Prefix with `-` to
-	// exclude ASNs from results. For example, `-174, 3356` excludes results from
-	// AS174, but includes results from AS3356.
+	// Filters results by Autonomous System. Specify one or more Autonomous System
+	// Numbers (ASNs) as a comma-separated list. Prefix with `-` to exclude ASNs from
+	// results. For example, `-174, 3356` excludes results from AS174, but includes
+	// results from AS3356.
 	Asn param.Field[[]string] `query:"asn"`
-	// Comma-separated list of continents (alpha-2 continent codes). Prefix with `-` to
-	// exclude continents from results. For example, `-EU,NA` excludes results from EU,
-	// but includes results from NA.
+	// Filters results by continent. Specify a comma-separated list of alpha-2 codes.
+	// Prefix with `-` to exclude continents from results. For example, `-EU,NA`
+	// excludes results from EU, but includes results from NA.
 	Continent param.Field[[]string] `query:"continent"`
 	// End of the date range (inclusive).
 	DateEnd param.Field[[]time.Time] `query:"dateEnd" format:"date-time"`
-	// Filters results by the specified date range. For example, use `7d` and
-	// `7dcontrol` to compare this week with the previous week. Use this parameter or
-	// set specific start and end dates (`dateStart` and `dateEnd` parameters).
+	// Filters results by date range. For example, use `7d` and `7dcontrol` to compare
+	// this week with the previous week. Use this parameter or set specific start and
+	// end dates (`dateStart` and `dateEnd` parameters).
 	DateRange param.Field[[]string] `query:"dateRange"`
 	// Start of the date range.
 	DateStart param.Field[[]time.Time] `query:"dateStart" format:"date-time"`
 	// Format in which results will be returned.
 	Format param.Field[RadarDNSTimeseriesGroupGetProtocolParamsFormat] `query:"format"`
-	// Comma-separated list of locations (alpha-2 codes). Prefix with `-` to exclude
-	// locations from results. For example, `-US,PT` excludes results from the US, but
-	// includes results from PT.
+	// Filters results by location. Specify a comma-separated list of alpha-2 codes.
+	// Prefix with `-` to exclude locations from results. For example, `-US,PT`
+	// excludes results from the US, but includes results from PT.
 	Location param.Field[[]string] `query:"location"`
 	// Array of names used to label the series in the response.
 	Name param.Field[[]string] `query:"name"`
-	// Includes empty DNS responses (NODATA).
+	// Specifies whether the response includes empty DNS responses (NODATA).
 	Nodata param.Field[bool] `query:"nodata"`
 	// Filters results by DNS query type.
 	QueryType param.Field[RadarDNSTimeseriesGroupGetProtocolParamsQueryType] `query:"queryType"`
@@ -2312,8 +4272,8 @@ func (r RadarDNSTimeseriesGroupGetProtocolParams) URLQuery() (v url.Values) {
 	})
 }
 
-// Aggregation interval results should be returned in (for example, in 15 minutes
-// or 1 hour intervals). Refer to
+// Aggregation interval of the results (e.g., in 15 minutes or 1 hour intervals).
+// Refer to
 // [Aggregation intervals](https://developers.cloudflare.com/radar/concepts/aggregation-intervals/).
 type RadarDNSTimeseriesGroupGetProtocolParamsAggInterval string
 
@@ -2484,40 +4444,40 @@ func (r RadarDNSTimeseriesGroupGetProtocolParamsResponseCode) IsKnown() bool {
 }
 
 type RadarDNSTimeseriesGroupGetQueryTypeParams struct {
-	// Aggregation interval results should be returned in (for example, in 15 minutes
-	// or 1 hour intervals). Refer to
+	// Aggregation interval of the results (e.g., in 15 minutes or 1 hour intervals).
+	// Refer to
 	// [Aggregation intervals](https://developers.cloudflare.com/radar/concepts/aggregation-intervals/).
 	AggInterval param.Field[RadarDNSTimeseriesGroupGetQueryTypeParamsAggInterval] `query:"aggInterval"`
-	// Comma-separated list of Autonomous System Numbers (ASNs). Prefix with `-` to
-	// exclude ASNs from results. For example, `-174, 3356` excludes results from
-	// AS174, but includes results from AS3356.
+	// Filters results by Autonomous System. Specify one or more Autonomous System
+	// Numbers (ASNs) as a comma-separated list. Prefix with `-` to exclude ASNs from
+	// results. For example, `-174, 3356` excludes results from AS174, but includes
+	// results from AS3356.
 	Asn param.Field[[]string] `query:"asn"`
-	// Comma-separated list of continents (alpha-2 continent codes). Prefix with `-` to
-	// exclude continents from results. For example, `-EU,NA` excludes results from EU,
-	// but includes results from NA.
+	// Filters results by continent. Specify a comma-separated list of alpha-2 codes.
+	// Prefix with `-` to exclude continents from results. For example, `-EU,NA`
+	// excludes results from EU, but includes results from NA.
 	Continent param.Field[[]string] `query:"continent"`
 	// End of the date range (inclusive).
 	DateEnd param.Field[[]time.Time] `query:"dateEnd" format:"date-time"`
-	// Filters results by the specified date range. For example, use `7d` and
-	// `7dcontrol` to compare this week with the previous week. Use this parameter or
-	// set specific start and end dates (`dateStart` and `dateEnd` parameters).
+	// Filters results by date range. For example, use `7d` and `7dcontrol` to compare
+	// this week with the previous week. Use this parameter or set specific start and
+	// end dates (`dateStart` and `dateEnd` parameters).
 	DateRange param.Field[[]string] `query:"dateRange"`
 	// Start of the date range.
 	DateStart param.Field[[]time.Time] `query:"dateStart" format:"date-time"`
 	// Format in which results will be returned.
 	Format param.Field[RadarDNSTimeseriesGroupGetQueryTypeParamsFormat] `query:"format"`
 	// Limits the number of objects per group to the top items within the specified
-	// time range. If there are more items than the limit, the response will include
-	// the count of items, with any remaining items grouped together under an "other"
-	// category.
+	// time range. When item count exceeds the limit, extra items appear grouped under
+	// an "other" category.
 	LimitPerGroup param.Field[int64] `query:"limitPerGroup"`
-	// Comma-separated list of locations (alpha-2 codes). Prefix with `-` to exclude
-	// locations from results. For example, `-US,PT` excludes results from the US, but
-	// includes results from PT.
+	// Filters results by location. Specify a comma-separated list of alpha-2 codes.
+	// Prefix with `-` to exclude locations from results. For example, `-US,PT`
+	// excludes results from the US, but includes results from PT.
 	Location param.Field[[]string] `query:"location"`
 	// Array of names used to label the series in the response.
 	Name param.Field[[]string] `query:"name"`
-	// Includes empty DNS responses (NODATA).
+	// Specifies whether the response includes empty DNS responses (NODATA).
 	Nodata param.Field[bool] `query:"nodata"`
 	// Filters results by DNS transport protocol.
 	Protocol param.Field[RadarDNSTimeseriesGroupGetQueryTypeParamsProtocol] `query:"protocol"`
@@ -2536,8 +4496,8 @@ func (r RadarDNSTimeseriesGroupGetQueryTypeParams) URLQuery() (v url.Values) {
 	})
 }
 
-// Aggregation interval results should be returned in (for example, in 15 minutes
-// or 1 hour intervals). Refer to
+// Aggregation interval of the results (e.g., in 15 minutes or 1 hour intervals).
+// Refer to
 // [Aggregation intervals](https://developers.cloudflare.com/radar/concepts/aggregation-intervals/).
 type RadarDNSTimeseriesGroupGetQueryTypeParamsAggInterval string
 
@@ -2624,40 +4584,40 @@ func (r RadarDNSTimeseriesGroupGetQueryTypeParamsResponseCode) IsKnown() bool {
 }
 
 type RadarDNSTimeseriesGroupGetResponseCodeParams struct {
-	// Aggregation interval results should be returned in (for example, in 15 minutes
-	// or 1 hour intervals). Refer to
+	// Aggregation interval of the results (e.g., in 15 minutes or 1 hour intervals).
+	// Refer to
 	// [Aggregation intervals](https://developers.cloudflare.com/radar/concepts/aggregation-intervals/).
 	AggInterval param.Field[RadarDNSTimeseriesGroupGetResponseCodeParamsAggInterval] `query:"aggInterval"`
-	// Comma-separated list of Autonomous System Numbers (ASNs). Prefix with `-` to
-	// exclude ASNs from results. For example, `-174, 3356` excludes results from
-	// AS174, but includes results from AS3356.
+	// Filters results by Autonomous System. Specify one or more Autonomous System
+	// Numbers (ASNs) as a comma-separated list. Prefix with `-` to exclude ASNs from
+	// results. For example, `-174, 3356` excludes results from AS174, but includes
+	// results from AS3356.
 	Asn param.Field[[]string] `query:"asn"`
-	// Comma-separated list of continents (alpha-2 continent codes). Prefix with `-` to
-	// exclude continents from results. For example, `-EU,NA` excludes results from EU,
-	// but includes results from NA.
+	// Filters results by continent. Specify a comma-separated list of alpha-2 codes.
+	// Prefix with `-` to exclude continents from results. For example, `-EU,NA`
+	// excludes results from EU, but includes results from NA.
 	Continent param.Field[[]string] `query:"continent"`
 	// End of the date range (inclusive).
 	DateEnd param.Field[[]time.Time] `query:"dateEnd" format:"date-time"`
-	// Filters results by the specified date range. For example, use `7d` and
-	// `7dcontrol` to compare this week with the previous week. Use this parameter or
-	// set specific start and end dates (`dateStart` and `dateEnd` parameters).
+	// Filters results by date range. For example, use `7d` and `7dcontrol` to compare
+	// this week with the previous week. Use this parameter or set specific start and
+	// end dates (`dateStart` and `dateEnd` parameters).
 	DateRange param.Field[[]string] `query:"dateRange"`
 	// Start of the date range.
 	DateStart param.Field[[]time.Time] `query:"dateStart" format:"date-time"`
 	// Format in which results will be returned.
 	Format param.Field[RadarDNSTimeseriesGroupGetResponseCodeParamsFormat] `query:"format"`
 	// Limits the number of objects per group to the top items within the specified
-	// time range. If there are more items than the limit, the response will include
-	// the count of items, with any remaining items grouped together under an "other"
-	// category.
+	// time range. When item count exceeds the limit, extra items appear grouped under
+	// an "other" category.
 	LimitPerGroup param.Field[int64] `query:"limitPerGroup"`
-	// Comma-separated list of locations (alpha-2 codes). Prefix with `-` to exclude
-	// locations from results. For example, `-US,PT` excludes results from the US, but
-	// includes results from PT.
+	// Filters results by location. Specify a comma-separated list of alpha-2 codes.
+	// Prefix with `-` to exclude locations from results. For example, `-US,PT`
+	// excludes results from the US, but includes results from PT.
 	Location param.Field[[]string] `query:"location"`
 	// Array of names used to label the series in the response.
 	Name param.Field[[]string] `query:"name"`
-	// Includes empty DNS responses (NODATA).
+	// Specifies whether the response includes empty DNS responses (NODATA).
 	Nodata param.Field[bool] `query:"nodata"`
 	// Filters results by DNS transport protocol.
 	Protocol param.Field[RadarDNSTimeseriesGroupGetResponseCodeParamsProtocol] `query:"protocol"`
@@ -2676,8 +4636,8 @@ func (r RadarDNSTimeseriesGroupGetResponseCodeParams) URLQuery() (v url.Values) 
 	})
 }
 
-// Aggregation interval results should be returned in (for example, in 15 minutes
-// or 1 hour intervals). Refer to
+// Aggregation interval of the results (e.g., in 15 minutes or 1 hour intervals).
+// Refer to
 // [Aggregation intervals](https://developers.cloudflare.com/radar/concepts/aggregation-intervals/).
 type RadarDNSTimeseriesGroupGetResponseCodeParamsAggInterval string
 
@@ -2833,35 +4793,36 @@ func (r RadarDNSTimeseriesGroupGetResponseCodeParamsQueryType) IsKnown() bool {
 }
 
 type RadarDNSTimeseriesGroupGetResponseTtlParams struct {
-	// Aggregation interval results should be returned in (for example, in 15 minutes
-	// or 1 hour intervals). Refer to
+	// Aggregation interval of the results (e.g., in 15 minutes or 1 hour intervals).
+	// Refer to
 	// [Aggregation intervals](https://developers.cloudflare.com/radar/concepts/aggregation-intervals/).
 	AggInterval param.Field[RadarDNSTimeseriesGroupGetResponseTtlParamsAggInterval] `query:"aggInterval"`
-	// Comma-separated list of Autonomous System Numbers (ASNs). Prefix with `-` to
-	// exclude ASNs from results. For example, `-174, 3356` excludes results from
-	// AS174, but includes results from AS3356.
+	// Filters results by Autonomous System. Specify one or more Autonomous System
+	// Numbers (ASNs) as a comma-separated list. Prefix with `-` to exclude ASNs from
+	// results. For example, `-174, 3356` excludes results from AS174, but includes
+	// results from AS3356.
 	Asn param.Field[[]string] `query:"asn"`
-	// Comma-separated list of continents (alpha-2 continent codes). Prefix with `-` to
-	// exclude continents from results. For example, `-EU,NA` excludes results from EU,
-	// but includes results from NA.
+	// Filters results by continent. Specify a comma-separated list of alpha-2 codes.
+	// Prefix with `-` to exclude continents from results. For example, `-EU,NA`
+	// excludes results from EU, but includes results from NA.
 	Continent param.Field[[]string] `query:"continent"`
 	// End of the date range (inclusive).
 	DateEnd param.Field[[]time.Time] `query:"dateEnd" format:"date-time"`
-	// Filters results by the specified date range. For example, use `7d` and
-	// `7dcontrol` to compare this week with the previous week. Use this parameter or
-	// set specific start and end dates (`dateStart` and `dateEnd` parameters).
+	// Filters results by date range. For example, use `7d` and `7dcontrol` to compare
+	// this week with the previous week. Use this parameter or set specific start and
+	// end dates (`dateStart` and `dateEnd` parameters).
 	DateRange param.Field[[]string] `query:"dateRange"`
 	// Start of the date range.
 	DateStart param.Field[[]time.Time] `query:"dateStart" format:"date-time"`
 	// Format in which results will be returned.
 	Format param.Field[RadarDNSTimeseriesGroupGetResponseTtlParamsFormat] `query:"format"`
-	// Comma-separated list of locations (alpha-2 codes). Prefix with `-` to exclude
-	// locations from results. For example, `-US,PT` excludes results from the US, but
-	// includes results from PT.
+	// Filters results by location. Specify a comma-separated list of alpha-2 codes.
+	// Prefix with `-` to exclude locations from results. For example, `-US,PT`
+	// excludes results from the US, but includes results from PT.
 	Location param.Field[[]string] `query:"location"`
 	// Array of names used to label the series in the response.
 	Name param.Field[[]string] `query:"name"`
-	// Includes empty DNS responses (NODATA).
+	// Specifies whether the response includes empty DNS responses (NODATA).
 	Nodata param.Field[bool] `query:"nodata"`
 	// Filters results by DNS transport protocol.
 	Protocol param.Field[RadarDNSTimeseriesGroupGetResponseTtlParamsProtocol] `query:"protocol"`
@@ -2882,8 +4843,8 @@ func (r RadarDNSTimeseriesGroupGetResponseTtlParams) URLQuery() (v url.Values) {
 	})
 }
 
-// Aggregation interval results should be returned in (for example, in 15 minutes
-// or 1 hour intervals). Refer to
+// Aggregation interval of the results (e.g., in 15 minutes or 1 hour intervals).
+// Refer to
 // [Aggregation intervals](https://developers.cloudflare.com/radar/concepts/aggregation-intervals/).
 type RadarDNSTimeseriesGroupGetResponseTtlParamsAggInterval string
 

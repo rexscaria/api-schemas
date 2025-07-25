@@ -171,13 +171,7 @@ func TestUserLoadBalancerMonitorDelete(t *testing.T) {
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.User.LoadBalancers.Monitors.Delete(
-		context.TODO(),
-		"f1aba936b94213e5b8dca0c0dbf1f9cc",
-		cfrex.UserLoadBalancerMonitorDeleteParams{
-			Body: map[string]interface{}{},
-		},
-	)
+	_, err := client.User.LoadBalancers.Monitors.Delete(context.TODO(), "f1aba936b94213e5b8dca0c0dbf1f9cc")
 	if err != nil {
 		var apierr *cfrex.Error
 		if errors.As(err, &apierr) {

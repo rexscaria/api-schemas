@@ -70,74 +70,6 @@ func (r *ZoneAnalyticsService) GetDashboard(ctx context.Context, zoneIdentifier 
 	return
 }
 
-type ZoneAnalyticsAPIResponse struct {
-	Errors   []ZoneAnalyticsMessage              `json:"errors,required"`
-	Messages []ZoneAnalyticsMessage              `json:"messages,required"`
-	Result   ZoneAnalyticsAPIResponseResultUnion `json:"result,required"`
-	// Whether the API call was successful
-	Success ZoneAnalyticsAPIResponseSuccess `json:"success,required"`
-	JSON    zoneAnalyticsAPIResponseJSON    `json:"-"`
-}
-
-// zoneAnalyticsAPIResponseJSON contains the JSON metadata for the struct
-// [ZoneAnalyticsAPIResponse]
-type zoneAnalyticsAPIResponseJSON struct {
-	Errors      apijson.Field
-	Messages    apijson.Field
-	Result      apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ZoneAnalyticsAPIResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r zoneAnalyticsAPIResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-// Union satisfied by [ZoneAnalyticsAPIResponseResultArray] or
-// [shared.UnionString].
-type ZoneAnalyticsAPIResponseResultUnion interface {
-	ImplementsZoneAnalyticsAPIResponseResultUnion()
-}
-
-func init() {
-	apijson.RegisterUnion(
-		reflect.TypeOf((*ZoneAnalyticsAPIResponseResultUnion)(nil)).Elem(),
-		"",
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(ZoneAnalyticsAPIResponseResultArray{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.String,
-			Type:       reflect.TypeOf(shared.UnionString("")),
-		},
-	)
-}
-
-type ZoneAnalyticsAPIResponseResultArray []interface{}
-
-func (r ZoneAnalyticsAPIResponseResultArray) ImplementsZoneAnalyticsAPIResponseResultUnion() {}
-
-// Whether the API call was successful
-type ZoneAnalyticsAPIResponseSuccess bool
-
-const (
-	ZoneAnalyticsAPIResponseSuccessTrue ZoneAnalyticsAPIResponseSuccess = true
-)
-
-func (r ZoneAnalyticsAPIResponseSuccess) IsKnown() bool {
-	switch r {
-	case ZoneAnalyticsAPIResponseSuccessTrue:
-		return true
-	}
-	return false
-}
-
 // Breakdown of totals for bandwidth in the form of bytes.
 type ZoneAnalyticsBandwidth struct {
 	// The total number of bytes served within the time frame.
@@ -268,29 +200,6 @@ func (r *ZoneAnalyticsBandwidthByColo) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (r zoneAnalyticsBandwidthByColoJSON) RawJSON() string {
-	return r.raw
-}
-
-type ZoneAnalyticsMessage struct {
-	Code    int64                    `json:"code,required"`
-	Message string                   `json:"message,required"`
-	JSON    zoneAnalyticsMessageJSON `json:"-"`
-}
-
-// zoneAnalyticsMessageJSON contains the JSON metadata for the struct
-// [ZoneAnalyticsMessage]
-type zoneAnalyticsMessageJSON struct {
-	Code        apijson.Field
-	Message     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ZoneAnalyticsMessage) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r zoneAnalyticsMessageJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -638,20 +547,26 @@ type ZoneAnalyticsUntilUnionParam interface {
 }
 
 type ZoneAnalyticsListColosResponse struct {
-	// The exact parameters/timestamps the analytics service used to return data.
-	Query ZoneAnalyticsQueryResponse `json:"query"`
+	Errors   []ZoneAnalyticsListColosResponseError   `json:"errors,required"`
+	Messages []ZoneAnalyticsListColosResponseMessage `json:"messages,required"`
 	// A breakdown of all dashboard analytics data by co-locations. This is limited to
 	// Enterprise zones only.
-	Result []ZoneAnalyticsListColosResponseResult `json:"result"`
-	JSON   zoneAnalyticsListColosResponseJSON     `json:"-"`
-	ZoneAnalyticsAPIResponse
+	Result []ZoneAnalyticsListColosResponseResult `json:"result,required"`
+	// Whether the API call was successful
+	Success ZoneAnalyticsListColosResponseSuccess `json:"success,required"`
+	// The exact parameters/timestamps the analytics service used to return data.
+	Query ZoneAnalyticsQueryResponse         `json:"query"`
+	JSON  zoneAnalyticsListColosResponseJSON `json:"-"`
 }
 
 // zoneAnalyticsListColosResponseJSON contains the JSON metadata for the struct
 // [ZoneAnalyticsListColosResponse]
 type zoneAnalyticsListColosResponseJSON struct {
-	Query       apijson.Field
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
+	Query       apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -661,6 +576,102 @@ func (r *ZoneAnalyticsListColosResponse) UnmarshalJSON(data []byte) (err error) 
 }
 
 func (r zoneAnalyticsListColosResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZoneAnalyticsListColosResponseError struct {
+	Code             int64                                      `json:"code,required"`
+	Message          string                                     `json:"message,required"`
+	DocumentationURL string                                     `json:"documentation_url"`
+	Source           ZoneAnalyticsListColosResponseErrorsSource `json:"source"`
+	JSON             zoneAnalyticsListColosResponseErrorJSON    `json:"-"`
+}
+
+// zoneAnalyticsListColosResponseErrorJSON contains the JSON metadata for the
+// struct [ZoneAnalyticsListColosResponseError]
+type zoneAnalyticsListColosResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *ZoneAnalyticsListColosResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneAnalyticsListColosResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZoneAnalyticsListColosResponseErrorsSource struct {
+	Pointer string                                         `json:"pointer"`
+	JSON    zoneAnalyticsListColosResponseErrorsSourceJSON `json:"-"`
+}
+
+// zoneAnalyticsListColosResponseErrorsSourceJSON contains the JSON metadata for
+// the struct [ZoneAnalyticsListColosResponseErrorsSource]
+type zoneAnalyticsListColosResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZoneAnalyticsListColosResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneAnalyticsListColosResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZoneAnalyticsListColosResponseMessage struct {
+	Code             int64                                        `json:"code,required"`
+	Message          string                                       `json:"message,required"`
+	DocumentationURL string                                       `json:"documentation_url"`
+	Source           ZoneAnalyticsListColosResponseMessagesSource `json:"source"`
+	JSON             zoneAnalyticsListColosResponseMessageJSON    `json:"-"`
+}
+
+// zoneAnalyticsListColosResponseMessageJSON contains the JSON metadata for the
+// struct [ZoneAnalyticsListColosResponseMessage]
+type zoneAnalyticsListColosResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *ZoneAnalyticsListColosResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneAnalyticsListColosResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZoneAnalyticsListColosResponseMessagesSource struct {
+	Pointer string                                           `json:"pointer"`
+	JSON    zoneAnalyticsListColosResponseMessagesSourceJSON `json:"-"`
+}
+
+// zoneAnalyticsListColosResponseMessagesSourceJSON contains the JSON metadata for
+// the struct [ZoneAnalyticsListColosResponseMessagesSource]
+type zoneAnalyticsListColosResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZoneAnalyticsListColosResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneAnalyticsListColosResponseMessagesSourceJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -795,20 +806,41 @@ func (r zoneAnalyticsListColosResponseResultTotalsJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful
+type ZoneAnalyticsListColosResponseSuccess bool
+
+const (
+	ZoneAnalyticsListColosResponseSuccessTrue ZoneAnalyticsListColosResponseSuccess = true
+)
+
+func (r ZoneAnalyticsListColosResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneAnalyticsListColosResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type ZoneAnalyticsGetDashboardResponse struct {
-	// The exact parameters/timestamps the analytics service used to return data.
-	Query ZoneAnalyticsQueryResponse `json:"query"`
+	Errors   []ZoneAnalyticsGetDashboardResponseError   `json:"errors,required"`
+	Messages []ZoneAnalyticsGetDashboardResponseMessage `json:"messages,required"`
 	// Totals and timeseries data.
-	Result ZoneAnalyticsGetDashboardResponseResult `json:"result"`
-	JSON   zoneAnalyticsGetDashboardResponseJSON   `json:"-"`
-	ZoneAnalyticsAPIResponse
+	Result ZoneAnalyticsGetDashboardResponseResult `json:"result,required"`
+	// Whether the API call was successful
+	Success ZoneAnalyticsGetDashboardResponseSuccess `json:"success,required"`
+	// The exact parameters/timestamps the analytics service used to return data.
+	Query ZoneAnalyticsQueryResponse            `json:"query"`
+	JSON  zoneAnalyticsGetDashboardResponseJSON `json:"-"`
 }
 
 // zoneAnalyticsGetDashboardResponseJSON contains the JSON metadata for the struct
 // [ZoneAnalyticsGetDashboardResponse]
 type zoneAnalyticsGetDashboardResponseJSON struct {
-	Query       apijson.Field
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
+	Query       apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -818,6 +850,102 @@ func (r *ZoneAnalyticsGetDashboardResponse) UnmarshalJSON(data []byte) (err erro
 }
 
 func (r zoneAnalyticsGetDashboardResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZoneAnalyticsGetDashboardResponseError struct {
+	Code             int64                                         `json:"code,required"`
+	Message          string                                        `json:"message,required"`
+	DocumentationURL string                                        `json:"documentation_url"`
+	Source           ZoneAnalyticsGetDashboardResponseErrorsSource `json:"source"`
+	JSON             zoneAnalyticsGetDashboardResponseErrorJSON    `json:"-"`
+}
+
+// zoneAnalyticsGetDashboardResponseErrorJSON contains the JSON metadata for the
+// struct [ZoneAnalyticsGetDashboardResponseError]
+type zoneAnalyticsGetDashboardResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *ZoneAnalyticsGetDashboardResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneAnalyticsGetDashboardResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZoneAnalyticsGetDashboardResponseErrorsSource struct {
+	Pointer string                                            `json:"pointer"`
+	JSON    zoneAnalyticsGetDashboardResponseErrorsSourceJSON `json:"-"`
+}
+
+// zoneAnalyticsGetDashboardResponseErrorsSourceJSON contains the JSON metadata for
+// the struct [ZoneAnalyticsGetDashboardResponseErrorsSource]
+type zoneAnalyticsGetDashboardResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZoneAnalyticsGetDashboardResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneAnalyticsGetDashboardResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZoneAnalyticsGetDashboardResponseMessage struct {
+	Code             int64                                           `json:"code,required"`
+	Message          string                                          `json:"message,required"`
+	DocumentationURL string                                          `json:"documentation_url"`
+	Source           ZoneAnalyticsGetDashboardResponseMessagesSource `json:"source"`
+	JSON             zoneAnalyticsGetDashboardResponseMessageJSON    `json:"-"`
+}
+
+// zoneAnalyticsGetDashboardResponseMessageJSON contains the JSON metadata for the
+// struct [ZoneAnalyticsGetDashboardResponseMessage]
+type zoneAnalyticsGetDashboardResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *ZoneAnalyticsGetDashboardResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneAnalyticsGetDashboardResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZoneAnalyticsGetDashboardResponseMessagesSource struct {
+	Pointer string                                              `json:"pointer"`
+	JSON    zoneAnalyticsGetDashboardResponseMessagesSourceJSON `json:"-"`
+}
+
+// zoneAnalyticsGetDashboardResponseMessagesSourceJSON contains the JSON metadata
+// for the struct [ZoneAnalyticsGetDashboardResponseMessagesSource]
+type zoneAnalyticsGetDashboardResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZoneAnalyticsGetDashboardResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneAnalyticsGetDashboardResponseMessagesSourceJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -958,6 +1086,21 @@ func (r *ZoneAnalyticsGetDashboardResponseResultTotals) UnmarshalJSON(data []byt
 
 func (r zoneAnalyticsGetDashboardResponseResultTotalsJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful
+type ZoneAnalyticsGetDashboardResponseSuccess bool
+
+const (
+	ZoneAnalyticsGetDashboardResponseSuccessTrue ZoneAnalyticsGetDashboardResponseSuccess = true
+)
+
+func (r ZoneAnalyticsGetDashboardResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneAnalyticsGetDashboardResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type ZoneAnalyticsListColosParams struct {

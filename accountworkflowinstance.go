@@ -264,12 +264,11 @@ const (
 	AccountWorkflowInstanceNewResponseResultStatusComplete        AccountWorkflowInstanceNewResponseResultStatus = "complete"
 	AccountWorkflowInstanceNewResponseResultStatusWaitingForPause AccountWorkflowInstanceNewResponseResultStatus = "waitingForPause"
 	AccountWorkflowInstanceNewResponseResultStatusWaiting         AccountWorkflowInstanceNewResponseResultStatus = "waiting"
-	AccountWorkflowInstanceNewResponseResultStatusUnknown         AccountWorkflowInstanceNewResponseResultStatus = "unknown"
 )
 
 func (r AccountWorkflowInstanceNewResponseResultStatus) IsKnown() bool {
 	switch r {
-	case AccountWorkflowInstanceNewResponseResultStatusQueued, AccountWorkflowInstanceNewResponseResultStatusRunning, AccountWorkflowInstanceNewResponseResultStatusPaused, AccountWorkflowInstanceNewResponseResultStatusErrored, AccountWorkflowInstanceNewResponseResultStatusTerminated, AccountWorkflowInstanceNewResponseResultStatusComplete, AccountWorkflowInstanceNewResponseResultStatusWaitingForPause, AccountWorkflowInstanceNewResponseResultStatusWaiting, AccountWorkflowInstanceNewResponseResultStatusUnknown:
+	case AccountWorkflowInstanceNewResponseResultStatusQueued, AccountWorkflowInstanceNewResponseResultStatusRunning, AccountWorkflowInstanceNewResponseResultStatusPaused, AccountWorkflowInstanceNewResponseResultStatusErrored, AccountWorkflowInstanceNewResponseResultStatusTerminated, AccountWorkflowInstanceNewResponseResultStatusComplete, AccountWorkflowInstanceNewResponseResultStatusWaitingForPause, AccountWorkflowInstanceNewResponseResultStatusWaiting:
 		return true
 	}
 	return false
@@ -486,12 +485,11 @@ const (
 	AccountWorkflowInstanceGetResponseResultStatusComplete        AccountWorkflowInstanceGetResponseResultStatus = "complete"
 	AccountWorkflowInstanceGetResponseResultStatusWaitingForPause AccountWorkflowInstanceGetResponseResultStatus = "waitingForPause"
 	AccountWorkflowInstanceGetResponseResultStatusWaiting         AccountWorkflowInstanceGetResponseResultStatus = "waiting"
-	AccountWorkflowInstanceGetResponseResultStatusUnknown         AccountWorkflowInstanceGetResponseResultStatus = "unknown"
 )
 
 func (r AccountWorkflowInstanceGetResponseResultStatus) IsKnown() bool {
 	switch r {
-	case AccountWorkflowInstanceGetResponseResultStatusQueued, AccountWorkflowInstanceGetResponseResultStatusRunning, AccountWorkflowInstanceGetResponseResultStatusPaused, AccountWorkflowInstanceGetResponseResultStatusErrored, AccountWorkflowInstanceGetResponseResultStatusTerminated, AccountWorkflowInstanceGetResponseResultStatusComplete, AccountWorkflowInstanceGetResponseResultStatusWaitingForPause, AccountWorkflowInstanceGetResponseResultStatusWaiting, AccountWorkflowInstanceGetResponseResultStatusUnknown:
+	case AccountWorkflowInstanceGetResponseResultStatusQueued, AccountWorkflowInstanceGetResponseResultStatusRunning, AccountWorkflowInstanceGetResponseResultStatusPaused, AccountWorkflowInstanceGetResponseResultStatusErrored, AccountWorkflowInstanceGetResponseResultStatusTerminated, AccountWorkflowInstanceGetResponseResultStatusComplete, AccountWorkflowInstanceGetResponseResultStatusWaitingForPause, AccountWorkflowInstanceGetResponseResultStatusWaiting:
 		return true
 	}
 	return false
@@ -559,12 +557,14 @@ func (r *AccountWorkflowInstanceGetResponseResultStep) UnmarshalJSON(data []byte
 // Possible runtime types of the union are
 // [AccountWorkflowInstanceGetResponseResultStepsObject],
 // [AccountWorkflowInstanceGetResponseResultStepsObject],
+// [AccountWorkflowInstanceGetResponseResultStepsObject],
 // [AccountWorkflowInstanceGetResponseResultStepsObject].
 func (r AccountWorkflowInstanceGetResponseResultStep) AsUnion() AccountWorkflowInstanceGetResponseResultStepsUnion {
 	return r.union
 }
 
 // Union satisfied by [AccountWorkflowInstanceGetResponseResultStepsObject],
+// [AccountWorkflowInstanceGetResponseResultStepsObject],
 // [AccountWorkflowInstanceGetResponseResultStepsObject] or
 // [AccountWorkflowInstanceGetResponseResultStepsObject].
 type AccountWorkflowInstanceGetResponseResultStepsUnion interface {
@@ -575,6 +575,10 @@ func init() {
 	apijson.RegisterUnion(
 		reflect.TypeOf((*AccountWorkflowInstanceGetResponseResultStepsUnion)(nil)).Elem(),
 		"",
+		apijson.UnionVariant{
+			TypeFilter: gjson.JSON,
+			Type:       reflect.TypeOf(AccountWorkflowInstanceGetResponseResultStepsObject{}),
+		},
 		apijson.UnionVariant{
 			TypeFilter: gjson.JSON,
 			Type:       reflect.TypeOf(AccountWorkflowInstanceGetResponseResultStepsObject{}),
@@ -681,9 +685,9 @@ func (r accountWorkflowInstanceGetResponseResultStepsObjectAttemptsErrorJSON) Ra
 }
 
 type AccountWorkflowInstanceGetResponseResultStepsObjectConfig struct {
-	Retries AccountWorkflowInstanceGetResponseResultStepsObjectConfigRetries      `json:"retries,required"`
-	Timeout AccountWorkflowInstanceGetResponseResultStepsObjectConfigTimeoutUnion `json:"timeout,required"`
-	JSON    accountWorkflowInstanceGetResponseResultStepsObjectConfigJSON         `json:"-"`
+	Retries AccountWorkflowInstanceGetResponseResultStepsObjectConfigRetries `json:"retries,required"`
+	Timeout interface{}                                                      `json:"timeout,required"`
+	JSON    accountWorkflowInstanceGetResponseResultStepsObjectConfigJSON    `json:"-"`
 }
 
 // accountWorkflowInstanceGetResponseResultStepsObjectConfigJSON contains the JSON
@@ -705,10 +709,10 @@ func (r accountWorkflowInstanceGetResponseResultStepsObjectConfigJSON) RawJSON()
 }
 
 type AccountWorkflowInstanceGetResponseResultStepsObjectConfigRetries struct {
-	Delay   AccountWorkflowInstanceGetResponseResultStepsObjectConfigRetriesDelayUnion `json:"delay,required"`
-	Limit   float64                                                                    `json:"limit,required"`
-	Backoff AccountWorkflowInstanceGetResponseResultStepsObjectConfigRetriesBackoff    `json:"backoff"`
-	JSON    accountWorkflowInstanceGetResponseResultStepsObjectConfigRetriesJSON       `json:"-"`
+	Delay   interface{}                                                             `json:"delay,required"`
+	Limit   float64                                                                 `json:"limit,required"`
+	Backoff AccountWorkflowInstanceGetResponseResultStepsObjectConfigRetriesBackoff `json:"backoff"`
+	JSON    accountWorkflowInstanceGetResponseResultStepsObjectConfigRetriesJSON    `json:"-"`
 }
 
 // accountWorkflowInstanceGetResponseResultStepsObjectConfigRetriesJSON contains
@@ -730,26 +734,6 @@ func (r accountWorkflowInstanceGetResponseResultStepsObjectConfigRetriesJSON) Ra
 	return r.raw
 }
 
-// Union satisfied by [shared.UnionString] or [shared.UnionFloat].
-type AccountWorkflowInstanceGetResponseResultStepsObjectConfigRetriesDelayUnion interface {
-	ImplementsAccountWorkflowInstanceGetResponseResultStepsObjectConfigRetriesDelayUnion()
-}
-
-func init() {
-	apijson.RegisterUnion(
-		reflect.TypeOf((*AccountWorkflowInstanceGetResponseResultStepsObjectConfigRetriesDelayUnion)(nil)).Elem(),
-		"",
-		apijson.UnionVariant{
-			TypeFilter: gjson.String,
-			Type:       reflect.TypeOf(shared.UnionString("")),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.Number,
-			Type:       reflect.TypeOf(shared.UnionFloat(0)),
-		},
-	)
-}
-
 type AccountWorkflowInstanceGetResponseResultStepsObjectConfigRetriesBackoff string
 
 const (
@@ -764,26 +748,6 @@ func (r AccountWorkflowInstanceGetResponseResultStepsObjectConfigRetriesBackoff)
 		return true
 	}
 	return false
-}
-
-// Union satisfied by [shared.UnionString] or [shared.UnionFloat].
-type AccountWorkflowInstanceGetResponseResultStepsObjectConfigTimeoutUnion interface {
-	ImplementsAccountWorkflowInstanceGetResponseResultStepsObjectConfigTimeoutUnion()
-}
-
-func init() {
-	apijson.RegisterUnion(
-		reflect.TypeOf((*AccountWorkflowInstanceGetResponseResultStepsObjectConfigTimeoutUnion)(nil)).Elem(),
-		"",
-		apijson.UnionVariant{
-			TypeFilter: gjson.String,
-			Type:       reflect.TypeOf(shared.UnionString("")),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.Number,
-			Type:       reflect.TypeOf(shared.UnionFloat(0)),
-		},
-	)
 }
 
 type AccountWorkflowInstanceGetResponseResultStepsObjectType string
@@ -803,14 +767,15 @@ func (r AccountWorkflowInstanceGetResponseResultStepsObjectType) IsKnown() bool 
 type AccountWorkflowInstanceGetResponseResultStepsType string
 
 const (
-	AccountWorkflowInstanceGetResponseResultStepsTypeStep        AccountWorkflowInstanceGetResponseResultStepsType = "step"
-	AccountWorkflowInstanceGetResponseResultStepsTypeSleep       AccountWorkflowInstanceGetResponseResultStepsType = "sleep"
-	AccountWorkflowInstanceGetResponseResultStepsTypeTermination AccountWorkflowInstanceGetResponseResultStepsType = "termination"
+	AccountWorkflowInstanceGetResponseResultStepsTypeStep         AccountWorkflowInstanceGetResponseResultStepsType = "step"
+	AccountWorkflowInstanceGetResponseResultStepsTypeSleep        AccountWorkflowInstanceGetResponseResultStepsType = "sleep"
+	AccountWorkflowInstanceGetResponseResultStepsTypeTermination  AccountWorkflowInstanceGetResponseResultStepsType = "termination"
+	AccountWorkflowInstanceGetResponseResultStepsTypeWaitForEvent AccountWorkflowInstanceGetResponseResultStepsType = "waitForEvent"
 )
 
 func (r AccountWorkflowInstanceGetResponseResultStepsType) IsKnown() bool {
 	switch r {
-	case AccountWorkflowInstanceGetResponseResultStepsTypeStep, AccountWorkflowInstanceGetResponseResultStepsTypeSleep, AccountWorkflowInstanceGetResponseResultStepsTypeTermination:
+	case AccountWorkflowInstanceGetResponseResultStepsTypeStep, AccountWorkflowInstanceGetResponseResultStepsTypeSleep, AccountWorkflowInstanceGetResponseResultStepsTypeTermination, AccountWorkflowInstanceGetResponseResultStepsTypeWaitForEvent:
 		return true
 	}
 	return false
@@ -1017,12 +982,11 @@ const (
 	AccountWorkflowInstanceListResponseResultStatusComplete        AccountWorkflowInstanceListResponseResultStatus = "complete"
 	AccountWorkflowInstanceListResponseResultStatusWaitingForPause AccountWorkflowInstanceListResponseResultStatus = "waitingForPause"
 	AccountWorkflowInstanceListResponseResultStatusWaiting         AccountWorkflowInstanceListResponseResultStatus = "waiting"
-	AccountWorkflowInstanceListResponseResultStatusUnknown         AccountWorkflowInstanceListResponseResultStatus = "unknown"
 )
 
 func (r AccountWorkflowInstanceListResponseResultStatus) IsKnown() bool {
 	switch r {
-	case AccountWorkflowInstanceListResponseResultStatusQueued, AccountWorkflowInstanceListResponseResultStatusRunning, AccountWorkflowInstanceListResponseResultStatusPaused, AccountWorkflowInstanceListResponseResultStatusErrored, AccountWorkflowInstanceListResponseResultStatusTerminated, AccountWorkflowInstanceListResponseResultStatusComplete, AccountWorkflowInstanceListResponseResultStatusWaitingForPause, AccountWorkflowInstanceListResponseResultStatusWaiting, AccountWorkflowInstanceListResponseResultStatusUnknown:
+	case AccountWorkflowInstanceListResponseResultStatusQueued, AccountWorkflowInstanceListResponseResultStatusRunning, AccountWorkflowInstanceListResponseResultStatusPaused, AccountWorkflowInstanceListResponseResultStatusErrored, AccountWorkflowInstanceListResponseResultStatusTerminated, AccountWorkflowInstanceListResponseResultStatusComplete, AccountWorkflowInstanceListResponseResultStatusWaitingForPause, AccountWorkflowInstanceListResponseResultStatusWaiting:
 		return true
 	}
 	return false
@@ -1182,12 +1146,11 @@ const (
 	AccountWorkflowInstanceBatchNewResponseResultStatusComplete        AccountWorkflowInstanceBatchNewResponseResultStatus = "complete"
 	AccountWorkflowInstanceBatchNewResponseResultStatusWaitingForPause AccountWorkflowInstanceBatchNewResponseResultStatus = "waitingForPause"
 	AccountWorkflowInstanceBatchNewResponseResultStatusWaiting         AccountWorkflowInstanceBatchNewResponseResultStatus = "waiting"
-	AccountWorkflowInstanceBatchNewResponseResultStatusUnknown         AccountWorkflowInstanceBatchNewResponseResultStatus = "unknown"
 )
 
 func (r AccountWorkflowInstanceBatchNewResponseResultStatus) IsKnown() bool {
 	switch r {
-	case AccountWorkflowInstanceBatchNewResponseResultStatusQueued, AccountWorkflowInstanceBatchNewResponseResultStatusRunning, AccountWorkflowInstanceBatchNewResponseResultStatusPaused, AccountWorkflowInstanceBatchNewResponseResultStatusErrored, AccountWorkflowInstanceBatchNewResponseResultStatusTerminated, AccountWorkflowInstanceBatchNewResponseResultStatusComplete, AccountWorkflowInstanceBatchNewResponseResultStatusWaitingForPause, AccountWorkflowInstanceBatchNewResponseResultStatusWaiting, AccountWorkflowInstanceBatchNewResponseResultStatusUnknown:
+	case AccountWorkflowInstanceBatchNewResponseResultStatusQueued, AccountWorkflowInstanceBatchNewResponseResultStatusRunning, AccountWorkflowInstanceBatchNewResponseResultStatusPaused, AccountWorkflowInstanceBatchNewResponseResultStatusErrored, AccountWorkflowInstanceBatchNewResponseResultStatusTerminated, AccountWorkflowInstanceBatchNewResponseResultStatusComplete, AccountWorkflowInstanceBatchNewResponseResultStatusWaitingForPause, AccountWorkflowInstanceBatchNewResponseResultStatusWaiting:
 		return true
 	}
 	return false
@@ -1427,7 +1390,7 @@ func (r accountWorkflowInstanceUpdateStatusResponseMessageJSON) RawJSON() string
 
 type AccountWorkflowInstanceUpdateStatusResponseResult struct {
 	Status AccountWorkflowInstanceUpdateStatusResponseResultStatus `json:"status,required"`
-	// In ISO 8601 with no timezone offsets and in UTC.
+	// Accepts ISO 8601 with no timezone offsets and in UTC.
 	Timestamp time.Time                                             `json:"timestamp,required" format:"date-time"`
 	JSON      accountWorkflowInstanceUpdateStatusResponseResultJSON `json:"-"`
 }
@@ -1460,12 +1423,11 @@ const (
 	AccountWorkflowInstanceUpdateStatusResponseResultStatusComplete        AccountWorkflowInstanceUpdateStatusResponseResultStatus = "complete"
 	AccountWorkflowInstanceUpdateStatusResponseResultStatusWaitingForPause AccountWorkflowInstanceUpdateStatusResponseResultStatus = "waitingForPause"
 	AccountWorkflowInstanceUpdateStatusResponseResultStatusWaiting         AccountWorkflowInstanceUpdateStatusResponseResultStatus = "waiting"
-	AccountWorkflowInstanceUpdateStatusResponseResultStatusUnknown         AccountWorkflowInstanceUpdateStatusResponseResultStatus = "unknown"
 )
 
 func (r AccountWorkflowInstanceUpdateStatusResponseResultStatus) IsKnown() bool {
 	switch r {
-	case AccountWorkflowInstanceUpdateStatusResponseResultStatusQueued, AccountWorkflowInstanceUpdateStatusResponseResultStatusRunning, AccountWorkflowInstanceUpdateStatusResponseResultStatusPaused, AccountWorkflowInstanceUpdateStatusResponseResultStatusErrored, AccountWorkflowInstanceUpdateStatusResponseResultStatusTerminated, AccountWorkflowInstanceUpdateStatusResponseResultStatusComplete, AccountWorkflowInstanceUpdateStatusResponseResultStatusWaitingForPause, AccountWorkflowInstanceUpdateStatusResponseResultStatusWaiting, AccountWorkflowInstanceUpdateStatusResponseResultStatusUnknown:
+	case AccountWorkflowInstanceUpdateStatusResponseResultStatusQueued, AccountWorkflowInstanceUpdateStatusResponseResultStatusRunning, AccountWorkflowInstanceUpdateStatusResponseResultStatusPaused, AccountWorkflowInstanceUpdateStatusResponseResultStatusErrored, AccountWorkflowInstanceUpdateStatusResponseResultStatusTerminated, AccountWorkflowInstanceUpdateStatusResponseResultStatusComplete, AccountWorkflowInstanceUpdateStatusResponseResultStatusWaitingForPause, AccountWorkflowInstanceUpdateStatusResponseResultStatusWaiting:
 		return true
 	}
 	return false
@@ -1513,8 +1475,9 @@ func (r accountWorkflowInstanceUpdateStatusResponseResultInfoJSON) RawJSON() str
 }
 
 type AccountWorkflowInstanceNewParams struct {
-	InstanceID param.Field[string]      `json:"instance_id"`
-	Params     param.Field[interface{}] `json:"params"`
+	InstanceID        param.Field[string]      `json:"instance_id"`
+	InstanceRetention param.Field[interface{}] `json:"instance_retention"`
+	Params            param.Field[interface{}] `json:"params"`
 }
 
 func (r AccountWorkflowInstanceNewParams) MarshalJSON() (data []byte, err error) {
@@ -1522,9 +1485,9 @@ func (r AccountWorkflowInstanceNewParams) MarshalJSON() (data []byte, err error)
 }
 
 type AccountWorkflowInstanceListParams struct {
-	// In ISO 8601 with no timezone offsets and in UTC.
+	// Accepts ISO 8601 with no timezone offsets and in UTC.
 	DateEnd param.Field[time.Time] `query:"date_end" format:"date-time"`
-	// In ISO 8601 with no timezone offsets and in UTC.
+	// Accepts ISO 8601 with no timezone offsets and in UTC.
 	DateStart param.Field[time.Time]                               `query:"date_start" format:"date-time"`
 	Page      param.Field[float64]                                 `query:"page"`
 	PerPage   param.Field[float64]                                 `query:"per_page"`
@@ -1551,12 +1514,11 @@ const (
 	AccountWorkflowInstanceListParamsStatusComplete        AccountWorkflowInstanceListParamsStatus = "complete"
 	AccountWorkflowInstanceListParamsStatusWaitingForPause AccountWorkflowInstanceListParamsStatus = "waitingForPause"
 	AccountWorkflowInstanceListParamsStatusWaiting         AccountWorkflowInstanceListParamsStatus = "waiting"
-	AccountWorkflowInstanceListParamsStatusUnknown         AccountWorkflowInstanceListParamsStatus = "unknown"
 )
 
 func (r AccountWorkflowInstanceListParamsStatus) IsKnown() bool {
 	switch r {
-	case AccountWorkflowInstanceListParamsStatusQueued, AccountWorkflowInstanceListParamsStatusRunning, AccountWorkflowInstanceListParamsStatusPaused, AccountWorkflowInstanceListParamsStatusErrored, AccountWorkflowInstanceListParamsStatusTerminated, AccountWorkflowInstanceListParamsStatusComplete, AccountWorkflowInstanceListParamsStatusWaitingForPause, AccountWorkflowInstanceListParamsStatusWaiting, AccountWorkflowInstanceListParamsStatusUnknown:
+	case AccountWorkflowInstanceListParamsStatusQueued, AccountWorkflowInstanceListParamsStatusRunning, AccountWorkflowInstanceListParamsStatusPaused, AccountWorkflowInstanceListParamsStatusErrored, AccountWorkflowInstanceListParamsStatusTerminated, AccountWorkflowInstanceListParamsStatusComplete, AccountWorkflowInstanceListParamsStatusWaitingForPause, AccountWorkflowInstanceListParamsStatusWaiting:
 		return true
 	}
 	return false
@@ -1571,8 +1533,9 @@ func (r AccountWorkflowInstanceBatchNewParams) MarshalJSON() (data []byte, err e
 }
 
 type AccountWorkflowInstanceBatchNewParamsBody struct {
-	InstanceID param.Field[string]      `json:"instance_id"`
-	Params     param.Field[interface{}] `json:"params"`
+	InstanceID        param.Field[string]      `json:"instance_id"`
+	InstanceRetention param.Field[interface{}] `json:"instance_retention"`
+	Params            param.Field[interface{}] `json:"params"`
 }
 
 func (r AccountWorkflowInstanceBatchNewParamsBody) MarshalJSON() (data []byte, err error) {
@@ -1588,7 +1551,7 @@ func (r AccountWorkflowInstanceSendEventParams) MarshalJSON() (data []byte, err 
 }
 
 type AccountWorkflowInstanceUpdateStatusParams struct {
-	// Possible actions to apply to instance
+	// Apply action to instance.
 	Status param.Field[AccountWorkflowInstanceUpdateStatusParamsStatus] `json:"status,required"`
 }
 
@@ -1596,19 +1559,18 @@ func (r AccountWorkflowInstanceUpdateStatusParams) MarshalJSON() (data []byte, e
 	return apijson.MarshalRoot(r)
 }
 
-// Possible actions to apply to instance
+// Apply action to instance.
 type AccountWorkflowInstanceUpdateStatusParamsStatus string
 
 const (
 	AccountWorkflowInstanceUpdateStatusParamsStatusResume    AccountWorkflowInstanceUpdateStatusParamsStatus = "resume"
 	AccountWorkflowInstanceUpdateStatusParamsStatusPause     AccountWorkflowInstanceUpdateStatusParamsStatus = "pause"
 	AccountWorkflowInstanceUpdateStatusParamsStatusTerminate AccountWorkflowInstanceUpdateStatusParamsStatus = "terminate"
-	AccountWorkflowInstanceUpdateStatusParamsStatusRestart   AccountWorkflowInstanceUpdateStatusParamsStatus = "restart"
 )
 
 func (r AccountWorkflowInstanceUpdateStatusParamsStatus) IsKnown() bool {
 	switch r {
-	case AccountWorkflowInstanceUpdateStatusParamsStatusResume, AccountWorkflowInstanceUpdateStatusParamsStatusPause, AccountWorkflowInstanceUpdateStatusParamsStatusTerminate, AccountWorkflowInstanceUpdateStatusParamsStatusRestart:
+	case AccountWorkflowInstanceUpdateStatusParamsStatusResume, AccountWorkflowInstanceUpdateStatusParamsStatusPause, AccountWorkflowInstanceUpdateStatusParamsStatusTerminate:
 		return true
 	}
 	return false

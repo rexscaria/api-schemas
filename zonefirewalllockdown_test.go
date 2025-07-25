@@ -14,7 +14,7 @@ import (
 	"github.com/rexscaria/api-schemas/option"
 )
 
-func TestZoneFirewallLockdownNew(t *testing.T) {
+func TestZoneFirewallLockdownNewWithOptionalParams(t *testing.T) {
 	t.Skip("skipped: tests are disabled for the time being")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -36,7 +36,10 @@ func TestZoneFirewallLockdownNew(t *testing.T) {
 				Target: cfrex.F(cfrex.FirewallLockdownConfigurationFirewallSchemasIPConfigurationTargetIP),
 				Value:  cfrex.F("198.51.100.4"),
 			}}),
-			URLs: cfrex.F([]string{"shop.example.com/*"}),
+			URLs:        cfrex.F([]string{"shop.example.com/*"}),
+			Description: cfrex.F("Prevent multiple login failures to mitigate brute force attacks"),
+			Paused:      cfrex.F(false),
+			Priority:    cfrex.F(5.000000),
 		},
 	)
 	if err != nil {
@@ -169,9 +172,6 @@ func TestZoneFirewallLockdownDelete(t *testing.T) {
 		context.TODO(),
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		"372e67954025e0ba6aaa6d586b9e0b59",
-		cfrex.ZoneFirewallLockdownDeleteParams{
-			Body: map[string]interface{}{},
-		},
 	)
 	if err != nil {
 		var apierr *cfrex.Error

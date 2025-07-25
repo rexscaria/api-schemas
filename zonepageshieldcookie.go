@@ -143,15 +143,21 @@ func (r CookieSameSiteAttribute) IsKnown() bool {
 }
 
 type ZonePageShieldCookieGetResponse struct {
-	Result Cookie                              `json:"result,required"`
-	JSON   zonePageShieldCookieGetResponseJSON `json:"-"`
-	GetResponseCollection
+	Result Cookie `json:"result,required,nullable"`
+	// Whether the API call was successful
+	Success  ZonePageShieldCookieGetResponseSuccess   `json:"success,required"`
+	Errors   []ZonePageShieldCookieGetResponseError   `json:"errors"`
+	Messages []ZonePageShieldCookieGetResponseMessage `json:"messages"`
+	JSON     zonePageShieldCookieGetResponseJSON      `json:"-"`
 }
 
 // zonePageShieldCookieGetResponseJSON contains the JSON metadata for the struct
 // [ZonePageShieldCookieGetResponse]
 type zonePageShieldCookieGetResponseJSON struct {
 	Result      apijson.Field
+	Success     apijson.Field
+	Errors      apijson.Field
+	Messages    apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -164,16 +170,135 @@ func (r zonePageShieldCookieGetResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful
+type ZonePageShieldCookieGetResponseSuccess bool
+
+const (
+	ZonePageShieldCookieGetResponseSuccessTrue ZonePageShieldCookieGetResponseSuccess = true
+)
+
+func (r ZonePageShieldCookieGetResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZonePageShieldCookieGetResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type ZonePageShieldCookieGetResponseError struct {
+	Code             int64                                       `json:"code,required"`
+	Message          string                                      `json:"message,required"`
+	DocumentationURL string                                      `json:"documentation_url"`
+	Source           ZonePageShieldCookieGetResponseErrorsSource `json:"source"`
+	JSON             zonePageShieldCookieGetResponseErrorJSON    `json:"-"`
+}
+
+// zonePageShieldCookieGetResponseErrorJSON contains the JSON metadata for the
+// struct [ZonePageShieldCookieGetResponseError]
+type zonePageShieldCookieGetResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *ZonePageShieldCookieGetResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zonePageShieldCookieGetResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZonePageShieldCookieGetResponseErrorsSource struct {
+	Pointer string                                          `json:"pointer"`
+	JSON    zonePageShieldCookieGetResponseErrorsSourceJSON `json:"-"`
+}
+
+// zonePageShieldCookieGetResponseErrorsSourceJSON contains the JSON metadata for
+// the struct [ZonePageShieldCookieGetResponseErrorsSource]
+type zonePageShieldCookieGetResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZonePageShieldCookieGetResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zonePageShieldCookieGetResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZonePageShieldCookieGetResponseMessage struct {
+	Code             int64                                         `json:"code,required"`
+	Message          string                                        `json:"message,required"`
+	DocumentationURL string                                        `json:"documentation_url"`
+	Source           ZonePageShieldCookieGetResponseMessagesSource `json:"source"`
+	JSON             zonePageShieldCookieGetResponseMessageJSON    `json:"-"`
+}
+
+// zonePageShieldCookieGetResponseMessageJSON contains the JSON metadata for the
+// struct [ZonePageShieldCookieGetResponseMessage]
+type zonePageShieldCookieGetResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *ZonePageShieldCookieGetResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zonePageShieldCookieGetResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZonePageShieldCookieGetResponseMessagesSource struct {
+	Pointer string                                            `json:"pointer"`
+	JSON    zonePageShieldCookieGetResponseMessagesSourceJSON `json:"-"`
+}
+
+// zonePageShieldCookieGetResponseMessagesSourceJSON contains the JSON metadata for
+// the struct [ZonePageShieldCookieGetResponseMessagesSource]
+type zonePageShieldCookieGetResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZonePageShieldCookieGetResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zonePageShieldCookieGetResponseMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
 type ZonePageShieldCookieListResponse struct {
-	Result []Cookie                             `json:"result,required"`
-	JSON   zonePageShieldCookieListResponseJSON `json:"-"`
-	ListResponseCollectionPageShield
+	Result     []Cookie                                   `json:"result,required"`
+	ResultInfo ZonePageShieldCookieListResponseResultInfo `json:"result_info,required"`
+	// Whether the API call was successful
+	Success  ZonePageShieldCookieListResponseSuccess   `json:"success,required"`
+	Errors   []ZonePageShieldCookieListResponseError   `json:"errors"`
+	Messages []ZonePageShieldCookieListResponseMessage `json:"messages"`
+	JSON     zonePageShieldCookieListResponseJSON      `json:"-"`
 }
 
 // zonePageShieldCookieListResponseJSON contains the JSON metadata for the struct
 // [ZonePageShieldCookieListResponse]
 type zonePageShieldCookieListResponseJSON struct {
 	Result      apijson.Field
+	ResultInfo  apijson.Field
+	Success     apijson.Field
+	Errors      apijson.Field
+	Messages    apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -183,6 +308,151 @@ func (r *ZonePageShieldCookieListResponse) UnmarshalJSON(data []byte) (err error
 }
 
 func (r zonePageShieldCookieListResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZonePageShieldCookieListResponseResultInfo struct {
+	// Total number of results for the requested service
+	Count float64 `json:"count,required"`
+	// Current page within paginated list of results
+	Page float64 `json:"page,required"`
+	// Number of results per page of results
+	PerPage float64 `json:"per_page,required"`
+	// Total results available without any search parameters
+	TotalCount float64 `json:"total_count,required"`
+	// Total number of pages
+	TotalPages float64                                        `json:"total_pages,required"`
+	JSON       zonePageShieldCookieListResponseResultInfoJSON `json:"-"`
+}
+
+// zonePageShieldCookieListResponseResultInfoJSON contains the JSON metadata for
+// the struct [ZonePageShieldCookieListResponseResultInfo]
+type zonePageShieldCookieListResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	TotalPages  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZonePageShieldCookieListResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zonePageShieldCookieListResponseResultInfoJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful
+type ZonePageShieldCookieListResponseSuccess bool
+
+const (
+	ZonePageShieldCookieListResponseSuccessTrue ZonePageShieldCookieListResponseSuccess = true
+)
+
+func (r ZonePageShieldCookieListResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZonePageShieldCookieListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type ZonePageShieldCookieListResponseError struct {
+	Code             int64                                        `json:"code,required"`
+	Message          string                                       `json:"message,required"`
+	DocumentationURL string                                       `json:"documentation_url"`
+	Source           ZonePageShieldCookieListResponseErrorsSource `json:"source"`
+	JSON             zonePageShieldCookieListResponseErrorJSON    `json:"-"`
+}
+
+// zonePageShieldCookieListResponseErrorJSON contains the JSON metadata for the
+// struct [ZonePageShieldCookieListResponseError]
+type zonePageShieldCookieListResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *ZonePageShieldCookieListResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zonePageShieldCookieListResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZonePageShieldCookieListResponseErrorsSource struct {
+	Pointer string                                           `json:"pointer"`
+	JSON    zonePageShieldCookieListResponseErrorsSourceJSON `json:"-"`
+}
+
+// zonePageShieldCookieListResponseErrorsSourceJSON contains the JSON metadata for
+// the struct [ZonePageShieldCookieListResponseErrorsSource]
+type zonePageShieldCookieListResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZonePageShieldCookieListResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zonePageShieldCookieListResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZonePageShieldCookieListResponseMessage struct {
+	Code             int64                                          `json:"code,required"`
+	Message          string                                         `json:"message,required"`
+	DocumentationURL string                                         `json:"documentation_url"`
+	Source           ZonePageShieldCookieListResponseMessagesSource `json:"source"`
+	JSON             zonePageShieldCookieListResponseMessageJSON    `json:"-"`
+}
+
+// zonePageShieldCookieListResponseMessageJSON contains the JSON metadata for the
+// struct [ZonePageShieldCookieListResponseMessage]
+type zonePageShieldCookieListResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *ZonePageShieldCookieListResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zonePageShieldCookieListResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZonePageShieldCookieListResponseMessagesSource struct {
+	Pointer string                                             `json:"pointer"`
+	JSON    zonePageShieldCookieListResponseMessagesSourceJSON `json:"-"`
+}
+
+// zonePageShieldCookieListResponseMessagesSourceJSON contains the JSON metadata
+// for the struct [ZonePageShieldCookieListResponseMessagesSource]
+type zonePageShieldCookieListResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZonePageShieldCookieListResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zonePageShieldCookieListResponseMessagesSourceJSON) RawJSON() string {
 	return r.raw
 }
 

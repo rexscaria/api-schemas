@@ -62,9 +62,6 @@ func TestAccountAddressingAddressMapAccountRemove(t *testing.T) {
 		context.TODO(),
 		"258def64c72dae45f3e4c8516e2111f2",
 		"055817b111884e0227e1be16a0be6ee0",
-		cfrex.AccountAddressingAddressMapAccountRemoveParams{
-			Body: map[string]interface{}{},
-		},
 	)
 	if err != nil {
 		var apierr *cfrex.Error

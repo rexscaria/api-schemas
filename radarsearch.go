@@ -33,7 +33,8 @@ func NewRadarSearchService(opts ...option.RequestOption) (r *RadarSearchService)
 	return
 }
 
-// Searches for locations, autonomous systems, and reports.
+// Searches for locations, autonomous systems, reports, bots, certificate logs, and
+// certificate authorities.
 func (r *RadarSearchService) Global(ctx context.Context, query RadarSearchGlobalParams, opts ...option.RequestOption) (res *RadarSearchGlobalResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "radar/search/global"
@@ -111,17 +112,17 @@ func (r radarSearchGlobalResponseResultSearchJSON) RawJSON() string {
 }
 
 type RadarSearchGlobalParams struct {
-	// Search for locations, autonomous systems and reports.
+	// String used to perform the search operation.
 	Query param.Field[string] `query:"query,required"`
-	// Search types to be excluded from results.
+	// Search types excluded from results.
 	Exclude param.Field[[]RadarSearchGlobalParamsExclude] `query:"exclude"`
 	// Format in which results will be returned.
 	Format param.Field[RadarSearchGlobalParamsFormat] `query:"format"`
-	// Search types to be included in results.
+	// Search types included in results.
 	Include param.Field[[]RadarSearchGlobalParamsInclude] `query:"include"`
 	// Limits the number of objects returned in the response.
 	Limit param.Field[int64] `query:"limit"`
-	// Limit the number of objects per search category.
+	// Limits the number of objects per search category.
 	LimitPerGroup param.Field[float64] `query:"limitPerGroup"`
 }
 
@@ -137,15 +138,17 @@ func (r RadarSearchGlobalParams) URLQuery() (v url.Values) {
 type RadarSearchGlobalParamsExclude string
 
 const (
-	RadarSearchGlobalParamsExcludeSpecialEvents RadarSearchGlobalParamsExclude = "SPECIAL_EVENTS"
-	RadarSearchGlobalParamsExcludeNotebooks     RadarSearchGlobalParamsExclude = "NOTEBOOKS"
-	RadarSearchGlobalParamsExcludeLocations     RadarSearchGlobalParamsExclude = "LOCATIONS"
-	RadarSearchGlobalParamsExcludeAsns          RadarSearchGlobalParamsExclude = "ASNS"
+	RadarSearchGlobalParamsExcludeAsns                   RadarSearchGlobalParamsExclude = "ASNS"
+	RadarSearchGlobalParamsExcludeBots                   RadarSearchGlobalParamsExclude = "BOTS"
+	RadarSearchGlobalParamsExcludeCertificateAuthorities RadarSearchGlobalParamsExclude = "CERTIFICATE_AUTHORITIES"
+	RadarSearchGlobalParamsExcludeCertificateLogs        RadarSearchGlobalParamsExclude = "CERTIFICATE_LOGS"
+	RadarSearchGlobalParamsExcludeLocations              RadarSearchGlobalParamsExclude = "LOCATIONS"
+	RadarSearchGlobalParamsExcludeNotebooks              RadarSearchGlobalParamsExclude = "NOTEBOOKS"
 )
 
 func (r RadarSearchGlobalParamsExclude) IsKnown() bool {
 	switch r {
-	case RadarSearchGlobalParamsExcludeSpecialEvents, RadarSearchGlobalParamsExcludeNotebooks, RadarSearchGlobalParamsExcludeLocations, RadarSearchGlobalParamsExcludeAsns:
+	case RadarSearchGlobalParamsExcludeAsns, RadarSearchGlobalParamsExcludeBots, RadarSearchGlobalParamsExcludeCertificateAuthorities, RadarSearchGlobalParamsExcludeCertificateLogs, RadarSearchGlobalParamsExcludeLocations, RadarSearchGlobalParamsExcludeNotebooks:
 		return true
 	}
 	return false
@@ -170,15 +173,17 @@ func (r RadarSearchGlobalParamsFormat) IsKnown() bool {
 type RadarSearchGlobalParamsInclude string
 
 const (
-	RadarSearchGlobalParamsIncludeSpecialEvents RadarSearchGlobalParamsInclude = "SPECIAL_EVENTS"
-	RadarSearchGlobalParamsIncludeNotebooks     RadarSearchGlobalParamsInclude = "NOTEBOOKS"
-	RadarSearchGlobalParamsIncludeLocations     RadarSearchGlobalParamsInclude = "LOCATIONS"
-	RadarSearchGlobalParamsIncludeAsns          RadarSearchGlobalParamsInclude = "ASNS"
+	RadarSearchGlobalParamsIncludeAsns                   RadarSearchGlobalParamsInclude = "ASNS"
+	RadarSearchGlobalParamsIncludeBots                   RadarSearchGlobalParamsInclude = "BOTS"
+	RadarSearchGlobalParamsIncludeCertificateAuthorities RadarSearchGlobalParamsInclude = "CERTIFICATE_AUTHORITIES"
+	RadarSearchGlobalParamsIncludeCertificateLogs        RadarSearchGlobalParamsInclude = "CERTIFICATE_LOGS"
+	RadarSearchGlobalParamsIncludeLocations              RadarSearchGlobalParamsInclude = "LOCATIONS"
+	RadarSearchGlobalParamsIncludeNotebooks              RadarSearchGlobalParamsInclude = "NOTEBOOKS"
 )
 
 func (r RadarSearchGlobalParamsInclude) IsKnown() bool {
 	switch r {
-	case RadarSearchGlobalParamsIncludeSpecialEvents, RadarSearchGlobalParamsIncludeNotebooks, RadarSearchGlobalParamsIncludeLocations, RadarSearchGlobalParamsIncludeAsns:
+	case RadarSearchGlobalParamsIncludeAsns, RadarSearchGlobalParamsIncludeBots, RadarSearchGlobalParamsIncludeCertificateAuthorities, RadarSearchGlobalParamsIncludeCertificateLogs, RadarSearchGlobalParamsIncludeLocations, RadarSearchGlobalParamsIncludeNotebooks:
 		return true
 	}
 	return false

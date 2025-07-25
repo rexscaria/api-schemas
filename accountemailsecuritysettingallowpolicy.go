@@ -130,15 +130,20 @@ func (r SortingDirection) IsKnown() bool {
 }
 
 type AccountEmailSecuritySettingAllowPolicyNewResponse struct {
-	Result AccountEmailSecuritySettingAllowPolicyNewResponseResult `json:"result,required"`
-	JSON   accountEmailSecuritySettingAllowPolicyNewResponseJSON   `json:"-"`
-	APIResponseEmailSecurity
+	Errors   []EmailSecurityMessage                                  `json:"errors,required"`
+	Messages []EmailSecurityMessage                                  `json:"messages,required"`
+	Result   AccountEmailSecuritySettingAllowPolicyNewResponseResult `json:"result,required"`
+	Success  bool                                                    `json:"success,required"`
+	JSON     accountEmailSecuritySettingAllowPolicyNewResponseJSON   `json:"-"`
 }
 
 // accountEmailSecuritySettingAllowPolicyNewResponseJSON contains the JSON metadata
 // for the struct [AccountEmailSecuritySettingAllowPolicyNewResponse]
 type accountEmailSecuritySettingAllowPolicyNewResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -211,15 +216,20 @@ func (r accountEmailSecuritySettingAllowPolicyNewResponseResultJSON) RawJSON() s
 }
 
 type AccountEmailSecuritySettingAllowPolicyGetResponse struct {
-	Result AccountEmailSecuritySettingAllowPolicyGetResponseResult `json:"result,required"`
-	JSON   accountEmailSecuritySettingAllowPolicyGetResponseJSON   `json:"-"`
-	APIResponseEmailSecurity
+	Errors   []EmailSecurityMessage                                  `json:"errors,required"`
+	Messages []EmailSecurityMessage                                  `json:"messages,required"`
+	Result   AccountEmailSecuritySettingAllowPolicyGetResponseResult `json:"result,required"`
+	Success  bool                                                    `json:"success,required"`
+	JSON     accountEmailSecuritySettingAllowPolicyGetResponseJSON   `json:"-"`
 }
 
 // accountEmailSecuritySettingAllowPolicyGetResponseJSON contains the JSON metadata
 // for the struct [AccountEmailSecuritySettingAllowPolicyGetResponse]
 type accountEmailSecuritySettingAllowPolicyGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -292,15 +302,20 @@ func (r accountEmailSecuritySettingAllowPolicyGetResponseResultJSON) RawJSON() s
 }
 
 type AccountEmailSecuritySettingAllowPolicyUpdateResponse struct {
-	Result AccountEmailSecuritySettingAllowPolicyUpdateResponseResult `json:"result,required"`
-	JSON   accountEmailSecuritySettingAllowPolicyUpdateResponseJSON   `json:"-"`
-	APIResponseEmailSecurity
+	Errors   []EmailSecurityMessage                                     `json:"errors,required"`
+	Messages []EmailSecurityMessage                                     `json:"messages,required"`
+	Result   AccountEmailSecuritySettingAllowPolicyUpdateResponseResult `json:"result,required"`
+	Success  bool                                                       `json:"success,required"`
+	JSON     accountEmailSecuritySettingAllowPolicyUpdateResponseJSON   `json:"-"`
 }
 
 // accountEmailSecuritySettingAllowPolicyUpdateResponseJSON contains the JSON
 // metadata for the struct [AccountEmailSecuritySettingAllowPolicyUpdateResponse]
 type accountEmailSecuritySettingAllowPolicyUpdateResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -373,17 +388,22 @@ func (r accountEmailSecuritySettingAllowPolicyUpdateResponseResultJSON) RawJSON(
 }
 
 type AccountEmailSecuritySettingAllowPolicyListResponse struct {
+	Errors     []EmailSecurityMessage                                     `json:"errors,required"`
+	Messages   []EmailSecurityMessage                                     `json:"messages,required"`
 	Result     []AccountEmailSecuritySettingAllowPolicyListResponseResult `json:"result,required"`
 	ResultInfo ResultInfoEmailSecurity                                    `json:"result_info,required"`
+	Success    bool                                                       `json:"success,required"`
 	JSON       accountEmailSecuritySettingAllowPolicyListResponseJSON     `json:"-"`
-	APIResponseEmailSecurity
 }
 
 // accountEmailSecuritySettingAllowPolicyListResponseJSON contains the JSON
 // metadata for the struct [AccountEmailSecuritySettingAllowPolicyListResponse]
 type accountEmailSecuritySettingAllowPolicyListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
 	ResultInfo  apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -456,15 +476,20 @@ func (r accountEmailSecuritySettingAllowPolicyListResponseResultJSON) RawJSON() 
 }
 
 type AccountEmailSecuritySettingAllowPolicyDeleteResponse struct {
-	Result AccountEmailSecuritySettingAllowPolicyDeleteResponseResult `json:"result,required"`
-	JSON   accountEmailSecuritySettingAllowPolicyDeleteResponseJSON   `json:"-"`
-	APIResponseEmailSecurity
+	Errors   []EmailSecurityMessage                                     `json:"errors,required"`
+	Messages []EmailSecurityMessage                                     `json:"messages,required"`
+	Result   AccountEmailSecuritySettingAllowPolicyDeleteResponseResult `json:"result,required"`
+	Success  bool                                                       `json:"success,required"`
+	JSON     accountEmailSecuritySettingAllowPolicyDeleteResponseJSON   `json:"-"`
 }
 
 // accountEmailSecuritySettingAllowPolicyDeleteResponseJSON contains the JSON
 // metadata for the struct [AccountEmailSecuritySettingAllowPolicyDeleteResponse]
 type accountEmailSecuritySettingAllowPolicyDeleteResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -535,9 +560,9 @@ type AccountEmailSecuritySettingAllowPolicyUpdateParams struct {
 	IsExemptRecipient param.Field[bool] `json:"is_exempt_recipient"`
 	IsRegex           param.Field[bool] `json:"is_regex"`
 	// Messages from this sender will bypass all detections and link following.
-	IsTrustedSender param.Field[bool]                                                          `json:"is_trusted_sender"`
-	Pattern         param.Field[string]                                                        `json:"pattern"`
-	PatternType     param.Field[AccountEmailSecuritySettingAllowPolicyUpdateParamsPatternType] `json:"pattern_type"`
+	IsTrustedSender param.Field[bool]        `json:"is_trusted_sender"`
+	Pattern         param.Field[string]      `json:"pattern"`
+	PatternType     param.Field[PatternType] `json:"pattern_type"`
 	// Enforce DMARC, SPF or DKIM authentication. When on, Email Security only honors
 	// policies that pass authentication.
 	VerifySender param.Field[bool] `json:"verify_sender"`
@@ -545,23 +570,6 @@ type AccountEmailSecuritySettingAllowPolicyUpdateParams struct {
 
 func (r AccountEmailSecuritySettingAllowPolicyUpdateParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
-}
-
-type AccountEmailSecuritySettingAllowPolicyUpdateParamsPatternType string
-
-const (
-	AccountEmailSecuritySettingAllowPolicyUpdateParamsPatternTypeEmail   AccountEmailSecuritySettingAllowPolicyUpdateParamsPatternType = "EMAIL"
-	AccountEmailSecuritySettingAllowPolicyUpdateParamsPatternTypeDomain  AccountEmailSecuritySettingAllowPolicyUpdateParamsPatternType = "DOMAIN"
-	AccountEmailSecuritySettingAllowPolicyUpdateParamsPatternTypeIP      AccountEmailSecuritySettingAllowPolicyUpdateParamsPatternType = "IP"
-	AccountEmailSecuritySettingAllowPolicyUpdateParamsPatternTypeUnknown AccountEmailSecuritySettingAllowPolicyUpdateParamsPatternType = "UNKNOWN"
-)
-
-func (r AccountEmailSecuritySettingAllowPolicyUpdateParamsPatternType) IsKnown() bool {
-	switch r {
-	case AccountEmailSecuritySettingAllowPolicyUpdateParamsPatternTypeEmail, AccountEmailSecuritySettingAllowPolicyUpdateParamsPatternTypeDomain, AccountEmailSecuritySettingAllowPolicyUpdateParamsPatternTypeIP, AccountEmailSecuritySettingAllowPolicyUpdateParamsPatternTypeUnknown:
-		return true
-	}
-	return false
 }
 
 type AccountEmailSecuritySettingAllowPolicyListParams struct {
@@ -577,6 +585,7 @@ type AccountEmailSecuritySettingAllowPolicyListParams struct {
 	Order param.Field[AccountEmailSecuritySettingAllowPolicyListParamsOrder] `query:"order"`
 	// The page number of paginated results.
 	Page        param.Field[int64]       `query:"page"`
+	Pattern     param.Field[string]      `query:"pattern"`
 	PatternType param.Field[PatternType] `query:"pattern_type"`
 	// The number of results per page.
 	PerPage param.Field[int64] `query:"per_page"`

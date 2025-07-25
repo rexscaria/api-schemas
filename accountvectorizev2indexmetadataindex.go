@@ -83,15 +83,21 @@ func (r *AccountVectorizeV2IndexMetadataIndexService) Delete(ctx context.Context
 }
 
 type AccountVectorizeV2IndexMetadataIndexNewResponse struct {
-	Result AccountVectorizeV2IndexMetadataIndexNewResponseResult `json:"result"`
-	JSON   accountVectorizeV2IndexMetadataIndexNewResponseJSON   `json:"-"`
-	VectorizeAPIResponseSingle
+	Errors   []VectorizeMessages                                   `json:"errors,required"`
+	Messages []VectorizeMessages                                   `json:"messages,required"`
+	Result   AccountVectorizeV2IndexMetadataIndexNewResponseResult `json:"result,required,nullable"`
+	// Whether the API call was successful
+	Success AccountVectorizeV2IndexMetadataIndexNewResponseSuccess `json:"success,required"`
+	JSON    accountVectorizeV2IndexMetadataIndexNewResponseJSON    `json:"-"`
 }
 
 // accountVectorizeV2IndexMetadataIndexNewResponseJSON contains the JSON metadata
 // for the struct [AccountVectorizeV2IndexMetadataIndexNewResponse]
 type accountVectorizeV2IndexMetadataIndexNewResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -106,7 +112,7 @@ func (r accountVectorizeV2IndexMetadataIndexNewResponseJSON) RawJSON() string {
 
 type AccountVectorizeV2IndexMetadataIndexNewResponseResult struct {
 	// The unique identifier for the async mutation operation containing the changeset.
-	MutationID interface{}                                               `json:"mutationId"`
+	MutationID string                                                    `json:"mutationId"`
 	JSON       accountVectorizeV2IndexMetadataIndexNewResponseResultJSON `json:"-"`
 }
 
@@ -126,16 +132,37 @@ func (r accountVectorizeV2IndexMetadataIndexNewResponseResultJSON) RawJSON() str
 	return r.raw
 }
 
+// Whether the API call was successful
+type AccountVectorizeV2IndexMetadataIndexNewResponseSuccess bool
+
+const (
+	AccountVectorizeV2IndexMetadataIndexNewResponseSuccessTrue AccountVectorizeV2IndexMetadataIndexNewResponseSuccess = true
+)
+
+func (r AccountVectorizeV2IndexMetadataIndexNewResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountVectorizeV2IndexMetadataIndexNewResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountVectorizeV2IndexMetadataIndexListResponse struct {
-	Result AccountVectorizeV2IndexMetadataIndexListResponseResult `json:"result"`
-	JSON   accountVectorizeV2IndexMetadataIndexListResponseJSON   `json:"-"`
-	VectorizeAPIResponseSingle
+	Errors   []VectorizeMessages                                    `json:"errors,required"`
+	Messages []VectorizeMessages                                    `json:"messages,required"`
+	Result   AccountVectorizeV2IndexMetadataIndexListResponseResult `json:"result,required,nullable"`
+	// Whether the API call was successful
+	Success AccountVectorizeV2IndexMetadataIndexListResponseSuccess `json:"success,required"`
+	JSON    accountVectorizeV2IndexMetadataIndexListResponseJSON    `json:"-"`
 }
 
 // accountVectorizeV2IndexMetadataIndexListResponseJSON contains the JSON metadata
 // for the struct [AccountVectorizeV2IndexMetadataIndexListResponse]
 type accountVectorizeV2IndexMetadataIndexListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -213,16 +240,37 @@ func (r AccountVectorizeV2IndexMetadataIndexListResponseResultMetadataIndexesInd
 	return false
 }
 
+// Whether the API call was successful
+type AccountVectorizeV2IndexMetadataIndexListResponseSuccess bool
+
+const (
+	AccountVectorizeV2IndexMetadataIndexListResponseSuccessTrue AccountVectorizeV2IndexMetadataIndexListResponseSuccess = true
+)
+
+func (r AccountVectorizeV2IndexMetadataIndexListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountVectorizeV2IndexMetadataIndexListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountVectorizeV2IndexMetadataIndexDeleteResponse struct {
-	Result AccountVectorizeV2IndexMetadataIndexDeleteResponseResult `json:"result"`
-	JSON   accountVectorizeV2IndexMetadataIndexDeleteResponseJSON   `json:"-"`
-	VectorizeAPIResponseSingle
+	Errors   []VectorizeMessages                                      `json:"errors,required"`
+	Messages []VectorizeMessages                                      `json:"messages,required"`
+	Result   AccountVectorizeV2IndexMetadataIndexDeleteResponseResult `json:"result,required,nullable"`
+	// Whether the API call was successful
+	Success AccountVectorizeV2IndexMetadataIndexDeleteResponseSuccess `json:"success,required"`
+	JSON    accountVectorizeV2IndexMetadataIndexDeleteResponseJSON    `json:"-"`
 }
 
 // accountVectorizeV2IndexMetadataIndexDeleteResponseJSON contains the JSON
 // metadata for the struct [AccountVectorizeV2IndexMetadataIndexDeleteResponse]
 type accountVectorizeV2IndexMetadataIndexDeleteResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -237,7 +285,7 @@ func (r accountVectorizeV2IndexMetadataIndexDeleteResponseJSON) RawJSON() string
 
 type AccountVectorizeV2IndexMetadataIndexDeleteResponseResult struct {
 	// The unique identifier for the async mutation operation containing the changeset.
-	MutationID interface{}                                                  `json:"mutationId"`
+	MutationID string                                                       `json:"mutationId"`
 	JSON       accountVectorizeV2IndexMetadataIndexDeleteResponseResultJSON `json:"-"`
 }
 
@@ -256,6 +304,21 @@ func (r *AccountVectorizeV2IndexMetadataIndexDeleteResponseResult) UnmarshalJSON
 
 func (r accountVectorizeV2IndexMetadataIndexDeleteResponseResultJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful
+type AccountVectorizeV2IndexMetadataIndexDeleteResponseSuccess bool
+
+const (
+	AccountVectorizeV2IndexMetadataIndexDeleteResponseSuccessTrue AccountVectorizeV2IndexMetadataIndexDeleteResponseSuccess = true
+)
+
+func (r AccountVectorizeV2IndexMetadataIndexDeleteResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountVectorizeV2IndexMetadataIndexDeleteResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountVectorizeV2IndexMetadataIndexNewParams struct {

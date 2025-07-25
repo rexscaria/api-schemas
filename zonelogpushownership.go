@@ -3,14 +3,6 @@
 package cfrex
 
 import (
-	"context"
-	"errors"
-	"fmt"
-	"net/http"
-
-	"github.com/rexscaria/api-schemas/internal/apijson"
-	"github.com/rexscaria/api-schemas/internal/param"
-	"github.com/rexscaria/api-schemas/internal/requestconfig"
 	"github.com/rexscaria/api-schemas/option"
 )
 
@@ -31,52 +23,4 @@ func NewZoneLogpushOwnershipService(opts ...option.RequestOption) (r *ZoneLogpus
 	r = &ZoneLogpushOwnershipService{}
 	r.Options = opts
 	return
-}
-
-// Gets a new ownership challenge sent to your destination.
-func (r *ZoneLogpushOwnershipService) GetChallenge(ctx context.Context, zoneID string, body ZoneLogpushOwnershipGetChallengeParams, opts ...option.RequestOption) (res *GetOwnershipResponse, err error) {
-	opts = append(r.Options[:], opts...)
-	if zoneID == "" {
-		err = errors.New("missing required zone_id parameter")
-		return
-	}
-	path := fmt.Sprintf("zones/%s/logpush/ownership", zoneID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
-}
-
-// Validates ownership challenge of the destination.
-func (r *ZoneLogpushOwnershipService) ValidateChallenge(ctx context.Context, zoneID string, body ZoneLogpushOwnershipValidateChallengeParams, opts ...option.RequestOption) (res *ValidateOwnershipResponse, err error) {
-	opts = append(r.Options[:], opts...)
-	if zoneID == "" {
-		err = errors.New("missing required zone_id parameter")
-		return
-	}
-	path := fmt.Sprintf("zones/%s/logpush/ownership/validate", zoneID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
-}
-
-type ZoneLogpushOwnershipGetChallengeParams struct {
-	// Uniquely identifies a resource (such as an s3 bucket) where data will be pushed.
-	// Additional configuration parameters supported by the destination may be
-	// included.
-	DestinationConf param.Field[string] `json:"destination_conf,required" format:"uri"`
-}
-
-func (r ZoneLogpushOwnershipGetChallengeParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-type ZoneLogpushOwnershipValidateChallengeParams struct {
-	// Uniquely identifies a resource (such as an s3 bucket) where data will be pushed.
-	// Additional configuration parameters supported by the destination may be
-	// included.
-	DestinationConf param.Field[string] `json:"destination_conf,required" format:"uri"`
-	// Ownership challenge token to prove destination ownership.
-	OwnershipChallenge param.Field[string] `json:"ownership_challenge,required"`
-}
-
-func (r ZoneLogpushOwnershipValidateChallengeParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
 }

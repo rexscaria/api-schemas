@@ -54,15 +54,21 @@ func (r *AccountPageProjectDeploymentHistoryService) GetLogs(ctx context.Context
 }
 
 type AccountPageProjectDeploymentHistoryGetLogsResponse struct {
-	Result AccountPageProjectDeploymentHistoryGetLogsResponseResult `json:"result"`
-	JSON   accountPageProjectDeploymentHistoryGetLogsResponseJSON   `json:"-"`
-	APIResponsePages
+	Errors   []AccountPageProjectDeploymentHistoryGetLogsResponseError   `json:"errors,required"`
+	Messages []AccountPageProjectDeploymentHistoryGetLogsResponseMessage `json:"messages,required"`
+	Result   AccountPageProjectDeploymentHistoryGetLogsResponseResult    `json:"result,required"`
+	// Whether the API call was successful
+	Success AccountPageProjectDeploymentHistoryGetLogsResponseSuccess `json:"success,required"`
+	JSON    accountPageProjectDeploymentHistoryGetLogsResponseJSON    `json:"-"`
 }
 
 // accountPageProjectDeploymentHistoryGetLogsResponseJSON contains the JSON
 // metadata for the struct [AccountPageProjectDeploymentHistoryGetLogsResponse]
 type accountPageProjectDeploymentHistoryGetLogsResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -72,6 +78,106 @@ func (r *AccountPageProjectDeploymentHistoryGetLogsResponse) UnmarshalJSON(data 
 }
 
 func (r accountPageProjectDeploymentHistoryGetLogsResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountPageProjectDeploymentHistoryGetLogsResponseError struct {
+	Code             int64                                                          `json:"code,required"`
+	Message          string                                                         `json:"message,required"`
+	DocumentationURL string                                                         `json:"documentation_url"`
+	Source           AccountPageProjectDeploymentHistoryGetLogsResponseErrorsSource `json:"source"`
+	JSON             accountPageProjectDeploymentHistoryGetLogsResponseErrorJSON    `json:"-"`
+}
+
+// accountPageProjectDeploymentHistoryGetLogsResponseErrorJSON contains the JSON
+// metadata for the struct
+// [AccountPageProjectDeploymentHistoryGetLogsResponseError]
+type accountPageProjectDeploymentHistoryGetLogsResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountPageProjectDeploymentHistoryGetLogsResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountPageProjectDeploymentHistoryGetLogsResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountPageProjectDeploymentHistoryGetLogsResponseErrorsSource struct {
+	Pointer string                                                             `json:"pointer"`
+	JSON    accountPageProjectDeploymentHistoryGetLogsResponseErrorsSourceJSON `json:"-"`
+}
+
+// accountPageProjectDeploymentHistoryGetLogsResponseErrorsSourceJSON contains the
+// JSON metadata for the struct
+// [AccountPageProjectDeploymentHistoryGetLogsResponseErrorsSource]
+type accountPageProjectDeploymentHistoryGetLogsResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountPageProjectDeploymentHistoryGetLogsResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountPageProjectDeploymentHistoryGetLogsResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountPageProjectDeploymentHistoryGetLogsResponseMessage struct {
+	Code             int64                                                            `json:"code,required"`
+	Message          string                                                           `json:"message,required"`
+	DocumentationURL string                                                           `json:"documentation_url"`
+	Source           AccountPageProjectDeploymentHistoryGetLogsResponseMessagesSource `json:"source"`
+	JSON             accountPageProjectDeploymentHistoryGetLogsResponseMessageJSON    `json:"-"`
+}
+
+// accountPageProjectDeploymentHistoryGetLogsResponseMessageJSON contains the JSON
+// metadata for the struct
+// [AccountPageProjectDeploymentHistoryGetLogsResponseMessage]
+type accountPageProjectDeploymentHistoryGetLogsResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountPageProjectDeploymentHistoryGetLogsResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountPageProjectDeploymentHistoryGetLogsResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountPageProjectDeploymentHistoryGetLogsResponseMessagesSource struct {
+	Pointer string                                                               `json:"pointer"`
+	JSON    accountPageProjectDeploymentHistoryGetLogsResponseMessagesSourceJSON `json:"-"`
+}
+
+// accountPageProjectDeploymentHistoryGetLogsResponseMessagesSourceJSON contains
+// the JSON metadata for the struct
+// [AccountPageProjectDeploymentHistoryGetLogsResponseMessagesSource]
+type accountPageProjectDeploymentHistoryGetLogsResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountPageProjectDeploymentHistoryGetLogsResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountPageProjectDeploymentHistoryGetLogsResponseMessagesSourceJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -123,4 +229,20 @@ func (r *AccountPageProjectDeploymentHistoryGetLogsResponseResultData) Unmarshal
 
 func (r accountPageProjectDeploymentHistoryGetLogsResponseResultDataJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful
+type AccountPageProjectDeploymentHistoryGetLogsResponseSuccess bool
+
+const (
+	AccountPageProjectDeploymentHistoryGetLogsResponseSuccessFalse AccountPageProjectDeploymentHistoryGetLogsResponseSuccess = false
+	AccountPageProjectDeploymentHistoryGetLogsResponseSuccessTrue  AccountPageProjectDeploymentHistoryGetLogsResponseSuccess = true
+)
+
+func (r AccountPageProjectDeploymentHistoryGetLogsResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountPageProjectDeploymentHistoryGetLogsResponseSuccessFalse, AccountPageProjectDeploymentHistoryGetLogsResponseSuccessTrue:
+		return true
+	}
+	return false
 }

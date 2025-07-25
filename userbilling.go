@@ -55,15 +55,23 @@ func (r *UserBillingService) GetProfile(ctx context.Context, opts ...option.Requ
 }
 
 type UserBillingListHistoryResponse struct {
-	Result []UserBillingListHistoryResponseResult `json:"result"`
-	JSON   userBillingListHistoryResponseJSON     `json:"-"`
-	BillSubsAPIResponseCollection
+	Errors   []UserBillingListHistoryResponseError   `json:"errors,required"`
+	Messages []UserBillingListHistoryResponseMessage `json:"messages,required"`
+	Result   []UserBillingListHistoryResponseResult  `json:"result,required,nullable"`
+	// Whether the API call was successful
+	Success    UserBillingListHistoryResponseSuccess    `json:"success,required"`
+	ResultInfo UserBillingListHistoryResponseResultInfo `json:"result_info"`
+	JSON       userBillingListHistoryResponseJSON       `json:"-"`
 }
 
 // userBillingListHistoryResponseJSON contains the JSON metadata for the struct
 // [UserBillingListHistoryResponse]
 type userBillingListHistoryResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -73,6 +81,102 @@ func (r *UserBillingListHistoryResponse) UnmarshalJSON(data []byte) (err error) 
 }
 
 func (r userBillingListHistoryResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+type UserBillingListHistoryResponseError struct {
+	Code             int64                                      `json:"code,required"`
+	Message          string                                     `json:"message,required"`
+	DocumentationURL string                                     `json:"documentation_url"`
+	Source           UserBillingListHistoryResponseErrorsSource `json:"source"`
+	JSON             userBillingListHistoryResponseErrorJSON    `json:"-"`
+}
+
+// userBillingListHistoryResponseErrorJSON contains the JSON metadata for the
+// struct [UserBillingListHistoryResponseError]
+type userBillingListHistoryResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *UserBillingListHistoryResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r userBillingListHistoryResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type UserBillingListHistoryResponseErrorsSource struct {
+	Pointer string                                         `json:"pointer"`
+	JSON    userBillingListHistoryResponseErrorsSourceJSON `json:"-"`
+}
+
+// userBillingListHistoryResponseErrorsSourceJSON contains the JSON metadata for
+// the struct [UserBillingListHistoryResponseErrorsSource]
+type userBillingListHistoryResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *UserBillingListHistoryResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r userBillingListHistoryResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type UserBillingListHistoryResponseMessage struct {
+	Code             int64                                        `json:"code,required"`
+	Message          string                                       `json:"message,required"`
+	DocumentationURL string                                       `json:"documentation_url"`
+	Source           UserBillingListHistoryResponseMessagesSource `json:"source"`
+	JSON             userBillingListHistoryResponseMessageJSON    `json:"-"`
+}
+
+// userBillingListHistoryResponseMessageJSON contains the JSON metadata for the
+// struct [UserBillingListHistoryResponseMessage]
+type userBillingListHistoryResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *UserBillingListHistoryResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r userBillingListHistoryResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type UserBillingListHistoryResponseMessagesSource struct {
+	Pointer string                                           `json:"pointer"`
+	JSON    userBillingListHistoryResponseMessagesSourceJSON `json:"-"`
+}
+
+// userBillingListHistoryResponseMessagesSourceJSON contains the JSON metadata for
+// the struct [UserBillingListHistoryResponseMessagesSource]
+type userBillingListHistoryResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *UserBillingListHistoryResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r userBillingListHistoryResponseMessagesSourceJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -136,6 +240,52 @@ func (r *UserBillingListHistoryResponseResultZone) UnmarshalJSON(data []byte) (e
 }
 
 func (r userBillingListHistoryResponseResultZoneJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful
+type UserBillingListHistoryResponseSuccess bool
+
+const (
+	UserBillingListHistoryResponseSuccessTrue UserBillingListHistoryResponseSuccess = true
+)
+
+func (r UserBillingListHistoryResponseSuccess) IsKnown() bool {
+	switch r {
+	case UserBillingListHistoryResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type UserBillingListHistoryResponseResultInfo struct {
+	// Total number of results for the requested service
+	Count float64 `json:"count"`
+	// Current page within paginated list of results
+	Page float64 `json:"page"`
+	// Number of results per page of results
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters
+	TotalCount float64                                      `json:"total_count"`
+	JSON       userBillingListHistoryResponseResultInfoJSON `json:"-"`
+}
+
+// userBillingListHistoryResponseResultInfoJSON contains the JSON metadata for the
+// struct [UserBillingListHistoryResponseResultInfo]
+type userBillingListHistoryResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *UserBillingListHistoryResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r userBillingListHistoryResponseResultInfoJSON) RawJSON() string {
 	return r.raw
 }
 

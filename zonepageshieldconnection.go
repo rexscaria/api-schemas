@@ -109,72 +109,22 @@ func (r connectionJSON) RawJSON() string {
 	return r.raw
 }
 
-type ListResponseCollectionPageShield struct {
-	ResultInfo ListResponseCollectionPageShieldResultInfo `json:"result_info,required"`
-	JSON       listResponseCollectionPageShieldJSON       `json:"-"`
-	ResponseCommonShield
-}
-
-// listResponseCollectionPageShieldJSON contains the JSON metadata for the struct
-// [ListResponseCollectionPageShield]
-type listResponseCollectionPageShieldJSON struct {
-	ResultInfo  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ListResponseCollectionPageShield) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r listResponseCollectionPageShieldJSON) RawJSON() string {
-	return r.raw
-}
-
-type ListResponseCollectionPageShieldResultInfo struct {
-	// Total number of results for the requested service
-	Count float64 `json:"count,required"`
-	// Current page within paginated list of results
-	Page float64 `json:"page,required"`
-	// Number of results per page of results
-	PerPage float64 `json:"per_page,required"`
-	// Total results available without any search parameters
-	TotalCount float64 `json:"total_count,required"`
-	// Total number of pages
-	TotalPages float64                                        `json:"total_pages,required"`
-	JSON       listResponseCollectionPageShieldResultInfoJSON `json:"-"`
-}
-
-// listResponseCollectionPageShieldResultInfoJSON contains the JSON metadata for
-// the struct [ListResponseCollectionPageShieldResultInfo]
-type listResponseCollectionPageShieldResultInfoJSON struct {
-	Count       apijson.Field
-	Page        apijson.Field
-	PerPage     apijson.Field
-	TotalCount  apijson.Field
-	TotalPages  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ListResponseCollectionPageShieldResultInfo) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r listResponseCollectionPageShieldResultInfoJSON) RawJSON() string {
-	return r.raw
-}
-
 type ZonePageShieldConnectionGetResponse struct {
-	Result Connection                              `json:"result,required"`
-	JSON   zonePageShieldConnectionGetResponseJSON `json:"-"`
-	GetResponseCollection
+	Result Connection `json:"result,required,nullable"`
+	// Whether the API call was successful
+	Success  ZonePageShieldConnectionGetResponseSuccess   `json:"success,required"`
+	Errors   []ZonePageShieldConnectionGetResponseError   `json:"errors"`
+	Messages []ZonePageShieldConnectionGetResponseMessage `json:"messages"`
+	JSON     zonePageShieldConnectionGetResponseJSON      `json:"-"`
 }
 
 // zonePageShieldConnectionGetResponseJSON contains the JSON metadata for the
 // struct [ZonePageShieldConnectionGetResponse]
 type zonePageShieldConnectionGetResponseJSON struct {
 	Result      apijson.Field
+	Success     apijson.Field
+	Errors      apijson.Field
+	Messages    apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -187,15 +137,134 @@ func (r zonePageShieldConnectionGetResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful
+type ZonePageShieldConnectionGetResponseSuccess bool
+
+const (
+	ZonePageShieldConnectionGetResponseSuccessTrue ZonePageShieldConnectionGetResponseSuccess = true
+)
+
+func (r ZonePageShieldConnectionGetResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZonePageShieldConnectionGetResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type ZonePageShieldConnectionGetResponseError struct {
+	Code             int64                                           `json:"code,required"`
+	Message          string                                          `json:"message,required"`
+	DocumentationURL string                                          `json:"documentation_url"`
+	Source           ZonePageShieldConnectionGetResponseErrorsSource `json:"source"`
+	JSON             zonePageShieldConnectionGetResponseErrorJSON    `json:"-"`
+}
+
+// zonePageShieldConnectionGetResponseErrorJSON contains the JSON metadata for the
+// struct [ZonePageShieldConnectionGetResponseError]
+type zonePageShieldConnectionGetResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *ZonePageShieldConnectionGetResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zonePageShieldConnectionGetResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZonePageShieldConnectionGetResponseErrorsSource struct {
+	Pointer string                                              `json:"pointer"`
+	JSON    zonePageShieldConnectionGetResponseErrorsSourceJSON `json:"-"`
+}
+
+// zonePageShieldConnectionGetResponseErrorsSourceJSON contains the JSON metadata
+// for the struct [ZonePageShieldConnectionGetResponseErrorsSource]
+type zonePageShieldConnectionGetResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZonePageShieldConnectionGetResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zonePageShieldConnectionGetResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZonePageShieldConnectionGetResponseMessage struct {
+	Code             int64                                             `json:"code,required"`
+	Message          string                                            `json:"message,required"`
+	DocumentationURL string                                            `json:"documentation_url"`
+	Source           ZonePageShieldConnectionGetResponseMessagesSource `json:"source"`
+	JSON             zonePageShieldConnectionGetResponseMessageJSON    `json:"-"`
+}
+
+// zonePageShieldConnectionGetResponseMessageJSON contains the JSON metadata for
+// the struct [ZonePageShieldConnectionGetResponseMessage]
+type zonePageShieldConnectionGetResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *ZonePageShieldConnectionGetResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zonePageShieldConnectionGetResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZonePageShieldConnectionGetResponseMessagesSource struct {
+	Pointer string                                                `json:"pointer"`
+	JSON    zonePageShieldConnectionGetResponseMessagesSourceJSON `json:"-"`
+}
+
+// zonePageShieldConnectionGetResponseMessagesSourceJSON contains the JSON metadata
+// for the struct [ZonePageShieldConnectionGetResponseMessagesSource]
+type zonePageShieldConnectionGetResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZonePageShieldConnectionGetResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zonePageShieldConnectionGetResponseMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
 type ZonePageShieldConnectionListResponse struct {
-	Result []Connection                             `json:"result"`
-	JSON   zonePageShieldConnectionListResponseJSON `json:"-"`
-	ListResponseCollectionPageShield
+	ResultInfo ZonePageShieldConnectionListResponseResultInfo `json:"result_info,required"`
+	// Whether the API call was successful
+	Success  ZonePageShieldConnectionListResponseSuccess   `json:"success,required"`
+	Errors   []ZonePageShieldConnectionListResponseError   `json:"errors"`
+	Messages []ZonePageShieldConnectionListResponseMessage `json:"messages"`
+	Result   []Connection                                  `json:"result"`
+	JSON     zonePageShieldConnectionListResponseJSON      `json:"-"`
 }
 
 // zonePageShieldConnectionListResponseJSON contains the JSON metadata for the
 // struct [ZonePageShieldConnectionListResponse]
 type zonePageShieldConnectionListResponseJSON struct {
+	ResultInfo  apijson.Field
+	Success     apijson.Field
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -206,6 +275,151 @@ func (r *ZonePageShieldConnectionListResponse) UnmarshalJSON(data []byte) (err e
 }
 
 func (r zonePageShieldConnectionListResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZonePageShieldConnectionListResponseResultInfo struct {
+	// Total number of results for the requested service
+	Count float64 `json:"count,required"`
+	// Current page within paginated list of results
+	Page float64 `json:"page,required"`
+	// Number of results per page of results
+	PerPage float64 `json:"per_page,required"`
+	// Total results available without any search parameters
+	TotalCount float64 `json:"total_count,required"`
+	// Total number of pages
+	TotalPages float64                                            `json:"total_pages,required"`
+	JSON       zonePageShieldConnectionListResponseResultInfoJSON `json:"-"`
+}
+
+// zonePageShieldConnectionListResponseResultInfoJSON contains the JSON metadata
+// for the struct [ZonePageShieldConnectionListResponseResultInfo]
+type zonePageShieldConnectionListResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	TotalPages  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZonePageShieldConnectionListResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zonePageShieldConnectionListResponseResultInfoJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful
+type ZonePageShieldConnectionListResponseSuccess bool
+
+const (
+	ZonePageShieldConnectionListResponseSuccessTrue ZonePageShieldConnectionListResponseSuccess = true
+)
+
+func (r ZonePageShieldConnectionListResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZonePageShieldConnectionListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type ZonePageShieldConnectionListResponseError struct {
+	Code             int64                                            `json:"code,required"`
+	Message          string                                           `json:"message,required"`
+	DocumentationURL string                                           `json:"documentation_url"`
+	Source           ZonePageShieldConnectionListResponseErrorsSource `json:"source"`
+	JSON             zonePageShieldConnectionListResponseErrorJSON    `json:"-"`
+}
+
+// zonePageShieldConnectionListResponseErrorJSON contains the JSON metadata for the
+// struct [ZonePageShieldConnectionListResponseError]
+type zonePageShieldConnectionListResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *ZonePageShieldConnectionListResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zonePageShieldConnectionListResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZonePageShieldConnectionListResponseErrorsSource struct {
+	Pointer string                                               `json:"pointer"`
+	JSON    zonePageShieldConnectionListResponseErrorsSourceJSON `json:"-"`
+}
+
+// zonePageShieldConnectionListResponseErrorsSourceJSON contains the JSON metadata
+// for the struct [ZonePageShieldConnectionListResponseErrorsSource]
+type zonePageShieldConnectionListResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZonePageShieldConnectionListResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zonePageShieldConnectionListResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZonePageShieldConnectionListResponseMessage struct {
+	Code             int64                                              `json:"code,required"`
+	Message          string                                             `json:"message,required"`
+	DocumentationURL string                                             `json:"documentation_url"`
+	Source           ZonePageShieldConnectionListResponseMessagesSource `json:"source"`
+	JSON             zonePageShieldConnectionListResponseMessageJSON    `json:"-"`
+}
+
+// zonePageShieldConnectionListResponseMessageJSON contains the JSON metadata for
+// the struct [ZonePageShieldConnectionListResponseMessage]
+type zonePageShieldConnectionListResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *ZonePageShieldConnectionListResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zonePageShieldConnectionListResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZonePageShieldConnectionListResponseMessagesSource struct {
+	Pointer string                                                 `json:"pointer"`
+	JSON    zonePageShieldConnectionListResponseMessagesSourceJSON `json:"-"`
+}
+
+// zonePageShieldConnectionListResponseMessagesSourceJSON contains the JSON
+// metadata for the struct [ZonePageShieldConnectionListResponseMessagesSource]
+type zonePageShieldConnectionListResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZonePageShieldConnectionListResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zonePageShieldConnectionListResponseMessagesSourceJSON) RawJSON() string {
 	return r.raw
 }
 

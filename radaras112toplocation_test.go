@@ -29,7 +29,6 @@ func TestRadarAs112TopLocationGetWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.As112.Top.Locations.Get(context.TODO(), cfrex.RadarAs112TopLocationGetParams{
-		Asn:       cfrex.F([]string{"string"}),
 		Continent: cfrex.F([]string{"string"}),
 		DateEnd:   cfrex.F([]time.Time{time.Now()}),
 		DateRange: cfrex.F([]string{"7d"}),
@@ -66,7 +65,6 @@ func TestRadarAs112TopLocationGetByDnssecWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		cfrex.RadarAs112TopLocationGetByDnssecParamsDnssecSupported,
 		cfrex.RadarAs112TopLocationGetByDnssecParams{
-			Asn:       cfrex.F([]string{"string"}),
 			Continent: cfrex.F([]string{"string"}),
 			DateEnd:   cfrex.F([]time.Time{time.Now()}),
 			DateRange: cfrex.F([]string{"7d"}),
@@ -104,7 +102,6 @@ func TestRadarAs112TopLocationGetByEdnsWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		cfrex.RadarAs112TopLocationGetByEdnsParamsEdnsSupported,
 		cfrex.RadarAs112TopLocationGetByEdnsParams{
-			Asn:       cfrex.F([]string{"string"}),
 			Continent: cfrex.F([]string{"string"}),
 			DateEnd:   cfrex.F([]time.Time{time.Now()}),
 			DateRange: cfrex.F([]string{"7d"}),
@@ -142,7 +139,6 @@ func TestRadarAs112TopLocationGetByIPVersionWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		cfrex.RadarAs112TopLocationGetByIPVersionParamsIPVersionIPv4,
 		cfrex.RadarAs112TopLocationGetByIPVersionParams{
-			Asn:       cfrex.F([]string{"string"}),
 			Continent: cfrex.F([]string{"string"}),
 			DateEnd:   cfrex.F([]time.Time{time.Now()}),
 			DateRange: cfrex.F([]string{"7d"}),

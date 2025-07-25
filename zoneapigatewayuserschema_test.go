@@ -31,7 +31,7 @@ func TestZoneAPIGatewayUserSchemaGetWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Zones.APIGateway.UserSchemas.Get(
 		context.TODO(),
-		"zone_id",
+		"023e105f4ecef8ad9ca31a8372d0c353",
 		"f174e90a-fafe-4643-bbbc-4a0ed4fc8415",
 		cfrex.ZoneAPIGatewayUserSchemaGetParams{
 			OmitSource: cfrex.F(true),
@@ -62,7 +62,7 @@ func TestZoneAPIGatewayUserSchemaListWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Zones.APIGateway.UserSchemas.List(
 		context.TODO(),
-		"zone_id",
+		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.ZoneAPIGatewayUserSchemaListParams{
 			OmitSource:        cfrex.F(true),
 			Page:              cfrex.F(int64(1)),
@@ -95,7 +95,7 @@ func TestZoneAPIGatewayUserSchemaDelete(t *testing.T) {
 	)
 	_, err := client.Zones.APIGateway.UserSchemas.Delete(
 		context.TODO(),
-		"zone_id",
+		"023e105f4ecef8ad9ca31a8372d0c353",
 		"f174e90a-fafe-4643-bbbc-4a0ed4fc8415",
 	)
 	if err != nil {
@@ -123,7 +123,7 @@ func TestZoneAPIGatewayUserSchemaEnableValidationWithOptionalParams(t *testing.T
 	)
 	_, err := client.Zones.APIGateway.UserSchemas.EnableValidation(
 		context.TODO(),
-		"zone_id",
+		"023e105f4ecef8ad9ca31a8372d0c353",
 		"f174e90a-fafe-4643-bbbc-4a0ed4fc8415",
 		cfrex.ZoneAPIGatewayUserSchemaEnableValidationParams{
 			ValidationEnabled: cfrex.F(cfrex.ZoneAPIGatewayUserSchemaEnableValidationParamsValidationEnabledTrue),
@@ -154,7 +154,7 @@ func TestZoneAPIGatewayUserSchemaGetHostsWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Zones.APIGateway.UserSchemas.GetHosts(
 		context.TODO(),
-		"zone_id",
+		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.ZoneAPIGatewayUserSchemaGetHostsParams{
 			Page:    cfrex.F(int64(1)),
 			PerPage: cfrex.F(int64(5)),
@@ -185,7 +185,7 @@ func TestZoneAPIGatewayUserSchemaGetOperationsWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Zones.APIGateway.UserSchemas.GetOperations(
 		context.TODO(),
-		"zone_id",
+		"023e105f4ecef8ad9ca31a8372d0c353",
 		"f174e90a-fafe-4643-bbbc-4a0ed4fc8415",
 		cfrex.ZoneAPIGatewayUserSchemaGetOperationsParams{
 			Endpoint:        cfrex.F("/api/v1"),
@@ -222,7 +222,7 @@ func TestZoneAPIGatewayUserSchemaUploadWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Zones.APIGateway.UserSchemas.Upload(
 		context.TODO(),
-		"zone_id",
+		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.ZoneAPIGatewayUserSchemaUploadParams{
 			File:              cfrex.F(io.Reader(bytes.NewBuffer([]byte("some file contents")))),
 			Kind:              cfrex.F(cfrex.APIShieldKindOpenAPIV3),

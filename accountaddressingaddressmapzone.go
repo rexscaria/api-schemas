@@ -53,7 +53,7 @@ func (r *AccountAddressingAddressMapZoneService) Add(ctx context.Context, accoun
 }
 
 // Remove a zone as a member of a particular address map.
-func (r *AccountAddressingAddressMapZoneService) Remove(ctx context.Context, accountID string, addressMapID string, zoneID string, body AccountAddressingAddressMapZoneRemoveParams, opts ...option.RequestOption) (res *APIResponseCollectionAddressing, err error) {
+func (r *AccountAddressingAddressMapZoneService) Remove(ctx context.Context, accountID string, addressMapID string, zoneID string, opts ...option.RequestOption) (res *APIResponseCollectionAddressing, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
@@ -68,7 +68,7 @@ func (r *AccountAddressingAddressMapZoneService) Remove(ctx context.Context, acc
 		return
 	}
 	path := fmt.Sprintf("accounts/%s/addressing/address_maps/%s/zones/%s", accountID, addressMapID, zoneID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
@@ -77,13 +77,5 @@ type AccountAddressingAddressMapZoneAddParams struct {
 }
 
 func (r AccountAddressingAddressMapZoneAddParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
-}
-
-type AccountAddressingAddressMapZoneRemoveParams struct {
-	Body interface{} `json:"body,required"`
-}
-
-func (r AccountAddressingAddressMapZoneRemoveParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r.Body)
 }

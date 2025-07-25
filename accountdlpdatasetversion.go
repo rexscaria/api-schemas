@@ -103,14 +103,20 @@ func (r datasetColumnJSON) RawJSON() string {
 }
 
 type AccountDlpDatasetVersionSetColumnInfoResponse struct {
-	Result []DatasetColumn                                   `json:"result"`
-	JSON   accountDlpDatasetVersionSetColumnInfoResponseJSON `json:"-"`
-	APIResponseSingleDlp
+	Errors   []MessagesDlpItems `json:"errors,required"`
+	Messages []MessagesDlpItems `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountDlpDatasetVersionSetColumnInfoResponseSuccess `json:"success,required"`
+	Result  []DatasetColumn                                      `json:"result"`
+	JSON    accountDlpDatasetVersionSetColumnInfoResponseJSON    `json:"-"`
 }
 
 // accountDlpDatasetVersionSetColumnInfoResponseJSON contains the JSON metadata for
 // the struct [AccountDlpDatasetVersionSetColumnInfoResponse]
 type accountDlpDatasetVersionSetColumnInfoResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -124,15 +130,36 @@ func (r accountDlpDatasetVersionSetColumnInfoResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountDlpDatasetVersionSetColumnInfoResponseSuccess bool
+
+const (
+	AccountDlpDatasetVersionSetColumnInfoResponseSuccessTrue AccountDlpDatasetVersionSetColumnInfoResponseSuccess = true
+)
+
+func (r AccountDlpDatasetVersionSetColumnInfoResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountDlpDatasetVersionSetColumnInfoResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountDlpDatasetVersionUploadEntryResponse struct {
-	Result DatasetColumn                                   `json:"result"`
-	JSON   accountDlpDatasetVersionUploadEntryResponseJSON `json:"-"`
-	APIResponseSingleDlp
+	Errors   []MessagesDlpItems `json:"errors,required"`
+	Messages []MessagesDlpItems `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountDlpDatasetVersionUploadEntryResponseSuccess `json:"success,required"`
+	Result  DatasetColumn                                      `json:"result"`
+	JSON    accountDlpDatasetVersionUploadEntryResponseJSON    `json:"-"`
 }
 
 // accountDlpDatasetVersionUploadEntryResponseJSON contains the JSON metadata for
 // the struct [AccountDlpDatasetVersionUploadEntryResponse]
 type accountDlpDatasetVersionUploadEntryResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -144,6 +171,21 @@ func (r *AccountDlpDatasetVersionUploadEntryResponse) UnmarshalJSON(data []byte)
 
 func (r accountDlpDatasetVersionUploadEntryResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountDlpDatasetVersionUploadEntryResponseSuccess bool
+
+const (
+	AccountDlpDatasetVersionUploadEntryResponseSuccessTrue AccountDlpDatasetVersionUploadEntryResponseSuccess = true
+)
+
+func (r AccountDlpDatasetVersionUploadEntryResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountDlpDatasetVersionUploadEntryResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountDlpDatasetVersionSetColumnInfoParams struct {

@@ -29,9 +29,9 @@ func TestRadarSearchGlobalWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Radar.Search.Global(context.TODO(), cfrex.RadarSearchGlobalParams{
 		Query:         cfrex.F("United"),
-		Exclude:       cfrex.F([]cfrex.RadarSearchGlobalParamsExclude{cfrex.RadarSearchGlobalParamsExcludeSpecialEvents}),
+		Exclude:       cfrex.F([]cfrex.RadarSearchGlobalParamsExclude{cfrex.RadarSearchGlobalParamsExcludeAsns}),
 		Format:        cfrex.F(cfrex.RadarSearchGlobalParamsFormatJson),
-		Include:       cfrex.F([]cfrex.RadarSearchGlobalParamsInclude{cfrex.RadarSearchGlobalParamsIncludeSpecialEvents}),
+		Include:       cfrex.F([]cfrex.RadarSearchGlobalParamsInclude{cfrex.RadarSearchGlobalParamsIncludeAsns}),
 		Limit:         cfrex.F(int64(5)),
 		LimitPerGroup: cfrex.F(0.000000),
 	})

@@ -157,18 +157,22 @@ func (r mqApiv4SuccessJSON) RawJSON() string {
 }
 
 type MqApiv4SuccessError struct {
-	Code    int64                   `json:"code,required"`
-	Message string                  `json:"message,required"`
-	JSON    mqApiv4SuccessErrorJSON `json:"-"`
+	Code             int64                      `json:"code,required"`
+	Message          string                     `json:"message,required"`
+	DocumentationURL string                     `json:"documentation_url"`
+	Source           MqAPIV4SuccessErrorsSource `json:"source"`
+	JSON             mqApiv4SuccessErrorJSON    `json:"-"`
 }
 
 // mqApiv4SuccessErrorJSON contains the JSON metadata for the struct
 // [MqApiv4SuccessError]
 type mqApiv4SuccessErrorJSON struct {
-	Code        apijson.Field
-	Message     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
 }
 
 func (r *MqApiv4SuccessError) UnmarshalJSON(data []byte) (err error) {
@@ -176,6 +180,27 @@ func (r *MqApiv4SuccessError) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (r mqApiv4SuccessErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type MqAPIV4SuccessErrorsSource struct {
+	Pointer string                         `json:"pointer"`
+	JSON    mqApiv4SuccessErrorsSourceJSON `json:"-"`
+}
+
+// mqApiv4SuccessErrorsSourceJSON contains the JSON metadata for the struct
+// [MqAPIV4SuccessErrorsSource]
+type mqApiv4SuccessErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *MqAPIV4SuccessErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r mqApiv4SuccessErrorsSourceJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -473,15 +498,21 @@ func (r MqQueueSettingsParam) MarshalJSON() (data []byte, err error) {
 }
 
 type AccountQueueNewResponse struct {
-	Result MqQueue                     `json:"result"`
-	JSON   accountQueueNewResponseJSON `json:"-"`
-	MqAPIV4Success
+	Errors   []AccountQueueNewResponseError `json:"errors"`
+	Messages []string                       `json:"messages"`
+	Result   MqQueue                        `json:"result"`
+	// Indicates if the API call was successful or not.
+	Success AccountQueueNewResponseSuccess `json:"success"`
+	JSON    accountQueueNewResponseJSON    `json:"-"`
 }
 
 // accountQueueNewResponseJSON contains the JSON metadata for the struct
 // [AccountQueueNewResponse]
 type accountQueueNewResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -494,16 +525,85 @@ func (r accountQueueNewResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+type AccountQueueNewResponseError struct {
+	Code             int64                               `json:"code,required"`
+	Message          string                              `json:"message,required"`
+	DocumentationURL string                              `json:"documentation_url"`
+	Source           AccountQueueNewResponseErrorsSource `json:"source"`
+	JSON             accountQueueNewResponseErrorJSON    `json:"-"`
+}
+
+// accountQueueNewResponseErrorJSON contains the JSON metadata for the struct
+// [AccountQueueNewResponseError]
+type accountQueueNewResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountQueueNewResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountQueueNewResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountQueueNewResponseErrorsSource struct {
+	Pointer string                                  `json:"pointer"`
+	JSON    accountQueueNewResponseErrorsSourceJSON `json:"-"`
+}
+
+// accountQueueNewResponseErrorsSourceJSON contains the JSON metadata for the
+// struct [AccountQueueNewResponseErrorsSource]
+type accountQueueNewResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountQueueNewResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountQueueNewResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Indicates if the API call was successful or not.
+type AccountQueueNewResponseSuccess bool
+
+const (
+	AccountQueueNewResponseSuccessTrue AccountQueueNewResponseSuccess = true
+)
+
+func (r AccountQueueNewResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountQueueNewResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountQueueGetResponse struct {
-	Result MqQueue                     `json:"result"`
-	JSON   accountQueueGetResponseJSON `json:"-"`
-	MqAPIV4Success
+	Errors   []AccountQueueGetResponseError `json:"errors"`
+	Messages []string                       `json:"messages"`
+	Result   MqQueue                        `json:"result"`
+	// Indicates if the API call was successful or not.
+	Success AccountQueueGetResponseSuccess `json:"success"`
+	JSON    accountQueueGetResponseJSON    `json:"-"`
 }
 
 // accountQueueGetResponseJSON contains the JSON metadata for the struct
 // [AccountQueueGetResponse]
 type accountQueueGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -516,16 +616,85 @@ func (r accountQueueGetResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+type AccountQueueGetResponseError struct {
+	Code             int64                               `json:"code,required"`
+	Message          string                              `json:"message,required"`
+	DocumentationURL string                              `json:"documentation_url"`
+	Source           AccountQueueGetResponseErrorsSource `json:"source"`
+	JSON             accountQueueGetResponseErrorJSON    `json:"-"`
+}
+
+// accountQueueGetResponseErrorJSON contains the JSON metadata for the struct
+// [AccountQueueGetResponseError]
+type accountQueueGetResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountQueueGetResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountQueueGetResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountQueueGetResponseErrorsSource struct {
+	Pointer string                                  `json:"pointer"`
+	JSON    accountQueueGetResponseErrorsSourceJSON `json:"-"`
+}
+
+// accountQueueGetResponseErrorsSourceJSON contains the JSON metadata for the
+// struct [AccountQueueGetResponseErrorsSource]
+type accountQueueGetResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountQueueGetResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountQueueGetResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Indicates if the API call was successful or not.
+type AccountQueueGetResponseSuccess bool
+
+const (
+	AccountQueueGetResponseSuccessTrue AccountQueueGetResponseSuccess = true
+)
+
+func (r AccountQueueGetResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountQueueGetResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountQueueUpdateResponse struct {
-	Result MqQueue                        `json:"result"`
-	JSON   accountQueueUpdateResponseJSON `json:"-"`
-	MqAPIV4Success
+	Errors   []AccountQueueUpdateResponseError `json:"errors"`
+	Messages []string                          `json:"messages"`
+	Result   MqQueue                           `json:"result"`
+	// Indicates if the API call was successful or not.
+	Success AccountQueueUpdateResponseSuccess `json:"success"`
+	JSON    accountQueueUpdateResponseJSON    `json:"-"`
 }
 
 // accountQueueUpdateResponseJSON contains the JSON metadata for the struct
 // [AccountQueueUpdateResponse]
 type accountQueueUpdateResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -538,18 +707,87 @@ func (r accountQueueUpdateResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+type AccountQueueUpdateResponseError struct {
+	Code             int64                                  `json:"code,required"`
+	Message          string                                 `json:"message,required"`
+	DocumentationURL string                                 `json:"documentation_url"`
+	Source           AccountQueueUpdateResponseErrorsSource `json:"source"`
+	JSON             accountQueueUpdateResponseErrorJSON    `json:"-"`
+}
+
+// accountQueueUpdateResponseErrorJSON contains the JSON metadata for the struct
+// [AccountQueueUpdateResponseError]
+type accountQueueUpdateResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountQueueUpdateResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountQueueUpdateResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountQueueUpdateResponseErrorsSource struct {
+	Pointer string                                     `json:"pointer"`
+	JSON    accountQueueUpdateResponseErrorsSourceJSON `json:"-"`
+}
+
+// accountQueueUpdateResponseErrorsSourceJSON contains the JSON metadata for the
+// struct [AccountQueueUpdateResponseErrorsSource]
+type accountQueueUpdateResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountQueueUpdateResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountQueueUpdateResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Indicates if the API call was successful or not.
+type AccountQueueUpdateResponseSuccess bool
+
+const (
+	AccountQueueUpdateResponseSuccessTrue AccountQueueUpdateResponseSuccess = true
+)
+
+func (r AccountQueueUpdateResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountQueueUpdateResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountQueueListResponse struct {
+	Errors     []AccountQueueListResponseError    `json:"errors"`
+	Messages   []string                           `json:"messages"`
 	Result     []MqQueue                          `json:"result"`
 	ResultInfo AccountQueueListResponseResultInfo `json:"result_info"`
-	JSON       accountQueueListResponseJSON       `json:"-"`
-	MqAPIV4Success
+	// Indicates if the API call was successful or not.
+	Success AccountQueueListResponseSuccess `json:"success"`
+	JSON    accountQueueListResponseJSON    `json:"-"`
 }
 
 // accountQueueListResponseJSON contains the JSON metadata for the struct
 // [AccountQueueListResponse]
 type accountQueueListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
 	ResultInfo  apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -559,6 +797,54 @@ func (r *AccountQueueListResponse) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (r accountQueueListResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountQueueListResponseError struct {
+	Code             int64                                `json:"code,required"`
+	Message          string                               `json:"message,required"`
+	DocumentationURL string                               `json:"documentation_url"`
+	Source           AccountQueueListResponseErrorsSource `json:"source"`
+	JSON             accountQueueListResponseErrorJSON    `json:"-"`
+}
+
+// accountQueueListResponseErrorJSON contains the JSON metadata for the struct
+// [AccountQueueListResponseError]
+type accountQueueListResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountQueueListResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountQueueListResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountQueueListResponseErrorsSource struct {
+	Pointer string                                   `json:"pointer"`
+	JSON    accountQueueListResponseErrorsSourceJSON `json:"-"`
+}
+
+// accountQueueListResponseErrorsSourceJSON contains the JSON metadata for the
+// struct [AccountQueueListResponseErrorsSource]
+type accountQueueListResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountQueueListResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountQueueListResponseErrorsSourceJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -596,16 +882,37 @@ func (r accountQueueListResponseResultInfoJSON) RawJSON() string {
 	return r.raw
 }
 
+// Indicates if the API call was successful or not.
+type AccountQueueListResponseSuccess bool
+
+const (
+	AccountQueueListResponseSuccessTrue AccountQueueListResponseSuccess = true
+)
+
+func (r AccountQueueListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountQueueListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountQueueUpdatePartialResponse struct {
-	Result MqQueue                               `json:"result"`
-	JSON   accountQueueUpdatePartialResponseJSON `json:"-"`
-	MqAPIV4Success
+	Errors   []AccountQueueUpdatePartialResponseError `json:"errors"`
+	Messages []string                                 `json:"messages"`
+	Result   MqQueue                                  `json:"result"`
+	// Indicates if the API call was successful or not.
+	Success AccountQueueUpdatePartialResponseSuccess `json:"success"`
+	JSON    accountQueueUpdatePartialResponseJSON    `json:"-"`
 }
 
 // accountQueueUpdatePartialResponseJSON contains the JSON metadata for the struct
 // [AccountQueueUpdatePartialResponse]
 type accountQueueUpdatePartialResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -616,6 +923,69 @@ func (r *AccountQueueUpdatePartialResponse) UnmarshalJSON(data []byte) (err erro
 
 func (r accountQueueUpdatePartialResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+type AccountQueueUpdatePartialResponseError struct {
+	Code             int64                                         `json:"code,required"`
+	Message          string                                        `json:"message,required"`
+	DocumentationURL string                                        `json:"documentation_url"`
+	Source           AccountQueueUpdatePartialResponseErrorsSource `json:"source"`
+	JSON             accountQueueUpdatePartialResponseErrorJSON    `json:"-"`
+}
+
+// accountQueueUpdatePartialResponseErrorJSON contains the JSON metadata for the
+// struct [AccountQueueUpdatePartialResponseError]
+type accountQueueUpdatePartialResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountQueueUpdatePartialResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountQueueUpdatePartialResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountQueueUpdatePartialResponseErrorsSource struct {
+	Pointer string                                            `json:"pointer"`
+	JSON    accountQueueUpdatePartialResponseErrorsSourceJSON `json:"-"`
+}
+
+// accountQueueUpdatePartialResponseErrorsSourceJSON contains the JSON metadata for
+// the struct [AccountQueueUpdatePartialResponseErrorsSource]
+type accountQueueUpdatePartialResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountQueueUpdatePartialResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountQueueUpdatePartialResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Indicates if the API call was successful or not.
+type AccountQueueUpdatePartialResponseSuccess bool
+
+const (
+	AccountQueueUpdatePartialResponseSuccessTrue AccountQueueUpdatePartialResponseSuccess = true
+)
+
+func (r AccountQueueUpdatePartialResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountQueueUpdatePartialResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountQueueNewParams struct {

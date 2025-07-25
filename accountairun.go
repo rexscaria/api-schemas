@@ -3,15 +3,12 @@
 package cfrex
 
 import (
-	"bytes"
 	"context"
 	"errors"
 	"fmt"
-	"mime/multipart"
 	"net/http"
 	"reflect"
 
-	"github.com/rexscaria/api-schemas/internal/apiform"
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
 	"github.com/rexscaria/api-schemas/internal/requestconfig"
@@ -588,22 +585,11 @@ func (r AccountAIRunExecuteModelResponseResultImageTextToText) ImplementsAccount
 }
 
 type AccountAIRunExecuteModelParams struct {
-	Body AccountAIRunExecuteModelParamsBodyUnion `json:"body" format:"binary"`
+	Body AccountAIRunExecuteModelParamsBodyUnion `json:"body"`
 }
 
-func (r AccountAIRunExecuteModelParams) MarshalMultipart() (data []byte, contentType string, err error) {
-	buf := bytes.NewBuffer(nil)
-	writer := multipart.NewWriter(buf)
-	err = apiform.MarshalRoot(r, writer)
-	if err != nil {
-		writer.Close()
-		return nil, "", err
-	}
-	err = writer.Close()
-	if err != nil {
-		return nil, "", err
-	}
-	return buf.Bytes(), writer.FormDataContentType(), nil
+func (r AccountAIRunExecuteModelParams) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r.Body)
 }
 
 type AccountAIRunExecuteModelParamsBody struct {
@@ -679,25 +665,25 @@ func (r AccountAIRunExecuteModelParamsBody) MarshalJSON() (data []byte, err erro
 	return apijson.MarshalRoot(r)
 }
 
-func (r AccountAIRunExecuteModelParamsBody) ImplementsAccountAIRunExecuteModelParamsBodyUnion() {}
+func (r AccountAIRunExecuteModelParamsBody) implementsAccountAIRunExecuteModelParamsBodyUnion() {}
 
 // Satisfied by [AccountAIRunExecuteModelParamsBodyTextClassification],
 // [AccountAIRunExecuteModelParamsBodyTextToImage],
 // [AccountAIRunExecuteModelParamsBodyTextToSpeech],
-// [AccountAIRunExecuteModelParamsBodyTextEmbeddings], [shared.UnionString],
-// [AccountAIRunExecuteModelParamsBodyObject],
-// [AccountAIRunExecuteModelParamsBodyImage],
-// [AccountAIRunExecuteModelParamsBodyImage],
+// [AccountAIRunExecuteModelParamsBodyTextEmbeddings],
+// [AccountAIRunExecuteModelParamsBodyAutomaticSpeechRecognition],
+// [AccountAIRunExecuteModelParamsBodyImageClassification],
+// [AccountAIRunExecuteModelParamsBodyObjectDetection],
 // [AccountAIRunExecuteModelParamsBodyPrompt],
-// [AccountAIRunExecuteModelParamsBodyMessages],
+// [AccountAIRunExecuteModelParamsBodyTextGeneration],
 // [AccountAIRunExecuteModelParamsBodyTranslation],
 // [AccountAIRunExecuteModelParamsBodySummarization],
+// [AccountAIRunExecuteModelParamsBodyImageToText],
 // [AccountAIRunExecuteModelParamsBodyObject],
-// [AccountAIRunExecuteModelParamsBodyObject],
-// [AccountAIRunExecuteModelParamsBodyObject],
+// [AccountAIRunExecuteModelParamsBodyImageTextToText],
 // [AccountAIRunExecuteModelParamsBody].
 type AccountAIRunExecuteModelParamsBodyUnion interface {
-	ImplementsAccountAIRunExecuteModelParamsBodyUnion()
+	implementsAccountAIRunExecuteModelParamsBodyUnion()
 }
 
 type AccountAIRunExecuteModelParamsBodyTextClassification struct {
@@ -709,7 +695,7 @@ func (r AccountAIRunExecuteModelParamsBodyTextClassification) MarshalJSON() (dat
 	return apijson.MarshalRoot(r)
 }
 
-func (r AccountAIRunExecuteModelParamsBodyTextClassification) ImplementsAccountAIRunExecuteModelParamsBodyUnion() {
+func (r AccountAIRunExecuteModelParamsBodyTextClassification) implementsAccountAIRunExecuteModelParamsBodyUnion() {
 }
 
 type AccountAIRunExecuteModelParamsBodyTextToImage struct {
@@ -745,7 +731,7 @@ func (r AccountAIRunExecuteModelParamsBodyTextToImage) MarshalJSON() (data []byt
 	return apijson.MarshalRoot(r)
 }
 
-func (r AccountAIRunExecuteModelParamsBodyTextToImage) ImplementsAccountAIRunExecuteModelParamsBodyUnion() {
+func (r AccountAIRunExecuteModelParamsBodyTextToImage) implementsAccountAIRunExecuteModelParamsBodyUnion() {
 }
 
 type AccountAIRunExecuteModelParamsBodyTextToSpeech struct {
@@ -760,7 +746,7 @@ func (r AccountAIRunExecuteModelParamsBodyTextToSpeech) MarshalJSON() (data []by
 	return apijson.MarshalRoot(r)
 }
 
-func (r AccountAIRunExecuteModelParamsBodyTextToSpeech) ImplementsAccountAIRunExecuteModelParamsBodyUnion() {
+func (r AccountAIRunExecuteModelParamsBodyTextToSpeech) implementsAccountAIRunExecuteModelParamsBodyUnion() {
 }
 
 type AccountAIRunExecuteModelParamsBodyTextEmbeddings struct {
@@ -772,7 +758,7 @@ func (r AccountAIRunExecuteModelParamsBodyTextEmbeddings) MarshalJSON() (data []
 	return apijson.MarshalRoot(r)
 }
 
-func (r AccountAIRunExecuteModelParamsBodyTextEmbeddings) ImplementsAccountAIRunExecuteModelParamsBodyUnion() {
+func (r AccountAIRunExecuteModelParamsBodyTextEmbeddings) implementsAccountAIRunExecuteModelParamsBodyUnion() {
 }
 
 // The text to embed
@@ -788,7 +774,7 @@ type AccountAIRunExecuteModelParamsBodyTextEmbeddingsTextArray []string
 func (r AccountAIRunExecuteModelParamsBodyTextEmbeddingsTextArray) ImplementsAccountAIRunExecuteModelParamsBodyTextEmbeddingsTextUnion() {
 }
 
-type AccountAIRunExecuteModelParamsBodyObject struct {
+type AccountAIRunExecuteModelParamsBodyAutomaticSpeechRecognition struct {
 	// An array of integers that represent the audio data constrained to 8-bit unsigned
 	// integer values
 	Audio param.Field[[]float64] `json:"audio,required"`
@@ -799,24 +785,37 @@ type AccountAIRunExecuteModelParamsBodyObject struct {
 	TargetLang param.Field[string] `json:"target_lang"`
 }
 
-func (r AccountAIRunExecuteModelParamsBodyObject) MarshalJSON() (data []byte, err error) {
+func (r AccountAIRunExecuteModelParamsBodyAutomaticSpeechRecognition) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-func (r AccountAIRunExecuteModelParamsBodyObject) ImplementsAccountAIRunExecuteModelParamsBodyUnion() {
+func (r AccountAIRunExecuteModelParamsBodyAutomaticSpeechRecognition) implementsAccountAIRunExecuteModelParamsBodyUnion() {
 }
 
-type AccountAIRunExecuteModelParamsBodyImage struct {
+type AccountAIRunExecuteModelParamsBodyImageClassification struct {
 	// An array of integers that represent the image data constrained to 8-bit unsigned
 	// integer values
 	Image param.Field[[]float64] `json:"image,required"`
 }
 
-func (r AccountAIRunExecuteModelParamsBodyImage) MarshalJSON() (data []byte, err error) {
+func (r AccountAIRunExecuteModelParamsBodyImageClassification) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-func (r AccountAIRunExecuteModelParamsBodyImage) ImplementsAccountAIRunExecuteModelParamsBodyUnion() {
+func (r AccountAIRunExecuteModelParamsBodyImageClassification) implementsAccountAIRunExecuteModelParamsBodyUnion() {
+}
+
+type AccountAIRunExecuteModelParamsBodyObjectDetection struct {
+	// An array of integers that represent the image data constrained to 8-bit unsigned
+	// integer values
+	Image param.Field[[]float64] `json:"image"`
+}
+
+func (r AccountAIRunExecuteModelParamsBodyObjectDetection) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r AccountAIRunExecuteModelParamsBodyObjectDetection) implementsAccountAIRunExecuteModelParamsBodyUnion() {
 }
 
 type AccountAIRunExecuteModelParamsBodyPrompt struct {
@@ -858,7 +857,7 @@ func (r AccountAIRunExecuteModelParamsBodyPrompt) MarshalJSON() (data []byte, er
 	return apijson.MarshalRoot(r)
 }
 
-func (r AccountAIRunExecuteModelParamsBodyPrompt) ImplementsAccountAIRunExecuteModelParamsBodyUnion() {
+func (r AccountAIRunExecuteModelParamsBodyPrompt) implementsAccountAIRunExecuteModelParamsBodyUnion() {
 }
 
 type AccountAIRunExecuteModelParamsBodyPromptResponseFormat struct {
@@ -885,12 +884,12 @@ func (r AccountAIRunExecuteModelParamsBodyPromptResponseFormatType) IsKnown() bo
 	return false
 }
 
-type AccountAIRunExecuteModelParamsBodyMessages struct {
+type AccountAIRunExecuteModelParamsBodyTextGeneration struct {
 	// An array of message objects representing the conversation history.
-	Messages param.Field[[]AccountAIRunExecuteModelParamsBodyMessagesMessage] `json:"messages,required"`
+	Messages param.Field[[]AccountAIRunExecuteModelParamsBodyTextGenerationMessage] `json:"messages,required"`
 	// Decreases the likelihood of the model repeating the same lines verbatim.
-	FrequencyPenalty param.Field[float64]                                              `json:"frequency_penalty"`
-	Functions        param.Field[[]AccountAIRunExecuteModelParamsBodyMessagesFunction] `json:"functions"`
+	FrequencyPenalty param.Field[float64]                                                    `json:"frequency_penalty"`
+	Functions        param.Field[[]AccountAIRunExecuteModelParamsBodyTextGenerationFunction] `json:"functions"`
 	// The maximum number of tokens to generate in the response.
 	MaxTokens param.Field[int64] `json:"max_tokens"`
 	// Increases the likelihood of the model introducing new topics.
@@ -899,8 +898,8 @@ type AccountAIRunExecuteModelParamsBodyMessages struct {
 	// model's expected formatting.
 	Raw param.Field[bool] `json:"raw"`
 	// Penalty for repeated tokens; higher values discourage repetition.
-	RepetitionPenalty param.Field[float64]                                                  `json:"repetition_penalty"`
-	ResponseFormat    param.Field[AccountAIRunExecuteModelParamsBodyMessagesResponseFormat] `json:"response_format"`
+	RepetitionPenalty param.Field[float64]                                                        `json:"repetition_penalty"`
+	ResponseFormat    param.Field[AccountAIRunExecuteModelParamsBodyTextGenerationResponseFormat] `json:"response_format"`
 	// Random seed for reproducibility of the generation.
 	Seed param.Field[int64] `json:"seed"`
 	// If true, the response will be streamed back incrementally using SSE, Server Sent
@@ -910,7 +909,7 @@ type AccountAIRunExecuteModelParamsBodyMessages struct {
 	// results.
 	Temperature param.Field[float64] `json:"temperature"`
 	// A list of tools available for the assistant to use.
-	Tools param.Field[[]AccountAIRunExecuteModelParamsBodyMessagesToolUnion] `json:"tools"`
+	Tools param.Field[[]AccountAIRunExecuteModelParamsBodyTextGenerationToolUnion] `json:"tools"`
 	// Limits the AI to choose from the top 'k' most probable words. Lower values make
 	// responses more focused; higher values introduce more variety and potential
 	// surprises.
@@ -921,58 +920,58 @@ type AccountAIRunExecuteModelParamsBodyMessages struct {
 	TopP param.Field[float64] `json:"top_p"`
 }
 
-func (r AccountAIRunExecuteModelParamsBodyMessages) MarshalJSON() (data []byte, err error) {
+func (r AccountAIRunExecuteModelParamsBodyTextGeneration) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-func (r AccountAIRunExecuteModelParamsBodyMessages) ImplementsAccountAIRunExecuteModelParamsBodyUnion() {
+func (r AccountAIRunExecuteModelParamsBodyTextGeneration) implementsAccountAIRunExecuteModelParamsBodyUnion() {
 }
 
-type AccountAIRunExecuteModelParamsBodyMessagesMessage struct {
+type AccountAIRunExecuteModelParamsBodyTextGenerationMessage struct {
 	// The content of the message as a string.
 	Content param.Field[string] `json:"content,required"`
 	// The role of the message sender (e.g., 'user', 'assistant', 'system', 'tool').
 	Role param.Field[string] `json:"role,required"`
 }
 
-func (r AccountAIRunExecuteModelParamsBodyMessagesMessage) MarshalJSON() (data []byte, err error) {
+func (r AccountAIRunExecuteModelParamsBodyTextGenerationMessage) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-type AccountAIRunExecuteModelParamsBodyMessagesFunction struct {
+type AccountAIRunExecuteModelParamsBodyTextGenerationFunction struct {
 	Code param.Field[string] `json:"code,required"`
 	Name param.Field[string] `json:"name,required"`
 }
 
-func (r AccountAIRunExecuteModelParamsBodyMessagesFunction) MarshalJSON() (data []byte, err error) {
+func (r AccountAIRunExecuteModelParamsBodyTextGenerationFunction) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-type AccountAIRunExecuteModelParamsBodyMessagesResponseFormat struct {
-	JsonSchema param.Field[interface{}]                                                  `json:"json_schema"`
-	Type       param.Field[AccountAIRunExecuteModelParamsBodyMessagesResponseFormatType] `json:"type"`
+type AccountAIRunExecuteModelParamsBodyTextGenerationResponseFormat struct {
+	JsonSchema param.Field[interface{}]                                                        `json:"json_schema"`
+	Type       param.Field[AccountAIRunExecuteModelParamsBodyTextGenerationResponseFormatType] `json:"type"`
 }
 
-func (r AccountAIRunExecuteModelParamsBodyMessagesResponseFormat) MarshalJSON() (data []byte, err error) {
+func (r AccountAIRunExecuteModelParamsBodyTextGenerationResponseFormat) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-type AccountAIRunExecuteModelParamsBodyMessagesResponseFormatType string
+type AccountAIRunExecuteModelParamsBodyTextGenerationResponseFormatType string
 
 const (
-	AccountAIRunExecuteModelParamsBodyMessagesResponseFormatTypeJsonObject AccountAIRunExecuteModelParamsBodyMessagesResponseFormatType = "json_object"
-	AccountAIRunExecuteModelParamsBodyMessagesResponseFormatTypeJsonSchema AccountAIRunExecuteModelParamsBodyMessagesResponseFormatType = "json_schema"
+	AccountAIRunExecuteModelParamsBodyTextGenerationResponseFormatTypeJsonObject AccountAIRunExecuteModelParamsBodyTextGenerationResponseFormatType = "json_object"
+	AccountAIRunExecuteModelParamsBodyTextGenerationResponseFormatTypeJsonSchema AccountAIRunExecuteModelParamsBodyTextGenerationResponseFormatType = "json_schema"
 )
 
-func (r AccountAIRunExecuteModelParamsBodyMessagesResponseFormatType) IsKnown() bool {
+func (r AccountAIRunExecuteModelParamsBodyTextGenerationResponseFormatType) IsKnown() bool {
 	switch r {
-	case AccountAIRunExecuteModelParamsBodyMessagesResponseFormatTypeJsonObject, AccountAIRunExecuteModelParamsBodyMessagesResponseFormatTypeJsonSchema:
+	case AccountAIRunExecuteModelParamsBodyTextGenerationResponseFormatTypeJsonObject, AccountAIRunExecuteModelParamsBodyTextGenerationResponseFormatTypeJsonSchema:
 		return true
 	}
 	return false
 }
 
-type AccountAIRunExecuteModelParamsBodyMessagesTool struct {
+type AccountAIRunExecuteModelParamsBodyTextGenerationTool struct {
 	// A brief description of what the tool does.
 	Description param.Field[string]      `json:"description"`
 	Function    param.Field[interface{}] `json:"function"`
@@ -983,58 +982,111 @@ type AccountAIRunExecuteModelParamsBodyMessagesTool struct {
 	Type param.Field[string] `json:"type"`
 }
 
-func (r AccountAIRunExecuteModelParamsBodyMessagesTool) MarshalJSON() (data []byte, err error) {
+func (r AccountAIRunExecuteModelParamsBodyTextGenerationTool) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-func (r AccountAIRunExecuteModelParamsBodyMessagesTool) implementsAccountAIRunExecuteModelParamsBodyMessagesToolUnion() {
+func (r AccountAIRunExecuteModelParamsBodyTextGenerationTool) implementsAccountAIRunExecuteModelParamsBodyTextGenerationToolUnion() {
 }
 
-// Satisfied by [AccountAIRunExecuteModelParamsBodyMessagesToolsObject],
-// [AccountAIRunExecuteModelParamsBodyMessagesToolsObject],
-// [AccountAIRunExecuteModelParamsBodyMessagesTool].
-type AccountAIRunExecuteModelParamsBodyMessagesToolUnion interface {
-	implementsAccountAIRunExecuteModelParamsBodyMessagesToolUnion()
+// Satisfied by [AccountAIRunExecuteModelParamsBodyTextGenerationToolsObject],
+// [AccountAIRunExecuteModelParamsBodyTextGenerationToolsFunction],
+// [AccountAIRunExecuteModelParamsBodyTextGenerationTool].
+type AccountAIRunExecuteModelParamsBodyTextGenerationToolUnion interface {
+	implementsAccountAIRunExecuteModelParamsBodyTextGenerationToolUnion()
 }
 
-type AccountAIRunExecuteModelParamsBodyMessagesToolsObject struct {
+type AccountAIRunExecuteModelParamsBodyTextGenerationToolsObject struct {
 	// A brief description of what the tool does.
 	Description param.Field[string] `json:"description,required"`
 	// The name of the tool. More descriptive the better.
 	Name param.Field[string] `json:"name,required"`
 	// Schema defining the parameters accepted by the tool.
-	Parameters param.Field[AccountAIRunExecuteModelParamsBodyMessagesToolsObjectParameters] `json:"parameters,required"`
+	Parameters param.Field[AccountAIRunExecuteModelParamsBodyTextGenerationToolsObjectParameters] `json:"parameters,required"`
 }
 
-func (r AccountAIRunExecuteModelParamsBodyMessagesToolsObject) MarshalJSON() (data []byte, err error) {
+func (r AccountAIRunExecuteModelParamsBodyTextGenerationToolsObject) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-func (r AccountAIRunExecuteModelParamsBodyMessagesToolsObject) implementsAccountAIRunExecuteModelParamsBodyMessagesToolUnion() {
+func (r AccountAIRunExecuteModelParamsBodyTextGenerationToolsObject) implementsAccountAIRunExecuteModelParamsBodyTextGenerationToolUnion() {
 }
 
 // Schema defining the parameters accepted by the tool.
-type AccountAIRunExecuteModelParamsBodyMessagesToolsObjectParameters struct {
+type AccountAIRunExecuteModelParamsBodyTextGenerationToolsObjectParameters struct {
 	// Definitions of each parameter.
-	Properties param.Field[map[string]AccountAIRunExecuteModelParamsBodyMessagesToolsObjectParametersProperties] `json:"properties,required"`
+	Properties param.Field[map[string]AccountAIRunExecuteModelParamsBodyTextGenerationToolsObjectParametersProperties] `json:"properties,required"`
 	// The type of the parameters object (usually 'object').
 	Type param.Field[string] `json:"type,required"`
 	// List of required parameter names.
 	Required param.Field[[]string] `json:"required"`
 }
 
-func (r AccountAIRunExecuteModelParamsBodyMessagesToolsObjectParameters) MarshalJSON() (data []byte, err error) {
+func (r AccountAIRunExecuteModelParamsBodyTextGenerationToolsObjectParameters) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-type AccountAIRunExecuteModelParamsBodyMessagesToolsObjectParametersProperties struct {
+type AccountAIRunExecuteModelParamsBodyTextGenerationToolsObjectParametersProperties struct {
 	// A description of the expected parameter.
 	Description param.Field[string] `json:"description,required"`
 	// The data type of the parameter.
 	Type param.Field[string] `json:"type,required"`
 }
 
-func (r AccountAIRunExecuteModelParamsBodyMessagesToolsObjectParametersProperties) MarshalJSON() (data []byte, err error) {
+func (r AccountAIRunExecuteModelParamsBodyTextGenerationToolsObjectParametersProperties) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type AccountAIRunExecuteModelParamsBodyTextGenerationToolsFunction struct {
+	// Details of the function tool.
+	Function param.Field[AccountAIRunExecuteModelParamsBodyTextGenerationToolsFunctionFunction] `json:"function,required"`
+	// Specifies the type of tool (e.g., 'function').
+	Type param.Field[string] `json:"type,required"`
+}
+
+func (r AccountAIRunExecuteModelParamsBodyTextGenerationToolsFunction) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r AccountAIRunExecuteModelParamsBodyTextGenerationToolsFunction) implementsAccountAIRunExecuteModelParamsBodyTextGenerationToolUnion() {
+}
+
+// Details of the function tool.
+type AccountAIRunExecuteModelParamsBodyTextGenerationToolsFunctionFunction struct {
+	// A brief description of what the function does.
+	Description param.Field[string] `json:"description,required"`
+	// The name of the function.
+	Name param.Field[string] `json:"name,required"`
+	// Schema defining the parameters accepted by the function.
+	Parameters param.Field[AccountAIRunExecuteModelParamsBodyTextGenerationToolsFunctionFunctionParameters] `json:"parameters,required"`
+}
+
+func (r AccountAIRunExecuteModelParamsBodyTextGenerationToolsFunctionFunction) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// Schema defining the parameters accepted by the function.
+type AccountAIRunExecuteModelParamsBodyTextGenerationToolsFunctionFunctionParameters struct {
+	// Definitions of each parameter.
+	Properties param.Field[map[string]AccountAIRunExecuteModelParamsBodyTextGenerationToolsFunctionFunctionParametersProperties] `json:"properties,required"`
+	// The type of the parameters object (usually 'object').
+	Type param.Field[string] `json:"type,required"`
+	// List of required parameter names.
+	Required param.Field[[]string] `json:"required"`
+}
+
+func (r AccountAIRunExecuteModelParamsBodyTextGenerationToolsFunctionFunctionParameters) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type AccountAIRunExecuteModelParamsBodyTextGenerationToolsFunctionFunctionParametersProperties struct {
+	// A description of the expected parameter.
+	Description param.Field[string] `json:"description,required"`
+	// The data type of the parameter.
+	Type param.Field[string] `json:"type,required"`
+}
+
+func (r AccountAIRunExecuteModelParamsBodyTextGenerationToolsFunctionFunctionParametersProperties) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
@@ -1052,7 +1104,7 @@ func (r AccountAIRunExecuteModelParamsBodyTranslation) MarshalJSON() (data []byt
 	return apijson.MarshalRoot(r)
 }
 
-func (r AccountAIRunExecuteModelParamsBodyTranslation) ImplementsAccountAIRunExecuteModelParamsBodyUnion() {
+func (r AccountAIRunExecuteModelParamsBodyTranslation) implementsAccountAIRunExecuteModelParamsBodyUnion() {
 }
 
 type AccountAIRunExecuteModelParamsBodySummarization struct {
@@ -1066,5 +1118,131 @@ func (r AccountAIRunExecuteModelParamsBodySummarization) MarshalJSON() (data []b
 	return apijson.MarshalRoot(r)
 }
 
-func (r AccountAIRunExecuteModelParamsBodySummarization) ImplementsAccountAIRunExecuteModelParamsBodyUnion() {
+func (r AccountAIRunExecuteModelParamsBodySummarization) implementsAccountAIRunExecuteModelParamsBodyUnion() {
+}
+
+type AccountAIRunExecuteModelParamsBodyImageToText struct {
+	// An array of integers that represent the image data constrained to 8-bit unsigned
+	// integer values
+	Image param.Field[[]float64] `json:"image,required"`
+	// Decreases the likelihood of the model repeating the same lines verbatim.
+	FrequencyPenalty param.Field[float64] `json:"frequency_penalty"`
+	// The maximum number of tokens to generate in the response.
+	MaxTokens param.Field[int64] `json:"max_tokens"`
+	// Increases the likelihood of the model introducing new topics.
+	PresencePenalty param.Field[float64] `json:"presence_penalty"`
+	// The input text prompt for the model to generate a response.
+	Prompt param.Field[string] `json:"prompt"`
+	// If true, a chat template is not applied and you must adhere to the specific
+	// model's expected formatting.
+	Raw param.Field[bool] `json:"raw"`
+	// Penalty for repeated tokens; higher values discourage repetition.
+	RepetitionPenalty param.Field[float64] `json:"repetition_penalty"`
+	// Random seed for reproducibility of the generation.
+	Seed param.Field[float64] `json:"seed"`
+	// Controls the randomness of the output; higher values produce more random
+	// results.
+	Temperature param.Field[float64] `json:"temperature"`
+	// Limits the AI to choose from the top 'k' most probable words. Lower values make
+	// responses more focused; higher values introduce more variety and potential
+	// surprises.
+	TopK param.Field[float64] `json:"top_k"`
+	// Controls the creativity of the AI's responses by adjusting how many possible
+	// words it considers. Lower values make outputs more predictable; higher values
+	// allow for more varied and creative responses.
+	TopP param.Field[float64] `json:"top_p"`
+}
+
+func (r AccountAIRunExecuteModelParamsBodyImageToText) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r AccountAIRunExecuteModelParamsBodyImageToText) implementsAccountAIRunExecuteModelParamsBodyUnion() {
+}
+
+type AccountAIRunExecuteModelParamsBodyObject struct {
+	// Image in base64 encoded format.
+	Image param.Field[string] `json:"image,required"`
+	// The input text prompt for the model to generate a response.
+	Prompt param.Field[string] `json:"prompt,required"`
+	// Decreases the likelihood of the model repeating the same lines verbatim.
+	FrequencyPenalty param.Field[float64] `json:"frequency_penalty"`
+	// Whether to ignore the EOS token and continue generating tokens after the EOS
+	// token is generated.
+	IgnoreEos param.Field[bool] `json:"ignore_eos"`
+	// The maximum number of tokens to generate in the response.
+	MaxTokens param.Field[int64] `json:"max_tokens"`
+	// Increases the likelihood of the model introducing new topics.
+	PresencePenalty param.Field[float64] `json:"presence_penalty"`
+	// Penalty for repeated tokens; higher values discourage repetition.
+	RepetitionPenalty param.Field[float64] `json:"repetition_penalty"`
+	// Random seed for reproducibility of the generation.
+	Seed param.Field[float64] `json:"seed"`
+	// Controls the randomness of the output; higher values produce more random
+	// results.
+	Temperature param.Field[float64] `json:"temperature"`
+	// Limits the AI to choose from the top 'k' most probable words. Lower values make
+	// responses more focused; higher values introduce more variety and potential
+	// surprises.
+	TopK param.Field[float64] `json:"top_k"`
+	// Controls the creativity of the AI's responses by adjusting how many possible
+	// words it considers. Lower values make outputs more predictable; higher values
+	// allow for more varied and creative responses.
+	TopP param.Field[float64] `json:"top_p"`
+}
+
+func (r AccountAIRunExecuteModelParamsBodyObject) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r AccountAIRunExecuteModelParamsBodyObject) implementsAccountAIRunExecuteModelParamsBodyUnion() {
+}
+
+type AccountAIRunExecuteModelParamsBodyImageTextToText struct {
+	// Image in base64 encoded format.
+	Image param.Field[string] `json:"image,required"`
+	// An array of message objects representing the conversation history.
+	Messages param.Field[[]AccountAIRunExecuteModelParamsBodyImageTextToTextMessage] `json:"messages,required"`
+	// Decreases the likelihood of the model repeating the same lines verbatim.
+	FrequencyPenalty param.Field[float64] `json:"frequency_penalty"`
+	// Whether to ignore the EOS token and continue generating tokens after the EOS
+	// token is generated.
+	IgnoreEos param.Field[bool] `json:"ignore_eos"`
+	// The maximum number of tokens to generate in the response.
+	MaxTokens param.Field[int64] `json:"max_tokens"`
+	// Increases the likelihood of the model introducing new topics.
+	PresencePenalty param.Field[float64] `json:"presence_penalty"`
+	// Penalty for repeated tokens; higher values discourage repetition.
+	RepetitionPenalty param.Field[float64] `json:"repetition_penalty"`
+	// Random seed for reproducibility of the generation.
+	Seed param.Field[float64] `json:"seed"`
+	// Controls the randomness of the output; higher values produce more random
+	// results.
+	Temperature param.Field[float64] `json:"temperature"`
+	// Limits the AI to choose from the top 'k' most probable words. Lower values make
+	// responses more focused; higher values introduce more variety and potential
+	// surprises.
+	TopK param.Field[float64] `json:"top_k"`
+	// Controls the creativity of the AI's responses by adjusting how many possible
+	// words it considers. Lower values make outputs more predictable; higher values
+	// allow for more varied and creative responses.
+	TopP param.Field[float64] `json:"top_p"`
+}
+
+func (r AccountAIRunExecuteModelParamsBodyImageTextToText) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r AccountAIRunExecuteModelParamsBodyImageTextToText) implementsAccountAIRunExecuteModelParamsBodyUnion() {
+}
+
+type AccountAIRunExecuteModelParamsBodyImageTextToTextMessage struct {
+	// The content of the message as a string.
+	Content param.Field[string] `json:"content,required"`
+	// The role of the message sender (e.g., 'user', 'assistant', 'system', 'tool').
+	Role param.Field[string] `json:"role,required"`
+}
+
+func (r AccountAIRunExecuteModelParamsBodyImageTextToTextMessage) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
 }

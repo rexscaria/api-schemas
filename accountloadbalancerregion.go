@@ -60,16 +60,22 @@ func (r *AccountLoadBalancerRegionService) List(ctx context.Context, accountID s
 }
 
 type AccountLoadBalancerRegionGetResponse struct {
+	Errors   []AccountLoadBalancerRegionGetResponseError   `json:"errors,required"`
+	Messages []AccountLoadBalancerRegionGetResponseMessage `json:"messages,required"`
 	// A list of countries and subdivisions mapped to a region.
-	Result interface{}                              `json:"result"`
-	JSON   accountLoadBalancerRegionGetResponseJSON `json:"-"`
-	SingleResponseMonitor
+	Result interface{} `json:"result,required"`
+	// Whether the API call was successful
+	Success AccountLoadBalancerRegionGetResponseSuccess `json:"success,required"`
+	JSON    accountLoadBalancerRegionGetResponseJSON    `json:"-"`
 }
 
 // accountLoadBalancerRegionGetResponseJSON contains the JSON metadata for the
 // struct [AccountLoadBalancerRegionGetResponse]
 type accountLoadBalancerRegionGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -82,16 +88,133 @@ func (r accountLoadBalancerRegionGetResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+type AccountLoadBalancerRegionGetResponseError struct {
+	Code             int64                                            `json:"code,required"`
+	Message          string                                           `json:"message,required"`
+	DocumentationURL string                                           `json:"documentation_url"`
+	Source           AccountLoadBalancerRegionGetResponseErrorsSource `json:"source"`
+	JSON             accountLoadBalancerRegionGetResponseErrorJSON    `json:"-"`
+}
+
+// accountLoadBalancerRegionGetResponseErrorJSON contains the JSON metadata for the
+// struct [AccountLoadBalancerRegionGetResponseError]
+type accountLoadBalancerRegionGetResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountLoadBalancerRegionGetResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountLoadBalancerRegionGetResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountLoadBalancerRegionGetResponseErrorsSource struct {
+	Pointer string                                               `json:"pointer"`
+	JSON    accountLoadBalancerRegionGetResponseErrorsSourceJSON `json:"-"`
+}
+
+// accountLoadBalancerRegionGetResponseErrorsSourceJSON contains the JSON metadata
+// for the struct [AccountLoadBalancerRegionGetResponseErrorsSource]
+type accountLoadBalancerRegionGetResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountLoadBalancerRegionGetResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountLoadBalancerRegionGetResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountLoadBalancerRegionGetResponseMessage struct {
+	Code             int64                                              `json:"code,required"`
+	Message          string                                             `json:"message,required"`
+	DocumentationURL string                                             `json:"documentation_url"`
+	Source           AccountLoadBalancerRegionGetResponseMessagesSource `json:"source"`
+	JSON             accountLoadBalancerRegionGetResponseMessageJSON    `json:"-"`
+}
+
+// accountLoadBalancerRegionGetResponseMessageJSON contains the JSON metadata for
+// the struct [AccountLoadBalancerRegionGetResponseMessage]
+type accountLoadBalancerRegionGetResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountLoadBalancerRegionGetResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountLoadBalancerRegionGetResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountLoadBalancerRegionGetResponseMessagesSource struct {
+	Pointer string                                                 `json:"pointer"`
+	JSON    accountLoadBalancerRegionGetResponseMessagesSourceJSON `json:"-"`
+}
+
+// accountLoadBalancerRegionGetResponseMessagesSourceJSON contains the JSON
+// metadata for the struct [AccountLoadBalancerRegionGetResponseMessagesSource]
+type accountLoadBalancerRegionGetResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountLoadBalancerRegionGetResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountLoadBalancerRegionGetResponseMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful
+type AccountLoadBalancerRegionGetResponseSuccess bool
+
+const (
+	AccountLoadBalancerRegionGetResponseSuccessTrue AccountLoadBalancerRegionGetResponseSuccess = true
+)
+
+func (r AccountLoadBalancerRegionGetResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountLoadBalancerRegionGetResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountLoadBalancerRegionListResponse struct {
-	Result interface{}                               `json:"result"`
-	JSON   accountLoadBalancerRegionListResponseJSON `json:"-"`
-	SingleResponseMonitor
+	Errors   []LoadBalancingMessages `json:"errors,required"`
+	Messages []LoadBalancingMessages `json:"messages,required"`
+	Result   interface{}             `json:"result,required"`
+	// Whether the API call was successful
+	Success AccountLoadBalancerRegionListResponseSuccess `json:"success,required"`
+	JSON    accountLoadBalancerRegionListResponseJSON    `json:"-"`
 }
 
 // accountLoadBalancerRegionListResponseJSON contains the JSON metadata for the
 // struct [AccountLoadBalancerRegionListResponse]
 type accountLoadBalancerRegionListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -102,6 +225,21 @@ func (r *AccountLoadBalancerRegionListResponse) UnmarshalJSON(data []byte) (err 
 
 func (r accountLoadBalancerRegionListResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful
+type AccountLoadBalancerRegionListResponseSuccess bool
+
+const (
+	AccountLoadBalancerRegionListResponseSuccessTrue AccountLoadBalancerRegionListResponseSuccess = true
+)
+
+func (r AccountLoadBalancerRegionListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountLoadBalancerRegionListResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 // A list of Cloudflare regions. WNAM: Western North America, ENAM: Eastern North

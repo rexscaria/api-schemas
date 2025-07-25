@@ -61,7 +61,7 @@ func TestAccountIntelDomainListMultipleDetailsWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.AccountIntelDomainListMultipleDetailsParams{
-			Domain: cfrex.F[any](map[string]interface{}{}),
+			Domain: cfrex.F([]string{"string"}),
 		},
 	)
 	if err != nil {

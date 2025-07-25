@@ -32,18 +32,9 @@ func TestAccountSubscriptionNewWithOptionalParams(t *testing.T) {
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.AccountSubscriptionNewParams{
 			SubscriptionV2: cfrex.SubscriptionV2Param{
-				App: cfrex.F(cfrex.SubscriptionV2AppParam{
-					InstallID: cfrex.F("install_id"),
-				}),
-				ComponentValues: cfrex.F([]cfrex.SubscriptionV2ComponentValueParam{{
-					Default: cfrex.F(5.000000),
-					Name:    cfrex.F("page_rules"),
-					Price:   cfrex.F(5.000000),
-					Value:   cfrex.F(20.000000),
-				}}),
 				Frequency: cfrex.F(cfrex.SubscriptionV2FrequencyMonthly),
 				RatePlan: cfrex.F(cfrex.SubscriptionV2RatePlanParam{
-					ID:                cfrex.F("free"),
+					ID:                cfrex.F(cfrex.SubscriptionV2RatePlanIDFree),
 					Currency:          cfrex.F("USD"),
 					ExternallyManaged: cfrex.F(false),
 					IsContract:        cfrex.F(false),
@@ -51,7 +42,6 @@ func TestAccountSubscriptionNewWithOptionalParams(t *testing.T) {
 					Scope:             cfrex.F("zone"),
 					Sets:              cfrex.F([]string{"string"}),
 				}),
-				Zone: cfrex.F(cfrex.SubscriptionV2ZoneParam{}),
 			},
 		},
 	)
@@ -84,18 +74,9 @@ func TestAccountSubscriptionUpdateWithOptionalParams(t *testing.T) {
 		"506e3185e9c882d175a2d0cb0093d9f2",
 		cfrex.AccountSubscriptionUpdateParams{
 			SubscriptionV2: cfrex.SubscriptionV2Param{
-				App: cfrex.F(cfrex.SubscriptionV2AppParam{
-					InstallID: cfrex.F("install_id"),
-				}),
-				ComponentValues: cfrex.F([]cfrex.SubscriptionV2ComponentValueParam{{
-					Default: cfrex.F(5.000000),
-					Name:    cfrex.F("page_rules"),
-					Price:   cfrex.F(5.000000),
-					Value:   cfrex.F(20.000000),
-				}}),
 				Frequency: cfrex.F(cfrex.SubscriptionV2FrequencyMonthly),
 				RatePlan: cfrex.F(cfrex.SubscriptionV2RatePlanParam{
-					ID:                cfrex.F("free"),
+					ID:                cfrex.F(cfrex.SubscriptionV2RatePlanIDFree),
 					Currency:          cfrex.F("USD"),
 					ExternallyManaged: cfrex.F(false),
 					IsContract:        cfrex.F(false),
@@ -103,7 +84,6 @@ func TestAccountSubscriptionUpdateWithOptionalParams(t *testing.T) {
 					Scope:             cfrex.F("zone"),
 					Sets:              cfrex.F([]string{"string"}),
 				}),
-				Zone: cfrex.F(cfrex.SubscriptionV2ZoneParam{}),
 			},
 		},
 	)
@@ -158,9 +138,6 @@ func TestAccountSubscriptionDelete(t *testing.T) {
 		context.TODO(),
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		"506e3185e9c882d175a2d0cb0093d9f2",
-		cfrex.AccountSubscriptionDeleteParams{
-			Body: map[string]interface{}{},
-		},
 	)
 	if err != nil {
 		var apierr *cfrex.Error

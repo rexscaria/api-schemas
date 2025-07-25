@@ -7,14 +7,11 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"reflect"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
 	"github.com/rexscaria/api-schemas/internal/requestconfig"
 	"github.com/rexscaria/api-schemas/option"
-	"github.com/rexscaria/api-schemas/shared"
-	"github.com/tidwall/gjson"
 )
 
 // AccountDiagnosticService contains methods and other services that help with
@@ -49,18 +46,22 @@ func (r *AccountDiagnosticService) RunTraceroute(ctx context.Context, accountID 
 }
 
 type MessagesMagicTransitItem struct {
-	Code    int64                        `json:"code,required"`
-	Message string                       `json:"message,required"`
-	JSON    messagesMagicTransitItemJSON `json:"-"`
+	Code             int64                          `json:"code,required"`
+	Message          string                         `json:"message,required"`
+	DocumentationURL string                         `json:"documentation_url"`
+	Source           MessagesMagicTransitItemSource `json:"source"`
+	JSON             messagesMagicTransitItemJSON   `json:"-"`
 }
 
 // messagesMagicTransitItemJSON contains the JSON metadata for the struct
 // [MessagesMagicTransitItem]
 type messagesMagicTransitItemJSON struct {
-	Code        apijson.Field
-	Message     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
 }
 
 func (r *MessagesMagicTransitItem) UnmarshalJSON(data []byte) (err error) {
@@ -71,13 +72,34 @@ func (r messagesMagicTransitItemJSON) RawJSON() string {
 	return r.raw
 }
 
+type MessagesMagicTransitItemSource struct {
+	Pointer string                             `json:"pointer"`
+	JSON    messagesMagicTransitItemSourceJSON `json:"-"`
+}
+
+// messagesMagicTransitItemSourceJSON contains the JSON metadata for the struct
+// [MessagesMagicTransitItemSource]
+type messagesMagicTransitItemSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *MessagesMagicTransitItemSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r messagesMagicTransitItemSourceJSON) RawJSON() string {
+	return r.raw
+}
+
 type AccountDiagnosticRunTracerouteResponse struct {
-	Errors   []MessagesMagicTransitItem                        `json:"errors,required"`
-	Messages []MessagesMagicTransitItem                        `json:"messages,required"`
-	Result   AccountDiagnosticRunTracerouteResponseResultUnion `json:"result,required,nullable"`
-	// Whether the API call was successful
-	Success AccountDiagnosticRunTracerouteResponseSuccess `json:"success,required"`
-	JSON    accountDiagnosticRunTracerouteResponseJSON    `json:"-"`
+	Errors   []MessagesMagicTransitItem `json:"errors,required"`
+	Messages []MessagesMagicTransitItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountDiagnosticRunTracerouteResponseSuccess  `json:"success,required"`
+	Result  []AccountDiagnosticRunTracerouteResponseResult `json:"result"`
+	JSON    accountDiagnosticRunTracerouteResponseJSON     `json:"-"`
 }
 
 // accountDiagnosticRunTracerouteResponseJSON contains the JSON metadata for the
@@ -85,8 +107,8 @@ type AccountDiagnosticRunTracerouteResponse struct {
 type accountDiagnosticRunTracerouteResponseJSON struct {
 	Errors      apijson.Field
 	Messages    apijson.Field
-	Result      apijson.Field
 	Success     apijson.Field
+	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -99,33 +121,7 @@ func (r accountDiagnosticRunTracerouteResponseJSON) RawJSON() string {
 	return r.raw
 }
 
-// Union satisfied by [AccountDiagnosticRunTracerouteResponseResultArray] or
-// [shared.UnionString].
-type AccountDiagnosticRunTracerouteResponseResultUnion interface {
-	ImplementsAccountDiagnosticRunTracerouteResponseResultUnion()
-}
-
-func init() {
-	apijson.RegisterUnion(
-		reflect.TypeOf((*AccountDiagnosticRunTracerouteResponseResultUnion)(nil)).Elem(),
-		"",
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(AccountDiagnosticRunTracerouteResponseResultArray{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.String,
-			Type:       reflect.TypeOf(shared.UnionString("")),
-		},
-	)
-}
-
-type AccountDiagnosticRunTracerouteResponseResultArray []interface{}
-
-func (r AccountDiagnosticRunTracerouteResponseResultArray) ImplementsAccountDiagnosticRunTracerouteResponseResultUnion() {
-}
-
-// Whether the API call was successful
+// Whether the API call was successful.
 type AccountDiagnosticRunTracerouteResponseSuccess bool
 
 const (
@@ -138,6 +134,186 @@ func (r AccountDiagnosticRunTracerouteResponseSuccess) IsKnown() bool {
 		return true
 	}
 	return false
+}
+
+type AccountDiagnosticRunTracerouteResponseResult struct {
+	Colos []AccountDiagnosticRunTracerouteResponseResultColo `json:"colos"`
+	// The target hostname, IPv6, or IPv6 address.
+	Target string                                           `json:"target"`
+	JSON   accountDiagnosticRunTracerouteResponseResultJSON `json:"-"`
+}
+
+// accountDiagnosticRunTracerouteResponseResultJSON contains the JSON metadata for
+// the struct [AccountDiagnosticRunTracerouteResponseResult]
+type accountDiagnosticRunTracerouteResponseResultJSON struct {
+	Colos       apijson.Field
+	Target      apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountDiagnosticRunTracerouteResponseResult) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountDiagnosticRunTracerouteResponseResultJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountDiagnosticRunTracerouteResponseResultColo struct {
+	Colo AccountDiagnosticRunTracerouteResponseResultColosColo `json:"colo"`
+	// Errors resulting from collecting traceroute from colo to target.
+	Error AccountDiagnosticRunTracerouteResponseResultColosError `json:"error"`
+	Hops  []AccountDiagnosticRunTracerouteResponseResultColosHop `json:"hops"`
+	// Aggregated statistics from all hops about the target.
+	TargetSummary interface{} `json:"target_summary"`
+	// Total time of traceroute in ms.
+	TracerouteTimeMs int64                                                `json:"traceroute_time_ms"`
+	JSON             accountDiagnosticRunTracerouteResponseResultColoJSON `json:"-"`
+}
+
+// accountDiagnosticRunTracerouteResponseResultColoJSON contains the JSON metadata
+// for the struct [AccountDiagnosticRunTracerouteResponseResultColo]
+type accountDiagnosticRunTracerouteResponseResultColoJSON struct {
+	Colo             apijson.Field
+	Error            apijson.Field
+	Hops             apijson.Field
+	TargetSummary    apijson.Field
+	TracerouteTimeMs apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountDiagnosticRunTracerouteResponseResultColo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountDiagnosticRunTracerouteResponseResultColoJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountDiagnosticRunTracerouteResponseResultColosColo struct {
+	// Source colo city.
+	City string `json:"city"`
+	// Source colo name.
+	Name string                                                    `json:"name"`
+	JSON accountDiagnosticRunTracerouteResponseResultColosColoJSON `json:"-"`
+}
+
+// accountDiagnosticRunTracerouteResponseResultColosColoJSON contains the JSON
+// metadata for the struct [AccountDiagnosticRunTracerouteResponseResultColosColo]
+type accountDiagnosticRunTracerouteResponseResultColosColoJSON struct {
+	City        apijson.Field
+	Name        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountDiagnosticRunTracerouteResponseResultColosColo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountDiagnosticRunTracerouteResponseResultColosColoJSON) RawJSON() string {
+	return r.raw
+}
+
+// Errors resulting from collecting traceroute from colo to target.
+type AccountDiagnosticRunTracerouteResponseResultColosError string
+
+const (
+	AccountDiagnosticRunTracerouteResponseResultColosErrorEmpty                             AccountDiagnosticRunTracerouteResponseResultColosError = ""
+	AccountDiagnosticRunTracerouteResponseResultColosErrorCouldNotGatherTracerouteDataCode1 AccountDiagnosticRunTracerouteResponseResultColosError = "Could not gather traceroute data: Code 1"
+	AccountDiagnosticRunTracerouteResponseResultColosErrorCouldNotGatherTracerouteDataCode2 AccountDiagnosticRunTracerouteResponseResultColosError = "Could not gather traceroute data: Code 2"
+	AccountDiagnosticRunTracerouteResponseResultColosErrorCouldNotGatherTracerouteDataCode3 AccountDiagnosticRunTracerouteResponseResultColosError = "Could not gather traceroute data: Code 3"
+	AccountDiagnosticRunTracerouteResponseResultColosErrorCouldNotGatherTracerouteDataCode4 AccountDiagnosticRunTracerouteResponseResultColosError = "Could not gather traceroute data: Code 4"
+)
+
+func (r AccountDiagnosticRunTracerouteResponseResultColosError) IsKnown() bool {
+	switch r {
+	case AccountDiagnosticRunTracerouteResponseResultColosErrorEmpty, AccountDiagnosticRunTracerouteResponseResultColosErrorCouldNotGatherTracerouteDataCode1, AccountDiagnosticRunTracerouteResponseResultColosErrorCouldNotGatherTracerouteDataCode2, AccountDiagnosticRunTracerouteResponseResultColosErrorCouldNotGatherTracerouteDataCode3, AccountDiagnosticRunTracerouteResponseResultColosErrorCouldNotGatherTracerouteDataCode4:
+		return true
+	}
+	return false
+}
+
+type AccountDiagnosticRunTracerouteResponseResultColosHop struct {
+	// An array of node objects.
+	Nodes []AccountDiagnosticRunTracerouteResponseResultColosHopsNode `json:"nodes"`
+	// Number of packets where no response was received.
+	PacketsLost int64 `json:"packets_lost"`
+	// Number of packets sent with specified TTL.
+	PacketsSent int64 `json:"packets_sent"`
+	// The time to live (TTL).
+	PacketsTtl int64                                                    `json:"packets_ttl"`
+	JSON       accountDiagnosticRunTracerouteResponseResultColosHopJSON `json:"-"`
+}
+
+// accountDiagnosticRunTracerouteResponseResultColosHopJSON contains the JSON
+// metadata for the struct [AccountDiagnosticRunTracerouteResponseResultColosHop]
+type accountDiagnosticRunTracerouteResponseResultColosHopJSON struct {
+	Nodes       apijson.Field
+	PacketsLost apijson.Field
+	PacketsSent apijson.Field
+	PacketsTtl  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountDiagnosticRunTracerouteResponseResultColosHop) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountDiagnosticRunTracerouteResponseResultColosHopJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountDiagnosticRunTracerouteResponseResultColosHopsNode struct {
+	// AS number associated with the node object.
+	Asn string `json:"asn"`
+	// IP address of the node.
+	IP string `json:"ip"`
+	// Field appears if there is an additional annotation printed when the probe
+	// returns. Field also appears when running a GRE+ICMP traceroute to denote which
+	// traceroute a node comes from.
+	Labels []string `json:"labels"`
+	// Maximum RTT in ms.
+	MaxRttMs float64 `json:"max_rtt_ms"`
+	// Mean RTT in ms.
+	MeanRttMs float64 `json:"mean_rtt_ms"`
+	// Minimum RTT in ms.
+	MinRttMs float64 `json:"min_rtt_ms"`
+	// Host name of the address, this may be the same as the IP address.
+	Name string `json:"name"`
+	// Number of packets with a response from this node.
+	PacketCount int64 `json:"packet_count"`
+	// Standard deviation of the RTTs in ms.
+	StdDevRttMs float64                                                       `json:"std_dev_rtt_ms"`
+	JSON        accountDiagnosticRunTracerouteResponseResultColosHopsNodeJSON `json:"-"`
+}
+
+// accountDiagnosticRunTracerouteResponseResultColosHopsNodeJSON contains the JSON
+// metadata for the struct
+// [AccountDiagnosticRunTracerouteResponseResultColosHopsNode]
+type accountDiagnosticRunTracerouteResponseResultColosHopsNodeJSON struct {
+	Asn         apijson.Field
+	IP          apijson.Field
+	Labels      apijson.Field
+	MaxRttMs    apijson.Field
+	MeanRttMs   apijson.Field
+	MinRttMs    apijson.Field
+	Name        apijson.Field
+	PacketCount apijson.Field
+	StdDevRttMs apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountDiagnosticRunTracerouteResponseResultColosHopsNode) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountDiagnosticRunTracerouteResponseResultColosHopsNodeJSON) RawJSON() string {
+	return r.raw
 }
 
 type AccountDiagnosticRunTracerouteParams struct {

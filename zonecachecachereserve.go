@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -83,77 +84,22 @@ func (r CacheReserveValue) IsKnown() bool {
 	return false
 }
 
-type ResponseValueReserve struct {
-	Result ResponseValueReserveResult `json:"result"`
-	JSON   responseValueReserveJSON   `json:"-"`
-}
-
-// responseValueReserveJSON contains the JSON metadata for the struct
-// [ResponseValueReserve]
-type responseValueReserveJSON struct {
-	Result      apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ResponseValueReserve) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r responseValueReserveJSON) RawJSON() string {
-	return r.raw
-}
-
-type ResponseValueReserveResult struct {
-	// Value of the Cache Reserve zone setting.
-	Value CacheReserveValue `json:"value,required"`
-	// ID of the zone setting.
-	ID   ResponseValueReserveResultID   `json:"id"`
-	JSON responseValueReserveResultJSON `json:"-"`
-	BaseCacheRule
-}
-
-// responseValueReserveResultJSON contains the JSON metadata for the struct
-// [ResponseValueReserveResult]
-type responseValueReserveResultJSON struct {
-	Value       apijson.Field
-	ID          apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ResponseValueReserveResult) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r responseValueReserveResultJSON) RawJSON() string {
-	return r.raw
-}
-
-// ID of the zone setting.
-type ResponseValueReserveResultID string
-
-const (
-	ResponseValueReserveResultIDCacheReserve ResponseValueReserveResultID = "cache_reserve"
-)
-
-func (r ResponseValueReserveResultID) IsKnown() bool {
-	switch r {
-	case ResponseValueReserveResultIDCacheReserve:
-		return true
-	}
-	return false
-}
-
 type ZoneCacheCacheReserveGetResponse struct {
-	JSON zoneCacheCacheReserveGetResponseJSON `json:"-"`
-	CacheRulesZoneCacheSettingsResponse
-	ResponseValueReserve
+	Errors   []MessagesCacheRulesItem `json:"errors,required"`
+	Messages []MessagesCacheRulesItem `json:"messages,required"`
+	// Whether the API call was successful
+	Success ZoneCacheCacheReserveGetResponseSuccess `json:"success,required"`
+	Result  ZoneCacheCacheReserveGetResponseResult  `json:"result"`
+	JSON    zoneCacheCacheReserveGetResponseJSON    `json:"-"`
 }
 
 // zoneCacheCacheReserveGetResponseJSON contains the JSON metadata for the struct
 // [ZoneCacheCacheReserveGetResponse]
 type zoneCacheCacheReserveGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
+	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -166,15 +112,83 @@ func (r zoneCacheCacheReserveGetResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful
+type ZoneCacheCacheReserveGetResponseSuccess bool
+
+const (
+	ZoneCacheCacheReserveGetResponseSuccessTrue ZoneCacheCacheReserveGetResponseSuccess = true
+)
+
+func (r ZoneCacheCacheReserveGetResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneCacheCacheReserveGetResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type ZoneCacheCacheReserveGetResponseResult struct {
+	// ID of the zone setting.
+	ID ZoneCacheCacheReserveGetResponseResultID `json:"id,required"`
+	// Whether the setting is editable
+	Editable bool `json:"editable,required"`
+	// The value of the feature
+	Value CacheReserveValue `json:"value,required"`
+	// Last time this setting was modified.
+	ModifiedOn time.Time                                  `json:"modified_on,nullable" format:"date-time"`
+	JSON       zoneCacheCacheReserveGetResponseResultJSON `json:"-"`
+}
+
+// zoneCacheCacheReserveGetResponseResultJSON contains the JSON metadata for the
+// struct [ZoneCacheCacheReserveGetResponseResult]
+type zoneCacheCacheReserveGetResponseResultJSON struct {
+	ID          apijson.Field
+	Editable    apijson.Field
+	Value       apijson.Field
+	ModifiedOn  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZoneCacheCacheReserveGetResponseResult) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneCacheCacheReserveGetResponseResultJSON) RawJSON() string {
+	return r.raw
+}
+
+// ID of the zone setting.
+type ZoneCacheCacheReserveGetResponseResultID string
+
+const (
+	ZoneCacheCacheReserveGetResponseResultIDCacheReserve ZoneCacheCacheReserveGetResponseResultID = "cache_reserve"
+)
+
+func (r ZoneCacheCacheReserveGetResponseResultID) IsKnown() bool {
+	switch r {
+	case ZoneCacheCacheReserveGetResponseResultIDCacheReserve:
+		return true
+	}
+	return false
+}
+
 type ZoneCacheCacheReserveUpdateResponse struct {
-	JSON zoneCacheCacheReserveUpdateResponseJSON `json:"-"`
-	CacheRulesZoneCacheSettingsResponse
-	ResponseValueReserve
+	Errors   []MessagesCacheRulesItem `json:"errors,required"`
+	Messages []MessagesCacheRulesItem `json:"messages,required"`
+	// Whether the API call was successful
+	Success ZoneCacheCacheReserveUpdateResponseSuccess `json:"success,required"`
+	Result  ZoneCacheCacheReserveUpdateResponseResult  `json:"result"`
+	JSON    zoneCacheCacheReserveUpdateResponseJSON    `json:"-"`
 }
 
 // zoneCacheCacheReserveUpdateResponseJSON contains the JSON metadata for the
 // struct [ZoneCacheCacheReserveUpdateResponse]
 type zoneCacheCacheReserveUpdateResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
+	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -185,6 +199,67 @@ func (r *ZoneCacheCacheReserveUpdateResponse) UnmarshalJSON(data []byte) (err er
 
 func (r zoneCacheCacheReserveUpdateResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful
+type ZoneCacheCacheReserveUpdateResponseSuccess bool
+
+const (
+	ZoneCacheCacheReserveUpdateResponseSuccessTrue ZoneCacheCacheReserveUpdateResponseSuccess = true
+)
+
+func (r ZoneCacheCacheReserveUpdateResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneCacheCacheReserveUpdateResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type ZoneCacheCacheReserveUpdateResponseResult struct {
+	// ID of the zone setting.
+	ID ZoneCacheCacheReserveUpdateResponseResultID `json:"id,required"`
+	// Whether the setting is editable
+	Editable bool `json:"editable,required"`
+	// The value of the feature
+	Value CacheReserveValue `json:"value,required"`
+	// Last time this setting was modified.
+	ModifiedOn time.Time                                     `json:"modified_on,nullable" format:"date-time"`
+	JSON       zoneCacheCacheReserveUpdateResponseResultJSON `json:"-"`
+}
+
+// zoneCacheCacheReserveUpdateResponseResultJSON contains the JSON metadata for the
+// struct [ZoneCacheCacheReserveUpdateResponseResult]
+type zoneCacheCacheReserveUpdateResponseResultJSON struct {
+	ID          apijson.Field
+	Editable    apijson.Field
+	Value       apijson.Field
+	ModifiedOn  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZoneCacheCacheReserveUpdateResponseResult) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneCacheCacheReserveUpdateResponseResultJSON) RawJSON() string {
+	return r.raw
+}
+
+// ID of the zone setting.
+type ZoneCacheCacheReserveUpdateResponseResultID string
+
+const (
+	ZoneCacheCacheReserveUpdateResponseResultIDCacheReserve ZoneCacheCacheReserveUpdateResponseResultID = "cache_reserve"
+)
+
+func (r ZoneCacheCacheReserveUpdateResponseResultID) IsKnown() bool {
+	switch r {
+	case ZoneCacheCacheReserveUpdateResponseResultIDCacheReserve:
+		return true
+	}
+	return false
 }
 
 type ZoneCacheCacheReserveUpdateParams struct {

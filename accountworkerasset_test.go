@@ -13,7 +13,7 @@ import (
 	"github.com/rexscaria/api-schemas/option"
 )
 
-func TestAccountWorkerAssetUploadWithOptionalParams(t *testing.T) {
+func TestAccountWorkerAssetUpload(t *testing.T) {
 	t.Skip("skipped: tests are disabled for the time being")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -31,8 +31,10 @@ func TestAccountWorkerAssetUploadWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.AccountWorkerAssetUploadParams{
-			Base64:      cfrex.F(cfrex.AccountWorkerAssetUploadParamsBase64True),
-			AnyFileHash: cfrex.F([]string{"string"}),
+			Base64: cfrex.F(cfrex.AccountWorkerAssetUploadParamsBase64True),
+			Body: map[string]string{
+				"foo": "string",
+			},
 		},
 	)
 	if err != nil {

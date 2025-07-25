@@ -51,15 +51,23 @@ func (r *AccountAccessLogScimService) Updates(ctx context.Context, accountID str
 }
 
 type AccountAccessLogScimUpdatesResponse struct {
-	Result []AccountAccessLogScimUpdatesResponseResult `json:"result"`
-	JSON   accountAccessLogScimUpdatesResponseJSON     `json:"-"`
-	APIResponseCollectionAccess
+	Errors   []MessagesAccessItem `json:"errors,required"`
+	Messages []MessagesAccessItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success    AccountAccessLogScimUpdatesResponseSuccess    `json:"success,required"`
+	Result     []AccountAccessLogScimUpdatesResponseResult   `json:"result"`
+	ResultInfo AccountAccessLogScimUpdatesResponseResultInfo `json:"result_info"`
+	JSON       accountAccessLogScimUpdatesResponseJSON       `json:"-"`
 }
 
 // accountAccessLogScimUpdatesResponseJSON contains the JSON metadata for the
 // struct [AccountAccessLogScimUpdatesResponse]
 type accountAccessLogScimUpdatesResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -70,6 +78,21 @@ func (r *AccountAccessLogScimUpdatesResponse) UnmarshalJSON(data []byte) (err er
 
 func (r accountAccessLogScimUpdatesResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountAccessLogScimUpdatesResponseSuccess bool
+
+const (
+	AccountAccessLogScimUpdatesResponseSuccessTrue AccountAccessLogScimUpdatesResponseSuccess = true
+)
+
+func (r AccountAccessLogScimUpdatesResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountAccessLogScimUpdatesResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountAccessLogScimUpdatesResponseResult struct {
@@ -121,6 +144,37 @@ func (r *AccountAccessLogScimUpdatesResponseResult) UnmarshalJSON(data []byte) (
 }
 
 func (r accountAccessLogScimUpdatesResponseResultJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountAccessLogScimUpdatesResponseResultInfo struct {
+	// Total number of results for the requested service.
+	Count float64 `json:"count"`
+	// Current page within paginated list of results.
+	Page float64 `json:"page"`
+	// Number of results per page of results.
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters.
+	TotalCount float64                                           `json:"total_count"`
+	JSON       accountAccessLogScimUpdatesResponseResultInfoJSON `json:"-"`
+}
+
+// accountAccessLogScimUpdatesResponseResultInfoJSON contains the JSON metadata for
+// the struct [AccountAccessLogScimUpdatesResponseResultInfo]
+type accountAccessLogScimUpdatesResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountAccessLogScimUpdatesResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountAccessLogScimUpdatesResponseResultInfoJSON) RawJSON() string {
 	return r.raw
 }
 

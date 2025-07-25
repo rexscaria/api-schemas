@@ -64,7 +64,7 @@ func (r *ZoneOriginTlsClientAuthHostnameCertificateService) List(ctx context.Con
 }
 
 // Delete Hostname Client Certificate
-func (r *ZoneOriginTlsClientAuthHostnameCertificateService) Delete(ctx context.Context, zoneID string, certificateID string, body ZoneOriginTlsClientAuthHostnameCertificateDeleteParams, opts ...option.RequestOption) (res *CertificateResponseSingleHostname, err error) {
+func (r *ZoneOriginTlsClientAuthHostnameCertificateService) Delete(ctx context.Context, zoneID string, certificateID string, opts ...option.RequestOption) (res *CertificateResponseSingleHostname, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
@@ -75,7 +75,7 @@ func (r *ZoneOriginTlsClientAuthHostnameCertificateService) Delete(ctx context.C
 		return
 	}
 	path := fmt.Sprintf("zones/%s/origin_tls_client_auth/hostnames/certificates/%s", zoneID, certificateID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
@@ -93,14 +93,20 @@ func (r *ZoneOriginTlsClientAuthHostnameCertificateService) Upload(ctx context.C
 }
 
 type CertificateResponseSingleHostname struct {
-	Result CertificateResponseSingleHostnameResult `json:"result"`
-	JSON   certificateResponseSingleHostnameJSON   `json:"-"`
-	APIResponseSingleTlsCertificates
+	Errors   []MessagesTlsCertificatesItem `json:"errors,required"`
+	Messages []MessagesTlsCertificatesItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success CertificateResponseSingleHostnameSuccess `json:"success,required"`
+	Result  CertificateResponseSingleHostnameResult  `json:"result"`
+	JSON    certificateResponseSingleHostnameJSON    `json:"-"`
 }
 
 // certificateResponseSingleHostnameJSON contains the JSON metadata for the struct
 // [CertificateResponseSingleHostname]
 type certificateResponseSingleHostnameJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -114,8 +120,23 @@ func (r certificateResponseSingleHostnameJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type CertificateResponseSingleHostnameSuccess bool
+
+const (
+	CertificateResponseSingleHostnameSuccessTrue CertificateResponseSingleHostnameSuccess = true
+)
+
+func (r CertificateResponseSingleHostnameSuccess) IsKnown() bool {
+	switch r {
+	case CertificateResponseSingleHostnameSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type CertificateResponseSingleHostnameResult struct {
-	// Identifier
+	// Identifier.
 	ID string `json:"id"`
 	// The hostname certificate.
 	Certificate string `json:"certificate"`
@@ -158,15 +179,23 @@ func (r certificateResponseSingleHostnameResultJSON) RawJSON() string {
 }
 
 type ZoneOriginTlsClientAuthHostnameCertificateListResponse struct {
-	Result []HostnameAuthenticatedOriginPull                          `json:"result"`
-	JSON   zoneOriginTlsClientAuthHostnameCertificateListResponseJSON `json:"-"`
-	APIResponseCollectionTlsCertificates
+	Errors   []MessagesTlsCertificatesItem `json:"errors,required"`
+	Messages []MessagesTlsCertificatesItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success    ZoneOriginTlsClientAuthHostnameCertificateListResponseSuccess    `json:"success,required"`
+	Result     []HostnameAuthenticatedOriginPull                                `json:"result"`
+	ResultInfo ZoneOriginTlsClientAuthHostnameCertificateListResponseResultInfo `json:"result_info"`
+	JSON       zoneOriginTlsClientAuthHostnameCertificateListResponseJSON       `json:"-"`
 }
 
 // zoneOriginTlsClientAuthHostnameCertificateListResponseJSON contains the JSON
 // metadata for the struct [ZoneOriginTlsClientAuthHostnameCertificateListResponse]
 type zoneOriginTlsClientAuthHostnameCertificateListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -179,12 +208,51 @@ func (r zoneOriginTlsClientAuthHostnameCertificateListResponseJSON) RawJSON() st
 	return r.raw
 }
 
-type ZoneOriginTlsClientAuthHostnameCertificateDeleteParams struct {
-	Body interface{} `json:"body,required"`
+// Whether the API call was successful.
+type ZoneOriginTlsClientAuthHostnameCertificateListResponseSuccess bool
+
+const (
+	ZoneOriginTlsClientAuthHostnameCertificateListResponseSuccessTrue ZoneOriginTlsClientAuthHostnameCertificateListResponseSuccess = true
+)
+
+func (r ZoneOriginTlsClientAuthHostnameCertificateListResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneOriginTlsClientAuthHostnameCertificateListResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
-func (r ZoneOriginTlsClientAuthHostnameCertificateDeleteParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
+type ZoneOriginTlsClientAuthHostnameCertificateListResponseResultInfo struct {
+	// Total number of results for the requested service.
+	Count float64 `json:"count"`
+	// Current page within paginated list of results.
+	Page float64 `json:"page"`
+	// Number of results per page of results.
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters.
+	TotalCount float64                                                              `json:"total_count"`
+	JSON       zoneOriginTlsClientAuthHostnameCertificateListResponseResultInfoJSON `json:"-"`
+}
+
+// zoneOriginTlsClientAuthHostnameCertificateListResponseResultInfoJSON contains
+// the JSON metadata for the struct
+// [ZoneOriginTlsClientAuthHostnameCertificateListResponseResultInfo]
+type zoneOriginTlsClientAuthHostnameCertificateListResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZoneOriginTlsClientAuthHostnameCertificateListResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneOriginTlsClientAuthHostnameCertificateListResponseResultInfoJSON) RawJSON() string {
+	return r.raw
 }
 
 type ZoneOriginTlsClientAuthHostnameCertificateUploadParams struct {

@@ -27,7 +27,7 @@ func TestZoneAPIGatewaySettingSchemaValidationGet(t *testing.T) {
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Zones.APIGateway.Settings.SchemaValidation.Get(context.TODO(), "zone_id")
+	_, err := client.Zones.APIGateway.Settings.SchemaValidation.Get(context.TODO(), "023e105f4ecef8ad9ca31a8372d0c353")
 	if err != nil {
 		var apierr *cfrex.Error
 		if errors.As(err, &apierr) {
@@ -53,7 +53,7 @@ func TestZoneAPIGatewaySettingSchemaValidationUpdateWithOptionalParams(t *testin
 	)
 	_, err := client.Zones.APIGateway.Settings.SchemaValidation.Update(
 		context.TODO(),
-		"zone_id",
+		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.ZoneAPIGatewaySettingSchemaValidationUpdateParams{
 			ValidationDefaultMitigationAction:  cfrex.F(cfrex.DefaultMitigationActionBlock),
 			ValidationOverrideMitigationAction: cfrex.F(cfrex.ZoneAPIGatewaySettingSchemaValidationUpdateParamsValidationOverrideMitigationActionNone),

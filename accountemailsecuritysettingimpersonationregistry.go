@@ -98,16 +98,21 @@ func (r *AccountEmailSecuritySettingImpersonationRegistryService) Delete(ctx con
 }
 
 type AccountEmailSecuritySettingImpersonationRegistryNewResponse struct {
-	Result AccountEmailSecuritySettingImpersonationRegistryNewResponseResult `json:"result,required"`
-	JSON   accountEmailSecuritySettingImpersonationRegistryNewResponseJSON   `json:"-"`
-	APIResponseEmailSecurity
+	Errors   []EmailSecurityMessage                                            `json:"errors,required"`
+	Messages []EmailSecurityMessage                                            `json:"messages,required"`
+	Result   AccountEmailSecuritySettingImpersonationRegistryNewResponseResult `json:"result,required"`
+	Success  bool                                                              `json:"success,required"`
+	JSON     accountEmailSecuritySettingImpersonationRegistryNewResponseJSON   `json:"-"`
 }
 
 // accountEmailSecuritySettingImpersonationRegistryNewResponseJSON contains the
 // JSON metadata for the struct
 // [AccountEmailSecuritySettingImpersonationRegistryNewResponse]
 type accountEmailSecuritySettingImpersonationRegistryNewResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -164,16 +169,21 @@ func (r accountEmailSecuritySettingImpersonationRegistryNewResponseResultJSON) R
 }
 
 type AccountEmailSecuritySettingImpersonationRegistryGetResponse struct {
-	Result AccountEmailSecuritySettingImpersonationRegistryGetResponseResult `json:"result,required"`
-	JSON   accountEmailSecuritySettingImpersonationRegistryGetResponseJSON   `json:"-"`
-	APIResponseEmailSecurity
+	Errors   []EmailSecurityMessage                                            `json:"errors,required"`
+	Messages []EmailSecurityMessage                                            `json:"messages,required"`
+	Result   AccountEmailSecuritySettingImpersonationRegistryGetResponseResult `json:"result,required"`
+	Success  bool                                                              `json:"success,required"`
+	JSON     accountEmailSecuritySettingImpersonationRegistryGetResponseJSON   `json:"-"`
 }
 
 // accountEmailSecuritySettingImpersonationRegistryGetResponseJSON contains the
 // JSON metadata for the struct
 // [AccountEmailSecuritySettingImpersonationRegistryGetResponse]
 type accountEmailSecuritySettingImpersonationRegistryGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -230,16 +240,21 @@ func (r accountEmailSecuritySettingImpersonationRegistryGetResponseResultJSON) R
 }
 
 type AccountEmailSecuritySettingImpersonationRegistryUpdateResponse struct {
-	Result AccountEmailSecuritySettingImpersonationRegistryUpdateResponseResult `json:"result,required"`
-	JSON   accountEmailSecuritySettingImpersonationRegistryUpdateResponseJSON   `json:"-"`
-	APIResponseEmailSecurity
+	Errors   []EmailSecurityMessage                                               `json:"errors,required"`
+	Messages []EmailSecurityMessage                                               `json:"messages,required"`
+	Result   AccountEmailSecuritySettingImpersonationRegistryUpdateResponseResult `json:"result,required"`
+	Success  bool                                                                 `json:"success,required"`
+	JSON     accountEmailSecuritySettingImpersonationRegistryUpdateResponseJSON   `json:"-"`
 }
 
 // accountEmailSecuritySettingImpersonationRegistryUpdateResponseJSON contains the
 // JSON metadata for the struct
 // [AccountEmailSecuritySettingImpersonationRegistryUpdateResponse]
 type accountEmailSecuritySettingImpersonationRegistryUpdateResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -296,18 +311,23 @@ func (r accountEmailSecuritySettingImpersonationRegistryUpdateResponseResultJSON
 }
 
 type AccountEmailSecuritySettingImpersonationRegistryListResponse struct {
+	Errors     []EmailSecurityMessage                                               `json:"errors,required"`
+	Messages   []EmailSecurityMessage                                               `json:"messages,required"`
 	Result     []AccountEmailSecuritySettingImpersonationRegistryListResponseResult `json:"result,required"`
 	ResultInfo ResultInfoEmailSecurity                                              `json:"result_info,required"`
+	Success    bool                                                                 `json:"success,required"`
 	JSON       accountEmailSecuritySettingImpersonationRegistryListResponseJSON     `json:"-"`
-	APIResponseEmailSecurity
 }
 
 // accountEmailSecuritySettingImpersonationRegistryListResponseJSON contains the
 // JSON metadata for the struct
 // [AccountEmailSecuritySettingImpersonationRegistryListResponse]
 type accountEmailSecuritySettingImpersonationRegistryListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
 	ResultInfo  apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -364,16 +384,21 @@ func (r accountEmailSecuritySettingImpersonationRegistryListResponseResultJSON) 
 }
 
 type AccountEmailSecuritySettingImpersonationRegistryDeleteResponse struct {
-	Result AccountEmailSecuritySettingImpersonationRegistryDeleteResponseResult `json:"result,required"`
-	JSON   accountEmailSecuritySettingImpersonationRegistryDeleteResponseJSON   `json:"-"`
-	APIResponseEmailSecurity
+	Errors   []EmailSecurityMessage                                               `json:"errors,required"`
+	Messages []EmailSecurityMessage                                               `json:"messages,required"`
+	Result   AccountEmailSecuritySettingImpersonationRegistryDeleteResponseResult `json:"result,required"`
+	Success  bool                                                                 `json:"success,required"`
+	JSON     accountEmailSecuritySettingImpersonationRegistryDeleteResponseJSON   `json:"-"`
 }
 
 // accountEmailSecuritySettingImpersonationRegistryDeleteResponseJSON contains the
 // JSON metadata for the struct
 // [AccountEmailSecuritySettingImpersonationRegistryDeleteResponse]
 type accountEmailSecuritySettingImpersonationRegistryDeleteResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }

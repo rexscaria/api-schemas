@@ -89,10 +89,10 @@ func TestAccountWorkerScriptSecretAddWithOptionalParams(t *testing.T) {
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		"this-is_my_script-01",
 		cfrex.AccountWorkerScriptSecretAddParams{
-			Secret: cfrex.SecretParam{
-				Name: cfrex.F("MY_SECRET"),
-				Text: cfrex.F("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"),
-				Type: cfrex.F(cfrex.SecretTypeSecretText),
+			Secret: cfrex.SecretWorkersBindingKindSecretTextParam{
+				Name: cfrex.F("myBinding"),
+				Text: cfrex.F("My secret."),
+				Type: cfrex.F(cfrex.SecretWorkersBindingKindSecretTextTypeSecretText),
 			},
 		},
 	)

@@ -85,9 +85,7 @@ func TestZoneUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.ZoneUpdateParams{
-			Plan: cfrex.F(cfrex.ZoneUpdateParamsPlan{
-				ID: cfrex.F("023e105f4ecef8ad9ca31a8372d0c353"),
-			}),
+			Paused:            cfrex.F(true),
 			Type:              cfrex.F(cfrex.ZoneUpdateParamsTypeFull),
 			VanityNameServers: cfrex.F([]string{"ns1.example.com", "ns2.example.com"}),
 		},
@@ -201,7 +199,7 @@ func TestZonePurgeCacheWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Zones.PurgeCache(
 		context.TODO(),
-		"zone_id",
+		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.ZonePurgeCacheParams{
 			Body: cfrex.ZonePurgeCacheParamsBodyCachePurgeFlexPurgeByTags{
 				Tags: cfrex.F([]string{"a-cache-tag", "another-cache-tag"}),

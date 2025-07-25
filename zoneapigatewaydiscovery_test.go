@@ -27,7 +27,7 @@ func TestZoneAPIGatewayDiscoveryGet(t *testing.T) {
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Zones.APIGateway.Discovery.Get(context.TODO(), "zone_id")
+	_, err := client.Zones.APIGateway.Discovery.Get(context.TODO(), "023e105f4ecef8ad9ca31a8372d0c353")
 	if err != nil {
 		var apierr *cfrex.Error
 		if errors.As(err, &apierr) {

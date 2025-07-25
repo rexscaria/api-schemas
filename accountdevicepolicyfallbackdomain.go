@@ -36,31 +36,43 @@ func NewAccountDevicePolicyFallbackDomainService(opts ...option.RequestOption) (
 // Fetches the list of domains to bypass Gateway DNS resolution from a specified
 // device settings profile. These domains will use the specified local DNS resolver
 // instead.
-func (r *AccountDevicePolicyFallbackDomainService) List(ctx context.Context, accountID interface{}, policyID string, opts ...option.RequestOption) (res *FallbackDomainResponseCollection, err error) {
+func (r *AccountDevicePolicyFallbackDomainService) List(ctx context.Context, accountID string, policyID string, opts ...option.RequestOption) (res *FallbackDomainResponseCollection, err error) {
 	opts = append(r.Options[:], opts...)
+	if accountID == "" {
+		err = errors.New("missing required account_id parameter")
+		return
+	}
 	if policyID == "" {
 		err = errors.New("missing required policy_id parameter")
 		return
 	}
-	path := fmt.Sprintf("accounts/%v/devices/policy/%s/fallback_domains", accountID, policyID)
+	path := fmt.Sprintf("accounts/%s/devices/policy/%s/fallback_domains", accountID, policyID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
 
 // Fetches a list of domains to bypass Gateway DNS resolution. These domains will
 // use the specified local DNS resolver instead.
-func (r *AccountDevicePolicyFallbackDomainService) GlobalList(ctx context.Context, accountID interface{}, opts ...option.RequestOption) (res *FallbackDomainResponseCollection, err error) {
+func (r *AccountDevicePolicyFallbackDomainService) GlobalList(ctx context.Context, accountID string, opts ...option.RequestOption) (res *FallbackDomainResponseCollection, err error) {
 	opts = append(r.Options[:], opts...)
-	path := fmt.Sprintf("accounts/%v/devices/policy/fallback_domains", accountID)
+	if accountID == "" {
+		err = errors.New("missing required account_id parameter")
+		return
+	}
+	path := fmt.Sprintf("accounts/%s/devices/policy/fallback_domains", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
 
 // Sets the list of domains to bypass Gateway DNS resolution. These domains will
 // use the specified local DNS resolver instead.
-func (r *AccountDevicePolicyFallbackDomainService) GlobalSet(ctx context.Context, accountID interface{}, body AccountDevicePolicyFallbackDomainGlobalSetParams, opts ...option.RequestOption) (res *FallbackDomainResponseCollection, err error) {
+func (r *AccountDevicePolicyFallbackDomainService) GlobalSet(ctx context.Context, accountID string, body AccountDevicePolicyFallbackDomainGlobalSetParams, opts ...option.RequestOption) (res *FallbackDomainResponseCollection, err error) {
 	opts = append(r.Options[:], opts...)
-	path := fmt.Sprintf("accounts/%v/devices/policy/fallback_domains", accountID)
+	if accountID == "" {
+		err = errors.New("missing required account_id parameter")
+		return
+	}
+	path := fmt.Sprintf("accounts/%s/devices/policy/fallback_domains", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
 	return
 }
@@ -68,13 +80,17 @@ func (r *AccountDevicePolicyFallbackDomainService) GlobalSet(ctx context.Context
 // Sets the list of domains to bypass Gateway DNS resolution. These domains will
 // use the specified local DNS resolver instead. This will only apply to the
 // specified device settings profile.
-func (r *AccountDevicePolicyFallbackDomainService) Set(ctx context.Context, accountID interface{}, policyID string, body AccountDevicePolicyFallbackDomainSetParams, opts ...option.RequestOption) (res *FallbackDomainResponseCollection, err error) {
+func (r *AccountDevicePolicyFallbackDomainService) Set(ctx context.Context, accountID string, policyID string, body AccountDevicePolicyFallbackDomainSetParams, opts ...option.RequestOption) (res *FallbackDomainResponseCollection, err error) {
 	opts = append(r.Options[:], opts...)
+	if accountID == "" {
+		err = errors.New("missing required account_id parameter")
+		return
+	}
 	if policyID == "" {
 		err = errors.New("missing required policy_id parameter")
 		return
 	}
-	path := fmt.Sprintf("accounts/%v/devices/policy/%s/fallback_domains", accountID, policyID)
+	path := fmt.Sprintf("accounts/%s/devices/policy/%s/fallback_domains", accountID, policyID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
 	return
 }
@@ -120,15 +136,23 @@ func (r FallbackDomainParam) MarshalJSON() (data []byte, err error) {
 }
 
 type FallbackDomainResponseCollection struct {
-	Result []FallbackDomain                     `json:"result"`
-	JSON   fallbackDomainResponseCollectionJSON `json:"-"`
-	APIResponseCollectionTeamsDevices
+	Errors   []FallbackDomainResponseCollectionError   `json:"errors,required"`
+	Messages []FallbackDomainResponseCollectionMessage `json:"messages,required"`
+	Result   []FallbackDomain                          `json:"result,required,nullable"`
+	// Whether the API call was successful.
+	Success    FallbackDomainResponseCollectionSuccess    `json:"success,required"`
+	ResultInfo FallbackDomainResponseCollectionResultInfo `json:"result_info"`
+	JSON       fallbackDomainResponseCollectionJSON       `json:"-"`
 }
 
 // fallbackDomainResponseCollectionJSON contains the JSON metadata for the struct
 // [FallbackDomainResponseCollection]
 type fallbackDomainResponseCollectionJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -138,6 +162,148 @@ func (r *FallbackDomainResponseCollection) UnmarshalJSON(data []byte) (err error
 }
 
 func (r fallbackDomainResponseCollectionJSON) RawJSON() string {
+	return r.raw
+}
+
+type FallbackDomainResponseCollectionError struct {
+	Code             int64                                        `json:"code,required"`
+	Message          string                                       `json:"message,required"`
+	DocumentationURL string                                       `json:"documentation_url"`
+	Source           FallbackDomainResponseCollectionErrorsSource `json:"source"`
+	JSON             fallbackDomainResponseCollectionErrorJSON    `json:"-"`
+}
+
+// fallbackDomainResponseCollectionErrorJSON contains the JSON metadata for the
+// struct [FallbackDomainResponseCollectionError]
+type fallbackDomainResponseCollectionErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *FallbackDomainResponseCollectionError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r fallbackDomainResponseCollectionErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type FallbackDomainResponseCollectionErrorsSource struct {
+	Pointer string                                           `json:"pointer"`
+	JSON    fallbackDomainResponseCollectionErrorsSourceJSON `json:"-"`
+}
+
+// fallbackDomainResponseCollectionErrorsSourceJSON contains the JSON metadata for
+// the struct [FallbackDomainResponseCollectionErrorsSource]
+type fallbackDomainResponseCollectionErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *FallbackDomainResponseCollectionErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r fallbackDomainResponseCollectionErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type FallbackDomainResponseCollectionMessage struct {
+	Code             int64                                          `json:"code,required"`
+	Message          string                                         `json:"message,required"`
+	DocumentationURL string                                         `json:"documentation_url"`
+	Source           FallbackDomainResponseCollectionMessagesSource `json:"source"`
+	JSON             fallbackDomainResponseCollectionMessageJSON    `json:"-"`
+}
+
+// fallbackDomainResponseCollectionMessageJSON contains the JSON metadata for the
+// struct [FallbackDomainResponseCollectionMessage]
+type fallbackDomainResponseCollectionMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *FallbackDomainResponseCollectionMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r fallbackDomainResponseCollectionMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type FallbackDomainResponseCollectionMessagesSource struct {
+	Pointer string                                             `json:"pointer"`
+	JSON    fallbackDomainResponseCollectionMessagesSourceJSON `json:"-"`
+}
+
+// fallbackDomainResponseCollectionMessagesSourceJSON contains the JSON metadata
+// for the struct [FallbackDomainResponseCollectionMessagesSource]
+type fallbackDomainResponseCollectionMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *FallbackDomainResponseCollectionMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r fallbackDomainResponseCollectionMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful.
+type FallbackDomainResponseCollectionSuccess bool
+
+const (
+	FallbackDomainResponseCollectionSuccessTrue FallbackDomainResponseCollectionSuccess = true
+)
+
+func (r FallbackDomainResponseCollectionSuccess) IsKnown() bool {
+	switch r {
+	case FallbackDomainResponseCollectionSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type FallbackDomainResponseCollectionResultInfo struct {
+	// Total number of results for the requested service.
+	Count float64 `json:"count"`
+	// Current page within paginated list of results.
+	Page float64 `json:"page"`
+	// Number of results per page of results.
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters.
+	TotalCount float64                                        `json:"total_count"`
+	JSON       fallbackDomainResponseCollectionResultInfoJSON `json:"-"`
+}
+
+// fallbackDomainResponseCollectionResultInfoJSON contains the JSON metadata for
+// the struct [FallbackDomainResponseCollectionResultInfo]
+type fallbackDomainResponseCollectionResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *FallbackDomainResponseCollectionResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r fallbackDomainResponseCollectionResultInfoJSON) RawJSON() string {
 	return r.raw
 }
 

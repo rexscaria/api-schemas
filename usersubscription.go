@@ -53,27 +53,33 @@ func (r *UserSubscriptionService) List(ctx context.Context, opts ...option.Reque
 }
 
 // Deletes a user's subscription.
-func (r *UserSubscriptionService) Delete(ctx context.Context, identifier string, body UserSubscriptionDeleteParams, opts ...option.RequestOption) (res *UserSubscriptionDeleteResponse, err error) {
+func (r *UserSubscriptionService) Delete(ctx context.Context, identifier string, opts ...option.RequestOption) (res *UserSubscriptionDeleteResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if identifier == "" {
 		err = errors.New("missing required identifier parameter")
 		return
 	}
 	path := fmt.Sprintf("user/subscriptions/%s", identifier)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
 type UserSubscriptionUpdateResponse struct {
-	Result interface{}                        `json:"result"`
-	JSON   userSubscriptionUpdateResponseJSON `json:"-"`
-	APIResponseSingleBilling
+	Errors   []BillSubsAPIMessages `json:"errors,required"`
+	Messages []BillSubsAPIMessages `json:"messages,required"`
+	Result   interface{}           `json:"result,required"`
+	// Whether the API call was successful
+	Success UserSubscriptionUpdateResponseSuccess `json:"success,required"`
+	JSON    userSubscriptionUpdateResponseJSON    `json:"-"`
 }
 
 // userSubscriptionUpdateResponseJSON contains the JSON metadata for the struct
 // [UserSubscriptionUpdateResponse]
 type userSubscriptionUpdateResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -86,16 +92,39 @@ func (r userSubscriptionUpdateResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful
+type UserSubscriptionUpdateResponseSuccess bool
+
+const (
+	UserSubscriptionUpdateResponseSuccessTrue UserSubscriptionUpdateResponseSuccess = true
+)
+
+func (r UserSubscriptionUpdateResponseSuccess) IsKnown() bool {
+	switch r {
+	case UserSubscriptionUpdateResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type UserSubscriptionListResponse struct {
-	Result []Subscription                   `json:"result"`
-	JSON   userSubscriptionListResponseJSON `json:"-"`
-	BillSubsAPIResponseCollection
+	Errors   []BillSubsAPIMessages `json:"errors,required"`
+	Messages []BillSubsAPIMessages `json:"messages,required"`
+	Result   []Subscription        `json:"result,required,nullable"`
+	// Whether the API call was successful
+	Success    UserSubscriptionListResponseSuccess    `json:"success,required"`
+	ResultInfo UserSubscriptionListResponseResultInfo `json:"result_info"`
+	JSON       userSubscriptionListResponseJSON       `json:"-"`
 }
 
 // userSubscriptionListResponseJSON contains the JSON metadata for the struct
 // [UserSubscriptionListResponse]
 type userSubscriptionListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -105,6 +134,52 @@ func (r *UserSubscriptionListResponse) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (r userSubscriptionListResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful
+type UserSubscriptionListResponseSuccess bool
+
+const (
+	UserSubscriptionListResponseSuccessTrue UserSubscriptionListResponseSuccess = true
+)
+
+func (r UserSubscriptionListResponseSuccess) IsKnown() bool {
+	switch r {
+	case UserSubscriptionListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type UserSubscriptionListResponseResultInfo struct {
+	// Total number of results for the requested service
+	Count float64 `json:"count"`
+	// Current page within paginated list of results
+	Page float64 `json:"page"`
+	// Number of results per page of results
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters
+	TotalCount float64                                    `json:"total_count"`
+	JSON       userSubscriptionListResponseResultInfoJSON `json:"-"`
+}
+
+// userSubscriptionListResponseResultInfoJSON contains the JSON metadata for the
+// struct [UserSubscriptionListResponseResultInfo]
+type userSubscriptionListResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *UserSubscriptionListResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r userSubscriptionListResponseResultInfoJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -136,12 +211,4 @@ type UserSubscriptionUpdateParams struct {
 
 func (r UserSubscriptionUpdateParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r.SubscriptionV2)
-}
-
-type UserSubscriptionDeleteParams struct {
-	Body interface{} `json:"body,required"`
-}
-
-func (r UserSubscriptionDeleteParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
 }

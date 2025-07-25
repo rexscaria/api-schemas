@@ -91,7 +91,7 @@ func (r *AccountGatewayProxyEndpointService) List(ctx context.Context, accountID
 }
 
 // Deletes a configured Zero Trust Gateway proxy endpoint.
-func (r *AccountGatewayProxyEndpointService) Delete(ctx context.Context, accountID string, proxyEndpointID string, body AccountGatewayProxyEndpointDeleteParams, opts ...option.RequestOption) (res *ZeroTrustGatewayEmptyResponse, err error) {
+func (r *AccountGatewayProxyEndpointService) Delete(ctx context.Context, accountID string, proxyEndpointID string, opts ...option.RequestOption) (res *ZeroTrustGatewayEmptyResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
@@ -102,7 +102,7 @@ func (r *AccountGatewayProxyEndpointService) Delete(ctx context.Context, account
 		return
 	}
 	path := fmt.Sprintf("accounts/%s/gateway/proxy_endpoints/%s", accountID, proxyEndpointID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
@@ -140,14 +140,20 @@ func (r endpointJSON) RawJSON() string {
 }
 
 type SingleResponseProxy struct {
-	Result Endpoint                `json:"result"`
-	JSON   singleResponseProxyJSON `json:"-"`
-	APIResponseSingleZeroTrustGateway
+	Errors   []ZeroTrustGatewayMessages `json:"errors,required"`
+	Messages []ZeroTrustGatewayMessages `json:"messages,required"`
+	// Whether the API call was successful
+	Success SingleResponseProxySuccess `json:"success,required"`
+	Result  Endpoint                   `json:"result"`
+	JSON    singleResponseProxyJSON    `json:"-"`
 }
 
 // singleResponseProxyJSON contains the JSON metadata for the struct
 // [SingleResponseProxy]
 type singleResponseProxyJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -161,16 +167,39 @@ func (r singleResponseProxyJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful
+type SingleResponseProxySuccess bool
+
+const (
+	SingleResponseProxySuccessTrue SingleResponseProxySuccess = true
+)
+
+func (r SingleResponseProxySuccess) IsKnown() bool {
+	switch r {
+	case SingleResponseProxySuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountGatewayProxyEndpointGetResponse struct {
-	Result []Endpoint                                 `json:"result"`
-	JSON   accountGatewayProxyEndpointGetResponseJSON `json:"-"`
-	APIResponseCollectionZeroTrustGateway
+	Errors   []ZeroTrustGatewayMessages `json:"errors,required"`
+	Messages []ZeroTrustGatewayMessages `json:"messages,required"`
+	// Whether the API call was successful
+	Success    AccountGatewayProxyEndpointGetResponseSuccess    `json:"success,required"`
+	Result     []Endpoint                                       `json:"result"`
+	ResultInfo AccountGatewayProxyEndpointGetResponseResultInfo `json:"result_info"`
+	JSON       accountGatewayProxyEndpointGetResponseJSON       `json:"-"`
 }
 
 // accountGatewayProxyEndpointGetResponseJSON contains the JSON metadata for the
 // struct [AccountGatewayProxyEndpointGetResponse]
 type accountGatewayProxyEndpointGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -180,6 +209,52 @@ func (r *AccountGatewayProxyEndpointGetResponse) UnmarshalJSON(data []byte) (err
 }
 
 func (r accountGatewayProxyEndpointGetResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful
+type AccountGatewayProxyEndpointGetResponseSuccess bool
+
+const (
+	AccountGatewayProxyEndpointGetResponseSuccessTrue AccountGatewayProxyEndpointGetResponseSuccess = true
+)
+
+func (r AccountGatewayProxyEndpointGetResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountGatewayProxyEndpointGetResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type AccountGatewayProxyEndpointGetResponseResultInfo struct {
+	// Total number of results for the requested service
+	Count float64 `json:"count"`
+	// Current page within paginated list of results
+	Page float64 `json:"page"`
+	// Number of results per page of results
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters
+	TotalCount float64                                              `json:"total_count"`
+	JSON       accountGatewayProxyEndpointGetResponseResultInfoJSON `json:"-"`
+}
+
+// accountGatewayProxyEndpointGetResponseResultInfoJSON contains the JSON metadata
+// for the struct [AccountGatewayProxyEndpointGetResponseResultInfo]
+type accountGatewayProxyEndpointGetResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountGatewayProxyEndpointGetResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountGatewayProxyEndpointGetResponseResultInfoJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -203,12 +278,4 @@ type AccountGatewayProxyEndpointUpdateParams struct {
 
 func (r AccountGatewayProxyEndpointUpdateParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
-}
-
-type AccountGatewayProxyEndpointDeleteParams struct {
-	Body interface{} `json:"body,required"`
-}
-
-func (r AccountGatewayProxyEndpointDeleteParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
 }

@@ -107,7 +107,7 @@ func (r *AccountMagicSiteLanService) List(ctx context.Context, accountID string,
 }
 
 // Remove a specific Site LAN.
-func (r *AccountMagicSiteLanService) Delete(ctx context.Context, accountID string, siteID string, lanID string, body AccountMagicSiteLanDeleteParams, opts ...option.RequestOption) (res *AccountMagicSiteLanDeleteResponse, err error) {
+func (r *AccountMagicSiteLanService) Delete(ctx context.Context, accountID string, siteID string, lanID string, opts ...option.RequestOption) (res *AccountMagicSiteLanDeleteResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
@@ -122,7 +122,7 @@ func (r *AccountMagicSiteLanService) Delete(ctx context.Context, accountID strin
 		return
 	}
 	path := fmt.Sprintf("accounts/%s/magic/sites/%s/lans/%s", accountID, siteID, lanID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
@@ -162,7 +162,7 @@ type MagicLan struct {
 	// optional (if omitted, use DHCP). However, if in high availability mode,
 	// static_address is required along with secondary and virtual address.
 	StaticAddressing MagicLanStaticAddressing `json:"static_addressing"`
-	// VLAN port number.
+	// VLAN ID. Use zero for untagged.
 	VlanTag int64        `json:"vlan_tag"`
 	JSON    magicLanJSON `json:"-"`
 }
@@ -191,15 +191,21 @@ func (r magicLanJSON) RawJSON() string {
 }
 
 type MagicLanModifiedResponse struct {
-	Result MagicLan                     `json:"result"`
-	JSON   magicLanModifiedResponseJSON `json:"-"`
-	MagicAPIResponseSingle
+	Errors   []MagicLanModifiedResponseError   `json:"errors,required"`
+	Messages []MagicLanModifiedResponseMessage `json:"messages,required"`
+	Result   MagicLan                          `json:"result,required"`
+	// Whether the API call was successful
+	Success MagicLanModifiedResponseSuccess `json:"success,required"`
+	JSON    magicLanModifiedResponseJSON    `json:"-"`
 }
 
 // magicLanModifiedResponseJSON contains the JSON metadata for the struct
 // [MagicLanModifiedResponse]
 type magicLanModifiedResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -210,6 +216,117 @@ func (r *MagicLanModifiedResponse) UnmarshalJSON(data []byte) (err error) {
 
 func (r magicLanModifiedResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+type MagicLanModifiedResponseError struct {
+	Code             int64                                `json:"code,required"`
+	Message          string                               `json:"message,required"`
+	DocumentationURL string                               `json:"documentation_url"`
+	Source           MagicLanModifiedResponseErrorsSource `json:"source"`
+	JSON             magicLanModifiedResponseErrorJSON    `json:"-"`
+}
+
+// magicLanModifiedResponseErrorJSON contains the JSON metadata for the struct
+// [MagicLanModifiedResponseError]
+type magicLanModifiedResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *MagicLanModifiedResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r magicLanModifiedResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type MagicLanModifiedResponseErrorsSource struct {
+	Pointer string                                   `json:"pointer"`
+	JSON    magicLanModifiedResponseErrorsSourceJSON `json:"-"`
+}
+
+// magicLanModifiedResponseErrorsSourceJSON contains the JSON metadata for the
+// struct [MagicLanModifiedResponseErrorsSource]
+type magicLanModifiedResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *MagicLanModifiedResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r magicLanModifiedResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type MagicLanModifiedResponseMessage struct {
+	Code             int64                                  `json:"code,required"`
+	Message          string                                 `json:"message,required"`
+	DocumentationURL string                                 `json:"documentation_url"`
+	Source           MagicLanModifiedResponseMessagesSource `json:"source"`
+	JSON             magicLanModifiedResponseMessageJSON    `json:"-"`
+}
+
+// magicLanModifiedResponseMessageJSON contains the JSON metadata for the struct
+// [MagicLanModifiedResponseMessage]
+type magicLanModifiedResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *MagicLanModifiedResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r magicLanModifiedResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type MagicLanModifiedResponseMessagesSource struct {
+	Pointer string                                     `json:"pointer"`
+	JSON    magicLanModifiedResponseMessagesSourceJSON `json:"-"`
+}
+
+// magicLanModifiedResponseMessagesSourceJSON contains the JSON metadata for the
+// struct [MagicLanModifiedResponseMessagesSource]
+type magicLanModifiedResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *MagicLanModifiedResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r magicLanModifiedResponseMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful
+type MagicLanModifiedResponseSuccess bool
+
+const (
+	MagicLanModifiedResponseSuccessTrue MagicLanModifiedResponseSuccess = true
+)
+
+func (r MagicLanModifiedResponseSuccess) IsKnown() bool {
+	switch r {
+	case MagicLanModifiedResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 // If the site is not configured in high availability mode, this configuration is
@@ -354,7 +471,7 @@ type MagicLanUpdateRequestParam struct {
 	// optional (if omitted, use DHCP). However, if in high availability mode,
 	// static_address is required along with secondary and virtual address.
 	StaticAddressing param.Field[MagicLanStaticAddressingParam] `json:"static_addressing"`
-	// VLAN port number.
+	// VLAN ID. Use zero for untagged.
 	VlanTag param.Field[int64] `json:"vlan_tag"`
 }
 
@@ -363,15 +480,21 @@ func (r MagicLanUpdateRequestParam) MarshalJSON() (data []byte, err error) {
 }
 
 type MagicLansCollectionResponse struct {
-	Result []MagicLan                      `json:"result"`
-	JSON   magicLansCollectionResponseJSON `json:"-"`
-	MagicAPIResponseSingle
+	Errors   []MagicLansCollectionResponseError   `json:"errors,required"`
+	Messages []MagicLansCollectionResponseMessage `json:"messages,required"`
+	Result   []MagicLan                           `json:"result,required"`
+	// Whether the API call was successful
+	Success MagicLansCollectionResponseSuccess `json:"success,required"`
+	JSON    magicLansCollectionResponseJSON    `json:"-"`
 }
 
 // magicLansCollectionResponseJSON contains the JSON metadata for the struct
 // [MagicLansCollectionResponse]
 type magicLansCollectionResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -382,6 +505,117 @@ func (r *MagicLansCollectionResponse) UnmarshalJSON(data []byte) (err error) {
 
 func (r magicLansCollectionResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+type MagicLansCollectionResponseError struct {
+	Code             int64                                   `json:"code,required"`
+	Message          string                                  `json:"message,required"`
+	DocumentationURL string                                  `json:"documentation_url"`
+	Source           MagicLansCollectionResponseErrorsSource `json:"source"`
+	JSON             magicLansCollectionResponseErrorJSON    `json:"-"`
+}
+
+// magicLansCollectionResponseErrorJSON contains the JSON metadata for the struct
+// [MagicLansCollectionResponseError]
+type magicLansCollectionResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *MagicLansCollectionResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r magicLansCollectionResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type MagicLansCollectionResponseErrorsSource struct {
+	Pointer string                                      `json:"pointer"`
+	JSON    magicLansCollectionResponseErrorsSourceJSON `json:"-"`
+}
+
+// magicLansCollectionResponseErrorsSourceJSON contains the JSON metadata for the
+// struct [MagicLansCollectionResponseErrorsSource]
+type magicLansCollectionResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *MagicLansCollectionResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r magicLansCollectionResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type MagicLansCollectionResponseMessage struct {
+	Code             int64                                     `json:"code,required"`
+	Message          string                                    `json:"message,required"`
+	DocumentationURL string                                    `json:"documentation_url"`
+	Source           MagicLansCollectionResponseMessagesSource `json:"source"`
+	JSON             magicLansCollectionResponseMessageJSON    `json:"-"`
+}
+
+// magicLansCollectionResponseMessageJSON contains the JSON metadata for the struct
+// [MagicLansCollectionResponseMessage]
+type magicLansCollectionResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *MagicLansCollectionResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r magicLansCollectionResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type MagicLansCollectionResponseMessagesSource struct {
+	Pointer string                                        `json:"pointer"`
+	JSON    magicLansCollectionResponseMessagesSourceJSON `json:"-"`
+}
+
+// magicLansCollectionResponseMessagesSourceJSON contains the JSON metadata for the
+// struct [MagicLansCollectionResponseMessagesSource]
+type magicLansCollectionResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *MagicLansCollectionResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r magicLansCollectionResponseMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful
+type MagicLansCollectionResponseSuccess bool
+
+const (
+	MagicLansCollectionResponseSuccessTrue MagicLansCollectionResponseSuccess = true
+)
+
+func (r MagicLansCollectionResponseSuccess) IsKnown() bool {
+	switch r {
+	case MagicLansCollectionResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type MagicNat struct {
@@ -454,15 +688,21 @@ func (r MagicRoutedSubnetParam) MarshalJSON() (data []byte, err error) {
 }
 
 type AccountMagicSiteLanGetResponse struct {
-	Result MagicLan                           `json:"result"`
-	JSON   accountMagicSiteLanGetResponseJSON `json:"-"`
-	MagicAPIResponseSingle
+	Errors   []AccountMagicSiteLanGetResponseError   `json:"errors,required"`
+	Messages []AccountMagicSiteLanGetResponseMessage `json:"messages,required"`
+	Result   MagicLan                                `json:"result,required"`
+	// Whether the API call was successful
+	Success AccountMagicSiteLanGetResponseSuccess `json:"success,required"`
+	JSON    accountMagicSiteLanGetResponseJSON    `json:"-"`
 }
 
 // accountMagicSiteLanGetResponseJSON contains the JSON metadata for the struct
 // [AccountMagicSiteLanGetResponse]
 type accountMagicSiteLanGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -475,16 +715,133 @@ func (r accountMagicSiteLanGetResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+type AccountMagicSiteLanGetResponseError struct {
+	Code             int64                                      `json:"code,required"`
+	Message          string                                     `json:"message,required"`
+	DocumentationURL string                                     `json:"documentation_url"`
+	Source           AccountMagicSiteLanGetResponseErrorsSource `json:"source"`
+	JSON             accountMagicSiteLanGetResponseErrorJSON    `json:"-"`
+}
+
+// accountMagicSiteLanGetResponseErrorJSON contains the JSON metadata for the
+// struct [AccountMagicSiteLanGetResponseError]
+type accountMagicSiteLanGetResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountMagicSiteLanGetResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountMagicSiteLanGetResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountMagicSiteLanGetResponseErrorsSource struct {
+	Pointer string                                         `json:"pointer"`
+	JSON    accountMagicSiteLanGetResponseErrorsSourceJSON `json:"-"`
+}
+
+// accountMagicSiteLanGetResponseErrorsSourceJSON contains the JSON metadata for
+// the struct [AccountMagicSiteLanGetResponseErrorsSource]
+type accountMagicSiteLanGetResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountMagicSiteLanGetResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountMagicSiteLanGetResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountMagicSiteLanGetResponseMessage struct {
+	Code             int64                                        `json:"code,required"`
+	Message          string                                       `json:"message,required"`
+	DocumentationURL string                                       `json:"documentation_url"`
+	Source           AccountMagicSiteLanGetResponseMessagesSource `json:"source"`
+	JSON             accountMagicSiteLanGetResponseMessageJSON    `json:"-"`
+}
+
+// accountMagicSiteLanGetResponseMessageJSON contains the JSON metadata for the
+// struct [AccountMagicSiteLanGetResponseMessage]
+type accountMagicSiteLanGetResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountMagicSiteLanGetResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountMagicSiteLanGetResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountMagicSiteLanGetResponseMessagesSource struct {
+	Pointer string                                           `json:"pointer"`
+	JSON    accountMagicSiteLanGetResponseMessagesSourceJSON `json:"-"`
+}
+
+// accountMagicSiteLanGetResponseMessagesSourceJSON contains the JSON metadata for
+// the struct [AccountMagicSiteLanGetResponseMessagesSource]
+type accountMagicSiteLanGetResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountMagicSiteLanGetResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountMagicSiteLanGetResponseMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful
+type AccountMagicSiteLanGetResponseSuccess bool
+
+const (
+	AccountMagicSiteLanGetResponseSuccessTrue AccountMagicSiteLanGetResponseSuccess = true
+)
+
+func (r AccountMagicSiteLanGetResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountMagicSiteLanGetResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountMagicSiteLanDeleteResponse struct {
-	Result MagicLan                              `json:"result"`
-	JSON   accountMagicSiteLanDeleteResponseJSON `json:"-"`
-	MagicAPIResponseSingle
+	Errors   []AccountMagicSiteLanDeleteResponseError   `json:"errors,required"`
+	Messages []AccountMagicSiteLanDeleteResponseMessage `json:"messages,required"`
+	Result   MagicLan                                   `json:"result,required"`
+	// Whether the API call was successful
+	Success AccountMagicSiteLanDeleteResponseSuccess `json:"success,required"`
+	JSON    accountMagicSiteLanDeleteResponseJSON    `json:"-"`
 }
 
 // accountMagicSiteLanDeleteResponseJSON contains the JSON metadata for the struct
 // [AccountMagicSiteLanDeleteResponse]
 type accountMagicSiteLanDeleteResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -497,10 +854,119 @@ func (r accountMagicSiteLanDeleteResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+type AccountMagicSiteLanDeleteResponseError struct {
+	Code             int64                                         `json:"code,required"`
+	Message          string                                        `json:"message,required"`
+	DocumentationURL string                                        `json:"documentation_url"`
+	Source           AccountMagicSiteLanDeleteResponseErrorsSource `json:"source"`
+	JSON             accountMagicSiteLanDeleteResponseErrorJSON    `json:"-"`
+}
+
+// accountMagicSiteLanDeleteResponseErrorJSON contains the JSON metadata for the
+// struct [AccountMagicSiteLanDeleteResponseError]
+type accountMagicSiteLanDeleteResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountMagicSiteLanDeleteResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountMagicSiteLanDeleteResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountMagicSiteLanDeleteResponseErrorsSource struct {
+	Pointer string                                            `json:"pointer"`
+	JSON    accountMagicSiteLanDeleteResponseErrorsSourceJSON `json:"-"`
+}
+
+// accountMagicSiteLanDeleteResponseErrorsSourceJSON contains the JSON metadata for
+// the struct [AccountMagicSiteLanDeleteResponseErrorsSource]
+type accountMagicSiteLanDeleteResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountMagicSiteLanDeleteResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountMagicSiteLanDeleteResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountMagicSiteLanDeleteResponseMessage struct {
+	Code             int64                                           `json:"code,required"`
+	Message          string                                          `json:"message,required"`
+	DocumentationURL string                                          `json:"documentation_url"`
+	Source           AccountMagicSiteLanDeleteResponseMessagesSource `json:"source"`
+	JSON             accountMagicSiteLanDeleteResponseMessageJSON    `json:"-"`
+}
+
+// accountMagicSiteLanDeleteResponseMessageJSON contains the JSON metadata for the
+// struct [AccountMagicSiteLanDeleteResponseMessage]
+type accountMagicSiteLanDeleteResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountMagicSiteLanDeleteResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountMagicSiteLanDeleteResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountMagicSiteLanDeleteResponseMessagesSource struct {
+	Pointer string                                              `json:"pointer"`
+	JSON    accountMagicSiteLanDeleteResponseMessagesSourceJSON `json:"-"`
+}
+
+// accountMagicSiteLanDeleteResponseMessagesSourceJSON contains the JSON metadata
+// for the struct [AccountMagicSiteLanDeleteResponseMessagesSource]
+type accountMagicSiteLanDeleteResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountMagicSiteLanDeleteResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountMagicSiteLanDeleteResponseMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful
+type AccountMagicSiteLanDeleteResponseSuccess bool
+
+const (
+	AccountMagicSiteLanDeleteResponseSuccessTrue AccountMagicSiteLanDeleteResponseSuccess = true
+)
+
+func (r AccountMagicSiteLanDeleteResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountMagicSiteLanDeleteResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountMagicSiteLanNewParams struct {
 	Physport param.Field[int64] `json:"physport,required"`
-	// VLAN port number.
-	VlanTag param.Field[int64] `json:"vlan_tag,required"`
 	// mark true to use this LAN for HA probing. only works for site with HA turned on.
 	// only one LAN can be set as the ha_link.
 	HaLink        param.Field[bool]                     `json:"ha_link"`
@@ -511,6 +977,8 @@ type AccountMagicSiteLanNewParams struct {
 	// optional (if omitted, use DHCP). However, if in high availability mode,
 	// static_address is required along with secondary and virtual address.
 	StaticAddressing param.Field[MagicLanStaticAddressingParam] `json:"static_addressing"`
+	// VLAN ID. Use zero for untagged.
+	VlanTag param.Field[int64] `json:"vlan_tag"`
 }
 
 func (r AccountMagicSiteLanNewParams) MarshalJSON() (data []byte, err error) {
@@ -523,14 +991,6 @@ type AccountMagicSiteLanUpdateParams struct {
 
 func (r AccountMagicSiteLanUpdateParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r.MagicLanUpdateRequest)
-}
-
-type AccountMagicSiteLanDeleteParams struct {
-	Body interface{} `json:"body,required"`
-}
-
-func (r AccountMagicSiteLanDeleteParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
 }
 
 type AccountMagicSiteLanPatchParams struct {

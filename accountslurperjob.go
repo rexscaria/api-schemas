@@ -169,69 +169,6 @@ func (r *AccountSlurperJobService) Resume(ctx context.Context, accountID string,
 	return
 }
 
-type APIV4Success struct {
-	Errors   []Apiv4SuccessError `json:"errors"`
-	Messages []string            `json:"messages"`
-	// Indicates if the API call was successful or not.
-	Success APIV4SuccessSuccess `json:"success"`
-	JSON    apiv4SuccessJSON    `json:"-"`
-}
-
-// apiv4SuccessJSON contains the JSON metadata for the struct [APIV4Success]
-type apiv4SuccessJSON struct {
-	Errors      apijson.Field
-	Messages    apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *APIV4Success) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r apiv4SuccessJSON) RawJSON() string {
-	return r.raw
-}
-
-type Apiv4SuccessError struct {
-	Code    int64                 `json:"code,required"`
-	Message string                `json:"message,required"`
-	JSON    apiv4SuccessErrorJSON `json:"-"`
-}
-
-// apiv4SuccessErrorJSON contains the JSON metadata for the struct
-// [Apiv4SuccessError]
-type apiv4SuccessErrorJSON struct {
-	Code        apijson.Field
-	Message     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *Apiv4SuccessError) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r apiv4SuccessErrorJSON) RawJSON() string {
-	return r.raw
-}
-
-// Indicates if the API call was successful or not.
-type APIV4SuccessSuccess bool
-
-const (
-	APIV4SuccessSuccessTrue APIV4SuccessSuccess = true
-)
-
-func (r APIV4SuccessSuccess) IsKnown() bool {
-	switch r {
-	case APIV4SuccessSuccessTrue:
-		return true
-	}
-	return false
-}
-
 type JobResponse struct {
 	ID         string            `json:"id"`
 	CreatedAt  string            `json:"createdAt"`
@@ -552,15 +489,21 @@ func (r Jurisdiction) IsKnown() bool {
 }
 
 type AccountSlurperJobNewResponse struct {
-	Result AccountSlurperJobNewResponseResult `json:"result"`
-	JSON   accountSlurperJobNewResponseJSON   `json:"-"`
-	APIV4Success
+	Errors   []AccountSlurperJobNewResponseError `json:"errors"`
+	Messages []string                            `json:"messages"`
+	Result   AccountSlurperJobNewResponseResult  `json:"result"`
+	// Indicates if the API call was successful or not.
+	Success AccountSlurperJobNewResponseSuccess `json:"success"`
+	JSON    accountSlurperJobNewResponseJSON    `json:"-"`
 }
 
 // accountSlurperJobNewResponseJSON contains the JSON metadata for the struct
 // [AccountSlurperJobNewResponse]
 type accountSlurperJobNewResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -570,6 +513,54 @@ func (r *AccountSlurperJobNewResponse) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (r accountSlurperJobNewResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountSlurperJobNewResponseError struct {
+	Code             int64                                    `json:"code,required"`
+	Message          string                                   `json:"message,required"`
+	DocumentationURL string                                   `json:"documentation_url"`
+	Source           AccountSlurperJobNewResponseErrorsSource `json:"source"`
+	JSON             accountSlurperJobNewResponseErrorJSON    `json:"-"`
+}
+
+// accountSlurperJobNewResponseErrorJSON contains the JSON metadata for the struct
+// [AccountSlurperJobNewResponseError]
+type accountSlurperJobNewResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountSlurperJobNewResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountSlurperJobNewResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountSlurperJobNewResponseErrorsSource struct {
+	Pointer string                                       `json:"pointer"`
+	JSON    accountSlurperJobNewResponseErrorsSourceJSON `json:"-"`
+}
+
+// accountSlurperJobNewResponseErrorsSourceJSON contains the JSON metadata for the
+// struct [AccountSlurperJobNewResponseErrorsSource]
+type accountSlurperJobNewResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountSlurperJobNewResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountSlurperJobNewResponseErrorsSourceJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -594,16 +585,37 @@ func (r accountSlurperJobNewResponseResultJSON) RawJSON() string {
 	return r.raw
 }
 
+// Indicates if the API call was successful or not.
+type AccountSlurperJobNewResponseSuccess bool
+
+const (
+	AccountSlurperJobNewResponseSuccessTrue AccountSlurperJobNewResponseSuccess = true
+)
+
+func (r AccountSlurperJobNewResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountSlurperJobNewResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountSlurperJobGetResponse struct {
-	Result JobResponse                      `json:"result"`
-	JSON   accountSlurperJobGetResponseJSON `json:"-"`
-	APIV4Success
+	Errors   []AccountSlurperJobGetResponseError `json:"errors"`
+	Messages []string                            `json:"messages"`
+	Result   JobResponse                         `json:"result"`
+	// Indicates if the API call was successful or not.
+	Success AccountSlurperJobGetResponseSuccess `json:"success"`
+	JSON    accountSlurperJobGetResponseJSON    `json:"-"`
 }
 
 // accountSlurperJobGetResponseJSON contains the JSON metadata for the struct
 // [AccountSlurperJobGetResponse]
 type accountSlurperJobGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -616,16 +628,85 @@ func (r accountSlurperJobGetResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+type AccountSlurperJobGetResponseError struct {
+	Code             int64                                    `json:"code,required"`
+	Message          string                                   `json:"message,required"`
+	DocumentationURL string                                   `json:"documentation_url"`
+	Source           AccountSlurperJobGetResponseErrorsSource `json:"source"`
+	JSON             accountSlurperJobGetResponseErrorJSON    `json:"-"`
+}
+
+// accountSlurperJobGetResponseErrorJSON contains the JSON metadata for the struct
+// [AccountSlurperJobGetResponseError]
+type accountSlurperJobGetResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountSlurperJobGetResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountSlurperJobGetResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountSlurperJobGetResponseErrorsSource struct {
+	Pointer string                                       `json:"pointer"`
+	JSON    accountSlurperJobGetResponseErrorsSourceJSON `json:"-"`
+}
+
+// accountSlurperJobGetResponseErrorsSourceJSON contains the JSON metadata for the
+// struct [AccountSlurperJobGetResponseErrorsSource]
+type accountSlurperJobGetResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountSlurperJobGetResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountSlurperJobGetResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Indicates if the API call was successful or not.
+type AccountSlurperJobGetResponseSuccess bool
+
+const (
+	AccountSlurperJobGetResponseSuccessTrue AccountSlurperJobGetResponseSuccess = true
+)
+
+func (r AccountSlurperJobGetResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountSlurperJobGetResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountSlurperJobListResponse struct {
-	Result []JobResponse                     `json:"result"`
-	JSON   accountSlurperJobListResponseJSON `json:"-"`
-	APIV4Success
+	Errors   []AccountSlurperJobListResponseError `json:"errors"`
+	Messages []string                             `json:"messages"`
+	Result   []JobResponse                        `json:"result"`
+	// Indicates if the API call was successful or not.
+	Success AccountSlurperJobListResponseSuccess `json:"success"`
+	JSON    accountSlurperJobListResponseJSON    `json:"-"`
 }
 
 // accountSlurperJobListResponseJSON contains the JSON metadata for the struct
 // [AccountSlurperJobListResponse]
 type accountSlurperJobListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -638,16 +719,85 @@ func (r accountSlurperJobListResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+type AccountSlurperJobListResponseError struct {
+	Code             int64                                     `json:"code,required"`
+	Message          string                                    `json:"message,required"`
+	DocumentationURL string                                    `json:"documentation_url"`
+	Source           AccountSlurperJobListResponseErrorsSource `json:"source"`
+	JSON             accountSlurperJobListResponseErrorJSON    `json:"-"`
+}
+
+// accountSlurperJobListResponseErrorJSON contains the JSON metadata for the struct
+// [AccountSlurperJobListResponseError]
+type accountSlurperJobListResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountSlurperJobListResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountSlurperJobListResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountSlurperJobListResponseErrorsSource struct {
+	Pointer string                                        `json:"pointer"`
+	JSON    accountSlurperJobListResponseErrorsSourceJSON `json:"-"`
+}
+
+// accountSlurperJobListResponseErrorsSourceJSON contains the JSON metadata for the
+// struct [AccountSlurperJobListResponseErrorsSource]
+type accountSlurperJobListResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountSlurperJobListResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountSlurperJobListResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Indicates if the API call was successful or not.
+type AccountSlurperJobListResponseSuccess bool
+
+const (
+	AccountSlurperJobListResponseSuccessTrue AccountSlurperJobListResponseSuccess = true
+)
+
+func (r AccountSlurperJobListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountSlurperJobListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountSlurperJobAbortResponse struct {
-	Result string                             `json:"result"`
-	JSON   accountSlurperJobAbortResponseJSON `json:"-"`
-	APIV4Success
+	Errors   []AccountSlurperJobAbortResponseError `json:"errors"`
+	Messages []string                              `json:"messages"`
+	Result   string                                `json:"result"`
+	// Indicates if the API call was successful or not.
+	Success AccountSlurperJobAbortResponseSuccess `json:"success"`
+	JSON    accountSlurperJobAbortResponseJSON    `json:"-"`
 }
 
 // accountSlurperJobAbortResponseJSON contains the JSON metadata for the struct
 // [AccountSlurperJobAbortResponse]
 type accountSlurperJobAbortResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -660,16 +810,85 @@ func (r accountSlurperJobAbortResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+type AccountSlurperJobAbortResponseError struct {
+	Code             int64                                      `json:"code,required"`
+	Message          string                                     `json:"message,required"`
+	DocumentationURL string                                     `json:"documentation_url"`
+	Source           AccountSlurperJobAbortResponseErrorsSource `json:"source"`
+	JSON             accountSlurperJobAbortResponseErrorJSON    `json:"-"`
+}
+
+// accountSlurperJobAbortResponseErrorJSON contains the JSON metadata for the
+// struct [AccountSlurperJobAbortResponseError]
+type accountSlurperJobAbortResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountSlurperJobAbortResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountSlurperJobAbortResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountSlurperJobAbortResponseErrorsSource struct {
+	Pointer string                                         `json:"pointer"`
+	JSON    accountSlurperJobAbortResponseErrorsSourceJSON `json:"-"`
+}
+
+// accountSlurperJobAbortResponseErrorsSourceJSON contains the JSON metadata for
+// the struct [AccountSlurperJobAbortResponseErrorsSource]
+type accountSlurperJobAbortResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountSlurperJobAbortResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountSlurperJobAbortResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Indicates if the API call was successful or not.
+type AccountSlurperJobAbortResponseSuccess bool
+
+const (
+	AccountSlurperJobAbortResponseSuccessTrue AccountSlurperJobAbortResponseSuccess = true
+)
+
+func (r AccountSlurperJobAbortResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountSlurperJobAbortResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountSlurperJobAbortAllResponse struct {
-	Result string                                `json:"result"`
-	JSON   accountSlurperJobAbortAllResponseJSON `json:"-"`
-	APIV4Success
+	Errors   []AccountSlurperJobAbortAllResponseError `json:"errors"`
+	Messages []string                                 `json:"messages"`
+	Result   string                                   `json:"result"`
+	// Indicates if the API call was successful or not.
+	Success AccountSlurperJobAbortAllResponseSuccess `json:"success"`
+	JSON    accountSlurperJobAbortAllResponseJSON    `json:"-"`
 }
 
 // accountSlurperJobAbortAllResponseJSON contains the JSON metadata for the struct
 // [AccountSlurperJobAbortAllResponse]
 type accountSlurperJobAbortAllResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -682,16 +901,85 @@ func (r accountSlurperJobAbortAllResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+type AccountSlurperJobAbortAllResponseError struct {
+	Code             int64                                         `json:"code,required"`
+	Message          string                                        `json:"message,required"`
+	DocumentationURL string                                        `json:"documentation_url"`
+	Source           AccountSlurperJobAbortAllResponseErrorsSource `json:"source"`
+	JSON             accountSlurperJobAbortAllResponseErrorJSON    `json:"-"`
+}
+
+// accountSlurperJobAbortAllResponseErrorJSON contains the JSON metadata for the
+// struct [AccountSlurperJobAbortAllResponseError]
+type accountSlurperJobAbortAllResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountSlurperJobAbortAllResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountSlurperJobAbortAllResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountSlurperJobAbortAllResponseErrorsSource struct {
+	Pointer string                                            `json:"pointer"`
+	JSON    accountSlurperJobAbortAllResponseErrorsSourceJSON `json:"-"`
+}
+
+// accountSlurperJobAbortAllResponseErrorsSourceJSON contains the JSON metadata for
+// the struct [AccountSlurperJobAbortAllResponseErrorsSource]
+type accountSlurperJobAbortAllResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountSlurperJobAbortAllResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountSlurperJobAbortAllResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Indicates if the API call was successful or not.
+type AccountSlurperJobAbortAllResponseSuccess bool
+
+const (
+	AccountSlurperJobAbortAllResponseSuccessTrue AccountSlurperJobAbortAllResponseSuccess = true
+)
+
+func (r AccountSlurperJobAbortAllResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountSlurperJobAbortAllResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountSlurperJobGetLogsResponse struct {
-	Result []AccountSlurperJobGetLogsResponseResult `json:"result"`
-	JSON   accountSlurperJobGetLogsResponseJSON     `json:"-"`
-	APIV4Success
+	Errors   []AccountSlurperJobGetLogsResponseError  `json:"errors"`
+	Messages []string                                 `json:"messages"`
+	Result   []AccountSlurperJobGetLogsResponseResult `json:"result"`
+	// Indicates if the API call was successful or not.
+	Success AccountSlurperJobGetLogsResponseSuccess `json:"success"`
+	JSON    accountSlurperJobGetLogsResponseJSON    `json:"-"`
 }
 
 // accountSlurperJobGetLogsResponseJSON contains the JSON metadata for the struct
 // [AccountSlurperJobGetLogsResponse]
 type accountSlurperJobGetLogsResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -701,6 +989,54 @@ func (r *AccountSlurperJobGetLogsResponse) UnmarshalJSON(data []byte) (err error
 }
 
 func (r accountSlurperJobGetLogsResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountSlurperJobGetLogsResponseError struct {
+	Code             int64                                        `json:"code,required"`
+	Message          string                                       `json:"message,required"`
+	DocumentationURL string                                       `json:"documentation_url"`
+	Source           AccountSlurperJobGetLogsResponseErrorsSource `json:"source"`
+	JSON             accountSlurperJobGetLogsResponseErrorJSON    `json:"-"`
+}
+
+// accountSlurperJobGetLogsResponseErrorJSON contains the JSON metadata for the
+// struct [AccountSlurperJobGetLogsResponseError]
+type accountSlurperJobGetLogsResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountSlurperJobGetLogsResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountSlurperJobGetLogsResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountSlurperJobGetLogsResponseErrorsSource struct {
+	Pointer string                                           `json:"pointer"`
+	JSON    accountSlurperJobGetLogsResponseErrorsSourceJSON `json:"-"`
+}
+
+// accountSlurperJobGetLogsResponseErrorsSourceJSON contains the JSON metadata for
+// the struct [AccountSlurperJobGetLogsResponseErrorsSource]
+type accountSlurperJobGetLogsResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountSlurperJobGetLogsResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountSlurperJobGetLogsResponseErrorsSourceJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -761,16 +1097,37 @@ func (r AccountSlurperJobGetLogsResponseResultLogType) IsKnown() bool {
 	return false
 }
 
+// Indicates if the API call was successful or not.
+type AccountSlurperJobGetLogsResponseSuccess bool
+
+const (
+	AccountSlurperJobGetLogsResponseSuccessTrue AccountSlurperJobGetLogsResponseSuccess = true
+)
+
+func (r AccountSlurperJobGetLogsResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountSlurperJobGetLogsResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountSlurperJobGetProgressResponse struct {
-	Result AccountSlurperJobGetProgressResponseResult `json:"result"`
-	JSON   accountSlurperJobGetProgressResponseJSON   `json:"-"`
-	APIV4Success
+	Errors   []AccountSlurperJobGetProgressResponseError `json:"errors"`
+	Messages []string                                    `json:"messages"`
+	Result   AccountSlurperJobGetProgressResponseResult  `json:"result"`
+	// Indicates if the API call was successful or not.
+	Success AccountSlurperJobGetProgressResponseSuccess `json:"success"`
+	JSON    accountSlurperJobGetProgressResponseJSON    `json:"-"`
 }
 
 // accountSlurperJobGetProgressResponseJSON contains the JSON metadata for the
 // struct [AccountSlurperJobGetProgressResponse]
 type accountSlurperJobGetProgressResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -780,6 +1137,54 @@ func (r *AccountSlurperJobGetProgressResponse) UnmarshalJSON(data []byte) (err e
 }
 
 func (r accountSlurperJobGetProgressResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountSlurperJobGetProgressResponseError struct {
+	Code             int64                                            `json:"code,required"`
+	Message          string                                           `json:"message,required"`
+	DocumentationURL string                                           `json:"documentation_url"`
+	Source           AccountSlurperJobGetProgressResponseErrorsSource `json:"source"`
+	JSON             accountSlurperJobGetProgressResponseErrorJSON    `json:"-"`
+}
+
+// accountSlurperJobGetProgressResponseErrorJSON contains the JSON metadata for the
+// struct [AccountSlurperJobGetProgressResponseError]
+type accountSlurperJobGetProgressResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountSlurperJobGetProgressResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountSlurperJobGetProgressResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountSlurperJobGetProgressResponseErrorsSource struct {
+	Pointer string                                               `json:"pointer"`
+	JSON    accountSlurperJobGetProgressResponseErrorsSourceJSON `json:"-"`
+}
+
+// accountSlurperJobGetProgressResponseErrorsSourceJSON contains the JSON metadata
+// for the struct [AccountSlurperJobGetProgressResponseErrorsSource]
+type accountSlurperJobGetProgressResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountSlurperJobGetProgressResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountSlurperJobGetProgressResponseErrorsSourceJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -816,16 +1221,37 @@ func (r accountSlurperJobGetProgressResponseResultJSON) RawJSON() string {
 	return r.raw
 }
 
+// Indicates if the API call was successful or not.
+type AccountSlurperJobGetProgressResponseSuccess bool
+
+const (
+	AccountSlurperJobGetProgressResponseSuccessTrue AccountSlurperJobGetProgressResponseSuccess = true
+)
+
+func (r AccountSlurperJobGetProgressResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountSlurperJobGetProgressResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountSlurperJobPauseResponse struct {
-	Result string                             `json:"result"`
-	JSON   accountSlurperJobPauseResponseJSON `json:"-"`
-	APIV4Success
+	Errors   []AccountSlurperJobPauseResponseError `json:"errors"`
+	Messages []string                              `json:"messages"`
+	Result   string                                `json:"result"`
+	// Indicates if the API call was successful or not.
+	Success AccountSlurperJobPauseResponseSuccess `json:"success"`
+	JSON    accountSlurperJobPauseResponseJSON    `json:"-"`
 }
 
 // accountSlurperJobPauseResponseJSON contains the JSON metadata for the struct
 // [AccountSlurperJobPauseResponse]
 type accountSlurperJobPauseResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -838,16 +1264,85 @@ func (r accountSlurperJobPauseResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+type AccountSlurperJobPauseResponseError struct {
+	Code             int64                                      `json:"code,required"`
+	Message          string                                     `json:"message,required"`
+	DocumentationURL string                                     `json:"documentation_url"`
+	Source           AccountSlurperJobPauseResponseErrorsSource `json:"source"`
+	JSON             accountSlurperJobPauseResponseErrorJSON    `json:"-"`
+}
+
+// accountSlurperJobPauseResponseErrorJSON contains the JSON metadata for the
+// struct [AccountSlurperJobPauseResponseError]
+type accountSlurperJobPauseResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountSlurperJobPauseResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountSlurperJobPauseResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountSlurperJobPauseResponseErrorsSource struct {
+	Pointer string                                         `json:"pointer"`
+	JSON    accountSlurperJobPauseResponseErrorsSourceJSON `json:"-"`
+}
+
+// accountSlurperJobPauseResponseErrorsSourceJSON contains the JSON metadata for
+// the struct [AccountSlurperJobPauseResponseErrorsSource]
+type accountSlurperJobPauseResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountSlurperJobPauseResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountSlurperJobPauseResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Indicates if the API call was successful or not.
+type AccountSlurperJobPauseResponseSuccess bool
+
+const (
+	AccountSlurperJobPauseResponseSuccessTrue AccountSlurperJobPauseResponseSuccess = true
+)
+
+func (r AccountSlurperJobPauseResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountSlurperJobPauseResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountSlurperJobResumeResponse struct {
-	Result string                              `json:"result"`
-	JSON   accountSlurperJobResumeResponseJSON `json:"-"`
-	APIV4Success
+	Errors   []AccountSlurperJobResumeResponseError `json:"errors"`
+	Messages []string                               `json:"messages"`
+	Result   string                                 `json:"result"`
+	// Indicates if the API call was successful or not.
+	Success AccountSlurperJobResumeResponseSuccess `json:"success"`
+	JSON    accountSlurperJobResumeResponseJSON    `json:"-"`
 }
 
 // accountSlurperJobResumeResponseJSON contains the JSON metadata for the struct
 // [AccountSlurperJobResumeResponse]
 type accountSlurperJobResumeResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -858,6 +1353,69 @@ func (r *AccountSlurperJobResumeResponse) UnmarshalJSON(data []byte) (err error)
 
 func (r accountSlurperJobResumeResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+type AccountSlurperJobResumeResponseError struct {
+	Code             int64                                       `json:"code,required"`
+	Message          string                                      `json:"message,required"`
+	DocumentationURL string                                      `json:"documentation_url"`
+	Source           AccountSlurperJobResumeResponseErrorsSource `json:"source"`
+	JSON             accountSlurperJobResumeResponseErrorJSON    `json:"-"`
+}
+
+// accountSlurperJobResumeResponseErrorJSON contains the JSON metadata for the
+// struct [AccountSlurperJobResumeResponseError]
+type accountSlurperJobResumeResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountSlurperJobResumeResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountSlurperJobResumeResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountSlurperJobResumeResponseErrorsSource struct {
+	Pointer string                                          `json:"pointer"`
+	JSON    accountSlurperJobResumeResponseErrorsSourceJSON `json:"-"`
+}
+
+// accountSlurperJobResumeResponseErrorsSourceJSON contains the JSON metadata for
+// the struct [AccountSlurperJobResumeResponseErrorsSource]
+type accountSlurperJobResumeResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountSlurperJobResumeResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountSlurperJobResumeResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Indicates if the API call was successful or not.
+type AccountSlurperJobResumeResponseSuccess bool
+
+const (
+	AccountSlurperJobResumeResponseSuccessTrue AccountSlurperJobResumeResponseSuccess = true
+)
+
+func (r AccountSlurperJobResumeResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountSlurperJobResumeResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountSlurperJobNewParams struct {

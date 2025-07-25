@@ -57,14 +57,20 @@ func (r *AccountDlpService) GetLimits(ctx context.Context, accountID string, opt
 }
 
 type AccountDlpGetLimitsResponse struct {
-	Result AccountDlpGetLimitsResponseResult `json:"result"`
-	JSON   accountDlpGetLimitsResponseJSON   `json:"-"`
-	APIResponseSingleDlp
+	Errors   []MessagesDlpItems `json:"errors,required"`
+	Messages []MessagesDlpItems `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountDlpGetLimitsResponseSuccess `json:"success,required"`
+	Result  AccountDlpGetLimitsResponseResult  `json:"result"`
+	JSON    accountDlpGetLimitsResponseJSON    `json:"-"`
 }
 
 // accountDlpGetLimitsResponseJSON contains the JSON metadata for the struct
 // [AccountDlpGetLimitsResponse]
 type accountDlpGetLimitsResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -76,6 +82,21 @@ func (r *AccountDlpGetLimitsResponse) UnmarshalJSON(data []byte) (err error) {
 
 func (r accountDlpGetLimitsResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountDlpGetLimitsResponseSuccess bool
+
+const (
+	AccountDlpGetLimitsResponseSuccessTrue AccountDlpGetLimitsResponseSuccess = true
+)
+
+func (r AccountDlpGetLimitsResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountDlpGetLimitsResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountDlpGetLimitsResponseResult struct {

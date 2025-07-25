@@ -67,7 +67,7 @@ func (r *AccountAddressingPrefixDelegationService) List(ctx context.Context, acc
 }
 
 // Delete an account delegation for a given IP prefix.
-func (r *AccountAddressingPrefixDelegationService) Delete(ctx context.Context, accountID string, prefixID string, delegationID string, body AccountAddressingPrefixDelegationDeleteParams, opts ...option.RequestOption) (res *AccountAddressingPrefixDelegationDeleteResponse, err error) {
+func (r *AccountAddressingPrefixDelegationService) Delete(ctx context.Context, accountID string, prefixID string, delegationID string, opts ...option.RequestOption) (res *AccountAddressingPrefixDelegationDeleteResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
@@ -82,7 +82,7 @@ func (r *AccountAddressingPrefixDelegationService) Delete(ctx context.Context, a
 		return
 	}
 	path := fmt.Sprintf("accounts/%s/addressing/prefixes/%s/delegations/%s", accountID, prefixID, delegationID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
@@ -121,14 +121,20 @@ func (r delegationJSON) RawJSON() string {
 }
 
 type AccountAddressingPrefixDelegationNewResponse struct {
-	Result Delegation                                       `json:"result"`
-	JSON   accountAddressingPrefixDelegationNewResponseJSON `json:"-"`
-	AddressingAPIResponseSingle
+	Errors   []AddressingMessages `json:"errors,required"`
+	Messages []AddressingMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountAddressingPrefixDelegationNewResponseSuccess `json:"success,required"`
+	Result  Delegation                                          `json:"result"`
+	JSON    accountAddressingPrefixDelegationNewResponseJSON    `json:"-"`
 }
 
 // accountAddressingPrefixDelegationNewResponseJSON contains the JSON metadata for
 // the struct [AccountAddressingPrefixDelegationNewResponse]
 type accountAddressingPrefixDelegationNewResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -142,16 +148,39 @@ func (r accountAddressingPrefixDelegationNewResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountAddressingPrefixDelegationNewResponseSuccess bool
+
+const (
+	AccountAddressingPrefixDelegationNewResponseSuccessTrue AccountAddressingPrefixDelegationNewResponseSuccess = true
+)
+
+func (r AccountAddressingPrefixDelegationNewResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountAddressingPrefixDelegationNewResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountAddressingPrefixDelegationListResponse struct {
-	Result []Delegation                                      `json:"result"`
-	JSON   accountAddressingPrefixDelegationListResponseJSON `json:"-"`
-	APIResponseCollectionAddressing
+	Errors   []AddressingMessages `json:"errors,required"`
+	Messages []AddressingMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success    AccountAddressingPrefixDelegationListResponseSuccess    `json:"success,required"`
+	Result     []Delegation                                            `json:"result"`
+	ResultInfo AccountAddressingPrefixDelegationListResponseResultInfo `json:"result_info"`
+	JSON       accountAddressingPrefixDelegationListResponseJSON       `json:"-"`
 }
 
 // accountAddressingPrefixDelegationListResponseJSON contains the JSON metadata for
 // the struct [AccountAddressingPrefixDelegationListResponse]
 type accountAddressingPrefixDelegationListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -164,15 +193,68 @@ func (r accountAddressingPrefixDelegationListResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountAddressingPrefixDelegationListResponseSuccess bool
+
+const (
+	AccountAddressingPrefixDelegationListResponseSuccessTrue AccountAddressingPrefixDelegationListResponseSuccess = true
+)
+
+func (r AccountAddressingPrefixDelegationListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountAddressingPrefixDelegationListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type AccountAddressingPrefixDelegationListResponseResultInfo struct {
+	// Total number of results for the requested service.
+	Count float64 `json:"count"`
+	// Current page within paginated list of results.
+	Page float64 `json:"page"`
+	// Number of results per page of results.
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters.
+	TotalCount float64                                                     `json:"total_count"`
+	JSON       accountAddressingPrefixDelegationListResponseResultInfoJSON `json:"-"`
+}
+
+// accountAddressingPrefixDelegationListResponseResultInfoJSON contains the JSON
+// metadata for the struct
+// [AccountAddressingPrefixDelegationListResponseResultInfo]
+type accountAddressingPrefixDelegationListResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountAddressingPrefixDelegationListResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountAddressingPrefixDelegationListResponseResultInfoJSON) RawJSON() string {
+	return r.raw
+}
+
 type AccountAddressingPrefixDelegationDeleteResponse struct {
-	Result AccountAddressingPrefixDelegationDeleteResponseResult `json:"result"`
-	JSON   accountAddressingPrefixDelegationDeleteResponseJSON   `json:"-"`
-	AddressingAPIResponseSingle
+	Errors   []AddressingMessages `json:"errors,required"`
+	Messages []AddressingMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountAddressingPrefixDelegationDeleteResponseSuccess `json:"success,required"`
+	Result  AccountAddressingPrefixDelegationDeleteResponseResult  `json:"result"`
+	JSON    accountAddressingPrefixDelegationDeleteResponseJSON    `json:"-"`
 }
 
 // accountAddressingPrefixDelegationDeleteResponseJSON contains the JSON metadata
 // for the struct [AccountAddressingPrefixDelegationDeleteResponse]
 type accountAddressingPrefixDelegationDeleteResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -184,6 +266,21 @@ func (r *AccountAddressingPrefixDelegationDeleteResponse) UnmarshalJSON(data []b
 
 func (r accountAddressingPrefixDelegationDeleteResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountAddressingPrefixDelegationDeleteResponseSuccess bool
+
+const (
+	AccountAddressingPrefixDelegationDeleteResponseSuccessTrue AccountAddressingPrefixDelegationDeleteResponseSuccess = true
+)
+
+func (r AccountAddressingPrefixDelegationDeleteResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountAddressingPrefixDelegationDeleteResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountAddressingPrefixDelegationDeleteResponseResult struct {
@@ -217,12 +314,4 @@ type AccountAddressingPrefixDelegationNewParams struct {
 
 func (r AccountAddressingPrefixDelegationNewParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
-}
-
-type AccountAddressingPrefixDelegationDeleteParams struct {
-	Body interface{} `json:"body,required"`
-}
-
-func (r AccountAddressingPrefixDelegationDeleteParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
 }

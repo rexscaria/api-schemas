@@ -70,7 +70,7 @@ func (r *AccountStorageKvNamespaceService) Get(ctx context.Context, accountID st
 }
 
 // Modifies a namespace's title.
-func (r *AccountStorageKvNamespaceService) Update(ctx context.Context, accountID string, namespaceID string, body AccountStorageKvNamespaceUpdateParams, opts ...option.RequestOption) (res *APIResponseCommonNoResult, err error) {
+func (r *AccountStorageKvNamespaceService) Update(ctx context.Context, accountID string, namespaceID string, body AccountStorageKvNamespaceUpdateParams, opts ...option.RequestOption) (res *AccountStorageKvNamespaceUpdateResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
@@ -98,7 +98,7 @@ func (r *AccountStorageKvNamespaceService) List(ctx context.Context, accountID s
 }
 
 // Deletes the namespace corresponding to the given ID.
-func (r *AccountStorageKvNamespaceService) Delete(ctx context.Context, accountID string, namespaceID string, body AccountStorageKvNamespaceDeleteParams, opts ...option.RequestOption) (res *APIResponseCommonNoResult, err error) {
+func (r *AccountStorageKvNamespaceService) Delete(ctx context.Context, accountID string, namespaceID string, opts ...option.RequestOption) (res *APIResponseCommonNoResult, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
@@ -109,7 +109,7 @@ func (r *AccountStorageKvNamespaceService) Delete(ctx context.Context, accountID
 		return
 	}
 	path := fmt.Sprintf("accounts/%s/storage/kv/namespaces/%s", accountID, namespaceID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
@@ -152,14 +152,20 @@ func (r *AccountStorageKvNamespaceService) ListKeys(ctx context.Context, account
 }
 
 type APIResponseCommonNoResult struct {
-	Result APIResponseCommonNoResultResult `json:"result,nullable"`
-	JSON   apiResponseCommonNoResultJSON   `json:"-"`
-	APIResponseWorkersKv
+	Errors   []APIResponseCommonNoResultError   `json:"errors,required"`
+	Messages []APIResponseCommonNoResultMessage `json:"messages,required"`
+	// Whether the API call was successful.
+	Success APIResponseCommonNoResultSuccess `json:"success,required"`
+	Result  APIResponseCommonNoResultResult  `json:"result,nullable"`
+	JSON    apiResponseCommonNoResultJSON    `json:"-"`
 }
 
 // apiResponseCommonNoResultJSON contains the JSON metadata for the struct
 // [APIResponseCommonNoResult]
 type apiResponseCommonNoResultJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -171,6 +177,117 @@ func (r *APIResponseCommonNoResult) UnmarshalJSON(data []byte) (err error) {
 
 func (r apiResponseCommonNoResultJSON) RawJSON() string {
 	return r.raw
+}
+
+type APIResponseCommonNoResultError struct {
+	Code             int64                                 `json:"code,required"`
+	Message          string                                `json:"message,required"`
+	DocumentationURL string                                `json:"documentation_url"`
+	Source           APIResponseCommonNoResultErrorsSource `json:"source"`
+	JSON             apiResponseCommonNoResultErrorJSON    `json:"-"`
+}
+
+// apiResponseCommonNoResultErrorJSON contains the JSON metadata for the struct
+// [APIResponseCommonNoResultError]
+type apiResponseCommonNoResultErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *APIResponseCommonNoResultError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r apiResponseCommonNoResultErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type APIResponseCommonNoResultErrorsSource struct {
+	Pointer string                                    `json:"pointer"`
+	JSON    apiResponseCommonNoResultErrorsSourceJSON `json:"-"`
+}
+
+// apiResponseCommonNoResultErrorsSourceJSON contains the JSON metadata for the
+// struct [APIResponseCommonNoResultErrorsSource]
+type apiResponseCommonNoResultErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *APIResponseCommonNoResultErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r apiResponseCommonNoResultErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type APIResponseCommonNoResultMessage struct {
+	Code             int64                                   `json:"code,required"`
+	Message          string                                  `json:"message,required"`
+	DocumentationURL string                                  `json:"documentation_url"`
+	Source           APIResponseCommonNoResultMessagesSource `json:"source"`
+	JSON             apiResponseCommonNoResultMessageJSON    `json:"-"`
+}
+
+// apiResponseCommonNoResultMessageJSON contains the JSON metadata for the struct
+// [APIResponseCommonNoResultMessage]
+type apiResponseCommonNoResultMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *APIResponseCommonNoResultMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r apiResponseCommonNoResultMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type APIResponseCommonNoResultMessagesSource struct {
+	Pointer string                                      `json:"pointer"`
+	JSON    apiResponseCommonNoResultMessagesSourceJSON `json:"-"`
+}
+
+// apiResponseCommonNoResultMessagesSourceJSON contains the JSON metadata for the
+// struct [APIResponseCommonNoResultMessagesSource]
+type apiResponseCommonNoResultMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *APIResponseCommonNoResultMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r apiResponseCommonNoResultMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful.
+type APIResponseCommonNoResultSuccess bool
+
+const (
+	APIResponseCommonNoResultSuccessTrue APIResponseCommonNoResultSuccess = true
+)
+
+func (r APIResponseCommonNoResultSuccess) IsKnown() bool {
+	switch r {
+	case APIResponseCommonNoResultSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type APIResponseCommonNoResultResult struct {
@@ -192,47 +309,6 @@ func (r apiResponseCommonNoResultResultJSON) RawJSON() string {
 	return r.raw
 }
 
-type APIResponseWorkersKv struct {
-	Errors   []MessagesWorkersKvItem `json:"errors,required"`
-	Messages []MessagesWorkersKvItem `json:"messages,required"`
-	// Whether the API call was successful
-	Success APIResponseWorkersKvSuccess `json:"success,required"`
-	JSON    apiResponseWorkersKvJSON    `json:"-"`
-}
-
-// apiResponseWorkersKvJSON contains the JSON metadata for the struct
-// [APIResponseWorkersKv]
-type apiResponseWorkersKvJSON struct {
-	Errors      apijson.Field
-	Messages    apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *APIResponseWorkersKv) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r apiResponseWorkersKvJSON) RawJSON() string {
-	return r.raw
-}
-
-// Whether the API call was successful
-type APIResponseWorkersKvSuccess bool
-
-const (
-	APIResponseWorkersKvSuccessTrue APIResponseWorkersKvSuccess = true
-)
-
-func (r APIResponseWorkersKvSuccess) IsKnown() bool {
-	switch r {
-	case APIResponseWorkersKvSuccessTrue:
-		return true
-	}
-	return false
-}
-
 type CreateRenameNamespaceBodyParam struct {
 	// A human-readable string name for a Namespace.
 	Title param.Field[string] `json:"title,required"`
@@ -243,18 +319,22 @@ func (r CreateRenameNamespaceBodyParam) MarshalJSON() (data []byte, err error) {
 }
 
 type MessagesWorkersKvItem struct {
-	Code    int64                     `json:"code,required"`
-	Message string                    `json:"message,required"`
-	JSON    messagesWorkersKvItemJSON `json:"-"`
+	Code             int64                       `json:"code,required"`
+	Message          string                      `json:"message,required"`
+	DocumentationURL string                      `json:"documentation_url"`
+	Source           MessagesWorkersKvItemSource `json:"source"`
+	JSON             messagesWorkersKvItemJSON   `json:"-"`
 }
 
 // messagesWorkersKvItemJSON contains the JSON metadata for the struct
 // [MessagesWorkersKvItem]
 type messagesWorkersKvItemJSON struct {
-	Code        apijson.Field
-	Message     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
 }
 
 func (r *MessagesWorkersKvItem) UnmarshalJSON(data []byte) (err error) {
@@ -262,6 +342,27 @@ func (r *MessagesWorkersKvItem) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (r messagesWorkersKvItemJSON) RawJSON() string {
+	return r.raw
+}
+
+type MessagesWorkersKvItemSource struct {
+	Pointer string                          `json:"pointer"`
+	JSON    messagesWorkersKvItemSourceJSON `json:"-"`
+}
+
+// messagesWorkersKvItemSourceJSON contains the JSON metadata for the struct
+// [MessagesWorkersKvItemSource]
+type messagesWorkersKvItemSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *MessagesWorkersKvItemSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r messagesWorkersKvItemSourceJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -297,14 +398,20 @@ func (r namespaceJSON) RawJSON() string {
 }
 
 type AccountStorageKvNamespaceNewResponse struct {
-	Result Namespace                                `json:"result"`
-	JSON   accountStorageKvNamespaceNewResponseJSON `json:"-"`
-	APIResponseWorkersKv
+	Errors   []MessagesWorkersKvItem `json:"errors,required"`
+	Messages []MessagesWorkersKvItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountStorageKvNamespaceNewResponseSuccess `json:"success,required"`
+	Result  Namespace                                   `json:"result"`
+	JSON    accountStorageKvNamespaceNewResponseJSON    `json:"-"`
 }
 
 // accountStorageKvNamespaceNewResponseJSON contains the JSON metadata for the
 // struct [AccountStorageKvNamespaceNewResponse]
 type accountStorageKvNamespaceNewResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -318,15 +425,36 @@ func (r accountStorageKvNamespaceNewResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountStorageKvNamespaceNewResponseSuccess bool
+
+const (
+	AccountStorageKvNamespaceNewResponseSuccessTrue AccountStorageKvNamespaceNewResponseSuccess = true
+)
+
+func (r AccountStorageKvNamespaceNewResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountStorageKvNamespaceNewResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountStorageKvNamespaceGetResponse struct {
-	Result Namespace                                `json:"result"`
-	JSON   accountStorageKvNamespaceGetResponseJSON `json:"-"`
-	APIResponseWorkersKv
+	Errors   []MessagesWorkersKvItem `json:"errors,required"`
+	Messages []MessagesWorkersKvItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountStorageKvNamespaceGetResponseSuccess `json:"success,required"`
+	Result  Namespace                                   `json:"result"`
+	JSON    accountStorageKvNamespaceGetResponseJSON    `json:"-"`
 }
 
 // accountStorageKvNamespaceGetResponseJSON contains the JSON metadata for the
 // struct [AccountStorageKvNamespaceGetResponse]
 type accountStorageKvNamespaceGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -340,16 +468,80 @@ func (r accountStorageKvNamespaceGetResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountStorageKvNamespaceGetResponseSuccess bool
+
+const (
+	AccountStorageKvNamespaceGetResponseSuccessTrue AccountStorageKvNamespaceGetResponseSuccess = true
+)
+
+func (r AccountStorageKvNamespaceGetResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountStorageKvNamespaceGetResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type AccountStorageKvNamespaceUpdateResponse struct {
+	Errors   []MessagesWorkersKvItem `json:"errors,required"`
+	Messages []MessagesWorkersKvItem `json:"messages,required"`
+	Result   Namespace               `json:"result,required"`
+	// Whether the API call was successful.
+	Success AccountStorageKvNamespaceUpdateResponseSuccess `json:"success,required"`
+	JSON    accountStorageKvNamespaceUpdateResponseJSON    `json:"-"`
+}
+
+// accountStorageKvNamespaceUpdateResponseJSON contains the JSON metadata for the
+// struct [AccountStorageKvNamespaceUpdateResponse]
+type accountStorageKvNamespaceUpdateResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Result      apijson.Field
+	Success     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountStorageKvNamespaceUpdateResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountStorageKvNamespaceUpdateResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountStorageKvNamespaceUpdateResponseSuccess bool
+
+const (
+	AccountStorageKvNamespaceUpdateResponseSuccessTrue AccountStorageKvNamespaceUpdateResponseSuccess = true
+)
+
+func (r AccountStorageKvNamespaceUpdateResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountStorageKvNamespaceUpdateResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountStorageKvNamespaceListResponse struct {
+	Errors   []MessagesWorkersKvItem `json:"errors,required"`
+	Messages []MessagesWorkersKvItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success    AccountStorageKvNamespaceListResponseSuccess    `json:"success,required"`
 	Result     []Namespace                                     `json:"result"`
 	ResultInfo AccountStorageKvNamespaceListResponseResultInfo `json:"result_info"`
 	JSON       accountStorageKvNamespaceListResponseJSON       `json:"-"`
-	APIResponseWorkersKv
 }
 
 // accountStorageKvNamespaceListResponseJSON contains the JSON metadata for the
 // struct [AccountStorageKvNamespaceListResponse]
 type accountStorageKvNamespaceListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	ResultInfo  apijson.Field
 	raw         string
@@ -364,14 +556,29 @@ func (r accountStorageKvNamespaceListResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountStorageKvNamespaceListResponseSuccess bool
+
+const (
+	AccountStorageKvNamespaceListResponseSuccessTrue AccountStorageKvNamespaceListResponseSuccess = true
+)
+
+func (r AccountStorageKvNamespaceListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountStorageKvNamespaceListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountStorageKvNamespaceListResponseResultInfo struct {
-	// Total number of results for the requested service
+	// Total number of results for the requested service.
 	Count float64 `json:"count"`
-	// Current page within paginated list of results
+	// Current page within paginated list of results.
 	Page float64 `json:"page"`
-	// Number of results per page of results
+	// Number of results per page of results.
 	PerPage float64 `json:"per_page"`
-	// Total results available without any search parameters
+	// Total results available without any search parameters.
 	TotalCount float64                                             `json:"total_count"`
 	JSON       accountStorageKvNamespaceListResponseResultInfoJSON `json:"-"`
 }
@@ -396,15 +603,20 @@ func (r accountStorageKvNamespaceListResponseResultInfoJSON) RawJSON() string {
 }
 
 type AccountStorageKvNamespaceGetMetadataResponse struct {
-	// Arbitrary JSON that is associated with a key.
-	Result map[string]interface{}                           `json:"result"`
-	JSON   accountStorageKvNamespaceGetMetadataResponseJSON `json:"-"`
-	APIResponseWorkersKv
+	Errors   []MessagesWorkersKvItem `json:"errors,required"`
+	Messages []MessagesWorkersKvItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountStorageKvNamespaceGetMetadataResponseSuccess `json:"success,required"`
+	Result  interface{}                                         `json:"result"`
+	JSON    accountStorageKvNamespaceGetMetadataResponseJSON    `json:"-"`
 }
 
 // accountStorageKvNamespaceGetMetadataResponseJSON contains the JSON metadata for
 // the struct [AccountStorageKvNamespaceGetMetadataResponse]
 type accountStorageKvNamespaceGetMetadataResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -418,16 +630,37 @@ func (r accountStorageKvNamespaceGetMetadataResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountStorageKvNamespaceGetMetadataResponseSuccess bool
+
+const (
+	AccountStorageKvNamespaceGetMetadataResponseSuccessTrue AccountStorageKvNamespaceGetMetadataResponseSuccess = true
+)
+
+func (r AccountStorageKvNamespaceGetMetadataResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountStorageKvNamespaceGetMetadataResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountStorageKvNamespaceListKeysResponse struct {
+	Errors   []MessagesWorkersKvItem `json:"errors,required"`
+	Messages []MessagesWorkersKvItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success    AccountStorageKvNamespaceListKeysResponseSuccess    `json:"success,required"`
 	Result     []AccountStorageKvNamespaceListKeysResponseResult   `json:"result"`
 	ResultInfo AccountStorageKvNamespaceListKeysResponseResultInfo `json:"result_info"`
 	JSON       accountStorageKvNamespaceListKeysResponseJSON       `json:"-"`
-	APIResponseWorkersKv
 }
 
 // accountStorageKvNamespaceListKeysResponseJSON contains the JSON metadata for the
 // struct [AccountStorageKvNamespaceListKeysResponse]
 type accountStorageKvNamespaceListKeysResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	ResultInfo  apijson.Field
 	raw         string
@@ -442,6 +675,21 @@ func (r accountStorageKvNamespaceListKeysResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountStorageKvNamespaceListKeysResponseSuccess bool
+
+const (
+	AccountStorageKvNamespaceListKeysResponseSuccessTrue AccountStorageKvNamespaceListKeysResponseSuccess = true
+)
+
+func (r AccountStorageKvNamespaceListKeysResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountStorageKvNamespaceListKeysResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 // A name for a value. A value stored under a given key may be retrieved via the
 // same key.
 type AccountStorageKvNamespaceListKeysResponseResult struct {
@@ -450,10 +698,9 @@ type AccountStorageKvNamespaceListKeysResponseResult struct {
 	Name string `json:"name,required"`
 	// The time, measured in number of seconds since the UNIX epoch, at which the key
 	// will expire. This property is omitted for keys that will not expire.
-	Expiration float64 `json:"expiration"`
-	// Arbitrary JSON that is associated with a key.
-	Metadata map[string]interface{}                              `json:"metadata"`
-	JSON     accountStorageKvNamespaceListKeysResponseResultJSON `json:"-"`
+	Expiration float64                                             `json:"expiration"`
+	Metadata   interface{}                                         `json:"metadata"`
+	JSON       accountStorageKvNamespaceListKeysResponseResultJSON `json:"-"`
 }
 
 // accountStorageKvNamespaceListKeysResponseResultJSON contains the JSON metadata
@@ -570,25 +817,17 @@ func (r AccountStorageKvNamespaceListParamsOrder) IsKnown() bool {
 	return false
 }
 
-type AccountStorageKvNamespaceDeleteParams struct {
-	Body interface{} `json:"body,required"`
-}
-
-func (r AccountStorageKvNamespaceDeleteParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
-}
-
 type AccountStorageKvNamespaceListKeysParams struct {
 	// Opaque token indicating the position from which to continue when requesting the
 	// next set of records if the amount of list results was limited by the limit
 	// parameter. A valid value for the cursor can be obtained from the `cursors`
 	// object in the `result_info` structure.
 	Cursor param.Field[string] `query:"cursor"`
-	// The number of keys to return. The cursor attribute may be used to iterate over
-	// the next batch of keys if there are more than the limit.
+	// Limits the number of keys returned in the response. The cursor attribute may be
+	// used to iterate over the next batch of keys if there are more than the limit.
 	Limit param.Field[float64] `query:"limit"`
-	// A string prefix used to filter down which keys will be returned. Exact matches
-	// and any key names that begin with the prefix will be returned.
+	// Filters returned keys by a name prefix. Exact matches and any key names that
+	// begin with the prefix will be returned.
 	Prefix param.Field[string] `query:"prefix"`
 }
 

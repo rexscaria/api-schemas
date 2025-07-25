@@ -7,7 +7,6 @@ import (
 	"errors"
 	"os"
 	"testing"
-	"time"
 
 	"github.com/rexscaria/api-schemas"
 	"github.com/rexscaria/api-schemas/internal/testutil"
@@ -36,7 +35,6 @@ func TestAccountAddressingAddressMapNewWithOptionalParams(t *testing.T) {
 			Enabled:     cfrex.F(true),
 			IPs:         cfrex.F([]string{"192.0.2.1"}),
 			Memberships: cfrex.F([]cfrex.MembershipParam{{
-				CreatedAt:  cfrex.F(time.Now()),
 				Identifier: cfrex.F("023e105f4ecef8ad9ca31a8372d0c353"),
 				Kind:       cfrex.F(cfrex.MembershipKindZone),
 			}}),
@@ -154,9 +152,6 @@ func TestAccountAddressingAddressMapDelete(t *testing.T) {
 		context.TODO(),
 		"258def64c72dae45f3e4c8516e2111f2",
 		"055817b111884e0227e1be16a0be6ee0",
-		cfrex.AccountAddressingAddressMapDeleteParams{
-			Body: map[string]interface{}{},
-		},
 	)
 	if err != nil {
 		var apierr *cfrex.Error

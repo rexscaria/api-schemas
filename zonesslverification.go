@@ -283,14 +283,20 @@ func (r ZoneSslVerificationGetResponseResultVerificationType) IsKnown() bool {
 }
 
 type ZoneSslVerificationUpdateResponse struct {
-	Result ZoneSslVerificationUpdateResponseResult `json:"result"`
-	JSON   zoneSslVerificationUpdateResponseJSON   `json:"-"`
-	APIResponseSingleTlsCertificates
+	Errors   []MessagesTlsCertificatesItem `json:"errors,required"`
+	Messages []MessagesTlsCertificatesItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success ZoneSslVerificationUpdateResponseSuccess `json:"success,required"`
+	Result  ZoneSslVerificationUpdateResponseResult  `json:"result"`
+	JSON    zoneSslVerificationUpdateResponseJSON    `json:"-"`
 }
 
 // zoneSslVerificationUpdateResponseJSON contains the JSON metadata for the struct
 // [ZoneSslVerificationUpdateResponse]
 type zoneSslVerificationUpdateResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -302,6 +308,21 @@ func (r *ZoneSslVerificationUpdateResponse) UnmarshalJSON(data []byte) (err erro
 
 func (r zoneSslVerificationUpdateResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type ZoneSslVerificationUpdateResponseSuccess bool
+
+const (
+	ZoneSslVerificationUpdateResponseSuccessTrue ZoneSslVerificationUpdateResponseSuccess = true
+)
+
+func (r ZoneSslVerificationUpdateResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneSslVerificationUpdateResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type ZoneSslVerificationUpdateResponseResult struct {

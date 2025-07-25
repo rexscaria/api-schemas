@@ -59,7 +59,7 @@ func (r *AccountWorkerDispatchNamespaceScriptSettingService) Get(ctx context.Con
 	return
 }
 
-// Patch script metadata, such as bindings
+// Patch script metadata, such as bindings.
 func (r *AccountWorkerDispatchNamespaceScriptSettingService) Patch(ctx context.Context, accountID string, dispatchNamespace string, scriptName string, body AccountWorkerDispatchNamespaceScriptSettingPatchParams, opts ...option.RequestOption) (res *AccountWorkerDispatchNamespaceScriptSettingPatchResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
@@ -198,44 +198,6 @@ func (r MigrationStepTransferredClassParam) MarshalJSON() (data []byte, err erro
 	return apijson.MarshalRoot(r)
 }
 
-type MigrationTagConditions struct {
-	// Tag to set as the latest migration tag.
-	NewTag string `json:"new_tag"`
-	// Tag used to verify against the latest migration tag for this Worker. If they
-	// don't match, the upload is rejected.
-	OldTag string                     `json:"old_tag"`
-	JSON   migrationTagConditionsJSON `json:"-"`
-}
-
-// migrationTagConditionsJSON contains the JSON metadata for the struct
-// [MigrationTagConditions]
-type migrationTagConditionsJSON struct {
-	NewTag      apijson.Field
-	OldTag      apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *MigrationTagConditions) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r migrationTagConditionsJSON) RawJSON() string {
-	return r.raw
-}
-
-type MigrationTagConditionsParam struct {
-	// Tag to set as the latest migration tag.
-	NewTag param.Field[string] `json:"new_tag"`
-	// Tag used to verify against the latest migration tag for this Worker. If they
-	// don't match, the upload is rejected.
-	OldTag param.Field[string] `json:"old_tag"`
-}
-
-func (r MigrationTagConditionsParam) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
 // Enables
 // [Smart Placement](https://developers.cloudflare.com/workers/configuration/smart-placement).
 type PlacementMode string
@@ -268,14 +230,12 @@ type ScriptVersionItem struct {
 	Limits ScriptVersionItemLimits `json:"limits"`
 	// Whether Logpush is turned on for the Worker.
 	Logpush bool `json:"logpush"`
-	// Migrations to apply for Durable Objects associated with this Worker.
-	Migrations ScriptVersionItemMigrations `json:"migrations"`
 	// Observability settings for the Worker.
 	Observability Observability `json:"observability"`
 	// Configuration for
 	// [Smart Placement](https://developers.cloudflare.com/workers/configuration/smart-placement).
 	Placement ScriptVersionItemPlacement `json:"placement"`
-	// Tags to help you manage your Workers
+	// Tags to help you manage your Workers.
 	Tags []string `json:"tags"`
 	// List of Workers that will consume logs from the attached Worker.
 	TailConsumers []TailConsumersScript `json:"tail_consumers"`
@@ -292,7 +252,6 @@ type scriptVersionItemJSON struct {
 	CompatibilityFlags apijson.Field
 	Limits             apijson.Field
 	Logpush            apijson.Field
-	Migrations         apijson.Field
 	Observability      apijson.Field
 	Placement          apijson.Field
 	Tags               apijson.Field
@@ -346,11 +305,13 @@ type ScriptVersionItemMigrations struct {
 	// Tag used to verify against the latest migration tag for this Worker. If they
 	// don't match, the upload is rejected.
 	OldTag string `json:"old_tag"`
-	// This field can have the runtime type of [[]MigrationStepRenamedClass].
+	// This field can have the runtime type of
+	// [[]ScriptVersionItemMigrationsWorkersSingleStepMigrationsRenamedClass].
 	RenamedClasses interface{} `json:"renamed_classes"`
 	// This field can have the runtime type of [[]MigrationStep].
 	Steps interface{} `json:"steps"`
-	// This field can have the runtime type of [[]MigrationStepTransferredClass].
+	// This field can have the runtime type of
+	// [[]ScriptVersionItemMigrationsWorkersSingleStepMigrationsTransferredClass].
 	TransferredClasses interface{}                     `json:"transferred_classes"`
 	JSON               scriptVersionItemMigrationsJSON `json:"-"`
 	union              ScriptVersionItemMigrationsUnion
@@ -419,16 +380,37 @@ func init() {
 
 // A single set of migrations to apply.
 type ScriptVersionItemMigrationsWorkersSingleStepMigrations struct {
-	JSON scriptVersionItemMigrationsWorkersSingleStepMigrationsJSON `json:"-"`
-	MigrationTagConditions
-	MigrationStep
+	// A list of classes to delete Durable Object namespaces from.
+	DeletedClasses []string `json:"deleted_classes"`
+	// A list of classes to create Durable Object namespaces from.
+	NewClasses []string `json:"new_classes"`
+	// A list of classes to create Durable Object namespaces with SQLite from.
+	NewSqliteClasses []string `json:"new_sqlite_classes"`
+	// Tag to set as the latest migration tag.
+	NewTag string `json:"new_tag"`
+	// Tag used to verify against the latest migration tag for this Worker. If they
+	// don't match, the upload is rejected.
+	OldTag string `json:"old_tag"`
+	// A list of classes with Durable Object namespaces that were renamed.
+	RenamedClasses []ScriptVersionItemMigrationsWorkersSingleStepMigrationsRenamedClass `json:"renamed_classes"`
+	// A list of transfers for Durable Object namespaces from a different Worker and
+	// class to a class defined in this Worker.
+	TransferredClasses []ScriptVersionItemMigrationsWorkersSingleStepMigrationsTransferredClass `json:"transferred_classes"`
+	JSON               scriptVersionItemMigrationsWorkersSingleStepMigrationsJSON               `json:"-"`
 }
 
 // scriptVersionItemMigrationsWorkersSingleStepMigrationsJSON contains the JSON
 // metadata for the struct [ScriptVersionItemMigrationsWorkersSingleStepMigrations]
 type scriptVersionItemMigrationsWorkersSingleStepMigrationsJSON struct {
-	raw         string
-	ExtraFields map[string]apijson.Field
+	DeletedClasses     apijson.Field
+	NewClasses         apijson.Field
+	NewSqliteClasses   apijson.Field
+	NewTag             apijson.Field
+	OldTag             apijson.Field
+	RenamedClasses     apijson.Field
+	TransferredClasses apijson.Field
+	raw                string
+	ExtraFields        map[string]apijson.Field
 }
 
 func (r *ScriptVersionItemMigrationsWorkersSingleStepMigrations) UnmarshalJSON(data []byte) (err error) {
@@ -442,17 +424,73 @@ func (r scriptVersionItemMigrationsWorkersSingleStepMigrationsJSON) RawJSON() st
 func (r ScriptVersionItemMigrationsWorkersSingleStepMigrations) implementsScriptVersionItemMigrations() {
 }
 
+type ScriptVersionItemMigrationsWorkersSingleStepMigrationsRenamedClass struct {
+	From string                                                                 `json:"from"`
+	To   string                                                                 `json:"to"`
+	JSON scriptVersionItemMigrationsWorkersSingleStepMigrationsRenamedClassJSON `json:"-"`
+}
+
+// scriptVersionItemMigrationsWorkersSingleStepMigrationsRenamedClassJSON contains
+// the JSON metadata for the struct
+// [ScriptVersionItemMigrationsWorkersSingleStepMigrationsRenamedClass]
+type scriptVersionItemMigrationsWorkersSingleStepMigrationsRenamedClassJSON struct {
+	From        apijson.Field
+	To          apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ScriptVersionItemMigrationsWorkersSingleStepMigrationsRenamedClass) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r scriptVersionItemMigrationsWorkersSingleStepMigrationsRenamedClassJSON) RawJSON() string {
+	return r.raw
+}
+
+type ScriptVersionItemMigrationsWorkersSingleStepMigrationsTransferredClass struct {
+	From       string                                                                     `json:"from"`
+	FromScript string                                                                     `json:"from_script"`
+	To         string                                                                     `json:"to"`
+	JSON       scriptVersionItemMigrationsWorkersSingleStepMigrationsTransferredClassJSON `json:"-"`
+}
+
+// scriptVersionItemMigrationsWorkersSingleStepMigrationsTransferredClassJSON
+// contains the JSON metadata for the struct
+// [ScriptVersionItemMigrationsWorkersSingleStepMigrationsTransferredClass]
+type scriptVersionItemMigrationsWorkersSingleStepMigrationsTransferredClassJSON struct {
+	From        apijson.Field
+	FromScript  apijson.Field
+	To          apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ScriptVersionItemMigrationsWorkersSingleStepMigrationsTransferredClass) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r scriptVersionItemMigrationsWorkersSingleStepMigrationsTransferredClassJSON) RawJSON() string {
+	return r.raw
+}
+
 type ScriptVersionItemMigrationsWorkersMultipleStepMigrations struct {
+	// Tag to set as the latest migration tag.
+	NewTag string `json:"new_tag"`
+	// Tag used to verify against the latest migration tag for this Worker. If they
+	// don't match, the upload is rejected.
+	OldTag string `json:"old_tag"`
 	// Migrations to apply in order.
 	Steps []MigrationStep                                              `json:"steps"`
 	JSON  scriptVersionItemMigrationsWorkersMultipleStepMigrationsJSON `json:"-"`
-	MigrationTagConditions
 }
 
 // scriptVersionItemMigrationsWorkersMultipleStepMigrationsJSON contains the JSON
 // metadata for the struct
 // [ScriptVersionItemMigrationsWorkersMultipleStepMigrations]
 type scriptVersionItemMigrationsWorkersMultipleStepMigrationsJSON struct {
+	NewTag      apijson.Field
+	OldTag      apijson.Field
 	Steps       apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -517,7 +555,7 @@ type ScriptVersionItemParam struct {
 	// Configuration for
 	// [Smart Placement](https://developers.cloudflare.com/workers/configuration/smart-placement).
 	Placement param.Field[ScriptVersionItemPlacementParam] `json:"placement"`
-	// Tags to help you manage your Workers
+	// Tags to help you manage your Workers.
 	Tags param.Field[[]string] `json:"tags"`
 	// List of Workers that will consume logs from the attached Worker.
 	TailConsumers param.Field[[]TailConsumersScriptParam] `json:"tail_consumers"`
@@ -540,17 +578,53 @@ func (r ScriptVersionItemLimitsParam) MarshalJSON() (data []byte, err error) {
 }
 
 // Migrations to apply for Durable Objects associated with this Worker.
+type ScriptVersionItemMigrationsParam struct {
+	DeletedClasses   param.Field[interface{}] `json:"deleted_classes"`
+	NewClasses       param.Field[interface{}] `json:"new_classes"`
+	NewSqliteClasses param.Field[interface{}] `json:"new_sqlite_classes"`
+	// Tag to set as the latest migration tag.
+	NewTag param.Field[string] `json:"new_tag"`
+	// Tag used to verify against the latest migration tag for this Worker. If they
+	// don't match, the upload is rejected.
+	OldTag             param.Field[string]      `json:"old_tag"`
+	RenamedClasses     param.Field[interface{}] `json:"renamed_classes"`
+	Steps              param.Field[interface{}] `json:"steps"`
+	TransferredClasses param.Field[interface{}] `json:"transferred_classes"`
+}
+
+func (r ScriptVersionItemMigrationsParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r ScriptVersionItemMigrationsParam) implementsScriptVersionItemMigrationsUnionParam() {}
+
+// Migrations to apply for Durable Objects associated with this Worker.
 //
 // Satisfied by [ScriptVersionItemMigrationsWorkersSingleStepMigrationsParam],
-// [ScriptVersionItemMigrationsWorkersMultipleStepMigrationsParam].
+// [ScriptVersionItemMigrationsWorkersMultipleStepMigrationsParam],
+// [ScriptVersionItemMigrationsParam].
 type ScriptVersionItemMigrationsUnionParam interface {
 	implementsScriptVersionItemMigrationsUnionParam()
 }
 
 // A single set of migrations to apply.
 type ScriptVersionItemMigrationsWorkersSingleStepMigrationsParam struct {
-	MigrationTagConditionsParam
-	MigrationStepParam
+	// A list of classes to delete Durable Object namespaces from.
+	DeletedClasses param.Field[[]string] `json:"deleted_classes"`
+	// A list of classes to create Durable Object namespaces from.
+	NewClasses param.Field[[]string] `json:"new_classes"`
+	// A list of classes to create Durable Object namespaces with SQLite from.
+	NewSqliteClasses param.Field[[]string] `json:"new_sqlite_classes"`
+	// Tag to set as the latest migration tag.
+	NewTag param.Field[string] `json:"new_tag"`
+	// Tag used to verify against the latest migration tag for this Worker. If they
+	// don't match, the upload is rejected.
+	OldTag param.Field[string] `json:"old_tag"`
+	// A list of classes with Durable Object namespaces that were renamed.
+	RenamedClasses param.Field[[]ScriptVersionItemMigrationsWorkersSingleStepMigrationsRenamedClassParam] `json:"renamed_classes"`
+	// A list of transfers for Durable Object namespaces from a different Worker and
+	// class to a class defined in this Worker.
+	TransferredClasses param.Field[[]ScriptVersionItemMigrationsWorkersSingleStepMigrationsTransferredClassParam] `json:"transferred_classes"`
 }
 
 func (r ScriptVersionItemMigrationsWorkersSingleStepMigrationsParam) MarshalJSON() (data []byte, err error) {
@@ -560,10 +634,33 @@ func (r ScriptVersionItemMigrationsWorkersSingleStepMigrationsParam) MarshalJSON
 func (r ScriptVersionItemMigrationsWorkersSingleStepMigrationsParam) implementsScriptVersionItemMigrationsUnionParam() {
 }
 
+type ScriptVersionItemMigrationsWorkersSingleStepMigrationsRenamedClassParam struct {
+	From param.Field[string] `json:"from"`
+	To   param.Field[string] `json:"to"`
+}
+
+func (r ScriptVersionItemMigrationsWorkersSingleStepMigrationsRenamedClassParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type ScriptVersionItemMigrationsWorkersSingleStepMigrationsTransferredClassParam struct {
+	From       param.Field[string] `json:"from"`
+	FromScript param.Field[string] `json:"from_script"`
+	To         param.Field[string] `json:"to"`
+}
+
+func (r ScriptVersionItemMigrationsWorkersSingleStepMigrationsTransferredClassParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
 type ScriptVersionItemMigrationsWorkersMultipleStepMigrationsParam struct {
+	// Tag to set as the latest migration tag.
+	NewTag param.Field[string] `json:"new_tag"`
+	// Tag used to verify against the latest migration tag for this Worker. If they
+	// don't match, the upload is rejected.
+	OldTag param.Field[string] `json:"old_tag"`
 	// Migrations to apply in order.
 	Steps param.Field[[]MigrationStepParam] `json:"steps"`
-	MigrationTagConditionsParam
 }
 
 func (r ScriptVersionItemMigrationsWorkersMultipleStepMigrationsParam) MarshalJSON() (data []byte, err error) {
@@ -601,14 +698,20 @@ func (r UsageModel) IsKnown() bool {
 }
 
 type AccountWorkerDispatchNamespaceScriptSettingGetResponse struct {
-	Result ScriptVersionItem                                          `json:"result"`
-	JSON   accountWorkerDispatchNamespaceScriptSettingGetResponseJSON `json:"-"`
-	CommonResponseWorkers
+	Errors   []WorkersMessages `json:"errors,required"`
+	Messages []WorkersMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountWorkerDispatchNamespaceScriptSettingGetResponseSuccess `json:"success,required"`
+	Result  ScriptVersionItem                                             `json:"result"`
+	JSON    accountWorkerDispatchNamespaceScriptSettingGetResponseJSON    `json:"-"`
 }
 
 // accountWorkerDispatchNamespaceScriptSettingGetResponseJSON contains the JSON
 // metadata for the struct [AccountWorkerDispatchNamespaceScriptSettingGetResponse]
 type accountWorkerDispatchNamespaceScriptSettingGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -622,16 +725,37 @@ func (r accountWorkerDispatchNamespaceScriptSettingGetResponseJSON) RawJSON() st
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountWorkerDispatchNamespaceScriptSettingGetResponseSuccess bool
+
+const (
+	AccountWorkerDispatchNamespaceScriptSettingGetResponseSuccessTrue AccountWorkerDispatchNamespaceScriptSettingGetResponseSuccess = true
+)
+
+func (r AccountWorkerDispatchNamespaceScriptSettingGetResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountWorkerDispatchNamespaceScriptSettingGetResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountWorkerDispatchNamespaceScriptSettingPatchResponse struct {
-	Result ScriptVersionItem                                            `json:"result"`
-	JSON   accountWorkerDispatchNamespaceScriptSettingPatchResponseJSON `json:"-"`
-	CommonResponseWorkers
+	Errors   []WorkersMessages `json:"errors,required"`
+	Messages []WorkersMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountWorkerDispatchNamespaceScriptSettingPatchResponseSuccess `json:"success,required"`
+	Result  ScriptVersionItem                                               `json:"result"`
+	JSON    accountWorkerDispatchNamespaceScriptSettingPatchResponseJSON    `json:"-"`
 }
 
 // accountWorkerDispatchNamespaceScriptSettingPatchResponseJSON contains the JSON
 // metadata for the struct
 // [AccountWorkerDispatchNamespaceScriptSettingPatchResponse]
 type accountWorkerDispatchNamespaceScriptSettingPatchResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -643,6 +767,21 @@ func (r *AccountWorkerDispatchNamespaceScriptSettingPatchResponse) UnmarshalJSON
 
 func (r accountWorkerDispatchNamespaceScriptSettingPatchResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountWorkerDispatchNamespaceScriptSettingPatchResponseSuccess bool
+
+const (
+	AccountWorkerDispatchNamespaceScriptSettingPatchResponseSuccessTrue AccountWorkerDispatchNamespaceScriptSettingPatchResponseSuccess = true
+)
+
+func (r AccountWorkerDispatchNamespaceScriptSettingPatchResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountWorkerDispatchNamespaceScriptSettingPatchResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountWorkerDispatchNamespaceScriptSettingPatchParams struct {

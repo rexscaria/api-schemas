@@ -39,6 +39,10 @@ func NewAccountUrlscannerScanService(opts ...option.RequestOption) (r *AccountUr
 // Submit a URL to scan. You can also set some options, like the visibility level
 // and custom headers. Check limits at
 // https://developers.cloudflare.com/security-center/investigate/scan-limits/.
+//
+// Deprecated: Use
+// [V2](https://developers.cloudflare.com/api/resources/url_scanner/subresources/scans/methods/create/)
+// instead.
 func (r *AccountUrlscannerScanService) New(ctx context.Context, accountID string, body AccountUrlscannerScanNewParams, opts ...option.RequestOption) (res *AccountUrlscannerScanNewResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
@@ -51,6 +55,10 @@ func (r *AccountUrlscannerScanService) New(ctx context.Context, accountID string
 }
 
 // Get URL scan by uuid
+//
+// Deprecated: Use
+// [V2](https://developers.cloudflare.com/api/resources/url_scanner/subresources/scans/methods/get/)
+// instead.
 func (r *AccountUrlscannerScanService) Get(ctx context.Context, accountID string, scanID string, query AccountUrlscannerScanGetParams, opts ...option.RequestOption) (res *AccountUrlscannerScanGetResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
@@ -72,6 +80,10 @@ func (r *AccountUrlscannerScanService) Get(ctx context.Context, accountID string
 // under load. By default, only successfully completed scans will appear in search
 // results, unless searching by `scanId`. Please take into account that older scans
 // may be removed from the search index at an unspecified time.
+//
+// Deprecated: Use
+// [V2](https://developers.cloudflare.com/api/resources/url_scanner/subresources/scans/methods/list/)
+// instead.
 func (r *AccountUrlscannerScanService) List(ctx context.Context, accountID string, query AccountUrlscannerScanListParams, opts ...option.RequestOption) (res *AccountUrlscannerScanListResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
@@ -85,6 +97,10 @@ func (r *AccountUrlscannerScanService) List(ctx context.Context, accountID strin
 
 // Get a URL scan's HAR file. See HAR spec at
 // http://www.softwareishard.com/blog/har-12-spec/.
+//
+// Deprecated: Use
+// [V2](https://developers.cloudflare.com/api/resources/url_scanner/subresources/scans/methods/har/)
+// instead.
 func (r *AccountUrlscannerScanService) GetHar(ctx context.Context, accountID string, scanID string, opts ...option.RequestOption) (res *AccountUrlscannerScanGetHarResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
@@ -101,6 +117,10 @@ func (r *AccountUrlscannerScanService) GetHar(ctx context.Context, accountID str
 }
 
 // Get scan's screenshot by resolution (desktop/mobile/tablet).
+//
+// Deprecated: Use
+// [V2](https://developers.cloudflare.com/api/resources/url_scanner/subresources/scans/methods/screenshot/)
+// instead.
 func (r *AccountUrlscannerScanService) GetScreenshot(ctx context.Context, accountID string, scanID string, query AccountUrlscannerScanGetScreenshotParams, opts ...option.RequestOption) (res *http.Response, err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "image/png")}, opts...)
@@ -194,8 +214,8 @@ type AccountUrlscannerScanNewResponseResult struct {
 	// Scan ID.
 	Uuid string `json:"uuid,required" format:"uuid"`
 	// Submitted visibility status.
-	Visibility string                                     `json:"visibility,required"`
-	JSON       accountUrlscannerScanNewResponseResultJSON `json:"-"`
+	Visibility AccountUrlscannerScanNewResponseResultVisibility `json:"visibility,required"`
+	JSON       accountUrlscannerScanNewResponseResultJSON       `json:"-"`
 }
 
 // accountUrlscannerScanNewResponseResultJSON contains the JSON metadata for the
@@ -215,6 +235,22 @@ func (r *AccountUrlscannerScanNewResponseResult) UnmarshalJSON(data []byte) (err
 
 func (r accountUrlscannerScanNewResponseResultJSON) RawJSON() string {
 	return r.raw
+}
+
+// Submitted visibility status.
+type AccountUrlscannerScanNewResponseResultVisibility string
+
+const (
+	AccountUrlscannerScanNewResponseResultVisibilityPublic   AccountUrlscannerScanNewResponseResultVisibility = "public"
+	AccountUrlscannerScanNewResponseResultVisibilityUnlisted AccountUrlscannerScanNewResponseResultVisibility = "unlisted"
+)
+
+func (r AccountUrlscannerScanNewResponseResultVisibility) IsKnown() bool {
+	switch r {
+	case AccountUrlscannerScanNewResponseResultVisibilityPublic, AccountUrlscannerScanNewResponseResultVisibilityUnlisted:
+		return true
+	}
+	return false
 }
 
 type AccountUrlscannerScanGetResponse struct {
@@ -378,11 +414,9 @@ func (r accountUrlscannerScanGetResponseResultScanCertificateJSON) RawJSON() str
 }
 
 type AccountUrlscannerScanGetResponseResultScanGeo struct {
-	// GeoIP continent location
-	Continents []string `json:"continents,required"`
-	// GeoIP country location
-	Locations []string                                          `json:"locations,required"`
-	JSON      accountUrlscannerScanGetResponseResultScanGeoJSON `json:"-"`
+	Continents []string                                          `json:"continents,required"`
+	Locations  []string                                          `json:"locations,required"`
+	JSON       accountUrlscannerScanGetResponseResultScanGeoJSON `json:"-"`
 }
 
 // accountUrlscannerScanGetResponseResultScanGeoJSON contains the JSON metadata for
@@ -1729,9 +1763,9 @@ type AccountUrlscannerScanListResponseResultTask struct {
 	URL string `json:"url,required"`
 	// Scan id
 	Uuid string `json:"uuid,required" format:"uuid"`
-	// Visibility status.
-	Visibility string                                          `json:"visibility,required"`
-	JSON       accountUrlscannerScanListResponseResultTaskJSON `json:"-"`
+	// Submitted visibility status.
+	Visibility AccountUrlscannerScanListResponseResultTasksVisibility `json:"visibility,required"`
+	JSON       accountUrlscannerScanListResponseResultTaskJSON        `json:"-"`
 }
 
 // accountUrlscannerScanListResponseResultTaskJSON contains the JSON metadata for
@@ -1753,6 +1787,22 @@ func (r *AccountUrlscannerScanListResponseResultTask) UnmarshalJSON(data []byte)
 
 func (r accountUrlscannerScanListResponseResultTaskJSON) RawJSON() string {
 	return r.raw
+}
+
+// Submitted visibility status.
+type AccountUrlscannerScanListResponseResultTasksVisibility string
+
+const (
+	AccountUrlscannerScanListResponseResultTasksVisibilityPublic   AccountUrlscannerScanListResponseResultTasksVisibility = "public"
+	AccountUrlscannerScanListResponseResultTasksVisibilityUnlisted AccountUrlscannerScanListResponseResultTasksVisibility = "unlisted"
+)
+
+func (r AccountUrlscannerScanListResponseResultTasksVisibility) IsKnown() bool {
+	switch r {
+	case AccountUrlscannerScanListResponseResultTasksVisibilityPublic, AccountUrlscannerScanListResponseResultTasksVisibilityUnlisted:
+		return true
+	}
+	return false
 }
 
 type AccountUrlscannerScanGetHarResponse struct {
@@ -2163,6 +2213,8 @@ func (r accountUrlscannerScanGetHarResponseResultHarLogPagesPageTimingsJSON) Raw
 
 type AccountUrlscannerScanNewParams struct {
 	URL param.Field[string] `json:"url,required"`
+	// Country to geo egress from
+	Country param.Field[AccountUrlscannerScanNewParamsCountry] `json:"country"`
 	// Set custom headers.
 	CustomHeaders param.Field[map[string]string] `json:"customHeaders"`
 	// Take multiple screenshots targeting different device types.
@@ -2177,6 +2229,215 @@ type AccountUrlscannerScanNewParams struct {
 
 func (r AccountUrlscannerScanNewParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
+}
+
+// Country to geo egress from
+type AccountUrlscannerScanNewParamsCountry string
+
+const (
+	AccountUrlscannerScanNewParamsCountryAf AccountUrlscannerScanNewParamsCountry = "AF"
+	AccountUrlscannerScanNewParamsCountryAl AccountUrlscannerScanNewParamsCountry = "AL"
+	AccountUrlscannerScanNewParamsCountryDz AccountUrlscannerScanNewParamsCountry = "DZ"
+	AccountUrlscannerScanNewParamsCountryAd AccountUrlscannerScanNewParamsCountry = "AD"
+	AccountUrlscannerScanNewParamsCountryAo AccountUrlscannerScanNewParamsCountry = "AO"
+	AccountUrlscannerScanNewParamsCountryAg AccountUrlscannerScanNewParamsCountry = "AG"
+	AccountUrlscannerScanNewParamsCountryAr AccountUrlscannerScanNewParamsCountry = "AR"
+	AccountUrlscannerScanNewParamsCountryAm AccountUrlscannerScanNewParamsCountry = "AM"
+	AccountUrlscannerScanNewParamsCountryAu AccountUrlscannerScanNewParamsCountry = "AU"
+	AccountUrlscannerScanNewParamsCountryAt AccountUrlscannerScanNewParamsCountry = "AT"
+	AccountUrlscannerScanNewParamsCountryAz AccountUrlscannerScanNewParamsCountry = "AZ"
+	AccountUrlscannerScanNewParamsCountryBh AccountUrlscannerScanNewParamsCountry = "BH"
+	AccountUrlscannerScanNewParamsCountryBd AccountUrlscannerScanNewParamsCountry = "BD"
+	AccountUrlscannerScanNewParamsCountryBb AccountUrlscannerScanNewParamsCountry = "BB"
+	AccountUrlscannerScanNewParamsCountryBy AccountUrlscannerScanNewParamsCountry = "BY"
+	AccountUrlscannerScanNewParamsCountryBe AccountUrlscannerScanNewParamsCountry = "BE"
+	AccountUrlscannerScanNewParamsCountryBz AccountUrlscannerScanNewParamsCountry = "BZ"
+	AccountUrlscannerScanNewParamsCountryBj AccountUrlscannerScanNewParamsCountry = "BJ"
+	AccountUrlscannerScanNewParamsCountryBm AccountUrlscannerScanNewParamsCountry = "BM"
+	AccountUrlscannerScanNewParamsCountryBt AccountUrlscannerScanNewParamsCountry = "BT"
+	AccountUrlscannerScanNewParamsCountryBo AccountUrlscannerScanNewParamsCountry = "BO"
+	AccountUrlscannerScanNewParamsCountryBa AccountUrlscannerScanNewParamsCountry = "BA"
+	AccountUrlscannerScanNewParamsCountryBw AccountUrlscannerScanNewParamsCountry = "BW"
+	AccountUrlscannerScanNewParamsCountryBr AccountUrlscannerScanNewParamsCountry = "BR"
+	AccountUrlscannerScanNewParamsCountryBn AccountUrlscannerScanNewParamsCountry = "BN"
+	AccountUrlscannerScanNewParamsCountryBg AccountUrlscannerScanNewParamsCountry = "BG"
+	AccountUrlscannerScanNewParamsCountryBf AccountUrlscannerScanNewParamsCountry = "BF"
+	AccountUrlscannerScanNewParamsCountryBi AccountUrlscannerScanNewParamsCountry = "BI"
+	AccountUrlscannerScanNewParamsCountryKh AccountUrlscannerScanNewParamsCountry = "KH"
+	AccountUrlscannerScanNewParamsCountryCm AccountUrlscannerScanNewParamsCountry = "CM"
+	AccountUrlscannerScanNewParamsCountryCa AccountUrlscannerScanNewParamsCountry = "CA"
+	AccountUrlscannerScanNewParamsCountryCv AccountUrlscannerScanNewParamsCountry = "CV"
+	AccountUrlscannerScanNewParamsCountryKy AccountUrlscannerScanNewParamsCountry = "KY"
+	AccountUrlscannerScanNewParamsCountryCf AccountUrlscannerScanNewParamsCountry = "CF"
+	AccountUrlscannerScanNewParamsCountryTd AccountUrlscannerScanNewParamsCountry = "TD"
+	AccountUrlscannerScanNewParamsCountryCl AccountUrlscannerScanNewParamsCountry = "CL"
+	AccountUrlscannerScanNewParamsCountryCn AccountUrlscannerScanNewParamsCountry = "CN"
+	AccountUrlscannerScanNewParamsCountryCo AccountUrlscannerScanNewParamsCountry = "CO"
+	AccountUrlscannerScanNewParamsCountryKm AccountUrlscannerScanNewParamsCountry = "KM"
+	AccountUrlscannerScanNewParamsCountryCg AccountUrlscannerScanNewParamsCountry = "CG"
+	AccountUrlscannerScanNewParamsCountryCr AccountUrlscannerScanNewParamsCountry = "CR"
+	AccountUrlscannerScanNewParamsCountryCi AccountUrlscannerScanNewParamsCountry = "CI"
+	AccountUrlscannerScanNewParamsCountryHr AccountUrlscannerScanNewParamsCountry = "HR"
+	AccountUrlscannerScanNewParamsCountryCu AccountUrlscannerScanNewParamsCountry = "CU"
+	AccountUrlscannerScanNewParamsCountryCy AccountUrlscannerScanNewParamsCountry = "CY"
+	AccountUrlscannerScanNewParamsCountryCz AccountUrlscannerScanNewParamsCountry = "CZ"
+	AccountUrlscannerScanNewParamsCountryCd AccountUrlscannerScanNewParamsCountry = "CD"
+	AccountUrlscannerScanNewParamsCountryDk AccountUrlscannerScanNewParamsCountry = "DK"
+	AccountUrlscannerScanNewParamsCountryDj AccountUrlscannerScanNewParamsCountry = "DJ"
+	AccountUrlscannerScanNewParamsCountryDm AccountUrlscannerScanNewParamsCountry = "DM"
+	AccountUrlscannerScanNewParamsCountryDo AccountUrlscannerScanNewParamsCountry = "DO"
+	AccountUrlscannerScanNewParamsCountryEc AccountUrlscannerScanNewParamsCountry = "EC"
+	AccountUrlscannerScanNewParamsCountryEg AccountUrlscannerScanNewParamsCountry = "EG"
+	AccountUrlscannerScanNewParamsCountrySv AccountUrlscannerScanNewParamsCountry = "SV"
+	AccountUrlscannerScanNewParamsCountryGq AccountUrlscannerScanNewParamsCountry = "GQ"
+	AccountUrlscannerScanNewParamsCountryEr AccountUrlscannerScanNewParamsCountry = "ER"
+	AccountUrlscannerScanNewParamsCountryEe AccountUrlscannerScanNewParamsCountry = "EE"
+	AccountUrlscannerScanNewParamsCountrySz AccountUrlscannerScanNewParamsCountry = "SZ"
+	AccountUrlscannerScanNewParamsCountryEt AccountUrlscannerScanNewParamsCountry = "ET"
+	AccountUrlscannerScanNewParamsCountryFj AccountUrlscannerScanNewParamsCountry = "FJ"
+	AccountUrlscannerScanNewParamsCountryFi AccountUrlscannerScanNewParamsCountry = "FI"
+	AccountUrlscannerScanNewParamsCountryFr AccountUrlscannerScanNewParamsCountry = "FR"
+	AccountUrlscannerScanNewParamsCountryGa AccountUrlscannerScanNewParamsCountry = "GA"
+	AccountUrlscannerScanNewParamsCountryGe AccountUrlscannerScanNewParamsCountry = "GE"
+	AccountUrlscannerScanNewParamsCountryDe AccountUrlscannerScanNewParamsCountry = "DE"
+	AccountUrlscannerScanNewParamsCountryGh AccountUrlscannerScanNewParamsCountry = "GH"
+	AccountUrlscannerScanNewParamsCountryGr AccountUrlscannerScanNewParamsCountry = "GR"
+	AccountUrlscannerScanNewParamsCountryGl AccountUrlscannerScanNewParamsCountry = "GL"
+	AccountUrlscannerScanNewParamsCountryGd AccountUrlscannerScanNewParamsCountry = "GD"
+	AccountUrlscannerScanNewParamsCountryGt AccountUrlscannerScanNewParamsCountry = "GT"
+	AccountUrlscannerScanNewParamsCountryGn AccountUrlscannerScanNewParamsCountry = "GN"
+	AccountUrlscannerScanNewParamsCountryGw AccountUrlscannerScanNewParamsCountry = "GW"
+	AccountUrlscannerScanNewParamsCountryGy AccountUrlscannerScanNewParamsCountry = "GY"
+	AccountUrlscannerScanNewParamsCountryHt AccountUrlscannerScanNewParamsCountry = "HT"
+	AccountUrlscannerScanNewParamsCountryHn AccountUrlscannerScanNewParamsCountry = "HN"
+	AccountUrlscannerScanNewParamsCountryHu AccountUrlscannerScanNewParamsCountry = "HU"
+	AccountUrlscannerScanNewParamsCountryIs AccountUrlscannerScanNewParamsCountry = "IS"
+	AccountUrlscannerScanNewParamsCountryIn AccountUrlscannerScanNewParamsCountry = "IN"
+	AccountUrlscannerScanNewParamsCountryID AccountUrlscannerScanNewParamsCountry = "ID"
+	AccountUrlscannerScanNewParamsCountryIr AccountUrlscannerScanNewParamsCountry = "IR"
+	AccountUrlscannerScanNewParamsCountryIq AccountUrlscannerScanNewParamsCountry = "IQ"
+	AccountUrlscannerScanNewParamsCountryIe AccountUrlscannerScanNewParamsCountry = "IE"
+	AccountUrlscannerScanNewParamsCountryIl AccountUrlscannerScanNewParamsCountry = "IL"
+	AccountUrlscannerScanNewParamsCountryIt AccountUrlscannerScanNewParamsCountry = "IT"
+	AccountUrlscannerScanNewParamsCountryJm AccountUrlscannerScanNewParamsCountry = "JM"
+	AccountUrlscannerScanNewParamsCountryJp AccountUrlscannerScanNewParamsCountry = "JP"
+	AccountUrlscannerScanNewParamsCountryJo AccountUrlscannerScanNewParamsCountry = "JO"
+	AccountUrlscannerScanNewParamsCountryKz AccountUrlscannerScanNewParamsCountry = "KZ"
+	AccountUrlscannerScanNewParamsCountryKe AccountUrlscannerScanNewParamsCountry = "KE"
+	AccountUrlscannerScanNewParamsCountryKi AccountUrlscannerScanNewParamsCountry = "KI"
+	AccountUrlscannerScanNewParamsCountryKw AccountUrlscannerScanNewParamsCountry = "KW"
+	AccountUrlscannerScanNewParamsCountryKg AccountUrlscannerScanNewParamsCountry = "KG"
+	AccountUrlscannerScanNewParamsCountryLa AccountUrlscannerScanNewParamsCountry = "LA"
+	AccountUrlscannerScanNewParamsCountryLv AccountUrlscannerScanNewParamsCountry = "LV"
+	AccountUrlscannerScanNewParamsCountryLb AccountUrlscannerScanNewParamsCountry = "LB"
+	AccountUrlscannerScanNewParamsCountryLs AccountUrlscannerScanNewParamsCountry = "LS"
+	AccountUrlscannerScanNewParamsCountryLr AccountUrlscannerScanNewParamsCountry = "LR"
+	AccountUrlscannerScanNewParamsCountryLy AccountUrlscannerScanNewParamsCountry = "LY"
+	AccountUrlscannerScanNewParamsCountryLi AccountUrlscannerScanNewParamsCountry = "LI"
+	AccountUrlscannerScanNewParamsCountryLt AccountUrlscannerScanNewParamsCountry = "LT"
+	AccountUrlscannerScanNewParamsCountryLu AccountUrlscannerScanNewParamsCountry = "LU"
+	AccountUrlscannerScanNewParamsCountryMo AccountUrlscannerScanNewParamsCountry = "MO"
+	AccountUrlscannerScanNewParamsCountryMg AccountUrlscannerScanNewParamsCountry = "MG"
+	AccountUrlscannerScanNewParamsCountryMw AccountUrlscannerScanNewParamsCountry = "MW"
+	AccountUrlscannerScanNewParamsCountryMy AccountUrlscannerScanNewParamsCountry = "MY"
+	AccountUrlscannerScanNewParamsCountryMv AccountUrlscannerScanNewParamsCountry = "MV"
+	AccountUrlscannerScanNewParamsCountryMl AccountUrlscannerScanNewParamsCountry = "ML"
+	AccountUrlscannerScanNewParamsCountryMr AccountUrlscannerScanNewParamsCountry = "MR"
+	AccountUrlscannerScanNewParamsCountryMu AccountUrlscannerScanNewParamsCountry = "MU"
+	AccountUrlscannerScanNewParamsCountryMx AccountUrlscannerScanNewParamsCountry = "MX"
+	AccountUrlscannerScanNewParamsCountryFm AccountUrlscannerScanNewParamsCountry = "FM"
+	AccountUrlscannerScanNewParamsCountryMd AccountUrlscannerScanNewParamsCountry = "MD"
+	AccountUrlscannerScanNewParamsCountryMc AccountUrlscannerScanNewParamsCountry = "MC"
+	AccountUrlscannerScanNewParamsCountryMn AccountUrlscannerScanNewParamsCountry = "MN"
+	AccountUrlscannerScanNewParamsCountryMs AccountUrlscannerScanNewParamsCountry = "MS"
+	AccountUrlscannerScanNewParamsCountryMa AccountUrlscannerScanNewParamsCountry = "MA"
+	AccountUrlscannerScanNewParamsCountryMz AccountUrlscannerScanNewParamsCountry = "MZ"
+	AccountUrlscannerScanNewParamsCountryMm AccountUrlscannerScanNewParamsCountry = "MM"
+	AccountUrlscannerScanNewParamsCountryNa AccountUrlscannerScanNewParamsCountry = "NA"
+	AccountUrlscannerScanNewParamsCountryNr AccountUrlscannerScanNewParamsCountry = "NR"
+	AccountUrlscannerScanNewParamsCountryNp AccountUrlscannerScanNewParamsCountry = "NP"
+	AccountUrlscannerScanNewParamsCountryNl AccountUrlscannerScanNewParamsCountry = "NL"
+	AccountUrlscannerScanNewParamsCountryNz AccountUrlscannerScanNewParamsCountry = "NZ"
+	AccountUrlscannerScanNewParamsCountryNi AccountUrlscannerScanNewParamsCountry = "NI"
+	AccountUrlscannerScanNewParamsCountryNe AccountUrlscannerScanNewParamsCountry = "NE"
+	AccountUrlscannerScanNewParamsCountryNg AccountUrlscannerScanNewParamsCountry = "NG"
+	AccountUrlscannerScanNewParamsCountryKp AccountUrlscannerScanNewParamsCountry = "KP"
+	AccountUrlscannerScanNewParamsCountryMk AccountUrlscannerScanNewParamsCountry = "MK"
+	AccountUrlscannerScanNewParamsCountryNo AccountUrlscannerScanNewParamsCountry = "NO"
+	AccountUrlscannerScanNewParamsCountryOm AccountUrlscannerScanNewParamsCountry = "OM"
+	AccountUrlscannerScanNewParamsCountryPk AccountUrlscannerScanNewParamsCountry = "PK"
+	AccountUrlscannerScanNewParamsCountryPs AccountUrlscannerScanNewParamsCountry = "PS"
+	AccountUrlscannerScanNewParamsCountryPa AccountUrlscannerScanNewParamsCountry = "PA"
+	AccountUrlscannerScanNewParamsCountryPg AccountUrlscannerScanNewParamsCountry = "PG"
+	AccountUrlscannerScanNewParamsCountryPy AccountUrlscannerScanNewParamsCountry = "PY"
+	AccountUrlscannerScanNewParamsCountryPe AccountUrlscannerScanNewParamsCountry = "PE"
+	AccountUrlscannerScanNewParamsCountryPh AccountUrlscannerScanNewParamsCountry = "PH"
+	AccountUrlscannerScanNewParamsCountryPl AccountUrlscannerScanNewParamsCountry = "PL"
+	AccountUrlscannerScanNewParamsCountryPt AccountUrlscannerScanNewParamsCountry = "PT"
+	AccountUrlscannerScanNewParamsCountryQa AccountUrlscannerScanNewParamsCountry = "QA"
+	AccountUrlscannerScanNewParamsCountryRo AccountUrlscannerScanNewParamsCountry = "RO"
+	AccountUrlscannerScanNewParamsCountryRu AccountUrlscannerScanNewParamsCountry = "RU"
+	AccountUrlscannerScanNewParamsCountryRw AccountUrlscannerScanNewParamsCountry = "RW"
+	AccountUrlscannerScanNewParamsCountrySh AccountUrlscannerScanNewParamsCountry = "SH"
+	AccountUrlscannerScanNewParamsCountryKn AccountUrlscannerScanNewParamsCountry = "KN"
+	AccountUrlscannerScanNewParamsCountryLc AccountUrlscannerScanNewParamsCountry = "LC"
+	AccountUrlscannerScanNewParamsCountryVc AccountUrlscannerScanNewParamsCountry = "VC"
+	AccountUrlscannerScanNewParamsCountryWs AccountUrlscannerScanNewParamsCountry = "WS"
+	AccountUrlscannerScanNewParamsCountrySm AccountUrlscannerScanNewParamsCountry = "SM"
+	AccountUrlscannerScanNewParamsCountrySt AccountUrlscannerScanNewParamsCountry = "ST"
+	AccountUrlscannerScanNewParamsCountrySa AccountUrlscannerScanNewParamsCountry = "SA"
+	AccountUrlscannerScanNewParamsCountrySn AccountUrlscannerScanNewParamsCountry = "SN"
+	AccountUrlscannerScanNewParamsCountryRs AccountUrlscannerScanNewParamsCountry = "RS"
+	AccountUrlscannerScanNewParamsCountrySc AccountUrlscannerScanNewParamsCountry = "SC"
+	AccountUrlscannerScanNewParamsCountrySl AccountUrlscannerScanNewParamsCountry = "SL"
+	AccountUrlscannerScanNewParamsCountrySk AccountUrlscannerScanNewParamsCountry = "SK"
+	AccountUrlscannerScanNewParamsCountrySi AccountUrlscannerScanNewParamsCountry = "SI"
+	AccountUrlscannerScanNewParamsCountrySb AccountUrlscannerScanNewParamsCountry = "SB"
+	AccountUrlscannerScanNewParamsCountrySo AccountUrlscannerScanNewParamsCountry = "SO"
+	AccountUrlscannerScanNewParamsCountryZa AccountUrlscannerScanNewParamsCountry = "ZA"
+	AccountUrlscannerScanNewParamsCountryKr AccountUrlscannerScanNewParamsCountry = "KR"
+	AccountUrlscannerScanNewParamsCountrySS AccountUrlscannerScanNewParamsCountry = "SS"
+	AccountUrlscannerScanNewParamsCountryEs AccountUrlscannerScanNewParamsCountry = "ES"
+	AccountUrlscannerScanNewParamsCountryLk AccountUrlscannerScanNewParamsCountry = "LK"
+	AccountUrlscannerScanNewParamsCountrySd AccountUrlscannerScanNewParamsCountry = "SD"
+	AccountUrlscannerScanNewParamsCountrySr AccountUrlscannerScanNewParamsCountry = "SR"
+	AccountUrlscannerScanNewParamsCountrySe AccountUrlscannerScanNewParamsCountry = "SE"
+	AccountUrlscannerScanNewParamsCountryCh AccountUrlscannerScanNewParamsCountry = "CH"
+	AccountUrlscannerScanNewParamsCountrySy AccountUrlscannerScanNewParamsCountry = "SY"
+	AccountUrlscannerScanNewParamsCountryTw AccountUrlscannerScanNewParamsCountry = "TW"
+	AccountUrlscannerScanNewParamsCountryTj AccountUrlscannerScanNewParamsCountry = "TJ"
+	AccountUrlscannerScanNewParamsCountryTz AccountUrlscannerScanNewParamsCountry = "TZ"
+	AccountUrlscannerScanNewParamsCountryTh AccountUrlscannerScanNewParamsCountry = "TH"
+	AccountUrlscannerScanNewParamsCountryBs AccountUrlscannerScanNewParamsCountry = "BS"
+	AccountUrlscannerScanNewParamsCountryGm AccountUrlscannerScanNewParamsCountry = "GM"
+	AccountUrlscannerScanNewParamsCountryTl AccountUrlscannerScanNewParamsCountry = "TL"
+	AccountUrlscannerScanNewParamsCountryTg AccountUrlscannerScanNewParamsCountry = "TG"
+	AccountUrlscannerScanNewParamsCountryTo AccountUrlscannerScanNewParamsCountry = "TO"
+	AccountUrlscannerScanNewParamsCountryTt AccountUrlscannerScanNewParamsCountry = "TT"
+	AccountUrlscannerScanNewParamsCountryTn AccountUrlscannerScanNewParamsCountry = "TN"
+	AccountUrlscannerScanNewParamsCountryTr AccountUrlscannerScanNewParamsCountry = "TR"
+	AccountUrlscannerScanNewParamsCountryTm AccountUrlscannerScanNewParamsCountry = "TM"
+	AccountUrlscannerScanNewParamsCountryUg AccountUrlscannerScanNewParamsCountry = "UG"
+	AccountUrlscannerScanNewParamsCountryUa AccountUrlscannerScanNewParamsCountry = "UA"
+	AccountUrlscannerScanNewParamsCountryAe AccountUrlscannerScanNewParamsCountry = "AE"
+	AccountUrlscannerScanNewParamsCountryGB AccountUrlscannerScanNewParamsCountry = "GB"
+	AccountUrlscannerScanNewParamsCountryUs AccountUrlscannerScanNewParamsCountry = "US"
+	AccountUrlscannerScanNewParamsCountryUy AccountUrlscannerScanNewParamsCountry = "UY"
+	AccountUrlscannerScanNewParamsCountryUz AccountUrlscannerScanNewParamsCountry = "UZ"
+	AccountUrlscannerScanNewParamsCountryVu AccountUrlscannerScanNewParamsCountry = "VU"
+	AccountUrlscannerScanNewParamsCountryVe AccountUrlscannerScanNewParamsCountry = "VE"
+	AccountUrlscannerScanNewParamsCountryVn AccountUrlscannerScanNewParamsCountry = "VN"
+	AccountUrlscannerScanNewParamsCountryYe AccountUrlscannerScanNewParamsCountry = "YE"
+	AccountUrlscannerScanNewParamsCountryZm AccountUrlscannerScanNewParamsCountry = "ZM"
+	AccountUrlscannerScanNewParamsCountryZw AccountUrlscannerScanNewParamsCountry = "ZW"
+)
+
+func (r AccountUrlscannerScanNewParamsCountry) IsKnown() bool {
+	switch r {
+	case AccountUrlscannerScanNewParamsCountryAf, AccountUrlscannerScanNewParamsCountryAl, AccountUrlscannerScanNewParamsCountryDz, AccountUrlscannerScanNewParamsCountryAd, AccountUrlscannerScanNewParamsCountryAo, AccountUrlscannerScanNewParamsCountryAg, AccountUrlscannerScanNewParamsCountryAr, AccountUrlscannerScanNewParamsCountryAm, AccountUrlscannerScanNewParamsCountryAu, AccountUrlscannerScanNewParamsCountryAt, AccountUrlscannerScanNewParamsCountryAz, AccountUrlscannerScanNewParamsCountryBh, AccountUrlscannerScanNewParamsCountryBd, AccountUrlscannerScanNewParamsCountryBb, AccountUrlscannerScanNewParamsCountryBy, AccountUrlscannerScanNewParamsCountryBe, AccountUrlscannerScanNewParamsCountryBz, AccountUrlscannerScanNewParamsCountryBj, AccountUrlscannerScanNewParamsCountryBm, AccountUrlscannerScanNewParamsCountryBt, AccountUrlscannerScanNewParamsCountryBo, AccountUrlscannerScanNewParamsCountryBa, AccountUrlscannerScanNewParamsCountryBw, AccountUrlscannerScanNewParamsCountryBr, AccountUrlscannerScanNewParamsCountryBn, AccountUrlscannerScanNewParamsCountryBg, AccountUrlscannerScanNewParamsCountryBf, AccountUrlscannerScanNewParamsCountryBi, AccountUrlscannerScanNewParamsCountryKh, AccountUrlscannerScanNewParamsCountryCm, AccountUrlscannerScanNewParamsCountryCa, AccountUrlscannerScanNewParamsCountryCv, AccountUrlscannerScanNewParamsCountryKy, AccountUrlscannerScanNewParamsCountryCf, AccountUrlscannerScanNewParamsCountryTd, AccountUrlscannerScanNewParamsCountryCl, AccountUrlscannerScanNewParamsCountryCn, AccountUrlscannerScanNewParamsCountryCo, AccountUrlscannerScanNewParamsCountryKm, AccountUrlscannerScanNewParamsCountryCg, AccountUrlscannerScanNewParamsCountryCr, AccountUrlscannerScanNewParamsCountryCi, AccountUrlscannerScanNewParamsCountryHr, AccountUrlscannerScanNewParamsCountryCu, AccountUrlscannerScanNewParamsCountryCy, AccountUrlscannerScanNewParamsCountryCz, AccountUrlscannerScanNewParamsCountryCd, AccountUrlscannerScanNewParamsCountryDk, AccountUrlscannerScanNewParamsCountryDj, AccountUrlscannerScanNewParamsCountryDm, AccountUrlscannerScanNewParamsCountryDo, AccountUrlscannerScanNewParamsCountryEc, AccountUrlscannerScanNewParamsCountryEg, AccountUrlscannerScanNewParamsCountrySv, AccountUrlscannerScanNewParamsCountryGq, AccountUrlscannerScanNewParamsCountryEr, AccountUrlscannerScanNewParamsCountryEe, AccountUrlscannerScanNewParamsCountrySz, AccountUrlscannerScanNewParamsCountryEt, AccountUrlscannerScanNewParamsCountryFj, AccountUrlscannerScanNewParamsCountryFi, AccountUrlscannerScanNewParamsCountryFr, AccountUrlscannerScanNewParamsCountryGa, AccountUrlscannerScanNewParamsCountryGe, AccountUrlscannerScanNewParamsCountryDe, AccountUrlscannerScanNewParamsCountryGh, AccountUrlscannerScanNewParamsCountryGr, AccountUrlscannerScanNewParamsCountryGl, AccountUrlscannerScanNewParamsCountryGd, AccountUrlscannerScanNewParamsCountryGt, AccountUrlscannerScanNewParamsCountryGn, AccountUrlscannerScanNewParamsCountryGw, AccountUrlscannerScanNewParamsCountryGy, AccountUrlscannerScanNewParamsCountryHt, AccountUrlscannerScanNewParamsCountryHn, AccountUrlscannerScanNewParamsCountryHu, AccountUrlscannerScanNewParamsCountryIs, AccountUrlscannerScanNewParamsCountryIn, AccountUrlscannerScanNewParamsCountryID, AccountUrlscannerScanNewParamsCountryIr, AccountUrlscannerScanNewParamsCountryIq, AccountUrlscannerScanNewParamsCountryIe, AccountUrlscannerScanNewParamsCountryIl, AccountUrlscannerScanNewParamsCountryIt, AccountUrlscannerScanNewParamsCountryJm, AccountUrlscannerScanNewParamsCountryJp, AccountUrlscannerScanNewParamsCountryJo, AccountUrlscannerScanNewParamsCountryKz, AccountUrlscannerScanNewParamsCountryKe, AccountUrlscannerScanNewParamsCountryKi, AccountUrlscannerScanNewParamsCountryKw, AccountUrlscannerScanNewParamsCountryKg, AccountUrlscannerScanNewParamsCountryLa, AccountUrlscannerScanNewParamsCountryLv, AccountUrlscannerScanNewParamsCountryLb, AccountUrlscannerScanNewParamsCountryLs, AccountUrlscannerScanNewParamsCountryLr, AccountUrlscannerScanNewParamsCountryLy, AccountUrlscannerScanNewParamsCountryLi, AccountUrlscannerScanNewParamsCountryLt, AccountUrlscannerScanNewParamsCountryLu, AccountUrlscannerScanNewParamsCountryMo, AccountUrlscannerScanNewParamsCountryMg, AccountUrlscannerScanNewParamsCountryMw, AccountUrlscannerScanNewParamsCountryMy, AccountUrlscannerScanNewParamsCountryMv, AccountUrlscannerScanNewParamsCountryMl, AccountUrlscannerScanNewParamsCountryMr, AccountUrlscannerScanNewParamsCountryMu, AccountUrlscannerScanNewParamsCountryMx, AccountUrlscannerScanNewParamsCountryFm, AccountUrlscannerScanNewParamsCountryMd, AccountUrlscannerScanNewParamsCountryMc, AccountUrlscannerScanNewParamsCountryMn, AccountUrlscannerScanNewParamsCountryMs, AccountUrlscannerScanNewParamsCountryMa, AccountUrlscannerScanNewParamsCountryMz, AccountUrlscannerScanNewParamsCountryMm, AccountUrlscannerScanNewParamsCountryNa, AccountUrlscannerScanNewParamsCountryNr, AccountUrlscannerScanNewParamsCountryNp, AccountUrlscannerScanNewParamsCountryNl, AccountUrlscannerScanNewParamsCountryNz, AccountUrlscannerScanNewParamsCountryNi, AccountUrlscannerScanNewParamsCountryNe, AccountUrlscannerScanNewParamsCountryNg, AccountUrlscannerScanNewParamsCountryKp, AccountUrlscannerScanNewParamsCountryMk, AccountUrlscannerScanNewParamsCountryNo, AccountUrlscannerScanNewParamsCountryOm, AccountUrlscannerScanNewParamsCountryPk, AccountUrlscannerScanNewParamsCountryPs, AccountUrlscannerScanNewParamsCountryPa, AccountUrlscannerScanNewParamsCountryPg, AccountUrlscannerScanNewParamsCountryPy, AccountUrlscannerScanNewParamsCountryPe, AccountUrlscannerScanNewParamsCountryPh, AccountUrlscannerScanNewParamsCountryPl, AccountUrlscannerScanNewParamsCountryPt, AccountUrlscannerScanNewParamsCountryQa, AccountUrlscannerScanNewParamsCountryRo, AccountUrlscannerScanNewParamsCountryRu, AccountUrlscannerScanNewParamsCountryRw, AccountUrlscannerScanNewParamsCountrySh, AccountUrlscannerScanNewParamsCountryKn, AccountUrlscannerScanNewParamsCountryLc, AccountUrlscannerScanNewParamsCountryVc, AccountUrlscannerScanNewParamsCountryWs, AccountUrlscannerScanNewParamsCountrySm, AccountUrlscannerScanNewParamsCountrySt, AccountUrlscannerScanNewParamsCountrySa, AccountUrlscannerScanNewParamsCountrySn, AccountUrlscannerScanNewParamsCountryRs, AccountUrlscannerScanNewParamsCountrySc, AccountUrlscannerScanNewParamsCountrySl, AccountUrlscannerScanNewParamsCountrySk, AccountUrlscannerScanNewParamsCountrySi, AccountUrlscannerScanNewParamsCountrySb, AccountUrlscannerScanNewParamsCountrySo, AccountUrlscannerScanNewParamsCountryZa, AccountUrlscannerScanNewParamsCountryKr, AccountUrlscannerScanNewParamsCountrySS, AccountUrlscannerScanNewParamsCountryEs, AccountUrlscannerScanNewParamsCountryLk, AccountUrlscannerScanNewParamsCountrySd, AccountUrlscannerScanNewParamsCountrySr, AccountUrlscannerScanNewParamsCountrySe, AccountUrlscannerScanNewParamsCountryCh, AccountUrlscannerScanNewParamsCountrySy, AccountUrlscannerScanNewParamsCountryTw, AccountUrlscannerScanNewParamsCountryTj, AccountUrlscannerScanNewParamsCountryTz, AccountUrlscannerScanNewParamsCountryTh, AccountUrlscannerScanNewParamsCountryBs, AccountUrlscannerScanNewParamsCountryGm, AccountUrlscannerScanNewParamsCountryTl, AccountUrlscannerScanNewParamsCountryTg, AccountUrlscannerScanNewParamsCountryTo, AccountUrlscannerScanNewParamsCountryTt, AccountUrlscannerScanNewParamsCountryTn, AccountUrlscannerScanNewParamsCountryTr, AccountUrlscannerScanNewParamsCountryTm, AccountUrlscannerScanNewParamsCountryUg, AccountUrlscannerScanNewParamsCountryUa, AccountUrlscannerScanNewParamsCountryAe, AccountUrlscannerScanNewParamsCountryGB, AccountUrlscannerScanNewParamsCountryUs, AccountUrlscannerScanNewParamsCountryUy, AccountUrlscannerScanNewParamsCountryUz, AccountUrlscannerScanNewParamsCountryVu, AccountUrlscannerScanNewParamsCountryVe, AccountUrlscannerScanNewParamsCountryVn, AccountUrlscannerScanNewParamsCountryYe, AccountUrlscannerScanNewParamsCountryZm, AccountUrlscannerScanNewParamsCountryZw:
+		return true
+	}
+	return false
 }
 
 // Device resolutions.

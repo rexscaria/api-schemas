@@ -65,7 +65,7 @@ func TestZonePageShieldConnectionListWithOptionalParams(t *testing.T) {
 			Export:              cfrex.F(cfrex.ZonePageShieldConnectionListParamsExportCsv),
 			Hosts:               cfrex.F("blog.cloudflare.com,www.example*,*cloudflare.com"),
 			OrderBy:             cfrex.F(cfrex.ZonePageShieldConnectionListParamsOrderByFirstSeenAt),
-			Page:                cfrex.F("page"),
+			Page:                cfrex.F("2"),
 			PageURL:             cfrex.F("example.com/page,*/checkout,example.com/*,*checkout*"),
 			PerPage:             cfrex.F(100.000000),
 			PrioritizeMalicious: cfrex.F(true),

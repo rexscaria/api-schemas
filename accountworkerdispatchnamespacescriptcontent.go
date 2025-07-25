@@ -7,6 +7,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"io"
 	"mime/multipart"
 	"net/http"
 	"time"
@@ -168,6 +169,9 @@ func (r scriptResponseJSON) RawJSON() string {
 // Configuration for
 // [Smart Placement](https://developers.cloudflare.com/workers/configuration/smart-placement).
 type ScriptResponsePlacement struct {
+	// The last time the script was analyzed for
+	// [Smart Placement](https://developers.cloudflare.com/workers/configuration/smart-placement).
+	LastAnalyzedAt time.Time `json:"last_analyzed_at" format:"date-time"`
 	// Enables
 	// [Smart Placement](https://developers.cloudflare.com/workers/configuration/smart-placement).
 	Mode PlacementMode `json:"mode"`
@@ -180,10 +184,11 @@ type ScriptResponsePlacement struct {
 // scriptResponsePlacementJSON contains the JSON metadata for the struct
 // [ScriptResponsePlacement]
 type scriptResponsePlacementJSON struct {
-	Mode        apijson.Field
-	Status      apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	LastAnalyzedAt apijson.Field
+	Mode           apijson.Field
+	Status         apijson.Field
+	raw            string
+	ExtraFields    map[string]apijson.Field
 }
 
 func (r *ScriptResponsePlacement) UnmarshalJSON(data []byte) (err error) {
@@ -195,15 +200,21 @@ func (r scriptResponsePlacementJSON) RawJSON() string {
 }
 
 type SingleScriptResponse struct {
-	Result ScriptResponse           `json:"result"`
-	JSON   singleScriptResponseJSON `json:"-"`
-	APIResponseSingleWorkers
+	Errors   []WorkersMessages `json:"errors,required"`
+	Messages []WorkersMessages `json:"messages,required"`
+	Result   ScriptResponse    `json:"result,required"`
+	// Whether the API call was successful.
+	Success SingleScriptResponseSuccess `json:"success,required"`
+	JSON    singleScriptResponseJSON    `json:"-"`
 }
 
 // singleScriptResponseJSON contains the JSON metadata for the struct
 // [SingleScriptResponse]
 type singleScriptResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -216,11 +227,33 @@ func (r singleScriptResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type SingleScriptResponseSuccess bool
+
+const (
+	SingleScriptResponseSuccessTrue SingleScriptResponseSuccess = true
+)
+
+func (r SingleScriptResponseSuccess) IsKnown() bool {
+	switch r {
+	case SingleScriptResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountWorkerDispatchNamespaceScriptContentPutParams struct {
 	// JSON encoded metadata about the uploaded parts and Worker configuration.
-	Metadata               param.Field[AccountWorkerDispatchNamespaceScriptContentPutParamsMetadata] `json:"metadata,required"`
-	CfWorkerBodyPart       param.Field[string]                                                       `header:"CF-WORKER-BODY-PART"`
-	CfWorkerMainModulePart param.Field[string]                                                       `header:"CF-WORKER-MAIN-MODULE-PART"`
+	Metadata param.Field[AccountWorkerDispatchNamespaceScriptContentPutParamsMetadata] `json:"metadata,required"`
+	// An array of modules (often JavaScript files) comprising a Worker script. At
+	// least one module must be present and referenced in the metadata as `main_module`
+	// or `body_part` by filename.<br/>Possible Content-Type(s) are:
+	// `application/javascript+module`, `text/javascript+module`,
+	// `application/javascript`, `text/javascript`, `application/wasm`, `text/plain`,
+	// `application/octet-stream`, `application/source-map`.
+	Files                  param.Field[[]io.Reader] `json:"files" format:"binary"`
+	CfWorkerBodyPart       param.Field[string]      `header:"CF-WORKER-BODY-PART"`
+	CfWorkerMainModulePart param.Field[string]      `header:"CF-WORKER-MAIN-MODULE-PART"`
 }
 
 func (r AccountWorkerDispatchNamespaceScriptContentPutParams) MarshalMultipart() (data []byte, contentType string, err error) {

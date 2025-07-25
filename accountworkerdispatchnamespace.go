@@ -93,11 +93,11 @@ func (r *AccountWorkerDispatchNamespaceService) Delete(ctx context.Context, acco
 }
 
 type NamespaceResponse struct {
-	// Identifier
+	// Identifier.
 	CreatedBy string `json:"created_by"`
 	// When the script was created.
 	CreatedOn time.Time `json:"created_on" format:"date-time"`
-	// Identifier
+	// Identifier.
 	ModifiedBy string `json:"modified_by"`
 	// When the script was last modified.
 	ModifiedOn time.Time `json:"modified_on" format:"date-time"`
@@ -105,7 +105,7 @@ type NamespaceResponse struct {
 	NamespaceID string `json:"namespace_id"`
 	// Name of the Workers for Platforms dispatch namespace.
 	NamespaceName string `json:"namespace_name"`
-	// The current number of scripts in this Dispatch Namespace
+	// The current number of scripts in this Dispatch Namespace.
 	ScriptCount int64                 `json:"script_count"`
 	JSON        namespaceResponseJSON `json:"-"`
 }
@@ -133,13 +133,19 @@ func (r namespaceResponseJSON) RawJSON() string {
 }
 
 type NullResult struct {
-	Result interface{}    `json:"result,nullable"`
-	JSON   nullResultJSON `json:"-"`
-	CommonResponseWorkers
+	Errors   []WorkersMessages `json:"errors,required"`
+	Messages []WorkersMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success NullResultSuccess `json:"success,required"`
+	Result  interface{}       `json:"result,nullable"`
+	JSON    nullResultJSON    `json:"-"`
 }
 
 // nullResultJSON contains the JSON metadata for the struct [NullResult]
 type nullResultJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -153,15 +159,36 @@ func (r nullResultJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type NullResultSuccess bool
+
+const (
+	NullResultSuccessTrue NullResultSuccess = true
+)
+
+func (r NullResultSuccess) IsKnown() bool {
+	switch r {
+	case NullResultSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type SingleNamespaceResponse struct {
-	Result NamespaceResponse           `json:"result"`
-	JSON   singleNamespaceResponseJSON `json:"-"`
-	CommonResponseWorkers
+	Errors   []WorkersMessages `json:"errors,required"`
+	Messages []WorkersMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success SingleNamespaceResponseSuccess `json:"success,required"`
+	Result  NamespaceResponse              `json:"result"`
+	JSON    singleNamespaceResponseJSON    `json:"-"`
 }
 
 // singleNamespaceResponseJSON contains the JSON metadata for the struct
 // [SingleNamespaceResponse]
 type singleNamespaceResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -175,15 +202,36 @@ func (r singleNamespaceResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type SingleNamespaceResponseSuccess bool
+
+const (
+	SingleNamespaceResponseSuccessTrue SingleNamespaceResponseSuccess = true
+)
+
+func (r SingleNamespaceResponseSuccess) IsKnown() bool {
+	switch r {
+	case SingleNamespaceResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountWorkerDispatchNamespaceListResponse struct {
-	Result []NamespaceResponse                            `json:"result"`
-	JSON   accountWorkerDispatchNamespaceListResponseJSON `json:"-"`
-	CommonResponseWorkers
+	Errors   []WorkersMessages `json:"errors,required"`
+	Messages []WorkersMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountWorkerDispatchNamespaceListResponseSuccess `json:"success,required"`
+	Result  []NamespaceResponse                               `json:"result"`
+	JSON    accountWorkerDispatchNamespaceListResponseJSON    `json:"-"`
 }
 
 // accountWorkerDispatchNamespaceListResponseJSON contains the JSON metadata for
 // the struct [AccountWorkerDispatchNamespaceListResponse]
 type accountWorkerDispatchNamespaceListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -197,8 +245,23 @@ func (r accountWorkerDispatchNamespaceListResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountWorkerDispatchNamespaceListResponseSuccess bool
+
+const (
+	AccountWorkerDispatchNamespaceListResponseSuccessTrue AccountWorkerDispatchNamespaceListResponseSuccess = true
+)
+
+func (r AccountWorkerDispatchNamespaceListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountWorkerDispatchNamespaceListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountWorkerDispatchNamespaceNewParams struct {
-	// The name of the dispatch namespace
+	// The name of the dispatch namespace.
 	Name param.Field[string] `json:"name"`
 }
 

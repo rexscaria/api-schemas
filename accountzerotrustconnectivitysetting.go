@@ -59,15 +59,21 @@ func (r *AccountZerotrustConnectivitySettingService) Update(ctx context.Context,
 }
 
 type ConnectivitySettingsResponse struct {
-	Result ConnectivitySettingsResponseResult `json:"result"`
-	JSON   connectivitySettingsResponseJSON   `json:"-"`
-	APIResponseTunnel
+	Errors   []MessagesTunnelItem               `json:"errors,required"`
+	Messages []MessagesTunnelItem               `json:"messages,required"`
+	Result   ConnectivitySettingsResponseResult `json:"result,required"`
+	// Whether the API call was successful
+	Success ConnectivitySettingsResponseSuccess `json:"success,required"`
+	JSON    connectivitySettingsResponseJSON    `json:"-"`
 }
 
 // connectivitySettingsResponseJSON contains the JSON metadata for the struct
 // [ConnectivitySettingsResponse]
 type connectivitySettingsResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -103,6 +109,21 @@ func (r *ConnectivitySettingsResponseResult) UnmarshalJSON(data []byte) (err err
 
 func (r connectivitySettingsResponseResultJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful
+type ConnectivitySettingsResponseSuccess bool
+
+const (
+	ConnectivitySettingsResponseSuccessTrue ConnectivitySettingsResponseSuccess = true
+)
+
+func (r ConnectivitySettingsResponseSuccess) IsKnown() bool {
+	switch r {
+	case ConnectivitySettingsResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountZerotrustConnectivitySettingUpdateParams struct {

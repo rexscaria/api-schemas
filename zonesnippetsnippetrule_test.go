@@ -13,7 +13,7 @@ import (
 	"github.com/rexscaria/api-schemas/option"
 )
 
-func TestZoneSnippetSnippetRuleUpdateWithOptionalParams(t *testing.T) {
+func TestZoneSnippetSnippetRuleUpdate(t *testing.T) {
 	t.Skip("skipped: tests are disabled for the time being")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -29,14 +29,14 @@ func TestZoneSnippetSnippetRuleUpdateWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Zones.Snippets.SnippetRules.Update(
 		context.TODO(),
-		"023e105f4ecef8ad9ca31a8372d0c353",
+		"9f1839b6152d298aca64c4e906b6d074",
 		cfrex.ZoneSnippetSnippetRuleUpdateParams{
-			Rules: cfrex.F([]cfrex.SnippetRuleItemParam{{
-				Description: cfrex.F("Rule description"),
+			Body: []cfrex.ZoneSnippetSnippetRuleUpdateParamsBody{{
+				Expression:  cfrex.F("ip.src ne 1.1.1.1"),
+				SnippetName: cfrex.F("my_snippet"),
+				Description: cfrex.F("Execute my_snippet when IP address is 1.1.1.1."),
 				Enabled:     cfrex.F(true),
-				Expression:  cfrex.F(`http.cookie eq "a=b"`),
-				SnippetName: cfrex.F("snippet_name_01"),
-			}}),
+			}},
 		},
 	)
 	if err != nil {
@@ -62,7 +62,7 @@ func TestZoneSnippetSnippetRuleList(t *testing.T) {
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Zones.Snippets.SnippetRules.List(context.TODO(), "023e105f4ecef8ad9ca31a8372d0c353")
+	_, err := client.Zones.Snippets.SnippetRules.List(context.TODO(), "9f1839b6152d298aca64c4e906b6d074")
 	if err != nil {
 		var apierr *cfrex.Error
 		if errors.As(err, &apierr) {
@@ -86,7 +86,7 @@ func TestZoneSnippetSnippetRuleDeleteAll(t *testing.T) {
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Zones.Snippets.SnippetRules.DeleteAll(context.TODO(), "023e105f4ecef8ad9ca31a8372d0c353")
+	_, err := client.Zones.Snippets.SnippetRules.DeleteAll(context.TODO(), "9f1839b6152d298aca64c4e906b6d074")
 	if err != nil {
 		var apierr *cfrex.Error
 		if errors.As(err, &apierr) {

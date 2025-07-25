@@ -32,7 +32,7 @@ func TestAccountWorkerScriptScheduleUpdate(t *testing.T) {
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		"this-is_my_script-01",
 		cfrex.AccountWorkerScriptScheduleUpdateParams{
-			Body: []cfrex.CronObjectParam{{
+			Body: []cfrex.AccountWorkerScriptScheduleUpdateParamsBody{{
 				Cron: cfrex.F("*/30 * * * *"),
 			}},
 		},

@@ -172,9 +172,6 @@ func TestAccountStreamLiveInputDelete(t *testing.T) {
 		context.TODO(),
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		"66be4bf738797e01e1fca35a7bdecdcd",
-		cfrex.AccountStreamLiveInputDeleteParams{
-			Body: map[string]interface{}{},
-		},
 	)
 	if err != nil {
 		var apierr *cfrex.Error

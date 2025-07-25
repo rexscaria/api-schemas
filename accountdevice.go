@@ -45,128 +45,142 @@ func NewAccountDeviceService(opts ...option.RequestOption) (r *AccountDeviceServ
 	return
 }
 
-// Fetches details for a single device.
-func (r *AccountDeviceService) Get(ctx context.Context, accountID interface{}, deviceID string, opts ...option.RequestOption) (res *AccountDeviceGetResponse, err error) {
+// Fetches a single WARP device. Not supported when
+// [multi-user mode](https://developers.cloudflare.com/cloudflare-one/connections/connect-devices/warp/deployment/mdm-deployment/windows-multiuser/)
+// is enabled for the account.
+//
+// **Deprecated**: please use one of the following endpoints instead:
+//
+// - GET /accounts/{account_id}/devices/physical-devices/{device_id}
+// - GET /accounts/{account_id}/devices/registrations/{registration_id}
+//
+// Deprecated: deprecated
+func (r *AccountDeviceService) Get(ctx context.Context, accountID string, deviceID string, opts ...option.RequestOption) (res *AccountDeviceGetResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	if accountID == "" {
+		err = errors.New("missing required account_id parameter")
+		return
+	}
 	if deviceID == "" {
 		err = errors.New("missing required device_id parameter")
 		return
 	}
-	path := fmt.Sprintf("accounts/%v/devices/%s", accountID, deviceID)
+	path := fmt.Sprintf("accounts/%s/devices/%s", accountID, deviceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
 
-// Fetches a list of enrolled devices.
-func (r *AccountDeviceService) List(ctx context.Context, accountID interface{}, opts ...option.RequestOption) (res *AccountDeviceListResponse, err error) {
+// List WARP devices. Not supported when
+// [multi-user mode](https://developers.cloudflare.com/cloudflare-one/connections/connect-devices/warp/deployment/mdm-deployment/windows-multiuser/)
+// is enabled for the account.
+//
+// **Deprecated**: please use one of the following endpoints instead:
+//
+// - GET /accounts/{account_id}/devices/physical-devices
+// - GET /accounts/{account_id}/devices/registrations
+//
+// Deprecated: deprecated
+func (r *AccountDeviceService) List(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountDeviceListResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	path := fmt.Sprintf("accounts/%v/devices", accountID)
+	if accountID == "" {
+		err = errors.New("missing required account_id parameter")
+		return
+	}
+	path := fmt.Sprintf("accounts/%s/devices", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
 
 // Fetches a one-time use admin override code for a device. This relies on the
-// **Admin Override** setting being enabled in your device configuration.
-func (r *AccountDeviceService) GetOverrideCode(ctx context.Context, accountID interface{}, deviceID string, opts ...option.RequestOption) (res *AccountDeviceGetOverrideCodeResponse, err error) {
+// **Admin Override** setting being enabled in your device configuration. Not
+// supported when
+// [multi-user mode](https://developers.cloudflare.com/cloudflare-one/connections/connect-devices/warp/deployment/mdm-deployment/windows-multiuser/)
+// is enabled for the account. **Deprecated:** please use GET
+// /accounts/{account_id}/devices/registrations/{registration_id}/override_codes
+// instead.
+//
+// Deprecated: deprecated
+func (r *AccountDeviceService) GetOverrideCode(ctx context.Context, accountID string, deviceID string, opts ...option.RequestOption) (res *AccountDeviceGetOverrideCodeResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	if accountID == "" {
+		err = errors.New("missing required account_id parameter")
+		return
+	}
 	if deviceID == "" {
 		err = errors.New("missing required device_id parameter")
 		return
 	}
-	path := fmt.Sprintf("accounts/%v/devices/%s/override_codes", accountID, deviceID)
+	path := fmt.Sprintf("accounts/%s/devices/%s/override_codes", accountID, deviceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
 
 // Fetches a list of the device settings profiles for an account.
-func (r *AccountDeviceService) ListPolicies(ctx context.Context, accountID interface{}, opts ...option.RequestOption) (res *DeviceSettingsResponseCollection, err error) {
+func (r *AccountDeviceService) ListPolicies(ctx context.Context, accountID string, opts ...option.RequestOption) (res *DeviceSettingsResponseCollection, err error) {
 	opts = append(r.Options[:], opts...)
-	path := fmt.Sprintf("accounts/%v/devices/policies", accountID)
+	if accountID == "" {
+		err = errors.New("missing required account_id parameter")
+		return
+	}
+	path := fmt.Sprintf("accounts/%s/devices/policies", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
 
-// Revokes a list of devices.
-func (r *AccountDeviceService) Revoke(ctx context.Context, accountID interface{}, body AccountDeviceRevokeParams, opts ...option.RequestOption) (res *APIResponseSingleTeamsDevices, err error) {
+// Revokes a list of devices. Not supported when
+// [multi-user mode](https://developers.cloudflare.com/cloudflare-one/connections/connect-devices/warp/deployment/mdm-deployment/windows-multiuser/)
+// is enabled.
+//
+// **Deprecated**: please use POST
+// /accounts/{account_id}/devices/registrations/revoke instead.
+//
+// Deprecated: deprecated
+func (r *AccountDeviceService) Revoke(ctx context.Context, accountID string, body AccountDeviceRevokeParams, opts ...option.RequestOption) (res *APIResponseSingleTeamsDevices, err error) {
 	opts = append(r.Options[:], opts...)
-	path := fmt.Sprintf("accounts/%v/devices/revoke", accountID)
+	if accountID == "" {
+		err = errors.New("missing required account_id parameter")
+		return
+	}
+	path := fmt.Sprintf("accounts/%s/devices/revoke", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
 
-// Unrevokes a list of devices.
-func (r *AccountDeviceService) Unrevoke(ctx context.Context, accountID interface{}, body AccountDeviceUnrevokeParams, opts ...option.RequestOption) (res *APIResponseSingleTeamsDevices, err error) {
+// Unrevokes a list of devices. Not supported when
+// [multi-user mode](https://developers.cloudflare.com/cloudflare-one/connections/connect-devices/warp/deployment/mdm-deployment/windows-multiuser/)
+// is enabled.
+//
+// **Deprecated**: please use POST
+// /accounts/{account_id}/devices/registrations/unrevoke instead.
+//
+// Deprecated: deprecated
+func (r *AccountDeviceService) Unrevoke(ctx context.Context, accountID string, body AccountDeviceUnrevokeParams, opts ...option.RequestOption) (res *APIResponseSingleTeamsDevices, err error) {
 	opts = append(r.Options[:], opts...)
-	path := fmt.Sprintf("accounts/%v/devices/unrevoke", accountID)
+	if accountID == "" {
+		err = errors.New("missing required account_id parameter")
+		return
+	}
+	path := fmt.Sprintf("accounts/%s/devices/unrevoke", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
-}
-
-type APIResponseCollectionTeamsDevices struct {
-	Result     []interface{}                               `json:"result,nullable"`
-	ResultInfo APIResponseCollectionTeamsDevicesResultInfo `json:"result_info"`
-	JSON       apiResponseCollectionTeamsDevicesJSON       `json:"-"`
-	APIResponseTeamsDevices
-}
-
-// apiResponseCollectionTeamsDevicesJSON contains the JSON metadata for the struct
-// [APIResponseCollectionTeamsDevices]
-type apiResponseCollectionTeamsDevicesJSON struct {
-	Result      apijson.Field
-	ResultInfo  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *APIResponseCollectionTeamsDevices) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r apiResponseCollectionTeamsDevicesJSON) RawJSON() string {
-	return r.raw
-}
-
-type APIResponseCollectionTeamsDevicesResultInfo struct {
-	// Total number of results for the requested service
-	Count float64 `json:"count"`
-	// Current page within paginated list of results
-	Page float64 `json:"page"`
-	// Number of results per page of results
-	PerPage float64 `json:"per_page"`
-	// Total results available without any search parameters
-	TotalCount float64                                         `json:"total_count"`
-	JSON       apiResponseCollectionTeamsDevicesResultInfoJSON `json:"-"`
-}
-
-// apiResponseCollectionTeamsDevicesResultInfoJSON contains the JSON metadata for
-// the struct [APIResponseCollectionTeamsDevicesResultInfo]
-type apiResponseCollectionTeamsDevicesResultInfoJSON struct {
-	Count       apijson.Field
-	Page        apijson.Field
-	PerPage     apijson.Field
-	TotalCount  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *APIResponseCollectionTeamsDevicesResultInfo) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r apiResponseCollectionTeamsDevicesResultInfoJSON) RawJSON() string {
-	return r.raw
 }
 
 type APIResponseSingleTeamsDevices struct {
-	Result interface{}                       `json:"result,nullable"`
-	JSON   apiResponseSingleTeamsDevicesJSON `json:"-"`
-	APIResponseTeamsDevices
+	Errors   []APIResponseSingleTeamsDevicesError   `json:"errors,required"`
+	Messages []APIResponseSingleTeamsDevicesMessage `json:"messages,required"`
+	Result   interface{}                            `json:"result,required,nullable"`
+	// Whether the API call was successful.
+	Success APIResponseSingleTeamsDevicesSuccess `json:"success,required"`
+	JSON    apiResponseSingleTeamsDevicesJSON    `json:"-"`
 }
 
 // apiResponseSingleTeamsDevicesJSON contains the JSON metadata for the struct
 // [APIResponseSingleTeamsDevices]
 type apiResponseSingleTeamsDevicesJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -179,16 +193,135 @@ func (r apiResponseSingleTeamsDevicesJSON) RawJSON() string {
 	return r.raw
 }
 
+type APIResponseSingleTeamsDevicesError struct {
+	Code             int64                                     `json:"code,required"`
+	Message          string                                    `json:"message,required"`
+	DocumentationURL string                                    `json:"documentation_url"`
+	Source           APIResponseSingleTeamsDevicesErrorsSource `json:"source"`
+	JSON             apiResponseSingleTeamsDevicesErrorJSON    `json:"-"`
+}
+
+// apiResponseSingleTeamsDevicesErrorJSON contains the JSON metadata for the struct
+// [APIResponseSingleTeamsDevicesError]
+type apiResponseSingleTeamsDevicesErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *APIResponseSingleTeamsDevicesError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r apiResponseSingleTeamsDevicesErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type APIResponseSingleTeamsDevicesErrorsSource struct {
+	Pointer string                                        `json:"pointer"`
+	JSON    apiResponseSingleTeamsDevicesErrorsSourceJSON `json:"-"`
+}
+
+// apiResponseSingleTeamsDevicesErrorsSourceJSON contains the JSON metadata for the
+// struct [APIResponseSingleTeamsDevicesErrorsSource]
+type apiResponseSingleTeamsDevicesErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *APIResponseSingleTeamsDevicesErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r apiResponseSingleTeamsDevicesErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type APIResponseSingleTeamsDevicesMessage struct {
+	Code             int64                                       `json:"code,required"`
+	Message          string                                      `json:"message,required"`
+	DocumentationURL string                                      `json:"documentation_url"`
+	Source           APIResponseSingleTeamsDevicesMessagesSource `json:"source"`
+	JSON             apiResponseSingleTeamsDevicesMessageJSON    `json:"-"`
+}
+
+// apiResponseSingleTeamsDevicesMessageJSON contains the JSON metadata for the
+// struct [APIResponseSingleTeamsDevicesMessage]
+type apiResponseSingleTeamsDevicesMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *APIResponseSingleTeamsDevicesMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r apiResponseSingleTeamsDevicesMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type APIResponseSingleTeamsDevicesMessagesSource struct {
+	Pointer string                                          `json:"pointer"`
+	JSON    apiResponseSingleTeamsDevicesMessagesSourceJSON `json:"-"`
+}
+
+// apiResponseSingleTeamsDevicesMessagesSourceJSON contains the JSON metadata for
+// the struct [APIResponseSingleTeamsDevicesMessagesSource]
+type apiResponseSingleTeamsDevicesMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *APIResponseSingleTeamsDevicesMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r apiResponseSingleTeamsDevicesMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful.
+type APIResponseSingleTeamsDevicesSuccess bool
+
+const (
+	APIResponseSingleTeamsDevicesSuccessTrue APIResponseSingleTeamsDevicesSuccess = true
+)
+
+func (r APIResponseSingleTeamsDevicesSuccess) IsKnown() bool {
+	switch r {
+	case APIResponseSingleTeamsDevicesSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type DeviceSettingsResponseCollection struct {
-	Result []DeviceSettingsPolicy               `json:"result"`
-	JSON   deviceSettingsResponseCollectionJSON `json:"-"`
-	APIResponseCollectionTeamsDevices
+	Errors   []DeviceSettingsResponseCollectionError   `json:"errors,required"`
+	Messages []DeviceSettingsResponseCollectionMessage `json:"messages,required"`
+	Result   []DeviceSettingsPolicy                    `json:"result,required,nullable"`
+	// Whether the API call was successful.
+	Success    DeviceSettingsResponseCollectionSuccess    `json:"success,required"`
+	ResultInfo DeviceSettingsResponseCollectionResultInfo `json:"result_info"`
+	JSON       deviceSettingsResponseCollectionJSON       `json:"-"`
 }
 
 // deviceSettingsResponseCollectionJSON contains the JSON metadata for the struct
 // [DeviceSettingsResponseCollection]
 type deviceSettingsResponseCollectionJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -201,8 +334,150 @@ func (r deviceSettingsResponseCollectionJSON) RawJSON() string {
 	return r.raw
 }
 
+type DeviceSettingsResponseCollectionError struct {
+	Code             int64                                        `json:"code,required"`
+	Message          string                                       `json:"message,required"`
+	DocumentationURL string                                       `json:"documentation_url"`
+	Source           DeviceSettingsResponseCollectionErrorsSource `json:"source"`
+	JSON             deviceSettingsResponseCollectionErrorJSON    `json:"-"`
+}
+
+// deviceSettingsResponseCollectionErrorJSON contains the JSON metadata for the
+// struct [DeviceSettingsResponseCollectionError]
+type deviceSettingsResponseCollectionErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *DeviceSettingsResponseCollectionError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r deviceSettingsResponseCollectionErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type DeviceSettingsResponseCollectionErrorsSource struct {
+	Pointer string                                           `json:"pointer"`
+	JSON    deviceSettingsResponseCollectionErrorsSourceJSON `json:"-"`
+}
+
+// deviceSettingsResponseCollectionErrorsSourceJSON contains the JSON metadata for
+// the struct [DeviceSettingsResponseCollectionErrorsSource]
+type deviceSettingsResponseCollectionErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *DeviceSettingsResponseCollectionErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r deviceSettingsResponseCollectionErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type DeviceSettingsResponseCollectionMessage struct {
+	Code             int64                                          `json:"code,required"`
+	Message          string                                         `json:"message,required"`
+	DocumentationURL string                                         `json:"documentation_url"`
+	Source           DeviceSettingsResponseCollectionMessagesSource `json:"source"`
+	JSON             deviceSettingsResponseCollectionMessageJSON    `json:"-"`
+}
+
+// deviceSettingsResponseCollectionMessageJSON contains the JSON metadata for the
+// struct [DeviceSettingsResponseCollectionMessage]
+type deviceSettingsResponseCollectionMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *DeviceSettingsResponseCollectionMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r deviceSettingsResponseCollectionMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type DeviceSettingsResponseCollectionMessagesSource struct {
+	Pointer string                                             `json:"pointer"`
+	JSON    deviceSettingsResponseCollectionMessagesSourceJSON `json:"-"`
+}
+
+// deviceSettingsResponseCollectionMessagesSourceJSON contains the JSON metadata
+// for the struct [DeviceSettingsResponseCollectionMessagesSource]
+type deviceSettingsResponseCollectionMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *DeviceSettingsResponseCollectionMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r deviceSettingsResponseCollectionMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful.
+type DeviceSettingsResponseCollectionSuccess bool
+
+const (
+	DeviceSettingsResponseCollectionSuccessTrue DeviceSettingsResponseCollectionSuccess = true
+)
+
+func (r DeviceSettingsResponseCollectionSuccess) IsKnown() bool {
+	switch r {
+	case DeviceSettingsResponseCollectionSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type DeviceSettingsResponseCollectionResultInfo struct {
+	// Total number of results for the requested service.
+	Count float64 `json:"count"`
+	// Current page within paginated list of results.
+	Page float64 `json:"page"`
+	// Number of results per page of results.
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters.
+	TotalCount float64                                        `json:"total_count"`
+	JSON       deviceSettingsResponseCollectionResultInfoJSON `json:"-"`
+}
+
+// deviceSettingsResponseCollectionResultInfoJSON contains the JSON metadata for
+// the struct [DeviceSettingsResponseCollectionResultInfo]
+type deviceSettingsResponseCollectionResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *DeviceSettingsResponseCollectionResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r deviceSettingsResponseCollectionResultInfoJSON) RawJSON() string {
+	return r.raw
+}
+
 type User struct {
-	// UUID
+	// UUID.
 	ID string `json:"id"`
 	// The contact email address of the user.
 	Email string `json:"email"`
@@ -229,15 +504,21 @@ func (r userJSON) RawJSON() string {
 }
 
 type AccountDeviceGetResponse struct {
-	Result AccountDeviceGetResponseResult `json:"result"`
-	JSON   accountDeviceGetResponseJSON   `json:"-"`
-	APIResponseSingleTeamsDevices
+	Errors   []AccountDeviceGetResponseError   `json:"errors,required"`
+	Messages []AccountDeviceGetResponseMessage `json:"messages,required"`
+	Result   AccountDeviceGetResponseResult    `json:"result,required,nullable"`
+	// Whether the API call was successful.
+	Success AccountDeviceGetResponseSuccess `json:"success,required"`
+	JSON    accountDeviceGetResponseJSON    `json:"-"`
 }
 
 // accountDeviceGetResponseJSON contains the JSON metadata for the struct
 // [AccountDeviceGetResponse]
 type accountDeviceGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -250,8 +531,105 @@ func (r accountDeviceGetResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+type AccountDeviceGetResponseError struct {
+	Code             int64                                `json:"code,required"`
+	Message          string                               `json:"message,required"`
+	DocumentationURL string                               `json:"documentation_url"`
+	Source           AccountDeviceGetResponseErrorsSource `json:"source"`
+	JSON             accountDeviceGetResponseErrorJSON    `json:"-"`
+}
+
+// accountDeviceGetResponseErrorJSON contains the JSON metadata for the struct
+// [AccountDeviceGetResponseError]
+type accountDeviceGetResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountDeviceGetResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountDeviceGetResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountDeviceGetResponseErrorsSource struct {
+	Pointer string                                   `json:"pointer"`
+	JSON    accountDeviceGetResponseErrorsSourceJSON `json:"-"`
+}
+
+// accountDeviceGetResponseErrorsSourceJSON contains the JSON metadata for the
+// struct [AccountDeviceGetResponseErrorsSource]
+type accountDeviceGetResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountDeviceGetResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountDeviceGetResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountDeviceGetResponseMessage struct {
+	Code             int64                                  `json:"code,required"`
+	Message          string                                 `json:"message,required"`
+	DocumentationURL string                                 `json:"documentation_url"`
+	Source           AccountDeviceGetResponseMessagesSource `json:"source"`
+	JSON             accountDeviceGetResponseMessageJSON    `json:"-"`
+}
+
+// accountDeviceGetResponseMessageJSON contains the JSON metadata for the struct
+// [AccountDeviceGetResponseMessage]
+type accountDeviceGetResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountDeviceGetResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountDeviceGetResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountDeviceGetResponseMessagesSource struct {
+	Pointer string                                     `json:"pointer"`
+	JSON    accountDeviceGetResponseMessagesSourceJSON `json:"-"`
+}
+
+// accountDeviceGetResponseMessagesSourceJSON contains the JSON metadata for the
+// struct [AccountDeviceGetResponseMessagesSource]
+type accountDeviceGetResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountDeviceGetResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountDeviceGetResponseMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
 type AccountDeviceGetResponseResult struct {
-	// Device ID.
+	// Registration ID. Equal to Device ID except for accounts which enabled
+	// [multi-user mode](https://developers.cloudflare.com/cloudflare-one/connections/connect-devices/warp/deployment/mdm-deployment/windows-multiuser/).
 	ID      string                                `json:"id"`
 	Account AccountDeviceGetResponseResultAccount `json:"account"`
 	// When the device was created.
@@ -351,16 +729,39 @@ func (r accountDeviceGetResponseResultAccountJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountDeviceGetResponseSuccess bool
+
+const (
+	AccountDeviceGetResponseSuccessTrue AccountDeviceGetResponseSuccess = true
+)
+
+func (r AccountDeviceGetResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountDeviceGetResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountDeviceListResponse struct {
-	Result []AccountDeviceListResponseResult `json:"result"`
-	JSON   accountDeviceListResponseJSON     `json:"-"`
-	APIResponseCollectionTeamsDevices
+	Errors   []AccountDeviceListResponseError   `json:"errors,required"`
+	Messages []AccountDeviceListResponseMessage `json:"messages,required"`
+	Result   []AccountDeviceListResponseResult  `json:"result,required,nullable"`
+	// Whether the API call was successful.
+	Success    AccountDeviceListResponseSuccess    `json:"success,required"`
+	ResultInfo AccountDeviceListResponseResultInfo `json:"result_info"`
+	JSON       accountDeviceListResponseJSON       `json:"-"`
 }
 
 // accountDeviceListResponseJSON contains the JSON metadata for the struct
 // [AccountDeviceListResponse]
 type accountDeviceListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -373,8 +774,105 @@ func (r accountDeviceListResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+type AccountDeviceListResponseError struct {
+	Code             int64                                 `json:"code,required"`
+	Message          string                                `json:"message,required"`
+	DocumentationURL string                                `json:"documentation_url"`
+	Source           AccountDeviceListResponseErrorsSource `json:"source"`
+	JSON             accountDeviceListResponseErrorJSON    `json:"-"`
+}
+
+// accountDeviceListResponseErrorJSON contains the JSON metadata for the struct
+// [AccountDeviceListResponseError]
+type accountDeviceListResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountDeviceListResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountDeviceListResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountDeviceListResponseErrorsSource struct {
+	Pointer string                                    `json:"pointer"`
+	JSON    accountDeviceListResponseErrorsSourceJSON `json:"-"`
+}
+
+// accountDeviceListResponseErrorsSourceJSON contains the JSON metadata for the
+// struct [AccountDeviceListResponseErrorsSource]
+type accountDeviceListResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountDeviceListResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountDeviceListResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountDeviceListResponseMessage struct {
+	Code             int64                                   `json:"code,required"`
+	Message          string                                  `json:"message,required"`
+	DocumentationURL string                                  `json:"documentation_url"`
+	Source           AccountDeviceListResponseMessagesSource `json:"source"`
+	JSON             accountDeviceListResponseMessageJSON    `json:"-"`
+}
+
+// accountDeviceListResponseMessageJSON contains the JSON metadata for the struct
+// [AccountDeviceListResponseMessage]
+type accountDeviceListResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountDeviceListResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountDeviceListResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountDeviceListResponseMessagesSource struct {
+	Pointer string                                      `json:"pointer"`
+	JSON    accountDeviceListResponseMessagesSourceJSON `json:"-"`
+}
+
+// accountDeviceListResponseMessagesSourceJSON contains the JSON metadata for the
+// struct [AccountDeviceListResponseMessagesSource]
+type accountDeviceListResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountDeviceListResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountDeviceListResponseMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
 type AccountDeviceListResponseResult struct {
-	// Device ID.
+	// Registration ID. Equal to Device ID except for accounts which enabled
+	// [multi-user mode](https://developers.cloudflare.com/cloudflare-one/connections/connect-devices/warp/deployment/mdm-deployment/windows-multiuser/).
 	ID string `json:"id"`
 	// When the device was created.
 	Created time.Time `json:"created" format:"date-time"`
@@ -450,16 +948,70 @@ func (r accountDeviceListResponseResultJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountDeviceListResponseSuccess bool
+
+const (
+	AccountDeviceListResponseSuccessTrue AccountDeviceListResponseSuccess = true
+)
+
+func (r AccountDeviceListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountDeviceListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type AccountDeviceListResponseResultInfo struct {
+	// Total number of results for the requested service.
+	Count float64 `json:"count"`
+	// Current page within paginated list of results.
+	Page float64 `json:"page"`
+	// Number of results per page of results.
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters.
+	TotalCount float64                                 `json:"total_count"`
+	JSON       accountDeviceListResponseResultInfoJSON `json:"-"`
+}
+
+// accountDeviceListResponseResultInfoJSON contains the JSON metadata for the
+// struct [AccountDeviceListResponseResultInfo]
+type accountDeviceListResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountDeviceListResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountDeviceListResponseResultInfoJSON) RawJSON() string {
+	return r.raw
+}
+
 type AccountDeviceGetOverrideCodeResponse struct {
-	Result AccountDeviceGetOverrideCodeResponseResult `json:"result"`
-	JSON   accountDeviceGetOverrideCodeResponseJSON   `json:"-"`
-	APIResponseCollectionTeamsDevices
+	Errors   []MessagesDeviceTestsItems `json:"errors,required"`
+	Messages []MessagesDeviceTestsItems `json:"messages,required"`
+	Result   []interface{}              `json:"result,required,nullable"`
+	// Whether the API call was successful.
+	Success    AccountDeviceGetOverrideCodeResponseSuccess    `json:"success,required"`
+	ResultInfo AccountDeviceGetOverrideCodeResponseResultInfo `json:"result_info"`
+	JSON       accountDeviceGetOverrideCodeResponseJSON       `json:"-"`
 }
 
 // accountDeviceGetOverrideCodeResponseJSON contains the JSON metadata for the
 // struct [AccountDeviceGetOverrideCodeResponse]
 type accountDeviceGetOverrideCodeResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -472,64 +1024,54 @@ func (r accountDeviceGetOverrideCodeResponseJSON) RawJSON() string {
 	return r.raw
 }
 
-type AccountDeviceGetOverrideCodeResponseResult struct {
-	DisableForTime AccountDeviceGetOverrideCodeResponseResultDisableForTime `json:"disable_for_time"`
-	JSON           accountDeviceGetOverrideCodeResponseResultJSON           `json:"-"`
+// Whether the API call was successful.
+type AccountDeviceGetOverrideCodeResponseSuccess bool
+
+const (
+	AccountDeviceGetOverrideCodeResponseSuccessTrue AccountDeviceGetOverrideCodeResponseSuccess = true
+)
+
+func (r AccountDeviceGetOverrideCodeResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountDeviceGetOverrideCodeResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
-// accountDeviceGetOverrideCodeResponseResultJSON contains the JSON metadata for
-// the struct [AccountDeviceGetOverrideCodeResponseResult]
-type accountDeviceGetOverrideCodeResponseResultJSON struct {
-	DisableForTime apijson.Field
-	raw            string
-	ExtraFields    map[string]apijson.Field
+type AccountDeviceGetOverrideCodeResponseResultInfo struct {
+	// Total number of results for the requested service.
+	Count float64 `json:"count"`
+	// Current page within paginated list of results.
+	Page float64 `json:"page"`
+	// Number of results per page of results.
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters.
+	TotalCount float64                                            `json:"total_count"`
+	JSON       accountDeviceGetOverrideCodeResponseResultInfoJSON `json:"-"`
 }
 
-func (r *AccountDeviceGetOverrideCodeResponseResult) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountDeviceGetOverrideCodeResponseResultJSON) RawJSON() string {
-	return r.raw
-}
-
-type AccountDeviceGetOverrideCodeResponseResultDisableForTime struct {
-	// Override code that is valid for 1 hour.
-	Number1 interface{} `json:"1"`
-	// Override code that is valid for 12 hour2.
-	Number12 interface{} `json:"12"`
-	// Override code that is valid for 24 hour.2.
-	Number24 interface{} `json:"24"`
-	// Override code that is valid for 3 hours.
-	Number3 interface{} `json:"3"`
-	// Override code that is valid for 6 hours.
-	Number6 interface{}                                                  `json:"6"`
-	JSON    accountDeviceGetOverrideCodeResponseResultDisableForTimeJSON `json:"-"`
-}
-
-// accountDeviceGetOverrideCodeResponseResultDisableForTimeJSON contains the JSON
-// metadata for the struct
-// [AccountDeviceGetOverrideCodeResponseResultDisableForTime]
-type accountDeviceGetOverrideCodeResponseResultDisableForTimeJSON struct {
-	Number1     apijson.Field
-	Number12    apijson.Field
-	Number24    apijson.Field
-	Number3     apijson.Field
-	Number6     apijson.Field
+// accountDeviceGetOverrideCodeResponseResultInfoJSON contains the JSON metadata
+// for the struct [AccountDeviceGetOverrideCodeResponseResultInfo]
+type accountDeviceGetOverrideCodeResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *AccountDeviceGetOverrideCodeResponseResultDisableForTime) UnmarshalJSON(data []byte) (err error) {
+func (r *AccountDeviceGetOverrideCodeResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r accountDeviceGetOverrideCodeResponseResultDisableForTimeJSON) RawJSON() string {
+func (r accountDeviceGetOverrideCodeResponseResultInfoJSON) RawJSON() string {
 	return r.raw
 }
 
 type AccountDeviceRevokeParams struct {
-	// A list of device ids to revoke.
+	// A list of Registration IDs to revoke.
 	Body []string `json:"body,required"`
 }
 
@@ -538,7 +1080,7 @@ func (r AccountDeviceRevokeParams) MarshalJSON() (data []byte, err error) {
 }
 
 type AccountDeviceUnrevokeParams struct {
-	// A list of device ids to unrevoke.
+	// A list of Registration IDs to unrevoke.
 	Body []string `json:"body,required"`
 }
 

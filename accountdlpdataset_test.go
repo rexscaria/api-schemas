@@ -32,6 +32,7 @@ func TestAccountDlpDatasetNewWithOptionalParams(t *testing.T) {
 		"account_id",
 		cfrex.AccountDlpDatasetNewParams{
 			Name:            cfrex.F("name"),
+			CaseSensitive:   cfrex.F(true),
 			Description:     cfrex.F("description"),
 			EncodingVersion: cfrex.F(int64(0)),
 			Secret:          cfrex.F(true),
@@ -93,8 +94,9 @@ func TestAccountDlpDatasetUpdateWithOptionalParams(t *testing.T) {
 		"account_id",
 		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		cfrex.AccountDlpDatasetUpdateParams{
-			Description: cfrex.F("description"),
-			Name:        cfrex.F("name"),
+			CaseSensitive: cfrex.F(true),
+			Description:   cfrex.F("description"),
+			Name:          cfrex.F("name"),
 		},
 	)
 	if err != nil {

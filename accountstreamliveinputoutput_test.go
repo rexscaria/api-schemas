@@ -125,9 +125,6 @@ func TestAccountStreamLiveInputOutputDelete(t *testing.T) {
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		"66be4bf738797e01e1fca35a7bdecdcd",
 		"baea4d9c515887b80289d5c33cf01145",
-		cfrex.AccountStreamLiveInputOutputDeleteParams{
-			Body: map[string]interface{}{},
-		},
 	)
 	if err != nil {
 		var apierr *cfrex.Error

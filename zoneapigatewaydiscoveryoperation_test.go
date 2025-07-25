@@ -29,7 +29,7 @@ func TestZoneAPIGatewayDiscoveryOperationUpdate(t *testing.T) {
 	)
 	_, err := client.Zones.APIGateway.Discovery.Operations.Update(
 		context.TODO(),
-		"zone_id",
+		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.ZoneAPIGatewayDiscoveryOperationUpdateParams{
 			Body: map[string]cfrex.ZoneAPIGatewayDiscoveryOperationUpdateParamsBody{
 				"3818d821-5901-4147-a474-f5f5aec1d54e": {
@@ -66,7 +66,7 @@ func TestZoneAPIGatewayDiscoveryOperationListWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Zones.APIGateway.Discovery.Operations.List(
 		context.TODO(),
-		"zone_id",
+		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.ZoneAPIGatewayDiscoveryOperationListParams{
 			Diff:      cfrex.F(true),
 			Direction: cfrex.F(cfrex.ZoneAPIGatewayDiscoveryOperationListParamsDirectionDesc),
@@ -105,7 +105,7 @@ func TestZoneAPIGatewayDiscoveryOperationUpdateSingleWithOptionalParams(t *testi
 	)
 	_, err := client.Zones.APIGateway.Discovery.Operations.UpdateSingle(
 		context.TODO(),
-		"zone_id",
+		"023e105f4ecef8ad9ca31a8372d0c353",
 		"f174e90a-fafe-4643-bbbc-4a0ed4fc8415",
 		cfrex.ZoneAPIGatewayDiscoveryOperationUpdateSingleParams{
 			State: cfrex.F(cfrex.ZoneAPIGatewayDiscoveryOperationUpdateSingleParamsStateReview),

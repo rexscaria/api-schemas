@@ -35,7 +35,7 @@ func NewAccountEventNotificationR2ConfigurationQueueService(opts ...option.Reque
 }
 
 // Create event notification rule.
-func (r *AccountEventNotificationR2ConfigurationQueueService) New(ctx context.Context, accountID string, bucketName string, queueID string, params AccountEventNotificationR2ConfigurationQueueNewParams, opts ...option.RequestOption) (res *AccountEventNotificationR2ConfigurationQueueNewResponse, err error) {
+func (r *AccountEventNotificationR2ConfigurationQueueService) New(ctx context.Context, accountID string, bucketName string, queueID string, params AccountEventNotificationR2ConfigurationQueueNewParams, opts ...option.RequestOption) (res *R2V4Response, err error) {
 	if params.Jurisdiction.Present {
 		opts = append(opts, option.WithHeader("cf-r2-jurisdiction", fmt.Sprintf("%s", params.Jurisdiction)))
 	}
@@ -59,9 +59,9 @@ func (r *AccountEventNotificationR2ConfigurationQueueService) New(ctx context.Co
 
 // Delete an event notification rule. **If no body is provided, all rules for
 // specified queue will be deleted**.
-func (r *AccountEventNotificationR2ConfigurationQueueService) Delete(ctx context.Context, accountID string, bucketName string, queueID string, params AccountEventNotificationR2ConfigurationQueueDeleteParams, opts ...option.RequestOption) (res *AccountEventNotificationR2ConfigurationQueueDeleteResponse, err error) {
-	if params.Jurisdiction.Present {
-		opts = append(opts, option.WithHeader("cf-r2-jurisdiction", fmt.Sprintf("%s", params.Jurisdiction)))
+func (r *AccountEventNotificationR2ConfigurationQueueService) Delete(ctx context.Context, accountID string, bucketName string, queueID string, body AccountEventNotificationR2ConfigurationQueueDeleteParams, opts ...option.RequestOption) (res *R2V4Response, err error) {
+	if body.Jurisdiction.Present {
+		opts = append(opts, option.WithHeader("cf-r2-jurisdiction", fmt.Sprintf("%s", body.Jurisdiction)))
 	}
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
@@ -77,39 +77,24 @@ func (r *AccountEventNotificationR2ConfigurationQueueService) Delete(ctx context
 		return
 	}
 	path := fmt.Sprintf("accounts/%s/event_notifications/r2/%s/configuration/queues/%s", accountID, bucketName, queueID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, params, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
-type R2Rule struct {
-	// Array of R2 object actions that will trigger notifications
-	Actions []R2RuleAction `json:"actions,required"`
+type R2RuleParam struct {
+	// Array of R2 object actions that will trigger notifications.
+	Actions param.Field[[]R2RuleAction] `json:"actions,required"`
 	// A description that can be used to identify the event notification rule after
-	// creation
-	Description string `json:"description"`
-	// Notifications will be sent only for objects with this prefix
-	Prefix string `json:"prefix"`
-	// Notifications will be sent only for objects with this suffix
-	Suffix string     `json:"suffix"`
-	JSON   r2RuleJSON `json:"-"`
+	// creation.
+	Description param.Field[string] `json:"description"`
+	// Notifications will be sent only for objects with this prefix.
+	Prefix param.Field[string] `json:"prefix"`
+	// Notifications will be sent only for objects with this suffix.
+	Suffix param.Field[string] `json:"suffix"`
 }
 
-// r2RuleJSON contains the JSON metadata for the struct [R2Rule]
-type r2RuleJSON struct {
-	Actions     apijson.Field
-	Description apijson.Field
-	Prefix      apijson.Field
-	Suffix      apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *R2Rule) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r r2RuleJSON) RawJSON() string {
-	return r.raw
+func (r R2RuleParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
 }
 
 type R2RuleAction string
@@ -130,68 +115,10 @@ func (r R2RuleAction) IsKnown() bool {
 	return false
 }
 
-type R2RuleParam struct {
-	// Array of R2 object actions that will trigger notifications
-	Actions param.Field[[]R2RuleAction] `json:"actions,required"`
-	// A description that can be used to identify the event notification rule after
-	// creation
-	Description param.Field[string] `json:"description"`
-	// Notifications will be sent only for objects with this prefix
-	Prefix param.Field[string] `json:"prefix"`
-	// Notifications will be sent only for objects with this suffix
-	Suffix param.Field[string] `json:"suffix"`
-}
-
-func (r R2RuleParam) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-type AccountEventNotificationR2ConfigurationQueueNewResponse struct {
-	JSON accountEventNotificationR2ConfigurationQueueNewResponseJSON `json:"-"`
-	R2V4Response
-}
-
-// accountEventNotificationR2ConfigurationQueueNewResponseJSON contains the JSON
-// metadata for the struct
-// [AccountEventNotificationR2ConfigurationQueueNewResponse]
-type accountEventNotificationR2ConfigurationQueueNewResponseJSON struct {
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountEventNotificationR2ConfigurationQueueNewResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountEventNotificationR2ConfigurationQueueNewResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-type AccountEventNotificationR2ConfigurationQueueDeleteResponse struct {
-	JSON accountEventNotificationR2ConfigurationQueueDeleteResponseJSON `json:"-"`
-	R2V4Response
-}
-
-// accountEventNotificationR2ConfigurationQueueDeleteResponseJSON contains the JSON
-// metadata for the struct
-// [AccountEventNotificationR2ConfigurationQueueDeleteResponse]
-type accountEventNotificationR2ConfigurationQueueDeleteResponseJSON struct {
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountEventNotificationR2ConfigurationQueueDeleteResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountEventNotificationR2ConfigurationQueueDeleteResponseJSON) RawJSON() string {
-	return r.raw
-}
-
 type AccountEventNotificationR2ConfigurationQueueNewParams struct {
-	// Array of rules to drive notifications
+	// Array of rules to drive notifications.
 	Rules param.Field[[]R2RuleParam] `json:"rules"`
-	// The bucket jurisdiction
+	// Jurisdiction where objects in this bucket are guaranteed to be stored.
 	Jurisdiction param.Field[AccountEventNotificationR2ConfigurationQueueNewParamsCfR2Jurisdiction] `header:"cf-r2-jurisdiction"`
 }
 
@@ -199,7 +126,7 @@ func (r AccountEventNotificationR2ConfigurationQueueNewParams) MarshalJSON() (da
 	return apijson.MarshalRoot(r)
 }
 
-// The bucket jurisdiction
+// Jurisdiction where objects in this bucket are guaranteed to be stored.
 type AccountEventNotificationR2ConfigurationQueueNewParamsCfR2Jurisdiction string
 
 const (
@@ -217,17 +144,11 @@ func (r AccountEventNotificationR2ConfigurationQueueNewParamsCfR2Jurisdiction) I
 }
 
 type AccountEventNotificationR2ConfigurationQueueDeleteParams struct {
-	// Array of rule ids to delete
-	RuleIDs param.Field[[]string] `json:"ruleIds"`
-	// The bucket jurisdiction
+	// Jurisdiction where objects in this bucket are guaranteed to be stored.
 	Jurisdiction param.Field[AccountEventNotificationR2ConfigurationQueueDeleteParamsCfR2Jurisdiction] `header:"cf-r2-jurisdiction"`
 }
 
-func (r AccountEventNotificationR2ConfigurationQueueDeleteParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-// The bucket jurisdiction
+// Jurisdiction where objects in this bucket are guaranteed to be stored.
 type AccountEventNotificationR2ConfigurationQueueDeleteParamsCfR2Jurisdiction string
 
 const (

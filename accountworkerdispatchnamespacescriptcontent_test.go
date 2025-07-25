@@ -82,6 +82,7 @@ func TestAccountWorkerDispatchNamespaceScriptContentPutWithOptionalParams(t *tes
 				BodyPart:   cfrex.F("worker.js"),
 				MainModule: cfrex.F("worker.js"),
 			}),
+			Files:                  cfrex.F([]io.Reader{io.Reader(bytes.NewBuffer([]byte("some file contents")))}),
 			CfWorkerBodyPart:       cfrex.F("CF-WORKER-BODY-PART"),
 			CfWorkerMainModulePart: cfrex.F("CF-WORKER-MAIN-MODULE-PART"),
 		},

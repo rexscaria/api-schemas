@@ -103,7 +103,7 @@ func (r *ZoneRateLimitService) List(ctx context.Context, zoneID string, query Zo
 // Deletes an existing rate limit.
 //
 // Deprecated: deprecated
-func (r *ZoneRateLimitService) Delete(ctx context.Context, zoneID string, rateLimitID string, body ZoneRateLimitDeleteParams, opts ...option.RequestOption) (res *ZoneRateLimitDeleteResponse, err error) {
+func (r *ZoneRateLimitService) Delete(ctx context.Context, zoneID string, rateLimitID string, opts ...option.RequestOption) (res *ZoneRateLimitDeleteResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
@@ -114,7 +114,7 @@ func (r *ZoneRateLimitService) Delete(ctx context.Context, zoneID string, rateLi
 		return
 	}
 	path := fmt.Sprintf("zones/%s/rate_limits/%s", zoneID, rateLimitID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
@@ -335,8 +335,8 @@ type FirewallRateLimits struct {
 	// Criteria specifying when the current rate limit should be bypassed. You can
 	// specify that the rate limit should not apply to one or more URLs.
 	Bypass []FirewallRateLimitsBypass `json:"bypass"`
-	// An informative summary of the rate limit. This value is sanitized and any tags
-	// will be removed.
+	// An informative summary of the rule. This value is sanitized and any tags will be
+	// removed.
 	Description string `json:"description"`
 	// When true, indicates that the rate limit is currently disabled.
 	Disabled bool `json:"disabled"`
@@ -414,15 +414,21 @@ func (r FirewallRateLimitsBypassName) IsKnown() bool {
 }
 
 type FirewallRatelimitSingle struct {
-	Result FirewallRateLimits          `json:"result"`
-	JSON   firewallRatelimitSingleJSON `json:"-"`
-	FirewallAPIResponseSingle
+	Errors   []FirewallMessagesItem `json:"errors,required"`
+	Messages []FirewallMessagesItem `json:"messages,required"`
+	Result   FirewallRateLimits     `json:"result,required"`
+	// Defines whether the API call was successful.
+	Success FirewallRatelimitSingleSuccess `json:"success,required"`
+	JSON    firewallRatelimitSingleJSON    `json:"-"`
 }
 
 // firewallRatelimitSingleJSON contains the JSON metadata for the struct
 // [FirewallRatelimitSingle]
 type firewallRatelimitSingleJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -435,16 +441,39 @@ func (r firewallRatelimitSingleJSON) RawJSON() string {
 	return r.raw
 }
 
+// Defines whether the API call was successful.
+type FirewallRatelimitSingleSuccess bool
+
+const (
+	FirewallRatelimitSingleSuccessTrue FirewallRatelimitSingleSuccess = true
+)
+
+func (r FirewallRatelimitSingleSuccess) IsKnown() bool {
+	switch r {
+	case FirewallRatelimitSingleSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type ZoneRateLimitListResponse struct {
-	Result []FirewallRateLimits          `json:"result"`
-	JSON   zoneRateLimitListResponseJSON `json:"-"`
-	FirewallAPIResponseCollection
+	Errors   []FirewallMessagesItem `json:"errors,required"`
+	Messages []FirewallMessagesItem `json:"messages,required"`
+	Result   []FirewallRateLimits   `json:"result,required,nullable"`
+	// Defines whether the API call was successful.
+	Success    ZoneRateLimitListResponseSuccess    `json:"success,required"`
+	ResultInfo ZoneRateLimitListResponseResultInfo `json:"result_info"`
+	JSON       zoneRateLimitListResponseJSON       `json:"-"`
 }
 
 // zoneRateLimitListResponseJSON contains the JSON metadata for the struct
 // [ZoneRateLimitListResponse]
 type zoneRateLimitListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -457,16 +486,68 @@ func (r zoneRateLimitListResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Defines whether the API call was successful.
+type ZoneRateLimitListResponseSuccess bool
+
+const (
+	ZoneRateLimitListResponseSuccessTrue ZoneRateLimitListResponseSuccess = true
+)
+
+func (r ZoneRateLimitListResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneRateLimitListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type ZoneRateLimitListResponseResultInfo struct {
+	// Defines the total number of results for the requested service.
+	Count float64 `json:"count"`
+	// Defines the current page within paginated list of results.
+	Page float64 `json:"page"`
+	// Defines the number of results per page of results.
+	PerPage float64 `json:"per_page"`
+	// Defines the total results available without any search parameters.
+	TotalCount float64                                 `json:"total_count"`
+	JSON       zoneRateLimitListResponseResultInfoJSON `json:"-"`
+}
+
+// zoneRateLimitListResponseResultInfoJSON contains the JSON metadata for the
+// struct [ZoneRateLimitListResponseResultInfo]
+type zoneRateLimitListResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZoneRateLimitListResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneRateLimitListResponseResultInfoJSON) RawJSON() string {
+	return r.raw
+}
+
 type ZoneRateLimitDeleteResponse struct {
-	Result ZoneRateLimitDeleteResponseResult `json:"result"`
-	JSON   zoneRateLimitDeleteResponseJSON   `json:"-"`
-	FirewallRatelimitSingle
+	Errors   []FirewallMessagesItem            `json:"errors,required"`
+	Messages []FirewallMessagesItem            `json:"messages,required"`
+	Result   ZoneRateLimitDeleteResponseResult `json:"result,required"`
+	// Defines whether the API call was successful.
+	Success ZoneRateLimitDeleteResponseSuccess `json:"success,required"`
+	JSON    zoneRateLimitDeleteResponseJSON    `json:"-"`
 }
 
 // zoneRateLimitDeleteResponseJSON contains the JSON metadata for the struct
 // [ZoneRateLimitDeleteResponse]
 type zoneRateLimitDeleteResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -481,14 +562,41 @@ func (r zoneRateLimitDeleteResponseJSON) RawJSON() string {
 
 type ZoneRateLimitDeleteResponseResult struct {
 	// The unique identifier of the rate limit.
-	ID   string                                `json:"id"`
-	JSON zoneRateLimitDeleteResponseResultJSON `json:"-"`
+	ID string `json:"id"`
+	// The action to perform when the threshold of matched traffic within the
+	// configured period is exceeded.
+	Action FirewallAction `json:"action"`
+	// Criteria specifying when the current rate limit should be bypassed. You can
+	// specify that the rate limit should not apply to one or more URLs.
+	Bypass []ZoneRateLimitDeleteResponseResultBypass `json:"bypass"`
+	// An informative summary of the rule. This value is sanitized and any tags will be
+	// removed.
+	Description string `json:"description"`
+	// When true, indicates that the rate limit is currently disabled.
+	Disabled bool `json:"disabled"`
+	// Determines which traffic the rate limit counts towards the threshold.
+	Match FirewallMatch `json:"match"`
+	// The time in seconds (an integer value) to count matching traffic. If the count
+	// exceeds the configured threshold within this period, Cloudflare will perform the
+	// configured action.
+	Period float64 `json:"period"`
+	// The threshold that will trigger the configured mitigation action. Configure this
+	// value along with the `period` property to establish a threshold per period.
+	Threshold float64                               `json:"threshold"`
+	JSON      zoneRateLimitDeleteResponseResultJSON `json:"-"`
 }
 
 // zoneRateLimitDeleteResponseResultJSON contains the JSON metadata for the struct
 // [ZoneRateLimitDeleteResponseResult]
 type zoneRateLimitDeleteResponseResultJSON struct {
 	ID          apijson.Field
+	Action      apijson.Field
+	Bypass      apijson.Field
+	Description apijson.Field
+	Disabled    apijson.Field
+	Match       apijson.Field
+	Period      apijson.Field
+	Threshold   apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -499,6 +607,59 @@ func (r *ZoneRateLimitDeleteResponseResult) UnmarshalJSON(data []byte) (err erro
 
 func (r zoneRateLimitDeleteResponseResultJSON) RawJSON() string {
 	return r.raw
+}
+
+type ZoneRateLimitDeleteResponseResultBypass struct {
+	Name ZoneRateLimitDeleteResponseResultBypassName `json:"name"`
+	// The URL to bypass.
+	Value string                                      `json:"value"`
+	JSON  zoneRateLimitDeleteResponseResultBypassJSON `json:"-"`
+}
+
+// zoneRateLimitDeleteResponseResultBypassJSON contains the JSON metadata for the
+// struct [ZoneRateLimitDeleteResponseResultBypass]
+type zoneRateLimitDeleteResponseResultBypassJSON struct {
+	Name        apijson.Field
+	Value       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZoneRateLimitDeleteResponseResultBypass) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneRateLimitDeleteResponseResultBypassJSON) RawJSON() string {
+	return r.raw
+}
+
+type ZoneRateLimitDeleteResponseResultBypassName string
+
+const (
+	ZoneRateLimitDeleteResponseResultBypassNameURL ZoneRateLimitDeleteResponseResultBypassName = "url"
+)
+
+func (r ZoneRateLimitDeleteResponseResultBypassName) IsKnown() bool {
+	switch r {
+	case ZoneRateLimitDeleteResponseResultBypassNameURL:
+		return true
+	}
+	return false
+}
+
+// Defines whether the API call was successful.
+type ZoneRateLimitDeleteResponseSuccess bool
+
+const (
+	ZoneRateLimitDeleteResponseSuccessTrue ZoneRateLimitDeleteResponseSuccess = true
+)
+
+func (r ZoneRateLimitDeleteResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneRateLimitDeleteResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type ZoneRateLimitNewParams struct {
@@ -540,10 +701,10 @@ func (r ZoneRateLimitUpdateParams) MarshalJSON() (data []byte, err error) {
 }
 
 type ZoneRateLimitListParams struct {
-	// The page number of paginated results.
+	// Defines the page number of paginated results.
 	Page param.Field[float64] `query:"page"`
-	// The maximum number of results per page. You can only set the value to `1` or to
-	// a multiple of 5 such as `5`, `10`, `15`, or `20`.
+	// Defines the maximum number of results per page. You can only set the value to
+	// `1` or to a multiple of 5 such as `5`, `10`, `15`, or `20`.
 	PerPage param.Field[float64] `query:"per_page"`
 }
 
@@ -554,12 +715,4 @@ func (r ZoneRateLimitListParams) URLQuery() (v url.Values) {
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
-}
-
-type ZoneRateLimitDeleteParams struct {
-	Body interface{} `json:"body,required"`
-}
-
-func (r ZoneRateLimitDeleteParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
 }

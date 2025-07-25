@@ -29,7 +29,7 @@ func TestZoneAPIGatewayConfigurationGetWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Zones.APIGateway.Configuration.Get(
 		context.TODO(),
-		"zone_id",
+		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.ZoneAPIGatewayConfigurationGetParams{
 			Properties: cfrex.F([]cfrex.ZoneAPIGatewayConfigurationGetParamsProperty{cfrex.ZoneAPIGatewayConfigurationGetParamsPropertyAuthIDCharacteristics}),
 		},
@@ -59,7 +59,7 @@ func TestZoneAPIGatewayConfigurationUpdate(t *testing.T) {
 	)
 	_, err := client.Zones.APIGateway.Configuration.Update(
 		context.TODO(),
-		"zone_id",
+		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.ZoneAPIGatewayConfigurationUpdateParams{
 			Configuration: cfrex.ConfigurationParam{
 				AuthIDCharacteristics: cfrex.F([]cfrex.ConfigurationAuthIDCharacteristicsUnionParam{cfrex.ConfigurationAuthIDCharacteristicsAPIShieldAuthIDCharacteristicParam{

@@ -49,14 +49,20 @@ func (r *AccountDlpPatternService) Validate(ctx context.Context, accountID strin
 }
 
 type AccountDlpPatternValidateResponse struct {
-	Result AccountDlpPatternValidateResponseResult `json:"result"`
-	JSON   accountDlpPatternValidateResponseJSON   `json:"-"`
-	APIResponseSingleDlp
+	Errors   []MessagesDlpItems `json:"errors,required"`
+	Messages []MessagesDlpItems `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountDlpPatternValidateResponseSuccess `json:"success,required"`
+	Result  AccountDlpPatternValidateResponseResult  `json:"result"`
+	JSON    accountDlpPatternValidateResponseJSON    `json:"-"`
 }
 
 // accountDlpPatternValidateResponseJSON contains the JSON metadata for the struct
 // [AccountDlpPatternValidateResponse]
 type accountDlpPatternValidateResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -68,6 +74,21 @@ func (r *AccountDlpPatternValidateResponse) UnmarshalJSON(data []byte) (err erro
 
 func (r accountDlpPatternValidateResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountDlpPatternValidateResponseSuccess bool
+
+const (
+	AccountDlpPatternValidateResponseSuccessTrue AccountDlpPatternValidateResponseSuccess = true
+)
+
+func (r AccountDlpPatternValidateResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountDlpPatternValidateResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountDlpPatternValidateResponseResult struct {

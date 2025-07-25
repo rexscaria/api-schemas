@@ -63,7 +63,7 @@ func (r *AccountMagicConnectorService) List(ctx context.Context, accountID strin
 	return
 }
 
-// Update Connector
+// Edit Connector to update specific properties
 func (r *AccountMagicConnectorService) Patch(ctx context.Context, accountID string, connectorID string, body AccountMagicConnectorPatchParams, opts ...option.RequestOption) (res *MconnCustomerConnectorUpdateResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
@@ -170,15 +170,20 @@ func (r MconnCustomerConnectorFieldsParam) MarshalJSON() (data []byte, err error
 }
 
 type MconnCustomerConnectorUpdateResponse struct {
-	Result MconnCustomerConnector                   `json:"result"`
-	JSON   mconnCustomerConnectorUpdateResponseJSON `json:"-"`
-	MconnGoodResponse
+	Errors   []MconnCodedMessage                      `json:"errors,required"`
+	Messages []MconnCodedMessage                      `json:"messages,required"`
+	Result   MconnCustomerConnector                   `json:"result,required"`
+	Success  bool                                     `json:"success,required"`
+	JSON     mconnCustomerConnectorUpdateResponseJSON `json:"-"`
 }
 
 // mconnCustomerConnectorUpdateResponseJSON contains the JSON metadata for the
 // struct [MconnCustomerConnectorUpdateResponse]
 type mconnCustomerConnectorUpdateResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -191,41 +196,21 @@ func (r mconnCustomerConnectorUpdateResponseJSON) RawJSON() string {
 	return r.raw
 }
 
-type MconnGoodResponse struct {
-	Errors   []MconnCodedMessage   `json:"errors,required"`
-	Messages []MconnCodedMessage   `json:"messages,required"`
-	Success  bool                  `json:"success,required"`
-	JSON     mconnGoodResponseJSON `json:"-"`
-}
-
-// mconnGoodResponseJSON contains the JSON metadata for the struct
-// [MconnGoodResponse]
-type mconnGoodResponseJSON struct {
-	Errors      apijson.Field
-	Messages    apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *MconnGoodResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r mconnGoodResponseJSON) RawJSON() string {
-	return r.raw
-}
-
 type AccountMagicConnectorGetResponse struct {
-	Result MconnCustomerConnector               `json:"result"`
-	JSON   accountMagicConnectorGetResponseJSON `json:"-"`
-	MconnGoodResponse
+	Errors   []MconnCodedMessage                  `json:"errors,required"`
+	Messages []MconnCodedMessage                  `json:"messages,required"`
+	Result   MconnCustomerConnector               `json:"result,required"`
+	Success  bool                                 `json:"success,required"`
+	JSON     accountMagicConnectorGetResponseJSON `json:"-"`
 }
 
 // accountMagicConnectorGetResponseJSON contains the JSON metadata for the struct
 // [AccountMagicConnectorGetResponse]
 type accountMagicConnectorGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -239,15 +224,20 @@ func (r accountMagicConnectorGetResponseJSON) RawJSON() string {
 }
 
 type AccountMagicConnectorListResponse struct {
-	Result []MconnCustomerConnector              `json:"result"`
-	JSON   accountMagicConnectorListResponseJSON `json:"-"`
-	MconnGoodResponse
+	Errors   []MconnCodedMessage                   `json:"errors,required"`
+	Messages []MconnCodedMessage                   `json:"messages,required"`
+	Result   []MconnCustomerConnector              `json:"result,required"`
+	Success  bool                                  `json:"success,required"`
+	JSON     accountMagicConnectorListResponseJSON `json:"-"`
 }
 
 // accountMagicConnectorListResponseJSON contains the JSON metadata for the struct
 // [AccountMagicConnectorListResponse]
 type accountMagicConnectorListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }

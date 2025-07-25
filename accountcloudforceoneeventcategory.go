@@ -34,53 +34,73 @@ func NewAccountCloudforceOneEventCategoryService(opts ...option.RequestOption) (
 }
 
 // Creates a new category
-func (r *AccountCloudforceOneEventCategoryService) New(ctx context.Context, accountID float64, body AccountCloudforceOneEventCategoryNewParams, opts ...option.RequestOption) (res *AccountCloudforceOneEventCategoryNewResponse, err error) {
+func (r *AccountCloudforceOneEventCategoryService) New(ctx context.Context, accountID string, body AccountCloudforceOneEventCategoryNewParams, opts ...option.RequestOption) (res *AccountCloudforceOneEventCategoryNewResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	path := fmt.Sprintf("accounts/%v/cloudforce-one/events/categories/create", accountID)
+	if accountID == "" {
+		err = errors.New("missing required account_id parameter")
+		return
+	}
+	path := fmt.Sprintf("accounts/%s/cloudforce-one/events/categories/create", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
 
 // Reads a category
-func (r *AccountCloudforceOneEventCategoryService) Get(ctx context.Context, accountID float64, categoryID string, opts ...option.RequestOption) (res *AccountCloudforceOneEventCategoryGetResponse, err error) {
+func (r *AccountCloudforceOneEventCategoryService) Get(ctx context.Context, accountID string, categoryID string, opts ...option.RequestOption) (res *AccountCloudforceOneEventCategoryGetResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	if accountID == "" {
+		err = errors.New("missing required account_id parameter")
+		return
+	}
 	if categoryID == "" {
 		err = errors.New("missing required category_id parameter")
 		return
 	}
-	path := fmt.Sprintf("accounts/%v/cloudforce-one/events/categories/%s", accountID, categoryID)
+	path := fmt.Sprintf("accounts/%s/cloudforce-one/events/categories/%s", accountID, categoryID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
 
 // Updates a category
-func (r *AccountCloudforceOneEventCategoryService) Update(ctx context.Context, accountID float64, categoryID string, body AccountCloudforceOneEventCategoryUpdateParams, opts ...option.RequestOption) (res *AccountCloudforceOneEventCategoryUpdateResponse, err error) {
+func (r *AccountCloudforceOneEventCategoryService) Update(ctx context.Context, accountID string, categoryID string, body AccountCloudforceOneEventCategoryUpdateParams, opts ...option.RequestOption) (res *AccountCloudforceOneEventCategoryUpdateResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	if accountID == "" {
+		err = errors.New("missing required account_id parameter")
+		return
+	}
 	if categoryID == "" {
 		err = errors.New("missing required category_id parameter")
 		return
 	}
-	path := fmt.Sprintf("accounts/%v/cloudforce-one/events/categories/%s", accountID, categoryID)
+	path := fmt.Sprintf("accounts/%s/cloudforce-one/events/categories/%s", accountID, categoryID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
 
 // Lists categories
-func (r *AccountCloudforceOneEventCategoryService) List(ctx context.Context, accountID float64, opts ...option.RequestOption) (res *[]AccountCloudforceOneEventCategoryListResponse, err error) {
+func (r *AccountCloudforceOneEventCategoryService) List(ctx context.Context, accountID string, opts ...option.RequestOption) (res *[]AccountCloudforceOneEventCategoryListResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	path := fmt.Sprintf("accounts/%v/cloudforce-one/events/categories", accountID)
+	if accountID == "" {
+		err = errors.New("missing required account_id parameter")
+		return
+	}
+	path := fmt.Sprintf("accounts/%s/cloudforce-one/events/categories", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
 
 // Deletes a category
-func (r *AccountCloudforceOneEventCategoryService) Delete(ctx context.Context, accountID float64, categoryID string, opts ...option.RequestOption) (res *AccountCloudforceOneEventCategoryDeleteResponse, err error) {
+func (r *AccountCloudforceOneEventCategoryService) Delete(ctx context.Context, accountID string, categoryID string, opts ...option.RequestOption) (res *AccountCloudforceOneEventCategoryDeleteResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	if accountID == "" {
+		err = errors.New("missing required account_id parameter")
+		return
+	}
 	if categoryID == "" {
 		err = errors.New("missing required category_id parameter")
 		return
 	}
-	path := fmt.Sprintf("accounts/%v/cloudforce-one/events/categories/%s", accountID, categoryID)
+	path := fmt.Sprintf("accounts/%s/cloudforce-one/events/categories/%s", accountID, categoryID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }

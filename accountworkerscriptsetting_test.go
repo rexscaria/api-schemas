@@ -61,9 +61,10 @@ func TestAccountWorkerScriptSettingPatchWithOptionalParams(t *testing.T) {
 		"this-is_my_script-01",
 		cfrex.AccountWorkerScriptSettingPatchParams{
 			Settings: cfrex.F(cfrex.ScriptVersionItemParam{
-				Bindings: cfrex.F([]cfrex.BindingItemUnionParam{cfrex.BindingItemWorkersBindingKindAIParam{
+				Bindings: cfrex.F([]cfrex.BindingItemUnionParam{cfrex.BindingItemWorkersBindingKindPlainTextParam{
 					Name: cfrex.F("MY_ENV_VAR"),
-					Type: cfrex.F(cfrex.BindingItemWorkersBindingKindAITypePlainText),
+					Text: cfrex.F("my_data"),
+					Type: cfrex.F(cfrex.BindingItemWorkersBindingKindPlainTextTypePlainText),
 				}}),
 				CompatibilityDate:  cfrex.F("2021-01-01"),
 				CompatibilityFlags: cfrex.F([]string{"nodejs_compat"}),
@@ -71,29 +72,30 @@ func TestAccountWorkerScriptSettingPatchWithOptionalParams(t *testing.T) {
 					CPUMs: cfrex.F(int64(50)),
 				}),
 				Logpush: cfrex.F(false),
-				Migrations: cfrex.F[cfrex.ScriptVersionItemMigrationsUnionParam](cfrex.ScriptVersionItemMigrationsWorkersSingleStepMigrationsParam(cfrex.ScriptVersionItemMigrationsWorkersSingleStepMigrationsParam{
-					MigrationTagConditionsParam: cfrex.MigrationTagConditionsParam{
-						NewTag: cfrex.F("v2"),
-						OldTag: cfrex.F("v1"),
-					},
-					MigrationStepParam: cfrex.MigrationStepParam{
-						DeletedClasses:   cfrex.F([]string{"string"}),
-						NewClasses:       cfrex.F([]string{"string"}),
-						NewSqliteClasses: cfrex.F([]string{"string"}),
-						RenamedClasses: cfrex.F([]cfrex.MigrationStepRenamedClassParam{{
-							From: cfrex.F("from"),
-							To:   cfrex.F("to"),
-						}}),
-						TransferredClasses: cfrex.F([]cfrex.MigrationStepTransferredClassParam{{
-							From:       cfrex.F("from"),
-							FromScript: cfrex.F("from_script"),
-							To:         cfrex.F("to"),
-						}}),
-					},
-				})),
+				Migrations: cfrex.F[cfrex.ScriptVersionItemMigrationsUnionParam](cfrex.ScriptVersionItemMigrationsWorkersSingleStepMigrationsParam{
+					DeletedClasses:   cfrex.F([]string{"string"}),
+					NewClasses:       cfrex.F([]string{"string"}),
+					NewSqliteClasses: cfrex.F([]string{"string"}),
+					NewTag:           cfrex.F("v2"),
+					OldTag:           cfrex.F("v1"),
+					RenamedClasses: cfrex.F([]cfrex.ScriptVersionItemMigrationsWorkersSingleStepMigrationsRenamedClassParam{{
+						From: cfrex.F("from"),
+						To:   cfrex.F("to"),
+					}}),
+					TransferredClasses: cfrex.F([]cfrex.ScriptVersionItemMigrationsWorkersSingleStepMigrationsTransferredClassParam{{
+						From:       cfrex.F("from"),
+						FromScript: cfrex.F("from_script"),
+						To:         cfrex.F("to"),
+					}}),
+				}),
 				Observability: cfrex.F(cfrex.ObservabilityParam{
 					Enabled:          cfrex.F(true),
 					HeadSamplingRate: cfrex.F(0.100000),
+					Logs: cfrex.F(cfrex.ObservabilityLogsParam{
+						Enabled:          cfrex.F(true),
+						InvocationLogs:   cfrex.F(true),
+						HeadSamplingRate: cfrex.F(0.100000),
+					}),
 				}),
 				Placement: cfrex.F(cfrex.ScriptVersionItemPlacementParam{
 					Mode: cfrex.F(cfrex.PlacementModeSmart),

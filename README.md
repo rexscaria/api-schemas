@@ -50,12 +50,11 @@ import (
 
 func main() {
 	client := cfrex.NewClient(
-		option.WithAPIEmail("My API Email"), // defaults to os.LookupEnv("CF_REX_API_EMAIL")
-		option.WithAPIKey("My API Key"),     // defaults to os.LookupEnv("CF_REX_API_KEY")
+		option.WithAccessToken("My Access Token"), // defaults to os.LookupEnv("CF_REX_ACCESS_TOKEN")
 	)
 	response, err := client.Accounts.Access.UpdateSeats(
 		context.TODO(),
-		"023e105f4ecef8ad9ca31a8372d0c353",
+		"699d98642c564d2e855e9661899b7252",
 		cfrex.AccountAccessUpdateSeatsParams{
 			Body: []cfrex.AccountAccessUpdateSeatsParamsBody{{
 				AccessSeat:  cfrex.F(false),
@@ -67,7 +66,7 @@ func main() {
 	if err != nil {
 		panic(err.Error())
 	}
-	fmt.Printf("%+v\n", response)
+	fmt.Printf("%+v\n", response.Errors)
 }
 
 ```
@@ -187,7 +186,7 @@ To handle errors, we recommend that you use the `errors.As` pattern:
 ```go
 _, err := client.Accounts.Access.UpdateSeats(
 	context.TODO(),
-	"023e105f4ecef8ad9ca31a8372d0c353",
+	"699d98642c564d2e855e9661899b7252",
 	cfrex.AccountAccessUpdateSeatsParams{
 		Body: []cfrex.AccountAccessUpdateSeatsParamsBody{{
 			AccessSeat:  cfrex.F(false),
@@ -222,7 +221,7 @@ ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
 defer cancel()
 client.Accounts.Access.UpdateSeats(
 	ctx,
-	"023e105f4ecef8ad9ca31a8372d0c353",
+	"699d98642c564d2e855e9661899b7252",
 	cfrex.AccountAccessUpdateSeatsParams{
 		Body: []cfrex.AccountAccessUpdateSeatsParamsBody{{
 			AccessSeat:  cfrex.F(false),
@@ -283,7 +282,7 @@ client := cfrex.NewClient(
 // Override per-request:
 client.Accounts.Access.UpdateSeats(
 	context.TODO(),
-	"023e105f4ecef8ad9ca31a8372d0c353",
+	"699d98642c564d2e855e9661899b7252",
 	cfrex.AccountAccessUpdateSeatsParams{
 		Body: []cfrex.AccountAccessUpdateSeatsParamsBody{{
 			AccessSeat:  cfrex.F(false),
@@ -305,7 +304,7 @@ you need to examine response headers, status codes, or other details.
 var response *http.Response
 response, err := client.Accounts.Access.UpdateSeats(
 	context.TODO(),
-	"023e105f4ecef8ad9ca31a8372d0c353",
+	"699d98642c564d2e855e9661899b7252",
 	cfrex.AccountAccessUpdateSeatsParams{
 		Body: []cfrex.AccountAccessUpdateSeatsParamsBody{{
 			AccessSeat:  cfrex.F(false),

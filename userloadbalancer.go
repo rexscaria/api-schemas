@@ -4,6 +4,7 @@ package cfrex
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net/http"
 
@@ -35,9 +36,13 @@ func NewUserLoadBalancerService(opts ...option.RequestOption) (r *UserLoadBalanc
 }
 
 // Get the result of a previous preview operation using the provided preview_id.
-func (r *UserLoadBalancerService) PreviewResult(ctx context.Context, previewID interface{}, opts ...option.RequestOption) (res *PreviewResultResponse, err error) {
+func (r *UserLoadBalancerService) PreviewResult(ctx context.Context, previewID string, opts ...option.RequestOption) (res *PreviewResultResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	path := fmt.Sprintf("user/load_balancers/preview/%v", previewID)
+	if previewID == "" {
+		err = errors.New("missing required preview_id parameter")
+		return
+	}
+	path := fmt.Sprintf("user/load_balancers/preview/%s", previewID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }

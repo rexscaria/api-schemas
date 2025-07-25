@@ -30,7 +30,6 @@ func TestRadarAs112TimeseriesGroupGetDnssecWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Radar.As112.TimeseriesGroups.GetDnssec(context.TODO(), cfrex.RadarAs112TimeseriesGroupGetDnssecParams{
 		AggInterval:  cfrex.F(cfrex.RadarAs112TimeseriesGroupGetDnssecParamsAggInterval1h),
-		Asn:          cfrex.F([]string{"string"}),
 		Continent:    cfrex.F([]string{"string"}),
 		DateEnd:      cfrex.F([]time.Time{time.Now()}),
 		DateRange:    cfrex.F([]string{"7d"}),
@@ -67,7 +66,6 @@ func TestRadarAs112TimeseriesGroupGetEdnsWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Radar.As112.TimeseriesGroups.GetEdns(context.TODO(), cfrex.RadarAs112TimeseriesGroupGetEdnsParams{
 		AggInterval:  cfrex.F(cfrex.RadarAs112TimeseriesGroupGetEdnsParamsAggInterval1h),
-		Asn:          cfrex.F([]string{"string"}),
 		Continent:    cfrex.F([]string{"string"}),
 		DateEnd:      cfrex.F([]time.Time{time.Now()}),
 		DateRange:    cfrex.F([]string{"7d"}),
@@ -104,7 +102,6 @@ func TestRadarAs112TimeseriesGroupGetIPVersionWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Radar.As112.TimeseriesGroups.GetIPVersion(context.TODO(), cfrex.RadarAs112TimeseriesGroupGetIPVersionParams{
 		AggInterval:  cfrex.F(cfrex.RadarAs112TimeseriesGroupGetIPVersionParamsAggInterval1h),
-		Asn:          cfrex.F([]string{"string"}),
 		Continent:    cfrex.F([]string{"string"}),
 		DateEnd:      cfrex.F([]time.Time{time.Now()}),
 		DateRange:    cfrex.F([]string{"7d"}),
@@ -141,7 +138,6 @@ func TestRadarAs112TimeseriesGroupGetProtocolWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Radar.As112.TimeseriesGroups.GetProtocol(context.TODO(), cfrex.RadarAs112TimeseriesGroupGetProtocolParams{
 		AggInterval:  cfrex.F(cfrex.RadarAs112TimeseriesGroupGetProtocolParamsAggInterval1h),
-		Asn:          cfrex.F([]string{"string"}),
 		Continent:    cfrex.F([]string{"string"}),
 		DateEnd:      cfrex.F([]time.Time{time.Now()}),
 		DateRange:    cfrex.F([]string{"7d"}),
@@ -177,7 +173,6 @@ func TestRadarAs112TimeseriesGroupGetQueryTypeWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Radar.As112.TimeseriesGroups.GetQueryType(context.TODO(), cfrex.RadarAs112TimeseriesGroupGetQueryTypeParams{
 		AggInterval:   cfrex.F(cfrex.RadarAs112TimeseriesGroupGetQueryTypeParamsAggInterval1h),
-		Asn:           cfrex.F([]string{"string"}),
 		Continent:     cfrex.F([]string{"string"}),
 		DateEnd:       cfrex.F([]time.Time{time.Now()}),
 		DateRange:     cfrex.F([]string{"7d"}),
@@ -214,7 +209,6 @@ func TestRadarAs112TimeseriesGroupGetResponseCodesWithOptionalParams(t *testing.
 	)
 	_, err := client.Radar.As112.TimeseriesGroups.GetResponseCodes(context.TODO(), cfrex.RadarAs112TimeseriesGroupGetResponseCodesParams{
 		AggInterval:   cfrex.F(cfrex.RadarAs112TimeseriesGroupGetResponseCodesParamsAggInterval1h),
-		Asn:           cfrex.F([]string{"string"}),
 		Continent:     cfrex.F([]string{"string"}),
 		DateEnd:       cfrex.F([]time.Time{time.Now()}),
 		DateRange:     cfrex.F([]string{"7d"}),

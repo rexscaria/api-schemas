@@ -100,10 +100,10 @@ func (r radarBgpGetTimeseriesResponseResultJSON) RawJSON() string {
 }
 
 type RadarBgpGetTimeseriesResponseResultMeta struct {
-	AggInterval    string                                                `json:"aggInterval,required"`
+	AggInterval    RadarBgpGetTimeseriesResponseResultMetaAggInterval    `json:"aggInterval,required"`
+	ConfidenceInfo RadarBgpGetTimeseriesResponseResultMetaConfidenceInfo `json:"confidenceInfo,required"`
 	DateRange      []RadarBgpGetTimeseriesResponseResultMetaDateRange    `json:"dateRange,required"`
 	LastUpdated    time.Time                                             `json:"lastUpdated,required" format:"date-time"`
-	ConfidenceInfo RadarBgpGetTimeseriesResponseResultMetaConfidenceInfo `json:"confidenceInfo"`
 	JSON           radarBgpGetTimeseriesResponseResultMetaJSON           `json:"-"`
 }
 
@@ -111,9 +111,9 @@ type RadarBgpGetTimeseriesResponseResultMeta struct {
 // struct [RadarBgpGetTimeseriesResponseResultMeta]
 type radarBgpGetTimeseriesResponseResultMetaJSON struct {
 	AggInterval    apijson.Field
+	ConfidenceInfo apijson.Field
 	DateRange      apijson.Field
 	LastUpdated    apijson.Field
-	ConfidenceInfo apijson.Field
 	raw            string
 	ExtraFields    map[string]apijson.Field
 }
@@ -123,6 +123,83 @@ func (r *RadarBgpGetTimeseriesResponseResultMeta) UnmarshalJSON(data []byte) (er
 }
 
 func (r radarBgpGetTimeseriesResponseResultMetaJSON) RawJSON() string {
+	return r.raw
+}
+
+type RadarBgpGetTimeseriesResponseResultMetaAggInterval string
+
+const (
+	RadarBgpGetTimeseriesResponseResultMetaAggInterval15m RadarBgpGetTimeseriesResponseResultMetaAggInterval = "15m"
+	RadarBgpGetTimeseriesResponseResultMetaAggInterval1h  RadarBgpGetTimeseriesResponseResultMetaAggInterval = "1h"
+	RadarBgpGetTimeseriesResponseResultMetaAggInterval1d  RadarBgpGetTimeseriesResponseResultMetaAggInterval = "1d"
+	RadarBgpGetTimeseriesResponseResultMetaAggInterval1w  RadarBgpGetTimeseriesResponseResultMetaAggInterval = "1w"
+)
+
+func (r RadarBgpGetTimeseriesResponseResultMetaAggInterval) IsKnown() bool {
+	switch r {
+	case RadarBgpGetTimeseriesResponseResultMetaAggInterval15m, RadarBgpGetTimeseriesResponseResultMetaAggInterval1h, RadarBgpGetTimeseriesResponseResultMetaAggInterval1d, RadarBgpGetTimeseriesResponseResultMetaAggInterval1w:
+		return true
+	}
+	return false
+}
+
+type RadarBgpGetTimeseriesResponseResultMetaConfidenceInfo struct {
+	Annotations []RadarBgpGetTimeseriesResponseResultMetaConfidenceInfoAnnotation `json:"annotations,required"`
+	// Provides an indication of how much confidence Cloudflare has in the data.
+	Level int64                                                     `json:"level,required"`
+	JSON  radarBgpGetTimeseriesResponseResultMetaConfidenceInfoJSON `json:"-"`
+}
+
+// radarBgpGetTimeseriesResponseResultMetaConfidenceInfoJSON contains the JSON
+// metadata for the struct [RadarBgpGetTimeseriesResponseResultMetaConfidenceInfo]
+type radarBgpGetTimeseriesResponseResultMetaConfidenceInfoJSON struct {
+	Annotations apijson.Field
+	Level       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *RadarBgpGetTimeseriesResponseResultMetaConfidenceInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarBgpGetTimeseriesResponseResultMetaConfidenceInfoJSON) RawJSON() string {
+	return r.raw
+}
+
+// Annotation associated with the result (e.g. outage or other type of event).
+type RadarBgpGetTimeseriesResponseResultMetaConfidenceInfoAnnotation struct {
+	DataSource  string    `json:"dataSource,required"`
+	Description string    `json:"description,required"`
+	EndDate     time.Time `json:"endDate,required" format:"date-time"`
+	EventType   string    `json:"eventType,required"`
+	// Whether event is a single point in time or a time range.
+	IsInstantaneous bool                                                                `json:"isInstantaneous,required"`
+	LinkedURL       string                                                              `json:"linkedUrl,required" format:"uri"`
+	StartDate       time.Time                                                           `json:"startDate,required" format:"date-time"`
+	JSON            radarBgpGetTimeseriesResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
+}
+
+// radarBgpGetTimeseriesResponseResultMetaConfidenceInfoAnnotationJSON contains the
+// JSON metadata for the struct
+// [RadarBgpGetTimeseriesResponseResultMetaConfidenceInfoAnnotation]
+type radarBgpGetTimeseriesResponseResultMetaConfidenceInfoAnnotationJSON struct {
+	DataSource      apijson.Field
+	Description     apijson.Field
+	EndDate         apijson.Field
+	EventType       apijson.Field
+	IsInstantaneous apijson.Field
+	LinkedURL       apijson.Field
+	StartDate       apijson.Field
+	raw             string
+	ExtraFields     map[string]apijson.Field
+}
+
+func (r *RadarBgpGetTimeseriesResponseResultMetaConfidenceInfoAnnotation) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarBgpGetTimeseriesResponseResultMetaConfidenceInfoAnnotationJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -151,63 +228,6 @@ func (r radarBgpGetTimeseriesResponseResultMetaDateRangeJSON) RawJSON() string {
 	return r.raw
 }
 
-type RadarBgpGetTimeseriesResponseResultMetaConfidenceInfo struct {
-	Annotations []RadarBgpGetTimeseriesResponseResultMetaConfidenceInfoAnnotation `json:"annotations"`
-	Level       int64                                                             `json:"level"`
-	JSON        radarBgpGetTimeseriesResponseResultMetaConfidenceInfoJSON         `json:"-"`
-}
-
-// radarBgpGetTimeseriesResponseResultMetaConfidenceInfoJSON contains the JSON
-// metadata for the struct [RadarBgpGetTimeseriesResponseResultMetaConfidenceInfo]
-type radarBgpGetTimeseriesResponseResultMetaConfidenceInfoJSON struct {
-	Annotations apijson.Field
-	Level       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *RadarBgpGetTimeseriesResponseResultMetaConfidenceInfo) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r radarBgpGetTimeseriesResponseResultMetaConfidenceInfoJSON) RawJSON() string {
-	return r.raw
-}
-
-type RadarBgpGetTimeseriesResponseResultMetaConfidenceInfoAnnotation struct {
-	DataSource      string                                                              `json:"dataSource,required"`
-	Description     string                                                              `json:"description,required"`
-	EventType       string                                                              `json:"eventType,required"`
-	IsInstantaneous bool                                                                `json:"isInstantaneous,required"`
-	EndTime         time.Time                                                           `json:"endTime" format:"date-time"`
-	LinkedURL       string                                                              `json:"linkedUrl"`
-	StartTime       time.Time                                                           `json:"startTime" format:"date-time"`
-	JSON            radarBgpGetTimeseriesResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
-}
-
-// radarBgpGetTimeseriesResponseResultMetaConfidenceInfoAnnotationJSON contains the
-// JSON metadata for the struct
-// [RadarBgpGetTimeseriesResponseResultMetaConfidenceInfoAnnotation]
-type radarBgpGetTimeseriesResponseResultMetaConfidenceInfoAnnotationJSON struct {
-	DataSource      apijson.Field
-	Description     apijson.Field
-	EventType       apijson.Field
-	IsInstantaneous apijson.Field
-	EndTime         apijson.Field
-	LinkedURL       apijson.Field
-	StartTime       apijson.Field
-	raw             string
-	ExtraFields     map[string]apijson.Field
-}
-
-func (r *RadarBgpGetTimeseriesResponseResultMetaConfidenceInfoAnnotation) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r radarBgpGetTimeseriesResponseResultMetaConfidenceInfoAnnotationJSON) RawJSON() string {
-	return r.raw
-}
-
 type RadarBgpGetTimeseriesResponseResultSerie0 struct {
 	Timestamps []time.Time                                   `json:"timestamps,required" format:"date-time"`
 	Values     []string                                      `json:"values,required"`
@@ -232,19 +252,20 @@ func (r radarBgpGetTimeseriesResponseResultSerie0JSON) RawJSON() string {
 }
 
 type RadarBgpGetTimeseriesParams struct {
-	// Aggregation interval results should be returned in (for example, in 15 minutes
-	// or 1 hour intervals). Refer to
+	// Aggregation interval of the results (e.g., in 15 minutes or 1 hour intervals).
+	// Refer to
 	// [Aggregation intervals](https://developers.cloudflare.com/radar/concepts/aggregation-intervals/).
 	AggInterval param.Field[RadarBgpGetTimeseriesParamsAggInterval] `query:"aggInterval"`
-	// Comma-separated list of Autonomous System Numbers (ASNs). Prefix with `-` to
-	// exclude ASNs from results. For example, `-174, 3356` excludes results from
-	// AS174, but includes results from AS3356.
+	// Filters results by Autonomous System. Specify one or more Autonomous System
+	// Numbers (ASNs) as a comma-separated list. Prefix with `-` to exclude ASNs from
+	// results. For example, `-174, 3356` excludes results from AS174, but includes
+	// results from AS3356.
 	Asn param.Field[[]string] `query:"asn"`
 	// End of the date range (inclusive).
 	DateEnd param.Field[[]time.Time] `query:"dateEnd" format:"date-time"`
-	// Filters results by the specified date range. For example, use `7d` and
-	// `7dcontrol` to compare this week with the previous week. Use this parameter or
-	// set specific start and end dates (`dateStart` and `dateEnd` parameters).
+	// Filters results by date range. For example, use `7d` and `7dcontrol` to compare
+	// this week with the previous week. Use this parameter or set specific start and
+	// end dates (`dateStart` and `dateEnd` parameters).
 	DateRange param.Field[[]string] `query:"dateRange"`
 	// Start of the date range.
 	DateStart param.Field[[]time.Time] `query:"dateStart" format:"date-time"`
@@ -252,9 +273,9 @@ type RadarBgpGetTimeseriesParams struct {
 	Format param.Field[RadarBgpGetTimeseriesParamsFormat] `query:"format"`
 	// Array of names used to label the series in the response.
 	Name param.Field[[]string] `query:"name"`
-	// Array of BGP network prefixes.
+	// Filters results by BGP network prefix.
 	Prefix param.Field[[]string] `query:"prefix"`
-	// Array of BGP update types.
+	// Filters results by BGP update type.
 	UpdateType param.Field[[]RadarBgpGetTimeseriesParamsUpdateType] `query:"updateType"`
 }
 
@@ -267,8 +288,8 @@ func (r RadarBgpGetTimeseriesParams) URLQuery() (v url.Values) {
 	})
 }
 
-// Aggregation interval results should be returned in (for example, in 15 minutes
-// or 1 hour intervals). Refer to
+// Aggregation interval of the results (e.g., in 15 minutes or 1 hour intervals).
+// Refer to
 // [Aggregation intervals](https://developers.cloudflare.com/radar/concepts/aggregation-intervals/).
 type RadarBgpGetTimeseriesParamsAggInterval string
 

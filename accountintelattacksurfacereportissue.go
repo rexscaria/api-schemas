@@ -184,14 +184,20 @@ func (r SeverityQueryParam) IsKnown() bool {
 }
 
 type ValueCountsResponse struct {
-	Result []ValueCountsResponseResult `json:"result"`
-	JSON   valueCountsResponseJSON     `json:"-"`
-	CommonResponseAttackSurfaceReport
+	Errors   []AttackSurfaceReportMessage `json:"errors,required"`
+	Messages []AttackSurfaceReportMessage `json:"messages,required"`
+	// Whether the API call was successful.
+	Success ValueCountsResponseSuccess  `json:"success,required"`
+	Result  []ValueCountsResponseResult `json:"result"`
+	JSON    valueCountsResponseJSON     `json:"-"`
 }
 
 // valueCountsResponseJSON contains the JSON metadata for the struct
 // [ValueCountsResponse]
 type valueCountsResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -203,6 +209,21 @@ func (r *ValueCountsResponse) UnmarshalJSON(data []byte) (err error) {
 
 func (r valueCountsResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type ValueCountsResponseSuccess bool
+
+const (
+	ValueCountsResponseSuccessTrue ValueCountsResponseSuccess = true
+)
+
+func (r ValueCountsResponseSuccess) IsKnown() bool {
+	switch r {
+	case ValueCountsResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type ValueCountsResponseResult struct {
@@ -229,14 +250,20 @@ func (r valueCountsResponseResultJSON) RawJSON() string {
 }
 
 type AccountIntelAttackSurfaceReportIssueListResponse struct {
-	Result AccountIntelAttackSurfaceReportIssueListResponseResult `json:"result"`
-	JSON   accountIntelAttackSurfaceReportIssueListResponseJSON   `json:"-"`
-	CommonResponseAttackSurfaceReport
+	Errors   []AttackSurfaceReportMessage `json:"errors,required"`
+	Messages []AttackSurfaceReportMessage `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountIntelAttackSurfaceReportIssueListResponseSuccess `json:"success,required"`
+	Result  AccountIntelAttackSurfaceReportIssueListResponseResult  `json:"result"`
+	JSON    accountIntelAttackSurfaceReportIssueListResponseJSON    `json:"-"`
 }
 
 // accountIntelAttackSurfaceReportIssueListResponseJSON contains the JSON metadata
 // for the struct [AccountIntelAttackSurfaceReportIssueListResponse]
 type accountIntelAttackSurfaceReportIssueListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -248,6 +275,21 @@ func (r *AccountIntelAttackSurfaceReportIssueListResponse) UnmarshalJSON(data []
 
 func (r accountIntelAttackSurfaceReportIssueListResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountIntelAttackSurfaceReportIssueListResponseSuccess bool
+
+const (
+	AccountIntelAttackSurfaceReportIssueListResponseSuccessTrue AccountIntelAttackSurfaceReportIssueListResponseSuccess = true
+)
+
+func (r AccountIntelAttackSurfaceReportIssueListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountIntelAttackSurfaceReportIssueListResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountIntelAttackSurfaceReportIssueListResponseResult struct {

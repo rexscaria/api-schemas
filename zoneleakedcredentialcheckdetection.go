@@ -7,14 +7,11 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"reflect"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
 	"github.com/rexscaria/api-schemas/internal/requestconfig"
 	"github.com/rexscaria/api-schemas/option"
-	"github.com/rexscaria/api-schemas/shared"
-	"github.com/tidwall/gjson"
 )
 
 // ZoneLeakedCredentialCheckDetectionService contains methods and other services
@@ -37,7 +34,7 @@ func NewZoneLeakedCredentialCheckDetectionService(opts ...option.RequestOption) 
 	return
 }
 
-// Create user-defined detection pattern for Leaked Credential Checks
+// Create user-defined detection pattern for Leaked Credential Checks.
 func (r *ZoneLeakedCredentialCheckDetectionService) New(ctx context.Context, zoneID string, body ZoneLeakedCredentialCheckDetectionNewParams, opts ...option.RequestOption) (res *ResponseCustomDetection, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
@@ -49,7 +46,7 @@ func (r *ZoneLeakedCredentialCheckDetectionService) New(ctx context.Context, zon
 	return
 }
 
-// Update user-defined detection pattern for Leaked Credential Checks
+// Update user-defined detection pattern for Leaked Credential Checks.
 func (r *ZoneLeakedCredentialCheckDetectionService) Update(ctx context.Context, zoneID string, detectionID DetectionIDParam, body ZoneLeakedCredentialCheckDetectionUpdateParams, opts ...option.RequestOption) (res *ResponseCustomDetection, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
@@ -65,7 +62,7 @@ func (r *ZoneLeakedCredentialCheckDetectionService) Update(ctx context.Context, 
 	return
 }
 
-// List user-defined detection patterns for Leaked Credential Checks
+// List user-defined detection patterns for Leaked Credential Checks.
 func (r *ZoneLeakedCredentialCheckDetectionService) List(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *ZoneLeakedCredentialCheckDetectionListResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
@@ -77,7 +74,7 @@ func (r *ZoneLeakedCredentialCheckDetectionService) List(ctx context.Context, zo
 	return
 }
 
-// Remove user-defined detection pattern for Leaked Credential Checks
+// Remove user-defined detection pattern for Leaked Credential Checks.
 func (r *ZoneLeakedCredentialCheckDetectionService) Delete(ctx context.Context, zoneID string, detectionID DetectionIDParam, opts ...option.RequestOption) (res *APIResponseWafProductBundle, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
@@ -94,10 +91,10 @@ func (r *ZoneLeakedCredentialCheckDetectionService) Delete(ctx context.Context, 
 }
 
 type APIResponseWafProductBundle struct {
-	Errors   []WafProductAPIBundleMessages          `json:"errors,required"`
-	Messages []WafProductAPIBundleMessages          `json:"messages,required"`
-	Result   APIResponseWafProductBundleResultUnion `json:"result,required"`
-	// Whether the API call was successful
+	Errors   []APIResponseWafProductBundleError   `json:"errors,required"`
+	Messages []APIResponseWafProductBundleMessage `json:"messages,required"`
+	Result   interface{}                          `json:"result,required"`
+	// Defines whether the API call was successful.
 	Success APIResponseWafProductBundleSuccess `json:"success,required"`
 	JSON    apiResponseWafProductBundleJSON    `json:"-"`
 }
@@ -121,32 +118,103 @@ func (r apiResponseWafProductBundleJSON) RawJSON() string {
 	return r.raw
 }
 
-// Union satisfied by [APIResponseWafProductBundleResultArray] or
-// [shared.UnionString].
-type APIResponseWafProductBundleResultUnion interface {
-	ImplementsAPIResponseWafProductBundleResultUnion()
+type APIResponseWafProductBundleError struct {
+	Code             int64                                   `json:"code,required"`
+	Message          string                                  `json:"message,required"`
+	DocumentationURL string                                  `json:"documentation_url"`
+	Source           APIResponseWafProductBundleErrorsSource `json:"source"`
+	JSON             apiResponseWafProductBundleErrorJSON    `json:"-"`
 }
 
-func init() {
-	apijson.RegisterUnion(
-		reflect.TypeOf((*APIResponseWafProductBundleResultUnion)(nil)).Elem(),
-		"",
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(APIResponseWafProductBundleResultArray{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.String,
-			Type:       reflect.TypeOf(shared.UnionString("")),
-		},
-	)
+// apiResponseWafProductBundleErrorJSON contains the JSON metadata for the struct
+// [APIResponseWafProductBundleError]
+type apiResponseWafProductBundleErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
 }
 
-type APIResponseWafProductBundleResultArray []interface{}
+func (r *APIResponseWafProductBundleError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
 
-func (r APIResponseWafProductBundleResultArray) ImplementsAPIResponseWafProductBundleResultUnion() {}
+func (r apiResponseWafProductBundleErrorJSON) RawJSON() string {
+	return r.raw
+}
 
-// Whether the API call was successful
+type APIResponseWafProductBundleErrorsSource struct {
+	Pointer string                                      `json:"pointer"`
+	JSON    apiResponseWafProductBundleErrorsSourceJSON `json:"-"`
+}
+
+// apiResponseWafProductBundleErrorsSourceJSON contains the JSON metadata for the
+// struct [APIResponseWafProductBundleErrorsSource]
+type apiResponseWafProductBundleErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *APIResponseWafProductBundleErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r apiResponseWafProductBundleErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type APIResponseWafProductBundleMessage struct {
+	Code             int64                                     `json:"code,required"`
+	Message          string                                    `json:"message,required"`
+	DocumentationURL string                                    `json:"documentation_url"`
+	Source           APIResponseWafProductBundleMessagesSource `json:"source"`
+	JSON             apiResponseWafProductBundleMessageJSON    `json:"-"`
+}
+
+// apiResponseWafProductBundleMessageJSON contains the JSON metadata for the struct
+// [APIResponseWafProductBundleMessage]
+type apiResponseWafProductBundleMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *APIResponseWafProductBundleMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r apiResponseWafProductBundleMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type APIResponseWafProductBundleMessagesSource struct {
+	Pointer string                                        `json:"pointer"`
+	JSON    apiResponseWafProductBundleMessagesSourceJSON `json:"-"`
+}
+
+// apiResponseWafProductBundleMessagesSourceJSON contains the JSON metadata for the
+// struct [APIResponseWafProductBundleMessagesSource]
+type apiResponseWafProductBundleMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *APIResponseWafProductBundleMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r apiResponseWafProductBundleMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Defines whether the API call was successful.
 type APIResponseWafProductBundleSuccess bool
 
 const (
@@ -161,14 +229,14 @@ func (r APIResponseWafProductBundleSuccess) IsKnown() bool {
 	return false
 }
 
-// A custom set of username/password expressions to match Leaked Credential Checks
-// on
+// Defines a custom set of username/password expressions to match Leaked Credential
+// Checks on.
 type CustomDetection struct {
-	// Identifier
+	// Defines the unique ID for this custom detection.
 	ID DetectionID `json:"id"`
-	// The ruleset expression to use in matching the password in a request
+	// Defines ehe ruleset expression to use in matching the password in a request.
 	Password string `json:"password"`
-	// The ruleset expression to use in matching the username in a request
+	// Defines the ruleset expression to use in matching the username in a request.
 	Username string              `json:"username"`
 	JSON     customDetectionJSON `json:"-"`
 }
@@ -190,12 +258,12 @@ func (r customDetectionJSON) RawJSON() string {
 	return r.raw
 }
 
-// A custom set of username/password expressions to match Leaked Credential Checks
-// on
+// Defines a custom set of username/password expressions to match Leaked Credential
+// Checks on.
 type CustomDetectionParam struct {
-	// The ruleset expression to use in matching the password in a request
+	// Defines ehe ruleset expression to use in matching the password in a request.
 	Password param.Field[string] `json:"password"`
-	// The ruleset expression to use in matching the username in a request
+	// Defines the ruleset expression to use in matching the username in a request.
 	Username param.Field[string] `json:"username"`
 }
 
@@ -208,17 +276,23 @@ type DetectionID = string
 type DetectionIDParam = string
 
 type ResponseCustomDetection struct {
-	// A custom set of username/password expressions to match Leaked Credential Checks
-	// on
-	Result CustomDetection             `json:"result"`
-	JSON   responseCustomDetectionJSON `json:"-"`
-	APIResponseSingleWafProductBundle
+	Errors   []WafProductAPIBundleMessages `json:"errors,required"`
+	Messages []WafProductAPIBundleMessages `json:"messages,required"`
+	// Defines a custom set of username/password expressions to match Leaked Credential
+	// Checks on.
+	Result CustomDetection `json:"result,required"`
+	// Defines whether the API call was successful.
+	Success ResponseCustomDetectionSuccess `json:"success,required"`
+	JSON    responseCustomDetectionJSON    `json:"-"`
 }
 
 // responseCustomDetectionJSON contains the JSON metadata for the struct
 // [ResponseCustomDetection]
 type responseCustomDetectionJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -231,16 +305,37 @@ func (r responseCustomDetectionJSON) RawJSON() string {
 	return r.raw
 }
 
+// Defines whether the API call was successful.
+type ResponseCustomDetectionSuccess bool
+
+const (
+	ResponseCustomDetectionSuccessTrue ResponseCustomDetectionSuccess = true
+)
+
+func (r ResponseCustomDetectionSuccess) IsKnown() bool {
+	switch r {
+	case ResponseCustomDetectionSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type ZoneLeakedCredentialCheckDetectionListResponse struct {
-	Result []CustomDetection                                  `json:"result,nullable"`
-	JSON   zoneLeakedCredentialCheckDetectionListResponseJSON `json:"-"`
-	APIResponseWafProductBundle
+	Errors   []WafProductAPIBundleMessages `json:"errors,required"`
+	Messages []WafProductAPIBundleMessages `json:"messages,required"`
+	Result   []CustomDetection             `json:"result,required,nullable"`
+	// Defines whether the API call was successful.
+	Success ZoneLeakedCredentialCheckDetectionListResponseSuccess `json:"success,required"`
+	JSON    zoneLeakedCredentialCheckDetectionListResponseJSON    `json:"-"`
 }
 
 // zoneLeakedCredentialCheckDetectionListResponseJSON contains the JSON metadata
 // for the struct [ZoneLeakedCredentialCheckDetectionListResponse]
 type zoneLeakedCredentialCheckDetectionListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -253,9 +348,24 @@ func (r zoneLeakedCredentialCheckDetectionListResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Defines whether the API call was successful.
+type ZoneLeakedCredentialCheckDetectionListResponseSuccess bool
+
+const (
+	ZoneLeakedCredentialCheckDetectionListResponseSuccessTrue ZoneLeakedCredentialCheckDetectionListResponseSuccess = true
+)
+
+func (r ZoneLeakedCredentialCheckDetectionListResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneLeakedCredentialCheckDetectionListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type ZoneLeakedCredentialCheckDetectionNewParams struct {
-	// A custom set of username/password expressions to match Leaked Credential Checks
-	// on
+	// Defines a custom set of username/password expressions to match Leaked Credential
+	// Checks on.
 	CustomDetection CustomDetectionParam `json:"custom_detection,required"`
 }
 
@@ -264,8 +374,8 @@ func (r ZoneLeakedCredentialCheckDetectionNewParams) MarshalJSON() (data []byte,
 }
 
 type ZoneLeakedCredentialCheckDetectionUpdateParams struct {
-	// A custom set of username/password expressions to match Leaked Credential Checks
-	// on
+	// Defines a custom set of username/password expressions to match Leaked Credential
+	// Checks on.
 	CustomDetection CustomDetectionParam `json:"custom_detection,required"`
 }
 

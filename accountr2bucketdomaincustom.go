@@ -117,7 +117,7 @@ func (r *AccountR2BucketDomainCustomService) Attach(ctx context.Context, account
 	return
 }
 
-// Remove custom domain registration from an existing R2 bucket
+// Remove custom domain registration from an existing R2 bucket.
 func (r *AccountR2BucketDomainCustomService) Remove(ctx context.Context, accountID string, bucketName string, domain string, body AccountR2BucketDomainCustomRemoveParams, opts ...option.RequestOption) (res *AccountR2BucketDomainCustomRemoveResponse, err error) {
 	if body.Jurisdiction.Present {
 		opts = append(opts, option.WithHeader("cf-r2-jurisdiction", fmt.Sprintf("%s", body.Jurisdiction)))
@@ -141,15 +141,21 @@ func (r *AccountR2BucketDomainCustomService) Remove(ctx context.Context, account
 }
 
 type AccountR2BucketDomainCustomGetResponse struct {
-	Result AccountR2BucketDomainCustomGetResponseResult `json:"result"`
-	JSON   accountR2BucketDomainCustomGetResponseJSON   `json:"-"`
-	R2V4Response
+	Errors   []AccountR2BucketDomainCustomGetResponseError `json:"errors,required"`
+	Messages []string                                      `json:"messages,required"`
+	Result   AccountR2BucketDomainCustomGetResponseResult  `json:"result,required"`
+	// Whether the API call was successful.
+	Success AccountR2BucketDomainCustomGetResponseSuccess `json:"success,required"`
+	JSON    accountR2BucketDomainCustomGetResponseJSON    `json:"-"`
 }
 
 // accountR2BucketDomainCustomGetResponseJSON contains the JSON metadata for the
 // struct [AccountR2BucketDomainCustomGetResponse]
 type accountR2BucketDomainCustomGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -162,18 +168,66 @@ func (r accountR2BucketDomainCustomGetResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+type AccountR2BucketDomainCustomGetResponseError struct {
+	Code             int64                                              `json:"code,required"`
+	Message          string                                             `json:"message,required"`
+	DocumentationURL string                                             `json:"documentation_url"`
+	Source           AccountR2BucketDomainCustomGetResponseErrorsSource `json:"source"`
+	JSON             accountR2BucketDomainCustomGetResponseErrorJSON    `json:"-"`
+}
+
+// accountR2BucketDomainCustomGetResponseErrorJSON contains the JSON metadata for
+// the struct [AccountR2BucketDomainCustomGetResponseError]
+type accountR2BucketDomainCustomGetResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountR2BucketDomainCustomGetResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountR2BucketDomainCustomGetResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountR2BucketDomainCustomGetResponseErrorsSource struct {
+	Pointer string                                                 `json:"pointer"`
+	JSON    accountR2BucketDomainCustomGetResponseErrorsSourceJSON `json:"-"`
+}
+
+// accountR2BucketDomainCustomGetResponseErrorsSourceJSON contains the JSON
+// metadata for the struct [AccountR2BucketDomainCustomGetResponseErrorsSource]
+type accountR2BucketDomainCustomGetResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountR2BucketDomainCustomGetResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountR2BucketDomainCustomGetResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
 type AccountR2BucketDomainCustomGetResponseResult struct {
-	// Domain name of the custom domain to be added
+	// Domain name of the custom domain to be added.
 	Domain string `json:"domain,required"`
-	// Whether this bucket is publicly accessible at the specified custom domain
+	// Whether this bucket is publicly accessible at the specified custom domain.
 	Enabled bool                                               `json:"enabled,required"`
 	Status  AccountR2BucketDomainCustomGetResponseResultStatus `json:"status,required"`
 	// Minimum TLS Version the custom domain will accept for incoming connections. If
 	// not set, defaults to 1.0.
 	MinTls AccountR2BucketDomainCustomGetResponseResultMinTls `json:"minTLS"`
-	// Zone ID of the custom domain resides in
+	// Zone ID of the custom domain resides in.
 	ZoneID string `json:"zoneId"`
-	// Zone that the custom domain resides in
+	// Zone that the custom domain resides in.
 	ZoneName string                                           `json:"zoneName"`
 	JSON     accountR2BucketDomainCustomGetResponseResultJSON `json:"-"`
 }
@@ -200,9 +254,9 @@ func (r accountR2BucketDomainCustomGetResponseResultJSON) RawJSON() string {
 }
 
 type AccountR2BucketDomainCustomGetResponseResultStatus struct {
-	// Ownership status of the domain
+	// Ownership status of the domain.
 	Ownership AccountR2BucketDomainCustomGetResponseResultStatusOwnership `json:"ownership,required"`
-	// SSL certificate status
+	// SSL certificate status.
 	Ssl  AccountR2BucketDomainCustomGetResponseResultStatusSsl  `json:"ssl,required"`
 	JSON accountR2BucketDomainCustomGetResponseResultStatusJSON `json:"-"`
 }
@@ -224,7 +278,7 @@ func (r accountR2BucketDomainCustomGetResponseResultStatusJSON) RawJSON() string
 	return r.raw
 }
 
-// Ownership status of the domain
+// Ownership status of the domain.
 type AccountR2BucketDomainCustomGetResponseResultStatusOwnership string
 
 const (
@@ -244,7 +298,7 @@ func (r AccountR2BucketDomainCustomGetResponseResultStatusOwnership) IsKnown() b
 	return false
 }
 
-// SSL certificate status
+// SSL certificate status.
 type AccountR2BucketDomainCustomGetResponseResultStatusSsl string
 
 const (
@@ -283,16 +337,37 @@ func (r AccountR2BucketDomainCustomGetResponseResultMinTls) IsKnown() bool {
 	return false
 }
 
+// Whether the API call was successful.
+type AccountR2BucketDomainCustomGetResponseSuccess bool
+
+const (
+	AccountR2BucketDomainCustomGetResponseSuccessTrue AccountR2BucketDomainCustomGetResponseSuccess = true
+)
+
+func (r AccountR2BucketDomainCustomGetResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountR2BucketDomainCustomGetResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountR2BucketDomainCustomUpdateResponse struct {
-	Result AccountR2BucketDomainCustomUpdateResponseResult `json:"result"`
-	JSON   accountR2BucketDomainCustomUpdateResponseJSON   `json:"-"`
-	R2V4Response
+	Errors   []AccountR2BucketDomainCustomUpdateResponseError `json:"errors,required"`
+	Messages []string                                         `json:"messages,required"`
+	Result   AccountR2BucketDomainCustomUpdateResponseResult  `json:"result,required"`
+	// Whether the API call was successful.
+	Success AccountR2BucketDomainCustomUpdateResponseSuccess `json:"success,required"`
+	JSON    accountR2BucketDomainCustomUpdateResponseJSON    `json:"-"`
 }
 
 // accountR2BucketDomainCustomUpdateResponseJSON contains the JSON metadata for the
 // struct [AccountR2BucketDomainCustomUpdateResponse]
 type accountR2BucketDomainCustomUpdateResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -305,10 +380,58 @@ func (r accountR2BucketDomainCustomUpdateResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+type AccountR2BucketDomainCustomUpdateResponseError struct {
+	Code             int64                                                 `json:"code,required"`
+	Message          string                                                `json:"message,required"`
+	DocumentationURL string                                                `json:"documentation_url"`
+	Source           AccountR2BucketDomainCustomUpdateResponseErrorsSource `json:"source"`
+	JSON             accountR2BucketDomainCustomUpdateResponseErrorJSON    `json:"-"`
+}
+
+// accountR2BucketDomainCustomUpdateResponseErrorJSON contains the JSON metadata
+// for the struct [AccountR2BucketDomainCustomUpdateResponseError]
+type accountR2BucketDomainCustomUpdateResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountR2BucketDomainCustomUpdateResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountR2BucketDomainCustomUpdateResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountR2BucketDomainCustomUpdateResponseErrorsSource struct {
+	Pointer string                                                    `json:"pointer"`
+	JSON    accountR2BucketDomainCustomUpdateResponseErrorsSourceJSON `json:"-"`
+}
+
+// accountR2BucketDomainCustomUpdateResponseErrorsSourceJSON contains the JSON
+// metadata for the struct [AccountR2BucketDomainCustomUpdateResponseErrorsSource]
+type accountR2BucketDomainCustomUpdateResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountR2BucketDomainCustomUpdateResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountR2BucketDomainCustomUpdateResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
 type AccountR2BucketDomainCustomUpdateResponseResult struct {
-	// Domain name of the affected custom domain
+	// Domain name of the affected custom domain.
 	Domain string `json:"domain,required"`
-	// Whether this bucket is publicly accessible at the specified custom domain
+	// Whether this bucket is publicly accessible at the specified custom domain.
 	Enabled bool `json:"enabled"`
 	// Minimum TLS Version the custom domain will accept for incoming connections. If
 	// not set, defaults to 1.0.
@@ -353,16 +476,37 @@ func (r AccountR2BucketDomainCustomUpdateResponseResultMinTls) IsKnown() bool {
 	return false
 }
 
+// Whether the API call was successful.
+type AccountR2BucketDomainCustomUpdateResponseSuccess bool
+
+const (
+	AccountR2BucketDomainCustomUpdateResponseSuccessTrue AccountR2BucketDomainCustomUpdateResponseSuccess = true
+)
+
+func (r AccountR2BucketDomainCustomUpdateResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountR2BucketDomainCustomUpdateResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountR2BucketDomainCustomListResponse struct {
-	Result AccountR2BucketDomainCustomListResponseResult `json:"result"`
-	JSON   accountR2BucketDomainCustomListResponseJSON   `json:"-"`
-	R2V4Response
+	Errors   []AccountR2BucketDomainCustomListResponseError `json:"errors,required"`
+	Messages []string                                       `json:"messages,required"`
+	Result   AccountR2BucketDomainCustomListResponseResult  `json:"result,required"`
+	// Whether the API call was successful.
+	Success AccountR2BucketDomainCustomListResponseSuccess `json:"success,required"`
+	JSON    accountR2BucketDomainCustomListResponseJSON    `json:"-"`
 }
 
 // accountR2BucketDomainCustomListResponseJSON contains the JSON metadata for the
 // struct [AccountR2BucketDomainCustomListResponse]
 type accountR2BucketDomainCustomListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -372,6 +516,54 @@ func (r *AccountR2BucketDomainCustomListResponse) UnmarshalJSON(data []byte) (er
 }
 
 func (r accountR2BucketDomainCustomListResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountR2BucketDomainCustomListResponseError struct {
+	Code             int64                                               `json:"code,required"`
+	Message          string                                              `json:"message,required"`
+	DocumentationURL string                                              `json:"documentation_url"`
+	Source           AccountR2BucketDomainCustomListResponseErrorsSource `json:"source"`
+	JSON             accountR2BucketDomainCustomListResponseErrorJSON    `json:"-"`
+}
+
+// accountR2BucketDomainCustomListResponseErrorJSON contains the JSON metadata for
+// the struct [AccountR2BucketDomainCustomListResponseError]
+type accountR2BucketDomainCustomListResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountR2BucketDomainCustomListResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountR2BucketDomainCustomListResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountR2BucketDomainCustomListResponseErrorsSource struct {
+	Pointer string                                                  `json:"pointer"`
+	JSON    accountR2BucketDomainCustomListResponseErrorsSourceJSON `json:"-"`
+}
+
+// accountR2BucketDomainCustomListResponseErrorsSourceJSON contains the JSON
+// metadata for the struct [AccountR2BucketDomainCustomListResponseErrorsSource]
+type accountR2BucketDomainCustomListResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountR2BucketDomainCustomListResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountR2BucketDomainCustomListResponseErrorsSourceJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -397,17 +589,17 @@ func (r accountR2BucketDomainCustomListResponseResultJSON) RawJSON() string {
 }
 
 type AccountR2BucketDomainCustomListResponseResultDomain struct {
-	// Domain name of the custom domain to be added
+	// Domain name of the custom domain to be added.
 	Domain string `json:"domain,required"`
-	// Whether this bucket is publicly accessible at the specified custom domain
+	// Whether this bucket is publicly accessible at the specified custom domain.
 	Enabled bool                                                       `json:"enabled,required"`
 	Status  AccountR2BucketDomainCustomListResponseResultDomainsStatus `json:"status,required"`
 	// Minimum TLS Version the custom domain will accept for incoming connections. If
 	// not set, defaults to 1.0.
 	MinTls AccountR2BucketDomainCustomListResponseResultDomainsMinTls `json:"minTLS"`
-	// Zone ID of the custom domain resides in
+	// Zone ID of the custom domain resides in.
 	ZoneID string `json:"zoneId"`
-	// Zone that the custom domain resides in
+	// Zone that the custom domain resides in.
 	ZoneName string                                                  `json:"zoneName"`
 	JSON     accountR2BucketDomainCustomListResponseResultDomainJSON `json:"-"`
 }
@@ -434,9 +626,9 @@ func (r accountR2BucketDomainCustomListResponseResultDomainJSON) RawJSON() strin
 }
 
 type AccountR2BucketDomainCustomListResponseResultDomainsStatus struct {
-	// Ownership status of the domain
+	// Ownership status of the domain.
 	Ownership AccountR2BucketDomainCustomListResponseResultDomainsStatusOwnership `json:"ownership,required"`
-	// SSL certificate status
+	// SSL certificate status.
 	Ssl  AccountR2BucketDomainCustomListResponseResultDomainsStatusSsl  `json:"ssl,required"`
 	JSON accountR2BucketDomainCustomListResponseResultDomainsStatusJSON `json:"-"`
 }
@@ -459,7 +651,7 @@ func (r accountR2BucketDomainCustomListResponseResultDomainsStatusJSON) RawJSON(
 	return r.raw
 }
 
-// Ownership status of the domain
+// Ownership status of the domain.
 type AccountR2BucketDomainCustomListResponseResultDomainsStatusOwnership string
 
 const (
@@ -479,7 +671,7 @@ func (r AccountR2BucketDomainCustomListResponseResultDomainsStatusOwnership) IsK
 	return false
 }
 
-// SSL certificate status
+// SSL certificate status.
 type AccountR2BucketDomainCustomListResponseResultDomainsStatusSsl string
 
 const (
@@ -518,16 +710,37 @@ func (r AccountR2BucketDomainCustomListResponseResultDomainsMinTls) IsKnown() bo
 	return false
 }
 
+// Whether the API call was successful.
+type AccountR2BucketDomainCustomListResponseSuccess bool
+
+const (
+	AccountR2BucketDomainCustomListResponseSuccessTrue AccountR2BucketDomainCustomListResponseSuccess = true
+)
+
+func (r AccountR2BucketDomainCustomListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountR2BucketDomainCustomListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountR2BucketDomainCustomAttachResponse struct {
-	Result AccountR2BucketDomainCustomAttachResponseResult `json:"result"`
-	JSON   accountR2BucketDomainCustomAttachResponseJSON   `json:"-"`
-	R2V4Response
+	Errors   []AccountR2BucketDomainCustomAttachResponseError `json:"errors,required"`
+	Messages []string                                         `json:"messages,required"`
+	Result   AccountR2BucketDomainCustomAttachResponseResult  `json:"result,required"`
+	// Whether the API call was successful.
+	Success AccountR2BucketDomainCustomAttachResponseSuccess `json:"success,required"`
+	JSON    accountR2BucketDomainCustomAttachResponseJSON    `json:"-"`
 }
 
 // accountR2BucketDomainCustomAttachResponseJSON contains the JSON metadata for the
 // struct [AccountR2BucketDomainCustomAttachResponse]
 type accountR2BucketDomainCustomAttachResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -540,10 +753,58 @@ func (r accountR2BucketDomainCustomAttachResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+type AccountR2BucketDomainCustomAttachResponseError struct {
+	Code             int64                                                 `json:"code,required"`
+	Message          string                                                `json:"message,required"`
+	DocumentationURL string                                                `json:"documentation_url"`
+	Source           AccountR2BucketDomainCustomAttachResponseErrorsSource `json:"source"`
+	JSON             accountR2BucketDomainCustomAttachResponseErrorJSON    `json:"-"`
+}
+
+// accountR2BucketDomainCustomAttachResponseErrorJSON contains the JSON metadata
+// for the struct [AccountR2BucketDomainCustomAttachResponseError]
+type accountR2BucketDomainCustomAttachResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountR2BucketDomainCustomAttachResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountR2BucketDomainCustomAttachResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountR2BucketDomainCustomAttachResponseErrorsSource struct {
+	Pointer string                                                    `json:"pointer"`
+	JSON    accountR2BucketDomainCustomAttachResponseErrorsSourceJSON `json:"-"`
+}
+
+// accountR2BucketDomainCustomAttachResponseErrorsSourceJSON contains the JSON
+// metadata for the struct [AccountR2BucketDomainCustomAttachResponseErrorsSource]
+type accountR2BucketDomainCustomAttachResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountR2BucketDomainCustomAttachResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountR2BucketDomainCustomAttachResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
 type AccountR2BucketDomainCustomAttachResponseResult struct {
-	// Domain name of the affected custom domain
+	// Domain name of the affected custom domain.
 	Domain string `json:"domain,required"`
-	// Whether this bucket is publicly accessible at the specified custom domain
+	// Whether this bucket is publicly accessible at the specified custom domain.
 	Enabled bool `json:"enabled,required"`
 	// Minimum TLS Version the custom domain will accept for incoming connections. If
 	// not set, defaults to 1.0.
@@ -588,16 +849,37 @@ func (r AccountR2BucketDomainCustomAttachResponseResultMinTls) IsKnown() bool {
 	return false
 }
 
+// Whether the API call was successful.
+type AccountR2BucketDomainCustomAttachResponseSuccess bool
+
+const (
+	AccountR2BucketDomainCustomAttachResponseSuccessTrue AccountR2BucketDomainCustomAttachResponseSuccess = true
+)
+
+func (r AccountR2BucketDomainCustomAttachResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountR2BucketDomainCustomAttachResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountR2BucketDomainCustomRemoveResponse struct {
-	Result AccountR2BucketDomainCustomRemoveResponseResult `json:"result"`
-	JSON   accountR2BucketDomainCustomRemoveResponseJSON   `json:"-"`
-	R2V4Response
+	Errors   []AccountR2BucketDomainCustomRemoveResponseError `json:"errors,required"`
+	Messages []string                                         `json:"messages,required"`
+	Result   AccountR2BucketDomainCustomRemoveResponseResult  `json:"result,required"`
+	// Whether the API call was successful.
+	Success AccountR2BucketDomainCustomRemoveResponseSuccess `json:"success,required"`
+	JSON    accountR2BucketDomainCustomRemoveResponseJSON    `json:"-"`
 }
 
 // accountR2BucketDomainCustomRemoveResponseJSON contains the JSON metadata for the
 // struct [AccountR2BucketDomainCustomRemoveResponse]
 type accountR2BucketDomainCustomRemoveResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -610,8 +892,56 @@ func (r accountR2BucketDomainCustomRemoveResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+type AccountR2BucketDomainCustomRemoveResponseError struct {
+	Code             int64                                                 `json:"code,required"`
+	Message          string                                                `json:"message,required"`
+	DocumentationURL string                                                `json:"documentation_url"`
+	Source           AccountR2BucketDomainCustomRemoveResponseErrorsSource `json:"source"`
+	JSON             accountR2BucketDomainCustomRemoveResponseErrorJSON    `json:"-"`
+}
+
+// accountR2BucketDomainCustomRemoveResponseErrorJSON contains the JSON metadata
+// for the struct [AccountR2BucketDomainCustomRemoveResponseError]
+type accountR2BucketDomainCustomRemoveResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountR2BucketDomainCustomRemoveResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountR2BucketDomainCustomRemoveResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountR2BucketDomainCustomRemoveResponseErrorsSource struct {
+	Pointer string                                                    `json:"pointer"`
+	JSON    accountR2BucketDomainCustomRemoveResponseErrorsSourceJSON `json:"-"`
+}
+
+// accountR2BucketDomainCustomRemoveResponseErrorsSourceJSON contains the JSON
+// metadata for the struct [AccountR2BucketDomainCustomRemoveResponseErrorsSource]
+type accountR2BucketDomainCustomRemoveResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountR2BucketDomainCustomRemoveResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountR2BucketDomainCustomRemoveResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
 type AccountR2BucketDomainCustomRemoveResponseResult struct {
-	// Name of the removed custom domain
+	// Name of the removed custom domain.
 	Domain string                                              `json:"domain,required"`
 	JSON   accountR2BucketDomainCustomRemoveResponseResultJSON `json:"-"`
 }
@@ -632,12 +962,27 @@ func (r accountR2BucketDomainCustomRemoveResponseResultJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountR2BucketDomainCustomRemoveResponseSuccess bool
+
+const (
+	AccountR2BucketDomainCustomRemoveResponseSuccessTrue AccountR2BucketDomainCustomRemoveResponseSuccess = true
+)
+
+func (r AccountR2BucketDomainCustomRemoveResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountR2BucketDomainCustomRemoveResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountR2BucketDomainCustomGetParams struct {
-	// The bucket jurisdiction
+	// Jurisdiction where objects in this bucket are guaranteed to be stored.
 	Jurisdiction param.Field[AccountR2BucketDomainCustomGetParamsCfR2Jurisdiction] `header:"cf-r2-jurisdiction"`
 }
 
-// The bucket jurisdiction
+// Jurisdiction where objects in this bucket are guaranteed to be stored.
 type AccountR2BucketDomainCustomGetParamsCfR2Jurisdiction string
 
 const (
@@ -655,12 +1000,12 @@ func (r AccountR2BucketDomainCustomGetParamsCfR2Jurisdiction) IsKnown() bool {
 }
 
 type AccountR2BucketDomainCustomUpdateParams struct {
-	// Whether to enable public bucket access at the specified custom domain
+	// Whether to enable public bucket access at the specified custom domain.
 	Enabled param.Field[bool] `json:"enabled"`
 	// Minimum TLS Version the custom domain will accept for incoming connections. If
 	// not set, defaults to previous value.
 	MinTls param.Field[AccountR2BucketDomainCustomUpdateParamsMinTls] `json:"minTLS"`
-	// The bucket jurisdiction
+	// Jurisdiction where objects in this bucket are guaranteed to be stored.
 	Jurisdiction param.Field[AccountR2BucketDomainCustomUpdateParamsCfR2Jurisdiction] `header:"cf-r2-jurisdiction"`
 }
 
@@ -687,7 +1032,7 @@ func (r AccountR2BucketDomainCustomUpdateParamsMinTls) IsKnown() bool {
 	return false
 }
 
-// The bucket jurisdiction
+// Jurisdiction where objects in this bucket are guaranteed to be stored.
 type AccountR2BucketDomainCustomUpdateParamsCfR2Jurisdiction string
 
 const (
@@ -705,11 +1050,11 @@ func (r AccountR2BucketDomainCustomUpdateParamsCfR2Jurisdiction) IsKnown() bool 
 }
 
 type AccountR2BucketDomainCustomListParams struct {
-	// The bucket jurisdiction
+	// Jurisdiction where objects in this bucket are guaranteed to be stored.
 	Jurisdiction param.Field[AccountR2BucketDomainCustomListParamsCfR2Jurisdiction] `header:"cf-r2-jurisdiction"`
 }
 
-// The bucket jurisdiction
+// Jurisdiction where objects in this bucket are guaranteed to be stored.
 type AccountR2BucketDomainCustomListParamsCfR2Jurisdiction string
 
 const (
@@ -727,17 +1072,17 @@ func (r AccountR2BucketDomainCustomListParamsCfR2Jurisdiction) IsKnown() bool {
 }
 
 type AccountR2BucketDomainCustomAttachParams struct {
-	// Name of the custom domain to be added
+	// Name of the custom domain to be added.
 	Domain param.Field[string] `json:"domain,required"`
 	// Whether to enable public bucket access at the custom domain. If undefined, the
 	// domain will be enabled.
 	Enabled param.Field[bool] `json:"enabled,required"`
-	// Zone ID of the custom domain
+	// Zone ID of the custom domain.
 	ZoneID param.Field[string] `json:"zoneId,required"`
 	// Minimum TLS Version the custom domain will accept for incoming connections. If
 	// not set, defaults to 1.0.
 	MinTls param.Field[AccountR2BucketDomainCustomAttachParamsMinTls] `json:"minTLS"`
-	// The bucket jurisdiction
+	// Jurisdiction where objects in this bucket are guaranteed to be stored.
 	Jurisdiction param.Field[AccountR2BucketDomainCustomAttachParamsCfR2Jurisdiction] `header:"cf-r2-jurisdiction"`
 }
 
@@ -764,7 +1109,7 @@ func (r AccountR2BucketDomainCustomAttachParamsMinTls) IsKnown() bool {
 	return false
 }
 
-// The bucket jurisdiction
+// Jurisdiction where objects in this bucket are guaranteed to be stored.
 type AccountR2BucketDomainCustomAttachParamsCfR2Jurisdiction string
 
 const (
@@ -782,11 +1127,11 @@ func (r AccountR2BucketDomainCustomAttachParamsCfR2Jurisdiction) IsKnown() bool 
 }
 
 type AccountR2BucketDomainCustomRemoveParams struct {
-	// The bucket jurisdiction
+	// Jurisdiction where objects in this bucket are guaranteed to be stored.
 	Jurisdiction param.Field[AccountR2BucketDomainCustomRemoveParamsCfR2Jurisdiction] `header:"cf-r2-jurisdiction"`
 }
 
-// The bucket jurisdiction
+// Jurisdiction where objects in this bucket are guaranteed to be stored.
 type AccountR2BucketDomainCustomRemoveParamsCfR2Jurisdiction string
 
 const (

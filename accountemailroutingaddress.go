@@ -93,68 +93,21 @@ func (r *AccountEmailRoutingAddressService) Delete(ctx context.Context, accountI
 	return
 }
 
-type APIResponseCollectionEmail struct {
-	ResultInfo APIResponseCollectionEmailResultInfo `json:"result_info"`
-	JSON       apiResponseCollectionEmailJSON       `json:"-"`
-	EmailAPIResponseCommon
-}
-
-// apiResponseCollectionEmailJSON contains the JSON metadata for the struct
-// [APIResponseCollectionEmail]
-type apiResponseCollectionEmailJSON struct {
-	ResultInfo  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *APIResponseCollectionEmail) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r apiResponseCollectionEmailJSON) RawJSON() string {
-	return r.raw
-}
-
-type APIResponseCollectionEmailResultInfo struct {
-	// Total number of results for the requested service
-	Count float64 `json:"count"`
-	// Current page within paginated list of results
-	Page float64 `json:"page"`
-	// Number of results per page of results
-	PerPage float64 `json:"per_page"`
-	// Total results available without any search parameters
-	TotalCount float64                                  `json:"total_count"`
-	JSON       apiResponseCollectionEmailResultInfoJSON `json:"-"`
-}
-
-// apiResponseCollectionEmailResultInfoJSON contains the JSON metadata for the
-// struct [APIResponseCollectionEmailResultInfo]
-type apiResponseCollectionEmailResultInfoJSON struct {
-	Count       apijson.Field
-	Page        apijson.Field
-	PerPage     apijson.Field
-	TotalCount  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *APIResponseCollectionEmailResultInfo) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r apiResponseCollectionEmailResultInfoJSON) RawJSON() string {
-	return r.raw
-}
-
 type DestinationAddressResponseSingle struct {
-	Result EmailAddress                         `json:"result"`
-	JSON   destinationAddressResponseSingleJSON `json:"-"`
-	EmailAPIResponseSingle
+	Errors   []EmailMessagesItem `json:"errors,required"`
+	Messages []EmailMessagesItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success DestinationAddressResponseSingleSuccess `json:"success,required"`
+	Result  EmailAddress                            `json:"result"`
+	JSON    destinationAddressResponseSingleJSON    `json:"-"`
 }
 
 // destinationAddressResponseSingleJSON contains the JSON metadata for the struct
 // [DestinationAddressResponseSingle]
 type destinationAddressResponseSingleJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -166,6 +119,21 @@ func (r *DestinationAddressResponseSingle) UnmarshalJSON(data []byte) (err error
 
 func (r destinationAddressResponseSingleJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type DestinationAddressResponseSingleSuccess bool
+
+const (
+	DestinationAddressResponseSingleSuccessTrue DestinationAddressResponseSingleSuccess = true
+)
+
+func (r DestinationAddressResponseSingleSuccess) IsKnown() bool {
+	switch r {
+	case DestinationAddressResponseSingleSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type EmailAddress struct {
@@ -209,15 +177,21 @@ func (r emailAddressJSON) RawJSON() string {
 }
 
 type AccountEmailRoutingAddressListResponse struct {
+	Errors   []EmailMessagesItem `json:"errors,required"`
+	Messages []EmailMessagesItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success    AccountEmailRoutingAddressListResponseSuccess    `json:"success,required"`
 	Result     []EmailAddress                                   `json:"result"`
 	ResultInfo AccountEmailRoutingAddressListResponseResultInfo `json:"result_info"`
 	JSON       accountEmailRoutingAddressListResponseJSON       `json:"-"`
-	APIResponseCollectionEmail
 }
 
 // accountEmailRoutingAddressListResponseJSON contains the JSON metadata for the
 // struct [AccountEmailRoutingAddressListResponse]
 type accountEmailRoutingAddressListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	ResultInfo  apijson.Field
 	raw         string
@@ -232,11 +206,30 @@ func (r accountEmailRoutingAddressListResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountEmailRoutingAddressListResponseSuccess bool
+
+const (
+	AccountEmailRoutingAddressListResponseSuccessTrue AccountEmailRoutingAddressListResponseSuccess = true
+)
+
+func (r AccountEmailRoutingAddressListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountEmailRoutingAddressListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountEmailRoutingAddressListResponseResultInfo struct {
-	Count      interface{}                                          `json:"count"`
-	Page       interface{}                                          `json:"page"`
-	PerPage    interface{}                                          `json:"per_page"`
-	TotalCount interface{}                                          `json:"total_count"`
+	// Total number of results for the requested service.
+	Count float64 `json:"count"`
+	// Current page within paginated list of results.
+	Page float64 `json:"page"`
+	// Number of results per page of results.
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters.
+	TotalCount float64                                              `json:"total_count"`
 	JSON       accountEmailRoutingAddressListResponseResultInfoJSON `json:"-"`
 }
 

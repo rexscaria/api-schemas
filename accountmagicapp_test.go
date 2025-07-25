@@ -34,7 +34,7 @@ func TestAccountMagicAppNewWithOptionalParams(t *testing.T) {
 			Name:      cfrex.F("Cloudflare Dashboard"),
 			Type:      cfrex.F("Development"),
 			Hostnames: cfrex.F([]string{"auth.cloudflare.com"}),
-			IPSubnets: cfrex.F([]cfrex.MagicAppSubnetItemParam{"192.0.2.0/24"}),
+			IPSubnets: cfrex.F([]string{"192.0.2.0/24"}),
 		},
 	)
 	if err != nil {
@@ -66,7 +66,7 @@ func TestAccountMagicAppUpdateWithOptionalParams(t *testing.T) {
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.AccountMagicAppUpdateParams{
 			Hostnames: cfrex.F([]string{"auth.cloudflare.com"}),
-			IPSubnets: cfrex.F([]cfrex.MagicAppSubnetItemParam{"192.0.2.0/24"}),
+			IPSubnets: cfrex.F([]cfrex.MagicAppSubnetItemParam{"1.1.1.1/32"}),
 			Name:      cfrex.F("Cloudflare Dashboard"),
 			Type:      cfrex.F("Development"),
 		},

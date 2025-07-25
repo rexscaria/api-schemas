@@ -49,7 +49,7 @@ func (r *AccountTeamnetVirtualNetworkService) New(ctx context.Context, accountID
 }
 
 // Get a virtual network.
-func (r *AccountTeamnetVirtualNetworkService) Get(ctx context.Context, accountID string, virtualNetworkID string, query AccountTeamnetVirtualNetworkGetParams, opts ...option.RequestOption) (res *VnetResponseSingle, err error) {
+func (r *AccountTeamnetVirtualNetworkService) Get(ctx context.Context, accountID string, virtualNetworkID string, opts ...option.RequestOption) (res *VnetResponseSingle, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
@@ -60,7 +60,7 @@ func (r *AccountTeamnetVirtualNetworkService) Get(ctx context.Context, accountID
 		return
 	}
 	path := fmt.Sprintf("accounts/%s/teamnet/virtual_networks/%s", accountID, virtualNetworkID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
 
@@ -93,7 +93,7 @@ func (r *AccountTeamnetVirtualNetworkService) List(ctx context.Context, accountI
 }
 
 // Deletes an existing virtual network.
-func (r *AccountTeamnetVirtualNetworkService) Delete(ctx context.Context, accountID string, virtualNetworkID string, body AccountTeamnetVirtualNetworkDeleteParams, opts ...option.RequestOption) (res *VnetResponseSingle, err error) {
+func (r *AccountTeamnetVirtualNetworkService) Delete(ctx context.Context, accountID string, virtualNetworkID string, opts ...option.RequestOption) (res *VnetResponseSingle, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
@@ -104,7 +104,7 @@ func (r *AccountTeamnetVirtualNetworkService) Delete(ctx context.Context, accoun
 		return
 	}
 	path := fmt.Sprintf("accounts/%s/teamnet/virtual_networks/%s", accountID, virtualNetworkID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
@@ -146,15 +146,21 @@ func (r virtualNetworkJSON) RawJSON() string {
 }
 
 type VnetResponseSingle struct {
-	Result VirtualNetwork         `json:"result"`
-	JSON   vnetResponseSingleJSON `json:"-"`
-	APIResponseTunnel
+	Errors   []MessagesTunnelItem `json:"errors,required"`
+	Messages []MessagesTunnelItem `json:"messages,required"`
+	Result   VirtualNetwork       `json:"result,required"`
+	// Whether the API call was successful
+	Success VnetResponseSingleSuccess `json:"success,required"`
+	JSON    vnetResponseSingleJSON    `json:"-"`
 }
 
 // vnetResponseSingleJSON contains the JSON metadata for the struct
 // [VnetResponseSingle]
 type vnetResponseSingleJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -167,16 +173,39 @@ func (r vnetResponseSingleJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful
+type VnetResponseSingleSuccess bool
+
+const (
+	VnetResponseSingleSuccessTrue VnetResponseSingleSuccess = true
+)
+
+func (r VnetResponseSingleSuccess) IsKnown() bool {
+	switch r {
+	case VnetResponseSingleSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountTeamnetVirtualNetworkListResponse struct {
-	Result []VirtualNetwork                             `json:"result"`
-	JSON   accountTeamnetVirtualNetworkListResponseJSON `json:"-"`
-	APIResponseCollectionTunnel
+	Errors   []MessagesTunnelItem `json:"errors,required"`
+	Messages []MessagesTunnelItem `json:"messages,required"`
+	Result   []VirtualNetwork     `json:"result,required,nullable"`
+	// Whether the API call was successful
+	Success    AccountTeamnetVirtualNetworkListResponseSuccess    `json:"success,required"`
+	ResultInfo AccountTeamnetVirtualNetworkListResponseResultInfo `json:"result_info"`
+	JSON       accountTeamnetVirtualNetworkListResponseJSON       `json:"-"`
 }
 
 // accountTeamnetVirtualNetworkListResponseJSON contains the JSON metadata for the
 // struct [AccountTeamnetVirtualNetworkListResponse]
 type accountTeamnetVirtualNetworkListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -189,6 +218,52 @@ func (r accountTeamnetVirtualNetworkListResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful
+type AccountTeamnetVirtualNetworkListResponseSuccess bool
+
+const (
+	AccountTeamnetVirtualNetworkListResponseSuccessTrue AccountTeamnetVirtualNetworkListResponseSuccess = true
+)
+
+func (r AccountTeamnetVirtualNetworkListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountTeamnetVirtualNetworkListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type AccountTeamnetVirtualNetworkListResponseResultInfo struct {
+	// Total number of results for the requested service
+	Count float64 `json:"count"`
+	// Current page within paginated list of results
+	Page float64 `json:"page"`
+	// Number of results per page of results
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters
+	TotalCount float64                                                `json:"total_count"`
+	JSON       accountTeamnetVirtualNetworkListResponseResultInfoJSON `json:"-"`
+}
+
+// accountTeamnetVirtualNetworkListResponseResultInfoJSON contains the JSON
+// metadata for the struct [AccountTeamnetVirtualNetworkListResponseResultInfo]
+type accountTeamnetVirtualNetworkListResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountTeamnetVirtualNetworkListResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountTeamnetVirtualNetworkListResponseResultInfoJSON) RawJSON() string {
+	return r.raw
+}
+
 type AccountTeamnetVirtualNetworkNewParams struct {
 	// A user-friendly name for the virtual network.
 	Name param.Field[string] `json:"name,required"`
@@ -196,13 +271,12 @@ type AccountTeamnetVirtualNetworkNewParams struct {
 	Comment param.Field[string] `json:"comment"`
 	// If `true`, this virtual network is the default for the account.
 	IsDefault param.Field[bool] `json:"is_default"`
+	// If `true`, this virtual network is the default for the account.
+	IsDefaultNetwork param.Field[bool] `json:"is_default_network"`
 }
 
 func (r AccountTeamnetVirtualNetworkNewParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
-}
-
-type AccountTeamnetVirtualNetworkGetParams struct {
 }
 
 type AccountTeamnetVirtualNetworkUpdateParams struct {
@@ -238,12 +312,4 @@ func (r AccountTeamnetVirtualNetworkListParams) URLQuery() (v url.Values) {
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
-}
-
-type AccountTeamnetVirtualNetworkDeleteParams struct {
-	Body interface{} `json:"body,required"`
-}
-
-func (r AccountTeamnetVirtualNetworkDeleteParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
 }

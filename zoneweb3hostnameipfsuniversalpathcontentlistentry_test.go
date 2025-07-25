@@ -160,9 +160,6 @@ func TestZoneWeb3HostnameIpfsUniversalPathContentListEntryDelete(t *testing.T) {
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		"023e105f4ecef8ad9ca31a8372d0c353",
-		cfrex.ZoneWeb3HostnameIpfsUniversalPathContentListEntryDeleteParams{
-			Body: map[string]interface{}{},
-		},
 	)
 	if err != nil {
 		var apierr *cfrex.Error

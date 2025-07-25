@@ -96,15 +96,23 @@ func (r metaJSON) RawJSON() string {
 }
 
 type AccountAccessIdentityProviderScimListGroupsResponse struct {
-	Result []AccountAccessIdentityProviderScimListGroupsResponseResult `json:"result"`
-	JSON   accountAccessIdentityProviderScimListGroupsResponseJSON     `json:"-"`
-	APIResponseCollectionAccess
+	Errors   []MessagesAccessItem `json:"errors,required"`
+	Messages []MessagesAccessItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success    AccountAccessIdentityProviderScimListGroupsResponseSuccess    `json:"success,required"`
+	Result     []AccountAccessIdentityProviderScimListGroupsResponseResult   `json:"result"`
+	ResultInfo AccountAccessIdentityProviderScimListGroupsResponseResultInfo `json:"result_info"`
+	JSON       accountAccessIdentityProviderScimListGroupsResponseJSON       `json:"-"`
 }
 
 // accountAccessIdentityProviderScimListGroupsResponseJSON contains the JSON
 // metadata for the struct [AccountAccessIdentityProviderScimListGroupsResponse]
 type accountAccessIdentityProviderScimListGroupsResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -115,6 +123,21 @@ func (r *AccountAccessIdentityProviderScimListGroupsResponse) UnmarshalJSON(data
 
 func (r accountAccessIdentityProviderScimListGroupsResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountAccessIdentityProviderScimListGroupsResponseSuccess bool
+
+const (
+	AccountAccessIdentityProviderScimListGroupsResponseSuccessTrue AccountAccessIdentityProviderScimListGroupsResponseSuccess = true
+)
+
+func (r AccountAccessIdentityProviderScimListGroupsResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountAccessIdentityProviderScimListGroupsResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountAccessIdentityProviderScimListGroupsResponseResult struct {
@@ -152,16 +175,56 @@ func (r accountAccessIdentityProviderScimListGroupsResponseResultJSON) RawJSON()
 	return r.raw
 }
 
+type AccountAccessIdentityProviderScimListGroupsResponseResultInfo struct {
+	// Total number of results for the requested service.
+	Count float64 `json:"count"`
+	// Current page within paginated list of results.
+	Page float64 `json:"page"`
+	// Number of results per page of results.
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters.
+	TotalCount float64                                                           `json:"total_count"`
+	JSON       accountAccessIdentityProviderScimListGroupsResponseResultInfoJSON `json:"-"`
+}
+
+// accountAccessIdentityProviderScimListGroupsResponseResultInfoJSON contains the
+// JSON metadata for the struct
+// [AccountAccessIdentityProviderScimListGroupsResponseResultInfo]
+type accountAccessIdentityProviderScimListGroupsResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountAccessIdentityProviderScimListGroupsResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountAccessIdentityProviderScimListGroupsResponseResultInfoJSON) RawJSON() string {
+	return r.raw
+}
+
 type AccountAccessIdentityProviderScimListUsersResponse struct {
-	Result []AccountAccessIdentityProviderScimListUsersResponseResult `json:"result"`
-	JSON   accountAccessIdentityProviderScimListUsersResponseJSON     `json:"-"`
-	APIResponseCollectionAccess
+	Errors   []MessagesAccessItem `json:"errors,required"`
+	Messages []MessagesAccessItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success    AccountAccessIdentityProviderScimListUsersResponseSuccess    `json:"success,required"`
+	Result     []AccountAccessIdentityProviderScimListUsersResponseResult   `json:"result"`
+	ResultInfo AccountAccessIdentityProviderScimListUsersResponseResultInfo `json:"result_info"`
+	JSON       accountAccessIdentityProviderScimListUsersResponseJSON       `json:"-"`
 }
 
 // accountAccessIdentityProviderScimListUsersResponseJSON contains the JSON
 // metadata for the struct [AccountAccessIdentityProviderScimListUsersResponse]
 type accountAccessIdentityProviderScimListUsersResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -172,6 +235,21 @@ func (r *AccountAccessIdentityProviderScimListUsersResponse) UnmarshalJSON(data 
 
 func (r accountAccessIdentityProviderScimListUsersResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountAccessIdentityProviderScimListUsersResponseSuccess bool
+
+const (
+	AccountAccessIdentityProviderScimListUsersResponseSuccessTrue AccountAccessIdentityProviderScimListUsersResponseSuccess = true
+)
+
+func (r AccountAccessIdentityProviderScimListUsersResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountAccessIdentityProviderScimListUsersResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountAccessIdentityProviderScimListUsersResponseResult struct {
@@ -241,6 +319,38 @@ func (r *AccountAccessIdentityProviderScimListUsersResponseResultEmail) Unmarsha
 }
 
 func (r accountAccessIdentityProviderScimListUsersResponseResultEmailJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountAccessIdentityProviderScimListUsersResponseResultInfo struct {
+	// Total number of results for the requested service.
+	Count float64 `json:"count"`
+	// Current page within paginated list of results.
+	Page float64 `json:"page"`
+	// Number of results per page of results.
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters.
+	TotalCount float64                                                          `json:"total_count"`
+	JSON       accountAccessIdentityProviderScimListUsersResponseResultInfoJSON `json:"-"`
+}
+
+// accountAccessIdentityProviderScimListUsersResponseResultInfoJSON contains the
+// JSON metadata for the struct
+// [AccountAccessIdentityProviderScimListUsersResponseResultInfo]
+type accountAccessIdentityProviderScimListUsersResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountAccessIdentityProviderScimListUsersResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountAccessIdentityProviderScimListUsersResponseResultInfoJSON) RawJSON() string {
 	return r.raw
 }
 

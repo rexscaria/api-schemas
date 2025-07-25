@@ -60,15 +60,16 @@ func TestAccountEmailSecuritySettingDomainUpdateWithOptionalParams(t *testing.T)
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		int64(2400),
 		cfrex.AccountEmailSecuritySettingDomainUpdateParams{
-			IPRestrictions:     cfrex.F([]string{"192.0.2.0/24", "2001:db8::/32"}),
-			Domain:             cfrex.F("domain"),
-			DropDispositions:   cfrex.F([]cfrex.DispositionLabel{cfrex.DispositionLabelMalicious}),
-			Folder:             cfrex.F(cfrex.ScannableFolderAllItems),
-			IntegrationID:      cfrex.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-			LookbackHops:       cfrex.F(int64(1)),
-			RequireTlsInbound:  cfrex.F(true),
-			RequireTlsOutbound: cfrex.F(true),
-			Transport:          cfrex.F("transport"),
+			IPRestrictions:       cfrex.F([]string{"192.0.2.0/24", "2001:db8::/32"}),
+			AllowedDeliveryModes: cfrex.F([]cfrex.DeliveryMode{cfrex.DeliveryModeDirect}),
+			Domain:               cfrex.F("domain"),
+			DropDispositions:     cfrex.F([]cfrex.DispositionLabel{cfrex.DispositionLabelMalicious}),
+			Folder:               cfrex.F(cfrex.ScannableFolderAllItems),
+			IntegrationID:        cfrex.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+			LookbackHops:         cfrex.F(int64(1)),
+			RequireTlsInbound:    cfrex.F(true),
+			RequireTlsOutbound:   cfrex.F(true),
+			Transport:            cfrex.F("transport"),
 		},
 	)
 	if err != nil {
@@ -159,15 +160,7 @@ func TestAccountEmailSecuritySettingDomainUnprotectMultiple(t *testing.T) {
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Accounts.EmailSecurity.Settings.Domains.UnprotectMultiple(
-		context.TODO(),
-		"023e105f4ecef8ad9ca31a8372d0c353",
-		cfrex.AccountEmailSecuritySettingDomainUnprotectMultipleParams{
-			Body: []cfrex.AccountEmailSecuritySettingDomainUnprotectMultipleParamsBody{{
-				ID: cfrex.F(int64(2400)),
-			}},
-		},
-	)
+	_, err := client.Accounts.EmailSecurity.Settings.Domains.UnprotectMultiple(context.TODO(), "023e105f4ecef8ad9ca31a8372d0c353")
 	if err != nil {
 		var apierr *cfrex.Error
 		if errors.As(err, &apierr) {

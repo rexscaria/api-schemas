@@ -36,7 +36,8 @@ func TestAccountUrlscannerScanNewWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"account_id",
 		cfrex.AccountUrlscannerScanNewParams{
-			URL: cfrex.F("https://www.example.com"),
+			URL:     cfrex.F("https://www.example.com"),
+			Country: cfrex.F(cfrex.AccountUrlscannerScanNewParamsCountryAf),
 			CustomHeaders: cfrex.F(map[string]string{
 				"foo": "string",
 			}),

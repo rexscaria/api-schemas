@@ -59,14 +59,20 @@ func (r *ZoneEmailRoutingRuleCatchAllService) Update(ctx context.Context, zoneID
 }
 
 type EmailCatchAllRuleResponseSingle struct {
-	Result EmailCatchAllRuleResponseSingleResult `json:"result"`
-	JSON   emailCatchAllRuleResponseSingleJSON   `json:"-"`
-	EmailAPIResponseSingle
+	Errors   []EmailMessagesItem `json:"errors,required"`
+	Messages []EmailMessagesItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success EmailCatchAllRuleResponseSingleSuccess `json:"success,required"`
+	Result  EmailCatchAllRuleResponseSingleResult  `json:"result"`
+	JSON    emailCatchAllRuleResponseSingleJSON    `json:"-"`
 }
 
 // emailCatchAllRuleResponseSingleJSON contains the JSON metadata for the struct
 // [EmailCatchAllRuleResponseSingle]
 type emailCatchAllRuleResponseSingleJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -78,6 +84,21 @@ func (r *EmailCatchAllRuleResponseSingle) UnmarshalJSON(data []byte) (err error)
 
 func (r emailCatchAllRuleResponseSingleJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type EmailCatchAllRuleResponseSingleSuccess bool
+
+const (
+	EmailCatchAllRuleResponseSingleSuccessTrue EmailCatchAllRuleResponseSingleSuccess = true
+)
+
+func (r EmailCatchAllRuleResponseSingleSuccess) IsKnown() bool {
+	switch r {
+	case EmailCatchAllRuleResponseSingleSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type EmailCatchAllRuleResponseSingleResult struct {

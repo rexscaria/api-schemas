@@ -123,13 +123,11 @@ type RadarEntityAsnGetResponseResultAsn struct {
 	Name            string                                           `json:"name,required"`
 	OrgName         string                                           `json:"orgName,required"`
 	Related         []RadarEntityAsnGetResponseResultAsnRelated      `json:"related,required"`
-	// Regional Internet Registry
-	Source  string `json:"source,required"`
-	Website string `json:"website,required"`
-	Aka     string `json:"aka"`
-	// Deprecated field. Please use 'aka'.
-	NameLong string                                 `json:"nameLong"`
-	JSON     radarEntityAsnGetResponseResultAsnJSON `json:"-"`
+	// Regional Internet Registry.
+	Source  string                                 `json:"source,required"`
+	Website string                                 `json:"website,required"`
+	Aka     string                                 `json:"aka"`
+	JSON    radarEntityAsnGetResponseResultAsnJSON `json:"-"`
 }
 
 // radarEntityAsnGetResponseResultAsnJSON contains the JSON metadata for the struct
@@ -146,7 +144,6 @@ type radarEntityAsnGetResponseResultAsnJSON struct {
 	Source          apijson.Field
 	Website         apijson.Field
 	Aka             apijson.Field
-	NameLong        apijson.Field
 	raw             string
 	ExtraFields     map[string]apijson.Field
 }
@@ -161,7 +158,7 @@ func (r radarEntityAsnGetResponseResultAsnJSON) RawJSON() string {
 
 type RadarEntityAsnGetResponseResultAsnEstimatedUsers struct {
 	Locations []RadarEntityAsnGetResponseResultAsnEstimatedUsersLocation `json:"locations,required"`
-	// Total estimated users
+	// Total estimated users.
 	EstimatedUsers int64                                                `json:"estimatedUsers"`
 	JSON           radarEntityAsnGetResponseResultAsnEstimatedUsersJSON `json:"-"`
 }
@@ -186,7 +183,7 @@ func (r radarEntityAsnGetResponseResultAsnEstimatedUsersJSON) RawJSON() string {
 type RadarEntityAsnGetResponseResultAsnEstimatedUsersLocation struct {
 	LocationAlpha2 string `json:"locationAlpha2,required"`
 	LocationName   string `json:"locationName,required"`
-	// Estimated users per location
+	// Estimated users per location.
 	EstimatedUsers int64                                                        `json:"estimatedUsers"`
 	JSON           radarEntityAsnGetResponseResultAsnEstimatedUsersLocationJSON `json:"-"`
 }
@@ -214,7 +211,7 @@ type RadarEntityAsnGetResponseResultAsnRelated struct {
 	Asn  int64  `json:"asn,required"`
 	Name string `json:"name,required"`
 	Aka  string `json:"aka"`
-	// Total estimated users
+	// Total estimated users.
 	EstimatedUsers int64                                         `json:"estimatedUsers"`
 	JSON           radarEntityAsnGetResponseResultAsnRelatedJSON `json:"-"`
 }
@@ -283,16 +280,14 @@ func (r radarEntityAsnListResponseResultJSON) RawJSON() string {
 }
 
 type RadarEntityAsnListResponseResultAsn struct {
-	Asn         int64  `json:"asn,required"`
-	Country     string `json:"country,required"`
-	CountryName string `json:"countryName,required"`
-	Name        string `json:"name,required"`
-	Aka         string `json:"aka"`
-	// Deprecated field. Please use 'aka'.
-	NameLong string                                  `json:"nameLong"`
-	OrgName  string                                  `json:"orgName"`
-	Website  string                                  `json:"website"`
-	JSON     radarEntityAsnListResponseResultAsnJSON `json:"-"`
+	Asn         int64                                   `json:"asn,required"`
+	Country     string                                  `json:"country,required"`
+	CountryName string                                  `json:"countryName,required"`
+	Name        string                                  `json:"name,required"`
+	Aka         string                                  `json:"aka"`
+	OrgName     string                                  `json:"orgName"`
+	Website     string                                  `json:"website"`
+	JSON        radarEntityAsnListResponseResultAsnJSON `json:"-"`
 }
 
 // radarEntityAsnListResponseResultAsnJSON contains the JSON metadata for the
@@ -303,7 +298,6 @@ type radarEntityAsnListResponseResultAsnJSON struct {
 	CountryName apijson.Field
 	Name        apijson.Field
 	Aka         apijson.Field
-	NameLong    apijson.Field
 	OrgName     apijson.Field
 	Website     apijson.Field
 	raw         string
@@ -474,13 +468,11 @@ type RadarEntityAsnGetByIPResponseResultAsn struct {
 	Name           string                                               `json:"name,required"`
 	OrgName        string                                               `json:"orgName,required"`
 	Related        []RadarEntityAsnGetByIPResponseResultAsnRelated      `json:"related,required"`
-	// Regional Internet Registry
-	Source  string `json:"source,required"`
-	Website string `json:"website,required"`
-	Aka     string `json:"aka"`
-	// Deprecated field. Please use 'aka'.
-	NameLong string                                     `json:"nameLong"`
-	JSON     radarEntityAsnGetByIPResponseResultAsnJSON `json:"-"`
+	// Regional Internet Registry.
+	Source  string                                     `json:"source,required"`
+	Website string                                     `json:"website,required"`
+	Aka     string                                     `json:"aka"`
+	JSON    radarEntityAsnGetByIPResponseResultAsnJSON `json:"-"`
 }
 
 // radarEntityAsnGetByIPResponseResultAsnJSON contains the JSON metadata for the
@@ -496,7 +488,6 @@ type radarEntityAsnGetByIPResponseResultAsnJSON struct {
 	Source         apijson.Field
 	Website        apijson.Field
 	Aka            apijson.Field
-	NameLong       apijson.Field
 	raw            string
 	ExtraFields    map[string]apijson.Field
 }
@@ -511,7 +502,7 @@ func (r radarEntityAsnGetByIPResponseResultAsnJSON) RawJSON() string {
 
 type RadarEntityAsnGetByIPResponseResultAsnEstimatedUsers struct {
 	Locations []RadarEntityAsnGetByIPResponseResultAsnEstimatedUsersLocation `json:"locations,required"`
-	// Total estimated users
+	// Total estimated users.
 	EstimatedUsers int64                                                    `json:"estimatedUsers"`
 	JSON           radarEntityAsnGetByIPResponseResultAsnEstimatedUsersJSON `json:"-"`
 }
@@ -536,7 +527,7 @@ func (r radarEntityAsnGetByIPResponseResultAsnEstimatedUsersJSON) RawJSON() stri
 type RadarEntityAsnGetByIPResponseResultAsnEstimatedUsersLocation struct {
 	LocationAlpha2 string `json:"locationAlpha2,required"`
 	LocationName   string `json:"locationName,required"`
-	// Estimated users per location
+	// Estimated users per location.
 	EstimatedUsers int64                                                            `json:"estimatedUsers"`
 	JSON           radarEntityAsnGetByIPResponseResultAsnEstimatedUsersLocationJSON `json:"-"`
 }
@@ -564,7 +555,7 @@ type RadarEntityAsnGetByIPResponseResultAsnRelated struct {
 	Asn  int64  `json:"asn,required"`
 	Name string `json:"name,required"`
 	Aka  string `json:"aka"`
-	// Total estimated users
+	// Total estimated users.
 	EstimatedUsers int64                                             `json:"estimatedUsers"`
 	JSON           radarEntityAsnGetByIPResponseResultAsnRelatedJSON `json:"-"`
 }
@@ -619,17 +610,18 @@ func (r RadarEntityAsnGetParamsFormat) IsKnown() bool {
 }
 
 type RadarEntityAsnListParams struct {
-	// Comma-separated list of Autonomous System Numbers (ASNs).
+	// Filters results by Autonomous System. Specify one or more Autonomous System
+	// Numbers (ASNs) as a comma-separated list.
 	Asn param.Field[string] `query:"asn"`
 	// Format in which results will be returned.
 	Format param.Field[RadarEntityAsnListParamsFormat] `query:"format"`
 	// Limits the number of objects returned in the response.
 	Limit param.Field[int64] `query:"limit"`
-	// Location alpha-2 code.
+	// Filters results by location. Specify an alpha-2 location code.
 	Location param.Field[string] `query:"location"`
 	// Skips the specified number of objects before fetching the results.
 	Offset param.Field[int64] `query:"offset"`
-	// Metric to order the ASNs by.
+	// Specifies the metric to order the ASNs by.
 	OrderBy param.Field[RadarEntityAsnListParamsOrderBy] `query:"orderBy"`
 }
 
@@ -658,7 +650,7 @@ func (r RadarEntityAsnListParamsFormat) IsKnown() bool {
 	return false
 }
 
-// Metric to order the ASNs by.
+// Specifies the metric to order the ASNs by.
 type RadarEntityAsnListParamsOrderBy string
 
 const (

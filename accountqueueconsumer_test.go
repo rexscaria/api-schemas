@@ -34,8 +34,7 @@ func TestAccountQueueConsumerNewWithOptionalParams(t *testing.T) {
 		cfrex.AccountQueueConsumerNewParams{
 			Body: cfrex.AccountQueueConsumerNewParamsBodyMqWorkerConsumer{
 				DeadLetterQueue: cfrex.F("example-queue"),
-				Script:          cfrex.F("script"),
-				ScriptName:      cfrex.F("script_name"),
+				ScriptName:      cfrex.F("my-consumer-worker"),
 				Settings: cfrex.F(cfrex.AccountQueueConsumerNewParamsBodyMqWorkerConsumerSettings{
 					BatchSize:      cfrex.F(50.000000),
 					MaxConcurrency: cfrex.F(10.000000),
@@ -78,8 +77,7 @@ func TestAccountQueueConsumerUpdateWithOptionalParams(t *testing.T) {
 		cfrex.AccountQueueConsumerUpdateParams{
 			Body: cfrex.AccountQueueConsumerUpdateParamsBodyMqWorkerConsumer{
 				DeadLetterQueue: cfrex.F("example-queue"),
-				Script:          cfrex.F("script"),
-				ScriptName:      cfrex.F("script_name"),
+				ScriptName:      cfrex.F("my-consumer-worker"),
 				Settings: cfrex.F(cfrex.AccountQueueConsumerUpdateParamsBodyMqWorkerConsumerSettings{
 					BatchSize:      cfrex.F(50.000000),
 					MaxConcurrency: cfrex.F(10.000000),

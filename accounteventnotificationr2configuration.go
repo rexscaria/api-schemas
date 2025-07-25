@@ -56,15 +56,21 @@ func (r *AccountEventNotificationR2ConfigurationService) List(ctx context.Contex
 }
 
 type AccountEventNotificationR2ConfigurationListResponse struct {
-	Result AccountEventNotificationR2ConfigurationListResponseResult `json:"result"`
-	JSON   accountEventNotificationR2ConfigurationListResponseJSON   `json:"-"`
-	R2V4Response
+	Errors   []AccountEventNotificationR2ConfigurationListResponseError `json:"errors,required"`
+	Messages []string                                                   `json:"messages,required"`
+	Result   AccountEventNotificationR2ConfigurationListResponseResult  `json:"result,required"`
+	// Whether the API call was successful.
+	Success AccountEventNotificationR2ConfigurationListResponseSuccess `json:"success,required"`
+	JSON    accountEventNotificationR2ConfigurationListResponseJSON    `json:"-"`
 }
 
 // accountEventNotificationR2ConfigurationListResponseJSON contains the JSON
 // metadata for the struct [AccountEventNotificationR2ConfigurationListResponse]
 type accountEventNotificationR2ConfigurationListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -74,6 +80,56 @@ func (r *AccountEventNotificationR2ConfigurationListResponse) UnmarshalJSON(data
 }
 
 func (r accountEventNotificationR2ConfigurationListResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountEventNotificationR2ConfigurationListResponseError struct {
+	Code             int64                                                           `json:"code,required"`
+	Message          string                                                          `json:"message,required"`
+	DocumentationURL string                                                          `json:"documentation_url"`
+	Source           AccountEventNotificationR2ConfigurationListResponseErrorsSource `json:"source"`
+	JSON             accountEventNotificationR2ConfigurationListResponseErrorJSON    `json:"-"`
+}
+
+// accountEventNotificationR2ConfigurationListResponseErrorJSON contains the JSON
+// metadata for the struct
+// [AccountEventNotificationR2ConfigurationListResponseError]
+type accountEventNotificationR2ConfigurationListResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountEventNotificationR2ConfigurationListResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountEventNotificationR2ConfigurationListResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountEventNotificationR2ConfigurationListResponseErrorsSource struct {
+	Pointer string                                                              `json:"pointer"`
+	JSON    accountEventNotificationR2ConfigurationListResponseErrorsSourceJSON `json:"-"`
+}
+
+// accountEventNotificationR2ConfigurationListResponseErrorsSourceJSON contains the
+// JSON metadata for the struct
+// [AccountEventNotificationR2ConfigurationListResponseErrorsSource]
+type accountEventNotificationR2ConfigurationListResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountEventNotificationR2ConfigurationListResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountEventNotificationR2ConfigurationListResponseErrorsSourceJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -104,9 +160,9 @@ func (r accountEventNotificationR2ConfigurationListResponseResultJSON) RawJSON()
 }
 
 type AccountEventNotificationR2ConfigurationListResponseResultQueue struct {
-	// Queue ID
+	// Queue ID.
 	QueueID string `json:"queueId"`
-	// Name of the queue
+	// Name of the queue.
 	QueueName string                                                                `json:"queueName"`
 	Rules     []AccountEventNotificationR2ConfigurationListResponseResultQueuesRule `json:"rules"`
 	JSON      accountEventNotificationR2ConfigurationListResponseResultQueueJSON    `json:"-"`
@@ -132,24 +188,32 @@ func (r accountEventNotificationR2ConfigurationListResponseResultQueueJSON) RawJ
 }
 
 type AccountEventNotificationR2ConfigurationListResponseResultQueuesRule struct {
-	// Timestamp when the rule was created
+	// Array of R2 object actions that will trigger notifications.
+	Actions []AccountEventNotificationR2ConfigurationListResponseResultQueuesRulesAction `json:"actions,required"`
+	// Timestamp when the rule was created.
 	CreatedAt string `json:"createdAt"`
 	// A description that can be used to identify the event notification rule after
-	// creation
+	// creation.
 	Description string `json:"description"`
-	// Rule ID
-	RuleID string                                                                  `json:"ruleId"`
+	// Notifications will be sent only for objects with this prefix.
+	Prefix string `json:"prefix"`
+	// Rule ID.
+	RuleID string `json:"ruleId"`
+	// Notifications will be sent only for objects with this suffix.
+	Suffix string                                                                  `json:"suffix"`
 	JSON   accountEventNotificationR2ConfigurationListResponseResultQueuesRuleJSON `json:"-"`
-	R2Rule
 }
 
 // accountEventNotificationR2ConfigurationListResponseResultQueuesRuleJSON contains
 // the JSON metadata for the struct
 // [AccountEventNotificationR2ConfigurationListResponseResultQueuesRule]
 type accountEventNotificationR2ConfigurationListResponseResultQueuesRuleJSON struct {
+	Actions     apijson.Field
 	CreatedAt   apijson.Field
 	Description apijson.Field
+	Prefix      apijson.Field
 	RuleID      apijson.Field
+	Suffix      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -162,12 +226,45 @@ func (r accountEventNotificationR2ConfigurationListResponseResultQueuesRuleJSON)
 	return r.raw
 }
 
+type AccountEventNotificationR2ConfigurationListResponseResultQueuesRulesAction string
+
+const (
+	AccountEventNotificationR2ConfigurationListResponseResultQueuesRulesActionPutObject               AccountEventNotificationR2ConfigurationListResponseResultQueuesRulesAction = "PutObject"
+	AccountEventNotificationR2ConfigurationListResponseResultQueuesRulesActionCopyObject              AccountEventNotificationR2ConfigurationListResponseResultQueuesRulesAction = "CopyObject"
+	AccountEventNotificationR2ConfigurationListResponseResultQueuesRulesActionDeleteObject            AccountEventNotificationR2ConfigurationListResponseResultQueuesRulesAction = "DeleteObject"
+	AccountEventNotificationR2ConfigurationListResponseResultQueuesRulesActionCompleteMultipartUpload AccountEventNotificationR2ConfigurationListResponseResultQueuesRulesAction = "CompleteMultipartUpload"
+	AccountEventNotificationR2ConfigurationListResponseResultQueuesRulesActionLifecycleDeletion       AccountEventNotificationR2ConfigurationListResponseResultQueuesRulesAction = "LifecycleDeletion"
+)
+
+func (r AccountEventNotificationR2ConfigurationListResponseResultQueuesRulesAction) IsKnown() bool {
+	switch r {
+	case AccountEventNotificationR2ConfigurationListResponseResultQueuesRulesActionPutObject, AccountEventNotificationR2ConfigurationListResponseResultQueuesRulesActionCopyObject, AccountEventNotificationR2ConfigurationListResponseResultQueuesRulesActionDeleteObject, AccountEventNotificationR2ConfigurationListResponseResultQueuesRulesActionCompleteMultipartUpload, AccountEventNotificationR2ConfigurationListResponseResultQueuesRulesActionLifecycleDeletion:
+		return true
+	}
+	return false
+}
+
+// Whether the API call was successful.
+type AccountEventNotificationR2ConfigurationListResponseSuccess bool
+
+const (
+	AccountEventNotificationR2ConfigurationListResponseSuccessTrue AccountEventNotificationR2ConfigurationListResponseSuccess = true
+)
+
+func (r AccountEventNotificationR2ConfigurationListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountEventNotificationR2ConfigurationListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountEventNotificationR2ConfigurationListParams struct {
-	// The bucket jurisdiction
+	// Jurisdiction where objects in this bucket are guaranteed to be stored.
 	Jurisdiction param.Field[AccountEventNotificationR2ConfigurationListParamsCfR2Jurisdiction] `header:"cf-r2-jurisdiction"`
 }
 
-// The bucket jurisdiction
+// Jurisdiction where objects in this bucket are guaranteed to be stored.
 type AccountEventNotificationR2ConfigurationListParamsCfR2Jurisdiction string
 
 const (

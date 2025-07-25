@@ -7,7 +7,6 @@ import (
 	"errors"
 	"os"
 	"testing"
-	"time"
 
 	"github.com/rexscaria/api-schemas"
 	"github.com/rexscaria/api-schemas/internal/testutil"
@@ -37,9 +36,6 @@ func TestAccountAccessCustomPageNewWithOptionalParams(t *testing.T) {
 				Name:       cfrex.F("name"),
 				Type:       cfrex.F(cfrex.SchemasCustomPageTypeIdentityDenied),
 				AppCount:   cfrex.F(int64(0)),
-				CreatedAt:  cfrex.F(time.Now()),
-				Uid:        cfrex.F("f174e90a-fafe-4643-bbbc-4a0ed4fc8415"),
-				UpdatedAt:  cfrex.F(time.Now()),
 			},
 		},
 	)
@@ -104,9 +100,6 @@ func TestAccountAccessCustomPageUpdateWithOptionalParams(t *testing.T) {
 				Name:       cfrex.F("name"),
 				Type:       cfrex.F(cfrex.SchemasCustomPageTypeIdentityDenied),
 				AppCount:   cfrex.F(int64(0)),
-				CreatedAt:  cfrex.F(time.Now()),
-				Uid:        cfrex.F("f174e90a-fafe-4643-bbbc-4a0ed4fc8415"),
-				UpdatedAt:  cfrex.F(time.Now()),
 			},
 		},
 	)

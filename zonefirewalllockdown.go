@@ -96,7 +96,7 @@ func (r *ZoneFirewallLockdownService) List(ctx context.Context, zoneID string, q
 }
 
 // Deletes an existing Zone Lockdown rule.
-func (r *ZoneFirewallLockdownService) Delete(ctx context.Context, zoneID string, lockDownsID string, body ZoneFirewallLockdownDeleteParams, opts ...option.RequestOption) (res *ZoneFirewallLockdownDeleteResponse, err error) {
+func (r *ZoneFirewallLockdownService) Delete(ctx context.Context, zoneID string, lockDownsID string, opts ...option.RequestOption) (res *ZoneFirewallLockdownDeleteResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
@@ -107,7 +107,7 @@ func (r *ZoneFirewallLockdownService) Delete(ctx context.Context, zoneID string,
 		return
 	}
 	path := fmt.Sprintf("zones/%s/firewall/lockdowns/%s", zoneID, lockDownsID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
@@ -383,15 +383,21 @@ func (r firewallZonelockdownJSON) RawJSON() string {
 }
 
 type FirewallZonelockdownResponseSingle struct {
-	Result FirewallZonelockdown                   `json:"result,required"`
-	JSON   firewallZonelockdownResponseSingleJSON `json:"-"`
-	FirewallAPIResponseSingle
+	Errors   []FirewallMessagesItem `json:"errors,required"`
+	Messages []FirewallMessagesItem `json:"messages,required"`
+	Result   FirewallZonelockdown   `json:"result,required"`
+	// Defines whether the API call was successful.
+	Success FirewallZonelockdownResponseSingleSuccess `json:"success,required"`
+	JSON    firewallZonelockdownResponseSingleJSON    `json:"-"`
 }
 
 // firewallZonelockdownResponseSingleJSON contains the JSON metadata for the struct
 // [FirewallZonelockdownResponseSingle]
 type firewallZonelockdownResponseSingleJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -404,16 +410,39 @@ func (r firewallZonelockdownResponseSingleJSON) RawJSON() string {
 	return r.raw
 }
 
+// Defines whether the API call was successful.
+type FirewallZonelockdownResponseSingleSuccess bool
+
+const (
+	FirewallZonelockdownResponseSingleSuccessTrue FirewallZonelockdownResponseSingleSuccess = true
+)
+
+func (r FirewallZonelockdownResponseSingleSuccess) IsKnown() bool {
+	switch r {
+	case FirewallZonelockdownResponseSingleSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type ZoneFirewallLockdownListResponse struct {
-	Result []FirewallZonelockdown               `json:"result,required"`
-	JSON   zoneFirewallLockdownListResponseJSON `json:"-"`
-	FirewallAPIResponseCollection
+	Errors   []FirewallMessagesItem `json:"errors,required"`
+	Messages []FirewallMessagesItem `json:"messages,required"`
+	Result   []FirewallZonelockdown `json:"result,required,nullable"`
+	// Defines whether the API call was successful.
+	Success    ZoneFirewallLockdownListResponseSuccess    `json:"success,required"`
+	ResultInfo ZoneFirewallLockdownListResponseResultInfo `json:"result_info"`
+	JSON       zoneFirewallLockdownListResponseJSON       `json:"-"`
 }
 
 // zoneFirewallLockdownListResponseJSON contains the JSON metadata for the struct
 // [ZoneFirewallLockdownListResponse]
 type zoneFirewallLockdownListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -423,6 +452,52 @@ func (r *ZoneFirewallLockdownListResponse) UnmarshalJSON(data []byte) (err error
 }
 
 func (r zoneFirewallLockdownListResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+// Defines whether the API call was successful.
+type ZoneFirewallLockdownListResponseSuccess bool
+
+const (
+	ZoneFirewallLockdownListResponseSuccessTrue ZoneFirewallLockdownListResponseSuccess = true
+)
+
+func (r ZoneFirewallLockdownListResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneFirewallLockdownListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type ZoneFirewallLockdownListResponseResultInfo struct {
+	// Defines the total number of results for the requested service.
+	Count float64 `json:"count"`
+	// Defines the current page within paginated list of results.
+	Page float64 `json:"page"`
+	// Defines the number of results per page of results.
+	PerPage float64 `json:"per_page"`
+	// Defines the total results available without any search parameters.
+	TotalCount float64                                        `json:"total_count"`
+	JSON       zoneFirewallLockdownListResponseResultInfoJSON `json:"-"`
+}
+
+// zoneFirewallLockdownListResponseResultInfoJSON contains the JSON metadata for
+// the struct [ZoneFirewallLockdownListResponseResultInfo]
+type zoneFirewallLockdownListResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZoneFirewallLockdownListResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneFirewallLockdownListResponseResultInfoJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -478,6 +553,15 @@ type ZoneFirewallLockdownNewParams struct {
 	// entered URL will be escaped before use, which means you can only use simple
 	// wildcard patterns.
 	URLs param.Field[[]string] `json:"urls,required"`
+	// An informative summary of the rule. This value is sanitized and any tags will be
+	// removed.
+	Description param.Field[string] `json:"description"`
+	// When true, indicates that the rule is currently paused.
+	Paused param.Field[bool] `json:"paused"`
+	// The priority of the rule to control the processing order. A lower number
+	// indicates higher priority. If not provided, any rules with a configured priority
+	// will be processed before rules without a priority.
+	Priority param.Field[float64] `json:"priority"`
 }
 
 func (r ZoneFirewallLockdownNewParams) MarshalJSON() (data []byte, err error) {
@@ -534,12 +618,4 @@ func (r ZoneFirewallLockdownListParams) URLQuery() (v url.Values) {
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
-}
-
-type ZoneFirewallLockdownDeleteParams struct {
-	Body interface{} `json:"body,required"`
-}
-
-func (r ZoneFirewallLockdownDeleteParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
 }

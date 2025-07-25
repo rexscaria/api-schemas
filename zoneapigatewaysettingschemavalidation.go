@@ -35,6 +35,10 @@ func NewZoneAPIGatewaySettingSchemaValidationService(opts ...option.RequestOptio
 }
 
 // Retrieves zone level schema validation settings currently set on the zone
+//
+// Deprecated: Use
+// [Schema Validation API](https://developers.cloudflare.com/api/resources/schema_validation/)
+// instead.
 func (r *ZoneAPIGatewaySettingSchemaValidationService) Get(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *ZoneSchemaValidationSettings, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
@@ -47,6 +51,10 @@ func (r *ZoneAPIGatewaySettingSchemaValidationService) Get(ctx context.Context, 
 }
 
 // Updates zone level schema validation settings on the zone
+//
+// Deprecated: Use
+// [Schema Validation API](https://developers.cloudflare.com/api/resources/schema_validation/)
+// instead.
 func (r *ZoneAPIGatewaySettingSchemaValidationService) Update(ctx context.Context, zoneID string, body ZoneAPIGatewaySettingSchemaValidationUpdateParams, opts ...option.RequestOption) (res *ZoneSchemaValidationSettings, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {

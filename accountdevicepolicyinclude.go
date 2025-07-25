@@ -37,42 +37,58 @@ func NewAccountDevicePolicyIncludeService(opts ...option.RequestOption) (r *Acco
 
 // Fetches the list of routes included in the WARP client's tunnel for a specific
 // device settings profile.
-func (r *AccountDevicePolicyIncludeService) List(ctx context.Context, accountID interface{}, policyID string, opts ...option.RequestOption) (res *SplitTunnelIncludeResponseCollection, err error) {
+func (r *AccountDevicePolicyIncludeService) List(ctx context.Context, accountID string, policyID string, opts ...option.RequestOption) (res *SplitTunnelIncludeResponseCollection, err error) {
 	opts = append(r.Options[:], opts...)
+	if accountID == "" {
+		err = errors.New("missing required account_id parameter")
+		return
+	}
 	if policyID == "" {
 		err = errors.New("missing required policy_id parameter")
 		return
 	}
-	path := fmt.Sprintf("accounts/%v/devices/policy/%s/include", accountID, policyID)
+	path := fmt.Sprintf("accounts/%s/devices/policy/%s/include", accountID, policyID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
 
 // Fetches the list of routes included in the WARP client's tunnel.
-func (r *AccountDevicePolicyIncludeService) GlobalList(ctx context.Context, accountID interface{}, opts ...option.RequestOption) (res *SplitTunnelIncludeResponseCollection, err error) {
+func (r *AccountDevicePolicyIncludeService) GlobalList(ctx context.Context, accountID string, opts ...option.RequestOption) (res *SplitTunnelIncludeResponseCollection, err error) {
 	opts = append(r.Options[:], opts...)
-	path := fmt.Sprintf("accounts/%v/devices/policy/include", accountID)
+	if accountID == "" {
+		err = errors.New("missing required account_id parameter")
+		return
+	}
+	path := fmt.Sprintf("accounts/%s/devices/policy/include", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
 
 // Sets the list of routes included in the WARP client's tunnel.
-func (r *AccountDevicePolicyIncludeService) GlobalSet(ctx context.Context, accountID interface{}, body AccountDevicePolicyIncludeGlobalSetParams, opts ...option.RequestOption) (res *SplitTunnelIncludeResponseCollection, err error) {
+func (r *AccountDevicePolicyIncludeService) GlobalSet(ctx context.Context, accountID string, body AccountDevicePolicyIncludeGlobalSetParams, opts ...option.RequestOption) (res *SplitTunnelIncludeResponseCollection, err error) {
 	opts = append(r.Options[:], opts...)
-	path := fmt.Sprintf("accounts/%v/devices/policy/include", accountID)
+	if accountID == "" {
+		err = errors.New("missing required account_id parameter")
+		return
+	}
+	path := fmt.Sprintf("accounts/%s/devices/policy/include", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
 	return
 }
 
 // Sets the list of routes included in the WARP client's tunnel for a specific
 // device settings profile.
-func (r *AccountDevicePolicyIncludeService) Set(ctx context.Context, accountID interface{}, policyID string, body AccountDevicePolicyIncludeSetParams, opts ...option.RequestOption) (res *SplitTunnelIncludeResponseCollection, err error) {
+func (r *AccountDevicePolicyIncludeService) Set(ctx context.Context, accountID string, policyID string, body AccountDevicePolicyIncludeSetParams, opts ...option.RequestOption) (res *SplitTunnelIncludeResponseCollection, err error) {
 	opts = append(r.Options[:], opts...)
+	if accountID == "" {
+		err = errors.New("missing required account_id parameter")
+		return
+	}
 	if policyID == "" {
 		err = errors.New("missing required policy_id parameter")
 		return
 	}
-	path := fmt.Sprintf("accounts/%v/devices/policy/%s/include", accountID, policyID)
+	path := fmt.Sprintf("accounts/%s/devices/policy/%s/include", accountID, policyID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
 	return
 }
@@ -257,15 +273,23 @@ func (r SplitTunnelIncludeTeamsDevicesIncludeSplitTunnelWithHostParam) implement
 }
 
 type SplitTunnelIncludeResponseCollection struct {
-	Result []SplitTunnelInclude                     `json:"result"`
-	JSON   splitTunnelIncludeResponseCollectionJSON `json:"-"`
-	APIResponseCollectionTeamsDevices
+	Errors   []MessagesDeviceTestsItems `json:"errors,required"`
+	Messages []MessagesDeviceTestsItems `json:"messages,required"`
+	Result   []SplitTunnelInclude       `json:"result,required,nullable"`
+	// Whether the API call was successful.
+	Success    SplitTunnelIncludeResponseCollectionSuccess    `json:"success,required"`
+	ResultInfo SplitTunnelIncludeResponseCollectionResultInfo `json:"result_info"`
+	JSON       splitTunnelIncludeResponseCollectionJSON       `json:"-"`
 }
 
 // splitTunnelIncludeResponseCollectionJSON contains the JSON metadata for the
 // struct [SplitTunnelIncludeResponseCollection]
 type splitTunnelIncludeResponseCollectionJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -275,6 +299,52 @@ func (r *SplitTunnelIncludeResponseCollection) UnmarshalJSON(data []byte) (err e
 }
 
 func (r splitTunnelIncludeResponseCollectionJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful.
+type SplitTunnelIncludeResponseCollectionSuccess bool
+
+const (
+	SplitTunnelIncludeResponseCollectionSuccessTrue SplitTunnelIncludeResponseCollectionSuccess = true
+)
+
+func (r SplitTunnelIncludeResponseCollectionSuccess) IsKnown() bool {
+	switch r {
+	case SplitTunnelIncludeResponseCollectionSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type SplitTunnelIncludeResponseCollectionResultInfo struct {
+	// Total number of results for the requested service.
+	Count float64 `json:"count"`
+	// Current page within paginated list of results.
+	Page float64 `json:"page"`
+	// Number of results per page of results.
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters.
+	TotalCount float64                                            `json:"total_count"`
+	JSON       splitTunnelIncludeResponseCollectionResultInfoJSON `json:"-"`
+}
+
+// splitTunnelIncludeResponseCollectionResultInfoJSON contains the JSON metadata
+// for the struct [SplitTunnelIncludeResponseCollectionResultInfo]
+type splitTunnelIncludeResponseCollectionResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *SplitTunnelIncludeResponseCollectionResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r splitTunnelIncludeResponseCollectionResultInfoJSON) RawJSON() string {
 	return r.raw
 }
 

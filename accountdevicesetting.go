@@ -4,6 +4,7 @@ package cfrex
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net/http"
 
@@ -33,25 +34,37 @@ func NewAccountDeviceSettingService(opts ...option.RequestOption) (r *AccountDev
 }
 
 // Describes the current device settings for a Zero Trust account.
-func (r *AccountDeviceSettingService) Get(ctx context.Context, accountID interface{}, opts ...option.RequestOption) (res *ZeroTrustAccountDeviceSettingsResponse, err error) {
+func (r *AccountDeviceSettingService) Get(ctx context.Context, accountID string, opts ...option.RequestOption) (res *ZeroTrustAccountDeviceSettingsResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	path := fmt.Sprintf("accounts/%v/devices/settings", accountID)
+	if accountID == "" {
+		err = errors.New("missing required account_id parameter")
+		return
+	}
+	path := fmt.Sprintf("accounts/%s/devices/settings", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
 
 // Updates the current device settings for a Zero Trust account.
-func (r *AccountDeviceSettingService) Update(ctx context.Context, accountID interface{}, body AccountDeviceSettingUpdateParams, opts ...option.RequestOption) (res *ZeroTrustAccountDeviceSettingsResponse, err error) {
+func (r *AccountDeviceSettingService) Update(ctx context.Context, accountID string, body AccountDeviceSettingUpdateParams, opts ...option.RequestOption) (res *ZeroTrustAccountDeviceSettingsResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	path := fmt.Sprintf("accounts/%v/devices/settings", accountID)
+	if accountID == "" {
+		err = errors.New("missing required account_id parameter")
+		return
+	}
+	path := fmt.Sprintf("accounts/%s/devices/settings", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
 	return
 }
 
 // Patches the current device settings for a Zero Trust account.
-func (r *AccountDeviceSettingService) Patch(ctx context.Context, accountID interface{}, body AccountDeviceSettingPatchParams, opts ...option.RequestOption) (res *ZeroTrustAccountDeviceSettingsResponse, err error) {
+func (r *AccountDeviceSettingService) Patch(ctx context.Context, accountID string, body AccountDeviceSettingPatchParams, opts ...option.RequestOption) (res *ZeroTrustAccountDeviceSettingsResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	path := fmt.Sprintf("accounts/%v/devices/settings", accountID)
+	if accountID == "" {
+		err = errors.New("missing required account_id parameter")
+		return
+	}
+	path := fmt.Sprintf("accounts/%s/devices/settings", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return
 }
@@ -110,15 +123,21 @@ func (r ZeroTrustAccountDeviceSettingsParam) MarshalJSON() (data []byte, err err
 }
 
 type ZeroTrustAccountDeviceSettingsResponse struct {
-	Result ZeroTrustAccountDeviceSettings             `json:"result"`
-	JSON   zeroTrustAccountDeviceSettingsResponseJSON `json:"-"`
-	APIResponseSingleTeamsDevices
+	Errors   []MessagesDeviceTestsItems     `json:"errors,required"`
+	Messages []MessagesDeviceTestsItems     `json:"messages,required"`
+	Result   ZeroTrustAccountDeviceSettings `json:"result,required,nullable"`
+	// Whether the API call was successful.
+	Success ZeroTrustAccountDeviceSettingsResponseSuccess `json:"success,required"`
+	JSON    zeroTrustAccountDeviceSettingsResponseJSON    `json:"-"`
 }
 
 // zeroTrustAccountDeviceSettingsResponseJSON contains the JSON metadata for the
 // struct [ZeroTrustAccountDeviceSettingsResponse]
 type zeroTrustAccountDeviceSettingsResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -129,6 +148,21 @@ func (r *ZeroTrustAccountDeviceSettingsResponse) UnmarshalJSON(data []byte) (err
 
 func (r zeroTrustAccountDeviceSettingsResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type ZeroTrustAccountDeviceSettingsResponseSuccess bool
+
+const (
+	ZeroTrustAccountDeviceSettingsResponseSuccessTrue ZeroTrustAccountDeviceSettingsResponseSuccess = true
+)
+
+func (r ZeroTrustAccountDeviceSettingsResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZeroTrustAccountDeviceSettingsResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountDeviceSettingUpdateParams struct {

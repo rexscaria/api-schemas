@@ -31,11 +31,13 @@ func TestZoneFirewallUaRuleNewWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.ZoneFirewallUaRuleNewParams{
-			Configuration: cfrex.F[cfrex.FirewallRuleConfigurationUnionParam](cfrex.FirewallRuleConfigurationFirewallIPConfigurationParam{
-				Target: cfrex.F(cfrex.FirewallRuleConfigurationFirewallIPConfigurationTargetIP),
-				Value:  cfrex.F("198.51.100.4"),
+			Configuration: cfrex.F(cfrex.ZoneFirewallUaRuleNewParamsConfiguration{
+				Target: cfrex.F(cfrex.ZoneFirewallUaRuleNewParamsConfigurationTargetUa),
+				Value:  cfrex.F("Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1)"),
 			}),
-			Mode: cfrex.F(cfrex.FirewallSchemasModeChallenge),
+			Mode:        cfrex.F(cfrex.FirewallSchemasModeChallenge),
+			Description: cfrex.F("Prevent multiple login failures to mitigate brute force attacks"),
+			Paused:      cfrex.F(false),
 		},
 	)
 	if err != nil {
@@ -98,7 +100,9 @@ func TestZoneFirewallUaRuleUpdateWithOptionalParams(t *testing.T) {
 				Target: cfrex.F(cfrex.FirewallRuleConfigurationFirewallIPConfigurationTargetIP),
 				Value:  cfrex.F("198.51.100.4"),
 			}),
-			Mode: cfrex.F(cfrex.FirewallSchemasModeChallenge),
+			Mode:        cfrex.F(cfrex.FirewallSchemasModeChallenge),
+			Description: cfrex.F("Prevent multiple login failures to mitigate brute force attacks"),
+			Paused:      cfrex.F(false),
 		},
 	)
 	if err != nil {
@@ -128,11 +132,11 @@ func TestZoneFirewallUaRuleListWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.ZoneFirewallUaRuleListParams{
-			Description:       cfrex.F("abusive"),
-			DescriptionSearch: cfrex.F("abusive"),
-			Page:              cfrex.F(1.000000),
-			PerPage:           cfrex.F(1.000000),
-			UaSearch:          cfrex.F("Safari"),
+			Description: cfrex.F("abusive"),
+			Page:        cfrex.F(1.000000),
+			Paused:      cfrex.F(false),
+			PerPage:     cfrex.F(1.000000),
+			UserAgent:   cfrex.F("Safari"),
 		},
 	)
 	if err != nil {
@@ -162,9 +166,6 @@ func TestZoneFirewallUaRuleDelete(t *testing.T) {
 		context.TODO(),
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		"372e67954025e0ba6aaa6d586b9e0b59",
-		cfrex.ZoneFirewallUaRuleDeleteParams{
-			Body: map[string]interface{}{},
-		},
 	)
 	if err != nil {
 		var apierr *cfrex.Error

@@ -106,7 +106,8 @@ func (r *AccountZtRiskScoringIntegrationService) GetIntegrationByReferenceID(ctx
 	return
 }
 
-// Overwrite the reference_id, tenant_url, and active values with the ones provided
+// Overwrite the reference_id, tenant_url, and active values with the ones
+// provided.
 func (r *AccountZtRiskScoringIntegrationService) UpdateIntegration(ctx context.Context, accountID string, integrationID string, body AccountZtRiskScoringIntegrationUpdateIntegrationParams, opts ...option.RequestOption) (res *AccountZtRiskScoringIntegrationUpdateIntegrationResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
@@ -136,11 +137,11 @@ type RiskScoreIntegration struct {
 	// integration ID. Useful when the risk-score integration needs to be associated
 	// with a secondary asset and recalled using that ID.
 	ReferenceID string `json:"reference_id,required"`
-	// The base URL for the tenant. E.g. "https://tenant.okta.com"
+	// The base URL for the tenant. E.g. "https://tenant.okta.com".
 	TenantURL string `json:"tenant_url,required"`
 	// The URL for the Shared Signals Framework configuration, e.g.
 	// "/.well-known/sse-configuration/{integration_uuid}/".
-	// https://openid.net/specs/openid-sse-framework-1_0.html#rfc.section.6.2.1
+	// https://openid.net/specs/openid-sse-framework-1_0.html#rfc.section.6.2.1.
 	WellKnownURL string                   `json:"well_known_url,required"`
 	JSON         riskScoreIntegrationJSON `json:"-"`
 }
@@ -183,14 +184,20 @@ func (r RiskScoreIntegrationType) IsKnown() bool {
 }
 
 type AccountZtRiskScoringIntegrationNewIntegrationResponse struct {
-	Result RiskScoreIntegration                                      `json:"result"`
-	JSON   accountZtRiskScoringIntegrationNewIntegrationResponseJSON `json:"-"`
-	APIResponseSingleDlp
+	Errors   []MessagesDlpItems `json:"errors,required"`
+	Messages []MessagesDlpItems `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountZtRiskScoringIntegrationNewIntegrationResponseSuccess `json:"success,required"`
+	Result  RiskScoreIntegration                                         `json:"result"`
+	JSON    accountZtRiskScoringIntegrationNewIntegrationResponseJSON    `json:"-"`
 }
 
 // accountZtRiskScoringIntegrationNewIntegrationResponseJSON contains the JSON
 // metadata for the struct [AccountZtRiskScoringIntegrationNewIntegrationResponse]
 type accountZtRiskScoringIntegrationNewIntegrationResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -204,16 +211,37 @@ func (r accountZtRiskScoringIntegrationNewIntegrationResponseJSON) RawJSON() str
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountZtRiskScoringIntegrationNewIntegrationResponseSuccess bool
+
+const (
+	AccountZtRiskScoringIntegrationNewIntegrationResponseSuccessTrue AccountZtRiskScoringIntegrationNewIntegrationResponseSuccess = true
+)
+
+func (r AccountZtRiskScoringIntegrationNewIntegrationResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountZtRiskScoringIntegrationNewIntegrationResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountZtRiskScoringIntegrationDeleteIntegrationResponse struct {
-	Result interface{}                                                  `json:"result,nullable"`
-	JSON   accountZtRiskScoringIntegrationDeleteIntegrationResponseJSON `json:"-"`
-	APIResponseSingleDlp
+	Errors   []MessagesDlpItems `json:"errors,required"`
+	Messages []MessagesDlpItems `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountZtRiskScoringIntegrationDeleteIntegrationResponseSuccess `json:"success,required"`
+	Result  interface{}                                                     `json:"result,nullable"`
+	JSON    accountZtRiskScoringIntegrationDeleteIntegrationResponseJSON    `json:"-"`
 }
 
 // accountZtRiskScoringIntegrationDeleteIntegrationResponseJSON contains the JSON
 // metadata for the struct
 // [AccountZtRiskScoringIntegrationDeleteIntegrationResponse]
 type accountZtRiskScoringIntegrationDeleteIntegrationResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -227,16 +255,37 @@ func (r accountZtRiskScoringIntegrationDeleteIntegrationResponseJSON) RawJSON() 
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountZtRiskScoringIntegrationDeleteIntegrationResponseSuccess bool
+
+const (
+	AccountZtRiskScoringIntegrationDeleteIntegrationResponseSuccessTrue AccountZtRiskScoringIntegrationDeleteIntegrationResponseSuccess = true
+)
+
+func (r AccountZtRiskScoringIntegrationDeleteIntegrationResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountZtRiskScoringIntegrationDeleteIntegrationResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountZtRiskScoringIntegrationListIntegrationsResponse struct {
-	Result []RiskScoreIntegration                                      `json:"result"`
-	JSON   accountZtRiskScoringIntegrationListIntegrationsResponseJSON `json:"-"`
-	APIResponseSingleDlp
+	Errors   []MessagesDlpItems `json:"errors,required"`
+	Messages []MessagesDlpItems `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountZtRiskScoringIntegrationListIntegrationsResponseSuccess `json:"success,required"`
+	Result  []RiskScoreIntegration                                         `json:"result"`
+	JSON    accountZtRiskScoringIntegrationListIntegrationsResponseJSON    `json:"-"`
 }
 
 // accountZtRiskScoringIntegrationListIntegrationsResponseJSON contains the JSON
 // metadata for the struct
 // [AccountZtRiskScoringIntegrationListIntegrationsResponse]
 type accountZtRiskScoringIntegrationListIntegrationsResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -250,15 +299,36 @@ func (r accountZtRiskScoringIntegrationListIntegrationsResponseJSON) RawJSON() s
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountZtRiskScoringIntegrationListIntegrationsResponseSuccess bool
+
+const (
+	AccountZtRiskScoringIntegrationListIntegrationsResponseSuccessTrue AccountZtRiskScoringIntegrationListIntegrationsResponseSuccess = true
+)
+
+func (r AccountZtRiskScoringIntegrationListIntegrationsResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountZtRiskScoringIntegrationListIntegrationsResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountZtRiskScoringIntegrationGetIntegrationResponse struct {
-	Result RiskScoreIntegration                                      `json:"result"`
-	JSON   accountZtRiskScoringIntegrationGetIntegrationResponseJSON `json:"-"`
-	APIResponseSingleDlp
+	Errors   []MessagesDlpItems `json:"errors,required"`
+	Messages []MessagesDlpItems `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountZtRiskScoringIntegrationGetIntegrationResponseSuccess `json:"success,required"`
+	Result  RiskScoreIntegration                                         `json:"result"`
+	JSON    accountZtRiskScoringIntegrationGetIntegrationResponseJSON    `json:"-"`
 }
 
 // accountZtRiskScoringIntegrationGetIntegrationResponseJSON contains the JSON
 // metadata for the struct [AccountZtRiskScoringIntegrationGetIntegrationResponse]
 type accountZtRiskScoringIntegrationGetIntegrationResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -272,16 +342,37 @@ func (r accountZtRiskScoringIntegrationGetIntegrationResponseJSON) RawJSON() str
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountZtRiskScoringIntegrationGetIntegrationResponseSuccess bool
+
+const (
+	AccountZtRiskScoringIntegrationGetIntegrationResponseSuccessTrue AccountZtRiskScoringIntegrationGetIntegrationResponseSuccess = true
+)
+
+func (r AccountZtRiskScoringIntegrationGetIntegrationResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountZtRiskScoringIntegrationGetIntegrationResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountZtRiskScoringIntegrationGetIntegrationByReferenceIDResponse struct {
-	Result RiskScoreIntegration                                                   `json:"result"`
-	JSON   accountZtRiskScoringIntegrationGetIntegrationByReferenceIDResponseJSON `json:"-"`
-	APIResponseSingleDlp
+	Errors   []MessagesDlpItems `json:"errors,required"`
+	Messages []MessagesDlpItems `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountZtRiskScoringIntegrationGetIntegrationByReferenceIDResponseSuccess `json:"success,required"`
+	Result  RiskScoreIntegration                                                      `json:"result"`
+	JSON    accountZtRiskScoringIntegrationGetIntegrationByReferenceIDResponseJSON    `json:"-"`
 }
 
 // accountZtRiskScoringIntegrationGetIntegrationByReferenceIDResponseJSON contains
 // the JSON metadata for the struct
 // [AccountZtRiskScoringIntegrationGetIntegrationByReferenceIDResponse]
 type accountZtRiskScoringIntegrationGetIntegrationByReferenceIDResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -295,16 +386,37 @@ func (r accountZtRiskScoringIntegrationGetIntegrationByReferenceIDResponseJSON) 
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountZtRiskScoringIntegrationGetIntegrationByReferenceIDResponseSuccess bool
+
+const (
+	AccountZtRiskScoringIntegrationGetIntegrationByReferenceIDResponseSuccessTrue AccountZtRiskScoringIntegrationGetIntegrationByReferenceIDResponseSuccess = true
+)
+
+func (r AccountZtRiskScoringIntegrationGetIntegrationByReferenceIDResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountZtRiskScoringIntegrationGetIntegrationByReferenceIDResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountZtRiskScoringIntegrationUpdateIntegrationResponse struct {
-	Result RiskScoreIntegration                                         `json:"result"`
-	JSON   accountZtRiskScoringIntegrationUpdateIntegrationResponseJSON `json:"-"`
-	APIResponseSingleDlp
+	Errors   []MessagesDlpItems `json:"errors,required"`
+	Messages []MessagesDlpItems `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountZtRiskScoringIntegrationUpdateIntegrationResponseSuccess `json:"success,required"`
+	Result  RiskScoreIntegration                                            `json:"result"`
+	JSON    accountZtRiskScoringIntegrationUpdateIntegrationResponseJSON    `json:"-"`
 }
 
 // accountZtRiskScoringIntegrationUpdateIntegrationResponseJSON contains the JSON
 // metadata for the struct
 // [AccountZtRiskScoringIntegrationUpdateIntegrationResponse]
 type accountZtRiskScoringIntegrationUpdateIntegrationResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -318,9 +430,24 @@ func (r accountZtRiskScoringIntegrationUpdateIntegrationResponseJSON) RawJSON() 
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountZtRiskScoringIntegrationUpdateIntegrationResponseSuccess bool
+
+const (
+	AccountZtRiskScoringIntegrationUpdateIntegrationResponseSuccessTrue AccountZtRiskScoringIntegrationUpdateIntegrationResponseSuccess = true
+)
+
+func (r AccountZtRiskScoringIntegrationUpdateIntegrationResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountZtRiskScoringIntegrationUpdateIntegrationResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountZtRiskScoringIntegrationNewIntegrationParams struct {
 	IntegrationType param.Field[RiskScoreIntegrationType] `json:"integration_type,required"`
-	// The base url of the tenant, e.g. "https://tenant.okta.com"
+	// The base url of the tenant, e.g. "https://tenant.okta.com".
 	TenantURL param.Field[string] `json:"tenant_url,required" format:"uri"`
 	// A reference id that can be supplied by the client. Currently this should be set
 	// to the Access-Okta IDP ID (a UUIDv4).
@@ -336,7 +463,7 @@ type AccountZtRiskScoringIntegrationUpdateIntegrationParams struct {
 	// Whether this integration is enabled. If disabled, no risk changes will be
 	// exported to the third-party.
 	Active param.Field[bool] `json:"active,required"`
-	// The base url of the tenant, e.g. "https://tenant.okta.com"
+	// The base url of the tenant, e.g. "https://tenant.okta.com".
 	TenantURL param.Field[string] `json:"tenant_url,required" format:"uri"`
 	// A reference id that can be supplied by the client. Currently this should be set
 	// to the Access-Okta IDP ID (a UUIDv4).

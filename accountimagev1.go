@@ -7,10 +7,10 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"io"
 	"mime/multipart"
 	"net/http"
 	"net/url"
-	"reflect"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apiform"
@@ -19,8 +19,6 @@ import (
 	"github.com/rexscaria/api-schemas/internal/param"
 	"github.com/rexscaria/api-schemas/internal/requestconfig"
 	"github.com/rexscaria/api-schemas/option"
-	"github.com/rexscaria/api-schemas/shared"
-	"github.com/tidwall/gjson"
 )
 
 // AccountImageV1Service contains methods and other services that help with
@@ -96,7 +94,7 @@ func (r *AccountImageV1Service) List(ctx context.Context, accountID string, quer
 
 // Delete an image on Cloudflare Images. On success, all copies of the image are
 // deleted and purged from cache.
-func (r *AccountImageV1Service) Delete(ctx context.Context, accountID string, imageID string, body AccountImageV1DeleteParams, opts ...option.RequestOption) (res *DeletedImagesResponse, err error) {
+func (r *AccountImageV1Service) Delete(ctx context.Context, accountID string, imageID string, opts ...option.RequestOption) (res *DeletedImagesResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
@@ -107,7 +105,7 @@ func (r *AccountImageV1Service) Delete(ctx context.Context, accountID string, im
 		return
 	}
 	path := fmt.Sprintf("accounts/%s/images/v1/%s", accountID, imageID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
@@ -155,105 +153,22 @@ func (r *AccountImageV1Service) Upload(ctx context.Context, accountID string, bo
 	return
 }
 
-type APIResponseImages struct {
-	Errors   []MessagesImageItem          `json:"errors,required"`
-	Messages []MessagesImageItem          `json:"messages,required"`
-	Result   APIResponseImagesResultUnion `json:"result,required"`
-	// Whether the API call was successful
-	Success APIResponseImagesSuccess `json:"success,required"`
-	JSON    apiResponseImagesJSON    `json:"-"`
-}
-
-// apiResponseImagesJSON contains the JSON metadata for the struct
-// [APIResponseImages]
-type apiResponseImagesJSON struct {
-	Errors      apijson.Field
-	Messages    apijson.Field
-	Result      apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *APIResponseImages) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r apiResponseImagesJSON) RawJSON() string {
-	return r.raw
-}
-
-// Union satisfied by [APIResponseImagesResultArray] or [shared.UnionString].
-type APIResponseImagesResultUnion interface {
-	ImplementsAPIResponseImagesResultUnion()
-}
-
-func init() {
-	apijson.RegisterUnion(
-		reflect.TypeOf((*APIResponseImagesResultUnion)(nil)).Elem(),
-		"",
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(APIResponseImagesResultArray{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.String,
-			Type:       reflect.TypeOf(shared.UnionString("")),
-		},
-	)
-}
-
-type APIResponseImagesResultArray []interface{}
-
-func (r APIResponseImagesResultArray) ImplementsAPIResponseImagesResultUnion() {}
-
-// Whether the API call was successful
-type APIResponseImagesSuccess bool
-
-const (
-	APIResponseImagesSuccessTrue APIResponseImagesSuccess = true
-)
-
-func (r APIResponseImagesSuccess) IsKnown() bool {
-	switch r {
-	case APIResponseImagesSuccessTrue:
-		return true
-	}
-	return false
-}
-
-type APIResponseSingleImages struct {
-	Result interface{}                 `json:"result"`
-	JSON   apiResponseSingleImagesJSON `json:"-"`
-	APIResponseImages
-}
-
-// apiResponseSingleImagesJSON contains the JSON metadata for the struct
-// [APIResponseSingleImages]
-type apiResponseSingleImagesJSON struct {
-	Result      apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *APIResponseSingleImages) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r apiResponseSingleImagesJSON) RawJSON() string {
-	return r.raw
-}
-
 type DeletedImagesResponse struct {
-	Result interface{}               `json:"result"`
-	JSON   deletedImagesResponseJSON `json:"-"`
-	APIResponseSingleImages
+	Errors   []DeletedImagesResponseError   `json:"errors,required"`
+	Messages []DeletedImagesResponseMessage `json:"messages,required"`
+	Result   interface{}                    `json:"result,required"`
+	// Whether the API call was successful
+	Success DeletedImagesResponseSuccess `json:"success,required"`
+	JSON    deletedImagesResponseJSON    `json:"-"`
 }
 
 // deletedImagesResponseJSON contains the JSON metadata for the struct
 // [DeletedImagesResponse]
 type deletedImagesResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -266,9 +181,122 @@ func (r deletedImagesResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+type DeletedImagesResponseError struct {
+	Code             int64                             `json:"code,required"`
+	Message          string                            `json:"message,required"`
+	DocumentationURL string                            `json:"documentation_url"`
+	Source           DeletedImagesResponseErrorsSource `json:"source"`
+	JSON             deletedImagesResponseErrorJSON    `json:"-"`
+}
+
+// deletedImagesResponseErrorJSON contains the JSON metadata for the struct
+// [DeletedImagesResponseError]
+type deletedImagesResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *DeletedImagesResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r deletedImagesResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type DeletedImagesResponseErrorsSource struct {
+	Pointer string                                `json:"pointer"`
+	JSON    deletedImagesResponseErrorsSourceJSON `json:"-"`
+}
+
+// deletedImagesResponseErrorsSourceJSON contains the JSON metadata for the struct
+// [DeletedImagesResponseErrorsSource]
+type deletedImagesResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *DeletedImagesResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r deletedImagesResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type DeletedImagesResponseMessage struct {
+	Code             int64                               `json:"code,required"`
+	Message          string                              `json:"message,required"`
+	DocumentationURL string                              `json:"documentation_url"`
+	Source           DeletedImagesResponseMessagesSource `json:"source"`
+	JSON             deletedImagesResponseMessageJSON    `json:"-"`
+}
+
+// deletedImagesResponseMessageJSON contains the JSON metadata for the struct
+// [DeletedImagesResponseMessage]
+type deletedImagesResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *DeletedImagesResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r deletedImagesResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type DeletedImagesResponseMessagesSource struct {
+	Pointer string                                  `json:"pointer"`
+	JSON    deletedImagesResponseMessagesSourceJSON `json:"-"`
+}
+
+// deletedImagesResponseMessagesSourceJSON contains the JSON metadata for the
+// struct [DeletedImagesResponseMessagesSource]
+type deletedImagesResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *DeletedImagesResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r deletedImagesResponseMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful
+type DeletedImagesResponseSuccess bool
+
+const (
+	DeletedImagesResponseSuccessTrue DeletedImagesResponseSuccess = true
+)
+
+func (r DeletedImagesResponseSuccess) IsKnown() bool {
+	switch r {
+	case DeletedImagesResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type Image struct {
 	// Image unique identifier.
 	ID string `json:"id"`
+	// Can set the creator field with an internal user ID.
+	Creator string `json:"creator,nullable"`
 	// Image file name.
 	Filename string `json:"filename"`
 	// User modifiable key-value store. Can be used for keeping references to another
@@ -287,6 +315,7 @@ type Image struct {
 // imageJSON contains the JSON metadata for the struct [Image]
 type imageJSON struct {
 	ID                apijson.Field
+	Creator           apijson.Field
 	Filename          apijson.Field
 	Meta              apijson.Field
 	RequireSignedURLs apijson.Field
@@ -305,15 +334,21 @@ func (r imageJSON) RawJSON() string {
 }
 
 type ImageResponseSingle struct {
-	Result Image                   `json:"result"`
-	JSON   imageResponseSingleJSON `json:"-"`
-	APIResponseSingleImages
+	Errors   []ImageResponseSingleError   `json:"errors,required"`
+	Messages []ImageResponseSingleMessage `json:"messages,required"`
+	Result   Image                        `json:"result,required"`
+	// Whether the API call was successful
+	Success ImageResponseSingleSuccess `json:"success,required"`
+	JSON    imageResponseSingleJSON    `json:"-"`
 }
 
 // imageResponseSingleJSON contains the JSON metadata for the struct
 // [ImageResponseSingle]
 type imageResponseSingleJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -326,39 +361,133 @@ func (r imageResponseSingleJSON) RawJSON() string {
 	return r.raw
 }
 
-type MessagesImageItem struct {
-	Code    int64                 `json:"code,required"`
-	Message string                `json:"message,required"`
-	JSON    messagesImageItemJSON `json:"-"`
+type ImageResponseSingleError struct {
+	Code             int64                           `json:"code,required"`
+	Message          string                          `json:"message,required"`
+	DocumentationURL string                          `json:"documentation_url"`
+	Source           ImageResponseSingleErrorsSource `json:"source"`
+	JSON             imageResponseSingleErrorJSON    `json:"-"`
 }
 
-// messagesImageItemJSON contains the JSON metadata for the struct
-// [MessagesImageItem]
-type messagesImageItemJSON struct {
-	Code        apijson.Field
-	Message     apijson.Field
+// imageResponseSingleErrorJSON contains the JSON metadata for the struct
+// [ImageResponseSingleError]
+type imageResponseSingleErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *ImageResponseSingleError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r imageResponseSingleErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type ImageResponseSingleErrorsSource struct {
+	Pointer string                              `json:"pointer"`
+	JSON    imageResponseSingleErrorsSourceJSON `json:"-"`
+}
+
+// imageResponseSingleErrorsSourceJSON contains the JSON metadata for the struct
+// [ImageResponseSingleErrorsSource]
+type imageResponseSingleErrorsSourceJSON struct {
+	Pointer     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *MessagesImageItem) UnmarshalJSON(data []byte) (err error) {
+func (r *ImageResponseSingleErrorsSource) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r messagesImageItemJSON) RawJSON() string {
+func (r imageResponseSingleErrorsSourceJSON) RawJSON() string {
 	return r.raw
 }
 
+type ImageResponseSingleMessage struct {
+	Code             int64                             `json:"code,required"`
+	Message          string                            `json:"message,required"`
+	DocumentationURL string                            `json:"documentation_url"`
+	Source           ImageResponseSingleMessagesSource `json:"source"`
+	JSON             imageResponseSingleMessageJSON    `json:"-"`
+}
+
+// imageResponseSingleMessageJSON contains the JSON metadata for the struct
+// [ImageResponseSingleMessage]
+type imageResponseSingleMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *ImageResponseSingleMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r imageResponseSingleMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type ImageResponseSingleMessagesSource struct {
+	Pointer string                                `json:"pointer"`
+	JSON    imageResponseSingleMessagesSourceJSON `json:"-"`
+}
+
+// imageResponseSingleMessagesSourceJSON contains the JSON metadata for the struct
+// [ImageResponseSingleMessagesSource]
+type imageResponseSingleMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ImageResponseSingleMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r imageResponseSingleMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful
+type ImageResponseSingleSuccess bool
+
+const (
+	ImageResponseSingleSuccessTrue ImageResponseSingleSuccess = true
+)
+
+func (r ImageResponseSingleSuccess) IsKnown() bool {
+	switch r {
+	case ImageResponseSingleSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountImageV1ListResponse struct {
-	Result AccountImageV1ListResponseResult `json:"result"`
-	JSON   accountImageV1ListResponseJSON   `json:"-"`
-	APIResponseImages
+	Errors   []AccountImageV1ListResponseError   `json:"errors,required"`
+	Messages []AccountImageV1ListResponseMessage `json:"messages,required"`
+	Result   AccountImageV1ListResponseResult    `json:"result,required"`
+	// Whether the API call was successful
+	Success AccountImageV1ListResponseSuccess `json:"success,required"`
+	JSON    accountImageV1ListResponseJSON    `json:"-"`
 }
 
 // accountImageV1ListResponseJSON contains the JSON metadata for the struct
 // [AccountImageV1ListResponse]
 type accountImageV1ListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -368,6 +497,102 @@ func (r *AccountImageV1ListResponse) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (r accountImageV1ListResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountImageV1ListResponseError struct {
+	Code             int64                                  `json:"code,required"`
+	Message          string                                 `json:"message,required"`
+	DocumentationURL string                                 `json:"documentation_url"`
+	Source           AccountImageV1ListResponseErrorsSource `json:"source"`
+	JSON             accountImageV1ListResponseErrorJSON    `json:"-"`
+}
+
+// accountImageV1ListResponseErrorJSON contains the JSON metadata for the struct
+// [AccountImageV1ListResponseError]
+type accountImageV1ListResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountImageV1ListResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountImageV1ListResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountImageV1ListResponseErrorsSource struct {
+	Pointer string                                     `json:"pointer"`
+	JSON    accountImageV1ListResponseErrorsSourceJSON `json:"-"`
+}
+
+// accountImageV1ListResponseErrorsSourceJSON contains the JSON metadata for the
+// struct [AccountImageV1ListResponseErrorsSource]
+type accountImageV1ListResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountImageV1ListResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountImageV1ListResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountImageV1ListResponseMessage struct {
+	Code             int64                                    `json:"code,required"`
+	Message          string                                   `json:"message,required"`
+	DocumentationURL string                                   `json:"documentation_url"`
+	Source           AccountImageV1ListResponseMessagesSource `json:"source"`
+	JSON             accountImageV1ListResponseMessageJSON    `json:"-"`
+}
+
+// accountImageV1ListResponseMessageJSON contains the JSON metadata for the struct
+// [AccountImageV1ListResponseMessage]
+type accountImageV1ListResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountImageV1ListResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountImageV1ListResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountImageV1ListResponseMessagesSource struct {
+	Pointer string                                       `json:"pointer"`
+	JSON    accountImageV1ListResponseMessagesSourceJSON `json:"-"`
+}
+
+// accountImageV1ListResponseMessagesSourceJSON contains the JSON metadata for the
+// struct [AccountImageV1ListResponseMessagesSource]
+type accountImageV1ListResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountImageV1ListResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountImageV1ListResponseMessagesSourceJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -392,16 +617,37 @@ func (r accountImageV1ListResponseResultJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful
+type AccountImageV1ListResponseSuccess bool
+
+const (
+	AccountImageV1ListResponseSuccessTrue AccountImageV1ListResponseSuccess = true
+)
+
+func (r AccountImageV1ListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountImageV1ListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountImageV1StatsResponse struct {
-	Result AccountImageV1StatsResponseResult `json:"result"`
-	JSON   accountImageV1StatsResponseJSON   `json:"-"`
-	APIResponseSingleImages
+	Errors   []AccountImageV1StatsResponseError   `json:"errors,required"`
+	Messages []AccountImageV1StatsResponseMessage `json:"messages,required"`
+	Result   AccountImageV1StatsResponseResult    `json:"result,required"`
+	// Whether the API call was successful
+	Success AccountImageV1StatsResponseSuccess `json:"success,required"`
+	JSON    accountImageV1StatsResponseJSON    `json:"-"`
 }
 
 // accountImageV1StatsResponseJSON contains the JSON metadata for the struct
 // [AccountImageV1StatsResponse]
 type accountImageV1StatsResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -411,6 +657,102 @@ func (r *AccountImageV1StatsResponse) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (r accountImageV1StatsResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountImageV1StatsResponseError struct {
+	Code             int64                                   `json:"code,required"`
+	Message          string                                  `json:"message,required"`
+	DocumentationURL string                                  `json:"documentation_url"`
+	Source           AccountImageV1StatsResponseErrorsSource `json:"source"`
+	JSON             accountImageV1StatsResponseErrorJSON    `json:"-"`
+}
+
+// accountImageV1StatsResponseErrorJSON contains the JSON metadata for the struct
+// [AccountImageV1StatsResponseError]
+type accountImageV1StatsResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountImageV1StatsResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountImageV1StatsResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountImageV1StatsResponseErrorsSource struct {
+	Pointer string                                      `json:"pointer"`
+	JSON    accountImageV1StatsResponseErrorsSourceJSON `json:"-"`
+}
+
+// accountImageV1StatsResponseErrorsSourceJSON contains the JSON metadata for the
+// struct [AccountImageV1StatsResponseErrorsSource]
+type accountImageV1StatsResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountImageV1StatsResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountImageV1StatsResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountImageV1StatsResponseMessage struct {
+	Code             int64                                     `json:"code,required"`
+	Message          string                                    `json:"message,required"`
+	DocumentationURL string                                    `json:"documentation_url"`
+	Source           AccountImageV1StatsResponseMessagesSource `json:"source"`
+	JSON             accountImageV1StatsResponseMessageJSON    `json:"-"`
+}
+
+// accountImageV1StatsResponseMessageJSON contains the JSON metadata for the struct
+// [AccountImageV1StatsResponseMessage]
+type accountImageV1StatsResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountImageV1StatsResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountImageV1StatsResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountImageV1StatsResponseMessagesSource struct {
+	Pointer string                                        `json:"pointer"`
+	JSON    accountImageV1StatsResponseMessagesSourceJSON `json:"-"`
+}
+
+// accountImageV1StatsResponseMessagesSourceJSON contains the JSON metadata for the
+// struct [AccountImageV1StatsResponseMessagesSource]
+type accountImageV1StatsResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountImageV1StatsResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountImageV1StatsResponseMessagesSourceJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -460,7 +802,24 @@ func (r accountImageV1StatsResponseResultCountJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful
+type AccountImageV1StatsResponseSuccess bool
+
+const (
+	AccountImageV1StatsResponseSuccessTrue AccountImageV1StatsResponseSuccess = true
+)
+
+func (r AccountImageV1StatsResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountImageV1StatsResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountImageV1UpdateParams struct {
+	// Can set the creator field with an internal user ID.
+	Creator param.Field[string] `json:"creator"`
 	// User modifiable key-value store. Can be used for keeping references to another
 	// system of record for managing images. No change if not specified.
 	Metadata param.Field[interface{}] `json:"metadata"`
@@ -475,6 +834,9 @@ func (r AccountImageV1UpdateParams) MarshalJSON() (data []byte, err error) {
 }
 
 type AccountImageV1ListParams struct {
+	// Internal user ID set within the creator field. Setting to empty string "" will
+	// return images where creator field is not set
+	Creator param.Field[string] `query:"creator"`
 	// Page number of paginated results.
 	Page param.Field[float64] `query:"page"`
 	// Number of items per page.
@@ -490,17 +852,13 @@ func (r AccountImageV1ListParams) URLQuery() (v url.Values) {
 	})
 }
 
-type AccountImageV1DeleteParams struct {
-	Body interface{} `json:"body,required"`
-}
-
-func (r AccountImageV1DeleteParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
-}
-
 type AccountImageV1UploadParams struct {
+	// An optional custom unique identifier for your image.
+	ID param.Field[string] `json:"id"`
+	// Can set the creator field with an internal user ID.
+	Creator param.Field[string] `json:"creator"`
 	// An image binary data. Only needed when type is uploading a file.
-	File param.Field[interface{}] `json:"file"`
+	File param.Field[io.Reader] `json:"file" format:"binary"`
 	// User modifiable key-value store. Can use used for keeping references to another
 	// system of record for managing images.
 	Metadata param.Field[interface{}] `json:"metadata"`

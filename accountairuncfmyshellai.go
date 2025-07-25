@@ -8,15 +8,12 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
-	"reflect"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
 	"github.com/rexscaria/api-schemas/internal/param"
 	"github.com/rexscaria/api-schemas/internal/requestconfig"
 	"github.com/rexscaria/api-schemas/option"
-	"github.com/rexscaria/api-schemas/shared"
-	"github.com/tidwall/gjson"
 )
 
 // AccountAIRunCfMyshellAIService contains methods and other services that help
@@ -50,78 +47,7 @@ func (r *AccountAIRunCfMyshellAIService) ExecuteMelotts(ctx context.Context, acc
 	return
 }
 
-type AccountAIRunCfMyshellAIExecuteMelottsResponse struct {
-	// The generated audio in MP3 format
-	Result  AccountAIRunCfMyshellAIExecuteMelottsResponseResultUnion `json:"result" format:"binary"`
-	Success bool                                                     `json:"success"`
-	JSON    accountAIRunCfMyshellAIExecuteMelottsResponseJSON        `json:"-"`
-}
-
-// accountAIRunCfMyshellAIExecuteMelottsResponseJSON contains the JSON metadata for
-// the struct [AccountAIRunCfMyshellAIExecuteMelottsResponse]
-type accountAIRunCfMyshellAIExecuteMelottsResponseJSON struct {
-	Result      apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountAIRunCfMyshellAIExecuteMelottsResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountAIRunCfMyshellAIExecuteMelottsResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-// The generated audio in MP3 format
-//
-// Union satisfied by [AccountAIRunCfMyshellAIExecuteMelottsResponseResultAudio] or
-// [shared.UnionString].
-type AccountAIRunCfMyshellAIExecuteMelottsResponseResultUnion interface {
-	ImplementsAccountAIRunCfMyshellAIExecuteMelottsResponseResultUnion()
-}
-
-func init() {
-	apijson.RegisterUnion(
-		reflect.TypeOf((*AccountAIRunCfMyshellAIExecuteMelottsResponseResultUnion)(nil)).Elem(),
-		"",
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(AccountAIRunCfMyshellAIExecuteMelottsResponseResultAudio{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.String,
-			Type:       reflect.TypeOf(shared.UnionString("")),
-		},
-	)
-}
-
-type AccountAIRunCfMyshellAIExecuteMelottsResponseResultAudio struct {
-	// The generated audio in MP3 format, base64-encoded
-	Audio string                                                       `json:"audio"`
-	JSON  accountAIRunCfMyshellAIExecuteMelottsResponseResultAudioJSON `json:"-"`
-}
-
-// accountAIRunCfMyshellAIExecuteMelottsResponseResultAudioJSON contains the JSON
-// metadata for the struct
-// [AccountAIRunCfMyshellAIExecuteMelottsResponseResultAudio]
-type accountAIRunCfMyshellAIExecuteMelottsResponseResultAudioJSON struct {
-	Audio       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountAIRunCfMyshellAIExecuteMelottsResponseResultAudio) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountAIRunCfMyshellAIExecuteMelottsResponseResultAudioJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r AccountAIRunCfMyshellAIExecuteMelottsResponseResultAudio) ImplementsAccountAIRunCfMyshellAIExecuteMelottsResponseResultUnion() {
-}
+type AccountAIRunCfMyshellAIExecuteMelottsResponse = interface{}
 
 type AccountAIRunCfMyshellAIExecuteMelottsParams struct {
 	// A text description of the audio you want to generate

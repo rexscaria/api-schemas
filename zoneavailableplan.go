@@ -127,71 +127,22 @@ func (r BillSubsAPIFrequency) IsKnown() bool {
 	return false
 }
 
-type BillSubsAPIResponseCollection struct {
-	Result     []interface{}                           `json:"result,nullable"`
-	ResultInfo BillSubsAPIResponseCollectionResultInfo `json:"result_info"`
-	JSON       billSubsAPIResponseCollectionJSON       `json:"-"`
-	APIResponseBilling
-}
-
-// billSubsAPIResponseCollectionJSON contains the JSON metadata for the struct
-// [BillSubsAPIResponseCollection]
-type billSubsAPIResponseCollectionJSON struct {
-	Result      apijson.Field
-	ResultInfo  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *BillSubsAPIResponseCollection) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r billSubsAPIResponseCollectionJSON) RawJSON() string {
-	return r.raw
-}
-
-type BillSubsAPIResponseCollectionResultInfo struct {
-	// Total number of results for the requested service
-	Count float64 `json:"count"`
-	// Current page within paginated list of results
-	Page float64 `json:"page"`
-	// Number of results per page of results
-	PerPage float64 `json:"per_page"`
-	// Total results available without any search parameters
-	TotalCount float64                                     `json:"total_count"`
-	JSON       billSubsAPIResponseCollectionResultInfoJSON `json:"-"`
-}
-
-// billSubsAPIResponseCollectionResultInfoJSON contains the JSON metadata for the
-// struct [BillSubsAPIResponseCollectionResultInfo]
-type billSubsAPIResponseCollectionResultInfoJSON struct {
-	Count       apijson.Field
-	Page        apijson.Field
-	PerPage     apijson.Field
-	TotalCount  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *BillSubsAPIResponseCollectionResultInfo) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r billSubsAPIResponseCollectionResultInfoJSON) RawJSON() string {
-	return r.raw
-}
-
 type ZoneAvailablePlanGetResponse struct {
-	Result BillSubsAPIAvailableRatePlan     `json:"result"`
-	JSON   zoneAvailablePlanGetResponseJSON `json:"-"`
-	APIResponseSingleBilling
+	Errors   []BillSubsAPIMessages        `json:"errors,required"`
+	Messages []BillSubsAPIMessages        `json:"messages,required"`
+	Result   BillSubsAPIAvailableRatePlan `json:"result,required"`
+	// Whether the API call was successful
+	Success ZoneAvailablePlanGetResponseSuccess `json:"success,required"`
+	JSON    zoneAvailablePlanGetResponseJSON    `json:"-"`
 }
 
 // zoneAvailablePlanGetResponseJSON contains the JSON metadata for the struct
 // [ZoneAvailablePlanGetResponse]
 type zoneAvailablePlanGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -204,16 +155,39 @@ func (r zoneAvailablePlanGetResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful
+type ZoneAvailablePlanGetResponseSuccess bool
+
+const (
+	ZoneAvailablePlanGetResponseSuccessTrue ZoneAvailablePlanGetResponseSuccess = true
+)
+
+func (r ZoneAvailablePlanGetResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneAvailablePlanGetResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type ZoneAvailablePlanListResponse struct {
-	Result []BillSubsAPIAvailableRatePlan    `json:"result"`
-	JSON   zoneAvailablePlanListResponseJSON `json:"-"`
-	BillSubsAPIResponseCollection
+	Errors   []BillSubsAPIMessages          `json:"errors,required"`
+	Messages []BillSubsAPIMessages          `json:"messages,required"`
+	Result   []BillSubsAPIAvailableRatePlan `json:"result,required,nullable"`
+	// Whether the API call was successful
+	Success    ZoneAvailablePlanListResponseSuccess    `json:"success,required"`
+	ResultInfo ZoneAvailablePlanListResponseResultInfo `json:"result_info"`
+	JSON       zoneAvailablePlanListResponseJSON       `json:"-"`
 }
 
 // zoneAvailablePlanListResponseJSON contains the JSON metadata for the struct
 // [ZoneAvailablePlanListResponse]
 type zoneAvailablePlanListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -223,5 +197,51 @@ func (r *ZoneAvailablePlanListResponse) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (r zoneAvailablePlanListResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful
+type ZoneAvailablePlanListResponseSuccess bool
+
+const (
+	ZoneAvailablePlanListResponseSuccessTrue ZoneAvailablePlanListResponseSuccess = true
+)
+
+func (r ZoneAvailablePlanListResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneAvailablePlanListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type ZoneAvailablePlanListResponseResultInfo struct {
+	// Total number of results for the requested service
+	Count float64 `json:"count"`
+	// Current page within paginated list of results
+	Page float64 `json:"page"`
+	// Number of results per page of results
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters
+	TotalCount float64                                     `json:"total_count"`
+	JSON       zoneAvailablePlanListResponseResultInfoJSON `json:"-"`
+}
+
+// zoneAvailablePlanListResponseResultInfoJSON contains the JSON metadata for the
+// struct [ZoneAvailablePlanListResponseResultInfo]
+type zoneAvailablePlanListResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZoneAvailablePlanListResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneAvailablePlanListResponseResultInfoJSON) RawJSON() string {
 	return r.raw
 }

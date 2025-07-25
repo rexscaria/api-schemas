@@ -61,13 +61,19 @@ func (r *ZoneOriginTlsClientAuthSettingService) Update(ctx context.Context, zone
 }
 
 type EnabledResponse struct {
-	Result EnabledResponseResult `json:"result"`
-	JSON   enabledResponseJSON   `json:"-"`
-	APIResponseSingleTlsCertificates
+	Errors   []MessagesTlsCertificatesItem `json:"errors,required"`
+	Messages []MessagesTlsCertificatesItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success EnabledResponseSuccess `json:"success,required"`
+	Result  EnabledResponseResult  `json:"result"`
+	JSON    enabledResponseJSON    `json:"-"`
 }
 
 // enabledResponseJSON contains the JSON metadata for the struct [EnabledResponse]
 type enabledResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -79,6 +85,21 @@ func (r *EnabledResponse) UnmarshalJSON(data []byte) (err error) {
 
 func (r enabledResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type EnabledResponseSuccess bool
+
+const (
+	EnabledResponseSuccessTrue EnabledResponseSuccess = true
+)
+
+func (r EnabledResponseSuccess) IsKnown() bool {
+	switch r {
+	case EnabledResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type EnabledResponseResult struct {

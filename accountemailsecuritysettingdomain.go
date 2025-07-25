@@ -85,14 +85,14 @@ func (r *AccountEmailSecuritySettingDomainService) Unprotect(ctx context.Context
 }
 
 // Unprotect multiple email domains
-func (r *AccountEmailSecuritySettingDomainService) UnprotectMultiple(ctx context.Context, accountID string, body AccountEmailSecuritySettingDomainUnprotectMultipleParams, opts ...option.RequestOption) (res *AccountEmailSecuritySettingDomainUnprotectMultipleResponse, err error) {
+func (r *AccountEmailSecuritySettingDomainService) UnprotectMultiple(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountEmailSecuritySettingDomainUnprotectMultipleResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
 	}
 	path := fmt.Sprintf("accounts/%s/email-security/settings/domains", accountID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
@@ -153,15 +153,20 @@ func (r ScannableFolder) IsKnown() bool {
 }
 
 type AccountEmailSecuritySettingDomainGetResponse struct {
-	Result AccountEmailSecuritySettingDomainGetResponseResult `json:"result,required"`
-	JSON   accountEmailSecuritySettingDomainGetResponseJSON   `json:"-"`
-	APIResponseEmailSecurity
+	Errors   []EmailSecurityMessage                             `json:"errors,required"`
+	Messages []EmailSecurityMessage                             `json:"messages,required"`
+	Result   AccountEmailSecuritySettingDomainGetResponseResult `json:"result,required"`
+	Success  bool                                               `json:"success,required"`
+	JSON     accountEmailSecuritySettingDomainGetResponseJSON   `json:"-"`
 }
 
 // accountEmailSecuritySettingDomainGetResponseJSON contains the JSON metadata for
 // the struct [AccountEmailSecuritySettingDomainGetResponse]
 type accountEmailSecuritySettingDomainGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -185,9 +190,9 @@ type AccountEmailSecuritySettingDomainGetResponseResult struct {
 	LastModified         time.Time                                                         `json:"last_modified,required" format:"date-time"`
 	LookbackHops         int64                                                             `json:"lookback_hops,required"`
 	Transport            string                                                            `json:"transport,required"`
-	Authorization        AccountEmailSecuritySettingDomainGetResponseResultAuthorization   `json:"authorization"`
-	EmailsProcessed      AccountEmailSecuritySettingDomainGetResponseResultEmailsProcessed `json:"emails_processed"`
-	Folder               AccountEmailSecuritySettingDomainGetResponseResultFolder          `json:"folder,nullable"`
+	Authorization        AccountEmailSecuritySettingDomainGetResponseResultAuthorization   `json:"authorization,nullable"`
+	EmailsProcessed      AccountEmailSecuritySettingDomainGetResponseResultEmailsProcessed `json:"emails_processed,nullable"`
+	Folder               ScannableFolder                                                   `json:"folder,nullable"`
 	InboxProvider        AccountEmailSecuritySettingDomainGetResponseResultInboxProvider   `json:"inbox_provider,nullable"`
 	IntegrationID        string                                                            `json:"integration_id,nullable" format:"uuid"`
 	O365TenantID         string                                                            `json:"o365_tenant_id,nullable"`
@@ -280,21 +285,6 @@ func (r accountEmailSecuritySettingDomainGetResponseResultEmailsProcessedJSON) R
 	return r.raw
 }
 
-type AccountEmailSecuritySettingDomainGetResponseResultFolder string
-
-const (
-	AccountEmailSecuritySettingDomainGetResponseResultFolderAllItems AccountEmailSecuritySettingDomainGetResponseResultFolder = "AllItems"
-	AccountEmailSecuritySettingDomainGetResponseResultFolderInbox    AccountEmailSecuritySettingDomainGetResponseResultFolder = "Inbox"
-)
-
-func (r AccountEmailSecuritySettingDomainGetResponseResultFolder) IsKnown() bool {
-	switch r {
-	case AccountEmailSecuritySettingDomainGetResponseResultFolderAllItems, AccountEmailSecuritySettingDomainGetResponseResultFolderInbox:
-		return true
-	}
-	return false
-}
-
 type AccountEmailSecuritySettingDomainGetResponseResultInboxProvider string
 
 const (
@@ -311,15 +301,20 @@ func (r AccountEmailSecuritySettingDomainGetResponseResultInboxProvider) IsKnown
 }
 
 type AccountEmailSecuritySettingDomainUpdateResponse struct {
-	Result AccountEmailSecuritySettingDomainUpdateResponseResult `json:"result,required"`
-	JSON   accountEmailSecuritySettingDomainUpdateResponseJSON   `json:"-"`
-	APIResponseEmailSecurity
+	Errors   []EmailSecurityMessage                                `json:"errors,required"`
+	Messages []EmailSecurityMessage                                `json:"messages,required"`
+	Result   AccountEmailSecuritySettingDomainUpdateResponseResult `json:"result,required"`
+	Success  bool                                                  `json:"success,required"`
+	JSON     accountEmailSecuritySettingDomainUpdateResponseJSON   `json:"-"`
 }
 
 // accountEmailSecuritySettingDomainUpdateResponseJSON contains the JSON metadata
 // for the struct [AccountEmailSecuritySettingDomainUpdateResponse]
 type accountEmailSecuritySettingDomainUpdateResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -343,9 +338,9 @@ type AccountEmailSecuritySettingDomainUpdateResponseResult struct {
 	LastModified         time.Time                                                            `json:"last_modified,required" format:"date-time"`
 	LookbackHops         int64                                                                `json:"lookback_hops,required"`
 	Transport            string                                                               `json:"transport,required"`
-	Authorization        AccountEmailSecuritySettingDomainUpdateResponseResultAuthorization   `json:"authorization"`
-	EmailsProcessed      AccountEmailSecuritySettingDomainUpdateResponseResultEmailsProcessed `json:"emails_processed"`
-	Folder               AccountEmailSecuritySettingDomainUpdateResponseResultFolder          `json:"folder,nullable"`
+	Authorization        AccountEmailSecuritySettingDomainUpdateResponseResultAuthorization   `json:"authorization,nullable"`
+	EmailsProcessed      AccountEmailSecuritySettingDomainUpdateResponseResultEmailsProcessed `json:"emails_processed,nullable"`
+	Folder               ScannableFolder                                                      `json:"folder,nullable"`
 	InboxProvider        AccountEmailSecuritySettingDomainUpdateResponseResultInboxProvider   `json:"inbox_provider,nullable"`
 	IntegrationID        string                                                               `json:"integration_id,nullable" format:"uuid"`
 	O365TenantID         string                                                               `json:"o365_tenant_id,nullable"`
@@ -438,21 +433,6 @@ func (r accountEmailSecuritySettingDomainUpdateResponseResultEmailsProcessedJSON
 	return r.raw
 }
 
-type AccountEmailSecuritySettingDomainUpdateResponseResultFolder string
-
-const (
-	AccountEmailSecuritySettingDomainUpdateResponseResultFolderAllItems AccountEmailSecuritySettingDomainUpdateResponseResultFolder = "AllItems"
-	AccountEmailSecuritySettingDomainUpdateResponseResultFolderInbox    AccountEmailSecuritySettingDomainUpdateResponseResultFolder = "Inbox"
-)
-
-func (r AccountEmailSecuritySettingDomainUpdateResponseResultFolder) IsKnown() bool {
-	switch r {
-	case AccountEmailSecuritySettingDomainUpdateResponseResultFolderAllItems, AccountEmailSecuritySettingDomainUpdateResponseResultFolderInbox:
-		return true
-	}
-	return false
-}
-
 type AccountEmailSecuritySettingDomainUpdateResponseResultInboxProvider string
 
 const (
@@ -469,17 +449,22 @@ func (r AccountEmailSecuritySettingDomainUpdateResponseResultInboxProvider) IsKn
 }
 
 type AccountEmailSecuritySettingDomainListResponse struct {
+	Errors     []EmailSecurityMessage                                `json:"errors,required"`
+	Messages   []EmailSecurityMessage                                `json:"messages,required"`
 	Result     []AccountEmailSecuritySettingDomainListResponseResult `json:"result,required"`
 	ResultInfo ResultInfoEmailSecurity                               `json:"result_info,required"`
+	Success    bool                                                  `json:"success,required"`
 	JSON       accountEmailSecuritySettingDomainListResponseJSON     `json:"-"`
-	APIResponseEmailSecurity
 }
 
 // accountEmailSecuritySettingDomainListResponseJSON contains the JSON metadata for
 // the struct [AccountEmailSecuritySettingDomainListResponse]
 type accountEmailSecuritySettingDomainListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
 	ResultInfo  apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -503,9 +488,9 @@ type AccountEmailSecuritySettingDomainListResponseResult struct {
 	LastModified         time.Time                                                          `json:"last_modified,required" format:"date-time"`
 	LookbackHops         int64                                                              `json:"lookback_hops,required"`
 	Transport            string                                                             `json:"transport,required"`
-	Authorization        AccountEmailSecuritySettingDomainListResponseResultAuthorization   `json:"authorization"`
-	EmailsProcessed      AccountEmailSecuritySettingDomainListResponseResultEmailsProcessed `json:"emails_processed"`
-	Folder               AccountEmailSecuritySettingDomainListResponseResultFolder          `json:"folder,nullable"`
+	Authorization        AccountEmailSecuritySettingDomainListResponseResultAuthorization   `json:"authorization,nullable"`
+	EmailsProcessed      AccountEmailSecuritySettingDomainListResponseResultEmailsProcessed `json:"emails_processed,nullable"`
+	Folder               ScannableFolder                                                    `json:"folder,nullable"`
 	InboxProvider        AccountEmailSecuritySettingDomainListResponseResultInboxProvider   `json:"inbox_provider,nullable"`
 	IntegrationID        string                                                             `json:"integration_id,nullable" format:"uuid"`
 	O365TenantID         string                                                             `json:"o365_tenant_id,nullable"`
@@ -598,21 +583,6 @@ func (r accountEmailSecuritySettingDomainListResponseResultEmailsProcessedJSON) 
 	return r.raw
 }
 
-type AccountEmailSecuritySettingDomainListResponseResultFolder string
-
-const (
-	AccountEmailSecuritySettingDomainListResponseResultFolderAllItems AccountEmailSecuritySettingDomainListResponseResultFolder = "AllItems"
-	AccountEmailSecuritySettingDomainListResponseResultFolderInbox    AccountEmailSecuritySettingDomainListResponseResultFolder = "Inbox"
-)
-
-func (r AccountEmailSecuritySettingDomainListResponseResultFolder) IsKnown() bool {
-	switch r {
-	case AccountEmailSecuritySettingDomainListResponseResultFolderAllItems, AccountEmailSecuritySettingDomainListResponseResultFolderInbox:
-		return true
-	}
-	return false
-}
-
 type AccountEmailSecuritySettingDomainListResponseResultInboxProvider string
 
 const (
@@ -629,15 +599,20 @@ func (r AccountEmailSecuritySettingDomainListResponseResultInboxProvider) IsKnow
 }
 
 type AccountEmailSecuritySettingDomainUnprotectResponse struct {
-	Result AccountEmailSecuritySettingDomainUnprotectResponseResult `json:"result,required"`
-	JSON   accountEmailSecuritySettingDomainUnprotectResponseJSON   `json:"-"`
-	APIResponseEmailSecurity
+	Errors   []EmailSecurityMessage                                   `json:"errors,required"`
+	Messages []EmailSecurityMessage                                   `json:"messages,required"`
+	Result   AccountEmailSecuritySettingDomainUnprotectResponseResult `json:"result,required"`
+	Success  bool                                                     `json:"success,required"`
+	JSON     accountEmailSecuritySettingDomainUnprotectResponseJSON   `json:"-"`
 }
 
 // accountEmailSecuritySettingDomainUnprotectResponseJSON contains the JSON
 // metadata for the struct [AccountEmailSecuritySettingDomainUnprotectResponse]
 type accountEmailSecuritySettingDomainUnprotectResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -674,16 +649,21 @@ func (r accountEmailSecuritySettingDomainUnprotectResponseResultJSON) RawJSON() 
 }
 
 type AccountEmailSecuritySettingDomainUnprotectMultipleResponse struct {
-	Result []AccountEmailSecuritySettingDomainUnprotectMultipleResponseResult `json:"result,required"`
-	JSON   accountEmailSecuritySettingDomainUnprotectMultipleResponseJSON     `json:"-"`
-	APIResponseEmailSecurity
+	Errors   []EmailSecurityMessage                                             `json:"errors,required"`
+	Messages []EmailSecurityMessage                                             `json:"messages,required"`
+	Result   []AccountEmailSecuritySettingDomainUnprotectMultipleResponseResult `json:"result,required"`
+	Success  bool                                                               `json:"success,required"`
+	JSON     accountEmailSecuritySettingDomainUnprotectMultipleResponseJSON     `json:"-"`
 }
 
 // accountEmailSecuritySettingDomainUnprotectMultipleResponseJSON contains the JSON
 // metadata for the struct
 // [AccountEmailSecuritySettingDomainUnprotectMultipleResponse]
 type accountEmailSecuritySettingDomainUnprotectMultipleResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -720,15 +700,16 @@ func (r accountEmailSecuritySettingDomainUnprotectMultipleResponseResultJSON) Ra
 }
 
 type AccountEmailSecuritySettingDomainUpdateParams struct {
-	IPRestrictions     param.Field[[]string]           `json:"ip_restrictions,required"`
-	Domain             param.Field[string]             `json:"domain"`
-	DropDispositions   param.Field[[]DispositionLabel] `json:"drop_dispositions"`
-	Folder             param.Field[ScannableFolder]    `json:"folder"`
-	IntegrationID      param.Field[string]             `json:"integration_id" format:"uuid"`
-	LookbackHops       param.Field[int64]              `json:"lookback_hops"`
-	RequireTlsInbound  param.Field[bool]               `json:"require_tls_inbound"`
-	RequireTlsOutbound param.Field[bool]               `json:"require_tls_outbound"`
-	Transport          param.Field[string]             `json:"transport"`
+	IPRestrictions       param.Field[[]string]           `json:"ip_restrictions,required"`
+	AllowedDeliveryModes param.Field[[]DeliveryMode]     `json:"allowed_delivery_modes"`
+	Domain               param.Field[string]             `json:"domain"`
+	DropDispositions     param.Field[[]DispositionLabel] `json:"drop_dispositions"`
+	Folder               param.Field[ScannableFolder]    `json:"folder"`
+	IntegrationID        param.Field[string]             `json:"integration_id" format:"uuid"`
+	LookbackHops         param.Field[int64]              `json:"lookback_hops"`
+	RequireTlsInbound    param.Field[bool]               `json:"require_tls_inbound"`
+	RequireTlsOutbound   param.Field[bool]               `json:"require_tls_outbound"`
+	Transport            param.Field[string]             `json:"transport"`
 }
 
 func (r AccountEmailSecuritySettingDomainUpdateParams) MarshalJSON() (data []byte, err error) {
@@ -779,21 +760,4 @@ func (r AccountEmailSecuritySettingDomainListParamsOrder) IsKnown() bool {
 		return true
 	}
 	return false
-}
-
-type AccountEmailSecuritySettingDomainUnprotectMultipleParams struct {
-	Body []AccountEmailSecuritySettingDomainUnprotectMultipleParamsBody `json:"body,required"`
-}
-
-func (r AccountEmailSecuritySettingDomainUnprotectMultipleParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
-}
-
-type AccountEmailSecuritySettingDomainUnprotectMultipleParamsBody struct {
-	// The unique identifier for the domain.
-	ID param.Field[int64] `json:"id,required"`
-}
-
-func (r AccountEmailSecuritySettingDomainUnprotectMultipleParamsBody) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
 }

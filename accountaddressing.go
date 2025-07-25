@@ -56,14 +56,20 @@ func (r *AccountAddressingService) ListServices(ctx context.Context, accountID s
 }
 
 type AccountAddressingListServicesResponse struct {
-	Result []AccountAddressingListServicesResponseResult `json:"result"`
-	JSON   accountAddressingListServicesResponseJSON     `json:"-"`
-	APIResponseAddressing
+	Errors   []AddressingMessages `json:"errors,required"`
+	Messages []AddressingMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountAddressingListServicesResponseSuccess  `json:"success,required"`
+	Result  []AccountAddressingListServicesResponseResult `json:"result"`
+	JSON    accountAddressingListServicesResponseJSON     `json:"-"`
 }
 
 // accountAddressingListServicesResponseJSON contains the JSON metadata for the
 // struct [AccountAddressingListServicesResponse]
 type accountAddressingListServicesResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -75,6 +81,21 @@ func (r *AccountAddressingListServicesResponse) UnmarshalJSON(data []byte) (err 
 
 func (r accountAddressingListServicesResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountAddressingListServicesResponseSuccess bool
+
+const (
+	AccountAddressingListServicesResponseSuccessTrue AccountAddressingListServicesResponseSuccess = true
+)
+
+func (r AccountAddressingListServicesResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountAddressingListServicesResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountAddressingListServicesResponseResult struct {

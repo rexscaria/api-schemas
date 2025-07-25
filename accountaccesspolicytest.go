@@ -36,7 +36,7 @@ func NewAccountAccessPolicyTestService(opts ...option.RequestOption) (r *Account
 }
 
 // Fetches the current status of a given Access policy test.
-func (r *AccountAccessPolicyTestService) Get(ctx context.Context, accountID string, policyTestID string, query AccountAccessPolicyTestGetParams, opts ...option.RequestOption) (res *AccountAccessPolicyTestGetResponse, err error) {
+func (r *AccountAccessPolicyTestService) Get(ctx context.Context, accountID string, policyTestID string, opts ...option.RequestOption) (res *AccountAccessPolicyTestGetResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
@@ -47,7 +47,7 @@ func (r *AccountAccessPolicyTestService) Get(ctx context.Context, accountID stri
 		return
 	}
 	path := fmt.Sprintf("accounts/%s/access/policy-tests/%s", accountID, policyTestID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
 
@@ -80,14 +80,20 @@ func (r *AccountAccessPolicyTestService) Users(ctx context.Context, accountID st
 }
 
 type AccountAccessPolicyTestGetResponse struct {
-	Result AccountAccessPolicyTestGetResponseResult `json:"result"`
-	JSON   accountAccessPolicyTestGetResponseJSON   `json:"-"`
-	APIResponseSingleAccess
+	Errors   []MessagesAccessItem `json:"errors,required"`
+	Messages []MessagesAccessItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountAccessPolicyTestGetResponseSuccess `json:"success,required"`
+	Result  AccountAccessPolicyTestGetResponseResult  `json:"result"`
+	JSON    accountAccessPolicyTestGetResponseJSON    `json:"-"`
 }
 
 // accountAccessPolicyTestGetResponseJSON contains the JSON metadata for the struct
 // [AccountAccessPolicyTestGetResponse]
 type accountAccessPolicyTestGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -101,15 +107,30 @@ func (r accountAccessPolicyTestGetResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountAccessPolicyTestGetResponseSuccess bool
+
+const (
+	AccountAccessPolicyTestGetResponseSuccessTrue AccountAccessPolicyTestGetResponseSuccess = true
+)
+
+func (r AccountAccessPolicyTestGetResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountAccessPolicyTestGetResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountAccessPolicyTestGetResponseResult struct {
 	// The UUID of the policy test.
 	ID string `json:"id"`
-	// The number of pages of (processed) users.
-	PagesProcessed int64 `json:"pages_processed"`
 	// The percentage of (processed) users approved based on policy evaluation results.
 	PercentApproved int64 `json:"percent_approved"`
 	// The percentage of (processed) users blocked based on policy evaluation results.
 	PercentBlocked int64 `json:"percent_blocked"`
+	// The percentage of (processed) users errored based on policy evaluation results.
+	PercentErrored int64 `json:"percent_errored"`
 	// The percentage of users processed so far (of the entire user base).
 	PercentUsersProcessed int64 `json:"percent_users_processed"`
 	// The status of the policy test.
@@ -119,7 +140,9 @@ type AccountAccessPolicyTestGetResponseResult struct {
 	// The number of (processed) users approved based on policy evaluation results.
 	UsersApproved int64 `json:"users_approved"`
 	// The number of (processed) users blocked based on policy evaluation results.
-	UsersBlocked int64                                        `json:"users_blocked"`
+	UsersBlocked int64 `json:"users_blocked"`
+	// The number of (processed) users errored based on policy evaluation results.
+	UsersErrored int64                                        `json:"users_errored"`
 	JSON         accountAccessPolicyTestGetResponseResultJSON `json:"-"`
 }
 
@@ -127,14 +150,15 @@ type AccountAccessPolicyTestGetResponseResult struct {
 // struct [AccountAccessPolicyTestGetResponseResult]
 type accountAccessPolicyTestGetResponseResultJSON struct {
 	ID                    apijson.Field
-	PagesProcessed        apijson.Field
 	PercentApproved       apijson.Field
 	PercentBlocked        apijson.Field
+	PercentErrored        apijson.Field
 	PercentUsersProcessed apijson.Field
 	Status                apijson.Field
 	TotalUsers            apijson.Field
 	UsersApproved         apijson.Field
 	UsersBlocked          apijson.Field
+	UsersErrored          apijson.Field
 	raw                   string
 	ExtraFields           map[string]apijson.Field
 }
@@ -151,28 +175,35 @@ func (r accountAccessPolicyTestGetResponseResultJSON) RawJSON() string {
 type AccountAccessPolicyTestGetResponseResultStatus string
 
 const (
-	AccountAccessPolicyTestGetResponseResultStatusBlocked    AccountAccessPolicyTestGetResponseResultStatus = "blocked"
-	AccountAccessPolicyTestGetResponseResultStatusProcessing AccountAccessPolicyTestGetResponseResultStatus = "processing"
-	AccountAccessPolicyTestGetResponseResultStatusComplete   AccountAccessPolicyTestGetResponseResultStatus = "complete"
+	AccountAccessPolicyTestGetResponseResultStatusBlocked      AccountAccessPolicyTestGetResponseResultStatus = "blocked"
+	AccountAccessPolicyTestGetResponseResultStatusProcessing   AccountAccessPolicyTestGetResponseResultStatus = "processing"
+	AccountAccessPolicyTestGetResponseResultStatusExceededTime AccountAccessPolicyTestGetResponseResultStatus = "exceeded time"
+	AccountAccessPolicyTestGetResponseResultStatusComplete     AccountAccessPolicyTestGetResponseResultStatus = "complete"
 )
 
 func (r AccountAccessPolicyTestGetResponseResultStatus) IsKnown() bool {
 	switch r {
-	case AccountAccessPolicyTestGetResponseResultStatusBlocked, AccountAccessPolicyTestGetResponseResultStatusProcessing, AccountAccessPolicyTestGetResponseResultStatusComplete:
+	case AccountAccessPolicyTestGetResponseResultStatusBlocked, AccountAccessPolicyTestGetResponseResultStatusProcessing, AccountAccessPolicyTestGetResponseResultStatusExceededTime, AccountAccessPolicyTestGetResponseResultStatusComplete:
 		return true
 	}
 	return false
 }
 
 type AccountAccessPolicyTestStartResponse struct {
-	Result AccountAccessPolicyTestStartResponseResult `json:"result"`
-	JSON   accountAccessPolicyTestStartResponseJSON   `json:"-"`
-	APIResponseSingleAccess
+	Errors   []MessagesAccessItem `json:"errors,required"`
+	Messages []MessagesAccessItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountAccessPolicyTestStartResponseSuccess `json:"success,required"`
+	Result  AccountAccessPolicyTestStartResponseResult  `json:"result"`
+	JSON    accountAccessPolicyTestStartResponseJSON    `json:"-"`
 }
 
 // accountAccessPolicyTestStartResponseJSON contains the JSON metadata for the
 // struct [AccountAccessPolicyTestStartResponse]
 type accountAccessPolicyTestStartResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -184,6 +215,21 @@ func (r *AccountAccessPolicyTestStartResponse) UnmarshalJSON(data []byte) (err e
 
 func (r accountAccessPolicyTestStartResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountAccessPolicyTestStartResponseSuccess bool
+
+const (
+	AccountAccessPolicyTestStartResponseSuccessTrue AccountAccessPolicyTestStartResponseSuccess = true
+)
+
+func (r AccountAccessPolicyTestStartResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountAccessPolicyTestStartResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountAccessPolicyTestStartResponseResult struct {
@@ -227,15 +273,21 @@ func (r AccountAccessPolicyTestStartResponseResultStatus) IsKnown() bool {
 }
 
 type AccountAccessPolicyTestUsersResponse struct {
+	Errors   []MessagesAccessItem `json:"errors,required"`
+	Messages []MessagesAccessItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountAccessPolicyTestUsersResponseSuccess `json:"success,required"`
 	// Page of processed users.
 	Result []AccountAccessPolicyTestUsersResponseResult `json:"result"`
 	JSON   accountAccessPolicyTestUsersResponseJSON     `json:"-"`
-	APIResponseSingleAccess
 }
 
 // accountAccessPolicyTestUsersResponseJSON contains the JSON metadata for the
 // struct [AccountAccessPolicyTestUsersResponse]
 type accountAccessPolicyTestUsersResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -249,8 +301,23 @@ func (r accountAccessPolicyTestUsersResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountAccessPolicyTestUsersResponseSuccess bool
+
+const (
+	AccountAccessPolicyTestUsersResponseSuccessTrue AccountAccessPolicyTestUsersResponseSuccess = true
+)
+
+func (r AccountAccessPolicyTestUsersResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountAccessPolicyTestUsersResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountAccessPolicyTestUsersResponseResult struct {
-	// UUID
+	// UUID.
 	ID string `json:"id"`
 	// The email of the user.
 	Email string `json:"email" format:"email"`
@@ -286,27 +353,15 @@ type AccountAccessPolicyTestUsersResponseResultStatus string
 const (
 	AccountAccessPolicyTestUsersResponseResultStatusApproved AccountAccessPolicyTestUsersResponseResultStatus = "approved"
 	AccountAccessPolicyTestUsersResponseResultStatusBlocked  AccountAccessPolicyTestUsersResponseResultStatus = "blocked"
+	AccountAccessPolicyTestUsersResponseResultStatusError    AccountAccessPolicyTestUsersResponseResultStatus = "error"
 )
 
 func (r AccountAccessPolicyTestUsersResponseResultStatus) IsKnown() bool {
 	switch r {
-	case AccountAccessPolicyTestUsersResponseResultStatusApproved, AccountAccessPolicyTestUsersResponseResultStatusBlocked:
+	case AccountAccessPolicyTestUsersResponseResultStatusApproved, AccountAccessPolicyTestUsersResponseResultStatusBlocked, AccountAccessPolicyTestUsersResponseResultStatusError:
 		return true
 	}
 	return false
-}
-
-type AccountAccessPolicyTestGetParams struct {
-	Page param.Field[int64] `query:"page"`
-}
-
-// URLQuery serializes [AccountAccessPolicyTestGetParams]'s query parameters as
-// `url.Values`.
-func (r AccountAccessPolicyTestGetParams) URLQuery() (v url.Values) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
 }
 
 type AccountAccessPolicyTestStartParams struct {
@@ -325,6 +380,8 @@ type AccountAccessPolicyTestStartParamsPolicyUnion interface {
 }
 
 type AccountAccessPolicyTestUsersParams struct {
+	Page    param.Field[int64] `query:"page"`
+	PerPage param.Field[int64] `query:"per_page"`
 	// Filter users by their policy evaluation status.
 	Status param.Field[AccountAccessPolicyTestUsersParamsStatus] `query:"status"`
 }
@@ -344,11 +401,12 @@ type AccountAccessPolicyTestUsersParamsStatus string
 const (
 	AccountAccessPolicyTestUsersParamsStatusSuccess AccountAccessPolicyTestUsersParamsStatus = "success"
 	AccountAccessPolicyTestUsersParamsStatusFail    AccountAccessPolicyTestUsersParamsStatus = "fail"
+	AccountAccessPolicyTestUsersParamsStatusError   AccountAccessPolicyTestUsersParamsStatus = "error"
 )
 
 func (r AccountAccessPolicyTestUsersParamsStatus) IsKnown() bool {
 	switch r {
-	case AccountAccessPolicyTestUsersParamsStatusSuccess, AccountAccessPolicyTestUsersParamsStatusFail:
+	case AccountAccessPolicyTestUsersParamsStatusSuccess, AccountAccessPolicyTestUsersParamsStatusFail, AccountAccessPolicyTestUsersParamsStatusError:
 		return true
 	}
 	return false

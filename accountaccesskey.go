@@ -71,14 +71,20 @@ func (r *AccountAccessKeyService) Rotate(ctx context.Context, accountID string, 
 }
 
 type SingleResponseKey struct {
-	Result SingleResponseKeyResult `json:"result"`
-	JSON   singleResponseKeyJSON   `json:"-"`
-	APIResponseSingleAccess
+	Errors   []MessagesAccessItem `json:"errors,required"`
+	Messages []MessagesAccessItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success SingleResponseKeySuccess `json:"success,required"`
+	Result  SingleResponseKeyResult  `json:"result"`
+	JSON    singleResponseKeyJSON    `json:"-"`
 }
 
 // singleResponseKeyJSON contains the JSON metadata for the struct
 // [SingleResponseKey]
 type singleResponseKeyJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -90,6 +96,21 @@ func (r *SingleResponseKey) UnmarshalJSON(data []byte) (err error) {
 
 func (r singleResponseKeyJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type SingleResponseKeySuccess bool
+
+const (
+	SingleResponseKeySuccessTrue SingleResponseKeySuccess = true
+)
+
+func (r SingleResponseKeySuccess) IsKnown() bool {
+	switch r {
+	case SingleResponseKeySuccessTrue:
+		return true
+	}
+	return false
 }
 
 type SingleResponseKeyResult struct {

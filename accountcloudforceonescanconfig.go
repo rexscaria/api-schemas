@@ -89,60 +89,23 @@ func (r *AccountCloudforceOneScanConfigService) Delete(ctx context.Context, acco
 	return
 }
 
-type APIResponsePortScan struct {
-	Errors   []MessagesPortScanItems `json:"errors,required"`
-	Messages []MessagesPortScanItems `json:"messages,required"`
-	// Whether the API call was successful
-	Success APIResponsePortScanSuccess `json:"success,required"`
-	JSON    apiResponsePortScanJSON    `json:"-"`
-}
-
-// apiResponsePortScanJSON contains the JSON metadata for the struct
-// [APIResponsePortScan]
-type apiResponsePortScanJSON struct {
-	Errors      apijson.Field
-	Messages    apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *APIResponsePortScan) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r apiResponsePortScanJSON) RawJSON() string {
-	return r.raw
-}
-
-// Whether the API call was successful
-type APIResponsePortScanSuccess bool
-
-const (
-	APIResponsePortScanSuccessTrue APIResponsePortScanSuccess = true
-)
-
-func (r APIResponsePortScanSuccess) IsKnown() bool {
-	switch r {
-	case APIResponsePortScanSuccessTrue:
-		return true
-	}
-	return false
-}
-
 type MessagesPortScanItems struct {
-	Code    int64                     `json:"code,required"`
-	Message string                    `json:"message,required"`
-	JSON    messagesPortScanItemsJSON `json:"-"`
+	Code             int64                       `json:"code,required"`
+	Message          string                      `json:"message,required"`
+	DocumentationURL string                      `json:"documentation_url"`
+	Source           MessagesPortScanItemsSource `json:"source"`
+	JSON             messagesPortScanItemsJSON   `json:"-"`
 }
 
 // messagesPortScanItemsJSON contains the JSON metadata for the struct
 // [MessagesPortScanItems]
 type messagesPortScanItemsJSON struct {
-	Code        apijson.Field
-	Message     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
 }
 
 func (r *MessagesPortScanItems) UnmarshalJSON(data []byte) (err error) {
@@ -153,18 +116,39 @@ func (r messagesPortScanItemsJSON) RawJSON() string {
 	return r.raw
 }
 
+type MessagesPortScanItemsSource struct {
+	Pointer string                          `json:"pointer"`
+	JSON    messagesPortScanItemsSourceJSON `json:"-"`
+}
+
+// messagesPortScanItemsSourceJSON contains the JSON metadata for the struct
+// [MessagesPortScanItemsSource]
+type messagesPortScanItemsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *MessagesPortScanItemsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r messagesPortScanItemsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
 type ScanConfig struct {
-	// Config ID
+	// Defines the Config ID.
 	ID        string `json:"id,required"`
 	AccountID string `json:"account_id,required"`
-	// The number of days between each scan (0 = no recurring scans).
+	// Defines the number of days between each scan (0 = One-off scan).
 	Frequency float64 `json:"frequency,required"`
-	// A list of IP addresses or CIDR blocks to scan. The maximum number of total IP
-	// addresses allowed is 5000.
+	// Defines a list of IP addresses or CIDR blocks to scan. The maximum number of
+	// total IP addresses allowed is 5000.
 	IPs []string `json:"ips,required"`
-	// A list of ports to scan. Allowed values:"default", "all", or a comma-separated
-	// list of ports or range of ports (e.g. ["1-80", "443"]). Default will scan the
-	// 100 most commonly open ports.
+	// Defines a list of ports to scan. Valid values are:"default", "all", or a
+	// comma-separated list of ports or range of ports (e.g. ["1-80", "443"]).
+	// "default" scans the 100 most commonly open ports.
 	Ports []string       `json:"ports,required"`
 	JSON  scanConfigJSON `json:"-"`
 }
@@ -189,14 +173,20 @@ func (r scanConfigJSON) RawJSON() string {
 }
 
 type AccountCloudforceOneScanConfigNewResponse struct {
-	Result ScanConfig                                    `json:"result"`
-	JSON   accountCloudforceOneScanConfigNewResponseJSON `json:"-"`
-	APIResponsePortScan
+	Errors   []MessagesPortScanItems `json:"errors,required"`
+	Messages []MessagesPortScanItems `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountCloudforceOneScanConfigNewResponseSuccess `json:"success,required"`
+	Result  ScanConfig                                       `json:"result"`
+	JSON    accountCloudforceOneScanConfigNewResponseJSON    `json:"-"`
 }
 
 // accountCloudforceOneScanConfigNewResponseJSON contains the JSON metadata for the
 // struct [AccountCloudforceOneScanConfigNewResponse]
 type accountCloudforceOneScanConfigNewResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -210,15 +200,36 @@ func (r accountCloudforceOneScanConfigNewResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountCloudforceOneScanConfigNewResponseSuccess bool
+
+const (
+	AccountCloudforceOneScanConfigNewResponseSuccessTrue AccountCloudforceOneScanConfigNewResponseSuccess = true
+)
+
+func (r AccountCloudforceOneScanConfigNewResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountCloudforceOneScanConfigNewResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountCloudforceOneScanConfigUpdateResponse struct {
-	Result ScanConfig                                       `json:"result"`
-	JSON   accountCloudforceOneScanConfigUpdateResponseJSON `json:"-"`
-	APIResponsePortScan
+	Errors   []MessagesPortScanItems `json:"errors,required"`
+	Messages []MessagesPortScanItems `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountCloudforceOneScanConfigUpdateResponseSuccess `json:"success,required"`
+	Result  ScanConfig                                          `json:"result"`
+	JSON    accountCloudforceOneScanConfigUpdateResponseJSON    `json:"-"`
 }
 
 // accountCloudforceOneScanConfigUpdateResponseJSON contains the JSON metadata for
 // the struct [AccountCloudforceOneScanConfigUpdateResponse]
 type accountCloudforceOneScanConfigUpdateResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -232,15 +243,36 @@ func (r accountCloudforceOneScanConfigUpdateResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountCloudforceOneScanConfigUpdateResponseSuccess bool
+
+const (
+	AccountCloudforceOneScanConfigUpdateResponseSuccessTrue AccountCloudforceOneScanConfigUpdateResponseSuccess = true
+)
+
+func (r AccountCloudforceOneScanConfigUpdateResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountCloudforceOneScanConfigUpdateResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountCloudforceOneScanConfigListResponse struct {
-	Result []ScanConfig                                   `json:"result"`
-	JSON   accountCloudforceOneScanConfigListResponseJSON `json:"-"`
-	APIResponsePortScan
+	Errors   []MessagesPortScanItems `json:"errors,required"`
+	Messages []MessagesPortScanItems `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountCloudforceOneScanConfigListResponseSuccess `json:"success,required"`
+	Result  []ScanConfig                                      `json:"result"`
+	JSON    accountCloudforceOneScanConfigListResponseJSON    `json:"-"`
 }
 
 // accountCloudforceOneScanConfigListResponseJSON contains the JSON metadata for
 // the struct [AccountCloudforceOneScanConfigListResponse]
 type accountCloudforceOneScanConfigListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -252,6 +284,21 @@ func (r *AccountCloudforceOneScanConfigListResponse) UnmarshalJSON(data []byte) 
 
 func (r accountCloudforceOneScanConfigListResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountCloudforceOneScanConfigListResponseSuccess bool
+
+const (
+	AccountCloudforceOneScanConfigListResponseSuccessTrue AccountCloudforceOneScanConfigListResponseSuccess = true
+)
+
+func (r AccountCloudforceOneScanConfigListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountCloudforceOneScanConfigListResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountCloudforceOneScanConfigDeleteResponse struct {
@@ -282,14 +329,14 @@ func (r accountCloudforceOneScanConfigDeleteResponseJSON) RawJSON() string {
 }
 
 type AccountCloudforceOneScanConfigNewParams struct {
-	// A list of IP addresses or CIDR blocks to scan. The maximum number of total IP
-	// addresses allowed is 5000.
+	// Defines a list of IP addresses or CIDR blocks to scan. The maximum number of
+	// total IP addresses allowed is 5000.
 	IPs param.Field[[]string] `json:"ips,required"`
-	// The number of days between each scan (0 = no recurring scans).
+	// Defines the number of days between each scan (0 = One-off scan).
 	Frequency param.Field[float64] `json:"frequency"`
-	// A list of ports to scan. Allowed values:"default", "all", or a comma-separated
-	// list of ports or range of ports (e.g. ["1-80", "443"]). Default will scan the
-	// 100 most commonly open ports.
+	// Defines a list of ports to scan. Valid values are:"default", "all", or a
+	// comma-separated list of ports or range of ports (e.g. ["1-80", "443"]).
+	// "default" scans the 100 most commonly open ports.
 	Ports param.Field[[]string] `json:"ports"`
 }
 
@@ -298,14 +345,14 @@ func (r AccountCloudforceOneScanConfigNewParams) MarshalJSON() (data []byte, err
 }
 
 type AccountCloudforceOneScanConfigUpdateParams struct {
-	// The number of days between each scan (0 = no recurring scans).
+	// Defines the number of days between each scan (0 = One-off scan).
 	Frequency param.Field[float64] `json:"frequency"`
-	// A list of IP addresses or CIDR blocks to scan. The maximum number of total IP
-	// addresses allowed is 5000.
+	// Defines a list of IP addresses or CIDR blocks to scan. The maximum number of
+	// total IP addresses allowed is 5000.
 	IPs param.Field[[]string] `json:"ips"`
-	// A list of ports to scan. Allowed values:"default", "all", or a comma-separated
-	// list of ports or range of ports (e.g. ["1-80", "443"]). Default will scan the
-	// 100 most commonly open ports.
+	// Defines a list of ports to scan. Valid values are:"default", "all", or a
+	// comma-separated list of ports or range of ports (e.g. ["1-80", "443"]).
+	// "default" scans the 100 most commonly open ports.
 	Ports param.Field[[]string] `json:"ports"`
 }
 

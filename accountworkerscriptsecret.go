@@ -105,14 +105,20 @@ func (r *AccountWorkerScriptSecretService) Get(ctx context.Context, accountID st
 }
 
 type AccountWorkerScriptSecretListResponse struct {
-	Result []SecretResponse                          `json:"result"`
-	JSON   accountWorkerScriptSecretListResponseJSON `json:"-"`
-	CommonResponseWorkers
+	Errors   []WorkersMessages `json:"errors,required"`
+	Messages []WorkersMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountWorkerScriptSecretListResponseSuccess `json:"success,required"`
+	Result  []Secret                                     `json:"result"`
+	JSON    accountWorkerScriptSecretListResponseJSON    `json:"-"`
 }
 
 // accountWorkerScriptSecretListResponseJSON contains the JSON metadata for the
 // struct [AccountWorkerScriptSecretListResponse]
 type accountWorkerScriptSecretListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -126,15 +132,37 @@ func (r accountWorkerScriptSecretListResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountWorkerScriptSecretListResponseSuccess bool
+
+const (
+	AccountWorkerScriptSecretListResponseSuccessTrue AccountWorkerScriptSecretListResponseSuccess = true
+)
+
+func (r AccountWorkerScriptSecretListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountWorkerScriptSecretListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountWorkerScriptSecretAddResponse struct {
-	Result SecretResponse                           `json:"result"`
+	Errors   []WorkersMessages `json:"errors,required"`
+	Messages []WorkersMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountWorkerScriptSecretAddResponseSuccess `json:"success,required"`
+	// A secret value accessible through a binding.
+	Result Secret                                   `json:"result"`
 	JSON   accountWorkerScriptSecretAddResponseJSON `json:"-"`
-	CommonResponseWorkers
 }
 
 // accountWorkerScriptSecretAddResponseJSON contains the JSON metadata for the
 // struct [AccountWorkerScriptSecretAddResponse]
 type accountWorkerScriptSecretAddResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -148,15 +176,37 @@ func (r accountWorkerScriptSecretAddResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountWorkerScriptSecretAddResponseSuccess bool
+
+const (
+	AccountWorkerScriptSecretAddResponseSuccessTrue AccountWorkerScriptSecretAddResponseSuccess = true
+)
+
+func (r AccountWorkerScriptSecretAddResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountWorkerScriptSecretAddResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountWorkerScriptSecretGetResponse struct {
-	Result SecretResponse                           `json:"result"`
+	Errors   []WorkersMessages `json:"errors,required"`
+	Messages []WorkersMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountWorkerScriptSecretGetResponseSuccess `json:"success,required"`
+	// A secret value accessible through a binding.
+	Result Secret                                   `json:"result"`
 	JSON   accountWorkerScriptSecretGetResponseJSON `json:"-"`
-	CommonResponseWorkers
 }
 
 // accountWorkerScriptSecretGetResponseJSON contains the JSON metadata for the
 // struct [AccountWorkerScriptSecretGetResponse]
 type accountWorkerScriptSecretGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -170,8 +220,24 @@ func (r accountWorkerScriptSecretGetResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountWorkerScriptSecretGetResponseSuccess bool
+
+const (
+	AccountWorkerScriptSecretGetResponseSuccessTrue AccountWorkerScriptSecretGetResponseSuccess = true
+)
+
+func (r AccountWorkerScriptSecretGetResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountWorkerScriptSecretGetResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountWorkerScriptSecretAddParams struct {
-	Secret SecretParam `json:"secret,required"`
+	// A secret value accessible through a binding.
+	Secret SecretUnionParam `json:"secret,required"`
 }
 
 func (r AccountWorkerScriptSecretAddParams) MarshalJSON() (data []byte, err error) {

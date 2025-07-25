@@ -8,15 +8,12 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
-	"reflect"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
 	"github.com/rexscaria/api-schemas/internal/param"
 	"github.com/rexscaria/api-schemas/internal/requestconfig"
 	"github.com/rexscaria/api-schemas/option"
-	"github.com/rexscaria/api-schemas/shared"
-	"github.com/tidwall/gjson"
 )
 
 // ZoneHoldService contains methods and other services that help with interacting
@@ -90,85 +87,22 @@ func (r *ZoneHoldService) Remove(ctx context.Context, zoneID string, body ZoneHo
 	return
 }
 
-type APIResponseSingleZonesSchemas struct {
-	Errors   []MessagesZonesItem                      `json:"errors,required"`
-	Messages []MessagesZonesItem                      `json:"messages,required"`
-	Result   APIResponseSingleZonesSchemasResultUnion `json:"result,required"`
-	// Whether the API call was successful
-	Success APIResponseSingleZonesSchemasSuccess `json:"success,required"`
-	JSON    apiResponseSingleZonesSchemasJSON    `json:"-"`
-}
-
-// apiResponseSingleZonesSchemasJSON contains the JSON metadata for the struct
-// [APIResponseSingleZonesSchemas]
-type apiResponseSingleZonesSchemasJSON struct {
-	Errors      apijson.Field
-	Messages    apijson.Field
-	Result      apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *APIResponseSingleZonesSchemas) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r apiResponseSingleZonesSchemasJSON) RawJSON() string {
-	return r.raw
-}
-
-// Union satisfied by [APIResponseSingleZonesSchemasResultArray] or
-// [shared.UnionString].
-type APIResponseSingleZonesSchemasResultUnion interface {
-	ImplementsAPIResponseSingleZonesSchemasResultUnion()
-}
-
-func init() {
-	apijson.RegisterUnion(
-		reflect.TypeOf((*APIResponseSingleZonesSchemasResultUnion)(nil)).Elem(),
-		"",
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(APIResponseSingleZonesSchemasResultArray{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.String,
-			Type:       reflect.TypeOf(shared.UnionString("")),
-		},
-	)
-}
-
-type APIResponseSingleZonesSchemasResultArray []interface{}
-
-func (r APIResponseSingleZonesSchemasResultArray) ImplementsAPIResponseSingleZonesSchemasResultUnion() {
-}
-
-// Whether the API call was successful
-type APIResponseSingleZonesSchemasSuccess bool
-
-const (
-	APIResponseSingleZonesSchemasSuccessTrue APIResponseSingleZonesSchemasSuccess = true
-)
-
-func (r APIResponseSingleZonesSchemasSuccess) IsKnown() bool {
-	switch r {
-	case APIResponseSingleZonesSchemasSuccessTrue:
-		return true
-	}
-	return false
-}
-
 type ZoneHoldNewResponse struct {
-	Result ZoneHoldNewResponseResult `json:"result"`
-	JSON   zoneHoldNewResponseJSON   `json:"-"`
-	APIResponseSingleZonesSchemas
+	Errors   []MessagesZonesItem       `json:"errors,required"`
+	Messages []MessagesZonesItem       `json:"messages,required"`
+	Result   ZoneHoldNewResponseResult `json:"result,required"`
+	// Whether the API call was successful
+	Success ZoneHoldNewResponseSuccess `json:"success,required"`
+	JSON    zoneHoldNewResponseJSON    `json:"-"`
 }
 
 // zoneHoldNewResponseJSON contains the JSON metadata for the struct
 // [ZoneHoldNewResponse]
 type zoneHoldNewResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -206,16 +140,37 @@ func (r zoneHoldNewResponseResultJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful
+type ZoneHoldNewResponseSuccess bool
+
+const (
+	ZoneHoldNewResponseSuccessTrue ZoneHoldNewResponseSuccess = true
+)
+
+func (r ZoneHoldNewResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneHoldNewResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type ZoneHoldGetResponse struct {
-	Result ZoneHoldGetResponseResult `json:"result"`
-	JSON   zoneHoldGetResponseJSON   `json:"-"`
-	APIResponseSingleZonesSchemas
+	Errors   []MessagesZonesItem       `json:"errors,required"`
+	Messages []MessagesZonesItem       `json:"messages,required"`
+	Result   ZoneHoldGetResponseResult `json:"result,required"`
+	// Whether the API call was successful
+	Success ZoneHoldGetResponseSuccess `json:"success,required"`
+	JSON    zoneHoldGetResponseJSON    `json:"-"`
 }
 
 // zoneHoldGetResponseJSON contains the JSON metadata for the struct
 // [ZoneHoldGetResponse]
 type zoneHoldGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -253,16 +208,37 @@ func (r zoneHoldGetResponseResultJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful
+type ZoneHoldGetResponseSuccess bool
+
+const (
+	ZoneHoldGetResponseSuccessTrue ZoneHoldGetResponseSuccess = true
+)
+
+func (r ZoneHoldGetResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneHoldGetResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type ZoneHoldUpdateResponse struct {
-	Result ZoneHoldUpdateResponseResult `json:"result"`
-	JSON   zoneHoldUpdateResponseJSON   `json:"-"`
-	APIResponseSingleZonesSchemas
+	Errors   []MessagesZonesItem          `json:"errors,required"`
+	Messages []MessagesZonesItem          `json:"messages,required"`
+	Result   ZoneHoldUpdateResponseResult `json:"result,required"`
+	// Whether the API call was successful
+	Success ZoneHoldUpdateResponseSuccess `json:"success,required"`
+	JSON    zoneHoldUpdateResponseJSON    `json:"-"`
 }
 
 // zoneHoldUpdateResponseJSON contains the JSON metadata for the struct
 // [ZoneHoldUpdateResponse]
 type zoneHoldUpdateResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -300,16 +276,37 @@ func (r zoneHoldUpdateResponseResultJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful
+type ZoneHoldUpdateResponseSuccess bool
+
+const (
+	ZoneHoldUpdateResponseSuccessTrue ZoneHoldUpdateResponseSuccess = true
+)
+
+func (r ZoneHoldUpdateResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneHoldUpdateResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type ZoneHoldRemoveResponse struct {
-	Result ZoneHoldRemoveResponseResult `json:"result"`
-	JSON   zoneHoldRemoveResponseJSON   `json:"-"`
-	APIResponseSingleZonesSchemas
+	Errors   []MessagesZonesItem          `json:"errors,required"`
+	Messages []MessagesZonesItem          `json:"messages,required"`
+	Result   ZoneHoldRemoveResponseResult `json:"result,required"`
+	// Whether the API call was successful
+	Success ZoneHoldRemoveResponseSuccess `json:"success,required"`
+	JSON    zoneHoldRemoveResponseJSON    `json:"-"`
 }
 
 // zoneHoldRemoveResponseJSON contains the JSON metadata for the struct
 // [ZoneHoldRemoveResponse]
 type zoneHoldRemoveResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -345,6 +342,21 @@ func (r *ZoneHoldRemoveResponseResult) UnmarshalJSON(data []byte) (err error) {
 
 func (r zoneHoldRemoveResponseResultJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful
+type ZoneHoldRemoveResponseSuccess bool
+
+const (
+	ZoneHoldRemoveResponseSuccessTrue ZoneHoldRemoveResponseSuccess = true
+)
+
+func (r ZoneHoldRemoveResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneHoldRemoveResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type ZoneHoldNewParams struct {

@@ -61,56 +61,21 @@ func (r *AccountAlertingV3DestinationPagerdutyConnectService) Link(ctx context.C
 	return
 }
 
-type APIResponseSingleAlerting struct {
-	Errors   []AaaMessage `json:"errors,required"`
-	Messages []AaaMessage `json:"messages,required"`
-	// Whether the API call was successful
-	Success APIResponseSingleAlertingSuccess `json:"success,required"`
-	JSON    apiResponseSingleAlertingJSON    `json:"-"`
-}
-
-// apiResponseSingleAlertingJSON contains the JSON metadata for the struct
-// [APIResponseSingleAlerting]
-type apiResponseSingleAlertingJSON struct {
-	Errors      apijson.Field
-	Messages    apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *APIResponseSingleAlerting) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r apiResponseSingleAlertingJSON) RawJSON() string {
-	return r.raw
-}
-
-// Whether the API call was successful
-type APIResponseSingleAlertingSuccess bool
-
-const (
-	APIResponseSingleAlertingSuccessTrue APIResponseSingleAlertingSuccess = true
-)
-
-func (r APIResponseSingleAlertingSuccess) IsKnown() bool {
-	switch r {
-	case APIResponseSingleAlertingSuccessTrue:
-		return true
-	}
-	return false
-}
-
 type IDResponseAlerting struct {
-	Result IDResponseAlertingResult `json:"result"`
-	JSON   idResponseAlertingJSON   `json:"-"`
-	APIResponseSingleAlerting
+	Errors   []IDResponseAlertingError   `json:"errors,required"`
+	Messages []IDResponseAlertingMessage `json:"messages,required"`
+	// Whether the API call was successful
+	Success IDResponseAlertingSuccess `json:"success,required"`
+	Result  IDResponseAlertingResult  `json:"result"`
+	JSON    idResponseAlertingJSON    `json:"-"`
 }
 
 // idResponseAlertingJSON contains the JSON metadata for the struct
 // [IDResponseAlerting]
 type idResponseAlertingJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -122,6 +87,117 @@ func (r *IDResponseAlerting) UnmarshalJSON(data []byte) (err error) {
 
 func (r idResponseAlertingJSON) RawJSON() string {
 	return r.raw
+}
+
+type IDResponseAlertingError struct {
+	Code             int64                          `json:"code,required"`
+	Message          string                         `json:"message,required"`
+	DocumentationURL string                         `json:"documentation_url"`
+	Source           IDResponseAlertingErrorsSource `json:"source"`
+	JSON             idResponseAlertingErrorJSON    `json:"-"`
+}
+
+// idResponseAlertingErrorJSON contains the JSON metadata for the struct
+// [IDResponseAlertingError]
+type idResponseAlertingErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *IDResponseAlertingError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r idResponseAlertingErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type IDResponseAlertingErrorsSource struct {
+	Pointer string                             `json:"pointer"`
+	JSON    idResponseAlertingErrorsSourceJSON `json:"-"`
+}
+
+// idResponseAlertingErrorsSourceJSON contains the JSON metadata for the struct
+// [IDResponseAlertingErrorsSource]
+type idResponseAlertingErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *IDResponseAlertingErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r idResponseAlertingErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type IDResponseAlertingMessage struct {
+	Code             int64                            `json:"code,required"`
+	Message          string                           `json:"message,required"`
+	DocumentationURL string                           `json:"documentation_url"`
+	Source           IDResponseAlertingMessagesSource `json:"source"`
+	JSON             idResponseAlertingMessageJSON    `json:"-"`
+}
+
+// idResponseAlertingMessageJSON contains the JSON metadata for the struct
+// [IDResponseAlertingMessage]
+type idResponseAlertingMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *IDResponseAlertingMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r idResponseAlertingMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type IDResponseAlertingMessagesSource struct {
+	Pointer string                               `json:"pointer"`
+	JSON    idResponseAlertingMessagesSourceJSON `json:"-"`
+}
+
+// idResponseAlertingMessagesSourceJSON contains the JSON metadata for the struct
+// [IDResponseAlertingMessagesSource]
+type idResponseAlertingMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *IDResponseAlertingMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r idResponseAlertingMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful
+type IDResponseAlertingSuccess bool
+
+const (
+	IDResponseAlertingSuccessTrue IDResponseAlertingSuccess = true
+)
+
+func (r IDResponseAlertingSuccess) IsKnown() bool {
+	switch r {
+	case IDResponseAlertingSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type IDResponseAlertingResult struct {
@@ -147,15 +223,21 @@ func (r idResponseAlertingResultJSON) RawJSON() string {
 }
 
 type AccountAlertingV3DestinationPagerdutyConnectNewTokenResponse struct {
-	Result AccountAlertingV3DestinationPagerdutyConnectNewTokenResponseResult `json:"result"`
-	JSON   accountAlertingV3DestinationPagerdutyConnectNewTokenResponseJSON   `json:"-"`
-	APIResponseSingleAlerting
+	Errors   []AaaMessage `json:"errors,required"`
+	Messages []AaaMessage `json:"messages,required"`
+	// Whether the API call was successful
+	Success AccountAlertingV3DestinationPagerdutyConnectNewTokenResponseSuccess `json:"success,required"`
+	Result  AccountAlertingV3DestinationPagerdutyConnectNewTokenResponseResult  `json:"result"`
+	JSON    accountAlertingV3DestinationPagerdutyConnectNewTokenResponseJSON    `json:"-"`
 }
 
 // accountAlertingV3DestinationPagerdutyConnectNewTokenResponseJSON contains the
 // JSON metadata for the struct
 // [AccountAlertingV3DestinationPagerdutyConnectNewTokenResponse]
 type accountAlertingV3DestinationPagerdutyConnectNewTokenResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -167,6 +249,21 @@ func (r *AccountAlertingV3DestinationPagerdutyConnectNewTokenResponse) Unmarshal
 
 func (r accountAlertingV3DestinationPagerdutyConnectNewTokenResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful
+type AccountAlertingV3DestinationPagerdutyConnectNewTokenResponseSuccess bool
+
+const (
+	AccountAlertingV3DestinationPagerdutyConnectNewTokenResponseSuccessTrue AccountAlertingV3DestinationPagerdutyConnectNewTokenResponseSuccess = true
+)
+
+func (r AccountAlertingV3DestinationPagerdutyConnectNewTokenResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountAlertingV3DestinationPagerdutyConnectNewTokenResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountAlertingV3DestinationPagerdutyConnectNewTokenResponseResult struct {

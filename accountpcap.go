@@ -95,61 +95,6 @@ func (r *AccountPcapService) Download(ctx context.Context, accountID string, pca
 	return
 }
 
-type APIResponseCollectionMagicVisibilityPcaps struct {
-	Result     []interface{}                                       `json:"result,nullable"`
-	ResultInfo APIResponseCollectionMagicVisibilityPcapsResultInfo `json:"result_info"`
-	JSON       apiResponseCollectionMagicVisibilityPcapsJSON       `json:"-"`
-	APIResponseMagicVisibilityPcaps
-}
-
-// apiResponseCollectionMagicVisibilityPcapsJSON contains the JSON metadata for the
-// struct [APIResponseCollectionMagicVisibilityPcaps]
-type apiResponseCollectionMagicVisibilityPcapsJSON struct {
-	Result      apijson.Field
-	ResultInfo  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *APIResponseCollectionMagicVisibilityPcaps) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r apiResponseCollectionMagicVisibilityPcapsJSON) RawJSON() string {
-	return r.raw
-}
-
-type APIResponseCollectionMagicVisibilityPcapsResultInfo struct {
-	// Total number of results for the requested service
-	Count float64 `json:"count"`
-	// Current page within paginated list of results
-	Page float64 `json:"page"`
-	// Number of results per page of results
-	PerPage float64 `json:"per_page"`
-	// Total results available without any search parameters
-	TotalCount float64                                                 `json:"total_count"`
-	JSON       apiResponseCollectionMagicVisibilityPcapsResultInfoJSON `json:"-"`
-}
-
-// apiResponseCollectionMagicVisibilityPcapsResultInfoJSON contains the JSON
-// metadata for the struct [APIResponseCollectionMagicVisibilityPcapsResultInfo]
-type apiResponseCollectionMagicVisibilityPcapsResultInfoJSON struct {
-	Count       apijson.Field
-	Page        apijson.Field
-	PerPage     apijson.Field
-	TotalCount  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *APIResponseCollectionMagicVisibilityPcapsResultInfo) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r apiResponseCollectionMagicVisibilityPcapsResultInfoJSON) RawJSON() string {
-	return r.raw
-}
-
 // The packet capture filter. When this field is empty, all packets are captured.
 type FilterV1 struct {
 	// The destination IP address of the packet.
@@ -236,8 +181,13 @@ type ResponseFull struct {
 	ErrorMessage string `json:"error_message"`
 	// The packet capture filter. When this field is empty, all packets are captured.
 	FilterV1 FilterV1 `json:"filter_v1"`
+	// The number of packets captured.
+	PacketsCaptured int64 `json:"packets_captured"`
 	// The status of the packet capture request.
 	Status StatusPacketCapture `json:"status"`
+	// The RFC 3339 timestamp when stopping the packet capture was requested. This
+	// field only applies to `full` packet captures.
+	StopRequested time.Time `json:"stop_requested" format:"date-time"`
 	// The RFC 3339 timestamp when the packet capture was created.
 	Submitted string `json:"submitted"`
 	// The system used to collect packet captures.
@@ -258,7 +208,9 @@ type responseFullJSON struct {
 	DestinationConf apijson.Field
 	ErrorMessage    apijson.Field
 	FilterV1        apijson.Field
+	PacketsCaptured apijson.Field
 	Status          apijson.Field
+	StopRequested   apijson.Field
 	Submitted       apijson.Field
 	System          apijson.Field
 	TimeLimit       apijson.Field
@@ -328,15 +280,21 @@ func (r ResponseSimple) implementsSingleResponsePcapsResult() {}
 func (r ResponseSimple) implementsAccountPcapListResponseResult() {}
 
 type SingleResponsePcaps struct {
-	Result SingleResponsePcapsResult `json:"result"`
-	JSON   singleResponsePcapsJSON   `json:"-"`
-	APIResponseMagicVisibilityPcaps
+	Errors   []MessagesMagicVisibilityPcapsItem `json:"errors,required"`
+	Messages []MessagesMagicVisibilityPcapsItem `json:"messages,required"`
+	Result   SingleResponsePcapsResult          `json:"result,required"`
+	// Whether the API call was successful
+	Success SingleResponsePcapsSuccess `json:"success,required"`
+	JSON    singleResponsePcapsJSON    `json:"-"`
 }
 
 // singleResponsePcapsJSON contains the JSON metadata for the struct
 // [SingleResponsePcaps]
 type singleResponsePcapsJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -369,8 +327,13 @@ type SingleResponsePcapsResult struct {
 	// The RFC 3339 offset timestamp from which to query backwards for packets. Must be
 	// within the last 24h. When this field is empty, defaults to time of request.
 	OffsetTime time.Time `json:"offset_time" format:"date-time"`
+	// The number of packets captured.
+	PacketsCaptured int64 `json:"packets_captured"`
 	// The status of the packet capture request.
 	Status StatusPacketCapture `json:"status"`
+	// The RFC 3339 timestamp when stopping the packet capture was requested. This
+	// field only applies to `full` packet captures.
+	StopRequested time.Time `json:"stop_requested" format:"date-time"`
 	// The RFC 3339 timestamp when the packet capture was created.
 	Submitted string `json:"submitted"`
 	// The system used to collect packet captures.
@@ -394,7 +357,9 @@ type singleResponsePcapsResultJSON struct {
 	ErrorMessage    apijson.Field
 	FilterV1        apijson.Field
 	OffsetTime      apijson.Field
+	PacketsCaptured apijson.Field
 	Status          apijson.Field
+	StopRequested   apijson.Field
 	Submitted       apijson.Field
 	System          apijson.Field
 	TimeLimit       apijson.Field
@@ -444,6 +409,21 @@ func init() {
 	)
 }
 
+// Whether the API call was successful
+type SingleResponsePcapsSuccess bool
+
+const (
+	SingleResponsePcapsSuccessTrue SingleResponsePcapsSuccess = true
+)
+
+func (r SingleResponsePcapsSuccess) IsKnown() bool {
+	switch r {
+	case SingleResponsePcapsSuccessTrue:
+		return true
+	}
+	return false
+}
+
 // The status of the packet capture request.
 type StatusPacketCapture string
 
@@ -482,15 +462,23 @@ func (r System) IsKnown() bool {
 }
 
 type AccountPcapListResponse struct {
-	Result []AccountPcapListResponseResult `json:"result"`
-	JSON   accountPcapListResponseJSON     `json:"-"`
-	APIResponseCollectionMagicVisibilityPcaps
+	Errors   []MessagesMagicVisibilityPcapsItem `json:"errors,required"`
+	Messages []MessagesMagicVisibilityPcapsItem `json:"messages,required"`
+	Result   []AccountPcapListResponseResult    `json:"result,required,nullable"`
+	// Whether the API call was successful
+	Success    AccountPcapListResponseSuccess    `json:"success,required"`
+	ResultInfo AccountPcapListResponseResultInfo `json:"result_info"`
+	JSON       accountPcapListResponseJSON       `json:"-"`
 }
 
 // accountPcapListResponseJSON contains the JSON metadata for the struct
 // [AccountPcapListResponse]
 type accountPcapListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -523,8 +511,13 @@ type AccountPcapListResponseResult struct {
 	// The RFC 3339 offset timestamp from which to query backwards for packets. Must be
 	// within the last 24h. When this field is empty, defaults to time of request.
 	OffsetTime time.Time `json:"offset_time" format:"date-time"`
+	// The number of packets captured.
+	PacketsCaptured int64 `json:"packets_captured"`
 	// The status of the packet capture request.
 	Status StatusPacketCapture `json:"status"`
+	// The RFC 3339 timestamp when stopping the packet capture was requested. This
+	// field only applies to `full` packet captures.
+	StopRequested time.Time `json:"stop_requested" format:"date-time"`
 	// The RFC 3339 timestamp when the packet capture was created.
 	Submitted string `json:"submitted"`
 	// The system used to collect packet captures.
@@ -548,7 +541,9 @@ type accountPcapListResponseResultJSON struct {
 	ErrorMessage    apijson.Field
 	FilterV1        apijson.Field
 	OffsetTime      apijson.Field
+	PacketsCaptured apijson.Field
 	Status          apijson.Field
+	StopRequested   apijson.Field
 	Submitted       apijson.Field
 	System          apijson.Field
 	TimeLimit       apijson.Field
@@ -596,6 +591,52 @@ func init() {
 			Type:       reflect.TypeOf(ResponseFull{}),
 		},
 	)
+}
+
+// Whether the API call was successful
+type AccountPcapListResponseSuccess bool
+
+const (
+	AccountPcapListResponseSuccessTrue AccountPcapListResponseSuccess = true
+)
+
+func (r AccountPcapListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountPcapListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type AccountPcapListResponseResultInfo struct {
+	// Total number of results for the requested service
+	Count float64 `json:"count"`
+	// Current page within paginated list of results
+	Page float64 `json:"page"`
+	// Number of results per page of results
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters
+	TotalCount float64                               `json:"total_count"`
+	JSON       accountPcapListResponseResultInfoJSON `json:"-"`
+}
+
+// accountPcapListResponseResultInfoJSON contains the JSON metadata for the struct
+// [AccountPcapListResponseResultInfo]
+type accountPcapListResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountPcapListResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountPcapListResponseResultInfoJSON) RawJSON() string {
+	return r.raw
 }
 
 type AccountPcapNewParams struct {

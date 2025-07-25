@@ -29,7 +29,7 @@ func TestZoneAPIGatewayOperationSchemaValidationGet(t *testing.T) {
 	)
 	_, err := client.Zones.APIGateway.Operations.SchemaValidation.Get(
 		context.TODO(),
-		"zone_id",
+		"023e105f4ecef8ad9ca31a8372d0c353",
 		"f174e90a-fafe-4643-bbbc-4a0ed4fc8415",
 	)
 	if err != nil {
@@ -57,12 +57,10 @@ func TestZoneAPIGatewayOperationSchemaValidationUpdateWithOptionalParams(t *test
 	)
 	_, err := client.Zones.APIGateway.Operations.SchemaValidation.Update(
 		context.TODO(),
-		"zone_id",
+		"023e105f4ecef8ad9ca31a8372d0c353",
 		"f174e90a-fafe-4643-bbbc-4a0ed4fc8415",
 		cfrex.ZoneAPIGatewayOperationSchemaValidationUpdateParams{
-			SchemaValidationSettings: cfrex.SchemaValidationSettingsParam{
-				MitigationAction: cfrex.F(cfrex.SchemaValidationSettingsMitigationActionBlock),
-			},
+			MitigationAction: cfrex.F(cfrex.ZoneAPIGatewayOperationSchemaValidationUpdateParamsMitigationActionBlock),
 		},
 	)
 	if err != nil {
@@ -90,7 +88,7 @@ func TestZoneAPIGatewayOperationSchemaValidationUpdateMultiple(t *testing.T) {
 	)
 	_, err := client.Zones.APIGateway.Operations.SchemaValidation.UpdateMultiple(
 		context.TODO(),
-		"zone_id",
+		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.ZoneAPIGatewayOperationSchemaValidationUpdateMultipleParams{
 			Body: map[string]cfrex.ZoneAPIGatewayOperationSchemaValidationUpdateMultipleParamsBody{
 				"3818d821-5901-4147-a474-f5f5aec1d54e": {

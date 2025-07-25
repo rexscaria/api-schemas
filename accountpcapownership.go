@@ -7,14 +7,11 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"reflect"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
 	"github.com/rexscaria/api-schemas/internal/requestconfig"
 	"github.com/rexscaria/api-schemas/option"
-	"github.com/rexscaria/api-schemas/shared"
-	"github.com/tidwall/gjson"
 )
 
 // AccountPcapOwnershipService contains methods and other services that help with
@@ -89,88 +86,23 @@ func (r *AccountPcapOwnershipService) Validate(ctx context.Context, accountID st
 	return
 }
 
-type APIResponseMagicVisibilityPcaps struct {
-	Errors   []MessagesMagicVisibilityPcapsItem         `json:"errors,required"`
-	Messages []MessagesMagicVisibilityPcapsItem         `json:"messages,required"`
-	Result   APIResponseMagicVisibilityPcapsResultUnion `json:"result,required"`
-	// Whether the API call was successful
-	Success APIResponseMagicVisibilityPcapsSuccess `json:"success,required"`
-	JSON    apiResponseMagicVisibilityPcapsJSON    `json:"-"`
-}
-
-// apiResponseMagicVisibilityPcapsJSON contains the JSON metadata for the struct
-// [APIResponseMagicVisibilityPcaps]
-type apiResponseMagicVisibilityPcapsJSON struct {
-	Errors      apijson.Field
-	Messages    apijson.Field
-	Result      apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *APIResponseMagicVisibilityPcaps) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r apiResponseMagicVisibilityPcapsJSON) RawJSON() string {
-	return r.raw
-}
-
-// Union satisfied by [APIResponseMagicVisibilityPcapsResultArray] or
-// [shared.UnionString].
-type APIResponseMagicVisibilityPcapsResultUnion interface {
-	ImplementsAPIResponseMagicVisibilityPcapsResultUnion()
-}
-
-func init() {
-	apijson.RegisterUnion(
-		reflect.TypeOf((*APIResponseMagicVisibilityPcapsResultUnion)(nil)).Elem(),
-		"",
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(APIResponseMagicVisibilityPcapsResultArray{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.String,
-			Type:       reflect.TypeOf(shared.UnionString("")),
-		},
-	)
-}
-
-type APIResponseMagicVisibilityPcapsResultArray []interface{}
-
-func (r APIResponseMagicVisibilityPcapsResultArray) ImplementsAPIResponseMagicVisibilityPcapsResultUnion() {
-}
-
-// Whether the API call was successful
-type APIResponseMagicVisibilityPcapsSuccess bool
-
-const (
-	APIResponseMagicVisibilityPcapsSuccessTrue APIResponseMagicVisibilityPcapsSuccess = true
-)
-
-func (r APIResponseMagicVisibilityPcapsSuccess) IsKnown() bool {
-	switch r {
-	case APIResponseMagicVisibilityPcapsSuccessTrue:
-		return true
-	}
-	return false
-}
-
 type MessagesMagicVisibilityPcapsItem struct {
-	Code    int64                                `json:"code,required"`
-	Message string                               `json:"message,required"`
-	JSON    messagesMagicVisibilityPcapsItemJSON `json:"-"`
+	Code             int64                                  `json:"code,required"`
+	Message          string                                 `json:"message,required"`
+	DocumentationURL string                                 `json:"documentation_url"`
+	Source           MessagesMagicVisibilityPcapsItemSource `json:"source"`
+	JSON             messagesMagicVisibilityPcapsItemJSON   `json:"-"`
 }
 
 // messagesMagicVisibilityPcapsItemJSON contains the JSON metadata for the struct
 // [MessagesMagicVisibilityPcapsItem]
 type messagesMagicVisibilityPcapsItemJSON struct {
-	Code        apijson.Field
-	Message     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
 }
 
 func (r *MessagesMagicVisibilityPcapsItem) UnmarshalJSON(data []byte) (err error) {
@@ -178,6 +110,27 @@ func (r *MessagesMagicVisibilityPcapsItem) UnmarshalJSON(data []byte) (err error
 }
 
 func (r messagesMagicVisibilityPcapsItemJSON) RawJSON() string {
+	return r.raw
+}
+
+type MessagesMagicVisibilityPcapsItemSource struct {
+	Pointer string                                     `json:"pointer"`
+	JSON    messagesMagicVisibilityPcapsItemSourceJSON `json:"-"`
+}
+
+// messagesMagicVisibilityPcapsItemSourceJSON contains the JSON metadata for the
+// struct [MessagesMagicVisibilityPcapsItemSource]
+type messagesMagicVisibilityPcapsItemSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *MessagesMagicVisibilityPcapsItemSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r messagesMagicVisibilityPcapsItemSourceJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -236,15 +189,21 @@ func (r OwnershipResponseStatus) IsKnown() bool {
 }
 
 type OwnershipSingleResponse struct {
-	Result OwnershipResponse           `json:"result"`
-	JSON   ownershipSingleResponseJSON `json:"-"`
-	APIResponseMagicVisibilityPcaps
+	Errors   []MessagesMagicVisibilityPcapsItem `json:"errors,required"`
+	Messages []MessagesMagicVisibilityPcapsItem `json:"messages,required"`
+	Result   OwnershipResponse                  `json:"result,required"`
+	// Whether the API call was successful
+	Success OwnershipSingleResponseSuccess `json:"success,required"`
+	JSON    ownershipSingleResponseJSON    `json:"-"`
 }
 
 // ownershipSingleResponseJSON contains the JSON metadata for the struct
 // [OwnershipSingleResponse]
 type ownershipSingleResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -257,16 +216,39 @@ func (r ownershipSingleResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful
+type OwnershipSingleResponseSuccess bool
+
+const (
+	OwnershipSingleResponseSuccessTrue OwnershipSingleResponseSuccess = true
+)
+
+func (r OwnershipSingleResponseSuccess) IsKnown() bool {
+	switch r {
+	case OwnershipSingleResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountPcapOwnershipListResponse struct {
-	Result []OwnershipResponse                  `json:"result,nullable"`
-	JSON   accountPcapOwnershipListResponseJSON `json:"-"`
-	APIResponseCollectionMagicVisibilityPcaps
+	Errors   []MessagesMagicVisibilityPcapsItem `json:"errors,required"`
+	Messages []MessagesMagicVisibilityPcapsItem `json:"messages,required"`
+	Result   []OwnershipResponse                `json:"result,required,nullable"`
+	// Whether the API call was successful
+	Success    AccountPcapOwnershipListResponseSuccess    `json:"success,required"`
+	ResultInfo AccountPcapOwnershipListResponseResultInfo `json:"result_info"`
+	JSON       accountPcapOwnershipListResponseJSON       `json:"-"`
 }
 
 // accountPcapOwnershipListResponseJSON contains the JSON metadata for the struct
 // [AccountPcapOwnershipListResponse]
 type accountPcapOwnershipListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -276,6 +258,52 @@ func (r *AccountPcapOwnershipListResponse) UnmarshalJSON(data []byte) (err error
 }
 
 func (r accountPcapOwnershipListResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful
+type AccountPcapOwnershipListResponseSuccess bool
+
+const (
+	AccountPcapOwnershipListResponseSuccessTrue AccountPcapOwnershipListResponseSuccess = true
+)
+
+func (r AccountPcapOwnershipListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountPcapOwnershipListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type AccountPcapOwnershipListResponseResultInfo struct {
+	// Total number of results for the requested service
+	Count float64 `json:"count"`
+	// Current page within paginated list of results
+	Page float64 `json:"page"`
+	// Number of results per page of results
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters
+	TotalCount float64                                        `json:"total_count"`
+	JSON       accountPcapOwnershipListResponseResultInfoJSON `json:"-"`
+}
+
+// accountPcapOwnershipListResponseResultInfoJSON contains the JSON metadata for
+// the struct [AccountPcapOwnershipListResponseResultInfo]
+type accountPcapOwnershipListResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountPcapOwnershipListResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountPcapOwnershipListResponseResultInfoJSON) RawJSON() string {
 	return r.raw
 }
 

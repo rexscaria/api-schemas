@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -79,102 +80,6 @@ func (r *ZoneCacheVariantService) Delete(ctx context.Context, zoneID string, opt
 	path := fmt.Sprintf("zones/%s/cache/variants", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
-}
-
-type ResponseValueVariants struct {
-	// Variant support enables caching variants of images with certain file extensions
-	// in addition to the original. This only applies when the origin server sends the
-	// 'Vary: Accept' response header. If the origin server sends 'Vary: Accept' but
-	// does not serve the variant requested, the response will not be cached. This will
-	// be indicated with BYPASS cache status in the response headers.
-	Result ResponseValueVariantsResult `json:"result"`
-	JSON   responseValueVariantsJSON   `json:"-"`
-}
-
-// responseValueVariantsJSON contains the JSON metadata for the struct
-// [ResponseValueVariants]
-type responseValueVariantsJSON struct {
-	Result      apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ResponseValueVariants) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r responseValueVariantsJSON) RawJSON() string {
-	return r.raw
-}
-
-// Variant support enables caching variants of images with certain file extensions
-// in addition to the original. This only applies when the origin server sends the
-// 'Vary: Accept' response header. If the origin server sends 'Vary: Accept' but
-// does not serve the variant requested, the response will not be cached. This will
-// be indicated with BYPASS cache status in the response headers.
-type ResponseValueVariantsResult struct {
-	// Value of the zone setting.
-	Value VariantsValue                   `json:"value,required"`
-	JSON  responseValueVariantsResultJSON `json:"-"`
-	Variants
-}
-
-// responseValueVariantsResultJSON contains the JSON metadata for the struct
-// [ResponseValueVariantsResult]
-type responseValueVariantsResultJSON struct {
-	Value       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ResponseValueVariantsResult) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r responseValueVariantsResultJSON) RawJSON() string {
-	return r.raw
-}
-
-// Variant support enables caching variants of images with certain file extensions
-// in addition to the original. This only applies when the origin server sends the
-// 'Vary: Accept' response header. If the origin server sends 'Vary: Accept' but
-// does not serve the variant requested, the response will not be cached. This will
-// be indicated with BYPASS cache status in the response headers.
-type Variants struct {
-	// ID of the zone setting.
-	ID   VariantsID   `json:"id"`
-	JSON variantsJSON `json:"-"`
-	BaseCacheRule
-}
-
-// variantsJSON contains the JSON metadata for the struct [Variants]
-type variantsJSON struct {
-	ID          apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *Variants) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r variantsJSON) RawJSON() string {
-	return r.raw
-}
-
-// ID of the zone setting.
-type VariantsID string
-
-const (
-	VariantsIDVariants VariantsID = "variants"
-)
-
-func (r VariantsID) IsKnown() bool {
-	switch r {
-	case VariantsIDVariants:
-		return true
-	}
-	return false
 }
 
 // Value of the zone setting.
@@ -282,14 +187,21 @@ func (r VariantsValueParam) MarshalJSON() (data []byte, err error) {
 }
 
 type ZoneCacheVariantGetResponse struct {
-	JSON zoneCacheVariantGetResponseJSON `json:"-"`
-	CacheRulesZoneCacheSettingsResponse
-	ResponseValueVariants
+	Errors   []MessagesCacheRulesItem `json:"errors,required"`
+	Messages []MessagesCacheRulesItem `json:"messages,required"`
+	// Whether the API call was successful
+	Success ZoneCacheVariantGetResponseSuccess `json:"success,required"`
+	Result  ZoneCacheVariantGetResponseResult  `json:"result"`
+	JSON    zoneCacheVariantGetResponseJSON    `json:"-"`
 }
 
 // zoneCacheVariantGetResponseJSON contains the JSON metadata for the struct
 // [ZoneCacheVariantGetResponse]
 type zoneCacheVariantGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
+	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -302,15 +214,83 @@ func (r zoneCacheVariantGetResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful
+type ZoneCacheVariantGetResponseSuccess bool
+
+const (
+	ZoneCacheVariantGetResponseSuccessTrue ZoneCacheVariantGetResponseSuccess = true
+)
+
+func (r ZoneCacheVariantGetResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneCacheVariantGetResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type ZoneCacheVariantGetResponseResult struct {
+	// ID of the zone setting.
+	ID ZoneCacheVariantGetResponseResultID `json:"id,required"`
+	// Whether the setting is editable
+	Editable bool `json:"editable,required"`
+	// The value of the feature
+	Value VariantsValue `json:"value,required"`
+	// Last time this setting was modified.
+	ModifiedOn time.Time                             `json:"modified_on,nullable" format:"date-time"`
+	JSON       zoneCacheVariantGetResponseResultJSON `json:"-"`
+}
+
+// zoneCacheVariantGetResponseResultJSON contains the JSON metadata for the struct
+// [ZoneCacheVariantGetResponseResult]
+type zoneCacheVariantGetResponseResultJSON struct {
+	ID          apijson.Field
+	Editable    apijson.Field
+	Value       apijson.Field
+	ModifiedOn  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZoneCacheVariantGetResponseResult) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneCacheVariantGetResponseResultJSON) RawJSON() string {
+	return r.raw
+}
+
+// ID of the zone setting.
+type ZoneCacheVariantGetResponseResultID string
+
+const (
+	ZoneCacheVariantGetResponseResultIDVariants ZoneCacheVariantGetResponseResultID = "variants"
+)
+
+func (r ZoneCacheVariantGetResponseResultID) IsKnown() bool {
+	switch r {
+	case ZoneCacheVariantGetResponseResultIDVariants:
+		return true
+	}
+	return false
+}
+
 type ZoneCacheVariantUpdateResponse struct {
-	JSON zoneCacheVariantUpdateResponseJSON `json:"-"`
-	CacheRulesZoneCacheSettingsResponse
-	ResponseValueVariants
+	Errors   []MessagesCacheRulesItem `json:"errors,required"`
+	Messages []MessagesCacheRulesItem `json:"messages,required"`
+	// Whether the API call was successful
+	Success ZoneCacheVariantUpdateResponseSuccess `json:"success,required"`
+	Result  ZoneCacheVariantUpdateResponseResult  `json:"result"`
+	JSON    zoneCacheVariantUpdateResponseJSON    `json:"-"`
 }
 
 // zoneCacheVariantUpdateResponseJSON contains the JSON metadata for the struct
 // [ZoneCacheVariantUpdateResponse]
 type zoneCacheVariantUpdateResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
+	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -323,20 +303,82 @@ func (r zoneCacheVariantUpdateResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful
+type ZoneCacheVariantUpdateResponseSuccess bool
+
+const (
+	ZoneCacheVariantUpdateResponseSuccessTrue ZoneCacheVariantUpdateResponseSuccess = true
+)
+
+func (r ZoneCacheVariantUpdateResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneCacheVariantUpdateResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type ZoneCacheVariantUpdateResponseResult struct {
+	// ID of the zone setting.
+	ID ZoneCacheVariantUpdateResponseResultID `json:"id,required"`
+	// Whether the setting is editable
+	Editable bool `json:"editable,required"`
+	// The value of the feature
+	Value VariantsValue `json:"value,required"`
+	// Last time this setting was modified.
+	ModifiedOn time.Time                                `json:"modified_on,nullable" format:"date-time"`
+	JSON       zoneCacheVariantUpdateResponseResultJSON `json:"-"`
+}
+
+// zoneCacheVariantUpdateResponseResultJSON contains the JSON metadata for the
+// struct [ZoneCacheVariantUpdateResponseResult]
+type zoneCacheVariantUpdateResponseResultJSON struct {
+	ID          apijson.Field
+	Editable    apijson.Field
+	Value       apijson.Field
+	ModifiedOn  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZoneCacheVariantUpdateResponseResult) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneCacheVariantUpdateResponseResultJSON) RawJSON() string {
+	return r.raw
+}
+
+// ID of the zone setting.
+type ZoneCacheVariantUpdateResponseResultID string
+
+const (
+	ZoneCacheVariantUpdateResponseResultIDVariants ZoneCacheVariantUpdateResponseResultID = "variants"
+)
+
+func (r ZoneCacheVariantUpdateResponseResultID) IsKnown() bool {
+	switch r {
+	case ZoneCacheVariantUpdateResponseResultIDVariants:
+		return true
+	}
+	return false
+}
+
 type ZoneCacheVariantDeleteResponse struct {
-	// Variant support enables caching variants of images with certain file extensions
-	// in addition to the original. This only applies when the origin server sends the
-	// 'Vary: Accept' response header. If the origin server sends 'Vary: Accept' but
-	// does not serve the variant requested, the response will not be cached. This will
-	// be indicated with BYPASS cache status in the response headers.
-	Result Variants                           `json:"result"`
-	JSON   zoneCacheVariantDeleteResponseJSON `json:"-"`
-	DeleteResponseSingle
+	Errors   []MessagesCacheRulesItem `json:"errors,required"`
+	Messages []MessagesCacheRulesItem `json:"messages,required"`
+	// Whether the API call was successful
+	Success ZoneCacheVariantDeleteResponseSuccess `json:"success,required"`
+	Result  ZoneCacheVariantDeleteResponseResult  `json:"result"`
+	JSON    zoneCacheVariantDeleteResponseJSON    `json:"-"`
 }
 
 // zoneCacheVariantDeleteResponseJSON contains the JSON metadata for the struct
 // [ZoneCacheVariantDeleteResponse]
 type zoneCacheVariantDeleteResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -348,6 +390,64 @@ func (r *ZoneCacheVariantDeleteResponse) UnmarshalJSON(data []byte) (err error) 
 
 func (r zoneCacheVariantDeleteResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful
+type ZoneCacheVariantDeleteResponseSuccess bool
+
+const (
+	ZoneCacheVariantDeleteResponseSuccessTrue ZoneCacheVariantDeleteResponseSuccess = true
+)
+
+func (r ZoneCacheVariantDeleteResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneCacheVariantDeleteResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type ZoneCacheVariantDeleteResponseResult struct {
+	// ID of the zone setting.
+	ID ZoneCacheVariantDeleteResponseResultID `json:"id,required"`
+	// Whether the setting is editable
+	Editable bool `json:"editable,required"`
+	// Last time this setting was modified.
+	ModifiedOn time.Time                                `json:"modified_on,nullable" format:"date-time"`
+	JSON       zoneCacheVariantDeleteResponseResultJSON `json:"-"`
+}
+
+// zoneCacheVariantDeleteResponseResultJSON contains the JSON metadata for the
+// struct [ZoneCacheVariantDeleteResponseResult]
+type zoneCacheVariantDeleteResponseResultJSON struct {
+	ID          apijson.Field
+	Editable    apijson.Field
+	ModifiedOn  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZoneCacheVariantDeleteResponseResult) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneCacheVariantDeleteResponseResultJSON) RawJSON() string {
+	return r.raw
+}
+
+// ID of the zone setting.
+type ZoneCacheVariantDeleteResponseResultID string
+
+const (
+	ZoneCacheVariantDeleteResponseResultIDVariants ZoneCacheVariantDeleteResponseResultID = "variants"
+)
+
+func (r ZoneCacheVariantDeleteResponseResultID) IsKnown() bool {
+	switch r {
+	case ZoneCacheVariantDeleteResponseResultIDVariants:
+		return true
+	}
+	return false
 }
 
 type ZoneCacheVariantUpdateParams struct {

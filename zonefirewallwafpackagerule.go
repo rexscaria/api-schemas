@@ -113,21 +113,36 @@ func (r *ZoneFirewallWafPackageRuleService) List(ctx context.Context, zoneID str
 // configure the total scoring threshold through the 'sensitivity' property of the
 // WAF package.
 type WafManagedRulesAnomalyRule struct {
+	// Defines the unique identifier of the WAF rule.
+	ID string `json:"id,required"`
 	// Defines the available modes for the current WAF rule. Applies to anomaly
 	// detection WAF rules.
-	AllowedModes []WafManagedRulesModeAnomaly `json:"allowed_modes"`
-	// When set to `on`, the current WAF rule will be used when evaluating the request.
-	// Applies to anomaly detection WAF rules.
-	Mode WafManagedRulesModeAnomaly     `json:"mode"`
-	JSON wafManagedRulesAnomalyRuleJSON `json:"-"`
-	WafManagedRulesBase
+	AllowedModes []WafManagedRulesModeAnomaly `json:"allowed_modes,required"`
+	// Defines the public description of the WAF rule.
+	Description string `json:"description,required"`
+	// Defines the rule group to which the current WAF rule belongs.
+	Group WafManagedRulesAnomalyRuleGroup `json:"group,required"`
+	// Defines the mode anomaly. When set to `on`, the current WAF rule will be used
+	// when evaluating the request. Applies to anomaly detection WAF rules.
+	Mode WafManagedRulesModeAnomaly `json:"mode,required"`
+	// Defines the unique identifier of a WAF package.
+	PackageID string `json:"package_id,required"`
+	// Defines the order in which the individual WAF rule is executed within its rule
+	// group.
+	Priority string                         `json:"priority,required"`
+	JSON     wafManagedRulesAnomalyRuleJSON `json:"-"`
 }
 
 // wafManagedRulesAnomalyRuleJSON contains the JSON metadata for the struct
 // [WafManagedRulesAnomalyRule]
 type wafManagedRulesAnomalyRuleJSON struct {
+	ID           apijson.Field
 	AllowedModes apijson.Field
+	Description  apijson.Field
+	Group        apijson.Field
 	Mode         apijson.Field
+	PackageID    apijson.Field
+	Priority     apijson.Field
 	raw          string
 	ExtraFields  map[string]apijson.Field
 }
@@ -144,63 +159,29 @@ func (r WafManagedRulesAnomalyRule) implementsZoneFirewallWafPackageRuleUpdateRe
 
 func (r WafManagedRulesAnomalyRule) implementsZoneFirewallWafPackageRuleListResponseResult() {}
 
-type WafManagedRulesBase struct {
-	// The unique identifier of the WAF rule.
+// Defines the rule group to which the current WAF rule belongs.
+type WafManagedRulesAnomalyRuleGroup struct {
+	// Defines the unique identifier of the rule group.
 	ID string `json:"id"`
-	// The public description of the WAF rule.
-	Description string `json:"description"`
-	// The rule group to which the current WAF rule belongs.
-	Group WafManagedRulesBaseGroup `json:"group"`
-	// The unique identifier of a WAF package.
-	PackageID string `json:"package_id"`
-	// The order in which the individual WAF rule is executed within its rule group.
-	Priority string                  `json:"priority"`
-	JSON     wafManagedRulesBaseJSON `json:"-"`
+	// Defines the name of the rule group.
+	Name string                              `json:"name"`
+	JSON wafManagedRulesAnomalyRuleGroupJSON `json:"-"`
 }
 
-// wafManagedRulesBaseJSON contains the JSON metadata for the struct
-// [WafManagedRulesBase]
-type wafManagedRulesBaseJSON struct {
-	ID          apijson.Field
-	Description apijson.Field
-	Group       apijson.Field
-	PackageID   apijson.Field
-	Priority    apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *WafManagedRulesBase) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r wafManagedRulesBaseJSON) RawJSON() string {
-	return r.raw
-}
-
-// The rule group to which the current WAF rule belongs.
-type WafManagedRulesBaseGroup struct {
-	// The unique identifier of the rule group.
-	ID string `json:"id"`
-	// The name of the rule group.
-	Name string                       `json:"name"`
-	JSON wafManagedRulesBaseGroupJSON `json:"-"`
-}
-
-// wafManagedRulesBaseGroupJSON contains the JSON metadata for the struct
-// [WafManagedRulesBaseGroup]
-type wafManagedRulesBaseGroupJSON struct {
+// wafManagedRulesAnomalyRuleGroupJSON contains the JSON metadata for the struct
+// [WafManagedRulesAnomalyRuleGroup]
+type wafManagedRulesAnomalyRuleGroupJSON struct {
 	ID          apijson.Field
 	Name        apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *WafManagedRulesBaseGroup) UnmarshalJSON(data []byte) (err error) {
+func (r *WafManagedRulesAnomalyRuleGroup) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r wafManagedRulesBaseGroupJSON) RawJSON() string {
+func (r wafManagedRulesAnomalyRuleGroupJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -221,8 +202,8 @@ func (r WafManagedRulesModeAllowTraditional) IsKnown() bool {
 	return false
 }
 
-// When set to `on`, the current WAF rule will be used when evaluating the request.
-// Applies to anomaly detection WAF rules.
+// Defines the mode anomaly. When set to `on`, the current WAF rule will be used
+// when evaluating the request. Applies to anomaly detection WAF rules.
 type WafManagedRulesModeAnomaly string
 
 const (
@@ -238,8 +219,8 @@ func (r WafManagedRulesModeAnomaly) IsKnown() bool {
 	return false
 }
 
-// The action that the current WAF rule will perform when triggered. Applies to
-// traditional (deny) WAF rules.
+// Defines the action that the current WAF rule will perform when triggered.
+// Applies to traditional (deny) WAF rules.
 type WafManagedRulesModeDenyTraditional string
 
 const (
@@ -259,15 +240,21 @@ func (r WafManagedRulesModeDenyTraditional) IsKnown() bool {
 }
 
 type WafManagedRulesRuleResponseSingle struct {
-	Result interface{}                           `json:"result"`
-	JSON   wafManagedRulesRuleResponseSingleJSON `json:"-"`
-	WafManagedRulesAPIResponseSingle
+	Errors   []WafManagedRulesMessage `json:"errors,required"`
+	Messages []WafManagedRulesMessage `json:"messages,required"`
+	Result   interface{}              `json:"result,required"`
+	// Defines whether the API call was successful.
+	Success WafManagedRulesRuleResponseSingleSuccess `json:"success,required"`
+	JSON    wafManagedRulesRuleResponseSingleJSON    `json:"-"`
 }
 
 // wafManagedRulesRuleResponseSingleJSON contains the JSON metadata for the struct
 // [WafManagedRulesRuleResponseSingle]
 type wafManagedRulesRuleResponseSingleJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -280,24 +267,54 @@ func (r wafManagedRulesRuleResponseSingleJSON) RawJSON() string {
 	return r.raw
 }
 
+// Defines whether the API call was successful.
+type WafManagedRulesRuleResponseSingleSuccess bool
+
+const (
+	WafManagedRulesRuleResponseSingleSuccessTrue WafManagedRulesRuleResponseSingleSuccess = true
+)
+
+func (r WafManagedRulesRuleResponseSingleSuccess) IsKnown() bool {
+	switch r {
+	case WafManagedRulesRuleResponseSingleSuccessTrue:
+		return true
+	}
+	return false
+}
+
 // When triggered, traditional WAF rules cause the firewall to immediately act on
 // the request based on the rule configuration. An 'allow' rule will immediately
 // allow the request and no other rules will be processed.
 type WafManagedRulesTraditionalAllowRule struct {
+	// Defines the unique identifier of the WAF rule.
+	ID string `json:"id,required"`
 	// Defines the available modes for the current WAF rule.
-	AllowedModes []WafManagedRulesModeAllowTraditional `json:"allowed_modes"`
+	AllowedModes []WafManagedRulesModeAllowTraditional `json:"allowed_modes,required"`
+	// Defines the public description of the WAF rule.
+	Description string `json:"description,required"`
+	// Defines the rule group to which the current WAF rule belongs.
+	Group WafManagedRulesTraditionalAllowRuleGroup `json:"group,required"`
 	// When set to `on`, the current rule will be used when evaluating the request.
 	// Applies to traditional (allow) WAF rules.
-	Mode WafManagedRulesModeAllowTraditional     `json:"mode"`
-	JSON wafManagedRulesTraditionalAllowRuleJSON `json:"-"`
-	WafManagedRulesBase
+	Mode WafManagedRulesModeAllowTraditional `json:"mode,required"`
+	// Defines the unique identifier of a WAF package.
+	PackageID string `json:"package_id,required"`
+	// Defines the order in which the individual WAF rule is executed within its rule
+	// group.
+	Priority string                                  `json:"priority,required"`
+	JSON     wafManagedRulesTraditionalAllowRuleJSON `json:"-"`
 }
 
 // wafManagedRulesTraditionalAllowRuleJSON contains the JSON metadata for the
 // struct [WafManagedRulesTraditionalAllowRule]
 type wafManagedRulesTraditionalAllowRuleJSON struct {
+	ID           apijson.Field
 	AllowedModes apijson.Field
+	Description  apijson.Field
+	Group        apijson.Field
 	Mode         apijson.Field
+	PackageID    apijson.Field
+	Priority     apijson.Field
 	raw          string
 	ExtraFields  map[string]apijson.Field
 }
@@ -316,28 +333,69 @@ func (r WafManagedRulesTraditionalAllowRule) implementsZoneFirewallWafPackageRul
 func (r WafManagedRulesTraditionalAllowRule) implementsZoneFirewallWafPackageRuleListResponseResult() {
 }
 
+// Defines the rule group to which the current WAF rule belongs.
+type WafManagedRulesTraditionalAllowRuleGroup struct {
+	// Defines the unique identifier of the rule group.
+	ID string `json:"id"`
+	// Defines the name of the rule group.
+	Name string                                       `json:"name"`
+	JSON wafManagedRulesTraditionalAllowRuleGroupJSON `json:"-"`
+}
+
+// wafManagedRulesTraditionalAllowRuleGroupJSON contains the JSON metadata for the
+// struct [WafManagedRulesTraditionalAllowRuleGroup]
+type wafManagedRulesTraditionalAllowRuleGroupJSON struct {
+	ID          apijson.Field
+	Name        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *WafManagedRulesTraditionalAllowRuleGroup) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r wafManagedRulesTraditionalAllowRuleGroupJSON) RawJSON() string {
+	return r.raw
+}
+
 // When triggered, traditional WAF rules cause the firewall to immediately act upon
 // the request based on the configuration of the rule. A 'deny' rule will
 // immediately respond to the request based on the configured rule action/mode (for
 // example, 'block') and no other rules will be processed.
 type WafManagedRulesTraditionalDenyRule struct {
-	// The list of possible actions of the WAF rule when it is triggered.
-	AllowedModes []WafManagedRulesModeDenyTraditional `json:"allowed_modes"`
-	// The default action/mode of a rule.
-	DefaultMode WafManagedRulesTraditionalDenyRuleDefaultMode `json:"default_mode"`
-	// The action that the current WAF rule will perform when triggered. Applies to
-	// traditional (deny) WAF rules.
-	Mode WafManagedRulesModeDenyTraditional     `json:"mode"`
-	JSON wafManagedRulesTraditionalDenyRuleJSON `json:"-"`
-	WafManagedRulesBase
+	// Defines the unique identifier of the WAF rule.
+	ID string `json:"id,required"`
+	// Defines the list of possible actions of the WAF rule when it is triggered.
+	AllowedModes []WafManagedRulesModeDenyTraditional `json:"allowed_modes,required"`
+	// Defines the default action/mode of a rule.
+	DefaultMode WafManagedRulesTraditionalDenyRuleDefaultMode `json:"default_mode,required"`
+	// Defines the public description of the WAF rule.
+	Description string `json:"description,required"`
+	// Defines the rule group to which the current WAF rule belongs.
+	Group WafManagedRulesTraditionalDenyRuleGroup `json:"group,required"`
+	// Defines the action that the current WAF rule will perform when triggered.
+	// Applies to traditional (deny) WAF rules.
+	Mode WafManagedRulesModeDenyTraditional `json:"mode,required"`
+	// Defines the unique identifier of a WAF package.
+	PackageID string `json:"package_id,required"`
+	// Defines the order in which the individual WAF rule is executed within its rule
+	// group.
+	Priority string                                 `json:"priority,required"`
+	JSON     wafManagedRulesTraditionalDenyRuleJSON `json:"-"`
 }
 
 // wafManagedRulesTraditionalDenyRuleJSON contains the JSON metadata for the struct
 // [WafManagedRulesTraditionalDenyRule]
 type wafManagedRulesTraditionalDenyRuleJSON struct {
+	ID           apijson.Field
 	AllowedModes apijson.Field
 	DefaultMode  apijson.Field
+	Description  apijson.Field
+	Group        apijson.Field
 	Mode         apijson.Field
+	PackageID    apijson.Field
+	Priority     apijson.Field
 	raw          string
 	ExtraFields  map[string]apijson.Field
 }
@@ -356,7 +414,7 @@ func (r WafManagedRulesTraditionalDenyRule) implementsZoneFirewallWafPackageRule
 func (r WafManagedRulesTraditionalDenyRule) implementsZoneFirewallWafPackageRuleListResponseResult() {
 }
 
-// The default action/mode of a rule.
+// Defines the default action/mode of a rule.
 type WafManagedRulesTraditionalDenyRuleDefaultMode string
 
 const (
@@ -374,20 +432,52 @@ func (r WafManagedRulesTraditionalDenyRuleDefaultMode) IsKnown() bool {
 	return false
 }
 
+// Defines the rule group to which the current WAF rule belongs.
+type WafManagedRulesTraditionalDenyRuleGroup struct {
+	// Defines the unique identifier of the rule group.
+	ID string `json:"id"`
+	// Defines the name of the rule group.
+	Name string                                      `json:"name"`
+	JSON wafManagedRulesTraditionalDenyRuleGroupJSON `json:"-"`
+}
+
+// wafManagedRulesTraditionalDenyRuleGroupJSON contains the JSON metadata for the
+// struct [WafManagedRulesTraditionalDenyRuleGroup]
+type wafManagedRulesTraditionalDenyRuleGroupJSON struct {
+	ID          apijson.Field
+	Name        apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *WafManagedRulesTraditionalDenyRuleGroup) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r wafManagedRulesTraditionalDenyRuleGroupJSON) RawJSON() string {
+	return r.raw
+}
+
 type ZoneFirewallWafPackageRuleUpdateResponse struct {
+	Errors   []WafManagedRulesMessage `json:"errors,required"`
+	Messages []WafManagedRulesMessage `json:"messages,required"`
 	// When triggered, anomaly detection WAF rules contribute to an overall threat
 	// score that will determine if a request is considered malicious. You can
 	// configure the total scoring threshold through the 'sensitivity' property of the
 	// WAF package.
-	Result ZoneFirewallWafPackageRuleUpdateResponseResult `json:"result"`
-	JSON   zoneFirewallWafPackageRuleUpdateResponseJSON   `json:"-"`
-	WafManagedRulesRuleResponseSingle
+	Result ZoneFirewallWafPackageRuleUpdateResponseResult `json:"result,required"`
+	// Defines whether the API call was successful.
+	Success ZoneFirewallWafPackageRuleUpdateResponseSuccess `json:"success,required"`
+	JSON    zoneFirewallWafPackageRuleUpdateResponseJSON    `json:"-"`
 }
 
 // zoneFirewallWafPackageRuleUpdateResponseJSON contains the JSON metadata for the
 // struct [ZoneFirewallWafPackageRuleUpdateResponse]
 type zoneFirewallWafPackageRuleUpdateResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -405,26 +495,29 @@ func (r zoneFirewallWafPackageRuleUpdateResponseJSON) RawJSON() string {
 // configure the total scoring threshold through the 'sensitivity' property of the
 // WAF package.
 type ZoneFirewallWafPackageRuleUpdateResponseResult struct {
-	// The unique identifier of the WAF rule.
-	ID string `json:"id"`
+	// Defines the unique identifier of the WAF rule.
+	ID string `json:"id,required"`
 	// This field can have the runtime type of [[]WafManagedRulesModeAnomaly],
 	// [[]WafManagedRulesModeDenyTraditional], [[]WafManagedRulesModeAllowTraditional].
-	AllowedModes interface{} `json:"allowed_modes"`
-	// The default action/mode of a rule.
+	AllowedModes interface{} `json:"allowed_modes,required"`
+	// Defines the public description of the WAF rule.
+	Description string `json:"description,required"`
+	// This field can have the runtime type of [WafManagedRulesAnomalyRuleGroup],
+	// [WafManagedRulesTraditionalDenyRuleGroup],
+	// [WafManagedRulesTraditionalAllowRuleGroup].
+	Group interface{} `json:"group,required"`
+	// Defines the mode anomaly. When set to `on`, the current WAF rule will be used
+	// when evaluating the request. Applies to anomaly detection WAF rules.
+	Mode WafManagedRulesModeAnomaly `json:"mode,required"`
+	// Defines the unique identifier of a WAF package.
+	PackageID string `json:"package_id,required"`
+	// Defines the order in which the individual WAF rule is executed within its rule
+	// group.
+	Priority string `json:"priority,required"`
+	// Defines the default action/mode of a rule.
 	DefaultMode ZoneFirewallWafPackageRuleUpdateResponseResultDefaultMode `json:"default_mode"`
-	// The public description of the WAF rule.
-	Description string `json:"description"`
-	// This field can have the runtime type of [WafManagedRulesBaseGroup].
-	Group interface{} `json:"group"`
-	// When set to `on`, the current WAF rule will be used when evaluating the request.
-	// Applies to anomaly detection WAF rules.
-	Mode WafManagedRulesModeAnomaly `json:"mode"`
-	// The unique identifier of a WAF package.
-	PackageID string `json:"package_id"`
-	// The order in which the individual WAF rule is executed within its rule group.
-	Priority string                                             `json:"priority"`
-	JSON     zoneFirewallWafPackageRuleUpdateResponseResultJSON `json:"-"`
-	union    ZoneFirewallWafPackageRuleUpdateResponseResultUnion
+	JSON        zoneFirewallWafPackageRuleUpdateResponseResultJSON        `json:"-"`
+	union       ZoneFirewallWafPackageRuleUpdateResponseResultUnion
 }
 
 // zoneFirewallWafPackageRuleUpdateResponseResultJSON contains the JSON metadata
@@ -432,12 +525,12 @@ type ZoneFirewallWafPackageRuleUpdateResponseResult struct {
 type zoneFirewallWafPackageRuleUpdateResponseResultJSON struct {
 	ID           apijson.Field
 	AllowedModes apijson.Field
-	DefaultMode  apijson.Field
 	Description  apijson.Field
 	Group        apijson.Field
 	Mode         apijson.Field
 	PackageID    apijson.Field
 	Priority     apijson.Field
+	DefaultMode  apijson.Field
 	raw          string
 	ExtraFields  map[string]apijson.Field
 }
@@ -494,7 +587,7 @@ func init() {
 	)
 }
 
-// The default action/mode of a rule.
+// Defines the default action/mode of a rule.
 type ZoneFirewallWafPackageRuleUpdateResponseResultDefaultMode string
 
 const (
@@ -512,16 +605,39 @@ func (r ZoneFirewallWafPackageRuleUpdateResponseResultDefaultMode) IsKnown() boo
 	return false
 }
 
+// Defines whether the API call was successful.
+type ZoneFirewallWafPackageRuleUpdateResponseSuccess bool
+
+const (
+	ZoneFirewallWafPackageRuleUpdateResponseSuccessTrue ZoneFirewallWafPackageRuleUpdateResponseSuccess = true
+)
+
+func (r ZoneFirewallWafPackageRuleUpdateResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneFirewallWafPackageRuleUpdateResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type ZoneFirewallWafPackageRuleListResponse struct {
-	Result []ZoneFirewallWafPackageRuleListResponseResult `json:"result"`
-	JSON   zoneFirewallWafPackageRuleListResponseJSON     `json:"-"`
-	WafManagedRulesAPIResponseCollection
+	Errors   []WafManagedRulesMessage                       `json:"errors,required"`
+	Messages []WafManagedRulesMessage                       `json:"messages,required"`
+	Result   []ZoneFirewallWafPackageRuleListResponseResult `json:"result,required"`
+	// Defines whether the API call was successful.
+	Success    ZoneFirewallWafPackageRuleListResponseSuccess    `json:"success,required"`
+	ResultInfo ZoneFirewallWafPackageRuleListResponseResultInfo `json:"result_info"`
+	JSON       zoneFirewallWafPackageRuleListResponseJSON       `json:"-"`
 }
 
 // zoneFirewallWafPackageRuleListResponseJSON contains the JSON metadata for the
 // struct [ZoneFirewallWafPackageRuleListResponse]
 type zoneFirewallWafPackageRuleListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -539,26 +655,29 @@ func (r zoneFirewallWafPackageRuleListResponseJSON) RawJSON() string {
 // configure the total scoring threshold through the 'sensitivity' property of the
 // WAF package.
 type ZoneFirewallWafPackageRuleListResponseResult struct {
-	// The unique identifier of the WAF rule.
-	ID string `json:"id"`
+	// Defines the unique identifier of the WAF rule.
+	ID string `json:"id,required"`
 	// This field can have the runtime type of [[]WafManagedRulesModeAnomaly],
 	// [[]WafManagedRulesModeDenyTraditional], [[]WafManagedRulesModeAllowTraditional].
-	AllowedModes interface{} `json:"allowed_modes"`
-	// The default action/mode of a rule.
+	AllowedModes interface{} `json:"allowed_modes,required"`
+	// Defines the public description of the WAF rule.
+	Description string `json:"description,required"`
+	// This field can have the runtime type of [WafManagedRulesAnomalyRuleGroup],
+	// [WafManagedRulesTraditionalDenyRuleGroup],
+	// [WafManagedRulesTraditionalAllowRuleGroup].
+	Group interface{} `json:"group,required"`
+	// Defines the mode anomaly. When set to `on`, the current WAF rule will be used
+	// when evaluating the request. Applies to anomaly detection WAF rules.
+	Mode WafManagedRulesModeAnomaly `json:"mode,required"`
+	// Defines the unique identifier of a WAF package.
+	PackageID string `json:"package_id,required"`
+	// Defines the order in which the individual WAF rule is executed within its rule
+	// group.
+	Priority string `json:"priority,required"`
+	// Defines the default action/mode of a rule.
 	DefaultMode ZoneFirewallWafPackageRuleListResponseResultDefaultMode `json:"default_mode"`
-	// The public description of the WAF rule.
-	Description string `json:"description"`
-	// This field can have the runtime type of [WafManagedRulesBaseGroup].
-	Group interface{} `json:"group"`
-	// When set to `on`, the current WAF rule will be used when evaluating the request.
-	// Applies to anomaly detection WAF rules.
-	Mode WafManagedRulesModeAnomaly `json:"mode"`
-	// The unique identifier of a WAF package.
-	PackageID string `json:"package_id"`
-	// The order in which the individual WAF rule is executed within its rule group.
-	Priority string                                           `json:"priority"`
-	JSON     zoneFirewallWafPackageRuleListResponseResultJSON `json:"-"`
-	union    ZoneFirewallWafPackageRuleListResponseResultUnion
+	JSON        zoneFirewallWafPackageRuleListResponseResultJSON        `json:"-"`
+	union       ZoneFirewallWafPackageRuleListResponseResultUnion
 }
 
 // zoneFirewallWafPackageRuleListResponseResultJSON contains the JSON metadata for
@@ -566,12 +685,12 @@ type ZoneFirewallWafPackageRuleListResponseResult struct {
 type zoneFirewallWafPackageRuleListResponseResultJSON struct {
 	ID           apijson.Field
 	AllowedModes apijson.Field
-	DefaultMode  apijson.Field
 	Description  apijson.Field
 	Group        apijson.Field
 	Mode         apijson.Field
 	PackageID    apijson.Field
 	Priority     apijson.Field
+	DefaultMode  apijson.Field
 	raw          string
 	ExtraFields  map[string]apijson.Field
 }
@@ -628,7 +747,7 @@ func init() {
 	)
 }
 
-// The default action/mode of a rule.
+// Defines the default action/mode of a rule.
 type ZoneFirewallWafPackageRuleListResponseResultDefaultMode string
 
 const (
@@ -646,9 +765,55 @@ func (r ZoneFirewallWafPackageRuleListResponseResultDefaultMode) IsKnown() bool 
 	return false
 }
 
+// Defines whether the API call was successful.
+type ZoneFirewallWafPackageRuleListResponseSuccess bool
+
+const (
+	ZoneFirewallWafPackageRuleListResponseSuccessTrue ZoneFirewallWafPackageRuleListResponseSuccess = true
+)
+
+func (r ZoneFirewallWafPackageRuleListResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneFirewallWafPackageRuleListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type ZoneFirewallWafPackageRuleListResponseResultInfo struct {
+	// Defines the total number of results for the requested service.
+	Count float64 `json:"count"`
+	// Defines the current page within paginated list of results.
+	Page float64 `json:"page"`
+	// Defines the number of results per page of results.
+	PerPage float64 `json:"per_page"`
+	// Defines the total results available without any search parameters.
+	TotalCount float64                                              `json:"total_count"`
+	JSON       zoneFirewallWafPackageRuleListResponseResultInfoJSON `json:"-"`
+}
+
+// zoneFirewallWafPackageRuleListResponseResultInfoJSON contains the JSON metadata
+// for the struct [ZoneFirewallWafPackageRuleListResponseResultInfo]
+type zoneFirewallWafPackageRuleListResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZoneFirewallWafPackageRuleListResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneFirewallWafPackageRuleListResponseResultInfoJSON) RawJSON() string {
+	return r.raw
+}
+
 type ZoneFirewallWafPackageRuleUpdateParams struct {
-	// The mode/action of the rule when triggered. You must use a value from the
-	// `allowed_modes` array of the current rule.
+	// Defines the mode/action of the rule when triggered. You must use a value from
+	// the `allowed_modes` array of the current rule.
 	Mode param.Field[ZoneFirewallWafPackageRuleUpdateParamsMode] `json:"mode"`
 }
 
@@ -656,8 +821,8 @@ func (r ZoneFirewallWafPackageRuleUpdateParams) MarshalJSON() (data []byte, err 
 	return apijson.MarshalRoot(r)
 }
 
-// The mode/action of the rule when triggered. You must use a value from the
-// `allowed_modes` array of the current rule.
+// Defines the mode/action of the rule when triggered. You must use a value from
+// the `allowed_modes` array of the current rule.
 type ZoneFirewallWafPackageRuleUpdateParamsMode string
 
 const (
@@ -679,24 +844,25 @@ func (r ZoneFirewallWafPackageRuleUpdateParamsMode) IsKnown() bool {
 }
 
 type ZoneFirewallWafPackageRuleListParams struct {
-	// The public description of the WAF rule.
+	// Defines the public description of the WAF rule.
 	Description param.Field[string] `query:"description"`
-	// The direction used to sort returned rules.
+	// Defines the direction used to sort returned rules.
 	Direction param.Field[ZoneFirewallWafPackageRuleListParamsDirection] `query:"direction"`
-	// The unique identifier of the rule group.
+	// Defines the unique identifier of the rule group.
 	GroupID param.Field[string] `query:"group_id"`
-	// When set to `all`, all the search requirements must match. When set to `any`,
-	// only one of the search requirements has to match.
+	// Defines the search requirements. When set to `all`, all the search requirements
+	// must match. When set to `any`, only one of the search requirements has to match.
 	Match param.Field[ZoneFirewallWafPackageRuleListParamsMatch] `query:"match"`
-	// The action/mode a rule has been overridden to perform.
+	// Defines the action/mode a rule has been overridden to perform.
 	Mode param.Field[ZoneFirewallWafPackageRuleListParamsMode] `query:"mode"`
-	// The field used to sort returned rules.
+	// Defines the field used to sort returned rules.
 	Order param.Field[ZoneFirewallWafPackageRuleListParamsOrder] `query:"order"`
-	// The page number of paginated results.
+	// Defines the page number of paginated results.
 	Page param.Field[float64] `query:"page"`
-	// The number of rules per page.
+	// Defines the number of rules per page.
 	PerPage param.Field[float64] `query:"per_page"`
-	// The order in which the individual WAF rule is executed within its rule group.
+	// Defines the order in which the individual WAF rule is executed within its rule
+	// group.
 	Priority param.Field[string] `query:"priority"`
 }
 
@@ -709,7 +875,7 @@ func (r ZoneFirewallWafPackageRuleListParams) URLQuery() (v url.Values) {
 	})
 }
 
-// The direction used to sort returned rules.
+// Defines the direction used to sort returned rules.
 type ZoneFirewallWafPackageRuleListParamsDirection string
 
 const (
@@ -725,8 +891,8 @@ func (r ZoneFirewallWafPackageRuleListParamsDirection) IsKnown() bool {
 	return false
 }
 
-// When set to `all`, all the search requirements must match. When set to `any`,
-// only one of the search requirements has to match.
+// Defines the search requirements. When set to `all`, all the search requirements
+// must match. When set to `any`, only one of the search requirements has to match.
 type ZoneFirewallWafPackageRuleListParamsMatch string
 
 const (
@@ -742,7 +908,7 @@ func (r ZoneFirewallWafPackageRuleListParamsMatch) IsKnown() bool {
 	return false
 }
 
-// The action/mode a rule has been overridden to perform.
+// Defines the action/mode a rule has been overridden to perform.
 type ZoneFirewallWafPackageRuleListParamsMode string
 
 const (
@@ -760,7 +926,7 @@ func (r ZoneFirewallWafPackageRuleListParamsMode) IsKnown() bool {
 	return false
 }
 
-// The field used to sort returned rules.
+// Defines the field used to sort returned rules.
 type ZoneFirewallWafPackageRuleListParamsOrder string
 
 const (

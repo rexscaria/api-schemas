@@ -67,13 +67,19 @@ func (r *UserInviteService) Respond(ctx context.Context, inviteID string, body U
 }
 
 type IamSingleInvite struct {
-	Result IamUserInvite       `json:"result"`
-	JSON   iamSingleInviteJSON `json:"-"`
-	APIResponseSingleIam
+	Errors   []IamSingleInviteError   `json:"errors,required"`
+	Messages []IamSingleInviteMessage `json:"messages,required"`
+	// Whether the API call was successful.
+	Success IamSingleInviteSuccess `json:"success,required"`
+	Result  IamUserInvite          `json:"result"`
+	JSON    iamSingleInviteJSON    `json:"-"`
 }
 
 // iamSingleInviteJSON contains the JSON metadata for the struct [IamSingleInvite]
 type iamSingleInviteJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -85,6 +91,117 @@ func (r *IamSingleInvite) UnmarshalJSON(data []byte) (err error) {
 
 func (r iamSingleInviteJSON) RawJSON() string {
 	return r.raw
+}
+
+type IamSingleInviteError struct {
+	Code             int64                       `json:"code,required"`
+	Message          string                      `json:"message,required"`
+	DocumentationURL string                      `json:"documentation_url"`
+	Source           IamSingleInviteErrorsSource `json:"source"`
+	JSON             iamSingleInviteErrorJSON    `json:"-"`
+}
+
+// iamSingleInviteErrorJSON contains the JSON metadata for the struct
+// [IamSingleInviteError]
+type iamSingleInviteErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *IamSingleInviteError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r iamSingleInviteErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type IamSingleInviteErrorsSource struct {
+	Pointer string                          `json:"pointer"`
+	JSON    iamSingleInviteErrorsSourceJSON `json:"-"`
+}
+
+// iamSingleInviteErrorsSourceJSON contains the JSON metadata for the struct
+// [IamSingleInviteErrorsSource]
+type iamSingleInviteErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *IamSingleInviteErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r iamSingleInviteErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type IamSingleInviteMessage struct {
+	Code             int64                         `json:"code,required"`
+	Message          string                        `json:"message,required"`
+	DocumentationURL string                        `json:"documentation_url"`
+	Source           IamSingleInviteMessagesSource `json:"source"`
+	JSON             iamSingleInviteMessageJSON    `json:"-"`
+}
+
+// iamSingleInviteMessageJSON contains the JSON metadata for the struct
+// [IamSingleInviteMessage]
+type iamSingleInviteMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *IamSingleInviteMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r iamSingleInviteMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type IamSingleInviteMessagesSource struct {
+	Pointer string                            `json:"pointer"`
+	JSON    iamSingleInviteMessagesSourceJSON `json:"-"`
+}
+
+// iamSingleInviteMessagesSourceJSON contains the JSON metadata for the struct
+// [IamSingleInviteMessagesSource]
+type iamSingleInviteMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *IamSingleInviteMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r iamSingleInviteMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful.
+type IamSingleInviteSuccess bool
+
+const (
+	IamSingleInviteSuccessTrue IamSingleInviteSuccess = true
+)
+
+func (r IamSingleInviteSuccess) IsKnown() bool {
+	switch r {
+	case IamSingleInviteSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type IamUserInvite struct {
@@ -156,15 +273,23 @@ func (r IamUserInviteStatus) IsKnown() bool {
 }
 
 type UserInviteListResponse struct {
-	Result []IamUserInvite            `json:"result"`
-	JSON   userInviteListResponseJSON `json:"-"`
-	IamAPIResponseCollection
+	Errors   []UserInviteListResponseError   `json:"errors,required"`
+	Messages []UserInviteListResponseMessage `json:"messages,required"`
+	// Whether the API call was successful.
+	Success    UserInviteListResponseSuccess    `json:"success,required"`
+	Result     []IamUserInvite                  `json:"result"`
+	ResultInfo UserInviteListResponseResultInfo `json:"result_info"`
+	JSON       userInviteListResponseJSON       `json:"-"`
 }
 
 // userInviteListResponseJSON contains the JSON metadata for the struct
 // [UserInviteListResponse]
 type userInviteListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -174,6 +299,148 @@ func (r *UserInviteListResponse) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (r userInviteListResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+type UserInviteListResponseError struct {
+	Code             int64                              `json:"code,required"`
+	Message          string                             `json:"message,required"`
+	DocumentationURL string                             `json:"documentation_url"`
+	Source           UserInviteListResponseErrorsSource `json:"source"`
+	JSON             userInviteListResponseErrorJSON    `json:"-"`
+}
+
+// userInviteListResponseErrorJSON contains the JSON metadata for the struct
+// [UserInviteListResponseError]
+type userInviteListResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *UserInviteListResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r userInviteListResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type UserInviteListResponseErrorsSource struct {
+	Pointer string                                 `json:"pointer"`
+	JSON    userInviteListResponseErrorsSourceJSON `json:"-"`
+}
+
+// userInviteListResponseErrorsSourceJSON contains the JSON metadata for the struct
+// [UserInviteListResponseErrorsSource]
+type userInviteListResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *UserInviteListResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r userInviteListResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type UserInviteListResponseMessage struct {
+	Code             int64                                `json:"code,required"`
+	Message          string                               `json:"message,required"`
+	DocumentationURL string                               `json:"documentation_url"`
+	Source           UserInviteListResponseMessagesSource `json:"source"`
+	JSON             userInviteListResponseMessageJSON    `json:"-"`
+}
+
+// userInviteListResponseMessageJSON contains the JSON metadata for the struct
+// [UserInviteListResponseMessage]
+type userInviteListResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *UserInviteListResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r userInviteListResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type UserInviteListResponseMessagesSource struct {
+	Pointer string                                   `json:"pointer"`
+	JSON    userInviteListResponseMessagesSourceJSON `json:"-"`
+}
+
+// userInviteListResponseMessagesSourceJSON contains the JSON metadata for the
+// struct [UserInviteListResponseMessagesSource]
+type userInviteListResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *UserInviteListResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r userInviteListResponseMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful.
+type UserInviteListResponseSuccess bool
+
+const (
+	UserInviteListResponseSuccessTrue UserInviteListResponseSuccess = true
+)
+
+func (r UserInviteListResponseSuccess) IsKnown() bool {
+	switch r {
+	case UserInviteListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type UserInviteListResponseResultInfo struct {
+	// Total number of results for the requested service
+	Count float64 `json:"count"`
+	// Current page within paginated list of results
+	Page float64 `json:"page"`
+	// Number of results per page of results
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters
+	TotalCount float64                              `json:"total_count"`
+	JSON       userInviteListResponseResultInfoJSON `json:"-"`
+}
+
+// userInviteListResponseResultInfoJSON contains the JSON metadata for the struct
+// [UserInviteListResponseResultInfo]
+type userInviteListResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *UserInviteListResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r userInviteListResponseResultInfoJSON) RawJSON() string {
 	return r.raw
 }
 

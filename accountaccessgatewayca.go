@@ -98,14 +98,20 @@ func (r schemasCertificatesJSON) RawJSON() string {
 }
 
 type AccountAccessGatewayCaNewResponse struct {
-	Result SchemasCertificates                   `json:"result"`
-	JSON   accountAccessGatewayCaNewResponseJSON `json:"-"`
-	APIResponseSingleAccess
+	Errors   []MessagesAccessItem `json:"errors,required"`
+	Messages []MessagesAccessItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountAccessGatewayCaNewResponseSuccess `json:"success,required"`
+	Result  SchemasCertificates                      `json:"result"`
+	JSON    accountAccessGatewayCaNewResponseJSON    `json:"-"`
 }
 
 // accountAccessGatewayCaNewResponseJSON contains the JSON metadata for the struct
 // [AccountAccessGatewayCaNewResponse]
 type accountAccessGatewayCaNewResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -119,16 +125,39 @@ func (r accountAccessGatewayCaNewResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountAccessGatewayCaNewResponseSuccess bool
+
+const (
+	AccountAccessGatewayCaNewResponseSuccessTrue AccountAccessGatewayCaNewResponseSuccess = true
+)
+
+func (r AccountAccessGatewayCaNewResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountAccessGatewayCaNewResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountAccessGatewayCaListResponse struct {
-	Result []SchemasCertificates                  `json:"result"`
-	JSON   accountAccessGatewayCaListResponseJSON `json:"-"`
-	APIResponseCollectionAccess
+	Errors   []MessagesAccessItem `json:"errors,required"`
+	Messages []MessagesAccessItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success    AccountAccessGatewayCaListResponseSuccess    `json:"success,required"`
+	Result     []SchemasCertificates                        `json:"result"`
+	ResultInfo AccountAccessGatewayCaListResponseResultInfo `json:"result_info"`
+	JSON       accountAccessGatewayCaListResponseJSON       `json:"-"`
 }
 
 // accountAccessGatewayCaListResponseJSON contains the JSON metadata for the struct
 // [AccountAccessGatewayCaListResponse]
 type accountAccessGatewayCaListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -138,5 +167,51 @@ func (r *AccountAccessGatewayCaListResponse) UnmarshalJSON(data []byte) (err err
 }
 
 func (r accountAccessGatewayCaListResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountAccessGatewayCaListResponseSuccess bool
+
+const (
+	AccountAccessGatewayCaListResponseSuccessTrue AccountAccessGatewayCaListResponseSuccess = true
+)
+
+func (r AccountAccessGatewayCaListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountAccessGatewayCaListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type AccountAccessGatewayCaListResponseResultInfo struct {
+	// Total number of results for the requested service.
+	Count float64 `json:"count"`
+	// Current page within paginated list of results.
+	Page float64 `json:"page"`
+	// Number of results per page of results.
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters.
+	TotalCount float64                                          `json:"total_count"`
+	JSON       accountAccessGatewayCaListResponseResultInfoJSON `json:"-"`
+}
+
+// accountAccessGatewayCaListResponseResultInfoJSON contains the JSON metadata for
+// the struct [AccountAccessGatewayCaListResponseResultInfo]
+type accountAccessGatewayCaListResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountAccessGatewayCaListResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountAccessGatewayCaListResponseResultInfoJSON) RawJSON() string {
 	return r.raw
 }

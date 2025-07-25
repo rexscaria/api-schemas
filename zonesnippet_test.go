@@ -33,8 +33,8 @@ func TestZoneSnippetGet(t *testing.T) {
 	)
 	_, err := client.Zones.Snippets.Get(
 		context.TODO(),
-		"023e105f4ecef8ad9ca31a8372d0c353",
-		"snippet_name_01",
+		"9f1839b6152d298aca64c4e906b6d074",
+		"my_snippet",
 	)
 	if err != nil {
 		var apierr *cfrex.Error
@@ -45,7 +45,7 @@ func TestZoneSnippetGet(t *testing.T) {
 	}
 }
 
-func TestZoneSnippetUpdateWithOptionalParams(t *testing.T) {
+func TestZoneSnippetUpdate(t *testing.T) {
 	t.Skip("skipped: tests are disabled for the time being")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -61,10 +61,10 @@ func TestZoneSnippetUpdateWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Zones.Snippets.Update(
 		context.TODO(),
-		"023e105f4ecef8ad9ca31a8372d0c353",
-		"snippet_name_01",
+		"9f1839b6152d298aca64c4e906b6d074",
+		"my_snippet",
 		cfrex.ZoneSnippetUpdateParams{
-			Files: cfrex.F("export { async function fetch(request, env) {return new Response('some_response') } }"),
+			Files: cfrex.F([]io.Reader{io.Reader(bytes.NewBuffer([]byte("some file contents")))}),
 			Metadata: cfrex.F(cfrex.ZoneSnippetUpdateParamsMetadata{
 				MainModule: cfrex.F("main.js"),
 			}),
@@ -79,7 +79,7 @@ func TestZoneSnippetUpdateWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestZoneSnippetList(t *testing.T) {
+func TestZoneSnippetListWithOptionalParams(t *testing.T) {
 	t.Skip("skipped: tests are disabled for the time being")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -93,7 +93,14 @@ func TestZoneSnippetList(t *testing.T) {
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Zones.Snippets.List(context.TODO(), "023e105f4ecef8ad9ca31a8372d0c353")
+	_, err := client.Zones.Snippets.List(
+		context.TODO(),
+		"9f1839b6152d298aca64c4e906b6d074",
+		cfrex.ZoneSnippetListParams{
+			Page:    cfrex.F(int64(1)),
+			PerPage: cfrex.F(int64(25)),
+		},
+	)
 	if err != nil {
 		var apierr *cfrex.Error
 		if errors.As(err, &apierr) {
@@ -119,8 +126,8 @@ func TestZoneSnippetDelete(t *testing.T) {
 	)
 	_, err := client.Zones.Snippets.Delete(
 		context.TODO(),
-		"023e105f4ecef8ad9ca31a8372d0c353",
-		"snippet_name_01",
+		"9f1839b6152d298aca64c4e906b6d074",
+		"my_snippet",
 	)
 	if err != nil {
 		var apierr *cfrex.Error
@@ -146,8 +153,8 @@ func TestZoneSnippetGetContent(t *testing.T) {
 	)
 	resp, err := client.Zones.Snippets.GetContent(
 		context.TODO(),
-		"023e105f4ecef8ad9ca31a8372d0c353",
-		"snippet_name_01",
+		"9f1839b6152d298aca64c4e906b6d074",
+		"my_snippet",
 	)
 	if err != nil {
 		var apierr *cfrex.Error

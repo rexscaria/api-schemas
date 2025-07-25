@@ -7,7 +7,6 @@ import (
 	"errors"
 	"os"
 	"testing"
-	"time"
 
 	"github.com/rexscaria/api-schemas"
 	"github.com/rexscaria/api-schemas/internal/testutil"
@@ -72,7 +71,7 @@ func TestAccountAccessTagGet(t *testing.T) {
 	}
 }
 
-func TestAccountAccessTagUpdateWithOptionalParams(t *testing.T) {
+func TestAccountAccessTagUpdate(t *testing.T) {
 	t.Skip("skipped: tests are disabled for the time being")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -91,9 +90,7 @@ func TestAccountAccessTagUpdateWithOptionalParams(t *testing.T) {
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		"engineers",
 		cfrex.AccountAccessTagUpdateParams{
-			Name:      cfrex.F("engineers"),
-			CreatedAt: cfrex.F(time.Now()),
-			UpdatedAt: cfrex.F(time.Now()),
+			Name: cfrex.F("engineers"),
 		},
 	)
 	if err != nil {

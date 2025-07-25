@@ -40,7 +40,7 @@ func NewAccountWorkerAssetService(opts ...option.RequestOption) (r *AccountWorke
 
 // Upload assets ahead of creating a Worker version. To learn more about the direct
 // uploads of assets, see
-// https://developers.cloudflare.com/workers/static-assets/direct-upload/
+// https://developers.cloudflare.com/workers/static-assets/direct-upload/.
 func (r *AccountWorkerAssetService) Upload(ctx context.Context, accountID string, params AccountWorkerAssetUploadParams, opts ...option.RequestOption) (res *AccountWorkerAssetUploadResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
@@ -53,14 +53,20 @@ func (r *AccountWorkerAssetService) Upload(ctx context.Context, accountID string
 }
 
 type AccountWorkerAssetUploadResponse struct {
-	Result AccountWorkerAssetUploadResponseResult `json:"result"`
-	JSON   accountWorkerAssetUploadResponseJSON   `json:"-"`
-	CommonResponseWorkers
+	Errors   []WorkersMessages `json:"errors,required"`
+	Messages []WorkersMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountWorkerAssetUploadResponseSuccess `json:"success,required"`
+	Result  AccountWorkerAssetUploadResponseResult  `json:"result"`
+	JSON    accountWorkerAssetUploadResponseJSON    `json:"-"`
 }
 
 // accountWorkerAssetUploadResponseJSON contains the JSON metadata for the struct
 // [AccountWorkerAssetUploadResponse]
 type accountWorkerAssetUploadResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -72,6 +78,21 @@ func (r *AccountWorkerAssetUploadResponse) UnmarshalJSON(data []byte) (err error
 
 func (r accountWorkerAssetUploadResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountWorkerAssetUploadResponseSuccess bool
+
+const (
+	AccountWorkerAssetUploadResponseSuccessTrue AccountWorkerAssetUploadResponseSuccess = true
+)
+
+func (r AccountWorkerAssetUploadResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountWorkerAssetUploadResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountWorkerAssetUploadResponseResult struct {
@@ -99,9 +120,7 @@ func (r accountWorkerAssetUploadResponseResultJSON) RawJSON() string {
 type AccountWorkerAssetUploadParams struct {
 	// Whether the file contents are base64-encoded. Must be `true`.
 	Base64 param.Field[AccountWorkerAssetUploadParamsBase64] `query:"base64,required"`
-	// Base-64 encoded contents of the file. The content type of the file should be
-	// included to ensure a valid "Content-Type" header is included in asset responses.
-	AnyFileHash param.Field[[]string] `json:"<any file hash>"`
+	Body   map[string]string                                 `json:"body,required"`
 }
 
 func (r AccountWorkerAssetUploadParams) MarshalMultipart() (data []byte, contentType string, err error) {

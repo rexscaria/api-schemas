@@ -99,37 +99,6 @@ func (r AggregateTimePeriodUnits) IsKnown() bool {
 	return false
 }
 
-type ResultInfoDexTests struct {
-	// Total number of results for the requested service
-	Count float64 `json:"count"`
-	// Current page within paginated list of results
-	Page float64 `json:"page"`
-	// Number of results per page of results
-	PerPage float64 `json:"per_page"`
-	// Total results available without any search parameters
-	TotalCount float64                `json:"total_count"`
-	JSON       resultInfoDexTestsJSON `json:"-"`
-}
-
-// resultInfoDexTestsJSON contains the JSON metadata for the struct
-// [ResultInfoDexTests]
-type resultInfoDexTestsJSON struct {
-	Count       apijson.Field
-	Page        apijson.Field
-	PerPage     apijson.Field
-	TotalCount  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ResultInfoDexTests) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r resultInfoDexTestsJSON) RawJSON() string {
-	return r.raw
-}
-
 type TimingAggregates struct {
 	History  []TimingAggregatesHistory `json:"history,required"`
 	AvgMs    int64                     `json:"avgMs,nullable"`
@@ -227,14 +196,20 @@ func (r timingAggregatesOverTimeValueJSON) RawJSON() string {
 }
 
 type AccountDexTestCountUniqueDevicesResponse struct {
-	Result AccountDexTestCountUniqueDevicesResponseResult `json:"result"`
-	JSON   accountDexTestCountUniqueDevicesResponseJSON   `json:"-"`
-	APIResponseSingleDigitalExperience
+	Errors   []Item `json:"errors,required"`
+	Messages []Item `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountDexTestCountUniqueDevicesResponseSuccess `json:"success,required"`
+	Result  AccountDexTestCountUniqueDevicesResponseResult  `json:"result"`
+	JSON    accountDexTestCountUniqueDevicesResponseJSON    `json:"-"`
 }
 
 // accountDexTestCountUniqueDevicesResponseJSON contains the JSON metadata for the
 // struct [AccountDexTestCountUniqueDevicesResponse]
 type accountDexTestCountUniqueDevicesResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -246,6 +221,21 @@ func (r *AccountDexTestCountUniqueDevicesResponse) UnmarshalJSON(data []byte) (e
 
 func (r accountDexTestCountUniqueDevicesResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountDexTestCountUniqueDevicesResponseSuccess bool
+
+const (
+	AccountDexTestCountUniqueDevicesResponseSuccessTrue AccountDexTestCountUniqueDevicesResponseSuccess = true
+)
+
+func (r AccountDexTestCountUniqueDevicesResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountDexTestCountUniqueDevicesResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountDexTestCountUniqueDevicesResponseResult struct {
@@ -271,17 +261,21 @@ func (r accountDexTestCountUniqueDevicesResponseResultJSON) RawJSON() string {
 }
 
 type AccountDexTestListOverviewResponse struct {
-	Result     AccountDexTestListOverviewResponseResult `json:"result"`
-	ResultInfo ResultInfoDexTests                       `json:"result_info"`
-	JSON       accountDexTestListOverviewResponseJSON   `json:"-"`
-	APIResponseSingleDigitalExperience
+	Errors   []Item `json:"errors,required"`
+	Messages []Item `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountDexTestListOverviewResponseSuccess `json:"success,required"`
+	Result  AccountDexTestListOverviewResponseResult  `json:"result"`
+	JSON    accountDexTestListOverviewResponseJSON    `json:"-"`
 }
 
 // accountDexTestListOverviewResponseJSON contains the JSON metadata for the struct
 // [AccountDexTestListOverviewResponse]
 type accountDexTestListOverviewResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
-	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -292,6 +286,21 @@ func (r *AccountDexTestListOverviewResponse) UnmarshalJSON(data []byte) (err err
 
 func (r accountDexTestListOverviewResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountDexTestListOverviewResponseSuccess bool
+
+const (
+	AccountDexTestListOverviewResponseSuccessTrue AccountDexTestListOverviewResponseSuccess = true
+)
+
+func (r AccountDexTestListOverviewResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountDexTestListOverviewResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountDexTestListOverviewResponseResult struct {

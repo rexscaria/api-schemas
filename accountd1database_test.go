@@ -188,8 +188,8 @@ func TestAccountD1DatabaseImport(t *testing.T) {
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		"xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
 		cfrex.AccountD1DatabaseImportParams{
-			Body: cfrex.AccountD1DatabaseImportParamsBodyObject{
-				Action: cfrex.F(cfrex.AccountD1DatabaseImportParamsBodyObjectActionInit),
+			Body: cfrex.AccountD1DatabaseImportParamsBodyInit{
+				Action: cfrex.F(cfrex.AccountD1DatabaseImportParamsBodyInitActionInit),
 				Etag:   cfrex.F("etag"),
 			},
 		},

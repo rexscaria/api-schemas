@@ -92,10 +92,10 @@ func TestAccountWorkerDispatchNamespaceScriptSecretAddWithOptionalParams(t *test
 		"my-dispatch-namespace",
 		"this-is_my_script-01",
 		cfrex.AccountWorkerDispatchNamespaceScriptSecretAddParams{
-			Secret: cfrex.SecretParam{
-				Name: cfrex.F("MY_SECRET"),
-				Text: cfrex.F("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"),
-				Type: cfrex.F(cfrex.SecretTypeSecretText),
+			Secret: cfrex.SecretWorkersBindingKindSecretTextParam{
+				Name: cfrex.F("myBinding"),
+				Text: cfrex.F("My secret."),
+				Type: cfrex.F(cfrex.SecretWorkersBindingKindSecretTextTypeSecretText),
 			},
 		},
 	)

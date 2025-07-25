@@ -29,7 +29,7 @@ func TestAccountMagicConnectorTelemetrySnapshotListWithOptionalParams(t *testing
 	)
 	_, err := client.Accounts.Magic.Connectors.Telemetry.Snapshots.List(
 		context.TODO(),
-		0.000000,
+		"023e105f4ecef8ad9ca31a8372d0c353",
 		"connector_id",
 		cfrex.AccountMagicConnectorTelemetrySnapshotListParams{
 			From:   cfrex.F(0.000000),
@@ -63,7 +63,7 @@ func TestAccountMagicConnectorTelemetrySnapshotGet(t *testing.T) {
 	)
 	_, err := client.Accounts.Magic.Connectors.Telemetry.Snapshots.Get(
 		context.TODO(),
-		0.000000,
+		"023e105f4ecef8ad9ca31a8372d0c353",
 		"connector_id",
 		0.000000,
 	)

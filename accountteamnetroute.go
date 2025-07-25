@@ -177,15 +177,21 @@ func (r teamnetJSON) RawJSON() string {
 }
 
 type TunnelRouteResponseSingle struct {
-	Result TunnelRouteResponseSingleResult `json:"result"`
-	JSON   tunnelRouteResponseSingleJSON   `json:"-"`
-	APIResponseTunnel
+	Errors   []MessagesTunnelItem            `json:"errors,required"`
+	Messages []MessagesTunnelItem            `json:"messages,required"`
+	Result   TunnelRouteResponseSingleResult `json:"result,required"`
+	// Whether the API call was successful
+	Success TunnelRouteResponseSingleSuccess `json:"success,required"`
+	JSON    tunnelRouteResponseSingleJSON    `json:"-"`
 }
 
 // tunnelRouteResponseSingleJSON contains the JSON metadata for the struct
 // [TunnelRouteResponseSingle]
 type tunnelRouteResponseSingleJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -239,16 +245,39 @@ func (r tunnelRouteResponseSingleResultJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful
+type TunnelRouteResponseSingleSuccess bool
+
+const (
+	TunnelRouteResponseSingleSuccessTrue TunnelRouteResponseSingleSuccess = true
+)
+
+func (r TunnelRouteResponseSingleSuccess) IsKnown() bool {
+	switch r {
+	case TunnelRouteResponseSingleSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountTeamnetRouteListResponse struct {
-	Result []Teamnet                           `json:"result"`
-	JSON   accountTeamnetRouteListResponseJSON `json:"-"`
-	APIResponseCollectionTunnel
+	Errors   []MessagesTunnelItem `json:"errors,required"`
+	Messages []MessagesTunnelItem `json:"messages,required"`
+	Result   []Teamnet            `json:"result,required,nullable"`
+	// Whether the API call was successful
+	Success    AccountTeamnetRouteListResponseSuccess    `json:"success,required"`
+	ResultInfo AccountTeamnetRouteListResponseResultInfo `json:"result_info"`
+	JSON       accountTeamnetRouteListResponseJSON       `json:"-"`
 }
 
 // accountTeamnetRouteListResponseJSON contains the JSON metadata for the struct
 // [AccountTeamnetRouteListResponse]
 type accountTeamnetRouteListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -261,16 +290,68 @@ func (r accountTeamnetRouteListResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful
+type AccountTeamnetRouteListResponseSuccess bool
+
+const (
+	AccountTeamnetRouteListResponseSuccessTrue AccountTeamnetRouteListResponseSuccess = true
+)
+
+func (r AccountTeamnetRouteListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountTeamnetRouteListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type AccountTeamnetRouteListResponseResultInfo struct {
+	// Total number of results for the requested service
+	Count float64 `json:"count"`
+	// Current page within paginated list of results
+	Page float64 `json:"page"`
+	// Number of results per page of results
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters
+	TotalCount float64                                       `json:"total_count"`
+	JSON       accountTeamnetRouteListResponseResultInfoJSON `json:"-"`
+}
+
+// accountTeamnetRouteListResponseResultInfoJSON contains the JSON metadata for the
+// struct [AccountTeamnetRouteListResponseResultInfo]
+type accountTeamnetRouteListResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountTeamnetRouteListResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountTeamnetRouteListResponseResultInfoJSON) RawJSON() string {
+	return r.raw
+}
+
 type AccountTeamnetRouteGetByIPResponse struct {
-	Result Teamnet                                `json:"result"`
-	JSON   accountTeamnetRouteGetByIPResponseJSON `json:"-"`
-	APIResponseTunnel
+	Errors   []MessagesTunnelItem `json:"errors,required"`
+	Messages []MessagesTunnelItem `json:"messages,required"`
+	Result   Teamnet              `json:"result,required"`
+	// Whether the API call was successful
+	Success AccountTeamnetRouteGetByIPResponseSuccess `json:"success,required"`
+	JSON    accountTeamnetRouteGetByIPResponseJSON    `json:"-"`
 }
 
 // accountTeamnetRouteGetByIPResponseJSON contains the JSON metadata for the struct
 // [AccountTeamnetRouteGetByIPResponse]
 type accountTeamnetRouteGetByIPResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -283,9 +364,26 @@ func (r accountTeamnetRouteGetByIPResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful
+type AccountTeamnetRouteGetByIPResponseSuccess bool
+
+const (
+	AccountTeamnetRouteGetByIPResponseSuccessTrue AccountTeamnetRouteGetByIPResponseSuccess = true
+)
+
+func (r AccountTeamnetRouteGetByIPResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountTeamnetRouteGetByIPResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountTeamnetRouteNewParams struct {
 	// The private IPv4 or IPv6 range connected by the route, in CIDR notation.
 	Network param.Field[string] `json:"network,required"`
+	// UUID of the tunnel.
+	TunnelID param.Field[string] `json:"tunnel_id,required" format:"uuid"`
 	// Optional remark describing the route.
 	Comment param.Field[string] `json:"comment"`
 	// UUID of the virtual network.
@@ -301,6 +399,8 @@ type AccountTeamnetRouteUpdateParams struct {
 	Comment param.Field[string] `json:"comment"`
 	// The private IPv4 or IPv6 range connected by the route, in CIDR notation.
 	Network param.Field[string] `json:"network"`
+	// UUID of the tunnel.
+	TunnelID param.Field[string] `json:"tunnel_id" format:"uuid"`
 	// UUID of the virtual network.
 	VirtualNetworkID param.Field[string] `json:"virtual_network_id" format:"uuid"`
 }
@@ -318,9 +418,9 @@ type AccountTeamnetRouteListParams struct {
 	// If `true`, only include deleted routes. If `false`, exclude deleted routes. If
 	// empty, all routes will be included.
 	IsDeleted param.Field[bool] `query:"is_deleted"`
-	// The private IPv4 or IPv6 range connected by the route, in CIDR notation.
+	// If set, only list routes that are contained within this IP range.
 	NetworkSubset param.Field[string] `query:"network_subset"`
-	// The private IPv4 or IPv6 range connected by the route, in CIDR notation.
+	// If set, only list routes that contain this IP range.
 	NetworkSuperset param.Field[string] `query:"network_superset"`
 	// Page number of paginated results.
 	Page param.Field[float64] `query:"page"`

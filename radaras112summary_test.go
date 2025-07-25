@@ -29,7 +29,6 @@ func TestRadarAs112SummaryGetDnssecWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.As112.Summary.GetDnssec(context.TODO(), cfrex.RadarAs112SummaryGetDnssecParams{
-		Asn:          cfrex.F([]string{"string"}),
 		Continent:    cfrex.F([]string{"string"}),
 		DateEnd:      cfrex.F([]time.Time{time.Now()}),
 		DateRange:    cfrex.F([]string{"7d"}),
@@ -65,7 +64,6 @@ func TestRadarAs112SummaryGetEdnsWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.As112.Summary.GetEdns(context.TODO(), cfrex.RadarAs112SummaryGetEdnsParams{
-		Asn:          cfrex.F([]string{"string"}),
 		Continent:    cfrex.F([]string{"string"}),
 		DateEnd:      cfrex.F([]time.Time{time.Now()}),
 		DateRange:    cfrex.F([]string{"7d"}),
@@ -101,7 +99,6 @@ func TestRadarAs112SummaryGetIPVersionWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.As112.Summary.GetIPVersion(context.TODO(), cfrex.RadarAs112SummaryGetIPVersionParams{
-		Asn:          cfrex.F([]string{"string"}),
 		Continent:    cfrex.F([]string{"string"}),
 		DateEnd:      cfrex.F([]time.Time{time.Now()}),
 		DateRange:    cfrex.F([]string{"7d"}),
@@ -137,7 +134,6 @@ func TestRadarAs112SummaryGetProtocolWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.As112.Summary.GetProtocol(context.TODO(), cfrex.RadarAs112SummaryGetProtocolParams{
-		Asn:          cfrex.F([]string{"string"}),
 		Continent:    cfrex.F([]string{"string"}),
 		DateEnd:      cfrex.F([]time.Time{time.Now()}),
 		DateRange:    cfrex.F([]string{"7d"}),
@@ -172,7 +168,6 @@ func TestRadarAs112SummaryGetQueryTypeWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.As112.Summary.GetQueryType(context.TODO(), cfrex.RadarAs112SummaryGetQueryTypeParams{
-		Asn:           cfrex.F([]string{"string"}),
 		Continent:     cfrex.F([]string{"string"}),
 		DateEnd:       cfrex.F([]time.Time{time.Now()}),
 		DateRange:     cfrex.F([]string{"7d"}),
@@ -208,7 +203,6 @@ func TestRadarAs112SummaryGetResponseCodesWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Radar.As112.Summary.GetResponseCodes(context.TODO(), cfrex.RadarAs112SummaryGetResponseCodesParams{
-		Asn:           cfrex.F([]string{"string"}),
 		Continent:     cfrex.F([]string{"string"}),
 		DateEnd:       cfrex.F([]time.Time{time.Now()}),
 		DateRange:     cfrex.F([]string{"7d"}),

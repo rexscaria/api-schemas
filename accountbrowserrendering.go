@@ -141,6 +141,7 @@ func (r *AccountBrowserRenderingService) ScrapeElements(ctx context.Context, acc
 }
 
 type AccountBrowserRenderingGetHTMLContentResponse struct {
+	Meta AccountBrowserRenderingGetHTMLContentResponseMeta `json:"meta,required"`
 	// Response status
 	Status bool                                                 `json:"status,required"`
 	Errors []AccountBrowserRenderingGetHTMLContentResponseError `json:"errors"`
@@ -152,6 +153,7 @@ type AccountBrowserRenderingGetHTMLContentResponse struct {
 // accountBrowserRenderingGetHTMLContentResponseJSON contains the JSON metadata for
 // the struct [AccountBrowserRenderingGetHTMLContentResponse]
 type accountBrowserRenderingGetHTMLContentResponseJSON struct {
+	Meta        apijson.Field
 	Status      apijson.Field
 	Errors      apijson.Field
 	Result      apijson.Field
@@ -164,6 +166,29 @@ func (r *AccountBrowserRenderingGetHTMLContentResponse) UnmarshalJSON(data []byt
 }
 
 func (r accountBrowserRenderingGetHTMLContentResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountBrowserRenderingGetHTMLContentResponseMeta struct {
+	Status float64                                               `json:"status,required"`
+	Title  string                                                `json:"title,required"`
+	JSON   accountBrowserRenderingGetHTMLContentResponseMetaJSON `json:"-"`
+}
+
+// accountBrowserRenderingGetHTMLContentResponseMetaJSON contains the JSON metadata
+// for the struct [AccountBrowserRenderingGetHTMLContentResponseMeta]
+type accountBrowserRenderingGetHTMLContentResponseMetaJSON struct {
+	Status      apijson.Field
+	Title       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountBrowserRenderingGetHTMLContentResponseMeta) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountBrowserRenderingGetHTMLContentResponseMetaJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -498,7 +523,7 @@ func (r accountBrowserRenderingScrapeElementsResponseJSON) RawJSON() string {
 }
 
 type AccountBrowserRenderingScrapeElementsResponseResult struct {
-	Result AccountBrowserRenderingScrapeElementsResponseResultResult `json:"result,required"`
+	Results AccountBrowserRenderingScrapeElementsResponseResultResults `json:"results,required"`
 	// Selector
 	Selector string                                                  `json:"selector,required"`
 	JSON     accountBrowserRenderingScrapeElementsResponseResultJSON `json:"-"`
@@ -507,7 +532,7 @@ type AccountBrowserRenderingScrapeElementsResponseResult struct {
 // accountBrowserRenderingScrapeElementsResponseResultJSON contains the JSON
 // metadata for the struct [AccountBrowserRenderingScrapeElementsResponseResult]
 type accountBrowserRenderingScrapeElementsResponseResultJSON struct {
-	Result      apijson.Field
+	Results     apijson.Field
 	Selector    apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -521,8 +546,8 @@ func (r accountBrowserRenderingScrapeElementsResponseResultJSON) RawJSON() strin
 	return r.raw
 }
 
-type AccountBrowserRenderingScrapeElementsResponseResultResult struct {
-	Attributes []AccountBrowserRenderingScrapeElementsResponseResultResultAttribute `json:"attributes,required"`
+type AccountBrowserRenderingScrapeElementsResponseResultResults struct {
+	Attributes []AccountBrowserRenderingScrapeElementsResponseResultResultsAttribute `json:"attributes,required"`
 	// Element height
 	Height float64 `json:"height,required"`
 	// Html content
@@ -534,14 +559,14 @@ type AccountBrowserRenderingScrapeElementsResponseResultResult struct {
 	// Element top
 	Top float64 `json:"top,required"`
 	// Element width
-	Width float64                                                       `json:"width,required"`
-	JSON  accountBrowserRenderingScrapeElementsResponseResultResultJSON `json:"-"`
+	Width float64                                                        `json:"width,required"`
+	JSON  accountBrowserRenderingScrapeElementsResponseResultResultsJSON `json:"-"`
 }
 
-// accountBrowserRenderingScrapeElementsResponseResultResultJSON contains the JSON
+// accountBrowserRenderingScrapeElementsResponseResultResultsJSON contains the JSON
 // metadata for the struct
-// [AccountBrowserRenderingScrapeElementsResponseResultResult]
-type accountBrowserRenderingScrapeElementsResponseResultResultJSON struct {
+// [AccountBrowserRenderingScrapeElementsResponseResultResults]
+type accountBrowserRenderingScrapeElementsResponseResultResultsJSON struct {
 	Attributes  apijson.Field
 	Height      apijson.Field
 	HTML        apijson.Field
@@ -553,37 +578,37 @@ type accountBrowserRenderingScrapeElementsResponseResultResultJSON struct {
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *AccountBrowserRenderingScrapeElementsResponseResultResult) UnmarshalJSON(data []byte) (err error) {
+func (r *AccountBrowserRenderingScrapeElementsResponseResultResults) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r accountBrowserRenderingScrapeElementsResponseResultResultJSON) RawJSON() string {
+func (r accountBrowserRenderingScrapeElementsResponseResultResultsJSON) RawJSON() string {
 	return r.raw
 }
 
-type AccountBrowserRenderingScrapeElementsResponseResultResultAttribute struct {
+type AccountBrowserRenderingScrapeElementsResponseResultResultsAttribute struct {
 	// Attribute name
 	Name string `json:"name,required"`
 	// Attribute value
-	Value string                                                                 `json:"value,required"`
-	JSON  accountBrowserRenderingScrapeElementsResponseResultResultAttributeJSON `json:"-"`
+	Value string                                                                  `json:"value,required"`
+	JSON  accountBrowserRenderingScrapeElementsResponseResultResultsAttributeJSON `json:"-"`
 }
 
-// accountBrowserRenderingScrapeElementsResponseResultResultAttributeJSON contains
+// accountBrowserRenderingScrapeElementsResponseResultResultsAttributeJSON contains
 // the JSON metadata for the struct
-// [AccountBrowserRenderingScrapeElementsResponseResultResultAttribute]
-type accountBrowserRenderingScrapeElementsResponseResultResultAttributeJSON struct {
+// [AccountBrowserRenderingScrapeElementsResponseResultResultsAttribute]
+type accountBrowserRenderingScrapeElementsResponseResultResultsAttributeJSON struct {
 	Name        apijson.Field
 	Value       apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *AccountBrowserRenderingScrapeElementsResponseResultResultAttribute) UnmarshalJSON(data []byte) (err error) {
+func (r *AccountBrowserRenderingScrapeElementsResponseResultResultsAttribute) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r accountBrowserRenderingScrapeElementsResponseResultResultAttributeJSON) RawJSON() string {
+func (r accountBrowserRenderingScrapeElementsResponseResultResultsAttributeJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -615,6 +640,10 @@ func (r accountBrowserRenderingScrapeElementsResponseErrorJSON) RawJSON() string
 type AccountBrowserRenderingGetHTMLContentParams struct {
 	// Cache TTL default is 5s. Set to 0 to disable.
 	CacheTtl param.Field[float64] `query:"cacheTTL"`
+	// The maximum duration allowed for the browser action to complete after the page
+	// has loaded (such as taking screenshots, extracting content, or generating PDFs).
+	// If this time limit is exceeded, the action stops and returns a timeout error.
+	ActionTimeout param.Field[float64] `json:"actionTimeout"`
 	// Adds a `<script>` tag into the page with the desired URL or content.
 	AddScriptTag param.Field[[]AccountBrowserRenderingGetHTMLContentParamsAddScriptTag] `json:"addScriptTag"`
 	// Adds a `<link rel="stylesheet">` tag into the page with the desired URL or a
@@ -950,6 +979,10 @@ func (r AccountBrowserRenderingGetHTMLContentParamsWaitForSelectorVisible) IsKno
 type AccountBrowserRenderingGetJsonParams struct {
 	// Cache TTL default is 5s. Set to 0 to disable.
 	CacheTtl param.Field[float64] `query:"cacheTTL"`
+	// The maximum duration allowed for the browser action to complete after the page
+	// has loaded (such as taking screenshots, extracting content, or generating PDFs).
+	// If this time limit is exceeded, the action stops and returns a timeout error.
+	ActionTimeout param.Field[float64] `json:"actionTimeout"`
 	// Adds a `<script>` tag into the page with the desired URL or content.
 	AddScriptTag param.Field[[]AccountBrowserRenderingGetJsonParamsAddScriptTag] `json:"addScriptTag"`
 	// Adds a `<link rel="stylesheet">` tag into the page with the desired URL or a
@@ -1297,6 +1330,10 @@ func (r AccountBrowserRenderingGetJsonParamsWaitForSelectorVisible) IsKnown() bo
 type AccountBrowserRenderingGetLinksParams struct {
 	// Cache TTL default is 5s. Set to 0 to disable.
 	CacheTtl param.Field[float64] `query:"cacheTTL"`
+	// The maximum duration allowed for the browser action to complete after the page
+	// has loaded (such as taking screenshots, extracting content, or generating PDFs).
+	// If this time limit is exceeded, the action stops and returns a timeout error.
+	ActionTimeout param.Field[float64] `json:"actionTimeout"`
 	// Adds a `<script>` tag into the page with the desired URL or content.
 	AddScriptTag param.Field[[]AccountBrowserRenderingGetLinksParamsAddScriptTag] `json:"addScriptTag"`
 	// Adds a `<link rel="stylesheet">` tag into the page with the desired URL or a
@@ -1632,6 +1669,10 @@ func (r AccountBrowserRenderingGetLinksParamsWaitForSelectorVisible) IsKnown() b
 type AccountBrowserRenderingGetMarkdownParams struct {
 	// Cache TTL default is 5s. Set to 0 to disable.
 	CacheTtl param.Field[float64] `query:"cacheTTL"`
+	// The maximum duration allowed for the browser action to complete after the page
+	// has loaded (such as taking screenshots, extracting content, or generating PDFs).
+	// If this time limit is exceeded, the action stops and returns a timeout error.
+	ActionTimeout param.Field[float64] `json:"actionTimeout"`
 	// Adds a `<script>` tag into the page with the desired URL or content.
 	AddScriptTag param.Field[[]AccountBrowserRenderingGetMarkdownParamsAddScriptTag] `json:"addScriptTag"`
 	// Adds a `<link rel="stylesheet">` tag into the page with the desired URL or a
@@ -1967,6 +2008,10 @@ func (r AccountBrowserRenderingGetMarkdownParamsWaitForSelectorVisible) IsKnown(
 type AccountBrowserRenderingGetPdfParams struct {
 	// Cache TTL default is 5s. Set to 0 to disable.
 	CacheTtl param.Field[float64] `query:"cacheTTL"`
+	// The maximum duration allowed for the browser action to complete after the page
+	// has loaded (such as taking screenshots, extracting content, or generating PDFs).
+	// If this time limit is exceeded, the action stops and returns a timeout error.
+	ActionTimeout param.Field[float64] `json:"actionTimeout"`
 	// Adds a `<script>` tag into the page with the desired URL or content.
 	AddScriptTag param.Field[[]AccountBrowserRenderingGetPdfParamsAddScriptTag] `json:"addScriptTag"`
 	// Adds a `<link rel="stylesheet">` tag into the page with the desired URL or a
@@ -1989,6 +2034,8 @@ type AccountBrowserRenderingGetPdfParams struct {
 	// Set the content of the page, eg: `<h1>Hello World!!</h1>`. Either `html` or
 	// `url` must be set.
 	HTML param.Field[string] `json:"html"`
+	// Check [options](https://pptr.dev/api/puppeteer.pdfoptions).
+	PdfOptions param.Field[AccountBrowserRenderingGetPdfParamsPdfOptions] `json:"pdfOptions"`
 	// Block undesired requests that match the provided regex patterns, eg.
 	// '/^.\*\.(css)'.
 	RejectRequestPattern param.Field[[]string] `json:"rejectRequestPattern"`
@@ -2212,6 +2259,117 @@ func (r AccountBrowserRenderingGetPdfParamsGotoOptionsWaitUntilArrayItem) IsKnow
 	return false
 }
 
+// Check [options](https://pptr.dev/api/puppeteer.pdfoptions).
+type AccountBrowserRenderingGetPdfParamsPdfOptions struct {
+	// Whether to show the header and footer.
+	DisplayHeaderFooter param.Field[bool] `json:"displayHeaderFooter"`
+	// HTML template for the print footer.
+	FooterTemplate param.Field[string] `json:"footerTemplate"`
+	// Paper format. Takes priority over width and height if set.
+	Format param.Field[AccountBrowserRenderingGetPdfParamsPdfOptionsFormat] `json:"format"`
+	// HTML template for the print header.
+	HeaderTemplate param.Field[string] `json:"headerTemplate"`
+	// Sets the height of paper. Can be a number or string with unit.
+	Height param.Field[AccountBrowserRenderingGetPdfParamsPdfOptionsHeightUnion] `json:"height"`
+	// Whether to print in landscape orientation.
+	Landscape param.Field[bool] `json:"landscape"`
+	// Set the PDF margins. Useful when setting header and footer.
+	Margin param.Field[AccountBrowserRenderingGetPdfParamsPdfOptionsMargin] `json:"margin"`
+	// Hides default white background and allows generating pdfs with transparency.
+	OmitBackground param.Field[bool] `json:"omitBackground"`
+	// Generate document outline.
+	Outline param.Field[bool] `json:"outline"`
+	// Paper ranges to print, e.g. '1-5, 8, 11-13'.
+	PageRanges param.Field[string] `json:"pageRanges"`
+	// Give CSS @page size priority over other size declarations.
+	PreferCssPageSize param.Field[bool] `json:"preferCSSPageSize"`
+	// Set to true to print background graphics.
+	PrintBackground param.Field[bool] `json:"printBackground"`
+	// Scales the rendering of the web page. Amount must be between 0.1 and 2.
+	Scale param.Field[float64] `json:"scale"`
+	// Generate tagged (accessible) PDF.
+	Tagged param.Field[bool] `json:"tagged"`
+	// Timeout in milliseconds.
+	Timeout param.Field[float64] `json:"timeout"`
+	// Sets the width of paper. Can be a number or string with unit.
+	Width param.Field[AccountBrowserRenderingGetPdfParamsPdfOptionsWidthUnion] `json:"width"`
+}
+
+func (r AccountBrowserRenderingGetPdfParamsPdfOptions) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// Paper format. Takes priority over width and height if set.
+type AccountBrowserRenderingGetPdfParamsPdfOptionsFormat string
+
+const (
+	AccountBrowserRenderingGetPdfParamsPdfOptionsFormatLetter  AccountBrowserRenderingGetPdfParamsPdfOptionsFormat = "letter"
+	AccountBrowserRenderingGetPdfParamsPdfOptionsFormatLegal   AccountBrowserRenderingGetPdfParamsPdfOptionsFormat = "legal"
+	AccountBrowserRenderingGetPdfParamsPdfOptionsFormatTabloid AccountBrowserRenderingGetPdfParamsPdfOptionsFormat = "tabloid"
+	AccountBrowserRenderingGetPdfParamsPdfOptionsFormatLedger  AccountBrowserRenderingGetPdfParamsPdfOptionsFormat = "ledger"
+	AccountBrowserRenderingGetPdfParamsPdfOptionsFormatA0      AccountBrowserRenderingGetPdfParamsPdfOptionsFormat = "a0"
+	AccountBrowserRenderingGetPdfParamsPdfOptionsFormatA1      AccountBrowserRenderingGetPdfParamsPdfOptionsFormat = "a1"
+	AccountBrowserRenderingGetPdfParamsPdfOptionsFormatA2      AccountBrowserRenderingGetPdfParamsPdfOptionsFormat = "a2"
+	AccountBrowserRenderingGetPdfParamsPdfOptionsFormatA3      AccountBrowserRenderingGetPdfParamsPdfOptionsFormat = "a3"
+	AccountBrowserRenderingGetPdfParamsPdfOptionsFormatA4      AccountBrowserRenderingGetPdfParamsPdfOptionsFormat = "a4"
+	AccountBrowserRenderingGetPdfParamsPdfOptionsFormatA5      AccountBrowserRenderingGetPdfParamsPdfOptionsFormat = "a5"
+	AccountBrowserRenderingGetPdfParamsPdfOptionsFormatA6      AccountBrowserRenderingGetPdfParamsPdfOptionsFormat = "a6"
+)
+
+func (r AccountBrowserRenderingGetPdfParamsPdfOptionsFormat) IsKnown() bool {
+	switch r {
+	case AccountBrowserRenderingGetPdfParamsPdfOptionsFormatLetter, AccountBrowserRenderingGetPdfParamsPdfOptionsFormatLegal, AccountBrowserRenderingGetPdfParamsPdfOptionsFormatTabloid, AccountBrowserRenderingGetPdfParamsPdfOptionsFormatLedger, AccountBrowserRenderingGetPdfParamsPdfOptionsFormatA0, AccountBrowserRenderingGetPdfParamsPdfOptionsFormatA1, AccountBrowserRenderingGetPdfParamsPdfOptionsFormatA2, AccountBrowserRenderingGetPdfParamsPdfOptionsFormatA3, AccountBrowserRenderingGetPdfParamsPdfOptionsFormatA4, AccountBrowserRenderingGetPdfParamsPdfOptionsFormatA5, AccountBrowserRenderingGetPdfParamsPdfOptionsFormatA6:
+		return true
+	}
+	return false
+}
+
+// Sets the height of paper. Can be a number or string with unit.
+//
+// Satisfied by [shared.UnionString], [shared.UnionFloat].
+type AccountBrowserRenderingGetPdfParamsPdfOptionsHeightUnion interface {
+	ImplementsAccountBrowserRenderingGetPdfParamsPdfOptionsHeightUnion()
+}
+
+// Set the PDF margins. Useful when setting header and footer.
+type AccountBrowserRenderingGetPdfParamsPdfOptionsMargin struct {
+	Bottom param.Field[AccountBrowserRenderingGetPdfParamsPdfOptionsMarginBottomUnion] `json:"bottom"`
+	Left   param.Field[AccountBrowserRenderingGetPdfParamsPdfOptionsMarginLeftUnion]   `json:"left"`
+	Right  param.Field[AccountBrowserRenderingGetPdfParamsPdfOptionsMarginRightUnion]  `json:"right"`
+	Top    param.Field[AccountBrowserRenderingGetPdfParamsPdfOptionsMarginTopUnion]    `json:"top"`
+}
+
+func (r AccountBrowserRenderingGetPdfParamsPdfOptionsMargin) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// Satisfied by [shared.UnionString], [shared.UnionFloat].
+type AccountBrowserRenderingGetPdfParamsPdfOptionsMarginBottomUnion interface {
+	ImplementsAccountBrowserRenderingGetPdfParamsPdfOptionsMarginBottomUnion()
+}
+
+// Satisfied by [shared.UnionString], [shared.UnionFloat].
+type AccountBrowserRenderingGetPdfParamsPdfOptionsMarginLeftUnion interface {
+	ImplementsAccountBrowserRenderingGetPdfParamsPdfOptionsMarginLeftUnion()
+}
+
+// Satisfied by [shared.UnionString], [shared.UnionFloat].
+type AccountBrowserRenderingGetPdfParamsPdfOptionsMarginRightUnion interface {
+	ImplementsAccountBrowserRenderingGetPdfParamsPdfOptionsMarginRightUnion()
+}
+
+// Satisfied by [shared.UnionString], [shared.UnionFloat].
+type AccountBrowserRenderingGetPdfParamsPdfOptionsMarginTopUnion interface {
+	ImplementsAccountBrowserRenderingGetPdfParamsPdfOptionsMarginTopUnion()
+}
+
+// Sets the width of paper. Can be a number or string with unit.
+//
+// Satisfied by [shared.UnionString], [shared.UnionFloat].
+type AccountBrowserRenderingGetPdfParamsPdfOptionsWidthUnion interface {
+	ImplementsAccountBrowserRenderingGetPdfParamsPdfOptionsWidthUnion()
+}
+
 type AccountBrowserRenderingGetPdfParamsRejectResourceType string
 
 const (
@@ -2301,6 +2459,10 @@ func (r AccountBrowserRenderingGetPdfParamsWaitForSelectorVisible) IsKnown() boo
 type AccountBrowserRenderingGetScreenshotParams struct {
 	// Cache TTL default is 5s. Set to 0 to disable.
 	CacheTtl param.Field[float64] `query:"cacheTTL"`
+	// The maximum duration allowed for the browser action to complete after the page
+	// has loaded (such as taking screenshots, extracting content, or generating PDFs).
+	// If this time limit is exceeded, the action stops and returns a timeout error.
+	ActionTimeout param.Field[float64] `json:"actionTimeout"`
 	// Adds a `<script>` tag into the page with the desired URL or content.
 	AddScriptTag param.Field[[]AccountBrowserRenderingGetScreenshotParamsAddScriptTag] `json:"addScriptTag"`
 	// Adds a `<link rel="stylesheet">` tag into the page with the desired URL or a
@@ -2700,6 +2862,10 @@ func (r AccountBrowserRenderingGetScreenshotParamsWaitForSelectorVisible) IsKnow
 type AccountBrowserRenderingGetSnapshotParams struct {
 	// Cache TTL default is 5s. Set to 0 to disable.
 	CacheTtl param.Field[float64] `query:"cacheTTL"`
+	// The maximum duration allowed for the browser action to complete after the page
+	// has loaded (such as taking screenshots, extracting content, or generating PDFs).
+	// If this time limit is exceeded, the action stops and returns a timeout error.
+	ActionTimeout param.Field[float64] `json:"actionTimeout"`
 	// Adds a `<script>` tag into the page with the desired URL or content.
 	AddScriptTag param.Field[[]AccountBrowserRenderingGetSnapshotParamsAddScriptTag] `json:"addScriptTag"`
 	// Adds a `<link rel="stylesheet">` tag into the page with the desired URL or a
@@ -3080,6 +3246,10 @@ type AccountBrowserRenderingScrapeElementsParams struct {
 	Elements param.Field[[]AccountBrowserRenderingScrapeElementsParamsElement] `json:"elements,required"`
 	// Cache TTL default is 5s. Set to 0 to disable.
 	CacheTtl param.Field[float64] `query:"cacheTTL"`
+	// The maximum duration allowed for the browser action to complete after the page
+	// has loaded (such as taking screenshots, extracting content, or generating PDFs).
+	// If this time limit is exceeded, the action stops and returns a timeout error.
+	ActionTimeout param.Field[float64] `json:"actionTimeout"`
 	// Adds a `<script>` tag into the page with the desired URL or content.
 	AddScriptTag param.Field[[]AccountBrowserRenderingScrapeElementsParamsAddScriptTag] `json:"addScriptTag"`
 	// Adds a `<link rel="stylesheet">` tag into the page with the desired URL or a

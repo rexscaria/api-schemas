@@ -30,7 +30,7 @@ func TestAccountWorkflowGet(t *testing.T) {
 	_, err := client.Accounts.Workflows.Get(
 		context.TODO(),
 		"account_id",
-		"workflow_name",
+		"x",
 	)
 	if err != nil {
 		var apierr *cfrex.Error
@@ -58,7 +58,7 @@ func TestAccountWorkflowUpdate(t *testing.T) {
 	_, err := client.Accounts.Workflows.Update(
 		context.TODO(),
 		"account_id",
-		"workflow_name",
+		"x",
 		cfrex.AccountWorkflowUpdateParams{
 			ClassName:  cfrex.F("x"),
 			ScriptName: cfrex.F("x"),
@@ -93,6 +93,7 @@ func TestAccountWorkflowListWithOptionalParams(t *testing.T) {
 		cfrex.AccountWorkflowListParams{
 			Page:    cfrex.F(1.000000),
 			PerPage: cfrex.F(1.000000),
+			Search:  cfrex.F("x"),
 		},
 	)
 	if err != nil {

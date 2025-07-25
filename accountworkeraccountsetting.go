@@ -34,7 +34,7 @@ func NewAccountWorkerAccountSettingService(opts ...option.RequestOption) (r *Acc
 }
 
 // Fetches Worker account settings for an account.
-func (r *AccountWorkerAccountSettingService) Get(ctx context.Context, accountID string, opts ...option.RequestOption) (res *SettingsResponseAccountSettings, err error) {
+func (r *AccountWorkerAccountSettingService) Get(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountWorkerAccountSettingGetResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
@@ -46,7 +46,7 @@ func (r *AccountWorkerAccountSettingService) Get(ctx context.Context, accountID 
 }
 
 // Creates Worker account settings for an account.
-func (r *AccountWorkerAccountSettingService) Update(ctx context.Context, accountID string, body AccountWorkerAccountSettingUpdateParams, opts ...option.RequestOption) (res *SettingsResponseAccountSettings, err error) {
+func (r *AccountWorkerAccountSettingService) Update(ctx context.Context, accountID string, body AccountWorkerAccountSettingUpdateParams, opts ...option.RequestOption) (res *AccountWorkerAccountSettingUpdateResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
@@ -55,28 +55,6 @@ func (r *AccountWorkerAccountSettingService) Update(ctx context.Context, account
 	path := fmt.Sprintf("accounts/%s/workers/account-settings", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
 	return
-}
-
-type SettingsResponseAccountSettings struct {
-	Result WorkersAccountSettings              `json:"result"`
-	JSON   settingsResponseAccountSettingsJSON `json:"-"`
-	CommonResponseWorkers
-}
-
-// settingsResponseAccountSettingsJSON contains the JSON metadata for the struct
-// [SettingsResponseAccountSettings]
-type settingsResponseAccountSettingsJSON struct {
-	Result      apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *SettingsResponseAccountSettings) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r settingsResponseAccountSettingsJSON) RawJSON() string {
-	return r.raw
 }
 
 type WorkersAccountSettings struct {
@@ -109,6 +87,92 @@ type WorkersAccountSettingsParam struct {
 
 func (r WorkersAccountSettingsParam) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
+}
+
+type AccountWorkerAccountSettingGetResponse struct {
+	Errors   []WorkersMessages      `json:"errors,required"`
+	Messages []WorkersMessages      `json:"messages,required"`
+	Result   WorkersAccountSettings `json:"result,required"`
+	// Whether the API call was successful.
+	Success AccountWorkerAccountSettingGetResponseSuccess `json:"success,required"`
+	JSON    accountWorkerAccountSettingGetResponseJSON    `json:"-"`
+}
+
+// accountWorkerAccountSettingGetResponseJSON contains the JSON metadata for the
+// struct [AccountWorkerAccountSettingGetResponse]
+type accountWorkerAccountSettingGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Result      apijson.Field
+	Success     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountWorkerAccountSettingGetResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountWorkerAccountSettingGetResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountWorkerAccountSettingGetResponseSuccess bool
+
+const (
+	AccountWorkerAccountSettingGetResponseSuccessTrue AccountWorkerAccountSettingGetResponseSuccess = true
+)
+
+func (r AccountWorkerAccountSettingGetResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountWorkerAccountSettingGetResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type AccountWorkerAccountSettingUpdateResponse struct {
+	Errors   []WorkersMessages      `json:"errors,required"`
+	Messages []WorkersMessages      `json:"messages,required"`
+	Result   WorkersAccountSettings `json:"result,required"`
+	// Whether the API call was successful.
+	Success AccountWorkerAccountSettingUpdateResponseSuccess `json:"success,required"`
+	JSON    accountWorkerAccountSettingUpdateResponseJSON    `json:"-"`
+}
+
+// accountWorkerAccountSettingUpdateResponseJSON contains the JSON metadata for the
+// struct [AccountWorkerAccountSettingUpdateResponse]
+type accountWorkerAccountSettingUpdateResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Result      apijson.Field
+	Success     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountWorkerAccountSettingUpdateResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountWorkerAccountSettingUpdateResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountWorkerAccountSettingUpdateResponseSuccess bool
+
+const (
+	AccountWorkerAccountSettingUpdateResponseSuccessTrue AccountWorkerAccountSettingUpdateResponseSuccess = true
+)
+
+func (r AccountWorkerAccountSettingUpdateResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountWorkerAccountSettingUpdateResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountWorkerAccountSettingUpdateParams struct {

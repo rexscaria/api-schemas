@@ -78,7 +78,8 @@ func (r radarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseJSON) RawJ
 }
 
 type RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResult struct {
-	Meta   interface{}                                                                `json:"meta,required"`
+	// Metadata for the results.
+	Meta   RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMeta   `json:"meta,required"`
 	Serie0 RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultSerie0 `json:"serie_0,required"`
 	JSON   radarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultJSON   `json:"-"`
 }
@@ -101,10 +102,205 @@ func (r radarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultJSON
 	return r.raw
 }
 
+// Metadata for the results.
+type RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMeta struct {
+	// Aggregation interval of the results (e.g., in 15 minutes or 1 hour intervals).
+	// Refer to
+	// [Aggregation intervals](https://developers.cloudflare.com/radar/concepts/aggregation-intervals/).
+	AggInterval    RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaAggInterval    `json:"aggInterval,required"`
+	ConfidenceInfo RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaConfidenceInfo `json:"confidenceInfo,required"`
+	DateRange      []RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaDateRange    `json:"dateRange,required"`
+	// Timestamp of the last dataset update.
+	LastUpdated time.Time `json:"lastUpdated,required" format:"date-time"`
+	// Normalization method applied to the results. Refer to
+	// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
+	Normalization RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaNormalization `json:"normalization,required"`
+	// Measurement units for the results.
+	Units []RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaUnit `json:"units,required"`
+	JSON  radarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaJSON   `json:"-"`
+}
+
+// radarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaJSON
+// contains the JSON metadata for the struct
+// [RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMeta]
+type radarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaJSON struct {
+	AggInterval    apijson.Field
+	ConfidenceInfo apijson.Field
+	DateRange      apijson.Field
+	LastUpdated    apijson.Field
+	Normalization  apijson.Field
+	Units          apijson.Field
+	raw            string
+	ExtraFields    map[string]apijson.Field
+}
+
+func (r *RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMeta) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaJSON) RawJSON() string {
+	return r.raw
+}
+
+// Aggregation interval of the results (e.g., in 15 minutes or 1 hour intervals).
+// Refer to
+// [Aggregation intervals](https://developers.cloudflare.com/radar/concepts/aggregation-intervals/).
+type RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaAggInterval string
+
+const (
+	RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaAggIntervalFifteenMinutes RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaAggInterval = "FIFTEEN_MINUTES"
+	RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaAggIntervalOneHour        RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaAggInterval = "ONE_HOUR"
+	RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaAggIntervalOneDay         RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaAggInterval = "ONE_DAY"
+	RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaAggIntervalOneWeek        RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaAggInterval = "ONE_WEEK"
+	RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaAggIntervalOneMonth       RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaAggInterval = "ONE_MONTH"
+)
+
+func (r RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaAggInterval) IsKnown() bool {
+	switch r {
+	case RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaAggIntervalFifteenMinutes, RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaAggIntervalOneHour, RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaAggIntervalOneDay, RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaAggIntervalOneWeek, RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaAggIntervalOneMonth:
+		return true
+	}
+	return false
+}
+
+type RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaConfidenceInfo struct {
+	Annotations []RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaConfidenceInfoAnnotation `json:"annotations,required"`
+	// Provides an indication of how much confidence Cloudflare has in the data.
+	Level int64                                                                                      `json:"level,required"`
+	JSON  radarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaConfidenceInfoJSON `json:"-"`
+}
+
+// radarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaConfidenceInfoJSON
+// contains the JSON metadata for the struct
+// [RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaConfidenceInfo]
+type radarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaConfidenceInfoJSON struct {
+	Annotations apijson.Field
+	Level       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaConfidenceInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaConfidenceInfoJSON) RawJSON() string {
+	return r.raw
+}
+
+// Annotation associated with the result (e.g. outage or other type of event).
+type RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaConfidenceInfoAnnotation struct {
+	DataSource  string    `json:"dataSource,required"`
+	Description string    `json:"description,required"`
+	EndDate     time.Time `json:"endDate,required" format:"date-time"`
+	EventType   string    `json:"eventType,required"`
+	// Whether event is a single point in time or a time range.
+	IsInstantaneous bool                                                                                                 `json:"isInstantaneous,required"`
+	LinkedURL       string                                                                                               `json:"linkedUrl,required" format:"uri"`
+	StartDate       time.Time                                                                                            `json:"startDate,required" format:"date-time"`
+	JSON            radarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
+}
+
+// radarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaConfidenceInfoAnnotationJSON
+// contains the JSON metadata for the struct
+// [RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaConfidenceInfoAnnotation]
+type radarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaConfidenceInfoAnnotationJSON struct {
+	DataSource      apijson.Field
+	Description     apijson.Field
+	EndDate         apijson.Field
+	EventType       apijson.Field
+	IsInstantaneous apijson.Field
+	LinkedURL       apijson.Field
+	StartDate       apijson.Field
+	raw             string
+	ExtraFields     map[string]apijson.Field
+}
+
+func (r *RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaConfidenceInfoAnnotation) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaConfidenceInfoAnnotationJSON) RawJSON() string {
+	return r.raw
+}
+
+type RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaDateRange struct {
+	// Adjusted end of date range.
+	EndTime time.Time `json:"endTime,required" format:"date-time"`
+	// Adjusted start of date range.
+	StartTime time.Time                                                                             `json:"startTime,required" format:"date-time"`
+	JSON      radarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaDateRangeJSON `json:"-"`
+}
+
+// radarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaDateRangeJSON
+// contains the JSON metadata for the struct
+// [RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaDateRange]
+type radarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaDateRangeJSON struct {
+	EndTime     apijson.Field
+	StartTime   apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaDateRange) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaDateRangeJSON) RawJSON() string {
+	return r.raw
+}
+
+// Normalization method applied to the results. Refer to
+// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
+type RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaNormalization string
+
+const (
+	RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaNormalizationPercentage           RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaNormalization = "PERCENTAGE"
+	RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaNormalizationMin0Max              RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaNormalization = "MIN0_MAX"
+	RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaNormalizationMinMax               RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaNormalization = "MIN_MAX"
+	RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaNormalizationRawValues            RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaNormalization = "RAW_VALUES"
+	RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaNormalizationPercentageChange     RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaNormalization = "PERCENTAGE_CHANGE"
+	RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaNormalizationRollingAverage       RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaNormalization = "ROLLING_AVERAGE"
+	RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaNormalizationOverlappedPercentage RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaNormalization = "OVERLAPPED_PERCENTAGE"
+	RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaNormalizationRatio                RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaNormalization = "RATIO"
+)
+
+func (r RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaNormalization) IsKnown() bool {
+	switch r {
+	case RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaNormalizationPercentage, RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaNormalizationMin0Max, RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaNormalizationMinMax, RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaNormalizationRawValues, RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaNormalizationPercentageChange, RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaNormalizationRollingAverage, RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaNormalizationOverlappedPercentage, RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaNormalizationRatio:
+		return true
+	}
+	return false
+}
+
+type RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaUnit struct {
+	Name  string                                                                           `json:"name,required"`
+	Value string                                                                           `json:"value,required"`
+	JSON  radarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaUnitJSON `json:"-"`
+}
+
+// radarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaUnitJSON
+// contains the JSON metadata for the struct
+// [RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaUnit]
+type radarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaUnitJSON struct {
+	Name        apijson.Field
+	Value       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaUnit) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaUnitJSON) RawJSON() string {
+	return r.raw
+}
+
 type RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultSerie0 struct {
 	Bot        []string                                                                       `json:"bot,required"`
 	Human      []string                                                                       `json:"human,required"`
-	Timestamps []string                                                                       `json:"timestamps,required"`
+	Timestamps []time.Time                                                                    `json:"timestamps,required" format:"date-time"`
 	JSON       radarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultSerie0JSON `json:"-"`
 }
 
@@ -152,7 +348,8 @@ func (r radarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseJ
 }
 
 type RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResult struct {
-	Meta   interface{}                                                                         `json:"meta,required"`
+	// Metadata for the results.
+	Meta   RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMeta   `json:"meta,required"`
 	Serie0 RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultSerie0 `json:"serie_0,required"`
 	JSON   radarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultJSON   `json:"-"`
 }
@@ -175,10 +372,205 @@ func (r radarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseR
 	return r.raw
 }
 
+// Metadata for the results.
+type RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMeta struct {
+	// Aggregation interval of the results (e.g., in 15 minutes or 1 hour intervals).
+	// Refer to
+	// [Aggregation intervals](https://developers.cloudflare.com/radar/concepts/aggregation-intervals/).
+	AggInterval    RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaAggInterval    `json:"aggInterval,required"`
+	ConfidenceInfo RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaConfidenceInfo `json:"confidenceInfo,required"`
+	DateRange      []RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaDateRange    `json:"dateRange,required"`
+	// Timestamp of the last dataset update.
+	LastUpdated time.Time `json:"lastUpdated,required" format:"date-time"`
+	// Normalization method applied to the results. Refer to
+	// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
+	Normalization RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaNormalization `json:"normalization,required"`
+	// Measurement units for the results.
+	Units []RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaUnit `json:"units,required"`
+	JSON  radarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaJSON   `json:"-"`
+}
+
+// radarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaJSON
+// contains the JSON metadata for the struct
+// [RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMeta]
+type radarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaJSON struct {
+	AggInterval    apijson.Field
+	ConfidenceInfo apijson.Field
+	DateRange      apijson.Field
+	LastUpdated    apijson.Field
+	Normalization  apijson.Field
+	Units          apijson.Field
+	raw            string
+	ExtraFields    map[string]apijson.Field
+}
+
+func (r *RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMeta) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaJSON) RawJSON() string {
+	return r.raw
+}
+
+// Aggregation interval of the results (e.g., in 15 minutes or 1 hour intervals).
+// Refer to
+// [Aggregation intervals](https://developers.cloudflare.com/radar/concepts/aggregation-intervals/).
+type RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaAggInterval string
+
+const (
+	RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaAggIntervalFifteenMinutes RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaAggInterval = "FIFTEEN_MINUTES"
+	RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaAggIntervalOneHour        RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaAggInterval = "ONE_HOUR"
+	RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaAggIntervalOneDay         RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaAggInterval = "ONE_DAY"
+	RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaAggIntervalOneWeek        RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaAggInterval = "ONE_WEEK"
+	RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaAggIntervalOneMonth       RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaAggInterval = "ONE_MONTH"
+)
+
+func (r RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaAggInterval) IsKnown() bool {
+	switch r {
+	case RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaAggIntervalFifteenMinutes, RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaAggIntervalOneHour, RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaAggIntervalOneDay, RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaAggIntervalOneWeek, RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaAggIntervalOneMonth:
+		return true
+	}
+	return false
+}
+
+type RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaConfidenceInfo struct {
+	Annotations []RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaConfidenceInfoAnnotation `json:"annotations,required"`
+	// Provides an indication of how much confidence Cloudflare has in the data.
+	Level int64                                                                                               `json:"level,required"`
+	JSON  radarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaConfidenceInfoJSON `json:"-"`
+}
+
+// radarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaConfidenceInfoJSON
+// contains the JSON metadata for the struct
+// [RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaConfidenceInfo]
+type radarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaConfidenceInfoJSON struct {
+	Annotations apijson.Field
+	Level       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaConfidenceInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaConfidenceInfoJSON) RawJSON() string {
+	return r.raw
+}
+
+// Annotation associated with the result (e.g. outage or other type of event).
+type RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaConfidenceInfoAnnotation struct {
+	DataSource  string    `json:"dataSource,required"`
+	Description string    `json:"description,required"`
+	EndDate     time.Time `json:"endDate,required" format:"date-time"`
+	EventType   string    `json:"eventType,required"`
+	// Whether event is a single point in time or a time range.
+	IsInstantaneous bool                                                                                                          `json:"isInstantaneous,required"`
+	LinkedURL       string                                                                                                        `json:"linkedUrl,required" format:"uri"`
+	StartDate       time.Time                                                                                                     `json:"startDate,required" format:"date-time"`
+	JSON            radarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
+}
+
+// radarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaConfidenceInfoAnnotationJSON
+// contains the JSON metadata for the struct
+// [RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaConfidenceInfoAnnotation]
+type radarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaConfidenceInfoAnnotationJSON struct {
+	DataSource      apijson.Field
+	Description     apijson.Field
+	EndDate         apijson.Field
+	EventType       apijson.Field
+	IsInstantaneous apijson.Field
+	LinkedURL       apijson.Field
+	StartDate       apijson.Field
+	raw             string
+	ExtraFields     map[string]apijson.Field
+}
+
+func (r *RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaConfidenceInfoAnnotation) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaConfidenceInfoAnnotationJSON) RawJSON() string {
+	return r.raw
+}
+
+type RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaDateRange struct {
+	// Adjusted end of date range.
+	EndTime time.Time `json:"endTime,required" format:"date-time"`
+	// Adjusted start of date range.
+	StartTime time.Time                                                                                      `json:"startTime,required" format:"date-time"`
+	JSON      radarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaDateRangeJSON `json:"-"`
+}
+
+// radarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaDateRangeJSON
+// contains the JSON metadata for the struct
+// [RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaDateRange]
+type radarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaDateRangeJSON struct {
+	EndTime     apijson.Field
+	StartTime   apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaDateRange) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaDateRangeJSON) RawJSON() string {
+	return r.raw
+}
+
+// Normalization method applied to the results. Refer to
+// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
+type RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaNormalization string
+
+const (
+	RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaNormalizationPercentage           RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaNormalization = "PERCENTAGE"
+	RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaNormalizationMin0Max              RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaNormalization = "MIN0_MAX"
+	RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaNormalizationMinMax               RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaNormalization = "MIN_MAX"
+	RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaNormalizationRawValues            RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaNormalization = "RAW_VALUES"
+	RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaNormalizationPercentageChange     RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaNormalization = "PERCENTAGE_CHANGE"
+	RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaNormalizationRollingAverage       RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaNormalization = "ROLLING_AVERAGE"
+	RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaNormalizationOverlappedPercentage RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaNormalization = "OVERLAPPED_PERCENTAGE"
+	RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaNormalizationRatio                RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaNormalization = "RATIO"
+)
+
+func (r RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaNormalization) IsKnown() bool {
+	switch r {
+	case RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaNormalizationPercentage, RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaNormalizationMin0Max, RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaNormalizationMinMax, RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaNormalizationRawValues, RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaNormalizationPercentageChange, RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaNormalizationRollingAverage, RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaNormalizationOverlappedPercentage, RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaNormalizationRatio:
+		return true
+	}
+	return false
+}
+
+type RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaUnit struct {
+	Name  string                                                                                    `json:"name,required"`
+	Value string                                                                                    `json:"value,required"`
+	JSON  radarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaUnitJSON `json:"-"`
+}
+
+// radarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaUnitJSON
+// contains the JSON metadata for the struct
+// [RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaUnit]
+type radarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaUnitJSON struct {
+	Name        apijson.Field
+	Value       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaUnit) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r radarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaUnitJSON) RawJSON() string {
+	return r.raw
+}
+
 type RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultSerie0 struct {
 	Clean       []string                                                                                `json:"CLEAN,required"`
 	Compromised []string                                                                                `json:"COMPROMISED,required"`
-	Timestamps  []string                                                                                `json:"timestamps,required"`
+	Timestamps  []time.Time                                                                             `json:"timestamps,required" format:"date-time"`
 	JSON        radarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultSerie0JSON `json:"-"`
 }
 
@@ -202,17 +594,17 @@ func (r radarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseR
 }
 
 type RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassParams struct {
-	// Aggregation interval results should be returned in (for example, in 15 minutes
-	// or 1 hour intervals). Refer to
+	// Aggregation interval of the results (e.g., in 15 minutes or 1 hour intervals).
+	// Refer to
 	// [Aggregation intervals](https://developers.cloudflare.com/radar/concepts/aggregation-intervals/).
 	AggInterval param.Field[RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassParamsAggInterval] `query:"aggInterval"`
 	// Filters results by compromised credential status (clean vs. compromised).
 	Compromised param.Field[[]RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassParamsCompromised] `query:"compromised"`
 	// End of the date range (inclusive).
 	DateEnd param.Field[[]time.Time] `query:"dateEnd" format:"date-time"`
-	// Filters results by the specified date range. For example, use `7d` and
-	// `7dcontrol` to compare this week with the previous week. Use this parameter or
-	// set specific start and end dates (`dateStart` and `dateEnd` parameters).
+	// Filters results by date range. For example, use `7d` and `7dcontrol` to compare
+	// this week with the previous week. Use this parameter or set specific start and
+	// end dates (`dateStart` and `dateEnd` parameters).
 	DateRange param.Field[[]string] `query:"dateRange"`
 	// Start of the date range.
 	DateStart param.Field[[]time.Time] `query:"dateStart" format:"date-time"`
@@ -232,8 +624,8 @@ func (r RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassParams) URLQuery()
 	})
 }
 
-// Aggregation interval results should be returned in (for example, in 15 minutes
-// or 1 hour intervals). Refer to
+// Aggregation interval of the results (e.g., in 15 minutes or 1 hour intervals).
+// Refer to
 // [Aggregation intervals](https://developers.cloudflare.com/radar/concepts/aggregation-intervals/).
 type RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassParamsAggInterval string
 
@@ -284,8 +676,8 @@ func (r RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassParamsFormat) IsKn
 }
 
 type RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusParams struct {
-	// Aggregation interval results should be returned in (for example, in 15 minutes
-	// or 1 hour intervals). Refer to
+	// Aggregation interval of the results (e.g., in 15 minutes or 1 hour intervals).
+	// Refer to
 	// [Aggregation intervals](https://developers.cloudflare.com/radar/concepts/aggregation-intervals/).
 	AggInterval param.Field[RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusParamsAggInterval] `query:"aggInterval"`
 	// Filters results by bot class. Refer to
@@ -293,9 +685,9 @@ type RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusParams struc
 	BotClass param.Field[[]RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusParamsBotClass] `query:"botClass"`
 	// End of the date range (inclusive).
 	DateEnd param.Field[[]time.Time] `query:"dateEnd" format:"date-time"`
-	// Filters results by the specified date range. For example, use `7d` and
-	// `7dcontrol` to compare this week with the previous week. Use this parameter or
-	// set specific start and end dates (`dateStart` and `dateEnd` parameters).
+	// Filters results by date range. For example, use `7d` and `7dcontrol` to compare
+	// this week with the previous week. Use this parameter or set specific start and
+	// end dates (`dateStart` and `dateEnd` parameters).
 	DateRange param.Field[[]string] `query:"dateRange"`
 	// Start of the date range.
 	DateStart param.Field[[]time.Time] `query:"dateStart" format:"date-time"`
@@ -315,8 +707,8 @@ func (r RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusParams) U
 	})
 }
 
-// Aggregation interval results should be returned in (for example, in 15 minutes
-// or 1 hour intervals). Refer to
+// Aggregation interval of the results (e.g., in 15 minutes or 1 hour intervals).
+// Refer to
 // [Aggregation intervals](https://developers.cloudflare.com/radar/concepts/aggregation-intervals/).
 type RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusParamsAggInterval string
 

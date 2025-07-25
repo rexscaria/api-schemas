@@ -4,6 +4,7 @@ package cfrex
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net/http"
 
@@ -32,17 +33,25 @@ func NewAccountCloudforceOneEventCronService(opts ...option.RequestOption) (r *A
 }
 
 // Reads the last cron update time
-func (r *AccountCloudforceOneEventCronService) Get(ctx context.Context, accountID float64, opts ...option.RequestOption) (res *AccountCloudforceOneEventCronGetResponse, err error) {
+func (r *AccountCloudforceOneEventCronService) Get(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountCloudforceOneEventCronGetResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	path := fmt.Sprintf("accounts/%v/cloudforce-one/events/cron", accountID)
+	if accountID == "" {
+		err = errors.New("missing required account_id parameter")
+		return
+	}
+	path := fmt.Sprintf("accounts/%s/cloudforce-one/events/cron", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
 
 // Reads the last cron update time
-func (r *AccountCloudforceOneEventCronService) Update(ctx context.Context, accountID float64, opts ...option.RequestOption) (res *AccountCloudforceOneEventCronUpdateResponse, err error) {
+func (r *AccountCloudforceOneEventCronService) Update(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountCloudforceOneEventCronUpdateResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	path := fmt.Sprintf("accounts/%v/cloudforce-one/events/cron", accountID)
+	if accountID == "" {
+		err = errors.New("missing required account_id parameter")
+		return
+	}
+	path := fmt.Sprintf("accounts/%s/cloudforce-one/events/cron", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
 	return
 }

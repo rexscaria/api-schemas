@@ -106,14 +106,20 @@ func (r *ZoneSpeedAPIPageTestService) Start(ctx context.Context, zoneID string, 
 }
 
 type ObservatoryCountResponse struct {
-	Result ObservatoryCountResponseResult `json:"result"`
-	JSON   observatoryCountResponseJSON   `json:"-"`
-	ObservatoryAPIResponseSingle
+	Errors   []ObservatoryCountResponseError   `json:"errors,required"`
+	Messages []ObservatoryCountResponseMessage `json:"messages,required"`
+	// Whether the API call was successful.
+	Success bool                           `json:"success,required"`
+	Result  ObservatoryCountResponseResult `json:"result"`
+	JSON    observatoryCountResponseJSON   `json:"-"`
 }
 
 // observatoryCountResponseJSON contains the JSON metadata for the struct
 // [ObservatoryCountResponse]
 type observatoryCountResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -124,6 +130,102 @@ func (r *ObservatoryCountResponse) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (r observatoryCountResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+type ObservatoryCountResponseError struct {
+	Code             int64                                `json:"code,required"`
+	Message          string                               `json:"message,required"`
+	DocumentationURL string                               `json:"documentation_url"`
+	Source           ObservatoryCountResponseErrorsSource `json:"source"`
+	JSON             observatoryCountResponseErrorJSON    `json:"-"`
+}
+
+// observatoryCountResponseErrorJSON contains the JSON metadata for the struct
+// [ObservatoryCountResponseError]
+type observatoryCountResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *ObservatoryCountResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r observatoryCountResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type ObservatoryCountResponseErrorsSource struct {
+	Pointer string                                   `json:"pointer"`
+	JSON    observatoryCountResponseErrorsSourceJSON `json:"-"`
+}
+
+// observatoryCountResponseErrorsSourceJSON contains the JSON metadata for the
+// struct [ObservatoryCountResponseErrorsSource]
+type observatoryCountResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ObservatoryCountResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r observatoryCountResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type ObservatoryCountResponseMessage struct {
+	Code             int64                                  `json:"code,required"`
+	Message          string                                 `json:"message,required"`
+	DocumentationURL string                                 `json:"documentation_url"`
+	Source           ObservatoryCountResponseMessagesSource `json:"source"`
+	JSON             observatoryCountResponseMessageJSON    `json:"-"`
+}
+
+// observatoryCountResponseMessageJSON contains the JSON metadata for the struct
+// [ObservatoryCountResponseMessage]
+type observatoryCountResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *ObservatoryCountResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r observatoryCountResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type ObservatoryCountResponseMessagesSource struct {
+	Pointer string                                     `json:"pointer"`
+	JSON    observatoryCountResponseMessagesSourceJSON `json:"-"`
+}
+
+// observatoryCountResponseMessagesSourceJSON contains the JSON metadata for the
+// struct [ObservatoryCountResponseMessagesSource]
+type observatoryCountResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ObservatoryCountResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r observatoryCountResponseMessagesSourceJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -269,7 +371,7 @@ func (r ObservatoryLighthouseReportState) IsKnown() bool {
 }
 
 type ObservatoryPageTest struct {
-	// UUID
+	// UUID.
 	ID   string    `json:"id"`
 	Date time.Time `json:"date" format:"date-time"`
 	// The Lighthouse report.
@@ -308,14 +410,20 @@ func (r observatoryPageTestJSON) RawJSON() string {
 }
 
 type ObservatoryPageTestResponseSingle struct {
-	Result ObservatoryPageTest                   `json:"result"`
-	JSON   observatoryPageTestResponseSingleJSON `json:"-"`
-	ObservatoryAPIResponseSingle
+	Errors   []ObservatoryMessagesItem `json:"errors,required"`
+	Messages []ObservatoryMessagesItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success bool                                  `json:"success,required"`
+	Result  ObservatoryPageTest                   `json:"result"`
+	JSON    observatoryPageTestResponseSingleJSON `json:"-"`
 }
 
 // observatoryPageTestResponseSingleJSON contains the JSON metadata for the struct
 // [ObservatoryPageTestResponseSingle]
 type observatoryPageTestResponseSingleJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -330,15 +438,21 @@ func (r observatoryPageTestResponseSingleJSON) RawJSON() string {
 }
 
 type ZoneSpeedAPIPageTestListHistoryResponse struct {
+	Errors   []ObservatoryMessagesItem `json:"errors,required"`
+	Messages []ObservatoryMessagesItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success    bool                                              `json:"success,required"`
 	Result     []ObservatoryPageTest                             `json:"result"`
 	ResultInfo ZoneSpeedAPIPageTestListHistoryResponseResultInfo `json:"result_info"`
 	JSON       zoneSpeedAPIPageTestListHistoryResponseJSON       `json:"-"`
-	ObservatoryAPIResponseCollection
 }
 
 // zoneSpeedAPIPageTestListHistoryResponseJSON contains the JSON metadata for the
 // struct [ZoneSpeedAPIPageTestListHistoryResponse]
 type zoneSpeedAPIPageTestListHistoryResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	ResultInfo  apijson.Field
 	raw         string

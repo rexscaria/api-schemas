@@ -59,12 +59,10 @@ func TestAccountLoadBalancerSearchWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.AccountLoadBalancerSearchParams{
-			Page:    cfrex.F(1.000000),
-			PerPage: cfrex.F(1.000000),
-			SearchParams: cfrex.F(cfrex.AccountLoadBalancerSearchParamsSearchParams{
-				Query:      cfrex.F("primary"),
-				References: cfrex.F(cfrex.AccountLoadBalancerSearchParamsSearchParamsReferencesStar),
-			}),
+			Page:       cfrex.F(1.000000),
+			PerPage:    cfrex.F(1.000000),
+			Query:      cfrex.F("primary"),
+			References: cfrex.F(cfrex.AccountLoadBalancerSearchParamsReferencesStar),
 		},
 	)
 	if err != nil {

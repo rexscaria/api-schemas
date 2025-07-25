@@ -34,7 +34,7 @@ func NewAccountWorkerSubdomainService(opts ...option.RequestOption) (r *AccountW
 }
 
 // Creates a Workers subdomain for an account.
-func (r *AccountWorkerSubdomainService) New(ctx context.Context, accountID string, body AccountWorkerSubdomainNewParams, opts ...option.RequestOption) (res *SubdomainResponse, err error) {
+func (r *AccountWorkerSubdomainService) New(ctx context.Context, accountID string, body AccountWorkerSubdomainNewParams, opts ...option.RequestOption) (res *AccountWorkerSubdomainNewResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
@@ -46,7 +46,7 @@ func (r *AccountWorkerSubdomainService) New(ctx context.Context, accountID strin
 }
 
 // Returns a Workers subdomain for an account.
-func (r *AccountWorkerSubdomainService) Get(ctx context.Context, accountID string, opts ...option.RequestOption) (res *SubdomainResponse, err error) {
+func (r *AccountWorkerSubdomainService) Get(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountWorkerSubdomainGetResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
@@ -57,60 +57,138 @@ func (r *AccountWorkerSubdomainService) Get(ctx context.Context, accountID strin
 	return
 }
 
-type SubdomainObject struct {
-	Subdomain string              `json:"subdomain"`
-	JSON      subdomainObjectJSON `json:"-"`
+type AccountWorkerSubdomainNewResponse struct {
+	Errors   []WorkersMessages                       `json:"errors,required"`
+	Messages []WorkersMessages                       `json:"messages,required"`
+	Result   AccountWorkerSubdomainNewResponseResult `json:"result,required"`
+	// Whether the API call was successful.
+	Success AccountWorkerSubdomainNewResponseSuccess `json:"success,required"`
+	JSON    accountWorkerSubdomainNewResponseJSON    `json:"-"`
 }
 
-// subdomainObjectJSON contains the JSON metadata for the struct [SubdomainObject]
-type subdomainObjectJSON struct {
+// accountWorkerSubdomainNewResponseJSON contains the JSON metadata for the struct
+// [AccountWorkerSubdomainNewResponse]
+type accountWorkerSubdomainNewResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Result      apijson.Field
+	Success     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountWorkerSubdomainNewResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountWorkerSubdomainNewResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountWorkerSubdomainNewResponseResult struct {
+	Subdomain string                                      `json:"subdomain,required"`
+	JSON      accountWorkerSubdomainNewResponseResultJSON `json:"-"`
+}
+
+// accountWorkerSubdomainNewResponseResultJSON contains the JSON metadata for the
+// struct [AccountWorkerSubdomainNewResponseResult]
+type accountWorkerSubdomainNewResponseResultJSON struct {
 	Subdomain   apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *SubdomainObject) UnmarshalJSON(data []byte) (err error) {
+func (r *AccountWorkerSubdomainNewResponseResult) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r subdomainObjectJSON) RawJSON() string {
+func (r accountWorkerSubdomainNewResponseResultJSON) RawJSON() string {
 	return r.raw
 }
 
-type SubdomainObjectParam struct {
-	Subdomain param.Field[string] `json:"subdomain"`
+// Whether the API call was successful.
+type AccountWorkerSubdomainNewResponseSuccess bool
+
+const (
+	AccountWorkerSubdomainNewResponseSuccessTrue AccountWorkerSubdomainNewResponseSuccess = true
+)
+
+func (r AccountWorkerSubdomainNewResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountWorkerSubdomainNewResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
-func (r SubdomainObjectParam) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+type AccountWorkerSubdomainGetResponse struct {
+	Errors   []WorkersMessages                       `json:"errors,required"`
+	Messages []WorkersMessages                       `json:"messages,required"`
+	Result   AccountWorkerSubdomainGetResponseResult `json:"result,required"`
+	// Whether the API call was successful.
+	Success AccountWorkerSubdomainGetResponseSuccess `json:"success,required"`
+	JSON    accountWorkerSubdomainGetResponseJSON    `json:"-"`
 }
 
-type SubdomainResponse struct {
-	Result SubdomainObject       `json:"result"`
-	JSON   subdomainResponseJSON `json:"-"`
-	CommonResponseWorkers
-}
-
-// subdomainResponseJSON contains the JSON metadata for the struct
-// [SubdomainResponse]
-type subdomainResponseJSON struct {
+// accountWorkerSubdomainGetResponseJSON contains the JSON metadata for the struct
+// [AccountWorkerSubdomainGetResponse]
+type accountWorkerSubdomainGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *SubdomainResponse) UnmarshalJSON(data []byte) (err error) {
+func (r *AccountWorkerSubdomainGetResponse) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r subdomainResponseJSON) RawJSON() string {
+func (r accountWorkerSubdomainGetResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+type AccountWorkerSubdomainGetResponseResult struct {
+	Subdomain string                                      `json:"subdomain,required"`
+	JSON      accountWorkerSubdomainGetResponseResultJSON `json:"-"`
+}
+
+// accountWorkerSubdomainGetResponseResultJSON contains the JSON metadata for the
+// struct [AccountWorkerSubdomainGetResponseResult]
+type accountWorkerSubdomainGetResponseResultJSON struct {
+	Subdomain   apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountWorkerSubdomainGetResponseResult) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountWorkerSubdomainGetResponseResultJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountWorkerSubdomainGetResponseSuccess bool
+
+const (
+	AccountWorkerSubdomainGetResponseSuccessTrue AccountWorkerSubdomainGetResponseSuccess = true
+)
+
+func (r AccountWorkerSubdomainGetResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountWorkerSubdomainGetResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountWorkerSubdomainNewParams struct {
-	SubdomainObject SubdomainObjectParam `json:"subdomain_object,required"`
+	Subdomain param.Field[string] `json:"subdomain,required"`
 }
 
 func (r AccountWorkerSubdomainNewParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.SubdomainObject)
+	return apijson.MarshalRoot(r)
 }

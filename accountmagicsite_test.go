@@ -36,8 +36,8 @@ func TestAccountMagicSiteNewWithOptionalParams(t *testing.T) {
 			Description: cfrex.F("description"),
 			HaMode:      cfrex.F(true),
 			Location: cfrex.F(cfrex.MagicSiteLocationParam{
-				Lat: cfrex.F("lat"),
-				Lon: cfrex.F("lon"),
+				Lat: cfrex.F("37.6192"),
+				Lon: cfrex.F("122.3816"),
 			}),
 			SecondaryConnectorID: cfrex.F("8d67040d3835dbcf46ce29da440dc482"),
 		},
@@ -105,8 +105,8 @@ func TestAccountMagicSiteUpdateWithOptionalParams(t *testing.T) {
 				ConnectorID: cfrex.F("ac60d3d0435248289d446cedd870bcf4"),
 				Description: cfrex.F("description"),
 				Location: cfrex.F(cfrex.MagicSiteLocationParam{
-					Lat: cfrex.F("lat"),
-					Lon: cfrex.F("lon"),
+					Lat: cfrex.F("37.6192"),
+					Lon: cfrex.F("122.3816"),
 				}),
 				Name:                 cfrex.F("site_1"),
 				SecondaryConnectorID: cfrex.F("8d67040d3835dbcf46ce29da440dc482"),
@@ -170,9 +170,6 @@ func TestAccountMagicSiteDelete(t *testing.T) {
 		context.TODO(),
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		"023e105f4ecef8ad9ca31a8372d0c353",
-		cfrex.AccountMagicSiteDeleteParams{
-			Body: map[string]interface{}{},
-		},
 	)
 	if err != nil {
 		var apierr *cfrex.Error
@@ -206,8 +203,8 @@ func TestAccountMagicSitePatchWithOptionalParams(t *testing.T) {
 				ConnectorID: cfrex.F("ac60d3d0435248289d446cedd870bcf4"),
 				Description: cfrex.F("description"),
 				Location: cfrex.F(cfrex.MagicSiteLocationParam{
-					Lat: cfrex.F("lat"),
-					Lon: cfrex.F("lon"),
+					Lat: cfrex.F("37.6192"),
+					Lon: cfrex.F("122.3816"),
 				}),
 				Name:                 cfrex.F("site_1"),
 				SecondaryConnectorID: cfrex.F("8d67040d3835dbcf46ce29da440dc482"),

@@ -64,76 +64,6 @@ func (r *ZoneSettingAegiService) Update(ctx context.Context, zoneID string, body
 	return
 }
 
-type CacheRulesAegisResponseValue struct {
-	// Aegis provides dedicated egress IPs (from Cloudflare to your origin) for your
-	// layer 7 WAF and CDN services. The egress IPs are reserved exclusively for your
-	// account so that you can increase your origin security by only allowing traffic
-	// from a small list of IP addresses.
-	Result CacheRulesAegisResponseValueResult `json:"result"`
-	JSON   cacheRulesAegisResponseValueJSON   `json:"-"`
-}
-
-// cacheRulesAegisResponseValueJSON contains the JSON metadata for the struct
-// [CacheRulesAegisResponseValue]
-type cacheRulesAegisResponseValueJSON struct {
-	Result      apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *CacheRulesAegisResponseValue) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r cacheRulesAegisResponseValueJSON) RawJSON() string {
-	return r.raw
-}
-
-// Aegis provides dedicated egress IPs (from Cloudflare to your origin) for your
-// layer 7 WAF and CDN services. The egress IPs are reserved exclusively for your
-// account so that you can increase your origin security by only allowing traffic
-// from a small list of IP addresses.
-type CacheRulesAegisResponseValueResult struct {
-	// ID of the zone setting.
-	ID CacheRulesAegisResponseValueResultID `json:"id"`
-	// Value of the zone setting.
-	Value CacheRulesAegisValue                   `json:"value"`
-	JSON  cacheRulesAegisResponseValueResultJSON `json:"-"`
-	BaseCacheRule
-}
-
-// cacheRulesAegisResponseValueResultJSON contains the JSON metadata for the struct
-// [CacheRulesAegisResponseValueResult]
-type cacheRulesAegisResponseValueResultJSON struct {
-	ID          apijson.Field
-	Value       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *CacheRulesAegisResponseValueResult) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r cacheRulesAegisResponseValueResultJSON) RawJSON() string {
-	return r.raw
-}
-
-// ID of the zone setting.
-type CacheRulesAegisResponseValueResultID string
-
-const (
-	CacheRulesAegisResponseValueResultIDAegis CacheRulesAegisResponseValueResultID = "aegis"
-)
-
-func (r CacheRulesAegisResponseValueResultID) IsKnown() bool {
-	switch r {
-	case CacheRulesAegisResponseValueResultIDAegis:
-		return true
-	}
-	return false
-}
-
 // Value of the zone setting.
 type CacheRulesAegisValue struct {
 	// Whether the feature is enabled or not.
@@ -174,68 +104,22 @@ func (r CacheRulesAegisValueParam) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-type CacheRulesZoneComplexCacheSettingsResponseSingle struct {
-	Result CacheRulesZoneComplexCacheSettingsResponseSingleResult `json:"result"`
-	JSON   cacheRulesZoneComplexCacheSettingsResponseSingleJSON   `json:"-"`
-	APIResponseCacheRules
-}
-
-// cacheRulesZoneComplexCacheSettingsResponseSingleJSON contains the JSON metadata
-// for the struct [CacheRulesZoneComplexCacheSettingsResponseSingle]
-type cacheRulesZoneComplexCacheSettingsResponseSingleJSON struct {
-	Result      apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *CacheRulesZoneComplexCacheSettingsResponseSingle) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r cacheRulesZoneComplexCacheSettingsResponseSingleJSON) RawJSON() string {
-	return r.raw
-}
-
-type CacheRulesZoneComplexCacheSettingsResponseSingleResult struct {
-	// The identifier of the caching setting
-	ID string `json:"id,required"`
-	// Whether the setting is editable
-	Editable bool `json:"editable,required"`
-	// The value of the feature
-	Value interface{} `json:"value,required"`
-	// The time when the setting was last modified
-	ModifiedOn time.Time                                                  `json:"modified_on" format:"date-time"`
-	JSON       cacheRulesZoneComplexCacheSettingsResponseSingleResultJSON `json:"-"`
-}
-
-// cacheRulesZoneComplexCacheSettingsResponseSingleResultJSON contains the JSON
-// metadata for the struct [CacheRulesZoneComplexCacheSettingsResponseSingleResult]
-type cacheRulesZoneComplexCacheSettingsResponseSingleResultJSON struct {
-	ID          apijson.Field
-	Editable    apijson.Field
-	Value       apijson.Field
-	ModifiedOn  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *CacheRulesZoneComplexCacheSettingsResponseSingleResult) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r cacheRulesZoneComplexCacheSettingsResponseSingleResultJSON) RawJSON() string {
-	return r.raw
-}
-
 type ZoneSettingAegiGetResponse struct {
-	JSON zoneSettingAegiGetResponseJSON `json:"-"`
-	CacheRulesZoneComplexCacheSettingsResponseSingle
-	CacheRulesAegisResponseValue
+	Errors   []MessagesCacheRulesItem `json:"errors,required"`
+	Messages []MessagesCacheRulesItem `json:"messages,required"`
+	// Whether the API call was successful
+	Success ZoneSettingAegiGetResponseSuccess `json:"success,required"`
+	Result  ZoneSettingAegiGetResponseResult  `json:"result"`
+	JSON    zoneSettingAegiGetResponseJSON    `json:"-"`
 }
 
 // zoneSettingAegiGetResponseJSON contains the JSON metadata for the struct
 // [ZoneSettingAegiGetResponse]
 type zoneSettingAegiGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
+	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -248,15 +132,83 @@ func (r zoneSettingAegiGetResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful
+type ZoneSettingAegiGetResponseSuccess bool
+
+const (
+	ZoneSettingAegiGetResponseSuccessTrue ZoneSettingAegiGetResponseSuccess = true
+)
+
+func (r ZoneSettingAegiGetResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneSettingAegiGetResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type ZoneSettingAegiGetResponseResult struct {
+	// ID of the zone setting.
+	ID ZoneSettingAegiGetResponseResultID `json:"id,required"`
+	// Whether the setting is editable
+	Editable bool `json:"editable,required"`
+	// The value of the feature
+	Value CacheRulesAegisValue `json:"value,required"`
+	// Last time this setting was modified.
+	ModifiedOn time.Time                            `json:"modified_on,nullable" format:"date-time"`
+	JSON       zoneSettingAegiGetResponseResultJSON `json:"-"`
+}
+
+// zoneSettingAegiGetResponseResultJSON contains the JSON metadata for the struct
+// [ZoneSettingAegiGetResponseResult]
+type zoneSettingAegiGetResponseResultJSON struct {
+	ID          apijson.Field
+	Editable    apijson.Field
+	Value       apijson.Field
+	ModifiedOn  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZoneSettingAegiGetResponseResult) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneSettingAegiGetResponseResultJSON) RawJSON() string {
+	return r.raw
+}
+
+// ID of the zone setting.
+type ZoneSettingAegiGetResponseResultID string
+
+const (
+	ZoneSettingAegiGetResponseResultIDAegis ZoneSettingAegiGetResponseResultID = "aegis"
+)
+
+func (r ZoneSettingAegiGetResponseResultID) IsKnown() bool {
+	switch r {
+	case ZoneSettingAegiGetResponseResultIDAegis:
+		return true
+	}
+	return false
+}
+
 type ZoneSettingAegiUpdateResponse struct {
-	JSON zoneSettingAegiUpdateResponseJSON `json:"-"`
-	CacheRulesZoneComplexCacheSettingsResponseSingle
-	CacheRulesAegisResponseValue
+	Errors   []MessagesCacheRulesItem `json:"errors,required"`
+	Messages []MessagesCacheRulesItem `json:"messages,required"`
+	// Whether the API call was successful
+	Success ZoneSettingAegiUpdateResponseSuccess `json:"success,required"`
+	Result  ZoneSettingAegiUpdateResponseResult  `json:"result"`
+	JSON    zoneSettingAegiUpdateResponseJSON    `json:"-"`
 }
 
 // zoneSettingAegiUpdateResponseJSON contains the JSON metadata for the struct
 // [ZoneSettingAegiUpdateResponse]
 type zoneSettingAegiUpdateResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
+	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -267,6 +219,67 @@ func (r *ZoneSettingAegiUpdateResponse) UnmarshalJSON(data []byte) (err error) {
 
 func (r zoneSettingAegiUpdateResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful
+type ZoneSettingAegiUpdateResponseSuccess bool
+
+const (
+	ZoneSettingAegiUpdateResponseSuccessTrue ZoneSettingAegiUpdateResponseSuccess = true
+)
+
+func (r ZoneSettingAegiUpdateResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneSettingAegiUpdateResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type ZoneSettingAegiUpdateResponseResult struct {
+	// ID of the zone setting.
+	ID ZoneSettingAegiUpdateResponseResultID `json:"id,required"`
+	// Whether the setting is editable
+	Editable bool `json:"editable,required"`
+	// The value of the feature
+	Value CacheRulesAegisValue `json:"value,required"`
+	// Last time this setting was modified.
+	ModifiedOn time.Time                               `json:"modified_on,nullable" format:"date-time"`
+	JSON       zoneSettingAegiUpdateResponseResultJSON `json:"-"`
+}
+
+// zoneSettingAegiUpdateResponseResultJSON contains the JSON metadata for the
+// struct [ZoneSettingAegiUpdateResponseResult]
+type zoneSettingAegiUpdateResponseResultJSON struct {
+	ID          apijson.Field
+	Editable    apijson.Field
+	Value       apijson.Field
+	ModifiedOn  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZoneSettingAegiUpdateResponseResult) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneSettingAegiUpdateResponseResultJSON) RawJSON() string {
+	return r.raw
+}
+
+// ID of the zone setting.
+type ZoneSettingAegiUpdateResponseResultID string
+
+const (
+	ZoneSettingAegiUpdateResponseResultIDAegis ZoneSettingAegiUpdateResponseResultID = "aegis"
+)
+
+func (r ZoneSettingAegiUpdateResponseResultID) IsKnown() bool {
+	switch r {
+	case ZoneSettingAegiUpdateResponseResultIDAegis:
+		return true
+	}
+	return false
 }
 
 type ZoneSettingAegiUpdateParams struct {

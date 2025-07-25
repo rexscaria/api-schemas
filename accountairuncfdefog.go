@@ -8,15 +8,12 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
-	"reflect"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
 	"github.com/rexscaria/api-schemas/internal/param"
 	"github.com/rexscaria/api-schemas/internal/requestconfig"
 	"github.com/rexscaria/api-schemas/option"
-	"github.com/rexscaria/api-schemas/shared"
-	"github.com/tidwall/gjson"
 )
 
 // AccountAIRunCfDefogService contains methods and other services that help with
@@ -50,137 +47,7 @@ func (r *AccountAIRunCfDefogService) ExecuteSqlcoder7b2(ctx context.Context, acc
 	return
 }
 
-type AccountAIRunCfDefogExecuteSqlcoder7b2Response struct {
-	Result  AccountAIRunCfDefogExecuteSqlcoder7b2ResponseResultUnion `json:"result" format:"binary"`
-	Success bool                                                     `json:"success"`
-	JSON    accountAIRunCfDefogExecuteSqlcoder7b2ResponseJSON        `json:"-"`
-}
-
-// accountAIRunCfDefogExecuteSqlcoder7b2ResponseJSON contains the JSON metadata for
-// the struct [AccountAIRunCfDefogExecuteSqlcoder7b2Response]
-type accountAIRunCfDefogExecuteSqlcoder7b2ResponseJSON struct {
-	Result      apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountAIRunCfDefogExecuteSqlcoder7b2Response) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountAIRunCfDefogExecuteSqlcoder7b2ResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-// Union satisfied by [AccountAIRunCfDefogExecuteSqlcoder7b2ResponseResultObject]
-// or [shared.UnionString].
-type AccountAIRunCfDefogExecuteSqlcoder7b2ResponseResultUnion interface {
-	ImplementsAccountAIRunCfDefogExecuteSqlcoder7b2ResponseResultUnion()
-}
-
-func init() {
-	apijson.RegisterUnion(
-		reflect.TypeOf((*AccountAIRunCfDefogExecuteSqlcoder7b2ResponseResultUnion)(nil)).Elem(),
-		"",
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(AccountAIRunCfDefogExecuteSqlcoder7b2ResponseResultObject{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.String,
-			Type:       reflect.TypeOf(shared.UnionString("")),
-		},
-	)
-}
-
-type AccountAIRunCfDefogExecuteSqlcoder7b2ResponseResultObject struct {
-	// The generated text response from the model
-	Response string `json:"response,required"`
-	// An array of tool calls requests made during the response generation
-	ToolCalls []AccountAIRunCfDefogExecuteSqlcoder7b2ResponseResultObjectToolCall `json:"tool_calls"`
-	// Usage statistics for the inference request
-	Usage AccountAIRunCfDefogExecuteSqlcoder7b2ResponseResultObjectUsage `json:"usage"`
-	JSON  accountAIRunCfDefogExecuteSqlcoder7b2ResponseResultObjectJSON  `json:"-"`
-}
-
-// accountAIRunCfDefogExecuteSqlcoder7b2ResponseResultObjectJSON contains the JSON
-// metadata for the struct
-// [AccountAIRunCfDefogExecuteSqlcoder7b2ResponseResultObject]
-type accountAIRunCfDefogExecuteSqlcoder7b2ResponseResultObjectJSON struct {
-	Response    apijson.Field
-	ToolCalls   apijson.Field
-	Usage       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountAIRunCfDefogExecuteSqlcoder7b2ResponseResultObject) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountAIRunCfDefogExecuteSqlcoder7b2ResponseResultObjectJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r AccountAIRunCfDefogExecuteSqlcoder7b2ResponseResultObject) ImplementsAccountAIRunCfDefogExecuteSqlcoder7b2ResponseResultUnion() {
-}
-
-type AccountAIRunCfDefogExecuteSqlcoder7b2ResponseResultObjectToolCall struct {
-	// The arguments passed to be passed to the tool call request
-	Arguments interface{} `json:"arguments"`
-	// The name of the tool to be called
-	Name string                                                                `json:"name"`
-	JSON accountAIRunCfDefogExecuteSqlcoder7b2ResponseResultObjectToolCallJSON `json:"-"`
-}
-
-// accountAIRunCfDefogExecuteSqlcoder7b2ResponseResultObjectToolCallJSON contains
-// the JSON metadata for the struct
-// [AccountAIRunCfDefogExecuteSqlcoder7b2ResponseResultObjectToolCall]
-type accountAIRunCfDefogExecuteSqlcoder7b2ResponseResultObjectToolCallJSON struct {
-	Arguments   apijson.Field
-	Name        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountAIRunCfDefogExecuteSqlcoder7b2ResponseResultObjectToolCall) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountAIRunCfDefogExecuteSqlcoder7b2ResponseResultObjectToolCallJSON) RawJSON() string {
-	return r.raw
-}
-
-// Usage statistics for the inference request
-type AccountAIRunCfDefogExecuteSqlcoder7b2ResponseResultObjectUsage struct {
-	// Total number of tokens in output
-	CompletionTokens float64 `json:"completion_tokens"`
-	// Total number of tokens in input
-	PromptTokens float64 `json:"prompt_tokens"`
-	// Total number of input and output tokens
-	TotalTokens float64                                                            `json:"total_tokens"`
-	JSON        accountAIRunCfDefogExecuteSqlcoder7b2ResponseResultObjectUsageJSON `json:"-"`
-}
-
-// accountAIRunCfDefogExecuteSqlcoder7b2ResponseResultObjectUsageJSON contains the
-// JSON metadata for the struct
-// [AccountAIRunCfDefogExecuteSqlcoder7b2ResponseResultObjectUsage]
-type accountAIRunCfDefogExecuteSqlcoder7b2ResponseResultObjectUsageJSON struct {
-	CompletionTokens apijson.Field
-	PromptTokens     apijson.Field
-	TotalTokens      apijson.Field
-	raw              string
-	ExtraFields      map[string]apijson.Field
-}
-
-func (r *AccountAIRunCfDefogExecuteSqlcoder7b2ResponseResultObjectUsage) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountAIRunCfDefogExecuteSqlcoder7b2ResponseResultObjectUsageJSON) RawJSON() string {
-	return r.raw
-}
+type AccountAIRunCfDefogExecuteSqlcoder7b2Response = interface{}
 
 type AccountAIRunCfDefogExecuteSqlcoder7b2Params struct {
 	QueueRequest param.Field[string]                                  `query:"queueRequest"`

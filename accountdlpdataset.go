@@ -111,87 +111,6 @@ func (r *AccountDlpDatasetService) Delete(ctx context.Context, accountID string,
 	return
 }
 
-type APIResponseDlp struct {
-	Errors   []MessagesDlpItems `json:"errors,required"`
-	Messages []MessagesDlpItems `json:"messages,required"`
-	// Whether the API call was successful
-	Success APIResponseDlpSuccess `json:"success,required"`
-	JSON    apiResponseDlpJSON    `json:"-"`
-}
-
-// apiResponseDlpJSON contains the JSON metadata for the struct [APIResponseDlp]
-type apiResponseDlpJSON struct {
-	Errors      apijson.Field
-	Messages    apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *APIResponseDlp) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r apiResponseDlpJSON) RawJSON() string {
-	return r.raw
-}
-
-// Whether the API call was successful
-type APIResponseDlpSuccess bool
-
-const (
-	APIResponseDlpSuccessTrue APIResponseDlpSuccess = true
-)
-
-func (r APIResponseDlpSuccess) IsKnown() bool {
-	switch r {
-	case APIResponseDlpSuccessTrue:
-		return true
-	}
-	return false
-}
-
-type APIResponseSingleDlp struct {
-	Errors   []MessagesDlpItems `json:"errors,required"`
-	Messages []MessagesDlpItems `json:"messages,required"`
-	// Whether the API call was successful
-	Success APIResponseSingleDlpSuccess `json:"success,required"`
-	JSON    apiResponseSingleDlpJSON    `json:"-"`
-}
-
-// apiResponseSingleDlpJSON contains the JSON metadata for the struct
-// [APIResponseSingleDlp]
-type apiResponseSingleDlpJSON struct {
-	Errors      apijson.Field
-	Messages    apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *APIResponseSingleDlp) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r apiResponseSingleDlpJSON) RawJSON() string {
-	return r.raw
-}
-
-// Whether the API call was successful
-type APIResponseSingleDlpSuccess bool
-
-const (
-	APIResponseSingleDlpSuccessTrue APIResponseSingleDlpSuccess = true
-)
-
-func (r APIResponseSingleDlpSuccess) IsKnown() bool {
-	switch r {
-	case APIResponseSingleDlpSuccessTrue:
-		return true
-	}
-	return false
-}
-
 type Dataset struct {
 	ID              string          `json:"id,required" format:"uuid"`
 	Columns         []DatasetColumn `json:"columns,required"`
@@ -204,9 +123,10 @@ type Dataset struct {
 	// When the dataset was last updated.
 	//
 	// This includes name or description changes as well as uploads.
-	UpdatedAt time.Time       `json:"updated_at,required" format:"date-time"`
-	Uploads   []DatasetUpload `json:"uploads,required"`
-	// The description of the dataset
+	UpdatedAt     time.Time       `json:"updated_at,required" format:"date-time"`
+	Uploads       []DatasetUpload `json:"uploads,required"`
+	CaseSensitive bool            `json:"case_sensitive"`
+	// The description of the dataset.
 	Description string      `json:"description,nullable"`
 	JSON        datasetJSON `json:"-"`
 }
@@ -223,6 +143,7 @@ type datasetJSON struct {
 	Status          apijson.Field
 	UpdatedAt       apijson.Field
 	Uploads         apijson.Field
+	CaseSensitive   apijson.Field
 	Description     apijson.Field
 	raw             string
 	ExtraFields     map[string]apijson.Field
@@ -261,18 +182,22 @@ func (r datasetUploadJSON) RawJSON() string {
 }
 
 type MessagesDlpItems struct {
-	Code    int64                `json:"code,required"`
-	Message string               `json:"message,required"`
-	JSON    messagesDlpItemsJSON `json:"-"`
+	Code             int64                  `json:"code,required"`
+	Message          string                 `json:"message,required"`
+	DocumentationURL string                 `json:"documentation_url"`
+	Source           MessagesDlpItemsSource `json:"source"`
+	JSON             messagesDlpItemsJSON   `json:"-"`
 }
 
 // messagesDlpItemsJSON contains the JSON metadata for the struct
 // [MessagesDlpItems]
 type messagesDlpItemsJSON struct {
-	Code        apijson.Field
-	Message     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
 }
 
 func (r *MessagesDlpItems) UnmarshalJSON(data []byte) (err error) {
@@ -283,11 +208,33 @@ func (r messagesDlpItemsJSON) RawJSON() string {
 	return r.raw
 }
 
+type MessagesDlpItemsSource struct {
+	Pointer string                     `json:"pointer"`
+	JSON    messagesDlpItemsSourceJSON `json:"-"`
+}
+
+// messagesDlpItemsSourceJSON contains the JSON metadata for the struct
+// [MessagesDlpItemsSource]
+type messagesDlpItemsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *MessagesDlpItemsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r messagesDlpItemsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
 type UploadStatus string
 
 const (
 	UploadStatusEmpty      UploadStatus = "empty"
 	UploadStatusUploading  UploadStatus = "uploading"
+	UploadStatusPending    UploadStatus = "pending"
 	UploadStatusProcessing UploadStatus = "processing"
 	UploadStatusFailed     UploadStatus = "failed"
 	UploadStatusComplete   UploadStatus = "complete"
@@ -295,21 +242,27 @@ const (
 
 func (r UploadStatus) IsKnown() bool {
 	switch r {
-	case UploadStatusEmpty, UploadStatusUploading, UploadStatusProcessing, UploadStatusFailed, UploadStatusComplete:
+	case UploadStatusEmpty, UploadStatusUploading, UploadStatusPending, UploadStatusProcessing, UploadStatusFailed, UploadStatusComplete:
 		return true
 	}
 	return false
 }
 
 type AccountDlpDatasetNewResponse struct {
-	Result AccountDlpDatasetNewResponseResult `json:"result"`
-	JSON   accountDlpDatasetNewResponseJSON   `json:"-"`
-	APIResponseSingleDlp
+	Errors   []MessagesDlpItems `json:"errors,required"`
+	Messages []MessagesDlpItems `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountDlpDatasetNewResponseSuccess `json:"success,required"`
+	Result  AccountDlpDatasetNewResponseResult  `json:"result"`
+	JSON    accountDlpDatasetNewResponseJSON    `json:"-"`
 }
 
 // accountDlpDatasetNewResponseJSON contains the JSON metadata for the struct
 // [AccountDlpDatasetNewResponse]
 type accountDlpDatasetNewResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -323,9 +276,24 @@ func (r accountDlpDatasetNewResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountDlpDatasetNewResponseSuccess bool
+
+const (
+	AccountDlpDatasetNewResponseSuccessTrue AccountDlpDatasetNewResponseSuccess = true
+)
+
+func (r AccountDlpDatasetNewResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountDlpDatasetNewResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountDlpDatasetNewResponseResult struct {
 	Dataset Dataset `json:"dataset,required"`
-	// Encoding version to use for dataset
+	// Encoding version to use for dataset.
 	EncodingVersion int64 `json:"encoding_version,required"`
 	MaxCells        int64 `json:"max_cells,required"`
 	// The version to use when uploading the dataset.
@@ -357,14 +325,20 @@ func (r accountDlpDatasetNewResponseResultJSON) RawJSON() string {
 }
 
 type AccountDlpDatasetGetResponse struct {
-	Result Dataset                          `json:"result"`
-	JSON   accountDlpDatasetGetResponseJSON `json:"-"`
-	APIResponseSingleDlp
+	Errors   []MessagesDlpItems `json:"errors,required"`
+	Messages []MessagesDlpItems `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountDlpDatasetGetResponseSuccess `json:"success,required"`
+	Result  Dataset                             `json:"result"`
+	JSON    accountDlpDatasetGetResponseJSON    `json:"-"`
 }
 
 // accountDlpDatasetGetResponseJSON contains the JSON metadata for the struct
 // [AccountDlpDatasetGetResponse]
 type accountDlpDatasetGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -378,15 +352,36 @@ func (r accountDlpDatasetGetResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountDlpDatasetGetResponseSuccess bool
+
+const (
+	AccountDlpDatasetGetResponseSuccessTrue AccountDlpDatasetGetResponseSuccess = true
+)
+
+func (r AccountDlpDatasetGetResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountDlpDatasetGetResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountDlpDatasetUpdateResponse struct {
-	Result Dataset                             `json:"result"`
-	JSON   accountDlpDatasetUpdateResponseJSON `json:"-"`
-	APIResponseSingleDlp
+	Errors   []MessagesDlpItems `json:"errors,required"`
+	Messages []MessagesDlpItems `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountDlpDatasetUpdateResponseSuccess `json:"success,required"`
+	Result  Dataset                                `json:"result"`
+	JSON    accountDlpDatasetUpdateResponseJSON    `json:"-"`
 }
 
 // accountDlpDatasetUpdateResponseJSON contains the JSON metadata for the struct
 // [AccountDlpDatasetUpdateResponse]
 type accountDlpDatasetUpdateResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -400,15 +395,36 @@ func (r accountDlpDatasetUpdateResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountDlpDatasetUpdateResponseSuccess bool
+
+const (
+	AccountDlpDatasetUpdateResponseSuccessTrue AccountDlpDatasetUpdateResponseSuccess = true
+)
+
+func (r AccountDlpDatasetUpdateResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountDlpDatasetUpdateResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountDlpDatasetListResponse struct {
-	Result []Dataset                         `json:"result"`
-	JSON   accountDlpDatasetListResponseJSON `json:"-"`
-	APIResponseSingleDlp
+	Errors   []MessagesDlpItems `json:"errors,required"`
+	Messages []MessagesDlpItems `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountDlpDatasetListResponseSuccess `json:"success,required"`
+	Result  []Dataset                            `json:"result"`
+	JSON    accountDlpDatasetListResponseJSON    `json:"-"`
 }
 
 // accountDlpDatasetListResponseJSON contains the JSON metadata for the struct
 // [AccountDlpDatasetListResponse]
 type accountDlpDatasetListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -422,9 +438,27 @@ func (r accountDlpDatasetListResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountDlpDatasetListResponseSuccess bool
+
+const (
+	AccountDlpDatasetListResponseSuccessTrue AccountDlpDatasetListResponseSuccess = true
+)
+
+func (r AccountDlpDatasetListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountDlpDatasetListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountDlpDatasetNewParams struct {
 	Name param.Field[string] `json:"name,required"`
-	// The description of the dataset
+	// Only applies to custom word lists. Determines if the words should be matched in
+	// a case-sensitive manner Cannot be set to false if `secret` is true or undefined
+	CaseSensitive param.Field[bool] `json:"case_sensitive"`
+	// The description of the dataset.
 	Description param.Field[string] `json:"description"`
 	// Dataset encoding version
 	//
@@ -445,9 +479,13 @@ func (r AccountDlpDatasetNewParams) MarshalJSON() (data []byte, err error) {
 }
 
 type AccountDlpDatasetUpdateParams struct {
-	// The description of the dataset
+	// Determines if the words should be matched in a case-sensitive manner.
+	//
+	// Only required for custom word lists.
+	CaseSensitive param.Field[bool] `json:"case_sensitive"`
+	// The description of the dataset.
 	Description param.Field[string] `json:"description"`
-	// The name of the dataset, must be unique
+	// The name of the dataset, must be unique.
 	Name param.Field[string] `json:"name"`
 }
 

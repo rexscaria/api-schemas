@@ -58,28 +58,31 @@ func (r *AccountLogControlCmbConfigService) Update(ctx context.Context, accountI
 }
 
 // Deletes CMB config.
-func (r *AccountLogControlCmbConfigService) Delete(ctx context.Context, accountID string, body AccountLogControlCmbConfigDeleteParams, opts ...option.RequestOption) (res *AccountLogControlCmbConfigDeleteResponse, err error) {
+func (r *AccountLogControlCmbConfigService) Delete(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountLogControlCmbConfigDeleteResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
 	}
 	path := fmt.Sprintf("accounts/%s/logs/control/cmb/config", accountID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
 type CmbConfig struct {
-	// Comma-separated list of regions.
+	// Allow out of region access
+	AllowOutOfRegionAccess bool `json:"allow_out_of_region_access"`
+	// Name of the region.
 	Regions string        `json:"regions"`
 	JSON    cmbConfigJSON `json:"-"`
 }
 
 // cmbConfigJSON contains the JSON metadata for the struct [CmbConfig]
 type cmbConfigJSON struct {
-	Regions     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	AllowOutOfRegionAccess apijson.Field
+	Regions                apijson.Field
+	raw                    string
+	ExtraFields            map[string]apijson.Field
 }
 
 func (r *CmbConfig) UnmarshalJSON(data []byte) (err error) {
@@ -91,7 +94,9 @@ func (r cmbConfigJSON) RawJSON() string {
 }
 
 type CmbConfigParam struct {
-	// Comma-separated list of regions.
+	// Allow out of region access
+	AllowOutOfRegionAccess param.Field[bool] `json:"allow_out_of_region_access"`
+	// Name of the region.
 	Regions param.Field[string] `json:"regions"`
 }
 
@@ -100,14 +105,20 @@ func (r CmbConfigParam) MarshalJSON() (data []byte, err error) {
 }
 
 type CmbConfigSingleResponse struct {
-	Result CmbConfig                   `json:"result,nullable"`
-	JSON   cmbConfigSingleResponseJSON `json:"-"`
-	SingleResponseLogControl
+	Errors   []MessagesLogcontrolItem `json:"errors,required"`
+	Messages []MessagesLogcontrolItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success CmbConfigSingleResponseSuccess `json:"success,required"`
+	Result  CmbConfig                      `json:"result,nullable"`
+	JSON    cmbConfigSingleResponseJSON    `json:"-"`
 }
 
 // cmbConfigSingleResponseJSON contains the JSON metadata for the struct
 // [CmbConfigSingleResponse]
 type cmbConfigSingleResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -121,60 +132,38 @@ func (r cmbConfigSingleResponseJSON) RawJSON() string {
 	return r.raw
 }
 
-type CommonResponseLogControl struct {
-	Errors   []MessagesLogcontrolItem `json:"errors,required"`
-	Messages []MessagesLogcontrolItem `json:"messages,required"`
-	// Whether the API call was successful
-	Success CommonResponseLogControlSuccess `json:"success,required"`
-	JSON    commonResponseLogControlJSON    `json:"-"`
-}
-
-// commonResponseLogControlJSON contains the JSON metadata for the struct
-// [CommonResponseLogControl]
-type commonResponseLogControlJSON struct {
-	Errors      apijson.Field
-	Messages    apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *CommonResponseLogControl) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r commonResponseLogControlJSON) RawJSON() string {
-	return r.raw
-}
-
-// Whether the API call was successful
-type CommonResponseLogControlSuccess bool
+// Whether the API call was successful.
+type CmbConfigSingleResponseSuccess bool
 
 const (
-	CommonResponseLogControlSuccessTrue CommonResponseLogControlSuccess = true
+	CmbConfigSingleResponseSuccessTrue CmbConfigSingleResponseSuccess = true
 )
 
-func (r CommonResponseLogControlSuccess) IsKnown() bool {
+func (r CmbConfigSingleResponseSuccess) IsKnown() bool {
 	switch r {
-	case CommonResponseLogControlSuccessTrue:
+	case CmbConfigSingleResponseSuccessTrue:
 		return true
 	}
 	return false
 }
 
 type MessagesLogcontrolItem struct {
-	Code    int64                      `json:"code,required"`
-	Message string                     `json:"message,required"`
-	JSON    messagesLogcontrolItemJSON `json:"-"`
+	Code             int64                        `json:"code,required"`
+	Message          string                       `json:"message,required"`
+	DocumentationURL string                       `json:"documentation_url"`
+	Source           MessagesLogcontrolItemSource `json:"source"`
+	JSON             messagesLogcontrolItemJSON   `json:"-"`
 }
 
 // messagesLogcontrolItemJSON contains the JSON metadata for the struct
 // [MessagesLogcontrolItem]
 type messagesLogcontrolItemJSON struct {
-	Code        apijson.Field
-	Message     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
 }
 
 func (r *MessagesLogcontrolItem) UnmarshalJSON(data []byte) (err error) {
@@ -185,56 +174,42 @@ func (r messagesLogcontrolItemJSON) RawJSON() string {
 	return r.raw
 }
 
-type SingleResponseLogControl struct {
-	Errors   []MessagesLogcontrolItem `json:"errors,required"`
-	Messages []MessagesLogcontrolItem `json:"messages,required"`
-	// Whether the API call was successful
-	Success SingleResponseLogControlSuccess `json:"success,required"`
-	JSON    singleResponseLogControlJSON    `json:"-"`
+type MessagesLogcontrolItemSource struct {
+	Pointer string                           `json:"pointer"`
+	JSON    messagesLogcontrolItemSourceJSON `json:"-"`
 }
 
-// singleResponseLogControlJSON contains the JSON metadata for the struct
-// [SingleResponseLogControl]
-type singleResponseLogControlJSON struct {
-	Errors      apijson.Field
-	Messages    apijson.Field
-	Success     apijson.Field
+// messagesLogcontrolItemSourceJSON contains the JSON metadata for the struct
+// [MessagesLogcontrolItemSource]
+type messagesLogcontrolItemSourceJSON struct {
+	Pointer     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *SingleResponseLogControl) UnmarshalJSON(data []byte) (err error) {
+func (r *MessagesLogcontrolItemSource) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r singleResponseLogControlJSON) RawJSON() string {
+func (r messagesLogcontrolItemSourceJSON) RawJSON() string {
 	return r.raw
 }
 
-// Whether the API call was successful
-type SingleResponseLogControlSuccess bool
-
-const (
-	SingleResponseLogControlSuccessTrue SingleResponseLogControlSuccess = true
-)
-
-func (r SingleResponseLogControlSuccess) IsKnown() bool {
-	switch r {
-	case SingleResponseLogControlSuccessTrue:
-		return true
-	}
-	return false
-}
-
 type AccountLogControlCmbConfigDeleteResponse struct {
-	Result interface{}                                  `json:"result,nullable"`
-	JSON   accountLogControlCmbConfigDeleteResponseJSON `json:"-"`
-	CommonResponseLogControl
+	Errors   []MessagesLogcontrolItem `json:"errors,required"`
+	Messages []MessagesLogcontrolItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountLogControlCmbConfigDeleteResponseSuccess `json:"success,required"`
+	Result  interface{}                                     `json:"result,nullable"`
+	JSON    accountLogControlCmbConfigDeleteResponseJSON    `json:"-"`
 }
 
 // accountLogControlCmbConfigDeleteResponseJSON contains the JSON metadata for the
 // struct [AccountLogControlCmbConfigDeleteResponse]
 type accountLogControlCmbConfigDeleteResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -248,18 +223,25 @@ func (r accountLogControlCmbConfigDeleteResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountLogControlCmbConfigDeleteResponseSuccess bool
+
+const (
+	AccountLogControlCmbConfigDeleteResponseSuccessTrue AccountLogControlCmbConfigDeleteResponseSuccess = true
+)
+
+func (r AccountLogControlCmbConfigDeleteResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountLogControlCmbConfigDeleteResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountLogControlCmbConfigUpdateParams struct {
 	CmbConfig CmbConfigParam `json:"cmb_config,required"`
 }
 
 func (r AccountLogControlCmbConfigUpdateParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r.CmbConfig)
-}
-
-type AccountLogControlCmbConfigDeleteParams struct {
-	Body interface{} `json:"body,required"`
-}
-
-func (r AccountLogControlCmbConfigDeleteParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
 }

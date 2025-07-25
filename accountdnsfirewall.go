@@ -97,7 +97,7 @@ func (r *AccountDNSFirewallService) List(ctx context.Context, accountID string, 
 }
 
 // Delete a DNS Firewall cluster
-func (r *AccountDNSFirewallService) Delete(ctx context.Context, accountID string, dnsFirewallID string, body AccountDNSFirewallDeleteParams, opts ...option.RequestOption) (res *AccountDNSFirewallDeleteResponse, err error) {
+func (r *AccountDNSFirewallService) Delete(ctx context.Context, accountID string, dnsFirewallID string, opts ...option.RequestOption) (res *AccountDNSFirewallDeleteResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
@@ -108,172 +108,8 @@ func (r *AccountDNSFirewallService) Delete(ctx context.Context, accountID string
 		return
 	}
 	path := fmt.Sprintf("accounts/%s/dns_firewall/%s", accountID, dnsFirewallID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
-}
-
-type APIResponseDNSFirewall struct {
-	Errors   []MessagesDNSFirewallItem `json:"errors,required"`
-	Messages []MessagesDNSFirewallItem `json:"messages,required"`
-	// Whether the API call was successful.
-	Success APIResponseDNSFirewallSuccess `json:"success,required"`
-	JSON    apiResponseDNSFirewallJSON    `json:"-"`
-}
-
-// apiResponseDNSFirewallJSON contains the JSON metadata for the struct
-// [APIResponseDNSFirewall]
-type apiResponseDNSFirewallJSON struct {
-	Errors      apijson.Field
-	Messages    apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *APIResponseDNSFirewall) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r apiResponseDNSFirewallJSON) RawJSON() string {
-	return r.raw
-}
-
-// Whether the API call was successful.
-type APIResponseDNSFirewallSuccess bool
-
-const (
-	APIResponseDNSFirewallSuccessTrue APIResponseDNSFirewallSuccess = true
-)
-
-func (r APIResponseDNSFirewallSuccess) IsKnown() bool {
-	switch r {
-	case APIResponseDNSFirewallSuccessTrue:
-		return true
-	}
-	return false
-}
-
-type APIResponseSingleDNSFirewall struct {
-	Errors   []MessagesDNSFirewallItem `json:"errors,required"`
-	Messages []MessagesDNSFirewallItem `json:"messages,required"`
-	// Whether the API call was successful.
-	Success APIResponseSingleDNSFirewallSuccess `json:"success,required"`
-	JSON    apiResponseSingleDNSFirewallJSON    `json:"-"`
-}
-
-// apiResponseSingleDNSFirewallJSON contains the JSON metadata for the struct
-// [APIResponseSingleDNSFirewall]
-type apiResponseSingleDNSFirewallJSON struct {
-	Errors      apijson.Field
-	Messages    apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *APIResponseSingleDNSFirewall) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r apiResponseSingleDNSFirewallJSON) RawJSON() string {
-	return r.raw
-}
-
-// Whether the API call was successful.
-type APIResponseSingleDNSFirewallSuccess bool
-
-const (
-	APIResponseSingleDNSFirewallSuccessTrue APIResponseSingleDNSFirewallSuccess = true
-)
-
-func (r APIResponseSingleDNSFirewallSuccess) IsKnown() bool {
-	switch r {
-	case APIResponseSingleDNSFirewallSuccessTrue:
-		return true
-	}
-	return false
-}
-
-type DNSFirewallCluster struct {
-	// Attack mitigation settings
-	AttackMitigation DNSFirewallClusterAttackMitigation `json:"attack_mitigation,nullable"`
-	// Whether to refuse to answer queries for the ANY type
-	DeprecateAnyRequests bool `json:"deprecate_any_requests"`
-	// Whether to forward client IP (resolver) subnet if no EDNS Client Subnet is sent
-	EcsFallback bool `json:"ecs_fallback"`
-	// Maximum DNS cache TTL This setting sets an upper bound on DNS TTLs for purposes
-	// of caching between DNS Firewall and the upstream servers. Higher TTLs will be
-	// decreased to the maximum defined here for caching purposes.
-	MaximumCacheTtl float64 `json:"maximum_cache_ttl"`
-	// Minimum DNS cache TTL This setting sets a lower bound on DNS TTLs for purposes
-	// of caching between DNS Firewall and the upstream servers. Lower TTLs will be
-	// increased to the minimum defined here for caching purposes.
-	MinimumCacheTtl float64 `json:"minimum_cache_ttl"`
-	// DNS Firewall cluster name
-	Name string `json:"name"`
-	// Negative DNS cache TTL This setting controls how long DNS Firewall should cache
-	// negative responses (e.g., NXDOMAIN) from the upstream servers.
-	NegativeCacheTtl float64 `json:"negative_cache_ttl,nullable"`
-	// Ratelimit in queries per second per datacenter (applies to DNS queries sent to
-	// the upstream nameservers configured on the cluster)
-	Ratelimit float64 `json:"ratelimit,nullable"`
-	// Number of retries for fetching DNS responses from upstream nameservers (not
-	// counting the initial attempt)
-	Retries     float64                `json:"retries"`
-	UpstreamIPs []string               `json:"upstream_ips" format:"ipv4"`
-	JSON        dnsFirewallClusterJSON `json:"-"`
-}
-
-// dnsFirewallClusterJSON contains the JSON metadata for the struct
-// [DNSFirewallCluster]
-type dnsFirewallClusterJSON struct {
-	AttackMitigation     apijson.Field
-	DeprecateAnyRequests apijson.Field
-	EcsFallback          apijson.Field
-	MaximumCacheTtl      apijson.Field
-	MinimumCacheTtl      apijson.Field
-	Name                 apijson.Field
-	NegativeCacheTtl     apijson.Field
-	Ratelimit            apijson.Field
-	Retries              apijson.Field
-	UpstreamIPs          apijson.Field
-	raw                  string
-	ExtraFields          map[string]apijson.Field
-}
-
-func (r *DNSFirewallCluster) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r dnsFirewallClusterJSON) RawJSON() string {
-	return r.raw
-}
-
-// Attack mitigation settings
-type DNSFirewallClusterAttackMitigation struct {
-	// When enabled, automatically mitigate random-prefix attacks to protect upstream
-	// DNS servers
-	Enabled bool `json:"enabled"`
-	// Only mitigate attacks when upstream servers seem unhealthy
-	OnlyWhenUpstreamUnhealthy bool                                   `json:"only_when_upstream_unhealthy"`
-	JSON                      dnsFirewallClusterAttackMitigationJSON `json:"-"`
-}
-
-// dnsFirewallClusterAttackMitigationJSON contains the JSON metadata for the struct
-// [DNSFirewallClusterAttackMitigation]
-type dnsFirewallClusterAttackMitigationJSON struct {
-	Enabled                   apijson.Field
-	OnlyWhenUpstreamUnhealthy apijson.Field
-	raw                       string
-	ExtraFields               map[string]apijson.Field
-}
-
-func (r *DNSFirewallClusterAttackMitigation) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r dnsFirewallClusterAttackMitigationJSON) RawJSON() string {
-	return r.raw
 }
 
 type DNSFirewallClusterParam struct {
@@ -324,22 +160,57 @@ func (r DNSFirewallClusterAttackMitigationParam) MarshalJSON() (data []byte, err
 
 type DNSFirewallClusterResponse struct {
 	// Identifier.
-	ID             string   `json:"id,required"`
-	DNSFirewallIPs []string `json:"dns_firewall_ips,required" format:"ipv4"`
+	ID string `json:"id,required"`
+	// Whether to refuse to answer queries for the ANY type
+	DeprecateAnyRequests bool     `json:"deprecate_any_requests,required"`
+	DNSFirewallIPs       []string `json:"dns_firewall_ips,required" format:"ipv4"`
+	// Whether to forward client IP (resolver) subnet if no EDNS Client Subnet is sent
+	EcsFallback bool `json:"ecs_fallback,required"`
+	// Maximum DNS cache TTL This setting sets an upper bound on DNS TTLs for purposes
+	// of caching between DNS Firewall and the upstream servers. Higher TTLs will be
+	// decreased to the maximum defined here for caching purposes.
+	MaximumCacheTtl float64 `json:"maximum_cache_ttl,required"`
+	// Minimum DNS cache TTL This setting sets a lower bound on DNS TTLs for purposes
+	// of caching between DNS Firewall and the upstream servers. Lower TTLs will be
+	// increased to the minimum defined here for caching purposes.
+	MinimumCacheTtl float64 `json:"minimum_cache_ttl,required"`
 	// Last modification of DNS Firewall cluster
-	ModifiedOn time.Time                      `json:"modified_on,required" format:"date-time"`
-	JSON       dnsFirewallClusterResponseJSON `json:"-"`
-	DNSFirewallCluster
+	ModifiedOn time.Time `json:"modified_on,required" format:"date-time"`
+	// DNS Firewall cluster name
+	Name string `json:"name,required"`
+	// Negative DNS cache TTL This setting controls how long DNS Firewall should cache
+	// negative responses (e.g., NXDOMAIN) from the upstream servers.
+	NegativeCacheTtl float64 `json:"negative_cache_ttl,required,nullable"`
+	// Ratelimit in queries per second per datacenter (applies to DNS queries sent to
+	// the upstream nameservers configured on the cluster)
+	Ratelimit float64 `json:"ratelimit,required,nullable"`
+	// Number of retries for fetching DNS responses from upstream nameservers (not
+	// counting the initial attempt)
+	Retries     float64  `json:"retries,required"`
+	UpstreamIPs []string `json:"upstream_ips,required" format:"ipv4"`
+	// Attack mitigation settings
+	AttackMitigation DNSFirewallClusterResponseAttackMitigation `json:"attack_mitigation,nullable"`
+	JSON             dnsFirewallClusterResponseJSON             `json:"-"`
 }
 
 // dnsFirewallClusterResponseJSON contains the JSON metadata for the struct
 // [DNSFirewallClusterResponse]
 type dnsFirewallClusterResponseJSON struct {
-	ID             apijson.Field
-	DNSFirewallIPs apijson.Field
-	ModifiedOn     apijson.Field
-	raw            string
-	ExtraFields    map[string]apijson.Field
+	ID                   apijson.Field
+	DeprecateAnyRequests apijson.Field
+	DNSFirewallIPs       apijson.Field
+	EcsFallback          apijson.Field
+	MaximumCacheTtl      apijson.Field
+	MinimumCacheTtl      apijson.Field
+	ModifiedOn           apijson.Field
+	Name                 apijson.Field
+	NegativeCacheTtl     apijson.Field
+	Ratelimit            apijson.Field
+	Retries              apijson.Field
+	UpstreamIPs          apijson.Field
+	AttackMitigation     apijson.Field
+	raw                  string
+	ExtraFields          map[string]apijson.Field
 }
 
 func (r *DNSFirewallClusterResponse) UnmarshalJSON(data []byte) (err error) {
@@ -350,15 +221,48 @@ func (r dnsFirewallClusterResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Attack mitigation settings
+type DNSFirewallClusterResponseAttackMitigation struct {
+	// When enabled, automatically mitigate random-prefix attacks to protect upstream
+	// DNS servers
+	Enabled bool `json:"enabled"`
+	// Only mitigate attacks when upstream servers seem unhealthy
+	OnlyWhenUpstreamUnhealthy bool                                           `json:"only_when_upstream_unhealthy"`
+	JSON                      dnsFirewallClusterResponseAttackMitigationJSON `json:"-"`
+}
+
+// dnsFirewallClusterResponseAttackMitigationJSON contains the JSON metadata for
+// the struct [DNSFirewallClusterResponseAttackMitigation]
+type dnsFirewallClusterResponseAttackMitigationJSON struct {
+	Enabled                   apijson.Field
+	OnlyWhenUpstreamUnhealthy apijson.Field
+	raw                       string
+	ExtraFields               map[string]apijson.Field
+}
+
+func (r *DNSFirewallClusterResponseAttackMitigation) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r dnsFirewallClusterResponseAttackMitigationJSON) RawJSON() string {
+	return r.raw
+}
+
 type DNSFirewallSingleResponse struct {
-	Result DNSFirewallClusterResponse    `json:"result"`
-	JSON   dnsFirewallSingleResponseJSON `json:"-"`
-	APIResponseSingleDNSFirewall
+	Errors   []MessagesDNSFirewallItem `json:"errors,required"`
+	Messages []MessagesDNSFirewallItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success DNSFirewallSingleResponseSuccess `json:"success,required"`
+	Result  DNSFirewallClusterResponse       `json:"result"`
+	JSON    dnsFirewallSingleResponseJSON    `json:"-"`
 }
 
 // dnsFirewallSingleResponseJSON contains the JSON metadata for the struct
 // [DNSFirewallSingleResponse]
 type dnsFirewallSingleResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -370,6 +274,21 @@ func (r *DNSFirewallSingleResponse) UnmarshalJSON(data []byte) (err error) {
 
 func (r dnsFirewallSingleResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type DNSFirewallSingleResponseSuccess bool
+
+const (
+	DNSFirewallSingleResponseSuccessTrue DNSFirewallSingleResponseSuccess = true
+)
+
+func (r DNSFirewallSingleResponseSuccess) IsKnown() bool {
+	switch r {
+	case DNSFirewallSingleResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type MessagesDNSFirewallItem struct {
@@ -421,15 +340,21 @@ func (r messagesDNSFirewallItemSourceJSON) RawJSON() string {
 }
 
 type AccountDNSFirewallListResponse struct {
+	Errors   []MessagesDNSFirewallItem `json:"errors,required"`
+	Messages []MessagesDNSFirewallItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success    AccountDNSFirewallListResponseSuccess    `json:"success,required"`
 	Result     []DNSFirewallClusterResponse             `json:"result"`
 	ResultInfo AccountDNSFirewallListResponseResultInfo `json:"result_info"`
 	JSON       accountDNSFirewallListResponseJSON       `json:"-"`
-	APIResponseDNSFirewall
 }
 
 // accountDNSFirewallListResponseJSON contains the JSON metadata for the struct
 // [AccountDNSFirewallListResponse]
 type accountDNSFirewallListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	ResultInfo  apijson.Field
 	raw         string
@@ -442,6 +367,21 @@ func (r *AccountDNSFirewallListResponse) UnmarshalJSON(data []byte) (err error) 
 
 func (r accountDNSFirewallListResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountDNSFirewallListResponseSuccess bool
+
+const (
+	AccountDNSFirewallListResponseSuccessTrue AccountDNSFirewallListResponseSuccess = true
+)
+
+func (r AccountDNSFirewallListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountDNSFirewallListResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountDNSFirewallListResponseResultInfo struct {
@@ -476,14 +416,20 @@ func (r accountDNSFirewallListResponseResultInfoJSON) RawJSON() string {
 }
 
 type AccountDNSFirewallDeleteResponse struct {
-	Result AccountDNSFirewallDeleteResponseResult `json:"result"`
-	JSON   accountDNSFirewallDeleteResponseJSON   `json:"-"`
-	APIResponseSingleDNSFirewall
+	Errors   []MessagesDNSFirewallItem `json:"errors,required"`
+	Messages []MessagesDNSFirewallItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountDNSFirewallDeleteResponseSuccess `json:"success,required"`
+	Result  AccountDNSFirewallDeleteResponseResult  `json:"result"`
+	JSON    accountDNSFirewallDeleteResponseJSON    `json:"-"`
 }
 
 // accountDNSFirewallDeleteResponseJSON contains the JSON metadata for the struct
 // [AccountDNSFirewallDeleteResponse]
 type accountDNSFirewallDeleteResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -495,6 +441,21 @@ func (r *AccountDNSFirewallDeleteResponse) UnmarshalJSON(data []byte) (err error
 
 func (r accountDNSFirewallDeleteResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountDNSFirewallDeleteResponseSuccess bool
+
+const (
+	AccountDNSFirewallDeleteResponseSuccessTrue AccountDNSFirewallDeleteResponseSuccess = true
+)
+
+func (r AccountDNSFirewallDeleteResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountDNSFirewallDeleteResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountDNSFirewallDeleteResponseResult struct {
@@ -549,12 +510,4 @@ func (r AccountDNSFirewallListParams) URLQuery() (v url.Values) {
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
-}
-
-type AccountDNSFirewallDeleteParams struct {
-	Body interface{} `json:"body,required"`
-}
-
-func (r AccountDNSFirewallDeleteParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
 }

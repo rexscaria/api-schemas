@@ -78,15 +78,21 @@ func (r *AccountImageV1KeyService) Delete(ctx context.Context, accountID string,
 }
 
 type ImageKeyResponseCollection struct {
-	Result ImageKeyResponseCollectionResult `json:"result"`
-	JSON   imageKeyResponseCollectionJSON   `json:"-"`
-	APIResponseImages
+	Errors   []ImageKeyResponseCollectionError   `json:"errors,required"`
+	Messages []ImageKeyResponseCollectionMessage `json:"messages,required"`
+	Result   ImageKeyResponseCollectionResult    `json:"result,required"`
+	// Whether the API call was successful
+	Success ImageKeyResponseCollectionSuccess `json:"success,required"`
+	JSON    imageKeyResponseCollectionJSON    `json:"-"`
 }
 
 // imageKeyResponseCollectionJSON contains the JSON metadata for the struct
 // [ImageKeyResponseCollection]
 type imageKeyResponseCollectionJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -96,6 +102,102 @@ func (r *ImageKeyResponseCollection) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (r imageKeyResponseCollectionJSON) RawJSON() string {
+	return r.raw
+}
+
+type ImageKeyResponseCollectionError struct {
+	Code             int64                                  `json:"code,required"`
+	Message          string                                 `json:"message,required"`
+	DocumentationURL string                                 `json:"documentation_url"`
+	Source           ImageKeyResponseCollectionErrorsSource `json:"source"`
+	JSON             imageKeyResponseCollectionErrorJSON    `json:"-"`
+}
+
+// imageKeyResponseCollectionErrorJSON contains the JSON metadata for the struct
+// [ImageKeyResponseCollectionError]
+type imageKeyResponseCollectionErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *ImageKeyResponseCollectionError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r imageKeyResponseCollectionErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type ImageKeyResponseCollectionErrorsSource struct {
+	Pointer string                                     `json:"pointer"`
+	JSON    imageKeyResponseCollectionErrorsSourceJSON `json:"-"`
+}
+
+// imageKeyResponseCollectionErrorsSourceJSON contains the JSON metadata for the
+// struct [ImageKeyResponseCollectionErrorsSource]
+type imageKeyResponseCollectionErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ImageKeyResponseCollectionErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r imageKeyResponseCollectionErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type ImageKeyResponseCollectionMessage struct {
+	Code             int64                                    `json:"code,required"`
+	Message          string                                   `json:"message,required"`
+	DocumentationURL string                                   `json:"documentation_url"`
+	Source           ImageKeyResponseCollectionMessagesSource `json:"source"`
+	JSON             imageKeyResponseCollectionMessageJSON    `json:"-"`
+}
+
+// imageKeyResponseCollectionMessageJSON contains the JSON metadata for the struct
+// [ImageKeyResponseCollectionMessage]
+type imageKeyResponseCollectionMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *ImageKeyResponseCollectionMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r imageKeyResponseCollectionMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type ImageKeyResponseCollectionMessagesSource struct {
+	Pointer string                                       `json:"pointer"`
+	JSON    imageKeyResponseCollectionMessagesSourceJSON `json:"-"`
+}
+
+// imageKeyResponseCollectionMessagesSourceJSON contains the JSON metadata for the
+// struct [ImageKeyResponseCollectionMessagesSource]
+type imageKeyResponseCollectionMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ImageKeyResponseCollectionMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r imageKeyResponseCollectionMessagesSourceJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -143,4 +245,19 @@ func (r *ImageKeyResponseCollectionResultKey) UnmarshalJSON(data []byte) (err er
 
 func (r imageKeyResponseCollectionResultKeyJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful
+type ImageKeyResponseCollectionSuccess bool
+
+const (
+	ImageKeyResponseCollectionSuccessTrue ImageKeyResponseCollectionSuccess = true
+)
+
+func (r ImageKeyResponseCollectionSuccess) IsKnown() bool {
+	switch r {
+	case ImageKeyResponseCollectionSuccessTrue:
+		return true
+	}
+	return false
 }

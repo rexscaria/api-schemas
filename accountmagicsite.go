@@ -105,7 +105,7 @@ func (r *AccountMagicSiteService) List(ctx context.Context, accountID string, qu
 }
 
 // Remove a specific Site.
-func (r *AccountMagicSiteService) Delete(ctx context.Context, accountID string, siteID string, body AccountMagicSiteDeleteParams, opts ...option.RequestOption) (res *AccountMagicSiteDeleteResponse, err error) {
+func (r *AccountMagicSiteService) Delete(ctx context.Context, accountID string, siteID string, opts ...option.RequestOption) (res *AccountMagicSiteDeleteResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
@@ -116,7 +116,7 @@ func (r *AccountMagicSiteService) Delete(ctx context.Context, accountID string, 
 		return
 	}
 	path := fmt.Sprintf("accounts/%s/magic/sites/%s", accountID, siteID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
@@ -214,15 +214,21 @@ func (r MagicSiteLocationParam) MarshalJSON() (data []byte, err error) {
 }
 
 type MagicSiteModifiedResponse struct {
-	Result MagicSite                     `json:"result"`
-	JSON   magicSiteModifiedResponseJSON `json:"-"`
-	MagicAPIResponseSingle
+	Errors   []MagicMessageItem `json:"errors,required"`
+	Messages []MagicMessageItem `json:"messages,required"`
+	Result   MagicSite          `json:"result,required"`
+	// Whether the API call was successful
+	Success MagicSiteModifiedResponseSuccess `json:"success,required"`
+	JSON    magicSiteModifiedResponseJSON    `json:"-"`
 }
 
 // magicSiteModifiedResponseJSON contains the JSON metadata for the struct
 // [MagicSiteModifiedResponse]
 type magicSiteModifiedResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -235,16 +241,37 @@ func (r magicSiteModifiedResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful
+type MagicSiteModifiedResponseSuccess bool
+
+const (
+	MagicSiteModifiedResponseSuccessTrue MagicSiteModifiedResponseSuccess = true
+)
+
+func (r MagicSiteModifiedResponseSuccess) IsKnown() bool {
+	switch r {
+	case MagicSiteModifiedResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type MagicSiteSingleResponse struct {
-	Result MagicSite                   `json:"result"`
-	JSON   magicSiteSingleResponseJSON `json:"-"`
-	MagicAPIResponseSingle
+	Errors   []MagicMessageItem `json:"errors,required"`
+	Messages []MagicMessageItem `json:"messages,required"`
+	Result   MagicSite          `json:"result,required"`
+	// Whether the API call was successful
+	Success MagicSiteSingleResponseSuccess `json:"success,required"`
+	JSON    magicSiteSingleResponseJSON    `json:"-"`
 }
 
 // magicSiteSingleResponseJSON contains the JSON metadata for the struct
 // [MagicSiteSingleResponse]
 type magicSiteSingleResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -255,6 +282,21 @@ func (r *MagicSiteSingleResponse) UnmarshalJSON(data []byte) (err error) {
 
 func (r magicSiteSingleResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful
+type MagicSiteSingleResponseSuccess bool
+
+const (
+	MagicSiteSingleResponseSuccessTrue MagicSiteSingleResponseSuccess = true
+)
+
+func (r MagicSiteSingleResponseSuccess) IsKnown() bool {
+	switch r {
+	case MagicSiteSingleResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type MagicSiteUpdateRequestParam struct {
@@ -274,15 +316,21 @@ func (r MagicSiteUpdateRequestParam) MarshalJSON() (data []byte, err error) {
 }
 
 type AccountMagicSiteListResponse struct {
-	Result []MagicSite                      `json:"result"`
-	JSON   accountMagicSiteListResponseJSON `json:"-"`
-	MagicAPIResponseSingle
+	Errors   []MagicMessageItem `json:"errors,required"`
+	Messages []MagicMessageItem `json:"messages,required"`
+	Result   []MagicSite        `json:"result,required"`
+	// Whether the API call was successful
+	Success AccountMagicSiteListResponseSuccess `json:"success,required"`
+	JSON    accountMagicSiteListResponseJSON    `json:"-"`
 }
 
 // accountMagicSiteListResponseJSON contains the JSON metadata for the struct
 // [AccountMagicSiteListResponse]
 type accountMagicSiteListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -295,16 +343,37 @@ func (r accountMagicSiteListResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful
+type AccountMagicSiteListResponseSuccess bool
+
+const (
+	AccountMagicSiteListResponseSuccessTrue AccountMagicSiteListResponseSuccess = true
+)
+
+func (r AccountMagicSiteListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountMagicSiteListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountMagicSiteDeleteResponse struct {
-	Result MagicSite                          `json:"result"`
-	JSON   accountMagicSiteDeleteResponseJSON `json:"-"`
-	MagicAPIResponseSingle
+	Errors   []MagicMessageItem `json:"errors,required"`
+	Messages []MagicMessageItem `json:"messages,required"`
+	Result   MagicSite          `json:"result,required"`
+	// Whether the API call was successful
+	Success AccountMagicSiteDeleteResponseSuccess `json:"success,required"`
+	JSON    accountMagicSiteDeleteResponseJSON    `json:"-"`
 }
 
 // accountMagicSiteDeleteResponseJSON contains the JSON metadata for the struct
 // [AccountMagicSiteDeleteResponse]
 type accountMagicSiteDeleteResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -315,6 +384,21 @@ func (r *AccountMagicSiteDeleteResponse) UnmarshalJSON(data []byte) (err error) 
 
 func (r accountMagicSiteDeleteResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful
+type AccountMagicSiteDeleteResponseSuccess bool
+
+const (
+	AccountMagicSiteDeleteResponseSuccessTrue AccountMagicSiteDeleteResponseSuccess = true
+)
+
+func (r AccountMagicSiteDeleteResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountMagicSiteDeleteResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountMagicSiteNewParams struct {
@@ -360,14 +444,6 @@ func (r AccountMagicSiteListParams) URLQuery() (v url.Values) {
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
-}
-
-type AccountMagicSiteDeleteParams struct {
-	Body interface{} `json:"body,required"`
-}
-
-func (r AccountMagicSiteDeleteParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
 }
 
 type AccountMagicSitePatchParams struct {

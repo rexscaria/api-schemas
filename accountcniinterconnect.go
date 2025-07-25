@@ -240,12 +240,14 @@ func (r nscInterconnectNscInterconnectPhysicalBodyJSON) RawJSON() string {
 func (r NscInterconnectNscInterconnectPhysicalBody) implementsNscInterconnect() {}
 
 type NscInterconnectNscInterconnectGcpPartnerBody struct {
-	Account string                                           `json:"account,required"`
-	Name    string                                           `json:"name,required"`
-	Region  string                                           `json:"region,required"`
-	Type    string                                           `json:"type,required"`
-	Owner   string                                           `json:"owner"`
-	JSON    nscInterconnectNscInterconnectGcpPartnerBodyJSON `json:"-"`
+	Account string `json:"account,required"`
+	Name    string `json:"name,required"`
+	Region  string `json:"region,required"`
+	Type    string `json:"type,required"`
+	Owner   string `json:"owner"`
+	// Bandwidth structure as visible through the customer-facing API.
+	Speed NscInterconnectNscInterconnectGcpPartnerBodySpeed `json:"speed"`
+	JSON  nscInterconnectNscInterconnectGcpPartnerBodyJSON  `json:"-"`
 }
 
 // nscInterconnectNscInterconnectGcpPartnerBodyJSON contains the JSON metadata for
@@ -256,6 +258,7 @@ type nscInterconnectNscInterconnectGcpPartnerBodyJSON struct {
 	Region      apijson.Field
 	Type        apijson.Field
 	Owner       apijson.Field
+	Speed       apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -269,6 +272,32 @@ func (r nscInterconnectNscInterconnectGcpPartnerBodyJSON) RawJSON() string {
 }
 
 func (r NscInterconnectNscInterconnectGcpPartnerBody) implementsNscInterconnect() {}
+
+// Bandwidth structure as visible through the customer-facing API.
+type NscInterconnectNscInterconnectGcpPartnerBodySpeed string
+
+const (
+	NscInterconnectNscInterconnectGcpPartnerBodySpeed50M  NscInterconnectNscInterconnectGcpPartnerBodySpeed = "50M"
+	NscInterconnectNscInterconnectGcpPartnerBodySpeed100M NscInterconnectNscInterconnectGcpPartnerBodySpeed = "100M"
+	NscInterconnectNscInterconnectGcpPartnerBodySpeed200M NscInterconnectNscInterconnectGcpPartnerBodySpeed = "200M"
+	NscInterconnectNscInterconnectGcpPartnerBodySpeed300M NscInterconnectNscInterconnectGcpPartnerBodySpeed = "300M"
+	NscInterconnectNscInterconnectGcpPartnerBodySpeed400M NscInterconnectNscInterconnectGcpPartnerBodySpeed = "400M"
+	NscInterconnectNscInterconnectGcpPartnerBodySpeed500M NscInterconnectNscInterconnectGcpPartnerBodySpeed = "500M"
+	NscInterconnectNscInterconnectGcpPartnerBodySpeed1G   NscInterconnectNscInterconnectGcpPartnerBodySpeed = "1G"
+	NscInterconnectNscInterconnectGcpPartnerBodySpeed2G   NscInterconnectNscInterconnectGcpPartnerBodySpeed = "2G"
+	NscInterconnectNscInterconnectGcpPartnerBodySpeed5G   NscInterconnectNscInterconnectGcpPartnerBodySpeed = "5G"
+	NscInterconnectNscInterconnectGcpPartnerBodySpeed10G  NscInterconnectNscInterconnectGcpPartnerBodySpeed = "10G"
+	NscInterconnectNscInterconnectGcpPartnerBodySpeed20G  NscInterconnectNscInterconnectGcpPartnerBodySpeed = "20G"
+	NscInterconnectNscInterconnectGcpPartnerBodySpeed50G  NscInterconnectNscInterconnectGcpPartnerBodySpeed = "50G"
+)
+
+func (r NscInterconnectNscInterconnectGcpPartnerBodySpeed) IsKnown() bool {
+	switch r {
+	case NscInterconnectNscInterconnectGcpPartnerBodySpeed50M, NscInterconnectNscInterconnectGcpPartnerBodySpeed100M, NscInterconnectNscInterconnectGcpPartnerBodySpeed200M, NscInterconnectNscInterconnectGcpPartnerBodySpeed300M, NscInterconnectNscInterconnectGcpPartnerBodySpeed400M, NscInterconnectNscInterconnectGcpPartnerBodySpeed500M, NscInterconnectNscInterconnectGcpPartnerBodySpeed1G, NscInterconnectNscInterconnectGcpPartnerBodySpeed2G, NscInterconnectNscInterconnectGcpPartnerBodySpeed5G, NscInterconnectNscInterconnectGcpPartnerBodySpeed10G, NscInterconnectNscInterconnectGcpPartnerBodySpeed20G, NscInterconnectNscInterconnectGcpPartnerBodySpeed50G:
+		return true
+	}
+	return false
+}
 
 type AccountCniInterconnectListResponse struct {
 	Items []NscInterconnect                      `json:"items,required"`

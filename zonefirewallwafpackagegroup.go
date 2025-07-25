@@ -8,15 +8,12 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
-	"reflect"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
 	"github.com/rexscaria/api-schemas/internal/param"
 	"github.com/rexscaria/api-schemas/internal/requestconfig"
 	"github.com/rexscaria/api-schemas/option"
-	"github.com/rexscaria/api-schemas/shared"
-	"github.com/tidwall/gjson"
 )
 
 // ZoneFirewallWafPackageGroupService contains methods and other services that help
@@ -110,165 +107,23 @@ func (r *ZoneFirewallWafPackageGroupService) List(ctx context.Context, zoneID st
 	return
 }
 
-type WafManagedRulesAPIResponseCollection struct {
-	Result     []interface{}                                  `json:"result,nullable"`
-	ResultInfo WafManagedRulesAPIResponseCollectionResultInfo `json:"result_info"`
-	JSON       wafManagedRulesAPIResponseCollectionJSON       `json:"-"`
-	WafManagedRulesAPIResponseCommon
-}
-
-// wafManagedRulesAPIResponseCollectionJSON contains the JSON metadata for the
-// struct [WafManagedRulesAPIResponseCollection]
-type wafManagedRulesAPIResponseCollectionJSON struct {
-	Result      apijson.Field
-	ResultInfo  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *WafManagedRulesAPIResponseCollection) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r wafManagedRulesAPIResponseCollectionJSON) RawJSON() string {
-	return r.raw
-}
-
-type WafManagedRulesAPIResponseCollectionResultInfo struct {
-	// Total number of results for the requested service
-	Count float64 `json:"count"`
-	// Current page within paginated list of results
-	Page float64 `json:"page"`
-	// Number of results per page of results
-	PerPage float64 `json:"per_page"`
-	// Total results available without any search parameters
-	TotalCount float64                                            `json:"total_count"`
-	JSON       wafManagedRulesAPIResponseCollectionResultInfoJSON `json:"-"`
-}
-
-// wafManagedRulesAPIResponseCollectionResultInfoJSON contains the JSON metadata
-// for the struct [WafManagedRulesAPIResponseCollectionResultInfo]
-type wafManagedRulesAPIResponseCollectionResultInfoJSON struct {
-	Count       apijson.Field
-	Page        apijson.Field
-	PerPage     apijson.Field
-	TotalCount  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *WafManagedRulesAPIResponseCollectionResultInfo) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r wafManagedRulesAPIResponseCollectionResultInfoJSON) RawJSON() string {
-	return r.raw
-}
-
-type WafManagedRulesAPIResponseCommon struct {
-	Errors   []WafManagedRulesMessage                    `json:"errors,required"`
-	Messages []WafManagedRulesMessage                    `json:"messages,required"`
-	Result   WafManagedRulesAPIResponseCommonResultUnion `json:"result,required"`
-	// Whether the API call was successful
-	Success WafManagedRulesAPIResponseCommonSuccess `json:"success,required"`
-	JSON    wafManagedRulesAPIResponseCommonJSON    `json:"-"`
-}
-
-// wafManagedRulesAPIResponseCommonJSON contains the JSON metadata for the struct
-// [WafManagedRulesAPIResponseCommon]
-type wafManagedRulesAPIResponseCommonJSON struct {
-	Errors      apijson.Field
-	Messages    apijson.Field
-	Result      apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *WafManagedRulesAPIResponseCommon) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r wafManagedRulesAPIResponseCommonJSON) RawJSON() string {
-	return r.raw
-}
-
-// Union satisfied by [WafManagedRulesAPIResponseCommonResultArray] or
-// [shared.UnionString].
-type WafManagedRulesAPIResponseCommonResultUnion interface {
-	ImplementsWafManagedRulesAPIResponseCommonResultUnion()
-}
-
-func init() {
-	apijson.RegisterUnion(
-		reflect.TypeOf((*WafManagedRulesAPIResponseCommonResultUnion)(nil)).Elem(),
-		"",
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(WafManagedRulesAPIResponseCommonResultArray{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.String,
-			Type:       reflect.TypeOf(shared.UnionString("")),
-		},
-	)
-}
-
-type WafManagedRulesAPIResponseCommonResultArray []interface{}
-
-func (r WafManagedRulesAPIResponseCommonResultArray) ImplementsWafManagedRulesAPIResponseCommonResultUnion() {
-}
-
-// Whether the API call was successful
-type WafManagedRulesAPIResponseCommonSuccess bool
-
-const (
-	WafManagedRulesAPIResponseCommonSuccessTrue WafManagedRulesAPIResponseCommonSuccess = true
-)
-
-func (r WafManagedRulesAPIResponseCommonSuccess) IsKnown() bool {
-	switch r {
-	case WafManagedRulesAPIResponseCommonSuccessTrue:
-		return true
-	}
-	return false
-}
-
-type WafManagedRulesAPIResponseSingle struct {
-	Result interface{}                          `json:"result"`
-	JSON   wafManagedRulesAPIResponseSingleJSON `json:"-"`
-	WafManagedRulesAPIResponseCommon
-}
-
-// wafManagedRulesAPIResponseSingleJSON contains the JSON metadata for the struct
-// [WafManagedRulesAPIResponseSingle]
-type wafManagedRulesAPIResponseSingleJSON struct {
-	Result      apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *WafManagedRulesAPIResponseSingle) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r wafManagedRulesAPIResponseSingleJSON) RawJSON() string {
-	return r.raw
-}
-
 type WafManagedRulesMessage struct {
-	Code    int64                      `json:"code,required"`
-	Message string                     `json:"message,required"`
-	JSON    wafManagedRulesMessageJSON `json:"-"`
+	Code             int64                        `json:"code,required"`
+	Message          string                       `json:"message,required"`
+	DocumentationURL string                       `json:"documentation_url"`
+	Source           WafManagedRulesMessageSource `json:"source"`
+	JSON             wafManagedRulesMessageJSON   `json:"-"`
 }
 
 // wafManagedRulesMessageJSON contains the JSON metadata for the struct
 // [WafManagedRulesMessage]
 type wafManagedRulesMessageJSON struct {
-	Code        apijson.Field
-	Message     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
 }
 
 func (r *WafManagedRulesMessage) UnmarshalJSON(data []byte) (err error) {
@@ -279,8 +134,29 @@ func (r wafManagedRulesMessageJSON) RawJSON() string {
 	return r.raw
 }
 
-// The state of the rules contained in the rule group. When `on`, the rules in the
-// group are configurable/usable.
+type WafManagedRulesMessageSource struct {
+	Pointer string                           `json:"pointer"`
+	JSON    wafManagedRulesMessageSourceJSON `json:"-"`
+}
+
+// wafManagedRulesMessageSourceJSON contains the JSON metadata for the struct
+// [WafManagedRulesMessageSource]
+type wafManagedRulesMessageSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *WafManagedRulesMessageSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r wafManagedRulesMessageSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Defines the state of the rules contained in the rule group. When `on`, the rules
+// in the group are configurable/usable.
 type WafManagedRulesMode string
 
 const (
@@ -297,15 +173,21 @@ func (r WafManagedRulesMode) IsKnown() bool {
 }
 
 type WafManagedRulesRuleGroupResponseSingle struct {
-	Result interface{}                                `json:"result"`
-	JSON   wafManagedRulesRuleGroupResponseSingleJSON `json:"-"`
-	WafManagedRulesAPIResponseSingle
+	Errors   []WafManagedRulesMessage `json:"errors,required"`
+	Messages []WafManagedRulesMessage `json:"messages,required"`
+	Result   interface{}              `json:"result,required"`
+	// Defines whether the API call was successful.
+	Success WafManagedRulesRuleGroupResponseSingleSuccess `json:"success,required"`
+	JSON    wafManagedRulesRuleGroupResponseSingleJSON    `json:"-"`
 }
 
 // wafManagedRulesRuleGroupResponseSingleJSON contains the JSON metadata for the
 // struct [WafManagedRulesRuleGroupResponseSingle]
 type wafManagedRulesRuleGroupResponseSingleJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -318,16 +200,39 @@ func (r wafManagedRulesRuleGroupResponseSingleJSON) RawJSON() string {
 	return r.raw
 }
 
+// Defines whether the API call was successful.
+type WafManagedRulesRuleGroupResponseSingleSuccess bool
+
+const (
+	WafManagedRulesRuleGroupResponseSingleSuccessTrue WafManagedRulesRuleGroupResponseSingleSuccess = true
+)
+
+func (r WafManagedRulesRuleGroupResponseSingleSuccess) IsKnown() bool {
+	switch r {
+	case WafManagedRulesRuleGroupResponseSingleSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type ZoneFirewallWafPackageGroupListResponse struct {
-	Result []ZoneFirewallWafPackageGroupListResponseResult `json:"result"`
-	JSON   zoneFirewallWafPackageGroupListResponseJSON     `json:"-"`
-	WafManagedRulesAPIResponseCollection
+	Errors   []WafManagedRulesMessage                        `json:"errors,required"`
+	Messages []WafManagedRulesMessage                        `json:"messages,required"`
+	Result   []ZoneFirewallWafPackageGroupListResponseResult `json:"result,required"`
+	// Defines whether the API call was successful.
+	Success    ZoneFirewallWafPackageGroupListResponseSuccess    `json:"success,required"`
+	ResultInfo ZoneFirewallWafPackageGroupListResponseResultInfo `json:"result_info"`
+	JSON       zoneFirewallWafPackageGroupListResponseJSON       `json:"-"`
 }
 
 // zoneFirewallWafPackageGroupListResponseJSON contains the JSON metadata for the
 // struct [ZoneFirewallWafPackageGroupListResponse]
 type zoneFirewallWafPackageGroupListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -341,38 +246,38 @@ func (r zoneFirewallWafPackageGroupListResponseJSON) RawJSON() string {
 }
 
 type ZoneFirewallWafPackageGroupListResponseResult struct {
-	// The unique identifier of the rule group.
-	ID string `json:"id"`
-	// The available states for the rule group.
+	// Defines the unique identifier of the rule group.
+	ID string `json:"id,required"`
+	// Defines an informative summary of what the rule group does.
+	Description string `json:"description,required,nullable"`
+	// Defines the state of the rules contained in the rule group. When `on`, the rules
+	// in the group are configurable/usable.
+	Mode WafManagedRulesMode `json:"mode,required"`
+	// Defines the name of the rule group.
+	Name string `json:"name,required"`
+	// Defines the number of rules in the current rule group.
+	RulesCount float64 `json:"rules_count,required"`
+	// Defines the available states for the rule group.
 	AllowedModes []WafManagedRulesMode `json:"allowed_modes"`
-	// An informative summary of what the rule group does.
-	Description string `json:"description,nullable"`
-	// The state of the rules contained in the rule group. When `on`, the rules in the
-	// group are configurable/usable.
-	Mode WafManagedRulesMode `json:"mode"`
-	// The number of rules within the group that have been modified from their default
-	// configuration.
+	// Defines the number of rules within the group that have been modified from their
+	// default configuration.
 	ModifiedRulesCount float64 `json:"modified_rules_count"`
-	// The name of the rule group.
-	Name string `json:"name"`
-	// The unique identifier of a WAF package.
-	PackageID string `json:"package_id"`
-	// The number of rules in the current rule group.
-	RulesCount float64                                           `json:"rules_count"`
-	JSON       zoneFirewallWafPackageGroupListResponseResultJSON `json:"-"`
+	// Defines the unique identifier of a WAF package.
+	PackageID string                                            `json:"package_id"`
+	JSON      zoneFirewallWafPackageGroupListResponseResultJSON `json:"-"`
 }
 
 // zoneFirewallWafPackageGroupListResponseResultJSON contains the JSON metadata for
 // the struct [ZoneFirewallWafPackageGroupListResponseResult]
 type zoneFirewallWafPackageGroupListResponseResultJSON struct {
 	ID                 apijson.Field
-	AllowedModes       apijson.Field
 	Description        apijson.Field
 	Mode               apijson.Field
-	ModifiedRulesCount apijson.Field
 	Name               apijson.Field
-	PackageID          apijson.Field
 	RulesCount         apijson.Field
+	AllowedModes       apijson.Field
+	ModifiedRulesCount apijson.Field
+	PackageID          apijson.Field
 	raw                string
 	ExtraFields        map[string]apijson.Field
 }
@@ -385,9 +290,55 @@ func (r zoneFirewallWafPackageGroupListResponseResultJSON) RawJSON() string {
 	return r.raw
 }
 
+// Defines whether the API call was successful.
+type ZoneFirewallWafPackageGroupListResponseSuccess bool
+
+const (
+	ZoneFirewallWafPackageGroupListResponseSuccessTrue ZoneFirewallWafPackageGroupListResponseSuccess = true
+)
+
+func (r ZoneFirewallWafPackageGroupListResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneFirewallWafPackageGroupListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type ZoneFirewallWafPackageGroupListResponseResultInfo struct {
+	// Defines the total number of results for the requested service.
+	Count float64 `json:"count"`
+	// Defines the current page within paginated list of results.
+	Page float64 `json:"page"`
+	// Defines the number of results per page of results.
+	PerPage float64 `json:"per_page"`
+	// Defines the total results available without any search parameters.
+	TotalCount float64                                               `json:"total_count"`
+	JSON       zoneFirewallWafPackageGroupListResponseResultInfoJSON `json:"-"`
+}
+
+// zoneFirewallWafPackageGroupListResponseResultInfoJSON contains the JSON metadata
+// for the struct [ZoneFirewallWafPackageGroupListResponseResultInfo]
+type zoneFirewallWafPackageGroupListResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZoneFirewallWafPackageGroupListResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneFirewallWafPackageGroupListResponseResultInfoJSON) RawJSON() string {
+	return r.raw
+}
+
 type ZoneFirewallWafPackageGroupUpdateParams struct {
-	// The state of the rules contained in the rule group. When `on`, the rules in the
-	// group are configurable/usable.
+	// Defines the state of the rules contained in the rule group. When `on`, the rules
+	// in the group are configurable/usable.
 	Mode param.Field[WafManagedRulesMode] `json:"mode"`
 }
 
@@ -396,23 +347,24 @@ func (r ZoneFirewallWafPackageGroupUpdateParams) MarshalJSON() (data []byte, err
 }
 
 type ZoneFirewallWafPackageGroupListParams struct {
-	// The direction used to sort returned rule groups.
+	// Defines the direction used to sort returned rule groups.
 	Direction param.Field[ZoneFirewallWafPackageGroupListParamsDirection] `query:"direction"`
-	// When set to `all`, all the search requirements must match. When set to `any`,
-	// only one of the search requirements has to match.
+	// Defines the condition for search requirements. When set to `all`, all the search
+	// requirements must match. When set to `any`, only one of the search requirements
+	// has to match.
 	Match param.Field[ZoneFirewallWafPackageGroupListParamsMatch] `query:"match"`
-	// The state of the rules contained in the rule group. When `on`, the rules in the
-	// group are configurable/usable.
+	// Defines the state of the rules contained in the rule group. When `on`, the rules
+	// in the group are configurable/usable.
 	Mode param.Field[WafManagedRulesMode] `query:"mode"`
-	// The name of the rule group.
+	// Defines the name of the rule group.
 	Name param.Field[string] `query:"name"`
-	// The field used to sort returned rule groups.
+	// Defines the field used to sort returned rule groups.
 	Order param.Field[ZoneFirewallWafPackageGroupListParamsOrder] `query:"order"`
-	// The page number of paginated results.
+	// Defines the page number of paginated results.
 	Page param.Field[float64] `query:"page"`
-	// The number of rule groups per page.
+	// Defines the number of rule groups per page.
 	PerPage param.Field[float64] `query:"per_page"`
-	// The number of rules in the current rule group.
+	// Defines the number of rules in the current rule group.
 	RulesCount param.Field[float64] `query:"rules_count"`
 }
 
@@ -425,7 +377,7 @@ func (r ZoneFirewallWafPackageGroupListParams) URLQuery() (v url.Values) {
 	})
 }
 
-// The direction used to sort returned rule groups.
+// Defines the direction used to sort returned rule groups.
 type ZoneFirewallWafPackageGroupListParamsDirection string
 
 const (
@@ -441,8 +393,9 @@ func (r ZoneFirewallWafPackageGroupListParamsDirection) IsKnown() bool {
 	return false
 }
 
-// When set to `all`, all the search requirements must match. When set to `any`,
-// only one of the search requirements has to match.
+// Defines the condition for search requirements. When set to `all`, all the search
+// requirements must match. When set to `any`, only one of the search requirements
+// has to match.
 type ZoneFirewallWafPackageGroupListParamsMatch string
 
 const (
@@ -458,7 +411,7 @@ func (r ZoneFirewallWafPackageGroupListParamsMatch) IsKnown() bool {
 	return false
 }
 
-// The field used to sort returned rule groups.
+// Defines the field used to sort returned rule groups.
 type ZoneFirewallWafPackageGroupListParamsOrder string
 
 const (

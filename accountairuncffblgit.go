@@ -8,15 +8,12 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
-	"reflect"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
 	"github.com/rexscaria/api-schemas/internal/param"
 	"github.com/rexscaria/api-schemas/internal/requestconfig"
 	"github.com/rexscaria/api-schemas/option"
-	"github.com/rexscaria/api-schemas/shared"
-	"github.com/tidwall/gjson"
 )
 
 // AccountAIRunCfFblgitService contains methods and other services that help with
@@ -50,139 +47,7 @@ func (r *AccountAIRunCfFblgitService) ExecuteUnaCybertron7bV2Bf16(ctx context.Co
 	return
 }
 
-type AccountAIRunCfFblgitExecuteUnaCybertron7bV2Bf16Response struct {
-	Result  AccountAIRunCfFblgitExecuteUnaCybertron7bV2Bf16ResponseResultUnion `json:"result" format:"binary"`
-	Success bool                                                               `json:"success"`
-	JSON    accountAIRunCfFblgitExecuteUnaCybertron7bV2Bf16ResponseJSON        `json:"-"`
-}
-
-// accountAIRunCfFblgitExecuteUnaCybertron7bV2Bf16ResponseJSON contains the JSON
-// metadata for the struct
-// [AccountAIRunCfFblgitExecuteUnaCybertron7bV2Bf16Response]
-type accountAIRunCfFblgitExecuteUnaCybertron7bV2Bf16ResponseJSON struct {
-	Result      apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountAIRunCfFblgitExecuteUnaCybertron7bV2Bf16Response) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountAIRunCfFblgitExecuteUnaCybertron7bV2Bf16ResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-// Union satisfied by
-// [AccountAIRunCfFblgitExecuteUnaCybertron7bV2Bf16ResponseResultObject] or
-// [shared.UnionString].
-type AccountAIRunCfFblgitExecuteUnaCybertron7bV2Bf16ResponseResultUnion interface {
-	ImplementsAccountAIRunCfFblgitExecuteUnaCybertron7bV2Bf16ResponseResultUnion()
-}
-
-func init() {
-	apijson.RegisterUnion(
-		reflect.TypeOf((*AccountAIRunCfFblgitExecuteUnaCybertron7bV2Bf16ResponseResultUnion)(nil)).Elem(),
-		"",
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(AccountAIRunCfFblgitExecuteUnaCybertron7bV2Bf16ResponseResultObject{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.String,
-			Type:       reflect.TypeOf(shared.UnionString("")),
-		},
-	)
-}
-
-type AccountAIRunCfFblgitExecuteUnaCybertron7bV2Bf16ResponseResultObject struct {
-	// The generated text response from the model
-	Response string `json:"response,required"`
-	// An array of tool calls requests made during the response generation
-	ToolCalls []AccountAIRunCfFblgitExecuteUnaCybertron7bV2Bf16ResponseResultObjectToolCall `json:"tool_calls"`
-	// Usage statistics for the inference request
-	Usage AccountAIRunCfFblgitExecuteUnaCybertron7bV2Bf16ResponseResultObjectUsage `json:"usage"`
-	JSON  accountAIRunCfFblgitExecuteUnaCybertron7bV2Bf16ResponseResultObjectJSON  `json:"-"`
-}
-
-// accountAIRunCfFblgitExecuteUnaCybertron7bV2Bf16ResponseResultObjectJSON contains
-// the JSON metadata for the struct
-// [AccountAIRunCfFblgitExecuteUnaCybertron7bV2Bf16ResponseResultObject]
-type accountAIRunCfFblgitExecuteUnaCybertron7bV2Bf16ResponseResultObjectJSON struct {
-	Response    apijson.Field
-	ToolCalls   apijson.Field
-	Usage       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountAIRunCfFblgitExecuteUnaCybertron7bV2Bf16ResponseResultObject) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountAIRunCfFblgitExecuteUnaCybertron7bV2Bf16ResponseResultObjectJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r AccountAIRunCfFblgitExecuteUnaCybertron7bV2Bf16ResponseResultObject) ImplementsAccountAIRunCfFblgitExecuteUnaCybertron7bV2Bf16ResponseResultUnion() {
-}
-
-type AccountAIRunCfFblgitExecuteUnaCybertron7bV2Bf16ResponseResultObjectToolCall struct {
-	// The arguments passed to be passed to the tool call request
-	Arguments interface{} `json:"arguments"`
-	// The name of the tool to be called
-	Name string                                                                          `json:"name"`
-	JSON accountAIRunCfFblgitExecuteUnaCybertron7bV2Bf16ResponseResultObjectToolCallJSON `json:"-"`
-}
-
-// accountAIRunCfFblgitExecuteUnaCybertron7bV2Bf16ResponseResultObjectToolCallJSON
-// contains the JSON metadata for the struct
-// [AccountAIRunCfFblgitExecuteUnaCybertron7bV2Bf16ResponseResultObjectToolCall]
-type accountAIRunCfFblgitExecuteUnaCybertron7bV2Bf16ResponseResultObjectToolCallJSON struct {
-	Arguments   apijson.Field
-	Name        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountAIRunCfFblgitExecuteUnaCybertron7bV2Bf16ResponseResultObjectToolCall) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountAIRunCfFblgitExecuteUnaCybertron7bV2Bf16ResponseResultObjectToolCallJSON) RawJSON() string {
-	return r.raw
-}
-
-// Usage statistics for the inference request
-type AccountAIRunCfFblgitExecuteUnaCybertron7bV2Bf16ResponseResultObjectUsage struct {
-	// Total number of tokens in output
-	CompletionTokens float64 `json:"completion_tokens"`
-	// Total number of tokens in input
-	PromptTokens float64 `json:"prompt_tokens"`
-	// Total number of input and output tokens
-	TotalTokens float64                                                                      `json:"total_tokens"`
-	JSON        accountAIRunCfFblgitExecuteUnaCybertron7bV2Bf16ResponseResultObjectUsageJSON `json:"-"`
-}
-
-// accountAIRunCfFblgitExecuteUnaCybertron7bV2Bf16ResponseResultObjectUsageJSON
-// contains the JSON metadata for the struct
-// [AccountAIRunCfFblgitExecuteUnaCybertron7bV2Bf16ResponseResultObjectUsage]
-type accountAIRunCfFblgitExecuteUnaCybertron7bV2Bf16ResponseResultObjectUsageJSON struct {
-	CompletionTokens apijson.Field
-	PromptTokens     apijson.Field
-	TotalTokens      apijson.Field
-	raw              string
-	ExtraFields      map[string]apijson.Field
-}
-
-func (r *AccountAIRunCfFblgitExecuteUnaCybertron7bV2Bf16ResponseResultObjectUsage) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountAIRunCfFblgitExecuteUnaCybertron7bV2Bf16ResponseResultObjectUsageJSON) RawJSON() string {
-	return r.raw
-}
+type AccountAIRunCfFblgitExecuteUnaCybertron7bV2Bf16Response = interface{}
 
 type AccountAIRunCfFblgitExecuteUnaCybertron7bV2Bf16Params struct {
 	QueueRequest param.Field[string]                                            `query:"queueRequest"`

@@ -106,7 +106,7 @@ func TestAccountEmailSecuritySettingAllowPolicyUpdateWithOptionalParams(t *testi
 			IsRegex:            cfrex.F(true),
 			IsTrustedSender:    cfrex.F(true),
 			Pattern:            cfrex.F("x"),
-			PatternType:        cfrex.F(cfrex.AccountEmailSecuritySettingAllowPolicyUpdateParamsPatternTypeEmail),
+			PatternType:        cfrex.F(cfrex.PatternTypeEmail),
 			VerifySender:       cfrex.F(true),
 		},
 	)
@@ -146,6 +146,7 @@ func TestAccountEmailSecuritySettingAllowPolicyListWithOptionalParams(t *testing
 			IsTrustedSender:    cfrex.F(true),
 			Order:              cfrex.F(cfrex.AccountEmailSecuritySettingAllowPolicyListParamsOrderPattern),
 			Page:               cfrex.F(int64(1)),
+			Pattern:            cfrex.F("pattern"),
 			PatternType:        cfrex.F(cfrex.PatternTypeEmail),
 			PerPage:            cfrex.F(int64(1)),
 			Search:             cfrex.F("search"),

@@ -29,7 +29,7 @@ func TestAccountCloudforceOneEventDatasetNew(t *testing.T) {
 	)
 	_, err := client.Accounts.CloudforceOne.Events.Dataset.New(
 		context.TODO(),
-		0.000000,
+		"account_id",
 		cfrex.AccountCloudforceOneEventDatasetNewParams{
 			IsPublic: cfrex.F(true),
 			Name:     cfrex.F("x"),
@@ -60,8 +60,8 @@ func TestAccountCloudforceOneEventDatasetGet(t *testing.T) {
 	)
 	_, err := client.Accounts.CloudforceOne.Events.Dataset.Get(
 		context.TODO(),
-		0.000000,
-		"dataset_id",
+		"account_id",
+		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 	)
 	if err != nil {
 		var apierr *cfrex.Error
@@ -88,8 +88,8 @@ func TestAccountCloudforceOneEventDatasetUpdate(t *testing.T) {
 	)
 	_, err := client.Accounts.CloudforceOne.Events.Dataset.Update(
 		context.TODO(),
-		0.000000,
-		"dataset_id",
+		"account_id",
+		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		cfrex.AccountCloudforceOneEventDatasetUpdateParams{
 			IsPublic: cfrex.F(true),
 			Name:     cfrex.F("x"),
@@ -118,7 +118,7 @@ func TestAccountCloudforceOneEventDatasetList(t *testing.T) {
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Accounts.CloudforceOne.Events.Dataset.List(context.TODO(), 0.000000)
+	_, err := client.Accounts.CloudforceOne.Events.Dataset.List(context.TODO(), "account_id")
 	if err != nil {
 		var apierr *cfrex.Error
 		if errors.As(err, &apierr) {

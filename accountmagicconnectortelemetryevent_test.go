@@ -29,12 +29,13 @@ func TestAccountMagicConnectorTelemetryEventListWithOptionalParams(t *testing.T)
 	)
 	_, err := client.Accounts.Magic.Connectors.Telemetry.Events.List(
 		context.TODO(),
-		0.000000,
+		"023e105f4ecef8ad9ca31a8372d0c353",
 		"connector_id",
 		cfrex.AccountMagicConnectorTelemetryEventListParams{
 			From:   cfrex.F(0.000000),
 			To:     cfrex.F(0.000000),
 			Cursor: cfrex.F("cursor"),
+			K:      cfrex.F("k"),
 			Limit:  cfrex.F(0.000000),
 		},
 	)
@@ -63,7 +64,7 @@ func TestAccountMagicConnectorTelemetryEventGet(t *testing.T) {
 	)
 	_, err := client.Accounts.Magic.Connectors.Telemetry.Events.Get(
 		context.TODO(),
-		0.000000,
+		"023e105f4ecef8ad9ca31a8372d0c353",
 		"connector_id",
 		0.000000,
 		0.000000,

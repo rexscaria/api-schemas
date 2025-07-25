@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -71,128 +72,22 @@ func (r *AccountWorkerScriptDeploymentService) List(ctx context.Context, account
 	return
 }
 
-type BaseDeployment struct {
-	ID          string                    `json:"id"`
-	Annotations BaseDeploymentAnnotations `json:"annotations"`
-	AuthorEmail string                    `json:"author_email"`
-	CreatedOn   string                    `json:"created_on"`
-	Source      string                    `json:"source"`
-	Strategy    string                    `json:"strategy"`
-	JSON        baseDeploymentJSON        `json:"-"`
-}
-
-// baseDeploymentJSON contains the JSON metadata for the struct [BaseDeployment]
-type baseDeploymentJSON struct {
-	ID          apijson.Field
-	Annotations apijson.Field
-	AuthorEmail apijson.Field
-	CreatedOn   apijson.Field
-	Source      apijson.Field
-	Strategy    apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *BaseDeployment) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r baseDeploymentJSON) RawJSON() string {
-	return r.raw
-}
-
-type BaseDeploymentAnnotations struct {
-	// Human-readable message about the deployment. Truncated to 100 bytes.
-	WorkersMessage string                        `json:"workers/message"`
-	JSON           baseDeploymentAnnotationsJSON `json:"-"`
-}
-
-// baseDeploymentAnnotationsJSON contains the JSON metadata for the struct
-// [BaseDeploymentAnnotations]
-type baseDeploymentAnnotationsJSON struct {
-	WorkersMessage apijson.Field
-	raw            string
-	ExtraFields    map[string]apijson.Field
-}
-
-func (r *BaseDeploymentAnnotations) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r baseDeploymentAnnotationsJSON) RawJSON() string {
-	return r.raw
-}
-
-type StrategyPercentage struct {
-	Strategy StrategyPercentageStrategy  `json:"strategy,required"`
-	Versions []StrategyPercentageVersion `json:"versions,required"`
-	JSON     strategyPercentageJSON      `json:"-"`
-}
-
-// strategyPercentageJSON contains the JSON metadata for the struct
-// [StrategyPercentage]
-type strategyPercentageJSON struct {
-	Strategy    apijson.Field
-	Versions    apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *StrategyPercentage) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r strategyPercentageJSON) RawJSON() string {
-	return r.raw
-}
-
-type StrategyPercentageStrategy string
-
-const (
-	StrategyPercentageStrategyPercentage StrategyPercentageStrategy = "percentage"
-)
-
-func (r StrategyPercentageStrategy) IsKnown() bool {
-	switch r {
-	case StrategyPercentageStrategyPercentage:
-		return true
-	}
-	return false
-}
-
-type StrategyPercentageVersion struct {
-	Percentage float64                       `json:"percentage,required"`
-	VersionID  string                        `json:"version_id,required"`
-	JSON       strategyPercentageVersionJSON `json:"-"`
-}
-
-// strategyPercentageVersionJSON contains the JSON metadata for the struct
-// [StrategyPercentageVersion]
-type strategyPercentageVersionJSON struct {
-	Percentage  apijson.Field
-	VersionID   apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *StrategyPercentageVersion) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r strategyPercentageVersionJSON) RawJSON() string {
-	return r.raw
-}
-
 type AccountWorkerScriptDeploymentNewResponse struct {
-	Result AccountWorkerScriptDeploymentNewResponseResult `json:"result"`
-	JSON   accountWorkerScriptDeploymentNewResponseJSON   `json:"-"`
-	CommonResponseWorkers
+	Errors   []WorkersMessages                              `json:"errors,required"`
+	Messages []WorkersMessages                              `json:"messages,required"`
+	Result   AccountWorkerScriptDeploymentNewResponseResult `json:"result,required"`
+	// Whether the API call was successful.
+	Success AccountWorkerScriptDeploymentNewResponseSuccess `json:"success,required"`
+	JSON    accountWorkerScriptDeploymentNewResponseJSON    `json:"-"`
 }
 
 // accountWorkerScriptDeploymentNewResponseJSON contains the JSON metadata for the
 // struct [AccountWorkerScriptDeploymentNewResponse]
 type accountWorkerScriptDeploymentNewResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -206,14 +101,26 @@ func (r accountWorkerScriptDeploymentNewResponseJSON) RawJSON() string {
 }
 
 type AccountWorkerScriptDeploymentNewResponseResult struct {
-	JSON accountWorkerScriptDeploymentNewResponseResultJSON `json:"-"`
-	BaseDeployment
-	StrategyPercentage
+	ID          string                                                    `json:"id,required" format:"uuid"`
+	CreatedOn   time.Time                                                 `json:"created_on,required" format:"date-time"`
+	Source      string                                                    `json:"source,required"`
+	Strategy    AccountWorkerScriptDeploymentNewResponseResultStrategy    `json:"strategy,required"`
+	Versions    []AccountWorkerScriptDeploymentNewResponseResultVersion   `json:"versions,required"`
+	Annotations AccountWorkerScriptDeploymentNewResponseResultAnnotations `json:"annotations"`
+	AuthorEmail string                                                    `json:"author_email" format:"email"`
+	JSON        accountWorkerScriptDeploymentNewResponseResultJSON        `json:"-"`
 }
 
 // accountWorkerScriptDeploymentNewResponseResultJSON contains the JSON metadata
 // for the struct [AccountWorkerScriptDeploymentNewResponseResult]
 type accountWorkerScriptDeploymentNewResponseResultJSON struct {
+	ID          apijson.Field
+	CreatedOn   apijson.Field
+	Source      apijson.Field
+	Strategy    apijson.Field
+	Versions    apijson.Field
+	Annotations apijson.Field
+	AuthorEmail apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -226,16 +133,97 @@ func (r accountWorkerScriptDeploymentNewResponseResultJSON) RawJSON() string {
 	return r.raw
 }
 
+type AccountWorkerScriptDeploymentNewResponseResultStrategy string
+
+const (
+	AccountWorkerScriptDeploymentNewResponseResultStrategyPercentage AccountWorkerScriptDeploymentNewResponseResultStrategy = "percentage"
+)
+
+func (r AccountWorkerScriptDeploymentNewResponseResultStrategy) IsKnown() bool {
+	switch r {
+	case AccountWorkerScriptDeploymentNewResponseResultStrategyPercentage:
+		return true
+	}
+	return false
+}
+
+type AccountWorkerScriptDeploymentNewResponseResultVersion struct {
+	Percentage float64                                                   `json:"percentage,required"`
+	VersionID  string                                                    `json:"version_id,required" format:"uuid"`
+	JSON       accountWorkerScriptDeploymentNewResponseResultVersionJSON `json:"-"`
+}
+
+// accountWorkerScriptDeploymentNewResponseResultVersionJSON contains the JSON
+// metadata for the struct [AccountWorkerScriptDeploymentNewResponseResultVersion]
+type accountWorkerScriptDeploymentNewResponseResultVersionJSON struct {
+	Percentage  apijson.Field
+	VersionID   apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountWorkerScriptDeploymentNewResponseResultVersion) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountWorkerScriptDeploymentNewResponseResultVersionJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountWorkerScriptDeploymentNewResponseResultAnnotations struct {
+	// Human-readable message about the deployment. Truncated to 100 bytes.
+	WorkersMessage string                                                        `json:"workers/message"`
+	JSON           accountWorkerScriptDeploymentNewResponseResultAnnotationsJSON `json:"-"`
+}
+
+// accountWorkerScriptDeploymentNewResponseResultAnnotationsJSON contains the JSON
+// metadata for the struct
+// [AccountWorkerScriptDeploymentNewResponseResultAnnotations]
+type accountWorkerScriptDeploymentNewResponseResultAnnotationsJSON struct {
+	WorkersMessage apijson.Field
+	raw            string
+	ExtraFields    map[string]apijson.Field
+}
+
+func (r *AccountWorkerScriptDeploymentNewResponseResultAnnotations) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountWorkerScriptDeploymentNewResponseResultAnnotationsJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountWorkerScriptDeploymentNewResponseSuccess bool
+
+const (
+	AccountWorkerScriptDeploymentNewResponseSuccessTrue AccountWorkerScriptDeploymentNewResponseSuccess = true
+)
+
+func (r AccountWorkerScriptDeploymentNewResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountWorkerScriptDeploymentNewResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountWorkerScriptDeploymentListResponse struct {
-	Result AccountWorkerScriptDeploymentListResponseResult `json:"result"`
-	JSON   accountWorkerScriptDeploymentListResponseJSON   `json:"-"`
-	CommonResponseWorkers
+	Errors   []WorkersMessages                               `json:"errors,required"`
+	Messages []WorkersMessages                               `json:"messages,required"`
+	Result   AccountWorkerScriptDeploymentListResponseResult `json:"result,required"`
+	// Whether the API call was successful.
+	Success AccountWorkerScriptDeploymentListResponseSuccess `json:"success,required"`
+	JSON    accountWorkerScriptDeploymentListResponseJSON    `json:"-"`
 }
 
 // accountWorkerScriptDeploymentListResponseJSON contains the JSON metadata for the
 // struct [AccountWorkerScriptDeploymentListResponse]
 type accountWorkerScriptDeploymentListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -249,7 +237,7 @@ func (r accountWorkerScriptDeploymentListResponseJSON) RawJSON() string {
 }
 
 type AccountWorkerScriptDeploymentListResponseResult struct {
-	Deployments []AccountWorkerScriptDeploymentListResponseResultDeployment `json:"deployments"`
+	Deployments []AccountWorkerScriptDeploymentListResponseResultDeployment `json:"deployments,required"`
 	JSON        accountWorkerScriptDeploymentListResponseResultJSON         `json:"-"`
 }
 
@@ -270,15 +258,27 @@ func (r accountWorkerScriptDeploymentListResponseResultJSON) RawJSON() string {
 }
 
 type AccountWorkerScriptDeploymentListResponseResultDeployment struct {
-	JSON accountWorkerScriptDeploymentListResponseResultDeploymentJSON `json:"-"`
-	BaseDeployment
-	StrategyPercentage
+	ID          string                                                                `json:"id,required" format:"uuid"`
+	CreatedOn   time.Time                                                             `json:"created_on,required" format:"date-time"`
+	Source      string                                                                `json:"source,required"`
+	Strategy    AccountWorkerScriptDeploymentListResponseResultDeploymentsStrategy    `json:"strategy,required"`
+	Versions    []AccountWorkerScriptDeploymentListResponseResultDeploymentsVersion   `json:"versions,required"`
+	Annotations AccountWorkerScriptDeploymentListResponseResultDeploymentsAnnotations `json:"annotations"`
+	AuthorEmail string                                                                `json:"author_email" format:"email"`
+	JSON        accountWorkerScriptDeploymentListResponseResultDeploymentJSON         `json:"-"`
 }
 
 // accountWorkerScriptDeploymentListResponseResultDeploymentJSON contains the JSON
 // metadata for the struct
 // [AccountWorkerScriptDeploymentListResponseResultDeployment]
 type accountWorkerScriptDeploymentListResponseResultDeploymentJSON struct {
+	ID          apijson.Field
+	CreatedOn   apijson.Field
+	Source      apijson.Field
+	Strategy    apijson.Field
+	Versions    apijson.Field
+	Annotations apijson.Field
+	AuthorEmail apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -289,6 +289,82 @@ func (r *AccountWorkerScriptDeploymentListResponseResultDeployment) UnmarshalJSO
 
 func (r accountWorkerScriptDeploymentListResponseResultDeploymentJSON) RawJSON() string {
 	return r.raw
+}
+
+type AccountWorkerScriptDeploymentListResponseResultDeploymentsStrategy string
+
+const (
+	AccountWorkerScriptDeploymentListResponseResultDeploymentsStrategyPercentage AccountWorkerScriptDeploymentListResponseResultDeploymentsStrategy = "percentage"
+)
+
+func (r AccountWorkerScriptDeploymentListResponseResultDeploymentsStrategy) IsKnown() bool {
+	switch r {
+	case AccountWorkerScriptDeploymentListResponseResultDeploymentsStrategyPercentage:
+		return true
+	}
+	return false
+}
+
+type AccountWorkerScriptDeploymentListResponseResultDeploymentsVersion struct {
+	Percentage float64                                                               `json:"percentage,required"`
+	VersionID  string                                                                `json:"version_id,required" format:"uuid"`
+	JSON       accountWorkerScriptDeploymentListResponseResultDeploymentsVersionJSON `json:"-"`
+}
+
+// accountWorkerScriptDeploymentListResponseResultDeploymentsVersionJSON contains
+// the JSON metadata for the struct
+// [AccountWorkerScriptDeploymentListResponseResultDeploymentsVersion]
+type accountWorkerScriptDeploymentListResponseResultDeploymentsVersionJSON struct {
+	Percentage  apijson.Field
+	VersionID   apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountWorkerScriptDeploymentListResponseResultDeploymentsVersion) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountWorkerScriptDeploymentListResponseResultDeploymentsVersionJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountWorkerScriptDeploymentListResponseResultDeploymentsAnnotations struct {
+	// Human-readable message about the deployment. Truncated to 100 bytes.
+	WorkersMessage string                                                                    `json:"workers/message"`
+	JSON           accountWorkerScriptDeploymentListResponseResultDeploymentsAnnotationsJSON `json:"-"`
+}
+
+// accountWorkerScriptDeploymentListResponseResultDeploymentsAnnotationsJSON
+// contains the JSON metadata for the struct
+// [AccountWorkerScriptDeploymentListResponseResultDeploymentsAnnotations]
+type accountWorkerScriptDeploymentListResponseResultDeploymentsAnnotationsJSON struct {
+	WorkersMessage apijson.Field
+	raw            string
+	ExtraFields    map[string]apijson.Field
+}
+
+func (r *AccountWorkerScriptDeploymentListResponseResultDeploymentsAnnotations) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountWorkerScriptDeploymentListResponseResultDeploymentsAnnotationsJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountWorkerScriptDeploymentListResponseSuccess bool
+
+const (
+	AccountWorkerScriptDeploymentListResponseSuccessTrue AccountWorkerScriptDeploymentListResponseSuccess = true
+)
+
+func (r AccountWorkerScriptDeploymentListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountWorkerScriptDeploymentListResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountWorkerScriptDeploymentNewParams struct {
@@ -329,7 +405,7 @@ func (r AccountWorkerScriptDeploymentNewParamsStrategy) IsKnown() bool {
 
 type AccountWorkerScriptDeploymentNewParamsVersion struct {
 	Percentage param.Field[float64] `json:"percentage,required"`
-	VersionID  param.Field[string]  `json:"version_id,required"`
+	VersionID  param.Field[string]  `json:"version_id,required" format:"uuid"`
 }
 
 func (r AccountWorkerScriptDeploymentNewParamsVersion) MarshalJSON() (data []byte, err error) {

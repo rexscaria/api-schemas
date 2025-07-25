@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -77,77 +78,22 @@ func (r RegionalTieredCacheValue) IsKnown() bool {
 	return false
 }
 
-type ResponseValueTiered struct {
-	Result ResponseValueTieredResult `json:"result"`
-	JSON   responseValueTieredJSON   `json:"-"`
-}
-
-// responseValueTieredJSON contains the JSON metadata for the struct
-// [ResponseValueTiered]
-type responseValueTieredJSON struct {
-	Result      apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ResponseValueTiered) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r responseValueTieredJSON) RawJSON() string {
-	return r.raw
-}
-
-type ResponseValueTieredResult struct {
-	// Value of the Regional Tiered Cache zone setting.
-	Value RegionalTieredCacheValue `json:"value,required"`
-	// ID of the zone setting.
-	ID   ResponseValueTieredResultID   `json:"id"`
-	JSON responseValueTieredResultJSON `json:"-"`
-	BaseCacheRule
-}
-
-// responseValueTieredResultJSON contains the JSON metadata for the struct
-// [ResponseValueTieredResult]
-type responseValueTieredResultJSON struct {
-	Value       apijson.Field
-	ID          apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ResponseValueTieredResult) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r responseValueTieredResultJSON) RawJSON() string {
-	return r.raw
-}
-
-// ID of the zone setting.
-type ResponseValueTieredResultID string
-
-const (
-	ResponseValueTieredResultIDTcRegional ResponseValueTieredResultID = "tc_regional"
-)
-
-func (r ResponseValueTieredResultID) IsKnown() bool {
-	switch r {
-	case ResponseValueTieredResultIDTcRegional:
-		return true
-	}
-	return false
-}
-
 type ZoneCacheRegionalTieredCacheGetResponse struct {
-	JSON zoneCacheRegionalTieredCacheGetResponseJSON `json:"-"`
-	CacheRulesZoneCacheSettingsResponse
-	ResponseValueTiered
+	Errors   []MessagesCacheRulesItem `json:"errors,required"`
+	Messages []MessagesCacheRulesItem `json:"messages,required"`
+	// Whether the API call was successful
+	Success ZoneCacheRegionalTieredCacheGetResponseSuccess `json:"success,required"`
+	Result  ZoneCacheRegionalTieredCacheGetResponseResult  `json:"result"`
+	JSON    zoneCacheRegionalTieredCacheGetResponseJSON    `json:"-"`
 }
 
 // zoneCacheRegionalTieredCacheGetResponseJSON contains the JSON metadata for the
 // struct [ZoneCacheRegionalTieredCacheGetResponse]
 type zoneCacheRegionalTieredCacheGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
+	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -160,15 +106,83 @@ func (r zoneCacheRegionalTieredCacheGetResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful
+type ZoneCacheRegionalTieredCacheGetResponseSuccess bool
+
+const (
+	ZoneCacheRegionalTieredCacheGetResponseSuccessTrue ZoneCacheRegionalTieredCacheGetResponseSuccess = true
+)
+
+func (r ZoneCacheRegionalTieredCacheGetResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneCacheRegionalTieredCacheGetResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type ZoneCacheRegionalTieredCacheGetResponseResult struct {
+	// ID of the zone setting.
+	ID ZoneCacheRegionalTieredCacheGetResponseResultID `json:"id,required"`
+	// Whether the setting is editable
+	Editable bool `json:"editable,required"`
+	// The value of the feature
+	Value RegionalTieredCacheValue `json:"value,required"`
+	// Last time this setting was modified.
+	ModifiedOn time.Time                                         `json:"modified_on,nullable" format:"date-time"`
+	JSON       zoneCacheRegionalTieredCacheGetResponseResultJSON `json:"-"`
+}
+
+// zoneCacheRegionalTieredCacheGetResponseResultJSON contains the JSON metadata for
+// the struct [ZoneCacheRegionalTieredCacheGetResponseResult]
+type zoneCacheRegionalTieredCacheGetResponseResultJSON struct {
+	ID          apijson.Field
+	Editable    apijson.Field
+	Value       apijson.Field
+	ModifiedOn  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZoneCacheRegionalTieredCacheGetResponseResult) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneCacheRegionalTieredCacheGetResponseResultJSON) RawJSON() string {
+	return r.raw
+}
+
+// ID of the zone setting.
+type ZoneCacheRegionalTieredCacheGetResponseResultID string
+
+const (
+	ZoneCacheRegionalTieredCacheGetResponseResultIDTcRegional ZoneCacheRegionalTieredCacheGetResponseResultID = "tc_regional"
+)
+
+func (r ZoneCacheRegionalTieredCacheGetResponseResultID) IsKnown() bool {
+	switch r {
+	case ZoneCacheRegionalTieredCacheGetResponseResultIDTcRegional:
+		return true
+	}
+	return false
+}
+
 type ZoneCacheRegionalTieredCacheUpdateResponse struct {
-	JSON zoneCacheRegionalTieredCacheUpdateResponseJSON `json:"-"`
-	CacheRulesZoneCacheSettingsResponse
-	ResponseValueTiered
+	Errors   []MessagesCacheRulesItem `json:"errors,required"`
+	Messages []MessagesCacheRulesItem `json:"messages,required"`
+	// Whether the API call was successful
+	Success ZoneCacheRegionalTieredCacheUpdateResponseSuccess `json:"success,required"`
+	Result  ZoneCacheRegionalTieredCacheUpdateResponseResult  `json:"result"`
+	JSON    zoneCacheRegionalTieredCacheUpdateResponseJSON    `json:"-"`
 }
 
 // zoneCacheRegionalTieredCacheUpdateResponseJSON contains the JSON metadata for
 // the struct [ZoneCacheRegionalTieredCacheUpdateResponse]
 type zoneCacheRegionalTieredCacheUpdateResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
+	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -179,6 +193,67 @@ func (r *ZoneCacheRegionalTieredCacheUpdateResponse) UnmarshalJSON(data []byte) 
 
 func (r zoneCacheRegionalTieredCacheUpdateResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful
+type ZoneCacheRegionalTieredCacheUpdateResponseSuccess bool
+
+const (
+	ZoneCacheRegionalTieredCacheUpdateResponseSuccessTrue ZoneCacheRegionalTieredCacheUpdateResponseSuccess = true
+)
+
+func (r ZoneCacheRegionalTieredCacheUpdateResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneCacheRegionalTieredCacheUpdateResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type ZoneCacheRegionalTieredCacheUpdateResponseResult struct {
+	// ID of the zone setting.
+	ID ZoneCacheRegionalTieredCacheUpdateResponseResultID `json:"id,required"`
+	// Whether the setting is editable
+	Editable bool `json:"editable,required"`
+	// The value of the feature
+	Value RegionalTieredCacheValue `json:"value,required"`
+	// Last time this setting was modified.
+	ModifiedOn time.Time                                            `json:"modified_on,nullable" format:"date-time"`
+	JSON       zoneCacheRegionalTieredCacheUpdateResponseResultJSON `json:"-"`
+}
+
+// zoneCacheRegionalTieredCacheUpdateResponseResultJSON contains the JSON metadata
+// for the struct [ZoneCacheRegionalTieredCacheUpdateResponseResult]
+type zoneCacheRegionalTieredCacheUpdateResponseResultJSON struct {
+	ID          apijson.Field
+	Editable    apijson.Field
+	Value       apijson.Field
+	ModifiedOn  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *ZoneCacheRegionalTieredCacheUpdateResponseResult) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r zoneCacheRegionalTieredCacheUpdateResponseResultJSON) RawJSON() string {
+	return r.raw
+}
+
+// ID of the zone setting.
+type ZoneCacheRegionalTieredCacheUpdateResponseResultID string
+
+const (
+	ZoneCacheRegionalTieredCacheUpdateResponseResultIDTcRegional ZoneCacheRegionalTieredCacheUpdateResponseResultID = "tc_regional"
+)
+
+func (r ZoneCacheRegionalTieredCacheUpdateResponseResultID) IsKnown() bool {
+	switch r {
+	case ZoneCacheRegionalTieredCacheUpdateResponseResultIDTcRegional:
+		return true
+	}
+	return false
 }
 
 type ZoneCacheRegionalTieredCacheUpdateParams struct {

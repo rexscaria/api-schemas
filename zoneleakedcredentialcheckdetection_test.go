@@ -63,7 +63,7 @@ func TestZoneLeakedCredentialCheckDetectionUpdateWithOptionalParams(t *testing.T
 	_, err := client.Zones.LeakedCredentialChecks.Detections.Update(
 		context.TODO(),
 		"023e105f4ecef8ad9ca31a8372d0c353",
-		"023e105f4ecef8ad9ca31a8372d0c353",
+		"18a14bafaa8eb1df04ce683ec18c765e",
 		cfrex.ZoneLeakedCredentialCheckDetectionUpdateParams{
 			CustomDetection: cfrex.CustomDetectionParam{
 				Password: cfrex.F(`lookup_json_string(http.request.body.raw, "secret")`),
@@ -121,7 +121,7 @@ func TestZoneLeakedCredentialCheckDetectionDelete(t *testing.T) {
 	_, err := client.Zones.LeakedCredentialChecks.Detections.Delete(
 		context.TODO(),
 		"023e105f4ecef8ad9ca31a8372d0c353",
-		"023e105f4ecef8ad9ca31a8372d0c353",
+		"18a14bafaa8eb1df04ce683ec18c765e",
 	)
 	if err != nil {
 		var apierr *cfrex.Error

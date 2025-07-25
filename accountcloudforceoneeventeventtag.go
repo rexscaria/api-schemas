@@ -34,26 +34,34 @@ func NewAccountCloudforceOneEventEventTagService(opts ...option.RequestOption) (
 }
 
 // Adds a tag to an event
-func (r *AccountCloudforceOneEventEventTagService) Add(ctx context.Context, accountID float64, eventID string, body AccountCloudforceOneEventEventTagAddParams, opts ...option.RequestOption) (res *AccountCloudforceOneEventEventTagAddResponse, err error) {
+func (r *AccountCloudforceOneEventEventTagService) Add(ctx context.Context, accountID string, eventID string, body AccountCloudforceOneEventEventTagAddParams, opts ...option.RequestOption) (res *AccountCloudforceOneEventEventTagAddResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	if accountID == "" {
+		err = errors.New("missing required account_id parameter")
+		return
+	}
 	if eventID == "" {
 		err = errors.New("missing required event_id parameter")
 		return
 	}
-	path := fmt.Sprintf("accounts/%v/cloudforce-one/events/event_tag/%s/create", accountID, eventID)
+	path := fmt.Sprintf("accounts/%s/cloudforce-one/events/event_tag/%s/create", accountID, eventID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
 
 // Removes a tag from an event
-func (r *AccountCloudforceOneEventEventTagService) Remove(ctx context.Context, accountID float64, eventID string, body AccountCloudforceOneEventEventTagRemoveParams, opts ...option.RequestOption) (res *AccountCloudforceOneEventEventTagRemoveResponse, err error) {
+func (r *AccountCloudforceOneEventEventTagService) Remove(ctx context.Context, accountID string, eventID string, opts ...option.RequestOption) (res *AccountCloudforceOneEventEventTagRemoveResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	if accountID == "" {
+		err = errors.New("missing required account_id parameter")
+		return
+	}
 	if eventID == "" {
 		err = errors.New("missing required event_id parameter")
 		return
 	}
-	path := fmt.Sprintf("accounts/%v/cloudforce-one/events/event_tag/%s", accountID, eventID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	path := fmt.Sprintf("accounts/%s/cloudforce-one/events/event_tag/%s", accountID, eventID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
@@ -150,13 +158,5 @@ type AccountCloudforceOneEventEventTagAddParams struct {
 }
 
 func (r AccountCloudforceOneEventEventTagAddParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-type AccountCloudforceOneEventEventTagRemoveParams struct {
-	Tags param.Field[[]string] `json:"tags,required"`
-}
-
-func (r AccountCloudforceOneEventEventTagRemoveParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }

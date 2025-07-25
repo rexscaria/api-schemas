@@ -66,32 +66,6 @@ func (r *ZoneSpeedAPIPageService) GetTrend(ctx context.Context, zoneID string, u
 	return
 }
 
-type ObservatoryAPIResponseCollection struct {
-	Errors   []ObservatoryMessagesItem `json:"errors,required"`
-	Messages []ObservatoryMessagesItem `json:"messages,required"`
-	// Whether the API call was successful.
-	Success bool                                 `json:"success,required"`
-	JSON    observatoryAPIResponseCollectionJSON `json:"-"`
-}
-
-// observatoryAPIResponseCollectionJSON contains the JSON metadata for the struct
-// [ObservatoryAPIResponseCollection]
-type observatoryAPIResponseCollectionJSON struct {
-	Errors      apijson.Field
-	Messages    apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *ObservatoryAPIResponseCollection) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r observatoryAPIResponseCollectionJSON) RawJSON() string {
-	return r.raw
-}
-
 // The type of device.
 type ObservatoryDeviceType string
 
@@ -185,14 +159,20 @@ func (r ObservatoryScheduleFrequency) IsKnown() bool {
 }
 
 type ZoneSpeedAPIPageListResponse struct {
-	Result []ZoneSpeedAPIPageListResponseResult `json:"result"`
-	JSON   zoneSpeedAPIPageListResponseJSON     `json:"-"`
-	ObservatoryAPIResponseCollection
+	Errors   []ObservatoryMessagesItem `json:"errors,required"`
+	Messages []ObservatoryMessagesItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success bool                                 `json:"success,required"`
+	Result  []ZoneSpeedAPIPageListResponseResult `json:"result"`
+	JSON    zoneSpeedAPIPageListResponseJSON     `json:"-"`
 }
 
 // zoneSpeedAPIPageListResponseJSON contains the JSON metadata for the struct
 // [ZoneSpeedAPIPageListResponse]
 type zoneSpeedAPIPageListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -237,14 +217,20 @@ func (r zoneSpeedAPIPageListResponseResultJSON) RawJSON() string {
 }
 
 type ZoneSpeedAPIPageGetTrendResponse struct {
-	Result ZoneSpeedAPIPageGetTrendResponseResult `json:"result"`
-	JSON   zoneSpeedAPIPageGetTrendResponseJSON   `json:"-"`
-	ObservatoryAPIResponseSingle
+	Errors   []ObservatoryMessagesItem `json:"errors,required"`
+	Messages []ObservatoryMessagesItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success bool                                   `json:"success,required"`
+	Result  ZoneSpeedAPIPageGetTrendResponseResult `json:"result"`
+	JSON    zoneSpeedAPIPageGetTrendResponseJSON   `json:"-"`
 }
 
 // zoneSpeedAPIPageGetTrendResponseJSON contains the JSON metadata for the struct
 // [ZoneSpeedAPIPageGetTrendResponse]
 type zoneSpeedAPIPageGetTrendResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field

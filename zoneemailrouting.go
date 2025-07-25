@@ -79,14 +79,20 @@ func (r *ZoneEmailRoutingService) Enable(ctx context.Context, zoneID string, bod
 }
 
 type EmailEmailSettingsResponseSingle struct {
-	Result EmailEmailSettingsResponseSingleResult `json:"result"`
-	JSON   emailEmailSettingsResponseSingleJSON   `json:"-"`
-	EmailAPIResponseSingle
+	Errors   []EmailMessagesItem `json:"errors,required"`
+	Messages []EmailMessagesItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success EmailEmailSettingsResponseSingleSuccess `json:"success,required"`
+	Result  EmailEmailSettingsResponseSingleResult  `json:"result"`
+	JSON    emailEmailSettingsResponseSingleJSON    `json:"-"`
 }
 
 // emailEmailSettingsResponseSingleJSON contains the JSON metadata for the struct
 // [EmailEmailSettingsResponseSingle]
 type emailEmailSettingsResponseSingleJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -98,6 +104,21 @@ func (r *EmailEmailSettingsResponseSingle) UnmarshalJSON(data []byte) (err error
 
 func (r emailEmailSettingsResponseSingleJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type EmailEmailSettingsResponseSingleSuccess bool
+
+const (
+	EmailEmailSettingsResponseSingleSuccessTrue EmailEmailSettingsResponseSingleSuccess = true
+)
+
+func (r EmailEmailSettingsResponseSingleSuccess) IsKnown() bool {
+	switch r {
+	case EmailEmailSettingsResponseSingleSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type EmailEmailSettingsResponseSingleResult struct {

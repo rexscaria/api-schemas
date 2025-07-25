@@ -35,7 +35,7 @@ func NewAccountGatewayLocationService(opts ...option.RequestOption) (r *AccountG
 }
 
 // Creates a new Zero Trust Gateway location.
-func (r *AccountGatewayLocationService) New(ctx context.Context, accountID string, body AccountGatewayLocationNewParams, opts ...option.RequestOption) (res *SingleResponseLocation, err error) {
+func (r *AccountGatewayLocationService) New(ctx context.Context, accountID string, body AccountGatewayLocationNewParams, opts ...option.RequestOption) (res *SchemasZeroTrustGatewaySingleResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
@@ -47,7 +47,7 @@ func (r *AccountGatewayLocationService) New(ctx context.Context, accountID strin
 }
 
 // Fetches a single Zero Trust Gateway location.
-func (r *AccountGatewayLocationService) Get(ctx context.Context, accountID string, locationID string, opts ...option.RequestOption) (res *SingleResponseLocation, err error) {
+func (r *AccountGatewayLocationService) Get(ctx context.Context, accountID string, locationID string, opts ...option.RequestOption) (res *SchemasZeroTrustGatewaySingleResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
@@ -63,7 +63,7 @@ func (r *AccountGatewayLocationService) Get(ctx context.Context, accountID strin
 }
 
 // Updates a configured Zero Trust Gateway location.
-func (r *AccountGatewayLocationService) Update(ctx context.Context, accountID string, locationID string, body AccountGatewayLocationUpdateParams, opts ...option.RequestOption) (res *SingleResponseLocation, err error) {
+func (r *AccountGatewayLocationService) Update(ctx context.Context, accountID string, locationID string, body AccountGatewayLocationUpdateParams, opts ...option.RequestOption) (res *SchemasZeroTrustGatewaySingleResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
@@ -91,7 +91,7 @@ func (r *AccountGatewayLocationService) List(ctx context.Context, accountID stri
 }
 
 // Deletes a configured Zero Trust Gateway location.
-func (r *AccountGatewayLocationService) Delete(ctx context.Context, accountID string, locationID string, body AccountGatewayLocationDeleteParams, opts ...option.RequestOption) (res *ZeroTrustGatewayEmptyResponse, err error) {
+func (r *AccountGatewayLocationService) Delete(ctx context.Context, accountID string, locationID string, opts ...option.RequestOption) (res *ZeroTrustGatewayEmptyResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
@@ -102,7 +102,7 @@ func (r *AccountGatewayLocationService) Delete(ctx context.Context, accountID st
 		return
 	}
 	path := fmt.Sprintf("accounts/%s/gateway/locations/%s", accountID, locationID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
@@ -110,10 +110,10 @@ func (r *AccountGatewayLocationService) Delete(ctx context.Context, accountID st
 // location, if this field is absent or set with null, the endpoints configuration
 // remains unchanged.
 type Endpoints struct {
-	Doh  EndpointsDoh  `json:"doh"`
-	Dot  EndpointsDot  `json:"dot"`
-	Ipv4 EndpointsIpv4 `json:"ipv4"`
-	Ipv6 EndpointsIpv6 `json:"ipv6"`
+	Doh  EndpointsDoh  `json:"doh,required"`
+	Dot  EndpointsDot  `json:"dot,required"`
+	Ipv4 EndpointsIpv4 `json:"ipv4,required"`
+	Ipv6 EndpointsIpv6 `json:"ipv6,required"`
 	JSON endpointsJSON `json:"-"`
 }
 
@@ -141,7 +141,7 @@ type EndpointsDoh struct {
 	// A list of allowed source IP network ranges for this endpoint. When empty, all
 	// source IPs are allowed. A non-empty list is only effective if the endpoint is
 	// enabled for this location.
-	Networks []IPNetwork `json:"networks"`
+	Networks []IPNetwork `json:"networks,nullable"`
 	// True if the endpoint requires
 	// [user identity](https://developers.cloudflare.com/cloudflare-one/connections/connect-devices/agentless/dns/dns-over-https/#filter-doh-requests-by-user)
 	// authentication.
@@ -172,7 +172,7 @@ type EndpointsDot struct {
 	// A list of allowed source IP network ranges for this endpoint. When empty, all
 	// source IPs are allowed. A non-empty list is only effective if the endpoint is
 	// enabled for this location.
-	Networks []IPNetwork      `json:"networks"`
+	Networks []IPNetwork      `json:"networks,nullable"`
 	JSON     endpointsDotJSON `json:"-"`
 }
 
@@ -219,7 +219,7 @@ type EndpointsIpv6 struct {
 	// A list of allowed source IPv6 network ranges for this endpoint. When empty, all
 	// source IPs are allowed. A non-empty list is only effective if the endpoint is
 	// enabled for this location.
-	Networks []EndpointsIpv6Network `json:"networks"`
+	Networks []EndpointsIpv6Network `json:"networks,nullable"`
 	JSON     endpointsIpv6JSON      `json:"-"`
 }
 
@@ -265,10 +265,10 @@ func (r endpointsIpv6NetworkJSON) RawJSON() string {
 // location, if this field is absent or set with null, the endpoints configuration
 // remains unchanged.
 type EndpointsParam struct {
-	Doh  param.Field[EndpointsDohParam]  `json:"doh"`
-	Dot  param.Field[EndpointsDotParam]  `json:"dot"`
-	Ipv4 param.Field[EndpointsIpv4Param] `json:"ipv4"`
-	Ipv6 param.Field[EndpointsIpv6Param] `json:"ipv6"`
+	Doh  param.Field[EndpointsDohParam]  `json:"doh,required"`
+	Dot  param.Field[EndpointsDotParam]  `json:"dot,required"`
+	Ipv4 param.Field[EndpointsIpv4Param] `json:"ipv4,required"`
+	Ipv6 param.Field[EndpointsIpv6Param] `json:"ipv6,required"`
 }
 
 func (r EndpointsParam) MarshalJSON() (data []byte, err error) {
@@ -405,8 +405,8 @@ type Location struct {
 	DNSDestinationIPsID string `json:"dns_destination_ips_id"`
 	// The uuid identifier of the IPv6 block brought to the gateway, so that this
 	// location's IPv6 address is allocated from the Bring Your Own Ipv6(BYOIPv6) block
-	// and not from the standard CloudFlare IPv6 block.
-	DNSDestinationIpv6BlockID string `json:"dns_destination_ipv6_block_id"`
+	// and not from the standard Cloudflare IPv6 block.
+	DNSDestinationIpv6BlockID string `json:"dns_destination_ipv6_block_id,nullable"`
 	// The DNS over HTTPS domain to send DNS requests to. This field is auto-generated
 	// by Gateway.
 	DohSubdomain string `json:"doh_subdomain"`
@@ -415,7 +415,7 @@ type Location struct {
 	// The destination endpoints configured for this location. When updating a
 	// location, if this field is absent or set with null, the endpoints configuration
 	// remains unchanged.
-	Endpoints Endpoints `json:"endpoints"`
+	Endpoints Endpoints `json:"endpoints,nullable"`
 	// IPV6 destination ip assigned to this location. DNS requests sent to this IP will
 	// counted as the request under this location. This field is auto-generated by
 	// Gateway.
@@ -431,7 +431,7 @@ type Location struct {
 	// A list of network ranges that requests from this location would originate from.
 	// A non-empty list is only effective if the ipv4 endpoint is enabled for this
 	// location.
-	Networks  []Ipv4Network `json:"networks"`
+	Networks  []Ipv4Network `json:"networks,nullable"`
 	UpdatedAt time.Time     `json:"updated_at" format:"date-time"`
 	JSON      locationJSON  `json:"-"`
 }
@@ -465,14 +465,20 @@ func (r locationJSON) RawJSON() string {
 }
 
 type SingleResponseLocation struct {
-	Result Location                   `json:"result"`
-	JSON   singleResponseLocationJSON `json:"-"`
-	APIResponseSingleZeroTrustGateway
+	Errors   []SingleResponseLocationError   `json:"errors,required"`
+	Messages []SingleResponseLocationMessage `json:"messages,required"`
+	// Whether the API call was successful
+	Success SingleResponseLocationSuccess `json:"success,required"`
+	Result  GatewayRule                   `json:"result"`
+	JSON    singleResponseLocationJSON    `json:"-"`
 }
 
 // singleResponseLocationJSON contains the JSON metadata for the struct
 // [SingleResponseLocation]
 type singleResponseLocationJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -486,16 +492,135 @@ func (r singleResponseLocationJSON) RawJSON() string {
 	return r.raw
 }
 
+type SingleResponseLocationError struct {
+	Code             int64                              `json:"code,required"`
+	Message          string                             `json:"message,required"`
+	DocumentationURL string                             `json:"documentation_url"`
+	Source           SingleResponseLocationErrorsSource `json:"source"`
+	JSON             singleResponseLocationErrorJSON    `json:"-"`
+}
+
+// singleResponseLocationErrorJSON contains the JSON metadata for the struct
+// [SingleResponseLocationError]
+type singleResponseLocationErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *SingleResponseLocationError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r singleResponseLocationErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type SingleResponseLocationErrorsSource struct {
+	Pointer string                                 `json:"pointer"`
+	JSON    singleResponseLocationErrorsSourceJSON `json:"-"`
+}
+
+// singleResponseLocationErrorsSourceJSON contains the JSON metadata for the struct
+// [SingleResponseLocationErrorsSource]
+type singleResponseLocationErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *SingleResponseLocationErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r singleResponseLocationErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type SingleResponseLocationMessage struct {
+	Code             int64                                `json:"code,required"`
+	Message          string                               `json:"message,required"`
+	DocumentationURL string                               `json:"documentation_url"`
+	Source           SingleResponseLocationMessagesSource `json:"source"`
+	JSON             singleResponseLocationMessageJSON    `json:"-"`
+}
+
+// singleResponseLocationMessageJSON contains the JSON metadata for the struct
+// [SingleResponseLocationMessage]
+type singleResponseLocationMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *SingleResponseLocationMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r singleResponseLocationMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type SingleResponseLocationMessagesSource struct {
+	Pointer string                                   `json:"pointer"`
+	JSON    singleResponseLocationMessagesSourceJSON `json:"-"`
+}
+
+// singleResponseLocationMessagesSourceJSON contains the JSON metadata for the
+// struct [SingleResponseLocationMessagesSource]
+type singleResponseLocationMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *SingleResponseLocationMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r singleResponseLocationMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful
+type SingleResponseLocationSuccess bool
+
+const (
+	SingleResponseLocationSuccessTrue SingleResponseLocationSuccess = true
+)
+
+func (r SingleResponseLocationSuccess) IsKnown() bool {
+	switch r {
+	case SingleResponseLocationSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountGatewayLocationListResponse struct {
-	Result []Location                             `json:"result"`
-	JSON   accountGatewayLocationListResponseJSON `json:"-"`
-	APIResponseCollectionZeroTrustGateway
+	Errors   []AccountGatewayLocationListResponseError   `json:"errors,required"`
+	Messages []AccountGatewayLocationListResponseMessage `json:"messages,required"`
+	// Whether the API call was successful
+	Success    AccountGatewayLocationListResponseSuccess    `json:"success,required"`
+	Result     []Location                                   `json:"result"`
+	ResultInfo AccountGatewayLocationListResponseResultInfo `json:"result_info"`
+	JSON       accountGatewayLocationListResponseJSON       `json:"-"`
 }
 
 // accountGatewayLocationListResponseJSON contains the JSON metadata for the struct
 // [AccountGatewayLocationListResponse]
 type accountGatewayLocationListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -505,6 +630,148 @@ func (r *AccountGatewayLocationListResponse) UnmarshalJSON(data []byte) (err err
 }
 
 func (r accountGatewayLocationListResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountGatewayLocationListResponseError struct {
+	Code             int64                                          `json:"code,required"`
+	Message          string                                         `json:"message,required"`
+	DocumentationURL string                                         `json:"documentation_url"`
+	Source           AccountGatewayLocationListResponseErrorsSource `json:"source"`
+	JSON             accountGatewayLocationListResponseErrorJSON    `json:"-"`
+}
+
+// accountGatewayLocationListResponseErrorJSON contains the JSON metadata for the
+// struct [AccountGatewayLocationListResponseError]
+type accountGatewayLocationListResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountGatewayLocationListResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountGatewayLocationListResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountGatewayLocationListResponseErrorsSource struct {
+	Pointer string                                             `json:"pointer"`
+	JSON    accountGatewayLocationListResponseErrorsSourceJSON `json:"-"`
+}
+
+// accountGatewayLocationListResponseErrorsSourceJSON contains the JSON metadata
+// for the struct [AccountGatewayLocationListResponseErrorsSource]
+type accountGatewayLocationListResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountGatewayLocationListResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountGatewayLocationListResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountGatewayLocationListResponseMessage struct {
+	Code             int64                                            `json:"code,required"`
+	Message          string                                           `json:"message,required"`
+	DocumentationURL string                                           `json:"documentation_url"`
+	Source           AccountGatewayLocationListResponseMessagesSource `json:"source"`
+	JSON             accountGatewayLocationListResponseMessageJSON    `json:"-"`
+}
+
+// accountGatewayLocationListResponseMessageJSON contains the JSON metadata for the
+// struct [AccountGatewayLocationListResponseMessage]
+type accountGatewayLocationListResponseMessageJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountGatewayLocationListResponseMessage) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountGatewayLocationListResponseMessageJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountGatewayLocationListResponseMessagesSource struct {
+	Pointer string                                               `json:"pointer"`
+	JSON    accountGatewayLocationListResponseMessagesSourceJSON `json:"-"`
+}
+
+// accountGatewayLocationListResponseMessagesSourceJSON contains the JSON metadata
+// for the struct [AccountGatewayLocationListResponseMessagesSource]
+type accountGatewayLocationListResponseMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountGatewayLocationListResponseMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountGatewayLocationListResponseMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Whether the API call was successful
+type AccountGatewayLocationListResponseSuccess bool
+
+const (
+	AccountGatewayLocationListResponseSuccessTrue AccountGatewayLocationListResponseSuccess = true
+)
+
+func (r AccountGatewayLocationListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountGatewayLocationListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type AccountGatewayLocationListResponseResultInfo struct {
+	// Total number of results for the requested service
+	Count float64 `json:"count"`
+	// Current page within paginated list of results
+	Page float64 `json:"page"`
+	// Number of results per page of results
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters
+	TotalCount float64                                          `json:"total_count"`
+	JSON       accountGatewayLocationListResponseResultInfoJSON `json:"-"`
+}
+
+// accountGatewayLocationListResponseResultInfoJSON contains the JSON metadata for
+// the struct [AccountGatewayLocationListResponseResultInfo]
+type accountGatewayLocationListResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountGatewayLocationListResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountGatewayLocationListResponseResultInfoJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -560,12 +827,4 @@ type AccountGatewayLocationUpdateParams struct {
 
 func (r AccountGatewayLocationUpdateParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
-}
-
-type AccountGatewayLocationDeleteParams struct {
-	Body interface{} `json:"body,required"`
-}
-
-func (r AccountGatewayLocationDeleteParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
 }

@@ -32,18 +32,9 @@ func TestUserSubscriptionUpdateWithOptionalParams(t *testing.T) {
 		"506e3185e9c882d175a2d0cb0093d9f2",
 		cfrex.UserSubscriptionUpdateParams{
 			SubscriptionV2: cfrex.SubscriptionV2Param{
-				App: cfrex.F(cfrex.SubscriptionV2AppParam{
-					InstallID: cfrex.F("install_id"),
-				}),
-				ComponentValues: cfrex.F([]cfrex.SubscriptionV2ComponentValueParam{{
-					Default: cfrex.F(5.000000),
-					Name:    cfrex.F("page_rules"),
-					Price:   cfrex.F(5.000000),
-					Value:   cfrex.F(20.000000),
-				}}),
 				Frequency: cfrex.F(cfrex.SubscriptionV2FrequencyMonthly),
 				RatePlan: cfrex.F(cfrex.SubscriptionV2RatePlanParam{
-					ID:                cfrex.F("free"),
+					ID:                cfrex.F(cfrex.SubscriptionV2RatePlanIDFree),
 					Currency:          cfrex.F("USD"),
 					ExternallyManaged: cfrex.F(false),
 					IsContract:        cfrex.F(false),
@@ -51,7 +42,6 @@ func TestUserSubscriptionUpdateWithOptionalParams(t *testing.T) {
 					Scope:             cfrex.F("zone"),
 					Sets:              cfrex.F([]string{"string"}),
 				}),
-				Zone: cfrex.F(cfrex.SubscriptionV2ZoneParam{}),
 			},
 		},
 	)
@@ -102,13 +92,7 @@ func TestUserSubscriptionDelete(t *testing.T) {
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.User.Subscriptions.Delete(
-		context.TODO(),
-		"506e3185e9c882d175a2d0cb0093d9f2",
-		cfrex.UserSubscriptionDeleteParams{
-			Body: map[string]interface{}{},
-		},
-	)
+	_, err := client.User.Subscriptions.Delete(context.TODO(), "506e3185e9c882d175a2d0cb0093d9f2")
 	if err != nil {
 		var apierr *cfrex.Error
 		if errors.As(err, &apierr) {

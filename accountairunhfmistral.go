@@ -8,15 +8,12 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
-	"reflect"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
 	"github.com/rexscaria/api-schemas/internal/param"
 	"github.com/rexscaria/api-schemas/internal/requestconfig"
 	"github.com/rexscaria/api-schemas/option"
-	"github.com/rexscaria/api-schemas/shared"
-	"github.com/tidwall/gjson"
 )
 
 // AccountAIRunHfMistralService contains methods and other services that help with
@@ -50,139 +47,7 @@ func (r *AccountAIRunHfMistralService) ExecuteMistral7bInstructV0_2(ctx context.
 	return
 }
 
-type AccountAIRunHfMistralExecuteMistral7bInstructV0_2Response struct {
-	Result  AccountAIRunHfMistralExecuteMistral7bInstructV0_2ResponseResultUnion `json:"result" format:"binary"`
-	Success bool                                                                 `json:"success"`
-	JSON    accountAIRunHfMistralExecuteMistral7bInstructV0_2ResponseJSON        `json:"-"`
-}
-
-// accountAIRunHfMistralExecuteMistral7bInstructV0_2ResponseJSON contains the JSON
-// metadata for the struct
-// [AccountAIRunHfMistralExecuteMistral7bInstructV0_2Response]
-type accountAIRunHfMistralExecuteMistral7bInstructV0_2ResponseJSON struct {
-	Result      apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountAIRunHfMistralExecuteMistral7bInstructV0_2Response) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountAIRunHfMistralExecuteMistral7bInstructV0_2ResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-// Union satisfied by
-// [AccountAIRunHfMistralExecuteMistral7bInstructV0_2ResponseResultObject] or
-// [shared.UnionString].
-type AccountAIRunHfMistralExecuteMistral7bInstructV0_2ResponseResultUnion interface {
-	ImplementsAccountAIRunHfMistralExecuteMistral7bInstructV0_2ResponseResultUnion()
-}
-
-func init() {
-	apijson.RegisterUnion(
-		reflect.TypeOf((*AccountAIRunHfMistralExecuteMistral7bInstructV0_2ResponseResultUnion)(nil)).Elem(),
-		"",
-		apijson.UnionVariant{
-			TypeFilter: gjson.JSON,
-			Type:       reflect.TypeOf(AccountAIRunHfMistralExecuteMistral7bInstructV0_2ResponseResultObject{}),
-		},
-		apijson.UnionVariant{
-			TypeFilter: gjson.String,
-			Type:       reflect.TypeOf(shared.UnionString("")),
-		},
-	)
-}
-
-type AccountAIRunHfMistralExecuteMistral7bInstructV0_2ResponseResultObject struct {
-	// The generated text response from the model
-	Response string `json:"response,required"`
-	// An array of tool calls requests made during the response generation
-	ToolCalls []AccountAIRunHfMistralExecuteMistral7bInstructV0_2ResponseResultObjectToolCall `json:"tool_calls"`
-	// Usage statistics for the inference request
-	Usage AccountAIRunHfMistralExecuteMistral7bInstructV0_2ResponseResultObjectUsage `json:"usage"`
-	JSON  accountAIRunHfMistralExecuteMistral7bInstructV0_2ResponseResultObjectJSON  `json:"-"`
-}
-
-// accountAIRunHfMistralExecuteMistral7bInstructV0_2ResponseResultObjectJSON
-// contains the JSON metadata for the struct
-// [AccountAIRunHfMistralExecuteMistral7bInstructV0_2ResponseResultObject]
-type accountAIRunHfMistralExecuteMistral7bInstructV0_2ResponseResultObjectJSON struct {
-	Response    apijson.Field
-	ToolCalls   apijson.Field
-	Usage       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountAIRunHfMistralExecuteMistral7bInstructV0_2ResponseResultObject) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountAIRunHfMistralExecuteMistral7bInstructV0_2ResponseResultObjectJSON) RawJSON() string {
-	return r.raw
-}
-
-func (r AccountAIRunHfMistralExecuteMistral7bInstructV0_2ResponseResultObject) ImplementsAccountAIRunHfMistralExecuteMistral7bInstructV0_2ResponseResultUnion() {
-}
-
-type AccountAIRunHfMistralExecuteMistral7bInstructV0_2ResponseResultObjectToolCall struct {
-	// The arguments passed to be passed to the tool call request
-	Arguments interface{} `json:"arguments"`
-	// The name of the tool to be called
-	Name string                                                                            `json:"name"`
-	JSON accountAIRunHfMistralExecuteMistral7bInstructV0_2ResponseResultObjectToolCallJSON `json:"-"`
-}
-
-// accountAIRunHfMistralExecuteMistral7bInstructV0_2ResponseResultObjectToolCallJSON
-// contains the JSON metadata for the struct
-// [AccountAIRunHfMistralExecuteMistral7bInstructV0_2ResponseResultObjectToolCall]
-type accountAIRunHfMistralExecuteMistral7bInstructV0_2ResponseResultObjectToolCallJSON struct {
-	Arguments   apijson.Field
-	Name        apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *AccountAIRunHfMistralExecuteMistral7bInstructV0_2ResponseResultObjectToolCall) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountAIRunHfMistralExecuteMistral7bInstructV0_2ResponseResultObjectToolCallJSON) RawJSON() string {
-	return r.raw
-}
-
-// Usage statistics for the inference request
-type AccountAIRunHfMistralExecuteMistral7bInstructV0_2ResponseResultObjectUsage struct {
-	// Total number of tokens in output
-	CompletionTokens float64 `json:"completion_tokens"`
-	// Total number of tokens in input
-	PromptTokens float64 `json:"prompt_tokens"`
-	// Total number of input and output tokens
-	TotalTokens float64                                                                        `json:"total_tokens"`
-	JSON        accountAIRunHfMistralExecuteMistral7bInstructV0_2ResponseResultObjectUsageJSON `json:"-"`
-}
-
-// accountAIRunHfMistralExecuteMistral7bInstructV0_2ResponseResultObjectUsageJSON
-// contains the JSON metadata for the struct
-// [AccountAIRunHfMistralExecuteMistral7bInstructV0_2ResponseResultObjectUsage]
-type accountAIRunHfMistralExecuteMistral7bInstructV0_2ResponseResultObjectUsageJSON struct {
-	CompletionTokens apijson.Field
-	PromptTokens     apijson.Field
-	TotalTokens      apijson.Field
-	raw              string
-	ExtraFields      map[string]apijson.Field
-}
-
-func (r *AccountAIRunHfMistralExecuteMistral7bInstructV0_2ResponseResultObjectUsage) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r accountAIRunHfMistralExecuteMistral7bInstructV0_2ResponseResultObjectUsageJSON) RawJSON() string {
-	return r.raw
-}
+type AccountAIRunHfMistralExecuteMistral7bInstructV0_2Response = interface{}
 
 type AccountAIRunHfMistralExecuteMistral7bInstructV0_2Params struct {
 	QueueRequest param.Field[string]                                              `query:"queueRequest"`

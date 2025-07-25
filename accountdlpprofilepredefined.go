@@ -66,14 +66,20 @@ func (r *AccountDlpProfilePredefinedService) Update(ctx context.Context, account
 }
 
 type AccountDlpProfilePredefinedGetResponse struct {
-	Result Profile                                    `json:"result"`
-	JSON   accountDlpProfilePredefinedGetResponseJSON `json:"-"`
-	APIResponseSingleDlp
+	Errors   []MessagesDlpItems `json:"errors,required"`
+	Messages []MessagesDlpItems `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountDlpProfilePredefinedGetResponseSuccess `json:"success,required"`
+	Result  Profile                                       `json:"result"`
+	JSON    accountDlpProfilePredefinedGetResponseJSON    `json:"-"`
 }
 
 // accountDlpProfilePredefinedGetResponseJSON contains the JSON metadata for the
 // struct [AccountDlpProfilePredefinedGetResponse]
 type accountDlpProfilePredefinedGetResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -87,15 +93,36 @@ func (r accountDlpProfilePredefinedGetResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountDlpProfilePredefinedGetResponseSuccess bool
+
+const (
+	AccountDlpProfilePredefinedGetResponseSuccessTrue AccountDlpProfilePredefinedGetResponseSuccess = true
+)
+
+func (r AccountDlpProfilePredefinedGetResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountDlpProfilePredefinedGetResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountDlpProfilePredefinedUpdateResponse struct {
-	Result Profile                                       `json:"result"`
-	JSON   accountDlpProfilePredefinedUpdateResponseJSON `json:"-"`
-	APIResponseSingleDlp
+	Errors   []MessagesDlpItems `json:"errors,required"`
+	Messages []MessagesDlpItems `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountDlpProfilePredefinedUpdateResponseSuccess `json:"success,required"`
+	Result  Profile                                          `json:"result"`
+	JSON    accountDlpProfilePredefinedUpdateResponseJSON    `json:"-"`
 }
 
 // accountDlpProfilePredefinedUpdateResponseJSON contains the JSON metadata for the
 // struct [AccountDlpProfilePredefinedUpdateResponse]
 type accountDlpProfilePredefinedUpdateResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -109,15 +136,30 @@ func (r accountDlpProfilePredefinedUpdateResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountDlpProfilePredefinedUpdateResponseSuccess bool
+
+const (
+	AccountDlpProfilePredefinedUpdateResponseSuccessTrue AccountDlpProfilePredefinedUpdateResponseSuccess = true
+)
+
+func (r AccountDlpProfilePredefinedUpdateResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountDlpProfilePredefinedUpdateResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountDlpProfilePredefinedUpdateParams struct {
-	Entries             param.Field[[]AccountDlpProfilePredefinedUpdateParamsEntry] `json:"entries,required"`
-	AIContextEnabled    param.Field[bool]                                           `json:"ai_context_enabled"`
-	AllowedMatchCount   param.Field[int64]                                          `json:"allowed_match_count"`
-	ConfidenceThreshold param.Field[string]                                         `json:"confidence_threshold"`
+	AIContextEnabled    param.Field[bool]   `json:"ai_context_enabled"`
+	AllowedMatchCount   param.Field[int64]  `json:"allowed_match_count"`
+	ConfidenceThreshold param.Field[string] `json:"confidence_threshold"`
 	// Scan the context of predefined entries to only return matches surrounded by
 	// keywords.
-	ContextAwareness param.Field[ContextAwarenessParam] `json:"context_awareness"`
-	OcrEnabled       param.Field[bool]                  `json:"ocr_enabled"`
+	ContextAwareness param.Field[ContextAwarenessParam]                          `json:"context_awareness"`
+	Entries          param.Field[[]AccountDlpProfilePredefinedUpdateParamsEntry] `json:"entries"`
+	OcrEnabled       param.Field[bool]                                           `json:"ocr_enabled"`
 }
 
 func (r AccountDlpProfilePredefinedUpdateParams) MarshalJSON() (data []byte, err error) {

@@ -77,14 +77,20 @@ func (r *AccountAddressingPrefixBgpStatusService) Get(ctx context.Context, accou
 }
 
 type AdvertisedResponse struct {
-	Result AdvertisedResponseResult `json:"result"`
-	JSON   advertisedResponseJSON   `json:"-"`
-	AddressingAPIResponseSingle
+	Errors   []AddressingMessages `json:"errors,required"`
+	Messages []AddressingMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AdvertisedResponseSuccess `json:"success,required"`
+	Result  AdvertisedResponseResult  `json:"result"`
+	JSON    advertisedResponseJSON    `json:"-"`
 }
 
 // advertisedResponseJSON contains the JSON metadata for the struct
 // [AdvertisedResponse]
 type advertisedResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -96,6 +102,21 @@ func (r *AdvertisedResponse) UnmarshalJSON(data []byte) (err error) {
 
 func (r advertisedResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type AdvertisedResponseSuccess bool
+
+const (
+	AdvertisedResponseSuccessTrue AdvertisedResponseSuccess = true
+)
+
+func (r AdvertisedResponseSuccess) IsKnown() bool {
+	switch r {
+	case AdvertisedResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AdvertisedResponseResult struct {

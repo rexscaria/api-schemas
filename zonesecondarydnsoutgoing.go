@@ -70,14 +70,14 @@ func (r *ZoneSecondaryDNSOutgoingService) Update(ctx context.Context, zoneID str
 }
 
 // Delete primary zone configuration for outgoing zone transfers.
-func (r *ZoneSecondaryDNSOutgoingService) Delete(ctx context.Context, zoneID string, body ZoneSecondaryDNSOutgoingDeleteParams, opts ...option.RequestOption) (res *IDResponseSecondaryDNS, err error) {
+func (r *ZoneSecondaryDNSOutgoingService) Delete(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *IDResponseSecondaryDNS, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
 	}
 	path := fmt.Sprintf("zones/%s/secondary_dns/outgoing", zoneID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
@@ -131,15 +131,21 @@ func (r *ZoneSecondaryDNSOutgoingService) Status(ctx context.Context, zoneID str
 }
 
 type EnableTransferResponse struct {
+	Errors   []SecondaryDNSMessages `json:"errors,required"`
+	Messages []SecondaryDNSMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success EnableTransferResponseSuccess `json:"success,required"`
 	// The zone transfer status of a primary zone
 	Result string                     `json:"result"`
 	JSON   enableTransferResponseJSON `json:"-"`
-	ResponseSingleACL
 }
 
 // enableTransferResponseJSON contains the JSON metadata for the struct
 // [EnableTransferResponse]
 type enableTransferResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -151,6 +157,21 @@ func (r *EnableTransferResponse) UnmarshalJSON(data []byte) (err error) {
 
 func (r enableTransferResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type EnableTransferResponseSuccess bool
+
+const (
+	EnableTransferResponseSuccessTrue EnableTransferResponseSuccess = true
+)
+
+func (r EnableTransferResponseSuccess) IsKnown() bool {
+	switch r {
+	case EnableTransferResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type SingleRequestParam struct {
@@ -165,14 +186,20 @@ func (r SingleRequestParam) MarshalJSON() (data []byte, err error) {
 }
 
 type SingleResponseOutgoing struct {
-	Result SingleResponseOutgoingResult `json:"result"`
-	JSON   singleResponseOutgoingJSON   `json:"-"`
-	ResponseSingleACL
+	Errors   []SecondaryDNSMessages `json:"errors,required"`
+	Messages []SecondaryDNSMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success SingleResponseOutgoingSuccess `json:"success,required"`
+	Result  SingleResponseOutgoingResult  `json:"result"`
+	JSON    singleResponseOutgoingJSON    `json:"-"`
 }
 
 // singleResponseOutgoingJSON contains the JSON metadata for the struct
 // [SingleResponseOutgoing]
 type singleResponseOutgoingJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -184,6 +211,21 @@ func (r *SingleResponseOutgoing) UnmarshalJSON(data []byte) (err error) {
 
 func (r singleResponseOutgoingJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type SingleResponseOutgoingSuccess bool
+
+const (
+	SingleResponseOutgoingSuccessTrue SingleResponseOutgoingSuccess = true
+)
+
+func (r SingleResponseOutgoingSuccess) IsKnown() bool {
+	switch r {
+	case SingleResponseOutgoingSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type SingleResponseOutgoingResult struct {
@@ -226,15 +268,21 @@ func (r singleResponseOutgoingResultJSON) RawJSON() string {
 }
 
 type ZoneSecondaryDNSOutgoingDisableResponse struct {
+	Errors   []SecondaryDNSMessages `json:"errors,required"`
+	Messages []SecondaryDNSMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success ZoneSecondaryDNSOutgoingDisableResponseSuccess `json:"success,required"`
 	// The zone transfer status of a primary zone
 	Result string                                      `json:"result"`
 	JSON   zoneSecondaryDNSOutgoingDisableResponseJSON `json:"-"`
-	ResponseSingleACL
 }
 
 // zoneSecondaryDNSOutgoingDisableResponseJSON contains the JSON metadata for the
 // struct [ZoneSecondaryDNSOutgoingDisableResponse]
 type zoneSecondaryDNSOutgoingDisableResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -248,17 +296,38 @@ func (r zoneSecondaryDNSOutgoingDisableResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type ZoneSecondaryDNSOutgoingDisableResponseSuccess bool
+
+const (
+	ZoneSecondaryDNSOutgoingDisableResponseSuccessTrue ZoneSecondaryDNSOutgoingDisableResponseSuccess = true
+)
+
+func (r ZoneSecondaryDNSOutgoingDisableResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneSecondaryDNSOutgoingDisableResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type ZoneSecondaryDNSOutgoingForceNotifyResponse struct {
+	Errors   []SecondaryDNSMessages `json:"errors,required"`
+	Messages []SecondaryDNSMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success ZoneSecondaryDNSOutgoingForceNotifyResponseSuccess `json:"success,required"`
 	// When force_notify query parameter is set to true, the response is a simple
 	// string
 	Result string                                          `json:"result"`
 	JSON   zoneSecondaryDNSOutgoingForceNotifyResponseJSON `json:"-"`
-	ResponseSingleACL
 }
 
 // zoneSecondaryDNSOutgoingForceNotifyResponseJSON contains the JSON metadata for
 // the struct [ZoneSecondaryDNSOutgoingForceNotifyResponse]
 type zoneSecondaryDNSOutgoingForceNotifyResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -270,6 +339,21 @@ func (r *ZoneSecondaryDNSOutgoingForceNotifyResponse) UnmarshalJSON(data []byte)
 
 func (r zoneSecondaryDNSOutgoingForceNotifyResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type ZoneSecondaryDNSOutgoingForceNotifyResponseSuccess bool
+
+const (
+	ZoneSecondaryDNSOutgoingForceNotifyResponseSuccessTrue ZoneSecondaryDNSOutgoingForceNotifyResponseSuccess = true
+)
+
+func (r ZoneSecondaryDNSOutgoingForceNotifyResponseSuccess) IsKnown() bool {
+	switch r {
+	case ZoneSecondaryDNSOutgoingForceNotifyResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type ZoneSecondaryDNSOutgoingNewParams struct {
@@ -286,14 +370,6 @@ type ZoneSecondaryDNSOutgoingUpdateParams struct {
 
 func (r ZoneSecondaryDNSOutgoingUpdateParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r.SingleRequest)
-}
-
-type ZoneSecondaryDNSOutgoingDeleteParams struct {
-	Body interface{} `json:"body,required"`
-}
-
-func (r ZoneSecondaryDNSOutgoingDeleteParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
 }
 
 type ZoneSecondaryDNSOutgoingDisableParams struct {

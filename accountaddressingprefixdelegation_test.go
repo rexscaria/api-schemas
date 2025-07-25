@@ -92,9 +92,6 @@ func TestAccountAddressingPrefixDelegationDelete(t *testing.T) {
 		"258def64c72dae45f3e4c8516e2111f2",
 		"2af39739cc4e3b5910c918468bb89828",
 		"d933b1530bc56c9953cf8ce166da8004",
-		cfrex.AccountAddressingPrefixDelegationDeleteParams{
-			Body: map[string]interface{}{},
-		},
 	)
 	if err != nil {
 		var apierr *cfrex.Error

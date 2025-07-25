@@ -93,7 +93,7 @@ func (r *AccountWarpConnectorService) List(ctx context.Context, accountID string
 }
 
 // Deletes a Warp Connector Tunnel from an account.
-func (r *AccountWarpConnectorService) Delete(ctx context.Context, accountID string, tunnelID string, body AccountWarpConnectorDeleteParams, opts ...option.RequestOption) (res *TunnelResponseSingle, err error) {
+func (r *AccountWarpConnectorService) Delete(ctx context.Context, accountID string, tunnelID string, opts ...option.RequestOption) (res *TunnelResponseSingle, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
@@ -104,7 +104,7 @@ func (r *AccountWarpConnectorService) Delete(ctx context.Context, accountID stri
 		return
 	}
 	path := fmt.Sprintf("accounts/%s/warp_connector/%s", accountID, tunnelID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
@@ -179,12 +179,4 @@ func (r AccountWarpConnectorListParams) URLQuery() (v url.Values) {
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
-}
-
-type AccountWarpConnectorDeleteParams struct {
-	Body interface{} `json:"body,required"`
-}
-
-func (r AccountWarpConnectorDeleteParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
 }

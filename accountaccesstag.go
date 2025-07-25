@@ -107,15 +107,21 @@ func (r *AccountAccessTagService) Delete(ctx context.Context, accountID string, 
 }
 
 type SingleResponseTag struct {
+	Errors   []MessagesAccessItem `json:"errors,required"`
+	Messages []MessagesAccessItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success SingleResponseTagSuccess `json:"success,required"`
 	// A tag
 	Result Tag                   `json:"result"`
 	JSON   singleResponseTagJSON `json:"-"`
-	APIResponseSingleAccess
 }
 
 // singleResponseTagJSON contains the JSON metadata for the struct
 // [SingleResponseTag]
 type singleResponseTagJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -127,6 +133,21 @@ func (r *SingleResponseTag) UnmarshalJSON(data []byte) (err error) {
 
 func (r singleResponseTagJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type SingleResponseTagSuccess bool
+
+const (
+	SingleResponseTagSuccessTrue SingleResponseTagSuccess = true
+)
+
+func (r SingleResponseTagSuccess) IsKnown() bool {
+	switch r {
+	case SingleResponseTagSuccessTrue:
+		return true
+	}
+	return false
 }
 
 // A tag
@@ -159,15 +180,23 @@ func (r tagJSON) RawJSON() string {
 }
 
 type AccountAccessTagListResponse struct {
-	Result []Tag                            `json:"result"`
-	JSON   accountAccessTagListResponseJSON `json:"-"`
-	APIResponseCollectionAccess
+	Errors   []MessagesAccessItem `json:"errors,required"`
+	Messages []MessagesAccessItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success    AccountAccessTagListResponseSuccess    `json:"success,required"`
+	Result     []Tag                                  `json:"result"`
+	ResultInfo AccountAccessTagListResponseResultInfo `json:"result_info"`
+	JSON       accountAccessTagListResponseJSON       `json:"-"`
 }
 
 // accountAccessTagListResponseJSON contains the JSON metadata for the struct
 // [AccountAccessTagListResponse]
 type accountAccessTagListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
+	ResultInfo  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -180,15 +209,67 @@ func (r accountAccessTagListResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountAccessTagListResponseSuccess bool
+
+const (
+	AccountAccessTagListResponseSuccessTrue AccountAccessTagListResponseSuccess = true
+)
+
+func (r AccountAccessTagListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountAccessTagListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
+type AccountAccessTagListResponseResultInfo struct {
+	// Total number of results for the requested service.
+	Count float64 `json:"count"`
+	// Current page within paginated list of results.
+	Page float64 `json:"page"`
+	// Number of results per page of results.
+	PerPage float64 `json:"per_page"`
+	// Total results available without any search parameters.
+	TotalCount float64                                    `json:"total_count"`
+	JSON       accountAccessTagListResponseResultInfoJSON `json:"-"`
+}
+
+// accountAccessTagListResponseResultInfoJSON contains the JSON metadata for the
+// struct [AccountAccessTagListResponseResultInfo]
+type accountAccessTagListResponseResultInfoJSON struct {
+	Count       apijson.Field
+	Page        apijson.Field
+	PerPage     apijson.Field
+	TotalCount  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountAccessTagListResponseResultInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountAccessTagListResponseResultInfoJSON) RawJSON() string {
+	return r.raw
+}
+
 type AccountAccessTagDeleteResponse struct {
-	Result AccountAccessTagDeleteResponseResult `json:"result"`
-	JSON   accountAccessTagDeleteResponseJSON   `json:"-"`
-	APIResponseSingleAccess
+	Errors   []MessagesAccessItem `json:"errors,required"`
+	Messages []MessagesAccessItem `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountAccessTagDeleteResponseSuccess `json:"success,required"`
+	Result  AccountAccessTagDeleteResponseResult  `json:"result"`
+	JSON    accountAccessTagDeleteResponseJSON    `json:"-"`
 }
 
 // accountAccessTagDeleteResponseJSON contains the JSON metadata for the struct
 // [AccountAccessTagDeleteResponse]
 type accountAccessTagDeleteResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -200,6 +281,21 @@ func (r *AccountAccessTagDeleteResponse) UnmarshalJSON(data []byte) (err error) 
 
 func (r accountAccessTagDeleteResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Whether the API call was successful.
+type AccountAccessTagDeleteResponseSuccess bool
+
+const (
+	AccountAccessTagDeleteResponseSuccessTrue AccountAccessTagDeleteResponseSuccess = true
+)
+
+func (r AccountAccessTagDeleteResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountAccessTagDeleteResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountAccessTagDeleteResponseResult struct {
@@ -235,9 +331,7 @@ func (r AccountAccessTagNewParams) MarshalJSON() (data []byte, err error) {
 
 type AccountAccessTagUpdateParams struct {
 	// The name of the tag
-	Name      param.Field[string]    `json:"name,required"`
-	CreatedAt param.Field[time.Time] `json:"created_at" format:"date-time"`
-	UpdatedAt param.Field[time.Time] `json:"updated_at" format:"date-time"`
+	Name param.Field[string] `json:"name,required"`
 }
 
 func (r AccountAccessTagUpdateParams) MarshalJSON() (data []byte, err error) {

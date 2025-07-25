@@ -73,7 +73,7 @@ func (r *AccountStreamCaptionService) List(ctx context.Context, accountID string
 }
 
 // Removes the captions or subtitles from a video.
-func (r *AccountStreamCaptionService) Delete(ctx context.Context, accountID string, identifier string, language string, body AccountStreamCaptionDeleteParams, opts ...option.RequestOption) (res *AccountStreamCaptionDeleteResponse, err error) {
+func (r *AccountStreamCaptionService) Delete(ctx context.Context, accountID string, identifier string, language string, opts ...option.RequestOption) (res *AccountStreamCaptionDeleteResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
@@ -88,7 +88,7 @@ func (r *AccountStreamCaptionService) Delete(ctx context.Context, accountID stri
 		return
 	}
 	path := fmt.Sprintf("accounts/%s/stream/%s/captions/%s", accountID, identifier, language)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
@@ -154,47 +154,6 @@ func (r *AccountStreamCaptionService) Upload(ctx context.Context, accountID stri
 	return
 }
 
-type APIResponseStream struct {
-	Errors   []StreamMessages `json:"errors,required"`
-	Messages []StreamMessages `json:"messages,required"`
-	// Whether the API call was successful
-	Success APIResponseStreamSuccess `json:"success,required"`
-	JSON    apiResponseStreamJSON    `json:"-"`
-}
-
-// apiResponseStreamJSON contains the JSON metadata for the struct
-// [APIResponseStream]
-type apiResponseStreamJSON struct {
-	Errors      apijson.Field
-	Messages    apijson.Field
-	Success     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *APIResponseStream) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r apiResponseStreamJSON) RawJSON() string {
-	return r.raw
-}
-
-// Whether the API call was successful
-type APIResponseStreamSuccess bool
-
-const (
-	APIResponseStreamSuccessTrue APIResponseStreamSuccess = true
-)
-
-func (r APIResponseStreamSuccess) IsKnown() bool {
-	switch r {
-	case APIResponseStreamSuccessTrue:
-		return true
-	}
-	return false
-}
-
 type Captions struct {
 	// Whether the caption was generated via AI.
 	Generated bool `json:"generated"`
@@ -243,14 +202,20 @@ func (r CaptionsStatus) IsKnown() bool {
 }
 
 type LanguageResponseSingle struct {
-	Result Captions                   `json:"result"`
-	JSON   languageResponseSingleJSON `json:"-"`
-	APIResponseSingleStream
+	Errors   []StreamMessages `json:"errors,required"`
+	Messages []StreamMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success LanguageResponseSingleSuccess `json:"success,required"`
+	Result  Captions                      `json:"result"`
+	JSON    languageResponseSingleJSON    `json:"-"`
 }
 
 // languageResponseSingleJSON contains the JSON metadata for the struct
 // [LanguageResponseSingle]
 type languageResponseSingleJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -264,18 +229,37 @@ func (r languageResponseSingleJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type LanguageResponseSingleSuccess bool
+
+const (
+	LanguageResponseSingleSuccessTrue LanguageResponseSingleSuccess = true
+)
+
+func (r LanguageResponseSingleSuccess) IsKnown() bool {
+	switch r {
+	case LanguageResponseSingleSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type StreamMessages struct {
-	Code    int64              `json:"code,required"`
-	Message string             `json:"message,required"`
-	JSON    streamMessagesJSON `json:"-"`
+	Code             int64                `json:"code,required"`
+	Message          string               `json:"message,required"`
+	DocumentationURL string               `json:"documentation_url"`
+	Source           StreamMessagesSource `json:"source"`
+	JSON             streamMessagesJSON   `json:"-"`
 }
 
 // streamMessagesJSON contains the JSON metadata for the struct [StreamMessages]
 type streamMessagesJSON struct {
-	Code        apijson.Field
-	Message     apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
 }
 
 func (r *StreamMessages) UnmarshalJSON(data []byte) (err error) {
@@ -286,15 +270,42 @@ func (r streamMessagesJSON) RawJSON() string {
 	return r.raw
 }
 
+type StreamMessagesSource struct {
+	Pointer string                   `json:"pointer"`
+	JSON    streamMessagesSourceJSON `json:"-"`
+}
+
+// streamMessagesSourceJSON contains the JSON metadata for the struct
+// [StreamMessagesSource]
+type streamMessagesSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *StreamMessagesSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r streamMessagesSourceJSON) RawJSON() string {
+	return r.raw
+}
+
 type AccountStreamCaptionListResponse struct {
-	Result []Captions                           `json:"result"`
-	JSON   accountStreamCaptionListResponseJSON `json:"-"`
-	APIResponseStream
+	Errors   []StreamMessages `json:"errors,required"`
+	Messages []StreamMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountStreamCaptionListResponseSuccess `json:"success,required"`
+	Result  []Captions                              `json:"result"`
+	JSON    accountStreamCaptionListResponseJSON    `json:"-"`
 }
 
 // accountStreamCaptionListResponseJSON contains the JSON metadata for the struct
 // [AccountStreamCaptionListResponse]
 type accountStreamCaptionListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -308,15 +319,36 @@ func (r accountStreamCaptionListResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// Whether the API call was successful.
+type AccountStreamCaptionListResponseSuccess bool
+
+const (
+	AccountStreamCaptionListResponseSuccessTrue AccountStreamCaptionListResponseSuccess = true
+)
+
+func (r AccountStreamCaptionListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountStreamCaptionListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountStreamCaptionDeleteResponse struct {
-	Result string                                 `json:"result"`
-	JSON   accountStreamCaptionDeleteResponseJSON `json:"-"`
-	APIResponseStream
+	Errors   []StreamMessages `json:"errors,required"`
+	Messages []StreamMessages `json:"messages,required"`
+	// Whether the API call was successful.
+	Success AccountStreamCaptionDeleteResponseSuccess `json:"success,required"`
+	Result  string                                    `json:"result"`
+	JSON    accountStreamCaptionDeleteResponseJSON    `json:"-"`
 }
 
 // accountStreamCaptionDeleteResponseJSON contains the JSON metadata for the struct
 // [AccountStreamCaptionDeleteResponse]
 type accountStreamCaptionDeleteResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
+	Success     apijson.Field
 	Result      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -330,12 +362,19 @@ func (r accountStreamCaptionDeleteResponseJSON) RawJSON() string {
 	return r.raw
 }
 
-type AccountStreamCaptionDeleteParams struct {
-	Body interface{} `json:"body,required"`
-}
+// Whether the API call was successful.
+type AccountStreamCaptionDeleteResponseSuccess bool
 
-func (r AccountStreamCaptionDeleteParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
+const (
+	AccountStreamCaptionDeleteResponseSuccessTrue AccountStreamCaptionDeleteResponseSuccess = true
+)
+
+func (r AccountStreamCaptionDeleteResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountStreamCaptionDeleteResponseSuccessTrue:
+		return true
+	}
+	return false
 }
 
 type AccountStreamCaptionUploadParams struct {

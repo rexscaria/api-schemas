@@ -113,7 +113,8 @@ type MqConsumer struct {
 	CreatedOn  string `json:"created_on"`
 	// A Resource identifier.
 	QueueID string `json:"queue_id"`
-	Script  string `json:"script"`
+	// Name of a Worker
+	Script string `json:"script"`
 	// This field can have the runtime type of [MqConsumerMqWorkerConsumerSettings],
 	// [MqConsumerMqHTTPConsumerSettings].
 	Settings interface{}    `json:"settings"`
@@ -181,7 +182,8 @@ type MqConsumerMqWorkerConsumer struct {
 	ConsumerID string `json:"consumer_id"`
 	CreatedOn  string `json:"created_on"`
 	// A Resource identifier.
-	QueueID  string                             `json:"queue_id"`
+	QueueID string `json:"queue_id"`
+	// Name of a Worker
 	Script   string                             `json:"script"`
 	Settings MqConsumerMqWorkerConsumerSettings `json:"settings"`
 	Type     MqConsumerMqWorkerConsumerType     `json:"type"`
@@ -358,7 +360,7 @@ func (r MqConsumerType) IsKnown() bool {
 }
 
 type MqConsumerParam struct {
-	Script     param.Field[string]         `json:"script"`
+	// Name of a Worker
 	ScriptName param.Field[string]         `json:"script_name"`
 	Settings   param.Field[interface{}]    `json:"settings"`
 	Type       param.Field[MqConsumerType] `json:"type"`
@@ -377,7 +379,7 @@ type MqConsumerUnionParam interface {
 }
 
 type MqConsumerMqWorkerConsumerParam struct {
-	Script     param.Field[string]                                  `json:"script"`
+	// Name of a Worker
 	ScriptName param.Field[string]                                  `json:"script_name"`
 	Settings   param.Field[MqConsumerMqWorkerConsumerSettingsParam] `json:"settings"`
 	Type       param.Field[MqConsumerMqWorkerConsumerType]          `json:"type"`
@@ -438,15 +440,21 @@ func (r MqConsumerMqHTTPConsumerSettingsParam) MarshalJSON() (data []byte, err e
 }
 
 type AccountQueueConsumerNewResponse struct {
-	Result MqConsumer                          `json:"result"`
-	JSON   accountQueueConsumerNewResponseJSON `json:"-"`
-	MqAPIV4Success
+	Errors   []AccountQueueConsumerNewResponseError `json:"errors"`
+	Messages []string                               `json:"messages"`
+	Result   MqConsumer                             `json:"result"`
+	// Indicates if the API call was successful or not.
+	Success AccountQueueConsumerNewResponseSuccess `json:"success"`
+	JSON    accountQueueConsumerNewResponseJSON    `json:"-"`
 }
 
 // accountQueueConsumerNewResponseJSON contains the JSON metadata for the struct
 // [AccountQueueConsumerNewResponse]
 type accountQueueConsumerNewResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -459,16 +467,85 @@ func (r accountQueueConsumerNewResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+type AccountQueueConsumerNewResponseError struct {
+	Code             int64                                       `json:"code,required"`
+	Message          string                                      `json:"message,required"`
+	DocumentationURL string                                      `json:"documentation_url"`
+	Source           AccountQueueConsumerNewResponseErrorsSource `json:"source"`
+	JSON             accountQueueConsumerNewResponseErrorJSON    `json:"-"`
+}
+
+// accountQueueConsumerNewResponseErrorJSON contains the JSON metadata for the
+// struct [AccountQueueConsumerNewResponseError]
+type accountQueueConsumerNewResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountQueueConsumerNewResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountQueueConsumerNewResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountQueueConsumerNewResponseErrorsSource struct {
+	Pointer string                                          `json:"pointer"`
+	JSON    accountQueueConsumerNewResponseErrorsSourceJSON `json:"-"`
+}
+
+// accountQueueConsumerNewResponseErrorsSourceJSON contains the JSON metadata for
+// the struct [AccountQueueConsumerNewResponseErrorsSource]
+type accountQueueConsumerNewResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountQueueConsumerNewResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountQueueConsumerNewResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Indicates if the API call was successful or not.
+type AccountQueueConsumerNewResponseSuccess bool
+
+const (
+	AccountQueueConsumerNewResponseSuccessTrue AccountQueueConsumerNewResponseSuccess = true
+)
+
+func (r AccountQueueConsumerNewResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountQueueConsumerNewResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountQueueConsumerUpdateResponse struct {
-	Result MqConsumer                             `json:"result"`
-	JSON   accountQueueConsumerUpdateResponseJSON `json:"-"`
-	MqAPIV4Success
+	Errors   []AccountQueueConsumerUpdateResponseError `json:"errors"`
+	Messages []string                                  `json:"messages"`
+	Result   MqConsumer                                `json:"result"`
+	// Indicates if the API call was successful or not.
+	Success AccountQueueConsumerUpdateResponseSuccess `json:"success"`
+	JSON    accountQueueConsumerUpdateResponseJSON    `json:"-"`
 }
 
 // accountQueueConsumerUpdateResponseJSON contains the JSON metadata for the struct
 // [AccountQueueConsumerUpdateResponse]
 type accountQueueConsumerUpdateResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -481,16 +558,85 @@ func (r accountQueueConsumerUpdateResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+type AccountQueueConsumerUpdateResponseError struct {
+	Code             int64                                          `json:"code,required"`
+	Message          string                                         `json:"message,required"`
+	DocumentationURL string                                         `json:"documentation_url"`
+	Source           AccountQueueConsumerUpdateResponseErrorsSource `json:"source"`
+	JSON             accountQueueConsumerUpdateResponseErrorJSON    `json:"-"`
+}
+
+// accountQueueConsumerUpdateResponseErrorJSON contains the JSON metadata for the
+// struct [AccountQueueConsumerUpdateResponseError]
+type accountQueueConsumerUpdateResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountQueueConsumerUpdateResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountQueueConsumerUpdateResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountQueueConsumerUpdateResponseErrorsSource struct {
+	Pointer string                                             `json:"pointer"`
+	JSON    accountQueueConsumerUpdateResponseErrorsSourceJSON `json:"-"`
+}
+
+// accountQueueConsumerUpdateResponseErrorsSourceJSON contains the JSON metadata
+// for the struct [AccountQueueConsumerUpdateResponseErrorsSource]
+type accountQueueConsumerUpdateResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountQueueConsumerUpdateResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountQueueConsumerUpdateResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Indicates if the API call was successful or not.
+type AccountQueueConsumerUpdateResponseSuccess bool
+
+const (
+	AccountQueueConsumerUpdateResponseSuccessTrue AccountQueueConsumerUpdateResponseSuccess = true
+)
+
+func (r AccountQueueConsumerUpdateResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountQueueConsumerUpdateResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountQueueConsumerListResponse struct {
-	Result []MqConsumer                         `json:"result"`
-	JSON   accountQueueConsumerListResponseJSON `json:"-"`
-	MqAPIV4Success
+	Errors   []AccountQueueConsumerListResponseError `json:"errors"`
+	Messages []string                                `json:"messages"`
+	Result   []MqConsumer                            `json:"result"`
+	// Indicates if the API call was successful or not.
+	Success AccountQueueConsumerListResponseSuccess `json:"success"`
+	JSON    accountQueueConsumerListResponseJSON    `json:"-"`
 }
 
 // accountQueueConsumerListResponseJSON contains the JSON metadata for the struct
 // [AccountQueueConsumerListResponse]
 type accountQueueConsumerListResponseJSON struct {
+	Errors      apijson.Field
+	Messages    apijson.Field
 	Result      apijson.Field
+	Success     apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -503,6 +649,69 @@ func (r accountQueueConsumerListResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+type AccountQueueConsumerListResponseError struct {
+	Code             int64                                        `json:"code,required"`
+	Message          string                                       `json:"message,required"`
+	DocumentationURL string                                       `json:"documentation_url"`
+	Source           AccountQueueConsumerListResponseErrorsSource `json:"source"`
+	JSON             accountQueueConsumerListResponseErrorJSON    `json:"-"`
+}
+
+// accountQueueConsumerListResponseErrorJSON contains the JSON metadata for the
+// struct [AccountQueueConsumerListResponseError]
+type accountQueueConsumerListResponseErrorJSON struct {
+	Code             apijson.Field
+	Message          apijson.Field
+	DocumentationURL apijson.Field
+	Source           apijson.Field
+	raw              string
+	ExtraFields      map[string]apijson.Field
+}
+
+func (r *AccountQueueConsumerListResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountQueueConsumerListResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountQueueConsumerListResponseErrorsSource struct {
+	Pointer string                                           `json:"pointer"`
+	JSON    accountQueueConsumerListResponseErrorsSourceJSON `json:"-"`
+}
+
+// accountQueueConsumerListResponseErrorsSourceJSON contains the JSON metadata for
+// the struct [AccountQueueConsumerListResponseErrorsSource]
+type accountQueueConsumerListResponseErrorsSourceJSON struct {
+	Pointer     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountQueueConsumerListResponseErrorsSource) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountQueueConsumerListResponseErrorsSourceJSON) RawJSON() string {
+	return r.raw
+}
+
+// Indicates if the API call was successful or not.
+type AccountQueueConsumerListResponseSuccess bool
+
+const (
+	AccountQueueConsumerListResponseSuccessTrue AccountQueueConsumerListResponseSuccess = true
+)
+
+func (r AccountQueueConsumerListResponseSuccess) IsKnown() bool {
+	switch r {
+	case AccountQueueConsumerListResponseSuccessTrue:
+		return true
+	}
+	return false
+}
+
 type AccountQueueConsumerNewParams struct {
 	Body AccountQueueConsumerNewParamsBodyUnion `json:"body"`
 }
@@ -512,11 +721,11 @@ func (r AccountQueueConsumerNewParams) MarshalJSON() (data []byte, err error) {
 }
 
 type AccountQueueConsumerNewParamsBody struct {
-	DeadLetterQueue param.Field[string]                                `json:"dead_letter_queue"`
-	Script          param.Field[string]                                `json:"script"`
-	ScriptName      param.Field[string]                                `json:"script_name"`
-	Settings        param.Field[interface{}]                           `json:"settings"`
-	Type            param.Field[AccountQueueConsumerNewParamsBodyType] `json:"type"`
+	DeadLetterQueue param.Field[string] `json:"dead_letter_queue"`
+	// Name of a Worker
+	ScriptName param.Field[string]                                `json:"script_name"`
+	Settings   param.Field[interface{}]                           `json:"settings"`
+	Type       param.Field[AccountQueueConsumerNewParamsBodyType] `json:"type"`
 }
 
 func (r AccountQueueConsumerNewParamsBody) MarshalJSON() (data []byte, err error) {
@@ -533,11 +742,11 @@ type AccountQueueConsumerNewParamsBodyUnion interface {
 }
 
 type AccountQueueConsumerNewParamsBodyMqWorkerConsumer struct {
-	DeadLetterQueue param.Field[string]                                                    `json:"dead_letter_queue"`
-	Script          param.Field[string]                                                    `json:"script"`
-	ScriptName      param.Field[string]                                                    `json:"script_name"`
-	Settings        param.Field[AccountQueueConsumerNewParamsBodyMqWorkerConsumerSettings] `json:"settings"`
-	Type            param.Field[AccountQueueConsumerNewParamsBodyMqWorkerConsumerType]     `json:"type"`
+	DeadLetterQueue param.Field[string] `json:"dead_letter_queue"`
+	// Name of a Worker
+	ScriptName param.Field[string]                                                    `json:"script_name"`
+	Settings   param.Field[AccountQueueConsumerNewParamsBodyMqWorkerConsumerSettings] `json:"settings"`
+	Type       param.Field[AccountQueueConsumerNewParamsBodyMqWorkerConsumerType]     `json:"type"`
 }
 
 func (r AccountQueueConsumerNewParamsBodyMqWorkerConsumer) MarshalJSON() (data []byte, err error) {
@@ -649,11 +858,11 @@ func (r AccountQueueConsumerUpdateParams) MarshalJSON() (data []byte, err error)
 }
 
 type AccountQueueConsumerUpdateParamsBody struct {
-	DeadLetterQueue param.Field[string]                                   `json:"dead_letter_queue"`
-	Script          param.Field[string]                                   `json:"script"`
-	ScriptName      param.Field[string]                                   `json:"script_name"`
-	Settings        param.Field[interface{}]                              `json:"settings"`
-	Type            param.Field[AccountQueueConsumerUpdateParamsBodyType] `json:"type"`
+	DeadLetterQueue param.Field[string] `json:"dead_letter_queue"`
+	// Name of a Worker
+	ScriptName param.Field[string]                                   `json:"script_name"`
+	Settings   param.Field[interface{}]                              `json:"settings"`
+	Type       param.Field[AccountQueueConsumerUpdateParamsBodyType] `json:"type"`
 }
 
 func (r AccountQueueConsumerUpdateParamsBody) MarshalJSON() (data []byte, err error) {
@@ -670,11 +879,11 @@ type AccountQueueConsumerUpdateParamsBodyUnion interface {
 }
 
 type AccountQueueConsumerUpdateParamsBodyMqWorkerConsumer struct {
-	DeadLetterQueue param.Field[string]                                                       `json:"dead_letter_queue"`
-	Script          param.Field[string]                                                       `json:"script"`
-	ScriptName      param.Field[string]                                                       `json:"script_name"`
-	Settings        param.Field[AccountQueueConsumerUpdateParamsBodyMqWorkerConsumerSettings] `json:"settings"`
-	Type            param.Field[AccountQueueConsumerUpdateParamsBodyMqWorkerConsumerType]     `json:"type"`
+	DeadLetterQueue param.Field[string] `json:"dead_letter_queue"`
+	// Name of a Worker
+	ScriptName param.Field[string]                                                       `json:"script_name"`
+	Settings   param.Field[AccountQueueConsumerUpdateParamsBodyMqWorkerConsumerSettings] `json:"settings"`
+	Type       param.Field[AccountQueueConsumerUpdateParamsBodyMqWorkerConsumerType]     `json:"type"`
 }
 
 func (r AccountQueueConsumerUpdateParamsBodyMqWorkerConsumer) MarshalJSON() (data []byte, err error) {

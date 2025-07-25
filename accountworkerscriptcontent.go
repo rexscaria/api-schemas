@@ -7,6 +7,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"io"
 	"mime/multipart"
 	"net/http"
 
@@ -36,7 +37,7 @@ func NewAccountWorkerScriptContentService(opts ...option.RequestOption) (r *Acco
 	return
 }
 
-// Fetch script content only
+// Fetch script content only.
 func (r *AccountWorkerScriptContentService) GetV2(ctx context.Context, accountID string, scriptName string, opts ...option.RequestOption) (res *http.Response, err error) {
 	opts = append(r.Options[:], opts...)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "string")}, opts...)
@@ -53,7 +54,7 @@ func (r *AccountWorkerScriptContentService) GetV2(ctx context.Context, accountID
 	return
 }
 
-// Put script content without touching config or metadata
+// Put script content without touching config or metadata.
 func (r *AccountWorkerScriptContentService) Put(ctx context.Context, accountID string, scriptName string, params AccountWorkerScriptContentPutParams, opts ...option.RequestOption) (res *SingleScriptResponse, err error) {
 	if params.CfWorkerBodyPart.Present {
 		opts = append(opts, option.WithHeader("CF-WORKER-BODY-PART", fmt.Sprintf("%s", params.CfWorkerBodyPart)))
@@ -77,9 +78,16 @@ func (r *AccountWorkerScriptContentService) Put(ctx context.Context, accountID s
 
 type AccountWorkerScriptContentPutParams struct {
 	// JSON encoded metadata about the uploaded parts and Worker configuration.
-	Metadata               param.Field[AccountWorkerScriptContentPutParamsMetadata] `json:"metadata,required"`
-	CfWorkerBodyPart       param.Field[string]                                      `header:"CF-WORKER-BODY-PART"`
-	CfWorkerMainModulePart param.Field[string]                                      `header:"CF-WORKER-MAIN-MODULE-PART"`
+	Metadata param.Field[AccountWorkerScriptContentPutParamsMetadata] `json:"metadata,required"`
+	// An array of modules (often JavaScript files) comprising a Worker script. At
+	// least one module must be present and referenced in the metadata as `main_module`
+	// or `body_part` by filename.<br/>Possible Content-Type(s) are:
+	// `application/javascript+module`, `text/javascript+module`,
+	// `application/javascript`, `text/javascript`, `application/wasm`, `text/plain`,
+	// `application/octet-stream`, `application/source-map`.
+	Files                  param.Field[[]io.Reader] `json:"files" format:"binary"`
+	CfWorkerBodyPart       param.Field[string]      `header:"CF-WORKER-BODY-PART"`
+	CfWorkerMainModulePart param.Field[string]      `header:"CF-WORKER-MAIN-MODULE-PART"`
 }
 
 func (r AccountWorkerScriptContentPutParams) MarshalMultipart() (data []byte, contentType string, err error) {
@@ -99,12 +107,11 @@ func (r AccountWorkerScriptContentPutParams) MarshalMultipart() (data []byte, co
 
 // JSON encoded metadata about the uploaded parts and Worker configuration.
 type AccountWorkerScriptContentPutParamsMetadata struct {
-	// Name of the part in the multipart request that contains the script (e.g. the
-	// file adding a listener to the `fetch` event). Indicates a
-	// `service worker syntax` Worker.
+	// Name of the uploaded file that contains the Worker script (e.g. the file adding
+	// a listener to the `fetch` event). Indicates a `service worker syntax` Worker.
 	BodyPart param.Field[string] `json:"body_part"`
-	// Name of the part in the multipart request that contains the main module (e.g.
-	// the file exporting a `fetch` handler). Indicates a `module syntax` Worker.
+	// Name of the uploaded file that contains the main module (e.g. the file exporting
+	// a `fetch` handler). Indicates a `module syntax` Worker.
 	MainModule param.Field[string] `json:"main_module"`
 }
 

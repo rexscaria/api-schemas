@@ -605,14 +605,13 @@ func (r AccountAIGatewayGatewayLogListGatewayLogsParamsDirection) IsKnown() bool
 type AccountAIGatewayGatewayLogListGatewayLogsParamsFeedback float64
 
 const (
-	AccountAIGatewayGatewayLogListGatewayLogsParamsFeedbackMinus1 AccountAIGatewayGatewayLogListGatewayLogsParamsFeedback = -1
-	AccountAIGatewayGatewayLogListGatewayLogsParamsFeedback0      AccountAIGatewayGatewayLogListGatewayLogsParamsFeedback = 0
-	AccountAIGatewayGatewayLogListGatewayLogsParamsFeedback1      AccountAIGatewayGatewayLogListGatewayLogsParamsFeedback = 1
+	AccountAIGatewayGatewayLogListGatewayLogsParamsFeedback0 AccountAIGatewayGatewayLogListGatewayLogsParamsFeedback = 0
+	AccountAIGatewayGatewayLogListGatewayLogsParamsFeedback1 AccountAIGatewayGatewayLogListGatewayLogsParamsFeedback = 1
 )
 
 func (r AccountAIGatewayGatewayLogListGatewayLogsParamsFeedback) IsKnown() bool {
 	switch r {
-	case AccountAIGatewayGatewayLogListGatewayLogsParamsFeedbackMinus1, AccountAIGatewayGatewayLogListGatewayLogsParamsFeedback0, AccountAIGatewayGatewayLogListGatewayLogsParamsFeedback1:
+	case AccountAIGatewayGatewayLogListGatewayLogsParamsFeedback0, AccountAIGatewayGatewayLogListGatewayLogsParamsFeedback1:
 		return true
 	}
 	return false
