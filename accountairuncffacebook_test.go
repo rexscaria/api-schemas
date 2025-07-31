@@ -64,6 +64,7 @@ func TestAccountAIRunCfFacebookExecuteDetrResnet50WithOptionalParams(t *testing.
 	_, err := client.Accounts.AI.Run.Cf.Facebook.ExecuteDetrResnet50(
 		context.TODO(),
 		"023e105f4ecef8ad9ca31a8372d0c353",
+		io.Reader(bytes.NewBuffer([]byte("some file contents"))),
 		cfrex.AccountAIRunCfFacebookExecuteDetrResnet50Params{
 			QueueRequest: cfrex.F("true"),
 			Body:         io.Reader(bytes.NewBuffer([]byte("some file contents"))),

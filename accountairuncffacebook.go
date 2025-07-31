@@ -52,14 +52,14 @@ func (r *AccountAIRunCfFacebookService) ExecuteBartLargeCnn(ctx context.Context,
 }
 
 // Execute @cf/facebook/detr-resnet-50 model.
-func (r *AccountAIRunCfFacebookService) ExecuteDetrResnet50(ctx context.Context, accountID string, params AccountAIRunCfFacebookExecuteDetrResnet50Params, opts ...option.RequestOption) (res *AccountAIRunCfFacebookExecuteDetrResnet50Response, err error) {
+func (r *AccountAIRunCfFacebookService) ExecuteDetrResnet50(ctx context.Context, accountID string, Body io.Reader, body AccountAIRunCfFacebookExecuteDetrResnet50Params, opts ...option.RequestOption) (res *AccountAIRunCfFacebookExecuteDetrResnet50Response, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
 	}
 	path := fmt.Sprintf("accounts/%s/ai/run/@cf/facebook/detr-resnet-50", accountID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
 

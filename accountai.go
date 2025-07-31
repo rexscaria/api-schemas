@@ -47,7 +47,7 @@ func NewAccountAIService(opts ...option.RequestOption) (r *AccountAIService) {
 }
 
 // Convert Files into Markdown
-func (r *AccountAIService) ConvertToMarkdown(ctx context.Context, accountID string, body AccountAIConvertToMarkdownParams, opts ...option.RequestOption) (res *AccountAIConvertToMarkdownResponse, err error) {
+func (r *AccountAIService) ConvertToMarkdown(ctx context.Context, accountID string, Body io.Reader, body AccountAIConvertToMarkdownParams, opts ...option.RequestOption) (res *AccountAIConvertToMarkdownResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")

@@ -3,15 +3,12 @@
 package cfrex
 
 import (
-	"bytes"
 	"context"
 	"errors"
 	"fmt"
 	"io"
-	"mime/multipart"
 	"net/http"
 
-	"github.com/rexscaria/api-schemas/internal/apiform"
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
 	"github.com/rexscaria/api-schemas/internal/requestconfig"
@@ -57,8 +54,9 @@ func (r *AccountDlpDatasetVersionService) SetColumnInfo(ctx context.Context, acc
 
 // This is used for multi-column EDMv2 datasets. The EDMv2 format can only be
 // created in the Cloudflare dashboard.
-func (r *AccountDlpDatasetVersionService) UploadEntry(ctx context.Context, accountID string, datasetID string, version int64, entryID string, body AccountDlpDatasetVersionUploadEntryParams, opts ...option.RequestOption) (res *AccountDlpDatasetVersionUploadEntryResponse, err error) {
+func (r *AccountDlpDatasetVersionService) UploadEntry(ctx context.Context, accountID string, datasetID string, version int64, entryID string, body io.Reader, opts ...option.RequestOption) (res *AccountDlpDatasetVersionUploadEntryResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithRequestBody("application/octet-stream", body)}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -72,7 +70,7 @@ func (r *AccountDlpDatasetVersionService) UploadEntry(ctx context.Context, accou
 		return
 	}
 	path := fmt.Sprintf("accounts/%s/dlp/datasets/%s/versions/%v/entries/%s", accountID, datasetID, version, entryID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
 	return
 }
 
@@ -241,23 +239,4 @@ func (r AccountDlpDatasetVersionSetColumnInfoParamsBodyNewColumn) MarshalJSON() 
 }
 
 func (r AccountDlpDatasetVersionSetColumnInfoParamsBodyNewColumn) implementsAccountDlpDatasetVersionSetColumnInfoParamsBodyUnion() {
-}
-
-type AccountDlpDatasetVersionUploadEntryParams struct {
-	Body io.Reader `json:"body,required" format:"binary"`
-}
-
-func (r AccountDlpDatasetVersionUploadEntryParams) MarshalMultipart() (data []byte, contentType string, err error) {
-	buf := bytes.NewBuffer(nil)
-	writer := multipart.NewWriter(buf)
-	err = apiform.MarshalRoot(r, writer)
-	if err != nil {
-		writer.Close()
-		return nil, "", err
-	}
-	err = writer.Close()
-	if err != nil {
-		return nil, "", err
-	}
-	return buf.Bytes(), writer.FormDataContentType(), nil
 }

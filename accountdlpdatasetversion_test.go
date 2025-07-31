@@ -71,9 +71,7 @@ func TestAccountDlpDatasetVersionUploadEntry(t *testing.T) {
 		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		int64(0),
 		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-		cfrex.AccountDlpDatasetVersionUploadEntryParams{
-			Body: io.Reader(bytes.NewBuffer([]byte("some file contents"))),
-		},
+		io.Reader(bytes.NewBuffer([]byte("some file contents"))),
 	)
 	if err != nil {
 		var apierr *cfrex.Error
