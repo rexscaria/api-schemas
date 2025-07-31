@@ -3,15 +3,12 @@
 package cfrex
 
 import (
-	"bytes"
 	"context"
 	"errors"
 	"fmt"
 	"io"
-	"mime/multipart"
 	"net/http"
 
-	"github.com/rexscaria/api-schemas/internal/apiform"
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/requestconfig"
 	"github.com/rexscaria/api-schemas/option"
@@ -56,8 +53,9 @@ func (r *AccountDlpDatasetUploadService) Prepare(ctx context.Context, accountID 
 // only be created in the Cloudflare dashboard. For other clients, this operation
 // can only be used for non-secret Custom Word Lists. The body must be a UTF-8
 // encoded, newline (NL or CRNL) separated list of words to be matched.
-func (r *AccountDlpDatasetUploadService) Version(ctx context.Context, accountID string, datasetID string, version int64, body AccountDlpDatasetUploadVersionParams, opts ...option.RequestOption) (res *AccountDlpDatasetUploadVersionResponse, err error) {
+func (r *AccountDlpDatasetUploadService) Version(ctx context.Context, accountID string, datasetID string, version int64, body io.Reader, opts ...option.RequestOption) (res *AccountDlpDatasetUploadVersionResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithRequestBody("application/octet-stream", body)}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -67,7 +65,7 @@ func (r *AccountDlpDatasetUploadService) Version(ctx context.Context, accountID 
 		return
 	}
 	path := fmt.Sprintf("accounts/%s/dlp/datasets/%s/upload/%v", accountID, datasetID, version)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
 	return
 }
 
@@ -186,23 +184,4 @@ func (r AccountDlpDatasetUploadVersionResponseSuccess) IsKnown() bool {
 		return true
 	}
 	return false
-}
-
-type AccountDlpDatasetUploadVersionParams struct {
-	Body io.Reader `json:"body,required" format:"binary"`
-}
-
-func (r AccountDlpDatasetUploadVersionParams) MarshalMultipart() (data []byte, contentType string, err error) {
-	buf := bytes.NewBuffer(nil)
-	writer := multipart.NewWriter(buf)
-	err = apiform.MarshalRoot(r, writer)
-	if err != nil {
-		writer.Close()
-		return nil, "", err
-	}
-	err = writer.Close()
-	if err != nil {
-		return nil, "", err
-	}
-	return buf.Bytes(), writer.FormDataContentType(), nil
 }

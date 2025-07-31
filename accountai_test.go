@@ -32,6 +32,7 @@ func TestAccountAIConvertToMarkdownWithOptionalParams(t *testing.T) {
 	_, err := client.Accounts.AI.ConvertToMarkdown(
 		context.TODO(),
 		"023e105f4ecef8ad9ca31a8372d0c353",
+		io.Reader(bytes.NewBuffer([]byte("some file contents"))),
 		cfrex.AccountAIConvertToMarkdownParams{
 			Body: io.Reader(bytes.NewBuffer([]byte("some file contents"))),
 		},

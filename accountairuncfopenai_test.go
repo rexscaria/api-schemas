@@ -32,6 +32,7 @@ func TestAccountAIRunCfOpenAIExecuteWhisperWithOptionalParams(t *testing.T) {
 	_, err := client.Accounts.AI.Run.Cf.OpenAI.ExecuteWhisper(
 		context.TODO(),
 		"023e105f4ecef8ad9ca31a8372d0c353",
+		io.Reader(bytes.NewBuffer([]byte("some file contents"))),
 		cfrex.AccountAIRunCfOpenAIExecuteWhisperParams{
 			QueueRequest: cfrex.F("true"),
 			Body:         io.Reader(bytes.NewBuffer([]byte("some file contents"))),
@@ -99,6 +100,7 @@ func TestAccountAIRunCfOpenAIExecuteWhisperTinyEnWithOptionalParams(t *testing.T
 	_, err := client.Accounts.AI.Run.Cf.OpenAI.ExecuteWhisperTinyEn(
 		context.TODO(),
 		"023e105f4ecef8ad9ca31a8372d0c353",
+		io.Reader(bytes.NewBuffer([]byte("some file contents"))),
 		cfrex.AccountAIRunCfOpenAIExecuteWhisperTinyEnParams{
 			QueueRequest: cfrex.F("true"),
 			Body:         io.Reader(bytes.NewBuffer([]byte("some file contents"))),

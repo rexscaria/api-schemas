@@ -40,14 +40,14 @@ func NewAccountAIRunCfOpenAIService(opts ...option.RequestOption) (r *AccountAIR
 }
 
 // Execute @cf/openai/whisper model.
-func (r *AccountAIRunCfOpenAIService) ExecuteWhisper(ctx context.Context, accountID string, params AccountAIRunCfOpenAIExecuteWhisperParams, opts ...option.RequestOption) (res *AccountAIRunCfOpenAIExecuteWhisperResponse, err error) {
+func (r *AccountAIRunCfOpenAIService) ExecuteWhisper(ctx context.Context, accountID string, Body io.Reader, body AccountAIRunCfOpenAIExecuteWhisperParams, opts ...option.RequestOption) (res *AccountAIRunCfOpenAIExecuteWhisperResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
 	}
 	path := fmt.Sprintf("accounts/%s/ai/run/@cf/openai/whisper", accountID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
 
@@ -64,14 +64,14 @@ func (r *AccountAIRunCfOpenAIService) ExecuteWhisperLargeV3Turbo(ctx context.Con
 }
 
 // Execute @cf/openai/whisper-tiny-en model.
-func (r *AccountAIRunCfOpenAIService) ExecuteWhisperTinyEn(ctx context.Context, accountID string, params AccountAIRunCfOpenAIExecuteWhisperTinyEnParams, opts ...option.RequestOption) (res *AccountAIRunCfOpenAIExecuteWhisperTinyEnResponse, err error) {
+func (r *AccountAIRunCfOpenAIService) ExecuteWhisperTinyEn(ctx context.Context, accountID string, Body io.Reader, body AccountAIRunCfOpenAIExecuteWhisperTinyEnParams, opts ...option.RequestOption) (res *AccountAIRunCfOpenAIExecuteWhisperTinyEnResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
 	}
 	path := fmt.Sprintf("accounts/%s/ai/run/@cf/openai/whisper-tiny-en", accountID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
 
