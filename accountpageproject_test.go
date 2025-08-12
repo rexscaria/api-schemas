@@ -14,7 +14,7 @@ import (
 )
 
 func TestAccountPageProjectNewWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -221,7 +221,7 @@ func TestAccountPageProjectNewWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountPageProjectGet(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -249,7 +249,7 @@ func TestAccountPageProjectGet(t *testing.T) {
 }
 
 func TestAccountPageProjectUpdateWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -457,7 +457,7 @@ func TestAccountPageProjectUpdateWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountPageProjectList(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -481,7 +481,7 @@ func TestAccountPageProjectList(t *testing.T) {
 }
 
 func TestAccountPageProjectDelete(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -509,7 +509,7 @@ func TestAccountPageProjectDelete(t *testing.T) {
 }
 
 func TestAccountPageProjectPurgeBuildCache(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL

@@ -15,7 +15,7 @@ import (
 )
 
 func TestRadarEmailSecuritySummaryGetArcWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -49,7 +49,7 @@ func TestRadarEmailSecuritySummaryGetArcWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarEmailSecuritySummaryGetDkimWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -83,7 +83,7 @@ func TestRadarEmailSecuritySummaryGetDkimWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarEmailSecuritySummaryGetDmarcWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -117,7 +117,7 @@ func TestRadarEmailSecuritySummaryGetDmarcWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarEmailSecuritySummaryGetMaliciousWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -152,7 +152,7 @@ func TestRadarEmailSecuritySummaryGetMaliciousWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarEmailSecuritySummaryGetSpamWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -187,7 +187,7 @@ func TestRadarEmailSecuritySummaryGetSpamWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarEmailSecuritySummaryGetSpfWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -221,7 +221,7 @@ func TestRadarEmailSecuritySummaryGetSpfWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarEmailSecuritySummaryGetSpoofWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -256,7 +256,7 @@ func TestRadarEmailSecuritySummaryGetSpoofWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarEmailSecuritySummaryGetThreatCategoryWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -291,7 +291,7 @@ func TestRadarEmailSecuritySummaryGetThreatCategoryWithOptionalParams(t *testing
 }
 
 func TestRadarEmailSecuritySummaryGetTlsVersionWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL

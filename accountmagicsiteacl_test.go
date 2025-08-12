@@ -14,7 +14,7 @@ import (
 )
 
 func TestAccountMagicSiteACLNewWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -63,7 +63,7 @@ func TestAccountMagicSiteACLNewWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountMagicSiteACLGet(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -92,7 +92,7 @@ func TestAccountMagicSiteACLGet(t *testing.T) {
 }
 
 func TestAccountMagicSiteACLUpdateWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -144,7 +144,7 @@ func TestAccountMagicSiteACLUpdateWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountMagicSiteACLList(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -172,7 +172,7 @@ func TestAccountMagicSiteACLList(t *testing.T) {
 }
 
 func TestAccountMagicSiteACLDelete(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -201,7 +201,7 @@ func TestAccountMagicSiteACLDelete(t *testing.T) {
 }
 
 func TestAccountMagicSiteACLPatchWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL

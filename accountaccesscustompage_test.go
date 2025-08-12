@@ -14,7 +14,7 @@ import (
 )
 
 func TestAccountAccessCustomPageNewWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -49,7 +49,7 @@ func TestAccountAccessCustomPageNewWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountAccessCustomPageGet(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -77,7 +77,7 @@ func TestAccountAccessCustomPageGet(t *testing.T) {
 }
 
 func TestAccountAccessCustomPageUpdateWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -113,7 +113,7 @@ func TestAccountAccessCustomPageUpdateWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountAccessCustomPageList(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -137,7 +137,7 @@ func TestAccountAccessCustomPageList(t *testing.T) {
 }
 
 func TestAccountAccessCustomPageDelete(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL

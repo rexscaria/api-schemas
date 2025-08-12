@@ -14,7 +14,7 @@ import (
 )
 
 func TestUserFirewallAccessRuleRuleNewWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -45,7 +45,7 @@ func TestUserFirewallAccessRuleRuleNewWithOptionalParams(t *testing.T) {
 }
 
 func TestUserFirewallAccessRuleRuleUpdateWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -76,7 +76,7 @@ func TestUserFirewallAccessRuleRuleUpdateWithOptionalParams(t *testing.T) {
 }
 
 func TestUserFirewallAccessRuleRuleListWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -112,7 +112,7 @@ func TestUserFirewallAccessRuleRuleListWithOptionalParams(t *testing.T) {
 }
 
 func TestUserFirewallAccessRuleRuleDelete(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL

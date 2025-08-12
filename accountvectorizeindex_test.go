@@ -16,7 +16,7 @@ import (
 )
 
 func TestAccountVectorizeIndexNewWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -53,7 +53,7 @@ func TestAccountVectorizeIndexNewWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountVectorizeIndexGet(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -81,7 +81,7 @@ func TestAccountVectorizeIndexGet(t *testing.T) {
 }
 
 func TestAccountVectorizeIndexUpdate(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -112,7 +112,7 @@ func TestAccountVectorizeIndexUpdate(t *testing.T) {
 }
 
 func TestAccountVectorizeIndexList(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -136,7 +136,7 @@ func TestAccountVectorizeIndexList(t *testing.T) {
 }
 
 func TestAccountVectorizeIndexDelete(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -164,7 +164,7 @@ func TestAccountVectorizeIndexDelete(t *testing.T) {
 }
 
 func TestAccountVectorizeIndexDeleteByIDsWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -197,7 +197,7 @@ func TestAccountVectorizeIndexDeleteByIDsWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountVectorizeIndexGetByIDsWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -230,7 +230,7 @@ func TestAccountVectorizeIndexGetByIDsWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountVectorizeIndexInsert(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -261,7 +261,7 @@ func TestAccountVectorizeIndexInsert(t *testing.T) {
 }
 
 func TestAccountVectorizeIndexQueryWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -301,7 +301,7 @@ func TestAccountVectorizeIndexQueryWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountVectorizeIndexUpsert(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL

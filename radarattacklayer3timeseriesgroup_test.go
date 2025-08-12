@@ -15,7 +15,7 @@ import (
 )
 
 func TestRadarAttackLayer3TimeseriesGroupGetBitrateTimeseriesWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -52,7 +52,7 @@ func TestRadarAttackLayer3TimeseriesGroupGetBitrateTimeseriesWithOptionalParams(
 }
 
 func TestRadarAttackLayer3TimeseriesGroupGetDurationTimeseriesWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -89,7 +89,7 @@ func TestRadarAttackLayer3TimeseriesGroupGetDurationTimeseriesWithOptionalParams
 }
 
 func TestRadarAttackLayer3TimeseriesGroupGetIndustryTimeseriesWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -127,7 +127,7 @@ func TestRadarAttackLayer3TimeseriesGroupGetIndustryTimeseriesWithOptionalParams
 }
 
 func TestRadarAttackLayer3TimeseriesGroupGetIPVersionTimeseriesWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -163,7 +163,7 @@ func TestRadarAttackLayer3TimeseriesGroupGetIPVersionTimeseriesWithOptionalParam
 }
 
 func TestRadarAttackLayer3TimeseriesGroupGetProtocolTimeseriesWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -199,7 +199,7 @@ func TestRadarAttackLayer3TimeseriesGroupGetProtocolTimeseriesWithOptionalParams
 }
 
 func TestRadarAttackLayer3TimeseriesGroupGetVectorTimeseriesWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -237,7 +237,7 @@ func TestRadarAttackLayer3TimeseriesGroupGetVectorTimeseriesWithOptionalParams(t
 }
 
 func TestRadarAttackLayer3TimeseriesGroupGetVerticalTimeseriesWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL

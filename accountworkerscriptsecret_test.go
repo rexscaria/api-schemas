@@ -14,7 +14,7 @@ import (
 )
 
 func TestAccountWorkerScriptSecretList(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -42,7 +42,7 @@ func TestAccountWorkerScriptSecretList(t *testing.T) {
 }
 
 func TestAccountWorkerScriptSecretDelete(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -71,7 +71,7 @@ func TestAccountWorkerScriptSecretDelete(t *testing.T) {
 }
 
 func TestAccountWorkerScriptSecretAddWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -106,7 +106,7 @@ func TestAccountWorkerScriptSecretAddWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountWorkerScriptSecretGet(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL

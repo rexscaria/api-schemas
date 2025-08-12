@@ -14,7 +14,7 @@ import (
 )
 
 func TestUserLoadBalancerPoolNewWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -79,7 +79,7 @@ func TestUserLoadBalancerPoolNewWithOptionalParams(t *testing.T) {
 }
 
 func TestUserLoadBalancerPoolGet(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -103,7 +103,7 @@ func TestUserLoadBalancerPoolGet(t *testing.T) {
 }
 
 func TestUserLoadBalancerPoolUpdateWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -172,7 +172,7 @@ func TestUserLoadBalancerPoolUpdateWithOptionalParams(t *testing.T) {
 }
 
 func TestUserLoadBalancerPoolListWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -198,7 +198,7 @@ func TestUserLoadBalancerPoolListWithOptionalParams(t *testing.T) {
 }
 
 func TestUserLoadBalancerPoolDelete(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -222,7 +222,7 @@ func TestUserLoadBalancerPoolDelete(t *testing.T) {
 }
 
 func TestUserLoadBalancerPoolHealth(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -246,7 +246,7 @@ func TestUserLoadBalancerPoolHealth(t *testing.T) {
 }
 
 func TestUserLoadBalancerPoolListReferences(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -270,7 +270,7 @@ func TestUserLoadBalancerPoolListReferences(t *testing.T) {
 }
 
 func TestUserLoadBalancerPoolPatchWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -338,7 +338,7 @@ func TestUserLoadBalancerPoolPatchWithOptionalParams(t *testing.T) {
 }
 
 func TestUserLoadBalancerPoolPreviewWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL

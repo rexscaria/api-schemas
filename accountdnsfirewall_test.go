@@ -14,7 +14,7 @@ import (
 )
 
 func TestAccountDNSFirewallNewWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -58,7 +58,7 @@ func TestAccountDNSFirewallNewWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountDNSFirewallGet(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -86,7 +86,7 @@ func TestAccountDNSFirewallGet(t *testing.T) {
 }
 
 func TestAccountDNSFirewallUpdateWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -131,7 +131,7 @@ func TestAccountDNSFirewallUpdateWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountDNSFirewallListWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -162,7 +162,7 @@ func TestAccountDNSFirewallListWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountDNSFirewallDelete(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL

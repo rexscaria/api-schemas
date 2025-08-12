@@ -18,7 +18,7 @@ import (
 )
 
 func TestAccountImageV1Get(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -46,7 +46,7 @@ func TestAccountImageV1Get(t *testing.T) {
 }
 
 func TestAccountImageV1UpdateWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -79,7 +79,7 @@ func TestAccountImageV1UpdateWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountImageV1ListWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -111,7 +111,7 @@ func TestAccountImageV1ListWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountImageV1Delete(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -139,7 +139,6 @@ func TestAccountImageV1Delete(t *testing.T) {
 }
 
 func TestAccountImageV1FetchBase(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(200)
 		w.Write([]byte("abc"))
@@ -179,7 +178,7 @@ func TestAccountImageV1FetchBase(t *testing.T) {
 }
 
 func TestAccountImageV1Stats(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -203,7 +202,7 @@ func TestAccountImageV1Stats(t *testing.T) {
 }
 
 func TestAccountImageV1UploadWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL

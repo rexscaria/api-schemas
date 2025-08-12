@@ -14,7 +14,7 @@ import (
 )
 
 func TestAccountAlertingV3PolicyNewWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -103,7 +103,7 @@ func TestAccountAlertingV3PolicyNewWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountAlertingV3PolicyGet(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -131,7 +131,7 @@ func TestAccountAlertingV3PolicyGet(t *testing.T) {
 }
 
 func TestAccountAlertingV3PolicyUpdateWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -221,7 +221,7 @@ func TestAccountAlertingV3PolicyUpdateWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountAlertingV3PolicyList(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -245,7 +245,7 @@ func TestAccountAlertingV3PolicyList(t *testing.T) {
 }
 
 func TestAccountAlertingV3PolicyDelete(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL

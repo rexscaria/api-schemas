@@ -14,7 +14,7 @@ import (
 )
 
 func TestAccountTeamnetRouteNewWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -47,7 +47,7 @@ func TestAccountTeamnetRouteNewWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountTeamnetRouteGet(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -75,7 +75,7 @@ func TestAccountTeamnetRouteGet(t *testing.T) {
 }
 
 func TestAccountTeamnetRouteUpdateWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -109,7 +109,7 @@ func TestAccountTeamnetRouteUpdateWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountTeamnetRouteListWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -149,7 +149,7 @@ func TestAccountTeamnetRouteListWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountTeamnetRouteDelete(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -177,7 +177,7 @@ func TestAccountTeamnetRouteDelete(t *testing.T) {
 }
 
 func TestAccountTeamnetRouteGetByIPWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL

@@ -14,7 +14,7 @@ import (
 )
 
 func TestZoneWaitingRoomNewWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -72,7 +72,7 @@ func TestZoneWaitingRoomNewWithOptionalParams(t *testing.T) {
 }
 
 func TestZoneWaitingRoomGet(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -100,7 +100,7 @@ func TestZoneWaitingRoomGet(t *testing.T) {
 }
 
 func TestZoneWaitingRoomUpdateWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -159,7 +159,7 @@ func TestZoneWaitingRoomUpdateWithOptionalParams(t *testing.T) {
 }
 
 func TestZoneWaitingRoomDelete(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -187,7 +187,7 @@ func TestZoneWaitingRoomDelete(t *testing.T) {
 }
 
 func TestZoneWaitingRoomPatchWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -246,7 +246,7 @@ func TestZoneWaitingRoomPatchWithOptionalParams(t *testing.T) {
 }
 
 func TestZoneWaitingRoomPreview(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -276,7 +276,7 @@ func TestZoneWaitingRoomPreview(t *testing.T) {
 }
 
 func TestZoneWaitingRoomStatus(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL

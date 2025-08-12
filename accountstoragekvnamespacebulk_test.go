@@ -14,7 +14,7 @@ import (
 )
 
 func TestAccountStorageKvNamespaceBulkDelete(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -42,7 +42,7 @@ func TestAccountStorageKvNamespaceBulkDelete(t *testing.T) {
 }
 
 func TestAccountStorageKvNamespaceBulkDeleteMultiple(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -73,7 +73,7 @@ func TestAccountStorageKvNamespaceBulkDeleteMultiple(t *testing.T) {
 }
 
 func TestAccountStorageKvNamespaceBulkGetMultipleWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -106,7 +106,7 @@ func TestAccountStorageKvNamespaceBulkGetMultipleWithOptionalParams(t *testing.T
 }
 
 func TestAccountStorageKvNamespaceBulkWrite(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL

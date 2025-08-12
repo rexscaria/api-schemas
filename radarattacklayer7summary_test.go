@@ -15,7 +15,7 @@ import (
 )
 
 func TestRadarAttackLayer7SummaryGetHTTPMethodSummaryWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -52,7 +52,7 @@ func TestRadarAttackLayer7SummaryGetHTTPMethodSummaryWithOptionalParams(t *testi
 }
 
 func TestRadarAttackLayer7SummaryGetHTTPVersionSummaryWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -88,7 +88,7 @@ func TestRadarAttackLayer7SummaryGetHTTPVersionSummaryWithOptionalParams(t *test
 }
 
 func TestRadarAttackLayer7SummaryGetIndustrySummaryWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -126,7 +126,7 @@ func TestRadarAttackLayer7SummaryGetIndustrySummaryWithOptionalParams(t *testing
 }
 
 func TestRadarAttackLayer7SummaryGetIPVersionSummaryWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -162,7 +162,7 @@ func TestRadarAttackLayer7SummaryGetIPVersionSummaryWithOptionalParams(t *testin
 }
 
 func TestRadarAttackLayer7SummaryGetManagedRulesSummaryWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -200,7 +200,7 @@ func TestRadarAttackLayer7SummaryGetManagedRulesSummaryWithOptionalParams(t *tes
 }
 
 func TestRadarAttackLayer7SummaryGetMitigationProductSummaryWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -237,7 +237,7 @@ func TestRadarAttackLayer7SummaryGetMitigationProductSummaryWithOptionalParams(t
 }
 
 func TestRadarAttackLayer7SummaryGetVerticalSummaryWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL

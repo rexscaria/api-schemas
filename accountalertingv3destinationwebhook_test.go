@@ -14,7 +14,7 @@ import (
 )
 
 func TestAccountAlertingV3DestinationWebhookNewWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -46,7 +46,7 @@ func TestAccountAlertingV3DestinationWebhookNewWithOptionalParams(t *testing.T) 
 }
 
 func TestAccountAlertingV3DestinationWebhookGet(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -74,7 +74,7 @@ func TestAccountAlertingV3DestinationWebhookGet(t *testing.T) {
 }
 
 func TestAccountAlertingV3DestinationWebhookUpdateWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -107,7 +107,7 @@ func TestAccountAlertingV3DestinationWebhookUpdateWithOptionalParams(t *testing.
 }
 
 func TestAccountAlertingV3DestinationWebhookList(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -131,7 +131,7 @@ func TestAccountAlertingV3DestinationWebhookList(t *testing.T) {
 }
 
 func TestAccountAlertingV3DestinationWebhookDelete(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL

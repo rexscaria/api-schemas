@@ -14,7 +14,7 @@ import (
 )
 
 func TestAccountZtRiskScoringResetRiskScore(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -42,7 +42,7 @@ func TestAccountZtRiskScoringResetRiskScore(t *testing.T) {
 }
 
 func TestAccountZtRiskScoringGetRiskScore(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -70,7 +70,7 @@ func TestAccountZtRiskScoringGetRiskScore(t *testing.T) {
 }
 
 func TestAccountZtRiskScoringGetSummary(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL

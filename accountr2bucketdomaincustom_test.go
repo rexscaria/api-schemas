@@ -14,7 +14,7 @@ import (
 )
 
 func TestAccountR2BucketDomainCustomGetWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -46,7 +46,7 @@ func TestAccountR2BucketDomainCustomGetWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountR2BucketDomainCustomUpdateWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -80,7 +80,7 @@ func TestAccountR2BucketDomainCustomUpdateWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountR2BucketDomainCustomListWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -111,7 +111,7 @@ func TestAccountR2BucketDomainCustomListWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountR2BucketDomainCustomAttachWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -146,7 +146,7 @@ func TestAccountR2BucketDomainCustomAttachWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountR2BucketDomainCustomRemoveWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL

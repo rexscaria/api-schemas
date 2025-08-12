@@ -14,7 +14,7 @@ import (
 )
 
 func TestAccountAddressingAddressMapNewWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -50,7 +50,7 @@ func TestAccountAddressingAddressMapNewWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountAddressingAddressMapGet(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -78,7 +78,7 @@ func TestAccountAddressingAddressMapGet(t *testing.T) {
 }
 
 func TestAccountAddressingAddressMapUpdateWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -111,7 +111,7 @@ func TestAccountAddressingAddressMapUpdateWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountAddressingAddressMapList(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -135,7 +135,7 @@ func TestAccountAddressingAddressMapList(t *testing.T) {
 }
 
 func TestAccountAddressingAddressMapDelete(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL

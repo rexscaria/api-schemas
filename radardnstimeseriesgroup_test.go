@@ -15,7 +15,7 @@ import (
 )
 
 func TestRadarDNSTimeseriesGroupGetCacheHitWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -54,7 +54,7 @@ func TestRadarDNSTimeseriesGroupGetCacheHitWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarDNSTimeseriesGroupGetDnssecWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -93,7 +93,7 @@ func TestRadarDNSTimeseriesGroupGetDnssecWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarDNSTimeseriesGroupGetDnssecAwareWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -132,7 +132,7 @@ func TestRadarDNSTimeseriesGroupGetDnssecAwareWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarDNSTimeseriesGroupGetDnssecE2EWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -171,7 +171,7 @@ func TestRadarDNSTimeseriesGroupGetDnssecE2EWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarDNSTimeseriesGroupGetIPVersionWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -210,7 +210,7 @@ func TestRadarDNSTimeseriesGroupGetIPVersionWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarDNSTimeseriesGroupGetMatchingAnswerWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -249,7 +249,7 @@ func TestRadarDNSTimeseriesGroupGetMatchingAnswerWithOptionalParams(t *testing.T
 }
 
 func TestRadarDNSTimeseriesGroupGetProtocolWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -287,7 +287,7 @@ func TestRadarDNSTimeseriesGroupGetProtocolWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarDNSTimeseriesGroupGetQueryTypeWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -326,7 +326,7 @@ func TestRadarDNSTimeseriesGroupGetQueryTypeWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarDNSTimeseriesGroupGetResponseCodeWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -365,7 +365,7 @@ func TestRadarDNSTimeseriesGroupGetResponseCodeWithOptionalParams(t *testing.T) 
 }
 
 func TestRadarDNSTimeseriesGroupGetResponseTtlWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL

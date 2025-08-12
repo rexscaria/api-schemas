@@ -15,7 +15,7 @@ import (
 )
 
 func TestAccountWorkflowInstanceNewWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -48,7 +48,7 @@ func TestAccountWorkflowInstanceNewWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountWorkflowInstanceGet(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -77,7 +77,7 @@ func TestAccountWorkflowInstanceGet(t *testing.T) {
 }
 
 func TestAccountWorkflowInstanceListWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -112,7 +112,7 @@ func TestAccountWorkflowInstanceListWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountWorkflowInstanceBatchNewWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -147,7 +147,7 @@ func TestAccountWorkflowInstanceBatchNewWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountWorkflowInstanceSendEventWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -180,7 +180,7 @@ func TestAccountWorkflowInstanceSendEventWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountWorkflowInstanceUpdateStatus(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL

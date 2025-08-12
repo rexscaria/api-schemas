@@ -19,7 +19,7 @@ import (
 )
 
 func TestAccountUrlscannerScanNewWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -55,7 +55,7 @@ func TestAccountUrlscannerScanNewWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountUrlscannerScanGetWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -86,7 +86,7 @@ func TestAccountUrlscannerScanGetWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountUrlscannerScanListWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -132,7 +132,7 @@ func TestAccountUrlscannerScanListWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountUrlscannerScanGetHar(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -160,7 +160,6 @@ func TestAccountUrlscannerScanGetHar(t *testing.T) {
 }
 
 func TestAccountUrlscannerScanGetScreenshotWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(200)
 		w.Write([]byte("abc"))

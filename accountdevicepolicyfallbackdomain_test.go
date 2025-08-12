@@ -14,7 +14,7 @@ import (
 )
 
 func TestAccountDevicePolicyFallbackDomainList(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -42,7 +42,7 @@ func TestAccountDevicePolicyFallbackDomainList(t *testing.T) {
 }
 
 func TestAccountDevicePolicyFallbackDomainGlobalList(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -66,7 +66,7 @@ func TestAccountDevicePolicyFallbackDomainGlobalList(t *testing.T) {
 }
 
 func TestAccountDevicePolicyFallbackDomainGlobalSet(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -100,7 +100,7 @@ func TestAccountDevicePolicyFallbackDomainGlobalSet(t *testing.T) {
 }
 
 func TestAccountDevicePolicyFallbackDomainSet(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL

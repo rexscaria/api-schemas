@@ -14,7 +14,7 @@ import (
 )
 
 func TestAccountSecondaryDNSACLNew(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -45,7 +45,7 @@ func TestAccountSecondaryDNSACLNew(t *testing.T) {
 }
 
 func TestAccountSecondaryDNSACLGet(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -73,7 +73,7 @@ func TestAccountSecondaryDNSACLGet(t *testing.T) {
 }
 
 func TestAccountSecondaryDNSACLUpdate(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -107,7 +107,7 @@ func TestAccountSecondaryDNSACLUpdate(t *testing.T) {
 }
 
 func TestAccountSecondaryDNSACLList(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -131,7 +131,7 @@ func TestAccountSecondaryDNSACLList(t *testing.T) {
 }
 
 func TestAccountSecondaryDNSACLDelete(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL

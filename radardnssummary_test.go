@@ -15,7 +15,7 @@ import (
 )
 
 func TestRadarDNSSummaryGetCacheHitWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -53,7 +53,7 @@ func TestRadarDNSSummaryGetCacheHitWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarDNSSummaryGetDnssecWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -91,7 +91,7 @@ func TestRadarDNSSummaryGetDnssecWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarDNSSummaryGetDnssecAwareWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -129,7 +129,7 @@ func TestRadarDNSSummaryGetDnssecAwareWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarDNSSummaryGetDnssecE2EWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -167,7 +167,7 @@ func TestRadarDNSSummaryGetDnssecE2EWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarDNSSummaryGetIPVersionWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -205,7 +205,7 @@ func TestRadarDNSSummaryGetIPVersionWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarDNSSummaryGetMatchingAnswerWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -243,7 +243,7 @@ func TestRadarDNSSummaryGetMatchingAnswerWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarDNSSummaryGetProtocolWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -280,7 +280,7 @@ func TestRadarDNSSummaryGetProtocolWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarDNSSummaryGetQueryTypeWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -318,7 +318,7 @@ func TestRadarDNSSummaryGetQueryTypeWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarDNSSummaryGetResponseCodeWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -356,7 +356,7 @@ func TestRadarDNSSummaryGetResponseCodeWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarDNSSummaryGetResponseTtlWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
