@@ -14,7 +14,7 @@ import (
 )
 
 func TestAccountAIGatewayGatewayEvaluationNewEvaluation(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -47,7 +47,7 @@ func TestAccountAIGatewayGatewayEvaluationNewEvaluation(t *testing.T) {
 }
 
 func TestAccountAIGatewayGatewayEvaluationDeleteEvaluation(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -76,7 +76,7 @@ func TestAccountAIGatewayGatewayEvaluationDeleteEvaluation(t *testing.T) {
 }
 
 func TestAccountAIGatewayGatewayEvaluationFetchEvaluation(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -105,7 +105,7 @@ func TestAccountAIGatewayGatewayEvaluationFetchEvaluation(t *testing.T) {
 }
 
 func TestAccountAIGatewayGatewayEvaluationListEvaluationsWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL

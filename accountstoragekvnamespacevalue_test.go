@@ -18,7 +18,6 @@ import (
 )
 
 func TestAccountStorageKvNamespaceValueGet(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(200)
 		w.Write([]byte("abc"))
@@ -59,7 +58,7 @@ func TestAccountStorageKvNamespaceValueGet(t *testing.T) {
 }
 
 func TestAccountStorageKvNamespaceValueDelete(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -88,7 +87,7 @@ func TestAccountStorageKvNamespaceValueDelete(t *testing.T) {
 }
 
 func TestAccountStorageKvNamespaceValueWriteWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL

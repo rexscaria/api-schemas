@@ -15,7 +15,7 @@ import (
 )
 
 func TestRadarAttackLayer7TopGetTopAttacksWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -53,7 +53,7 @@ func TestRadarAttackLayer7TopGetTopAttacksWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarAttackLayer7TopGetTopIndustryWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -91,7 +91,7 @@ func TestRadarAttackLayer7TopGetTopIndustryWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarAttackLayer7TopGetTopVerticalsWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL

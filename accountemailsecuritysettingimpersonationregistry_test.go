@@ -14,7 +14,7 @@ import (
 )
 
 func TestAccountEmailSecuritySettingImpersonationRegistryNew(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -46,7 +46,7 @@ func TestAccountEmailSecuritySettingImpersonationRegistryNew(t *testing.T) {
 }
 
 func TestAccountEmailSecuritySettingImpersonationRegistryGet(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -74,7 +74,7 @@ func TestAccountEmailSecuritySettingImpersonationRegistryGet(t *testing.T) {
 }
 
 func TestAccountEmailSecuritySettingImpersonationRegistryUpdateWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -107,7 +107,7 @@ func TestAccountEmailSecuritySettingImpersonationRegistryUpdateWithOptionalParam
 }
 
 func TestAccountEmailSecuritySettingImpersonationRegistryListWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -142,7 +142,7 @@ func TestAccountEmailSecuritySettingImpersonationRegistryListWithOptionalParams(
 }
 
 func TestAccountEmailSecuritySettingImpersonationRegistryDelete(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL

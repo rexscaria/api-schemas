@@ -14,7 +14,7 @@ import (
 )
 
 func TestAccountMagicCloudCatalogSyncNewWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -49,7 +49,7 @@ func TestAccountMagicCloudCatalogSyncNewWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountMagicCloudCatalogSyncGet(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -77,7 +77,7 @@ func TestAccountMagicCloudCatalogSyncGet(t *testing.T) {
 }
 
 func TestAccountMagicCloudCatalogSyncUpdateWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -113,7 +113,7 @@ func TestAccountMagicCloudCatalogSyncUpdateWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountMagicCloudCatalogSyncList(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -137,7 +137,7 @@ func TestAccountMagicCloudCatalogSyncList(t *testing.T) {
 }
 
 func TestAccountMagicCloudCatalogSyncDeleteWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -168,7 +168,7 @@ func TestAccountMagicCloudCatalogSyncDeleteWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountMagicCloudCatalogSyncListPoliciesWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -198,7 +198,7 @@ func TestAccountMagicCloudCatalogSyncListPoliciesWithOptionalParams(t *testing.T
 }
 
 func TestAccountMagicCloudCatalogSyncPatchWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -234,7 +234,7 @@ func TestAccountMagicCloudCatalogSyncPatchWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountMagicCloudCatalogSyncRun(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL

@@ -15,7 +15,7 @@ import (
 )
 
 func TestRadarEmailRoutingTimeseriesGroupGetArcWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -51,7 +51,7 @@ func TestRadarEmailRoutingTimeseriesGroupGetArcWithOptionalParams(t *testing.T) 
 }
 
 func TestRadarEmailRoutingTimeseriesGroupGetDkimWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -87,7 +87,7 @@ func TestRadarEmailRoutingTimeseriesGroupGetDkimWithOptionalParams(t *testing.T)
 }
 
 func TestRadarEmailRoutingTimeseriesGroupGetDmarcWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -123,7 +123,7 @@ func TestRadarEmailRoutingTimeseriesGroupGetDmarcWithOptionalParams(t *testing.T
 }
 
 func TestRadarEmailRoutingTimeseriesGroupGetEncryptedWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -159,7 +159,7 @@ func TestRadarEmailRoutingTimeseriesGroupGetEncryptedWithOptionalParams(t *testi
 }
 
 func TestRadarEmailRoutingTimeseriesGroupGetIPVersionWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -195,7 +195,7 @@ func TestRadarEmailRoutingTimeseriesGroupGetIPVersionWithOptionalParams(t *testi
 }
 
 func TestRadarEmailRoutingTimeseriesGroupGetSpfWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL

@@ -19,7 +19,7 @@ import (
 )
 
 func TestAccountBrowserRenderingGetHTMLContentWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -114,7 +114,7 @@ func TestAccountBrowserRenderingGetHTMLContentWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountBrowserRenderingGetJsonWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -216,7 +216,7 @@ func TestAccountBrowserRenderingGetJsonWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountBrowserRenderingGetLinksWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -312,7 +312,7 @@ func TestAccountBrowserRenderingGetLinksWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountBrowserRenderingGetMarkdownWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -407,7 +407,6 @@ func TestAccountBrowserRenderingGetMarkdownWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountBrowserRenderingGetPdfWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(200)
 		w.Write([]byte("abc"))
@@ -537,7 +536,7 @@ func TestAccountBrowserRenderingGetPdfWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountBrowserRenderingGetScreenshotWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -651,7 +650,7 @@ func TestAccountBrowserRenderingGetScreenshotWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountBrowserRenderingGetSnapshotWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -762,7 +761,7 @@ func TestAccountBrowserRenderingGetSnapshotWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountBrowserRenderingScrapeElementsWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL

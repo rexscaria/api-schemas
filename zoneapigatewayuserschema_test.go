@@ -16,7 +16,7 @@ import (
 )
 
 func TestZoneAPIGatewayUserSchemaGetWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -47,7 +47,7 @@ func TestZoneAPIGatewayUserSchemaGetWithOptionalParams(t *testing.T) {
 }
 
 func TestZoneAPIGatewayUserSchemaListWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -80,7 +80,7 @@ func TestZoneAPIGatewayUserSchemaListWithOptionalParams(t *testing.T) {
 }
 
 func TestZoneAPIGatewayUserSchemaDelete(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -108,7 +108,7 @@ func TestZoneAPIGatewayUserSchemaDelete(t *testing.T) {
 }
 
 func TestZoneAPIGatewayUserSchemaEnableValidationWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -139,7 +139,7 @@ func TestZoneAPIGatewayUserSchemaEnableValidationWithOptionalParams(t *testing.T
 }
 
 func TestZoneAPIGatewayUserSchemaGetHostsWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -170,7 +170,7 @@ func TestZoneAPIGatewayUserSchemaGetHostsWithOptionalParams(t *testing.T) {
 }
 
 func TestZoneAPIGatewayUserSchemaGetOperationsWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -207,7 +207,7 @@ func TestZoneAPIGatewayUserSchemaGetOperationsWithOptionalParams(t *testing.T) {
 }
 
 func TestZoneAPIGatewayUserSchemaUploadWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL

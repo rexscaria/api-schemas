@@ -15,7 +15,7 @@ import (
 )
 
 func TestRadarHTTPSummaryGetByBotClassWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -55,7 +55,7 @@ func TestRadarHTTPSummaryGetByBotClassWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarHTTPSummaryGetByDeviceTypeWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -95,7 +95,7 @@ func TestRadarHTTPSummaryGetByDeviceTypeWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarHTTPSummaryGetByHTTPProtocolWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -135,7 +135,7 @@ func TestRadarHTTPSummaryGetByHTTPProtocolWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarHTTPSummaryGetByHTTPVersionWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -175,7 +175,7 @@ func TestRadarHTTPSummaryGetByHTTPVersionWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarHTTPSummaryGetByIPVersionWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -215,7 +215,7 @@ func TestRadarHTTPSummaryGetByIPVersionWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarHTTPSummaryGetByOsWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -255,7 +255,7 @@ func TestRadarHTTPSummaryGetByOsWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarHTTPSummaryGetByPostQuantumWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -296,7 +296,7 @@ func TestRadarHTTPSummaryGetByPostQuantumWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarHTTPSummaryGetByTlsVersionWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL

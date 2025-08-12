@@ -14,7 +14,7 @@ import (
 )
 
 func TestAccountIntelIndicatorFeedNewFeedWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -45,7 +45,7 @@ func TestAccountIntelIndicatorFeedNewFeedWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountIntelIndicatorFeedDownloadData(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -73,7 +73,7 @@ func TestAccountIntelIndicatorFeedDownloadData(t *testing.T) {
 }
 
 func TestAccountIntelIndicatorFeedGetData(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -101,7 +101,7 @@ func TestAccountIntelIndicatorFeedGetData(t *testing.T) {
 }
 
 func TestAccountIntelIndicatorFeedListFeeds(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -125,7 +125,7 @@ func TestAccountIntelIndicatorFeedListFeeds(t *testing.T) {
 }
 
 func TestAccountIntelIndicatorFeedGetMetadata(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -153,7 +153,7 @@ func TestAccountIntelIndicatorFeedGetMetadata(t *testing.T) {
 }
 
 func TestAccountIntelIndicatorFeedUpdateDataWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -184,7 +184,7 @@ func TestAccountIntelIndicatorFeedUpdateDataWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountIntelIndicatorFeedUpdateMetadataWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL

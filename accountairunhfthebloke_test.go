@@ -14,7 +14,7 @@ import (
 )
 
 func TestAccountAIRunHfTheblokeExecuteDeepseekCoder6_7bBaseAwqWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -62,7 +62,7 @@ func TestAccountAIRunHfTheblokeExecuteDeepseekCoder6_7bBaseAwqWithOptionalParams
 }
 
 func TestAccountAIRunHfTheblokeExecuteDeepseekCoder6_7bInstructAwqWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -110,7 +110,7 @@ func TestAccountAIRunHfTheblokeExecuteDeepseekCoder6_7bInstructAwqWithOptionalPa
 }
 
 func TestAccountAIRunHfTheblokeExecuteLlama2_13bChatAwqWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -158,7 +158,7 @@ func TestAccountAIRunHfTheblokeExecuteLlama2_13bChatAwqWithOptionalParams(t *tes
 }
 
 func TestAccountAIRunHfTheblokeExecuteLlamaguard7bAwqWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -206,7 +206,7 @@ func TestAccountAIRunHfTheblokeExecuteLlamaguard7bAwqWithOptionalParams(t *testi
 }
 
 func TestAccountAIRunHfTheblokeExecuteMistral7bInstructV0_1AwqWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -254,7 +254,7 @@ func TestAccountAIRunHfTheblokeExecuteMistral7bInstructV0_1AwqWithOptionalParams
 }
 
 func TestAccountAIRunHfTheblokeExecuteNeuralChat7bV3_1AwqWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -302,7 +302,7 @@ func TestAccountAIRunHfTheblokeExecuteNeuralChat7bV3_1AwqWithOptionalParams(t *t
 }
 
 func TestAccountAIRunHfTheblokeExecuteOpenhermes2_5Mistral7bAwqWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -350,7 +350,7 @@ func TestAccountAIRunHfTheblokeExecuteOpenhermes2_5Mistral7bAwqWithOptionalParam
 }
 
 func TestAccountAIRunHfTheblokeExecuteZephyr7bBetaAwqWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL

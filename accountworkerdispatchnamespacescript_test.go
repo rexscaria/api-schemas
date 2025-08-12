@@ -16,7 +16,7 @@ import (
 )
 
 func TestAccountWorkerDispatchNamespaceScriptGet(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -45,7 +45,7 @@ func TestAccountWorkerDispatchNamespaceScriptGet(t *testing.T) {
 }
 
 func TestAccountWorkerDispatchNamespaceScriptDeleteWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -77,7 +77,7 @@ func TestAccountWorkerDispatchNamespaceScriptDeleteWithOptionalParams(t *testing
 }
 
 func TestAccountWorkerDispatchNamespaceScriptNewAssetsUploadSession(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -116,7 +116,7 @@ func TestAccountWorkerDispatchNamespaceScriptNewAssetsUploadSession(t *testing.T
 }
 
 func TestAccountWorkerDispatchNamespaceScriptGetBindings(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -145,7 +145,7 @@ func TestAccountWorkerDispatchNamespaceScriptGetBindings(t *testing.T) {
 }
 
 func TestAccountWorkerDispatchNamespaceScriptUploadWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL

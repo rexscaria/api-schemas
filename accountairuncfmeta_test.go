@@ -14,7 +14,7 @@ import (
 )
 
 func TestAccountAIRunCfMetaExecuteLlama2_7bChatFp16WithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -62,7 +62,7 @@ func TestAccountAIRunCfMetaExecuteLlama2_7bChatFp16WithOptionalParams(t *testing
 }
 
 func TestAccountAIRunCfMetaExecuteLlama2_7bChatInt8WithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -110,7 +110,7 @@ func TestAccountAIRunCfMetaExecuteLlama2_7bChatInt8WithOptionalParams(t *testing
 }
 
 func TestAccountAIRunCfMetaExecuteLlama3_1_70bInstructWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -158,7 +158,7 @@ func TestAccountAIRunCfMetaExecuteLlama3_1_70bInstructWithOptionalParams(t *test
 }
 
 func TestAccountAIRunCfMetaExecuteLlama3_1_70bInstructPreviewWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -206,7 +206,7 @@ func TestAccountAIRunCfMetaExecuteLlama3_1_70bInstructPreviewWithOptionalParams(
 }
 
 func TestAccountAIRunCfMetaExecuteLlama3_1_70bPreviewWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -254,7 +254,7 @@ func TestAccountAIRunCfMetaExecuteLlama3_1_70bPreviewWithOptionalParams(t *testi
 }
 
 func TestAccountAIRunCfMetaExecuteLlama3_1_8bInstructAwqWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -302,7 +302,7 @@ func TestAccountAIRunCfMetaExecuteLlama3_1_8bInstructAwqWithOptionalParams(t *te
 }
 
 func TestAccountAIRunCfMetaExecuteLlama3_1_8bInstructFastWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -350,7 +350,7 @@ func TestAccountAIRunCfMetaExecuteLlama3_1_8bInstructFastWithOptionalParams(t *t
 }
 
 func TestAccountAIRunCfMetaExecuteLlama3_1_8bInstructFp8WithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -398,7 +398,7 @@ func TestAccountAIRunCfMetaExecuteLlama3_1_8bInstructFp8WithOptionalParams(t *te
 }
 
 func TestAccountAIRunCfMetaExecuteLlama3_1_8bPreviewWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -446,7 +446,7 @@ func TestAccountAIRunCfMetaExecuteLlama3_1_8bPreviewWithOptionalParams(t *testin
 }
 
 func TestAccountAIRunCfMetaExecuteLlama3_2_11bVisionInstructWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -491,7 +491,7 @@ func TestAccountAIRunCfMetaExecuteLlama3_2_11bVisionInstructWithOptionalParams(t
 }
 
 func TestAccountAIRunCfMetaExecuteLlama3_2_1bInstructWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -539,7 +539,7 @@ func TestAccountAIRunCfMetaExecuteLlama3_2_1bInstructWithOptionalParams(t *testi
 }
 
 func TestAccountAIRunCfMetaExecuteLlama3_2_3bInstructWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -587,7 +587,7 @@ func TestAccountAIRunCfMetaExecuteLlama3_2_3bInstructWithOptionalParams(t *testi
 }
 
 func TestAccountAIRunCfMetaExecuteLlama3_8bInstructWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -635,7 +635,7 @@ func TestAccountAIRunCfMetaExecuteLlama3_8bInstructWithOptionalParams(t *testing
 }
 
 func TestAccountAIRunCfMetaExecuteLlama3_8bInstructAwqWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -683,7 +683,7 @@ func TestAccountAIRunCfMetaExecuteLlama3_8bInstructAwqWithOptionalParams(t *test
 }
 
 func TestAccountAIRunCfMetaExecuteLlamaGuard3_8bWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -722,7 +722,7 @@ func TestAccountAIRunCfMetaExecuteLlamaGuard3_8bWithOptionalParams(t *testing.T)
 }
 
 func TestAccountAIRunCfMetaExecuteM2m100_1_2bWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
+	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
