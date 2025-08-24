@@ -25,7 +25,7 @@ import (
 // the [NewAccountDNSFirewallService] method instead.
 type AccountDNSFirewallService struct {
 	Options      []option.RequestOption
-	DNSAnalytics *AccountDNSFirewallDNSAnalyticService
+	DNSAnalytics *AccountDNSFirewallDNSAnalyticsService
 	ReverseDNS   *AccountDNSFirewallReverseDNSService
 }
 
@@ -35,7 +35,7 @@ type AccountDNSFirewallService struct {
 func NewAccountDNSFirewallService(opts ...option.RequestOption) (r *AccountDNSFirewallService) {
 	r = &AccountDNSFirewallService{}
 	r.Options = opts
-	r.DNSAnalytics = NewAccountDNSFirewallDNSAnalyticService(opts...)
+	r.DNSAnalytics = NewAccountDNSFirewallDNSAnalyticsService(opts...)
 	r.ReverseDNS = NewAccountDNSFirewallReverseDNSService(opts...)
 	return
 }

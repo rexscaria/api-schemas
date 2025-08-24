@@ -26,7 +26,7 @@ type UserService struct {
 	Firewall               *UserFirewallService
 	Invites                *UserInviteService
 	LoadBalancers          *UserLoadBalancerService
-	LoadBalancingAnalytics *UserLoadBalancingAnalyticService
+	LoadBalancingAnalytics *UserLoadBalancingAnalyticsService
 	Organizations          *UserOrganizationService
 	Subscriptions          *UserSubscriptionService
 	Tokens                 *UserTokenService
@@ -42,7 +42,7 @@ func NewUserService(opts ...option.RequestOption) (r *UserService) {
 	r.Firewall = NewUserFirewallService(opts...)
 	r.Invites = NewUserInviteService(opts...)
 	r.LoadBalancers = NewUserLoadBalancerService(opts...)
-	r.LoadBalancingAnalytics = NewUserLoadBalancingAnalyticService(opts...)
+	r.LoadBalancingAnalytics = NewUserLoadBalancingAnalyticsService(opts...)
 	r.Organizations = NewUserOrganizationService(opts...)
 	r.Subscriptions = NewUserSubscriptionService(opts...)
 	r.Tokens = NewUserTokenService(opts...)

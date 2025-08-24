@@ -17,21 +17,21 @@ import (
 	"github.com/rexscaria/api-schemas/option"
 )
 
-// ZoneDNSAnalyticReportService contains methods and other services that help with
+// ZoneDNSAnalyticsReportService contains methods and other services that help with
 // interacting with the cf-rex API.
 //
 // Note, unlike clients, this service does not read variables from the environment
 // automatically. You should not instantiate this service directly, and instead use
-// the [NewZoneDNSAnalyticReportService] method instead.
-type ZoneDNSAnalyticReportService struct {
+// the [NewZoneDNSAnalyticsReportService] method instead.
+type ZoneDNSAnalyticsReportService struct {
 	Options []option.RequestOption
 }
 
-// NewZoneDNSAnalyticReportService generates a new service that applies the given
+// NewZoneDNSAnalyticsReportService generates a new service that applies the given
 // options to each request. These options are applied after the parent client's
 // options (if there is one), and before any request-specific options.
-func NewZoneDNSAnalyticReportService(opts ...option.RequestOption) (r *ZoneDNSAnalyticReportService) {
-	r = &ZoneDNSAnalyticReportService{}
+func NewZoneDNSAnalyticsReportService(opts ...option.RequestOption) (r *ZoneDNSAnalyticsReportService) {
+	r = &ZoneDNSAnalyticsReportService{}
 	r.Options = opts
 	return
 }
@@ -41,7 +41,7 @@ func NewZoneDNSAnalyticReportService(opts ...option.RequestOption) (r *ZoneDNSAn
 // See
 // [Analytics API properties](https://developers.cloudflare.com/dns/reference/analytics-api-properties/)
 // for detailed information about the available query parameters.
-func (r *ZoneDNSAnalyticReportService) Get(ctx context.Context, zoneID string, query ZoneDNSAnalyticReportGetParams, opts ...option.RequestOption) (res *ZoneDNSAnalyticReportGetResponse, err error) {
+func (r *ZoneDNSAnalyticsReportService) Get(ctx context.Context, zoneID string, query ZoneDNSAnalyticsReportGetParams, opts ...option.RequestOption) (res *ZoneDNSAnalyticsReportGetResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
@@ -57,7 +57,7 @@ func (r *ZoneDNSAnalyticReportService) Get(ctx context.Context, zoneID string, q
 // See
 // [Analytics API properties](https://developers.cloudflare.com/dns/reference/analytics-api-properties/)
 // for detailed information about the available query parameters.
-func (r *ZoneDNSAnalyticReportService) ByTime(ctx context.Context, zoneID string, query ZoneDNSAnalyticReportByTimeParams, opts ...option.RequestOption) (res *ZoneDNSAnalyticReportByTimeResponse, err error) {
+func (r *ZoneDNSAnalyticsReportService) ByTime(ctx context.Context, zoneID string, query ZoneDNSAnalyticsReportByTimeParams, opts ...option.RequestOption) (res *ZoneDNSAnalyticsReportByTimeResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
@@ -68,18 +68,18 @@ func (r *ZoneDNSAnalyticReportService) ByTime(ctx context.Context, zoneID string
 	return
 }
 
-type ZoneDNSAnalyticReportGetResponse struct {
+type ZoneDNSAnalyticsReportGetResponse struct {
 	Errors   []MessagesDNSAnalyticsItem `json:"errors,required"`
 	Messages []MessagesDNSAnalyticsItem `json:"messages,required"`
 	// Whether the API call was successful.
-	Success ZoneDNSAnalyticReportGetResponseSuccess `json:"success,required"`
-	Result  DataReport                              `json:"result"`
-	JSON    zoneDNSAnalyticReportGetResponseJSON    `json:"-"`
+	Success ZoneDNSAnalyticsReportGetResponseSuccess `json:"success,required"`
+	Result  DataReport                               `json:"result"`
+	JSON    zoneDNSAnalyticsReportGetResponseJSON    `json:"-"`
 }
 
-// zoneDNSAnalyticReportGetResponseJSON contains the JSON metadata for the struct
-// [ZoneDNSAnalyticReportGetResponse]
-type zoneDNSAnalyticReportGetResponseJSON struct {
+// zoneDNSAnalyticsReportGetResponseJSON contains the JSON metadata for the struct
+// [ZoneDNSAnalyticsReportGetResponse]
+type zoneDNSAnalyticsReportGetResponseJSON struct {
 	Errors      apijson.Field
 	Messages    apijson.Field
 	Success     apijson.Field
@@ -88,41 +88,41 @@ type zoneDNSAnalyticReportGetResponseJSON struct {
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *ZoneDNSAnalyticReportGetResponse) UnmarshalJSON(data []byte) (err error) {
+func (r *ZoneDNSAnalyticsReportGetResponse) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r zoneDNSAnalyticReportGetResponseJSON) RawJSON() string {
+func (r zoneDNSAnalyticsReportGetResponseJSON) RawJSON() string {
 	return r.raw
 }
 
 // Whether the API call was successful.
-type ZoneDNSAnalyticReportGetResponseSuccess bool
+type ZoneDNSAnalyticsReportGetResponseSuccess bool
 
 const (
-	ZoneDNSAnalyticReportGetResponseSuccessTrue ZoneDNSAnalyticReportGetResponseSuccess = true
+	ZoneDNSAnalyticsReportGetResponseSuccessTrue ZoneDNSAnalyticsReportGetResponseSuccess = true
 )
 
-func (r ZoneDNSAnalyticReportGetResponseSuccess) IsKnown() bool {
+func (r ZoneDNSAnalyticsReportGetResponseSuccess) IsKnown() bool {
 	switch r {
-	case ZoneDNSAnalyticReportGetResponseSuccessTrue:
+	case ZoneDNSAnalyticsReportGetResponseSuccessTrue:
 		return true
 	}
 	return false
 }
 
-type ZoneDNSAnalyticReportByTimeResponse struct {
+type ZoneDNSAnalyticsReportByTimeResponse struct {
 	Errors   []MessagesDNSAnalyticsItem `json:"errors,required"`
 	Messages []MessagesDNSAnalyticsItem `json:"messages,required"`
 	// Whether the API call was successful.
-	Success ZoneDNSAnalyticReportByTimeResponseSuccess `json:"success,required"`
-	Result  ReportByTime                               `json:"result"`
-	JSON    zoneDNSAnalyticReportByTimeResponseJSON    `json:"-"`
+	Success ZoneDNSAnalyticsReportByTimeResponseSuccess `json:"success,required"`
+	Result  ReportByTime                                `json:"result"`
+	JSON    zoneDNSAnalyticsReportByTimeResponseJSON    `json:"-"`
 }
 
-// zoneDNSAnalyticReportByTimeResponseJSON contains the JSON metadata for the
-// struct [ZoneDNSAnalyticReportByTimeResponse]
-type zoneDNSAnalyticReportByTimeResponseJSON struct {
+// zoneDNSAnalyticsReportByTimeResponseJSON contains the JSON metadata for the
+// struct [ZoneDNSAnalyticsReportByTimeResponse]
+type zoneDNSAnalyticsReportByTimeResponseJSON struct {
 	Errors      apijson.Field
 	Messages    apijson.Field
 	Success     apijson.Field
@@ -131,30 +131,30 @@ type zoneDNSAnalyticReportByTimeResponseJSON struct {
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *ZoneDNSAnalyticReportByTimeResponse) UnmarshalJSON(data []byte) (err error) {
+func (r *ZoneDNSAnalyticsReportByTimeResponse) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r zoneDNSAnalyticReportByTimeResponseJSON) RawJSON() string {
+func (r zoneDNSAnalyticsReportByTimeResponseJSON) RawJSON() string {
 	return r.raw
 }
 
 // Whether the API call was successful.
-type ZoneDNSAnalyticReportByTimeResponseSuccess bool
+type ZoneDNSAnalyticsReportByTimeResponseSuccess bool
 
 const (
-	ZoneDNSAnalyticReportByTimeResponseSuccessTrue ZoneDNSAnalyticReportByTimeResponseSuccess = true
+	ZoneDNSAnalyticsReportByTimeResponseSuccessTrue ZoneDNSAnalyticsReportByTimeResponseSuccess = true
 )
 
-func (r ZoneDNSAnalyticReportByTimeResponseSuccess) IsKnown() bool {
+func (r ZoneDNSAnalyticsReportByTimeResponseSuccess) IsKnown() bool {
 	switch r {
-	case ZoneDNSAnalyticReportByTimeResponseSuccessTrue:
+	case ZoneDNSAnalyticsReportByTimeResponseSuccessTrue:
 		return true
 	}
 	return false
 }
 
-type ZoneDNSAnalyticReportGetParams struct {
+type ZoneDNSAnalyticsReportGetParams struct {
 	// A comma-separated list of dimensions to group results by.
 	Dimensions param.Field[string] `query:"dimensions"`
 	// Segmentation filter in 'attribute operator value' format.
@@ -172,16 +172,16 @@ type ZoneDNSAnalyticReportGetParams struct {
 	Until param.Field[time.Time] `query:"until" format:"date-time"`
 }
 
-// URLQuery serializes [ZoneDNSAnalyticReportGetParams]'s query parameters as
+// URLQuery serializes [ZoneDNSAnalyticsReportGetParams]'s query parameters as
 // `url.Values`.
-func (r ZoneDNSAnalyticReportGetParams) URLQuery() (v url.Values) {
+func (r ZoneDNSAnalyticsReportGetParams) URLQuery() (v url.Values) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
 
-type ZoneDNSAnalyticReportByTimeParams struct {
+type ZoneDNSAnalyticsReportByTimeParams struct {
 	// A comma-separated list of dimensions to group results by.
 	Dimensions param.Field[string] `query:"dimensions"`
 	// Segmentation filter in 'attribute operator value' format.
@@ -201,9 +201,9 @@ type ZoneDNSAnalyticReportByTimeParams struct {
 	Until param.Field[time.Time] `query:"until" format:"date-time"`
 }
 
-// URLQuery serializes [ZoneDNSAnalyticReportByTimeParams]'s query parameters as
+// URLQuery serializes [ZoneDNSAnalyticsReportByTimeParams]'s query parameters as
 // `url.Values`.
-func (r ZoneDNSAnalyticReportByTimeParams) URLQuery() (v url.Values) {
+func (r ZoneDNSAnalyticsReportByTimeParams) URLQuery() (v url.Values) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

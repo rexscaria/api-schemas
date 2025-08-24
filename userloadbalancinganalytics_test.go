@@ -14,7 +14,7 @@ import (
 	"github.com/rexscaria/api-schemas/option"
 )
 
-func TestUserLoadBalancingAnalyticListEventsWithOptionalParams(t *testing.T) {
+func TestUserLoadBalancingAnalyticsListEventsWithOptionalParams(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -28,7 +28,7 @@ func TestUserLoadBalancingAnalyticListEventsWithOptionalParams(t *testing.T) {
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.User.LoadBalancingAnalytics.ListEvents(context.TODO(), cfrex.UserLoadBalancingAnalyticListEventsParams{
+	_, err := client.User.LoadBalancingAnalytics.ListEvents(context.TODO(), cfrex.UserLoadBalancingAnalyticsListEventsParams{
 		OriginHealthy: cfrex.F(true),
 		OriginName:    cfrex.F("primary-dc-1"),
 		PoolHealthy:   cfrex.F(true),

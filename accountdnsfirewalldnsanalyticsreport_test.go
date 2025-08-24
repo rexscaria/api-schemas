@@ -14,7 +14,7 @@ import (
 	"github.com/rexscaria/api-schemas/option"
 )
 
-func TestZoneDNSAnalyticReportGetWithOptionalParams(t *testing.T) {
+func TestAccountDNSFirewallDNSAnalyticsReportGetWithOptionalParams(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -28,10 +28,11 @@ func TestZoneDNSAnalyticReportGetWithOptionalParams(t *testing.T) {
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Zones.DNSAnalytics.Report.Get(
+	_, err := client.Accounts.DNSFirewall.DNSAnalytics.Report.Get(
 		context.TODO(),
 		"023e105f4ecef8ad9ca31a8372d0c353",
-		cfrex.ZoneDNSAnalyticReportGetParams{
+		"023e105f4ecef8ad9ca31a8372d0c353",
+		cfrex.AccountDNSFirewallDNSAnalyticsReportGetParams{
 			Dimensions: cfrex.F("queryType"),
 			Filters:    cfrex.F("responseCode==NOERROR,queryType==A"),
 			Limit:      cfrex.F(int64(100)),
@@ -50,7 +51,7 @@ func TestZoneDNSAnalyticReportGetWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestZoneDNSAnalyticReportByTimeWithOptionalParams(t *testing.T) {
+func TestAccountDNSFirewallDNSAnalyticsReportListByTimeWithOptionalParams(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -64,10 +65,11 @@ func TestZoneDNSAnalyticReportByTimeWithOptionalParams(t *testing.T) {
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Zones.DNSAnalytics.Report.ByTime(
+	_, err := client.Accounts.DNSFirewall.DNSAnalytics.Report.ListByTime(
 		context.TODO(),
 		"023e105f4ecef8ad9ca31a8372d0c353",
-		cfrex.ZoneDNSAnalyticReportByTimeParams{
+		"023e105f4ecef8ad9ca31a8372d0c353",
+		cfrex.AccountDNSFirewallDNSAnalyticsReportListByTimeParams{
 			Dimensions: cfrex.F("queryType"),
 			Filters:    cfrex.F("responseCode==NOERROR,queryType==A"),
 			Limit:      cfrex.F(int64(100)),

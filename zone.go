@@ -44,7 +44,7 @@ type ZoneService struct {
 	CustomNs               *ZoneCustomNService
 	DcvDelegation          *ZoneDcvDelegationService
 	Devices                *ZoneDeviceService
-	DNSAnalytics           *ZoneDNSAnalyticService
+	DNSAnalytics           *ZoneDNSAnalyticsService
 	DNSRecords             *ZoneDNSRecordService
 	DNSSettings            *ZoneDNSSettingService
 	Dnssec                 *ZoneDnssecService
@@ -106,7 +106,7 @@ func NewZoneService(opts ...option.RequestOption) (r *ZoneService) {
 	r.CustomNs = NewZoneCustomNService(opts...)
 	r.DcvDelegation = NewZoneDcvDelegationService(opts...)
 	r.Devices = NewZoneDeviceService(opts...)
-	r.DNSAnalytics = NewZoneDNSAnalyticService(opts...)
+	r.DNSAnalytics = NewZoneDNSAnalyticsService(opts...)
 	r.DNSRecords = NewZoneDNSRecordService(opts...)
 	r.DNSSettings = NewZoneDNSSettingService(opts...)
 	r.Dnssec = NewZoneDnssecService(opts...)
