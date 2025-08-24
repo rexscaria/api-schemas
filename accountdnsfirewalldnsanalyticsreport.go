@@ -17,22 +17,22 @@ import (
 	"github.com/rexscaria/api-schemas/option"
 )
 
-// AccountDNSFirewallDNSAnalyticReportService contains methods and other services
+// AccountDNSFirewallDNSAnalyticsReportService contains methods and other services
 // that help with interacting with the cf-rex API.
 //
 // Note, unlike clients, this service does not read variables from the environment
 // automatically. You should not instantiate this service directly, and instead use
-// the [NewAccountDNSFirewallDNSAnalyticReportService] method instead.
-type AccountDNSFirewallDNSAnalyticReportService struct {
+// the [NewAccountDNSFirewallDNSAnalyticsReportService] method instead.
+type AccountDNSFirewallDNSAnalyticsReportService struct {
 	Options []option.RequestOption
 }
 
-// NewAccountDNSFirewallDNSAnalyticReportService generates a new service that
+// NewAccountDNSFirewallDNSAnalyticsReportService generates a new service that
 // applies the given options to each request. These options are applied after the
 // parent client's options (if there is one), and before any request-specific
 // options.
-func NewAccountDNSFirewallDNSAnalyticReportService(opts ...option.RequestOption) (r *AccountDNSFirewallDNSAnalyticReportService) {
-	r = &AccountDNSFirewallDNSAnalyticReportService{}
+func NewAccountDNSFirewallDNSAnalyticsReportService(opts ...option.RequestOption) (r *AccountDNSFirewallDNSAnalyticsReportService) {
+	r = &AccountDNSFirewallDNSAnalyticsReportService{}
 	r.Options = opts
 	return
 }
@@ -42,7 +42,7 @@ func NewAccountDNSFirewallDNSAnalyticReportService(opts ...option.RequestOption)
 // See
 // [Analytics API properties](https://developers.cloudflare.com/dns/reference/analytics-api-properties/)
 // for detailed information about the available query parameters.
-func (r *AccountDNSFirewallDNSAnalyticReportService) Get(ctx context.Context, accountID string, dnsFirewallID string, query AccountDNSFirewallDNSAnalyticReportGetParams, opts ...option.RequestOption) (res *AccountDNSFirewallDNSAnalyticReportGetResponse, err error) {
+func (r *AccountDNSFirewallDNSAnalyticsReportService) Get(ctx context.Context, accountID string, dnsFirewallID string, query AccountDNSFirewallDNSAnalyticsReportGetParams, opts ...option.RequestOption) (res *AccountDNSFirewallDNSAnalyticsReportGetResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
@@ -62,7 +62,7 @@ func (r *AccountDNSFirewallDNSAnalyticReportService) Get(ctx context.Context, ac
 // See
 // [Analytics API properties](https://developers.cloudflare.com/dns/reference/analytics-api-properties/)
 // for detailed information about the available query parameters.
-func (r *AccountDNSFirewallDNSAnalyticReportService) ListByTime(ctx context.Context, accountID string, dnsFirewallID string, query AccountDNSFirewallDNSAnalyticReportListByTimeParams, opts ...option.RequestOption) (res *AccountDNSFirewallDNSAnalyticReportListByTimeResponse, err error) {
+func (r *AccountDNSFirewallDNSAnalyticsReportService) ListByTime(ctx context.Context, accountID string, dnsFirewallID string, query AccountDNSFirewallDNSAnalyticsReportListByTimeParams, opts ...option.RequestOption) (res *AccountDNSFirewallDNSAnalyticsReportListByTimeResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
@@ -373,18 +373,18 @@ func (r TimeDelta) IsKnown() bool {
 	return false
 }
 
-type AccountDNSFirewallDNSAnalyticReportGetResponse struct {
+type AccountDNSFirewallDNSAnalyticsReportGetResponse struct {
 	Errors   []MessagesDNSAnalyticsItem `json:"errors,required"`
 	Messages []MessagesDNSAnalyticsItem `json:"messages,required"`
 	// Whether the API call was successful.
-	Success AccountDNSFirewallDNSAnalyticReportGetResponseSuccess `json:"success,required"`
-	Result  DataReport                                            `json:"result"`
-	JSON    accountDNSFirewallDNSAnalyticReportGetResponseJSON    `json:"-"`
+	Success AccountDNSFirewallDNSAnalyticsReportGetResponseSuccess `json:"success,required"`
+	Result  DataReport                                             `json:"result"`
+	JSON    accountDNSFirewallDNSAnalyticsReportGetResponseJSON    `json:"-"`
 }
 
-// accountDNSFirewallDNSAnalyticReportGetResponseJSON contains the JSON metadata
-// for the struct [AccountDNSFirewallDNSAnalyticReportGetResponse]
-type accountDNSFirewallDNSAnalyticReportGetResponseJSON struct {
+// accountDNSFirewallDNSAnalyticsReportGetResponseJSON contains the JSON metadata
+// for the struct [AccountDNSFirewallDNSAnalyticsReportGetResponse]
+type accountDNSFirewallDNSAnalyticsReportGetResponseJSON struct {
 	Errors      apijson.Field
 	Messages    apijson.Field
 	Success     apijson.Field
@@ -393,41 +393,41 @@ type accountDNSFirewallDNSAnalyticReportGetResponseJSON struct {
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *AccountDNSFirewallDNSAnalyticReportGetResponse) UnmarshalJSON(data []byte) (err error) {
+func (r *AccountDNSFirewallDNSAnalyticsReportGetResponse) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r accountDNSFirewallDNSAnalyticReportGetResponseJSON) RawJSON() string {
+func (r accountDNSFirewallDNSAnalyticsReportGetResponseJSON) RawJSON() string {
 	return r.raw
 }
 
 // Whether the API call was successful.
-type AccountDNSFirewallDNSAnalyticReportGetResponseSuccess bool
+type AccountDNSFirewallDNSAnalyticsReportGetResponseSuccess bool
 
 const (
-	AccountDNSFirewallDNSAnalyticReportGetResponseSuccessTrue AccountDNSFirewallDNSAnalyticReportGetResponseSuccess = true
+	AccountDNSFirewallDNSAnalyticsReportGetResponseSuccessTrue AccountDNSFirewallDNSAnalyticsReportGetResponseSuccess = true
 )
 
-func (r AccountDNSFirewallDNSAnalyticReportGetResponseSuccess) IsKnown() bool {
+func (r AccountDNSFirewallDNSAnalyticsReportGetResponseSuccess) IsKnown() bool {
 	switch r {
-	case AccountDNSFirewallDNSAnalyticReportGetResponseSuccessTrue:
+	case AccountDNSFirewallDNSAnalyticsReportGetResponseSuccessTrue:
 		return true
 	}
 	return false
 }
 
-type AccountDNSFirewallDNSAnalyticReportListByTimeResponse struct {
+type AccountDNSFirewallDNSAnalyticsReportListByTimeResponse struct {
 	Errors   []MessagesDNSAnalyticsItem `json:"errors,required"`
 	Messages []MessagesDNSAnalyticsItem `json:"messages,required"`
 	// Whether the API call was successful.
-	Success AccountDNSFirewallDNSAnalyticReportListByTimeResponseSuccess `json:"success,required"`
-	Result  ReportByTime                                                 `json:"result"`
-	JSON    accountDNSFirewallDNSAnalyticReportListByTimeResponseJSON    `json:"-"`
+	Success AccountDNSFirewallDNSAnalyticsReportListByTimeResponseSuccess `json:"success,required"`
+	Result  ReportByTime                                                  `json:"result"`
+	JSON    accountDNSFirewallDNSAnalyticsReportListByTimeResponseJSON    `json:"-"`
 }
 
-// accountDNSFirewallDNSAnalyticReportListByTimeResponseJSON contains the JSON
-// metadata for the struct [AccountDNSFirewallDNSAnalyticReportListByTimeResponse]
-type accountDNSFirewallDNSAnalyticReportListByTimeResponseJSON struct {
+// accountDNSFirewallDNSAnalyticsReportListByTimeResponseJSON contains the JSON
+// metadata for the struct [AccountDNSFirewallDNSAnalyticsReportListByTimeResponse]
+type accountDNSFirewallDNSAnalyticsReportListByTimeResponseJSON struct {
 	Errors      apijson.Field
 	Messages    apijson.Field
 	Success     apijson.Field
@@ -436,30 +436,30 @@ type accountDNSFirewallDNSAnalyticReportListByTimeResponseJSON struct {
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *AccountDNSFirewallDNSAnalyticReportListByTimeResponse) UnmarshalJSON(data []byte) (err error) {
+func (r *AccountDNSFirewallDNSAnalyticsReportListByTimeResponse) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r accountDNSFirewallDNSAnalyticReportListByTimeResponseJSON) RawJSON() string {
+func (r accountDNSFirewallDNSAnalyticsReportListByTimeResponseJSON) RawJSON() string {
 	return r.raw
 }
 
 // Whether the API call was successful.
-type AccountDNSFirewallDNSAnalyticReportListByTimeResponseSuccess bool
+type AccountDNSFirewallDNSAnalyticsReportListByTimeResponseSuccess bool
 
 const (
-	AccountDNSFirewallDNSAnalyticReportListByTimeResponseSuccessTrue AccountDNSFirewallDNSAnalyticReportListByTimeResponseSuccess = true
+	AccountDNSFirewallDNSAnalyticsReportListByTimeResponseSuccessTrue AccountDNSFirewallDNSAnalyticsReportListByTimeResponseSuccess = true
 )
 
-func (r AccountDNSFirewallDNSAnalyticReportListByTimeResponseSuccess) IsKnown() bool {
+func (r AccountDNSFirewallDNSAnalyticsReportListByTimeResponseSuccess) IsKnown() bool {
 	switch r {
-	case AccountDNSFirewallDNSAnalyticReportListByTimeResponseSuccessTrue:
+	case AccountDNSFirewallDNSAnalyticsReportListByTimeResponseSuccessTrue:
 		return true
 	}
 	return false
 }
 
-type AccountDNSFirewallDNSAnalyticReportGetParams struct {
+type AccountDNSFirewallDNSAnalyticsReportGetParams struct {
 	// A comma-separated list of dimensions to group results by.
 	Dimensions param.Field[string] `query:"dimensions"`
 	// Segmentation filter in 'attribute operator value' format.
@@ -477,16 +477,16 @@ type AccountDNSFirewallDNSAnalyticReportGetParams struct {
 	Until param.Field[time.Time] `query:"until" format:"date-time"`
 }
 
-// URLQuery serializes [AccountDNSFirewallDNSAnalyticReportGetParams]'s query
+// URLQuery serializes [AccountDNSFirewallDNSAnalyticsReportGetParams]'s query
 // parameters as `url.Values`.
-func (r AccountDNSFirewallDNSAnalyticReportGetParams) URLQuery() (v url.Values) {
+func (r AccountDNSFirewallDNSAnalyticsReportGetParams) URLQuery() (v url.Values) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
 
-type AccountDNSFirewallDNSAnalyticReportListByTimeParams struct {
+type AccountDNSFirewallDNSAnalyticsReportListByTimeParams struct {
 	// A comma-separated list of dimensions to group results by.
 	Dimensions param.Field[string] `query:"dimensions"`
 	// Segmentation filter in 'attribute operator value' format.
@@ -506,9 +506,9 @@ type AccountDNSFirewallDNSAnalyticReportListByTimeParams struct {
 	Until param.Field[time.Time] `query:"until" format:"date-time"`
 }
 
-// URLQuery serializes [AccountDNSFirewallDNSAnalyticReportListByTimeParams]'s
+// URLQuery serializes [AccountDNSFirewallDNSAnalyticsReportListByTimeParams]'s
 // query parameters as `url.Values`.
-func (r AccountDNSFirewallDNSAnalyticReportListByTimeParams) URLQuery() (v url.Values) {
+func (r AccountDNSFirewallDNSAnalyticsReportListByTimeParams) URLQuery() (v url.Values) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
