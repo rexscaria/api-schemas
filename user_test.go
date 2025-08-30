@@ -12,7 +12,6 @@ import (
 	"github.com/rexscaria/api-schemas"
 	"github.com/rexscaria/api-schemas/internal/testutil"
 	"github.com/rexscaria/api-schemas/option"
-	"github.com/rexscaria/api-schemas/shared"
 )
 
 func TestUserGet(t *testing.T) {
@@ -92,13 +91,13 @@ func TestUserListAuditLogsWithOptionalParams(t *testing.T) {
 			Email: cfrex.F("alice@example.com"),
 			IP:    cfrex.F("17.168.228.63"),
 		}),
-		Before:       cfrex.F[cfrex.UserListAuditLogsParamsBeforeUnion](shared.UnionTime(time.Now())),
+		Before:       cfrex.F(time.Now()),
 		Direction:    cfrex.F(cfrex.UserListAuditLogsParamsDirectionDesc),
 		Export:       cfrex.F(true),
 		HideUserLogs: cfrex.F(true),
 		Page:         cfrex.F(50.000000),
 		PerPage:      cfrex.F(25.000000),
-		Since:        cfrex.F[cfrex.UserListAuditLogsParamsSinceUnion](shared.UnionTime(time.Now())),
+		Since:        cfrex.F(time.Now()),
 		Zone: cfrex.F(cfrex.UserListAuditLogsParamsZone{
 			Name: cfrex.F("example.com"),
 		}),

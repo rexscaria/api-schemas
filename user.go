@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -348,7 +349,7 @@ type UserListAuditLogsParams struct {
 	Actor  param.Field[UserListAuditLogsParamsActor]  `query:"actor"`
 	// Limits the returned results to logs older than the specified date. A `full-date`
 	// that conforms to RFC3339.
-	Before param.Field[UserListAuditLogsParamsBeforeUnion] `query:"before" format:"date"`
+	Before param.Field[time.Time] `query:"before" format:"date-time"`
 	// Changes the direction of the chronological sorting.
 	Direction param.Field[UserListAuditLogsParamsDirection] `query:"direction"`
 	// Indicates that this request is an export of logs in CSV format.
@@ -361,8 +362,8 @@ type UserListAuditLogsParams struct {
 	PerPage param.Field[float64] `query:"per_page"`
 	// Limits the returned results to logs newer than the specified date. A `full-date`
 	// that conforms to RFC3339.
-	Since param.Field[UserListAuditLogsParamsSinceUnion] `query:"since" format:"date"`
-	Zone  param.Field[UserListAuditLogsParamsZone]       `query:"zone"`
+	Since param.Field[time.Time]                   `query:"since" format:"date-time"`
+	Zone  param.Field[UserListAuditLogsParamsZone] `query:"zone"`
 }
 
 // URLQuery serializes [UserListAuditLogsParams]'s query parameters as
@@ -405,14 +406,6 @@ func (r UserListAuditLogsParamsActor) URLQuery() (v url.Values) {
 	})
 }
 
-// Limits the returned results to logs older than the specified date. A `full-date`
-// that conforms to RFC3339.
-//
-// Satisfied by [shared.UnionTime], [shared.UnionTime].
-type UserListAuditLogsParamsBeforeUnion interface {
-	ImplementsUserListAuditLogsParamsBeforeUnion()
-}
-
 // Changes the direction of the chronological sorting.
 type UserListAuditLogsParamsDirection string
 
@@ -427,14 +420,6 @@ func (r UserListAuditLogsParamsDirection) IsKnown() bool {
 		return true
 	}
 	return false
-}
-
-// Limits the returned results to logs newer than the specified date. A `full-date`
-// that conforms to RFC3339.
-//
-// Satisfied by [shared.UnionTime], [shared.UnionTime].
-type UserListAuditLogsParamsSinceUnion interface {
-	ImplementsUserListAuditLogsParamsSinceUnion()
 }
 
 type UserListAuditLogsParamsZone struct {
