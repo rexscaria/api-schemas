@@ -8,9 +8,6 @@ import (
 
 type UnionTime time.Time
 
-func (UnionTime) ImplementsUserListAuditLogsParamsBeforeUnion() {}
-func (UnionTime) ImplementsUserListAuditLogsParamsSinceUnion()  {}
-
 type UnionString string
 
 func (UnionString) ImplementsAccountAccessPolicyTestStartParamsPolicyUnion() {}
