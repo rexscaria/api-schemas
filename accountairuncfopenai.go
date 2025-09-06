@@ -40,14 +40,15 @@ func NewAccountAIRunCfOpenAIService(opts ...option.RequestOption) (r *AccountAIR
 }
 
 // Execute @cf/openai/whisper model.
-func (r *AccountAIRunCfOpenAIService) ExecuteWhisper(ctx context.Context, accountID string, Body io.Reader, body AccountAIRunCfOpenAIExecuteWhisperParams, opts ...option.RequestOption) (res *AccountAIRunCfOpenAIExecuteWhisperResponse, err error) {
+func (r *AccountAIRunCfOpenAIService) ExecuteWhisper(ctx context.Context, accountID string, body io.Reader, body AccountAIRunCfOpenAIExecuteWhisperParams, opts ...option.RequestOption) (res *AccountAIRunCfOpenAIExecuteWhisperResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithRequestBody("application/octet-stream", body)}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
 	}
 	path := fmt.Sprintf("accounts/%s/ai/run/@cf/openai/whisper", accountID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
 	return
 }
 
@@ -64,14 +65,15 @@ func (r *AccountAIRunCfOpenAIService) ExecuteWhisperLargeV3Turbo(ctx context.Con
 }
 
 // Execute @cf/openai/whisper-tiny-en model.
-func (r *AccountAIRunCfOpenAIService) ExecuteWhisperTinyEn(ctx context.Context, accountID string, Body io.Reader, body AccountAIRunCfOpenAIExecuteWhisperTinyEnParams, opts ...option.RequestOption) (res *AccountAIRunCfOpenAIExecuteWhisperTinyEnResponse, err error) {
+func (r *AccountAIRunCfOpenAIService) ExecuteWhisperTinyEn(ctx context.Context, accountID string, body io.Reader, body AccountAIRunCfOpenAIExecuteWhisperTinyEnParams, opts ...option.RequestOption) (res *AccountAIRunCfOpenAIExecuteWhisperTinyEnResponse, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithRequestBody("application/octet-stream", body)}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
 	}
 	path := fmt.Sprintf("accounts/%s/ai/run/@cf/openai/whisper-tiny-en", accountID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
 	return
 }
 
@@ -83,7 +85,6 @@ type AccountAIRunCfOpenAIExecuteWhisperTinyEnResponse = interface{}
 
 type AccountAIRunCfOpenAIExecuteWhisperParams struct {
 	QueueRequest param.Field[string] `query:"queueRequest"`
-	Body         io.Reader           `json:"body" format:"binary"`
 }
 
 func (r AccountAIRunCfOpenAIExecuteWhisperParams) MarshalMultipart() (data []byte, contentType string, err error) {
@@ -142,7 +143,6 @@ func (r AccountAIRunCfOpenAIExecuteWhisperLargeV3TurboParams) URLQuery() (v url.
 
 type AccountAIRunCfOpenAIExecuteWhisperTinyEnParams struct {
 	QueueRequest param.Field[string] `query:"queueRequest"`
-	Body         io.Reader           `json:"body" format:"binary"`
 }
 
 func (r AccountAIRunCfOpenAIExecuteWhisperTinyEnParams) MarshalMultipart() (data []byte, contentType string, err error) {

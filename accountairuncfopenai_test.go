@@ -35,7 +35,6 @@ func TestAccountAIRunCfOpenAIExecuteWhisperWithOptionalParams(t *testing.T) {
 		io.Reader(bytes.NewBuffer([]byte("some file contents"))),
 		cfrex.AccountAIRunCfOpenAIExecuteWhisperParams{
 			QueueRequest: cfrex.F("true"),
-			Body:         io.Reader(bytes.NewBuffer([]byte("some file contents"))),
 		},
 	)
 	if err != nil {
@@ -103,7 +102,6 @@ func TestAccountAIRunCfOpenAIExecuteWhisperTinyEnWithOptionalParams(t *testing.T
 		io.Reader(bytes.NewBuffer([]byte("some file contents"))),
 		cfrex.AccountAIRunCfOpenAIExecuteWhisperTinyEnParams{
 			QueueRequest: cfrex.F("true"),
-			Body:         io.Reader(bytes.NewBuffer([]byte("some file contents"))),
 		},
 	)
 	if err != nil {
