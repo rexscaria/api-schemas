@@ -15,7 +15,7 @@ import (
 	"github.com/rexscaria/api-schemas/option"
 )
 
-func TestAccountAIConvertToMarkdownWithOptionalParams(t *testing.T) {
+func TestAccountAIConvertToMarkdown(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -33,9 +33,6 @@ func TestAccountAIConvertToMarkdownWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		io.Reader(bytes.NewBuffer([]byte("some file contents"))),
-		cfrex.AccountAIConvertToMarkdownParams{
-			Body: io.Reader(bytes.NewBuffer([]byte("some file contents"))),
-		},
 	)
 	if err != nil {
 		var apierr *cfrex.Error

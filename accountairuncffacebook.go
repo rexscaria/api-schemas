@@ -52,14 +52,15 @@ func (r *AccountAIRunCfFacebookService) ExecuteBartLargeCnn(ctx context.Context,
 }
 
 // Execute @cf/facebook/detr-resnet-50 model.
-func (r *AccountAIRunCfFacebookService) ExecuteDetrResnet50(ctx context.Context, accountID string, Body io.Reader, body AccountAIRunCfFacebookExecuteDetrResnet50Params, opts ...option.RequestOption) (res *AccountAIRunCfFacebookExecuteDetrResnet50Response, err error) {
+func (r *AccountAIRunCfFacebookService) ExecuteDetrResnet50(ctx context.Context, accountID string, body io.Reader, body AccountAIRunCfFacebookExecuteDetrResnet50Params, opts ...option.RequestOption) (res *AccountAIRunCfFacebookExecuteDetrResnet50Response, err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithRequestBody("application/octet-stream", body)}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
 	}
 	path := fmt.Sprintf("accounts/%s/ai/run/@cf/facebook/detr-resnet-50", accountID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
 	return
 }
 
@@ -90,7 +91,6 @@ func (r AccountAIRunCfFacebookExecuteBartLargeCnnParams) URLQuery() (v url.Value
 
 type AccountAIRunCfFacebookExecuteDetrResnet50Params struct {
 	QueueRequest param.Field[string] `query:"queueRequest"`
-	Body         io.Reader           `json:"body" format:"binary"`
 }
 
 func (r AccountAIRunCfFacebookExecuteDetrResnet50Params) MarshalMultipart() (data []byte, contentType string, err error) {
