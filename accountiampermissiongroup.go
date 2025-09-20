@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -37,7 +38,7 @@ func NewAccountIamPermissionGroupService(opts ...option.RequestOption) (r *Accou
 
 // Get information about a specific permission group in an account.
 func (r *AccountIamPermissionGroupService) Get(ctx context.Context, accountID string, permissionGroupID string, opts ...option.RequestOption) (res *IamPermissionGroup, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -53,7 +54,7 @@ func (r *AccountIamPermissionGroupService) Get(ctx context.Context, accountID st
 
 // List all the permissions groups for an account.
 func (r *AccountIamPermissionGroupService) List(ctx context.Context, accountID string, query AccountIamPermissionGroupListParams, opts ...option.RequestOption) (res *AccountIamPermissionGroupListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -35,7 +36,7 @@ func NewZoneWaitingRoomSettingService(opts ...option.RequestOption) (r *ZoneWait
 
 // Get zone-level Waiting Room settings
 func (r *ZoneWaitingRoomSettingService) Get(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *ZoneSettingsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -47,7 +48,7 @@ func (r *ZoneWaitingRoomSettingService) Get(ctx context.Context, zoneID string, 
 
 // Update zone-level Waiting Room settings
 func (r *ZoneWaitingRoomSettingService) Update(ctx context.Context, zoneID string, body ZoneWaitingRoomSettingUpdateParams, opts ...option.RequestOption) (res *ZoneSettingsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -59,7 +60,7 @@ func (r *ZoneWaitingRoomSettingService) Update(ctx context.Context, zoneID strin
 
 // Patch zone-level Waiting Room settings
 func (r *ZoneWaitingRoomSettingService) Patch(ctx context.Context, zoneID string, body ZoneWaitingRoomSettingPatchParams, opts ...option.RequestOption) (res *ZoneSettingsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

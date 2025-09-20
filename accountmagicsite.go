@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -45,7 +46,7 @@ func NewAccountMagicSiteService(opts ...option.RequestOption) (r *AccountMagicSi
 
 // Creates a new Site
 func (r *AccountMagicSiteService) New(ctx context.Context, accountID string, body AccountMagicSiteNewParams, opts ...option.RequestOption) (res *MagicSiteSingleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -60,7 +61,7 @@ func (r *AccountMagicSiteService) Get(ctx context.Context, accountID string, sit
 	if query.XMagicNewHcTarget.Present {
 		opts = append(opts, option.WithHeader("x-magic-new-hc-target", fmt.Sprintf("%s", query.XMagicNewHcTarget)))
 	}
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -76,7 +77,7 @@ func (r *AccountMagicSiteService) Get(ctx context.Context, accountID string, sit
 
 // Update a specific Site.
 func (r *AccountMagicSiteService) Update(ctx context.Context, accountID string, siteID string, body AccountMagicSiteUpdateParams, opts ...option.RequestOption) (res *MagicSiteModifiedResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -94,7 +95,7 @@ func (r *AccountMagicSiteService) Update(ctx context.Context, accountID string, 
 // sites where connectorid matches either site.ConnectorID or
 // site.SecondaryConnectorID.
 func (r *AccountMagicSiteService) List(ctx context.Context, accountID string, query AccountMagicSiteListParams, opts ...option.RequestOption) (res *AccountMagicSiteListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -106,7 +107,7 @@ func (r *AccountMagicSiteService) List(ctx context.Context, accountID string, qu
 
 // Remove a specific Site.
 func (r *AccountMagicSiteService) Delete(ctx context.Context, accountID string, siteID string, opts ...option.RequestOption) (res *AccountMagicSiteDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -122,7 +123,7 @@ func (r *AccountMagicSiteService) Delete(ctx context.Context, accountID string, 
 
 // Patch a specific Site.
 func (r *AccountMagicSiteService) Patch(ctx context.Context, accountID string, siteID string, body AccountMagicSitePatchParams, opts ...option.RequestOption) (res *MagicSiteModifiedResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

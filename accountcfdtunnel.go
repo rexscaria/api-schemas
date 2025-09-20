@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -44,7 +45,7 @@ func NewAccountCfdTunnelService(opts ...option.RequestOption) (r *AccountCfdTunn
 
 // Creates a new Cloudflare Tunnel in an account.
 func (r *AccountCfdTunnelService) New(ctx context.Context, accountID string, body AccountCfdTunnelNewParams, opts ...option.RequestOption) (res *TunnelResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -56,7 +57,7 @@ func (r *AccountCfdTunnelService) New(ctx context.Context, accountID string, bod
 
 // Fetches a single Cloudflare Tunnel.
 func (r *AccountCfdTunnelService) Get(ctx context.Context, accountID string, tunnelID string, opts ...option.RequestOption) (res *TunnelResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -72,7 +73,7 @@ func (r *AccountCfdTunnelService) Get(ctx context.Context, accountID string, tun
 
 // Updates an existing Cloudflare Tunnel.
 func (r *AccountCfdTunnelService) Update(ctx context.Context, accountID string, tunnelID string, body AccountCfdTunnelUpdateParams, opts ...option.RequestOption) (res *TunnelResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -88,7 +89,7 @@ func (r *AccountCfdTunnelService) Update(ctx context.Context, accountID string, 
 
 // Lists and filters Cloudflare Tunnels in an account.
 func (r *AccountCfdTunnelService) List(ctx context.Context, accountID string, query AccountCfdTunnelListParams, opts ...option.RequestOption) (res *TunnelResponseCollection, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -100,7 +101,7 @@ func (r *AccountCfdTunnelService) List(ctx context.Context, accountID string, qu
 
 // Deletes a Cloudflare Tunnel from an account.
 func (r *AccountCfdTunnelService) Delete(ctx context.Context, accountID string, tunnelID string, opts ...option.RequestOption) (res *TunnelResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -116,7 +117,7 @@ func (r *AccountCfdTunnelService) Delete(ctx context.Context, accountID string, 
 
 // Fetches connector and connection details for a Cloudflare Tunnel.
 func (r *AccountCfdTunnelService) GetConnector(ctx context.Context, accountID string, tunnelID string, connectorID string, opts ...option.RequestOption) (res *AccountCfdTunnelGetConnectorResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -137,7 +138,7 @@ func (r *AccountCfdTunnelService) GetConnector(ctx context.Context, accountID st
 // Gets a management token used to access the management resources (i.e. Streaming
 // Logs) of a tunnel.
 func (r *AccountCfdTunnelService) GetManagementToken(ctx context.Context, accountID string, tunnelID string, body AccountCfdTunnelGetManagementTokenParams, opts ...option.RequestOption) (res *TunnelResponseToken, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -153,7 +154,7 @@ func (r *AccountCfdTunnelService) GetManagementToken(ctx context.Context, accoun
 
 // Gets the token used to associate cloudflared with a specific tunnel.
 func (r *AccountCfdTunnelService) GetToken(ctx context.Context, accountID string, tunnelID string, opts ...option.RequestOption) (res *TunnelResponseToken, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

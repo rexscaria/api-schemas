@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -37,7 +38,7 @@ func NewAccountIntelDomainService(opts ...option.RequestOption) (r *AccountIntel
 
 // Gets security details and statistics about a domain.
 func (r *AccountIntelDomainService) GetDetails(ctx context.Context, accountID string, query AccountIntelDomainGetDetailsParams, opts ...option.RequestOption) (res *AccountIntelDomainGetDetailsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -49,7 +50,7 @@ func (r *AccountIntelDomainService) GetDetails(ctx context.Context, accountID st
 
 // Same as summary.
 func (r *AccountIntelDomainService) ListMultipleDetails(ctx context.Context, accountID string, query AccountIntelDomainListMultipleDetailsParams, opts ...option.RequestOption) (res *AccountIntelDomainListMultipleDetailsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

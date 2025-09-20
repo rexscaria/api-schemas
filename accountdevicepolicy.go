@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -42,7 +43,7 @@ func NewAccountDevicePolicyService(opts ...option.RequestOption) (r *AccountDevi
 // Creates a device settings profile to be applied to certain devices matching the
 // criteria.
 func (r *AccountDevicePolicyService) New(ctx context.Context, accountID string, body AccountDevicePolicyNewParams, opts ...option.RequestOption) (res *DeviceSettingsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -54,7 +55,7 @@ func (r *AccountDevicePolicyService) New(ctx context.Context, accountID string, 
 
 // Fetches the default device settings profile for an account.
 func (r *AccountDevicePolicyService) Get(ctx context.Context, accountID string, opts ...option.RequestOption) (res *DefaultDeviceSettingsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -66,7 +67,7 @@ func (r *AccountDevicePolicyService) Get(ctx context.Context, accountID string, 
 
 // Updates the default device settings profile for an account.
 func (r *AccountDevicePolicyService) Update(ctx context.Context, accountID string, body AccountDevicePolicyUpdateParams, opts ...option.RequestOption) (res *DefaultDeviceSettingsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -79,7 +80,7 @@ func (r *AccountDevicePolicyService) Update(ctx context.Context, accountID strin
 // Deletes a device settings profile and fetches a list of the remaining profiles
 // for an account.
 func (r *AccountDevicePolicyService) Delete(ctx context.Context, accountID string, policyID string, opts ...option.RequestOption) (res *DeviceSettingsResponseCollection, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -95,7 +96,7 @@ func (r *AccountDevicePolicyService) Delete(ctx context.Context, accountID strin
 
 // Fetches a device settings profile by ID.
 func (r *AccountDevicePolicyService) GetByID(ctx context.Context, accountID string, policyID string, opts ...option.RequestOption) (res *DeviceSettingsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -111,7 +112,7 @@ func (r *AccountDevicePolicyService) GetByID(ctx context.Context, accountID stri
 
 // Updates a configured device settings profile.
 func (r *AccountDevicePolicyService) UpdateByID(ctx context.Context, accountID string, policyID string, body AccountDevicePolicyUpdateByIDParams, opts ...option.RequestOption) (res *DeviceSettingsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

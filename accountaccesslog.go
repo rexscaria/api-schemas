@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -40,7 +41,7 @@ func NewAccountAccessLogService(opts ...option.RequestOption) (r *AccountAccessL
 
 // Gets a list of Access authentication audit logs for an account.
 func (r *AccountAccessLogService) AccessRequests(ctx context.Context, accountID string, query AccountAccessLogAccessRequestsParams, opts ...option.RequestOption) (res *AccountAccessLogAccessRequestsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

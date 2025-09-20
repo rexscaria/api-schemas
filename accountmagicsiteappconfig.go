@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"reflect"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -37,7 +38,7 @@ func NewAccountMagicSiteAppConfigService(opts ...option.RequestOption) (r *Accou
 
 // Creates a new App Config for a site
 func (r *AccountMagicSiteAppConfigService) New(ctx context.Context, accountID string, siteID string, body AccountMagicSiteAppConfigNewParams, opts ...option.RequestOption) (res *MagicAppConfigSingleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -53,7 +54,7 @@ func (r *AccountMagicSiteAppConfigService) New(ctx context.Context, accountID st
 
 // Updates an App Config for a site
 func (r *AccountMagicSiteAppConfigService) Update(ctx context.Context, accountID string, siteID string, appConfigID string, body AccountMagicSiteAppConfigUpdateParams, opts ...option.RequestOption) (res *MagicAppConfigSingleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -73,7 +74,7 @@ func (r *AccountMagicSiteAppConfigService) Update(ctx context.Context, accountID
 
 // Lists App Configs associated with a site.
 func (r *AccountMagicSiteAppConfigService) List(ctx context.Context, accountID string, siteID string, opts ...option.RequestOption) (res *AccountMagicSiteAppConfigListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -89,7 +90,7 @@ func (r *AccountMagicSiteAppConfigService) List(ctx context.Context, accountID s
 
 // Deletes specific App Config associated with a site.
 func (r *AccountMagicSiteAppConfigService) Delete(ctx context.Context, accountID string, siteID string, appConfigID string, opts ...option.RequestOption) (res *MagicAppConfigSingleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

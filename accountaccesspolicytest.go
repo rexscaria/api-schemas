@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -37,7 +38,7 @@ func NewAccountAccessPolicyTestService(opts ...option.RequestOption) (r *Account
 
 // Fetches the current status of a given Access policy test.
 func (r *AccountAccessPolicyTestService) Get(ctx context.Context, accountID string, policyTestID string, opts ...option.RequestOption) (res *AccountAccessPolicyTestGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -53,7 +54,7 @@ func (r *AccountAccessPolicyTestService) Get(ctx context.Context, accountID stri
 
 // Starts an Access policy test.
 func (r *AccountAccessPolicyTestService) Start(ctx context.Context, accountID string, body AccountAccessPolicyTestStartParams, opts ...option.RequestOption) (res *AccountAccessPolicyTestStartResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -65,7 +66,7 @@ func (r *AccountAccessPolicyTestService) Start(ctx context.Context, accountID st
 
 // Fetches a single page of user results from an Access policy test.
 func (r *AccountAccessPolicyTestService) Users(ctx context.Context, accountID string, policyTestID string, query AccountAccessPolicyTestUsersParams, opts ...option.RequestOption) (res *AccountAccessPolicyTestUsersResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

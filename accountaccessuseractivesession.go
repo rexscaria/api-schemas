@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/requestconfig"
@@ -34,7 +35,7 @@ func NewAccountAccessUserActiveSessionService(opts ...option.RequestOption) (r *
 
 // Get an active session for a single user.
 func (r *AccountAccessUserActiveSessionService) Get(ctx context.Context, accountID string, userID string, nonce string, opts ...option.RequestOption) (res *AccountAccessUserActiveSessionGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -54,7 +55,7 @@ func (r *AccountAccessUserActiveSessionService) Get(ctx context.Context, account
 
 // Get active sessions for a single user.
 func (r *AccountAccessUserActiveSessionService) List(ctx context.Context, accountID string, userID string, opts ...option.RequestOption) (res *AccountAccessUserActiveSessionListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -38,7 +39,7 @@ func NewRadarBgpTopService(opts ...option.RequestOption) (r *RadarBgpTopService)
 
 // Retrieves the top network prefixes by BGP updates.
 func (r *RadarBgpTopService) ListTopPrefixes(ctx context.Context, query RadarBgpTopListTopPrefixesParams, opts ...option.RequestOption) (res *RadarBgpTopListTopPrefixesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/bgp/top/prefixes"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

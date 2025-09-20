@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"reflect"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -40,7 +41,7 @@ func NewAccountPcapService(opts ...option.RequestOption) (r *AccountPcapService)
 
 // Create new PCAP request for account.
 func (r *AccountPcapService) New(ctx context.Context, accountID string, body AccountPcapNewParams, opts ...option.RequestOption) (res *SingleResponsePcaps, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -52,7 +53,7 @@ func (r *AccountPcapService) New(ctx context.Context, accountID string, body Acc
 
 // Get information for a PCAP request by id.
 func (r *AccountPcapService) Get(ctx context.Context, accountID string, pcapID string, opts ...option.RequestOption) (res *SingleResponsePcaps, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -68,7 +69,7 @@ func (r *AccountPcapService) Get(ctx context.Context, accountID string, pcapID s
 
 // Lists all packet capture requests for an account.
 func (r *AccountPcapService) List(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountPcapListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -80,7 +81,7 @@ func (r *AccountPcapService) List(ctx context.Context, accountID string, opts ..
 
 // Download PCAP information into a file. Response is a binary PCAP file.
 func (r *AccountPcapService) Download(ctx context.Context, accountID string, pcapID string, opts ...option.RequestOption) (res *http.Response, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "application/vnd.tcpdump.pcap")}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")

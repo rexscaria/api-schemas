@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -36,7 +37,7 @@ func NewAccountDlpPayloadLogService(opts ...option.RequestOption) (r *AccountDlp
 
 // Get payload log settings
 func (r *AccountDlpPayloadLogService) Get(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountDlpPayloadLogGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -48,7 +49,7 @@ func (r *AccountDlpPayloadLogService) Get(ctx context.Context, accountID string,
 
 // Set payload log settings
 func (r *AccountDlpPayloadLogService) Update(ctx context.Context, accountID string, body AccountDlpPayloadLogUpdateParams, opts ...option.RequestOption) (res *AccountDlpPayloadLogUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

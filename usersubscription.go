@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/requestconfig"
@@ -34,7 +35,7 @@ func NewUserSubscriptionService(opts ...option.RequestOption) (r *UserSubscripti
 
 // Updates a user's subscriptions.
 func (r *UserSubscriptionService) Update(ctx context.Context, identifier string, body UserSubscriptionUpdateParams, opts ...option.RequestOption) (res *UserSubscriptionUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if identifier == "" {
 		err = errors.New("missing required identifier parameter")
 		return
@@ -46,7 +47,7 @@ func (r *UserSubscriptionService) Update(ctx context.Context, identifier string,
 
 // Lists all of a user's subscriptions.
 func (r *UserSubscriptionService) List(ctx context.Context, opts ...option.RequestOption) (res *UserSubscriptionListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "user/subscriptions"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -54,7 +55,7 @@ func (r *UserSubscriptionService) List(ctx context.Context, opts ...option.Reque
 
 // Deletes a user's subscription.
 func (r *UserSubscriptionService) Delete(ctx context.Context, identifier string, opts ...option.RequestOption) (res *UserSubscriptionDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if identifier == "" {
 		err = errors.New("missing required identifier parameter")
 		return

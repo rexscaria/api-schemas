@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -36,7 +37,7 @@ func NewAccountMagicSiteLanService(opts ...option.RequestOption) (r *AccountMagi
 // Creates a new Site LAN. If the site is in high availability mode,
 // static_addressing is required along with secondary and virtual address.
 func (r *AccountMagicSiteLanService) New(ctx context.Context, accountID string, siteID string, body AccountMagicSiteLanNewParams, opts ...option.RequestOption) (res *MagicLansCollectionResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -52,7 +53,7 @@ func (r *AccountMagicSiteLanService) New(ctx context.Context, accountID string, 
 
 // Get a specific Site LAN.
 func (r *AccountMagicSiteLanService) Get(ctx context.Context, accountID string, siteID string, lanID string, opts ...option.RequestOption) (res *AccountMagicSiteLanGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -72,7 +73,7 @@ func (r *AccountMagicSiteLanService) Get(ctx context.Context, accountID string, 
 
 // Update a specific Site LAN.
 func (r *AccountMagicSiteLanService) Update(ctx context.Context, accountID string, siteID string, lanID string, body AccountMagicSiteLanUpdateParams, opts ...option.RequestOption) (res *MagicLanModifiedResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -92,7 +93,7 @@ func (r *AccountMagicSiteLanService) Update(ctx context.Context, accountID strin
 
 // Lists Site LANs associated with an account.
 func (r *AccountMagicSiteLanService) List(ctx context.Context, accountID string, siteID string, opts ...option.RequestOption) (res *MagicLansCollectionResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -108,7 +109,7 @@ func (r *AccountMagicSiteLanService) List(ctx context.Context, accountID string,
 
 // Remove a specific Site LAN.
 func (r *AccountMagicSiteLanService) Delete(ctx context.Context, accountID string, siteID string, lanID string, opts ...option.RequestOption) (res *AccountMagicSiteLanDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -128,7 +129,7 @@ func (r *AccountMagicSiteLanService) Delete(ctx context.Context, accountID strin
 
 // Patch a specific Site LAN.
 func (r *AccountMagicSiteLanService) Patch(ctx context.Context, accountID string, siteID string, lanID string, body AccountMagicSiteLanPatchParams, opts ...option.RequestOption) (res *MagicLanModifiedResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -36,7 +37,7 @@ func NewZoneDnssecService(opts ...option.RequestOption) (r *ZoneDnssecService) {
 
 // Details about DNSSEC status and configuration.
 func (r *ZoneDnssecService) Get(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *DnssecResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -48,7 +49,7 @@ func (r *ZoneDnssecService) Get(ctx context.Context, zoneID string, opts ...opti
 
 // Enable or disable DNSSEC.
 func (r *ZoneDnssecService) Update(ctx context.Context, zoneID string, body ZoneDnssecUpdateParams, opts ...option.RequestOption) (res *DnssecResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -60,7 +61,7 @@ func (r *ZoneDnssecService) Update(ctx context.Context, zoneID string, body Zone
 
 // Delete DNSSEC.
 func (r *ZoneDnssecService) Delete(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *ZoneDnssecDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

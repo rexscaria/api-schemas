@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -36,7 +37,7 @@ func NewAccountWorkerScriptUsageModelService(opts ...option.RequestOption) (r *A
 // Updates the Usage Model for a given Worker. Requires a Workers Paid
 // subscription.
 func (r *AccountWorkerScriptUsageModelService) Update(ctx context.Context, accountID string, scriptName string, body AccountWorkerScriptUsageModelUpdateParams, opts ...option.RequestOption) (res *UsageModelResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -52,7 +53,7 @@ func (r *AccountWorkerScriptUsageModelService) Update(ctx context.Context, accou
 
 // Fetches the Usage Model for a given Worker.
 func (r *AccountWorkerScriptUsageModelService) Get(ctx context.Context, accountID string, scriptName string, opts ...option.RequestOption) (res *UsageModelResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

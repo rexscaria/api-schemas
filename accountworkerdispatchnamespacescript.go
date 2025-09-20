@@ -12,6 +12,7 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apiform"
@@ -53,7 +54,7 @@ func NewAccountWorkerDispatchNamespaceScriptService(opts ...option.RequestOption
 
 // Fetch information about a script uploaded to a Workers for Platforms namespace.
 func (r *AccountWorkerDispatchNamespaceScriptService) Get(ctx context.Context, accountID string, dispatchNamespace string, scriptName string, opts ...option.RequestOption) (res *AccountWorkerDispatchNamespaceScriptGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -74,7 +75,7 @@ func (r *AccountWorkerDispatchNamespaceScriptService) Get(ctx context.Context, a
 // Delete a worker from a Workers for Platforms namespace. This call has no
 // response body on a successful delete.
 func (r *AccountWorkerDispatchNamespaceScriptService) Delete(ctx context.Context, accountID string, dispatchNamespace string, scriptName string, body AccountWorkerDispatchNamespaceScriptDeleteParams, opts ...option.RequestOption) (res *NullResult, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -96,7 +97,7 @@ func (r *AccountWorkerDispatchNamespaceScriptService) Delete(ctx context.Context
 // more about the direct uploads of assets, see
 // https://developers.cloudflare.com/workers/static-assets/direct-upload/.
 func (r *AccountWorkerDispatchNamespaceScriptService) NewAssetsUploadSession(ctx context.Context, accountID string, dispatchNamespace string, scriptName string, body AccountWorkerDispatchNamespaceScriptNewAssetsUploadSessionParams, opts ...option.RequestOption) (res *UploadSessionResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -117,7 +118,7 @@ func (r *AccountWorkerDispatchNamespaceScriptService) NewAssetsUploadSession(ctx
 // Fetch script bindings from a script uploaded to a Workers for Platforms
 // namespace.
 func (r *AccountWorkerDispatchNamespaceScriptService) GetBindings(ctx context.Context, accountID string, dispatchNamespace string, scriptName string, opts ...option.RequestOption) (res *AccountWorkerDispatchNamespaceScriptGetBindingsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -139,7 +140,7 @@ func (r *AccountWorkerDispatchNamespaceScriptService) GetBindings(ctx context.Co
 // about the multipart metadata on our docs:
 // https://developers.cloudflare.com/workers/configuration/multipart-upload-metadata/.
 func (r *AccountWorkerDispatchNamespaceScriptService) Upload(ctx context.Context, accountID string, dispatchNamespace string, scriptName string, body AccountWorkerDispatchNamespaceScriptUploadParams, opts ...option.RequestOption) (res *AccountWorkerDispatchNamespaceScriptUploadResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

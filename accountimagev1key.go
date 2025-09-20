@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/requestconfig"
@@ -34,7 +35,7 @@ func NewAccountImageV1KeyService(opts ...option.RequestOption) (r *AccountImageV
 
 // Create a new signing key with specified name. Returns all keys available.
 func (r *AccountImageV1KeyService) New(ctx context.Context, accountID string, signingKeyName string, opts ...option.RequestOption) (res *ImageKeyResponseCollection, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -50,7 +51,7 @@ func (r *AccountImageV1KeyService) New(ctx context.Context, accountID string, si
 
 // Lists your signing keys. These can be found on your Cloudflare Images dashboard.
 func (r *AccountImageV1KeyService) List(ctx context.Context, accountID string, opts ...option.RequestOption) (res *ImageKeyResponseCollection, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -63,7 +64,7 @@ func (r *AccountImageV1KeyService) List(ctx context.Context, accountID string, o
 // Delete signing key with specified name. Returns all keys available. When last
 // key is removed, a new default signing key will be generated.
 func (r *AccountImageV1KeyService) Delete(ctx context.Context, accountID string, signingKeyName string, opts ...option.RequestOption) (res *ImageKeyResponseCollection, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -51,7 +52,7 @@ func NewZoneCustomHostnameService(opts ...option.RequestOption) (r *ZoneCustomHo
 // the following condition One certificate in the bundle must use an RSA, and the
 // other must use an ECDSA.
 func (r *ZoneCustomHostnameService) New(ctx context.Context, zoneID string, body ZoneCustomHostnameNewParams, opts ...option.RequestOption) (res *CustomHostnameResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -63,7 +64,7 @@ func (r *ZoneCustomHostnameService) New(ctx context.Context, zoneID string, body
 
 // Custom Hostname Details
 func (r *ZoneCustomHostnameService) Get(ctx context.Context, zoneID string, customHostnameID string, opts ...option.RequestOption) (res *CustomHostnameResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -85,7 +86,7 @@ func (r *ZoneCustomHostnameService) Get(ctx context.Context, zoneID string, cust
 // certificates as long as the following condition is met. One certificate must use
 // the RSA algorithm, and the other must use the ECDSA algorithm.
 func (r *ZoneCustomHostnameService) Update(ctx context.Context, zoneID string, customHostnameID string, body ZoneCustomHostnameUpdateParams, opts ...option.RequestOption) (res *CustomHostnameResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -101,7 +102,7 @@ func (r *ZoneCustomHostnameService) Update(ctx context.Context, zoneID string, c
 
 // List, search, sort, and filter all of your custom hostnames.
 func (r *ZoneCustomHostnameService) List(ctx context.Context, zoneID string, query ZoneCustomHostnameListParams, opts ...option.RequestOption) (res *ZoneCustomHostnameListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -113,7 +114,7 @@ func (r *ZoneCustomHostnameService) List(ctx context.Context, zoneID string, que
 
 // Delete Custom Hostname (and any issued SSL certificates)
 func (r *ZoneCustomHostnameService) Delete(ctx context.Context, zoneID string, customHostnameID string, opts ...option.RequestOption) (res *ZoneCustomHostnameDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

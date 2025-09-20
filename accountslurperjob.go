@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -39,7 +40,7 @@ func NewAccountSlurperJobService(opts ...option.RequestOption) (r *AccountSlurpe
 
 // Create a job
 func (r *AccountSlurperJobService) New(ctx context.Context, accountID string, body AccountSlurperJobNewParams, opts ...option.RequestOption) (res *AccountSlurperJobNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -51,7 +52,7 @@ func (r *AccountSlurperJobService) New(ctx context.Context, accountID string, bo
 
 // Get job details
 func (r *AccountSlurperJobService) Get(ctx context.Context, accountID string, jobID string, opts ...option.RequestOption) (res *AccountSlurperJobGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -67,7 +68,7 @@ func (r *AccountSlurperJobService) Get(ctx context.Context, accountID string, jo
 
 // List jobs
 func (r *AccountSlurperJobService) List(ctx context.Context, accountID string, query AccountSlurperJobListParams, opts ...option.RequestOption) (res *AccountSlurperJobListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -79,7 +80,7 @@ func (r *AccountSlurperJobService) List(ctx context.Context, accountID string, q
 
 // Abort a job
 func (r *AccountSlurperJobService) Abort(ctx context.Context, accountID string, jobID string, opts ...option.RequestOption) (res *AccountSlurperJobAbortResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -95,7 +96,7 @@ func (r *AccountSlurperJobService) Abort(ctx context.Context, accountID string, 
 
 // Abort all jobs
 func (r *AccountSlurperJobService) AbortAll(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountSlurperJobAbortAllResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -107,7 +108,7 @@ func (r *AccountSlurperJobService) AbortAll(ctx context.Context, accountID strin
 
 // Get job logs
 func (r *AccountSlurperJobService) GetLogs(ctx context.Context, accountID string, jobID string, query AccountSlurperJobGetLogsParams, opts ...option.RequestOption) (res *AccountSlurperJobGetLogsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -123,7 +124,7 @@ func (r *AccountSlurperJobService) GetLogs(ctx context.Context, accountID string
 
 // Get job progress
 func (r *AccountSlurperJobService) GetProgress(ctx context.Context, accountID string, jobID string, opts ...option.RequestOption) (res *AccountSlurperJobGetProgressResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -139,7 +140,7 @@ func (r *AccountSlurperJobService) GetProgress(ctx context.Context, accountID st
 
 // Pause a job
 func (r *AccountSlurperJobService) Pause(ctx context.Context, accountID string, jobID string, opts ...option.RequestOption) (res *AccountSlurperJobPauseResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -155,7 +156,7 @@ func (r *AccountSlurperJobService) Pause(ctx context.Context, accountID string, 
 
 // Resume a job
 func (r *AccountSlurperJobService) Resume(ctx context.Context, accountID string, jobID string, opts ...option.RequestOption) (res *AccountSlurperJobResumeResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

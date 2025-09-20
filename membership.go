@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -40,7 +41,7 @@ func NewMembershipService(opts ...option.RequestOption) (r *MembershipService) {
 
 // Get a specific membership.
 func (r *MembershipService) Get(ctx context.Context, membershipID string, opts ...option.RequestOption) (res *SingleMembershipResponseWithPolicies, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if membershipID == "" {
 		err = errors.New("missing required membership_id parameter")
 		return
@@ -52,7 +53,7 @@ func (r *MembershipService) Get(ctx context.Context, membershipID string, opts .
 
 // Accept or reject this account invitation.
 func (r *MembershipService) Update(ctx context.Context, membershipID string, body MembershipUpdateParams, opts ...option.RequestOption) (res *SingleMembershipResponseWithPolicies, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if membershipID == "" {
 		err = errors.New("missing required membership_id parameter")
 		return
@@ -64,7 +65,7 @@ func (r *MembershipService) Update(ctx context.Context, membershipID string, bod
 
 // List memberships of accounts the user can access.
 func (r *MembershipService) List(ctx context.Context, query MembershipListParams, opts ...option.RequestOption) (res *MembershipListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "memberships"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -72,7 +73,7 @@ func (r *MembershipService) List(ctx context.Context, query MembershipListParams
 
 // Remove the associated member from an account.
 func (r *MembershipService) Remove(ctx context.Context, membershipID string, opts ...option.RequestOption) (res *MembershipRemoveResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if membershipID == "" {
 		err = errors.New("missing required membership_id parameter")
 		return

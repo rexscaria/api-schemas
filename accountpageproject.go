@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"reflect"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -42,7 +43,7 @@ func NewAccountPageProjectService(opts ...option.RequestOption) (r *AccountPageP
 
 // Create a new project.
 func (r *AccountPageProjectService) New(ctx context.Context, accountID string, body AccountPageProjectNewParams, opts ...option.RequestOption) (res *ProjectResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -54,7 +55,7 @@ func (r *AccountPageProjectService) New(ctx context.Context, accountID string, b
 
 // Fetch a project by name.
 func (r *AccountPageProjectService) Get(ctx context.Context, accountID string, projectName string, opts ...option.RequestOption) (res *ProjectResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -71,7 +72,7 @@ func (r *AccountPageProjectService) Get(ctx context.Context, accountID string, p
 // Set new attributes for an existing project. Modify environment variables. To
 // delete an environment variable, set the key to null.
 func (r *AccountPageProjectService) Update(ctx context.Context, accountID string, projectName string, body AccountPageProjectUpdateParams, opts ...option.RequestOption) (res *ProjectResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -87,7 +88,7 @@ func (r *AccountPageProjectService) Update(ctx context.Context, accountID string
 
 // Fetch a list of all user projects.
 func (r *AccountPageProjectService) List(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountPageProjectListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -99,7 +100,7 @@ func (r *AccountPageProjectService) List(ctx context.Context, accountID string, 
 
 // Delete a project by name.
 func (r *AccountPageProjectService) Delete(ctx context.Context, accountID string, projectName string, opts ...option.RequestOption) (res *AccountPageProjectDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -115,7 +116,7 @@ func (r *AccountPageProjectService) Delete(ctx context.Context, accountID string
 
 // Purge all cached build artifacts for a Pages project
 func (r *AccountPageProjectService) PurgeBuildCache(ctx context.Context, accountID string, projectName string, opts ...option.RequestOption) (res *AccountPageProjectPurgeBuildCacheResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

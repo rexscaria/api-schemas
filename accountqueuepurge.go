@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -35,7 +36,7 @@ func NewAccountQueuePurgeService(opts ...option.RequestOption) (r *AccountQueueP
 
 // Deletes all messages from the Queue.
 func (r *AccountQueuePurgeService) Execute(ctx context.Context, accountID string, queueID string, body AccountQueuePurgeExecuteParams, opts ...option.RequestOption) (res *AccountQueuePurgeExecuteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -51,7 +52,7 @@ func (r *AccountQueuePurgeService) Execute(ctx context.Context, accountID string
 
 // Get details about a Queue's purge status.
 func (r *AccountQueuePurgeService) Status(ctx context.Context, accountID string, queueID string, opts ...option.RequestOption) (res *AccountQueuePurgeStatusResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -40,7 +41,7 @@ func NewAccountInfrastructureTargetService(opts ...option.RequestOption) (r *Acc
 
 // Create new target
 func (r *AccountInfrastructureTargetService) New(ctx context.Context, accountID string, body AccountInfrastructureTargetNewParams, opts ...option.RequestOption) (res *AccountInfrastructureTargetNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -52,7 +53,7 @@ func (r *AccountInfrastructureTargetService) New(ctx context.Context, accountID 
 
 // Get target
 func (r *AccountInfrastructureTargetService) Get(ctx context.Context, accountID string, targetID string, opts ...option.RequestOption) (res *AccountInfrastructureTargetGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -68,7 +69,7 @@ func (r *AccountInfrastructureTargetService) Get(ctx context.Context, accountID 
 
 // Update target
 func (r *AccountInfrastructureTargetService) Update(ctx context.Context, accountID string, targetID string, body AccountInfrastructureTargetUpdateParams, opts ...option.RequestOption) (res *AccountInfrastructureTargetUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -85,7 +86,7 @@ func (r *AccountInfrastructureTargetService) Update(ctx context.Context, account
 // Lists and sorts an account’s targets. Filters are optional and are ANDed
 // together.
 func (r *AccountInfrastructureTargetService) List(ctx context.Context, accountID string, query AccountInfrastructureTargetListParams, opts ...option.RequestOption) (res *AccountInfrastructureTargetListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -97,7 +98,7 @@ func (r *AccountInfrastructureTargetService) List(ctx context.Context, accountID
 
 // Delete target
 func (r *AccountInfrastructureTargetService) Delete(ctx context.Context, accountID string, targetID string, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")

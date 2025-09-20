@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -37,7 +38,7 @@ func NewRadarEmailRoutingTimeseriesGroupService(opts ...option.RequestOption) (r
 // Retrieves the distribution of emails by ARC (Authenticated Received Chain)
 // validation over time.
 func (r *RadarEmailRoutingTimeseriesGroupService) GetArc(ctx context.Context, query RadarEmailRoutingTimeseriesGroupGetArcParams, opts ...option.RequestOption) (res *RadarEmailRoutingTimeseriesGroupGetArcResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/email/routing/timeseries_groups/arc"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -46,7 +47,7 @@ func (r *RadarEmailRoutingTimeseriesGroupService) GetArc(ctx context.Context, qu
 // Retrieves the distribution of emails by DKIM (DomainKeys Identified Mail)
 // validation over time.
 func (r *RadarEmailRoutingTimeseriesGroupService) GetDkim(ctx context.Context, query RadarEmailRoutingTimeseriesGroupGetDkimParams, opts ...option.RequestOption) (res *RadarEmailRoutingTimeseriesGroupGetDkimResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/email/routing/timeseries_groups/dkim"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -55,7 +56,7 @@ func (r *RadarEmailRoutingTimeseriesGroupService) GetDkim(ctx context.Context, q
 // Retrieves the distribution of emails by DMARC (Domain-based Message
 // Authentication, Reporting and Conformance) validation over time.
 func (r *RadarEmailRoutingTimeseriesGroupService) GetDmarc(ctx context.Context, query RadarEmailRoutingTimeseriesGroupGetDmarcParams, opts ...option.RequestOption) (res *RadarEmailRoutingTimeseriesGroupGetDmarcResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/email/routing/timeseries_groups/dmarc"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -64,7 +65,7 @@ func (r *RadarEmailRoutingTimeseriesGroupService) GetDmarc(ctx context.Context, 
 // Retrieves the distribution of emails by encryption status (encrypted vs.
 // not-encrypted) over time.
 func (r *RadarEmailRoutingTimeseriesGroupService) GetEncrypted(ctx context.Context, query RadarEmailRoutingTimeseriesGroupGetEncryptedParams, opts ...option.RequestOption) (res *RadarEmailRoutingTimeseriesGroupGetEncryptedResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/email/routing/timeseries_groups/encrypted"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -72,7 +73,7 @@ func (r *RadarEmailRoutingTimeseriesGroupService) GetEncrypted(ctx context.Conte
 
 // Retrieves the distribution of emails by IP version over time.
 func (r *RadarEmailRoutingTimeseriesGroupService) GetIPVersion(ctx context.Context, query RadarEmailRoutingTimeseriesGroupGetIPVersionParams, opts ...option.RequestOption) (res *RadarEmailRoutingTimeseriesGroupGetIPVersionResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/email/routing/timeseries_groups/ip_version"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -81,7 +82,7 @@ func (r *RadarEmailRoutingTimeseriesGroupService) GetIPVersion(ctx context.Conte
 // Retrieves the distribution of emails by SPF (Sender Policy Framework) validation
 // over time.
 func (r *RadarEmailRoutingTimeseriesGroupService) GetSpf(ctx context.Context, query RadarEmailRoutingTimeseriesGroupGetSpfParams, opts ...option.RequestOption) (res *RadarEmailRoutingTimeseriesGroupGetSpfResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/email/routing/timeseries_groups/spf"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

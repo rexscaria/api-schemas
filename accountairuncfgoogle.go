@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -37,7 +38,7 @@ func NewAccountAIRunCfGoogleService(opts ...option.RequestOption) (r *AccountAIR
 
 // Execute @cf/google/gemma-2b-it-lora model.
 func (r *AccountAIRunCfGoogleService) ExecuteGemma2bItLora(ctx context.Context, accountID string, params AccountAIRunCfGoogleExecuteGemma2bItLoraParams, opts ...option.RequestOption) (res *AccountAIRunCfGoogleExecuteGemma2bItLoraResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -49,7 +50,7 @@ func (r *AccountAIRunCfGoogleService) ExecuteGemma2bItLora(ctx context.Context, 
 
 // Execute @cf/google/gemma-7b-it-lora model.
 func (r *AccountAIRunCfGoogleService) ExecuteGemma7bItLora(ctx context.Context, accountID string, params AccountAIRunCfGoogleExecuteGemma7bItLoraParams, opts ...option.RequestOption) (res *AccountAIRunCfGoogleExecuteGemma7bItLoraResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

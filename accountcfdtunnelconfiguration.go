@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -36,7 +37,7 @@ func NewAccountCfdTunnelConfigurationService(opts ...option.RequestOption) (r *A
 
 // Gets the configuration for a remotely-managed tunnel
 func (r *AccountCfdTunnelConfigurationService) Get(ctx context.Context, accountID string, tunnelID string, opts ...option.RequestOption) (res *ConfigurationResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -52,7 +53,7 @@ func (r *AccountCfdTunnelConfigurationService) Get(ctx context.Context, accountI
 
 // Adds or updates the configuration for a remotely-managed tunnel.
 func (r *AccountCfdTunnelConfigurationService) Update(ctx context.Context, accountID string, tunnelID string, body AccountCfdTunnelConfigurationUpdateParams, opts ...option.RequestOption) (res *ConfigurationResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

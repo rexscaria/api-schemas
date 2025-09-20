@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -36,7 +37,7 @@ func NewAccountAccessCustomPageService(opts ...option.RequestOption) (r *Account
 
 // Create a custom page
 func (r *AccountAccessCustomPageService) New(ctx context.Context, accountID string, body AccountAccessCustomPageNewParams, opts ...option.RequestOption) (res *SingleResponseWithoutHTML, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -48,7 +49,7 @@ func (r *AccountAccessCustomPageService) New(ctx context.Context, accountID stri
 
 // Fetches a custom page and also returns its HTML.
 func (r *AccountAccessCustomPageService) Get(ctx context.Context, accountID string, customPageID string, opts ...option.RequestOption) (res *AccountAccessCustomPageGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -64,7 +65,7 @@ func (r *AccountAccessCustomPageService) Get(ctx context.Context, accountID stri
 
 // Update a custom page
 func (r *AccountAccessCustomPageService) Update(ctx context.Context, accountID string, customPageID string, body AccountAccessCustomPageUpdateParams, opts ...option.RequestOption) (res *SingleResponseWithoutHTML, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -80,7 +81,7 @@ func (r *AccountAccessCustomPageService) Update(ctx context.Context, accountID s
 
 // List custom pages
 func (r *AccountAccessCustomPageService) List(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountAccessCustomPageListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -92,7 +93,7 @@ func (r *AccountAccessCustomPageService) List(ctx context.Context, accountID str
 
 // Delete a custom page
 func (r *AccountAccessCustomPageService) Delete(ctx context.Context, accountID string, customPageID string, opts ...option.RequestOption) (res *IDResponseCertificates, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

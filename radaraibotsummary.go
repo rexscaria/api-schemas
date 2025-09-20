@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -36,7 +37,7 @@ func NewRadarAIBotSummaryService(opts ...option.RequestOption) (r *RadarAIBotSum
 
 // Retrieves the distribution of traffic by AI user agent.
 func (r *RadarAIBotSummaryService) GetUserAgent(ctx context.Context, query RadarAIBotSummaryGetUserAgentParams, opts ...option.RequestOption) (res *RadarAIBotSummaryGetUserAgentResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/ai/bots/summary/user_agent"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

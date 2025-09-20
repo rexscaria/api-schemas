@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -36,7 +37,7 @@ func NewUserInviteService(opts ...option.RequestOption) (r *UserInviteService) {
 
 // Gets the details of an invitation.
 func (r *UserInviteService) Get(ctx context.Context, inviteID string, opts ...option.RequestOption) (res *IamSingleInvite, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if inviteID == "" {
 		err = errors.New("missing required invite_id parameter")
 		return
@@ -48,7 +49,7 @@ func (r *UserInviteService) Get(ctx context.Context, inviteID string, opts ...op
 
 // Lists all invitations associated with my user.
 func (r *UserInviteService) List(ctx context.Context, opts ...option.RequestOption) (res *UserInviteListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "user/invites"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -56,7 +57,7 @@ func (r *UserInviteService) List(ctx context.Context, opts ...option.RequestOpti
 
 // Responds to an invitation.
 func (r *UserInviteService) Respond(ctx context.Context, inviteID string, body UserInviteRespondParams, opts ...option.RequestOption) (res *IamSingleInvite, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if inviteID == "" {
 		err = errors.New("missing required invite_id parameter")
 		return

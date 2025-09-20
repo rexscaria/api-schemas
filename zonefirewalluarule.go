@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -37,7 +38,7 @@ func NewZoneFirewallUaRuleService(opts ...option.RequestOption) (r *ZoneFirewall
 
 // Creates a new User Agent Blocking rule in a zone.
 func (r *ZoneFirewallUaRuleService) New(ctx context.Context, zoneID string, body ZoneFirewallUaRuleNewParams, opts ...option.RequestOption) (res *FirewallUablockResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -49,7 +50,7 @@ func (r *ZoneFirewallUaRuleService) New(ctx context.Context, zoneID string, body
 
 // Fetches the details of a User Agent Blocking rule.
 func (r *ZoneFirewallUaRuleService) Get(ctx context.Context, zoneID string, uaRuleID string, opts ...option.RequestOption) (res *FirewallUablockResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -65,7 +66,7 @@ func (r *ZoneFirewallUaRuleService) Get(ctx context.Context, zoneID string, uaRu
 
 // Updates an existing User Agent Blocking rule.
 func (r *ZoneFirewallUaRuleService) Update(ctx context.Context, zoneID string, uaRuleID string, body ZoneFirewallUaRuleUpdateParams, opts ...option.RequestOption) (res *FirewallUablockResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -82,7 +83,7 @@ func (r *ZoneFirewallUaRuleService) Update(ctx context.Context, zoneID string, u
 // Fetches User Agent Blocking rules in a zone. You can filter the results using
 // several optional parameters.
 func (r *ZoneFirewallUaRuleService) List(ctx context.Context, zoneID string, query ZoneFirewallUaRuleListParams, opts ...option.RequestOption) (res *ZoneFirewallUaRuleListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -94,7 +95,7 @@ func (r *ZoneFirewallUaRuleService) List(ctx context.Context, zoneID string, que
 
 // Deletes an existing User Agent Blocking rule.
 func (r *ZoneFirewallUaRuleService) Delete(ctx context.Context, zoneID string, uaRuleID string, opts ...option.RequestOption) (res *ZoneFirewallUaRuleDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

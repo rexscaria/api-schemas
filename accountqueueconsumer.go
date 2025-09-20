@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"reflect"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -37,7 +38,7 @@ func NewAccountQueueConsumerService(opts ...option.RequestOption) (r *AccountQue
 
 // Creates a new consumer for a Queue
 func (r *AccountQueueConsumerService) New(ctx context.Context, accountID string, queueID string, body AccountQueueConsumerNewParams, opts ...option.RequestOption) (res *AccountQueueConsumerNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -53,7 +54,7 @@ func (r *AccountQueueConsumerService) New(ctx context.Context, accountID string,
 
 // Updates the consumer for a queue, or creates one if it does not exist.
 func (r *AccountQueueConsumerService) Update(ctx context.Context, accountID string, queueID string, consumerID string, body AccountQueueConsumerUpdateParams, opts ...option.RequestOption) (res *AccountQueueConsumerUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -73,7 +74,7 @@ func (r *AccountQueueConsumerService) Update(ctx context.Context, accountID stri
 
 // Returns the consumers for a Queue
 func (r *AccountQueueConsumerService) List(ctx context.Context, accountID string, queueID string, opts ...option.RequestOption) (res *AccountQueueConsumerListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -89,7 +90,7 @@ func (r *AccountQueueConsumerService) List(ctx context.Context, accountID string
 
 // Deletes the consumer for a queue.
 func (r *AccountQueueConsumerService) Delete(ctx context.Context, accountID string, queueID string, consumerID string, opts ...option.RequestOption) (res *MqAPIV4Success, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

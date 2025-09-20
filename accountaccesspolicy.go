@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -35,7 +36,7 @@ func NewAccountAccessPolicyService(opts ...option.RequestOption) (r *AccountAcce
 
 // Creates a new Access reusable policy.
 func (r *AccountAccessPolicyService) New(ctx context.Context, accountID string, body AccountAccessPolicyNewParams, opts ...option.RequestOption) (res *ReusableSingleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -47,7 +48,7 @@ func (r *AccountAccessPolicyService) New(ctx context.Context, accountID string, 
 
 // Fetches a single Access reusable policy.
 func (r *AccountAccessPolicyService) Get(ctx context.Context, accountID string, policyID string, opts ...option.RequestOption) (res *ReusableSingleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -63,7 +64,7 @@ func (r *AccountAccessPolicyService) Get(ctx context.Context, accountID string, 
 
 // Updates a Access reusable policy.
 func (r *AccountAccessPolicyService) Update(ctx context.Context, accountID string, policyID string, body AccountAccessPolicyUpdateParams, opts ...option.RequestOption) (res *ReusableSingleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -79,7 +80,7 @@ func (r *AccountAccessPolicyService) Update(ctx context.Context, accountID strin
 
 // Lists Access reusable policies.
 func (r *AccountAccessPolicyService) List(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountAccessPolicyListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -91,7 +92,7 @@ func (r *AccountAccessPolicyService) List(ctx context.Context, accountID string,
 
 // Deletes an Access reusable policy.
 func (r *AccountAccessPolicyService) Delete(ctx context.Context, accountID string, policyID string, opts ...option.RequestOption) (res *AccountAccessPolicyDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

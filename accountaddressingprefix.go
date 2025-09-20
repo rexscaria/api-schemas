@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -42,7 +43,7 @@ func NewAccountAddressingPrefixService(opts ...option.RequestOption) (r *Account
 
 // List a particular prefix owned by the account.
 func (r *AccountAddressingPrefixService) Get(ctx context.Context, accountID string, prefixID string, opts ...option.RequestOption) (res *SingleResponsePrefix, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -58,7 +59,7 @@ func (r *AccountAddressingPrefixService) Get(ctx context.Context, accountID stri
 
 // Modify the description for a prefix owned by the account.
 func (r *AccountAddressingPrefixService) Update(ctx context.Context, accountID string, prefixID string, body AccountAddressingPrefixUpdateParams, opts ...option.RequestOption) (res *SingleResponsePrefix, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -74,7 +75,7 @@ func (r *AccountAddressingPrefixService) Update(ctx context.Context, accountID s
 
 // List all prefixes owned by the account.
 func (r *AccountAddressingPrefixService) List(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountAddressingPrefixListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -86,7 +87,7 @@ func (r *AccountAddressingPrefixService) List(ctx context.Context, accountID str
 
 // Delete an unapproved prefix owned by the account.
 func (r *AccountAddressingPrefixService) Delete(ctx context.Context, accountID string, prefixID string, opts ...option.RequestOption) (res *APIResponseCollectionAddressing, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -102,7 +103,7 @@ func (r *AccountAddressingPrefixService) Delete(ctx context.Context, accountID s
 
 // Add a new prefix under the account.
 func (r *AccountAddressingPrefixService) Add(ctx context.Context, accountID string, body AccountAddressingPrefixAddParams, opts ...option.RequestOption) (res *SingleResponsePrefix, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

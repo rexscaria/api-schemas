@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -41,7 +42,7 @@ func NewZoneCacheCacheReserveService(opts ...option.RequestOption) (r *ZoneCache
 // [developer docs](https://developers.cloudflare.com/cache/about/cache-reserve)
 // for more information.
 func (r *ZoneCacheCacheReserveService) Get(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *ZoneCacheCacheReserveGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -58,7 +59,7 @@ func (r *ZoneCacheCacheReserveService) Get(ctx context.Context, zoneID string, o
 // [developer docs](https://developers.cloudflare.com/cache/about/cache-reserve)
 // for more information.
 func (r *ZoneCacheCacheReserveService) Update(ctx context.Context, zoneID string, body ZoneCacheCacheReserveUpdateParams, opts ...option.RequestOption) (res *ZoneCacheCacheReserveUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

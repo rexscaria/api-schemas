@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/requestconfig"
@@ -34,7 +35,7 @@ func NewAccountAccessGatewayCaService(opts ...option.RequestOption) (r *AccountA
 
 // Adds a new SSH Certificate Authority (CA).
 func (r *AccountAccessGatewayCaService) New(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountAccessGatewayCaNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -46,7 +47,7 @@ func (r *AccountAccessGatewayCaService) New(ctx context.Context, accountID strin
 
 // Lists SSH Certificate Authorities (CA).
 func (r *AccountAccessGatewayCaService) List(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountAccessGatewayCaListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -58,7 +59,7 @@ func (r *AccountAccessGatewayCaService) List(ctx context.Context, accountID stri
 
 // Deletes an SSH Certificate Authority.
 func (r *AccountAccessGatewayCaService) Delete(ctx context.Context, accountID string, certificateID string, opts ...option.RequestOption) (res *IDResponseApps, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

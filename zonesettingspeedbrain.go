@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -37,7 +38,7 @@ func NewZoneSettingSpeedBrainService(opts ...option.RequestOption) (r *ZoneSetti
 // prefetched or preloaded, making website navigation faster. Refer to the
 // Cloudflare Speed Brain documentation for more information.
 func (r *ZoneSettingSpeedBrainService) Get(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *ZoneSettingSpeedBrainGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -51,7 +52,7 @@ func (r *ZoneSettingSpeedBrainService) Get(ctx context.Context, zoneID string, o
 // prefetched or preloaded, making website navigation faster. Refer to the
 // Cloudflare Speed Brain documentation for more information.
 func (r *ZoneSettingSpeedBrainService) Update(ctx context.Context, zoneID string, body ZoneSettingSpeedBrainUpdateParams, opts ...option.RequestOption) (res *ZoneSettingSpeedBrainUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

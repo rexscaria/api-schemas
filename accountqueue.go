@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"reflect"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -43,7 +44,7 @@ func NewAccountQueueService(opts ...option.RequestOption) (r *AccountQueueServic
 
 // Create a new queue
 func (r *AccountQueueService) New(ctx context.Context, accountID string, body AccountQueueNewParams, opts ...option.RequestOption) (res *AccountQueueNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -55,7 +56,7 @@ func (r *AccountQueueService) New(ctx context.Context, accountID string, body Ac
 
 // Get details about a specific queue.
 func (r *AccountQueueService) Get(ctx context.Context, accountID string, queueID string, opts ...option.RequestOption) (res *AccountQueueGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -73,7 +74,7 @@ func (r *AccountQueueService) Get(ctx context.Context, accountID string, queueID
 // successful, the Queue's configuration is overwritten with the supplied
 // configuration.
 func (r *AccountQueueService) Update(ctx context.Context, accountID string, queueID string, body AccountQueueUpdateParams, opts ...option.RequestOption) (res *AccountQueueUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -89,7 +90,7 @@ func (r *AccountQueueService) Update(ctx context.Context, accountID string, queu
 
 // Returns the queues owned by an account.
 func (r *AccountQueueService) List(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountQueueListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -101,7 +102,7 @@ func (r *AccountQueueService) List(ctx context.Context, accountID string, opts .
 
 // Deletes a queue
 func (r *AccountQueueService) Delete(ctx context.Context, accountID string, queueID string, opts ...option.RequestOption) (res *MqAPIV4Success, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -117,7 +118,7 @@ func (r *AccountQueueService) Delete(ctx context.Context, accountID string, queu
 
 // Updates a Queue.
 func (r *AccountQueueService) UpdatePartial(ctx context.Context, accountID string, queueID string, body AccountQueueUpdatePartialParams, opts ...option.RequestOption) (res *AccountQueueUpdatePartialResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -39,7 +40,7 @@ func NewCertificateService(opts ...option.RequestOption) (r *CertificateService)
 // Create an Origin CA certificate. You can use an Origin CA Key as your User
 // Service Key or an API token when calling this endpoint ([see above](#requests)).
 func (r *CertificateService) New(ctx context.Context, body CertificateNewParams, opts ...option.RequestOption) (res *SingleCertificateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "certificates"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -49,7 +50,7 @@ func (r *CertificateService) New(ctx context.Context, body CertificateNewParams,
 // Origin CA Key as your User Service Key or an API token when calling this
 // endpoint ([see above](#requests)).
 func (r *CertificateService) Get(ctx context.Context, certificateID string, opts ...option.RequestOption) (res *SingleCertificateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if certificateID == "" {
 		err = errors.New("missing required certificate_id parameter")
 		return
@@ -63,7 +64,7 @@ func (r *CertificateService) Get(ctx context.Context, certificateID string, opts
 // CA Key as your User Service Key or an API token when calling this endpoint
 // ([see above](#requests)).
 func (r *CertificateService) List(ctx context.Context, query CertificateListParams, opts ...option.RequestOption) (res *CertificateListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "certificates"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -73,7 +74,7 @@ func (r *CertificateService) List(ctx context.Context, query CertificateListPara
 // Origin CA Key as your User Service Key or an API token when calling this
 // endpoint ([see above](#requests)).
 func (r *CertificateService) Revoke(ctx context.Context, certificateID string, opts ...option.RequestOption) (res *CertificateRevokeResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if certificateID == "" {
 		err = errors.New("missing required certificate_id parameter")
 		return

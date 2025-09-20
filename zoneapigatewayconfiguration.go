@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -39,7 +40,7 @@ func NewZoneAPIGatewayConfigurationService(opts ...option.RequestOption) (r *Zon
 
 // Retrieve information about specific configuration properties
 func (r *ZoneAPIGatewayConfigurationService) Get(ctx context.Context, zoneID string, query ZoneAPIGatewayConfigurationGetParams, opts ...option.RequestOption) (res *ZoneAPIGatewayConfigurationGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -51,7 +52,7 @@ func (r *ZoneAPIGatewayConfigurationService) Get(ctx context.Context, zoneID str
 
 // Set configuration properties
 func (r *ZoneAPIGatewayConfigurationService) Update(ctx context.Context, zoneID string, body ZoneAPIGatewayConfigurationUpdateParams, opts ...option.RequestOption) (res *APIResponseAPIShield, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

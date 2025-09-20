@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -38,7 +39,7 @@ func NewAccountDNSSettingViewService(opts ...option.RequestOption) (r *AccountDN
 
 // Create Internal DNS View for an account
 func (r *AccountDNSSettingViewService) New(ctx context.Context, accountID string, body AccountDNSSettingViewNewParams, opts ...option.RequestOption) (res *DNSViewResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -50,7 +51,7 @@ func (r *AccountDNSSettingViewService) New(ctx context.Context, accountID string
 
 // Get DNS Internal View
 func (r *AccountDNSSettingViewService) Get(ctx context.Context, accountID string, viewID string, opts ...option.RequestOption) (res *DNSViewResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -66,7 +67,7 @@ func (r *AccountDNSSettingViewService) Get(ctx context.Context, accountID string
 
 // Update an existing Internal DNS View
 func (r *AccountDNSSettingViewService) Update(ctx context.Context, accountID string, viewID string, body AccountDNSSettingViewUpdateParams, opts ...option.RequestOption) (res *DNSViewResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -82,7 +83,7 @@ func (r *AccountDNSSettingViewService) Update(ctx context.Context, accountID str
 
 // List DNS Internal Views for an Account
 func (r *AccountDNSSettingViewService) List(ctx context.Context, accountID string, query AccountDNSSettingViewListParams, opts ...option.RequestOption) (res *AccountDNSSettingViewListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -94,7 +95,7 @@ func (r *AccountDNSSettingViewService) List(ctx context.Context, accountID strin
 
 // Delete an existing Internal DNS View
 func (r *AccountDNSSettingViewService) Delete(ctx context.Context, accountID string, viewID string, opts ...option.RequestOption) (res *AccountDNSSettingViewDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

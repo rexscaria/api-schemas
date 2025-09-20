@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -35,7 +36,7 @@ func NewZoneSettingRumService(opts ...option.RequestOption) (r *ZoneSettingRumSe
 
 // Retrieves RUM status for a zone.
 func (r *ZoneSettingRumService) Get(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *RumSiteResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -47,7 +48,7 @@ func (r *ZoneSettingRumService) Get(ctx context.Context, zoneID string, opts ...
 
 // Toggles RUM on/off for an existing zone.
 func (r *ZoneSettingRumService) Update(ctx context.Context, zoneID string, body ZoneSettingRumUpdateParams, opts ...option.RequestOption) (res *RumSiteResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

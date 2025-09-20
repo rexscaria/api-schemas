@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -36,7 +37,7 @@ func NewZoneSecurityCenterSecuritytxtService(opts ...option.RequestOption) (r *Z
 
 // Get security.txt
 func (r *ZoneSecurityCenterSecuritytxtService) Get(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *ZoneSecurityCenterSecuritytxtGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -48,7 +49,7 @@ func (r *ZoneSecurityCenterSecuritytxtService) Get(ctx context.Context, zoneID s
 
 // Update security.txt
 func (r *ZoneSecurityCenterSecuritytxtService) Update(ctx context.Context, zoneID string, body ZoneSecurityCenterSecuritytxtUpdateParams, opts ...option.RequestOption) (res *SingleResponseReport, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -60,7 +61,7 @@ func (r *ZoneSecurityCenterSecuritytxtService) Update(ctx context.Context, zoneI
 
 // Delete security.txt
 func (r *ZoneSecurityCenterSecuritytxtService) Delete(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *SingleResponseReport, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

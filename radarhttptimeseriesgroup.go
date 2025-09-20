@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -38,7 +39,7 @@ func NewRadarHTTPTimeseriesGroupService(opts ...option.RequestOption) (r *RadarH
 // over time. Visit https://developers.cloudflare.com/radar/concepts/bot-classes/
 // for more information.
 func (r *RadarHTTPTimeseriesGroupService) GetByBotClass(ctx context.Context, query RadarHTTPTimeseriesGroupGetByBotClassParams, opts ...option.RequestOption) (res *RadarHTTPTimeseriesGroupGetByBotClassResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/http/timeseries_groups/bot_class"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -46,7 +47,7 @@ func (r *RadarHTTPTimeseriesGroupService) GetByBotClass(ctx context.Context, que
 
 // Retrieves the distribution of HTTP requests by user agent over time.
 func (r *RadarHTTPTimeseriesGroupService) GetByBrowser(ctx context.Context, query RadarHTTPTimeseriesGroupGetByBrowserParams, opts ...option.RequestOption) (res *RadarHTTPTimeseriesGroupGetByBrowserResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/http/timeseries_groups/browser"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -54,7 +55,7 @@ func (r *RadarHTTPTimeseriesGroupService) GetByBrowser(ctx context.Context, quer
 
 // Retrieves the distribution of HTTP requests by user agent family over time.
 func (r *RadarHTTPTimeseriesGroupService) GetByBrowserFamily(ctx context.Context, query RadarHTTPTimeseriesGroupGetByBrowserFamilyParams, opts ...option.RequestOption) (res *RadarHTTPTimeseriesGroupGetByBrowserFamilyResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/http/timeseries_groups/browser_family"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -62,7 +63,7 @@ func (r *RadarHTTPTimeseriesGroupService) GetByBrowserFamily(ctx context.Context
 
 // Retrieves the distribution of HTTP requests by device type over time.
 func (r *RadarHTTPTimeseriesGroupService) GetByDeviceType(ctx context.Context, query RadarHTTPTimeseriesGroupGetByDeviceTypeParams, opts ...option.RequestOption) (res *RadarHTTPTimeseriesGroupGetByDeviceTypeResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/http/timeseries_groups/device_type"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -71,7 +72,7 @@ func (r *RadarHTTPTimeseriesGroupService) GetByDeviceType(ctx context.Context, q
 // Retrieves the distribution of HTTP requests by HTTP protocol (HTTP vs. HTTPS)
 // over time.
 func (r *RadarHTTPTimeseriesGroupService) GetByHTTPProtocol(ctx context.Context, query RadarHTTPTimeseriesGroupGetByHTTPProtocolParams, opts ...option.RequestOption) (res *RadarHTTPTimeseriesGroupGetByHTTPProtocolResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/http/timeseries_groups/http_protocol"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -79,7 +80,7 @@ func (r *RadarHTTPTimeseriesGroupService) GetByHTTPProtocol(ctx context.Context,
 
 // Retrieves the distribution of HTTP requests by HTTP version over time.
 func (r *RadarHTTPTimeseriesGroupService) GetByHTTPVersion(ctx context.Context, query RadarHTTPTimeseriesGroupGetByHTTPVersionParams, opts ...option.RequestOption) (res *RadarHTTPTimeseriesGroupGetByHTTPVersionResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/http/timeseries_groups/http_version"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -87,7 +88,7 @@ func (r *RadarHTTPTimeseriesGroupService) GetByHTTPVersion(ctx context.Context, 
 
 // Retrieves the distribution of HTTP requests by IP version over time.
 func (r *RadarHTTPTimeseriesGroupService) GetByIPVersion(ctx context.Context, query RadarHTTPTimeseriesGroupGetByIPVersionParams, opts ...option.RequestOption) (res *RadarHTTPTimeseriesGroupGetByIPVersionResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/http/timeseries_groups/ip_version"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -95,7 +96,7 @@ func (r *RadarHTTPTimeseriesGroupService) GetByIPVersion(ctx context.Context, qu
 
 // Retrieves the distribution of HTTP requests by operating system over time.
 func (r *RadarHTTPTimeseriesGroupService) GetByOs(ctx context.Context, query RadarHTTPTimeseriesGroupGetByOsParams, opts ...option.RequestOption) (res *RadarHTTPTimeseriesGroupGetByOsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/http/timeseries_groups/os"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -103,7 +104,7 @@ func (r *RadarHTTPTimeseriesGroupService) GetByOs(ctx context.Context, query Rad
 
 // Retrieves the distribution of HTTP requests by post-quantum support over time.
 func (r *RadarHTTPTimeseriesGroupService) GetByPostQuantum(ctx context.Context, query RadarHTTPTimeseriesGroupGetByPostQuantumParams, opts ...option.RequestOption) (res *RadarHTTPTimeseriesGroupGetByPostQuantumResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/http/timeseries_groups/post_quantum"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -111,7 +112,7 @@ func (r *RadarHTTPTimeseriesGroupService) GetByPostQuantum(ctx context.Context, 
 
 // Retrieves the distribution of HTTP requests by TLS version over time.
 func (r *RadarHTTPTimeseriesGroupService) GetByTlsVersion(ctx context.Context, query RadarHTTPTimeseriesGroupGetByTlsVersionParams, opts ...option.RequestOption) (res *RadarHTTPTimeseriesGroupGetByTlsVersionResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/http/timeseries_groups/tls_version"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

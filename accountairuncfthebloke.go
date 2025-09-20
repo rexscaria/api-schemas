@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -37,7 +38,7 @@ func NewAccountAIRunCfTheblokeService(opts ...option.RequestOption) (r *AccountA
 
 // Execute @cf/thebloke/discolm-german-7b-v1-awq model.
 func (r *AccountAIRunCfTheblokeService) ExecuteDiscolmGerman7bV1Awq(ctx context.Context, accountID string, params AccountAIRunCfTheblokeExecuteDiscolmGerman7bV1AwqParams, opts ...option.RequestOption) (res *AccountAIRunCfTheblokeExecuteDiscolmGerman7bV1AwqResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

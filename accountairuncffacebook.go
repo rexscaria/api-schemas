@@ -11,6 +11,7 @@ import (
 	"mime/multipart"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apiform"
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -41,7 +42,7 @@ func NewAccountAIRunCfFacebookService(opts ...option.RequestOption) (r *AccountA
 
 // Execute @cf/facebook/bart-large-cnn model.
 func (r *AccountAIRunCfFacebookService) ExecuteBartLargeCnn(ctx context.Context, accountID string, params AccountAIRunCfFacebookExecuteBartLargeCnnParams, opts ...option.RequestOption) (res *AccountAIRunCfFacebookExecuteBartLargeCnnResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -53,7 +54,7 @@ func (r *AccountAIRunCfFacebookService) ExecuteBartLargeCnn(ctx context.Context,
 
 // Execute @cf/facebook/detr-resnet-50 model.
 func (r *AccountAIRunCfFacebookService) ExecuteDetrResnet50(ctx context.Context, accountID string, body io.Reader, body AccountAIRunCfFacebookExecuteDetrResnet50Params, opts ...option.RequestOption) (res *AccountAIRunCfFacebookExecuteDetrResnet50Response, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithRequestBody("application/octet-stream", body)}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")

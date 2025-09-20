@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -42,7 +43,7 @@ func NewAccountEmailSecurityService(opts ...option.RequestOption) (r *AccountEma
 
 // This endpoint returns information for submissions to made to reclassify emails.
 func (r *AccountEmailSecurityService) GetSubmissions(ctx context.Context, accountID string, query AccountEmailSecurityGetSubmissionsParams, opts ...option.RequestOption) (res *AccountEmailSecurityGetSubmissionsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

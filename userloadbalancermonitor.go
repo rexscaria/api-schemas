@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/requestconfig"
@@ -34,7 +35,7 @@ func NewUserLoadBalancerMonitorService(opts ...option.RequestOption) (r *UserLoa
 
 // Create a configured monitor.
 func (r *UserLoadBalancerMonitorService) New(ctx context.Context, body UserLoadBalancerMonitorNewParams, opts ...option.RequestOption) (res *ResponseSingleMonitor, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "user/load_balancers/monitors"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -42,7 +43,7 @@ func (r *UserLoadBalancerMonitorService) New(ctx context.Context, body UserLoadB
 
 // List a single configured monitor for a user.
 func (r *UserLoadBalancerMonitorService) Get(ctx context.Context, monitorID string, opts ...option.RequestOption) (res *ResponseSingleMonitor, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if monitorID == "" {
 		err = errors.New("missing required monitor_id parameter")
 		return
@@ -54,7 +55,7 @@ func (r *UserLoadBalancerMonitorService) Get(ctx context.Context, monitorID stri
 
 // Modify a configured monitor.
 func (r *UserLoadBalancerMonitorService) Update(ctx context.Context, monitorID string, body UserLoadBalancerMonitorUpdateParams, opts ...option.RequestOption) (res *ResponseSingleMonitor, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if monitorID == "" {
 		err = errors.New("missing required monitor_id parameter")
 		return
@@ -66,7 +67,7 @@ func (r *UserLoadBalancerMonitorService) Update(ctx context.Context, monitorID s
 
 // List configured monitors for a user.
 func (r *UserLoadBalancerMonitorService) List(ctx context.Context, opts ...option.RequestOption) (res *ResponseCollectionMonitor, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "user/load_balancers/monitors"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -74,7 +75,7 @@ func (r *UserLoadBalancerMonitorService) List(ctx context.Context, opts ...optio
 
 // Delete a configured monitor.
 func (r *UserLoadBalancerMonitorService) Delete(ctx context.Context, monitorID string, opts ...option.RequestOption) (res *IDResponseLoadBalancing, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if monitorID == "" {
 		err = errors.New("missing required monitor_id parameter")
 		return
@@ -86,7 +87,7 @@ func (r *UserLoadBalancerMonitorService) Delete(ctx context.Context, monitorID s
 
 // Get the list of resources that reference the provided monitor.
 func (r *UserLoadBalancerMonitorService) ListReferences(ctx context.Context, monitorID string, opts ...option.RequestOption) (res *ReferencesMonitorResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if monitorID == "" {
 		err = errors.New("missing required monitor_id parameter")
 		return
@@ -98,7 +99,7 @@ func (r *UserLoadBalancerMonitorService) ListReferences(ctx context.Context, mon
 
 // Apply changes to an existing monitor, overwriting the supplied properties.
 func (r *UserLoadBalancerMonitorService) Patch(ctx context.Context, monitorID string, body UserLoadBalancerMonitorPatchParams, opts ...option.RequestOption) (res *ResponseSingleMonitor, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if monitorID == "" {
 		err = errors.New("missing required monitor_id parameter")
 		return
@@ -111,7 +112,7 @@ func (r *UserLoadBalancerMonitorService) Patch(ctx context.Context, monitorID st
 // Preview pools using the specified monitor with provided monitor details. The
 // returned preview_id can be used in the preview endpoint to retrieve the results.
 func (r *UserLoadBalancerMonitorService) Preview(ctx context.Context, monitorID string, body UserLoadBalancerMonitorPreviewParams, opts ...option.RequestOption) (res *PreviewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if monitorID == "" {
 		err = errors.New("missing required monitor_id parameter")
 		return

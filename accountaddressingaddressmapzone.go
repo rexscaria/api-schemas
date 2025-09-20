@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/requestconfig"
@@ -34,7 +35,7 @@ func NewAccountAddressingAddressMapZoneService(opts ...option.RequestOption) (r 
 
 // Add a zone as a member of a particular address map.
 func (r *AccountAddressingAddressMapZoneService) Add(ctx context.Context, accountID string, addressMapID string, zoneID string, body AccountAddressingAddressMapZoneAddParams, opts ...option.RequestOption) (res *APIResponseCollectionAddressing, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -54,7 +55,7 @@ func (r *AccountAddressingAddressMapZoneService) Add(ctx context.Context, accoun
 
 // Remove a zone as a member of a particular address map.
 func (r *AccountAddressingAddressMapZoneService) Remove(ctx context.Context, accountID string, addressMapID string, zoneID string, opts ...option.RequestOption) (res *APIResponseCollectionAddressing, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

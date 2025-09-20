@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -41,7 +42,7 @@ func NewAccountStreamLiveInputService(opts ...option.RequestOption) (r *AccountS
 // Creates a live input, and returns credentials that you or your users can use to
 // stream live video to Cloudflare Stream.
 func (r *AccountStreamLiveInputService) New(ctx context.Context, accountID string, body AccountStreamLiveInputNewParams, opts ...option.RequestOption) (res *LiveInputResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -53,7 +54,7 @@ func (r *AccountStreamLiveInputService) New(ctx context.Context, accountID strin
 
 // Retrieves details of an existing live input.
 func (r *AccountStreamLiveInputService) Get(ctx context.Context, accountID string, liveInputIdentifier string, opts ...option.RequestOption) (res *LiveInputResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -69,7 +70,7 @@ func (r *AccountStreamLiveInputService) Get(ctx context.Context, accountID strin
 
 // Updates a specified live input.
 func (r *AccountStreamLiveInputService) Update(ctx context.Context, accountID string, liveInputIdentifier string, body AccountStreamLiveInputUpdateParams, opts ...option.RequestOption) (res *LiveInputResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -86,7 +87,7 @@ func (r *AccountStreamLiveInputService) Update(ctx context.Context, accountID st
 // Lists the live inputs created for an account. To get the credentials needed to
 // stream to a specific live input, request a single live input.
 func (r *AccountStreamLiveInputService) List(ctx context.Context, accountID string, query AccountStreamLiveInputListParams, opts ...option.RequestOption) (res *AccountStreamLiveInputListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -99,7 +100,7 @@ func (r *AccountStreamLiveInputService) List(ctx context.Context, accountID stri
 // Prevents a live input from being streamed to and makes the live input
 // inaccessible to any future API calls.
 func (r *AccountStreamLiveInputService) Delete(ctx context.Context, accountID string, liveInputIdentifier string, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")

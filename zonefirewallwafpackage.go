@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -48,7 +49,7 @@ func NewZoneFirewallWafPackageService(opts ...option.RequestOption) (r *ZoneFire
 //
 // Deprecated: deprecated
 func (r *ZoneFirewallWafPackageService) Get(ctx context.Context, zoneID string, packageID string, opts ...option.RequestOption) (res *FirewallPackageResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -70,7 +71,7 @@ func (r *ZoneFirewallWafPackageService) Get(ctx context.Context, zoneID string, 
 //
 // Deprecated: deprecated
 func (r *ZoneFirewallWafPackageService) Update(ctx context.Context, zoneID string, packageID string, body ZoneFirewallWafPackageUpdateParams, opts ...option.RequestOption) (res *ZoneFirewallWafPackageUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -91,7 +92,7 @@ func (r *ZoneFirewallWafPackageService) Update(ctx context.Context, zoneID strin
 //
 // Deprecated: deprecated
 func (r *ZoneFirewallWafPackageService) List(ctx context.Context, zoneID string, query ZoneFirewallWafPackageListParams, opts ...option.RequestOption) (res *ZoneFirewallWafPackageListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

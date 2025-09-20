@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -40,7 +41,7 @@ func NewAccountBotnetFeedAsnService(opts ...option.RequestOption) (r *AccountBot
 // user account for given date. If no date is given, it will return results for the
 // previous day.
 func (r *AccountBotnetFeedAsnService) GetDailyReport(ctx context.Context, accountID string, asnID int64, query AccountBotnetFeedAsnGetDailyReportParams, opts ...option.RequestOption) (res *AccountBotnetFeedAsnGetDailyReportResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -53,7 +54,7 @@ func (r *AccountBotnetFeedAsnService) GetDailyReport(ctx context.Context, accoun
 // Gets all the data the botnet threat feed tracking database has for a given ASN
 // registered to user account.
 func (r *AccountBotnetFeedAsnService) GetFullReport(ctx context.Context, accountID string, asnID int64, opts ...option.RequestOption) (res *AccountBotnetFeedAsnGetFullReportResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

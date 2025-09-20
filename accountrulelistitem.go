@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -40,7 +41,7 @@ func NewAccountRuleListItemService(opts ...option.RequestOption) (r *AccountRule
 // This operation is asynchronous. To get current the operation status, invoke the
 // `Get bulk operation status` endpoint with the returned `operation_id`.
 func (r *AccountRuleListItemService) New(ctx context.Context, accountID string, listID string, body AccountRuleListItemNewParams, opts ...option.RequestOption) (res *AsyncResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -60,7 +61,7 @@ func (r *AccountRuleListItemService) New(ctx context.Context, accountID string, 
 // This operation is asynchronous. To get current the operation status, invoke the
 // `Get bulk operation status` endpoint with the returned `operation_id`.
 func (r *AccountRuleListItemService) Update(ctx context.Context, accountID string, listID string, body AccountRuleListItemUpdateParams, opts ...option.RequestOption) (res *AsyncResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -76,7 +77,7 @@ func (r *AccountRuleListItemService) Update(ctx context.Context, accountID strin
 
 // Fetches all the items in the list.
 func (r *AccountRuleListItemService) List(ctx context.Context, accountID string, listID string, query AccountRuleListItemListParams, opts ...option.RequestOption) (res *AccountRuleListItemListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -95,7 +96,7 @@ func (r *AccountRuleListItemService) List(ctx context.Context, accountID string,
 // This operation is asynchronous. To get current the operation status, invoke the
 // `Get bulk operation status` endpoint with the returned `operation_id`.
 func (r *AccountRuleListItemService) Delete(ctx context.Context, accountID string, listID string, body AccountRuleListItemDeleteParams, opts ...option.RequestOption) (res *AsyncResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

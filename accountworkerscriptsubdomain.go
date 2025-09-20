@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -35,7 +36,7 @@ func NewAccountWorkerScriptSubdomainService(opts ...option.RequestOption) (r *Ac
 
 // Get if the Worker is available on the workers.dev subdomain.
 func (r *AccountWorkerScriptSubdomainService) Get(ctx context.Context, accountID string, scriptName string, opts ...option.RequestOption) (res *AccountWorkerScriptSubdomainGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -51,7 +52,7 @@ func (r *AccountWorkerScriptSubdomainService) Get(ctx context.Context, accountID
 
 // Enable or disable the Worker on the workers.dev subdomain.
 func (r *AccountWorkerScriptSubdomainService) Post(ctx context.Context, accountID string, scriptName string, body AccountWorkerScriptSubdomainPostParams, opts ...option.RequestOption) (res *AccountWorkerScriptSubdomainPostResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

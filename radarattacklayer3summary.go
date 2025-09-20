@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -36,7 +37,7 @@ func NewRadarAttackLayer3SummaryService(opts ...option.RequestOption) (r *RadarA
 
 // Retrieves the distribution of layer 3 attacks by bitrate.
 func (r *RadarAttackLayer3SummaryService) GetBitrateSummary(ctx context.Context, query RadarAttackLayer3SummaryGetBitrateSummaryParams, opts ...option.RequestOption) (res *RadarAttackLayer3SummaryGetBitrateSummaryResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/attacks/layer3/summary/bitrate"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -44,7 +45,7 @@ func (r *RadarAttackLayer3SummaryService) GetBitrateSummary(ctx context.Context,
 
 // Retrieves the distribution of layer 3 attacks by duration.
 func (r *RadarAttackLayer3SummaryService) GetDurationSummary(ctx context.Context, query RadarAttackLayer3SummaryGetDurationSummaryParams, opts ...option.RequestOption) (res *RadarAttackLayer3SummaryGetDurationSummaryResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/attacks/layer3/summary/duration"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -52,7 +53,7 @@ func (r *RadarAttackLayer3SummaryService) GetDurationSummary(ctx context.Context
 
 // Retrieves the distribution of layer 3 attacks by targeted industry.
 func (r *RadarAttackLayer3SummaryService) GetIndustrySummary(ctx context.Context, query RadarAttackLayer3SummaryGetIndustrySummaryParams, opts ...option.RequestOption) (res *RadarAttackLayer3SummaryGetIndustrySummaryResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/attacks/layer3/summary/industry"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -60,7 +61,7 @@ func (r *RadarAttackLayer3SummaryService) GetIndustrySummary(ctx context.Context
 
 // Retrieves the distribution of layer 3 attacks by IP version.
 func (r *RadarAttackLayer3SummaryService) GetIPVersionSummary(ctx context.Context, query RadarAttackLayer3SummaryGetIPVersionSummaryParams, opts ...option.RequestOption) (res *RadarAttackLayer3SummaryGetIPVersionSummaryResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/attacks/layer3/summary/ip_version"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -68,7 +69,7 @@ func (r *RadarAttackLayer3SummaryService) GetIPVersionSummary(ctx context.Contex
 
 // Retrieves the distribution of layer 3 attacks by protocol.
 func (r *RadarAttackLayer3SummaryService) GetProtocolSummary(ctx context.Context, query RadarAttackLayer3SummaryGetProtocolSummaryParams, opts ...option.RequestOption) (res *RadarAttackLayer3SummaryGetProtocolSummaryResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/attacks/layer3/summary/protocol"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -76,7 +77,7 @@ func (r *RadarAttackLayer3SummaryService) GetProtocolSummary(ctx context.Context
 
 // Retrieves the distribution of layer 3 attacks by vector.
 func (r *RadarAttackLayer3SummaryService) GetVectorSummary(ctx context.Context, query RadarAttackLayer3SummaryGetVectorSummaryParams, opts ...option.RequestOption) (res *RadarAttackLayer3SummaryGetVectorSummaryResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/attacks/layer3/summary/vector"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -84,7 +85,7 @@ func (r *RadarAttackLayer3SummaryService) GetVectorSummary(ctx context.Context, 
 
 // Retrieves the distribution of layer 3 attacks by targeted vertical.
 func (r *RadarAttackLayer3SummaryService) GetVerticalSummary(ctx context.Context, query RadarAttackLayer3SummaryGetVerticalSummaryParams, opts ...option.RequestOption) (res *RadarAttackLayer3SummaryGetVerticalSummaryResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/attacks/layer3/summary/vertical"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

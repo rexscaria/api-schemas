@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -37,7 +38,7 @@ func NewZoneWaitingRoomRuleService(opts ...option.RequestOption) (r *ZoneWaiting
 // Only available for the Waiting Room Advanced subscription. Creates a rule for a
 // waiting room.
 func (r *ZoneWaitingRoomRuleService) New(ctx context.Context, zoneID string, waitingRoomID string, body ZoneWaitingRoomRuleNewParams, opts ...option.RequestOption) (res *ResponseCollectionWaitingRoomRules, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -53,7 +54,7 @@ func (r *ZoneWaitingRoomRuleService) New(ctx context.Context, zoneID string, wai
 
 // Lists rules for a waiting room.
 func (r *ZoneWaitingRoomRuleService) List(ctx context.Context, zoneID string, waitingRoomID string, opts ...option.RequestOption) (res *ResponseCollectionWaitingRoomRules, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -69,7 +70,7 @@ func (r *ZoneWaitingRoomRuleService) List(ctx context.Context, zoneID string, wa
 
 // Deletes a rule for a waiting room.
 func (r *ZoneWaitingRoomRuleService) Delete(ctx context.Context, zoneID string, waitingRoomID string, ruleID string, opts ...option.RequestOption) (res *ResponseCollectionWaitingRoomRules, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -89,7 +90,7 @@ func (r *ZoneWaitingRoomRuleService) Delete(ctx context.Context, zoneID string, 
 
 // Patches a rule for a waiting room.
 func (r *ZoneWaitingRoomRuleService) Patch(ctx context.Context, zoneID string, waitingRoomID string, ruleID string, body ZoneWaitingRoomRulePatchParams, opts ...option.RequestOption) (res *ResponseCollectionWaitingRoomRules, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -110,7 +111,7 @@ func (r *ZoneWaitingRoomRuleService) Patch(ctx context.Context, zoneID string, w
 // Only available for the Waiting Room Advanced subscription. Replaces all rules
 // for a waiting room.
 func (r *ZoneWaitingRoomRuleService) Replace(ctx context.Context, zoneID string, waitingRoomID string, body ZoneWaitingRoomRuleReplaceParams, opts ...option.RequestOption) (res *ResponseCollectionWaitingRoomRules, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

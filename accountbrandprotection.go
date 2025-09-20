@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/requestconfig"
@@ -34,7 +35,7 @@ func NewAccountBrandProtectionService(opts ...option.RequestOption) (r *AccountB
 
 // Return submitted URLs based on ID
 func (r *AccountBrandProtectionService) GetURLInfo(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountBrandProtectionGetURLInfoResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -46,7 +47,7 @@ func (r *AccountBrandProtectionService) GetURLInfo(ctx context.Context, accountI
 
 // Return new URL submissions
 func (r *AccountBrandProtectionService) SubmitURL(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountBrandProtectionSubmitURLResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

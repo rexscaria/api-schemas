@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -39,7 +40,7 @@ func NewAccountEmailSecuritySettingBlockSenderService(opts ...option.RequestOpti
 
 // Create a blocked email sender
 func (r *AccountEmailSecuritySettingBlockSenderService) New(ctx context.Context, accountID string, body AccountEmailSecuritySettingBlockSenderNewParams, opts ...option.RequestOption) (res *AccountEmailSecuritySettingBlockSenderNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -51,7 +52,7 @@ func (r *AccountEmailSecuritySettingBlockSenderService) New(ctx context.Context,
 
 // Get a blocked email sender
 func (r *AccountEmailSecuritySettingBlockSenderService) Get(ctx context.Context, accountID string, patternID int64, opts ...option.RequestOption) (res *AccountEmailSecuritySettingBlockSenderGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -63,7 +64,7 @@ func (r *AccountEmailSecuritySettingBlockSenderService) Get(ctx context.Context,
 
 // Update a blocked email sender
 func (r *AccountEmailSecuritySettingBlockSenderService) Update(ctx context.Context, accountID string, patternID int64, body AccountEmailSecuritySettingBlockSenderUpdateParams, opts ...option.RequestOption) (res *AccountEmailSecuritySettingBlockSenderUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -75,7 +76,7 @@ func (r *AccountEmailSecuritySettingBlockSenderService) Update(ctx context.Conte
 
 // List blocked email senders
 func (r *AccountEmailSecuritySettingBlockSenderService) List(ctx context.Context, accountID string, query AccountEmailSecuritySettingBlockSenderListParams, opts ...option.RequestOption) (res *AccountEmailSecuritySettingBlockSenderListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -87,7 +88,7 @@ func (r *AccountEmailSecuritySettingBlockSenderService) List(ctx context.Context
 
 // Delete a blocked email sender
 func (r *AccountEmailSecuritySettingBlockSenderService) Delete(ctx context.Context, accountID string, patternID int64, opts ...option.RequestOption) (res *AccountEmailSecuritySettingBlockSenderDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

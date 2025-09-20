@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -40,7 +41,7 @@ func NewRadarVerifiedBotTopService(opts ...option.RequestOption) (r *RadarVerifi
 // [Radar Bots API](https://developers.cloudflare.com/api/resources/radar/subresources/bots/)
 // instead.
 func (r *RadarVerifiedBotTopService) Bots(ctx context.Context, query RadarVerifiedBotTopBotsParams, opts ...option.RequestOption) (res *RadarVerifiedBotTopBotsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/verified_bots/top/bots"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -53,7 +54,7 @@ func (r *RadarVerifiedBotTopService) Bots(ctx context.Context, query RadarVerifi
 // [Radar Bots API](https://developers.cloudflare.com/api/resources/radar/subresources/bots/)
 // instead.
 func (r *RadarVerifiedBotTopService) Categories(ctx context.Context, query RadarVerifiedBotTopCategoriesParams, opts ...option.RequestOption) (res *RadarVerifiedBotTopCategoriesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/verified_bots/top/categories"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

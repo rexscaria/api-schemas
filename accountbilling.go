@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -37,7 +38,7 @@ func NewAccountBillingService(opts ...option.RequestOption) (r *AccountBillingSe
 //
 // Deprecated: deprecated
 func (r *AccountBillingService) GetProfile(ctx context.Context, accountID string, opts ...option.RequestOption) (res *BillingResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

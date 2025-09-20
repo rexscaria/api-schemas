@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -38,7 +39,7 @@ func NewAccountLoadBalancerPoolService(opts ...option.RequestOption) (r *Account
 
 // Create a new pool.
 func (r *AccountLoadBalancerPoolService) New(ctx context.Context, accountID string, body AccountLoadBalancerPoolNewParams, opts ...option.RequestOption) (res *SchemasLoadBalancingSingleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -50,7 +51,7 @@ func (r *AccountLoadBalancerPoolService) New(ctx context.Context, accountID stri
 
 // Fetch a single configured pool.
 func (r *AccountLoadBalancerPoolService) Get(ctx context.Context, accountID string, poolID string, opts ...option.RequestOption) (res *SchemasLoadBalancingSingleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -66,7 +67,7 @@ func (r *AccountLoadBalancerPoolService) Get(ctx context.Context, accountID stri
 
 // Modify a configured pool.
 func (r *AccountLoadBalancerPoolService) Update(ctx context.Context, accountID string, poolID string, body AccountLoadBalancerPoolUpdateParams, opts ...option.RequestOption) (res *SchemasLoadBalancingSingleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -82,7 +83,7 @@ func (r *AccountLoadBalancerPoolService) Update(ctx context.Context, accountID s
 
 // List configured pools.
 func (r *AccountLoadBalancerPoolService) List(ctx context.Context, accountID string, query AccountLoadBalancerPoolListParams, opts ...option.RequestOption) (res *SchemasResponseCollection, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -94,7 +95,7 @@ func (r *AccountLoadBalancerPoolService) List(ctx context.Context, accountID str
 
 // Delete a configured pool.
 func (r *AccountLoadBalancerPoolService) Delete(ctx context.Context, accountID string, poolID string, opts ...option.RequestOption) (res *SchemasIDResponseLoadBalancing, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -110,7 +111,7 @@ func (r *AccountLoadBalancerPoolService) Delete(ctx context.Context, accountID s
 
 // Fetch the latest pool health status for a single pool.
 func (r *AccountLoadBalancerPoolService) Health(ctx context.Context, accountID string, poolID string, opts ...option.RequestOption) (res *HealthDetails, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -126,7 +127,7 @@ func (r *AccountLoadBalancerPoolService) Health(ctx context.Context, accountID s
 
 // Get the list of resources that reference the provided pool.
 func (r *AccountLoadBalancerPoolService) ListReferences(ctx context.Context, accountID string, poolID string, opts ...option.RequestOption) (res *ReferencesPoolResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -142,7 +143,7 @@ func (r *AccountLoadBalancerPoolService) ListReferences(ctx context.Context, acc
 
 // Apply changes to an existing pool, overwriting the supplied properties.
 func (r *AccountLoadBalancerPoolService) Patch(ctx context.Context, accountID string, poolID string, body AccountLoadBalancerPoolPatchParams, opts ...option.RequestOption) (res *SchemasLoadBalancingSingleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -159,7 +160,7 @@ func (r *AccountLoadBalancerPoolService) Patch(ctx context.Context, accountID st
 // Preview pool health using provided monitor details. The returned preview_id can
 // be used in the preview endpoint to retrieve the results.
 func (r *AccountLoadBalancerPoolService) Preview(ctx context.Context, accountID string, poolID string, body AccountLoadBalancerPoolPreviewParams, opts ...option.RequestOption) (res *PreviewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

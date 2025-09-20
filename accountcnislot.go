@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -37,7 +38,7 @@ func NewAccountCniSlotService(opts ...option.RequestOption) (r *AccountCniSlotSe
 
 // Get information about the specified slot
 func (r *AccountCniSlotService) Get(ctx context.Context, accountID string, slot string, opts ...option.RequestOption) (res *NscSlotInfo, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -53,7 +54,7 @@ func (r *AccountCniSlotService) Get(ctx context.Context, accountID string, slot 
 
 // Retrieve a list of all slots matching the specified parameters
 func (r *AccountCniSlotService) List(ctx context.Context, accountID string, query AccountCniSlotListParams, opts ...option.RequestOption) (res *AccountCniSlotListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -40,7 +41,7 @@ func NewAccountAccessLogScimService(opts ...option.RequestOption) (r *AccountAcc
 // Group resources synced to Cloudflare via the System for Cross-domain Identity
 // Management (SCIM).
 func (r *AccountAccessLogScimService) Updates(ctx context.Context, accountID string, query AccountAccessLogScimUpdatesParams, opts ...option.RequestOption) (res *AccountAccessLogScimUpdatesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -36,7 +37,7 @@ func NewAccountInfrastructureTargetBatchService(opts ...option.RequestOption) (r
 
 // Adds one or more targets.
 func (r *AccountInfrastructureTargetBatchService) New(ctx context.Context, accountID string, body AccountInfrastructureTargetBatchNewParams, opts ...option.RequestOption) (res *AccountInfrastructureTargetBatchNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -50,7 +51,7 @@ func (r *AccountInfrastructureTargetBatchService) New(ctx context.Context, accou
 //
 // Deprecated: deprecated
 func (r *AccountInfrastructureTargetBatchService) Delete(ctx context.Context, accountID string, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")

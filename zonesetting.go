@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"reflect"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -57,7 +58,7 @@ func NewZoneSettingService(opts ...option.RequestOption) (r *ZoneSettingService)
 // Deprecated: This endpoint is deprecated. Zone settings should instead be managed
 // individually.
 func (r *ZoneSettingService) Get(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *ZonesZoneSettingsResponseCollection, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -72,7 +73,7 @@ func (r *ZoneSettingService) Get(ctx context.Context, zoneID string, opts ...opt
 // Deprecated: This endpoint is deprecated. Zone settings should instead be managed
 // individually.
 func (r *ZoneSettingService) Update(ctx context.Context, zoneID string, body ZoneSettingUpdateParams, opts ...option.RequestOption) (res *ZonesZoneSettingsResponseCollection, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -84,7 +85,7 @@ func (r *ZoneSettingService) Update(ctx context.Context, zoneID string, body Zon
 
 // Fetch a single zone setting by name
 func (r *ZoneSettingService) GetSetting(ctx context.Context, zoneID string, settingID string, opts ...option.RequestOption) (res *ZoneSettingGetSettingResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -100,7 +101,7 @@ func (r *ZoneSettingService) GetSetting(ctx context.Context, zoneID string, sett
 
 // Updates a single zone setting by the identifier
 func (r *ZoneSettingService) UpdateSetting(ctx context.Context, zoneID string, settingID string, body ZoneSettingUpdateSettingParams, opts ...option.RequestOption) (res *ZoneSettingUpdateSettingResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

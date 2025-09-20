@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -37,7 +38,7 @@ func NewAccountWorkerDomainService(opts ...option.RequestOption) (r *AccountWork
 
 // Gets a Worker domain.
 func (r *AccountWorkerDomainService) Get(ctx context.Context, accountID string, domainID string, opts ...option.RequestOption) (res *DomainResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -53,7 +54,7 @@ func (r *AccountWorkerDomainService) Get(ctx context.Context, accountID string, 
 
 // Lists all Worker Domains for an account.
 func (r *AccountWorkerDomainService) List(ctx context.Context, accountID string, query AccountWorkerDomainListParams, opts ...option.RequestOption) (res *AccountWorkerDomainListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -65,7 +66,7 @@ func (r *AccountWorkerDomainService) List(ctx context.Context, accountID string,
 
 // Attaches a Worker to a zone and hostname.
 func (r *AccountWorkerDomainService) Attach(ctx context.Context, accountID string, body AccountWorkerDomainAttachParams, opts ...option.RequestOption) (res *DomainResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -77,7 +78,7 @@ func (r *AccountWorkerDomainService) Attach(ctx context.Context, accountID strin
 
 // Detaches a Worker from a zone and hostname.
 func (r *AccountWorkerDomainService) Detach(ctx context.Context, accountID string, domainID string, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")

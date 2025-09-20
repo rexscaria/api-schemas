@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -35,7 +36,7 @@ func NewAccountDeviceNetworkService(opts ...option.RequestOption) (r *AccountDev
 
 // Creates a new device managed network.
 func (r *AccountDeviceNetworkService) New(ctx context.Context, accountID string, body AccountDeviceNetworkNewParams, opts ...option.RequestOption) (res *SingleResponseNetwork, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -47,7 +48,7 @@ func (r *AccountDeviceNetworkService) New(ctx context.Context, accountID string,
 
 // Fetches details for a single managed network.
 func (r *AccountDeviceNetworkService) Get(ctx context.Context, accountID string, networkID string, opts ...option.RequestOption) (res *SingleResponseNetwork, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -63,7 +64,7 @@ func (r *AccountDeviceNetworkService) Get(ctx context.Context, accountID string,
 
 // Updates a configured device managed network.
 func (r *AccountDeviceNetworkService) Update(ctx context.Context, accountID string, networkID string, body AccountDeviceNetworkUpdateParams, opts ...option.RequestOption) (res *SingleResponseNetwork, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -79,7 +80,7 @@ func (r *AccountDeviceNetworkService) Update(ctx context.Context, accountID stri
 
 // Fetches a list of managed networks for an account.
 func (r *AccountDeviceNetworkService) List(ctx context.Context, accountID string, opts ...option.RequestOption) (res *ResponseCollectionDevices, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -92,7 +93,7 @@ func (r *AccountDeviceNetworkService) List(ctx context.Context, accountID string
 // Deletes a device managed network and fetches a list of the remaining device
 // managed networks for an account.
 func (r *AccountDeviceNetworkService) Delete(ctx context.Context, accountID string, networkID string, opts ...option.RequestOption) (res *ResponseCollectionDevices, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

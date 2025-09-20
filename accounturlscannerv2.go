@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -42,7 +43,7 @@ func NewAccountUrlscannerV2Service(opts ...option.RequestOption) (r *AccountUrls
 // take into account scans submitted in bulk have lower priority and may take
 // longer to finish.
 func (r *AccountUrlscannerV2Service) BulkNewScans(ctx context.Context, accountID string, body AccountUrlscannerV2BulkNewScansParams, opts ...option.RequestOption) (res *[]AccountUrlscannerV2BulkNewScansResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -55,7 +56,7 @@ func (r *AccountUrlscannerV2Service) BulkNewScans(ctx context.Context, accountID
 // Submit a URL to scan. Check limits at
 // https://developers.cloudflare.com/security-center/investigate/scan-limits/.
 func (r *AccountUrlscannerV2Service) NewScan(ctx context.Context, accountID string, body AccountUrlscannerV2NewScanParams, opts ...option.RequestOption) (res *AccountUrlscannerV2NewScanResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -68,7 +69,7 @@ func (r *AccountUrlscannerV2Service) NewScan(ctx context.Context, accountID stri
 // Returns a plain text response, with the scan's DOM content as rendered by
 // Chrome.
 func (r *AccountUrlscannerV2Service) GetDom(ctx context.Context, accountID string, scanID string, opts ...option.RequestOption) (res *string, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "text/plain")}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
@@ -86,7 +87,7 @@ func (r *AccountUrlscannerV2Service) GetDom(ctx context.Context, accountID strin
 // Get a URL scan's HAR file. See HAR spec at
 // http://www.softwareishard.com/blog/har-12-spec/.
 func (r *AccountUrlscannerV2Service) GetHar(ctx context.Context, accountID string, scanID string, opts ...option.RequestOption) (res *AccountUrlscannerV2GetHarResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -103,7 +104,7 @@ func (r *AccountUrlscannerV2Service) GetHar(ctx context.Context, accountID strin
 // Returns the raw response of the network request. Find the `response_id` in the
 // `data.requests.response.hash`.
 func (r *AccountUrlscannerV2Service) GetRawResponse(ctx context.Context, accountID string, responseID string, opts ...option.RequestOption) (res *string, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "text/plain")}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
@@ -120,7 +121,7 @@ func (r *AccountUrlscannerV2Service) GetRawResponse(ctx context.Context, account
 
 // Get URL scan by uuid
 func (r *AccountUrlscannerV2Service) GetScan(ctx context.Context, accountID string, scanID string, opts ...option.RequestOption) (res *AccountUrlscannerV2GetScanResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -143,7 +144,7 @@ func (r *AccountUrlscannerV2Service) GetScan(ctx context.Context, accountID stri
 // "microsoft".<br/>- 'apikey:me AND date:[2025-01 TO 2025-02]': my scans from 2025
 // January to 2025 February.
 func (r *AccountUrlscannerV2Service) SearchScans(ctx context.Context, accountID string, query AccountUrlscannerV2SearchScansParams, opts ...option.RequestOption) (res *AccountUrlscannerV2SearchScansResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

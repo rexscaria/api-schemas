@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -37,7 +38,7 @@ func NewAccountAIRunHfNexusflowService(opts ...option.RequestOption) (r *Account
 
 // Execute @hf/nexusflow/starling-lm-7b-beta model.
 func (r *AccountAIRunHfNexusflowService) ExecuteStarlingLm7bBeta(ctx context.Context, accountID string, params AccountAIRunHfNexusflowExecuteStarlingLm7bBetaParams, opts ...option.RequestOption) (res *AccountAIRunHfNexusflowExecuteStarlingLm7bBetaResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -42,7 +43,7 @@ func NewRadarHTTPService(opts ...option.RequestOption) (r *RadarHTTPService) {
 
 // Retrieves the HTTP requests over time.
 func (r *RadarHTTPService) GetTimeseries(ctx context.Context, query RadarHTTPGetTimeseriesParams, opts ...option.RequestOption) (res *RadarHTTPGetTimeseriesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/http/timeseries"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

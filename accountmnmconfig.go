@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -35,7 +36,7 @@ func NewAccountMnmConfigService(opts ...option.RequestOption) (r *AccountMnmConf
 
 // Create a new network monitoring configuration.
 func (r *AccountMnmConfigService) New(ctx context.Context, accountID string, body AccountMnmConfigNewParams, opts ...option.RequestOption) (res *ConfigSingleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -48,7 +49,7 @@ func (r *AccountMnmConfigService) New(ctx context.Context, accountID string, bod
 // Update an existing network monitoring configuration, requires the entire
 // configuration to be updated at once.
 func (r *AccountMnmConfigService) Update(ctx context.Context, accountID string, body AccountMnmConfigUpdateParams, opts ...option.RequestOption) (res *ConfigSingleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -60,7 +61,7 @@ func (r *AccountMnmConfigService) Update(ctx context.Context, accountID string, 
 
 // Lists default sampling, router IPs and warp devices for account.
 func (r *AccountMnmConfigService) List(ctx context.Context, accountID string, opts ...option.RequestOption) (res *ConfigSingleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -72,7 +73,7 @@ func (r *AccountMnmConfigService) List(ctx context.Context, accountID string, op
 
 // Delete an existing network monitoring configuration.
 func (r *AccountMnmConfigService) Delete(ctx context.Context, accountID string, opts ...option.RequestOption) (res *ConfigSingleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -84,7 +85,7 @@ func (r *AccountMnmConfigService) Delete(ctx context.Context, accountID string, 
 
 // Lists default sampling, router IPs, warp devices, and rules for account.
 func (r *AccountMnmConfigService) ListFull(ctx context.Context, accountID string, opts ...option.RequestOption) (res *ConfigSingleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -96,7 +97,7 @@ func (r *AccountMnmConfigService) ListFull(ctx context.Context, accountID string
 
 // Update fields in an existing network monitoring configuration.
 func (r *AccountMnmConfigService) UpdateFields(ctx context.Context, accountID string, body AccountMnmConfigUpdateFieldsParams, opts ...option.RequestOption) (res *ConfigSingleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

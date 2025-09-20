@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -37,7 +38,7 @@ func NewAccountRoleService(opts ...option.RequestOption) (r *AccountRoleService)
 
 // Get information about a specific role for an account.
 func (r *AccountRoleService) Get(ctx context.Context, accountID string, roleID string, opts ...option.RequestOption) (res *AccountRoleGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -53,7 +54,7 @@ func (r *AccountRoleService) Get(ctx context.Context, accountID string, roleID s
 
 // Get all available roles for an account.
 func (r *AccountRoleService) List(ctx context.Context, accountID string, query AccountRoleListParams, opts ...option.RequestOption) (res *AccountRoleListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

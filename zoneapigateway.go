@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -49,7 +50,7 @@ func NewZoneAPIGatewayService(opts ...option.RequestOption) (r *ZoneAPIGatewaySe
 
 // Retrieve operations and features as OpenAPI schemas
 func (r *ZoneAPIGatewayService) GetSchemas(ctx context.Context, zoneID string, query ZoneAPIGatewayGetSchemasParams, opts ...option.RequestOption) (res *ZoneAPIGatewayGetSchemasResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

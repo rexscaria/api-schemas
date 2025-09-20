@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -36,7 +37,7 @@ func NewRadarNetflowTopService(opts ...option.RequestOption) (r *RadarNetflowTop
 
 // Retrieves the top autonomous systems by network traffic (NetFlows).
 func (r *RadarNetflowTopService) GetTopAs(ctx context.Context, query RadarNetflowTopGetTopAsParams, opts ...option.RequestOption) (res *RadarNetflowTopGetTopAsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/netflows/top/ases"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -44,7 +45,7 @@ func (r *RadarNetflowTopService) GetTopAs(ctx context.Context, query RadarNetflo
 
 // Retrieves the top locations by network traffic (NetFlows).
 func (r *RadarNetflowTopService) GetTopLocations(ctx context.Context, query RadarNetflowTopGetTopLocationsParams, opts ...option.RequestOption) (res *RadarNetflowTopGetTopLocationsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/netflows/top/locations"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

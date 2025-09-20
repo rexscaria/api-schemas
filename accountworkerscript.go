@@ -11,6 +11,7 @@ import (
 	"mime/multipart"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apiform"
@@ -62,7 +63,7 @@ func NewAccountWorkerScriptService(opts ...option.RequestOption) (r *AccountWork
 
 // Fetch a list of uploaded workers.
 func (r *AccountWorkerScriptService) List(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountWorkerScriptListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -74,7 +75,7 @@ func (r *AccountWorkerScriptService) List(ctx context.Context, accountID string,
 
 // Delete your worker. This call has no response body on a successful delete.
 func (r *AccountWorkerScriptService) Delete(ctx context.Context, accountID string, scriptName string, body AccountWorkerScriptDeleteParams, opts ...option.RequestOption) (res *NullResult, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -92,7 +93,7 @@ func (r *AccountWorkerScriptService) Delete(ctx context.Context, accountID strin
 // more about the direct uploads of assets, see
 // https://developers.cloudflare.com/workers/static-assets/direct-upload/.
 func (r *AccountWorkerScriptService) NewAssetsUploadSession(ctx context.Context, accountID string, scriptName string, body AccountWorkerScriptNewAssetsUploadSessionParams, opts ...option.RequestOption) (res *UploadSessionResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -109,7 +110,7 @@ func (r *AccountWorkerScriptService) NewAssetsUploadSession(ctx context.Context,
 // Fetch raw script content for your worker. Note this is the original script
 // content, not JSON encoded.
 func (r *AccountWorkerScriptService) Download(ctx context.Context, accountID string, scriptName string, opts ...option.RequestOption) (res *string, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "application/javascript")}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
@@ -128,7 +129,7 @@ func (r *AccountWorkerScriptService) Download(ctx context.Context, accountID str
 // docs:
 // https://developers.cloudflare.com/workers/configuration/multipart-upload-metadata/.
 func (r *AccountWorkerScriptService) Upload(ctx context.Context, accountID string, scriptName string, body AccountWorkerScriptUploadParams, opts ...option.RequestOption) (res *AccountWorkerScriptUploadResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

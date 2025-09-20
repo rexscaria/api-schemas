@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -36,7 +37,7 @@ func NewAccountAccessKeyService(opts ...option.RequestOption) (r *AccountAccessK
 
 // Gets the Access key rotation settings for an account.
 func (r *AccountAccessKeyService) Get(ctx context.Context, accountID string, opts ...option.RequestOption) (res *SingleResponseKey, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -48,7 +49,7 @@ func (r *AccountAccessKeyService) Get(ctx context.Context, accountID string, opt
 
 // Updates the Access key rotation settings for an account.
 func (r *AccountAccessKeyService) Update(ctx context.Context, accountID string, body AccountAccessKeyUpdateParams, opts ...option.RequestOption) (res *SingleResponseKey, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -60,7 +61,7 @@ func (r *AccountAccessKeyService) Update(ctx context.Context, accountID string, 
 
 // Perfoms a key rotation for an account.
 func (r *AccountAccessKeyService) Rotate(ctx context.Context, accountID string, opts ...option.RequestOption) (res *SingleResponseKey, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

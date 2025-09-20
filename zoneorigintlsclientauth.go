@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -40,7 +41,7 @@ func NewZoneOriginTlsClientAuthService(opts ...option.RequestOption) (r *ZoneOri
 
 // Get Certificate Details
 func (r *ZoneOriginTlsClientAuthService) Get(ctx context.Context, zoneID string, certificateID string, opts ...option.RequestOption) (res *CertificateResponseSingleOrigin, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -56,7 +57,7 @@ func (r *ZoneOriginTlsClientAuthService) Get(ctx context.Context, zoneID string,
 
 // List Certificates
 func (r *ZoneOriginTlsClientAuthService) List(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *ZoneOriginTlsClientAuthListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -68,7 +69,7 @@ func (r *ZoneOriginTlsClientAuthService) List(ctx context.Context, zoneID string
 
 // Delete Certificate
 func (r *ZoneOriginTlsClientAuthService) Delete(ctx context.Context, zoneID string, certificateID string, opts ...option.RequestOption) (res *CertificateResponseSingleOrigin, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -88,7 +89,7 @@ func (r *ZoneOriginTlsClientAuthService) Delete(ctx context.Context, zoneID stri
 // zone-level authenticated origin pulls by making a PUT call to settings endpoint
 // to see the uploaded certificate in use.
 func (r *ZoneOriginTlsClientAuthService) Upload(ctx context.Context, zoneID string, body ZoneOriginTlsClientAuthUploadParams, opts ...option.RequestOption) (res *CertificateResponseSingleOrigin, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

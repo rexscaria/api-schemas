@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -35,7 +36,7 @@ func NewZoneEmailRoutingRuleCatchAllService(opts ...option.RequestOption) (r *Zo
 
 // Get information on the default catch-all routing rule.
 func (r *ZoneEmailRoutingRuleCatchAllService) Get(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *EmailCatchAllRuleResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -48,7 +49,7 @@ func (r *ZoneEmailRoutingRuleCatchAllService) Get(ctx context.Context, zoneID st
 // Enable or disable catch-all routing rule, or change action to forward to
 // specific destination address.
 func (r *ZoneEmailRoutingRuleCatchAllService) Update(ctx context.Context, zoneID string, body ZoneEmailRoutingRuleCatchAllUpdateParams, opts ...option.RequestOption) (res *EmailCatchAllRuleResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

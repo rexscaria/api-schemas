@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -38,7 +39,7 @@ func NewAccountDexHTTPTestService(opts ...option.RequestOption) (r *AccountDexHT
 // Get test details and aggregate performance metrics for an http test for a given
 // time period between 1 hour and 7 days.
 func (r *AccountDexHTTPTestService) Get(ctx context.Context, accountID string, testID string, query AccountDexHTTPTestGetParams, opts ...option.RequestOption) (res *AccountDexHTTPTestGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -55,7 +56,7 @@ func (r *AccountDexHTTPTestService) Get(ctx context.Context, accountID string, t
 // Get percentiles for an http test for a given time period between 1 hour and 7
 // days.
 func (r *AccountDexHTTPTestService) GetPercentiles(ctx context.Context, accountID string, testID string, query AccountDexHTTPTestGetPercentilesParams, opts ...option.RequestOption) (res *AccountDexHTTPTestGetPercentilesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

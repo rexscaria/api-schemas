@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -38,7 +39,7 @@ func NewZoneCacheRegionalTieredCacheService(opts ...option.RequestOption) (r *Zo
 // upper tier. This can help improve performance for smart and custom tiered cache
 // topologies.
 func (r *ZoneCacheRegionalTieredCacheService) Get(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *ZoneCacheRegionalTieredCacheGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -52,7 +53,7 @@ func (r *ZoneCacheRegionalTieredCacheService) Get(ctx context.Context, zoneID st
 // upper tier. This can help improve performance for smart and custom tiered cache
 // topologies.
 func (r *ZoneCacheRegionalTieredCacheService) Update(ctx context.Context, zoneID string, body ZoneCacheRegionalTieredCacheUpdateParams, opts ...option.RequestOption) (res *ZoneCacheRegionalTieredCacheUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

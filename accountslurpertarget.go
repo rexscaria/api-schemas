@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -35,7 +36,7 @@ func NewAccountSlurperTargetService(opts ...option.RequestOption) (r *AccountSlu
 
 // Check whether tokens are valid against the target bucket
 func (r *AccountSlurperTargetService) CheckConnectivity(ctx context.Context, accountID string, body AccountSlurperTargetCheckConnectivityParams, opts ...option.RequestOption) (res *AccountSlurperTargetCheckConnectivityResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

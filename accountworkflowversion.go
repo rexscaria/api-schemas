@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -38,7 +39,7 @@ func NewAccountWorkflowVersionService(opts ...option.RequestOption) (r *AccountW
 
 // Get Workflow version details
 func (r *AccountWorkflowVersionService) Get(ctx context.Context, accountID string, workflowName string, versionID string, opts ...option.RequestOption) (res *AccountWorkflowVersionGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -58,7 +59,7 @@ func (r *AccountWorkflowVersionService) Get(ctx context.Context, accountID strin
 
 // List deployed Workflow versions
 func (r *AccountWorkflowVersionService) List(ctx context.Context, accountID string, workflowName string, query AccountWorkflowVersionListParams, opts ...option.RequestOption) (res *AccountWorkflowVersionListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

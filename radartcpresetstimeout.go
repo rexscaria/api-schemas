@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -37,7 +38,7 @@ func NewRadarTcpResetsTimeoutService(opts ...option.RequestOption) (r *RadarTcpR
 // Retrieves the distribution of connection stage by TCP connections terminated
 // within the first 10 packets by a reset or timeout.
 func (r *RadarTcpResetsTimeoutService) Summary(ctx context.Context, query RadarTcpResetsTimeoutSummaryParams, opts ...option.RequestOption) (res *RadarTcpResetsTimeoutSummaryResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/tcp_resets_timeouts/summary"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -46,7 +47,7 @@ func (r *RadarTcpResetsTimeoutService) Summary(ctx context.Context, query RadarT
 // Retrieves the distribution of connection stage by TCP connections terminated
 // within the first 10 packets by a reset or timeout over time.
 func (r *RadarTcpResetsTimeoutService) TimeseriesGroups(ctx context.Context, query RadarTcpResetsTimeoutTimeseriesGroupsParams, opts ...option.RequestOption) (res *RadarTcpResetsTimeoutTimeseriesGroupsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/tcp_resets_timeouts/timeseries_groups"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -37,7 +38,7 @@ func NewAccountCniCniService(opts ...option.RequestOption) (r *AccountCniCniServ
 
 // Create a new CNI object
 func (r *AccountCniCniService) New(ctx context.Context, accountID string, body AccountCniCniNewParams, opts ...option.RequestOption) (res *NscCni, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -49,7 +50,7 @@ func (r *AccountCniCniService) New(ctx context.Context, accountID string, body A
 
 // Get information about a CNI object
 func (r *AccountCniCniService) Get(ctx context.Context, accountID string, cni string, opts ...option.RequestOption) (res *NscCni, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -65,7 +66,7 @@ func (r *AccountCniCniService) Get(ctx context.Context, accountID string, cni st
 
 // Modify stored information about a CNI object
 func (r *AccountCniCniService) Update(ctx context.Context, accountID string, cni string, body AccountCniCniUpdateParams, opts ...option.RequestOption) (res *NscCni, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -81,7 +82,7 @@ func (r *AccountCniCniService) Update(ctx context.Context, accountID string, cni
 
 // List existing CNI objects
 func (r *AccountCniCniService) List(ctx context.Context, accountID string, query AccountCniCniListParams, opts ...option.RequestOption) (res *AccountCniCniListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -93,7 +94,7 @@ func (r *AccountCniCniService) List(ctx context.Context, accountID string, query
 
 // Delete a specified CNI object
 func (r *AccountCniCniService) Delete(ctx context.Context, accountID string, cni string, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")

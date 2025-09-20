@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/requestconfig"
@@ -34,7 +35,7 @@ func NewZoneSettingZarazWorkflowService(opts ...option.RequestOption) (r *ZoneSe
 
 // Gets Zaraz workflow for a zone.
 func (r *ZoneSettingZarazWorkflowService) Get(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *ZarazWorkflowResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -46,7 +47,7 @@ func (r *ZoneSettingZarazWorkflowService) Get(ctx context.Context, zoneID string
 
 // Updates Zaraz workflow for a zone.
 func (r *ZoneSettingZarazWorkflowService) Update(ctx context.Context, zoneID string, body ZoneSettingZarazWorkflowUpdateParams, opts ...option.RequestOption) (res *ZarazWorkflowResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

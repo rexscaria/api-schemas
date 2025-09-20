@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -36,7 +37,7 @@ func NewRadarAnnotationOutageService(opts ...option.RequestOption) (r *RadarAnno
 
 // Retrieves the number of outages by location.
 func (r *RadarAnnotationOutageService) GetByLocation(ctx context.Context, query RadarAnnotationOutageGetByLocationParams, opts ...option.RequestOption) (res *RadarAnnotationOutageGetByLocationResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/annotations/outages/locations"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -44,7 +45,7 @@ func (r *RadarAnnotationOutageService) GetByLocation(ctx context.Context, query 
 
 // Retrieves the latest Internet outages and anomalies.
 func (r *RadarAnnotationOutageService) GetLatest(ctx context.Context, query RadarAnnotationOutageGetLatestParams, opts ...option.RequestOption) (res *RadarAnnotationOutageGetLatestResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/annotations/outages"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

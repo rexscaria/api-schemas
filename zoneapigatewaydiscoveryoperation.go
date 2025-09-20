@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -37,7 +38,7 @@ func NewZoneAPIGatewayDiscoveryOperationService(opts ...option.RequestOption) (r
 
 // Update the `state` on one or more discovered operations
 func (r *ZoneAPIGatewayDiscoveryOperationService) Update(ctx context.Context, zoneID string, body ZoneAPIGatewayDiscoveryOperationUpdateParams, opts ...option.RequestOption) (res *ZoneAPIGatewayDiscoveryOperationUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -49,7 +50,7 @@ func (r *ZoneAPIGatewayDiscoveryOperationService) Update(ctx context.Context, zo
 
 // Retrieve the most up to date view of discovered operations
 func (r *ZoneAPIGatewayDiscoveryOperationService) List(ctx context.Context, zoneID string, query ZoneAPIGatewayDiscoveryOperationListParams, opts ...option.RequestOption) (res *ZoneAPIGatewayDiscoveryOperationListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -61,7 +62,7 @@ func (r *ZoneAPIGatewayDiscoveryOperationService) List(ctx context.Context, zone
 
 // Update the `state` on a discovered operation
 func (r *ZoneAPIGatewayDiscoveryOperationService) UpdateSingle(ctx context.Context, zoneID string, operationID SchemasUuidParam, body ZoneAPIGatewayDiscoveryOperationUpdateSingleParams, opts ...option.RequestOption) (res *ZoneAPIGatewayDiscoveryOperationUpdateSingleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

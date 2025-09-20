@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -37,7 +38,7 @@ func NewAccountAccessAppPolicyService(opts ...option.RequestOption) (r *AccountA
 // longer be exclusively scoped to the application. Further updates to the policy
 // should go through the /accounts/{account_id}/policies/{uid} endpoint.
 func (r *AccountAccessAppPolicyService) MakeReusable(ctx context.Context, accountID string, appID string, policyID string, opts ...option.RequestOption) (res *ResponseCollectionAppPolicies, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

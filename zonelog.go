@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -43,7 +44,7 @@ func NewZoneLogService(opts ...option.RequestOption) (r *ZoneLogService) {
 // return zero, one, or more records (ray ids are not unique).
 func (r *ZoneLogService) GetRayidLogs(ctx context.Context, zoneID string, rayID string, query ZoneLogGetRayidLogsParams, opts ...option.RequestOption) (res *interface{}, err error) {
 	var env apijson.UnionUnmarshaler[interface{}]
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

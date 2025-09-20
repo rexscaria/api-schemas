@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -42,7 +43,7 @@ func NewZoneCacheOriginPostQuantumEncryptionService(opts ...option.RequestOption
 // algorithms are advertised but only used when requested by the origin, and off
 // means that PQ algorithms are not advertised
 func (r *ZoneCacheOriginPostQuantumEncryptionService) Get(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *ZoneCacheOriginPostQuantumEncryptionGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -59,7 +60,7 @@ func (r *ZoneCacheOriginPostQuantumEncryptionService) Get(ctx context.Context, z
 // algorithms are advertised but only used when requested by the origin, and off
 // means that PQ algorithms are not advertised
 func (r *ZoneCacheOriginPostQuantumEncryptionService) Update(ctx context.Context, zoneID string, body ZoneCacheOriginPostQuantumEncryptionUpdateParams, opts ...option.RequestOption) (res *ZoneCacheOriginPostQuantumEncryptionUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

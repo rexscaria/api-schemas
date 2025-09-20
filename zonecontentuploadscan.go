@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/requestconfig"
@@ -36,7 +37,7 @@ func NewZoneContentUploadScanService(opts ...option.RequestOption) (r *ZoneConte
 
 // Disable Content Scanning.
 func (r *ZoneContentUploadScanService) Disable(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *APIResponseCommon, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -48,7 +49,7 @@ func (r *ZoneContentUploadScanService) Disable(ctx context.Context, zoneID strin
 
 // Enable Content Scanning.
 func (r *ZoneContentUploadScanService) Enable(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *APIResponseCommon, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -60,7 +61,7 @@ func (r *ZoneContentUploadScanService) Enable(ctx context.Context, zoneID string
 
 // Retrieve the current status of Content Scanning.
 func (r *ZoneContentUploadScanService) GetStatus(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *ZoneContentUploadScanGetStatusResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

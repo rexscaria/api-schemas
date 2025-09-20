@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -35,7 +36,7 @@ func NewAccountPageProjectDomainService(opts ...option.RequestOption) (r *Accoun
 
 // Add a new domain for the Pages project.
 func (r *AccountPageProjectDomainService) New(ctx context.Context, accountID string, projectName string, body AccountPageProjectDomainNewParams, opts ...option.RequestOption) (res *ResponseSingleDomain, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -51,7 +52,7 @@ func (r *AccountPageProjectDomainService) New(ctx context.Context, accountID str
 
 // Fetch a single domain.
 func (r *AccountPageProjectDomainService) Get(ctx context.Context, accountID string, projectName string, domainName string, opts ...option.RequestOption) (res *ResponseSingleDomain, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -71,7 +72,7 @@ func (r *AccountPageProjectDomainService) Get(ctx context.Context, accountID str
 
 // Retry the validation status of a single domain.
 func (r *AccountPageProjectDomainService) Update(ctx context.Context, accountID string, projectName string, domainName string, body AccountPageProjectDomainUpdateParams, opts ...option.RequestOption) (res *ResponseSingleDomain, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -91,7 +92,7 @@ func (r *AccountPageProjectDomainService) Update(ctx context.Context, accountID 
 
 // Fetch a list of all domains associated with a Pages project.
 func (r *AccountPageProjectDomainService) List(ctx context.Context, accountID string, projectName string, opts ...option.RequestOption) (res *AccountPageProjectDomainListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -107,7 +108,7 @@ func (r *AccountPageProjectDomainService) List(ctx context.Context, accountID st
 
 // Delete a Pages project's domain.
 func (r *AccountPageProjectDomainService) Delete(ctx context.Context, accountID string, projectName string, domainName string, opts ...option.RequestOption) (res *AccountPageProjectDomainDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

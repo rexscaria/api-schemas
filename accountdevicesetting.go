@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -35,7 +36,7 @@ func NewAccountDeviceSettingService(opts ...option.RequestOption) (r *AccountDev
 
 // Describes the current device settings for a Zero Trust account.
 func (r *AccountDeviceSettingService) Get(ctx context.Context, accountID string, opts ...option.RequestOption) (res *ZeroTrustAccountDeviceSettingsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -47,7 +48,7 @@ func (r *AccountDeviceSettingService) Get(ctx context.Context, accountID string,
 
 // Updates the current device settings for a Zero Trust account.
 func (r *AccountDeviceSettingService) Update(ctx context.Context, accountID string, body AccountDeviceSettingUpdateParams, opts ...option.RequestOption) (res *ZeroTrustAccountDeviceSettingsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -59,7 +60,7 @@ func (r *AccountDeviceSettingService) Update(ctx context.Context, accountID stri
 
 // Patches the current device settings for a Zero Trust account.
 func (r *AccountDeviceSettingService) Patch(ctx context.Context, accountID string, body AccountDeviceSettingPatchParams, opts ...option.RequestOption) (res *ZeroTrustAccountDeviceSettingsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

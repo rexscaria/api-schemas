@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -38,7 +39,7 @@ func NewZoneCustomCertificateService(opts ...option.RequestOption) (r *ZoneCusto
 
 // Upload a new SSL certificate for a zone.
 func (r *ZoneCustomCertificateService) New(ctx context.Context, zoneID string, body ZoneCustomCertificateNewParams, opts ...option.RequestOption) (res *CertificateResponseSingleCustom, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -50,7 +51,7 @@ func (r *ZoneCustomCertificateService) New(ctx context.Context, zoneID string, b
 
 // SSL Configuration Details
 func (r *ZoneCustomCertificateService) Get(ctx context.Context, zoneID string, customCertificateID string, opts ...option.RequestOption) (res *CertificateResponseSingleCustom, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -68,7 +69,7 @@ func (r *ZoneCustomCertificateService) Get(ctx context.Context, zoneID string, c
 // a configuration for sni_custom certificates will result in a new resource id
 // being returned, and the previous one being deleted.
 func (r *ZoneCustomCertificateService) Update(ctx context.Context, zoneID string, customCertificateID string, body ZoneCustomCertificateUpdateParams, opts ...option.RequestOption) (res *CertificateResponseSingleCustom, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -86,7 +87,7 @@ func (r *ZoneCustomCertificateService) Update(ctx context.Context, zoneID string
 // priority will break ties across overlapping 'legacy_custom' certificates, but
 // 'legacy_custom' certificates will always supercede 'sni_custom' certificates.
 func (r *ZoneCustomCertificateService) List(ctx context.Context, zoneID string, query ZoneCustomCertificateListParams, opts ...option.RequestOption) (res *CertificateResponseCollection, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -98,7 +99,7 @@ func (r *ZoneCustomCertificateService) List(ctx context.Context, zoneID string, 
 
 // Remove a SSL certificate from a zone.
 func (r *ZoneCustomCertificateService) Delete(ctx context.Context, zoneID string, customCertificateID string, opts ...option.RequestOption) (res *ZoneCustomCertificateDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -116,7 +117,7 @@ func (r *ZoneCustomCertificateService) Delete(ctx context.Context, zoneID string
 // should be used during a request. The higher priority will break ties across
 // overlapping 'legacy_custom' certificates.
 func (r *ZoneCustomCertificateService) Prioritize(ctx context.Context, zoneID string, body ZoneCustomCertificatePrioritizeParams, opts ...option.RequestOption) (res *CertificateResponseCollection, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

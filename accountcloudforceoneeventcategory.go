@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -35,7 +36,7 @@ func NewAccountCloudforceOneEventCategoryService(opts ...option.RequestOption) (
 
 // Creates a new category
 func (r *AccountCloudforceOneEventCategoryService) New(ctx context.Context, accountID string, body AccountCloudforceOneEventCategoryNewParams, opts ...option.RequestOption) (res *AccountCloudforceOneEventCategoryNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -47,7 +48,7 @@ func (r *AccountCloudforceOneEventCategoryService) New(ctx context.Context, acco
 
 // Reads a category
 func (r *AccountCloudforceOneEventCategoryService) Get(ctx context.Context, accountID string, categoryID string, opts ...option.RequestOption) (res *AccountCloudforceOneEventCategoryGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -63,7 +64,7 @@ func (r *AccountCloudforceOneEventCategoryService) Get(ctx context.Context, acco
 
 // Updates a category
 func (r *AccountCloudforceOneEventCategoryService) Update(ctx context.Context, accountID string, categoryID string, body AccountCloudforceOneEventCategoryUpdateParams, opts ...option.RequestOption) (res *AccountCloudforceOneEventCategoryUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -79,7 +80,7 @@ func (r *AccountCloudforceOneEventCategoryService) Update(ctx context.Context, a
 
 // Lists categories
 func (r *AccountCloudforceOneEventCategoryService) List(ctx context.Context, accountID string, opts ...option.RequestOption) (res *[]AccountCloudforceOneEventCategoryListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -91,7 +92,7 @@ func (r *AccountCloudforceOneEventCategoryService) List(ctx context.Context, acc
 
 // Deletes a category
 func (r *AccountCloudforceOneEventCategoryService) Delete(ctx context.Context, accountID string, categoryID string, opts ...option.RequestOption) (res *AccountCloudforceOneEventCategoryDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

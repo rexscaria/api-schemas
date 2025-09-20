@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -44,7 +45,7 @@ func NewAccountAIGatewayGatewayService(opts ...option.RequestOption) (r *Account
 
 // Create a new Gateway
 func (r *AccountAIGatewayGatewayService) NewGateway(ctx context.Context, accountID string, body AccountAIGatewayGatewayNewGatewayParams, opts ...option.RequestOption) (res *AccountAIGatewayGatewayNewGatewayResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -56,7 +57,7 @@ func (r *AccountAIGatewayGatewayService) NewGateway(ctx context.Context, account
 
 // Delete a Gateway
 func (r *AccountAIGatewayGatewayService) DeleteGateway(ctx context.Context, accountID string, id string, opts ...option.RequestOption) (res *AccountAIGatewayGatewayDeleteGatewayResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -72,7 +73,7 @@ func (r *AccountAIGatewayGatewayService) DeleteGateway(ctx context.Context, acco
 
 // Fetch a Gateway
 func (r *AccountAIGatewayGatewayService) FetchGateway(ctx context.Context, accountID string, id string, opts ...option.RequestOption) (res *AccountAIGatewayGatewayFetchGatewayResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -88,7 +89,7 @@ func (r *AccountAIGatewayGatewayService) FetchGateway(ctx context.Context, accou
 
 // Get Gateway URL
 func (r *AccountAIGatewayGatewayService) GetGatewayURL(ctx context.Context, accountID string, gatewayID string, provider string, opts ...option.RequestOption) (res *AccountAIGatewayGatewayGetGatewayURLResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -108,7 +109,7 @@ func (r *AccountAIGatewayGatewayService) GetGatewayURL(ctx context.Context, acco
 
 // List Gateways
 func (r *AccountAIGatewayGatewayService) ListGateways(ctx context.Context, accountID string, query AccountAIGatewayGatewayListGatewaysParams, opts ...option.RequestOption) (res *AccountAIGatewayGatewayListGatewaysResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -120,7 +121,7 @@ func (r *AccountAIGatewayGatewayService) ListGateways(ctx context.Context, accou
 
 // Update a Gateway
 func (r *AccountAIGatewayGatewayService) UpdateGateway(ctx context.Context, accountID string, id string, body AccountAIGatewayGatewayUpdateGatewayParams, opts ...option.RequestOption) (res *AccountAIGatewayGatewayUpdateGatewayResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -35,7 +36,7 @@ func NewAccountPcapOwnershipService(opts ...option.RequestOption) (r *AccountPca
 
 // Adds an AWS or GCP bucket to use with full packet captures.
 func (r *AccountPcapOwnershipService) New(ctx context.Context, accountID string, body AccountPcapOwnershipNewParams, opts ...option.RequestOption) (res *OwnershipSingleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -47,7 +48,7 @@ func (r *AccountPcapOwnershipService) New(ctx context.Context, accountID string,
 
 // List all buckets configured for use with PCAPs API.
 func (r *AccountPcapOwnershipService) List(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountPcapOwnershipListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -59,7 +60,7 @@ func (r *AccountPcapOwnershipService) List(ctx context.Context, accountID string
 
 // Deletes buckets added to the packet captures API.
 func (r *AccountPcapOwnershipService) Delete(ctx context.Context, accountID string, ownershipID string, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
@@ -76,7 +77,7 @@ func (r *AccountPcapOwnershipService) Delete(ctx context.Context, accountID stri
 
 // Validates buckets added to the packet captures API.
 func (r *AccountPcapOwnershipService) Validate(ctx context.Context, accountID string, body AccountPcapOwnershipValidateParams, opts ...option.RequestOption) (res *OwnershipSingleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

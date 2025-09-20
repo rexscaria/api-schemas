@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"mime/multipart"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apiform"
@@ -40,7 +41,7 @@ func NewAccountStreamWatermarkService(opts ...option.RequestOption) (r *AccountS
 // Creates watermark profiles using a single `HTTP POST multipart/form-data`
 // request.
 func (r *AccountStreamWatermarkService) New(ctx context.Context, accountID string, body AccountStreamWatermarkNewParams, opts ...option.RequestOption) (res *WatermarkResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -52,7 +53,7 @@ func (r *AccountStreamWatermarkService) New(ctx context.Context, accountID strin
 
 // Retrieves details for a single watermark profile.
 func (r *AccountStreamWatermarkService) Get(ctx context.Context, accountID string, identifier string, opts ...option.RequestOption) (res *WatermarkResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -68,7 +69,7 @@ func (r *AccountStreamWatermarkService) Get(ctx context.Context, accountID strin
 
 // Lists all watermark profiles for an account.
 func (r *AccountStreamWatermarkService) List(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountStreamWatermarkListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -80,7 +81,7 @@ func (r *AccountStreamWatermarkService) List(ctx context.Context, accountID stri
 
 // Deletes a watermark profile.
 func (r *AccountStreamWatermarkService) Delete(ctx context.Context, accountID string, identifier string, opts ...option.RequestOption) (res *AccountStreamWatermarkDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

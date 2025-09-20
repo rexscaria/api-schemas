@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -40,7 +41,7 @@ func NewZoneAPIGatewayOperationSchemaValidationService(opts ...option.RequestOpt
 // [Schema Validation API](https://developers.cloudflare.com/api/resources/schema_validation/)
 // instead.
 func (r *ZoneAPIGatewayOperationSchemaValidationService) Get(ctx context.Context, zoneID string, operationID string, opts ...option.RequestOption) (res *SchemaValidationSettings, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -60,7 +61,7 @@ func (r *ZoneAPIGatewayOperationSchemaValidationService) Get(ctx context.Context
 // [Schema Validation API](https://developers.cloudflare.com/api/resources/schema_validation/)
 // instead.
 func (r *ZoneAPIGatewayOperationSchemaValidationService) Update(ctx context.Context, zoneID string, operationID string, body ZoneAPIGatewayOperationSchemaValidationUpdateParams, opts ...option.RequestOption) (res *SchemaValidationSettings, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -80,7 +81,7 @@ func (r *ZoneAPIGatewayOperationSchemaValidationService) Update(ctx context.Cont
 // [Schema Validation API](https://developers.cloudflare.com/api/resources/schema_validation/)
 // instead.
 func (r *ZoneAPIGatewayOperationSchemaValidationService) UpdateMultiple(ctx context.Context, zoneID string, body ZoneAPIGatewayOperationSchemaValidationUpdateMultipleParams, opts ...option.RequestOption) (res *ZoneAPIGatewayOperationSchemaValidationUpdateMultipleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

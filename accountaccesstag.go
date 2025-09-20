@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -36,7 +37,7 @@ func NewAccountAccessTagService(opts ...option.RequestOption) (r *AccountAccessT
 
 // Create a tag
 func (r *AccountAccessTagService) New(ctx context.Context, accountID string, body AccountAccessTagNewParams, opts ...option.RequestOption) (res *SingleResponseTag, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -48,7 +49,7 @@ func (r *AccountAccessTagService) New(ctx context.Context, accountID string, bod
 
 // Get a tag
 func (r *AccountAccessTagService) Get(ctx context.Context, accountID string, tagName string, opts ...option.RequestOption) (res *SingleResponseTag, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -64,7 +65,7 @@ func (r *AccountAccessTagService) Get(ctx context.Context, accountID string, tag
 
 // Update a tag
 func (r *AccountAccessTagService) Update(ctx context.Context, accountID string, tagName string, body AccountAccessTagUpdateParams, opts ...option.RequestOption) (res *SingleResponseTag, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -80,7 +81,7 @@ func (r *AccountAccessTagService) Update(ctx context.Context, accountID string, 
 
 // List tags
 func (r *AccountAccessTagService) List(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountAccessTagListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -92,7 +93,7 @@ func (r *AccountAccessTagService) List(ctx context.Context, accountID string, op
 
 // Delete a tag
 func (r *AccountAccessTagService) Delete(ctx context.Context, accountID string, tagName string, opts ...option.RequestOption) (res *AccountAccessTagDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

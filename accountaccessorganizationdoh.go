@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -36,7 +37,7 @@ func NewAccountAccessOrganizationDohService(opts ...option.RequestOption) (r *Ac
 
 // Returns the DoH settings for your Zero Trust organization.
 func (r *AccountAccessOrganizationDohService) Get(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountAccessOrganizationDohGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -48,7 +49,7 @@ func (r *AccountAccessOrganizationDohService) Get(ctx context.Context, accountID
 
 // Updates the DoH settings for your Zero Trust organization.
 func (r *AccountAccessOrganizationDohService) Update(ctx context.Context, accountID string, body AccountAccessOrganizationDohUpdateParams, opts ...option.RequestOption) (res *AccountAccessOrganizationDohUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

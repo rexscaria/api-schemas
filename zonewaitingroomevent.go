@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -43,7 +44,7 @@ func NewZoneWaitingRoomEventService(opts ...option.RequestOption) (r *ZoneWaitin
 // inherit from the waiting room's configuration. Note that events cannot overlap
 // with each other, so only one event can be active at a time.
 func (r *ZoneWaitingRoomEventService) New(ctx context.Context, zoneID string, waitingRoomID string, body ZoneWaitingRoomEventNewParams, opts ...option.RequestOption) (res *EventResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -59,7 +60,7 @@ func (r *ZoneWaitingRoomEventService) New(ctx context.Context, zoneID string, wa
 
 // Fetches a single configured event for a waiting room.
 func (r *ZoneWaitingRoomEventService) Get(ctx context.Context, zoneID string, waitingRoomID string, eventID string, opts ...option.RequestOption) (res *EventResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -79,7 +80,7 @@ func (r *ZoneWaitingRoomEventService) Get(ctx context.Context, zoneID string, wa
 
 // Updates a configured event for a waiting room.
 func (r *ZoneWaitingRoomEventService) Update(ctx context.Context, zoneID string, waitingRoomID string, eventID string, body ZoneWaitingRoomEventUpdateParams, opts ...option.RequestOption) (res *EventResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -99,7 +100,7 @@ func (r *ZoneWaitingRoomEventService) Update(ctx context.Context, zoneID string,
 
 // Lists events for a waiting room.
 func (r *ZoneWaitingRoomEventService) List(ctx context.Context, zoneID string, waitingRoomID string, query ZoneWaitingRoomEventListParams, opts ...option.RequestOption) (res *ZoneWaitingRoomEventListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -115,7 +116,7 @@ func (r *ZoneWaitingRoomEventService) List(ctx context.Context, zoneID string, w
 
 // Deletes an event for a waiting room.
 func (r *ZoneWaitingRoomEventService) Delete(ctx context.Context, zoneID string, waitingRoomID string, eventID string, opts ...option.RequestOption) (res *ZoneWaitingRoomEventDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -135,7 +136,7 @@ func (r *ZoneWaitingRoomEventService) Delete(ctx context.Context, zoneID string,
 
 // Patches a configured event for a waiting room.
 func (r *ZoneWaitingRoomEventService) Patch(ctx context.Context, zoneID string, waitingRoomID string, eventID string, body ZoneWaitingRoomEventPatchParams, opts ...option.RequestOption) (res *EventResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -156,7 +157,7 @@ func (r *ZoneWaitingRoomEventService) Patch(ctx context.Context, zoneID string, 
 // Previews an event's configuration as if it was active. Inherited fields from the
 // waiting room will be displayed with their current values.
 func (r *ZoneWaitingRoomEventService) Preview(ctx context.Context, zoneID string, waitingRoomID string, eventID string, opts ...option.RequestOption) (res *ZoneWaitingRoomEventPreviewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

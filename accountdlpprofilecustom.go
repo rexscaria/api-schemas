@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -35,7 +36,7 @@ func NewAccountDlpProfileCustomService(opts ...option.RequestOption) (r *Account
 
 // Creates a DLP custom profile.
 func (r *AccountDlpProfileCustomService) New(ctx context.Context, accountID string, body AccountDlpProfileCustomNewParams, opts ...option.RequestOption) (res *AccountDlpProfileCustomNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -47,7 +48,7 @@ func (r *AccountDlpProfileCustomService) New(ctx context.Context, accountID stri
 
 // Fetches a custom DLP profile by id.
 func (r *AccountDlpProfileCustomService) Get(ctx context.Context, accountID string, profileID string, opts ...option.RequestOption) (res *AccountDlpProfileCustomGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -63,7 +64,7 @@ func (r *AccountDlpProfileCustomService) Get(ctx context.Context, accountID stri
 
 // Updates a DLP custom profile.
 func (r *AccountDlpProfileCustomService) Update(ctx context.Context, accountID string, profileID string, body AccountDlpProfileCustomUpdateParams, opts ...option.RequestOption) (res *AccountDlpProfileCustomUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -79,7 +80,7 @@ func (r *AccountDlpProfileCustomService) Update(ctx context.Context, accountID s
 
 // Deletes a DLP custom profile.
 func (r *AccountDlpProfileCustomService) Delete(ctx context.Context, accountID string, profileID string, opts ...option.RequestOption) (res *AccountDlpProfileCustomDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

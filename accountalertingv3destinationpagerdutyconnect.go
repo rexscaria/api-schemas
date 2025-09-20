@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/requestconfig"
@@ -35,7 +36,7 @@ func NewAccountAlertingV3DestinationPagerdutyConnectService(opts ...option.Reque
 
 // Creates a new token for integrating with PagerDuty.
 func (r *AccountAlertingV3DestinationPagerdutyConnectService) NewToken(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountAlertingV3DestinationPagerdutyConnectNewTokenResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -47,7 +48,7 @@ func (r *AccountAlertingV3DestinationPagerdutyConnectService) NewToken(ctx conte
 
 // Links PagerDuty with the account using the integration token.
 func (r *AccountAlertingV3DestinationPagerdutyConnectService) Link(ctx context.Context, accountID string, tokenID string, opts ...option.RequestOption) (res *IDResponseAlerting, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

@@ -10,6 +10,7 @@ import (
 	"mime/multipart"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apiform"
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -43,7 +44,7 @@ func NewAccountPageProjectDeploymentService(opts ...option.RequestOption) (r *Ac
 // Start a new deployment from production. The repository and account must have
 // already been authorized on the Cloudflare Pages dashboard.
 func (r *AccountPageProjectDeploymentService) New(ctx context.Context, accountID string, projectName string, body AccountPageProjectDeploymentNewParams, opts ...option.RequestOption) (res *NewDeployment, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -59,7 +60,7 @@ func (r *AccountPageProjectDeploymentService) New(ctx context.Context, accountID
 
 // Fetch information about a deployment.
 func (r *AccountPageProjectDeploymentService) Get(ctx context.Context, accountID string, projectName string, deploymentID string, opts ...option.RequestOption) (res *ResponseDetails, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -79,7 +80,7 @@ func (r *AccountPageProjectDeploymentService) Get(ctx context.Context, accountID
 
 // Fetch a list of project deployments.
 func (r *AccountPageProjectDeploymentService) List(ctx context.Context, accountID string, projectName string, query AccountPageProjectDeploymentListParams, opts ...option.RequestOption) (res *AccountPageProjectDeploymentListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -95,7 +96,7 @@ func (r *AccountPageProjectDeploymentService) List(ctx context.Context, accountI
 
 // Delete a deployment.
 func (r *AccountPageProjectDeploymentService) Delete(ctx context.Context, accountID string, projectName string, deploymentID string, opts ...option.RequestOption) (res *AccountPageProjectDeploymentDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -115,7 +116,7 @@ func (r *AccountPageProjectDeploymentService) Delete(ctx context.Context, accoun
 
 // Retry a previous deployment.
 func (r *AccountPageProjectDeploymentService) Retry(ctx context.Context, accountID string, projectName string, deploymentID string, body AccountPageProjectDeploymentRetryParams, opts ...option.RequestOption) (res *NewDeployment, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -136,7 +137,7 @@ func (r *AccountPageProjectDeploymentService) Retry(ctx context.Context, account
 // Rollback the production deployment to a previous deployment. You can only
 // rollback to succesful builds on production.
 func (r *AccountPageProjectDeploymentService) Rollback(ctx context.Context, accountID string, projectName string, deploymentID string, body AccountPageProjectDeploymentRollbackParams, opts ...option.RequestOption) (res *ResponseDetails, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

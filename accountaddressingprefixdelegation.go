@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -36,7 +37,7 @@ func NewAccountAddressingPrefixDelegationService(opts ...option.RequestOption) (
 
 // Create a new account delegation for a given IP prefix.
 func (r *AccountAddressingPrefixDelegationService) New(ctx context.Context, accountID string, prefixID string, body AccountAddressingPrefixDelegationNewParams, opts ...option.RequestOption) (res *AccountAddressingPrefixDelegationNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -52,7 +53,7 @@ func (r *AccountAddressingPrefixDelegationService) New(ctx context.Context, acco
 
 // List all delegations for a given account IP prefix.
 func (r *AccountAddressingPrefixDelegationService) List(ctx context.Context, accountID string, prefixID string, opts ...option.RequestOption) (res *AccountAddressingPrefixDelegationListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -68,7 +69,7 @@ func (r *AccountAddressingPrefixDelegationService) List(ctx context.Context, acc
 
 // Delete an account delegation for a given IP prefix.
 func (r *AccountAddressingPrefixDelegationService) Delete(ctx context.Context, accountID string, prefixID string, delegationID string, opts ...option.RequestOption) (res *AccountAddressingPrefixDelegationDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

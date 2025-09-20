@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -40,7 +41,7 @@ func NewAccountAccessUserService(opts ...option.RequestOption) (r *AccountAccess
 
 // Gets a list of users for an account.
 func (r *AccountAccessUserService) List(ctx context.Context, accountID string, query AccountAccessUserListParams, opts ...option.RequestOption) (res *AccountAccessUserListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -52,7 +53,7 @@ func (r *AccountAccessUserService) List(ctx context.Context, accountID string, q
 
 // Get all failed login attempts for a single user.
 func (r *AccountAccessUserService) FailedLogins(ctx context.Context, accountID string, userID string, opts ...option.RequestOption) (res *AccountAccessUserFailedLoginsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -68,7 +69,7 @@ func (r *AccountAccessUserService) FailedLogins(ctx context.Context, accountID s
 
 // Get last seen identity for a single user.
 func (r *AccountAccessUserService) LastSeenIdentity(ctx context.Context, accountID string, userID string, opts ...option.RequestOption) (res *AccountAccessUserLastSeenIdentityResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

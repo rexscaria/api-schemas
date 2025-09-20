@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -37,7 +38,7 @@ func NewAccountAIRunCfDeepseekAIService(opts ...option.RequestOption) (r *Accoun
 
 // Execute @cf/deepseek-ai/deepseek-math-7b-instruct model.
 func (r *AccountAIRunCfDeepseekAIService) ExecuteDeepseekMath7bInstruct(ctx context.Context, accountID string, params AccountAIRunCfDeepseekAIExecuteDeepseekMath7bInstructParams, opts ...option.RequestOption) (res *AccountAIRunCfDeepseekAIExecuteDeepseekMath7bInstructResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -49,7 +50,7 @@ func (r *AccountAIRunCfDeepseekAIService) ExecuteDeepseekMath7bInstruct(ctx cont
 
 // Execute @cf/deepseek-ai/deepseek-r1-distill-qwen-32b model.
 func (r *AccountAIRunCfDeepseekAIService) ExecuteDeepseekR1DistillQwen32b(ctx context.Context, accountID string, params AccountAIRunCfDeepseekAIExecuteDeepseekR1DistillQwen32bParams, opts ...option.RequestOption) (res *AccountAIRunCfDeepseekAIExecuteDeepseekR1DistillQwen32bResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

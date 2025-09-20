@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -39,7 +40,7 @@ func NewUserOrganizationService(opts ...option.RequestOption) (r *UserOrganizati
 //
 // Deprecated: deprecated
 func (r *UserOrganizationService) Get(ctx context.Context, organizationID string, opts ...option.RequestOption) (res *UserOrganizationGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if organizationID == "" {
 		err = errors.New("missing required organization_id parameter")
 		return
@@ -53,7 +54,7 @@ func (r *UserOrganizationService) Get(ctx context.Context, organizationID string
 //
 // Deprecated: deprecated
 func (r *UserOrganizationService) List(ctx context.Context, query UserOrganizationListParams, opts ...option.RequestOption) (res *UserOrganizationListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "user/organizations"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -63,7 +64,7 @@ func (r *UserOrganizationService) List(ctx context.Context, query UserOrganizati
 //
 // Deprecated: deprecated
 func (r *UserOrganizationService) Leave(ctx context.Context, organizationID string, opts ...option.RequestOption) (res *UserOrganizationLeaveResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if organizationID == "" {
 		err = errors.New("missing required organization_id parameter")
 		return

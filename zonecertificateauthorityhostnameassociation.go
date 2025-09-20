@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -38,7 +39,7 @@ func NewZoneCertificateAuthorityHostnameAssociationService(opts ...option.Reques
 
 // List Hostname Associations
 func (r *ZoneCertificateAuthorityHostnameAssociationService) List(ctx context.Context, zoneID string, query ZoneCertificateAuthorityHostnameAssociationListParams, opts ...option.RequestOption) (res *HostnameAssociationsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -50,7 +51,7 @@ func (r *ZoneCertificateAuthorityHostnameAssociationService) List(ctx context.Co
 
 // Replace Hostname Associations
 func (r *ZoneCertificateAuthorityHostnameAssociationService) Replace(ctx context.Context, zoneID string, body ZoneCertificateAuthorityHostnameAssociationReplaceParams, opts ...option.RequestOption) (res *HostnameAssociationsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

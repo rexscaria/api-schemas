@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -37,7 +38,7 @@ func NewAccountAIRunCfOpenchatService(opts ...option.RequestOption) (r *AccountA
 
 // Execute @cf/openchat/openchat-3.5-0106 model.
 func (r *AccountAIRunCfOpenchatService) ExecuteOpenchat3_5_0106(ctx context.Context, accountID string, params AccountAIRunCfOpenchatExecuteOpenchat3_5_0106Params, opts ...option.RequestOption) (res *AccountAIRunCfOpenchatExecuteOpenchat3_5_0106Response, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

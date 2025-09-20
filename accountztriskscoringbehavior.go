@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -35,7 +36,7 @@ func NewAccountZtRiskScoringBehaviorService(opts ...option.RequestOption) (r *Ac
 
 // Get all behaviors and associated configuration
 func (r *AccountZtRiskScoringBehaviorService) ListBehaviors(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountZtRiskScoringBehaviorListBehaviorsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -47,7 +48,7 @@ func (r *AccountZtRiskScoringBehaviorService) ListBehaviors(ctx context.Context,
 
 // Update configuration for risk behaviors
 func (r *AccountZtRiskScoringBehaviorService) UpdateBehaviors(ctx context.Context, accountID string, body AccountZtRiskScoringBehaviorUpdateBehaviorsParams, opts ...option.RequestOption) (res *AccountZtRiskScoringBehaviorUpdateBehaviorsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

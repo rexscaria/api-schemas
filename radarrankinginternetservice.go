@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -39,7 +40,7 @@ func NewRadarRankingInternetServiceService(opts ...option.RequestOption) (r *Rad
 
 // Retrieves the list of Internet services categories.
 func (r *RadarRankingInternetServiceService) ListCategories(ctx context.Context, query RadarRankingInternetServiceListCategoriesParams, opts ...option.RequestOption) (res *RadarRankingInternetServiceListCategoriesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/ranking/internet_services/categories"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -47,7 +48,7 @@ func (r *RadarRankingInternetServiceService) ListCategories(ctx context.Context,
 
 // Retrieves Internet Services rank update changes over time.
 func (r *RadarRankingInternetServiceService) GetTimeseriesGroups(ctx context.Context, query RadarRankingInternetServiceGetTimeseriesGroupsParams, opts ...option.RequestOption) (res *RadarRankingInternetServiceGetTimeseriesGroupsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/ranking/internet_services/timeseries_groups"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -55,7 +56,7 @@ func (r *RadarRankingInternetServiceService) GetTimeseriesGroups(ctx context.Con
 
 // Retrieves top Internet services based on their rank.
 func (r *RadarRankingInternetServiceService) GetTopServices(ctx context.Context, query RadarRankingInternetServiceGetTopServicesParams, opts ...option.RequestOption) (res *RadarRankingInternetServiceGetTopServicesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/ranking/internet_services/top"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

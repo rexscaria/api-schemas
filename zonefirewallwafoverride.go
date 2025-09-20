@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -42,7 +43,7 @@ func NewZoneFirewallWafOverrideService(opts ...option.RequestOption) (r *ZoneFir
 //
 // Deprecated: deprecated
 func (r *ZoneFirewallWafOverrideService) New(ctx context.Context, zoneID string, body ZoneFirewallWafOverrideNewParams, opts ...option.RequestOption) (res *FirewallOverrideResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -59,7 +60,7 @@ func (r *ZoneFirewallWafOverrideService) New(ctx context.Context, zoneID string,
 //
 // Deprecated: deprecated
 func (r *ZoneFirewallWafOverrideService) Get(ctx context.Context, zoneID string, overridesID string, opts ...option.RequestOption) (res *FirewallOverrideResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -80,7 +81,7 @@ func (r *ZoneFirewallWafOverrideService) Get(ctx context.Context, zoneID string,
 //
 // Deprecated: deprecated
 func (r *ZoneFirewallWafOverrideService) Update(ctx context.Context, zoneID string, overridesID string, body ZoneFirewallWafOverrideUpdateParams, opts ...option.RequestOption) (res *FirewallOverrideResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -101,7 +102,7 @@ func (r *ZoneFirewallWafOverrideService) Update(ctx context.Context, zoneID stri
 //
 // Deprecated: deprecated
 func (r *ZoneFirewallWafOverrideService) List(ctx context.Context, zoneID string, query ZoneFirewallWafOverrideListParams, opts ...option.RequestOption) (res *ZoneFirewallWafOverrideListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -118,7 +119,7 @@ func (r *ZoneFirewallWafOverrideService) List(ctx context.Context, zoneID string
 //
 // Deprecated: deprecated
 func (r *ZoneFirewallWafOverrideService) Delete(ctx context.Context, zoneID string, overridesID string, opts ...option.RequestOption) (res *ZoneFirewallWafOverrideDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

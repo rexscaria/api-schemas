@@ -12,6 +12,7 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apiform"
@@ -49,7 +50,7 @@ func NewZoneAPIGatewayUserSchemaService(opts ...option.RequestOption) (r *ZoneAP
 // [Schema Validation API](https://developers.cloudflare.com/api/resources/schema_validation/)
 // instead.
 func (r *ZoneAPIGatewayUserSchemaService) Get(ctx context.Context, zoneID string, schemaID string, query ZoneAPIGatewayUserSchemaGetParams, opts ...option.RequestOption) (res *ZoneAPIGatewayUserSchemaGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -69,7 +70,7 @@ func (r *ZoneAPIGatewayUserSchemaService) Get(ctx context.Context, zoneID string
 // [Schema Validation API](https://developers.cloudflare.com/api/resources/schema_validation/)
 // instead.
 func (r *ZoneAPIGatewayUserSchemaService) List(ctx context.Context, zoneID string, query ZoneAPIGatewayUserSchemaListParams, opts ...option.RequestOption) (res *ZoneAPIGatewayUserSchemaListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -85,7 +86,7 @@ func (r *ZoneAPIGatewayUserSchemaService) List(ctx context.Context, zoneID strin
 // [Schema Validation API](https://developers.cloudflare.com/api/resources/schema_validation/)
 // instead.
 func (r *ZoneAPIGatewayUserSchemaService) Delete(ctx context.Context, zoneID string, schemaID string, opts ...option.RequestOption) (res *APIResponseAPIShield, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -105,7 +106,7 @@ func (r *ZoneAPIGatewayUserSchemaService) Delete(ctx context.Context, zoneID str
 // [Schema Validation API](https://developers.cloudflare.com/api/resources/schema_validation/)
 // instead.
 func (r *ZoneAPIGatewayUserSchemaService) EnableValidation(ctx context.Context, zoneID string, schemaID string, body ZoneAPIGatewayUserSchemaEnableValidationParams, opts ...option.RequestOption) (res *ZoneAPIGatewayUserSchemaEnableValidationResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -125,7 +126,7 @@ func (r *ZoneAPIGatewayUserSchemaService) EnableValidation(ctx context.Context, 
 // [Schema Validation API](https://developers.cloudflare.com/api/resources/schema_validation/)
 // instead.
 func (r *ZoneAPIGatewayUserSchemaService) GetHosts(ctx context.Context, zoneID string, query ZoneAPIGatewayUserSchemaGetHostsParams, opts ...option.RequestOption) (res *ZoneAPIGatewayUserSchemaGetHostsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -142,7 +143,7 @@ func (r *ZoneAPIGatewayUserSchemaService) GetHosts(ctx context.Context, zoneID s
 // [Schema Validation API](https://developers.cloudflare.com/api/resources/schema_validation/)
 // instead.
 func (r *ZoneAPIGatewayUserSchemaService) GetOperations(ctx context.Context, zoneID string, schemaID string, query ZoneAPIGatewayUserSchemaGetOperationsParams, opts ...option.RequestOption) (res *ZoneAPIGatewayUserSchemaGetOperationsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -162,7 +163,7 @@ func (r *ZoneAPIGatewayUserSchemaService) GetOperations(ctx context.Context, zon
 // [Schema Validation API](https://developers.cloudflare.com/api/resources/schema_validation/)
 // instead.
 func (r *ZoneAPIGatewayUserSchemaService) Upload(ctx context.Context, zoneID string, body ZoneAPIGatewayUserSchemaUploadParams, opts ...option.RequestOption) (res *ZoneAPIGatewayUserSchemaUploadResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

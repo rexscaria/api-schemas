@@ -10,6 +10,7 @@ import (
 	"mime/multipart"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apiform"
@@ -43,7 +44,7 @@ func NewAccountImageV2Service(opts ...option.RequestOption) (r *AccountImageV2Se
 // get a specific range of images. Endpoint returns continuation_token if more
 // images are present.
 func (r *AccountImageV2Service) List(ctx context.Context, accountID string, query AccountImageV2ListParams, opts ...option.RequestOption) (res *AccountImageV2ListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -61,7 +62,7 @@ func (r *AccountImageV2Service) List(ctx context.Context, accountID string, quer
 // (accounts/:account_identifier/images/v1/:identifier), and check that the
 // `draft: true` property is not present.
 func (r *AccountImageV2Service) NewDirectUpload(ctx context.Context, accountID string, body AccountImageV2NewDirectUploadParams, opts ...option.RequestOption) (res *AccountImageV2NewDirectUploadResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

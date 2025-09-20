@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -37,7 +38,7 @@ func NewAccountAIRunHfNousresearchService(opts ...option.RequestOption) (r *Acco
 
 // Execute @hf/nousresearch/hermes-2-pro-mistral-7b model.
 func (r *AccountAIRunHfNousresearchService) ExecuteHermes2ProMistral7b(ctx context.Context, accountID string, params AccountAIRunHfNousresearchExecuteHermes2ProMistral7bParams, opts ...option.RequestOption) (res *AccountAIRunHfNousresearchExecuteHermes2ProMistral7bResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

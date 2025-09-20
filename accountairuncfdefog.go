@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -37,7 +38,7 @@ func NewAccountAIRunCfDefogService(opts ...option.RequestOption) (r *AccountAIRu
 
 // Execute @cf/defog/sqlcoder-7b-2 model.
 func (r *AccountAIRunCfDefogService) ExecuteSqlcoder7b2(ctx context.Context, accountID string, params AccountAIRunCfDefogExecuteSqlcoder7b2Params, opts ...option.RequestOption) (res *AccountAIRunCfDefogExecuteSqlcoder7b2Response, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

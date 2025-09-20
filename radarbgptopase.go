@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -36,7 +37,7 @@ func NewRadarBgpTopAseService(opts ...option.RequestOption) (r *RadarBgpTopAseSe
 
 // Retrieves the top autonomous systems by BGP updates (announcements only).
 func (r *RadarBgpTopAseService) ListTopAses(ctx context.Context, query RadarBgpTopAseListTopAsesParams, opts ...option.RequestOption) (res *RadarBgpTopAseListTopAsesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/bgp/top/ases"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -46,7 +47,7 @@ func (r *RadarBgpTopAseService) ListTopAses(ctx context.Context, query RadarBgpT
 // ordered by announced prefixes count. The data comes from public BGP MRT data
 // archives and updates every 2 hours.
 func (r *RadarBgpTopAseService) ListTopPrefixes(ctx context.Context, query RadarBgpTopAseListTopPrefixesParams, opts ...option.RequestOption) (res *RadarBgpTopAseListTopPrefixesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/bgp/top/ases/prefixes"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

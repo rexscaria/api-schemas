@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -37,7 +38,7 @@ func NewAccountCfdTunnelConnectionService(opts ...option.RequestOption) (r *Acco
 
 // Fetches connection details for a Cloudflare Tunnel.
 func (r *AccountCfdTunnelConnectionService) List(ctx context.Context, accountID string, tunnelID string, opts ...option.RequestOption) (res *AccountCfdTunnelConnectionListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -56,7 +57,7 @@ func (r *AccountCfdTunnelConnectionService) List(ctx context.Context, accountID 
 // all connectors will be removed. We recommend running this command after rotating
 // tokens.
 func (r *AccountCfdTunnelConnectionService) Cleanup(ctx context.Context, accountID string, tunnelID string, body AccountCfdTunnelConnectionCleanupParams, opts ...option.RequestOption) (res *AccountCfdTunnelConnectionCleanupResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -38,7 +39,7 @@ func NewAccountAIGatewayGatewayLogService(opts ...option.RequestOption) (r *Acco
 
 // Delete Gateway Logs
 func (r *AccountAIGatewayGatewayLogService) DeleteGatewayLogs(ctx context.Context, accountID string, gatewayID string, body AccountAIGatewayGatewayLogDeleteGatewayLogsParams, opts ...option.RequestOption) (res *AccountAIGatewayGatewayLogDeleteGatewayLogsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -54,7 +55,7 @@ func (r *AccountAIGatewayGatewayLogService) DeleteGatewayLogs(ctx context.Contex
 
 // Get Gateway Log Detail
 func (r *AccountAIGatewayGatewayLogService) GetGatewayLogDetail(ctx context.Context, accountID string, gatewayID string, id string, opts ...option.RequestOption) (res *AccountAIGatewayGatewayLogGetGatewayLogDetailResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -74,7 +75,7 @@ func (r *AccountAIGatewayGatewayLogService) GetGatewayLogDetail(ctx context.Cont
 
 // Get Gateway Log Request
 func (r *AccountAIGatewayGatewayLogService) GetGatewayLogRequest(ctx context.Context, accountID string, gatewayID string, id string, opts ...option.RequestOption) (res *AccountAIGatewayGatewayLogGetGatewayLogRequestResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -94,7 +95,7 @@ func (r *AccountAIGatewayGatewayLogService) GetGatewayLogRequest(ctx context.Con
 
 // Get Gateway Log Response
 func (r *AccountAIGatewayGatewayLogService) GetGatewayLogResponse(ctx context.Context, accountID string, gatewayID string, id string, opts ...option.RequestOption) (res *AccountAIGatewayGatewayLogGetGatewayLogResponseResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -114,7 +115,7 @@ func (r *AccountAIGatewayGatewayLogService) GetGatewayLogResponse(ctx context.Co
 
 // List Gateway Logs
 func (r *AccountAIGatewayGatewayLogService) ListGatewayLogs(ctx context.Context, accountID string, gatewayID string, query AccountAIGatewayGatewayLogListGatewayLogsParams, opts ...option.RequestOption) (res *AccountAIGatewayGatewayLogListGatewayLogsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -130,7 +131,7 @@ func (r *AccountAIGatewayGatewayLogService) ListGatewayLogs(ctx context.Context,
 
 // Patch Gateway Log
 func (r *AccountAIGatewayGatewayLogService) PatchGatewayLog(ctx context.Context, accountID string, gatewayID string, id string, body AccountAIGatewayGatewayLogPatchGatewayLogParams, opts ...option.RequestOption) (res *AccountAIGatewayGatewayLogPatchGatewayLogResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

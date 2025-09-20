@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -46,7 +47,7 @@ func NewRadarRankingService(opts ...option.RequestOption) (r *RadarRankingServic
 // thousand, top one million, etc.. These are available through Radar datasets
 // endpoints.
 func (r *RadarRankingService) GetDomainRank(ctx context.Context, domain string, query RadarRankingGetDomainRankParams, opts ...option.RequestOption) (res *RadarRankingGetDomainRankResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if domain == "" {
 		err = errors.New("missing required domain parameter")
 		return
@@ -58,7 +59,7 @@ func (r *RadarRankingService) GetDomainRank(ctx context.Context, domain string, 
 
 // Retrieves domains rank over time.
 func (r *RadarRankingService) GetTimeseriesGroups(ctx context.Context, query RadarRankingGetTimeseriesGroupsParams, opts ...option.RequestOption) (res *RadarRankingGetTimeseriesGroupsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/ranking/timeseries_groups"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -69,7 +70,7 @@ func (r *RadarRankingService) GetTimeseriesGroups(ctx context.Context, query Rad
 // are domains that are generating a surge in interest. For more information on top
 // domains, see https://blog.cloudflare.com/radar-domain-rankings/.
 func (r *RadarRankingService) GetTopDomains(ctx context.Context, query RadarRankingGetTopDomainsParams, opts ...option.RequestOption) (res *RadarRankingGetTopDomainsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/ranking/top"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

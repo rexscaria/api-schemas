@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"reflect"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -37,7 +38,7 @@ func NewAccountMagicAppService(opts ...option.RequestOption) (r *AccountMagicApp
 
 // Creates a new App for an account
 func (r *AccountMagicAppService) New(ctx context.Context, accountID string, body AccountMagicAppNewParams, opts ...option.RequestOption) (res *MagicAppSingleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -49,7 +50,7 @@ func (r *AccountMagicAppService) New(ctx context.Context, accountID string, body
 
 // Updates an Account App
 func (r *AccountMagicAppService) Update(ctx context.Context, accountID string, accountAppID string, body AccountMagicAppUpdateParams, opts ...option.RequestOption) (res *MagicAppSingleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -65,7 +66,7 @@ func (r *AccountMagicAppService) Update(ctx context.Context, accountID string, a
 
 // Lists Apps associated with an account.
 func (r *AccountMagicAppService) List(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountMagicAppListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -77,7 +78,7 @@ func (r *AccountMagicAppService) List(ctx context.Context, accountID string, opt
 
 // Deletes specific Account App.
 func (r *AccountMagicAppService) Delete(ctx context.Context, accountID string, accountAppID string, opts ...option.RequestOption) (res *MagicAppSingleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

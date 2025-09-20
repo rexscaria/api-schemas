@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -36,7 +37,7 @@ func NewZoneKeylessCertificateService(opts ...option.RequestOption) (r *ZoneKeyl
 
 // Create Keyless SSL Configuration
 func (r *ZoneKeylessCertificateService) New(ctx context.Context, zoneID string, body ZoneKeylessCertificateNewParams, opts ...option.RequestOption) (res *KeylessResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -48,7 +49,7 @@ func (r *ZoneKeylessCertificateService) New(ctx context.Context, zoneID string, 
 
 // Get details for one Keyless SSL configuration.
 func (r *ZoneKeylessCertificateService) Get(ctx context.Context, zoneID string, keylessCertificateID string, opts ...option.RequestOption) (res *KeylessResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -65,7 +66,7 @@ func (r *ZoneKeylessCertificateService) Get(ctx context.Context, zoneID string, 
 // This will update attributes of a Keyless SSL. Consists of one or more of the
 // following: host,name,port.
 func (r *ZoneKeylessCertificateService) Update(ctx context.Context, zoneID string, keylessCertificateID string, body ZoneKeylessCertificateUpdateParams, opts ...option.RequestOption) (res *KeylessResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -81,7 +82,7 @@ func (r *ZoneKeylessCertificateService) Update(ctx context.Context, zoneID strin
 
 // List all Keyless SSL configurations for a given zone.
 func (r *ZoneKeylessCertificateService) List(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *ZoneKeylessCertificateListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -93,7 +94,7 @@ func (r *ZoneKeylessCertificateService) List(ctx context.Context, zoneID string,
 
 // Delete Keyless SSL Configuration
 func (r *ZoneKeylessCertificateService) Delete(ctx context.Context, zoneID string, keylessCertificateID string, opts ...option.RequestOption) (res *ZoneKeylessCertificateDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

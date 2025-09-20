@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -35,7 +36,7 @@ func NewZoneContentUploadScanPayloadService(opts ...option.RequestOption) (r *Zo
 
 // Add custom scan expressions for Content Scanning.
 func (r *ZoneContentUploadScanPayloadService) New(ctx context.Context, zoneID string, body ZoneContentUploadScanPayloadNewParams, opts ...option.RequestOption) (res *CustomScanCollection, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -47,7 +48,7 @@ func (r *ZoneContentUploadScanPayloadService) New(ctx context.Context, zoneID st
 
 // Get a list of existing custom scan expressions for Content Scanning.
 func (r *ZoneContentUploadScanPayloadService) List(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *CustomScanCollection, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -59,7 +60,7 @@ func (r *ZoneContentUploadScanPayloadService) List(ctx context.Context, zoneID s
 
 // Delete a Content Scan Custom Expression.
 func (r *ZoneContentUploadScanPayloadService) Delete(ctx context.Context, zoneID string, expressionID CustomScanIDParam, opts ...option.RequestOption) (res *CustomScanCollection, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

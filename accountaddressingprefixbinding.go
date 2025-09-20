@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -39,7 +40,7 @@ func NewAccountAddressingPrefixBindingService(opts ...option.RequestOption) (r *
 // Spectrum service binding, and only allows creating upgrade service bindings for
 // the Cloudflare CDN or Cloudflare Spectrum.
 func (r *AccountAddressingPrefixBindingService) New(ctx context.Context, accountID string, prefixID string, body AccountAddressingPrefixBindingNewParams, opts ...option.RequestOption) (res *AccountAddressingPrefixBindingNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -55,7 +56,7 @@ func (r *AccountAddressingPrefixBindingService) New(ctx context.Context, account
 
 // Fetch a single Service Binding
 func (r *AccountAddressingPrefixBindingService) Get(ctx context.Context, accountID string, prefixID string, bindingID string, opts ...option.RequestOption) (res *AccountAddressingPrefixBindingGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -80,7 +81,7 @@ func (r *AccountAddressingPrefixBindingService) Get(ctx context.Context, account
 // CDN would route traffic for `192.0.2.1` to the CDN, and traffic for all other
 // IPs in the prefix to Cloudflare Magic Transit.
 func (r *AccountAddressingPrefixBindingService) List(ctx context.Context, accountID string, prefixID string, opts ...option.RequestOption) (res *AccountAddressingPrefixBindingListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -96,7 +97,7 @@ func (r *AccountAddressingPrefixBindingService) List(ctx context.Context, accoun
 
 // Delete a Service Binding
 func (r *AccountAddressingPrefixBindingService) Delete(ctx context.Context, accountID string, prefixID string, bindingID string, opts ...option.RequestOption) (res *APIResponseAddressing, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

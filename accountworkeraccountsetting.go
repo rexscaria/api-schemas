@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -35,7 +36,7 @@ func NewAccountWorkerAccountSettingService(opts ...option.RequestOption) (r *Acc
 
 // Fetches Worker account settings for an account.
 func (r *AccountWorkerAccountSettingService) Get(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountWorkerAccountSettingGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -47,7 +48,7 @@ func (r *AccountWorkerAccountSettingService) Get(ctx context.Context, accountID 
 
 // Creates Worker account settings for an account.
 func (r *AccountWorkerAccountSettingService) Update(ctx context.Context, accountID string, body AccountWorkerAccountSettingUpdateParams, opts ...option.RequestOption) (res *AccountWorkerAccountSettingUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

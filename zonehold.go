@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -38,7 +39,7 @@ func NewZoneHoldService(opts ...option.RequestOption) (r *ZoneHoldService) {
 // Enforce a zone hold on the zone, blocking the creation and activation of zones
 // with this zone's hostname.
 func (r *ZoneHoldService) New(ctx context.Context, zoneID string, body ZoneHoldNewParams, opts ...option.RequestOption) (res *ZoneHoldNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -51,7 +52,7 @@ func (r *ZoneHoldService) New(ctx context.Context, zoneID string, body ZoneHoldN
 // Retrieve whether the zone is subject to a zone hold, and metadata about the
 // hold.
 func (r *ZoneHoldService) Get(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *ZoneHoldGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -64,7 +65,7 @@ func (r *ZoneHoldService) Get(ctx context.Context, zoneID string, opts ...option
 // Update the `hold_after` and/or `include_subdomains` values on an existing zone
 // hold. The hold is enabled if the `hold_after` date-time value is in the past.
 func (r *ZoneHoldService) Update(ctx context.Context, zoneID string, body ZoneHoldUpdateParams, opts ...option.RequestOption) (res *ZoneHoldUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -77,7 +78,7 @@ func (r *ZoneHoldService) Update(ctx context.Context, zoneID string, body ZoneHo
 // Stop enforcement of a zone hold on the zone, permanently or temporarily,
 // allowing the creation and activation of zones with this zone's hostname.
 func (r *ZoneHoldService) Remove(ctx context.Context, zoneID string, body ZoneHoldRemoveParams, opts ...option.RequestOption) (res *ZoneHoldRemoveResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

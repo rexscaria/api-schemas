@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"reflect"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -50,7 +51,7 @@ func NewAccountAIRunService(opts ...option.RequestOption) (r *AccountAIRunServic
 // Model specific inputs available in
 // [Cloudflare Docs](https://developers.cloudflare.com/workers-ai/models/).
 func (r *AccountAIRunService) ExecuteModel(ctx context.Context, accountID string, modelName string, body AccountAIRunExecuteModelParams, opts ...option.RequestOption) (res *AccountAIRunExecuteModelResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

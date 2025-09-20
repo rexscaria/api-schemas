@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -41,7 +42,7 @@ func NewZonePageruleService(opts ...option.RequestOption) (r *ZonePageruleServic
 
 // Creates a new Page Rule.
 func (r *ZonePageruleService) New(ctx context.Context, zoneID string, body ZonePageruleNewParams, opts ...option.RequestOption) (res *ZonePageruleNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -53,7 +54,7 @@ func (r *ZonePageruleService) New(ctx context.Context, zoneID string, body ZoneP
 
 // Fetches the details of a Page Rule.
 func (r *ZonePageruleService) Get(ctx context.Context, zoneID string, pageruleID string, opts ...option.RequestOption) (res *ZonePageruleGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -70,7 +71,7 @@ func (r *ZonePageruleService) Get(ctx context.Context, zoneID string, pageruleID
 // Replaces the configuration of an existing Page Rule. The configuration of the
 // updated Page Rule will exactly match the data passed in the API request.
 func (r *ZonePageruleService) Update(ctx context.Context, zoneID string, pageruleID string, body ZonePageruleUpdateParams, opts ...option.RequestOption) (res *ZonePageruleUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -86,7 +87,7 @@ func (r *ZonePageruleService) Update(ctx context.Context, zoneID string, pagerul
 
 // Fetches Page Rules in a zone.
 func (r *ZonePageruleService) List(ctx context.Context, zoneID string, query ZonePageruleListParams, opts ...option.RequestOption) (res *ZonePageruleListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -98,7 +99,7 @@ func (r *ZonePageruleService) List(ctx context.Context, zoneID string, query Zon
 
 // Deletes an existing Page Rule.
 func (r *ZonePageruleService) Delete(ctx context.Context, zoneID string, pageruleID string, opts ...option.RequestOption) (res *ZonePageruleDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -114,7 +115,7 @@ func (r *ZonePageruleService) Delete(ctx context.Context, zoneID string, pagerul
 
 // Updates one or more fields of an existing Page Rule.
 func (r *ZonePageruleService) Edit(ctx context.Context, zoneID string, pageruleID string, body ZonePageruleEditParams, opts ...option.RequestOption) (res *ZonePageruleEditResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -133,7 +134,7 @@ func (r *ZonePageruleService) Edit(ctx context.Context, zoneID string, pageruleI
 //
 // Deprecated: deprecated
 func (r *ZonePageruleService) ListSettings(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *ZonePageruleListSettingsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

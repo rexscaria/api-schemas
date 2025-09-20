@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -42,7 +43,7 @@ func NewAccountDNSFirewallService(opts ...option.RequestOption) (r *AccountDNSFi
 
 // Create a DNS Firewall cluster
 func (r *AccountDNSFirewallService) New(ctx context.Context, accountID string, body AccountDNSFirewallNewParams, opts ...option.RequestOption) (res *DNSFirewallSingleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -54,7 +55,7 @@ func (r *AccountDNSFirewallService) New(ctx context.Context, accountID string, b
 
 // Show a single DNS Firewall cluster for an account
 func (r *AccountDNSFirewallService) Get(ctx context.Context, accountID string, dnsFirewallID string, opts ...option.RequestOption) (res *DNSFirewallSingleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -70,7 +71,7 @@ func (r *AccountDNSFirewallService) Get(ctx context.Context, accountID string, d
 
 // Modify the configuration of a DNS Firewall cluster
 func (r *AccountDNSFirewallService) Update(ctx context.Context, accountID string, dnsFirewallID string, body AccountDNSFirewallUpdateParams, opts ...option.RequestOption) (res *DNSFirewallSingleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -86,7 +87,7 @@ func (r *AccountDNSFirewallService) Update(ctx context.Context, accountID string
 
 // List DNS Firewall clusters for an account
 func (r *AccountDNSFirewallService) List(ctx context.Context, accountID string, query AccountDNSFirewallListParams, opts ...option.RequestOption) (res *AccountDNSFirewallListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -98,7 +99,7 @@ func (r *AccountDNSFirewallService) List(ctx context.Context, accountID string, 
 
 // Delete a DNS Firewall cluster
 func (r *AccountDNSFirewallService) Delete(ctx context.Context, accountID string, dnsFirewallID string, opts ...option.RequestOption) (res *AccountDNSFirewallDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -37,7 +38,7 @@ func NewAccountAIRunCfRunwaymlService(opts ...option.RequestOption) (r *AccountA
 
 // Execute @cf/runwayml/stable-diffusion-v1-5-img2img model.
 func (r *AccountAIRunCfRunwaymlService) ExecuteStableDiffusionV1_5Img2img(ctx context.Context, accountID string, params AccountAIRunCfRunwaymlExecuteStableDiffusionV1_5Img2imgParams, opts ...option.RequestOption) (res *AccountAIRunCfRunwaymlExecuteStableDiffusionV1_5Img2imgResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -49,7 +50,7 @@ func (r *AccountAIRunCfRunwaymlService) ExecuteStableDiffusionV1_5Img2img(ctx co
 
 // Execute @cf/runwayml/stable-diffusion-v1-5-inpainting model.
 func (r *AccountAIRunCfRunwaymlService) ExecuteStableDiffusionV1_5Inpainting(ctx context.Context, accountID string, params AccountAIRunCfRunwaymlExecuteStableDiffusionV1_5InpaintingParams, opts ...option.RequestOption) (res *AccountAIRunCfRunwaymlExecuteStableDiffusionV1_5InpaintingResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

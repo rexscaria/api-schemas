@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -41,7 +42,7 @@ func NewAccountAIGatewayGatewayDatasetService(opts ...option.RequestOption) (r *
 
 // Create a new Dataset
 func (r *AccountAIGatewayGatewayDatasetService) NewDataset(ctx context.Context, accountID string, gatewayID string, body AccountAIGatewayGatewayDatasetNewDatasetParams, opts ...option.RequestOption) (res *AccountAIGatewayGatewayDatasetNewDatasetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -57,7 +58,7 @@ func (r *AccountAIGatewayGatewayDatasetService) NewDataset(ctx context.Context, 
 
 // Delete a Dataset
 func (r *AccountAIGatewayGatewayDatasetService) DeleteDataset(ctx context.Context, accountID string, gatewayID string, id string, opts ...option.RequestOption) (res *AccountAIGatewayGatewayDatasetDeleteDatasetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -77,7 +78,7 @@ func (r *AccountAIGatewayGatewayDatasetService) DeleteDataset(ctx context.Contex
 
 // Fetch a Dataset
 func (r *AccountAIGatewayGatewayDatasetService) FetchDataset(ctx context.Context, accountID string, gatewayID string, id string, opts ...option.RequestOption) (res *AccountAIGatewayGatewayDatasetFetchDatasetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -97,7 +98,7 @@ func (r *AccountAIGatewayGatewayDatasetService) FetchDataset(ctx context.Context
 
 // List Datasets
 func (r *AccountAIGatewayGatewayDatasetService) ListDatasets(ctx context.Context, accountID string, gatewayID string, query AccountAIGatewayGatewayDatasetListDatasetsParams, opts ...option.RequestOption) (res *AccountAIGatewayGatewayDatasetListDatasetsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -113,7 +114,7 @@ func (r *AccountAIGatewayGatewayDatasetService) ListDatasets(ctx context.Context
 
 // Update a Dataset
 func (r *AccountAIGatewayGatewayDatasetService) UpdateDataset(ctx context.Context, accountID string, gatewayID string, id string, body AccountAIGatewayGatewayDatasetUpdateDatasetParams, opts ...option.RequestOption) (res *AccountAIGatewayGatewayDatasetUpdateDatasetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -35,7 +36,7 @@ func NewZoneManagedHeaderService(opts ...option.RequestOption) (r *ZoneManagedHe
 
 // Updates the status of one or more Managed Transforms.
 func (r *ZoneManagedHeaderService) Update(ctx context.Context, zoneID string, body ZoneManagedHeaderUpdateParams, opts ...option.RequestOption) (res *ZoneManagedHeaderUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -47,7 +48,7 @@ func (r *ZoneManagedHeaderService) Update(ctx context.Context, zoneID string, bo
 
 // Fetches a list of all Managed Transforms.
 func (r *ZoneManagedHeaderService) List(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *ZoneManagedHeaderListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -59,7 +60,7 @@ func (r *ZoneManagedHeaderService) List(ctx context.Context, zoneID string, opts
 
 // Disables all Managed Transforms.
 func (r *ZoneManagedHeaderService) Delete(ctx context.Context, zoneID string, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")

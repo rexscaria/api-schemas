@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -37,7 +38,7 @@ func NewAccountWorkerScriptScriptSettingService(opts ...option.RequestOption) (r
 // [Worker Versions](https://developers.cloudflare.com/api/operations/worker-versions-list-versions).
 // Includes Logpush and Tail Consumers.
 func (r *AccountWorkerScriptScriptSettingService) Get(ctx context.Context, accountID string, scriptName string, opts ...option.RequestOption) (res *SettingsResponseScriptSettings, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -55,7 +56,7 @@ func (r *AccountWorkerScriptScriptSettingService) Get(ctx context.Context, accou
 // [Worker Versions](https://developers.cloudflare.com/api/operations/worker-versions-list-versions).
 // Including but not limited to Logpush and Tail Consumers.
 func (r *AccountWorkerScriptScriptSettingService) Patch(ctx context.Context, accountID string, scriptName string, body AccountWorkerScriptScriptSettingPatchParams, opts ...option.RequestOption) (res *SettingsResponseScriptSettings, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

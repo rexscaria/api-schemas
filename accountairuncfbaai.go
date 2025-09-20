@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -37,7 +38,7 @@ func NewAccountAIRunCfBaaiService(opts ...option.RequestOption) (r *AccountAIRun
 
 // Execute @cf/baai/bge-base-en-v1.5 model.
 func (r *AccountAIRunCfBaaiService) ExecuteBgeBaseEnV1_5(ctx context.Context, accountID string, params AccountAIRunCfBaaiExecuteBgeBaseEnV1_5Params, opts ...option.RequestOption) (res *AccountAIRunCfBaaiExecuteBgeBaseEnV1_5Response, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -49,7 +50,7 @@ func (r *AccountAIRunCfBaaiService) ExecuteBgeBaseEnV1_5(ctx context.Context, ac
 
 // Execute @cf/baai/bge-large-en-v1.5 model.
 func (r *AccountAIRunCfBaaiService) ExecuteBgeLargeEnV1_5(ctx context.Context, accountID string, params AccountAIRunCfBaaiExecuteBgeLargeEnV1_5Params, opts ...option.RequestOption) (res *AccountAIRunCfBaaiExecuteBgeLargeEnV1_5Response, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -61,7 +62,7 @@ func (r *AccountAIRunCfBaaiService) ExecuteBgeLargeEnV1_5(ctx context.Context, a
 
 // Execute @cf/baai/bge-m3 model.
 func (r *AccountAIRunCfBaaiService) ExecuteBgeM3(ctx context.Context, accountID string, params AccountAIRunCfBaaiExecuteBgeM3Params, opts ...option.RequestOption) (res *AccountAIRunCfBaaiExecuteBgeM3Response, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -73,7 +74,7 @@ func (r *AccountAIRunCfBaaiService) ExecuteBgeM3(ctx context.Context, accountID 
 
 // Execute @cf/baai/bge-reranker-base model.
 func (r *AccountAIRunCfBaaiService) ExecuteBgeRerankerBase(ctx context.Context, accountID string, params AccountAIRunCfBaaiExecuteBgeRerankerBaseParams, opts ...option.RequestOption) (res *AccountAIRunCfBaaiExecuteBgeRerankerBaseResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -85,7 +86,7 @@ func (r *AccountAIRunCfBaaiService) ExecuteBgeRerankerBase(ctx context.Context, 
 
 // Execute @cf/baai/bge-small-en-v1.5 model.
 func (r *AccountAIRunCfBaaiService) ExecuteBgeSmallEnV1_5(ctx context.Context, accountID string, params AccountAIRunCfBaaiExecuteBgeSmallEnV1_5Params, opts ...option.RequestOption) (res *AccountAIRunCfBaaiExecuteBgeSmallEnV1_5Response, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

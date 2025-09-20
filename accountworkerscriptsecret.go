@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/requestconfig"
@@ -34,7 +35,7 @@ func NewAccountWorkerScriptSecretService(opts ...option.RequestOption) (r *Accou
 
 // List secrets bound to a script.
 func (r *AccountWorkerScriptSecretService) List(ctx context.Context, accountID string, scriptName string, opts ...option.RequestOption) (res *AccountWorkerScriptSecretListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -50,7 +51,7 @@ func (r *AccountWorkerScriptSecretService) List(ctx context.Context, accountID s
 
 // Remove a secret from a script.
 func (r *AccountWorkerScriptSecretService) Delete(ctx context.Context, accountID string, scriptName string, secretName string, opts ...option.RequestOption) (res *NullResult, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -70,7 +71,7 @@ func (r *AccountWorkerScriptSecretService) Delete(ctx context.Context, accountID
 
 // Add a secret to a script.
 func (r *AccountWorkerScriptSecretService) Add(ctx context.Context, accountID string, scriptName string, body AccountWorkerScriptSecretAddParams, opts ...option.RequestOption) (res *AccountWorkerScriptSecretAddResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -86,7 +87,7 @@ func (r *AccountWorkerScriptSecretService) Add(ctx context.Context, accountID st
 
 // Get a given secret binding (value omitted) on a script.
 func (r *AccountWorkerScriptSecretService) Get(ctx context.Context, accountID string, scriptName string, secretName string, opts ...option.RequestOption) (res *AccountWorkerScriptSecretGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

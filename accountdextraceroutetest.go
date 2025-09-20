@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -38,7 +39,7 @@ func NewAccountDexTracerouteTestService(opts ...option.RequestOption) (r *Accoun
 // Get test details and aggregate performance metrics for an traceroute test for a
 // given time period between 1 hour and 7 days.
 func (r *AccountDexTracerouteTestService) Get(ctx context.Context, accountID string, testID string, query AccountDexTracerouteTestGetParams, opts ...option.RequestOption) (res *AccountDexTracerouteTestGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -54,7 +55,7 @@ func (r *AccountDexTracerouteTestService) Get(ctx context.Context, accountID str
 
 // Get a breakdown of metrics by hop for individual traceroute test runs
 func (r *AccountDexTracerouteTestService) GetNetworkPath(ctx context.Context, accountID string, testID string, query AccountDexTracerouteTestGetNetworkPathParams, opts ...option.RequestOption) (res *AccountDexTracerouteTestGetNetworkPathResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -71,7 +72,7 @@ func (r *AccountDexTracerouteTestService) GetNetworkPath(ctx context.Context, ac
 // Get percentiles for a traceroute test for a given time period between 1 hour and
 // 7 days.
 func (r *AccountDexTracerouteTestService) GetPercentiles(ctx context.Context, accountID string, testID string, query AccountDexTracerouteTestGetPercentilesParams, opts ...option.RequestOption) (res *AccountDexTracerouteTestGetPercentilesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -40,7 +41,7 @@ func NewZoneRateLimitService(opts ...option.RequestOption) (r *ZoneRateLimitServ
 //
 // Deprecated: deprecated
 func (r *ZoneRateLimitService) New(ctx context.Context, zoneID string, body ZoneRateLimitNewParams, opts ...option.RequestOption) (res *FirewallRatelimitSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -54,7 +55,7 @@ func (r *ZoneRateLimitService) New(ctx context.Context, zoneID string, body Zone
 //
 // Deprecated: deprecated
 func (r *ZoneRateLimitService) Get(ctx context.Context, zoneID string, rateLimitID string, opts ...option.RequestOption) (res *FirewallRatelimitSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -72,7 +73,7 @@ func (r *ZoneRateLimitService) Get(ctx context.Context, zoneID string, rateLimit
 //
 // Deprecated: deprecated
 func (r *ZoneRateLimitService) Update(ctx context.Context, zoneID string, rateLimitID string, body ZoneRateLimitUpdateParams, opts ...option.RequestOption) (res *FirewallRatelimitSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -90,7 +91,7 @@ func (r *ZoneRateLimitService) Update(ctx context.Context, zoneID string, rateLi
 //
 // Deprecated: deprecated
 func (r *ZoneRateLimitService) List(ctx context.Context, zoneID string, query ZoneRateLimitListParams, opts ...option.RequestOption) (res *ZoneRateLimitListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -104,7 +105,7 @@ func (r *ZoneRateLimitService) List(ctx context.Context, zoneID string, query Zo
 //
 // Deprecated: deprecated
 func (r *ZoneRateLimitService) Delete(ctx context.Context, zoneID string, rateLimitID string, opts ...option.RequestOption) (res *ZoneRateLimitDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

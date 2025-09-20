@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"reflect"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -53,7 +54,7 @@ func NewAccountGatewayService(opts ...option.RequestOption) (r *AccountGatewaySe
 
 // Creates a Zero Trust account with an existing Cloudflare account.
 func (r *AccountGatewayService) New(ctx context.Context, accountID string, opts ...option.RequestOption) (res *GatewayAccount, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -65,7 +66,7 @@ func (r *AccountGatewayService) New(ctx context.Context, accountID string, opts 
 
 // Gets information about the current Zero Trust account.
 func (r *AccountGatewayService) Get(ctx context.Context, accountID string, opts ...option.RequestOption) (res *GatewayAccount, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -77,7 +78,7 @@ func (r *AccountGatewayService) Get(ctx context.Context, accountID string, opts 
 
 // Fetches all application and application type mappings.
 func (r *AccountGatewayService) ListAppTypes(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountGatewayListAppTypesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -89,7 +90,7 @@ func (r *AccountGatewayService) ListAppTypes(ctx context.Context, accountID stri
 
 // Fetches a list of all categories.
 func (r *AccountGatewayService) ListCategories(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountGatewayListCategoriesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -38,7 +39,7 @@ func NewZoneSettingFontService(opts ...option.RequestOption) (r *ZoneSettingFont
 // Hosted fonts from your own domain, boost performance, and enhance user privacy.
 // Refer to the Cloudflare Fonts documentation for more information.
 func (r *ZoneSettingFontService) Get(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *ZoneSettingFontGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -52,7 +53,7 @@ func (r *ZoneSettingFontService) Get(ctx context.Context, zoneID string, opts ..
 // Hosted fonts from your own domain, boost performance, and enhance user privacy.
 // Refer to the Cloudflare Fonts documentation for more information.
 func (r *ZoneSettingFontService) Update(ctx context.Context, zoneID string, body ZoneSettingFontUpdateParams, opts ...option.RequestOption) (res *ZoneSettingFontUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -35,7 +36,7 @@ func NewAccountMagicSiteWanService(opts ...option.RequestOption) (r *AccountMagi
 
 // Creates a new Site WAN.
 func (r *AccountMagicSiteWanService) New(ctx context.Context, accountID string, siteID string, body AccountMagicSiteWanNewParams, opts ...option.RequestOption) (res *MagicWansCollectionResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -51,7 +52,7 @@ func (r *AccountMagicSiteWanService) New(ctx context.Context, accountID string, 
 
 // Get a specific Site WAN.
 func (r *AccountMagicSiteWanService) Get(ctx context.Context, accountID string, siteID string, wanID string, opts ...option.RequestOption) (res *AccountMagicSiteWanGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -71,7 +72,7 @@ func (r *AccountMagicSiteWanService) Get(ctx context.Context, accountID string, 
 
 // Update a specific Site WAN.
 func (r *AccountMagicSiteWanService) Update(ctx context.Context, accountID string, siteID string, wanID string, body AccountMagicSiteWanUpdateParams, opts ...option.RequestOption) (res *MagicWanModifiedResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -91,7 +92,7 @@ func (r *AccountMagicSiteWanService) Update(ctx context.Context, accountID strin
 
 // Lists Site WANs associated with an account.
 func (r *AccountMagicSiteWanService) List(ctx context.Context, accountID string, siteID string, opts ...option.RequestOption) (res *MagicWansCollectionResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -107,7 +108,7 @@ func (r *AccountMagicSiteWanService) List(ctx context.Context, accountID string,
 
 // Remove a specific Site WAN.
 func (r *AccountMagicSiteWanService) Delete(ctx context.Context, accountID string, siteID string, wanID string, opts ...option.RequestOption) (res *AccountMagicSiteWanDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -127,7 +128,7 @@ func (r *AccountMagicSiteWanService) Delete(ctx context.Context, accountID strin
 
 // Patch a specific Site WAN.
 func (r *AccountMagicSiteWanService) Patch(ctx context.Context, accountID string, siteID string, wanID string, body AccountMagicSiteWanPatchParams, opts ...option.RequestOption) (res *MagicWanModifiedResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

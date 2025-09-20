@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -40,7 +41,7 @@ func NewZoneCacheVariantService(opts ...option.RequestOption) (r *ZoneCacheVaria
 // does not serve the variant requested, the response will not be cached. This will
 // be indicated with BYPASS cache status in the response headers.
 func (r *ZoneCacheVariantService) Get(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *ZoneCacheVariantGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -56,7 +57,7 @@ func (r *ZoneCacheVariantService) Get(ctx context.Context, zoneID string, opts .
 // does not serve the variant requested, the response will not be cached. This will
 // be indicated with BYPASS cache status in the response headers.
 func (r *ZoneCacheVariantService) Update(ctx context.Context, zoneID string, body ZoneCacheVariantUpdateParams, opts ...option.RequestOption) (res *ZoneCacheVariantUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -72,7 +73,7 @@ func (r *ZoneCacheVariantService) Update(ctx context.Context, zoneID string, bod
 // does not serve the variant requested, the response will not be cached. This will
 // be indicated with BYPASS cache status in the response headers.
 func (r *ZoneCacheVariantService) Delete(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *ZoneCacheVariantDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

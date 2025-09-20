@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -37,7 +38,7 @@ func NewAccountAIRunCfFblgitService(opts ...option.RequestOption) (r *AccountAIR
 
 // Execute @cf/fblgit/una-cybertron-7b-v2-bf16 model.
 func (r *AccountAIRunCfFblgitService) ExecuteUnaCybertron7bV2Bf16(ctx context.Context, accountID string, params AccountAIRunCfFblgitExecuteUnaCybertron7bV2Bf16Params, opts ...option.RequestOption) (res *AccountAIRunCfFblgitExecuteUnaCybertron7bV2Bf16Response, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

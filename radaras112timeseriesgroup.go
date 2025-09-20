@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -37,7 +38,7 @@ func NewRadarAs112TimeseriesGroupService(opts ...option.RequestOption) (r *Radar
 // Retrieves the distribution of AS112 DNS queries by DNSSEC (DNS Security
 // Extensions) support over time.
 func (r *RadarAs112TimeseriesGroupService) GetDnssec(ctx context.Context, query RadarAs112TimeseriesGroupGetDnssecParams, opts ...option.RequestOption) (res *RadarAs112TimeseriesGroupGetDnssecResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/as112/timeseries_groups/dnssec"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -46,7 +47,7 @@ func (r *RadarAs112TimeseriesGroupService) GetDnssec(ctx context.Context, query 
 // Retrieves the distribution of AS112 DNS queries by EDNS (Extension Mechanisms
 // for DNS) support over time.
 func (r *RadarAs112TimeseriesGroupService) GetEdns(ctx context.Context, query RadarAs112TimeseriesGroupGetEdnsParams, opts ...option.RequestOption) (res *RadarAs112TimeseriesGroupGetEdnsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/as112/timeseries_groups/edns"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -54,7 +55,7 @@ func (r *RadarAs112TimeseriesGroupService) GetEdns(ctx context.Context, query Ra
 
 // Retrieves the distribution of AS112 DNS queries by IP version over time.
 func (r *RadarAs112TimeseriesGroupService) GetIPVersion(ctx context.Context, query RadarAs112TimeseriesGroupGetIPVersionParams, opts ...option.RequestOption) (res *RadarAs112TimeseriesGroupGetIPVersionResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/as112/timeseries_groups/ip_version"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -63,7 +64,7 @@ func (r *RadarAs112TimeseriesGroupService) GetIPVersion(ctx context.Context, que
 // Retrieves the distribution of AS112 DNS requests classified by protocol over
 // time.
 func (r *RadarAs112TimeseriesGroupService) GetProtocol(ctx context.Context, query RadarAs112TimeseriesGroupGetProtocolParams, opts ...option.RequestOption) (res *RadarAs112TimeseriesGroupGetProtocolResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/as112/timeseries_groups/protocol"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -71,7 +72,7 @@ func (r *RadarAs112TimeseriesGroupService) GetProtocol(ctx context.Context, quer
 
 // Retrieves the distribution of AS112 DNS queries by type over time.
 func (r *RadarAs112TimeseriesGroupService) GetQueryType(ctx context.Context, query RadarAs112TimeseriesGroupGetQueryTypeParams, opts ...option.RequestOption) (res *RadarAs112TimeseriesGroupGetQueryTypeResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/as112/timeseries_groups/query_type"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -80,7 +81,7 @@ func (r *RadarAs112TimeseriesGroupService) GetQueryType(ctx context.Context, que
 // Retrieves the distribution of AS112 DNS requests classified by response code
 // over time.
 func (r *RadarAs112TimeseriesGroupService) GetResponseCodes(ctx context.Context, query RadarAs112TimeseriesGroupGetResponseCodesParams, opts ...option.RequestOption) (res *RadarAs112TimeseriesGroupGetResponseCodesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/as112/timeseries_groups/response_codes"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

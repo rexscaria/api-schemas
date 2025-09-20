@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -37,7 +38,7 @@ func NewAccountAIRunHfMistralService(opts ...option.RequestOption) (r *AccountAI
 
 // Execute @hf/mistral/mistral-7b-instruct-v0.2 model.
 func (r *AccountAIRunHfMistralService) ExecuteMistral7bInstructV0_2(ctx context.Context, accountID string, params AccountAIRunHfMistralExecuteMistral7bInstructV0_2Params, opts ...option.RequestOption) (res *AccountAIRunHfMistralExecuteMistral7bInstructV0_2Response, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

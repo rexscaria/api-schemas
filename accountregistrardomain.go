@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -36,7 +37,7 @@ func NewAccountRegistrarDomainService(opts ...option.RequestOption) (r *AccountR
 
 // Show individual domain.
 func (r *AccountRegistrarDomainService) Get(ctx context.Context, accountID string, domainName string, opts ...option.RequestOption) (res *RegistrarAPIDomainResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -52,7 +53,7 @@ func (r *AccountRegistrarDomainService) Get(ctx context.Context, accountID strin
 
 // Update individual domain.
 func (r *AccountRegistrarDomainService) Update(ctx context.Context, accountID string, domainName string, body AccountRegistrarDomainUpdateParams, opts ...option.RequestOption) (res *RegistrarAPIDomainResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -68,7 +69,7 @@ func (r *AccountRegistrarDomainService) Update(ctx context.Context, accountID st
 
 // List domains handled by Registrar.
 func (r *AccountRegistrarDomainService) List(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountRegistrarDomainListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

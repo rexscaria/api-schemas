@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -146,7 +147,7 @@ func NewZoneService(opts ...option.RequestOption) (r *ZoneService) {
 
 // Create Zone
 func (r *ZoneService) New(ctx context.Context, body ZoneNewParams, opts ...option.RequestOption) (res *ZoneNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "zones"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -154,7 +155,7 @@ func (r *ZoneService) New(ctx context.Context, body ZoneNewParams, opts ...optio
 
 // Zone Details
 func (r *ZoneService) Get(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *ZoneGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -166,7 +167,7 @@ func (r *ZoneService) Get(ctx context.Context, zoneID string, opts ...option.Req
 
 // Edits a zone. Only one zone property can be changed at a time.
 func (r *ZoneService) Update(ctx context.Context, zoneID string, body ZoneUpdateParams, opts ...option.RequestOption) (res *ZoneUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -179,7 +180,7 @@ func (r *ZoneService) Update(ctx context.Context, zoneID string, body ZoneUpdate
 // Lists, searches, sorts, and filters your zones. Listing zones across more than
 // 500 accounts is currently not allowed.
 func (r *ZoneService) List(ctx context.Context, query ZoneListParams, opts ...option.RequestOption) (res *ZoneListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "zones"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -187,7 +188,7 @@ func (r *ZoneService) List(ctx context.Context, query ZoneListParams, opts ...op
 
 // Deletes an existing zone.
 func (r *ZoneService) Delete(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *ZoneDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -199,7 +200,7 @@ func (r *ZoneService) Delete(ctx context.Context, zoneID string, opts ...option.
 
 // Lists all rate plans the zone can subscribe to.
 func (r *ZoneService) ListAvailableRatePlans(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *ZoneListAvailableRatePlansResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -271,7 +272,7 @@ func (r *ZoneService) ListAvailableRatePlans(ctx context.Context, zoneID string,
 // please refer to
 // [purge cache availability and limits documentation page](https://developers.cloudflare.com/cache/how-to/purge-cache/#availability-and-limits).
 func (r *ZoneService) PurgeCache(ctx context.Context, zoneID string, body ZonePurgeCacheParams, opts ...option.RequestOption) (res *ZonePurgeCacheResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -284,7 +285,7 @@ func (r *ZoneService) PurgeCache(ctx context.Context, zoneID string, body ZonePu
 // Triggeres a new activation check for a PENDING Zone. This can be triggered every
 // 5 min for paygo/ent customers, every hour for FREE Zones.
 func (r *ZoneService) RerunActivationCheck(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *ZoneRerunActivationCheckResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

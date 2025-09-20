@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -39,7 +40,7 @@ func NewAccountIntelAttackSurfaceReportService(opts ...option.RequestOption) (r 
 //
 // Deprecated: deprecated
 func (r *AccountIntelAttackSurfaceReportService) DismissIssue(ctx context.Context, accountID string, issueID string, body AccountIntelAttackSurfaceReportDismissIssueParams, opts ...option.RequestOption) (res *SingleResponseReport, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -55,7 +56,7 @@ func (r *AccountIntelAttackSurfaceReportService) DismissIssue(ctx context.Contex
 
 // Get Security Center Issues Types
 func (r *AccountIntelAttackSurfaceReportService) ListIssueTypes(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountIntelAttackSurfaceReportListIssueTypesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

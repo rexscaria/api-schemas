@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -35,7 +36,7 @@ func NewAccountWorkerScriptScheduleService(opts ...option.RequestOption) (r *Acc
 
 // Updates Cron Triggers for a Worker.
 func (r *AccountWorkerScriptScheduleService) Update(ctx context.Context, accountID string, scriptName string, body AccountWorkerScriptScheduleUpdateParams, opts ...option.RequestOption) (res *AccountWorkerScriptScheduleUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -51,7 +52,7 @@ func (r *AccountWorkerScriptScheduleService) Update(ctx context.Context, account
 
 // Fetches Cron Triggers for a Worker.
 func (r *AccountWorkerScriptScheduleService) Get(ctx context.Context, accountID string, scriptName string, opts ...option.RequestOption) (res *AccountWorkerScriptScheduleGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

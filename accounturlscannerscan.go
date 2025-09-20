@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -44,7 +45,7 @@ func NewAccountUrlscannerScanService(opts ...option.RequestOption) (r *AccountUr
 // [V2](https://developers.cloudflare.com/api/resources/url_scanner/subresources/scans/methods/create/)
 // instead.
 func (r *AccountUrlscannerScanService) New(ctx context.Context, accountID string, body AccountUrlscannerScanNewParams, opts ...option.RequestOption) (res *AccountUrlscannerScanNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -60,7 +61,7 @@ func (r *AccountUrlscannerScanService) New(ctx context.Context, accountID string
 // [V2](https://developers.cloudflare.com/api/resources/url_scanner/subresources/scans/methods/get/)
 // instead.
 func (r *AccountUrlscannerScanService) Get(ctx context.Context, accountID string, scanID string, query AccountUrlscannerScanGetParams, opts ...option.RequestOption) (res *AccountUrlscannerScanGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -85,7 +86,7 @@ func (r *AccountUrlscannerScanService) Get(ctx context.Context, accountID string
 // [V2](https://developers.cloudflare.com/api/resources/url_scanner/subresources/scans/methods/list/)
 // instead.
 func (r *AccountUrlscannerScanService) List(ctx context.Context, accountID string, query AccountUrlscannerScanListParams, opts ...option.RequestOption) (res *AccountUrlscannerScanListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -102,7 +103,7 @@ func (r *AccountUrlscannerScanService) List(ctx context.Context, accountID strin
 // [V2](https://developers.cloudflare.com/api/resources/url_scanner/subresources/scans/methods/har/)
 // instead.
 func (r *AccountUrlscannerScanService) GetHar(ctx context.Context, accountID string, scanID string, opts ...option.RequestOption) (res *AccountUrlscannerScanGetHarResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -122,7 +123,7 @@ func (r *AccountUrlscannerScanService) GetHar(ctx context.Context, accountID str
 // [V2](https://developers.cloudflare.com/api/resources/url_scanner/subresources/scans/methods/screenshot/)
 // instead.
 func (r *AccountUrlscannerScanService) GetScreenshot(ctx context.Context, accountID string, scanID string, query AccountUrlscannerScanGetScreenshotParams, opts ...option.RequestOption) (res *http.Response, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "image/png")}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")

@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -40,7 +41,7 @@ func NewZoneFirewallLockdownService(opts ...option.RequestOption) (r *ZoneFirewa
 
 // Creates a new Zone Lockdown rule.
 func (r *ZoneFirewallLockdownService) New(ctx context.Context, zoneID string, body ZoneFirewallLockdownNewParams, opts ...option.RequestOption) (res *FirewallZonelockdownResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -52,7 +53,7 @@ func (r *ZoneFirewallLockdownService) New(ctx context.Context, zoneID string, bo
 
 // Fetches the details of a Zone Lockdown rule.
 func (r *ZoneFirewallLockdownService) Get(ctx context.Context, zoneID string, lockDownsID string, opts ...option.RequestOption) (res *FirewallZonelockdownResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -68,7 +69,7 @@ func (r *ZoneFirewallLockdownService) Get(ctx context.Context, zoneID string, lo
 
 // Updates an existing Zone Lockdown rule.
 func (r *ZoneFirewallLockdownService) Update(ctx context.Context, zoneID string, lockDownsID string, body ZoneFirewallLockdownUpdateParams, opts ...option.RequestOption) (res *FirewallZonelockdownResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -85,7 +86,7 @@ func (r *ZoneFirewallLockdownService) Update(ctx context.Context, zoneID string,
 // Fetches Zone Lockdown rules. You can filter the results using several optional
 // parameters.
 func (r *ZoneFirewallLockdownService) List(ctx context.Context, zoneID string, query ZoneFirewallLockdownListParams, opts ...option.RequestOption) (res *ZoneFirewallLockdownListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -97,7 +98,7 @@ func (r *ZoneFirewallLockdownService) List(ctx context.Context, zoneID string, q
 
 // Deletes an existing Zone Lockdown rule.
 func (r *ZoneFirewallLockdownService) Delete(ctx context.Context, zoneID string, lockDownsID string, opts ...option.RequestOption) (res *ZoneFirewallLockdownDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

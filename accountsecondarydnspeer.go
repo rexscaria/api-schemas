@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -35,7 +36,7 @@ func NewAccountSecondaryDNSPeerService(opts ...option.RequestOption) (r *Account
 
 // Create Peer.
 func (r *AccountSecondaryDNSPeerService) New(ctx context.Context, accountID string, body AccountSecondaryDNSPeerNewParams, opts ...option.RequestOption) (res *SchemasSecondaryDNSPeersSingleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -47,7 +48,7 @@ func (r *AccountSecondaryDNSPeerService) New(ctx context.Context, accountID stri
 
 // Get Peer.
 func (r *AccountSecondaryDNSPeerService) Get(ctx context.Context, accountID string, peerID string, opts ...option.RequestOption) (res *SchemasSecondaryDNSPeersSingleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -63,7 +64,7 @@ func (r *AccountSecondaryDNSPeerService) Get(ctx context.Context, accountID stri
 
 // Modify Peer.
 func (r *AccountSecondaryDNSPeerService) Update(ctx context.Context, accountID string, peerID string, body AccountSecondaryDNSPeerUpdateParams, opts ...option.RequestOption) (res *SchemasSecondaryDNSPeersSingleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -79,7 +80,7 @@ func (r *AccountSecondaryDNSPeerService) Update(ctx context.Context, accountID s
 
 // List Peers.
 func (r *AccountSecondaryDNSPeerService) List(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountSecondaryDNSPeerListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -91,7 +92,7 @@ func (r *AccountSecondaryDNSPeerService) List(ctx context.Context, accountID str
 
 // Delete Peer.
 func (r *AccountSecondaryDNSPeerService) Delete(ctx context.Context, accountID string, peerID string, opts ...option.RequestOption) (res *SchemasIDResponseSecondaryDNS, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

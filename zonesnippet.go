@@ -11,6 +11,7 @@ import (
 	"mime/multipart"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apiform"
@@ -44,7 +45,7 @@ func NewZoneSnippetService(opts ...option.RequestOption) (r *ZoneSnippetService)
 
 // Fetches a snippet belonging to the zone.
 func (r *ZoneSnippetService) Get(ctx context.Context, zoneID string, snippetName string, opts ...option.RequestOption) (res *ZoneSnippetGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -60,7 +61,7 @@ func (r *ZoneSnippetService) Get(ctx context.Context, zoneID string, snippetName
 
 // Creates or updates a snippet belonging to the zone.
 func (r *ZoneSnippetService) Update(ctx context.Context, zoneID string, snippetName string, body ZoneSnippetUpdateParams, opts ...option.RequestOption) (res *ZoneSnippetUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -76,7 +77,7 @@ func (r *ZoneSnippetService) Update(ctx context.Context, zoneID string, snippetN
 
 // Fetches all snippets belonging to the zone.
 func (r *ZoneSnippetService) List(ctx context.Context, zoneID string, query ZoneSnippetListParams, opts ...option.RequestOption) (res *ZoneSnippetListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -88,7 +89,7 @@ func (r *ZoneSnippetService) List(ctx context.Context, zoneID string, query Zone
 
 // Deletes a snippet belonging to the zone.
 func (r *ZoneSnippetService) Delete(ctx context.Context, zoneID string, snippetName string, opts ...option.RequestOption) (res *ZoneSnippetDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -104,7 +105,7 @@ func (r *ZoneSnippetService) Delete(ctx context.Context, zoneID string, snippetN
 
 // Fetches the content of a snippet belonging to the zone.
 func (r *ZoneSnippetService) GetContent(ctx context.Context, zoneID string, snippetName string, opts ...option.RequestOption) (res *http.Response, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "multipart/form-data")}, opts...)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")

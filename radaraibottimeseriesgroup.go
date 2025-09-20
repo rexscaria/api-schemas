@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -36,7 +37,7 @@ func NewRadarAIBotTimeseriesGroupService(opts ...option.RequestOption) (r *Radar
 
 // Retrieves the distribution of traffic by AI user agent over time.
 func (r *RadarAIBotTimeseriesGroupService) GetUserAgent(ctx context.Context, query RadarAIBotTimeseriesGroupGetUserAgentParams, opts ...option.RequestOption) (res *RadarAIBotTimeseriesGroupGetUserAgentResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/ai/bots/timeseries_groups/user_agent"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

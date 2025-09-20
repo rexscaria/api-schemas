@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -35,7 +36,7 @@ func NewAccountRumV2RuleService(opts ...option.RequestOption) (r *AccountRumV2Ru
 
 // Creates a new rule in a Web Analytics ruleset.
 func (r *AccountRumV2RuleService) New(ctx context.Context, accountID string, rulesetID string, body AccountRumV2RuleNewParams, opts ...option.RequestOption) (res *ResponseSingleRule, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -51,7 +52,7 @@ func (r *AccountRumV2RuleService) New(ctx context.Context, accountID string, rul
 
 // Lists all the rules in a Web Analytics ruleset.
 func (r *AccountRumV2RuleService) List(ctx context.Context, accountID string, rulesetID string, opts ...option.RequestOption) (res *ResponseCollectionRules, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -67,7 +68,7 @@ func (r *AccountRumV2RuleService) List(ctx context.Context, accountID string, ru
 
 // Deletes an existing rule from a Web Analytics ruleset.
 func (r *AccountRumV2RuleService) Delete(ctx context.Context, accountID string, rulesetID string, ruleID string, opts ...option.RequestOption) (res *AccountRumV2RuleDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -87,7 +88,7 @@ func (r *AccountRumV2RuleService) Delete(ctx context.Context, accountID string, 
 
 // Updates a rule in a Web Analytics ruleset.
 func (r *AccountRumV2RuleService) Update0(ctx context.Context, accountID string, rulesetID string, ruleID string, body AccountRumV2RuleUpdate0Params, opts ...option.RequestOption) (res *ResponseSingleRule, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -107,7 +108,7 @@ func (r *AccountRumV2RuleService) Update0(ctx context.Context, accountID string,
 
 // Modifies one or more rules in a Web Analytics ruleset with a single request.
 func (r *AccountRumV2RuleService) Update1(ctx context.Context, accountID string, rulesetID string, body AccountRumV2RuleUpdate1Params, opts ...option.RequestOption) (res *ResponseCollectionRules, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

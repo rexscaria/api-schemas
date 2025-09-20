@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -67,7 +68,7 @@ func (r *AccountStreamService) New(ctx context.Context, accountID string, params
 	if params.UploadMetadata.Present {
 		opts = append(opts, option.WithHeader("Upload-Metadata", fmt.Sprintf("%s", params.UploadMetadata)))
 	}
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
@@ -80,7 +81,7 @@ func (r *AccountStreamService) New(ctx context.Context, accountID string, params
 
 // Fetches details for a single video.
 func (r *AccountStreamService) Get(ctx context.Context, accountID string, identifier string, opts ...option.RequestOption) (res *VideoResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -96,7 +97,7 @@ func (r *AccountStreamService) Get(ctx context.Context, accountID string, identi
 
 // Edit details for a single video.
 func (r *AccountStreamService) Update(ctx context.Context, accountID string, identifier string, body AccountStreamUpdateParams, opts ...option.RequestOption) (res *VideoResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -113,7 +114,7 @@ func (r *AccountStreamService) Update(ctx context.Context, accountID string, ide
 // Lists up to 1000 videos from a single request. For a specific range, refer to
 // the optional parameters.
 func (r *AccountStreamService) List(ctx context.Context, accountID string, query AccountStreamListParams, opts ...option.RequestOption) (res *AccountStreamListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -125,7 +126,7 @@ func (r *AccountStreamService) List(ctx context.Context, accountID string, query
 
 // Deletes a video and its copies from Cloudflare Stream.
 func (r *AccountStreamService) Delete(ctx context.Context, accountID string, identifier string, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
@@ -142,7 +143,7 @@ func (r *AccountStreamService) Delete(ctx context.Context, accountID string, ide
 
 // Clips a video based on the specified start and end times provided in seconds.
 func (r *AccountStreamService) Clip(ctx context.Context, accountID string, body AccountStreamClipParams, opts ...option.RequestOption) (res *AccountStreamClipResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -157,7 +158,7 @@ func (r *AccountStreamService) Copy(ctx context.Context, accountID string, param
 	if params.UploadCreator.Present {
 		opts = append(opts, option.WithHeader("Upload-Creator", fmt.Sprintf("%s", params.UploadCreator)))
 	}
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -170,7 +171,7 @@ func (r *AccountStreamService) Copy(ctx context.Context, accountID string, param
 // Creates a signed URL token for a video. If a body is not provided in the
 // request, a token is created with default values.
 func (r *AccountStreamService) NewSignedURL(ctx context.Context, accountID string, identifier string, body AccountStreamNewSignedURLParams, opts ...option.RequestOption) (res *AccountStreamNewSignedURLResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -189,7 +190,7 @@ func (r *AccountStreamService) DirectUpload(ctx context.Context, accountID strin
 	if params.UploadCreator.Present {
 		opts = append(opts, option.WithHeader("Upload-Creator", fmt.Sprintf("%s", params.UploadCreator)))
 	}
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -203,7 +204,7 @@ func (r *AccountStreamService) DirectUpload(ctx context.Context, accountID strin
 // Cloudflare. On success, returns an HTML fragment for use on web pages to display
 // a video. On failure, returns a JSON response body.
 func (r *AccountStreamService) GetEmbedCode(ctx context.Context, accountID string, identifier string, opts ...option.RequestOption) (res *string, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -219,7 +220,7 @@ func (r *AccountStreamService) GetEmbedCode(ctx context.Context, accountID strin
 
 // Returns information about an account's storage use.
 func (r *AccountStreamService) GetStorageUsage(ctx context.Context, accountID string, query AccountStreamGetStorageUsageParams, opts ...option.RequestOption) (res *AccountStreamGetStorageUsageResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -40,7 +41,7 @@ func NewUserFirewallAccessRuleRuleService(opts ...option.RequestOption) (r *User
 // Note: To create an IP Access rule that applies to a specific zone, refer to the
 // [IP Access rules for a zone](#ip-access-rules-for-a-zone) endpoints.
 func (r *UserFirewallAccessRuleRuleService) New(ctx context.Context, body UserFirewallAccessRuleRuleNewParams, opts ...option.RequestOption) (res *FirewallRuleSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "user/firewall/access_rules/rules"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -49,7 +50,7 @@ func (r *UserFirewallAccessRuleRuleService) New(ctx context.Context, body UserFi
 // Updates an IP Access rule defined at the user level. You can only update the
 // rule action (`mode` parameter) and notes.
 func (r *UserFirewallAccessRuleRuleService) Update(ctx context.Context, ruleID string, body UserFirewallAccessRuleRuleUpdateParams, opts ...option.RequestOption) (res *FirewallRuleSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if ruleID == "" {
 		err = errors.New("missing required rule_id parameter")
 		return
@@ -62,7 +63,7 @@ func (r *UserFirewallAccessRuleRuleService) Update(ctx context.Context, ruleID s
 // Fetches IP Access rules of the user. You can filter the results using several
 // optional parameters.
 func (r *UserFirewallAccessRuleRuleService) List(ctx context.Context, query UserFirewallAccessRuleRuleListParams, opts ...option.RequestOption) (res *FirewallRuleCollection, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "user/firewall/access_rules/rules"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -72,7 +73,7 @@ func (r *UserFirewallAccessRuleRuleService) List(ctx context.Context, query User
 //
 // Note: Deleting a user-level rule will affect all zones owned by the user.
 func (r *UserFirewallAccessRuleRuleService) Delete(ctx context.Context, ruleID string, opts ...option.RequestOption) (res *FirewallRuleSingleID, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if ruleID == "" {
 		err = errors.New("missing required rule_id parameter")
 		return

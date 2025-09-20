@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -38,7 +39,7 @@ func NewZonePageShieldConnectionService(opts ...option.RequestOption) (r *ZonePa
 
 // Fetches a connection detected by Page Shield by connection ID.
 func (r *ZonePageShieldConnectionService) Get(ctx context.Context, zoneID string, connectionID string, opts ...option.RequestOption) (res *ZonePageShieldConnectionGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -54,7 +55,7 @@ func (r *ZonePageShieldConnectionService) Get(ctx context.Context, zoneID string
 
 // Lists all connections detected by Page Shield.
 func (r *ZonePageShieldConnectionService) List(ctx context.Context, zoneID string, query ZonePageShieldConnectionListParams, opts ...option.RequestOption) (res *ZonePageShieldConnectionListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -35,7 +36,7 @@ func NewAccountDevicePostureIntegrationService(opts ...option.RequestOption) (r 
 
 // Create a new device posture integration.
 func (r *AccountDevicePostureIntegrationService) New(ctx context.Context, accountID string, body AccountDevicePostureIntegrationNewParams, opts ...option.RequestOption) (res *SingleResponseIntegration, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -47,7 +48,7 @@ func (r *AccountDevicePostureIntegrationService) New(ctx context.Context, accoun
 
 // Fetches details for a single device posture integration.
 func (r *AccountDevicePostureIntegrationService) Get(ctx context.Context, accountID string, integrationID string, opts ...option.RequestOption) (res *SingleResponseIntegration, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -63,7 +64,7 @@ func (r *AccountDevicePostureIntegrationService) Get(ctx context.Context, accoun
 
 // Updates a configured device posture integration.
 func (r *AccountDevicePostureIntegrationService) Update(ctx context.Context, accountID string, integrationID string, body AccountDevicePostureIntegrationUpdateParams, opts ...option.RequestOption) (res *SingleResponseIntegration, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -79,7 +80,7 @@ func (r *AccountDevicePostureIntegrationService) Update(ctx context.Context, acc
 
 // Fetches the list of device posture integrations for an account.
 func (r *AccountDevicePostureIntegrationService) List(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountDevicePostureIntegrationListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -91,7 +92,7 @@ func (r *AccountDevicePostureIntegrationService) List(ctx context.Context, accou
 
 // Delete a configured device posture integration.
 func (r *AccountDevicePostureIntegrationService) Delete(ctx context.Context, accountID string, integrationID string, opts ...option.RequestOption) (res *AccountDevicePostureIntegrationDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

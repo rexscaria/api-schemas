@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -44,7 +45,7 @@ func NewRadarAttackLayer7TopService(opts ...option.RequestOption) (r *RadarAttac
 // You can optionally limit the number of attacks by origin/target location (useful
 // if all the top attacks are from or to the same location).
 func (r *RadarAttackLayer7TopService) GetTopAttacks(ctx context.Context, query RadarAttackLayer7TopGetTopAttacksParams, opts ...option.RequestOption) (res *RadarAttackLayer7TopGetTopAttacksResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/attacks/layer7/top/attacks"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -55,7 +56,7 @@ func (r *RadarAttackLayer7TopService) GetTopAttacks(ctx context.Context, query R
 //
 // Deprecated: deprecated
 func (r *RadarAttackLayer7TopService) GetTopIndustry(ctx context.Context, query RadarAttackLayer7TopGetTopIndustryParams, opts ...option.RequestOption) (res *RadarAttackLayer7TopGetTopIndustryResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/attacks/layer7/top/industry"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -66,7 +67,7 @@ func (r *RadarAttackLayer7TopService) GetTopIndustry(ctx context.Context, query 
 //
 // Deprecated: deprecated
 func (r *RadarAttackLayer7TopService) GetTopVerticals(ctx context.Context, query RadarAttackLayer7TopGetTopVerticalsParams, opts ...option.RequestOption) (res *RadarAttackLayer7TopGetTopVerticalsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/attacks/layer7/top/vertical"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

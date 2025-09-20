@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -43,7 +44,7 @@ func NewAccountLoadBalancerService(opts ...option.RequestOption) (r *AccountLoad
 
 // Get the result of a previous preview operation using the provided preview_id.
 func (r *AccountLoadBalancerService) PreviewResult(ctx context.Context, accountID string, previewID string, opts ...option.RequestOption) (res *PreviewResultResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -59,7 +60,7 @@ func (r *AccountLoadBalancerService) PreviewResult(ctx context.Context, accountI
 
 // Search for Load Balancing resources.
 func (r *AccountLoadBalancerService) Search(ctx context.Context, accountID string, query AccountLoadBalancerSearchParams, opts ...option.RequestOption) (res *AccountLoadBalancerSearchResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

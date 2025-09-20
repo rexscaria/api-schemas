@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -37,7 +38,7 @@ func NewZoneLeakedCredentialCheckService(opts ...option.RequestOption) (r *ZoneL
 
 // Retrieves the current status of Leaked Credential Checks.
 func (r *ZoneLeakedCredentialCheckService) Get(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *ResponseStatus, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -49,7 +50,7 @@ func (r *ZoneLeakedCredentialCheckService) Get(ctx context.Context, zoneID strin
 
 // Updates the current status of Leaked Credential Checks.
 func (r *ZoneLeakedCredentialCheckService) Update(ctx context.Context, zoneID string, body ZoneLeakedCredentialCheckUpdateParams, opts ...option.RequestOption) (res *ResponseStatus, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

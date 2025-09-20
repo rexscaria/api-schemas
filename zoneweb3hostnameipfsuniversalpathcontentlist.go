@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -38,7 +39,7 @@ func NewZoneWeb3HostnameIpfsUniversalPathContentListService(opts ...option.Reque
 
 // IPFS Universal Path Gateway Content List Details
 func (r *ZoneWeb3HostnameIpfsUniversalPathContentListService) Get(ctx context.Context, zoneID string, identifier string, opts ...option.RequestOption) (res *DetailsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -54,7 +55,7 @@ func (r *ZoneWeb3HostnameIpfsUniversalPathContentListService) Get(ctx context.Co
 
 // Update IPFS Universal Path Gateway Content List
 func (r *ZoneWeb3HostnameIpfsUniversalPathContentListService) Update(ctx context.Context, zoneID string, identifier string, body ZoneWeb3HostnameIpfsUniversalPathContentListUpdateParams, opts ...option.RequestOption) (res *DetailsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

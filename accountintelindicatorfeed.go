@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"mime/multipart"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apiform"
@@ -41,7 +42,7 @@ func NewAccountIntelIndicatorFeedService(opts ...option.RequestOption) (r *Accou
 
 // Create new indicator feed
 func (r *AccountIntelIndicatorFeedService) NewFeed(ctx context.Context, accountID string, body AccountIntelIndicatorFeedNewFeedParams, opts ...option.RequestOption) (res *AccountIntelIndicatorFeedNewFeedResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -53,7 +54,7 @@ func (r *AccountIntelIndicatorFeedService) NewFeed(ctx context.Context, accountI
 
 // Download indicator feed data
 func (r *AccountIntelIndicatorFeedService) DownloadData(ctx context.Context, accountID string, feedID int64, opts ...option.RequestOption) (res *UpdateFeedResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -65,7 +66,7 @@ func (r *AccountIntelIndicatorFeedService) DownloadData(ctx context.Context, acc
 
 // Get indicator feed data
 func (r *AccountIntelIndicatorFeedService) GetData(ctx context.Context, accountID string, feedID int64, opts ...option.RequestOption) (res *string, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "text/csv")}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
@@ -78,7 +79,7 @@ func (r *AccountIntelIndicatorFeedService) GetData(ctx context.Context, accountI
 
 // Get indicator feeds owned by this account
 func (r *AccountIntelIndicatorFeedService) ListFeeds(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountIntelIndicatorFeedListFeedsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -90,7 +91,7 @@ func (r *AccountIntelIndicatorFeedService) ListFeeds(ctx context.Context, accoun
 
 // Get indicator feed metadata
 func (r *AccountIntelIndicatorFeedService) GetMetadata(ctx context.Context, accountID string, feedID int64, opts ...option.RequestOption) (res *AccountIntelIndicatorFeedGetMetadataResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -102,7 +103,7 @@ func (r *AccountIntelIndicatorFeedService) GetMetadata(ctx context.Context, acco
 
 // Update indicator feed data
 func (r *AccountIntelIndicatorFeedService) UpdateData(ctx context.Context, accountID string, feedID int64, body AccountIntelIndicatorFeedUpdateDataParams, opts ...option.RequestOption) (res *UpdateFeedResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -114,7 +115,7 @@ func (r *AccountIntelIndicatorFeedService) UpdateData(ctx context.Context, accou
 
 // Update indicator feed metadata
 func (r *AccountIntelIndicatorFeedService) UpdateMetadata(ctx context.Context, accountID string, feedID int64, body AccountIntelIndicatorFeedUpdateMetadataParams, opts ...option.RequestOption) (res *AccountIntelIndicatorFeedUpdateMetadataResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

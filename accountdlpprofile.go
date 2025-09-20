@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -44,7 +45,7 @@ func NewAccountDlpProfileService(opts ...option.RequestOption) (r *AccountDlpPro
 
 // Fetches a DLP profile by ID.
 func (r *AccountDlpProfileService) Get(ctx context.Context, accountID string, profileID string, opts ...option.RequestOption) (res *AccountDlpProfileGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -60,7 +61,7 @@ func (r *AccountDlpProfileService) Get(ctx context.Context, accountID string, pr
 
 // Lists all DLP profiles in an account.
 func (r *AccountDlpProfileService) List(ctx context.Context, accountID string, query AccountDlpProfileListParams, opts ...option.RequestOption) (res *AccountDlpProfileListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

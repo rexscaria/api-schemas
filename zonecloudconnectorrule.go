@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -35,7 +36,7 @@ func NewZoneCloudConnectorRuleService(opts ...option.RequestOption) (r *ZoneClou
 
 // Put Rules
 func (r *ZoneCloudConnectorRuleService) Update(ctx context.Context, zoneID string, body ZoneCloudConnectorRuleUpdateParams, opts ...option.RequestOption) (res *ZoneCloudConnectorRuleUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -47,7 +48,7 @@ func (r *ZoneCloudConnectorRuleService) Update(ctx context.Context, zoneID strin
 
 // Rules
 func (r *ZoneCloudConnectorRuleService) List(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *ZoneCloudConnectorRuleListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

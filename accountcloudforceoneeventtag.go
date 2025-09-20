@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -35,7 +36,7 @@ func NewAccountCloudforceOneEventTagService(opts ...option.RequestOption) (r *Ac
 
 // Creates a new tag
 func (r *AccountCloudforceOneEventTagService) New(ctx context.Context, accountID string, body AccountCloudforceOneEventTagNewParams, opts ...option.RequestOption) (res *AccountCloudforceOneEventTagNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

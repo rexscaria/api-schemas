@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -35,7 +36,7 @@ func NewAccountImageV1VariantService(opts ...option.RequestOption) (r *AccountIm
 
 // Specify variants that allow you to resize images for different use cases.
 func (r *AccountImageV1VariantService) New(ctx context.Context, accountID string, body AccountImageV1VariantNewParams, opts ...option.RequestOption) (res *ImageVariantSimpleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -47,7 +48,7 @@ func (r *AccountImageV1VariantService) New(ctx context.Context, accountID string
 
 // Fetch details for a single variant.
 func (r *AccountImageV1VariantService) Get(ctx context.Context, accountID string, variantID string, opts ...option.RequestOption) (res *ImageVariantSimpleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -63,7 +64,7 @@ func (r *AccountImageV1VariantService) Get(ctx context.Context, accountID string
 
 // Updating a variant purges the cache for all images associated with the variant.
 func (r *AccountImageV1VariantService) Update(ctx context.Context, accountID string, variantID string, body AccountImageV1VariantUpdateParams, opts ...option.RequestOption) (res *ImageVariantSimpleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -79,7 +80,7 @@ func (r *AccountImageV1VariantService) Update(ctx context.Context, accountID str
 
 // Lists existing variants.
 func (r *AccountImageV1VariantService) List(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountImageV1VariantListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -91,7 +92,7 @@ func (r *AccountImageV1VariantService) List(ctx context.Context, accountID strin
 
 // Deleting a variant purges the cache for all images associated with the variant.
 func (r *AccountImageV1VariantService) Delete(ctx context.Context, accountID string, variantID string, opts ...option.RequestOption) (res *DeletedImagesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -43,7 +44,7 @@ func NewAccountStorageKvNamespaceService(opts ...option.RequestOption) (r *Accou
 // already owns a namespace with this title. A namespace must be explicitly deleted
 // to be replaced.
 func (r *AccountStorageKvNamespaceService) New(ctx context.Context, accountID string, body AccountStorageKvNamespaceNewParams, opts ...option.RequestOption) (res *AccountStorageKvNamespaceNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -55,7 +56,7 @@ func (r *AccountStorageKvNamespaceService) New(ctx context.Context, accountID st
 
 // Get the namespace corresponding to the given ID.
 func (r *AccountStorageKvNamespaceService) Get(ctx context.Context, accountID string, namespaceID string, opts ...option.RequestOption) (res *AccountStorageKvNamespaceGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -71,7 +72,7 @@ func (r *AccountStorageKvNamespaceService) Get(ctx context.Context, accountID st
 
 // Modifies a namespace's title.
 func (r *AccountStorageKvNamespaceService) Update(ctx context.Context, accountID string, namespaceID string, body AccountStorageKvNamespaceUpdateParams, opts ...option.RequestOption) (res *AccountStorageKvNamespaceUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -87,7 +88,7 @@ func (r *AccountStorageKvNamespaceService) Update(ctx context.Context, accountID
 
 // Returns the namespaces owned by an account.
 func (r *AccountStorageKvNamespaceService) List(ctx context.Context, accountID string, query AccountStorageKvNamespaceListParams, opts ...option.RequestOption) (res *AccountStorageKvNamespaceListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -99,7 +100,7 @@ func (r *AccountStorageKvNamespaceService) List(ctx context.Context, accountID s
 
 // Deletes the namespace corresponding to the given ID.
 func (r *AccountStorageKvNamespaceService) Delete(ctx context.Context, accountID string, namespaceID string, opts ...option.RequestOption) (res *APIResponseCommonNoResult, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -117,7 +118,7 @@ func (r *AccountStorageKvNamespaceService) Delete(ctx context.Context, accountID
 // URL-encoding to use special characters (for example, `:`, `!`, `%`) in the key
 // name.
 func (r *AccountStorageKvNamespaceService) GetMetadata(ctx context.Context, accountID string, namespaceID string, keyName string, opts ...option.RequestOption) (res *AccountStorageKvNamespaceGetMetadataResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -137,7 +138,7 @@ func (r *AccountStorageKvNamespaceService) GetMetadata(ctx context.Context, acco
 
 // Lists a namespace's keys.
 func (r *AccountStorageKvNamespaceService) ListKeys(ctx context.Context, accountID string, namespaceID string, query AccountStorageKvNamespaceListKeysParams, opts ...option.RequestOption) (res *AccountStorageKvNamespaceListKeysResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

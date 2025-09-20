@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -41,7 +42,7 @@ func NewAccountAIGatewayGatewayEvaluationService(opts ...option.RequestOption) (
 
 // Create a new Evaluation
 func (r *AccountAIGatewayGatewayEvaluationService) NewEvaluation(ctx context.Context, accountID string, gatewayID string, body AccountAIGatewayGatewayEvaluationNewEvaluationParams, opts ...option.RequestOption) (res *AccountAIGatewayGatewayEvaluationNewEvaluationResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -57,7 +58,7 @@ func (r *AccountAIGatewayGatewayEvaluationService) NewEvaluation(ctx context.Con
 
 // Delete a Evaluation
 func (r *AccountAIGatewayGatewayEvaluationService) DeleteEvaluation(ctx context.Context, accountID string, gatewayID string, id string, opts ...option.RequestOption) (res *AccountAIGatewayGatewayEvaluationDeleteEvaluationResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -77,7 +78,7 @@ func (r *AccountAIGatewayGatewayEvaluationService) DeleteEvaluation(ctx context.
 
 // Fetch a Evaluation
 func (r *AccountAIGatewayGatewayEvaluationService) FetchEvaluation(ctx context.Context, accountID string, gatewayID string, id string, opts ...option.RequestOption) (res *AccountAIGatewayGatewayEvaluationFetchEvaluationResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -97,7 +98,7 @@ func (r *AccountAIGatewayGatewayEvaluationService) FetchEvaluation(ctx context.C
 
 // List Evaluations
 func (r *AccountAIGatewayGatewayEvaluationService) ListEvaluations(ctx context.Context, accountID string, gatewayID string, query AccountAIGatewayGatewayEvaluationListEvaluationsParams, opts ...option.RequestOption) (res *AccountAIGatewayGatewayEvaluationListEvaluationsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

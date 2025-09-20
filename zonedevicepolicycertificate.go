@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -35,7 +36,7 @@ func NewZoneDevicePolicyCertificateService(opts ...option.RequestOption) (r *Zon
 
 // Fetches device certificate provisioning.
 func (r *ZoneDevicePolicyCertificateService) Get(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *DevicePolicyCertificate, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -49,7 +50,7 @@ func (r *ZoneDevicePolicyCertificateService) Get(ctx context.Context, zoneID str
 // and referenced by Access device posture policies when the client visits MTLS
 // protected domains. This facilitates device posture without a WARP session.
 func (r *ZoneDevicePolicyCertificateService) Update(ctx context.Context, zoneID string, body ZoneDevicePolicyCertificateUpdateParams, opts ...option.RequestOption) (res *DevicePolicyCertificate, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

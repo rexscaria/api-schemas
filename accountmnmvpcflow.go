@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/requestconfig"
@@ -34,7 +35,7 @@ func NewAccountMnmVpcFlowService(opts ...option.RequestOption) (r *AccountMnmVpc
 
 // Generate authentication token for VPC flow logs export.
 func (r *AccountMnmVpcFlowService) GenerateToken(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountMnmVpcFlowGenerateTokenResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

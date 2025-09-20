@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -39,7 +40,7 @@ func NewRadarQualitySpeedService(opts ...option.RequestOption) (r *RadarQualityS
 // Retrieves a histogram from the previous 90 days of Cloudflare Speed Test data,
 // split into fixed bandwidth (Mbps), latency (ms), or jitter (ms) buckets.
 func (r *RadarQualitySpeedService) GetHistogram(ctx context.Context, query RadarQualitySpeedGetHistogramParams, opts ...option.RequestOption) (res *RadarQualitySpeedGetHistogramResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/quality/speed/histogram"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -48,7 +49,7 @@ func (r *RadarQualitySpeedService) GetHistogram(ctx context.Context, query Radar
 // Retrieves a summary of bandwidth, latency, jitter, and packet loss, from the
 // previous 90 days of Cloudflare Speed Test data.
 func (r *RadarQualitySpeedService) GetSummary(ctx context.Context, query RadarQualitySpeedGetSummaryParams, opts ...option.RequestOption) (res *RadarQualitySpeedGetSummaryResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/quality/speed/summary"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -35,7 +36,7 @@ func NewZoneLoadBalancerService(opts ...option.RequestOption) (r *ZoneLoadBalanc
 
 // Create a new load balancer.
 func (r *ZoneLoadBalancerService) New(ctx context.Context, zoneID string, body ZoneLoadBalancerNewParams, opts ...option.RequestOption) (res *LoadBalancerSingleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -47,7 +48,7 @@ func (r *ZoneLoadBalancerService) New(ctx context.Context, zoneID string, body Z
 
 // Fetch a single configured load balancer.
 func (r *ZoneLoadBalancerService) Get(ctx context.Context, zoneID string, loadBalancerID string, opts ...option.RequestOption) (res *LoadBalancerSingleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -63,7 +64,7 @@ func (r *ZoneLoadBalancerService) Get(ctx context.Context, zoneID string, loadBa
 
 // Update a configured load balancer.
 func (r *ZoneLoadBalancerService) Update(ctx context.Context, zoneID string, loadBalancerID string, body ZoneLoadBalancerUpdateParams, opts ...option.RequestOption) (res *LoadBalancerSingleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -79,7 +80,7 @@ func (r *ZoneLoadBalancerService) Update(ctx context.Context, zoneID string, loa
 
 // List configured load balancers.
 func (r *ZoneLoadBalancerService) List(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *ZoneLoadBalancerListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -91,7 +92,7 @@ func (r *ZoneLoadBalancerService) List(ctx context.Context, zoneID string, opts 
 
 // Delete a configured load balancer.
 func (r *ZoneLoadBalancerService) Delete(ctx context.Context, zoneID string, loadBalancerID string, opts ...option.RequestOption) (res *ZoneLoadBalancerDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -107,7 +108,7 @@ func (r *ZoneLoadBalancerService) Delete(ctx context.Context, zoneID string, loa
 
 // Apply changes to an existing load balancer, overwriting the supplied properties.
 func (r *ZoneLoadBalancerService) Patch(ctx context.Context, zoneID string, loadBalancerID string, body ZoneLoadBalancerPatchParams, opts ...option.RequestOption) (res *LoadBalancerSingleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

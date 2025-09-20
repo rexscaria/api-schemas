@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -40,7 +41,7 @@ func NewAccountEmailSecurityInvestigateService(opts ...option.RequestOption) (r 
 
 // Get message details
 func (r *AccountEmailSecurityInvestigateService) Get(ctx context.Context, accountID string, postfixID string, opts ...option.RequestOption) (res *AccountEmailSecurityInvestigateGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -56,7 +57,7 @@ func (r *AccountEmailSecurityInvestigateService) Get(ctx context.Context, accoun
 
 // Returns information for each email that matches the search parameter(s).
 func (r *AccountEmailSecurityInvestigateService) List(ctx context.Context, accountID string, query AccountEmailSecurityInvestigateListParams, opts ...option.RequestOption) (res *AccountEmailSecurityInvestigateListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -69,7 +70,7 @@ func (r *AccountEmailSecurityInvestigateService) List(ctx context.Context, accou
 // Returns detection details such as threat categories and sender information for
 // non-benign messages.
 func (r *AccountEmailSecurityInvestigateService) GetDetections(ctx context.Context, accountID string, postfixID string, opts ...option.RequestOption) (res *AccountEmailSecurityInvestigateGetDetectionsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -85,7 +86,7 @@ func (r *AccountEmailSecurityInvestigateService) GetDetections(ctx context.Conte
 
 // Returns the raw eml of any non-benign message.
 func (r *AccountEmailSecurityInvestigateService) GetRaw(ctx context.Context, accountID string, postfixID string, opts ...option.RequestOption) (res *AccountEmailSecurityInvestigateGetRawResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -101,7 +102,7 @@ func (r *AccountEmailSecurityInvestigateService) GetRaw(ctx context.Context, acc
 
 // Get email trace
 func (r *AccountEmailSecurityInvestigateService) GetTrace(ctx context.Context, accountID string, postfixID string, opts ...option.RequestOption) (res *AccountEmailSecurityInvestigateGetTraceResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -117,7 +118,7 @@ func (r *AccountEmailSecurityInvestigateService) GetTrace(ctx context.Context, a
 
 // Move multiple messages
 func (r *AccountEmailSecurityInvestigateService) MoveMultiple(ctx context.Context, accountID string, body AccountEmailSecurityInvestigateMoveMultipleParams, opts ...option.RequestOption) (res *AccountEmailSecurityInvestigateMoveMultipleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -130,7 +131,7 @@ func (r *AccountEmailSecurityInvestigateService) MoveMultiple(ctx context.Contex
 // Returns a preview of the message body as a base64 encoded PNG image for
 // non-benign messages.
 func (r *AccountEmailSecurityInvestigateService) Preview(ctx context.Context, accountID string, postfixID string, opts ...option.RequestOption) (res *AccountEmailSecurityInvestigatePreviewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -146,7 +147,7 @@ func (r *AccountEmailSecurityInvestigateService) Preview(ctx context.Context, ac
 
 // Preview for non-detection messages
 func (r *AccountEmailSecurityInvestigateService) PreviewMultiple(ctx context.Context, accountID string, body AccountEmailSecurityInvestigatePreviewMultipleParams, opts ...option.RequestOption) (res *AccountEmailSecurityInvestigatePreviewMultipleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -158,7 +159,7 @@ func (r *AccountEmailSecurityInvestigateService) PreviewMultiple(ctx context.Con
 
 // Change email classfication
 func (r *AccountEmailSecurityInvestigateService) Reclassify(ctx context.Context, accountID string, postfixID string, body AccountEmailSecurityInvestigateReclassifyParams, opts ...option.RequestOption) (res *AccountEmailSecurityInvestigateReclassifyResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -174,7 +175,7 @@ func (r *AccountEmailSecurityInvestigateService) Reclassify(ctx context.Context,
 
 // Release messages from quarantine
 func (r *AccountEmailSecurityInvestigateService) Release(ctx context.Context, accountID string, body AccountEmailSecurityInvestigateReleaseParams, opts ...option.RequestOption) (res *AccountEmailSecurityInvestigateReleaseResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -35,7 +36,7 @@ func NewAccountCloudforceOneScanConfigService(opts ...option.RequestOption) (r *
 
 // Create a new Scan Config
 func (r *AccountCloudforceOneScanConfigService) New(ctx context.Context, accountID string, body AccountCloudforceOneScanConfigNewParams, opts ...option.RequestOption) (res *AccountCloudforceOneScanConfigNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -47,7 +48,7 @@ func (r *AccountCloudforceOneScanConfigService) New(ctx context.Context, account
 
 // Update an existing Scan Config
 func (r *AccountCloudforceOneScanConfigService) Update(ctx context.Context, accountID string, configID string, body AccountCloudforceOneScanConfigUpdateParams, opts ...option.RequestOption) (res *AccountCloudforceOneScanConfigUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -63,7 +64,7 @@ func (r *AccountCloudforceOneScanConfigService) Update(ctx context.Context, acco
 
 // List Scan Configs
 func (r *AccountCloudforceOneScanConfigService) List(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountCloudforceOneScanConfigListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -75,7 +76,7 @@ func (r *AccountCloudforceOneScanConfigService) List(ctx context.Context, accoun
 
 // Delete a Scan Config
 func (r *AccountCloudforceOneScanConfigService) Delete(ctx context.Context, accountID string, configID string, opts ...option.RequestOption) (res *AccountCloudforceOneScanConfigDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

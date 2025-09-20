@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -36,7 +37,7 @@ func NewAccountGatewayConfigurationService(opts ...option.RequestOption) (r *Acc
 
 // Fetches the current Zero Trust account configuration.
 func (r *AccountGatewayConfigurationService) Get(ctx context.Context, accountID string, opts ...option.RequestOption) (res *GatewayAccountConfig, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -48,7 +49,7 @@ func (r *AccountGatewayConfigurationService) Get(ctx context.Context, accountID 
 
 // Updates the current Zero Trust account configuration.
 func (r *AccountGatewayConfigurationService) Update(ctx context.Context, accountID string, body AccountGatewayConfigurationUpdateParams, opts ...option.RequestOption) (res *GatewayAccountConfig, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -64,7 +65,7 @@ func (r *AccountGatewayConfigurationService) Update(ctx context.Context, account
 // `certificate`, without updating the entire configuration object. Returns an
 // error if any collection of settings is not properly configured.
 func (r *AccountGatewayConfigurationService) Patch(ctx context.Context, accountID string, body AccountGatewayConfigurationPatchParams, opts ...option.RequestOption) (res *GatewayAccountConfig, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -78,7 +79,7 @@ func (r *AccountGatewayConfigurationService) Patch(ctx context.Context, accountI
 //
 // Deprecated: deprecated
 func (r *AccountGatewayConfigurationService) GetCustomCertificate(ctx context.Context, accountID string, opts ...option.RequestOption) (res *CustomCertificateSettings, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

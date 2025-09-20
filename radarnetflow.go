@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -39,7 +40,7 @@ func NewRadarNetflowService(opts ...option.RequestOption) (r *RadarNetflowServic
 // Retrieves the distribution of network traffic (NetFlows) by HTTP vs other
 // protocols.
 func (r *RadarNetflowService) GetSummary(ctx context.Context, query RadarNetflowGetSummaryParams, opts ...option.RequestOption) (res *RadarNetflowGetSummaryResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/netflows/summary"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -47,7 +48,7 @@ func (r *RadarNetflowService) GetSummary(ctx context.Context, query RadarNetflow
 
 // Retrieves network traffic (NetFlows) over time.
 func (r *RadarNetflowService) GetTimeseries(ctx context.Context, query RadarNetflowGetTimeseriesParams, opts ...option.RequestOption) (res *RadarNetflowGetTimeseriesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/netflows/timeseries"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -41,7 +42,7 @@ func NewZoneFirewallRuleService(opts ...option.RequestOption) (r *ZoneFirewallRu
 //
 // Deprecated: deprecated
 func (r *ZoneFirewallRuleService) New(ctx context.Context, zoneID string, body ZoneFirewallRuleNewParams, opts ...option.RequestOption) (res *FirewallFilterRulesResponseCollection, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -55,7 +56,7 @@ func (r *ZoneFirewallRuleService) New(ctx context.Context, zoneID string, body Z
 //
 // Deprecated: deprecated
 func (r *ZoneFirewallRuleService) Get(ctx context.Context, zoneID string, ruleID string, opts ...option.RequestOption) (res *FirewallFilterRulesSingleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -73,7 +74,7 @@ func (r *ZoneFirewallRuleService) Get(ctx context.Context, zoneID string, ruleID
 //
 // Deprecated: deprecated
 func (r *ZoneFirewallRuleService) Update(ctx context.Context, zoneID string, ruleID string, body ZoneFirewallRuleUpdateParams, opts ...option.RequestOption) (res *FirewallFilterRulesSingleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -92,7 +93,7 @@ func (r *ZoneFirewallRuleService) Update(ctx context.Context, zoneID string, rul
 //
 // Deprecated: deprecated
 func (r *ZoneFirewallRuleService) List(ctx context.Context, zoneID string, query ZoneFirewallRuleListParams, opts ...option.RequestOption) (res *FirewallFilterRulesResponseCollection, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -106,7 +107,7 @@ func (r *ZoneFirewallRuleService) List(ctx context.Context, zoneID string, query
 //
 // Deprecated: deprecated
 func (r *ZoneFirewallRuleService) Delete(ctx context.Context, zoneID string, ruleID string, opts ...option.RequestOption) (res *ZoneFirewallRuleDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -124,7 +125,7 @@ func (r *ZoneFirewallRuleService) Delete(ctx context.Context, zoneID string, rul
 //
 // Deprecated: deprecated
 func (r *ZoneFirewallRuleService) UpdatePriority(ctx context.Context, zoneID string, ruleID string, body ZoneFirewallRuleUpdatePriorityParams, opts ...option.RequestOption) (res *FirewallFilterRulesResponseCollection, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

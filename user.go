@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -52,7 +53,7 @@ func NewUserService(opts ...option.RequestOption) (r *UserService) {
 
 // User Details
 func (r *UserService) Get(ctx context.Context, opts ...option.RequestOption) (res *IamSingleUser, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "user"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -60,7 +61,7 @@ func (r *UserService) Get(ctx context.Context, opts ...option.RequestOption) (re
 
 // Edit part of your user details.
 func (r *UserService) Update(ctx context.Context, body UserUpdateParams, opts ...option.RequestOption) (res *IamSingleUser, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "user"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return
@@ -69,7 +70,7 @@ func (r *UserService) Update(ctx context.Context, body UserUpdateParams, opts ..
 // Gets a list of audit logs for a user account. Can be filtered by who made the
 // change, on which zone, and the timeframe of the change.
 func (r *UserService) ListAuditLogs(ctx context.Context, query UserListAuditLogsParams, opts ...option.RequestOption) (res *AaaAuditLogs, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "user/audit_logs"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

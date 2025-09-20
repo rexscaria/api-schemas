@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -38,7 +39,7 @@ func NewAccountD1DatabaseService(opts ...option.RequestOption) (r *AccountD1Data
 
 // Returns the created D1 database.
 func (r *AccountD1DatabaseService) New(ctx context.Context, accountID string, body AccountD1DatabaseNewParams, opts ...option.RequestOption) (res *AccountD1DatabaseNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -50,7 +51,7 @@ func (r *AccountD1DatabaseService) New(ctx context.Context, accountID string, bo
 
 // Returns the specified D1 database.
 func (r *AccountD1DatabaseService) Get(ctx context.Context, accountID string, databaseID string, opts ...option.RequestOption) (res *AccountD1DatabaseGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -66,7 +67,7 @@ func (r *AccountD1DatabaseService) Get(ctx context.Context, accountID string, da
 
 // Returns a list of D1 databases.
 func (r *AccountD1DatabaseService) List(ctx context.Context, accountID string, query AccountD1DatabaseListParams, opts ...option.RequestOption) (res *AccountD1DatabaseListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -78,7 +79,7 @@ func (r *AccountD1DatabaseService) List(ctx context.Context, accountID string, q
 
 // Deletes the specified D1 database.
 func (r *AccountD1DatabaseService) Delete(ctx context.Context, accountID string, databaseID string, opts ...option.RequestOption) (res *AccountD1DatabaseDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -97,7 +98,7 @@ func (r *AccountD1DatabaseService) Delete(ctx context.Context, accountID string,
 // unavailable to serve queries. To avoid blocking your DB unnecessarily, an
 // in-progress export must be continually polled or will automatically cancel.
 func (r *AccountD1DatabaseService) Export(ctx context.Context, accountID string, databaseID string, body AccountD1DatabaseExportParams, opts ...option.RequestOption) (res *AccountD1DatabaseExportResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -115,7 +116,7 @@ func (r *AccountD1DatabaseService) Export(ctx context.Context, accountID string,
 // to import it and polling it for status updates. Imports block the D1 for their
 // duration.
 func (r *AccountD1DatabaseService) Import(ctx context.Context, accountID string, databaseID string, body AccountD1DatabaseImportParams, opts ...option.RequestOption) (res *AccountD1DatabaseImportResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -131,7 +132,7 @@ func (r *AccountD1DatabaseService) Import(ctx context.Context, accountID string,
 
 // Returns the query result as an object.
 func (r *AccountD1DatabaseService) Query(ctx context.Context, accountID string, databaseID string, body AccountD1DatabaseQueryParams, opts ...option.RequestOption) (res *AccountD1DatabaseQueryResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -148,7 +149,7 @@ func (r *AccountD1DatabaseService) Query(ctx context.Context, accountID string, 
 // Returns the query result rows as arrays rather than objects. This is a
 // performance-optimized version of the /query endpoint.
 func (r *AccountD1DatabaseService) RawQuery(ctx context.Context, accountID string, databaseID string, body AccountD1DatabaseRawQueryParams, opts ...option.RequestOption) (res *AccountD1DatabaseRawQueryResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

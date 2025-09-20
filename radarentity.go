@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -39,7 +40,7 @@ func NewRadarEntityService(opts ...option.RequestOption) (r *RadarEntityService)
 
 // Retrieves IP address information.
 func (r *RadarEntityService) GetIPDetails(ctx context.Context, query RadarEntityGetIPDetailsParams, opts ...option.RequestOption) (res *RadarEntityGetIPDetailsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/entities/ip"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -37,7 +38,7 @@ func NewAccountAccessBookmarkService(opts ...option.RequestOption) (r *AccountAc
 //
 // Deprecated: deprecated
 func (r *AccountAccessBookmarkService) New(ctx context.Context, accountID string, bookmarkID string, body AccountAccessBookmarkNewParams, opts ...option.RequestOption) (res *SingleResponseBookmark, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -55,7 +56,7 @@ func (r *AccountAccessBookmarkService) New(ctx context.Context, accountID string
 //
 // Deprecated: deprecated
 func (r *AccountAccessBookmarkService) Get(ctx context.Context, accountID string, bookmarkID string, opts ...option.RequestOption) (res *SingleResponseBookmark, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -73,7 +74,7 @@ func (r *AccountAccessBookmarkService) Get(ctx context.Context, accountID string
 //
 // Deprecated: deprecated
 func (r *AccountAccessBookmarkService) Update(ctx context.Context, accountID string, bookmarkID string, body AccountAccessBookmarkUpdateParams, opts ...option.RequestOption) (res *SingleResponseBookmark, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -91,7 +92,7 @@ func (r *AccountAccessBookmarkService) Update(ctx context.Context, accountID str
 //
 // Deprecated: deprecated
 func (r *AccountAccessBookmarkService) List(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountAccessBookmarkListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -105,7 +106,7 @@ func (r *AccountAccessBookmarkService) List(ctx context.Context, accountID strin
 //
 // Deprecated: deprecated
 func (r *AccountAccessBookmarkService) Delete(ctx context.Context, accountID string, bookmarkID string, opts ...option.RequestOption) (res *IDResponseApps, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

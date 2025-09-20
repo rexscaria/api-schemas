@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -53,7 +54,7 @@ func NewAccountDexService(opts ...option.RequestOption) (r *AccountDexService) {
 // period, sorted by usage starting from the most used colo. Colos without traffic
 // are also returned and sorted alphabetically.
 func (r *AccountDexService) ListColos(ctx context.Context, accountID string, query AccountDexListColosParams, opts ...option.RequestOption) (res *AccountDexListColosResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

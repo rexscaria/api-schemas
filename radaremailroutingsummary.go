@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -37,7 +38,7 @@ func NewRadarEmailRoutingSummaryService(opts ...option.RequestOption) (r *RadarE
 // Retrieves the distribution of emails by ARC (Authenticated Received Chain)
 // validation.
 func (r *RadarEmailRoutingSummaryService) GetArc(ctx context.Context, query RadarEmailRoutingSummaryGetArcParams, opts ...option.RequestOption) (res *RadarEmailRoutingSummaryGetArcResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/email/routing/summary/arc"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -46,7 +47,7 @@ func (r *RadarEmailRoutingSummaryService) GetArc(ctx context.Context, query Rada
 // Retrieves the distribution of emails by DKIM (DomainKeys Identified Mail)
 // validation.
 func (r *RadarEmailRoutingSummaryService) GetDkim(ctx context.Context, query RadarEmailRoutingSummaryGetDkimParams, opts ...option.RequestOption) (res *RadarEmailRoutingSummaryGetDkimResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/email/routing/summary/dkim"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -55,7 +56,7 @@ func (r *RadarEmailRoutingSummaryService) GetDkim(ctx context.Context, query Rad
 // Retrieves the distribution of emails by DMARC (Domain-based Message
 // Authentication, Reporting and Conformance) validation.
 func (r *RadarEmailRoutingSummaryService) GetDmarc(ctx context.Context, query RadarEmailRoutingSummaryGetDmarcParams, opts ...option.RequestOption) (res *RadarEmailRoutingSummaryGetDmarcResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/email/routing/summary/dmarc"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -64,7 +65,7 @@ func (r *RadarEmailRoutingSummaryService) GetDmarc(ctx context.Context, query Ra
 // Retrieves the distribution of emails by encryption status (encrypted vs.
 // not-encrypted).
 func (r *RadarEmailRoutingSummaryService) GetEncrypted(ctx context.Context, query RadarEmailRoutingSummaryGetEncryptedParams, opts ...option.RequestOption) (res *RadarEmailRoutingSummaryGetEncryptedResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/email/routing/summary/encrypted"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -72,7 +73,7 @@ func (r *RadarEmailRoutingSummaryService) GetEncrypted(ctx context.Context, quer
 
 // Retrieves the distribution of emails by IP version.
 func (r *RadarEmailRoutingSummaryService) GetIPVersion(ctx context.Context, query RadarEmailRoutingSummaryGetIPVersionParams, opts ...option.RequestOption) (res *RadarEmailRoutingSummaryGetIPVersionResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/email/routing/summary/ip_version"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -81,7 +82,7 @@ func (r *RadarEmailRoutingSummaryService) GetIPVersion(ctx context.Context, quer
 // Retrieves the distribution of emails by SPF (Sender Policy Framework)
 // validation.
 func (r *RadarEmailRoutingSummaryService) GetSpf(ctx context.Context, query RadarEmailRoutingSummaryGetSpfParams, opts ...option.RequestOption) (res *RadarEmailRoutingSummaryGetSpfResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/email/routing/summary/spf"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

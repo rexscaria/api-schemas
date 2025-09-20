@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -38,7 +39,7 @@ func NewAccountR2Service(opts ...option.RequestOption) (r *AccountR2Service) {
 // Creates temporary access credentials on a bucket that can be optionally scoped
 // to prefixes or objects.
 func (r *AccountR2Service) NewTempAccessCredentials(ctx context.Context, accountID string, body AccountR2NewTempAccessCredentialsParams, opts ...option.RequestOption) (res *AccountR2NewTempAccessCredentialsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -51,7 +52,7 @@ func (r *AccountR2Service) NewTempAccessCredentials(ctx context.Context, account
 // Get Storage/Object Count Metrics across all buckets in your account. Note that
 // Account-Level Metrics may not immediately reflect the latest data.
 func (r *AccountR2Service) GetMetrics(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountR2GetMetricsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

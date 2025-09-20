@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"reflect"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -38,7 +39,7 @@ func NewAccountWorkerDispatchNamespaceScriptSecretService(opts ...option.Request
 
 // List secrets bound to a script uploaded to a Workers for Platforms namespace.
 func (r *AccountWorkerDispatchNamespaceScriptSecretService) List(ctx context.Context, accountID string, dispatchNamespace string, scriptName string, opts ...option.RequestOption) (res *AccountWorkerDispatchNamespaceScriptSecretListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -58,7 +59,7 @@ func (r *AccountWorkerDispatchNamespaceScriptSecretService) List(ctx context.Con
 
 // Remove a secret from a script uploaded to a Workers for Platforms namespace.
 func (r *AccountWorkerDispatchNamespaceScriptSecretService) Delete(ctx context.Context, accountID string, dispatchNamespace string, scriptName string, secretName string, opts ...option.RequestOption) (res *NullResult, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -82,7 +83,7 @@ func (r *AccountWorkerDispatchNamespaceScriptSecretService) Delete(ctx context.C
 
 // Add a secret to a script uploaded to a Workers for Platforms namespace.
 func (r *AccountWorkerDispatchNamespaceScriptSecretService) Add(ctx context.Context, accountID string, dispatchNamespace string, scriptName string, body AccountWorkerDispatchNamespaceScriptSecretAddParams, opts ...option.RequestOption) (res *AccountWorkerDispatchNamespaceScriptSecretAddResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -103,7 +104,7 @@ func (r *AccountWorkerDispatchNamespaceScriptSecretService) Add(ctx context.Cont
 // Get a given secret binding (value omitted) on a script uploaded to a Workers for
 // Platforms namespace.
 func (r *AccountWorkerDispatchNamespaceScriptSecretService) Get(ctx context.Context, accountID string, dispatchNamespace string, scriptName string, secretName string, opts ...option.RequestOption) (res *AccountWorkerDispatchNamespaceScriptSecretGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -44,7 +45,7 @@ func NewAccountLogService(opts ...option.RequestOption) (r *AccountLogService) {
 // limitations. <br /> <ul> <li>Audit logs are available only for the past 30 days.
 // <br /></li> <li>Error handling is not yet implemented. <br /> </li> </ul>
 func (r *AccountLogService) GetAuditLogs(ctx context.Context, accountID string, query AccountLogGetAuditLogsParams, opts ...option.RequestOption) (res *AccountLogGetAuditLogsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

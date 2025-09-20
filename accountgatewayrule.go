@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -36,7 +37,7 @@ func NewAccountGatewayRuleService(opts ...option.RequestOption) (r *AccountGatew
 
 // Creates a new Zero Trust Gateway rule.
 func (r *AccountGatewayRuleService) New(ctx context.Context, accountID string, body AccountGatewayRuleNewParams, opts ...option.RequestOption) (res *SingleResponseLocation, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -48,7 +49,7 @@ func (r *AccountGatewayRuleService) New(ctx context.Context, accountID string, b
 
 // Fetches a single Zero Trust Gateway rule.
 func (r *AccountGatewayRuleService) Get(ctx context.Context, accountID string, ruleID string, opts ...option.RequestOption) (res *SingleResponseLocation, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -64,7 +65,7 @@ func (r *AccountGatewayRuleService) Get(ctx context.Context, accountID string, r
 
 // Updates a configured Zero Trust Gateway rule.
 func (r *AccountGatewayRuleService) Update(ctx context.Context, accountID string, ruleID string, body AccountGatewayRuleUpdateParams, opts ...option.RequestOption) (res *SingleResponseLocation, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -80,7 +81,7 @@ func (r *AccountGatewayRuleService) Update(ctx context.Context, accountID string
 
 // Fetches the Zero Trust Gateway rules for an account.
 func (r *AccountGatewayRuleService) List(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountGatewayRuleListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -92,7 +93,7 @@ func (r *AccountGatewayRuleService) List(ctx context.Context, accountID string, 
 
 // Deletes a Zero Trust Gateway rule.
 func (r *AccountGatewayRuleService) Delete(ctx context.Context, accountID string, ruleID string, opts ...option.RequestOption) (res *ZeroTrustGatewayEmptyResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -112,7 +113,7 @@ func (r *AccountGatewayRuleService) Delete(ctx context.Context, accountID string
 // The Zero Trust Gateway Rule must have values for both `expiration.expires_at`
 // and `expiration.duration`.
 func (r *AccountGatewayRuleService) ResetExpiration(ctx context.Context, accountID string, ruleID string, opts ...option.RequestOption) (res *SingleResponseLocation, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

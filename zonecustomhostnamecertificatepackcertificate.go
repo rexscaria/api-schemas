@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -39,7 +40,7 @@ func NewZoneCustomHostnameCertificatePackCertificateService(opts ...option.Reque
 // cannot delete a certificate if it is the only remaining certificate in the pack.
 // At least one certificate must remain in the pack.
 func (r *ZoneCustomHostnameCertificatePackCertificateService) Delete(ctx context.Context, zoneID string, customHostnameID string, certificatePackID string, certificateID string, opts ...option.RequestOption) (res *ZoneCustomHostnameCertificatePackCertificateDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -66,7 +67,7 @@ func (r *ZoneCustomHostnameCertificatePackCertificateService) Delete(ctx context
 // You can only replace an RSA certificate with another RSA certificate or an ECDSA
 // certificate with another ECDSA certificate.
 func (r *ZoneCustomHostnameCertificatePackCertificateService) Replace(ctx context.Context, zoneID string, customHostnameID string, certificatePackID string, certificateID string, body ZoneCustomHostnameCertificatePackCertificateReplaceParams, opts ...option.RequestOption) (res *CustomHostnameResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

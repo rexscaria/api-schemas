@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -46,7 +47,7 @@ func NewAccountIntelService(opts ...option.RequestOption) (r *AccountIntelServic
 
 // Allows you to submit requests to change a domain’s category.
 func (r *AccountIntelService) NewMiscategorization(ctx context.Context, accountID string, body AccountIntelNewMiscategorizationParams, opts ...option.RequestOption) (res *SingleResponseIntel, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -59,7 +60,7 @@ func (r *AccountIntelService) NewMiscategorization(ctx context.Context, accountI
 // Gets historical security threat and content categories currently and previously
 // assigned to a domain.
 func (r *AccountIntelService) GetDomainHistory(ctx context.Context, accountID string, query AccountIntelGetDomainHistoryParams, opts ...option.RequestOption) (res *AccountIntelGetDomainHistoryResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -73,7 +74,7 @@ func (r *AccountIntelService) GetDomainHistory(ctx context.Context, accountID st
 // threat categories of an IP address. **Must provide ip query parameters.** For
 // example, `/intel/ip?ipv4=1.1.1.1` or `/intel/ip?ipv6=2001:db8::1`.
 func (r *AccountIntelService) GetIPOverview(ctx context.Context, accountID string, query AccountIntelGetIPOverviewParams, opts ...option.RequestOption) (res *AccountIntelGetIPOverviewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -85,7 +86,7 @@ func (r *AccountIntelService) GetIPOverview(ctx context.Context, accountID strin
 
 // Gets a list of all the domains that have resolved to a specific IP address.
 func (r *AccountIntelService) GetPassiveDNS(ctx context.Context, accountID string, query AccountIntelGetPassiveDNSParams, opts ...option.RequestOption) (res *AccountIntelGetPassiveDNSResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -97,7 +98,7 @@ func (r *AccountIntelService) GetPassiveDNS(ctx context.Context, accountID strin
 
 // Get WHOIS Record
 func (r *AccountIntelService) GetWhoisRecord(ctx context.Context, accountID string, query AccountIntelGetWhoisRecordParams, opts ...option.RequestOption) (res *AccountIntelGetWhoisRecordResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -109,7 +110,7 @@ func (r *AccountIntelService) GetWhoisRecord(ctx context.Context, accountID stri
 
 // Get IP Lists.
 func (r *AccountIntelService) ListIPLists(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountIntelListIPListsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -121,7 +122,7 @@ func (r *AccountIntelService) ListIPLists(ctx context.Context, accountID string,
 
 // List sinkholes owned by this account
 func (r *AccountIntelService) ListSinkholes(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountIntelListSinkholesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

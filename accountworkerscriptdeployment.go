@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -41,7 +42,7 @@ func NewAccountWorkerScriptDeploymentService(opts ...option.RequestOption) (r *A
 // are deployed to traffic. A deployment can consist of one or two versions of a
 // Worker.
 func (r *AccountWorkerScriptDeploymentService) New(ctx context.Context, accountID string, scriptName string, params AccountWorkerScriptDeploymentNewParams, opts ...option.RequestOption) (res *AccountWorkerScriptDeploymentNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -58,7 +59,7 @@ func (r *AccountWorkerScriptDeploymentService) New(ctx context.Context, accountI
 // List of Worker Deployments. The first deployment in the list is the latest
 // deployment actively serving traffic.
 func (r *AccountWorkerScriptDeploymentService) List(ctx context.Context, accountID string, scriptName string, opts ...option.RequestOption) (res *AccountWorkerScriptDeploymentListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

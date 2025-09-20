@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -36,7 +37,7 @@ func NewRadarDNSSummaryService(opts ...option.RequestOption) (r *RadarDNSSummary
 
 // Retrieves the distribution of DNS queries by cache status.
 func (r *RadarDNSSummaryService) GetCacheHit(ctx context.Context, query RadarDNSSummaryGetCacheHitParams, opts ...option.RequestOption) (res *RadarDNSSummaryGetCacheHitResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/dns/summary/cache_hit"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -45,7 +46,7 @@ func (r *RadarDNSSummaryService) GetCacheHit(ctx context.Context, query RadarDNS
 // Retrieves the distribution of DNS responses by DNSSEC (DNS Security Extensions)
 // support.
 func (r *RadarDNSSummaryService) GetDnssec(ctx context.Context, query RadarDNSSummaryGetDnssecParams, opts ...option.RequestOption) (res *RadarDNSSummaryGetDnssecResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/dns/summary/dnssec"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -54,7 +55,7 @@ func (r *RadarDNSSummaryService) GetDnssec(ctx context.Context, query RadarDNSSu
 // Retrieves the distribution of DNS queries by DNSSEC (DNS Security Extensions)
 // client awareness.
 func (r *RadarDNSSummaryService) GetDnssecAware(ctx context.Context, query RadarDNSSummaryGetDnssecAwareParams, opts ...option.RequestOption) (res *RadarDNSSummaryGetDnssecAwareResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/dns/summary/dnssec_aware"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -63,7 +64,7 @@ func (r *RadarDNSSummaryService) GetDnssecAware(ctx context.Context, query Radar
 // Retrieves the distribution of DNSSEC-validated answers by end-to-end security
 // status.
 func (r *RadarDNSSummaryService) GetDnssecE2E(ctx context.Context, query RadarDNSSummaryGetDnssecE2EParams, opts ...option.RequestOption) (res *RadarDNSSummaryGetDnssecE2EResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/dns/summary/dnssec_e2e"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -71,7 +72,7 @@ func (r *RadarDNSSummaryService) GetDnssecE2E(ctx context.Context, query RadarDN
 
 // Retrieves the distribution of DNS queries by IP version.
 func (r *RadarDNSSummaryService) GetIPVersion(ctx context.Context, query RadarDNSSummaryGetIPVersionParams, opts ...option.RequestOption) (res *RadarDNSSummaryGetIPVersionResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/dns/summary/ip_version"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -79,7 +80,7 @@ func (r *RadarDNSSummaryService) GetIPVersion(ctx context.Context, query RadarDN
 
 // Retrieves the distribution of DNS queries by matching answers.
 func (r *RadarDNSSummaryService) GetMatchingAnswer(ctx context.Context, query RadarDNSSummaryGetMatchingAnswerParams, opts ...option.RequestOption) (res *RadarDNSSummaryGetMatchingAnswerResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/dns/summary/matching_answer"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -87,7 +88,7 @@ func (r *RadarDNSSummaryService) GetMatchingAnswer(ctx context.Context, query Ra
 
 // Retrieves the distribution of DNS queries by DNS transport protocol.
 func (r *RadarDNSSummaryService) GetProtocol(ctx context.Context, query RadarDNSSummaryGetProtocolParams, opts ...option.RequestOption) (res *RadarDNSSummaryGetProtocolResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/dns/summary/protocol"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -95,7 +96,7 @@ func (r *RadarDNSSummaryService) GetProtocol(ctx context.Context, query RadarDNS
 
 // Retrieves the distribution of DNS queries by type.
 func (r *RadarDNSSummaryService) GetQueryType(ctx context.Context, query RadarDNSSummaryGetQueryTypeParams, opts ...option.RequestOption) (res *RadarDNSSummaryGetQueryTypeResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/dns/summary/query_type"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -103,7 +104,7 @@ func (r *RadarDNSSummaryService) GetQueryType(ctx context.Context, query RadarDN
 
 // Retrieves the distribution of DNS queries by response code.
 func (r *RadarDNSSummaryService) GetResponseCode(ctx context.Context, query RadarDNSSummaryGetResponseCodeParams, opts ...option.RequestOption) (res *RadarDNSSummaryGetResponseCodeResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/dns/summary/response_code"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -111,7 +112,7 @@ func (r *RadarDNSSummaryService) GetResponseCode(ctx context.Context, query Rada
 
 // Retrieves the distribution of DNS queries by minimum response TTL.
 func (r *RadarDNSSummaryService) GetResponseTtl(ctx context.Context, query RadarDNSSummaryGetResponseTtlParams, opts ...option.RequestOption) (res *RadarDNSSummaryGetResponseTtlResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/dns/summary/response_ttl"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

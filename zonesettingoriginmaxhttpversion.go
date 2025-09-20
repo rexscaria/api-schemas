@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -41,7 +42,7 @@ func NewZoneSettingOriginMaxHTTPVersionService(opts ...option.RequestOption) (r 
 // for more information.). The default value is "2" for all plan types except
 // Enterprise where it is "1"
 func (r *ZoneSettingOriginMaxHTTPVersionService) Get(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *ZoneSettingOriginMaxHTTPVersionGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -58,7 +59,7 @@ func (r *ZoneSettingOriginMaxHTTPVersionService) Get(ctx context.Context, zoneID
 // for more information.). The default value is "2" for all plan types except
 // Enterprise where it is "1"
 func (r *ZoneSettingOriginMaxHTTPVersionService) Update(ctx context.Context, zoneID string, body ZoneSettingOriginMaxHTTPVersionUpdateParams, opts ...option.RequestOption) (res *ZoneSettingOriginMaxHTTPVersionUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

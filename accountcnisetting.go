@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -35,7 +36,7 @@ func NewAccountCniSettingService(opts ...option.RequestOption) (r *AccountCniSet
 
 // Get the current settings for the active account
 func (r *AccountCniSettingService) Get(ctx context.Context, accountID string, opts ...option.RequestOption) (res *NscSettings, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -47,7 +48,7 @@ func (r *AccountCniSettingService) Get(ctx context.Context, accountID string, op
 
 // Update the current settings for the active account
 func (r *AccountCniSettingService) Update(ctx context.Context, accountID string, body AccountCniSettingUpdateParams, opts ...option.RequestOption) (res *NscSettings, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

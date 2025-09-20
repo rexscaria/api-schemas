@@ -10,6 +10,7 @@ import (
 	"io"
 	"mime/multipart"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apiform"
@@ -42,7 +43,7 @@ func NewAccountVectorizeIndexService(opts ...option.RequestOption) (r *AccountVe
 //
 // Deprecated: deprecated
 func (r *AccountVectorizeIndexService) New(ctx context.Context, accountID string, body AccountVectorizeIndexNewParams, opts ...option.RequestOption) (res *AccountVectorizeIndexNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -56,7 +57,7 @@ func (r *AccountVectorizeIndexService) New(ctx context.Context, accountID string
 //
 // Deprecated: deprecated
 func (r *AccountVectorizeIndexService) Get(ctx context.Context, accountID string, indexName string, opts ...option.RequestOption) (res *AccountVectorizeIndexGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -74,7 +75,7 @@ func (r *AccountVectorizeIndexService) Get(ctx context.Context, accountID string
 //
 // Deprecated: deprecated
 func (r *AccountVectorizeIndexService) Update(ctx context.Context, accountID string, indexName string, body AccountVectorizeIndexUpdateParams, opts ...option.RequestOption) (res *AccountVectorizeIndexUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -92,7 +93,7 @@ func (r *AccountVectorizeIndexService) Update(ctx context.Context, accountID str
 //
 // Deprecated: deprecated
 func (r *AccountVectorizeIndexService) List(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountVectorizeIndexListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -106,7 +107,7 @@ func (r *AccountVectorizeIndexService) List(ctx context.Context, accountID strin
 //
 // Deprecated: deprecated
 func (r *AccountVectorizeIndexService) Delete(ctx context.Context, accountID string, indexName string, opts ...option.RequestOption) (res *AccountVectorizeIndexDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -124,7 +125,7 @@ func (r *AccountVectorizeIndexService) Delete(ctx context.Context, accountID str
 //
 // Deprecated: deprecated
 func (r *AccountVectorizeIndexService) DeleteByIDs(ctx context.Context, accountID string, indexName string, body AccountVectorizeIndexDeleteByIDsParams, opts ...option.RequestOption) (res *AccountVectorizeIndexDeleteByIDsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -142,7 +143,7 @@ func (r *AccountVectorizeIndexService) DeleteByIDs(ctx context.Context, accountI
 //
 // Deprecated: deprecated
 func (r *AccountVectorizeIndexService) GetByIDs(ctx context.Context, accountID string, indexName string, body AccountVectorizeIndexGetByIDsParams, opts ...option.RequestOption) (res *AccountVectorizeIndexGetByIDsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -161,7 +162,7 @@ func (r *AccountVectorizeIndexService) GetByIDs(ctx context.Context, accountID s
 //
 // Deprecated: deprecated
 func (r *AccountVectorizeIndexService) Insert(ctx context.Context, accountID string, indexName string, body AccountVectorizeIndexInsertParams, opts ...option.RequestOption) (res *AccountVectorizeIndexInsertResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -179,7 +180,7 @@ func (r *AccountVectorizeIndexService) Insert(ctx context.Context, accountID str
 //
 // Deprecated: deprecated
 func (r *AccountVectorizeIndexService) Query(ctx context.Context, accountID string, indexName string, body AccountVectorizeIndexQueryParams, opts ...option.RequestOption) (res *AccountVectorizeIndexQueryResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -198,7 +199,7 @@ func (r *AccountVectorizeIndexService) Query(ctx context.Context, accountID stri
 //
 // Deprecated: deprecated
 func (r *AccountVectorizeIndexService) Upsert(ctx context.Context, accountID string, indexName string, body AccountVectorizeIndexUpsertParams, opts ...option.RequestOption) (res *AccountVectorizeIndexUpsertResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

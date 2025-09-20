@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"reflect"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -41,7 +42,7 @@ func NewAccountStorageKvNamespaceBulkService(opts ...option.RequestOption) (r *A
 //
 // Deprecated: deprecated
 func (r *AccountStorageKvNamespaceBulkService) Delete(ctx context.Context, accountID string, namespaceID string, opts ...option.RequestOption) (res *AccountStorageKvNamespaceBulkDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -58,7 +59,7 @@ func (r *AccountStorageKvNamespaceBulkService) Delete(ctx context.Context, accou
 // Remove multiple KV pairs from the namespace. Body should be an array of up to
 // 10,000 keys to be removed.
 func (r *AccountStorageKvNamespaceBulkService) DeleteMultiple(ctx context.Context, accountID string, namespaceID string, body AccountStorageKvNamespaceBulkDeleteMultipleParams, opts ...option.RequestOption) (res *AccountStorageKvNamespaceBulkDeleteMultipleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -76,7 +77,7 @@ func (r *AccountStorageKvNamespaceBulkService) DeleteMultiple(ctx context.Contex
 // values. JSON values can optionally be parsed instead of being returned as a
 // string value. Metadata can be included if `withMetadata` is true.
 func (r *AccountStorageKvNamespaceBulkService) GetMultiple(ctx context.Context, accountID string, namespaceID string, body AccountStorageKvNamespaceBulkGetMultipleParams, opts ...option.RequestOption) (res *AccountStorageKvNamespaceBulkGetMultipleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -97,7 +98,7 @@ func (r *AccountStorageKvNamespaceBulkService) GetMultiple(ctx context.Context, 
 // set, `expiration_ttl` is used and `expiration` is ignored. The entire request
 // size must be 100 megabytes or less.
 func (r *AccountStorageKvNamespaceBulkService) Write(ctx context.Context, accountID string, namespaceID string, body AccountStorageKvNamespaceBulkWriteParams, opts ...option.RequestOption) (res *AccountStorageKvNamespaceBulkWriteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

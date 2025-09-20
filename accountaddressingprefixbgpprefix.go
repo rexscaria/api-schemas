@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -38,7 +39,7 @@ func NewAccountAddressingPrefixBgpPrefixService(opts ...option.RequestOption) (r
 // subnet. When created, BGP prefixes are initially withdrawn, and can be
 // advertised with the Update BGP Prefix API.
 func (r *AccountAddressingPrefixBgpPrefixService) New(ctx context.Context, accountID string, prefixID string, body AccountAddressingPrefixBgpPrefixNewParams, opts ...option.RequestOption) (res *SingleResponseBgp, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -54,7 +55,7 @@ func (r *AccountAddressingPrefixBgpPrefixService) New(ctx context.Context, accou
 
 // Retrieve a single BGP Prefix according to its identifier
 func (r *AccountAddressingPrefixBgpPrefixService) Get(ctx context.Context, accountID string, prefixID string, bgpPrefixID string, opts ...option.RequestOption) (res *SingleResponseBgp, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -75,7 +76,7 @@ func (r *AccountAddressingPrefixBgpPrefixService) Get(ctx context.Context, accou
 // Update the properties of a BGP Prefix, such as the on demand advertisement
 // status (advertised or withdrawn).
 func (r *AccountAddressingPrefixBgpPrefixService) Update(ctx context.Context, accountID string, prefixID string, bgpPrefixID string, body AccountAddressingPrefixBgpPrefixUpdateParams, opts ...option.RequestOption) (res *SingleResponseBgp, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -98,7 +99,7 @@ func (r *AccountAddressingPrefixBgpPrefixService) Update(ctx context.Context, ac
 // advertise subnets more specific than an IP Prefix by creating more specific BGP
 // Prefixes.
 func (r *AccountAddressingPrefixBgpPrefixService) List(ctx context.Context, accountID string, prefixID string, opts ...option.RequestOption) (res *AccountAddressingPrefixBgpPrefixListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

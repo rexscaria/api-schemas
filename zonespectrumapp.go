@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -42,7 +43,7 @@ func NewZoneSpectrumAppService(opts ...option.RequestOption) (r *ZoneSpectrumApp
 // Creates a new Spectrum application from a configuration using a name for the
 // origin.
 func (r *ZoneSpectrumAppService) New(ctx context.Context, zoneID ZoneIdentifierParam, body ZoneSpectrumAppNewParams, opts ...option.RequestOption) (res *AppConfigSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -54,7 +55,7 @@ func (r *ZoneSpectrumAppService) New(ctx context.Context, zoneID ZoneIdentifierP
 
 // Gets the application configuration of a specific application inside a zone.
 func (r *ZoneSpectrumAppService) Get(ctx context.Context, zoneID ZoneIdentifierParam, appID AppIdentifierParam, opts ...option.RequestOption) (res *AppConfigSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -71,7 +72,7 @@ func (r *ZoneSpectrumAppService) Get(ctx context.Context, zoneID ZoneIdentifierP
 // Updates a previously existing application's configuration that uses a name for
 // the origin.
 func (r *ZoneSpectrumAppService) Update(ctx context.Context, zoneID ZoneIdentifierParam, appID AppIdentifierParam, body ZoneSpectrumAppUpdateParams, opts ...option.RequestOption) (res *AppConfigSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -87,7 +88,7 @@ func (r *ZoneSpectrumAppService) Update(ctx context.Context, zoneID ZoneIdentifi
 
 // Retrieves a list of currently existing Spectrum applications inside a zone.
 func (r *ZoneSpectrumAppService) List(ctx context.Context, zoneID ZoneIdentifierParam, query ZoneSpectrumAppListParams, opts ...option.RequestOption) (res *ZoneSpectrumAppListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -99,7 +100,7 @@ func (r *ZoneSpectrumAppService) List(ctx context.Context, zoneID ZoneIdentifier
 
 // Deletes a previously existing application.
 func (r *ZoneSpectrumAppService) Delete(ctx context.Context, zoneID ZoneIdentifierParam, appID AppIdentifierParam, opts ...option.RequestOption) (res *ZoneSpectrumAppDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

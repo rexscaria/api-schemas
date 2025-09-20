@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -36,7 +37,7 @@ func NewRadarDNSTimeseriesGroupService(opts ...option.RequestOption) (r *RadarDN
 
 // Retrieves the distribution of DNS queries by cache status over time.
 func (r *RadarDNSTimeseriesGroupService) GetCacheHit(ctx context.Context, query RadarDNSTimeseriesGroupGetCacheHitParams, opts ...option.RequestOption) (res *RadarDNSTimeseriesGroupGetCacheHitResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/dns/timeseries_groups/cache_hit"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -45,7 +46,7 @@ func (r *RadarDNSTimeseriesGroupService) GetCacheHit(ctx context.Context, query 
 // Retrieves the distribution of DNS responses by DNSSEC (DNS Security Extensions)
 // support over time.
 func (r *RadarDNSTimeseriesGroupService) GetDnssec(ctx context.Context, query RadarDNSTimeseriesGroupGetDnssecParams, opts ...option.RequestOption) (res *RadarDNSTimeseriesGroupGetDnssecResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/dns/timeseries_groups/dnssec"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -54,7 +55,7 @@ func (r *RadarDNSTimeseriesGroupService) GetDnssec(ctx context.Context, query Ra
 // Retrieves the distribution of DNS queries by DNSSEC (DNS Security Extensions)
 // client awareness over time.
 func (r *RadarDNSTimeseriesGroupService) GetDnssecAware(ctx context.Context, query RadarDNSTimeseriesGroupGetDnssecAwareParams, opts ...option.RequestOption) (res *RadarDNSTimeseriesGroupGetDnssecAwareResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/dns/timeseries_groups/dnssec_aware"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -63,7 +64,7 @@ func (r *RadarDNSTimeseriesGroupService) GetDnssecAware(ctx context.Context, que
 // Retrieves the distribution of DNSSEC-validated answers by end-to-end security
 // status over time.
 func (r *RadarDNSTimeseriesGroupService) GetDnssecE2E(ctx context.Context, query RadarDNSTimeseriesGroupGetDnssecE2EParams, opts ...option.RequestOption) (res *RadarDNSTimeseriesGroupGetDnssecE2EResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/dns/timeseries_groups/dnssec_e2e"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -71,7 +72,7 @@ func (r *RadarDNSTimeseriesGroupService) GetDnssecE2E(ctx context.Context, query
 
 // Retrieves the distribution of DNS queries by IP version over time.
 func (r *RadarDNSTimeseriesGroupService) GetIPVersion(ctx context.Context, query RadarDNSTimeseriesGroupGetIPVersionParams, opts ...option.RequestOption) (res *RadarDNSTimeseriesGroupGetIPVersionResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/dns/timeseries_groups/ip_version"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -79,7 +80,7 @@ func (r *RadarDNSTimeseriesGroupService) GetIPVersion(ctx context.Context, query
 
 // Retrieves the distribution of DNS queries by matching answers over time.
 func (r *RadarDNSTimeseriesGroupService) GetMatchingAnswer(ctx context.Context, query RadarDNSTimeseriesGroupGetMatchingAnswerParams, opts ...option.RequestOption) (res *RadarDNSTimeseriesGroupGetMatchingAnswerResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/dns/timeseries_groups/matching_answer"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -87,7 +88,7 @@ func (r *RadarDNSTimeseriesGroupService) GetMatchingAnswer(ctx context.Context, 
 
 // Retrieves the distribution of DNS queries by DNS transport protocol over time.
 func (r *RadarDNSTimeseriesGroupService) GetProtocol(ctx context.Context, query RadarDNSTimeseriesGroupGetProtocolParams, opts ...option.RequestOption) (res *RadarDNSTimeseriesGroupGetProtocolResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/dns/timeseries_groups/protocol"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -95,7 +96,7 @@ func (r *RadarDNSTimeseriesGroupService) GetProtocol(ctx context.Context, query 
 
 // Retrieves the distribution of DNS queries by type over time.
 func (r *RadarDNSTimeseriesGroupService) GetQueryType(ctx context.Context, query RadarDNSTimeseriesGroupGetQueryTypeParams, opts ...option.RequestOption) (res *RadarDNSTimeseriesGroupGetQueryTypeResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/dns/timeseries_groups/query_type"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -103,7 +104,7 @@ func (r *RadarDNSTimeseriesGroupService) GetQueryType(ctx context.Context, query
 
 // Retrieves the distribution of DNS queries by response code over time.
 func (r *RadarDNSTimeseriesGroupService) GetResponseCode(ctx context.Context, query RadarDNSTimeseriesGroupGetResponseCodeParams, opts ...option.RequestOption) (res *RadarDNSTimeseriesGroupGetResponseCodeResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/dns/timeseries_groups/response_code"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -111,7 +112,7 @@ func (r *RadarDNSTimeseriesGroupService) GetResponseCode(ctx context.Context, qu
 
 // Retrieves the distribution of DNS queries by minimum answer TTL over time.
 func (r *RadarDNSTimeseriesGroupService) GetResponseTtl(ctx context.Context, query RadarDNSTimeseriesGroupGetResponseTtlParams, opts ...option.RequestOption) (res *RadarDNSTimeseriesGroupGetResponseTtlResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/dns/timeseries_groups/response_ttl"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

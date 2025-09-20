@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -37,7 +38,7 @@ func NewAccountRuleListService(opts ...option.RequestOption) (r *AccountRuleList
 
 // Creates a new list of the specified kind.
 func (r *AccountRuleListService) New(ctx context.Context, accountID string, body AccountRuleListNewParams, opts ...option.RequestOption) (res *ListResponseCollection, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -49,7 +50,7 @@ func (r *AccountRuleListService) New(ctx context.Context, accountID string, body
 
 // Fetches the details of a list.
 func (r *AccountRuleListService) Get(ctx context.Context, accountID string, listID string, opts ...option.RequestOption) (res *ListResponseCollection, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -65,7 +66,7 @@ func (r *AccountRuleListService) Get(ctx context.Context, accountID string, list
 
 // Updates the description of a list.
 func (r *AccountRuleListService) Update(ctx context.Context, accountID string, listID string, body AccountRuleListUpdateParams, opts ...option.RequestOption) (res *ListResponseCollection, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -81,7 +82,7 @@ func (r *AccountRuleListService) Update(ctx context.Context, accountID string, l
 
 // Fetches all lists in the account.
 func (r *AccountRuleListService) List(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountRuleListListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -93,7 +94,7 @@ func (r *AccountRuleListService) List(ctx context.Context, accountID string, opt
 
 // Deletes a specific list and all its items.
 func (r *AccountRuleListService) Delete(ctx context.Context, accountID string, listID string, opts ...option.RequestOption) (res *AccountRuleListDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

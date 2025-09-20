@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -38,7 +39,7 @@ func NewZoneSpectrumAnalyticsAggregateService(opts ...option.RequestOption) (r *
 // Retrieves analytics aggregated from the last minute of usage on Spectrum
 // applications underneath a given zone.
 func (r *ZoneSpectrumAnalyticsAggregateService) GetCurrent(ctx context.Context, zoneID string, query ZoneSpectrumAnalyticsAggregateGetCurrentParams, opts ...option.RequestOption) (res *ZoneSpectrumAnalyticsAggregateGetCurrentResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

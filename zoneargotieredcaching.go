@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -46,7 +47,7 @@ func NewZoneArgoTieredCachingService(opts ...option.RequestOption) (r *ZoneArgoT
 // network locations. This results in fewer open connections using server
 // resources.
 func (r *ZoneArgoTieredCachingService) Get(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *ZoneArgoTieredCachingGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -68,7 +69,7 @@ func (r *ZoneArgoTieredCachingService) Get(ctx context.Context, zoneID string, o
 // network locations. This results in fewer open connections using server
 // resources.
 func (r *ZoneArgoTieredCachingService) Update(ctx context.Context, zoneID string, body ZoneArgoTieredCachingUpdateParams, opts ...option.RequestOption) (res *ZoneArgoTieredCachingUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

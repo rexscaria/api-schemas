@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/requestconfig"
@@ -34,7 +35,7 @@ func NewAccountBotnetFeedConfigAsnService(opts ...option.RequestOption) (r *Acco
 
 // Delete an ASN from botnet threat feed for a given user.
 func (r *AccountBotnetFeedConfigAsnService) DeleteAsn(ctx context.Context, accountID string, asnID int64, opts ...option.RequestOption) (res *AccountBotnetFeedConfigAsnDeleteAsnResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -46,7 +47,7 @@ func (r *AccountBotnetFeedConfigAsnService) DeleteAsn(ctx context.Context, accou
 
 // Gets a list of all ASNs registered for a user for the DDoS Botnet Feed API.
 func (r *AccountBotnetFeedConfigAsnService) ListAsns(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountBotnetFeedConfigAsnListAsnsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
