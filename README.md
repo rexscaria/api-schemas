@@ -31,7 +31,7 @@ go get -u 'github.com/rexscaria/api-schemas@v0.0.1-alpha.0'
 
 ## Requirements
 
-This library requires Go 1.18+.
+This library requires Go 1.22+.
 
 ## Usage
 
