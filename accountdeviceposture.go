@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"reflect"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -39,7 +40,7 @@ func NewAccountDevicePostureService(opts ...option.RequestOption) (r *AccountDev
 
 // Creates a new device posture rule.
 func (r *AccountDevicePostureService) New(ctx context.Context, accountID string, body AccountDevicePostureNewParams, opts ...option.RequestOption) (res *SingleResponsePosture, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -51,7 +52,7 @@ func (r *AccountDevicePostureService) New(ctx context.Context, accountID string,
 
 // Fetches a single device posture rule.
 func (r *AccountDevicePostureService) Get(ctx context.Context, accountID string, ruleID string, opts ...option.RequestOption) (res *SingleResponsePosture, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -67,7 +68,7 @@ func (r *AccountDevicePostureService) Get(ctx context.Context, accountID string,
 
 // Updates a device posture rule.
 func (r *AccountDevicePostureService) Update(ctx context.Context, accountID string, ruleID string, body AccountDevicePostureUpdateParams, opts ...option.RequestOption) (res *SingleResponsePosture, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -83,7 +84,7 @@ func (r *AccountDevicePostureService) Update(ctx context.Context, accountID stri
 
 // Fetches device posture rules for a Zero Trust account.
 func (r *AccountDevicePostureService) List(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountDevicePostureListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -95,7 +96,7 @@ func (r *AccountDevicePostureService) List(ctx context.Context, accountID string
 
 // Deletes a device posture rule.
 func (r *AccountDevicePostureService) Delete(ctx context.Context, accountID string, ruleID string, opts ...option.RequestOption) (res *AccountDevicePostureDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

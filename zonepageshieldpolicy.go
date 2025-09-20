@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -35,7 +36,7 @@ func NewZonePageShieldPolicyService(opts ...option.RequestOption) (r *ZonePageSh
 
 // Create a Page Shield policy.
 func (r *ZonePageShieldPolicyService) New(ctx context.Context, zoneID string, body ZonePageShieldPolicyNewParams, opts ...option.RequestOption) (res *GetZonePolicyResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -47,7 +48,7 @@ func (r *ZonePageShieldPolicyService) New(ctx context.Context, zoneID string, bo
 
 // Fetches a Page Shield policy by ID.
 func (r *ZonePageShieldPolicyService) Get(ctx context.Context, zoneID string, policyID string, opts ...option.RequestOption) (res *GetZonePolicyResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -63,7 +64,7 @@ func (r *ZonePageShieldPolicyService) Get(ctx context.Context, zoneID string, po
 
 // Update a Page Shield policy by ID.
 func (r *ZonePageShieldPolicyService) Update(ctx context.Context, zoneID string, policyID string, body ZonePageShieldPolicyUpdateParams, opts ...option.RequestOption) (res *GetZonePolicyResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -79,7 +80,7 @@ func (r *ZonePageShieldPolicyService) Update(ctx context.Context, zoneID string,
 
 // Lists all Page Shield policies.
 func (r *ZonePageShieldPolicyService) List(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *ZonePageShieldPolicyListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -91,7 +92,7 @@ func (r *ZonePageShieldPolicyService) List(ctx context.Context, zoneID string, o
 
 // Delete a Page Shield policy by ID.
 func (r *ZonePageShieldPolicyService) Delete(ctx context.Context, zoneID string, policyID string, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")

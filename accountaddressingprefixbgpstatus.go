@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -41,7 +42,7 @@ func NewAccountAddressingPrefixBgpStatusService(opts ...option.RequestOption) (r
 //
 // Deprecated: deprecated
 func (r *AccountAddressingPrefixBgpStatusService) Update(ctx context.Context, accountID string, prefixID string, body AccountAddressingPrefixBgpStatusUpdateParams, opts ...option.RequestOption) (res *AdvertisedResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -62,7 +63,7 @@ func (r *AccountAddressingPrefixBgpStatusService) Update(ctx context.Context, ac
 //
 // Deprecated: deprecated
 func (r *AccountAddressingPrefixBgpStatusService) Get(ctx context.Context, accountID string, prefixID string, opts ...option.RequestOption) (res *AdvertisedResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

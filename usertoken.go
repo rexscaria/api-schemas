@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -38,7 +39,7 @@ func NewUserTokenService(opts ...option.RequestOption) (r *UserTokenService) {
 
 // Create a new access token.
 func (r *UserTokenService) New(ctx context.Context, body UserTokenNewParams, opts ...option.RequestOption) (res *IamSingleTokenCreateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "user/tokens"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -46,7 +47,7 @@ func (r *UserTokenService) New(ctx context.Context, body UserTokenNewParams, opt
 
 // Get information about a specific token.
 func (r *UserTokenService) Get(ctx context.Context, tokenID string, opts ...option.RequestOption) (res *IamSingleTokenResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if tokenID == "" {
 		err = errors.New("missing required token_id parameter")
 		return
@@ -58,7 +59,7 @@ func (r *UserTokenService) Get(ctx context.Context, tokenID string, opts ...opti
 
 // Update an existing token.
 func (r *UserTokenService) Update(ctx context.Context, tokenID string, body UserTokenUpdateParams, opts ...option.RequestOption) (res *IamSingleTokenResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if tokenID == "" {
 		err = errors.New("missing required token_id parameter")
 		return
@@ -70,7 +71,7 @@ func (r *UserTokenService) Update(ctx context.Context, tokenID string, body User
 
 // List all access tokens you created.
 func (r *UserTokenService) List(ctx context.Context, query UserTokenListParams, opts ...option.RequestOption) (res *IamCollectionTokensResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "user/tokens"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -78,7 +79,7 @@ func (r *UserTokenService) List(ctx context.Context, query UserTokenListParams, 
 
 // Destroy a token.
 func (r *UserTokenService) Delete(ctx context.Context, tokenID string, opts ...option.RequestOption) (res *IamAPIResponseSingleID, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if tokenID == "" {
 		err = errors.New("missing required token_id parameter")
 		return
@@ -90,7 +91,7 @@ func (r *UserTokenService) Delete(ctx context.Context, tokenID string, opts ...o
 
 // Find all available permission groups for API Tokens
 func (r *UserTokenService) ListPermissionGroups(ctx context.Context, query UserTokenListPermissionGroupsParams, opts ...option.RequestOption) (res *IamPermissionsGroupResponseCollection, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "user/tokens/permission_groups"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -98,7 +99,7 @@ func (r *UserTokenService) ListPermissionGroups(ctx context.Context, query UserT
 
 // Roll the token secret.
 func (r *UserTokenService) Roll(ctx context.Context, tokenID string, body UserTokenRollParams, opts ...option.RequestOption) (res *IamResponseSingleValue, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if tokenID == "" {
 		err = errors.New("missing required token_id parameter")
 		return
@@ -110,7 +111,7 @@ func (r *UserTokenService) Roll(ctx context.Context, tokenID string, body UserTo
 
 // Test whether a token works.
 func (r *UserTokenService) Verify(ctx context.Context, opts ...option.RequestOption) (res *UserTokenVerifyResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "user/tokens/verify"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return

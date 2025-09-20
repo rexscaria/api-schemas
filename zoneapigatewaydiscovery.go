@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/requestconfig"
@@ -37,7 +38,7 @@ func NewZoneAPIGatewayDiscoveryService(opts ...option.RequestOption) (r *ZoneAPI
 // Retrieve the most up to date view of discovered operations, rendered as OpenAPI
 // schemas
 func (r *ZoneAPIGatewayDiscoveryService) Get(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *ZoneAPIGatewayDiscoveryGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

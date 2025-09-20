@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -36,7 +37,7 @@ func NewAccountVectorizeV2IndexMetadataIndexService(opts ...option.RequestOption
 
 // Enable metadata filtering based on metadata property. Limited to 10 properties.
 func (r *AccountVectorizeV2IndexMetadataIndexService) New(ctx context.Context, accountID string, indexName string, body AccountVectorizeV2IndexMetadataIndexNewParams, opts ...option.RequestOption) (res *AccountVectorizeV2IndexMetadataIndexNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -52,7 +53,7 @@ func (r *AccountVectorizeV2IndexMetadataIndexService) New(ctx context.Context, a
 
 // List Metadata Indexes for the specified Vectorize Index.
 func (r *AccountVectorizeV2IndexMetadataIndexService) List(ctx context.Context, accountID string, indexName string, opts ...option.RequestOption) (res *AccountVectorizeV2IndexMetadataIndexListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -68,7 +69,7 @@ func (r *AccountVectorizeV2IndexMetadataIndexService) List(ctx context.Context, 
 
 // Allow Vectorize to delete the specified metadata index.
 func (r *AccountVectorizeV2IndexMetadataIndexService) Delete(ctx context.Context, accountID string, indexName string, body AccountVectorizeV2IndexMetadataIndexDeleteParams, opts ...option.RequestOption) (res *AccountVectorizeV2IndexMetadataIndexDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

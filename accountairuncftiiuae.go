@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -37,7 +38,7 @@ func NewAccountAIRunCfTiiuaeService(opts ...option.RequestOption) (r *AccountAIR
 
 // Execute @cf/tiiuae/falcon-7b-instruct model.
 func (r *AccountAIRunCfTiiuaeService) ExecuteFalcon7bInstruct(ctx context.Context, accountID string, params AccountAIRunCfTiiuaeExecuteFalcon7bInstructParams, opts ...option.RequestOption) (res *AccountAIRunCfTiiuaeExecuteFalcon7bInstructResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

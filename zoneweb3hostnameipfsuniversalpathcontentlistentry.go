@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -38,7 +39,7 @@ func NewZoneWeb3HostnameIpfsUniversalPathContentListEntryService(opts ...option.
 
 // Create IPFS Universal Path Gateway Content List Entry
 func (r *ZoneWeb3HostnameIpfsUniversalPathContentListEntryService) New(ctx context.Context, zoneID string, identifier string, body ZoneWeb3HostnameIpfsUniversalPathContentListEntryNewParams, opts ...option.RequestOption) (res *EntrySingleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -54,7 +55,7 @@ func (r *ZoneWeb3HostnameIpfsUniversalPathContentListEntryService) New(ctx conte
 
 // IPFS Universal Path Gateway Content List Entry Details
 func (r *ZoneWeb3HostnameIpfsUniversalPathContentListEntryService) Get(ctx context.Context, zoneID string, identifier string, contentListEntryIdentifier string, opts ...option.RequestOption) (res *EntrySingleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -74,7 +75,7 @@ func (r *ZoneWeb3HostnameIpfsUniversalPathContentListEntryService) Get(ctx conte
 
 // Edit IPFS Universal Path Gateway Content List Entry
 func (r *ZoneWeb3HostnameIpfsUniversalPathContentListEntryService) Update(ctx context.Context, zoneID string, identifier string, contentListEntryIdentifier string, body ZoneWeb3HostnameIpfsUniversalPathContentListEntryUpdateParams, opts ...option.RequestOption) (res *EntrySingleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -94,7 +95,7 @@ func (r *ZoneWeb3HostnameIpfsUniversalPathContentListEntryService) Update(ctx co
 
 // List IPFS Universal Path Gateway Content List Entries
 func (r *ZoneWeb3HostnameIpfsUniversalPathContentListEntryService) List(ctx context.Context, zoneID string, identifier string, opts ...option.RequestOption) (res *ZoneWeb3HostnameIpfsUniversalPathContentListEntryListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -110,7 +111,7 @@ func (r *ZoneWeb3HostnameIpfsUniversalPathContentListEntryService) List(ctx cont
 
 // Delete IPFS Universal Path Gateway Content List Entry
 func (r *ZoneWeb3HostnameIpfsUniversalPathContentListEntryService) Delete(ctx context.Context, zoneID string, identifier string, contentListEntryIdentifier string, opts ...option.RequestOption) (res *APIResponseSingleID, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -40,7 +41,7 @@ func NewZoneHealthcheckService(opts ...option.RequestOption) (r *ZoneHealthcheck
 
 // Create a new health check.
 func (r *ZoneHealthcheckService) New(ctx context.Context, zoneID string, body ZoneHealthcheckNewParams, opts ...option.RequestOption) (res *HealthcheckSingleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -52,7 +53,7 @@ func (r *ZoneHealthcheckService) New(ctx context.Context, zoneID string, body Zo
 
 // Fetch a single configured health check.
 func (r *ZoneHealthcheckService) Get(ctx context.Context, zoneID string, healthcheckID string, opts ...option.RequestOption) (res *HealthcheckSingleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -68,7 +69,7 @@ func (r *ZoneHealthcheckService) Get(ctx context.Context, zoneID string, healthc
 
 // Update a configured health check.
 func (r *ZoneHealthcheckService) Update(ctx context.Context, zoneID string, healthcheckID string, body ZoneHealthcheckUpdateParams, opts ...option.RequestOption) (res *HealthcheckSingleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -84,7 +85,7 @@ func (r *ZoneHealthcheckService) Update(ctx context.Context, zoneID string, heal
 
 // List configured health checks.
 func (r *ZoneHealthcheckService) List(ctx context.Context, zoneID string, query ZoneHealthcheckListParams, opts ...option.RequestOption) (res *ZoneHealthcheckListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -96,7 +97,7 @@ func (r *ZoneHealthcheckService) List(ctx context.Context, zoneID string, query 
 
 // Delete a health check.
 func (r *ZoneHealthcheckService) Delete(ctx context.Context, zoneID string, healthcheckID string, opts ...option.RequestOption) (res *HealthcheckIDResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -112,7 +113,7 @@ func (r *ZoneHealthcheckService) Delete(ctx context.Context, zoneID string, heal
 
 // Patch a configured health check.
 func (r *ZoneHealthcheckService) Patch(ctx context.Context, zoneID string, healthcheckID string, body ZoneHealthcheckPatchParams, opts ...option.RequestOption) (res *HealthcheckSingleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

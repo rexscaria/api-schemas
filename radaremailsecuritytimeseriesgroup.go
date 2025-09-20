@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -37,7 +38,7 @@ func NewRadarEmailSecurityTimeseriesGroupService(opts ...option.RequestOption) (
 // Retrieves the distribution of emails by ARC (Authenticated Received Chain)
 // validation over time.
 func (r *RadarEmailSecurityTimeseriesGroupService) GetArc(ctx context.Context, query RadarEmailSecurityTimeseriesGroupGetArcParams, opts ...option.RequestOption) (res *RadarEmailSecurityTimeseriesGroupGetArcResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/email/security/timeseries_groups/arc"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -46,7 +47,7 @@ func (r *RadarEmailSecurityTimeseriesGroupService) GetArc(ctx context.Context, q
 // Retrieves the distribution of emails by DKIM (DomainKeys Identified Mail)
 // validation over time.
 func (r *RadarEmailSecurityTimeseriesGroupService) GetDkim(ctx context.Context, query RadarEmailSecurityTimeseriesGroupGetDkimParams, opts ...option.RequestOption) (res *RadarEmailSecurityTimeseriesGroupGetDkimResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/email/security/timeseries_groups/dkim"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -55,7 +56,7 @@ func (r *RadarEmailSecurityTimeseriesGroupService) GetDkim(ctx context.Context, 
 // Retrieves the distribution of emails by DMARC (Domain-based Message
 // Authentication, Reporting and Conformance) validation over time.
 func (r *RadarEmailSecurityTimeseriesGroupService) GetDmarc(ctx context.Context, query RadarEmailSecurityTimeseriesGroupGetDmarcParams, opts ...option.RequestOption) (res *RadarEmailSecurityTimeseriesGroupGetDmarcResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/email/security/timeseries_groups/dmarc"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -63,7 +64,7 @@ func (r *RadarEmailSecurityTimeseriesGroupService) GetDmarc(ctx context.Context,
 
 // Retrieves the distribution of emails by malicious classification over time.
 func (r *RadarEmailSecurityTimeseriesGroupService) GetMalicious(ctx context.Context, query RadarEmailSecurityTimeseriesGroupGetMaliciousParams, opts ...option.RequestOption) (res *RadarEmailSecurityTimeseriesGroupGetMaliciousResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/email/security/timeseries_groups/malicious"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -72,7 +73,7 @@ func (r *RadarEmailSecurityTimeseriesGroupService) GetMalicious(ctx context.Cont
 // Retrieves the distribution of emails by spam classification (spam vs. non-spam)
 // over time.
 func (r *RadarEmailSecurityTimeseriesGroupService) GetSpam(ctx context.Context, query RadarEmailSecurityTimeseriesGroupGetSpamParams, opts ...option.RequestOption) (res *RadarEmailSecurityTimeseriesGroupGetSpamResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/email/security/timeseries_groups/spam"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -81,7 +82,7 @@ func (r *RadarEmailSecurityTimeseriesGroupService) GetSpam(ctx context.Context, 
 // Retrieves the distribution of emails by SPF (Sender Policy Framework) validation
 // over time.
 func (r *RadarEmailSecurityTimeseriesGroupService) GetSpf(ctx context.Context, query RadarEmailSecurityTimeseriesGroupGetSpfParams, opts ...option.RequestOption) (res *RadarEmailSecurityTimeseriesGroupGetSpfResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/email/security/timeseries_groups/spf"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -90,7 +91,7 @@ func (r *RadarEmailSecurityTimeseriesGroupService) GetSpf(ctx context.Context, q
 // Retrieves the distribution of emails by spoof classification (spoof vs.
 // non-spoof) over time.
 func (r *RadarEmailSecurityTimeseriesGroupService) GetSpoof(ctx context.Context, query RadarEmailSecurityTimeseriesGroupGetSpoofParams, opts ...option.RequestOption) (res *RadarEmailSecurityTimeseriesGroupGetSpoofResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/email/security/timeseries_groups/spoof"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -98,7 +99,7 @@ func (r *RadarEmailSecurityTimeseriesGroupService) GetSpoof(ctx context.Context,
 
 // Retrieves the distribution of emails by threat category over time.
 func (r *RadarEmailSecurityTimeseriesGroupService) GetThreatCategory(ctx context.Context, query RadarEmailSecurityTimeseriesGroupGetThreatCategoryParams, opts ...option.RequestOption) (res *RadarEmailSecurityTimeseriesGroupGetThreatCategoryResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/email/security/timeseries_groups/threat_category"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -106,7 +107,7 @@ func (r *RadarEmailSecurityTimeseriesGroupService) GetThreatCategory(ctx context
 
 // Retrieves the distribution of emails by TLS version over time.
 func (r *RadarEmailSecurityTimeseriesGroupService) GetTlsVersion(ctx context.Context, query RadarEmailSecurityTimeseriesGroupGetTlsVersionParams, opts ...option.RequestOption) (res *RadarEmailSecurityTimeseriesGroupGetTlsVersionResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/email/security/timeseries_groups/tls_version"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

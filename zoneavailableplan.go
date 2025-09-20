@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/requestconfig"
@@ -34,7 +35,7 @@ func NewZoneAvailablePlanService(opts ...option.RequestOption) (r *ZoneAvailable
 
 // Details of the available plan that the zone can subscribe to.
 func (r *ZoneAvailablePlanService) Get(ctx context.Context, zoneID string, planIdentifier string, opts ...option.RequestOption) (res *ZoneAvailablePlanGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -50,7 +51,7 @@ func (r *ZoneAvailablePlanService) Get(ctx context.Context, zoneID string, planI
 
 // Lists available plans the zone can subscribe to.
 func (r *ZoneAvailablePlanService) List(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *ZoneAvailablePlanListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

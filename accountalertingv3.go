@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -42,7 +43,7 @@ func NewAccountAlertingV3Service(opts ...option.RequestOption) (r *AccountAlerti
 
 // Gets a list of all alert types for which an account is eligible.
 func (r *AccountAlertingV3Service) ListAvailableAlerts(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountAlertingV3ListAvailableAlertsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -56,7 +57,7 @@ func (r *AccountAlertingV3Service) ListAvailableAlerts(ctx context.Context, acco
 // are displayed for last `x` number of days based on the zone plan (free = 30, pro
 // = 30, biz = 30, ent = 90).
 func (r *AccountAlertingV3Service) ListHistory(ctx context.Context, accountID string, query AccountAlertingV3ListHistoryParams, opts ...option.RequestOption) (res *AccountAlertingV3ListHistoryResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

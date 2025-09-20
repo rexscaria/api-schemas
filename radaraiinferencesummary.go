@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -36,7 +37,7 @@ func NewRadarAIInferenceSummaryService(opts ...option.RequestOption) (r *RadarAI
 
 // Retrieves the distribution of unique accounts by model.
 func (r *RadarAIInferenceSummaryService) GetModel(ctx context.Context, query RadarAIInferenceSummaryGetModelParams, opts ...option.RequestOption) (res *RadarAIInferenceSummaryGetModelResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/ai/inference/summary/model"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -44,7 +45,7 @@ func (r *RadarAIInferenceSummaryService) GetModel(ctx context.Context, query Rad
 
 // Retrieves the distribution of unique accounts by task.
 func (r *RadarAIInferenceSummaryService) GetTask(ctx context.Context, query RadarAIInferenceSummaryGetTaskParams, opts ...option.RequestOption) (res *RadarAIInferenceSummaryGetTaskResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/ai/inference/summary/task"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

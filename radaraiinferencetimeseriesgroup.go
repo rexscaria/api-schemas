@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -36,7 +37,7 @@ func NewRadarAIInferenceTimeseriesGroupService(opts ...option.RequestOption) (r 
 
 // Retrieves the distribution of unique accounts by model over time.
 func (r *RadarAIInferenceTimeseriesGroupService) GetModel(ctx context.Context, query RadarAIInferenceTimeseriesGroupGetModelParams, opts ...option.RequestOption) (res *RadarAIInferenceTimeseriesGroupGetModelResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/ai/inference/timeseries_groups/model"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -44,7 +45,7 @@ func (r *RadarAIInferenceTimeseriesGroupService) GetModel(ctx context.Context, q
 
 // Retrieves the distribution of unique accounts by task over time.
 func (r *RadarAIInferenceTimeseriesGroupService) GetTask(ctx context.Context, query RadarAIInferenceTimeseriesGroupGetTaskParams, opts ...option.RequestOption) (res *RadarAIInferenceTimeseriesGroupGetTaskResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/ai/inference/timeseries_groups/task"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

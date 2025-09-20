@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -39,7 +40,7 @@ func NewAccountMagicCloudResourceService(opts ...option.RequestOption) (r *Accou
 
 // Read an resource from the Resource Catalog (Closed Beta).
 func (r *AccountMagicCloudResourceService) Get(ctx context.Context, accountID string, resourceID string, query AccountMagicCloudResourceGetParams, opts ...option.RequestOption) (res *AccountMagicCloudResourceGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -55,7 +56,7 @@ func (r *AccountMagicCloudResourceService) Get(ctx context.Context, accountID st
 
 // List resources in the Resource Catalog (Closed Beta).
 func (r *AccountMagicCloudResourceService) List(ctx context.Context, accountID string, query AccountMagicCloudResourceListParams, opts ...option.RequestOption) (res *AccountMagicCloudResourceListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -67,7 +68,7 @@ func (r *AccountMagicCloudResourceService) List(ctx context.Context, accountID s
 
 // Export resources in the Resource Catalog as a JSON file (Closed Beta).
 func (r *AccountMagicCloudResourceService) Export(ctx context.Context, accountID string, query AccountMagicCloudResourceExportParams, opts ...option.RequestOption) (res *http.Response, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "application/octet-stream")}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
@@ -80,7 +81,7 @@ func (r *AccountMagicCloudResourceService) Export(ctx context.Context, accountID
 
 // Preview Rego query result against the latest resource catalog (Closed Beta).
 func (r *AccountMagicCloudResourceService) PreviewPolicy(ctx context.Context, accountID string, body AccountMagicCloudResourcePreviewPolicyParams, opts ...option.RequestOption) (res *AccountMagicCloudResourcePreviewPolicyResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

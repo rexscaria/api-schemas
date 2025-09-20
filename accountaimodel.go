@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -37,7 +38,7 @@ func NewAccountAIModelService(opts ...option.RequestOption) (r *AccountAIModelSe
 
 // Get Model Schema
 func (r *AccountAIModelService) GetSchema(ctx context.Context, accountID string, query AccountAIModelGetSchemaParams, opts ...option.RequestOption) (res *AccountAIModelGetSchemaResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -49,7 +50,7 @@ func (r *AccountAIModelService) GetSchema(ctx context.Context, accountID string,
 
 // Model Search
 func (r *AccountAIModelService) Search(ctx context.Context, accountID string, query AccountAIModelSearchParams, opts ...option.RequestOption) (res *AccountAIModelSearchResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

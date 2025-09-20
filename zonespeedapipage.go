@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -40,7 +41,7 @@ func NewZoneSpeedAPIPageService(opts ...option.RequestOption) (r *ZoneSpeedAPIPa
 
 // Lists all webpages which have been tested.
 func (r *ZoneSpeedAPIPageService) List(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *ZoneSpeedAPIPageListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -52,7 +53,7 @@ func (r *ZoneSpeedAPIPageService) List(ctx context.Context, zoneID string, opts 
 
 // Lists the core web vital metrics trend over time for a specific page.
 func (r *ZoneSpeedAPIPageService) GetTrend(ctx context.Context, zoneID string, url string, query ZoneSpeedAPIPageGetTrendParams, opts ...option.RequestOption) (res *ZoneSpeedAPIPageGetTrendResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

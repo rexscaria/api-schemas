@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -35,7 +36,7 @@ func NewZoneArgoSmartRoutingService(opts ...option.RequestOption) (r *ZoneArgoSm
 
 // Retrieves the value of Argo Smart Routing enablement setting.
 func (r *ZoneArgoSmartRoutingService) Get(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *ArgoConfigResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -47,7 +48,7 @@ func (r *ZoneArgoSmartRoutingService) Get(ctx context.Context, zoneID string, op
 
 // Configures the value of the Argo Smart Routing enablement setting.
 func (r *ZoneArgoSmartRoutingService) Update(ctx context.Context, zoneID string, body ZoneArgoSmartRoutingUpdateParams, opts ...option.RequestOption) (res *ArgoConfigResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

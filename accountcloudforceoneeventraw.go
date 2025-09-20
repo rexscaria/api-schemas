@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -35,7 +36,7 @@ func NewAccountCloudforceOneEventRawService(opts ...option.RequestOption) (r *Ac
 
 // Reads data for a raw event
 func (r *AccountCloudforceOneEventRawService) Get(ctx context.Context, accountID string, datasetID string, eventID string, opts ...option.RequestOption) (res *AccountCloudforceOneEventRawGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -55,7 +56,7 @@ func (r *AccountCloudforceOneEventRawService) Get(ctx context.Context, accountID
 
 // Updates a raw event
 func (r *AccountCloudforceOneEventRawService) Update(ctx context.Context, accountID string, eventID string, rawID string, body AccountCloudforceOneEventRawUpdateParams, opts ...option.RequestOption) (res *AccountCloudforceOneEventRawUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

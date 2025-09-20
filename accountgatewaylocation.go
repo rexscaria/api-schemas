@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -36,7 +37,7 @@ func NewAccountGatewayLocationService(opts ...option.RequestOption) (r *AccountG
 
 // Creates a new Zero Trust Gateway location.
 func (r *AccountGatewayLocationService) New(ctx context.Context, accountID string, body AccountGatewayLocationNewParams, opts ...option.RequestOption) (res *SchemasZeroTrustGatewaySingleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -48,7 +49,7 @@ func (r *AccountGatewayLocationService) New(ctx context.Context, accountID strin
 
 // Fetches a single Zero Trust Gateway location.
 func (r *AccountGatewayLocationService) Get(ctx context.Context, accountID string, locationID string, opts ...option.RequestOption) (res *SchemasZeroTrustGatewaySingleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -64,7 +65,7 @@ func (r *AccountGatewayLocationService) Get(ctx context.Context, accountID strin
 
 // Updates a configured Zero Trust Gateway location.
 func (r *AccountGatewayLocationService) Update(ctx context.Context, accountID string, locationID string, body AccountGatewayLocationUpdateParams, opts ...option.RequestOption) (res *SchemasZeroTrustGatewaySingleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -80,7 +81,7 @@ func (r *AccountGatewayLocationService) Update(ctx context.Context, accountID st
 
 // Fetches Zero Trust Gateway locations for an account.
 func (r *AccountGatewayLocationService) List(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountGatewayLocationListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -92,7 +93,7 @@ func (r *AccountGatewayLocationService) List(ctx context.Context, accountID stri
 
 // Deletes a configured Zero Trust Gateway location.
 func (r *AccountGatewayLocationService) Delete(ctx context.Context, accountID string, locationID string, opts ...option.RequestOption) (res *ZeroTrustGatewayEmptyResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -37,7 +38,7 @@ func NewRadarBgpIPService(opts ...option.RequestOption) (r *RadarBgpIPService) {
 // Retrieves time series data for the announced IP space count, represented as the
 // number of IPv4 /24s and IPv6 /48s, for a given ASN.
 func (r *RadarBgpIPService) GetTimeseries(ctx context.Context, query RadarBgpIPGetTimeseriesParams, opts ...option.RequestOption) (res *RadarBgpIPGetTimeseriesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/bgp/ips/timeseries"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

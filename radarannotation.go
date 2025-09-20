@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -38,7 +39,7 @@ func NewRadarAnnotationService(opts ...option.RequestOption) (r *RadarAnnotation
 
 // Retrieves the latest annotations.
 func (r *RadarAnnotationService) GetLatest(ctx context.Context, query RadarAnnotationGetLatestParams, opts ...option.RequestOption) (res *RadarAnnotationGetLatestResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/annotations"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

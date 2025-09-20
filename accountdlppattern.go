@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -38,7 +39,7 @@ func NewAccountDlpPatternService(opts ...option.RequestOption) (r *AccountDlpPat
 // regex will be rejected if it uses `*` or `+`. Bound the maximum number of
 // characters that can be matched using a range, e.g. `{1,100}`.
 func (r *AccountDlpPatternService) Validate(ctx context.Context, accountID string, body AccountDlpPatternValidateParams, opts ...option.RequestOption) (res *AccountDlpPatternValidateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

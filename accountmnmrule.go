@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -36,7 +37,7 @@ func NewAccountMnmRuleService(opts ...option.RequestOption) (r *AccountMnmRuleSe
 // Create network monitoring rules for account. Currently only supports creating a
 // single rule per API request.
 func (r *AccountMnmRuleService) New(ctx context.Context, accountID string, body AccountMnmRuleNewParams, opts ...option.RequestOption) (res *RulesSingleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -48,7 +49,7 @@ func (r *AccountMnmRuleService) New(ctx context.Context, accountID string, body 
 
 // List a single network monitoring rule for account.
 func (r *AccountMnmRuleService) Get(ctx context.Context, accountID string, ruleID string, opts ...option.RequestOption) (res *RulesSingleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -64,7 +65,7 @@ func (r *AccountMnmRuleService) Get(ctx context.Context, accountID string, ruleI
 
 // Update network monitoring rules for account.
 func (r *AccountMnmRuleService) Update(ctx context.Context, accountID string, body AccountMnmRuleUpdateParams, opts ...option.RequestOption) (res *RulesSingleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -76,7 +77,7 @@ func (r *AccountMnmRuleService) Update(ctx context.Context, accountID string, bo
 
 // Lists network monitoring rules for account.
 func (r *AccountMnmRuleService) List(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountMnmRuleListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -88,7 +89,7 @@ func (r *AccountMnmRuleService) List(ctx context.Context, accountID string, opts
 
 // Delete a network monitoring rule for account.
 func (r *AccountMnmRuleService) Delete(ctx context.Context, accountID string, ruleID string, opts ...option.RequestOption) (res *RulesSingleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -104,7 +105,7 @@ func (r *AccountMnmRuleService) Delete(ctx context.Context, accountID string, ru
 
 // Update advertisement for rule.
 func (r *AccountMnmRuleService) UpdateAdvertisement(ctx context.Context, accountID string, ruleID string, body AccountMnmRuleUpdateAdvertisementParams, opts ...option.RequestOption) (res *AccountMnmRuleUpdateAdvertisementResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -120,7 +121,7 @@ func (r *AccountMnmRuleService) UpdateAdvertisement(ctx context.Context, account
 
 // Update a network monitoring rule for account.
 func (r *AccountMnmRuleService) UpdateRule(ctx context.Context, accountID string, ruleID string, body AccountMnmRuleUpdateRuleParams, opts ...option.RequestOption) (res *RulesSingleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

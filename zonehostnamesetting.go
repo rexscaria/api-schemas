@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"reflect"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -39,7 +40,7 @@ func NewZoneHostnameSettingService(opts ...option.RequestOption) (r *ZoneHostnam
 
 // List the requested TLS setting for the hostnames under this zone.
 func (r *ZoneHostnameSettingService) Get(ctx context.Context, zoneID string, settingID SettingID, opts ...option.RequestOption) (res *ZoneHostnameSettingGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -51,7 +52,7 @@ func (r *ZoneHostnameSettingService) Get(ctx context.Context, zoneID string, set
 
 // Update the tls setting value for the hostname.
 func (r *ZoneHostnameSettingService) Update(ctx context.Context, zoneID string, settingID SettingID, hostname string, body ZoneHostnameSettingUpdateParams, opts ...option.RequestOption) (res *ZoneHostnameSettingUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -67,7 +68,7 @@ func (r *ZoneHostnameSettingService) Update(ctx context.Context, zoneID string, 
 
 // Delete the tls setting value for the hostname.
 func (r *ZoneHostnameSettingService) Delete(ctx context.Context, zoneID string, settingID SettingID, hostname string, opts ...option.RequestOption) (res *ZoneHostnameSettingDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

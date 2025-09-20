@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/requestconfig"
@@ -34,7 +35,7 @@ func NewAccountStreamDownloadService(opts ...option.RequestOption) (r *AccountSt
 
 // Creates a download for a video when a video is ready to view.
 func (r *AccountStreamDownloadService) New(ctx context.Context, accountID string, identifier string, body AccountStreamDownloadNewParams, opts ...option.RequestOption) (res *DownloadsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -50,7 +51,7 @@ func (r *AccountStreamDownloadService) New(ctx context.Context, accountID string
 
 // Lists the downloads created for a video.
 func (r *AccountStreamDownloadService) List(ctx context.Context, accountID string, identifier string, opts ...option.RequestOption) (res *DownloadsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -66,7 +67,7 @@ func (r *AccountStreamDownloadService) List(ctx context.Context, accountID strin
 
 // Delete the downloads for a video.
 func (r *AccountStreamDownloadService) Delete(ctx context.Context, accountID string, identifier string, opts ...option.RequestOption) (res *DeletedStreamResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

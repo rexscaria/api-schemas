@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apiquery"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -36,7 +37,7 @@ func NewOrganizationService(opts ...option.RequestOption) (r *OrganizationServic
 
 // Lists all organization shares.
 func (r *OrganizationService) ListShares(ctx context.Context, organizationID string, query OrganizationListSharesParams, opts ...option.RequestOption) (res *ShareResponseCollection, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if organizationID == "" {
 		err = errors.New("missing required organization_id parameter")
 		return

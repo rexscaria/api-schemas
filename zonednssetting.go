@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -35,7 +36,7 @@ func NewZoneDNSSettingService(opts ...option.RequestOption) (r *ZoneDNSSettingSe
 
 // Update DNS settings for a zone
 func (r *ZoneDNSSettingService) Update(ctx context.Context, zoneID string, body ZoneDNSSettingUpdateParams, opts ...option.RequestOption) (res *SingleResponseDNSSettingsZone, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -47,7 +48,7 @@ func (r *ZoneDNSSettingService) Update(ctx context.Context, zoneID string, body 
 
 // Show DNS settings for a zone
 func (r *ZoneDNSSettingService) Show(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *SingleResponseDNSSettingsZone, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

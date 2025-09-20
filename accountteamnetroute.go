@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -40,7 +41,7 @@ func NewAccountTeamnetRouteService(opts ...option.RequestOption) (r *AccountTeam
 
 // Routes a private network through a Cloudflare Tunnel.
 func (r *AccountTeamnetRouteService) New(ctx context.Context, accountID string, body AccountTeamnetRouteNewParams, opts ...option.RequestOption) (res *TunnelRouteResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -52,7 +53,7 @@ func (r *AccountTeamnetRouteService) New(ctx context.Context, accountID string, 
 
 // Get a private network route in an account.
 func (r *AccountTeamnetRouteService) Get(ctx context.Context, accountID string, routeID string, opts ...option.RequestOption) (res *TunnelRouteResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -69,7 +70,7 @@ func (r *AccountTeamnetRouteService) Get(ctx context.Context, accountID string, 
 // Updates an existing private network route in an account. The fields that are
 // meant to be updated should be provided in the body of the request.
 func (r *AccountTeamnetRouteService) Update(ctx context.Context, accountID string, routeID string, body AccountTeamnetRouteUpdateParams, opts ...option.RequestOption) (res *TunnelRouteResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -85,7 +86,7 @@ func (r *AccountTeamnetRouteService) Update(ctx context.Context, accountID strin
 
 // Lists and filters private network routes in an account.
 func (r *AccountTeamnetRouteService) List(ctx context.Context, accountID string, query AccountTeamnetRouteListParams, opts ...option.RequestOption) (res *AccountTeamnetRouteListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -97,7 +98,7 @@ func (r *AccountTeamnetRouteService) List(ctx context.Context, accountID string,
 
 // Deletes a private network route from an account.
 func (r *AccountTeamnetRouteService) Delete(ctx context.Context, accountID string, routeID string, opts ...option.RequestOption) (res *TunnelRouteResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -113,7 +114,7 @@ func (r *AccountTeamnetRouteService) Delete(ctx context.Context, accountID strin
 
 // Fetches routes that contain the given IP address.
 func (r *AccountTeamnetRouteService) GetByIP(ctx context.Context, accountID string, ip string, query AccountTeamnetRouteGetByIPParams, opts ...option.RequestOption) (res *AccountTeamnetRouteGetByIPResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

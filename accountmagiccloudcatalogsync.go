@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -40,7 +41,7 @@ func (r *AccountMagicCloudCatalogSyncService) New(ctx context.Context, accountID
 	if params.Forwarded.Present {
 		opts = append(opts, option.WithHeader("forwarded", fmt.Sprintf("%s", params.Forwarded)))
 	}
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -52,7 +53,7 @@ func (r *AccountMagicCloudCatalogSyncService) New(ctx context.Context, accountID
 
 // Read a Catalog Sync (Closed Beta).
 func (r *AccountMagicCloudCatalogSyncService) Get(ctx context.Context, accountID string, syncID string, opts ...option.RequestOption) (res *AccountMagicCloudCatalogSyncGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -68,7 +69,7 @@ func (r *AccountMagicCloudCatalogSyncService) Get(ctx context.Context, accountID
 
 // Update a Catalog Sync (Closed Beta).
 func (r *AccountMagicCloudCatalogSyncService) Update(ctx context.Context, accountID string, syncID string, body AccountMagicCloudCatalogSyncUpdateParams, opts ...option.RequestOption) (res *McnUpdateCatalogSyncResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -84,7 +85,7 @@ func (r *AccountMagicCloudCatalogSyncService) Update(ctx context.Context, accoun
 
 // List Catalog Syncs (Closed Beta).
 func (r *AccountMagicCloudCatalogSyncService) List(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountMagicCloudCatalogSyncListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -96,7 +97,7 @@ func (r *AccountMagicCloudCatalogSyncService) List(ctx context.Context, accountI
 
 // Delete a Catalog Sync (Closed Beta).
 func (r *AccountMagicCloudCatalogSyncService) Delete(ctx context.Context, accountID string, syncID string, body AccountMagicCloudCatalogSyncDeleteParams, opts ...option.RequestOption) (res *AccountMagicCloudCatalogSyncDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -112,7 +113,7 @@ func (r *AccountMagicCloudCatalogSyncService) Delete(ctx context.Context, accoun
 
 // List prebuilt catalog sync policies (Closed Beta).
 func (r *AccountMagicCloudCatalogSyncService) ListPolicies(ctx context.Context, accountID string, query AccountMagicCloudCatalogSyncListPoliciesParams, opts ...option.RequestOption) (res *AccountMagicCloudCatalogSyncListPoliciesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -124,7 +125,7 @@ func (r *AccountMagicCloudCatalogSyncService) ListPolicies(ctx context.Context, 
 
 // Update a Catalog Sync (Closed Beta).
 func (r *AccountMagicCloudCatalogSyncService) Patch(ctx context.Context, accountID string, syncID string, body AccountMagicCloudCatalogSyncPatchParams, opts ...option.RequestOption) (res *McnUpdateCatalogSyncResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -141,7 +142,7 @@ func (r *AccountMagicCloudCatalogSyncService) Patch(ctx context.Context, account
 // Refresh a Catalog Sync's destination by running the sync policy against latest
 // resource catalog (Closed Beta).
 func (r *AccountMagicCloudCatalogSyncService) Run(ctx context.Context, accountID string, syncID string, opts ...option.RequestOption) (res *AccountMagicCloudCatalogSyncRunResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

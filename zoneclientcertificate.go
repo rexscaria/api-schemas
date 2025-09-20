@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -37,7 +38,7 @@ func NewZoneClientCertificateService(opts ...option.RequestOption) (r *ZoneClien
 
 // Create a new API Shield mTLS Client Certificate
 func (r *ZoneClientCertificateService) New(ctx context.Context, zoneID string, body ZoneClientCertificateNewParams, opts ...option.RequestOption) (res *ClientCertificateResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -49,7 +50,7 @@ func (r *ZoneClientCertificateService) New(ctx context.Context, zoneID string, b
 
 // Get Details for a single mTLS API Shield Client Certificate
 func (r *ZoneClientCertificateService) Get(ctx context.Context, zoneID string, clientCertificateID string, opts ...option.RequestOption) (res *ClientCertificateResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -66,7 +67,7 @@ func (r *ZoneClientCertificateService) Get(ctx context.Context, zoneID string, c
 // List all of your Zone's API Shield mTLS Client Certificates by Status and/or
 // using Pagination
 func (r *ZoneClientCertificateService) List(ctx context.Context, zoneID string, query ZoneClientCertificateListParams, opts ...option.RequestOption) (res *ZoneClientCertificateListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -79,7 +80,7 @@ func (r *ZoneClientCertificateService) List(ctx context.Context, zoneID string, 
 // If a API Shield mTLS Client Certificate is in a pending_revocation state, you
 // may reactivate it with this endpoint.
 func (r *ZoneClientCertificateService) Reactivate(ctx context.Context, zoneID string, clientCertificateID string, opts ...option.RequestOption) (res *ClientCertificateResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -96,7 +97,7 @@ func (r *ZoneClientCertificateService) Reactivate(ctx context.Context, zoneID st
 // Set a API Shield mTLS Client Certificate to pending_revocation status for
 // processing to revoked status.
 func (r *ZoneClientCertificateService) Revoke(ctx context.Context, zoneID string, clientCertificateID string, opts ...option.RequestOption) (res *ClientCertificateResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

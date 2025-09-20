@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/requestconfig"
@@ -35,7 +36,7 @@ func NewZoneDcvDelegationService(opts ...option.RequestOption) (r *ZoneDcvDelega
 // Retrieve the account and zone specific unique identifier used as part of the
 // CNAME target for DCV Delegation.
 func (r *ZoneDcvDelegationService) Get(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *ZoneDcvDelegationGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

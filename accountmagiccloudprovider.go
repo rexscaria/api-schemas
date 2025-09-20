@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -42,7 +43,7 @@ func (r *AccountMagicCloudProviderService) New(ctx context.Context, accountID st
 	if params.Forwarded.Present {
 		opts = append(opts, option.WithHeader("forwarded", fmt.Sprintf("%s", params.Forwarded)))
 	}
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -54,7 +55,7 @@ func (r *AccountMagicCloudProviderService) New(ctx context.Context, accountID st
 
 // Read a Cloud Integration (Closed Beta).
 func (r *AccountMagicCloudProviderService) Get(ctx context.Context, accountID string, providerID string, query AccountMagicCloudProviderGetParams, opts ...option.RequestOption) (res *AccountMagicCloudProviderGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -70,7 +71,7 @@ func (r *AccountMagicCloudProviderService) Get(ctx context.Context, accountID st
 
 // Update a Cloud Integration (Closed Beta).
 func (r *AccountMagicCloudProviderService) Update(ctx context.Context, accountID string, providerID string, body AccountMagicCloudProviderUpdateParams, opts ...option.RequestOption) (res *McnUpdateProviderResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -86,7 +87,7 @@ func (r *AccountMagicCloudProviderService) Update(ctx context.Context, accountID
 
 // List Cloud Integrations (Closed Beta).
 func (r *AccountMagicCloudProviderService) List(ctx context.Context, accountID string, query AccountMagicCloudProviderListParams, opts ...option.RequestOption) (res *AccountMagicCloudProviderListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -98,7 +99,7 @@ func (r *AccountMagicCloudProviderService) List(ctx context.Context, accountID s
 
 // Delete a Cloud Integration (Closed Beta).
 func (r *AccountMagicCloudProviderService) Delete(ctx context.Context, accountID string, providerID string, opts ...option.RequestOption) (res *AccountMagicCloudProviderDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -114,7 +115,7 @@ func (r *AccountMagicCloudProviderService) Delete(ctx context.Context, accountID
 
 // Run discovery for a Cloud Integration (Closed Beta).
 func (r *AccountMagicCloudProviderService) Discover(ctx context.Context, accountID string, providerID string, body AccountMagicCloudProviderDiscoverParams, opts ...option.RequestOption) (res *McnGoodResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -130,7 +131,7 @@ func (r *AccountMagicCloudProviderService) Discover(ctx context.Context, account
 
 // Run discovery for all Cloud Integrations in an account (Closed Beta).
 func (r *AccountMagicCloudProviderService) DiscoverAll(ctx context.Context, accountID string, opts ...option.RequestOption) (res *McnGoodResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -142,7 +143,7 @@ func (r *AccountMagicCloudProviderService) DiscoverAll(ctx context.Context, acco
 
 // Get initial configuration to complete Cloud Integration setup (Closed Beta).
 func (r *AccountMagicCloudProviderService) GetSetupConfig(ctx context.Context, accountID string, providerID string, opts ...option.RequestOption) (res *AccountMagicCloudProviderGetSetupConfigResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -158,7 +159,7 @@ func (r *AccountMagicCloudProviderService) GetSetupConfig(ctx context.Context, a
 
 // Update a Cloud Integration (Closed Beta).
 func (r *AccountMagicCloudProviderService) Patch(ctx context.Context, accountID string, providerID string, body AccountMagicCloudProviderPatchParams, opts ...option.RequestOption) (res *McnUpdateProviderResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

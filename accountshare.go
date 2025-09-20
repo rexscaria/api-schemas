@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -42,7 +43,7 @@ func NewAccountShareService(opts ...option.RequestOption) (r *AccountShareServic
 
 // Create a new share
 func (r *AccountShareService) New(ctx context.Context, accountID string, body AccountShareNewParams, opts ...option.RequestOption) (res *ShareResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -54,7 +55,7 @@ func (r *AccountShareService) New(ctx context.Context, accountID string, body Ac
 
 // Fetches share by ID.
 func (r *AccountShareService) Get(ctx context.Context, accountID string, shareID string, opts ...option.RequestOption) (res *ShareResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -71,7 +72,7 @@ func (r *AccountShareService) Get(ctx context.Context, accountID string, shareID
 // Updating is not immediate, an updated share object with a new status will be
 // returned.
 func (r *AccountShareService) Update(ctx context.Context, accountID string, shareID string, body AccountShareUpdateParams, opts ...option.RequestOption) (res *ShareResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -87,7 +88,7 @@ func (r *AccountShareService) Update(ctx context.Context, accountID string, shar
 
 // Lists all account shares.
 func (r *AccountShareService) List(ctx context.Context, accountID string, query AccountShareListParams, opts ...option.RequestOption) (res *ShareResponseCollection, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -100,7 +101,7 @@ func (r *AccountShareService) List(ctx context.Context, accountID string, query 
 // Deletion is not immediate, an updated share object with a new status will be
 // returned.
 func (r *AccountShareService) Delete(ctx context.Context, accountID string, shareID string, opts ...option.RequestOption) (res *ShareResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

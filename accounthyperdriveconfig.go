@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"reflect"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -38,7 +39,7 @@ func NewAccountHyperdriveConfigService(opts ...option.RequestOption) (r *Account
 
 // Creates and returns a new Hyperdrive configuration.
 func (r *AccountHyperdriveConfigService) New(ctx context.Context, accountID string, body AccountHyperdriveConfigNewParams, opts ...option.RequestOption) (res *AccountHyperdriveConfigNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -50,7 +51,7 @@ func (r *AccountHyperdriveConfigService) New(ctx context.Context, accountID stri
 
 // Returns the specified Hyperdrive configuration.
 func (r *AccountHyperdriveConfigService) Get(ctx context.Context, accountID string, hyperdriveID string, opts ...option.RequestOption) (res *AccountHyperdriveConfigGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -66,7 +67,7 @@ func (r *AccountHyperdriveConfigService) Get(ctx context.Context, accountID stri
 
 // Updates and returns the specified Hyperdrive configuration.
 func (r *AccountHyperdriveConfigService) Update(ctx context.Context, accountID string, hyperdriveID string, body AccountHyperdriveConfigUpdateParams, opts ...option.RequestOption) (res *AccountHyperdriveConfigUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -82,7 +83,7 @@ func (r *AccountHyperdriveConfigService) Update(ctx context.Context, accountID s
 
 // Returns a list of Hyperdrives.
 func (r *AccountHyperdriveConfigService) List(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountHyperdriveConfigListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -94,7 +95,7 @@ func (r *AccountHyperdriveConfigService) List(ctx context.Context, accountID str
 
 // Deletes the specified Hyperdrive.
 func (r *AccountHyperdriveConfigService) Delete(ctx context.Context, accountID string, hyperdriveID string, opts ...option.RequestOption) (res *AccountHyperdriveConfigDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -111,7 +112,7 @@ func (r *AccountHyperdriveConfigService) Delete(ctx context.Context, accountID s
 // Patches and returns the specified Hyperdrive configuration. Custom caching
 // settings are not kept if caching is disabled.
 func (r *AccountHyperdriveConfigService) Patch(ctx context.Context, accountID string, hyperdriveID string, body AccountHyperdriveConfigPatchParams, opts ...option.RequestOption) (res *AccountHyperdriveConfigPatchResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

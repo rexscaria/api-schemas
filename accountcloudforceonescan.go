@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/requestconfig"
@@ -36,7 +37,7 @@ func NewAccountCloudforceOneScanService(opts ...option.RequestOption) (r *Accoun
 
 // Get the Latest Scan Result
 func (r *AccountCloudforceOneScanService) GetResults(ctx context.Context, accountID string, configID string, opts ...option.RequestOption) (res *AccountCloudforceOneScanGetResultsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

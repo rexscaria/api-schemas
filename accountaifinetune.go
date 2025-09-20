@@ -11,6 +11,7 @@ import (
 	"mime/multipart"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apiform"
@@ -42,7 +43,7 @@ func NewAccountAIFinetuneService(opts ...option.RequestOption) (r *AccountAIFine
 
 // Create a new Finetune
 func (r *AccountAIFinetuneService) New(ctx context.Context, accountID string, body AccountAIFinetuneNewParams, opts ...option.RequestOption) (res *AccountAIFinetuneNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -54,7 +55,7 @@ func (r *AccountAIFinetuneService) New(ctx context.Context, accountID string, bo
 
 // List Finetunes
 func (r *AccountAIFinetuneService) List(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountAIFinetuneListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -66,7 +67,7 @@ func (r *AccountAIFinetuneService) List(ctx context.Context, accountID string, o
 
 // List Public Finetunes
 func (r *AccountAIFinetuneService) ListPublic(ctx context.Context, accountID string, query AccountAIFinetuneListPublicParams, opts ...option.RequestOption) (res *AccountAIFinetuneListPublicResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -78,7 +79,7 @@ func (r *AccountAIFinetuneService) ListPublic(ctx context.Context, accountID str
 
 // Upload a Finetune Asset
 func (r *AccountAIFinetuneService) UploadAsset(ctx context.Context, accountID string, finetuneID string, body AccountAIFinetuneUploadAssetParams, opts ...option.RequestOption) (res *AccountAIFinetuneUploadAssetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

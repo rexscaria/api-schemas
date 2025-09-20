@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -38,7 +39,7 @@ func NewAccountBrowserRenderingService(opts ...option.RequestOption) (r *Account
 // Fetches rendered HTML content from provided URL or HTML. Check available options
 // like `gotoOptions` and `waitFor*` to control page load behaviour.
 func (r *AccountBrowserRenderingService) GetHTMLContent(ctx context.Context, accountID string, params AccountBrowserRenderingGetHTMLContentParams, opts ...option.RequestOption) (res *AccountBrowserRenderingGetHTMLContentResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -51,7 +52,7 @@ func (r *AccountBrowserRenderingService) GetHTMLContent(ctx context.Context, acc
 // Gets json from a webpage from a provided URL or HTML. Pass `prompt` or `schema`
 // in the body. Control page loading with `gotoOptions` and `waitFor*` options.
 func (r *AccountBrowserRenderingService) GetJson(ctx context.Context, accountID string, params AccountBrowserRenderingGetJsonParams, opts ...option.RequestOption) (res *AccountBrowserRenderingGetJsonResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -63,7 +64,7 @@ func (r *AccountBrowserRenderingService) GetJson(ctx context.Context, accountID 
 
 // Get links from a web page.
 func (r *AccountBrowserRenderingService) GetLinks(ctx context.Context, accountID string, params AccountBrowserRenderingGetLinksParams, opts ...option.RequestOption) (res *AccountBrowserRenderingGetLinksResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -76,7 +77,7 @@ func (r *AccountBrowserRenderingService) GetLinks(ctx context.Context, accountID
 // Gets markdown of a webpage from provided URL or HTML. Control page loading with
 // `gotoOptions` and `waitFor*` options.
 func (r *AccountBrowserRenderingService) GetMarkdown(ctx context.Context, accountID string, params AccountBrowserRenderingGetMarkdownParams, opts ...option.RequestOption) (res *AccountBrowserRenderingGetMarkdownResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -89,7 +90,7 @@ func (r *AccountBrowserRenderingService) GetMarkdown(ctx context.Context, accoun
 // Fetches rendered PDF from provided URL or HTML. Check available options like
 // `gotoOptions` and `waitFor*` to control page load behaviour.
 func (r *AccountBrowserRenderingService) GetPdf(ctx context.Context, accountID string, params AccountBrowserRenderingGetPdfParams, opts ...option.RequestOption) (res *http.Response, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "application/pdf")}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
@@ -104,7 +105,7 @@ func (r *AccountBrowserRenderingService) GetPdf(ctx context.Context, accountID s
 // with `gotoOptions` and `waitFor*` options. Customize screenshots with
 // `viewport`, `fullPage`, `clip` and others.
 func (r *AccountBrowserRenderingService) GetScreenshot(ctx context.Context, accountID string, params AccountBrowserRenderingGetScreenshotParams, opts ...option.RequestOption) (res *AccountBrowserRenderingGetScreenshotResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -118,7 +119,7 @@ func (r *AccountBrowserRenderingService) GetScreenshot(ctx context.Context, acco
 // `gotoOptions` and `waitFor*` options. Customize screenshots with `viewport`,
 // `fullPage`, `clip` and others.
 func (r *AccountBrowserRenderingService) GetSnapshot(ctx context.Context, accountID string, params AccountBrowserRenderingGetSnapshotParams, opts ...option.RequestOption) (res *AccountBrowserRenderingGetSnapshotResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -130,7 +131,7 @@ func (r *AccountBrowserRenderingService) GetSnapshot(ctx context.Context, accoun
 
 // Get meta attributes like height, width, text and others of selected elements.
 func (r *AccountBrowserRenderingService) ScrapeElements(ctx context.Context, accountID string, params AccountBrowserRenderingScrapeElementsParams, opts ...option.RequestOption) (res *AccountBrowserRenderingScrapeElementsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

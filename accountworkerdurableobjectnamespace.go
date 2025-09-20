@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -38,7 +39,7 @@ func NewAccountWorkerDurableObjectNamespaceService(opts ...option.RequestOption)
 
 // Returns the Durable Object namespaces owned by an account.
 func (r *AccountWorkerDurableObjectNamespaceService) List(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountWorkerDurableObjectNamespaceListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -50,7 +51,7 @@ func (r *AccountWorkerDurableObjectNamespaceService) List(ctx context.Context, a
 
 // Returns the Durable Objects in a given namespace.
 func (r *AccountWorkerDurableObjectNamespaceService) ListObjects(ctx context.Context, accountID string, id string, query AccountWorkerDurableObjectNamespaceListObjectsParams, opts ...option.RequestOption) (res *AccountWorkerDurableObjectNamespaceListObjectsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

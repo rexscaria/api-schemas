@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -55,7 +56,7 @@ func NewAccountCloudforceOneEventService(opts ...option.RequestOption) (r *Accou
 // endpoint. When `datasetId` parameter is unspecified, it will be created in a
 // default dataset named `Cloudforce One Threat Events`.
 func (r *AccountCloudforceOneEventService) New(ctx context.Context, accountID string, body AccountCloudforceOneEventNewParams, opts ...option.RequestOption) (res *AccountCloudforceOneEventNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -67,7 +68,7 @@ func (r *AccountCloudforceOneEventService) New(ctx context.Context, accountID st
 
 // Reads an event
 func (r *AccountCloudforceOneEventService) Get(ctx context.Context, accountID string, eventID string, opts ...option.RequestOption) (res *AccountCloudforceOneEventGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -83,7 +84,7 @@ func (r *AccountCloudforceOneEventService) Get(ctx context.Context, accountID st
 
 // Updates an event
 func (r *AccountCloudforceOneEventService) Update(ctx context.Context, accountID string, eventID string, body AccountCloudforceOneEventUpdateParams, opts ...option.RequestOption) (res *AccountCloudforceOneEventUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -102,7 +103,7 @@ func (r *AccountCloudforceOneEventService) Update(ctx context.Context, accountID
 // [`List Datasets`](https://developers.cloudflare.com/api/resources/cloudforce_one/subresources/threat_events/subresources/datasets/methods/list/)
 // endpoint.
 func (r *AccountCloudforceOneEventService) Delete(ctx context.Context, accountID string, eventID string, opts ...option.RequestOption) (res *AccountCloudforceOneEventDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -121,7 +122,7 @@ func (r *AccountCloudforceOneEventService) Delete(ctx context.Context, accountID
 // [`List Datasets`](https://developers.cloudflare.com/api/resources/cloudforce_one/subresources/threat_events/subresources/datasets/methods/list/)
 // endpoint.
 func (r *AccountCloudforceOneEventService) NewBulk(ctx context.Context, accountID string, body AccountCloudforceOneEventNewBulkParams, opts ...option.RequestOption) (res *float64, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -133,7 +134,7 @@ func (r *AccountCloudforceOneEventService) NewBulk(ctx context.Context, accountI
 
 // Lists attackers
 func (r *AccountCloudforceOneEventService) ListAttackers(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountCloudforceOneEventListAttackersResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -145,7 +146,7 @@ func (r *AccountCloudforceOneEventService) ListAttackers(ctx context.Context, ac
 
 // Retrieves countries information for all countries
 func (r *AccountCloudforceOneEventService) ListCountries(ctx context.Context, accountID string, opts ...option.RequestOption) (res *[]AccountCloudforceOneEventListCountriesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -157,7 +158,7 @@ func (r *AccountCloudforceOneEventService) ListCountries(ctx context.Context, ac
 
 // Lists all indicator types
 func (r *AccountCloudforceOneEventService) ListIndicatorTypes(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountCloudforceOneEventListIndicatorTypesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -169,7 +170,7 @@ func (r *AccountCloudforceOneEventService) ListIndicatorTypes(ctx context.Contex
 
 // Lists all target industries
 func (r *AccountCloudforceOneEventService) ListTargetIndustries(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountCloudforceOneEventListTargetIndustriesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -37,7 +38,7 @@ func NewRadarEmailSecurityTopTldService(opts ...option.RequestOption) (r *RadarE
 
 // Retrieves the top TLDs by number of email messages.
 func (r *RadarEmailSecurityTopTldService) Get(ctx context.Context, query RadarEmailSecurityTopTldGetParams, opts ...option.RequestOption) (res *RadarEmailSecurityTopTldGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/email/security/top/tlds"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -45,7 +46,7 @@ func (r *RadarEmailSecurityTopTldService) Get(ctx context.Context, query RadarEm
 
 // Retrieves the top TLDs by emails classified as malicious or not.
 func (r *RadarEmailSecurityTopTldService) GetMalicious(ctx context.Context, malicious RadarEmailSecurityTopTldGetMaliciousParamsMalicious, query RadarEmailSecurityTopTldGetMaliciousParams, opts ...option.RequestOption) (res *RadarEmailSecurityTopTldGetMaliciousResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("radar/email/security/top/tlds/malicious/%v", malicious)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -53,7 +54,7 @@ func (r *RadarEmailSecurityTopTldService) GetMalicious(ctx context.Context, mali
 
 // Retrieves the top TLDs by emails classified as spam or not.
 func (r *RadarEmailSecurityTopTldService) GetSpam(ctx context.Context, spam RadarEmailSecurityTopTldGetSpamParamsSpam, query RadarEmailSecurityTopTldGetSpamParams, opts ...option.RequestOption) (res *RadarEmailSecurityTopTldGetSpamResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("radar/email/security/top/tlds/spam/%v", spam)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -61,7 +62,7 @@ func (r *RadarEmailSecurityTopTldService) GetSpam(ctx context.Context, spam Rada
 
 // Retrieves the top TLDs by emails classified as spoof or not.
 func (r *RadarEmailSecurityTopTldService) GetSpoof(ctx context.Context, spoof RadarEmailSecurityTopTldGetSpoofParamsSpoof, query RadarEmailSecurityTopTldGetSpoofParams, opts ...option.RequestOption) (res *RadarEmailSecurityTopTldGetSpoofResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("radar/email/security/top/tlds/spoof/%v", spoof)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

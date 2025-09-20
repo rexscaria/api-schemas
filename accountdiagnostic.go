@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -35,7 +36,7 @@ func NewAccountDiagnosticService(opts ...option.RequestOption) (r *AccountDiagno
 
 // Run traceroutes from Cloudflare colos.
 func (r *AccountDiagnosticService) RunTraceroute(ctx context.Context, accountID string, body AccountDiagnosticRunTracerouteParams, opts ...option.RequestOption) (res *AccountDiagnosticRunTracerouteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -39,7 +40,7 @@ func NewZoneSettingAegiService(opts ...option.RequestOption) (r *ZoneSettingAegi
 // account so that you can increase your origin security by only allowing traffic
 // from a small list of IP addresses.
 func (r *ZoneSettingAegiService) Get(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *ZoneSettingAegiGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -54,7 +55,7 @@ func (r *ZoneSettingAegiService) Get(ctx context.Context, zoneID string, opts ..
 // account so that you can increase your origin security by only allowing traffic
 // from a small list of IP addresses.
 func (r *ZoneSettingAegiService) Update(ctx context.Context, zoneID string, body ZoneSettingAegiUpdateParams, opts ...option.RequestOption) (res *ZoneSettingAegiUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -38,7 +39,7 @@ func NewAccountTeamnetVirtualNetworkService(opts ...option.RequestOption) (r *Ac
 
 // Adds a new virtual network to an account.
 func (r *AccountTeamnetVirtualNetworkService) New(ctx context.Context, accountID string, body AccountTeamnetVirtualNetworkNewParams, opts ...option.RequestOption) (res *VnetResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -50,7 +51,7 @@ func (r *AccountTeamnetVirtualNetworkService) New(ctx context.Context, accountID
 
 // Get a virtual network.
 func (r *AccountTeamnetVirtualNetworkService) Get(ctx context.Context, accountID string, virtualNetworkID string, opts ...option.RequestOption) (res *VnetResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -66,7 +67,7 @@ func (r *AccountTeamnetVirtualNetworkService) Get(ctx context.Context, accountID
 
 // Updates an existing virtual network.
 func (r *AccountTeamnetVirtualNetworkService) Update(ctx context.Context, accountID string, virtualNetworkID string, body AccountTeamnetVirtualNetworkUpdateParams, opts ...option.RequestOption) (res *VnetResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -82,7 +83,7 @@ func (r *AccountTeamnetVirtualNetworkService) Update(ctx context.Context, accoun
 
 // Lists and filters virtual networks in an account.
 func (r *AccountTeamnetVirtualNetworkService) List(ctx context.Context, accountID string, query AccountTeamnetVirtualNetworkListParams, opts ...option.RequestOption) (res *AccountTeamnetVirtualNetworkListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -94,7 +95,7 @@ func (r *AccountTeamnetVirtualNetworkService) List(ctx context.Context, accountI
 
 // Deletes an existing virtual network.
 func (r *AccountTeamnetVirtualNetworkService) Delete(ctx context.Context, accountID string, virtualNetworkID string, opts ...option.RequestOption) (res *VnetResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

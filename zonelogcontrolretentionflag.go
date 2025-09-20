@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -35,7 +36,7 @@ func NewZoneLogControlRetentionFlagService(opts ...option.RequestOption) (r *Zon
 
 // Updates log retention flag for Logpull API.
 func (r *ZoneLogControlRetentionFlagService) Update(ctx context.Context, zoneID string, body ZoneLogControlRetentionFlagUpdateParams, opts ...option.RequestOption) (res *FlagResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -47,7 +48,7 @@ func (r *ZoneLogControlRetentionFlagService) Update(ctx context.Context, zoneID 
 
 // Gets log retention flag for Logpull API.
 func (r *ZoneLogControlRetentionFlagService) Get(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *FlagResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

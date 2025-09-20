@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -39,7 +40,7 @@ func NewZoneAPIGatewayOperationService(opts ...option.RequestOption) (r *ZoneAPI
 
 // Retrieve information about an operation
 func (r *ZoneAPIGatewayOperationService) Get(ctx context.Context, zoneID string, operationID string, query ZoneAPIGatewayOperationGetParams, opts ...option.RequestOption) (res *SingleOperationResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -55,7 +56,7 @@ func (r *ZoneAPIGatewayOperationService) Get(ctx context.Context, zoneID string,
 
 // Retrieve information about all operations on a zone
 func (r *ZoneAPIGatewayOperationService) List(ctx context.Context, zoneID string, query ZoneAPIGatewayOperationListParams, opts ...option.RequestOption) (res *ZoneAPIGatewayOperationListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -71,7 +72,7 @@ func (r *ZoneAPIGatewayOperationService) List(ctx context.Context, zoneID string
 // existing one will return the record of the already existing operation and update
 // its last_updated date.
 func (r *ZoneAPIGatewayOperationService) AddMultiple(ctx context.Context, zoneID string, body ZoneAPIGatewayOperationAddMultipleParams, opts ...option.RequestOption) (res *ZoneAPIGatewayOperationAddMultipleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -87,7 +88,7 @@ func (r *ZoneAPIGatewayOperationService) AddMultiple(ctx context.Context, zoneID
 // will return the record of the already existing operation and update its
 // last_updated date.
 func (r *ZoneAPIGatewayOperationService) AddSingle(ctx context.Context, zoneID string, body ZoneAPIGatewayOperationAddSingleParams, opts ...option.RequestOption) (res *SingleOperationResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -99,7 +100,7 @@ func (r *ZoneAPIGatewayOperationService) AddSingle(ctx context.Context, zoneID s
 
 // Delete multiple operations
 func (r *ZoneAPIGatewayOperationService) DeleteMultiple(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *APIResponseAPIShield, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -111,7 +112,7 @@ func (r *ZoneAPIGatewayOperationService) DeleteMultiple(ctx context.Context, zon
 
 // Delete an operation
 func (r *ZoneAPIGatewayOperationService) DeleteSingle(ctx context.Context, zoneID string, operationID string, opts ...option.RequestOption) (res *APIResponseAPIShield, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

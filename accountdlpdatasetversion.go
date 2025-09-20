@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -38,7 +39,7 @@ func NewAccountDlpDatasetVersionService(opts ...option.RequestOption) (r *Accoun
 // created in the Cloudflare dashboard. The columns in the response appear in the
 // same order as in the request.
 func (r *AccountDlpDatasetVersionService) SetColumnInfo(ctx context.Context, accountID string, datasetID string, version int64, body AccountDlpDatasetVersionSetColumnInfoParams, opts ...option.RequestOption) (res *AccountDlpDatasetVersionSetColumnInfoResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -55,7 +56,7 @@ func (r *AccountDlpDatasetVersionService) SetColumnInfo(ctx context.Context, acc
 // This is used for multi-column EDMv2 datasets. The EDMv2 format can only be
 // created in the Cloudflare dashboard.
 func (r *AccountDlpDatasetVersionService) UploadEntry(ctx context.Context, accountID string, datasetID string, version int64, entryID string, body io.Reader, opts ...option.RequestOption) (res *AccountDlpDatasetVersionUploadEntryResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithRequestBody("application/octet-stream", body)}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")

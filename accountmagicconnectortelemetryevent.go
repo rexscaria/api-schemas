@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -40,7 +41,7 @@ func NewAccountMagicConnectorTelemetryEventService(opts ...option.RequestOption)
 
 // List Events
 func (r *AccountMagicConnectorTelemetryEventService) List(ctx context.Context, accountID string, connectorID string, query AccountMagicConnectorTelemetryEventListParams, opts ...option.RequestOption) (res *AccountMagicConnectorTelemetryEventListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -56,7 +57,7 @@ func (r *AccountMagicConnectorTelemetryEventService) List(ctx context.Context, a
 
 // Get Event
 func (r *AccountMagicConnectorTelemetryEventService) Get(ctx context.Context, accountID string, connectorID string, eventT float64, eventN float64, opts ...option.RequestOption) (res *AccountMagicConnectorTelemetryEventGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

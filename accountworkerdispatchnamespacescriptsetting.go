@@ -10,6 +10,7 @@ import (
 	"mime/multipart"
 	"net/http"
 	"reflect"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apiform"
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -41,7 +42,7 @@ func NewAccountWorkerDispatchNamespaceScriptSettingService(opts ...option.Reques
 
 // Get script settings from a script uploaded to a Workers for Platforms namespace.
 func (r *AccountWorkerDispatchNamespaceScriptSettingService) Get(ctx context.Context, accountID string, dispatchNamespace string, scriptName string, opts ...option.RequestOption) (res *AccountWorkerDispatchNamespaceScriptSettingGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -61,7 +62,7 @@ func (r *AccountWorkerDispatchNamespaceScriptSettingService) Get(ctx context.Con
 
 // Patch script metadata, such as bindings.
 func (r *AccountWorkerDispatchNamespaceScriptSettingService) Patch(ctx context.Context, accountID string, dispatchNamespace string, scriptName string, body AccountWorkerDispatchNamespaceScriptSettingPatchParams, opts ...option.RequestOption) (res *AccountWorkerDispatchNamespaceScriptSettingPatchResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

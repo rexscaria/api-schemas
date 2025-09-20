@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -39,7 +40,7 @@ func NewZoneEmailRoutingService(opts ...option.RequestOption) (r *ZoneEmailRouti
 
 // Get information about the settings for your Email Routing zone.
 func (r *ZoneEmailRoutingService) Get(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *EmailEmailSettingsResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -54,7 +55,7 @@ func (r *ZoneEmailRoutingService) Get(ctx context.Context, zoneID string, opts .
 //
 // Deprecated: deprecated
 func (r *ZoneEmailRoutingService) Disable(ctx context.Context, zoneID string, body ZoneEmailRoutingDisableParams, opts ...option.RequestOption) (res *EmailEmailSettingsResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -68,7 +69,7 @@ func (r *ZoneEmailRoutingService) Disable(ctx context.Context, zoneID string, bo
 //
 // Deprecated: deprecated
 func (r *ZoneEmailRoutingService) Enable(ctx context.Context, zoneID string, body ZoneEmailRoutingEnableParams, opts ...option.RequestOption) (res *EmailEmailSettingsResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

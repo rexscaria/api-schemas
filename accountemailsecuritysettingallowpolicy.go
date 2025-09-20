@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -39,7 +40,7 @@ func NewAccountEmailSecuritySettingAllowPolicyService(opts ...option.RequestOpti
 
 // Create an email allow policy
 func (r *AccountEmailSecuritySettingAllowPolicyService) New(ctx context.Context, accountID string, body AccountEmailSecuritySettingAllowPolicyNewParams, opts ...option.RequestOption) (res *AccountEmailSecuritySettingAllowPolicyNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -51,7 +52,7 @@ func (r *AccountEmailSecuritySettingAllowPolicyService) New(ctx context.Context,
 
 // Get an email allow policy
 func (r *AccountEmailSecuritySettingAllowPolicyService) Get(ctx context.Context, accountID string, policyID int64, opts ...option.RequestOption) (res *AccountEmailSecuritySettingAllowPolicyGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -63,7 +64,7 @@ func (r *AccountEmailSecuritySettingAllowPolicyService) Get(ctx context.Context,
 
 // Update an email allow policy
 func (r *AccountEmailSecuritySettingAllowPolicyService) Update(ctx context.Context, accountID string, policyID int64, body AccountEmailSecuritySettingAllowPolicyUpdateParams, opts ...option.RequestOption) (res *AccountEmailSecuritySettingAllowPolicyUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -75,7 +76,7 @@ func (r *AccountEmailSecuritySettingAllowPolicyService) Update(ctx context.Conte
 
 // Lists, searches, and sorts an account’s email allow policies.
 func (r *AccountEmailSecuritySettingAllowPolicyService) List(ctx context.Context, accountID string, query AccountEmailSecuritySettingAllowPolicyListParams, opts ...option.RequestOption) (res *AccountEmailSecuritySettingAllowPolicyListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -87,7 +88,7 @@ func (r *AccountEmailSecuritySettingAllowPolicyService) List(ctx context.Context
 
 // Delete an email allow policy
 func (r *AccountEmailSecuritySettingAllowPolicyService) Delete(ctx context.Context, accountID string, policyID int64, opts ...option.RequestOption) (res *AccountEmailSecuritySettingAllowPolicyDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

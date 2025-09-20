@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -37,7 +38,7 @@ func NewAccountAIRunCfBytedanceService(opts ...option.RequestOption) (r *Account
 
 // Execute @cf/bytedance/stable-diffusion-xl-lightning model.
 func (r *AccountAIRunCfBytedanceService) ExecuteStableDiffusionXlLightning(ctx context.Context, accountID string, params AccountAIRunCfBytedanceExecuteStableDiffusionXlLightningParams, opts ...option.RequestOption) (res *AccountAIRunCfBytedanceExecuteStableDiffusionXlLightningResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

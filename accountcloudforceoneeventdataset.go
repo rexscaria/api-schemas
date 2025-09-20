@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -35,7 +36,7 @@ func NewAccountCloudforceOneEventDatasetService(opts ...option.RequestOption) (r
 
 // Creates a dataset
 func (r *AccountCloudforceOneEventDatasetService) New(ctx context.Context, accountID string, body AccountCloudforceOneEventDatasetNewParams, opts ...option.RequestOption) (res *AccountCloudforceOneEventDatasetNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -47,7 +48,7 @@ func (r *AccountCloudforceOneEventDatasetService) New(ctx context.Context, accou
 
 // Reads a dataset
 func (r *AccountCloudforceOneEventDatasetService) Get(ctx context.Context, accountID string, datasetID string, opts ...option.RequestOption) (res *AccountCloudforceOneEventDatasetGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -63,7 +64,7 @@ func (r *AccountCloudforceOneEventDatasetService) Get(ctx context.Context, accou
 
 // Updates an existing dataset
 func (r *AccountCloudforceOneEventDatasetService) Update(ctx context.Context, accountID string, datasetID string, body AccountCloudforceOneEventDatasetUpdateParams, opts ...option.RequestOption) (res *AccountCloudforceOneEventDatasetUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -79,7 +80,7 @@ func (r *AccountCloudforceOneEventDatasetService) Update(ctx context.Context, ac
 
 // Lists all datasets in an account
 func (r *AccountCloudforceOneEventDatasetService) List(ctx context.Context, accountID string, opts ...option.RequestOption) (res *[]AccountCloudforceOneEventDatasetListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

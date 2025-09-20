@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -35,7 +36,7 @@ func NewAccountDNSFirewallReverseDNSService(opts ...option.RequestOption) (r *Ac
 
 // Show reverse DNS configuration (PTR records) for a DNS Firewall cluster
 func (r *AccountDNSFirewallReverseDNSService) Get(ctx context.Context, accountID string, dnsFirewallID string, opts ...option.RequestOption) (res *DNSFirewallReverseDNSResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -51,7 +52,7 @@ func (r *AccountDNSFirewallReverseDNSService) Get(ctx context.Context, accountID
 
 // Update reverse DNS configuration (PTR records) for a DNS Firewall cluster
 func (r *AccountDNSFirewallReverseDNSService) Update(ctx context.Context, accountID string, dnsFirewallID string, body AccountDNSFirewallReverseDNSUpdateParams, opts ...option.RequestOption) (res *DNSFirewallReverseDNSResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/requestconfig"
@@ -38,7 +39,7 @@ func NewZoneSecondaryDNSService(opts ...option.RequestOption) (r *ZoneSecondaryD
 
 // Sends AXFR zone transfer request to primary nameserver(s).
 func (r *ZoneSecondaryDNSService) ForceAxfr(ctx context.Context, zoneID string, body ZoneSecondaryDNSForceAxfrParams, opts ...option.RequestOption) (res *ZoneSecondaryDNSForceAxfrResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

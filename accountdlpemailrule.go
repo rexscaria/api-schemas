@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"reflect"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -39,7 +40,7 @@ func NewAccountDlpEmailRuleService(opts ...option.RequestOption) (r *AccountDlpE
 
 // Create email scanner rule
 func (r *AccountDlpEmailRuleService) New(ctx context.Context, accountID string, body AccountDlpEmailRuleNewParams, opts ...option.RequestOption) (res *AccountDlpEmailRuleNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -51,7 +52,7 @@ func (r *AccountDlpEmailRuleService) New(ctx context.Context, accountID string, 
 
 // Get an email scanner rule
 func (r *AccountDlpEmailRuleService) Get(ctx context.Context, accountID string, ruleID string, opts ...option.RequestOption) (res *AccountDlpEmailRuleGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -67,7 +68,7 @@ func (r *AccountDlpEmailRuleService) Get(ctx context.Context, accountID string, 
 
 // Update email scanner rule
 func (r *AccountDlpEmailRuleService) Update(ctx context.Context, accountID string, ruleID string, body AccountDlpEmailRuleUpdateParams, opts ...option.RequestOption) (res *AccountDlpEmailRuleUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -83,7 +84,7 @@ func (r *AccountDlpEmailRuleService) Update(ctx context.Context, accountID strin
 
 // Lists all email scanner rules for an account.
 func (r *AccountDlpEmailRuleService) List(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountDlpEmailRuleListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -95,7 +96,7 @@ func (r *AccountDlpEmailRuleService) List(ctx context.Context, accountID string,
 
 // Delete email scanner rule
 func (r *AccountDlpEmailRuleService) Delete(ctx context.Context, accountID string, ruleID string, opts ...option.RequestOption) (res *AccountDlpEmailRuleDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -111,7 +112,7 @@ func (r *AccountDlpEmailRuleService) Delete(ctx context.Context, accountID strin
 
 // Update email scanner rule priorities
 func (r *AccountDlpEmailRuleService) UpdatePriorities(ctx context.Context, accountID string, body AccountDlpEmailRuleUpdatePrioritiesParams, opts ...option.RequestOption) (res *AccountDlpEmailRuleUpdatePrioritiesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

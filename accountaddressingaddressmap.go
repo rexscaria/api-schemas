@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -42,7 +43,7 @@ func NewAccountAddressingAddressMapService(opts ...option.RequestOption) (r *Acc
 
 // Create a new address map under the account.
 func (r *AccountAddressingAddressMapService) New(ctx context.Context, accountID string, body AccountAddressingAddressMapNewParams, opts ...option.RequestOption) (res *FullResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -54,7 +55,7 @@ func (r *AccountAddressingAddressMapService) New(ctx context.Context, accountID 
 
 // Show a particular address map owned by the account.
 func (r *AccountAddressingAddressMapService) Get(ctx context.Context, accountID string, addressMapID string, opts ...option.RequestOption) (res *FullResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -70,7 +71,7 @@ func (r *AccountAddressingAddressMapService) Get(ctx context.Context, accountID 
 
 // Modify properties of an address map owned by the account.
 func (r *AccountAddressingAddressMapService) Update(ctx context.Context, accountID string, addressMapID string, body AccountAddressingAddressMapUpdateParams, opts ...option.RequestOption) (res *AccountAddressingAddressMapUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -86,7 +87,7 @@ func (r *AccountAddressingAddressMapService) Update(ctx context.Context, account
 
 // List all address maps owned by the account.
 func (r *AccountAddressingAddressMapService) List(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountAddressingAddressMapListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -99,7 +100,7 @@ func (r *AccountAddressingAddressMapService) List(ctx context.Context, accountID
 // Delete a particular address map owned by the account. An Address Map must be
 // disabled before it can be deleted.
 func (r *AccountAddressingAddressMapService) Delete(ctx context.Context, accountID string, addressMapID string, opts ...option.RequestOption) (res *APIResponseCollectionAddressing, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

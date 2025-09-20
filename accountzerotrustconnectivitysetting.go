@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -36,7 +37,7 @@ func NewAccountZerotrustConnectivitySettingService(opts ...option.RequestOption)
 
 // Gets the Zero Trust Connectivity Settings for the given account.
 func (r *AccountZerotrustConnectivitySettingService) Get(ctx context.Context, accountID string, opts ...option.RequestOption) (res *ConnectivitySettingsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -48,7 +49,7 @@ func (r *AccountZerotrustConnectivitySettingService) Get(ctx context.Context, ac
 
 // Updates the Zero Trust Connectivity Settings for the given account.
 func (r *AccountZerotrustConnectivitySettingService) Update(ctx context.Context, accountID string, body AccountZerotrustConnectivitySettingUpdateParams, opts ...option.RequestOption) (res *ConnectivitySettingsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

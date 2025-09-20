@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -38,7 +39,7 @@ func NewRadarTrafficAnomalyService(opts ...option.RequestOption) (r *RadarTraffi
 // indicate an outage. These alerts are automatically detected by Radar and
 // manually verified by our team.
 func (r *RadarTrafficAnomalyService) List(ctx context.Context, query RadarTrafficAnomalyListParams, opts ...option.RequestOption) (res *RadarTrafficAnomalyListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/traffic_anomalies"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -48,7 +49,7 @@ func (r *RadarTrafficAnomalyService) List(ctx context.Context, query RadarTraffi
 // anomalies are signals that might indicate an outage, automatically detected by
 // Radar and manually verified by our team.
 func (r *RadarTrafficAnomalyService) Locations(ctx context.Context, query RadarTrafficAnomalyLocationsParams, opts ...option.RequestOption) (res *RadarTrafficAnomalyLocationsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/traffic_anomalies/locations"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

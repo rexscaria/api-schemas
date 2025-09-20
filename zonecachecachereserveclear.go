@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -38,7 +39,7 @@ func NewZoneCacheCacheReserveClearService(opts ...option.RequestOption) (r *Zone
 // You cannot re-enable Cache Reserve while this process is ongoing. Keep in mind
 // that you cannot undo or cancel this operation.
 func (r *ZoneCacheCacheReserveClearService) Get(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *ZoneCacheCacheReserveClearGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -53,7 +54,7 @@ func (r *ZoneCacheCacheReserveClearService) Get(ctx context.Context, zoneID stri
 // You cannot re-enable Cache Reserve while this process is ongoing. Keep in mind
 // that you cannot undo or cancel this operation.
 func (r *ZoneCacheCacheReserveClearService) Start(ctx context.Context, zoneID string, body ZoneCacheCacheReserveClearStartParams, opts ...option.RequestOption) (res *ZoneCacheCacheReserveClearStartResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

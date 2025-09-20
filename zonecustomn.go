@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -40,7 +41,7 @@ func NewZoneCustomNService(opts ...option.RequestOption) (r *ZoneCustomNService)
 //
 // Deprecated: deprecated
 func (r *ZoneCustomNService) Get(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *ZoneCustomNGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -61,7 +62,7 @@ func (r *ZoneCustomNService) Get(ctx context.Context, zoneID string, opts ...opt
 //
 // Deprecated: deprecated
 func (r *ZoneCustomNService) Update(ctx context.Context, zoneID string, body ZoneCustomNUpdateParams, opts ...option.RequestOption) (res *ZoneCustomNUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

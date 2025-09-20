@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -36,7 +37,7 @@ func NewRadarAttackLayer7SummaryService(opts ...option.RequestOption) (r *RadarA
 
 // Retrieves the distribution of layer 7 attacks by HTTP method.
 func (r *RadarAttackLayer7SummaryService) GetHTTPMethodSummary(ctx context.Context, query RadarAttackLayer7SummaryGetHTTPMethodSummaryParams, opts ...option.RequestOption) (res *RadarAttackLayer7SummaryGetHTTPMethodSummaryResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/attacks/layer7/summary/http_method"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -44,7 +45,7 @@ func (r *RadarAttackLayer7SummaryService) GetHTTPMethodSummary(ctx context.Conte
 
 // Retrieves the distribution of layer 7 attacks by HTTP version.
 func (r *RadarAttackLayer7SummaryService) GetHTTPVersionSummary(ctx context.Context, query RadarAttackLayer7SummaryGetHTTPVersionSummaryParams, opts ...option.RequestOption) (res *RadarAttackLayer7SummaryGetHTTPVersionSummaryResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/attacks/layer7/summary/http_version"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -52,7 +53,7 @@ func (r *RadarAttackLayer7SummaryService) GetHTTPVersionSummary(ctx context.Cont
 
 // Retrieves the distribution of layer 7 attacks by targeted industry.
 func (r *RadarAttackLayer7SummaryService) GetIndustrySummary(ctx context.Context, query RadarAttackLayer7SummaryGetIndustrySummaryParams, opts ...option.RequestOption) (res *RadarAttackLayer7SummaryGetIndustrySummaryResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/attacks/layer7/summary/industry"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -60,7 +61,7 @@ func (r *RadarAttackLayer7SummaryService) GetIndustrySummary(ctx context.Context
 
 // Retrieves the distribution of layer 7 attacks by IP version.
 func (r *RadarAttackLayer7SummaryService) GetIPVersionSummary(ctx context.Context, query RadarAttackLayer7SummaryGetIPVersionSummaryParams, opts ...option.RequestOption) (res *RadarAttackLayer7SummaryGetIPVersionSummaryResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/attacks/layer7/summary/ip_version"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -68,7 +69,7 @@ func (r *RadarAttackLayer7SummaryService) GetIPVersionSummary(ctx context.Contex
 
 // Retrieves the distribution of layer 7 attacks by managed rules.
 func (r *RadarAttackLayer7SummaryService) GetManagedRulesSummary(ctx context.Context, query RadarAttackLayer7SummaryGetManagedRulesSummaryParams, opts ...option.RequestOption) (res *RadarAttackLayer7SummaryGetManagedRulesSummaryResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/attacks/layer7/summary/managed_rules"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -76,7 +77,7 @@ func (r *RadarAttackLayer7SummaryService) GetManagedRulesSummary(ctx context.Con
 
 // Retrieves the distribution of layer 7 attacks by mitigation product.
 func (r *RadarAttackLayer7SummaryService) GetMitigationProductSummary(ctx context.Context, query RadarAttackLayer7SummaryGetMitigationProductSummaryParams, opts ...option.RequestOption) (res *RadarAttackLayer7SummaryGetMitigationProductSummaryResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/attacks/layer7/summary/mitigation_product"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -84,7 +85,7 @@ func (r *RadarAttackLayer7SummaryService) GetMitigationProductSummary(ctx contex
 
 // Retrieves the distribution of layer 7 attacks by targeted vertical.
 func (r *RadarAttackLayer7SummaryService) GetVerticalSummary(ctx context.Context, query RadarAttackLayer7SummaryGetVerticalSummaryParams, opts ...option.RequestOption) (res *RadarAttackLayer7SummaryGetVerticalSummaryResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/attacks/layer7/summary/vertical"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

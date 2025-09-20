@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -38,7 +39,7 @@ func NewZoneSettingZarazHistoryService(opts ...option.RequestOption) (r *ZoneSet
 
 // Lists a history of published Zaraz configuration records for a zone.
 func (r *ZoneSettingZarazHistoryService) List(ctx context.Context, zoneID string, query ZoneSettingZarazHistoryListParams, opts ...option.RequestOption) (res *ZoneSettingZarazHistoryListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -50,7 +51,7 @@ func (r *ZoneSettingZarazHistoryService) List(ctx context.Context, zoneID string
 
 // Restores a historical published Zaraz configuration by ID for a zone.
 func (r *ZoneSettingZarazHistoryService) Restore(ctx context.Context, zoneID string, body ZoneSettingZarazHistoryRestoreParams, opts ...option.RequestOption) (res *ZarazConfigResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -62,7 +63,7 @@ func (r *ZoneSettingZarazHistoryService) Restore(ctx context.Context, zoneID str
 
 // Gets a history of published Zaraz configurations by ID(s) for a zone.
 func (r *ZoneSettingZarazHistoryService) GetConfigs(ctx context.Context, zoneID string, query ZoneSettingZarazHistoryGetConfigsParams, opts ...option.RequestOption) (res *ZoneSettingZarazHistoryGetConfigsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -39,7 +40,7 @@ func NewAccountEmailSecuritySettingImpersonationRegistryService(opts ...option.R
 
 // Create an entry in impersonation registry
 func (r *AccountEmailSecuritySettingImpersonationRegistryService) New(ctx context.Context, accountID string, body AccountEmailSecuritySettingImpersonationRegistryNewParams, opts ...option.RequestOption) (res *AccountEmailSecuritySettingImpersonationRegistryNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -51,7 +52,7 @@ func (r *AccountEmailSecuritySettingImpersonationRegistryService) New(ctx contex
 
 // Get an entry in impersonation registry
 func (r *AccountEmailSecuritySettingImpersonationRegistryService) Get(ctx context.Context, accountID string, displayNameID int64, opts ...option.RequestOption) (res *AccountEmailSecuritySettingImpersonationRegistryGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -63,7 +64,7 @@ func (r *AccountEmailSecuritySettingImpersonationRegistryService) Get(ctx contex
 
 // Update an entry in impersonation registry
 func (r *AccountEmailSecuritySettingImpersonationRegistryService) Update(ctx context.Context, accountID string, displayNameID int64, body AccountEmailSecuritySettingImpersonationRegistryUpdateParams, opts ...option.RequestOption) (res *AccountEmailSecuritySettingImpersonationRegistryUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -75,7 +76,7 @@ func (r *AccountEmailSecuritySettingImpersonationRegistryService) Update(ctx con
 
 // Lists, searches, and sorts entries in the impersonation registry.
 func (r *AccountEmailSecuritySettingImpersonationRegistryService) List(ctx context.Context, accountID string, query AccountEmailSecuritySettingImpersonationRegistryListParams, opts ...option.RequestOption) (res *AccountEmailSecuritySettingImpersonationRegistryListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -87,7 +88,7 @@ func (r *AccountEmailSecuritySettingImpersonationRegistryService) List(ctx conte
 
 // Delete an entry from impersonation registry
 func (r *AccountEmailSecuritySettingImpersonationRegistryService) Delete(ctx context.Context, accountID string, displayNameID int64, opts ...option.RequestOption) (res *AccountEmailSecuritySettingImpersonationRegistryDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

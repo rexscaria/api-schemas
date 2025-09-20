@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -40,7 +41,7 @@ func NewRadarHTTPTopService(opts ...option.RequestOption) (r *RadarHTTPTopServic
 
 // Retrieves the top user agents, aggregated in families, by HTTP requests.
 func (r *RadarHTTPTopService) GetTopBrowserFamilies(ctx context.Context, query RadarHTTPTopGetTopBrowserFamiliesParams, opts ...option.RequestOption) (res *RadarHTTPTopGetTopBrowserFamiliesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/http/top/browser_family"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -48,7 +49,7 @@ func (r *RadarHTTPTopService) GetTopBrowserFamilies(ctx context.Context, query R
 
 // Retrieves the top user agents by HTTP requests.
 func (r *RadarHTTPTopService) GetTopBrowsers(ctx context.Context, query RadarHTTPTopGetTopBrowsersParams, opts ...option.RequestOption) (res *RadarHTTPTopGetTopBrowsersResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/http/top/browser"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

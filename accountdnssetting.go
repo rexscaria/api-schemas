@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -37,7 +38,7 @@ func NewAccountDNSSettingService(opts ...option.RequestOption) (r *AccountDNSSet
 
 // Show DNS settings for an account
 func (r *AccountDNSSettingService) Get(ctx context.Context, accountID string, opts ...option.RequestOption) (res *DNSResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -49,7 +50,7 @@ func (r *AccountDNSSettingService) Get(ctx context.Context, accountID string, op
 
 // Update DNS settings for an account
 func (r *AccountDNSSettingService) Update(ctx context.Context, accountID string, body AccountDNSSettingUpdateParams, opts ...option.RequestOption) (res *DNSResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -36,7 +37,7 @@ func NewZoneLeakedCredentialCheckDetectionService(opts ...option.RequestOption) 
 
 // Create user-defined detection pattern for Leaked Credential Checks.
 func (r *ZoneLeakedCredentialCheckDetectionService) New(ctx context.Context, zoneID string, body ZoneLeakedCredentialCheckDetectionNewParams, opts ...option.RequestOption) (res *ResponseCustomDetection, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -48,7 +49,7 @@ func (r *ZoneLeakedCredentialCheckDetectionService) New(ctx context.Context, zon
 
 // Update user-defined detection pattern for Leaked Credential Checks.
 func (r *ZoneLeakedCredentialCheckDetectionService) Update(ctx context.Context, zoneID string, detectionID DetectionIDParam, body ZoneLeakedCredentialCheckDetectionUpdateParams, opts ...option.RequestOption) (res *ResponseCustomDetection, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -64,7 +65,7 @@ func (r *ZoneLeakedCredentialCheckDetectionService) Update(ctx context.Context, 
 
 // List user-defined detection patterns for Leaked Credential Checks.
 func (r *ZoneLeakedCredentialCheckDetectionService) List(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *ZoneLeakedCredentialCheckDetectionListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -76,7 +77,7 @@ func (r *ZoneLeakedCredentialCheckDetectionService) List(ctx context.Context, zo
 
 // Remove user-defined detection pattern for Leaked Credential Checks.
 func (r *ZoneLeakedCredentialCheckDetectionService) Delete(ctx context.Context, zoneID string, detectionID DetectionIDParam, opts ...option.RequestOption) (res *APIResponseWafProductBundle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

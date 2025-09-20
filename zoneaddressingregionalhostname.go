@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -39,7 +40,7 @@ func NewZoneAddressingRegionalHostnameService(opts ...option.RequestOption) (r *
 // traffic. Learn more about
 // [Regional Services](https://developers.cloudflare.com/data-localization/regional-services/get-started/).
 func (r *ZoneAddressingRegionalHostnameService) New(ctx context.Context, zoneID string, body ZoneAddressingRegionalHostnameNewParams, opts ...option.RequestOption) (res *ZoneAddressingRegionalHostnameNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -51,7 +52,7 @@ func (r *ZoneAddressingRegionalHostnameService) New(ctx context.Context, zoneID 
 
 // Fetch the configuration for a specific Regional Hostname, within a zone.
 func (r *ZoneAddressingRegionalHostnameService) Get(ctx context.Context, zoneID string, hostname string, opts ...option.RequestOption) (res *ZoneAddressingRegionalHostnameGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -68,7 +69,7 @@ func (r *ZoneAddressingRegionalHostnameService) Get(ctx context.Context, zoneID 
 // Update the configuration for a specific Regional Hostname. Only the region_key
 // of a hostname is mutable.
 func (r *ZoneAddressingRegionalHostnameService) Update(ctx context.Context, zoneID string, hostname string, body ZoneAddressingRegionalHostnameUpdateParams, opts ...option.RequestOption) (res *ZoneAddressingRegionalHostnameUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -84,7 +85,7 @@ func (r *ZoneAddressingRegionalHostnameService) Update(ctx context.Context, zone
 
 // List all Regional Hostnames within a zone.
 func (r *ZoneAddressingRegionalHostnameService) List(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *ZoneAddressingRegionalHostnameListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -96,7 +97,7 @@ func (r *ZoneAddressingRegionalHostnameService) List(ctx context.Context, zoneID
 
 // Delete the region configuration for a specific Regional Hostname.
 func (r *ZoneAddressingRegionalHostnameService) Delete(ctx context.Context, zoneID string, hostname string, opts ...option.RequestOption) (res *APIResponseDls, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

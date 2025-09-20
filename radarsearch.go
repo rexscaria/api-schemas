@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -36,7 +37,7 @@ func NewRadarSearchService(opts ...option.RequestOption) (r *RadarSearchService)
 // Searches for locations, autonomous systems, reports, bots, certificate logs, and
 // certificate authorities.
 func (r *RadarSearchService) Global(ctx context.Context, query RadarSearchGlobalParams, opts ...option.RequestOption) (res *RadarSearchGlobalResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/search/global"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

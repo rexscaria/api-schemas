@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apiquery"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -36,7 +37,7 @@ func NewAccountUrlscannerV2ScreenshotService(opts ...option.RequestOption) (r *A
 
 // Get scan's screenshot by resolution (desktop/mobile/tablet).
 func (r *AccountUrlscannerV2ScreenshotService) GetScreenshot(ctx context.Context, accountID string, scanID string, query AccountUrlscannerV2ScreenshotGetScreenshotParams, opts ...option.RequestOption) (res *http.Response, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "image/png")}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")

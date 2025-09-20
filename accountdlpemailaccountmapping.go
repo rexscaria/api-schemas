@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"reflect"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -37,7 +38,7 @@ func NewAccountDlpEmailAccountMappingService(opts ...option.RequestOption) (r *A
 
 // Create mapping
 func (r *AccountDlpEmailAccountMappingService) New(ctx context.Context, accountID string, body AccountDlpEmailAccountMappingNewParams, opts ...option.RequestOption) (res *AccountDlpEmailAccountMappingNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -49,7 +50,7 @@ func (r *AccountDlpEmailAccountMappingService) New(ctx context.Context, accountI
 
 // Get mapping
 func (r *AccountDlpEmailAccountMappingService) Get(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountDlpEmailAccountMappingGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

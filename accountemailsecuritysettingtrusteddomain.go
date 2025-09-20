@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -41,7 +42,7 @@ func NewAccountEmailSecuritySettingTrustedDomainService(opts ...option.RequestOp
 
 // Create a trusted email domain
 func (r *AccountEmailSecuritySettingTrustedDomainService) New(ctx context.Context, accountID string, body AccountEmailSecuritySettingTrustedDomainNewParams, opts ...option.RequestOption) (res *AccountEmailSecuritySettingTrustedDomainNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -53,7 +54,7 @@ func (r *AccountEmailSecuritySettingTrustedDomainService) New(ctx context.Contex
 
 // Get a trusted email domain
 func (r *AccountEmailSecuritySettingTrustedDomainService) Get(ctx context.Context, accountID string, trustedDomainID int64, opts ...option.RequestOption) (res *AccountEmailSecuritySettingTrustedDomainGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -65,7 +66,7 @@ func (r *AccountEmailSecuritySettingTrustedDomainService) Get(ctx context.Contex
 
 // Update a trusted email domain
 func (r *AccountEmailSecuritySettingTrustedDomainService) Update(ctx context.Context, accountID string, trustedDomainID int64, body AccountEmailSecuritySettingTrustedDomainUpdateParams, opts ...option.RequestOption) (res *AccountEmailSecuritySettingTrustedDomainUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -77,7 +78,7 @@ func (r *AccountEmailSecuritySettingTrustedDomainService) Update(ctx context.Con
 
 // Lists, searches, and sorts an account’s trusted email domains.
 func (r *AccountEmailSecuritySettingTrustedDomainService) List(ctx context.Context, accountID string, query AccountEmailSecuritySettingTrustedDomainListParams, opts ...option.RequestOption) (res *AccountEmailSecuritySettingTrustedDomainListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -89,7 +90,7 @@ func (r *AccountEmailSecuritySettingTrustedDomainService) List(ctx context.Conte
 
 // Delete a trusted email domain
 func (r *AccountEmailSecuritySettingTrustedDomainService) Delete(ctx context.Context, accountID string, trustedDomainID int64, opts ...option.RequestOption) (res *AccountEmailSecuritySettingTrustedDomainDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

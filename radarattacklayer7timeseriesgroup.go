@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -36,7 +37,7 @@ func NewRadarAttackLayer7TimeseriesGroupService(opts ...option.RequestOption) (r
 
 // Retrieves the distribution of layer 7 attacks by HTTP method over time.
 func (r *RadarAttackLayer7TimeseriesGroupService) GetHTTPMethodTimeseries(ctx context.Context, query RadarAttackLayer7TimeseriesGroupGetHTTPMethodTimeseriesParams, opts ...option.RequestOption) (res *RadarAttackLayer7TimeseriesGroupGetHTTPMethodTimeseriesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/attacks/layer7/timeseries_groups/http_method"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -44,7 +45,7 @@ func (r *RadarAttackLayer7TimeseriesGroupService) GetHTTPMethodTimeseries(ctx co
 
 // Retrieves the distribution of layer 7 attacks by HTTP version over time.
 func (r *RadarAttackLayer7TimeseriesGroupService) GetHTTPVersionTimeseries(ctx context.Context, query RadarAttackLayer7TimeseriesGroupGetHTTPVersionTimeseriesParams, opts ...option.RequestOption) (res *RadarAttackLayer7TimeseriesGroupGetHTTPVersionTimeseriesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/attacks/layer7/timeseries_groups/http_version"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -52,7 +53,7 @@ func (r *RadarAttackLayer7TimeseriesGroupService) GetHTTPVersionTimeseries(ctx c
 
 // Retrieves the distribution of layer 7 attacks by targeted industry over time.
 func (r *RadarAttackLayer7TimeseriesGroupService) GetIndustryTimeseries(ctx context.Context, query RadarAttackLayer7TimeseriesGroupGetIndustryTimeseriesParams, opts ...option.RequestOption) (res *RadarAttackLayer7TimeseriesGroupGetIndustryTimeseriesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/attacks/layer7/timeseries_groups/industry"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -60,7 +61,7 @@ func (r *RadarAttackLayer7TimeseriesGroupService) GetIndustryTimeseries(ctx cont
 
 // Retrieves the distribution of layer 7 attacks by IP version used over time.
 func (r *RadarAttackLayer7TimeseriesGroupService) GetIPVersionTimeseries(ctx context.Context, query RadarAttackLayer7TimeseriesGroupGetIPVersionTimeseriesParams, opts ...option.RequestOption) (res *RadarAttackLayer7TimeseriesGroupGetIPVersionTimeseriesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/attacks/layer7/timeseries_groups/ip_version"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -68,7 +69,7 @@ func (r *RadarAttackLayer7TimeseriesGroupService) GetIPVersionTimeseries(ctx con
 
 // Retrieves the distribution of layer 7 attacks by managed rules over time.
 func (r *RadarAttackLayer7TimeseriesGroupService) GetManagedRulesTimeseries(ctx context.Context, query RadarAttackLayer7TimeseriesGroupGetManagedRulesTimeseriesParams, opts ...option.RequestOption) (res *RadarAttackLayer7TimeseriesGroupGetManagedRulesTimeseriesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/attacks/layer7/timeseries_groups/managed_rules"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -76,7 +77,7 @@ func (r *RadarAttackLayer7TimeseriesGroupService) GetManagedRulesTimeseries(ctx 
 
 // Retrieves the distribution of layer 7 attacks by mitigation product over time.
 func (r *RadarAttackLayer7TimeseriesGroupService) GetMitigationProductTimeseries(ctx context.Context, query RadarAttackLayer7TimeseriesGroupGetMitigationProductTimeseriesParams, opts ...option.RequestOption) (res *RadarAttackLayer7TimeseriesGroupGetMitigationProductTimeseriesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/attacks/layer7/timeseries_groups/mitigation_product"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -84,7 +85,7 @@ func (r *RadarAttackLayer7TimeseriesGroupService) GetMitigationProductTimeseries
 
 // Retrieves the distribution of layer 7 attacks by targeted vertical over time.
 func (r *RadarAttackLayer7TimeseriesGroupService) GetVerticalTimeseries(ctx context.Context, query RadarAttackLayer7TimeseriesGroupGetVerticalTimeseriesParams, opts ...option.RequestOption) (res *RadarAttackLayer7TimeseriesGroupGetVerticalTimeseriesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/attacks/layer7/timeseries_groups/vertical"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

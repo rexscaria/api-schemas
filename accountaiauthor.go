@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/requestconfig"
@@ -34,7 +35,7 @@ func NewAccountAIAuthorService(opts ...option.RequestOption) (r *AccountAIAuthor
 
 // Author Search
 func (r *AccountAIAuthorService) Search(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountAIAuthorSearchResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

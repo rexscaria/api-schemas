@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -35,7 +36,7 @@ func NewAccountStreamWebhookService(opts ...option.RequestOption) (r *AccountStr
 
 // Creates a webhook notification.
 func (r *AccountStreamWebhookService) New(ctx context.Context, accountID string, body AccountStreamWebhookNewParams, opts ...option.RequestOption) (res *WebhookResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -47,7 +48,7 @@ func (r *AccountStreamWebhookService) New(ctx context.Context, accountID string,
 
 // Retrieves a list of webhooks.
 func (r *AccountStreamWebhookService) List(ctx context.Context, accountID string, opts ...option.RequestOption) (res *WebhookResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -59,7 +60,7 @@ func (r *AccountStreamWebhookService) List(ctx context.Context, accountID string
 
 // Deletes a webhook.
 func (r *AccountStreamWebhookService) Delete(ctx context.Context, accountID string, opts ...option.RequestOption) (res *DeletedStreamResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

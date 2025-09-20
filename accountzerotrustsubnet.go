@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -38,7 +39,7 @@ func NewAccountZerotrustSubnetService(opts ...option.RequestOption) (r *AccountZ
 
 // Lists and filters subnets in an account.
 func (r *AccountZerotrustSubnetService) List(ctx context.Context, accountID string, query AccountZerotrustSubnetListParams, opts ...option.RequestOption) (res *AccountZerotrustSubnetListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -50,7 +51,7 @@ func (r *AccountZerotrustSubnetService) List(ctx context.Context, accountID stri
 
 // Updates the Cloudflare Source subnet of the given address family
 func (r *AccountZerotrustSubnetService) UpdateCloudflareSource(ctx context.Context, accountID string, addressFamily AddressFamily, body AccountZerotrustSubnetUpdateCloudflareSourceParams, opts ...option.RequestOption) (res *AccountZerotrustSubnetUpdateCloudflareSourceResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

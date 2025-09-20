@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -38,7 +39,7 @@ func NewRadarDatasetService(opts ...option.RequestOption) (r *RadarDatasetServic
 
 // Retrieves an URL to download a single dataset.
 func (r *RadarDatasetService) GetDownloadURL(ctx context.Context, params RadarDatasetGetDownloadURLParams, opts ...option.RequestOption) (res *RadarDatasetGetDownloadURLResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/datasets/download"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
@@ -46,7 +47,7 @@ func (r *RadarDatasetService) GetDownloadURL(ctx context.Context, params RadarDa
 
 // Retrieves a list of datasets.
 func (r *RadarDatasetService) ListDatasets(ctx context.Context, query RadarDatasetListDatasetsParams, opts ...option.RequestOption) (res *RadarDatasetListDatasetsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/datasets"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -56,7 +57,7 @@ func (r *RadarDatasetService) ListDatasets(ctx context.Context, query RadarDatas
 // content by alias the latest dataset is returned, optionally filtered by the
 // latest available at a given date.
 func (r *RadarDatasetService) GetCsv(ctx context.Context, alias string, opts ...option.RequestOption) (res *string, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "text/csv")}, opts...)
 	if alias == "" {
 		err = errors.New("missing required alias parameter")

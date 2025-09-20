@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -67,7 +68,7 @@ func NewAccountAccessService(opts ...option.RequestOption) (r *AccountAccessServ
 // Removes a user from a Zero Trust seat when both `access_seat` and `gateway_seat`
 // are set to false.
 func (r *AccountAccessService) UpdateSeats(ctx context.Context, accountID string, body AccountAccessUpdateSeatsParams, opts ...option.RequestOption) (res *AccountAccessUpdateSeatsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

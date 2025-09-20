@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -39,7 +40,7 @@ func NewRadarEntityLocationService(opts ...option.RequestOption) (r *RadarEntity
 // indicates a low level of confidence in the traffic data - normally this happens
 // because Cloudflare has a small amount of traffic from/to this location).
 func (r *RadarEntityLocationService) Get(ctx context.Context, location string, query RadarEntityLocationGetParams, opts ...option.RequestOption) (res *RadarEntityLocationGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if location == "" {
 		err = errors.New("missing required location parameter")
 		return
@@ -51,7 +52,7 @@ func (r *RadarEntityLocationService) Get(ctx context.Context, location string, q
 
 // Retrieves a list of locations.
 func (r *RadarEntityLocationService) List(ctx context.Context, query RadarEntityLocationListParams, opts ...option.RequestOption) (res *RadarEntityLocationListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/entities/locations"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

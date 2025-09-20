@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -38,7 +39,7 @@ func NewRadarAttackLayer7TopAseService(opts ...option.RequestOption) (r *RadarAt
 // percentages of the total layer 7 attacks, with the origin autonomous systems
 // determined by the client IP address.
 func (r *RadarAttackLayer7TopAseService) GetTopOriginAs(ctx context.Context, query RadarAttackLayer7TopAseGetTopOriginAsParams, opts ...option.RequestOption) (res *RadarAttackLayer7TopAseGetTopOriginAsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/attacks/layer7/top/ases/origin"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

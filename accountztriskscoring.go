@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -39,7 +40,7 @@ func NewAccountZtRiskScoringService(opts ...option.RequestOption) (r *AccountZtR
 
 // Clear the risk score for a particular user
 func (r *AccountZtRiskScoringService) ResetRiskScore(ctx context.Context, accountID string, userID string, opts ...option.RequestOption) (res *AccountZtRiskScoringResetRiskScoreResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -55,7 +56,7 @@ func (r *AccountZtRiskScoringService) ResetRiskScore(ctx context.Context, accoun
 
 // Get risk event/score information for a specific user
 func (r *AccountZtRiskScoringService) GetRiskScore(ctx context.Context, accountID string, userID string, opts ...option.RequestOption) (res *AccountZtRiskScoringGetRiskScoreResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -71,7 +72,7 @@ func (r *AccountZtRiskScoringService) GetRiskScore(ctx context.Context, accountI
 
 // Get risk score info for all users in the account
 func (r *AccountZtRiskScoringService) GetSummary(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountZtRiskScoringGetSummaryResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

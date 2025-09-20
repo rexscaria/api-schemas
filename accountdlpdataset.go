@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -40,7 +41,7 @@ func NewAccountDlpDatasetService(opts ...option.RequestOption) (r *AccountDlpDat
 
 // Create a new dataset
 func (r *AccountDlpDatasetService) New(ctx context.Context, accountID string, body AccountDlpDatasetNewParams, opts ...option.RequestOption) (res *AccountDlpDatasetNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -52,7 +53,7 @@ func (r *AccountDlpDatasetService) New(ctx context.Context, accountID string, bo
 
 // Fetch a specific dataset
 func (r *AccountDlpDatasetService) Get(ctx context.Context, accountID string, datasetID string, opts ...option.RequestOption) (res *AccountDlpDatasetGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -68,7 +69,7 @@ func (r *AccountDlpDatasetService) Get(ctx context.Context, accountID string, da
 
 // Update details about a dataset
 func (r *AccountDlpDatasetService) Update(ctx context.Context, accountID string, datasetID string, body AccountDlpDatasetUpdateParams, opts ...option.RequestOption) (res *AccountDlpDatasetUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -84,7 +85,7 @@ func (r *AccountDlpDatasetService) Update(ctx context.Context, accountID string,
 
 // Fetch all datasets
 func (r *AccountDlpDatasetService) List(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountDlpDatasetListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -96,7 +97,7 @@ func (r *AccountDlpDatasetService) List(ctx context.Context, accountID string, o
 
 // This deletes all versions of the dataset.
 func (r *AccountDlpDatasetService) Delete(ctx context.Context, accountID string, datasetID string, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")

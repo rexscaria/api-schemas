@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -37,7 +38,7 @@ func NewAccountAIRunCfTinyllamaService(opts ...option.RequestOption) (r *Account
 
 // Execute @cf/tinyllama/tinyllama-1.1b-chat-v1.0 model.
 func (r *AccountAIRunCfTinyllamaService) ExecuteTinyllama1_1bChatV1_0(ctx context.Context, accountID string, params AccountAIRunCfTinyllamaExecuteTinyllama1_1bChatV1_0Params, opts ...option.RequestOption) (res *AccountAIRunCfTinyllamaExecuteTinyllama1_1bChatV1_0Response, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/requestconfig"
@@ -37,7 +38,7 @@ func NewAccountAlertingV3DestinationPagerdutyService(opts ...option.RequestOptio
 
 // Get a list of all configured PagerDuty services.
 func (r *AccountAlertingV3DestinationPagerdutyService) List(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountAlertingV3DestinationPagerdutyListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -49,7 +50,7 @@ func (r *AccountAlertingV3DestinationPagerdutyService) List(ctx context.Context,
 
 // Deletes all the PagerDuty Services connected to the account.
 func (r *AccountAlertingV3DestinationPagerdutyService) DeleteAll(ctx context.Context, accountID string, opts ...option.RequestOption) (res *APIResponseCollectionAlerting, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

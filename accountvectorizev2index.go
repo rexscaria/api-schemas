@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -40,7 +41,7 @@ func NewAccountVectorizeV2IndexService(opts ...option.RequestOption) (r *Account
 
 // Creates and returns a new Vectorize Index.
 func (r *AccountVectorizeV2IndexService) New(ctx context.Context, accountID string, body AccountVectorizeV2IndexNewParams, opts ...option.RequestOption) (res *AccountVectorizeV2IndexNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -52,7 +53,7 @@ func (r *AccountVectorizeV2IndexService) New(ctx context.Context, accountID stri
 
 // Returns the specified Vectorize Index.
 func (r *AccountVectorizeV2IndexService) Get(ctx context.Context, accountID string, indexName string, opts ...option.RequestOption) (res *AccountVectorizeV2IndexGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -68,7 +69,7 @@ func (r *AccountVectorizeV2IndexService) Get(ctx context.Context, accountID stri
 
 // Returns a list of Vectorize Indexes
 func (r *AccountVectorizeV2IndexService) List(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountVectorizeV2IndexListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -80,7 +81,7 @@ func (r *AccountVectorizeV2IndexService) List(ctx context.Context, accountID str
 
 // Deletes the specified Vectorize Index.
 func (r *AccountVectorizeV2IndexService) Delete(ctx context.Context, accountID string, indexName string, opts ...option.RequestOption) (res *AccountVectorizeV2IndexDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -96,7 +97,7 @@ func (r *AccountVectorizeV2IndexService) Delete(ctx context.Context, accountID s
 
 // Delete a set of vectors from an index by their vector identifiers.
 func (r *AccountVectorizeV2IndexService) DeleteByIDs(ctx context.Context, accountID string, indexName string, body AccountVectorizeV2IndexDeleteByIDsParams, opts ...option.RequestOption) (res *AccountVectorizeV2IndexDeleteByIDsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -112,7 +113,7 @@ func (r *AccountVectorizeV2IndexService) DeleteByIDs(ctx context.Context, accoun
 
 // Get a set of vectors from an index by their vector identifiers.
 func (r *AccountVectorizeV2IndexService) GetByIDs(ctx context.Context, accountID string, indexName string, body AccountVectorizeV2IndexGetByIDsParams, opts ...option.RequestOption) (res *AccountVectorizeV2IndexGetByIDsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -128,7 +129,7 @@ func (r *AccountVectorizeV2IndexService) GetByIDs(ctx context.Context, accountID
 
 // Get information about a vectorize index.
 func (r *AccountVectorizeV2IndexService) GetInfo(ctx context.Context, accountID string, indexName string, opts ...option.RequestOption) (res *AccountVectorizeV2IndexGetInfoResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -145,7 +146,7 @@ func (r *AccountVectorizeV2IndexService) GetInfo(ctx context.Context, accountID 
 // Inserts vectors into the specified index and returns a mutation id corresponding
 // to the vectors enqueued for insertion.
 func (r *AccountVectorizeV2IndexService) Insert(ctx context.Context, accountID string, indexName string, params AccountVectorizeV2IndexInsertParams, opts ...option.RequestOption) (res *AccountVectorizeV2IndexInsertResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -161,7 +162,7 @@ func (r *AccountVectorizeV2IndexService) Insert(ctx context.Context, accountID s
 
 // Finds vectors closest to a given vector in an index.
 func (r *AccountVectorizeV2IndexService) Query(ctx context.Context, accountID string, indexName string, body AccountVectorizeV2IndexQueryParams, opts ...option.RequestOption) (res *AccountVectorizeV2IndexQueryResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -178,7 +179,7 @@ func (r *AccountVectorizeV2IndexService) Query(ctx context.Context, accountID st
 // Upserts vectors into the specified index, creating them if they do not exist and
 // returns a mutation id corresponding to the vectors enqueued for upsertion.
 func (r *AccountVectorizeV2IndexService) Upsert(ctx context.Context, accountID string, indexName string, params AccountVectorizeV2IndexUpsertParams, opts ...option.RequestOption) (res *AccountVectorizeV2IndexUpsertResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

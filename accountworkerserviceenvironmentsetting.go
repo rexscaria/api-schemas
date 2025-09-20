@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/requestconfig"
@@ -35,7 +36,7 @@ func NewAccountWorkerServiceEnvironmentSettingService(opts ...option.RequestOpti
 
 // Get script settings from a worker with an environment.
 func (r *AccountWorkerServiceEnvironmentSettingService) Get(ctx context.Context, accountID string, serviceName string, environmentName string, opts ...option.RequestOption) (res *SettingsResponseScriptSettings, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -55,7 +56,7 @@ func (r *AccountWorkerServiceEnvironmentSettingService) Get(ctx context.Context,
 
 // Patch script metadata, such as bindings.
 func (r *AccountWorkerServiceEnvironmentSettingService) Patch(ctx context.Context, accountID string, serviceName string, environmentName string, body AccountWorkerServiceEnvironmentSettingPatchParams, opts ...option.RequestOption) (res *SettingsResponseScriptSettings, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

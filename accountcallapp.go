@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -37,7 +38,7 @@ func NewAccountCallAppService(opts ...option.RequestOption) (r *AccountCallAppSe
 // Creates a new Cloudflare calls app. An app is an unique enviroment where each
 // Session can access all Tracks within the app.
 func (r *AccountCallAppService) New(ctx context.Context, accountID string, body AccountCallAppNewParams, opts ...option.RequestOption) (res *AccountCallAppNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -49,7 +50,7 @@ func (r *AccountCallAppService) New(ctx context.Context, accountID string, body 
 
 // Fetches details for a single Calls app.
 func (r *AccountCallAppService) Get(ctx context.Context, accountID string, appID string, opts ...option.RequestOption) (res *CallsAppResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -65,7 +66,7 @@ func (r *AccountCallAppService) Get(ctx context.Context, accountID string, appID
 
 // Edit details for a single app.
 func (r *AccountCallAppService) Update(ctx context.Context, accountID string, appID string, body AccountCallAppUpdateParams, opts ...option.RequestOption) (res *CallsAppResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -81,7 +82,7 @@ func (r *AccountCallAppService) Update(ctx context.Context, accountID string, ap
 
 // Lists all apps in the Cloudflare account
 func (r *AccountCallAppService) List(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountCallAppListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -93,7 +94,7 @@ func (r *AccountCallAppService) List(ctx context.Context, accountID string, opts
 
 // Deletes an app from Cloudflare Calls
 func (r *AccountCallAppService) Delete(ctx context.Context, accountID string, appID string, opts ...option.RequestOption) (res *CallsAppResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

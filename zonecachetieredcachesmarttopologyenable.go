@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -42,7 +43,7 @@ func NewZoneCacheTieredCacheSmartTopologyEnableService(opts ...option.RequestOpt
 // data center is connected with an origin. As a result, Cloudflare can select the
 // data center with the lowest latency to be the upper-tier for an origin.
 func (r *ZoneCacheTieredCacheSmartTopologyEnableService) Get(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *ZoneCacheTieredCacheSmartTopologyEnableGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -59,7 +60,7 @@ func (r *ZoneCacheTieredCacheSmartTopologyEnableService) Get(ctx context.Context
 // data center is connected with an origin. As a result, Cloudflare can select the
 // data center with the lowest latency to be the upper-tier for an origin.
 func (r *ZoneCacheTieredCacheSmartTopologyEnableService) Update(ctx context.Context, zoneID string, body ZoneCacheTieredCacheSmartTopologyEnableUpdateParams, opts ...option.RequestOption) (res *ZoneCacheTieredCacheSmartTopologyEnableUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -76,7 +77,7 @@ func (r *ZoneCacheTieredCacheSmartTopologyEnableService) Update(ctx context.Cont
 // data center is connected with an origin. As a result, Cloudflare can select the
 // data center with the lowest latency to be the upper-tier for an origin.
 func (r *ZoneCacheTieredCacheSmartTopologyEnableService) Delete(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *ZoneCacheTieredCacheSmartTopologyEnableDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

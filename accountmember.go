@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -37,7 +38,7 @@ func NewAccountMemberService(opts ...option.RequestOption) (r *AccountMemberServ
 
 // Get information about a specific member of an account.
 func (r *AccountMemberService) Get(ctx context.Context, accountID string, memberID string, opts ...option.RequestOption) (res *IamSingleMemberResponseWithPolicies, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -53,7 +54,7 @@ func (r *AccountMemberService) Get(ctx context.Context, accountID string, member
 
 // Modify an account member.
 func (r *AccountMemberService) Update(ctx context.Context, accountID string, memberID string, body AccountMemberUpdateParams, opts ...option.RequestOption) (res *IamSingleMemberResponseWithPolicies, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -69,7 +70,7 @@ func (r *AccountMemberService) Update(ctx context.Context, accountID string, mem
 
 // List all members of an account.
 func (r *AccountMemberService) List(ctx context.Context, accountID string, query AccountMemberListParams, opts ...option.RequestOption) (res *AccountMemberListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -81,7 +82,7 @@ func (r *AccountMemberService) List(ctx context.Context, accountID string, query
 
 // Add a user to the list of members for this account.
 func (r *AccountMemberService) Add(ctx context.Context, accountID string, body AccountMemberAddParams, opts ...option.RequestOption) (res *IamSingleMemberResponseWithPolicies, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -93,7 +94,7 @@ func (r *AccountMemberService) Add(ctx context.Context, accountID string, body A
 
 // Remove a member from an account.
 func (r *AccountMemberService) Remove(ctx context.Context, accountID string, memberID string, opts ...option.RequestOption) (res *IamAPIResponseSingleID, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

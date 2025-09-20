@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"reflect"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -44,7 +45,7 @@ func (r *AccountMagicIpsecTunnelService) New(ctx context.Context, accountID stri
 	if params.XMagicNewHcTarget.Present {
 		opts = append(opts, option.WithHeader("x-magic-new-hc-target", fmt.Sprintf("%s", params.XMagicNewHcTarget)))
 	}
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -59,7 +60,7 @@ func (r *AccountMagicIpsecTunnelService) Get(ctx context.Context, accountID stri
 	if query.XMagicNewHcTarget.Present {
 		opts = append(opts, option.WithHeader("x-magic-new-hc-target", fmt.Sprintf("%s", query.XMagicNewHcTarget)))
 	}
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -80,7 +81,7 @@ func (r *AccountMagicIpsecTunnelService) Update(ctx context.Context, accountID s
 	if params.XMagicNewHcTarget.Present {
 		opts = append(opts, option.WithHeader("x-magic-new-hc-target", fmt.Sprintf("%s", params.XMagicNewHcTarget)))
 	}
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -99,7 +100,7 @@ func (r *AccountMagicIpsecTunnelService) List(ctx context.Context, accountID str
 	if query.XMagicNewHcTarget.Present {
 		opts = append(opts, option.WithHeader("x-magic-new-hc-target", fmt.Sprintf("%s", query.XMagicNewHcTarget)))
 	}
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -116,7 +117,7 @@ func (r *AccountMagicIpsecTunnelService) Delete(ctx context.Context, accountID s
 	if body.XMagicNewHcTarget.Present {
 		opts = append(opts, option.WithHeader("x-magic-new-hc-target", fmt.Sprintf("%s", body.XMagicNewHcTarget)))
 	}
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -136,7 +137,7 @@ func (r *AccountMagicIpsecTunnelService) Delete(ctx context.Context, accountID s
 // persisted to Cloudflare's edge and cannot be retrieved later. Note the PSK in a
 // safe place.
 func (r *AccountMagicIpsecTunnelService) GeneratePsk(ctx context.Context, accountID string, ipsecTunnelID string, body AccountMagicIpsecTunnelGeneratePskParams, opts ...option.RequestOption) (res *AccountMagicIpsecTunnelGeneratePskResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

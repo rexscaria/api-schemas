@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"mime/multipart"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apiform"
@@ -39,7 +40,7 @@ func NewAccountAddressingLoaDocumentService(opts ...option.RequestOption) (r *Ac
 
 // Download specified LOA document under the account.
 func (r *AccountAddressingLoaDocumentService) Download(ctx context.Context, accountID string, loaDocumentID string, opts ...option.RequestOption) (res *http.Response, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "application/pdf")}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
@@ -56,7 +57,7 @@ func (r *AccountAddressingLoaDocumentService) Download(ctx context.Context, acco
 
 // Submit LOA document (pdf format) under the account.
 func (r *AccountAddressingLoaDocumentService) Upload(ctx context.Context, accountID string, body AccountAddressingLoaDocumentUploadParams, opts ...option.RequestOption) (res *AccountAddressingLoaDocumentUploadResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

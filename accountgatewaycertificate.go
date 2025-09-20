@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -36,7 +37,7 @@ func NewAccountGatewayCertificateService(opts ...option.RequestOption) (r *Accou
 
 // Creates a new Zero Trust certificate.
 func (r *AccountGatewayCertificateService) New(ctx context.Context, accountID string, body AccountGatewayCertificateNewParams, opts ...option.RequestOption) (res *SingleResponseCertificateGateway, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -48,7 +49,7 @@ func (r *AccountGatewayCertificateService) New(ctx context.Context, accountID st
 
 // Fetches a single Zero Trust certificate.
 func (r *AccountGatewayCertificateService) Get(ctx context.Context, accountID string, certificateID string, opts ...option.RequestOption) (res *SingleResponseCertificateGateway, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -64,7 +65,7 @@ func (r *AccountGatewayCertificateService) Get(ctx context.Context, accountID st
 
 // Fetches all Zero Trust certificates for an account.
 func (r *AccountGatewayCertificateService) List(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountGatewayCertificateListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -77,7 +78,7 @@ func (r *AccountGatewayCertificateService) List(ctx context.Context, accountID s
 // Deletes a gateway-managed Zero Trust certificate. A certificate must be
 // deactivated from the edge (inactive) before it is deleted.
 func (r *AccountGatewayCertificateService) Delete(ctx context.Context, accountID string, certificateID string, opts ...option.RequestOption) (res *SingleResponseCertificateGateway, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -93,7 +94,7 @@ func (r *AccountGatewayCertificateService) Delete(ctx context.Context, accountID
 
 // Binds a single Zero Trust certificate to the edge.
 func (r *AccountGatewayCertificateService) Activate(ctx context.Context, accountID string, certificateID string, body AccountGatewayCertificateActivateParams, opts ...option.RequestOption) (res *SingleResponseCertificateGateway, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -109,7 +110,7 @@ func (r *AccountGatewayCertificateService) Activate(ctx context.Context, account
 
 // Unbinds a single Zero Trust certificate from the edge
 func (r *AccountGatewayCertificateService) Deactivate(ctx context.Context, accountID string, certificateID string, body AccountGatewayCertificateDeactivateParams, opts ...option.RequestOption) (res *SingleResponseCertificateGateway, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

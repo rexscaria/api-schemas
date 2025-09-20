@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -37,7 +38,7 @@ func NewAccountAIRunCfLykonService(opts ...option.RequestOption) (r *AccountAIRu
 
 // Execute @cf/lykon/dreamshaper-8-lcm model.
 func (r *AccountAIRunCfLykonService) ExecuteDreamshaper8Lcm(ctx context.Context, accountID string, params AccountAIRunCfLykonExecuteDreamshaper8LcmParams, opts ...option.RequestOption) (res *AccountAIRunCfLykonExecuteDreamshaper8LcmResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

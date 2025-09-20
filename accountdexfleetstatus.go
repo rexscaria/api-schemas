@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -37,7 +38,7 @@ func NewAccountDexFleetStatusService(opts ...option.RequestOption) (r *AccountDe
 
 // List details for devices using WARP
 func (r *AccountDexFleetStatusService) ListDevices(ctx context.Context, accountID string, query AccountDexFleetStatusListDevicesParams, opts ...option.RequestOption) (res *AccountDexFleetStatusListDevicesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -49,7 +50,7 @@ func (r *AccountDexFleetStatusService) ListDevices(ctx context.Context, accountI
 
 // List details for live (up to 60 minutes) devices using WARP
 func (r *AccountDexFleetStatusService) ListLiveStatus(ctx context.Context, accountID string, query AccountDexFleetStatusListLiveStatusParams, opts ...option.RequestOption) (res *AccountDexFleetStatusListLiveStatusResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -61,7 +62,7 @@ func (r *AccountDexFleetStatusService) ListLiveStatus(ctx context.Context, accou
 
 // List details for devices using WARP, up to 7 days
 func (r *AccountDexFleetStatusService) ListOverTime(ctx context.Context, accountID string, query AccountDexFleetStatusListOverTimeParams, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")

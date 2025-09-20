@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -43,7 +44,7 @@ func NewZoneSslService(opts ...option.RequestOption) (r *ZoneSslService) {
 // Returns the set of hostnames, the signature algorithm, and the expiration date
 // of the certificate.
 func (r *ZoneSslService) AnalyzeCertificate(ctx context.Context, zoneID string, body ZoneSslAnalyzeCertificateParams, opts ...option.RequestOption) (res *ZoneSslAnalyzeCertificateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -58,7 +59,7 @@ func (r *ZoneSslService) AnalyzeCertificate(ctx context.Context, zoneID string, 
 // Deprecated: SSL/TLS Recommender has been decommissioned in favor of Automatic
 // SSL/TLS
 func (r *ZoneSslService) GetRecommendation(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *ZoneSslGetRecommendationResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

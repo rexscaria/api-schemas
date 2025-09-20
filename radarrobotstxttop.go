@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -38,7 +39,7 @@ func NewRadarRobotsTxtTopService(opts ...option.RequestOption) (r *RadarRobotsTx
 
 // Retrieves the top domain categories by the number of robots.txt files parsed.
 func (r *RadarRobotsTxtTopService) GetTopDomainCategories(ctx context.Context, query RadarRobotsTxtTopGetTopDomainCategoriesParams, opts ...option.RequestOption) (res *RadarRobotsTxtTopGetTopDomainCategoriesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/robots_txt/top/domain_categories"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

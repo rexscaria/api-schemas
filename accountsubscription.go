@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -36,7 +37,7 @@ func NewAccountSubscriptionService(opts ...option.RequestOption) (r *AccountSubs
 
 // Creates an account subscription.
 func (r *AccountSubscriptionService) New(ctx context.Context, accountID string, body AccountSubscriptionNewParams, opts ...option.RequestOption) (res *AccountSubscriptionResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -48,7 +49,7 @@ func (r *AccountSubscriptionService) New(ctx context.Context, accountID string, 
 
 // Updates an account subscription.
 func (r *AccountSubscriptionService) Update(ctx context.Context, accountID string, subscriptionIdentifier string, body AccountSubscriptionUpdateParams, opts ...option.RequestOption) (res *AccountSubscriptionResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -64,7 +65,7 @@ func (r *AccountSubscriptionService) Update(ctx context.Context, accountID strin
 
 // Lists all of an account's subscriptions.
 func (r *AccountSubscriptionService) List(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountSubscriptionListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -76,7 +77,7 @@ func (r *AccountSubscriptionService) List(ctx context.Context, accountID string,
 
 // Deletes an account's subscription.
 func (r *AccountSubscriptionService) Delete(ctx context.Context, accountID string, subscriptionIdentifier string, opts ...option.RequestOption) (res *AccountSubscriptionDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

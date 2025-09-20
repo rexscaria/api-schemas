@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/requestconfig"
@@ -45,7 +46,7 @@ func NewAccountAddressingService(opts ...option.RequestOption) (r *AccountAddres
 // IP addresses. This endpoint can be used as a reference of available services on
 // the Cloudflare network, and their service IDs.
 func (r *AccountAddressingService) ListServices(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountAddressingListServicesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

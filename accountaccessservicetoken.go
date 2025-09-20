@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -35,7 +36,7 @@ func NewAccountAccessServiceTokenService(opts ...option.RequestOption) (r *Accou
 
 // Refreshes the expiration of a service token.
 func (r *AccountAccessServiceTokenService) Refresh(ctx context.Context, accountID string, serviceTokenID string, opts ...option.RequestOption) (res *SchemasAccessSingleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -51,7 +52,7 @@ func (r *AccountAccessServiceTokenService) Refresh(ctx context.Context, accountI
 
 // Generates a new Client Secret for a service token and revokes the old one.
 func (r *AccountAccessServiceTokenService) Rotate(ctx context.Context, accountID string, serviceTokenID string, opts ...option.RequestOption) (res *CreateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

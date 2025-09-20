@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -35,7 +36,7 @@ func NewAccountDlpProfilePredefinedService(opts ...option.RequestOption) (r *Acc
 
 // Fetches a predefined DLP profile by id.
 func (r *AccountDlpProfilePredefinedService) Get(ctx context.Context, accountID string, profileID string, opts ...option.RequestOption) (res *AccountDlpProfilePredefinedGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -51,7 +52,7 @@ func (r *AccountDlpProfilePredefinedService) Get(ctx context.Context, accountID 
 
 // Updates a DLP predefined profile. Only supports enabling/disabling entries.
 func (r *AccountDlpProfilePredefinedService) Update(ctx context.Context, accountID string, profileID string, body AccountDlpProfilePredefinedUpdateParams, opts ...option.RequestOption) (res *AccountDlpProfilePredefinedUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

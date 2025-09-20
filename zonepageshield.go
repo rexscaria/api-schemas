@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -43,7 +44,7 @@ func NewZonePageShieldService(opts ...option.RequestOption) (r *ZonePageShieldSe
 
 // Fetches the Page Shield settings.
 func (r *ZonePageShieldService) Get(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *ZonePageShieldGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -55,7 +56,7 @@ func (r *ZonePageShieldService) Get(ctx context.Context, zoneID string, opts ...
 
 // Updates Page Shield settings.
 func (r *ZonePageShieldService) Update(ctx context.Context, zoneID string, body ZonePageShieldUpdateParams, opts ...option.RequestOption) (res *ZonePageShieldUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

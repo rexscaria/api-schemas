@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -35,7 +36,7 @@ func NewRadarBgpRouteService(opts ...option.RequestOption) (r *RadarBgpRouteServ
 
 // Retrieves all ASes in the current global routing tables with routing statistics.
 func (r *RadarBgpRouteService) ListAses(ctx context.Context, query RadarBgpRouteListAsesParams, opts ...option.RequestOption) (res *RadarBgpRouteListAsesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/bgp/routes/ases"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -43,7 +44,7 @@ func (r *RadarBgpRouteService) ListAses(ctx context.Context, query RadarBgpRoute
 
 // Retrieves all Multi-Origin AS (MOAS) prefixes in the global routing tables.
 func (r *RadarBgpRouteService) ListMoas(ctx context.Context, query RadarBgpRouteListMoasParams, opts ...option.RequestOption) (res *RadarBgpRouteListMoasResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/bgp/routes/moas"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -51,7 +52,7 @@ func (r *RadarBgpRouteService) ListMoas(ctx context.Context, query RadarBgpRoute
 
 // Retrieves the prefix-to-ASN mapping from global routing tables.
 func (r *RadarBgpRouteService) GetPrefixToAs(ctx context.Context, query RadarBgpRouteGetPrefixToAsParams, opts ...option.RequestOption) (res *RadarBgpRouteGetPrefixToAsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/bgp/routes/pfx2as"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -60,7 +61,7 @@ func (r *RadarBgpRouteService) GetPrefixToAs(ctx context.Context, query RadarBgp
 // Retrieves real-time BGP routes for a prefix, using public real-time data
 // collectors (RouteViews and RIPE RIS).
 func (r *RadarBgpRouteService) GetRealtimeRoutes(ctx context.Context, query RadarBgpRouteGetRealtimeRoutesParams, opts ...option.RequestOption) (res *RadarBgpRouteGetRealtimeRoutesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/bgp/routes/realtime"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -68,7 +69,7 @@ func (r *RadarBgpRouteService) GetRealtimeRoutes(ctx context.Context, query Rada
 
 // Retrieves the BGP routing table stats.
 func (r *RadarBgpRouteService) GetStats(ctx context.Context, query RadarBgpRouteGetStatsParams, opts ...option.RequestOption) (res *RadarBgpRouteGetStatsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/bgp/routes/stats"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -35,7 +36,7 @@ func NewAccountSecondaryDNSTsigService(opts ...option.RequestOption) (r *Account
 
 // Create TSIG.
 func (r *AccountSecondaryDNSTsigService) New(ctx context.Context, accountID string, body AccountSecondaryDNSTsigNewParams, opts ...option.RequestOption) (res *SingleResponseTsigs, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -47,7 +48,7 @@ func (r *AccountSecondaryDNSTsigService) New(ctx context.Context, accountID stri
 
 // Get TSIG.
 func (r *AccountSecondaryDNSTsigService) Get(ctx context.Context, accountID string, tsigID string, opts ...option.RequestOption) (res *SingleResponseTsigs, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -63,7 +64,7 @@ func (r *AccountSecondaryDNSTsigService) Get(ctx context.Context, accountID stri
 
 // Modify TSIG.
 func (r *AccountSecondaryDNSTsigService) Update(ctx context.Context, accountID string, tsigID string, body AccountSecondaryDNSTsigUpdateParams, opts ...option.RequestOption) (res *SingleResponseTsigs, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -79,7 +80,7 @@ func (r *AccountSecondaryDNSTsigService) Update(ctx context.Context, accountID s
 
 // List TSIGs.
 func (r *AccountSecondaryDNSTsigService) List(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountSecondaryDNSTsigListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -91,7 +92,7 @@ func (r *AccountSecondaryDNSTsigService) List(ctx context.Context, accountID str
 
 // Delete TSIG.
 func (r *AccountSecondaryDNSTsigService) Delete(ctx context.Context, accountID string, tsigID string, opts ...option.RequestOption) (res *AccountSecondaryDNSTsigDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

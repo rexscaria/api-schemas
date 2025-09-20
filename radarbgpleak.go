@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -36,7 +37,7 @@ func NewRadarBgpLeakService(opts ...option.RequestOption) (r *RadarBgpLeakServic
 
 // Retrieves the BGP route leak events.
 func (r *RadarBgpLeakService) ListEvents(ctx context.Context, query RadarBgpLeakListEventsParams, opts ...option.RequestOption) (res *RadarBgpLeakListEventsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/bgp/leaks/events"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

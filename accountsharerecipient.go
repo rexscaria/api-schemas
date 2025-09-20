@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -38,7 +39,7 @@ func NewAccountShareRecipientService(opts ...option.RequestOption) (r *AccountSh
 
 // Create a new share recipient
 func (r *AccountShareRecipientService) New(ctx context.Context, accountID string, shareID string, body AccountShareRecipientNewParams, opts ...option.RequestOption) (res *ShareRecipientResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -54,7 +55,7 @@ func (r *AccountShareRecipientService) New(ctx context.Context, accountID string
 
 // Get share recipient by ID.
 func (r *AccountShareRecipientService) Get(ctx context.Context, accountID string, shareID string, recipientID string, opts ...option.RequestOption) (res *ShareRecipientResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -74,7 +75,7 @@ func (r *AccountShareRecipientService) Get(ctx context.Context, accountID string
 
 // List share recipients by share ID.
 func (r *AccountShareRecipientService) List(ctx context.Context, accountID string, shareID string, query AccountShareRecipientListParams, opts ...option.RequestOption) (res *AccountShareRecipientListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -91,7 +92,7 @@ func (r *AccountShareRecipientService) List(ctx context.Context, accountID strin
 // Deletion is not immediate, an updated share recipient object with a new status
 // will be returned.
 func (r *AccountShareRecipientService) Delete(ctx context.Context, accountID string, shareID string, recipientID string, opts ...option.RequestOption) (res *ShareRecipientResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

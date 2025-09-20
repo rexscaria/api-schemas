@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -36,7 +37,7 @@ func NewZoneOriginTlsClientAuthSettingService(opts ...option.RequestOption) (r *
 // Get whether zone-level authenticated origin pulls is enabled or not. It is false
 // by default.
 func (r *ZoneOriginTlsClientAuthSettingService) Get(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *EnabledResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -50,7 +51,7 @@ func (r *ZoneOriginTlsClientAuthSettingService) Get(ctx context.Context, zoneID 
 // true either before/after the certificate is uploaded to see the certificate in
 // use.
 func (r *ZoneOriginTlsClientAuthSettingService) Update(ctx context.Context, zoneID string, body ZoneOriginTlsClientAuthSettingUpdateParams, opts ...option.RequestOption) (res *EnabledResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

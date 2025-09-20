@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -36,7 +37,7 @@ func NewZoneCustomHostnameFallbackOriginService(opts ...option.RequestOption) (r
 
 // Get Fallback Origin for Custom Hostnames
 func (r *ZoneCustomHostnameFallbackOriginService) Get(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *FallbackOriginResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -48,7 +49,7 @@ func (r *ZoneCustomHostnameFallbackOriginService) Get(ctx context.Context, zoneI
 
 // Update Fallback Origin for Custom Hostnames
 func (r *ZoneCustomHostnameFallbackOriginService) Update(ctx context.Context, zoneID string, body ZoneCustomHostnameFallbackOriginUpdateParams, opts ...option.RequestOption) (res *FallbackOriginResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -60,7 +61,7 @@ func (r *ZoneCustomHostnameFallbackOriginService) Update(ctx context.Context, zo
 
 // Delete Fallback Origin for Custom Hostnames
 func (r *ZoneCustomHostnameFallbackOriginService) Delete(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *FallbackOriginResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

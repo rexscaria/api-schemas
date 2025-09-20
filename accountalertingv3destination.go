@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/requestconfig"
@@ -38,7 +39,7 @@ func NewAccountAlertingV3DestinationService(opts ...option.RequestOption) (r *Ac
 
 // Get a list of all delivery mechanism types for which an account is eligible.
 func (r *AccountAlertingV3DestinationService) ListEligibility(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountAlertingV3DestinationListEligibilityResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

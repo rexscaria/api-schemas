@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"reflect"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -38,7 +39,7 @@ func NewAccountDlpEntryService(opts ...option.RequestOption) (r *AccountDlpEntry
 
 // Creates a DLP custom entry.
 func (r *AccountDlpEntryService) New(ctx context.Context, accountID string, body AccountDlpEntryNewParams, opts ...option.RequestOption) (res *AccountDlpEntryNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -50,7 +51,7 @@ func (r *AccountDlpEntryService) New(ctx context.Context, accountID string, body
 
 // Fetches a DLP entry by ID.
 func (r *AccountDlpEntryService) Get(ctx context.Context, accountID string, entryID string, opts ...option.RequestOption) (res *AccountDlpEntryGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -66,7 +67,7 @@ func (r *AccountDlpEntryService) Get(ctx context.Context, accountID string, entr
 
 // Updates a DLP entry.
 func (r *AccountDlpEntryService) Update(ctx context.Context, accountID string, entryID string, body AccountDlpEntryUpdateParams, opts ...option.RequestOption) (res *AccountDlpEntryUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -82,7 +83,7 @@ func (r *AccountDlpEntryService) Update(ctx context.Context, accountID string, e
 
 // Lists all DLP entries in an account.
 func (r *AccountDlpEntryService) List(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountDlpEntryListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -94,7 +95,7 @@ func (r *AccountDlpEntryService) List(ctx context.Context, accountID string, opt
 
 // Deletes a DLP custom entry.
 func (r *AccountDlpEntryService) Delete(ctx context.Context, accountID string, entryID string, opts ...option.RequestOption) (res *AccountDlpEntryDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

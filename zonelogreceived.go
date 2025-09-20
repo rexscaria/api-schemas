@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -45,7 +46,7 @@ func NewZoneLogReceivedService(opts ...option.RequestOption) (r *ZoneLogReceived
 // will be handled properly.
 func (r *ZoneLogReceivedService) GetLogs(ctx context.Context, zoneID string, query ZoneLogReceivedGetLogsParams, opts ...option.RequestOption) (res *interface{}, err error) {
 	var env apijson.UnionUnmarshaler[interface{}]
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -62,7 +63,7 @@ func (r *ZoneLogReceivedService) GetLogs(ctx context.Context, zoneID string, que
 // Lists all fields available. The response is json object with key-value pairs,
 // where keys are field names, and values are descriptions.
 func (r *ZoneLogReceivedService) ListFields(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *ZoneLogReceivedListFieldsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

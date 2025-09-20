@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -36,7 +37,7 @@ func NewAccountGatewayProxyEndpointService(opts ...option.RequestOption) (r *Acc
 
 // Creates a new Zero Trust Gateway proxy endpoint.
 func (r *AccountGatewayProxyEndpointService) New(ctx context.Context, accountID string, body AccountGatewayProxyEndpointNewParams, opts ...option.RequestOption) (res *SingleResponseProxy, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -48,7 +49,7 @@ func (r *AccountGatewayProxyEndpointService) New(ctx context.Context, accountID 
 
 // Fetches a single Zero Trust Gateway proxy endpoint.
 func (r *AccountGatewayProxyEndpointService) Get(ctx context.Context, accountID string, proxyEndpointID string, opts ...option.RequestOption) (res *AccountGatewayProxyEndpointGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -64,7 +65,7 @@ func (r *AccountGatewayProxyEndpointService) Get(ctx context.Context, accountID 
 
 // Updates a configured Zero Trust Gateway proxy endpoint.
 func (r *AccountGatewayProxyEndpointService) Update(ctx context.Context, accountID string, proxyEndpointID string, body AccountGatewayProxyEndpointUpdateParams, opts ...option.RequestOption) (res *SingleResponseProxy, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -80,7 +81,7 @@ func (r *AccountGatewayProxyEndpointService) Update(ctx context.Context, account
 
 // Fetches all Zero Trust Gateway proxy endpoints for an account.
 func (r *AccountGatewayProxyEndpointService) List(ctx context.Context, accountID string, opts ...option.RequestOption) (res *SingleResponseProxy, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -92,7 +93,7 @@ func (r *AccountGatewayProxyEndpointService) List(ctx context.Context, accountID
 
 // Deletes a configured Zero Trust Gateway proxy endpoint.
 func (r *AccountGatewayProxyEndpointService) Delete(ctx context.Context, accountID string, proxyEndpointID string, opts ...option.RequestOption) (res *ZeroTrustGatewayEmptyResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -37,7 +38,7 @@ func NewRadarQualitySpeedTopService(opts ...option.RequestOption) (r *RadarQuali
 // Retrieves the top autonomous systems by bandwidth, latency, jitter, or packet
 // loss, from the previous 90 days of Cloudflare Speed Test data.
 func (r *RadarQualitySpeedTopService) GetTopAs(ctx context.Context, query RadarQualitySpeedTopGetTopAsParams, opts ...option.RequestOption) (res *RadarQualitySpeedTopGetTopAsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/quality/speed/top/ases"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -46,7 +47,7 @@ func (r *RadarQualitySpeedTopService) GetTopAs(ctx context.Context, query RadarQ
 // Retrieves the top locations by bandwidth, latency, jitter, or packet loss, from
 // the previous 90 days of Cloudflare Speed Test data.
 func (r *RadarQualitySpeedTopService) GetTopLocations(ctx context.Context, query RadarQualitySpeedTopGetTopLocationsParams, opts ...option.RequestOption) (res *RadarQualitySpeedTopGetTopLocationsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/quality/speed/top/locations"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

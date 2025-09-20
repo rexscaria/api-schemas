@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -37,7 +38,7 @@ func NewAccountAIRunHfTheblokeService(opts ...option.RequestOption) (r *AccountA
 
 // Execute @hf/thebloke/deepseek-coder-6.7b-base-awq model.
 func (r *AccountAIRunHfTheblokeService) ExecuteDeepseekCoder6_7bBaseAwq(ctx context.Context, accountID string, params AccountAIRunHfTheblokeExecuteDeepseekCoder6_7bBaseAwqParams, opts ...option.RequestOption) (res *AccountAIRunHfTheblokeExecuteDeepseekCoder6_7bBaseAwqResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -49,7 +50,7 @@ func (r *AccountAIRunHfTheblokeService) ExecuteDeepseekCoder6_7bBaseAwq(ctx cont
 
 // Execute @hf/thebloke/deepseek-coder-6.7b-instruct-awq model.
 func (r *AccountAIRunHfTheblokeService) ExecuteDeepseekCoder6_7bInstructAwq(ctx context.Context, accountID string, params AccountAIRunHfTheblokeExecuteDeepseekCoder6_7bInstructAwqParams, opts ...option.RequestOption) (res *AccountAIRunHfTheblokeExecuteDeepseekCoder6_7bInstructAwqResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -61,7 +62,7 @@ func (r *AccountAIRunHfTheblokeService) ExecuteDeepseekCoder6_7bInstructAwq(ctx 
 
 // Execute @hf/thebloke/llama-2-13b-chat-awq model.
 func (r *AccountAIRunHfTheblokeService) ExecuteLlama2_13bChatAwq(ctx context.Context, accountID string, params AccountAIRunHfTheblokeExecuteLlama2_13bChatAwqParams, opts ...option.RequestOption) (res *AccountAIRunHfTheblokeExecuteLlama2_13bChatAwqResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -73,7 +74,7 @@ func (r *AccountAIRunHfTheblokeService) ExecuteLlama2_13bChatAwq(ctx context.Con
 
 // Execute @hf/thebloke/llamaguard-7b-awq model.
 func (r *AccountAIRunHfTheblokeService) ExecuteLlamaguard7bAwq(ctx context.Context, accountID string, params AccountAIRunHfTheblokeExecuteLlamaguard7bAwqParams, opts ...option.RequestOption) (res *AccountAIRunHfTheblokeExecuteLlamaguard7bAwqResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -85,7 +86,7 @@ func (r *AccountAIRunHfTheblokeService) ExecuteLlamaguard7bAwq(ctx context.Conte
 
 // Execute @hf/thebloke/mistral-7b-instruct-v0.1-awq model.
 func (r *AccountAIRunHfTheblokeService) ExecuteMistral7bInstructV0_1Awq(ctx context.Context, accountID string, params AccountAIRunHfTheblokeExecuteMistral7bInstructV0_1AwqParams, opts ...option.RequestOption) (res *AccountAIRunHfTheblokeExecuteMistral7bInstructV0_1AwqResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -97,7 +98,7 @@ func (r *AccountAIRunHfTheblokeService) ExecuteMistral7bInstructV0_1Awq(ctx cont
 
 // Execute @hf/thebloke/neural-chat-7b-v3-1-awq model.
 func (r *AccountAIRunHfTheblokeService) ExecuteNeuralChat7bV3_1Awq(ctx context.Context, accountID string, params AccountAIRunHfTheblokeExecuteNeuralChat7bV3_1AwqParams, opts ...option.RequestOption) (res *AccountAIRunHfTheblokeExecuteNeuralChat7bV3_1AwqResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -109,7 +110,7 @@ func (r *AccountAIRunHfTheblokeService) ExecuteNeuralChat7bV3_1Awq(ctx context.C
 
 // Execute @hf/thebloke/openhermes-2.5-mistral-7b-awq model.
 func (r *AccountAIRunHfTheblokeService) ExecuteOpenhermes2_5Mistral7bAwq(ctx context.Context, accountID string, params AccountAIRunHfTheblokeExecuteOpenhermes2_5Mistral7bAwqParams, opts ...option.RequestOption) (res *AccountAIRunHfTheblokeExecuteOpenhermes2_5Mistral7bAwqResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -121,7 +122,7 @@ func (r *AccountAIRunHfTheblokeService) ExecuteOpenhermes2_5Mistral7bAwq(ctx con
 
 // Execute @hf/thebloke/zephyr-7b-beta-awq model.
 func (r *AccountAIRunHfTheblokeService) ExecuteZephyr7bBetaAwq(ctx context.Context, accountID string, params AccountAIRunHfTheblokeExecuteZephyr7bBetaAwqParams, opts ...option.RequestOption) (res *AccountAIRunHfTheblokeExecuteZephyr7bBetaAwqResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

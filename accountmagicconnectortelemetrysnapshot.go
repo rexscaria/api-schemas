@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -38,7 +39,7 @@ func NewAccountMagicConnectorTelemetrySnapshotService(opts ...option.RequestOpti
 
 // List Snapshots
 func (r *AccountMagicConnectorTelemetrySnapshotService) List(ctx context.Context, accountID string, connectorID string, query AccountMagicConnectorTelemetrySnapshotListParams, opts ...option.RequestOption) (res *AccountMagicConnectorTelemetrySnapshotListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -54,7 +55,7 @@ func (r *AccountMagicConnectorTelemetrySnapshotService) List(ctx context.Context
 
 // Get Snapshot
 func (r *AccountMagicConnectorTelemetrySnapshotService) Get(ctx context.Context, accountID string, connectorID string, snapshotT float64, opts ...option.RequestOption) (res *AccountMagicConnectorTelemetrySnapshotGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -37,7 +38,7 @@ func NewAccountDevicePolicyFallbackDomainService(opts ...option.RequestOption) (
 // device settings profile. These domains will use the specified local DNS resolver
 // instead.
 func (r *AccountDevicePolicyFallbackDomainService) List(ctx context.Context, accountID string, policyID string, opts ...option.RequestOption) (res *FallbackDomainResponseCollection, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -54,7 +55,7 @@ func (r *AccountDevicePolicyFallbackDomainService) List(ctx context.Context, acc
 // Fetches a list of domains to bypass Gateway DNS resolution. These domains will
 // use the specified local DNS resolver instead.
 func (r *AccountDevicePolicyFallbackDomainService) GlobalList(ctx context.Context, accountID string, opts ...option.RequestOption) (res *FallbackDomainResponseCollection, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -67,7 +68,7 @@ func (r *AccountDevicePolicyFallbackDomainService) GlobalList(ctx context.Contex
 // Sets the list of domains to bypass Gateway DNS resolution. These domains will
 // use the specified local DNS resolver instead.
 func (r *AccountDevicePolicyFallbackDomainService) GlobalSet(ctx context.Context, accountID string, body AccountDevicePolicyFallbackDomainGlobalSetParams, opts ...option.RequestOption) (res *FallbackDomainResponseCollection, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -81,7 +82,7 @@ func (r *AccountDevicePolicyFallbackDomainService) GlobalSet(ctx context.Context
 // use the specified local DNS resolver instead. This will only apply to the
 // specified device settings profile.
 func (r *AccountDevicePolicyFallbackDomainService) Set(ctx context.Context, accountID string, policyID string, body AccountDevicePolicyFallbackDomainSetParams, opts ...option.RequestOption) (res *FallbackDomainResponseCollection, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

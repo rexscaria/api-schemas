@@ -10,6 +10,7 @@ import (
 	"mime/multipart"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apiform"
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -40,7 +41,7 @@ func NewAccountAIRunCfMetaService(opts ...option.RequestOption) (r *AccountAIRun
 
 // Execute @cf/meta/llama-2-7b-chat-fp16 model.
 func (r *AccountAIRunCfMetaService) ExecuteLlama2_7bChatFp16(ctx context.Context, accountID string, params AccountAIRunCfMetaExecuteLlama2_7bChatFp16Params, opts ...option.RequestOption) (res *AccountAIRunCfMetaExecuteLlama2_7bChatFp16Response, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -52,7 +53,7 @@ func (r *AccountAIRunCfMetaService) ExecuteLlama2_7bChatFp16(ctx context.Context
 
 // Execute @cf/meta/llama-2-7b-chat-int8 model.
 func (r *AccountAIRunCfMetaService) ExecuteLlama2_7bChatInt8(ctx context.Context, accountID string, params AccountAIRunCfMetaExecuteLlama2_7bChatInt8Params, opts ...option.RequestOption) (res *AccountAIRunCfMetaExecuteLlama2_7bChatInt8Response, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -64,7 +65,7 @@ func (r *AccountAIRunCfMetaService) ExecuteLlama2_7bChatInt8(ctx context.Context
 
 // Execute @cf/meta/llama-3.1-70b-instruct model.
 func (r *AccountAIRunCfMetaService) ExecuteLlama3_1_70bInstruct(ctx context.Context, accountID string, params AccountAIRunCfMetaExecuteLlama3_1_70bInstructParams, opts ...option.RequestOption) (res *AccountAIRunCfMetaExecuteLlama3_1_70bInstructResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -76,7 +77,7 @@ func (r *AccountAIRunCfMetaService) ExecuteLlama3_1_70bInstruct(ctx context.Cont
 
 // Execute @cf/meta/llama-3.1-70b-instruct-preview model.
 func (r *AccountAIRunCfMetaService) ExecuteLlama3_1_70bInstructPreview(ctx context.Context, accountID string, params AccountAIRunCfMetaExecuteLlama3_1_70bInstructPreviewParams, opts ...option.RequestOption) (res *AccountAIRunCfMetaExecuteLlama3_1_70bInstructPreviewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -88,7 +89,7 @@ func (r *AccountAIRunCfMetaService) ExecuteLlama3_1_70bInstructPreview(ctx conte
 
 // Execute @cf/meta/llama-3.1-70b-preview model.
 func (r *AccountAIRunCfMetaService) ExecuteLlama3_1_70bPreview(ctx context.Context, accountID string, params AccountAIRunCfMetaExecuteLlama3_1_70bPreviewParams, opts ...option.RequestOption) (res *AccountAIRunCfMetaExecuteLlama3_1_70bPreviewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -100,7 +101,7 @@ func (r *AccountAIRunCfMetaService) ExecuteLlama3_1_70bPreview(ctx context.Conte
 
 // Execute @cf/meta/llama-3.1-8b-instruct-awq model.
 func (r *AccountAIRunCfMetaService) ExecuteLlama3_1_8bInstructAwq(ctx context.Context, accountID string, params AccountAIRunCfMetaExecuteLlama3_1_8bInstructAwqParams, opts ...option.RequestOption) (res *AccountAIRunCfMetaExecuteLlama3_1_8bInstructAwqResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -112,7 +113,7 @@ func (r *AccountAIRunCfMetaService) ExecuteLlama3_1_8bInstructAwq(ctx context.Co
 
 // Execute @cf/meta/llama-3.1-8b-instruct-fast model.
 func (r *AccountAIRunCfMetaService) ExecuteLlama3_1_8bInstructFast(ctx context.Context, accountID string, params AccountAIRunCfMetaExecuteLlama3_1_8bInstructFastParams, opts ...option.RequestOption) (res *AccountAIRunCfMetaExecuteLlama3_1_8bInstructFastResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -124,7 +125,7 @@ func (r *AccountAIRunCfMetaService) ExecuteLlama3_1_8bInstructFast(ctx context.C
 
 // Execute @cf/meta/llama-3.1-8b-instruct-fp8 model.
 func (r *AccountAIRunCfMetaService) ExecuteLlama3_1_8bInstructFp8(ctx context.Context, accountID string, params AccountAIRunCfMetaExecuteLlama3_1_8bInstructFp8Params, opts ...option.RequestOption) (res *AccountAIRunCfMetaExecuteLlama3_1_8bInstructFp8Response, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -136,7 +137,7 @@ func (r *AccountAIRunCfMetaService) ExecuteLlama3_1_8bInstructFp8(ctx context.Co
 
 // Execute @cf/meta/llama-3.1-8b-preview model.
 func (r *AccountAIRunCfMetaService) ExecuteLlama3_1_8bPreview(ctx context.Context, accountID string, params AccountAIRunCfMetaExecuteLlama3_1_8bPreviewParams, opts ...option.RequestOption) (res *AccountAIRunCfMetaExecuteLlama3_1_8bPreviewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -148,7 +149,7 @@ func (r *AccountAIRunCfMetaService) ExecuteLlama3_1_8bPreview(ctx context.Contex
 
 // Execute @cf/meta/llama-3.2-11b-vision-instruct model.
 func (r *AccountAIRunCfMetaService) ExecuteLlama3_2_11bVisionInstruct(ctx context.Context, accountID string, params AccountAIRunCfMetaExecuteLlama3_2_11bVisionInstructParams, opts ...option.RequestOption) (res *AccountAIRunCfMetaExecuteLlama3_2_11bVisionInstructResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -160,7 +161,7 @@ func (r *AccountAIRunCfMetaService) ExecuteLlama3_2_11bVisionInstruct(ctx contex
 
 // Execute @cf/meta/llama-3.2-1b-instruct model.
 func (r *AccountAIRunCfMetaService) ExecuteLlama3_2_1bInstruct(ctx context.Context, accountID string, params AccountAIRunCfMetaExecuteLlama3_2_1bInstructParams, opts ...option.RequestOption) (res *AccountAIRunCfMetaExecuteLlama3_2_1bInstructResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -172,7 +173,7 @@ func (r *AccountAIRunCfMetaService) ExecuteLlama3_2_1bInstruct(ctx context.Conte
 
 // Execute @cf/meta/llama-3.2-3b-instruct model.
 func (r *AccountAIRunCfMetaService) ExecuteLlama3_2_3bInstruct(ctx context.Context, accountID string, params AccountAIRunCfMetaExecuteLlama3_2_3bInstructParams, opts ...option.RequestOption) (res *AccountAIRunCfMetaExecuteLlama3_2_3bInstructResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -184,7 +185,7 @@ func (r *AccountAIRunCfMetaService) ExecuteLlama3_2_3bInstruct(ctx context.Conte
 
 // Execute @cf/meta/llama-3-8b-instruct model.
 func (r *AccountAIRunCfMetaService) ExecuteLlama3_8bInstruct(ctx context.Context, accountID string, params AccountAIRunCfMetaExecuteLlama3_8bInstructParams, opts ...option.RequestOption) (res *AccountAIRunCfMetaExecuteLlama3_8bInstructResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -196,7 +197,7 @@ func (r *AccountAIRunCfMetaService) ExecuteLlama3_8bInstruct(ctx context.Context
 
 // Execute @cf/meta/llama-3-8b-instruct-awq model.
 func (r *AccountAIRunCfMetaService) ExecuteLlama3_8bInstructAwq(ctx context.Context, accountID string, params AccountAIRunCfMetaExecuteLlama3_8bInstructAwqParams, opts ...option.RequestOption) (res *AccountAIRunCfMetaExecuteLlama3_8bInstructAwqResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -208,7 +209,7 @@ func (r *AccountAIRunCfMetaService) ExecuteLlama3_8bInstructAwq(ctx context.Cont
 
 // Execute @cf/meta/llama-guard-3-8b model.
 func (r *AccountAIRunCfMetaService) ExecuteLlamaGuard3_8b(ctx context.Context, accountID string, params AccountAIRunCfMetaExecuteLlamaGuard3_8bParams, opts ...option.RequestOption) (res *AccountAIRunCfMetaExecuteLlamaGuard3_8bResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -220,7 +221,7 @@ func (r *AccountAIRunCfMetaService) ExecuteLlamaGuard3_8b(ctx context.Context, a
 
 // Execute @cf/meta/m2m100-1.2b model.
 func (r *AccountAIRunCfMetaService) ExecuteM2m100_1_2b(ctx context.Context, accountID string, params AccountAIRunCfMetaExecuteM2m100_1_2bParams, opts ...option.RequestOption) (res *AccountAIRunCfMetaExecuteM2m100_1_2bResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

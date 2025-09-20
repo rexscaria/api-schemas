@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -37,7 +38,7 @@ func NewAccountMagicRouteService(opts ...option.RequestOption) (r *AccountMagicR
 // Creates a new Magic static route. Use `?validate_only=true` as an optional query
 // parameter to run validation only without persisting changes.
 func (r *AccountMagicRouteService) New(ctx context.Context, accountID string, body AccountMagicRouteNewParams, opts ...option.RequestOption) (res *AccountMagicRouteNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -49,7 +50,7 @@ func (r *AccountMagicRouteService) New(ctx context.Context, accountID string, bo
 
 // Get a specific Magic static route.
 func (r *AccountMagicRouteService) Get(ctx context.Context, accountID string, routeID string, opts ...option.RequestOption) (res *AccountMagicRouteGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -66,7 +67,7 @@ func (r *AccountMagicRouteService) Get(ctx context.Context, accountID string, ro
 // Update a specific Magic static route. Use `?validate_only=true` as an optional
 // query parameter to run validation only without persisting changes.
 func (r *AccountMagicRouteService) Update(ctx context.Context, accountID string, routeID string, body AccountMagicRouteUpdateParams, opts ...option.RequestOption) (res *AccountMagicRouteUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -82,7 +83,7 @@ func (r *AccountMagicRouteService) Update(ctx context.Context, accountID string,
 
 // List all Magic static routes.
 func (r *AccountMagicRouteService) List(ctx context.Context, accountID string, opts ...option.RequestOption) (res *MagicRoutesCollectionResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -94,7 +95,7 @@ func (r *AccountMagicRouteService) List(ctx context.Context, accountID string, o
 
 // Disable and remove a specific Magic static route.
 func (r *AccountMagicRouteService) Delete(ctx context.Context, accountID string, routeID string, opts ...option.RequestOption) (res *AccountMagicRouteDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -110,7 +111,7 @@ func (r *AccountMagicRouteService) Delete(ctx context.Context, accountID string,
 
 // Delete multiple Magic static routes.
 func (r *AccountMagicRouteService) DeleteMany(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountMagicRouteDeleteManyResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -124,7 +125,7 @@ func (r *AccountMagicRouteService) DeleteMany(ctx context.Context, accountID str
 // query parameter to run validation only without persisting changes. Only fields
 // for a route that need to be changed need be provided.
 func (r *AccountMagicRouteService) UpdateMany(ctx context.Context, accountID string, body AccountMagicRouteUpdateManyParams, opts ...option.RequestOption) (res *AccountMagicRouteUpdateManyResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

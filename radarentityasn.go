@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -39,7 +40,7 @@ func NewRadarEntityAsnService(opts ...option.RequestOption) (r *RadarEntityAsnSe
 // happens because Cloudflare has a small amount of traffic from/to this AS).
 // Population estimates come from APNIC (refer to https://labs.apnic.net/?p=526).
 func (r *RadarEntityAsnService) Get(ctx context.Context, asn int64, query RadarEntityAsnGetParams, opts ...option.RequestOption) (res *RadarEntityAsnGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("radar/entities/asns/%v", asn)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -47,7 +48,7 @@ func (r *RadarEntityAsnService) Get(ctx context.Context, asn int64, query RadarE
 
 // Retrieves a list of autonomous systems.
 func (r *RadarEntityAsnService) List(ctx context.Context, query RadarEntityAsnListParams, opts ...option.RequestOption) (res *RadarEntityAsnListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/entities/asns"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -55,7 +56,7 @@ func (r *RadarEntityAsnService) List(ctx context.Context, query RadarEntityAsnLi
 
 // Retrieves AS-level relationship for given networks.
 func (r *RadarEntityAsnService) GetRelationships(ctx context.Context, asn int64, query RadarEntityAsnGetRelationshipsParams, opts ...option.RequestOption) (res *RadarEntityAsnGetRelationshipsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("radar/entities/asns/%v/rel", asn)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -64,7 +65,7 @@ func (r *RadarEntityAsnService) GetRelationships(ctx context.Context, asn int64,
 // Retrieves the requested autonomous system information based on IP address.
 // Population estimates come from APNIC (refer to https://labs.apnic.net/?p=526).
 func (r *RadarEntityAsnService) GetByIP(ctx context.Context, query RadarEntityAsnGetByIPParams, opts ...option.RequestOption) (res *RadarEntityAsnGetByIPResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/entities/asns/ip"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

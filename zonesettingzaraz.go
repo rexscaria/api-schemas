@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"reflect"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/requestconfig"
@@ -44,7 +45,7 @@ func NewZoneSettingZarazService(opts ...option.RequestOption) (r *ZoneSettingZar
 // Exports full current published Zaraz configuration for a zone, secret variables
 // included.
 func (r *ZoneSettingZarazService) Export(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *ZarazConfigReturn, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -56,7 +57,7 @@ func (r *ZoneSettingZarazService) Export(ctx context.Context, zoneID string, opt
 
 // Publish current Zaraz preview configuration for a zone.
 func (r *ZoneSettingZarazService) Publish(ctx context.Context, zoneID string, body ZoneSettingZarazPublishParams, opts ...option.RequestOption) (res *ZoneSettingZarazPublishResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -68,7 +69,7 @@ func (r *ZoneSettingZarazService) Publish(ctx context.Context, zoneID string, bo
 
 // Gets default Zaraz configuration for a zone.
 func (r *ZoneSettingZarazService) GetDefault(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *ZarazConfigResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -35,7 +36,7 @@ func NewZoneAPIGatewayExpressionTemplateService(opts ...option.RequestOption) (r
 
 // Generate fallthrough WAF expression template from a set of API hosts
 func (r *ZoneAPIGatewayExpressionTemplateService) GenerateFallthrough(ctx context.Context, zoneID string, body ZoneAPIGatewayExpressionTemplateGenerateFallthroughParams, opts ...option.RequestOption) (res *ZoneAPIGatewayExpressionTemplateGenerateFallthroughResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

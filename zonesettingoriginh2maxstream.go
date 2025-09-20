@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -41,7 +42,7 @@ func NewZoneSettingOriginH2MaxStreamService(opts ...option.RequestOption) (r *Zo
 // note that the default value is `100` for all plan types except Enterprise where
 // it is `1`. `1` means that H2 multiplexing is disabled.
 func (r *ZoneSettingOriginH2MaxStreamService) Get(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *ZoneSettingOriginH2MaxStreamGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -58,7 +59,7 @@ func (r *ZoneSettingOriginH2MaxStreamService) Get(ctx context.Context, zoneID st
 // note that the default value is `100` for all plan types except Enterprise where
 // it is `1`. `1` means that H2 multiplexing is disabled.
 func (r *ZoneSettingOriginH2MaxStreamService) Update(ctx context.Context, zoneID string, body ZoneSettingOriginH2MaxStreamUpdateParams, opts ...option.RequestOption) (res *ZoneSettingOriginH2MaxStreamUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

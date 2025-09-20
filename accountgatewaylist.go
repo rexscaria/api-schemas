@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -38,7 +39,7 @@ func NewAccountGatewayListService(opts ...option.RequestOption) (r *AccountGatew
 
 // Creates a new Zero Trust list.
 func (r *AccountGatewayListService) New(ctx context.Context, accountID string, body AccountGatewayListNewParams, opts ...option.RequestOption) (res *AccountGatewayListNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -50,7 +51,7 @@ func (r *AccountGatewayListService) New(ctx context.Context, accountID string, b
 
 // Fetches a single Zero Trust list.
 func (r *AccountGatewayListService) Get(ctx context.Context, accountID string, listID string, opts ...option.RequestOption) (res *AccountGatewayListGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -67,7 +68,7 @@ func (r *AccountGatewayListService) Get(ctx context.Context, accountID string, l
 // Updates a configured Zero Trust list. Skips updating list items if not included
 // in the payload.
 func (r *AccountGatewayListService) Update(ctx context.Context, accountID string, listID string, body AccountGatewayListUpdateParams, opts ...option.RequestOption) (res *AccountGatewayListUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -83,7 +84,7 @@ func (r *AccountGatewayListService) Update(ctx context.Context, accountID string
 
 // Fetches all Zero Trust lists for an account.
 func (r *AccountGatewayListService) List(ctx context.Context, accountID string, query AccountGatewayListListParams, opts ...option.RequestOption) (res *AccountGatewayListListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -95,7 +96,7 @@ func (r *AccountGatewayListService) List(ctx context.Context, accountID string, 
 
 // Deletes a Zero Trust list.
 func (r *AccountGatewayListService) Delete(ctx context.Context, accountID string, listID string, opts ...option.RequestOption) (res *ZeroTrustGatewayEmptyResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -111,7 +112,7 @@ func (r *AccountGatewayListService) Delete(ctx context.Context, accountID string
 
 // Fetches all items in a single Zero Trust list.
 func (r *AccountGatewayListService) ListItems(ctx context.Context, accountID string, listID string, opts ...option.RequestOption) (res *AccountGatewayListListItemsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -127,7 +128,7 @@ func (r *AccountGatewayListService) ListItems(ctx context.Context, accountID str
 
 // Appends or removes an item from a configured Zero Trust list.
 func (r *AccountGatewayListService) Patch(ctx context.Context, accountID string, listID string, body AccountGatewayListPatchParams, opts ...option.RequestOption) (res *AccountGatewayListPatchResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

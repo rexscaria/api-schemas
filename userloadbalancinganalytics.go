@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -36,7 +37,7 @@ func NewUserLoadBalancingAnalyticsService(opts ...option.RequestOption) (r *User
 
 // List origin health changes.
 func (r *UserLoadBalancingAnalyticsService) ListEvents(ctx context.Context, query UserLoadBalancingAnalyticsListEventsParams, opts ...option.RequestOption) (res *UserLoadBalancingAnalyticsListEventsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "user/load_balancing_analytics/events"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

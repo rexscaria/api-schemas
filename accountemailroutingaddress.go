@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -39,7 +40,7 @@ func NewAccountEmailRoutingAddressService(opts ...option.RequestOption) (r *Acco
 // Create a destination address to forward your emails to. Destination addresses
 // need to be verified before they can be used.
 func (r *AccountEmailRoutingAddressService) New(ctx context.Context, accountID string, body AccountEmailRoutingAddressNewParams, opts ...option.RequestOption) (res *DestinationAddressResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -51,7 +52,7 @@ func (r *AccountEmailRoutingAddressService) New(ctx context.Context, accountID s
 
 // Gets information for a specific destination email already created.
 func (r *AccountEmailRoutingAddressService) Get(ctx context.Context, accountID string, destinationAddressIdentifier string, opts ...option.RequestOption) (res *DestinationAddressResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -67,7 +68,7 @@ func (r *AccountEmailRoutingAddressService) Get(ctx context.Context, accountID s
 
 // Lists existing destination addresses.
 func (r *AccountEmailRoutingAddressService) List(ctx context.Context, accountID string, query AccountEmailRoutingAddressListParams, opts ...option.RequestOption) (res *AccountEmailRoutingAddressListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -79,7 +80,7 @@ func (r *AccountEmailRoutingAddressService) List(ctx context.Context, accountID 
 
 // Deletes a specific destination address.
 func (r *AccountEmailRoutingAddressService) Delete(ctx context.Context, accountID string, destinationAddressIdentifier string, opts ...option.RequestOption) (res *DestinationAddressResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

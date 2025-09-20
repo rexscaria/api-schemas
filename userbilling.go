@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -38,7 +39,7 @@ func NewUserBillingService(opts ...option.RequestOption) (r *UserBillingService)
 //
 // Deprecated: deprecated
 func (r *UserBillingService) ListHistory(ctx context.Context, query UserBillingListHistoryParams, opts ...option.RequestOption) (res *UserBillingListHistoryResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "user/billing/history"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -48,7 +49,7 @@ func (r *UserBillingService) ListHistory(ctx context.Context, query UserBillingL
 //
 // Deprecated: deprecated
 func (r *UserBillingService) GetProfile(ctx context.Context, opts ...option.RequestOption) (res *BillingResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "user/billing/profile"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return

@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"reflect"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -37,7 +38,7 @@ func NewZoneBotManagementService(opts ...option.RequestOption) (r *ZoneBotManage
 
 // Retrieve a zone's Bot Management Config
 func (r *ZoneBotManagementService) Get(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *ManagementResponseBody, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -117,7 +118,7 @@ func (r *ZoneBotManagementService) Get(ctx context.Context, zoneID string, opts 
 //
 // ```
 func (r *ZoneBotManagementService) Update(ctx context.Context, zoneID string, body ZoneBotManagementUpdateParams, opts ...option.RequestOption) (res *ManagementResponseBody, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

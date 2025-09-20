@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -37,7 +38,7 @@ func NewAccountGatewayAuditSSHSettingService(opts ...option.RequestOption) (r *A
 // Gets all Zero Trust Audit SSH and SSH with Access for Infrastructure settings
 // for an account.
 func (r *AccountGatewayAuditSSHSettingService) Get(ctx context.Context, accountID string, opts ...option.RequestOption) (res *SingleResponseAudit, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -50,7 +51,7 @@ func (r *AccountGatewayAuditSSHSettingService) Get(ctx context.Context, accountI
 // Updates Zero Trust Audit SSH and SSH with Access for Infrastructure settings for
 // an account.
 func (r *AccountGatewayAuditSSHSettingService) Update(ctx context.Context, accountID string, body AccountGatewayAuditSSHSettingUpdateParams, opts ...option.RequestOption) (res *SingleResponseAudit, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -63,7 +64,7 @@ func (r *AccountGatewayAuditSSHSettingService) Update(ctx context.Context, accou
 // Rotates the SSH account seed that is used for generating the host key identity
 // when connecting through the Cloudflare SSH Proxy.
 func (r *AccountGatewayAuditSSHSettingService) RotateSeed(ctx context.Context, accountID string, opts ...option.RequestOption) (res *SingleResponseAudit, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

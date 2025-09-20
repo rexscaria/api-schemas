@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/requestconfig"
@@ -34,7 +35,7 @@ func NewAccountIntelAsnService(opts ...option.RequestOption) (r *AccountIntelAsn
 
 // Get ASN Subnets.
 func (r *AccountIntelAsnService) ListSubnets(ctx context.Context, accountID string, asn int64, opts ...option.RequestOption) (res *AccountIntelAsnListSubnetsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -47,7 +48,7 @@ func (r *AccountIntelAsnService) ListSubnets(ctx context.Context, accountID stri
 // Gets an overview of the Autonomous System Number (ASN) and a list of subnets for
 // it.
 func (r *AccountIntelAsnService) GetOverview(ctx context.Context, accountID string, asn int64, opts ...option.RequestOption) (res *AccountIntelAsnGetOverviewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

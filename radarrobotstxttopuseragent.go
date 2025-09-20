@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -36,7 +37,7 @@ func NewRadarRobotsTxtTopUserAgentService(opts ...option.RequestOption) (r *Rada
 
 // Retrieves the top user agents on robots.txt files.
 func (r *RadarRobotsTxtTopUserAgentService) GetTopUserAgents(ctx context.Context, query RadarRobotsTxtTopUserAgentGetTopUserAgentsParams, opts ...option.RequestOption) (res *RadarRobotsTxtTopUserAgentGetTopUserAgentsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/robots_txt/top/user_agents/directive"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -56,7 +57,7 @@ func NewAccountDeviceService(opts ...option.RequestOption) (r *AccountDeviceServ
 //
 // Deprecated: deprecated
 func (r *AccountDeviceService) Get(ctx context.Context, accountID string, deviceID string, opts ...option.RequestOption) (res *AccountDeviceGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -81,7 +82,7 @@ func (r *AccountDeviceService) Get(ctx context.Context, accountID string, device
 //
 // Deprecated: deprecated
 func (r *AccountDeviceService) List(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountDeviceListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -101,7 +102,7 @@ func (r *AccountDeviceService) List(ctx context.Context, accountID string, opts 
 //
 // Deprecated: deprecated
 func (r *AccountDeviceService) GetOverrideCode(ctx context.Context, accountID string, deviceID string, opts ...option.RequestOption) (res *AccountDeviceGetOverrideCodeResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -117,7 +118,7 @@ func (r *AccountDeviceService) GetOverrideCode(ctx context.Context, accountID st
 
 // Fetches a list of the device settings profiles for an account.
 func (r *AccountDeviceService) ListPolicies(ctx context.Context, accountID string, opts ...option.RequestOption) (res *DeviceSettingsResponseCollection, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -136,7 +137,7 @@ func (r *AccountDeviceService) ListPolicies(ctx context.Context, accountID strin
 //
 // Deprecated: deprecated
 func (r *AccountDeviceService) Revoke(ctx context.Context, accountID string, body AccountDeviceRevokeParams, opts ...option.RequestOption) (res *APIResponseSingleTeamsDevices, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -155,7 +156,7 @@ func (r *AccountDeviceService) Revoke(ctx context.Context, accountID string, bod
 //
 // Deprecated: deprecated
 func (r *AccountDeviceService) Unrevoke(ctx context.Context, accountID string, body AccountDeviceUnrevokeParams, opts ...option.RequestOption) (res *APIResponseSingleTeamsDevices, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

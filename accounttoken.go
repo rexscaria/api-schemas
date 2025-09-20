@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -40,7 +41,7 @@ func NewAccountTokenService(opts ...option.RequestOption) (r *AccountTokenServic
 
 // Create a new Account Owned API token.
 func (r *AccountTokenService) New(ctx context.Context, accountID string, body AccountTokenNewParams, opts ...option.RequestOption) (res *IamSingleTokenCreateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -52,7 +53,7 @@ func (r *AccountTokenService) New(ctx context.Context, accountID string, body Ac
 
 // Get information about a specific Account Owned API token.
 func (r *AccountTokenService) Get(ctx context.Context, accountID string, tokenID string, opts ...option.RequestOption) (res *IamSingleTokenResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -68,7 +69,7 @@ func (r *AccountTokenService) Get(ctx context.Context, accountID string, tokenID
 
 // Update an existing token.
 func (r *AccountTokenService) Update(ctx context.Context, accountID string, tokenID string, body AccountTokenUpdateParams, opts ...option.RequestOption) (res *IamSingleTokenResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -84,7 +85,7 @@ func (r *AccountTokenService) Update(ctx context.Context, accountID string, toke
 
 // List all Account Owned API tokens created for this account.
 func (r *AccountTokenService) List(ctx context.Context, accountID string, query AccountTokenListParams, opts ...option.RequestOption) (res *IamCollectionTokensResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -96,7 +97,7 @@ func (r *AccountTokenService) List(ctx context.Context, accountID string, query 
 
 // Destroy an Account Owned API token.
 func (r *AccountTokenService) Delete(ctx context.Context, accountID string, tokenID string, opts ...option.RequestOption) (res *IamAPIResponseSingleID, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -112,7 +113,7 @@ func (r *AccountTokenService) Delete(ctx context.Context, accountID string, toke
 
 // Find all available permission groups for Account Owned API Tokens
 func (r *AccountTokenService) ListPermissionGroups(ctx context.Context, accountID string, query AccountTokenListPermissionGroupsParams, opts ...option.RequestOption) (res *IamPermissionsGroupResponseCollection, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -124,7 +125,7 @@ func (r *AccountTokenService) ListPermissionGroups(ctx context.Context, accountI
 
 // Roll the Account Owned API token secret.
 func (r *AccountTokenService) Roll(ctx context.Context, accountID string, tokenID string, body AccountTokenRollParams, opts ...option.RequestOption) (res *IamResponseSingleValue, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -140,7 +141,7 @@ func (r *AccountTokenService) Roll(ctx context.Context, accountID string, tokenI
 
 // Test whether a token works.
 func (r *AccountTokenService) Verify(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountTokenVerifyResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

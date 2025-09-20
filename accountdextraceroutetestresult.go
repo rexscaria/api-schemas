@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/requestconfig"
@@ -35,7 +36,7 @@ func NewAccountDexTracerouteTestResultService(opts ...option.RequestOption) (r *
 // Get a breakdown of hops and performance metrics for a specific traceroute test
 // run
 func (r *AccountDexTracerouteTestResultService) GetNetworkPath(ctx context.Context, accountID string, testResultID string, opts ...option.RequestOption) (res *AccountDexTracerouteTestResultGetNetworkPathResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

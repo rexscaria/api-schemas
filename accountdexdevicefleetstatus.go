@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -38,7 +39,7 @@ func NewAccountDexDeviceFleetStatusService(opts ...option.RequestOption) (r *Acc
 // Get the live status of a latest device given device_id from the device_state
 // table
 func (r *AccountDexDeviceFleetStatusService) GetLiveStatus(ctx context.Context, accountID string, deviceID string, query AccountDexDeviceFleetStatusGetLiveStatusParams, opts ...option.RequestOption) (res *Device, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

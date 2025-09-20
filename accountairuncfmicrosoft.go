@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -37,7 +38,7 @@ func NewAccountAIRunCfMicrosoftService(opts ...option.RequestOption) (r *Account
 
 // Execute @cf/microsoft/phi-2 model.
 func (r *AccountAIRunCfMicrosoftService) ExecutePhi2(ctx context.Context, accountID string, params AccountAIRunCfMicrosoftExecutePhi2Params, opts ...option.RequestOption) (res *AccountAIRunCfMicrosoftExecutePhi2Response, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

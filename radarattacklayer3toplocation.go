@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -36,7 +37,7 @@ func NewRadarAttackLayer3TopLocationService(opts ...option.RequestOption) (r *Ra
 
 // Retrieves the origin locations of layer 3 attacks.
 func (r *RadarAttackLayer3TopLocationService) GetTopOriginLocations(ctx context.Context, query RadarAttackLayer3TopLocationGetTopOriginLocationsParams, opts ...option.RequestOption) (res *RadarAttackLayer3TopLocationGetTopOriginLocationsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/attacks/layer3/top/locations/origin"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -44,7 +45,7 @@ func (r *RadarAttackLayer3TopLocationService) GetTopOriginLocations(ctx context.
 
 // Retrieves the target locations of layer 3 attacks.
 func (r *RadarAttackLayer3TopLocationService) GetTopTargetLocations(ctx context.Context, query RadarAttackLayer3TopLocationGetTopTargetLocationsParams, opts ...option.RequestOption) (res *RadarAttackLayer3TopLocationGetTopTargetLocationsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/attacks/layer3/top/locations/target"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -39,7 +40,7 @@ func NewAccountAccessIdentityProviderScimService(opts ...option.RequestOption) (
 // Lists SCIM Group resources synced to Cloudflare via the System for Cross-domain
 // Identity Management (SCIM).
 func (r *AccountAccessIdentityProviderScimService) ListGroups(ctx context.Context, accountID string, identityProviderID string, query AccountAccessIdentityProviderScimListGroupsParams, opts ...option.RequestOption) (res *AccountAccessIdentityProviderScimListGroupsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -56,7 +57,7 @@ func (r *AccountAccessIdentityProviderScimService) ListGroups(ctx context.Contex
 // Lists SCIM User resources synced to Cloudflare via the System for Cross-domain
 // Identity Management (SCIM).
 func (r *AccountAccessIdentityProviderScimService) ListUsers(ctx context.Context, accountID string, identityProviderID string, query AccountAccessIdentityProviderScimListUsersParams, opts ...option.RequestOption) (res *AccountAccessIdentityProviderScimListUsersResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

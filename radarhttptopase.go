@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -37,7 +38,7 @@ func NewRadarHTTPTopAseService(opts ...option.RequestOption) (r *RadarHTTPTopAse
 
 // Retrieves the top autonomous systems by HTTP requests.
 func (r *RadarHTTPTopAseService) List(ctx context.Context, query RadarHTTPTopAseListParams, opts ...option.RequestOption) (res *RadarHTTPTopAseListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/http/top/ases"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -46,7 +47,7 @@ func (r *RadarHTTPTopAseService) List(ctx context.Context, query RadarHTTPTopAse
 // Retrieves the top autonomous systems, by HTTP requests, of the requested bot
 // class.
 func (r *RadarHTTPTopAseService) ListByBotClass(ctx context.Context, botClass RadarHTTPTopAseListByBotClassParamsBotClass, query RadarHTTPTopAseListByBotClassParams, opts ...option.RequestOption) (res *RadarHTTPTopAseListByBotClassResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("radar/http/top/ases/bot_class/%v", botClass)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -55,7 +56,7 @@ func (r *RadarHTTPTopAseService) ListByBotClass(ctx context.Context, botClass Ra
 // Retrieves the top autonomous systems, by HTTP requests, of the requested browser
 // family.
 func (r *RadarHTTPTopAseService) ListByBrowserFamily(ctx context.Context, browserFamily RadarHTTPTopAseListByBrowserFamilyParamsBrowserFamily, query RadarHTTPTopAseListByBrowserFamilyParams, opts ...option.RequestOption) (res *RadarHTTPTopAseListByBrowserFamilyResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("radar/http/top/ases/browser_family/%v", browserFamily)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -64,7 +65,7 @@ func (r *RadarHTTPTopAseService) ListByBrowserFamily(ctx context.Context, browse
 // Retrieves the top autonomous systems, by HTTP requests, of the requested device
 // type.
 func (r *RadarHTTPTopAseService) ListByDeviceType(ctx context.Context, deviceType RadarHTTPTopAseListByDeviceTypeParamsDeviceType, query RadarHTTPTopAseListByDeviceTypeParams, opts ...option.RequestOption) (res *RadarHTTPTopAseListByDeviceTypeResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("radar/http/top/ases/device_type/%v", deviceType)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -73,7 +74,7 @@ func (r *RadarHTTPTopAseService) ListByDeviceType(ctx context.Context, deviceTyp
 // Retrieves the top autonomous systems, by HTTP requests, of the requested HTTP
 // protocol.
 func (r *RadarHTTPTopAseService) ListByHTTPProtocol(ctx context.Context, httpProtocol RadarHTTPTopAseListByHTTPProtocolParamsHTTPProtocol, query RadarHTTPTopAseListByHTTPProtocolParams, opts ...option.RequestOption) (res *RadarHTTPTopAseListByHTTPProtocolResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("radar/http/top/ases/http_protocol/%v", httpProtocol)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -82,7 +83,7 @@ func (r *RadarHTTPTopAseService) ListByHTTPProtocol(ctx context.Context, httpPro
 // Retrieves the top autonomous systems, by HTTP requests, of the requested HTTP
 // version.
 func (r *RadarHTTPTopAseService) ListByHTTPVersion(ctx context.Context, httpVersion RadarHTTPTopAseListByHTTPVersionParamsHTTPVersion, query RadarHTTPTopAseListByHTTPVersionParams, opts ...option.RequestOption) (res *RadarHTTPTopAseListByHTTPVersionResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("radar/http/top/ases/http_version/%v", httpVersion)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -91,7 +92,7 @@ func (r *RadarHTTPTopAseService) ListByHTTPVersion(ctx context.Context, httpVers
 // Retrieves the top autonomous systems, by HTTP requests, of the requested IP
 // version.
 func (r *RadarHTTPTopAseService) ListByIPVersion(ctx context.Context, ipVersion RadarHTTPTopAseListByIPVersionParamsIPVersion, query RadarHTTPTopAseListByIPVersionParams, opts ...option.RequestOption) (res *RadarHTTPTopAseListByIPVersionResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("radar/http/top/ases/ip_version/%v", ipVersion)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -100,7 +101,7 @@ func (r *RadarHTTPTopAseService) ListByIPVersion(ctx context.Context, ipVersion 
 // Retrieves the top autonomous systems, by HTTP requests, of the requested
 // operating system.
 func (r *RadarHTTPTopAseService) ListByOs(ctx context.Context, os RadarHTTPTopAseListByOsParamsOs, query RadarHTTPTopAseListByOsParams, opts ...option.RequestOption) (res *RadarHTTPTopAseListByOsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("radar/http/top/ases/os/%v", os)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -109,7 +110,7 @@ func (r *RadarHTTPTopAseService) ListByOs(ctx context.Context, os RadarHTTPTopAs
 // Retrieves the top autonomous systems, by HTTP requests, of the requested TLS
 // protocol version.
 func (r *RadarHTTPTopAseService) ListByTlsVersion(ctx context.Context, tlsVersion RadarHTTPTopAseListByTlsVersionParamsTlsVersion, query RadarHTTPTopAseListByTlsVersionParams, opts ...option.RequestOption) (res *RadarHTTPTopAseListByTlsVersionResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("radar/http/top/ases/tls_version/%v", tlsVersion)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

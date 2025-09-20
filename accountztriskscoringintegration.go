@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -36,7 +37,7 @@ func NewAccountZtRiskScoringIntegrationService(opts ...option.RequestOption) (r 
 
 // Create new risk score integration.
 func (r *AccountZtRiskScoringIntegrationService) NewIntegration(ctx context.Context, accountID string, body AccountZtRiskScoringIntegrationNewIntegrationParams, opts ...option.RequestOption) (res *AccountZtRiskScoringIntegrationNewIntegrationResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -48,7 +49,7 @@ func (r *AccountZtRiskScoringIntegrationService) NewIntegration(ctx context.Cont
 
 // Delete a risk score integration.
 func (r *AccountZtRiskScoringIntegrationService) DeleteIntegration(ctx context.Context, accountID string, integrationID string, opts ...option.RequestOption) (res *AccountZtRiskScoringIntegrationDeleteIntegrationResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -64,7 +65,7 @@ func (r *AccountZtRiskScoringIntegrationService) DeleteIntegration(ctx context.C
 
 // List all risk score integrations for the account.
 func (r *AccountZtRiskScoringIntegrationService) ListIntegrations(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountZtRiskScoringIntegrationListIntegrationsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -76,7 +77,7 @@ func (r *AccountZtRiskScoringIntegrationService) ListIntegrations(ctx context.Co
 
 // Get risk score integration by id.
 func (r *AccountZtRiskScoringIntegrationService) GetIntegration(ctx context.Context, accountID string, integrationID string, opts ...option.RequestOption) (res *AccountZtRiskScoringIntegrationGetIntegrationResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -92,7 +93,7 @@ func (r *AccountZtRiskScoringIntegrationService) GetIntegration(ctx context.Cont
 
 // Get risk score integration by reference id.
 func (r *AccountZtRiskScoringIntegrationService) GetIntegrationByReferenceID(ctx context.Context, accountID string, referenceID string, opts ...option.RequestOption) (res *AccountZtRiskScoringIntegrationGetIntegrationByReferenceIDResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -109,7 +110,7 @@ func (r *AccountZtRiskScoringIntegrationService) GetIntegrationByReferenceID(ctx
 // Overwrite the reference_id, tenant_url, and active values with the ones
 // provided.
 func (r *AccountZtRiskScoringIntegrationService) UpdateIntegration(ctx context.Context, accountID string, integrationID string, body AccountZtRiskScoringIntegrationUpdateIntegrationParams, opts ...option.RequestOption) (res *AccountZtRiskScoringIntegrationUpdateIntegrationResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -37,7 +38,7 @@ func NewAccountAIRunCfMyshellAIService(opts ...option.RequestOption) (r *Account
 
 // Execute @cf/myshell-ai/melotts model.
 func (r *AccountAIRunCfMyshellAIService) ExecuteMelotts(ctx context.Context, accountID string, params AccountAIRunCfMyshellAIExecuteMelottsParams, opts ...option.RequestOption) (res *AccountAIRunCfMyshellAIExecuteMelottsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

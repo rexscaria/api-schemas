@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"mime/multipart"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apiform"
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -38,7 +39,7 @@ func NewAccountStreamCaptionService(opts ...option.RequestOption) (r *AccountStr
 
 // Lists the captions or subtitles for provided language.
 func (r *AccountStreamCaptionService) Get(ctx context.Context, accountID string, identifier string, language string, opts ...option.RequestOption) (res *LanguageResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -58,7 +59,7 @@ func (r *AccountStreamCaptionService) Get(ctx context.Context, accountID string,
 
 // Lists the available captions or subtitles for a specific video.
 func (r *AccountStreamCaptionService) List(ctx context.Context, accountID string, identifier string, opts ...option.RequestOption) (res *AccountStreamCaptionListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -74,7 +75,7 @@ func (r *AccountStreamCaptionService) List(ctx context.Context, accountID string
 
 // Removes the captions or subtitles from a video.
 func (r *AccountStreamCaptionService) Delete(ctx context.Context, accountID string, identifier string, language string, opts ...option.RequestOption) (res *AccountStreamCaptionDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -94,7 +95,7 @@ func (r *AccountStreamCaptionService) Delete(ctx context.Context, accountID stri
 
 // Generate captions or subtitles for provided language via AI.
 func (r *AccountStreamCaptionService) Generate(ctx context.Context, accountID string, identifier string, language string, opts ...option.RequestOption) (res *LanguageResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -114,7 +115,7 @@ func (r *AccountStreamCaptionService) Generate(ctx context.Context, accountID st
 
 // Return WebVTT captions for a provided language.
 func (r *AccountStreamCaptionService) GetVtt(ctx context.Context, accountID string, identifier string, language string, opts ...option.RequestOption) (res *string, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "text/vtt")}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
@@ -136,7 +137,7 @@ func (r *AccountStreamCaptionService) GetVtt(ctx context.Context, accountID stri
 // Uploads the caption or subtitle file to the endpoint for a specific BCP47
 // language. One caption or subtitle file per language is allowed.
 func (r *AccountStreamCaptionService) Upload(ctx context.Context, accountID string, identifier string, language string, body AccountStreamCaptionUploadParams, opts ...option.RequestOption) (res *LanguageResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

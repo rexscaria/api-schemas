@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/requestconfig"
@@ -38,7 +39,7 @@ func NewZoneSpeedAPIService(opts ...option.RequestOption) (r *ZoneSpeedAPIServic
 
 // Retrieves quota for all plans, as well as the current zone quota.
 func (r *ZoneSpeedAPIService) GetAvailabilities(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *ZoneSpeedAPIGetAvailabilitiesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

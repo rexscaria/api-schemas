@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -41,7 +42,7 @@ func NewAccountWorkflowInstanceService(opts ...option.RequestOption) (r *Account
 
 // Create a new workflow instance
 func (r *AccountWorkflowInstanceService) New(ctx context.Context, accountID string, workflowName string, body AccountWorkflowInstanceNewParams, opts ...option.RequestOption) (res *AccountWorkflowInstanceNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -57,7 +58,7 @@ func (r *AccountWorkflowInstanceService) New(ctx context.Context, accountID stri
 
 // Get logs and status from instance
 func (r *AccountWorkflowInstanceService) Get(ctx context.Context, accountID string, workflowName string, instanceID string, opts ...option.RequestOption) (res *AccountWorkflowInstanceGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -77,7 +78,7 @@ func (r *AccountWorkflowInstanceService) Get(ctx context.Context, accountID stri
 
 // List of workflow instances
 func (r *AccountWorkflowInstanceService) List(ctx context.Context, accountID string, workflowName string, query AccountWorkflowInstanceListParams, opts ...option.RequestOption) (res *AccountWorkflowInstanceListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -93,7 +94,7 @@ func (r *AccountWorkflowInstanceService) List(ctx context.Context, accountID str
 
 // Batch create new Workflow instances
 func (r *AccountWorkflowInstanceService) BatchNew(ctx context.Context, accountID string, workflowName string, body AccountWorkflowInstanceBatchNewParams, opts ...option.RequestOption) (res *AccountWorkflowInstanceBatchNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -109,7 +110,7 @@ func (r *AccountWorkflowInstanceService) BatchNew(ctx context.Context, accountID
 
 // Send event to instance
 func (r *AccountWorkflowInstanceService) SendEvent(ctx context.Context, accountID string, workflowName string, instanceID string, eventType string, body AccountWorkflowInstanceSendEventParams, opts ...option.RequestOption) (res *AccountWorkflowInstanceSendEventResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -133,7 +134,7 @@ func (r *AccountWorkflowInstanceService) SendEvent(ctx context.Context, accountI
 
 // Change status of instance
 func (r *AccountWorkflowInstanceService) UpdateStatus(ctx context.Context, accountID string, workflowName string, instanceID string, body AccountWorkflowInstanceUpdateStatusParams, opts ...option.RequestOption) (res *AccountWorkflowInstanceUpdateStatusResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -35,7 +36,7 @@ func NewAccountQueueMessageService(opts ...option.RequestOption) (r *AccountQueu
 
 // Acknowledge + Retry messages from a Queue
 func (r *AccountQueueMessageService) Acknowledge(ctx context.Context, accountID string, queueID string, body AccountQueueMessageAcknowledgeParams, opts ...option.RequestOption) (res *AccountQueueMessageAcknowledgeResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -51,7 +52,7 @@ func (r *AccountQueueMessageService) Acknowledge(ctx context.Context, accountID 
 
 // Pull a batch of messages from a Queue
 func (r *AccountQueueMessageService) Pull(ctx context.Context, accountID string, queueID string, body AccountQueueMessagePullParams, opts ...option.RequestOption) (res *AccountQueueMessagePullResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

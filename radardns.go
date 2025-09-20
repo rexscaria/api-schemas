@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -42,7 +43,7 @@ func NewRadarDNSService(opts ...option.RequestOption) (r *RadarDNSService) {
 
 // Retrieves normalized query volume to the 1.1.1.1 DNS resolver over time.
 func (r *RadarDNSService) GetTimeseries(ctx context.Context, query RadarDNSGetTimeseriesParams, opts ...option.RequestOption) (res *RadarDNSGetTimeseriesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/dns/timeseries"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

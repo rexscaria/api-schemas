@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -38,7 +39,7 @@ func NewAccountWarpConnectorService(opts ...option.RequestOption) (r *AccountWar
 
 // Creates a new Warp Connector Tunnel in an account.
 func (r *AccountWarpConnectorService) New(ctx context.Context, accountID string, body AccountWarpConnectorNewParams, opts ...option.RequestOption) (res *TunnelResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -50,7 +51,7 @@ func (r *AccountWarpConnectorService) New(ctx context.Context, accountID string,
 
 // Fetches a single Warp Connector Tunnel.
 func (r *AccountWarpConnectorService) Get(ctx context.Context, accountID string, tunnelID string, opts ...option.RequestOption) (res *TunnelResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -66,7 +67,7 @@ func (r *AccountWarpConnectorService) Get(ctx context.Context, accountID string,
 
 // Updates an existing Warp Connector Tunnel.
 func (r *AccountWarpConnectorService) Update(ctx context.Context, accountID string, tunnelID string, body AccountWarpConnectorUpdateParams, opts ...option.RequestOption) (res *TunnelResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -82,7 +83,7 @@ func (r *AccountWarpConnectorService) Update(ctx context.Context, accountID stri
 
 // Lists and filters Warp Connector Tunnels in an account.
 func (r *AccountWarpConnectorService) List(ctx context.Context, accountID string, query AccountWarpConnectorListParams, opts ...option.RequestOption) (res *TunnelResponseCollection, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -94,7 +95,7 @@ func (r *AccountWarpConnectorService) List(ctx context.Context, accountID string
 
 // Deletes a Warp Connector Tunnel from an account.
 func (r *AccountWarpConnectorService) Delete(ctx context.Context, accountID string, tunnelID string, opts ...option.RequestOption) (res *TunnelResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -111,7 +112,7 @@ func (r *AccountWarpConnectorService) Delete(ctx context.Context, accountID stri
 // Gets the token used to associate warp device with a specific Warp Connector
 // tunnel.
 func (r *AccountWarpConnectorService) GetToken(ctx context.Context, accountID string, tunnelID string, opts ...option.RequestOption) (res *TunnelResponseToken, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

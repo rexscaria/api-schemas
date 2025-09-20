@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -37,7 +38,7 @@ func NewAccountStreamKeyService(opts ...option.RequestOption) (r *AccountStreamK
 // once after creation. Keys are created, used, and deleted independently of
 // videos, and every key can sign any video.
 func (r *AccountStreamKeyService) New(ctx context.Context, accountID string, body AccountStreamKeyNewParams, opts ...option.RequestOption) (res *AccountStreamKeyNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -49,7 +50,7 @@ func (r *AccountStreamKeyService) New(ctx context.Context, accountID string, bod
 
 // Lists the video ID and creation date and time when a signing key was created.
 func (r *AccountStreamKeyService) List(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountStreamKeyListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -61,7 +62,7 @@ func (r *AccountStreamKeyService) List(ctx context.Context, accountID string, op
 
 // Deletes signing keys and revokes all signed URLs generated with the key.
 func (r *AccountStreamKeyService) Delete(ctx context.Context, accountID string, identifier string, opts ...option.RequestOption) (res *DeletedStreamResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

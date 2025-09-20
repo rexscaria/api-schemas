@@ -11,6 +11,7 @@ import (
 	"mime/multipart"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apiform"
@@ -46,7 +47,7 @@ func NewAccountImageV1Service(opts ...option.RequestOption) (r *AccountImageV1Se
 
 // Fetch details for a single image.
 func (r *AccountImageV1Service) Get(ctx context.Context, accountID string, imageID string, opts ...option.RequestOption) (res *ImageResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -63,7 +64,7 @@ func (r *AccountImageV1Service) Get(ctx context.Context, accountID string, image
 // Update image access control. On access control change, all copies of the image
 // are purged from cache.
 func (r *AccountImageV1Service) Update(ctx context.Context, accountID string, imageID string, body AccountImageV1UpdateParams, opts ...option.RequestOption) (res *ImageResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -82,7 +83,7 @@ func (r *AccountImageV1Service) Update(ctx context.Context, accountID string, im
 //
 // Deprecated: deprecated
 func (r *AccountImageV1Service) List(ctx context.Context, accountID string, query AccountImageV1ListParams, opts ...option.RequestOption) (res *AccountImageV1ListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -95,7 +96,7 @@ func (r *AccountImageV1Service) List(ctx context.Context, accountID string, quer
 // Delete an image on Cloudflare Images. On success, all copies of the image are
 // deleted and purged from cache.
 func (r *AccountImageV1Service) Delete(ctx context.Context, accountID string, imageID string, opts ...option.RequestOption) (res *DeletedImagesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -112,7 +113,7 @@ func (r *AccountImageV1Service) Delete(ctx context.Context, accountID string, im
 // Fetch base image. For most images this will be the originally uploaded file. For
 // larger images it can be a near-lossless version of the original.
 func (r *AccountImageV1Service) FetchBase(ctx context.Context, accountID string, imageID string, opts ...option.RequestOption) (res *http.Response, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "image/*")}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
@@ -129,7 +130,7 @@ func (r *AccountImageV1Service) FetchBase(ctx context.Context, accountID string,
 
 // Fetch usage statistics details for Cloudflare Images.
 func (r *AccountImageV1Service) Stats(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountImageV1StatsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -143,7 +144,7 @@ func (r *AccountImageV1Service) Stats(ctx context.Context, accountID string, opt
 // (multipart/form-data) request. An image can be uploaded by sending an image file
 // or passing an accessible to an API url.
 func (r *AccountImageV1Service) Upload(ctx context.Context, accountID string, body AccountImageV1UploadParams, opts ...option.RequestOption) (res *ImageResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

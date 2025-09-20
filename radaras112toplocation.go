@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -37,7 +38,7 @@ func NewRadarAs112TopLocationService(opts ...option.RequestOption) (r *RadarAs11
 
 // Retrieves the top locations by AS112 DNS queries.
 func (r *RadarAs112TopLocationService) Get(ctx context.Context, query RadarAs112TopLocationGetParams, opts ...option.RequestOption) (res *RadarAs112TopLocationGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/as112/top/locations"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -46,7 +47,7 @@ func (r *RadarAs112TopLocationService) Get(ctx context.Context, query RadarAs112
 // Retrieves the top locations of DNS queries to AS112 with DNSSEC (DNS Security
 // Extensions) support.
 func (r *RadarAs112TopLocationService) GetByDnssec(ctx context.Context, dnssec RadarAs112TopLocationGetByDnssecParamsDnssec, query RadarAs112TopLocationGetByDnssecParams, opts ...option.RequestOption) (res *RadarAs112TopLocationGetByDnssecResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("radar/as112/top/locations/dnssec/%v", dnssec)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -55,7 +56,7 @@ func (r *RadarAs112TopLocationService) GetByDnssec(ctx context.Context, dnssec R
 // Retrieves the top locations of DNS queries to AS112 with EDNS (Extension
 // Mechanisms for DNS) support.
 func (r *RadarAs112TopLocationService) GetByEdns(ctx context.Context, edns RadarAs112TopLocationGetByEdnsParamsEdns, query RadarAs112TopLocationGetByEdnsParams, opts ...option.RequestOption) (res *RadarAs112TopLocationGetByEdnsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("radar/as112/top/locations/edns/%v", edns)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -63,7 +64,7 @@ func (r *RadarAs112TopLocationService) GetByEdns(ctx context.Context, edns Radar
 
 // Retrieves the top locations of DNS queries to AS112 for an IP version.
 func (r *RadarAs112TopLocationService) GetByIPVersion(ctx context.Context, ipVersion RadarAs112TopLocationGetByIPVersionParamsIPVersion, query RadarAs112TopLocationGetByIPVersionParams, opts ...option.RequestOption) (res *RadarAs112TopLocationGetByIPVersionResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("radar/as112/top/locations/ip_version/%v", ipVersion)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

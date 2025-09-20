@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -37,7 +38,7 @@ func NewAccountLoadBalancerRegionService(opts ...option.RequestOption) (r *Accou
 
 // Get a single region mapping.
 func (r *AccountLoadBalancerRegionService) Get(ctx context.Context, accountID string, regionID AccountLoadBalancerRegionGetParamsRegionID, opts ...option.RequestOption) (res *AccountLoadBalancerRegionGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -49,7 +50,7 @@ func (r *AccountLoadBalancerRegionService) Get(ctx context.Context, accountID st
 
 // List all region mappings.
 func (r *AccountLoadBalancerRegionService) List(ctx context.Context, accountID string, query AccountLoadBalancerRegionListParams, opts ...option.RequestOption) (res *AccountLoadBalancerRegionListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

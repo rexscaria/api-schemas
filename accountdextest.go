@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -38,7 +39,7 @@ func NewAccountDexTestService(opts ...option.RequestOption) (r *AccountDexTestSe
 // Returns unique count of devices that have run synthetic application monitoring
 // tests in the past 7 days.
 func (r *AccountDexTestService) CountUniqueDevices(ctx context.Context, accountID string, query AccountDexTestCountUniqueDevicesParams, opts ...option.RequestOption) (res *AccountDexTestCountUniqueDevicesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -50,7 +51,7 @@ func (r *AccountDexTestService) CountUniqueDevices(ctx context.Context, accountI
 
 // List DEX tests with overview metrics
 func (r *AccountDexTestService) ListOverview(ctx context.Context, accountID string, query AccountDexTestListOverviewParams, opts ...option.RequestOption) (res *AccountDexTestListOverviewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

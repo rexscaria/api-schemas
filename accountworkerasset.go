@@ -10,6 +10,7 @@ import (
 	"mime/multipart"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apiform"
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -42,7 +43,7 @@ func NewAccountWorkerAssetService(opts ...option.RequestOption) (r *AccountWorke
 // uploads of assets, see
 // https://developers.cloudflare.com/workers/static-assets/direct-upload/.
 func (r *AccountWorkerAssetService) Upload(ctx context.Context, accountID string, params AccountWorkerAssetUploadParams, opts ...option.RequestOption) (res *AccountWorkerAssetUploadResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -41,7 +42,7 @@ func NewAccountIntelAttackSurfaceReportIssueService(opts ...option.RequestOption
 //
 // Deprecated: deprecated
 func (r *AccountIntelAttackSurfaceReportIssueService) List(ctx context.Context, accountID string, query AccountIntelAttackSurfaceReportIssueListParams, opts ...option.RequestOption) (res *AccountIntelAttackSurfaceReportIssueListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -55,7 +56,7 @@ func (r *AccountIntelAttackSurfaceReportIssueService) List(ctx context.Context, 
 //
 // Deprecated: deprecated
 func (r *AccountIntelAttackSurfaceReportIssueService) ListByClass(ctx context.Context, accountID string, query AccountIntelAttackSurfaceReportIssueListByClassParams, opts ...option.RequestOption) (res *ValueCountsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -69,7 +70,7 @@ func (r *AccountIntelAttackSurfaceReportIssueService) ListByClass(ctx context.Co
 //
 // Deprecated: deprecated
 func (r *AccountIntelAttackSurfaceReportIssueService) ListBySeverity(ctx context.Context, accountID string, query AccountIntelAttackSurfaceReportIssueListBySeverityParams, opts ...option.RequestOption) (res *ValueCountsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -83,7 +84,7 @@ func (r *AccountIntelAttackSurfaceReportIssueService) ListBySeverity(ctx context
 //
 // Deprecated: deprecated
 func (r *AccountIntelAttackSurfaceReportIssueService) ListByType(ctx context.Context, accountID string, query AccountIntelAttackSurfaceReportIssueListByTypeParams, opts ...option.RequestOption) (res *ValueCountsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

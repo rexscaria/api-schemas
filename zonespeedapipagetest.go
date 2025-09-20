@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -39,7 +40,7 @@ func NewZoneSpeedAPIPageTestService(opts ...option.RequestOption) (r *ZoneSpeedA
 // Deletes all tests for a specific webpage from a specific region. Deleted tests
 // are still counted as part of the quota.
 func (r *ZoneSpeedAPIPageTestService) DeleteAll(ctx context.Context, zoneID string, url string, body ZoneSpeedAPIPageTestDeleteAllParams, opts ...option.RequestOption) (res *ObservatoryCountResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -55,7 +56,7 @@ func (r *ZoneSpeedAPIPageTestService) DeleteAll(ctx context.Context, zoneID stri
 
 // Retrieves the result of a specific test.
 func (r *ZoneSpeedAPIPageTestService) GetResult(ctx context.Context, zoneID string, url string, testID string, opts ...option.RequestOption) (res *ObservatoryPageTestResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -75,7 +76,7 @@ func (r *ZoneSpeedAPIPageTestService) GetResult(ctx context.Context, zoneID stri
 
 // Test history (list of tests) for a specific webpage.
 func (r *ZoneSpeedAPIPageTestService) ListHistory(ctx context.Context, zoneID string, url string, query ZoneSpeedAPIPageTestListHistoryParams, opts ...option.RequestOption) (res *ZoneSpeedAPIPageTestListHistoryResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -91,7 +92,7 @@ func (r *ZoneSpeedAPIPageTestService) ListHistory(ctx context.Context, zoneID st
 
 // Starts a test for a specific webpage, in a specific region.
 func (r *ZoneSpeedAPIPageTestService) Start(ctx context.Context, zoneID string, url string, body ZoneSpeedAPIPageTestStartParams, opts ...option.RequestOption) (res *ObservatoryPageTestResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

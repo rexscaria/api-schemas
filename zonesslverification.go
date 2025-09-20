@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -37,7 +38,7 @@ func NewZoneSslVerificationService(opts ...option.RequestOption) (r *ZoneSslVeri
 
 // Get SSL Verification Info for a Zone.
 func (r *ZoneSslVerificationService) Get(ctx context.Context, zoneID string, query ZoneSslVerificationGetParams, opts ...option.RequestOption) (res *ZoneSslVerificationGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -52,7 +53,7 @@ func (r *ZoneSslVerificationService) Get(ctx context.Context, zoneID string, que
 // If a validation method is provided, the validation will be immediately attempted
 // using that method.
 func (r *ZoneSslVerificationService) Update(ctx context.Context, zoneID string, certificatePackID string, body ZoneSslVerificationUpdateParams, opts ...option.RequestOption) (res *ZoneSslVerificationUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/requestconfig"
@@ -34,7 +35,7 @@ func NewZoneHealthcheckPreviewService(opts ...option.RequestOption) (r *ZoneHeal
 
 // Create a new preview health check.
 func (r *ZoneHealthcheckPreviewService) New(ctx context.Context, zoneID string, body ZoneHealthcheckPreviewNewParams, opts ...option.RequestOption) (res *HealthcheckSingleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -46,7 +47,7 @@ func (r *ZoneHealthcheckPreviewService) New(ctx context.Context, zoneID string, 
 
 // Fetch a single configured health check preview.
 func (r *ZoneHealthcheckPreviewService) Get(ctx context.Context, zoneID string, healthcheckID string, opts ...option.RequestOption) (res *HealthcheckSingleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -62,7 +63,7 @@ func (r *ZoneHealthcheckPreviewService) Get(ctx context.Context, zoneID string, 
 
 // Delete a health check.
 func (r *ZoneHealthcheckPreviewService) Delete(ctx context.Context, zoneID string, healthcheckID string, opts ...option.RequestOption) (res *HealthcheckIDResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -38,7 +39,7 @@ func NewRadarAttackLayer7TopLocationService(opts ...option.RequestOption) (r *Ra
 // the total layer 7 attacks, with the origin location determined by the client IP
 // address.
 func (r *RadarAttackLayer7TopLocationService) GetTopOriginLocations(ctx context.Context, query RadarAttackLayer7TopLocationGetTopOriginLocationsParams, opts ...option.RequestOption) (res *RadarAttackLayer7TopLocationGetTopOriginLocationsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/attacks/layer7/top/locations/origin"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -48,7 +49,7 @@ func (r *RadarAttackLayer7TopLocationService) GetTopOriginLocations(ctx context.
 // percentage out of the total layer 7 attacks. The target location is determined
 // by the attacked zone's billing country, when available.
 func (r *RadarAttackLayer7TopLocationService) GetTopTargetLocations(ctx context.Context, query RadarAttackLayer7TopLocationGetTopTargetLocationsParams, opts ...option.RequestOption) (res *RadarAttackLayer7TopLocationGetTopTargetLocationsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/attacks/layer7/top/locations/target"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

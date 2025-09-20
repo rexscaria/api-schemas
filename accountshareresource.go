@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -38,7 +39,7 @@ func NewAccountShareResourceService(opts ...option.RequestOption) (r *AccountSha
 
 // Create a new share resource
 func (r *AccountShareResourceService) New(ctx context.Context, accountID string, shareID string, body AccountShareResourceNewParams, opts ...option.RequestOption) (res *ShareResourceResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -54,7 +55,7 @@ func (r *AccountShareResourceService) New(ctx context.Context, accountID string,
 
 // Get share resource by ID.
 func (r *AccountShareResourceService) Get(ctx context.Context, accountID string, shareID string, resourceID string, opts ...option.RequestOption) (res *ShareResourceResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -75,7 +76,7 @@ func (r *AccountShareResourceService) Get(ctx context.Context, accountID string,
 // Update is not immediate, an updated share resource object with a new status will
 // be returned.
 func (r *AccountShareResourceService) Update(ctx context.Context, accountID string, shareID string, resourceID string, body AccountShareResourceUpdateParams, opts ...option.RequestOption) (res *ShareResourceResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -95,7 +96,7 @@ func (r *AccountShareResourceService) Update(ctx context.Context, accountID stri
 
 // List share resources by share ID.
 func (r *AccountShareResourceService) List(ctx context.Context, accountID string, shareID string, query AccountShareResourceListParams, opts ...option.RequestOption) (res *AccountShareResourceListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -112,7 +113,7 @@ func (r *AccountShareResourceService) List(ctx context.Context, accountID string
 // Deletion is not immediate, an updated share resource object with a new status
 // will be returned.
 func (r *AccountShareResourceService) Delete(ctx context.Context, accountID string, shareID string, resourceID string, opts ...option.RequestOption) (res *ShareResourceResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

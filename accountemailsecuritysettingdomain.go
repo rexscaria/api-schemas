@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -38,7 +39,7 @@ func NewAccountEmailSecuritySettingDomainService(opts ...option.RequestOption) (
 
 // Get an email domain
 func (r *AccountEmailSecuritySettingDomainService) Get(ctx context.Context, accountID string, domainID int64, opts ...option.RequestOption) (res *AccountEmailSecuritySettingDomainGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -50,7 +51,7 @@ func (r *AccountEmailSecuritySettingDomainService) Get(ctx context.Context, acco
 
 // Update an email domain
 func (r *AccountEmailSecuritySettingDomainService) Update(ctx context.Context, accountID string, domainID int64, body AccountEmailSecuritySettingDomainUpdateParams, opts ...option.RequestOption) (res *AccountEmailSecuritySettingDomainUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -62,7 +63,7 @@ func (r *AccountEmailSecuritySettingDomainService) Update(ctx context.Context, a
 
 // Lists, searches, and sorts an account’s email domains.
 func (r *AccountEmailSecuritySettingDomainService) List(ctx context.Context, accountID string, query AccountEmailSecuritySettingDomainListParams, opts ...option.RequestOption) (res *AccountEmailSecuritySettingDomainListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -74,7 +75,7 @@ func (r *AccountEmailSecuritySettingDomainService) List(ctx context.Context, acc
 
 // Unprotect an email domain
 func (r *AccountEmailSecuritySettingDomainService) Unprotect(ctx context.Context, accountID string, domainID int64, opts ...option.RequestOption) (res *AccountEmailSecuritySettingDomainUnprotectResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -86,7 +87,7 @@ func (r *AccountEmailSecuritySettingDomainService) Unprotect(ctx context.Context
 
 // Unprotect multiple email domains
 func (r *AccountEmailSecuritySettingDomainService) UnprotectMultiple(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountEmailSecuritySettingDomainUnprotectMultipleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

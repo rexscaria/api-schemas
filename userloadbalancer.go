@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/requestconfig"
 	"github.com/rexscaria/api-schemas/option"
@@ -37,7 +38,7 @@ func NewUserLoadBalancerService(opts ...option.RequestOption) (r *UserLoadBalanc
 
 // Get the result of a previous preview operation using the provided preview_id.
 func (r *UserLoadBalancerService) PreviewResult(ctx context.Context, previewID string, opts ...option.RequestOption) (res *PreviewResultResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if previewID == "" {
 		err = errors.New("missing required preview_id parameter")
 		return

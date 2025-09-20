@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -38,7 +39,7 @@ func NewZonePageShieldCookieService(opts ...option.RequestOption) (r *ZonePageSh
 
 // Fetches a cookie collected by Page Shield by cookie ID.
 func (r *ZonePageShieldCookieService) Get(ctx context.Context, zoneID string, cookieID string, opts ...option.RequestOption) (res *ZonePageShieldCookieGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -54,7 +55,7 @@ func (r *ZonePageShieldCookieService) Get(ctx context.Context, zoneID string, co
 
 // Lists all cookies collected by Page Shield.
 func (r *ZonePageShieldCookieService) List(ctx context.Context, zoneID string, query ZonePageShieldCookieListParams, opts ...option.RequestOption) (res *ZonePageShieldCookieListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

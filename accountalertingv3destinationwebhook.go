@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -37,7 +38,7 @@ func NewAccountAlertingV3DestinationWebhookService(opts ...option.RequestOption)
 
 // Creates a new webhook destination.
 func (r *AccountAlertingV3DestinationWebhookService) New(ctx context.Context, accountID string, body AccountAlertingV3DestinationWebhookNewParams, opts ...option.RequestOption) (res *IDResponseAlerting, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -49,7 +50,7 @@ func (r *AccountAlertingV3DestinationWebhookService) New(ctx context.Context, ac
 
 // Get details for a single webhooks destination.
 func (r *AccountAlertingV3DestinationWebhookService) Get(ctx context.Context, accountID string, webhookID string, opts ...option.RequestOption) (res *AccountAlertingV3DestinationWebhookGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -65,7 +66,7 @@ func (r *AccountAlertingV3DestinationWebhookService) Get(ctx context.Context, ac
 
 // Update a webhook destination.
 func (r *AccountAlertingV3DestinationWebhookService) Update(ctx context.Context, accountID string, webhookID string, body AccountAlertingV3DestinationWebhookUpdateParams, opts ...option.RequestOption) (res *IDResponseAlerting, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -81,7 +82,7 @@ func (r *AccountAlertingV3DestinationWebhookService) Update(ctx context.Context,
 
 // Gets a list of all configured webhook destinations.
 func (r *AccountAlertingV3DestinationWebhookService) List(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountAlertingV3DestinationWebhookListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -93,7 +94,7 @@ func (r *AccountAlertingV3DestinationWebhookService) List(ctx context.Context, a
 
 // Delete a configured webhook destination.
 func (r *AccountAlertingV3DestinationWebhookService) Delete(ctx context.Context, accountID string, webhookID string, opts ...option.RequestOption) (res *APIResponseCollectionAlerting, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

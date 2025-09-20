@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -35,7 +36,7 @@ func NewAccountSecondaryDNSACLService(opts ...option.RequestOption) (r *AccountS
 
 // Create ACL.
 func (r *AccountSecondaryDNSACLService) New(ctx context.Context, accountID string, body AccountSecondaryDNSACLNewParams, opts ...option.RequestOption) (res *SchemasSecondaryDNSComponentsSingleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -47,7 +48,7 @@ func (r *AccountSecondaryDNSACLService) New(ctx context.Context, accountID strin
 
 // Get ACL.
 func (r *AccountSecondaryDNSACLService) Get(ctx context.Context, accountID string, aclID string, opts ...option.RequestOption) (res *SchemasSecondaryDNSComponentsSingleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -63,7 +64,7 @@ func (r *AccountSecondaryDNSACLService) Get(ctx context.Context, accountID strin
 
 // Modify ACL.
 func (r *AccountSecondaryDNSACLService) Update(ctx context.Context, accountID string, aclID string, body AccountSecondaryDNSACLUpdateParams, opts ...option.RequestOption) (res *SchemasSecondaryDNSComponentsSingleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -79,7 +80,7 @@ func (r *AccountSecondaryDNSACLService) Update(ctx context.Context, accountID st
 
 // List ACLs.
 func (r *AccountSecondaryDNSACLService) List(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountSecondaryDnsaclListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -91,7 +92,7 @@ func (r *AccountSecondaryDNSACLService) List(ctx context.Context, accountID stri
 
 // Delete ACL.
 func (r *AccountSecondaryDNSACLService) Delete(ctx context.Context, accountID string, aclID string, opts ...option.RequestOption) (res *SchemasIDResponseSecondaryDNS, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

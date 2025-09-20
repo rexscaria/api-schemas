@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -37,7 +38,7 @@ func NewAccountAIRunCfBlackForestLabService(opts ...option.RequestOption) (r *Ac
 
 // Execute @cf/black-forest-labs/flux-1-schnell model.
 func (r *AccountAIRunCfBlackForestLabService) ExecuteFlux1Schnell(ctx context.Context, accountID string, params AccountAIRunCfBlackForestLabExecuteFlux1SchnellParams, opts ...option.RequestOption) (res *AccountAIRunCfBlackForestLabExecuteFlux1SchnellResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

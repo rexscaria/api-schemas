@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -40,7 +41,7 @@ func NewZoneSpectrumAnalyticsEventService(opts ...option.RequestOption) (r *Zone
 
 // Retrieves a list of aggregate metrics grouped by time interval.
 func (r *ZoneSpectrumAnalyticsEventService) GetByTime(ctx context.Context, zoneID string, query ZoneSpectrumAnalyticsEventGetByTimeParams, opts ...option.RequestOption) (res *QueryResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -52,7 +53,7 @@ func (r *ZoneSpectrumAnalyticsEventService) GetByTime(ctx context.Context, zoneI
 
 // Retrieves a list of summarised aggregate metrics over a given time period.
 func (r *ZoneSpectrumAnalyticsEventService) GetSummary(ctx context.Context, zoneID string, query ZoneSpectrumAnalyticsEventGetSummaryParams, opts ...option.RequestOption) (res *QueryResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

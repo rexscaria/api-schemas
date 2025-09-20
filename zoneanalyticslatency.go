@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -37,7 +38,7 @@ func NewZoneAnalyticsLatencyService(opts ...option.RequestOption) (r *ZoneAnalyt
 
 // Argo Analytics for a zone
 func (r *ZoneAnalyticsLatencyService) Get(ctx context.Context, zoneID string, query ZoneAnalyticsLatencyGetParams, opts ...option.RequestOption) (res *ArgoAnalyticsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -49,7 +50,7 @@ func (r *ZoneAnalyticsLatencyService) Get(ctx context.Context, zoneID string, qu
 
 // Argo Analytics for a zone at different PoPs
 func (r *ZoneAnalyticsLatencyService) ListColos(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *ArgoAnalyticsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

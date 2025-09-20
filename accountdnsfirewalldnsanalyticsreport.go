@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -43,7 +44,7 @@ func NewAccountDNSFirewallDNSAnalyticsReportService(opts ...option.RequestOption
 // [Analytics API properties](https://developers.cloudflare.com/dns/reference/analytics-api-properties/)
 // for detailed information about the available query parameters.
 func (r *AccountDNSFirewallDNSAnalyticsReportService) Get(ctx context.Context, accountID string, dnsFirewallID string, query AccountDNSFirewallDNSAnalyticsReportGetParams, opts ...option.RequestOption) (res *AccountDNSFirewallDNSAnalyticsReportGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -63,7 +64,7 @@ func (r *AccountDNSFirewallDNSAnalyticsReportService) Get(ctx context.Context, a
 // [Analytics API properties](https://developers.cloudflare.com/dns/reference/analytics-api-properties/)
 // for detailed information about the available query parameters.
 func (r *AccountDNSFirewallDNSAnalyticsReportService) ListByTime(ctx context.Context, accountID string, dnsFirewallID string, query AccountDNSFirewallDNSAnalyticsReportListByTimeParams, opts ...option.RequestOption) (res *AccountDNSFirewallDNSAnalyticsReportListByTimeResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

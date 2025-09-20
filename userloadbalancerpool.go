@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -37,7 +38,7 @@ func NewUserLoadBalancerPoolService(opts ...option.RequestOption) (r *UserLoadBa
 
 // Create a new pool.
 func (r *UserLoadBalancerPoolService) New(ctx context.Context, body UserLoadBalancerPoolNewParams, opts ...option.RequestOption) (res *SchemasLoadBalancingSingleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "user/load_balancers/pools"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -45,7 +46,7 @@ func (r *UserLoadBalancerPoolService) New(ctx context.Context, body UserLoadBala
 
 // Fetch a single configured pool.
 func (r *UserLoadBalancerPoolService) Get(ctx context.Context, poolID string, opts ...option.RequestOption) (res *SchemasLoadBalancingSingleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if poolID == "" {
 		err = errors.New("missing required pool_id parameter")
 		return
@@ -57,7 +58,7 @@ func (r *UserLoadBalancerPoolService) Get(ctx context.Context, poolID string, op
 
 // Modify a configured pool.
 func (r *UserLoadBalancerPoolService) Update(ctx context.Context, poolID string, body UserLoadBalancerPoolUpdateParams, opts ...option.RequestOption) (res *SchemasLoadBalancingSingleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if poolID == "" {
 		err = errors.New("missing required pool_id parameter")
 		return
@@ -69,7 +70,7 @@ func (r *UserLoadBalancerPoolService) Update(ctx context.Context, poolID string,
 
 // List configured pools.
 func (r *UserLoadBalancerPoolService) List(ctx context.Context, query UserLoadBalancerPoolListParams, opts ...option.RequestOption) (res *SchemasResponseCollection, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "user/load_balancers/pools"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -77,7 +78,7 @@ func (r *UserLoadBalancerPoolService) List(ctx context.Context, query UserLoadBa
 
 // Delete a configured pool.
 func (r *UserLoadBalancerPoolService) Delete(ctx context.Context, poolID string, opts ...option.RequestOption) (res *SchemasIDResponseLoadBalancing, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if poolID == "" {
 		err = errors.New("missing required pool_id parameter")
 		return
@@ -89,7 +90,7 @@ func (r *UserLoadBalancerPoolService) Delete(ctx context.Context, poolID string,
 
 // Fetch the latest pool health status for a single pool.
 func (r *UserLoadBalancerPoolService) Health(ctx context.Context, poolID string, opts ...option.RequestOption) (res *HealthDetails, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if poolID == "" {
 		err = errors.New("missing required pool_id parameter")
 		return
@@ -101,7 +102,7 @@ func (r *UserLoadBalancerPoolService) Health(ctx context.Context, poolID string,
 
 // Get the list of resources that reference the provided pool.
 func (r *UserLoadBalancerPoolService) ListReferences(ctx context.Context, poolID string, opts ...option.RequestOption) (res *ReferencesPoolResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if poolID == "" {
 		err = errors.New("missing required pool_id parameter")
 		return
@@ -113,7 +114,7 @@ func (r *UserLoadBalancerPoolService) ListReferences(ctx context.Context, poolID
 
 // Apply changes to an existing pool, overwriting the supplied properties.
 func (r *UserLoadBalancerPoolService) Patch(ctx context.Context, poolID string, body UserLoadBalancerPoolPatchParams, opts ...option.RequestOption) (res *SchemasLoadBalancingSingleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if poolID == "" {
 		err = errors.New("missing required pool_id parameter")
 		return
@@ -126,7 +127,7 @@ func (r *UserLoadBalancerPoolService) Patch(ctx context.Context, poolID string, 
 // Preview pool health using provided monitor details. The returned preview_id can
 // be used in the preview endpoint to retrieve the results.
 func (r *UserLoadBalancerPoolService) Preview(ctx context.Context, poolID string, body UserLoadBalancerPoolPreviewParams, opts ...option.RequestOption) (res *PreviewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if poolID == "" {
 		err = errors.New("missing required pool_id parameter")
 		return

@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"mime/multipart"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apiform"
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -38,7 +39,7 @@ func NewAccountWorkerScriptSettingService(opts ...option.RequestOption) (r *Acco
 
 // Get metadata and config, such as bindings or usage model.
 func (r *AccountWorkerScriptSettingService) Get(ctx context.Context, accountID string, scriptName string, opts ...option.RequestOption) (res *ScriptVersionResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -54,7 +55,7 @@ func (r *AccountWorkerScriptSettingService) Get(ctx context.Context, accountID s
 
 // Patch metadata or config, such as bindings or usage model.
 func (r *AccountWorkerScriptSettingService) Patch(ctx context.Context, accountID string, scriptName string, body AccountWorkerScriptSettingPatchParams, opts ...option.RequestOption) (res *ScriptVersionResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

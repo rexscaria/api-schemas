@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -37,7 +38,7 @@ func NewRadarHTTPTopLocationService(opts ...option.RequestOption) (r *RadarHTTPT
 
 // Retrieves the top locations by HTTP requests.
 func (r *RadarHTTPTopLocationService) List(ctx context.Context, query RadarHTTPTopLocationListParams, opts ...option.RequestOption) (res *RadarHTTPTopLocationListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/http/top/locations"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -45,7 +46,7 @@ func (r *RadarHTTPTopLocationService) List(ctx context.Context, query RadarHTTPT
 
 // Retrieves the top locations, by HTTP requests, of the requested bot class.
 func (r *RadarHTTPTopLocationService) ListByBotClass(ctx context.Context, botClass RadarHTTPTopLocationListByBotClassParamsBotClass, query RadarHTTPTopLocationListByBotClassParams, opts ...option.RequestOption) (res *RadarHTTPTopLocationListByBotClassResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("radar/http/top/locations/bot_class/%v", botClass)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -53,7 +54,7 @@ func (r *RadarHTTPTopLocationService) ListByBotClass(ctx context.Context, botCla
 
 // Retrieves the top locations, by HTTP requests, of the requested browser family.
 func (r *RadarHTTPTopLocationService) ListByBrowserFamily(ctx context.Context, browserFamily RadarHTTPTopLocationListByBrowserFamilyParamsBrowserFamily, query RadarHTTPTopLocationListByBrowserFamilyParams, opts ...option.RequestOption) (res *RadarHTTPTopLocationListByBrowserFamilyResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("radar/http/top/locations/browser_family/%v", browserFamily)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -61,7 +62,7 @@ func (r *RadarHTTPTopLocationService) ListByBrowserFamily(ctx context.Context, b
 
 // Retrieves the top locations, by HTTP requests, of the requested device type.
 func (r *RadarHTTPTopLocationService) ListByDeviceType(ctx context.Context, deviceType RadarHTTPTopLocationListByDeviceTypeParamsDeviceType, query RadarHTTPTopLocationListByDeviceTypeParams, opts ...option.RequestOption) (res *RadarHTTPTopLocationListByDeviceTypeResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("radar/http/top/locations/device_type/%v", deviceType)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -69,7 +70,7 @@ func (r *RadarHTTPTopLocationService) ListByDeviceType(ctx context.Context, devi
 
 // Retrieves the top locations, by HTTP requests, of the requested HTTP protocol.
 func (r *RadarHTTPTopLocationService) ListByHTTPProtocol(ctx context.Context, httpProtocol RadarHTTPTopLocationListByHTTPProtocolParamsHTTPProtocol, query RadarHTTPTopLocationListByHTTPProtocolParams, opts ...option.RequestOption) (res *RadarHTTPTopLocationListByHTTPProtocolResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("radar/http/top/locations/http_protocol/%v", httpProtocol)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -77,7 +78,7 @@ func (r *RadarHTTPTopLocationService) ListByHTTPProtocol(ctx context.Context, ht
 
 // Retrieves the top locations, by HTTP requests, of the requested HTTP version.
 func (r *RadarHTTPTopLocationService) ListByHTTPVersion(ctx context.Context, httpVersion RadarHTTPTopLocationListByHTTPVersionParamsHTTPVersion, query RadarHTTPTopLocationListByHTTPVersionParams, opts ...option.RequestOption) (res *RadarHTTPTopLocationListByHTTPVersionResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("radar/http/top/locations/http_version/%v", httpVersion)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -85,7 +86,7 @@ func (r *RadarHTTPTopLocationService) ListByHTTPVersion(ctx context.Context, htt
 
 // Retrieves the top locations, by HTTP requests, of the requested IP version.
 func (r *RadarHTTPTopLocationService) ListByIPVersion(ctx context.Context, ipVersion RadarHTTPTopLocationListByIPVersionParamsIPVersion, query RadarHTTPTopLocationListByIPVersionParams, opts ...option.RequestOption) (res *RadarHTTPTopLocationListByIPVersionResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("radar/http/top/locations/ip_version/%v", ipVersion)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -94,7 +95,7 @@ func (r *RadarHTTPTopLocationService) ListByIPVersion(ctx context.Context, ipVer
 // Retrieves the top locations, by HTTP requests, of the requested operating
 // system.
 func (r *RadarHTTPTopLocationService) ListByOs(ctx context.Context, os RadarHTTPTopLocationListByOsParamsOs, query RadarHTTPTopLocationListByOsParams, opts ...option.RequestOption) (res *RadarHTTPTopLocationListByOsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("radar/http/top/locations/os/%v", os)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -103,7 +104,7 @@ func (r *RadarHTTPTopLocationService) ListByOs(ctx context.Context, os RadarHTTP
 // Retrieves the top locations, by HTTP requests, of the requested TLS protocol
 // version.
 func (r *RadarHTTPTopLocationService) ListByTlsVersion(ctx context.Context, tlsVersion RadarHTTPTopLocationListByTlsVersionParamsTlsVersion, query RadarHTTPTopLocationListByTlsVersionParams, opts ...option.RequestOption) (res *RadarHTTPTopLocationListByTlsVersionResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("radar/http/top/locations/tls_version/%v", tlsVersion)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

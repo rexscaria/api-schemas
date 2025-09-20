@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -37,7 +38,7 @@ func NewAccountAIRunHfMetaLlamaService(opts ...option.RequestOption) (r *Account
 
 // Execute @hf/meta-llama/meta-llama-3-8b-instruct model.
 func (r *AccountAIRunHfMetaLlamaService) ExecuteMetaLlama3_8bInstruct(ctx context.Context, accountID string, params AccountAIRunHfMetaLlamaExecuteMetaLlama3_8bInstructParams, opts ...option.RequestOption) (res *AccountAIRunHfMetaLlamaExecuteMetaLlama3_8bInstructResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

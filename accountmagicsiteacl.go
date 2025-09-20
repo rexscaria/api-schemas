@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -35,7 +36,7 @@ func NewAccountMagicSiteACLService(opts ...option.RequestOption) (r *AccountMagi
 
 // Creates a new Site ACL.
 func (r *AccountMagicSiteACLService) New(ctx context.Context, accountID string, siteID string, body AccountMagicSiteACLNewParams, opts ...option.RequestOption) (res *MagicACLSingleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -51,7 +52,7 @@ func (r *AccountMagicSiteACLService) New(ctx context.Context, accountID string, 
 
 // Get a specific Site ACL.
 func (r *AccountMagicSiteACLService) Get(ctx context.Context, accountID string, siteID string, aclID string, opts ...option.RequestOption) (res *MagicACLSingleResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -71,7 +72,7 @@ func (r *AccountMagicSiteACLService) Get(ctx context.Context, accountID string, 
 
 // Update a specific Site ACL.
 func (r *AccountMagicSiteACLService) Update(ctx context.Context, accountID string, siteID string, aclID string, body AccountMagicSiteACLUpdateParams, opts ...option.RequestOption) (res *MagicACLModifiedResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -91,7 +92,7 @@ func (r *AccountMagicSiteACLService) Update(ctx context.Context, accountID strin
 
 // Lists Site ACLs associated with an account.
 func (r *AccountMagicSiteACLService) List(ctx context.Context, accountID string, siteID string, opts ...option.RequestOption) (res *AccountMagicSiteACLListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -107,7 +108,7 @@ func (r *AccountMagicSiteACLService) List(ctx context.Context, accountID string,
 
 // Remove a specific Site ACL.
 func (r *AccountMagicSiteACLService) Delete(ctx context.Context, accountID string, siteID string, aclID string, opts ...option.RequestOption) (res *AccountMagicSiteACLDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -127,7 +128,7 @@ func (r *AccountMagicSiteACLService) Delete(ctx context.Context, accountID strin
 
 // Patch a specific Site ACL.
 func (r *AccountMagicSiteACLService) Patch(ctx context.Context, accountID string, siteID string, aclID string, body AccountMagicSiteACLPatchParams, opts ...option.RequestOption) (res *MagicACLModifiedResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

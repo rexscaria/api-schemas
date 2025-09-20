@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -42,7 +43,7 @@ func NewAccountWorkflowService(opts ...option.RequestOption) (r *AccountWorkflow
 
 // Get Workflow details
 func (r *AccountWorkflowService) Get(ctx context.Context, accountID string, workflowName string, opts ...option.RequestOption) (res *AccountWorkflowGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -58,7 +59,7 @@ func (r *AccountWorkflowService) Get(ctx context.Context, accountID string, work
 
 // Create/modify Workflow
 func (r *AccountWorkflowService) Update(ctx context.Context, accountID string, workflowName string, body AccountWorkflowUpdateParams, opts ...option.RequestOption) (res *AccountWorkflowUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -74,7 +75,7 @@ func (r *AccountWorkflowService) Update(ctx context.Context, accountID string, w
 
 // List all Workflows
 func (r *AccountWorkflowService) List(ctx context.Context, accountID string, query AccountWorkflowListParams, opts ...option.RequestOption) (res *AccountWorkflowListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

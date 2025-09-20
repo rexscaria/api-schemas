@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -38,7 +39,7 @@ func NewAccountDexCommandService(opts ...option.RequestOption) (r *AccountDexCom
 
 // Initiate commands for up to 10 devices per account
 func (r *AccountDexCommandService) New(ctx context.Context, accountID string, body AccountDexCommandNewParams, opts ...option.RequestOption) (res *AccountDexCommandNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -51,7 +52,7 @@ func (r *AccountDexCommandService) New(ctx context.Context, accountID string, bo
 // Retrieves a paginated list of commands issued to devices under the specified
 // account, optionally filtered by time range, device, or other parameters
 func (r *AccountDexCommandService) List(ctx context.Context, accountID string, query AccountDexCommandListParams, opts ...option.RequestOption) (res *AccountDexCommandListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -63,7 +64,7 @@ func (r *AccountDexCommandService) List(ctx context.Context, accountID string, q
 
 // Downloads artifacts for an executed command. Bulk downloads are not supported
 func (r *AccountDexCommandService) DownloadOutput(ctx context.Context, accountID string, commandID string, filename string, opts ...option.RequestOption) (res *http.Response, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "application/zip")}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
@@ -85,7 +86,7 @@ func (r *AccountDexCommandService) DownloadOutput(ctx context.Context, accountID
 // Retrieves the current quota usage and limits for device commands within a
 // specific account, including the time when the quota will reset
 func (r *AccountDexCommandService) GetQuota(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountDexCommandGetQuotaResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -98,7 +99,7 @@ func (r *AccountDexCommandService) GetQuota(ctx context.Context, accountID strin
 // List devices with WARP client support for remote captures which have been
 // connected in the last 1 hour.
 func (r *AccountDexCommandService) ListEligibleDevices(ctx context.Context, accountID string, query AccountDexCommandListEligibleDevicesParams, opts ...option.RequestOption) (res *AccountDexCommandListEligibleDevicesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

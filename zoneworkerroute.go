@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -35,7 +36,7 @@ func NewZoneWorkerRouteService(opts ...option.RequestOption) (r *ZoneWorkerRoute
 
 // Creates a route that maps a URL pattern to a Worker.
 func (r *ZoneWorkerRouteService) New(ctx context.Context, zoneID string, body ZoneWorkerRouteNewParams, opts ...option.RequestOption) (res *ZoneWorkerRouteNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -47,7 +48,7 @@ func (r *ZoneWorkerRouteService) New(ctx context.Context, zoneID string, body Zo
 
 // Returns information about a route, including URL pattern and Worker.
 func (r *ZoneWorkerRouteService) Get(ctx context.Context, zoneID string, routeID string, opts ...option.RequestOption) (res *ZoneWorkerRouteGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -63,7 +64,7 @@ func (r *ZoneWorkerRouteService) Get(ctx context.Context, zoneID string, routeID
 
 // Updates the URL pattern or Worker associated with a route.
 func (r *ZoneWorkerRouteService) Update(ctx context.Context, zoneID string, routeID string, body ZoneWorkerRouteUpdateParams, opts ...option.RequestOption) (res *ZoneWorkerRouteUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -79,7 +80,7 @@ func (r *ZoneWorkerRouteService) Update(ctx context.Context, zoneID string, rout
 
 // Returns routes for a zone.
 func (r *ZoneWorkerRouteService) List(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *ZoneWorkerRouteListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -91,7 +92,7 @@ func (r *ZoneWorkerRouteService) List(ctx context.Context, zoneID string, opts .
 
 // Deletes a route.
 func (r *ZoneWorkerRouteService) Delete(ctx context.Context, zoneID string, routeID string, opts ...option.RequestOption) (res *ZoneWorkerRouteDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

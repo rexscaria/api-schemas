@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -42,7 +43,7 @@ func NewRadarAs112Service(opts ...option.RequestOption) (r *RadarAs112Service) {
 
 // Retrieves the AS112 DNS queries over time.
 func (r *RadarAs112Service) GetTimeseries(ctx context.Context, query RadarAs112GetTimeseriesParams, opts ...option.RequestOption) (res *RadarAs112GetTimeseriesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/as112/timeseries"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

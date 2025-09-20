@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -41,7 +42,7 @@ func NewAccountTeamnetRouteNetworkService(opts ...option.RequestOption) (r *Acco
 // Deprecated: This endpoint and its related APIs are deprecated in favor of the
 // equivalent Tunnel Route (without CIDR) APIs.
 func (r *AccountTeamnetRouteNetworkService) New(ctx context.Context, accountID string, ipNetworkEncoded string, body AccountTeamnetRouteNetworkNewParams, opts ...option.RequestOption) (res *TunnelRouteResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -61,7 +62,7 @@ func (r *AccountTeamnetRouteNetworkService) New(ctx context.Context, accountID s
 // Deprecated: This endpoint and its related APIs are deprecated in favor of the
 // equivalent Tunnel Route (without CIDR) APIs.
 func (r *AccountTeamnetRouteNetworkService) Update(ctx context.Context, accountID string, ipNetworkEncoded string, opts ...option.RequestOption) (res *TunnelRouteResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -86,7 +87,7 @@ func (r *AccountTeamnetRouteNetworkService) Update(ctx context.Context, accountI
 // Deprecated: This endpoint and its related APIs are deprecated in favor of the
 // equivalent Tunnel Route (without CIDR) APIs.
 func (r *AccountTeamnetRouteNetworkService) Delete(ctx context.Context, accountID string, ipNetworkEncoded string, body AccountTeamnetRouteNetworkDeleteParams, opts ...option.RequestOption) (res *TunnelRouteResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

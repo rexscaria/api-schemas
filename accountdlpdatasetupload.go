@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/requestconfig"
@@ -35,7 +36,7 @@ func NewAccountDlpDatasetUploadService(opts ...option.RequestOption) (r *Account
 
 // Prepare to upload a new version of a dataset
 func (r *AccountDlpDatasetUploadService) Prepare(ctx context.Context, accountID string, datasetID string, opts ...option.RequestOption) (res *AccountDlpDatasetUploadPrepareResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -54,7 +55,7 @@ func (r *AccountDlpDatasetUploadService) Prepare(ctx context.Context, accountID 
 // can only be used for non-secret Custom Word Lists. The body must be a UTF-8
 // encoded, newline (NL or CRNL) separated list of words to be matched.
 func (r *AccountDlpDatasetUploadService) Version(ctx context.Context, accountID string, datasetID string, version int64, body io.Reader, opts ...option.RequestOption) (res *AccountDlpDatasetUploadVersionResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithRequestBody("application/octet-stream", body)}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")

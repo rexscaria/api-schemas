@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -37,7 +38,7 @@ func NewZoneOriginTlsClientAuthHostnameCertificateService(opts ...option.Request
 
 // Get the certificate by ID to be used for client authentication on a hostname.
 func (r *ZoneOriginTlsClientAuthHostnameCertificateService) Get(ctx context.Context, zoneID string, certificateID string, opts ...option.RequestOption) (res *CertificateResponseSingleHostname, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -53,7 +54,7 @@ func (r *ZoneOriginTlsClientAuthHostnameCertificateService) Get(ctx context.Cont
 
 // List Certificates
 func (r *ZoneOriginTlsClientAuthHostnameCertificateService) List(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *ZoneOriginTlsClientAuthHostnameCertificateListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -65,7 +66,7 @@ func (r *ZoneOriginTlsClientAuthHostnameCertificateService) List(ctx context.Con
 
 // Delete Hostname Client Certificate
 func (r *ZoneOriginTlsClientAuthHostnameCertificateService) Delete(ctx context.Context, zoneID string, certificateID string, opts ...option.RequestOption) (res *CertificateResponseSingleHostname, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -82,7 +83,7 @@ func (r *ZoneOriginTlsClientAuthHostnameCertificateService) Delete(ctx context.C
 // Upload a certificate to be used for client authentication on a hostname. 10
 // hostname certificates per zone are allowed.
 func (r *ZoneOriginTlsClientAuthHostnameCertificateService) Upload(ctx context.Context, zoneID string, body ZoneOriginTlsClientAuthHostnameCertificateUploadParams, opts ...option.RequestOption) (res *CertificateResponseSingleHostname, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

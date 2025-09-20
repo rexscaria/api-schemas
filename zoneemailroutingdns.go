@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -39,7 +40,7 @@ func NewZoneEmailRoutingDNSService(opts ...option.RequestOption) (r *ZoneEmailRo
 
 // Show the DNS records needed to configure your Email Routing zone.
 func (r *ZoneEmailRoutingDNSService) Get(ctx context.Context, zoneID string, query ZoneEmailRoutingDNSGetParams, opts ...option.RequestOption) (res *ZoneEmailRoutingDNSGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -52,7 +53,7 @@ func (r *ZoneEmailRoutingDNSService) Get(ctx context.Context, zoneID string, que
 // Disable your Email Routing zone. Also removes additional MX records previously
 // required for Email Routing to work.
 func (r *ZoneEmailRoutingDNSService) Delete(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *ZoneEmailRoutingDNSDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -64,7 +65,7 @@ func (r *ZoneEmailRoutingDNSService) Delete(ctx context.Context, zoneID string, 
 
 // Enable you Email Routing zone. Add and lock the necessary MX and SPF records.
 func (r *ZoneEmailRoutingDNSService) Enable(ctx context.Context, zoneID string, body ZoneEmailRoutingDNSEnableParams, opts ...option.RequestOption) (res *EmailEmailSettingsResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -76,7 +77,7 @@ func (r *ZoneEmailRoutingDNSService) Enable(ctx context.Context, zoneID string, 
 
 // Unlock MX Records previously locked by Email Routing.
 func (r *ZoneEmailRoutingDNSService) Unlock(ctx context.Context, zoneID string, body ZoneEmailRoutingDNSUnlockParams, opts ...option.RequestOption) (res *EmailEmailSettingsResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

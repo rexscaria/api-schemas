@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -38,7 +39,7 @@ func NewAccountChallengeWidgetService(opts ...option.RequestOption) (r *AccountC
 
 // Lists challenge widgets.
 func (r *AccountChallengeWidgetService) New(ctx context.Context, accountID string, params AccountChallengeWidgetNewParams, opts ...option.RequestOption) (res *AccountChallengeWidgetNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -50,7 +51,7 @@ func (r *AccountChallengeWidgetService) New(ctx context.Context, accountID strin
 
 // Show a single challenge widget configuration.
 func (r *AccountChallengeWidgetService) Get(ctx context.Context, accountID string, sitekey string, opts ...option.RequestOption) (res *AccountChallengeWidgetGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -66,7 +67,7 @@ func (r *AccountChallengeWidgetService) Get(ctx context.Context, accountID strin
 
 // Update the configuration of a widget.
 func (r *AccountChallengeWidgetService) Update(ctx context.Context, accountID string, sitekey string, body AccountChallengeWidgetUpdateParams, opts ...option.RequestOption) (res *AccountChallengeWidgetUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -82,7 +83,7 @@ func (r *AccountChallengeWidgetService) Update(ctx context.Context, accountID st
 
 // Lists all turnstile widgets of an account.
 func (r *AccountChallengeWidgetService) List(ctx context.Context, accountID string, query AccountChallengeWidgetListParams, opts ...option.RequestOption) (res *AccountChallengeWidgetListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -94,7 +95,7 @@ func (r *AccountChallengeWidgetService) List(ctx context.Context, accountID stri
 
 // Destroy a Turnstile Widget.
 func (r *AccountChallengeWidgetService) Delete(ctx context.Context, accountID string, sitekey string, opts ...option.RequestOption) (res *AccountChallengeWidgetDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -113,7 +114,7 @@ func (r *AccountChallengeWidgetService) Delete(ctx context.Context, accountID st
 //
 // Note that secrets cannot be rotated again during the grace period.
 func (r *AccountChallengeWidgetService) RotateSecret(ctx context.Context, accountID string, sitekey string, body AccountChallengeWidgetRotateSecretParams, opts ...option.RequestOption) (res *AccountChallengeWidgetRotateSecretResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

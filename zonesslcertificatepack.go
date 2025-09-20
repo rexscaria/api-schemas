@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -37,7 +38,7 @@ func NewZoneSslCertificatePackService(opts ...option.RequestOption) (r *ZoneSslC
 
 // For a given zone, get a certificate pack.
 func (r *ZoneSslCertificatePackService) Get(ctx context.Context, zoneID string, certificatePackID string, opts ...option.RequestOption) (res *ZoneSslCertificatePackGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -55,7 +56,7 @@ func (r *ZoneSslCertificatePackService) Get(ctx context.Context, zoneID string, 
 // certificate pack. The former is only a validation operation for a Certificate
 // Pack in a validation_timed_out status.
 func (r *ZoneSslCertificatePackService) Update(ctx context.Context, zoneID string, certificatePackID string, body ZoneSslCertificatePackUpdateParams, opts ...option.RequestOption) (res *AdvancedCertificatePackResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -71,7 +72,7 @@ func (r *ZoneSslCertificatePackService) Update(ctx context.Context, zoneID strin
 
 // For a given zone, list all active certificate packs.
 func (r *ZoneSslCertificatePackService) List(ctx context.Context, zoneID string, query ZoneSslCertificatePackListParams, opts ...option.RequestOption) (res *ZoneSslCertificatePackListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -83,7 +84,7 @@ func (r *ZoneSslCertificatePackService) List(ctx context.Context, zoneID string,
 
 // For a given zone, delete an advanced certificate pack.
 func (r *ZoneSslCertificatePackService) Delete(ctx context.Context, zoneID string, certificatePackID string, opts ...option.RequestOption) (res *ZoneSslCertificatePackDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -99,7 +100,7 @@ func (r *ZoneSslCertificatePackService) Delete(ctx context.Context, zoneID strin
 
 // For a given zone, list certificate pack quotas.
 func (r *ZoneSslCertificatePackService) GetQuota(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *ZoneSslCertificatePackGetQuotaResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -111,7 +112,7 @@ func (r *ZoneSslCertificatePackService) GetQuota(ctx context.Context, zoneID str
 
 // For a given zone, order an advanced certificate pack.
 func (r *ZoneSslCertificatePackService) Order(ctx context.Context, zoneID string, body ZoneSslCertificatePackOrderParams, opts ...option.RequestOption) (res *AdvancedCertificatePackResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

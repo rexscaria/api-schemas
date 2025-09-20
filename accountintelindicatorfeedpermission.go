@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -36,7 +37,7 @@ func NewAccountIntelIndicatorFeedPermissionService(opts ...option.RequestOption)
 
 // Grant permission to indicator feed
 func (r *AccountIntelIndicatorFeedPermissionService) AddPermission(ctx context.Context, accountID string, body AccountIntelIndicatorFeedPermissionAddPermissionParams, opts ...option.RequestOption) (res *PermissionsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -48,7 +49,7 @@ func (r *AccountIntelIndicatorFeedPermissionService) AddPermission(ctx context.C
 
 // List indicator feed permissions
 func (r *AccountIntelIndicatorFeedPermissionService) ListPermissions(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountIntelIndicatorFeedPermissionListPermissionsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -60,7 +61,7 @@ func (r *AccountIntelIndicatorFeedPermissionService) ListPermissions(ctx context
 
 // Revoke permission to indicator feed
 func (r *AccountIntelIndicatorFeedPermissionService) RemovePermission(ctx context.Context, accountID string, body AccountIntelIndicatorFeedPermissionRemovePermissionParams, opts ...option.RequestOption) (res *PermissionsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

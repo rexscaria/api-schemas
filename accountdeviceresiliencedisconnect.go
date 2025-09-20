@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -36,7 +37,7 @@ func NewAccountDeviceResilienceDisconnectService(opts ...option.RequestOption) (
 
 // Fetch the Global WARP override state.
 func (r *AccountDeviceResilienceDisconnectService) Get(ctx context.Context, accountID string, opts ...option.RequestOption) (res *GlobalWarpOverrideResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -48,7 +49,7 @@ func (r *AccountDeviceResilienceDisconnectService) Get(ctx context.Context, acco
 
 // Sets the Global WARP override state.
 func (r *AccountDeviceResilienceDisconnectService) Set(ctx context.Context, accountID string, body AccountDeviceResilienceDisconnectSetParams, opts ...option.RequestOption) (res *GlobalWarpOverrideResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

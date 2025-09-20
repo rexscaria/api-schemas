@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -35,7 +36,7 @@ func NewAccountCustomNService(opts ...option.RequestOption) (r *AccountCustomNSe
 
 // Add Account Custom Nameserver
 func (r *AccountCustomNService) New(ctx context.Context, accountID string, body AccountCustomNNewParams, opts ...option.RequestOption) (res *AccountCustomNNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -47,7 +48,7 @@ func (r *AccountCustomNService) New(ctx context.Context, accountID string, body 
 
 // List an account's custom nameservers.
 func (r *AccountCustomNService) List(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountCustomNListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -59,7 +60,7 @@ func (r *AccountCustomNService) List(ctx context.Context, accountID string, opts
 
 // Delete Account Custom Nameserver
 func (r *AccountCustomNService) Delete(ctx context.Context, accountID string, customNsID string, opts ...option.RequestOption) (res *AccountCustomNDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -38,7 +39,7 @@ func NewZoneWeb3HostnameService(opts ...option.RequestOption) (r *ZoneWeb3Hostna
 
 // Create Web3 Hostname
 func (r *ZoneWeb3HostnameService) New(ctx context.Context, zoneID string, body ZoneWeb3HostnameNewParams, opts ...option.RequestOption) (res *SingleResponseWeb3, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -50,7 +51,7 @@ func (r *ZoneWeb3HostnameService) New(ctx context.Context, zoneID string, body Z
 
 // Web3 Hostname Details
 func (r *ZoneWeb3HostnameService) Get(ctx context.Context, zoneID string, identifier string, opts ...option.RequestOption) (res *SingleResponseWeb3, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -66,7 +67,7 @@ func (r *ZoneWeb3HostnameService) Get(ctx context.Context, zoneID string, identi
 
 // List Web3 Hostnames
 func (r *ZoneWeb3HostnameService) List(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *ZoneWeb3HostnameListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -78,7 +79,7 @@ func (r *ZoneWeb3HostnameService) List(ctx context.Context, zoneID string, opts 
 
 // Delete Web3 Hostname
 func (r *ZoneWeb3HostnameService) Delete(ctx context.Context, zoneID string, identifier string, opts ...option.RequestOption) (res *APIResponseSingleID, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -94,7 +95,7 @@ func (r *ZoneWeb3HostnameService) Delete(ctx context.Context, zoneID string, ide
 
 // Edit Web3 Hostname
 func (r *ZoneWeb3HostnameService) Patch(ctx context.Context, zoneID string, identifier string, body ZoneWeb3HostnamePatchParams, opts ...option.RequestOption) (res *SingleResponseWeb3, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

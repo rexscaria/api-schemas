@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -42,7 +43,7 @@ func NewZoneDNSAnalyticsReportService(opts ...option.RequestOption) (r *ZoneDNSA
 // [Analytics API properties](https://developers.cloudflare.com/dns/reference/analytics-api-properties/)
 // for detailed information about the available query parameters.
 func (r *ZoneDNSAnalyticsReportService) Get(ctx context.Context, zoneID string, query ZoneDNSAnalyticsReportGetParams, opts ...option.RequestOption) (res *ZoneDNSAnalyticsReportGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -58,7 +59,7 @@ func (r *ZoneDNSAnalyticsReportService) Get(ctx context.Context, zoneID string, 
 // [Analytics API properties](https://developers.cloudflare.com/dns/reference/analytics-api-properties/)
 // for detailed information about the available query parameters.
 func (r *ZoneDNSAnalyticsReportService) ByTime(ctx context.Context, zoneID string, query ZoneDNSAnalyticsReportByTimeParams, opts ...option.RequestOption) (res *ZoneDNSAnalyticsReportByTimeResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

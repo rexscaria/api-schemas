@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -35,7 +36,7 @@ func NewZoneURLNormalizationService(opts ...option.RequestOption) (r *ZoneURLNor
 
 // Fetches the current URL Normalization settings.
 func (r *ZoneURLNormalizationService) Get(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *ZoneURLNormalizationGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -47,7 +48,7 @@ func (r *ZoneURLNormalizationService) Get(ctx context.Context, zoneID string, op
 
 // Updates the URL Normalization settings.
 func (r *ZoneURLNormalizationService) Update(ctx context.Context, zoneID string, body ZoneURLNormalizationUpdateParams, opts ...option.RequestOption) (res *ZoneURLNormalizationUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -59,7 +60,7 @@ func (r *ZoneURLNormalizationService) Update(ctx context.Context, zoneID string,
 
 // Deletes the URL Normalization settings.
 func (r *ZoneURLNormalizationService) Delete(ctx context.Context, zoneID string, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")

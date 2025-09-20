@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -36,7 +37,7 @@ func NewRadarLeakedCredentialCheckSummaryService(opts ...option.RequestOption) (
 
 // Retrieves the distribution of HTTP authentication requests by bot class.
 func (r *RadarLeakedCredentialCheckSummaryService) GetByBotClass(ctx context.Context, query RadarLeakedCredentialCheckSummaryGetByBotClassParams, opts ...option.RequestOption) (res *RadarLeakedCredentialCheckSummaryGetByBotClassResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/leaked_credential_checks/summary/bot_class"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -45,7 +46,7 @@ func (r *RadarLeakedCredentialCheckSummaryService) GetByBotClass(ctx context.Con
 // Retrieves the distribution of HTTP authentication requests by compromised
 // credential status.
 func (r *RadarLeakedCredentialCheckSummaryService) GetByCompromisedStatus(ctx context.Context, query RadarLeakedCredentialCheckSummaryGetByCompromisedStatusParams, opts ...option.RequestOption) (res *RadarLeakedCredentialCheckSummaryGetByCompromisedStatusResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/leaked_credential_checks/summary/compromised"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

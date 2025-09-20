@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -35,7 +36,7 @@ func NewAccountLoadBalancerMonitorService(opts ...option.RequestOption) (r *Acco
 
 // Create a configured monitor.
 func (r *AccountLoadBalancerMonitorService) New(ctx context.Context, accountID string, body AccountLoadBalancerMonitorNewParams, opts ...option.RequestOption) (res *ResponseSingleMonitor, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -47,7 +48,7 @@ func (r *AccountLoadBalancerMonitorService) New(ctx context.Context, accountID s
 
 // List a single configured monitor for an account.
 func (r *AccountLoadBalancerMonitorService) Get(ctx context.Context, accountID string, monitorID string, opts ...option.RequestOption) (res *ResponseSingleMonitor, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -63,7 +64,7 @@ func (r *AccountLoadBalancerMonitorService) Get(ctx context.Context, accountID s
 
 // Modify a configured monitor.
 func (r *AccountLoadBalancerMonitorService) Update(ctx context.Context, accountID string, monitorID string, body AccountLoadBalancerMonitorUpdateParams, opts ...option.RequestOption) (res *ResponseSingleMonitor, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -79,7 +80,7 @@ func (r *AccountLoadBalancerMonitorService) Update(ctx context.Context, accountI
 
 // List configured monitors for an account.
 func (r *AccountLoadBalancerMonitorService) List(ctx context.Context, accountID string, opts ...option.RequestOption) (res *ResponseCollectionMonitor, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -91,7 +92,7 @@ func (r *AccountLoadBalancerMonitorService) List(ctx context.Context, accountID 
 
 // Delete a configured monitor.
 func (r *AccountLoadBalancerMonitorService) Delete(ctx context.Context, accountID string, monitorID string, opts ...option.RequestOption) (res *IDResponseLoadBalancing, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -107,7 +108,7 @@ func (r *AccountLoadBalancerMonitorService) Delete(ctx context.Context, accountI
 
 // Get the list of resources that reference the provided monitor.
 func (r *AccountLoadBalancerMonitorService) ListReferences(ctx context.Context, accountID string, monitorID string, opts ...option.RequestOption) (res *ReferencesMonitorResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -123,7 +124,7 @@ func (r *AccountLoadBalancerMonitorService) ListReferences(ctx context.Context, 
 
 // Apply changes to an existing monitor, overwriting the supplied properties.
 func (r *AccountLoadBalancerMonitorService) Patch(ctx context.Context, accountID string, monitorID string, body AccountLoadBalancerMonitorPatchParams, opts ...option.RequestOption) (res *ResponseSingleMonitor, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -140,7 +141,7 @@ func (r *AccountLoadBalancerMonitorService) Patch(ctx context.Context, accountID
 // Preview pools using the specified monitor with provided monitor details. The
 // returned preview_id can be used in the preview endpoint to retrieve the results.
 func (r *AccountLoadBalancerMonitorService) Preview(ctx context.Context, accountID string, monitorID string, body AccountLoadBalancerMonitorPreviewParams, opts ...option.RequestOption) (res *PreviewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

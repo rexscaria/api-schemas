@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -42,7 +43,7 @@ func NewZoneWaitingRoomService(opts ...option.RequestOption) (r *ZoneWaitingRoom
 
 // Creates a new waiting room.
 func (r *ZoneWaitingRoomService) New(ctx context.Context, zoneID string, body ZoneWaitingRoomNewParams, opts ...option.RequestOption) (res *SingleResponseWaitingRoom, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -54,7 +55,7 @@ func (r *ZoneWaitingRoomService) New(ctx context.Context, zoneID string, body Zo
 
 // Fetches a single configured waiting room.
 func (r *ZoneWaitingRoomService) Get(ctx context.Context, zoneID string, waitingRoomID string, opts ...option.RequestOption) (res *SingleResponseWaitingRoom, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -70,7 +71,7 @@ func (r *ZoneWaitingRoomService) Get(ctx context.Context, zoneID string, waiting
 
 // Updates a configured waiting room.
 func (r *ZoneWaitingRoomService) Update(ctx context.Context, zoneID string, waitingRoomID string, body ZoneWaitingRoomUpdateParams, opts ...option.RequestOption) (res *SingleResponseWaitingRoom, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -86,7 +87,7 @@ func (r *ZoneWaitingRoomService) Update(ctx context.Context, zoneID string, wait
 
 // Deletes a waiting room.
 func (r *ZoneWaitingRoomService) Delete(ctx context.Context, zoneID string, waitingRoomID string, opts ...option.RequestOption) (res *ZoneWaitingRoomDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -102,7 +103,7 @@ func (r *ZoneWaitingRoomService) Delete(ctx context.Context, zoneID string, wait
 
 // Patches a configured waiting room.
 func (r *ZoneWaitingRoomService) Patch(ctx context.Context, zoneID string, waitingRoomID string, body ZoneWaitingRoomPatchParams, opts ...option.RequestOption) (res *SingleResponseWaitingRoom, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -153,7 +154,7 @@ func (r *ZoneWaitingRoomService) Patch(ctx context.Context, zoneID string, waiti
 // `http://waitingrooms.dev/preview/<uuid>?waitTime=50` to configure the estimated
 // wait time as 50 minutes.
 func (r *ZoneWaitingRoomService) Preview(ctx context.Context, zoneID string, body ZoneWaitingRoomPreviewParams, opts ...option.RequestOption) (res *ZoneWaitingRoomPreviewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -183,7 +184,7 @@ func (r *ZoneWaitingRoomService) Preview(ctx context.Context, zoneID string, bod
 //  5. `max_estimated_time_minutes`: Integer of the maximum estimated time currently
 //     presented to the users.
 func (r *ZoneWaitingRoomService) Status(ctx context.Context, zoneID string, waitingRoomID string, opts ...option.RequestOption) (res *ZoneWaitingRoomStatusResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

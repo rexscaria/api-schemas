@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -35,7 +36,7 @@ func NewZoneSecondaryDNSOutgoingService(opts ...option.RequestOption) (r *ZoneSe
 
 // Create primary zone configuration for outgoing zone transfers.
 func (r *ZoneSecondaryDNSOutgoingService) New(ctx context.Context, zoneID string, body ZoneSecondaryDNSOutgoingNewParams, opts ...option.RequestOption) (res *SingleResponseOutgoing, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -47,7 +48,7 @@ func (r *ZoneSecondaryDNSOutgoingService) New(ctx context.Context, zoneID string
 
 // Get primary zone configuration for outgoing zone transfers.
 func (r *ZoneSecondaryDNSOutgoingService) Get(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *SingleResponseOutgoing, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -59,7 +60,7 @@ func (r *ZoneSecondaryDNSOutgoingService) Get(ctx context.Context, zoneID string
 
 // Update primary zone configuration for outgoing zone transfers.
 func (r *ZoneSecondaryDNSOutgoingService) Update(ctx context.Context, zoneID string, body ZoneSecondaryDNSOutgoingUpdateParams, opts ...option.RequestOption) (res *SingleResponseOutgoing, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -71,7 +72,7 @@ func (r *ZoneSecondaryDNSOutgoingService) Update(ctx context.Context, zoneID str
 
 // Delete primary zone configuration for outgoing zone transfers.
 func (r *ZoneSecondaryDNSOutgoingService) Delete(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *IDResponseSecondaryDNS, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -84,7 +85,7 @@ func (r *ZoneSecondaryDNSOutgoingService) Delete(ctx context.Context, zoneID str
 // Disable outgoing zone transfers for primary zone and clears IXFR backlog of
 // primary zone.
 func (r *ZoneSecondaryDNSOutgoingService) Disable(ctx context.Context, zoneID string, body ZoneSecondaryDNSOutgoingDisableParams, opts ...option.RequestOption) (res *ZoneSecondaryDNSOutgoingDisableResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -96,7 +97,7 @@ func (r *ZoneSecondaryDNSOutgoingService) Disable(ctx context.Context, zoneID st
 
 // Enable outgoing zone transfers for primary zone.
 func (r *ZoneSecondaryDNSOutgoingService) Enable(ctx context.Context, zoneID string, body ZoneSecondaryDNSOutgoingEnableParams, opts ...option.RequestOption) (res *EnableTransferResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -108,7 +109,7 @@ func (r *ZoneSecondaryDNSOutgoingService) Enable(ctx context.Context, zoneID str
 
 // Notifies the secondary nameserver(s) and clears IXFR backlog of primary zone.
 func (r *ZoneSecondaryDNSOutgoingService) ForceNotify(ctx context.Context, zoneID string, body ZoneSecondaryDNSOutgoingForceNotifyParams, opts ...option.RequestOption) (res *ZoneSecondaryDNSOutgoingForceNotifyResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -120,7 +121,7 @@ func (r *ZoneSecondaryDNSOutgoingService) ForceNotify(ctx context.Context, zoneI
 
 // Get primary zone transfer status.
 func (r *ZoneSecondaryDNSOutgoingService) Status(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *EnableTransferResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -40,7 +41,7 @@ func NewAccountAIGatewayService(opts ...option.RequestOption) (r *AccountAIGatew
 
 // List Evaluators
 func (r *AccountAIGatewayService) ListEvaluators(ctx context.Context, accountID string, query AccountAIGatewayListEvaluatorsParams, opts ...option.RequestOption) (res *AccountAIGatewayListEvaluatorsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

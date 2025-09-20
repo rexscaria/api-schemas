@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -37,7 +38,7 @@ func NewAccountAIRunHfGoogleService(opts ...option.RequestOption) (r *AccountAIR
 
 // Execute @hf/google/gemma-7b-it model.
 func (r *AccountAIRunHfGoogleService) ExecuteGemma7bIt(ctx context.Context, accountID string, params AccountAIRunHfGoogleExecuteGemma7bItParams, opts ...option.RequestOption) (res *AccountAIRunHfGoogleExecuteGemma7bItResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -37,7 +38,7 @@ func NewRadarEmailSecuritySummaryService(opts ...option.RequestOption) (r *Radar
 // Retrieves the distribution of emails by ARC (Authenticated Received Chain)
 // validation.
 func (r *RadarEmailSecuritySummaryService) GetArc(ctx context.Context, query RadarEmailSecuritySummaryGetArcParams, opts ...option.RequestOption) (res *RadarEmailSecuritySummaryGetArcResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/email/security/summary/arc"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -46,7 +47,7 @@ func (r *RadarEmailSecuritySummaryService) GetArc(ctx context.Context, query Rad
 // Retrieves the distribution of emails by DKIM (DomainKeys Identified Mail)
 // validation.
 func (r *RadarEmailSecuritySummaryService) GetDkim(ctx context.Context, query RadarEmailSecuritySummaryGetDkimParams, opts ...option.RequestOption) (res *RadarEmailSecuritySummaryGetDkimResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/email/security/summary/dkim"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -55,7 +56,7 @@ func (r *RadarEmailSecuritySummaryService) GetDkim(ctx context.Context, query Ra
 // Retrieves the distribution of emails by DMARC (Domain-based Message
 // Authentication, Reporting and Conformance) validation.
 func (r *RadarEmailSecuritySummaryService) GetDmarc(ctx context.Context, query RadarEmailSecuritySummaryGetDmarcParams, opts ...option.RequestOption) (res *RadarEmailSecuritySummaryGetDmarcResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/email/security/summary/dmarc"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -63,7 +64,7 @@ func (r *RadarEmailSecuritySummaryService) GetDmarc(ctx context.Context, query R
 
 // Retrieves the distribution of emails by malicious classification.
 func (r *RadarEmailSecuritySummaryService) GetMalicious(ctx context.Context, query RadarEmailSecuritySummaryGetMaliciousParams, opts ...option.RequestOption) (res *RadarEmailSecuritySummaryGetMaliciousResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/email/security/summary/malicious"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -71,7 +72,7 @@ func (r *RadarEmailSecuritySummaryService) GetMalicious(ctx context.Context, que
 
 // Retrieves the proportion of emails by spam classification (spam vs. non-spam).
 func (r *RadarEmailSecuritySummaryService) GetSpam(ctx context.Context, query RadarEmailSecuritySummaryGetSpamParams, opts ...option.RequestOption) (res *RadarEmailSecuritySummaryGetSpamResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/email/security/summary/spam"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -80,7 +81,7 @@ func (r *RadarEmailSecuritySummaryService) GetSpam(ctx context.Context, query Ra
 // Retrieves the distribution of emails by SPF (Sender Policy Framework)
 // validation.
 func (r *RadarEmailSecuritySummaryService) GetSpf(ctx context.Context, query RadarEmailSecuritySummaryGetSpfParams, opts ...option.RequestOption) (res *RadarEmailSecuritySummaryGetSpfResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/email/security/summary/spf"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -89,7 +90,7 @@ func (r *RadarEmailSecuritySummaryService) GetSpf(ctx context.Context, query Rad
 // Retrieves the proportion of emails by spoof classification (spoof vs.
 // non-spoof).
 func (r *RadarEmailSecuritySummaryService) GetSpoof(ctx context.Context, query RadarEmailSecuritySummaryGetSpoofParams, opts ...option.RequestOption) (res *RadarEmailSecuritySummaryGetSpoofResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/email/security/summary/spoof"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -97,7 +98,7 @@ func (r *RadarEmailSecuritySummaryService) GetSpoof(ctx context.Context, query R
 
 // Retrieves the distribution of emails by threat categories.
 func (r *RadarEmailSecuritySummaryService) GetThreatCategory(ctx context.Context, query RadarEmailSecuritySummaryGetThreatCategoryParams, opts ...option.RequestOption) (res *RadarEmailSecuritySummaryGetThreatCategoryResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/email/security/summary/threat_category"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -105,7 +106,7 @@ func (r *RadarEmailSecuritySummaryService) GetThreatCategory(ctx context.Context
 
 // Retrieves the distribution of emails by TLS version.
 func (r *RadarEmailSecuritySummaryService) GetTlsVersion(ctx context.Context, query RadarEmailSecuritySummaryGetTlsVersionParams, opts ...option.RequestOption) (res *RadarEmailSecuritySummaryGetTlsVersionResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/email/security/summary/tls_version"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

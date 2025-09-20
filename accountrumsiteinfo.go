@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -38,7 +39,7 @@ func NewAccountRumSiteInfoService(opts ...option.RequestOption) (r *AccountRumSi
 
 // Creates a new Web Analytics site.
 func (r *AccountRumSiteInfoService) New(ctx context.Context, accountID string, body AccountRumSiteInfoNewParams, opts ...option.RequestOption) (res *ResponseSingleSite, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -50,7 +51,7 @@ func (r *AccountRumSiteInfoService) New(ctx context.Context, accountID string, b
 
 // Retrieves a Web Analytics site.
 func (r *AccountRumSiteInfoService) Get(ctx context.Context, accountID string, siteID string, opts ...option.RequestOption) (res *ResponseSingleSite, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -66,7 +67,7 @@ func (r *AccountRumSiteInfoService) Get(ctx context.Context, accountID string, s
 
 // Updates an existing Web Analytics site.
 func (r *AccountRumSiteInfoService) Update(ctx context.Context, accountID string, siteID string, body AccountRumSiteInfoUpdateParams, opts ...option.RequestOption) (res *ResponseSingleSite, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -82,7 +83,7 @@ func (r *AccountRumSiteInfoService) Update(ctx context.Context, accountID string
 
 // Lists all Web Analytics sites of an account.
 func (r *AccountRumSiteInfoService) List(ctx context.Context, accountID string, query AccountRumSiteInfoListParams, opts ...option.RequestOption) (res *AccountRumSiteInfoListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -94,7 +95,7 @@ func (r *AccountRumSiteInfoService) List(ctx context.Context, accountID string, 
 
 // Deletes an existing Web Analytics site.
 func (r *AccountRumSiteInfoService) Delete(ctx context.Context, accountID string, siteID string, opts ...option.RequestOption) (res *AccountRumSiteInfoDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

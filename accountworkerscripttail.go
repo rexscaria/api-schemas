@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -35,7 +36,7 @@ func NewAccountWorkerScriptTailService(opts ...option.RequestOption) (r *Account
 
 // Get list of tails currently deployed on a Worker.
 func (r *AccountWorkerScriptTailService) List(ctx context.Context, accountID string, scriptName string, opts ...option.RequestOption) (res *AccountWorkerScriptTailListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -51,7 +52,7 @@ func (r *AccountWorkerScriptTailService) List(ctx context.Context, accountID str
 
 // Deletes a tail from a Worker.
 func (r *AccountWorkerScriptTailService) Delete(ctx context.Context, accountID string, scriptName string, id string, opts ...option.RequestOption) (res *CommonResponseWorkers, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -71,7 +72,7 @@ func (r *AccountWorkerScriptTailService) Delete(ctx context.Context, accountID s
 
 // Starts a tail that receives logs and exception from a Worker.
 func (r *AccountWorkerScriptTailService) Start(ctx context.Context, accountID string, scriptName string, body AccountWorkerScriptTailStartParams, opts ...option.RequestOption) (res *AccountWorkerScriptTailStartResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

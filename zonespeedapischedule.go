@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -37,7 +38,7 @@ func NewZoneSpeedAPIScheduleService(opts ...option.RequestOption) (r *ZoneSpeedA
 
 // Creates a scheduled test for a page.
 func (r *ZoneSpeedAPIScheduleService) New(ctx context.Context, zoneID string, url string, body ZoneSpeedAPIScheduleNewParams, opts ...option.RequestOption) (res *ZoneSpeedAPIScheduleNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -53,7 +54,7 @@ func (r *ZoneSpeedAPIScheduleService) New(ctx context.Context, zoneID string, ur
 
 // Deletes a scheduled test for a page.
 func (r *ZoneSpeedAPIScheduleService) Delete(ctx context.Context, zoneID string, url string, body ZoneSpeedAPIScheduleDeleteParams, opts ...option.RequestOption) (res *ObservatoryCountResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -69,7 +70,7 @@ func (r *ZoneSpeedAPIScheduleService) Delete(ctx context.Context, zoneID string,
 
 // Retrieves the test schedule for a page in a specific region.
 func (r *ZoneSpeedAPIScheduleService) Get(ctx context.Context, zoneID string, url string, query ZoneSpeedAPIScheduleGetParams, opts ...option.RequestOption) (res *ZoneSpeedAPIScheduleGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

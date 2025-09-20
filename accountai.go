@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/requestconfig"
@@ -45,7 +46,7 @@ func NewAccountAIService(opts ...option.RequestOption) (r *AccountAIService) {
 
 // Convert Files into Markdown
 func (r *AccountAIService) ConvertToMarkdown(ctx context.Context, accountID string, body io.Reader, opts ...option.RequestOption) (res *AccountAIConvertToMarkdownResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithRequestBody("application/octet-stream", body)}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")

@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -37,7 +38,7 @@ func NewAccountAIRunCfQwenService(opts ...option.RequestOption) (r *AccountAIRun
 
 // Execute @cf/qwen/qwen1.5-0.5b-chat model.
 func (r *AccountAIRunCfQwenService) ExecuteQwen1_5_0_5bChat(ctx context.Context, accountID string, params AccountAIRunCfQwenExecuteQwen1_5_0_5bChatParams, opts ...option.RequestOption) (res *AccountAIRunCfQwenExecuteQwen1_5_0_5bChatResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -49,7 +50,7 @@ func (r *AccountAIRunCfQwenService) ExecuteQwen1_5_0_5bChat(ctx context.Context,
 
 // Execute @cf/qwen/qwen1.5-1.8b-chat model.
 func (r *AccountAIRunCfQwenService) ExecuteQwen1_5_1_8bChat(ctx context.Context, accountID string, params AccountAIRunCfQwenExecuteQwen1_5_1_8bChatParams, opts ...option.RequestOption) (res *AccountAIRunCfQwenExecuteQwen1_5_1_8bChatResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -61,7 +62,7 @@ func (r *AccountAIRunCfQwenService) ExecuteQwen1_5_1_8bChat(ctx context.Context,
 
 // Execute @cf/qwen/qwen1.5-14b-chat-awq model.
 func (r *AccountAIRunCfQwenService) ExecuteQwen1_5_14bChatAwq(ctx context.Context, accountID string, params AccountAIRunCfQwenExecuteQwen1_5_14bChatAwqParams, opts ...option.RequestOption) (res *AccountAIRunCfQwenExecuteQwen1_5_14bChatAwqResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -73,7 +74,7 @@ func (r *AccountAIRunCfQwenService) ExecuteQwen1_5_14bChatAwq(ctx context.Contex
 
 // Execute @cf/qwen/qwen1.5-7b-chat-awq model.
 func (r *AccountAIRunCfQwenService) ExecuteQwen1_5_7bChatAwq(ctx context.Context, accountID string, params AccountAIRunCfQwenExecuteQwen1_5_7bChatAwqParams, opts ...option.RequestOption) (res *AccountAIRunCfQwenExecuteQwen1_5_7bChatAwqResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -41,7 +42,7 @@ func NewZoneEmailRoutingRuleService(opts ...option.RequestOption) (r *ZoneEmailR
 // sent to a specific custom email address) plus a set of actions to take on the
 // email (like forwarding it to a specific destination address).
 func (r *ZoneEmailRoutingRuleService) New(ctx context.Context, zoneID string, body ZoneEmailRoutingRuleNewParams, opts ...option.RequestOption) (res *EmailRuleResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -53,7 +54,7 @@ func (r *ZoneEmailRoutingRuleService) New(ctx context.Context, zoneID string, bo
 
 // Get information for a specific routing rule already created.
 func (r *ZoneEmailRoutingRuleService) Get(ctx context.Context, zoneID string, ruleIdentifier string, opts ...option.RequestOption) (res *EmailRuleResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -69,7 +70,7 @@ func (r *ZoneEmailRoutingRuleService) Get(ctx context.Context, zoneID string, ru
 
 // Update actions and matches, or enable/disable specific routing rules.
 func (r *ZoneEmailRoutingRuleService) Update(ctx context.Context, zoneID string, ruleIdentifier string, body ZoneEmailRoutingRuleUpdateParams, opts ...option.RequestOption) (res *EmailRuleResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -85,7 +86,7 @@ func (r *ZoneEmailRoutingRuleService) Update(ctx context.Context, zoneID string,
 
 // Lists existing routing rules.
 func (r *ZoneEmailRoutingRuleService) List(ctx context.Context, zoneID string, query ZoneEmailRoutingRuleListParams, opts ...option.RequestOption) (res *ZoneEmailRoutingRuleListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -97,7 +98,7 @@ func (r *ZoneEmailRoutingRuleService) List(ctx context.Context, zoneID string, q
 
 // Delete a specific routing rule.
 func (r *ZoneEmailRoutingRuleService) Delete(ctx context.Context, zoneID string, ruleIdentifier string, opts ...option.RequestOption) (res *EmailRuleResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

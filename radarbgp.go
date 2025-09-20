@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -47,7 +48,7 @@ func NewRadarBgpService(opts ...option.RequestOption) (r *RadarBgpService) {
 // Retrieves BGP updates over time. When requesting updates for an autonomous
 // system, only BGP updates of type announcement are returned.
 func (r *RadarBgpService) GetTimeseries(ctx context.Context, query RadarBgpGetTimeseriesParams, opts ...option.RequestOption) (res *RadarBgpGetTimeseriesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/bgp/timeseries"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"reflect"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -38,7 +39,7 @@ func NewAccountDevicePolicyExcludeService(opts ...option.RequestOption) (r *Acco
 // Fetches the list of routes excluded from the WARP client's tunnel for a specific
 // device settings profile.
 func (r *AccountDevicePolicyExcludeService) List(ctx context.Context, accountID string, policyID string, opts ...option.RequestOption) (res *SplitTunnelResponseCollection, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -54,7 +55,7 @@ func (r *AccountDevicePolicyExcludeService) List(ctx context.Context, accountID 
 
 // Fetches the list of routes excluded from the WARP client's tunnel.
 func (r *AccountDevicePolicyExcludeService) GlobalList(ctx context.Context, accountID string, opts ...option.RequestOption) (res *SplitTunnelResponseCollection, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -66,7 +67,7 @@ func (r *AccountDevicePolicyExcludeService) GlobalList(ctx context.Context, acco
 
 // Sets the list of routes excluded from the WARP client's tunnel.
 func (r *AccountDevicePolicyExcludeService) GlobalSet(ctx context.Context, accountID string, body AccountDevicePolicyExcludeGlobalSetParams, opts ...option.RequestOption) (res *SplitTunnelResponseCollection, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -79,7 +80,7 @@ func (r *AccountDevicePolicyExcludeService) GlobalSet(ctx context.Context, accou
 // Sets the list of routes excluded from the WARP client's tunnel for a specific
 // device settings profile.
 func (r *AccountDevicePolicyExcludeService) Set(ctx context.Context, accountID string, policyID string, body AccountDevicePolicyExcludeSetParams, opts ...option.RequestOption) (res *SplitTunnelResponseCollection, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

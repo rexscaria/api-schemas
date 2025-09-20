@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -37,7 +38,7 @@ func NewAccountAIRunCfHuggingfaceService(opts ...option.RequestOption) (r *Accou
 
 // Execute @cf/huggingface/distilbert-sst-2-int8 model.
 func (r *AccountAIRunCfHuggingfaceService) ExecuteDistilbertSst2Int8(ctx context.Context, accountID string, params AccountAIRunCfHuggingfaceExecuteDistilbertSst2Int8Params, opts ...option.RequestOption) (res *AccountAIRunCfHuggingfaceExecuteDistilbertSst2Int8Response, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

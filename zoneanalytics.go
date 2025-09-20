@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -45,7 +46,7 @@ func NewZoneAnalyticsService(opts ...option.RequestOption) (r *ZoneAnalyticsServ
 //
 // Deprecated: deprecated
 func (r *ZoneAnalyticsService) ListColos(ctx context.Context, zoneIdentifier string, query ZoneAnalyticsListColosParams, opts ...option.RequestOption) (res *ZoneAnalyticsListColosResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneIdentifier == "" {
 		err = errors.New("missing required zone_identifier parameter")
 		return
@@ -60,7 +61,7 @@ func (r *ZoneAnalyticsService) ListColos(ctx context.Context, zoneIdentifier str
 //
 // Deprecated: deprecated
 func (r *ZoneAnalyticsService) GetDashboard(ctx context.Context, zoneIdentifier string, query ZoneAnalyticsGetDashboardParams, opts ...option.RequestOption) (res *ZoneAnalyticsGetDashboardResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneIdentifier == "" {
 		err = errors.New("missing required zone_identifier parameter")
 		return

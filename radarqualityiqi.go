@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -37,7 +38,7 @@ func NewRadarQualityIqiService(opts ...option.RequestOption) (r *RadarQualityIqi
 // Retrieves a summary (percentiles) of bandwidth, latency, or DNS response time
 // from the Radar Internet Quality Index (IQI).
 func (r *RadarQualityIqiService) GetSummary(ctx context.Context, query RadarQualityIqiGetSummaryParams, opts ...option.RequestOption) (res *RadarQualityIqiGetSummaryResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/quality/iqi/summary"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -46,7 +47,7 @@ func (r *RadarQualityIqiService) GetSummary(ctx context.Context, query RadarQual
 // Retrieves a time series (percentiles) of bandwidth, latency, or DNS response
 // time from the Radar Internet Quality Index (IQI).
 func (r *RadarQualityIqiService) GetTimeseriesGroups(ctx context.Context, query RadarQualityIqiGetTimeseriesGroupsParams, opts ...option.RequestOption) (res *RadarQualityIqiGetTimeseriesGroupsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/quality/iqi/timeseries_groups"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

@@ -10,6 +10,7 @@ import (
 	"mime/multipart"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apiform"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -43,7 +44,7 @@ func NewAccountStorageKvNamespaceValueService(opts ...option.RequestOption) (r *
 // measured in seconds since the UNIX epoch will be returned in the `expiration`
 // response header.
 func (r *AccountStorageKvNamespaceValueService) Get(ctx context.Context, accountID string, namespaceID string, keyName string, opts ...option.RequestOption) (res *http.Response, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "application/octet-stream")}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
@@ -65,7 +66,7 @@ func (r *AccountStorageKvNamespaceValueService) Get(ctx context.Context, account
 // Remove a KV pair from the namespace. Use URL-encoding to use special characters
 // (for example, `:`, `!`, `%`) in the key name.
 func (r *AccountStorageKvNamespaceValueService) Delete(ctx context.Context, accountID string, namespaceID string, keyName string, opts ...option.RequestOption) (res *APIResponseCommonNoResult, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -92,7 +93,7 @@ func (r *AccountStorageKvNamespaceValueService) Delete(ctx context.Context, acco
 // key-value pair will never expire. If both are set, `expiration_ttl` is used and
 // `expiration` is ignored.
 func (r *AccountStorageKvNamespaceValueService) Write(ctx context.Context, accountID string, namespaceID string, keyName string, params AccountStorageKvNamespaceValueWriteParams, opts ...option.RequestOption) (res *APIResponseCommonNoResult, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

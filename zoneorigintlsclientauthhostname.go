@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -38,7 +39,7 @@ func NewZoneOriginTlsClientAuthHostnameService(opts ...option.RequestOption) (r 
 
 // Get the Hostname Status for Client Authentication
 func (r *ZoneOriginTlsClientAuthHostnameService) Get(ctx context.Context, zoneID string, hostname string, opts ...option.RequestOption) (res *ZoneOriginTlsClientAuthHostnameGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -58,7 +59,7 @@ func (r *ZoneOriginTlsClientAuthHostnameService) Get(ctx context.Context, zoneID
 // certificate are allowed. Note: Use a null value for parameter _enabled_ to
 // invalidate the association.
 func (r *ZoneOriginTlsClientAuthHostnameService) Update(ctx context.Context, zoneID string, body ZoneOriginTlsClientAuthHostnameUpdateParams, opts ...option.RequestOption) (res *ZoneOriginTlsClientAuthHostnameUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

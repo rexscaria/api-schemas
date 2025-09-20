@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -36,7 +37,7 @@ func NewAccountAlertingV3PolicyService(opts ...option.RequestOption) (r *Account
 
 // Creates a new Notification policy.
 func (r *AccountAlertingV3PolicyService) New(ctx context.Context, accountID string, body AccountAlertingV3PolicyNewParams, opts ...option.RequestOption) (res *IDResponseAlerting, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -48,7 +49,7 @@ func (r *AccountAlertingV3PolicyService) New(ctx context.Context, accountID stri
 
 // Get details for a single policy.
 func (r *AccountAlertingV3PolicyService) Get(ctx context.Context, accountID string, policyID string, opts ...option.RequestOption) (res *AccountAlertingV3PolicyGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -64,7 +65,7 @@ func (r *AccountAlertingV3PolicyService) Get(ctx context.Context, accountID stri
 
 // Update a Notification policy.
 func (r *AccountAlertingV3PolicyService) Update(ctx context.Context, accountID string, policyID string, body AccountAlertingV3PolicyUpdateParams, opts ...option.RequestOption) (res *IDResponseAlerting, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -80,7 +81,7 @@ func (r *AccountAlertingV3PolicyService) Update(ctx context.Context, accountID s
 
 // Get a list of all Notification policies.
 func (r *AccountAlertingV3PolicyService) List(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountAlertingV3PolicyListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -92,7 +93,7 @@ func (r *AccountAlertingV3PolicyService) List(ctx context.Context, accountID str
 
 // Delete a Notification policy.
 func (r *AccountAlertingV3PolicyService) Delete(ctx context.Context, accountID string, policyID string, opts ...option.RequestOption) (res *APIResponseCollectionAlerting, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

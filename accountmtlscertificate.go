@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -36,7 +37,7 @@ func NewAccountMtlsCertificateService(opts ...option.RequestOption) (r *AccountM
 
 // Fetches a single mTLS certificate.
 func (r *AccountMtlsCertificateService) Get(ctx context.Context, accountID string, mtlsCertificateID string, opts ...option.RequestOption) (res *CertificateResponseSingleMtls, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -52,7 +53,7 @@ func (r *AccountMtlsCertificateService) Get(ctx context.Context, accountID strin
 
 // Lists all mTLS certificates.
 func (r *AccountMtlsCertificateService) List(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountMtlsCertificateListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -65,7 +66,7 @@ func (r *AccountMtlsCertificateService) List(ctx context.Context, accountID stri
 // Deletes the mTLS certificate unless the certificate is in use by one or more
 // Cloudflare services.
 func (r *AccountMtlsCertificateService) Delete(ctx context.Context, accountID string, mtlsCertificateID string, opts ...option.RequestOption) (res *CertificateResponseSingleMtls, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -81,7 +82,7 @@ func (r *AccountMtlsCertificateService) Delete(ctx context.Context, accountID st
 
 // Lists all active associations between the certificate and Cloudflare services.
 func (r *AccountMtlsCertificateService) ListAssociations(ctx context.Context, accountID string, mtlsCertificateID string, opts ...option.RequestOption) (res *AccountMtlsCertificateListAssociationsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -97,7 +98,7 @@ func (r *AccountMtlsCertificateService) ListAssociations(ctx context.Context, ac
 
 // Upload a certificate that you want to use with mTLS-enabled Cloudflare services.
 func (r *AccountMtlsCertificateService) Upload(ctx context.Context, accountID string, body AccountMtlsCertificateUploadParams, opts ...option.RequestOption) (res *AccountMtlsCertificateUploadResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

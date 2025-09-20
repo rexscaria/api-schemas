@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -36,7 +37,7 @@ func NewRadarAttackLayer3TimeseriesGroupService(opts ...option.RequestOption) (r
 
 // Retrieves the distribution of layer 3 attacks by bitrate over time.
 func (r *RadarAttackLayer3TimeseriesGroupService) GetBitrateTimeseries(ctx context.Context, query RadarAttackLayer3TimeseriesGroupGetBitrateTimeseriesParams, opts ...option.RequestOption) (res *RadarAttackLayer3TimeseriesGroupGetBitrateTimeseriesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/attacks/layer3/timeseries_groups/bitrate"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -44,7 +45,7 @@ func (r *RadarAttackLayer3TimeseriesGroupService) GetBitrateTimeseries(ctx conte
 
 // Retrieves the distribution of layer 3 attacks by duration over time.
 func (r *RadarAttackLayer3TimeseriesGroupService) GetDurationTimeseries(ctx context.Context, query RadarAttackLayer3TimeseriesGroupGetDurationTimeseriesParams, opts ...option.RequestOption) (res *RadarAttackLayer3TimeseriesGroupGetDurationTimeseriesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/attacks/layer3/timeseries_groups/duration"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -52,7 +53,7 @@ func (r *RadarAttackLayer3TimeseriesGroupService) GetDurationTimeseries(ctx cont
 
 // Retrieves the distribution of layer 3 attacks by targeted industry over time.
 func (r *RadarAttackLayer3TimeseriesGroupService) GetIndustryTimeseries(ctx context.Context, query RadarAttackLayer3TimeseriesGroupGetIndustryTimeseriesParams, opts ...option.RequestOption) (res *RadarAttackLayer3TimeseriesGroupGetIndustryTimeseriesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/attacks/layer3/timeseries_groups/industry"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -60,7 +61,7 @@ func (r *RadarAttackLayer3TimeseriesGroupService) GetIndustryTimeseries(ctx cont
 
 // Retrieves the distribution of layer 3 attacks by IP version over time.
 func (r *RadarAttackLayer3TimeseriesGroupService) GetIPVersionTimeseries(ctx context.Context, query RadarAttackLayer3TimeseriesGroupGetIPVersionTimeseriesParams, opts ...option.RequestOption) (res *RadarAttackLayer3TimeseriesGroupGetIPVersionTimeseriesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/attacks/layer3/timeseries_groups/ip_version"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -68,7 +69,7 @@ func (r *RadarAttackLayer3TimeseriesGroupService) GetIPVersionTimeseries(ctx con
 
 // Retrieves the distribution of layer 3 attacks by protocol over time.
 func (r *RadarAttackLayer3TimeseriesGroupService) GetProtocolTimeseries(ctx context.Context, query RadarAttackLayer3TimeseriesGroupGetProtocolTimeseriesParams, opts ...option.RequestOption) (res *RadarAttackLayer3TimeseriesGroupGetProtocolTimeseriesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/attacks/layer3/timeseries_groups/protocol"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -76,7 +77,7 @@ func (r *RadarAttackLayer3TimeseriesGroupService) GetProtocolTimeseries(ctx cont
 
 // Retrieves the distribution of layer 3 attacks by vector over time.
 func (r *RadarAttackLayer3TimeseriesGroupService) GetVectorTimeseries(ctx context.Context, query RadarAttackLayer3TimeseriesGroupGetVectorTimeseriesParams, opts ...option.RequestOption) (res *RadarAttackLayer3TimeseriesGroupGetVectorTimeseriesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/attacks/layer3/timeseries_groups/vector"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -84,7 +85,7 @@ func (r *RadarAttackLayer3TimeseriesGroupService) GetVectorTimeseries(ctx contex
 
 // Retrieves the distribution of layer 3 attacks by targeted vertical over time.
 func (r *RadarAttackLayer3TimeseriesGroupService) GetVerticalTimeseries(ctx context.Context, query RadarAttackLayer3TimeseriesGroupGetVerticalTimeseriesParams, opts ...option.RequestOption) (res *RadarAttackLayer3TimeseriesGroupGetVerticalTimeseriesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/attacks/layer3/timeseries_groups/vertical"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

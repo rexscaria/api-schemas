@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -37,7 +38,7 @@ func NewAccountStreamLiveInputOutputService(opts ...option.RequestOption) (r *Ac
 // other RTMP or SRT destinations. Outputs are always linked to a specific live
 // input — one live input can have many outputs.
 func (r *AccountStreamLiveInputOutputService) New(ctx context.Context, accountID string, liveInputIdentifier string, body AccountStreamLiveInputOutputNewParams, opts ...option.RequestOption) (res *OutputResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -53,7 +54,7 @@ func (r *AccountStreamLiveInputOutputService) New(ctx context.Context, accountID
 
 // Updates the state of an output.
 func (r *AccountStreamLiveInputOutputService) Update(ctx context.Context, accountID string, liveInputIdentifier string, outputIdentifier string, body AccountStreamLiveInputOutputUpdateParams, opts ...option.RequestOption) (res *OutputResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -73,7 +74,7 @@ func (r *AccountStreamLiveInputOutputService) Update(ctx context.Context, accoun
 
 // Retrieves all outputs associated with a specified live input.
 func (r *AccountStreamLiveInputOutputService) List(ctx context.Context, accountID string, liveInputIdentifier string, opts ...option.RequestOption) (res *AccountStreamLiveInputOutputListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -89,7 +90,7 @@ func (r *AccountStreamLiveInputOutputService) List(ctx context.Context, accountI
 
 // Deletes an output and removes it from the associated live input.
 func (r *AccountStreamLiveInputOutputService) Delete(ctx context.Context, accountID string, liveInputIdentifier string, outputIdentifier string, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")

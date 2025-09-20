@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/apiquery"
@@ -42,7 +43,7 @@ func (r *AccountMagicCloudOnrampService) New(ctx context.Context, accountID stri
 	if params.Forwarded.Present {
 		opts = append(opts, option.WithHeader("forwarded", fmt.Sprintf("%s", params.Forwarded)))
 	}
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -54,7 +55,7 @@ func (r *AccountMagicCloudOnrampService) New(ctx context.Context, accountID stri
 
 // Read an On-ramp (Closed Beta).
 func (r *AccountMagicCloudOnrampService) Get(ctx context.Context, accountID string, onrampID string, query AccountMagicCloudOnrampGetParams, opts ...option.RequestOption) (res *AccountMagicCloudOnrampGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -70,7 +71,7 @@ func (r *AccountMagicCloudOnrampService) Get(ctx context.Context, accountID stri
 
 // Update an On-ramp (Closed Beta).
 func (r *AccountMagicCloudOnrampService) Update(ctx context.Context, accountID string, onrampID string, body AccountMagicCloudOnrampUpdateParams, opts ...option.RequestOption) (res *McnUpdateOnrampResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -86,7 +87,7 @@ func (r *AccountMagicCloudOnrampService) Update(ctx context.Context, accountID s
 
 // List On-ramps (Closed Beta).
 func (r *AccountMagicCloudOnrampService) List(ctx context.Context, accountID string, query AccountMagicCloudOnrampListParams, opts ...option.RequestOption) (res *AccountMagicCloudOnrampListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -98,7 +99,7 @@ func (r *AccountMagicCloudOnrampService) List(ctx context.Context, accountID str
 
 // Delete an On-ramp (Closed Beta).
 func (r *AccountMagicCloudOnrampService) Delete(ctx context.Context, accountID string, onrampID string, body AccountMagicCloudOnrampDeleteParams, opts ...option.RequestOption) (res *AccountMagicCloudOnrampDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -114,7 +115,7 @@ func (r *AccountMagicCloudOnrampService) Delete(ctx context.Context, accountID s
 
 // Apply an On-ramp (Closed Beta).
 func (r *AccountMagicCloudOnrampService) Apply(ctx context.Context, accountID string, onrampID string, opts ...option.RequestOption) (res *McnGoodResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -130,7 +131,7 @@ func (r *AccountMagicCloudOnrampService) Apply(ctx context.Context, accountID st
 
 // Export an On-ramp to terraform ready file(s) (Closed Beta).
 func (r *AccountMagicCloudOnrampService) Export(ctx context.Context, accountID string, onrampID string, opts ...option.RequestOption) (res *http.Response, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "application/zip")}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
@@ -147,7 +148,7 @@ func (r *AccountMagicCloudOnrampService) Export(ctx context.Context, accountID s
 
 // Update an On-ramp (Closed Beta).
 func (r *AccountMagicCloudOnrampService) Patch(ctx context.Context, accountID string, onrampID string, body AccountMagicCloudOnrampPatchParams, opts ...option.RequestOption) (res *McnUpdateOnrampResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -163,7 +164,7 @@ func (r *AccountMagicCloudOnrampService) Patch(ctx context.Context, accountID st
 
 // Plan an On-ramp (Closed Beta).
 func (r *AccountMagicCloudOnrampService) Plan(ctx context.Context, accountID string, onrampID string, opts ...option.RequestOption) (res *McnGoodResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

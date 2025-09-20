@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/param"
@@ -35,7 +36,7 @@ func NewZoneLogpushEdgeService(opts ...option.RequestOption) (r *ZoneLogpushEdge
 
 // Creates a new Instant Logs job for a zone.
 func (r *ZoneLogpushEdgeService) NewJob(ctx context.Context, zoneID string, body ZoneLogpushEdgeNewJobParams, opts ...option.RequestOption) (res *ZoneLogpushEdgeNewJobResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return
@@ -47,7 +48,7 @@ func (r *ZoneLogpushEdgeService) NewJob(ctx context.Context, zoneID string, body
 
 // Lists Instant Logs jobs for a zone.
 func (r *ZoneLogpushEdgeService) ListJobs(ctx context.Context, zoneID string, opts ...option.RequestOption) (res *ZoneLogpushEdgeListJobsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
 		return

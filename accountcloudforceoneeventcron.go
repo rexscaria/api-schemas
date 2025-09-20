@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
 	"github.com/rexscaria/api-schemas/internal/requestconfig"
@@ -34,7 +35,7 @@ func NewAccountCloudforceOneEventCronService(opts ...option.RequestOption) (r *A
 
 // Reads the last cron update time
 func (r *AccountCloudforceOneEventCronService) Get(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountCloudforceOneEventCronGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -46,7 +47,7 @@ func (r *AccountCloudforceOneEventCronService) Get(ctx context.Context, accountI
 
 // Reads the last cron update time
 func (r *AccountCloudforceOneEventCronService) Update(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountCloudforceOneEventCronUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

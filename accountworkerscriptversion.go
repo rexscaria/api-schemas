@@ -11,6 +11,7 @@ import (
 	"mime/multipart"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/rexscaria/api-schemas/internal/apiform"
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -41,7 +42,7 @@ func NewAccountWorkerScriptVersionService(opts ...option.RequestOption) (r *Acco
 
 // List of Worker Versions. The first version in the list is the latest version.
 func (r *AccountWorkerScriptVersionService) List(ctx context.Context, accountID string, scriptName string, query AccountWorkerScriptVersionListParams, opts ...option.RequestOption) (res *AccountWorkerScriptVersionListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -57,7 +58,7 @@ func (r *AccountWorkerScriptVersionService) List(ctx context.Context, accountID 
 
 // Get Version Detail
 func (r *AccountWorkerScriptVersionService) GetDetail(ctx context.Context, accountID string, scriptName string, versionID string, opts ...option.RequestOption) (res *AccountWorkerScriptVersionGetDetailResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -79,7 +80,7 @@ func (r *AccountWorkerScriptVersionService) GetDetail(ctx context.Context, accou
 // more about the multipart metadata on our docs:
 // https://developers.cloudflare.com/workers/configuration/multipart-upload-metadata/.
 func (r *AccountWorkerScriptVersionService) Upload(ctx context.Context, accountID string, scriptName string, body AccountWorkerScriptVersionUploadParams, opts ...option.RequestOption) (res *AccountWorkerScriptVersionUploadResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

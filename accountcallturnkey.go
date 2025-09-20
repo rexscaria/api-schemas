@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -36,7 +37,7 @@ func NewAccountCallTurnKeyService(opts ...option.RequestOption) (r *AccountCallT
 
 // Creates a new Cloudflare Calls TURN key.
 func (r *AccountCallTurnKeyService) New(ctx context.Context, accountID string, body AccountCallTurnKeyNewParams, opts ...option.RequestOption) (res *AccountCallTurnKeyNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -48,7 +49,7 @@ func (r *AccountCallTurnKeyService) New(ctx context.Context, accountID string, b
 
 // Fetches details for a single TURN key.
 func (r *AccountCallTurnKeyService) Get(ctx context.Context, accountID string, keyID string, opts ...option.RequestOption) (res *CallsTurnKeyResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -64,7 +65,7 @@ func (r *AccountCallTurnKeyService) Get(ctx context.Context, accountID string, k
 
 // Edit details for a single TURN key.
 func (r *AccountCallTurnKeyService) Update(ctx context.Context, accountID string, keyID string, body AccountCallTurnKeyUpdateParams, opts ...option.RequestOption) (res *CallsTurnKeyResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -80,7 +81,7 @@ func (r *AccountCallTurnKeyService) Update(ctx context.Context, accountID string
 
 // Lists all TURN keys in the Cloudflare account
 func (r *AccountCallTurnKeyService) List(ctx context.Context, accountID string, opts ...option.RequestOption) (res *AccountCallTurnKeyListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return
@@ -92,7 +93,7 @@ func (r *AccountCallTurnKeyService) List(ctx context.Context, accountID string, 
 
 // Deletes a TURN key from Cloudflare Calls
 func (r *AccountCallTurnKeyService) Delete(ctx context.Context, accountID string, keyID string, opts ...option.RequestOption) (res *CallsTurnKeyResponseSingle, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
 		return

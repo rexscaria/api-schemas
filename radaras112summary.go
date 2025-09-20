@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/rexscaria/api-schemas/internal/apijson"
@@ -37,7 +38,7 @@ func NewRadarAs112SummaryService(opts ...option.RequestOption) (r *RadarAs112Sum
 // Retrieves the distribution of DNS queries to AS112 by DNSSEC (DNS Security
 // Extensions) support.
 func (r *RadarAs112SummaryService) GetDnssec(ctx context.Context, query RadarAs112SummaryGetDnssecParams, opts ...option.RequestOption) (res *RadarAs112SummaryGetDnssecResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/as112/summary/dnssec"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -46,7 +47,7 @@ func (r *RadarAs112SummaryService) GetDnssec(ctx context.Context, query RadarAs1
 // Retrieves the distribution of DNS queries to AS112 by EDNS (Extension Mechanisms
 // for DNS) support.
 func (r *RadarAs112SummaryService) GetEdns(ctx context.Context, query RadarAs112SummaryGetEdnsParams, opts ...option.RequestOption) (res *RadarAs112SummaryGetEdnsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/as112/summary/edns"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -54,7 +55,7 @@ func (r *RadarAs112SummaryService) GetEdns(ctx context.Context, query RadarAs112
 
 // Retrieves the distribution of DNS queries to AS112 by IP version.
 func (r *RadarAs112SummaryService) GetIPVersion(ctx context.Context, query RadarAs112SummaryGetIPVersionParams, opts ...option.RequestOption) (res *RadarAs112SummaryGetIPVersionResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/as112/summary/ip_version"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -62,7 +63,7 @@ func (r *RadarAs112SummaryService) GetIPVersion(ctx context.Context, query Radar
 
 // Retrieves the distribution of DNS queries to AS112 by protocol.
 func (r *RadarAs112SummaryService) GetProtocol(ctx context.Context, query RadarAs112SummaryGetProtocolParams, opts ...option.RequestOption) (res *RadarAs112SummaryGetProtocolResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/as112/summary/protocol"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -70,7 +71,7 @@ func (r *RadarAs112SummaryService) GetProtocol(ctx context.Context, query RadarA
 
 // Retrieves the distribution of DNS queries to AS112 by type.
 func (r *RadarAs112SummaryService) GetQueryType(ctx context.Context, query RadarAs112SummaryGetQueryTypeParams, opts ...option.RequestOption) (res *RadarAs112SummaryGetQueryTypeResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/as112/summary/query_type"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -78,7 +79,7 @@ func (r *RadarAs112SummaryService) GetQueryType(ctx context.Context, query Radar
 
 // Retrieves the distribution of AS112 DNS requests classified by response code.
 func (r *RadarAs112SummaryService) GetResponseCodes(ctx context.Context, query RadarAs112SummaryGetResponseCodesParams, opts ...option.RequestOption) (res *RadarAs112SummaryGetResponseCodesResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "radar/as112/summary/response_codes"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
