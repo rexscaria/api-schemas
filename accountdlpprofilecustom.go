@@ -39,11 +39,11 @@ func (r *AccountDlpProfileCustomService) New(ctx context.Context, accountID stri
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/dlp/profiles/custom", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetches a custom DLP profile by id.
@@ -51,15 +51,15 @@ func (r *AccountDlpProfileCustomService) Get(ctx context.Context, accountID stri
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if profileID == "" {
 		err = errors.New("missing required profile_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/dlp/profiles/custom/%s", accountID, profileID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates a DLP custom profile.
@@ -67,15 +67,15 @@ func (r *AccountDlpProfileCustomService) Update(ctx context.Context, accountID s
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if profileID == "" {
 		err = errors.New("missing required profile_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/dlp/profiles/custom/%s", accountID, profileID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Deletes a DLP custom profile.
@@ -83,15 +83,15 @@ func (r *AccountDlpProfileCustomService) Delete(ctx context.Context, accountID s
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if profileID == "" {
 		err = errors.New("missing required profile_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/dlp/profiles/custom/%s", accountID, profileID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Scan the context of predefined entries to only return matches surrounded by
@@ -101,9 +101,9 @@ func (r *AccountDlpProfileCustomService) Delete(ctx context.Context, accountID s
 type ContextAwareness struct {
 	// If true, scan the context of predefined entries to only return matches
 	// surrounded by keywords.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Content types to exclude from context analysis and return all matches.
-	Skip ContextAwarenessSkip `json:"skip,required"`
+	Skip ContextAwarenessSkip `json:"skip" api:"required"`
 	JSON contextAwarenessJSON `json:"-"`
 }
 
@@ -127,7 +127,7 @@ func (r contextAwarenessJSON) RawJSON() string {
 // Content types to exclude from context analysis and return all matches.
 type ContextAwarenessSkip struct {
 	// If the content type is a file, skip context analysis and return all matches.
-	Files bool                     `json:"files,required"`
+	Files bool                     `json:"files" api:"required"`
 	JSON  contextAwarenessSkipJSON `json:"-"`
 }
 
@@ -154,9 +154,9 @@ func (r contextAwarenessSkipJSON) RawJSON() string {
 type ContextAwarenessParam struct {
 	// If true, scan the context of predefined entries to only return matches
 	// surrounded by keywords.
-	Enabled param.Field[bool] `json:"enabled,required"`
+	Enabled param.Field[bool] `json:"enabled" api:"required"`
 	// Content types to exclude from context analysis and return all matches.
-	Skip param.Field[ContextAwarenessSkipParam] `json:"skip,required"`
+	Skip param.Field[ContextAwarenessSkipParam] `json:"skip" api:"required"`
 }
 
 func (r ContextAwarenessParam) MarshalJSON() (data []byte, err error) {
@@ -166,7 +166,7 @@ func (r ContextAwarenessParam) MarshalJSON() (data []byte, err error) {
 // Content types to exclude from context analysis and return all matches.
 type ContextAwarenessSkipParam struct {
 	// If the content type is a file, skip context analysis and return all matches.
-	Files param.Field[bool] `json:"files,required"`
+	Files param.Field[bool] `json:"files" api:"required"`
 }
 
 func (r ContextAwarenessSkipParam) MarshalJSON() (data []byte, err error) {
@@ -174,9 +174,9 @@ func (r ContextAwarenessSkipParam) MarshalJSON() (data []byte, err error) {
 }
 
 type NewCustomEntryParam struct {
-	Enabled param.Field[bool]         `json:"enabled,required"`
-	Name    param.Field[string]       `json:"name,required"`
-	Pattern param.Field[PatternParam] `json:"pattern,required"`
+	Enabled param.Field[bool]         `json:"enabled" api:"required"`
+	Name    param.Field[string]       `json:"name" api:"required"`
+	Pattern param.Field[PatternParam] `json:"pattern" api:"required"`
 }
 
 func (r NewCustomEntryParam) MarshalJSON() (data []byte, err error) {
@@ -188,8 +188,8 @@ func (r NewCustomEntryParam) implementsNewCustomProfileEntriesUnionParam() {}
 func (r NewCustomEntryParam) implementsAccountDlpProfileCustomUpdateParamsEntryUnion() {}
 
 type NewCustomProfileParam struct {
-	Entries          param.Field[[]NewCustomProfileEntriesUnionParam] `json:"entries,required"`
-	Name             param.Field[string]                              `json:"name,required"`
+	Entries          param.Field[[]NewCustomProfileEntriesUnionParam] `json:"entries" api:"required"`
+	Name             param.Field[string]                              `json:"name" api:"required"`
 	AIContextEnabled param.Field[bool]                                `json:"ai_context_enabled"`
 	// Related DLP policies will trigger when the match count exceeds the number set.
 	AllowedMatchCount   param.Field[int64]  `json:"allowed_match_count"`
@@ -212,8 +212,8 @@ func (r NewCustomProfileParam) MarshalJSON() (data []byte, err error) {
 }
 
 type NewCustomProfileEntryParam struct {
-	Enabled param.Field[bool]         `json:"enabled,required"`
-	Name    param.Field[string]       `json:"name,required"`
+	Enabled param.Field[bool]         `json:"enabled" api:"required"`
+	Name    param.Field[string]       `json:"name" api:"required"`
 	Pattern param.Field[PatternParam] `json:"pattern"`
 	Words   param.Field[interface{}]  `json:"words"`
 }
@@ -231,9 +231,9 @@ type NewCustomProfileEntriesUnionParam interface {
 }
 
 type NewCustomProfileEntriesDlpNewWordListEntryParam struct {
-	Enabled param.Field[bool]     `json:"enabled,required"`
-	Name    param.Field[string]   `json:"name,required"`
-	Words   param.Field[[]string] `json:"words,required"`
+	Enabled param.Field[bool]     `json:"enabled" api:"required"`
+	Name    param.Field[string]   `json:"name" api:"required"`
+	Words   param.Field[[]string] `json:"words" api:"required"`
 }
 
 func (r NewCustomProfileEntriesDlpNewWordListEntryParam) MarshalJSON() (data []byte, err error) {
@@ -244,9 +244,9 @@ func (r NewCustomProfileEntriesDlpNewWordListEntryParam) implementsNewCustomProf
 }
 
 type NewCustomProfileSharedEntryParam struct {
-	Enabled   param.Field[bool]                                   `json:"enabled,required"`
-	EntryID   param.Field[string]                                 `json:"entry_id,required" format:"uuid"`
-	EntryType param.Field[NewCustomProfileSharedEntriesEntryType] `json:"entry_type,required"`
+	Enabled   param.Field[bool]                                   `json:"enabled" api:"required"`
+	EntryID   param.Field[string]                                 `json:"entry_id" api:"required" format:"uuid"`
+	EntryType param.Field[NewCustomProfileSharedEntriesEntryType] `json:"entry_type" api:"required"`
 }
 
 func (r NewCustomProfileSharedEntryParam) MarshalJSON() (data []byte, err error) {
@@ -265,9 +265,9 @@ type NewCustomProfileSharedEntriesUnionParam interface {
 }
 
 type NewCustomProfileSharedEntriesCustomParam struct {
-	Enabled   param.Field[bool]                                         `json:"enabled,required"`
-	EntryID   param.Field[string]                                       `json:"entry_id,required" format:"uuid"`
-	EntryType param.Field[NewCustomProfileSharedEntriesCustomEntryType] `json:"entry_type,required"`
+	Enabled   param.Field[bool]                                         `json:"enabled" api:"required"`
+	EntryID   param.Field[string]                                       `json:"entry_id" api:"required" format:"uuid"`
+	EntryType param.Field[NewCustomProfileSharedEntriesCustomEntryType] `json:"entry_type" api:"required"`
 }
 
 func (r NewCustomProfileSharedEntriesCustomParam) MarshalJSON() (data []byte, err error) {
@@ -292,9 +292,9 @@ func (r NewCustomProfileSharedEntriesCustomEntryType) IsKnown() bool {
 }
 
 type NewCustomProfileSharedEntriesPredefinedParam struct {
-	Enabled   param.Field[bool]                                             `json:"enabled,required"`
-	EntryID   param.Field[string]                                           `json:"entry_id,required" format:"uuid"`
-	EntryType param.Field[NewCustomProfileSharedEntriesPredefinedEntryType] `json:"entry_type,required"`
+	Enabled   param.Field[bool]                                             `json:"enabled" api:"required"`
+	EntryID   param.Field[string]                                           `json:"entry_id" api:"required" format:"uuid"`
+	EntryType param.Field[NewCustomProfileSharedEntriesPredefinedEntryType] `json:"entry_type" api:"required"`
 }
 
 func (r NewCustomProfileSharedEntriesPredefinedParam) MarshalJSON() (data []byte, err error) {
@@ -319,9 +319,9 @@ func (r NewCustomProfileSharedEntriesPredefinedEntryType) IsKnown() bool {
 }
 
 type NewCustomProfileSharedEntriesIntegrationParam struct {
-	Enabled   param.Field[bool]                                              `json:"enabled,required"`
-	EntryID   param.Field[string]                                            `json:"entry_id,required" format:"uuid"`
-	EntryType param.Field[NewCustomProfileSharedEntriesIntegrationEntryType] `json:"entry_type,required"`
+	Enabled   param.Field[bool]                                              `json:"enabled" api:"required"`
+	EntryID   param.Field[string]                                            `json:"entry_id" api:"required" format:"uuid"`
+	EntryType param.Field[NewCustomProfileSharedEntriesIntegrationEntryType] `json:"entry_type" api:"required"`
 }
 
 func (r NewCustomProfileSharedEntriesIntegrationParam) MarshalJSON() (data []byte, err error) {
@@ -346,9 +346,9 @@ func (r NewCustomProfileSharedEntriesIntegrationEntryType) IsKnown() bool {
 }
 
 type NewCustomProfileSharedEntriesExactDataParam struct {
-	Enabled   param.Field[bool]                                            `json:"enabled,required"`
-	EntryID   param.Field[string]                                          `json:"entry_id,required" format:"uuid"`
-	EntryType param.Field[NewCustomProfileSharedEntriesExactDataEntryType] `json:"entry_type,required"`
+	Enabled   param.Field[bool]                                            `json:"enabled" api:"required"`
+	EntryID   param.Field[string]                                          `json:"entry_id" api:"required" format:"uuid"`
+	EntryType param.Field[NewCustomProfileSharedEntriesExactDataEntryType] `json:"entry_type" api:"required"`
 }
 
 func (r NewCustomProfileSharedEntriesExactDataParam) MarshalJSON() (data []byte, err error) {
@@ -373,9 +373,9 @@ func (r NewCustomProfileSharedEntriesExactDataEntryType) IsKnown() bool {
 }
 
 type NewCustomProfileSharedEntriesObjectParam struct {
-	Enabled   param.Field[bool]                                         `json:"enabled,required"`
-	EntryID   param.Field[string]                                       `json:"entry_id,required" format:"uuid"`
-	EntryType param.Field[NewCustomProfileSharedEntriesObjectEntryType] `json:"entry_type,required"`
+	Enabled   param.Field[bool]                                         `json:"enabled" api:"required"`
+	EntryID   param.Field[string]                                       `json:"entry_id" api:"required" format:"uuid"`
+	EntryType param.Field[NewCustomProfileSharedEntriesObjectEntryType] `json:"entry_type" api:"required"`
 }
 
 func (r NewCustomProfileSharedEntriesObjectParam) MarshalJSON() (data []byte, err error) {
@@ -418,10 +418,10 @@ func (r NewCustomProfileSharedEntriesEntryType) IsKnown() bool {
 }
 
 type AccountDlpProfileCustomNewResponse struct {
-	Errors   []MessagesDlpItems `json:"errors,required"`
-	Messages []MessagesDlpItems `json:"messages,required"`
+	Errors   []MessagesDlpItems `json:"errors" api:"required"`
+	Messages []MessagesDlpItems `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountDlpProfileCustomNewResponseSuccess `json:"success,required"`
+	Success AccountDlpProfileCustomNewResponseSuccess `json:"success" api:"required"`
 	Result  Profile                                   `json:"result"`
 	JSON    accountDlpProfileCustomNewResponseJSON    `json:"-"`
 }
@@ -461,10 +461,10 @@ func (r AccountDlpProfileCustomNewResponseSuccess) IsKnown() bool {
 }
 
 type AccountDlpProfileCustomGetResponse struct {
-	Errors   []MessagesDlpItems `json:"errors,required"`
-	Messages []MessagesDlpItems `json:"messages,required"`
+	Errors   []MessagesDlpItems `json:"errors" api:"required"`
+	Messages []MessagesDlpItems `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountDlpProfileCustomGetResponseSuccess `json:"success,required"`
+	Success AccountDlpProfileCustomGetResponseSuccess `json:"success" api:"required"`
 	Result  Profile                                   `json:"result"`
 	JSON    accountDlpProfileCustomGetResponseJSON    `json:"-"`
 }
@@ -504,10 +504,10 @@ func (r AccountDlpProfileCustomGetResponseSuccess) IsKnown() bool {
 }
 
 type AccountDlpProfileCustomUpdateResponse struct {
-	Errors   []MessagesDlpItems `json:"errors,required"`
-	Messages []MessagesDlpItems `json:"messages,required"`
+	Errors   []MessagesDlpItems `json:"errors" api:"required"`
+	Messages []MessagesDlpItems `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountDlpProfileCustomUpdateResponseSuccess `json:"success,required"`
+	Success AccountDlpProfileCustomUpdateResponseSuccess `json:"success" api:"required"`
 	Result  Profile                                      `json:"result"`
 	JSON    accountDlpProfileCustomUpdateResponseJSON    `json:"-"`
 }
@@ -547,11 +547,11 @@ func (r AccountDlpProfileCustomUpdateResponseSuccess) IsKnown() bool {
 }
 
 type AccountDlpProfileCustomDeleteResponse struct {
-	Errors   []MessagesDlpItems `json:"errors,required"`
-	Messages []MessagesDlpItems `json:"messages,required"`
+	Errors   []MessagesDlpItems `json:"errors" api:"required"`
+	Messages []MessagesDlpItems `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountDlpProfileCustomDeleteResponseSuccess `json:"success,required"`
-	Result  interface{}                                  `json:"result,nullable"`
+	Success AccountDlpProfileCustomDeleteResponseSuccess `json:"success" api:"required"`
+	Result  interface{}                                  `json:"result" api:"nullable"`
 	JSON    accountDlpProfileCustomDeleteResponseJSON    `json:"-"`
 }
 
@@ -590,7 +590,7 @@ func (r AccountDlpProfileCustomDeleteResponseSuccess) IsKnown() bool {
 }
 
 type AccountDlpProfileCustomNewParams struct {
-	NewCustomProfile NewCustomProfileParam `json:"new_custom_profile,required"`
+	NewCustomProfile NewCustomProfileParam `json:"new_custom_profile" api:"required"`
 }
 
 func (r AccountDlpProfileCustomNewParams) MarshalJSON() (data []byte, err error) {
@@ -598,7 +598,7 @@ func (r AccountDlpProfileCustomNewParams) MarshalJSON() (data []byte, err error)
 }
 
 type AccountDlpProfileCustomUpdateParams struct {
-	Name                param.Field[string] `json:"name,required"`
+	Name                param.Field[string] `json:"name" api:"required"`
 	AIContextEnabled    param.Field[bool]   `json:"ai_context_enabled"`
 	AllowedMatchCount   param.Field[int64]  `json:"allowed_match_count"`
 	ConfidenceThreshold param.Field[string] `json:"confidence_threshold"`
@@ -620,9 +620,9 @@ func (r AccountDlpProfileCustomUpdateParams) MarshalJSON() (data []byte, err err
 }
 
 type AccountDlpProfileCustomUpdateParamsEntry struct {
-	Enabled param.Field[bool]         `json:"enabled,required"`
-	Name    param.Field[string]       `json:"name,required"`
-	Pattern param.Field[PatternParam] `json:"pattern,required"`
+	Enabled param.Field[bool]         `json:"enabled" api:"required"`
+	Name    param.Field[string]       `json:"name" api:"required"`
+	Pattern param.Field[PatternParam] `json:"pattern" api:"required"`
 	EntryID param.Field[string]       `json:"entry_id" format:"uuid"`
 }
 
@@ -641,10 +641,10 @@ type AccountDlpProfileCustomUpdateParamsEntryUnion interface {
 }
 
 type AccountDlpProfileCustomUpdateParamsEntriesDlpNewCustomEntryWithID struct {
-	Enabled param.Field[bool]         `json:"enabled,required"`
-	EntryID param.Field[string]       `json:"entry_id,required" format:"uuid"`
-	Name    param.Field[string]       `json:"name,required"`
-	Pattern param.Field[PatternParam] `json:"pattern,required"`
+	Enabled param.Field[bool]         `json:"enabled" api:"required"`
+	EntryID param.Field[string]       `json:"entry_id" api:"required" format:"uuid"`
+	Name    param.Field[string]       `json:"name" api:"required"`
+	Pattern param.Field[PatternParam] `json:"pattern" api:"required"`
 }
 
 func (r AccountDlpProfileCustomUpdateParamsEntriesDlpNewCustomEntryWithID) MarshalJSON() (data []byte, err error) {
@@ -655,9 +655,9 @@ func (r AccountDlpProfileCustomUpdateParamsEntriesDlpNewCustomEntryWithID) imple
 }
 
 type AccountDlpProfileCustomUpdateParamsSharedEntry struct {
-	Enabled   param.Field[bool]                                                      `json:"enabled,required"`
-	EntryID   param.Field[string]                                                    `json:"entry_id,required" format:"uuid"`
-	EntryType param.Field[AccountDlpProfileCustomUpdateParamsSharedEntriesEntryType] `json:"entry_type,required"`
+	Enabled   param.Field[bool]                                                      `json:"enabled" api:"required"`
+	EntryID   param.Field[string]                                                    `json:"entry_id" api:"required" format:"uuid"`
+	EntryType param.Field[AccountDlpProfileCustomUpdateParamsSharedEntriesEntryType] `json:"entry_type" api:"required"`
 }
 
 func (r AccountDlpProfileCustomUpdateParamsSharedEntry) MarshalJSON() (data []byte, err error) {
@@ -677,9 +677,9 @@ type AccountDlpProfileCustomUpdateParamsSharedEntryUnion interface {
 }
 
 type AccountDlpProfileCustomUpdateParamsSharedEntriesPredefined struct {
-	Enabled   param.Field[bool]                                                                `json:"enabled,required"`
-	EntryID   param.Field[string]                                                              `json:"entry_id,required" format:"uuid"`
-	EntryType param.Field[AccountDlpProfileCustomUpdateParamsSharedEntriesPredefinedEntryType] `json:"entry_type,required"`
+	Enabled   param.Field[bool]                                                                `json:"enabled" api:"required"`
+	EntryID   param.Field[string]                                                              `json:"entry_id" api:"required" format:"uuid"`
+	EntryType param.Field[AccountDlpProfileCustomUpdateParamsSharedEntriesPredefinedEntryType] `json:"entry_type" api:"required"`
 }
 
 func (r AccountDlpProfileCustomUpdateParamsSharedEntriesPredefined) MarshalJSON() (data []byte, err error) {
@@ -704,9 +704,9 @@ func (r AccountDlpProfileCustomUpdateParamsSharedEntriesPredefinedEntryType) IsK
 }
 
 type AccountDlpProfileCustomUpdateParamsSharedEntriesIntegration struct {
-	Enabled   param.Field[bool]                                                                 `json:"enabled,required"`
-	EntryID   param.Field[string]                                                               `json:"entry_id,required" format:"uuid"`
-	EntryType param.Field[AccountDlpProfileCustomUpdateParamsSharedEntriesIntegrationEntryType] `json:"entry_type,required"`
+	Enabled   param.Field[bool]                                                                 `json:"enabled" api:"required"`
+	EntryID   param.Field[string]                                                               `json:"entry_id" api:"required" format:"uuid"`
+	EntryType param.Field[AccountDlpProfileCustomUpdateParamsSharedEntriesIntegrationEntryType] `json:"entry_type" api:"required"`
 }
 
 func (r AccountDlpProfileCustomUpdateParamsSharedEntriesIntegration) MarshalJSON() (data []byte, err error) {
@@ -731,9 +731,9 @@ func (r AccountDlpProfileCustomUpdateParamsSharedEntriesIntegrationEntryType) Is
 }
 
 type AccountDlpProfileCustomUpdateParamsSharedEntriesExactData struct {
-	Enabled   param.Field[bool]                                                               `json:"enabled,required"`
-	EntryID   param.Field[string]                                                             `json:"entry_id,required" format:"uuid"`
-	EntryType param.Field[AccountDlpProfileCustomUpdateParamsSharedEntriesExactDataEntryType] `json:"entry_type,required"`
+	Enabled   param.Field[bool]                                                               `json:"enabled" api:"required"`
+	EntryID   param.Field[string]                                                             `json:"entry_id" api:"required" format:"uuid"`
+	EntryType param.Field[AccountDlpProfileCustomUpdateParamsSharedEntriesExactDataEntryType] `json:"entry_type" api:"required"`
 }
 
 func (r AccountDlpProfileCustomUpdateParamsSharedEntriesExactData) MarshalJSON() (data []byte, err error) {
@@ -758,9 +758,9 @@ func (r AccountDlpProfileCustomUpdateParamsSharedEntriesExactDataEntryType) IsKn
 }
 
 type AccountDlpProfileCustomUpdateParamsSharedEntriesObject struct {
-	Enabled   param.Field[bool]                                                            `json:"enabled,required"`
-	EntryID   param.Field[string]                                                          `json:"entry_id,required" format:"uuid"`
-	EntryType param.Field[AccountDlpProfileCustomUpdateParamsSharedEntriesObjectEntryType] `json:"entry_type,required"`
+	Enabled   param.Field[bool]                                                            `json:"enabled" api:"required"`
+	EntryID   param.Field[string]                                                          `json:"entry_id" api:"required" format:"uuid"`
+	EntryType param.Field[AccountDlpProfileCustomUpdateParamsSharedEntriesObjectEntryType] `json:"entry_type" api:"required"`
 }
 
 func (r AccountDlpProfileCustomUpdateParamsSharedEntriesObject) MarshalJSON() (data []byte, err error) {

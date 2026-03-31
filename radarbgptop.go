@@ -42,12 +42,12 @@ func (r *RadarBgpTopService) ListTopPrefixes(ctx context.Context, query RadarBgp
 	opts = slices.Concat(r.Options, opts)
 	path := "radar/bgp/top/prefixes"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type RadarBgpTopListTopPrefixesResponse struct {
-	Result  RadarBgpTopListTopPrefixesResponseResult `json:"result,required"`
-	Success bool                                     `json:"success,required"`
+	Result  RadarBgpTopListTopPrefixesResponseResult `json:"result" api:"required"`
+	Success bool                                     `json:"success" api:"required"`
 	JSON    radarBgpTopListTopPrefixesResponseJSON   `json:"-"`
 }
 
@@ -69,8 +69,8 @@ func (r radarBgpTopListTopPrefixesResponseJSON) RawJSON() string {
 }
 
 type RadarBgpTopListTopPrefixesResponseResult struct {
-	Meta RadarBgpTopListTopPrefixesResponseResultMeta   `json:"meta,required"`
-	Top0 []RadarBgpTopListTopPrefixesResponseResultTop0 `json:"top_0,required"`
+	Meta RadarBgpTopListTopPrefixesResponseResultMeta   `json:"meta" api:"required"`
+	Top0 []RadarBgpTopListTopPrefixesResponseResultTop0 `json:"top_0" api:"required"`
 	JSON radarBgpTopListTopPrefixesResponseResultJSON   `json:"-"`
 }
 
@@ -92,7 +92,7 @@ func (r radarBgpTopListTopPrefixesResponseResultJSON) RawJSON() string {
 }
 
 type RadarBgpTopListTopPrefixesResponseResultMeta struct {
-	DateRange []RadarBgpTopListTopPrefixesResponseResultMetaDateRange `json:"dateRange,required"`
+	DateRange []RadarBgpTopListTopPrefixesResponseResultMetaDateRange `json:"dateRange" api:"required"`
 	JSON      radarBgpTopListTopPrefixesResponseResultMetaJSON        `json:"-"`
 }
 
@@ -114,9 +114,9 @@ func (r radarBgpTopListTopPrefixesResponseResultMetaJSON) RawJSON() string {
 
 type RadarBgpTopListTopPrefixesResponseResultMetaDateRange struct {
 	// Adjusted end of date range.
-	EndTime time.Time `json:"endTime,required" format:"date-time"`
+	EndTime time.Time `json:"endTime" api:"required" format:"date-time"`
 	// Adjusted start of date range.
-	StartTime time.Time                                                 `json:"startTime,required" format:"date-time"`
+	StartTime time.Time                                                 `json:"startTime" api:"required" format:"date-time"`
 	JSON      radarBgpTopListTopPrefixesResponseResultMetaDateRangeJSON `json:"-"`
 }
 
@@ -138,9 +138,9 @@ func (r radarBgpTopListTopPrefixesResponseResultMetaDateRangeJSON) RawJSON() str
 }
 
 type RadarBgpTopListTopPrefixesResponseResultTop0 struct {
-	Prefix string `json:"prefix,required"`
+	Prefix string `json:"prefix" api:"required"`
 	// A numeric string.
-	Value string                                           `json:"value,required"`
+	Value string                                           `json:"value" api:"required"`
 	JSON  radarBgpTopListTopPrefixesResponseResultTop0JSON `json:"-"`
 }
 

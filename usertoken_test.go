@@ -15,7 +15,7 @@ import (
 )
 
 func TestUserTokenNewWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -27,6 +27,7 @@ func TestUserTokenNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.User.Tokens.New(context.TODO(), cfrex.UserTokenNewParams{
 		IamCreatePayload: cfrex.IamCreatePayloadParam{
@@ -70,7 +71,7 @@ func TestUserTokenNewWithOptionalParams(t *testing.T) {
 }
 
 func TestUserTokenGet(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -82,6 +83,7 @@ func TestUserTokenGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.User.Tokens.Get(context.TODO(), "ed17574386854bf78a67040be0a770b0")
 	if err != nil {
@@ -94,7 +96,7 @@ func TestUserTokenGet(t *testing.T) {
 }
 
 func TestUserTokenUpdateWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -106,6 +108,7 @@ func TestUserTokenUpdateWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.User.Tokens.Update(
 		context.TODO(),
@@ -154,7 +157,7 @@ func TestUserTokenUpdateWithOptionalParams(t *testing.T) {
 }
 
 func TestUserTokenListWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -166,6 +169,7 @@ func TestUserTokenListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.User.Tokens.List(context.TODO(), cfrex.UserTokenListParams{
 		Direction: cfrex.F(cfrex.UserTokenListParamsDirectionDesc),
@@ -182,7 +186,7 @@ func TestUserTokenListWithOptionalParams(t *testing.T) {
 }
 
 func TestUserTokenDelete(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -194,6 +198,7 @@ func TestUserTokenDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.User.Tokens.Delete(context.TODO(), "ed17574386854bf78a67040be0a770b0")
 	if err != nil {
@@ -206,7 +211,7 @@ func TestUserTokenDelete(t *testing.T) {
 }
 
 func TestUserTokenListPermissionGroupsWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -218,6 +223,7 @@ func TestUserTokenListPermissionGroupsWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.User.Tokens.ListPermissionGroups(context.TODO(), cfrex.UserTokenListPermissionGroupsParams{
 		Name:  cfrex.F("Account%20Settings%20Write"),
@@ -233,7 +239,7 @@ func TestUserTokenListPermissionGroupsWithOptionalParams(t *testing.T) {
 }
 
 func TestUserTokenRoll(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -245,6 +251,7 @@ func TestUserTokenRoll(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.User.Tokens.Roll(
 		context.TODO(),
@@ -263,7 +270,7 @@ func TestUserTokenRoll(t *testing.T) {
 }
 
 func TestUserTokenVerify(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -275,6 +282,7 @@ func TestUserTokenVerify(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.User.Tokens.Verify(context.TODO())
 	if err != nil {

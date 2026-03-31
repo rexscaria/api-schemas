@@ -14,7 +14,7 @@ import (
 )
 
 func TestAccountSlurperJobNewWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,6 +26,7 @@ func TestAccountSlurperJobNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Slurper.Jobs.New(
 		context.TODO(),
@@ -62,7 +63,7 @@ func TestAccountSlurperJobNewWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountSlurperJobGet(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -74,6 +75,7 @@ func TestAccountSlurperJobGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Slurper.Jobs.Get(
 		context.TODO(),
@@ -90,7 +92,7 @@ func TestAccountSlurperJobGet(t *testing.T) {
 }
 
 func TestAccountSlurperJobListWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -102,6 +104,7 @@ func TestAccountSlurperJobListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Slurper.Jobs.List(
 		context.TODO(),
@@ -121,7 +124,7 @@ func TestAccountSlurperJobListWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountSlurperJobAbort(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -133,6 +136,7 @@ func TestAccountSlurperJobAbort(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Slurper.Jobs.Abort(
 		context.TODO(),
@@ -149,7 +153,7 @@ func TestAccountSlurperJobAbort(t *testing.T) {
 }
 
 func TestAccountSlurperJobAbortAll(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -161,6 +165,7 @@ func TestAccountSlurperJobAbortAll(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Slurper.Jobs.AbortAll(context.TODO(), "account_id")
 	if err != nil {
@@ -173,7 +178,7 @@ func TestAccountSlurperJobAbortAll(t *testing.T) {
 }
 
 func TestAccountSlurperJobGetLogsWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -185,6 +190,7 @@ func TestAccountSlurperJobGetLogsWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Slurper.Jobs.GetLogs(
 		context.TODO(),
@@ -205,7 +211,7 @@ func TestAccountSlurperJobGetLogsWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountSlurperJobGetProgress(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -217,6 +223,7 @@ func TestAccountSlurperJobGetProgress(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Slurper.Jobs.GetProgress(
 		context.TODO(),
@@ -233,7 +240,7 @@ func TestAccountSlurperJobGetProgress(t *testing.T) {
 }
 
 func TestAccountSlurperJobPause(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -245,6 +252,7 @@ func TestAccountSlurperJobPause(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Slurper.Jobs.Pause(
 		context.TODO(),
@@ -261,7 +269,7 @@ func TestAccountSlurperJobPause(t *testing.T) {
 }
 
 func TestAccountSlurperJobResume(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -273,6 +281,7 @@ func TestAccountSlurperJobResume(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Slurper.Jobs.Resume(
 		context.TODO(),

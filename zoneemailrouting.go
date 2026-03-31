@@ -43,11 +43,11 @@ func (r *ZoneEmailRoutingService) Get(ctx context.Context, zoneID string, opts .
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/email/routing", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Disable your Email Routing zone. Also removes additional MX records previously
@@ -58,11 +58,11 @@ func (r *ZoneEmailRoutingService) Disable(ctx context.Context, zoneID string, bo
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/email/routing/disable", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Enable you Email Routing zone. Add and lock the necessary MX and SPF records.
@@ -72,18 +72,18 @@ func (r *ZoneEmailRoutingService) Enable(ctx context.Context, zoneID string, bod
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/email/routing/enable", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type EmailEmailSettingsResponseSingle struct {
-	Errors   []EmailMessagesItem `json:"errors,required"`
-	Messages []EmailMessagesItem `json:"messages,required"`
+	Errors   []EmailMessagesItem `json:"errors" api:"required"`
+	Messages []EmailMessagesItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success EmailEmailSettingsResponseSingleSuccess `json:"success,required"`
+	Success EmailEmailSettingsResponseSingleSuccess `json:"success" api:"required"`
 	Result  EmailEmailSettingsResponseSingleResult  `json:"result"`
 	JSON    emailEmailSettingsResponseSingleJSON    `json:"-"`
 }
@@ -124,11 +124,11 @@ func (r EmailEmailSettingsResponseSingleSuccess) IsKnown() bool {
 
 type EmailEmailSettingsResponseSingleResult struct {
 	// Email Routing settings identifier.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// State of the zone settings for Email Routing.
-	Enabled EmailEmailSettingsResponseSingleResultEnabled `json:"enabled,required"`
+	Enabled EmailEmailSettingsResponseSingleResultEnabled `json:"enabled" api:"required"`
 	// Domain of your zone.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// The date and time the settings have been created.
 	Created time.Time `json:"created" format:"date-time"`
 	// The date and time the settings have been modified.
@@ -220,7 +220,7 @@ func (r EmailEmailSettingsResponseSingleResultStatus) IsKnown() bool {
 }
 
 type ZoneEmailRoutingDisableParams struct {
-	Body interface{} `json:"body,required"`
+	Body interface{} `json:"body" api:"required"`
 }
 
 func (r ZoneEmailRoutingDisableParams) MarshalJSON() (data []byte, err error) {
@@ -228,7 +228,7 @@ func (r ZoneEmailRoutingDisableParams) MarshalJSON() (data []byte, err error) {
 }
 
 type ZoneEmailRoutingEnableParams struct {
-	Body interface{} `json:"body,required"`
+	Body interface{} `json:"body" api:"required"`
 }
 
 func (r ZoneEmailRoutingEnableParams) MarshalJSON() (data []byte, err error) {

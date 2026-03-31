@@ -39,11 +39,11 @@ func (r *AccountGatewayLoggingService) Get(ctx context.Context, accountID string
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/gateway/logging", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates logging settings for the current Zero Trust account.
@@ -51,11 +51,11 @@ func (r *AccountGatewayLoggingService) Update(ctx context.Context, accountID str
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/gateway/logging", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountLogOptions struct {
@@ -170,10 +170,10 @@ func (r GatewayAccountLoggingSettingsSettingsByRuleTypeParam) MarshalJSON() (dat
 }
 
 type GatewayAccountLoggingSettingsResponse struct {
-	Errors   []GatewayAccountLoggingSettingsResponseError   `json:"errors,required"`
-	Messages []GatewayAccountLoggingSettingsResponseMessage `json:"messages,required"`
+	Errors   []GatewayAccountLoggingSettingsResponseError   `json:"errors" api:"required"`
+	Messages []GatewayAccountLoggingSettingsResponseMessage `json:"messages" api:"required"`
 	// Whether the API call was successful
-	Success GatewayAccountLoggingSettingsResponseSuccess `json:"success,required"`
+	Success GatewayAccountLoggingSettingsResponseSuccess `json:"success" api:"required"`
 	Result  GatewayAccountLoggingSettings                `json:"result"`
 	JSON    gatewayAccountLoggingSettingsResponseJSON    `json:"-"`
 }
@@ -198,8 +198,8 @@ func (r gatewayAccountLoggingSettingsResponseJSON) RawJSON() string {
 }
 
 type GatewayAccountLoggingSettingsResponseError struct {
-	Code             int64                                             `json:"code,required"`
-	Message          string                                            `json:"message,required"`
+	Code             int64                                             `json:"code" api:"required"`
+	Message          string                                            `json:"message" api:"required"`
 	DocumentationURL string                                            `json:"documentation_url"`
 	Source           GatewayAccountLoggingSettingsResponseErrorsSource `json:"source"`
 	JSON             gatewayAccountLoggingSettingsResponseErrorJSON    `json:"-"`
@@ -246,8 +246,8 @@ func (r gatewayAccountLoggingSettingsResponseErrorsSourceJSON) RawJSON() string 
 }
 
 type GatewayAccountLoggingSettingsResponseMessage struct {
-	Code             int64                                               `json:"code,required"`
-	Message          string                                              `json:"message,required"`
+	Code             int64                                               `json:"code" api:"required"`
+	Message          string                                              `json:"message" api:"required"`
 	DocumentationURL string                                              `json:"documentation_url"`
 	Source           GatewayAccountLoggingSettingsResponseMessagesSource `json:"source"`
 	JSON             gatewayAccountLoggingSettingsResponseMessageJSON    `json:"-"`
@@ -309,7 +309,7 @@ func (r GatewayAccountLoggingSettingsResponseSuccess) IsKnown() bool {
 }
 
 type AccountGatewayLoggingUpdateParams struct {
-	GatewayAccountLoggingSettings GatewayAccountLoggingSettingsParam `json:"gateway_account_logging_settings,required"`
+	GatewayAccountLoggingSettings GatewayAccountLoggingSettingsParam `json:"gateway_account_logging_settings" api:"required"`
 }
 
 func (r AccountGatewayLoggingUpdateParams) MarshalJSON() (data []byte, err error) {

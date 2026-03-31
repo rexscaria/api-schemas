@@ -14,7 +14,7 @@ import (
 )
 
 func TestZoneSecondaryDNSOutgoingNew(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -47,7 +47,7 @@ func TestZoneSecondaryDNSOutgoingNew(t *testing.T) {
 }
 
 func TestZoneSecondaryDNSOutgoingGet(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -71,7 +71,7 @@ func TestZoneSecondaryDNSOutgoingGet(t *testing.T) {
 }
 
 func TestZoneSecondaryDNSOutgoingUpdate(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -104,7 +104,7 @@ func TestZoneSecondaryDNSOutgoingUpdate(t *testing.T) {
 }
 
 func TestZoneSecondaryDNSOutgoingDelete(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -128,7 +128,7 @@ func TestZoneSecondaryDNSOutgoingDelete(t *testing.T) {
 }
 
 func TestZoneSecondaryDNSOutgoingDisable(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -158,7 +158,7 @@ func TestZoneSecondaryDNSOutgoingDisable(t *testing.T) {
 }
 
 func TestZoneSecondaryDNSOutgoingEnable(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -188,7 +188,7 @@ func TestZoneSecondaryDNSOutgoingEnable(t *testing.T) {
 }
 
 func TestZoneSecondaryDNSOutgoingForceNotify(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -218,7 +218,7 @@ func TestZoneSecondaryDNSOutgoingForceNotify(t *testing.T) {
 }
 
 func TestZoneSecondaryDNSOutgoingStatus(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL

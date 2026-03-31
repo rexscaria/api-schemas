@@ -44,11 +44,11 @@ func (r *ZoneCustomNService) Get(ctx context.Context, zoneID string, opts ...opt
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/custom_ns", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Set metadata for account-level custom nameservers on a zone.
@@ -65,11 +65,11 @@ func (r *ZoneCustomNService) Update(ctx context.Context, zoneID string, body Zon
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/custom_ns", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type ZoneMetadataParam struct {
@@ -84,10 +84,10 @@ func (r ZoneMetadataParam) MarshalJSON() (data []byte, err error) {
 }
 
 type ZoneCustomNGetResponse struct {
-	Errors   []ZoneCustomNGetResponseError   `json:"errors,required"`
-	Messages []ZoneCustomNGetResponseMessage `json:"messages,required"`
+	Errors   []ZoneCustomNGetResponseError   `json:"errors" api:"required"`
+	Messages []ZoneCustomNGetResponseMessage `json:"messages" api:"required"`
 	// Whether the API call was successful
-	Success ZoneCustomNGetResponseSuccess `json:"success,required"`
+	Success ZoneCustomNGetResponseSuccess `json:"success" api:"required"`
 	// Whether zone uses account-level custom nameservers.
 	Enabled bool `json:"enabled"`
 	// The number of the name server set to assign to the zone.
@@ -118,8 +118,8 @@ func (r zoneCustomNGetResponseJSON) RawJSON() string {
 }
 
 type ZoneCustomNGetResponseError struct {
-	Code             int64                              `json:"code,required"`
-	Message          string                             `json:"message,required"`
+	Code             int64                              `json:"code" api:"required"`
+	Message          string                             `json:"message" api:"required"`
 	DocumentationURL string                             `json:"documentation_url"`
 	Source           ZoneCustomNGetResponseErrorsSource `json:"source"`
 	JSON             zoneCustomNGetResponseErrorJSON    `json:"-"`
@@ -166,8 +166,8 @@ func (r zoneCustomNGetResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type ZoneCustomNGetResponseMessage struct {
-	Code             int64                                `json:"code,required"`
-	Message          string                               `json:"message,required"`
+	Code             int64                                `json:"code" api:"required"`
+	Message          string                               `json:"message" api:"required"`
 	DocumentationURL string                               `json:"documentation_url"`
 	Source           ZoneCustomNGetResponseMessagesSource `json:"source"`
 	JSON             zoneCustomNGetResponseMessageJSON    `json:"-"`
@@ -260,10 +260,10 @@ func (r zoneCustomNGetResponseResultInfoJSON) RawJSON() string {
 }
 
 type ZoneCustomNUpdateResponse struct {
-	Errors   []CustomNsMessages `json:"errors,required"`
-	Messages []CustomNsMessages `json:"messages,required"`
+	Errors   []CustomNsMessages `json:"errors" api:"required"`
+	Messages []CustomNsMessages `json:"messages" api:"required"`
 	// Whether the API call was successful
-	Success    ZoneCustomNUpdateResponseSuccess    `json:"success,required"`
+	Success    ZoneCustomNUpdateResponseSuccess    `json:"success" api:"required"`
 	Result     []string                            `json:"result"`
 	ResultInfo ZoneCustomNUpdateResponseResultInfo `json:"result_info"`
 	JSON       zoneCustomNUpdateResponseJSON       `json:"-"`
@@ -336,7 +336,7 @@ func (r zoneCustomNUpdateResponseResultInfoJSON) RawJSON() string {
 }
 
 type ZoneCustomNUpdateParams struct {
-	ZoneMetadata ZoneMetadataParam `json:"zone_metadata,required"`
+	ZoneMetadata ZoneMetadataParam `json:"zone_metadata" api:"required"`
 }
 
 func (r ZoneCustomNUpdateParams) MarshalJSON() (data []byte, err error) {

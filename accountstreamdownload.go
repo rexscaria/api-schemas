@@ -38,15 +38,15 @@ func (r *AccountStreamDownloadService) New(ctx context.Context, accountID string
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if identifier == "" {
 		err = errors.New("missing required identifier parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/stream/%s/downloads", accountID, identifier)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists the downloads created for a video.
@@ -54,15 +54,15 @@ func (r *AccountStreamDownloadService) List(ctx context.Context, accountID strin
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if identifier == "" {
 		err = errors.New("missing required identifier parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/stream/%s/downloads", accountID, identifier)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete the downloads for a video.
@@ -70,22 +70,22 @@ func (r *AccountStreamDownloadService) Delete(ctx context.Context, accountID str
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if identifier == "" {
 		err = errors.New("missing required identifier parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/stream/%s/downloads", accountID, identifier)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type DownloadsResponse struct {
-	Errors   []StreamMessages `json:"errors,required"`
-	Messages []StreamMessages `json:"messages,required"`
+	Errors   []StreamMessages `json:"errors" api:"required"`
+	Messages []StreamMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success DownloadsResponseSuccess `json:"success,required"`
+	Success DownloadsResponseSuccess `json:"success" api:"required"`
 	Result  interface{}              `json:"result"`
 	JSON    downloadsResponseJSON    `json:"-"`
 }
@@ -125,7 +125,7 @@ func (r DownloadsResponseSuccess) IsKnown() bool {
 }
 
 type AccountStreamDownloadNewParams struct {
-	Body interface{} `json:"body,required"`
+	Body interface{} `json:"body" api:"required"`
 }
 
 func (r AccountStreamDownloadNewParams) MarshalJSON() (data []byte, err error) {

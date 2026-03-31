@@ -44,11 +44,11 @@ func (r *AccountInfrastructureTargetService) New(ctx context.Context, accountID 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/infrastructure/targets", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get target
@@ -56,15 +56,15 @@ func (r *AccountInfrastructureTargetService) Get(ctx context.Context, accountID 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if targetID == "" {
 		err = errors.New("missing required target_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/infrastructure/targets/%s", accountID, targetID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update target
@@ -72,15 +72,15 @@ func (r *AccountInfrastructureTargetService) Update(ctx context.Context, account
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if targetID == "" {
 		err = errors.New("missing required target_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/infrastructure/targets/%s", accountID, targetID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists and sorts an account’s targets. Filters are optional and are ANDed
@@ -89,28 +89,28 @@ func (r *AccountInfrastructureTargetService) List(ctx context.Context, accountID
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/infrastructure/targets", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete target
 func (r *AccountInfrastructureTargetService) Delete(ctx context.Context, accountID string, targetID string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return err
 	}
 	if targetID == "" {
 		err = errors.New("missing required target_id parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("accounts/%s/infrastructure/targets/%s", accountID, targetID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // The IPv4/IPv6 address that identifies where to reach a target
@@ -231,8 +231,8 @@ func (r IPInfoTargetIpv6Param) MarshalJSON() (data []byte, err error) {
 }
 
 type MessagesInfraItem struct {
-	Code             int64                   `json:"code,required"`
-	Message          string                  `json:"message,required"`
+	Code             int64                   `json:"code" api:"required"`
+	Message          string                  `json:"message" api:"required"`
 	DocumentationURL string                  `json:"documentation_url"`
 	Source           MessagesInfraItemSource `json:"source"`
 	JSON             messagesInfraItemJSON   `json:"-"`
@@ -279,10 +279,10 @@ func (r messagesInfraItemSourceJSON) RawJSON() string {
 }
 
 type AccountInfrastructureTargetNewResponse struct {
-	Errors   []MessagesInfraItem `json:"errors,required"`
-	Messages []MessagesInfraItem `json:"messages,required"`
+	Errors   []MessagesInfraItem `json:"errors" api:"required"`
+	Messages []MessagesInfraItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountInfrastructureTargetNewResponseSuccess `json:"success,required"`
+	Success AccountInfrastructureTargetNewResponseSuccess `json:"success" api:"required"`
 	Result  TargetBatch                                   `json:"result"`
 	JSON    accountInfrastructureTargetNewResponseJSON    `json:"-"`
 }
@@ -322,10 +322,10 @@ func (r AccountInfrastructureTargetNewResponseSuccess) IsKnown() bool {
 }
 
 type AccountInfrastructureTargetGetResponse struct {
-	Errors   []MessagesInfraItem `json:"errors,required"`
-	Messages []MessagesInfraItem `json:"messages,required"`
+	Errors   []MessagesInfraItem `json:"errors" api:"required"`
+	Messages []MessagesInfraItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountInfrastructureTargetGetResponseSuccess `json:"success,required"`
+	Success AccountInfrastructureTargetGetResponseSuccess `json:"success" api:"required"`
 	Result  TargetBatch                                   `json:"result"`
 	JSON    accountInfrastructureTargetGetResponseJSON    `json:"-"`
 }
@@ -365,10 +365,10 @@ func (r AccountInfrastructureTargetGetResponseSuccess) IsKnown() bool {
 }
 
 type AccountInfrastructureTargetUpdateResponse struct {
-	Errors   []MessagesInfraItem `json:"errors,required"`
-	Messages []MessagesInfraItem `json:"messages,required"`
+	Errors   []MessagesInfraItem `json:"errors" api:"required"`
+	Messages []MessagesInfraItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountInfrastructureTargetUpdateResponseSuccess `json:"success,required"`
+	Success AccountInfrastructureTargetUpdateResponseSuccess `json:"success" api:"required"`
 	Result  TargetBatch                                      `json:"result"`
 	JSON    accountInfrastructureTargetUpdateResponseJSON    `json:"-"`
 }
@@ -408,10 +408,10 @@ func (r AccountInfrastructureTargetUpdateResponseSuccess) IsKnown() bool {
 }
 
 type AccountInfrastructureTargetListResponse struct {
-	Errors   []MessagesInfraItem `json:"errors,required"`
-	Messages []MessagesInfraItem `json:"messages,required"`
+	Errors   []MessagesInfraItem `json:"errors" api:"required"`
+	Messages []MessagesInfraItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success    AccountInfrastructureTargetListResponseSuccess    `json:"success,required"`
+	Success    AccountInfrastructureTargetListResponseSuccess    `json:"success" api:"required"`
 	Result     []TargetBatch                                     `json:"result"`
 	ResultInfo AccountInfrastructureTargetListResponseResultInfo `json:"result_info"`
 	JSON       accountInfrastructureTargetListResponseJSON       `json:"-"`
@@ -487,9 +487,9 @@ type AccountInfrastructureTargetNewParams struct {
 	// A non-unique field that refers to a target. Case insensitive, maximum length of
 	// 255 characters, supports the use of special characters dash and period, does not
 	// support spaces, and must start and end with an alphanumeric character.
-	Hostname param.Field[string] `json:"hostname,required"`
+	Hostname param.Field[string] `json:"hostname" api:"required"`
 	// The IPv4/IPv6 address that identifies where to reach a target
-	IP param.Field[IPInfoTargetParam] `json:"ip,required"`
+	IP param.Field[IPInfoTargetParam] `json:"ip" api:"required"`
 }
 
 func (r AccountInfrastructureTargetNewParams) MarshalJSON() (data []byte, err error) {
@@ -500,9 +500,9 @@ type AccountInfrastructureTargetUpdateParams struct {
 	// A non-unique field that refers to a target. Case insensitive, maximum length of
 	// 255 characters, supports the use of special characters dash and period, does not
 	// support spaces, and must start and end with an alphanumeric character.
-	Hostname param.Field[string] `json:"hostname,required"`
+	Hostname param.Field[string] `json:"hostname" api:"required"`
 	// The IPv4/IPv6 address that identifies where to reach a target
-	IP param.Field[IPInfoTargetParam] `json:"ip,required"`
+	IP param.Field[IPInfoTargetParam] `json:"ip" api:"required"`
 }
 
 func (r AccountInfrastructureTargetUpdateParams) MarshalJSON() (data []byte, err error) {

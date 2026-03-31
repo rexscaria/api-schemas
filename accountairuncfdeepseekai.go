@@ -41,11 +41,11 @@ func (r *AccountAIRunCfDeepseekAIService) ExecuteDeepseekMath7bInstruct(ctx cont
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai/run/@cf/deepseek-ai/deepseek-math-7b-instruct", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Execute @cf/deepseek-ai/deepseek-r1-distill-qwen-32b model.
@@ -53,11 +53,11 @@ func (r *AccountAIRunCfDeepseekAIService) ExecuteDeepseekR1DistillQwen32b(ctx co
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai/run/@cf/deepseek-ai/deepseek-r1-distill-qwen-32b", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountAIRunCfDeepseekAIExecuteDeepseekMath7bInstructResponse = interface{}
@@ -138,7 +138,7 @@ type AccountAIRunCfDeepseekAIExecuteDeepseekMath7bInstructParamsBodyUnion interf
 
 type AccountAIRunCfDeepseekAIExecuteDeepseekMath7bInstructParamsBodyPrompt struct {
 	// The input text prompt for the model to generate a response.
-	Prompt param.Field[string] `json:"prompt,required"`
+	Prompt param.Field[string] `json:"prompt" api:"required"`
 	// Decreases the likelihood of the model repeating the same lines verbatim.
 	FrequencyPenalty param.Field[float64] `json:"frequency_penalty"`
 	// Name of the LoRA (Low-Rank Adaptation) model to fine-tune the base model.
@@ -204,7 +204,7 @@ func (r AccountAIRunCfDeepseekAIExecuteDeepseekMath7bInstructParamsBodyPromptRes
 
 type AccountAIRunCfDeepseekAIExecuteDeepseekMath7bInstructParamsBodyMessages struct {
 	// An array of message objects representing the conversation history.
-	Messages param.Field[[]AccountAIRunCfDeepseekAIExecuteDeepseekMath7bInstructParamsBodyMessagesMessage] `json:"messages,required"`
+	Messages param.Field[[]AccountAIRunCfDeepseekAIExecuteDeepseekMath7bInstructParamsBodyMessagesMessage] `json:"messages" api:"required"`
 	// Decreases the likelihood of the model repeating the same lines verbatim.
 	FrequencyPenalty param.Field[float64]                                                                           `json:"frequency_penalty"`
 	Functions        param.Field[[]AccountAIRunCfDeepseekAIExecuteDeepseekMath7bInstructParamsBodyMessagesFunction] `json:"functions"`
@@ -247,9 +247,9 @@ func (r AccountAIRunCfDeepseekAIExecuteDeepseekMath7bInstructParamsBodyMessages)
 
 type AccountAIRunCfDeepseekAIExecuteDeepseekMath7bInstructParamsBodyMessagesMessage struct {
 	// The content of the message as a string.
-	Content param.Field[string] `json:"content,required"`
+	Content param.Field[string] `json:"content" api:"required"`
 	// The role of the message sender (e.g., 'user', 'assistant', 'system', 'tool').
-	Role param.Field[string] `json:"role,required"`
+	Role param.Field[string] `json:"role" api:"required"`
 }
 
 func (r AccountAIRunCfDeepseekAIExecuteDeepseekMath7bInstructParamsBodyMessagesMessage) MarshalJSON() (data []byte, err error) {
@@ -257,8 +257,8 @@ func (r AccountAIRunCfDeepseekAIExecuteDeepseekMath7bInstructParamsBodyMessagesM
 }
 
 type AccountAIRunCfDeepseekAIExecuteDeepseekMath7bInstructParamsBodyMessagesFunction struct {
-	Code param.Field[string] `json:"code,required"`
-	Name param.Field[string] `json:"name,required"`
+	Code param.Field[string] `json:"code" api:"required"`
+	Name param.Field[string] `json:"name" api:"required"`
 }
 
 func (r AccountAIRunCfDeepseekAIExecuteDeepseekMath7bInstructParamsBodyMessagesFunction) MarshalJSON() (data []byte, err error) {
@@ -317,11 +317,11 @@ type AccountAIRunCfDeepseekAIExecuteDeepseekMath7bInstructParamsBodyMessagesTool
 
 type AccountAIRunCfDeepseekAIExecuteDeepseekMath7bInstructParamsBodyMessagesToolsObject struct {
 	// A brief description of what the tool does.
-	Description param.Field[string] `json:"description,required"`
+	Description param.Field[string] `json:"description" api:"required"`
 	// The name of the tool. More descriptive the better.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Schema defining the parameters accepted by the tool.
-	Parameters param.Field[AccountAIRunCfDeepseekAIExecuteDeepseekMath7bInstructParamsBodyMessagesToolsObjectParameters] `json:"parameters,required"`
+	Parameters param.Field[AccountAIRunCfDeepseekAIExecuteDeepseekMath7bInstructParamsBodyMessagesToolsObjectParameters] `json:"parameters" api:"required"`
 }
 
 func (r AccountAIRunCfDeepseekAIExecuteDeepseekMath7bInstructParamsBodyMessagesToolsObject) MarshalJSON() (data []byte, err error) {
@@ -334,9 +334,9 @@ func (r AccountAIRunCfDeepseekAIExecuteDeepseekMath7bInstructParamsBodyMessagesT
 // Schema defining the parameters accepted by the tool.
 type AccountAIRunCfDeepseekAIExecuteDeepseekMath7bInstructParamsBodyMessagesToolsObjectParameters struct {
 	// Definitions of each parameter.
-	Properties param.Field[map[string]AccountAIRunCfDeepseekAIExecuteDeepseekMath7bInstructParamsBodyMessagesToolsObjectParametersProperties] `json:"properties,required"`
+	Properties param.Field[map[string]AccountAIRunCfDeepseekAIExecuteDeepseekMath7bInstructParamsBodyMessagesToolsObjectParametersProperties] `json:"properties" api:"required"`
 	// The type of the parameters object (usually 'object').
-	Type param.Field[string] `json:"type,required"`
+	Type param.Field[string] `json:"type" api:"required"`
 	// List of required parameter names.
 	Required param.Field[[]string] `json:"required"`
 }
@@ -347,9 +347,9 @@ func (r AccountAIRunCfDeepseekAIExecuteDeepseekMath7bInstructParamsBodyMessagesT
 
 type AccountAIRunCfDeepseekAIExecuteDeepseekMath7bInstructParamsBodyMessagesToolsObjectParametersProperties struct {
 	// A description of the expected parameter.
-	Description param.Field[string] `json:"description,required"`
+	Description param.Field[string] `json:"description" api:"required"`
 	// The data type of the parameter.
-	Type param.Field[string] `json:"type,required"`
+	Type param.Field[string] `json:"type" api:"required"`
 }
 
 func (r AccountAIRunCfDeepseekAIExecuteDeepseekMath7bInstructParamsBodyMessagesToolsObjectParametersProperties) MarshalJSON() (data []byte, err error) {
@@ -430,7 +430,7 @@ type AccountAIRunCfDeepseekAIExecuteDeepseekR1DistillQwen32bParamsBodyUnion inte
 
 type AccountAIRunCfDeepseekAIExecuteDeepseekR1DistillQwen32bParamsBodyPrompt struct {
 	// The input text prompt for the model to generate a response.
-	Prompt param.Field[string] `json:"prompt,required"`
+	Prompt param.Field[string] `json:"prompt" api:"required"`
 	// Decreases the likelihood of the model repeating the same lines verbatim.
 	FrequencyPenalty param.Field[float64] `json:"frequency_penalty"`
 	// Name of the LoRA (Low-Rank Adaptation) model to fine-tune the base model.
@@ -496,7 +496,7 @@ func (r AccountAIRunCfDeepseekAIExecuteDeepseekR1DistillQwen32bParamsBodyPromptR
 
 type AccountAIRunCfDeepseekAIExecuteDeepseekR1DistillQwen32bParamsBodyMessages struct {
 	// An array of message objects representing the conversation history.
-	Messages param.Field[[]AccountAIRunCfDeepseekAIExecuteDeepseekR1DistillQwen32bParamsBodyMessagesMessage] `json:"messages,required"`
+	Messages param.Field[[]AccountAIRunCfDeepseekAIExecuteDeepseekR1DistillQwen32bParamsBodyMessagesMessage] `json:"messages" api:"required"`
 	// Decreases the likelihood of the model repeating the same lines verbatim.
 	FrequencyPenalty param.Field[float64]                                                                             `json:"frequency_penalty"`
 	Functions        param.Field[[]AccountAIRunCfDeepseekAIExecuteDeepseekR1DistillQwen32bParamsBodyMessagesFunction] `json:"functions"`
@@ -539,9 +539,9 @@ func (r AccountAIRunCfDeepseekAIExecuteDeepseekR1DistillQwen32bParamsBodyMessage
 
 type AccountAIRunCfDeepseekAIExecuteDeepseekR1DistillQwen32bParamsBodyMessagesMessage struct {
 	// The content of the message as a string.
-	Content param.Field[string] `json:"content,required"`
+	Content param.Field[string] `json:"content" api:"required"`
 	// The role of the message sender (e.g., 'user', 'assistant', 'system', 'tool').
-	Role param.Field[string] `json:"role,required"`
+	Role param.Field[string] `json:"role" api:"required"`
 }
 
 func (r AccountAIRunCfDeepseekAIExecuteDeepseekR1DistillQwen32bParamsBodyMessagesMessage) MarshalJSON() (data []byte, err error) {
@@ -549,8 +549,8 @@ func (r AccountAIRunCfDeepseekAIExecuteDeepseekR1DistillQwen32bParamsBodyMessage
 }
 
 type AccountAIRunCfDeepseekAIExecuteDeepseekR1DistillQwen32bParamsBodyMessagesFunction struct {
-	Code param.Field[string] `json:"code,required"`
-	Name param.Field[string] `json:"name,required"`
+	Code param.Field[string] `json:"code" api:"required"`
+	Name param.Field[string] `json:"name" api:"required"`
 }
 
 func (r AccountAIRunCfDeepseekAIExecuteDeepseekR1DistillQwen32bParamsBodyMessagesFunction) MarshalJSON() (data []byte, err error) {
@@ -609,11 +609,11 @@ type AccountAIRunCfDeepseekAIExecuteDeepseekR1DistillQwen32bParamsBodyMessagesTo
 
 type AccountAIRunCfDeepseekAIExecuteDeepseekR1DistillQwen32bParamsBodyMessagesToolsObject struct {
 	// A brief description of what the tool does.
-	Description param.Field[string] `json:"description,required"`
+	Description param.Field[string] `json:"description" api:"required"`
 	// The name of the tool. More descriptive the better.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Schema defining the parameters accepted by the tool.
-	Parameters param.Field[AccountAIRunCfDeepseekAIExecuteDeepseekR1DistillQwen32bParamsBodyMessagesToolsObjectParameters] `json:"parameters,required"`
+	Parameters param.Field[AccountAIRunCfDeepseekAIExecuteDeepseekR1DistillQwen32bParamsBodyMessagesToolsObjectParameters] `json:"parameters" api:"required"`
 }
 
 func (r AccountAIRunCfDeepseekAIExecuteDeepseekR1DistillQwen32bParamsBodyMessagesToolsObject) MarshalJSON() (data []byte, err error) {
@@ -626,9 +626,9 @@ func (r AccountAIRunCfDeepseekAIExecuteDeepseekR1DistillQwen32bParamsBodyMessage
 // Schema defining the parameters accepted by the tool.
 type AccountAIRunCfDeepseekAIExecuteDeepseekR1DistillQwen32bParamsBodyMessagesToolsObjectParameters struct {
 	// Definitions of each parameter.
-	Properties param.Field[map[string]AccountAIRunCfDeepseekAIExecuteDeepseekR1DistillQwen32bParamsBodyMessagesToolsObjectParametersProperties] `json:"properties,required"`
+	Properties param.Field[map[string]AccountAIRunCfDeepseekAIExecuteDeepseekR1DistillQwen32bParamsBodyMessagesToolsObjectParametersProperties] `json:"properties" api:"required"`
 	// The type of the parameters object (usually 'object').
-	Type param.Field[string] `json:"type,required"`
+	Type param.Field[string] `json:"type" api:"required"`
 	// List of required parameter names.
 	Required param.Field[[]string] `json:"required"`
 }
@@ -639,9 +639,9 @@ func (r AccountAIRunCfDeepseekAIExecuteDeepseekR1DistillQwen32bParamsBodyMessage
 
 type AccountAIRunCfDeepseekAIExecuteDeepseekR1DistillQwen32bParamsBodyMessagesToolsObjectParametersProperties struct {
 	// A description of the expected parameter.
-	Description param.Field[string] `json:"description,required"`
+	Description param.Field[string] `json:"description" api:"required"`
 	// The data type of the parameter.
-	Type param.Field[string] `json:"type,required"`
+	Type param.Field[string] `json:"type" api:"required"`
 }
 
 func (r AccountAIRunCfDeepseekAIExecuteDeepseekR1DistillQwen32bParamsBodyMessagesToolsObjectParametersProperties) MarshalJSON() (data []byte, err error) {

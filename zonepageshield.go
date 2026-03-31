@@ -47,11 +47,11 @@ func (r *ZonePageShieldService) Get(ctx context.Context, zoneID string, opts ...
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/page_shield", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates Page Shield settings.
@@ -59,16 +59,16 @@ func (r *ZonePageShieldService) Update(ctx context.Context, zoneID string, body 
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/page_shield", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type MessagesPageShieldItem struct {
-	Code             int64                        `json:"code,required"`
-	Message          string                       `json:"message,required"`
+	Code             int64                        `json:"code" api:"required"`
+	Message          string                       `json:"message" api:"required"`
 	DocumentationURL string                       `json:"documentation_url"`
 	Source           MessagesPageShieldItemSource `json:"source"`
 	JSON             messagesPageShieldItemJSON   `json:"-"`
@@ -116,10 +116,10 @@ func (r messagesPageShieldItemSourceJSON) RawJSON() string {
 
 type ZonePageShieldGetResponse struct {
 	// Whether the API call was successful
-	Success  ZonePageShieldGetResponseSuccess `json:"success,required"`
+	Success  ZonePageShieldGetResponseSuccess `json:"success" api:"required"`
 	Errors   []MessagesPageShieldItem         `json:"errors"`
 	Messages []MessagesPageShieldItem         `json:"messages"`
-	Result   ZonePageShieldGetResponseResult  `json:"result,nullable"`
+	Result   ZonePageShieldGetResponseResult  `json:"result" api:"nullable"`
 	JSON     zonePageShieldGetResponseJSON    `json:"-"`
 }
 
@@ -159,14 +159,14 @@ func (r ZonePageShieldGetResponseSuccess) IsKnown() bool {
 
 type ZonePageShieldGetResponseResult struct {
 	// When true, indicates that Page Shield is enabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// The timestamp of when Page Shield was last updated.
-	UpdatedAt string `json:"updated_at,required"`
+	UpdatedAt string `json:"updated_at" api:"required"`
 	// When true, CSP reports will be sent to
 	// https://csp-reporting.cloudflare.com/cdn-cgi/script_monitor/report
-	UseCloudflareReportingEndpoint bool `json:"use_cloudflare_reporting_endpoint,required"`
+	UseCloudflareReportingEndpoint bool `json:"use_cloudflare_reporting_endpoint" api:"required"`
 	// When true, the paths associated with connections URLs will also be analyzed.
-	UseConnectionURLPath bool                                `json:"use_connection_url_path,required"`
+	UseConnectionURLPath bool                                `json:"use_connection_url_path" api:"required"`
 	JSON                 zonePageShieldGetResponseResultJSON `json:"-"`
 }
 
@@ -191,7 +191,7 @@ func (r zonePageShieldGetResponseResultJSON) RawJSON() string {
 
 type ZonePageShieldUpdateResponse struct {
 	// Whether the API call was successful
-	Success  ZonePageShieldUpdateResponseSuccess `json:"success,required"`
+	Success  ZonePageShieldUpdateResponseSuccess `json:"success" api:"required"`
 	Errors   []MessagesPageShieldItem            `json:"errors"`
 	Messages []MessagesPageShieldItem            `json:"messages"`
 	Result   ZonePageShieldUpdateResponseResult  `json:"result"`
@@ -234,14 +234,14 @@ func (r ZonePageShieldUpdateResponseSuccess) IsKnown() bool {
 
 type ZonePageShieldUpdateResponseResult struct {
 	// When true, indicates that Page Shield is enabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// The timestamp of when Page Shield was last updated.
-	UpdatedAt string `json:"updated_at,required"`
+	UpdatedAt string `json:"updated_at" api:"required"`
 	// When true, CSP reports will be sent to
 	// https://csp-reporting.cloudflare.com/cdn-cgi/script_monitor/report
-	UseCloudflareReportingEndpoint bool `json:"use_cloudflare_reporting_endpoint,required"`
+	UseCloudflareReportingEndpoint bool `json:"use_cloudflare_reporting_endpoint" api:"required"`
 	// When true, the paths associated with connections URLs will also be analyzed.
-	UseConnectionURLPath bool                                   `json:"use_connection_url_path,required"`
+	UseConnectionURLPath bool                                   `json:"use_connection_url_path" api:"required"`
 	JSON                 zonePageShieldUpdateResponseResultJSON `json:"-"`
 }
 

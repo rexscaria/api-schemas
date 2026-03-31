@@ -45,15 +45,15 @@ func (r *AccountStorageKvNamespaceBulkService) Delete(ctx context.Context, accou
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if namespaceID == "" {
 		err = errors.New("missing required namespace_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/storage/kv/namespaces/%s/bulk", accountID, namespaceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Remove multiple KV pairs from the namespace. Body should be an array of up to
@@ -62,15 +62,15 @@ func (r *AccountStorageKvNamespaceBulkService) DeleteMultiple(ctx context.Contex
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if namespaceID == "" {
 		err = errors.New("missing required namespace_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/storage/kv/namespaces/%s/bulk/delete", accountID, namespaceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve up to 100 KV pairs from the namespace. Keys must contain text-based
@@ -80,15 +80,15 @@ func (r *AccountStorageKvNamespaceBulkService) GetMultiple(ctx context.Context, 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if namespaceID == "" {
 		err = errors.New("missing required namespace_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/storage/kv/namespaces/%s/bulk/get", accountID, namespaceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Write multiple keys and values at once. Body should be an array of up to 10,000
@@ -101,15 +101,15 @@ func (r *AccountStorageKvNamespaceBulkService) Write(ctx context.Context, accoun
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if namespaceID == "" {
 		err = errors.New("missing required namespace_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/storage/kv/namespaces/%s/bulk", accountID, namespaceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type BulkResult struct {
@@ -137,11 +137,11 @@ func (r bulkResultJSON) RawJSON() string {
 }
 
 type AccountStorageKvNamespaceBulkDeleteResponse struct {
-	Errors   []MessagesWorkersKvItem `json:"errors,required"`
-	Messages []MessagesWorkersKvItem `json:"messages,required"`
+	Errors   []MessagesWorkersKvItem `json:"errors" api:"required"`
+	Messages []MessagesWorkersKvItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountStorageKvNamespaceBulkDeleteResponseSuccess `json:"success,required"`
-	Result  BulkResult                                         `json:"result,nullable"`
+	Success AccountStorageKvNamespaceBulkDeleteResponseSuccess `json:"success" api:"required"`
+	Result  BulkResult                                         `json:"result" api:"nullable"`
 	JSON    accountStorageKvNamespaceBulkDeleteResponseJSON    `json:"-"`
 }
 
@@ -180,11 +180,11 @@ func (r AccountStorageKvNamespaceBulkDeleteResponseSuccess) IsKnown() bool {
 }
 
 type AccountStorageKvNamespaceBulkDeleteMultipleResponse struct {
-	Errors   []MessagesWorkersKvItem `json:"errors,required"`
-	Messages []MessagesWorkersKvItem `json:"messages,required"`
+	Errors   []MessagesWorkersKvItem `json:"errors" api:"required"`
+	Messages []MessagesWorkersKvItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountStorageKvNamespaceBulkDeleteMultipleResponseSuccess `json:"success,required"`
-	Result  BulkResult                                                 `json:"result,nullable"`
+	Success AccountStorageKvNamespaceBulkDeleteMultipleResponseSuccess `json:"success" api:"required"`
+	Result  BulkResult                                                 `json:"result" api:"nullable"`
 	JSON    accountStorageKvNamespaceBulkDeleteMultipleResponseJSON    `json:"-"`
 }
 
@@ -223,11 +223,11 @@ func (r AccountStorageKvNamespaceBulkDeleteMultipleResponseSuccess) IsKnown() bo
 }
 
 type AccountStorageKvNamespaceBulkGetMultipleResponse struct {
-	Errors   []MessagesWorkersKvItem `json:"errors,required"`
-	Messages []MessagesWorkersKvItem `json:"messages,required"`
+	Errors   []MessagesWorkersKvItem `json:"errors" api:"required"`
+	Messages []MessagesWorkersKvItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountStorageKvNamespaceBulkGetMultipleResponseSuccess `json:"success,required"`
-	Result  AccountStorageKvNamespaceBulkGetMultipleResponseResult  `json:"result,nullable"`
+	Success AccountStorageKvNamespaceBulkGetMultipleResponseSuccess `json:"success" api:"required"`
+	Result  AccountStorageKvNamespaceBulkGetMultipleResponseResult  `json:"result" api:"nullable"`
 	JSON    accountStorageKvNamespaceBulkGetMultipleResponseJSON    `json:"-"`
 }
 
@@ -422,8 +422,8 @@ func (r AccountStorageKvNamespaceBulkGetMultipleResponseResultWorkersKvBulkGetRe
 }
 
 type AccountStorageKvNamespaceBulkGetMultipleResponseResultWorkersKvBulkGetResultWithMetadataValue struct {
-	Metadata interface{} `json:"metadata,required"`
-	Value    interface{} `json:"value,required"`
+	Metadata interface{} `json:"metadata" api:"required"`
+	Value    interface{} `json:"value" api:"required"`
 	// Expires the key at a certain time, measured in number of seconds since the UNIX
 	// epoch.
 	Expiration float64                                                                                           `json:"expiration"`
@@ -450,11 +450,11 @@ func (r accountStorageKvNamespaceBulkGetMultipleResponseResultWorkersKvBulkGetRe
 }
 
 type AccountStorageKvNamespaceBulkWriteResponse struct {
-	Errors   []MessagesWorkersKvItem `json:"errors,required"`
-	Messages []MessagesWorkersKvItem `json:"messages,required"`
+	Errors   []MessagesWorkersKvItem `json:"errors" api:"required"`
+	Messages []MessagesWorkersKvItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountStorageKvNamespaceBulkWriteResponseSuccess `json:"success,required"`
-	Result  BulkResult                                        `json:"result,nullable"`
+	Success AccountStorageKvNamespaceBulkWriteResponseSuccess `json:"success" api:"required"`
+	Result  BulkResult                                        `json:"result" api:"nullable"`
 	JSON    accountStorageKvNamespaceBulkWriteResponseJSON    `json:"-"`
 }
 
@@ -493,7 +493,7 @@ func (r AccountStorageKvNamespaceBulkWriteResponseSuccess) IsKnown() bool {
 }
 
 type AccountStorageKvNamespaceBulkDeleteMultipleParams struct {
-	Body []string `json:"body,required"`
+	Body []string `json:"body" api:"required"`
 }
 
 func (r AccountStorageKvNamespaceBulkDeleteMultipleParams) MarshalJSON() (data []byte, err error) {
@@ -502,7 +502,7 @@ func (r AccountStorageKvNamespaceBulkDeleteMultipleParams) MarshalJSON() (data [
 
 type AccountStorageKvNamespaceBulkGetMultipleParams struct {
 	// Array of keys to retrieve (maximum of 100).
-	Keys param.Field[[]string] `json:"keys,required"`
+	Keys param.Field[[]string] `json:"keys" api:"required"`
 	// Whether to parse JSON values in the response.
 	Type param.Field[AccountStorageKvNamespaceBulkGetMultipleParamsType] `json:"type"`
 	// Whether to include metadata in the response.
@@ -530,7 +530,7 @@ func (r AccountStorageKvNamespaceBulkGetMultipleParamsType) IsKnown() bool {
 }
 
 type AccountStorageKvNamespaceBulkWriteParams struct {
-	Body []AccountStorageKvNamespaceBulkWriteParamsBody `json:"body,required"`
+	Body []AccountStorageKvNamespaceBulkWriteParamsBody `json:"body" api:"required"`
 }
 
 func (r AccountStorageKvNamespaceBulkWriteParams) MarshalJSON() (data []byte, err error) {
@@ -540,9 +540,9 @@ func (r AccountStorageKvNamespaceBulkWriteParams) MarshalJSON() (data []byte, er
 type AccountStorageKvNamespaceBulkWriteParamsBody struct {
 	// A key's name. The name may be at most 512 bytes. All printable, non-whitespace
 	// characters are valid.
-	Key param.Field[string] `json:"key,required"`
+	Key param.Field[string] `json:"key" api:"required"`
 	// A UTF-8 encoded string to be stored, up to 25 MiB in length.
-	Value param.Field[string] `json:"value,required"`
+	Value param.Field[string] `json:"value" api:"required"`
 	// Indicates whether or not the server should base64 decode the value before
 	// storing it. Useful for writing values that wouldn't otherwise be valid JSON
 	// strings, such as images.

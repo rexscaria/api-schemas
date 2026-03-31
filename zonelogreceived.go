@@ -49,15 +49,15 @@ func (r *ZoneLogReceivedService) GetLogs(ctx context.Context, zoneID string, que
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/logs/received", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &env, opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	res = &env.Value
-	return
+	return res, nil
 }
 
 // Lists all fields available. The response is json object with key-value pairs,
@@ -66,11 +66,11 @@ func (r *ZoneLogReceivedService) ListFields(ctx context.Context, zoneID string, 
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/logs/received/fields", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type ZoneLogReceivedListFieldsResponse struct {
@@ -100,7 +100,7 @@ type ZoneLogReceivedGetLogsParams struct {
 	// RFC 3339. `end` must be at least five minutes earlier than now and must be later
 	// than `start`. Difference between `start` and `end` must be not greater than one
 	// hour.
-	End param.Field[ZoneLogReceivedGetLogsParamsEndUnion] `query:"end,required"`
+	End param.Field[ZoneLogReceivedGetLogsParamsEndUnion] `query:"end" api:"required"`
 	// When `?count=` is provided, the response will contain up to `count` results.
 	// Since results are not sorted, you are likely to get different data for repeated
 	// requests. `count` must be an integer > 0.

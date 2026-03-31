@@ -42,11 +42,11 @@ func (r *AccountHyperdriveConfigService) New(ctx context.Context, accountID stri
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/hyperdrive/configs", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns the specified Hyperdrive configuration.
@@ -54,15 +54,15 @@ func (r *AccountHyperdriveConfigService) Get(ctx context.Context, accountID stri
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if hyperdriveID == "" {
 		err = errors.New("missing required hyperdrive_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/hyperdrive/configs/%s", accountID, hyperdriveID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates and returns the specified Hyperdrive configuration.
@@ -70,15 +70,15 @@ func (r *AccountHyperdriveConfigService) Update(ctx context.Context, accountID s
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if hyperdriveID == "" {
 		err = errors.New("missing required hyperdrive_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/hyperdrive/configs/%s", accountID, hyperdriveID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns a list of Hyperdrives.
@@ -86,11 +86,11 @@ func (r *AccountHyperdriveConfigService) List(ctx context.Context, accountID str
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/hyperdrive/configs", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Deletes the specified Hyperdrive.
@@ -98,15 +98,15 @@ func (r *AccountHyperdriveConfigService) Delete(ctx context.Context, accountID s
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if hyperdriveID == "" {
 		err = errors.New("missing required hyperdrive_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/hyperdrive/configs/%s", accountID, hyperdriveID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Patches and returns the specified Hyperdrive configuration. Custom caching
@@ -115,15 +115,15 @@ func (r *AccountHyperdriveConfigService) Patch(ctx context.Context, accountID st
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if hyperdriveID == "" {
 		err = errors.New("missing required hyperdrive_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/hyperdrive/configs/%s", accountID, hyperdriveID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type HyperdriveHyperdriveCaching struct {
@@ -304,8 +304,8 @@ func (r HyperdriveHyperdriveCachingCommonParam) MarshalJSON() (data []byte, err 
 func (r HyperdriveHyperdriveCachingCommonParam) implementsHyperdriveHyperdriveCachingUnionParam() {}
 
 type HyperdriveHyperdriveConfigParam struct {
-	Name    param.Field[string]                                     `json:"name,required"`
-	Origin  param.Field[HyperdriveHyperdriveConfigOriginUnionParam] `json:"origin,required"`
+	Name    param.Field[string]                                     `json:"name" api:"required"`
+	Origin  param.Field[HyperdriveHyperdriveConfigOriginUnionParam] `json:"origin" api:"required"`
 	Caching param.Field[HyperdriveHyperdriveCachingUnionParam]      `json:"caching"`
 	Mtls    param.Field[HyperdriveHyperdriveConfigMtlsParam]        `json:"mtls"`
 	// The (soft) maximum number of connections the Hyperdrive is allowed to make to
@@ -319,16 +319,16 @@ func (r HyperdriveHyperdriveConfigParam) MarshalJSON() (data []byte, err error) 
 
 type HyperdriveHyperdriveConfigOriginParam struct {
 	// Set the name of your origin database.
-	Database param.Field[string] `json:"database,required"`
+	Database param.Field[string] `json:"database" api:"required"`
 	// Defines the host (hostname or IP) of your origin database.
-	Host param.Field[string] `json:"host,required"`
+	Host param.Field[string] `json:"host" api:"required"`
 	// Set the password needed to access your origin database. The API never returns
 	// this write-only value.
-	Password param.Field[string] `json:"password,required"`
+	Password param.Field[string] `json:"password" api:"required"`
 	// Specifies the URL scheme used to connect to your origin database.
-	Scheme param.Field[HyperdriveHyperdriveConfigOriginScheme] `json:"scheme,required"`
+	Scheme param.Field[HyperdriveHyperdriveConfigOriginScheme] `json:"scheme" api:"required"`
 	// Set the user of your origin database.
-	User param.Field[string] `json:"user,required"`
+	User param.Field[string] `json:"user" api:"required"`
 	// Defines the Client ID of the Access token to use when connecting to the origin
 	// database.
 	AccessClientID param.Field[string] `json:"access_client_id"`
@@ -355,18 +355,18 @@ type HyperdriveHyperdriveConfigOriginUnionParam interface {
 
 type HyperdriveHyperdriveConfigOriginPublicDatabaseParam struct {
 	// Set the name of your origin database.
-	Database param.Field[string] `json:"database,required"`
+	Database param.Field[string] `json:"database" api:"required"`
 	// Defines the host (hostname or IP) of your origin database.
-	Host param.Field[string] `json:"host,required"`
+	Host param.Field[string] `json:"host" api:"required"`
 	// Set the password needed to access your origin database. The API never returns
 	// this write-only value.
-	Password param.Field[string] `json:"password,required"`
+	Password param.Field[string] `json:"password" api:"required"`
 	// Defines the port (default: 5432 for Postgres) of your origin database.
-	Port param.Field[int64] `json:"port,required"`
+	Port param.Field[int64] `json:"port" api:"required"`
 	// Specifies the URL scheme used to connect to your origin database.
-	Scheme param.Field[HyperdriveHyperdriveConfigOriginPublicDatabaseScheme] `json:"scheme,required"`
+	Scheme param.Field[HyperdriveHyperdriveConfigOriginPublicDatabaseScheme] `json:"scheme" api:"required"`
 	// Set the user of your origin database.
-	User param.Field[string] `json:"user,required"`
+	User param.Field[string] `json:"user" api:"required"`
 }
 
 func (r HyperdriveHyperdriveConfigOriginPublicDatabaseParam) MarshalJSON() (data []byte, err error) {
@@ -396,21 +396,21 @@ func (r HyperdriveHyperdriveConfigOriginPublicDatabaseScheme) IsKnown() bool {
 type HyperdriveHyperdriveConfigOriginAccessProtectedDatabaseBehindCloudflareTunnelParam struct {
 	// Defines the Client ID of the Access token to use when connecting to the origin
 	// database.
-	AccessClientID param.Field[string] `json:"access_client_id,required"`
+	AccessClientID param.Field[string] `json:"access_client_id" api:"required"`
 	// Defines the Client Secret of the Access Token to use when connecting to the
 	// origin database. The API never returns this write-only value.
-	AccessClientSecret param.Field[string] `json:"access_client_secret,required"`
+	AccessClientSecret param.Field[string] `json:"access_client_secret" api:"required"`
 	// Set the name of your origin database.
-	Database param.Field[string] `json:"database,required"`
+	Database param.Field[string] `json:"database" api:"required"`
 	// Defines the host (hostname or IP) of your origin database.
-	Host param.Field[string] `json:"host,required"`
+	Host param.Field[string] `json:"host" api:"required"`
 	// Set the password needed to access your origin database. The API never returns
 	// this write-only value.
-	Password param.Field[string] `json:"password,required"`
+	Password param.Field[string] `json:"password" api:"required"`
 	// Specifies the URL scheme used to connect to your origin database.
-	Scheme param.Field[HyperdriveHyperdriveConfigOriginAccessProtectedDatabaseBehindCloudflareTunnelScheme] `json:"scheme,required"`
+	Scheme param.Field[HyperdriveHyperdriveConfigOriginAccessProtectedDatabaseBehindCloudflareTunnelScheme] `json:"scheme" api:"required"`
 	// Set the user of your origin database.
-	User param.Field[string] `json:"user,required"`
+	User param.Field[string] `json:"user" api:"required"`
 }
 
 func (r HyperdriveHyperdriveConfigOriginAccessProtectedDatabaseBehindCloudflareTunnelParam) MarshalJSON() (data []byte, err error) {
@@ -468,7 +468,7 @@ func (r HyperdriveHyperdriveConfigMtlsParam) MarshalJSON() (data []byte, err err
 }
 
 type HyperdriveHyperdriveConfigResponse struct {
-	Caching HyperdriveHyperdriveCaching `json:"caching,required"`
+	Caching HyperdriveHyperdriveCaching `json:"caching" api:"required"`
 	// Define configurations using a unique string identifier.
 	ID string `json:"id"`
 	// Defines the creation time of the Hyperdrive configuration.
@@ -537,13 +537,13 @@ func (r hyperdriveHyperdriveConfigResponseMtlsJSON) RawJSON() string {
 
 type HyperdriveHyperdriveConfigResponseOrigin struct {
 	// Set the name of your origin database.
-	Database string `json:"database,required"`
+	Database string `json:"database" api:"required"`
 	// Defines the host (hostname or IP) of your origin database.
-	Host string `json:"host,required"`
+	Host string `json:"host" api:"required"`
 	// Specifies the URL scheme used to connect to your origin database.
-	Scheme HyperdriveHyperdriveConfigResponseOriginScheme `json:"scheme,required"`
+	Scheme HyperdriveHyperdriveConfigResponseOriginScheme `json:"scheme" api:"required"`
 	// Set the user of your origin database.
-	User string `json:"user,required"`
+	User string `json:"user" api:"required"`
 	// Defines the Client ID of the Access token to use when connecting to the origin
 	// database.
 	AccessClientID string `json:"access_client_id"`
@@ -612,15 +612,15 @@ func init() {
 
 type HyperdriveHyperdriveConfigResponseOriginPublicDatabase struct {
 	// Set the name of your origin database.
-	Database string `json:"database,required"`
+	Database string `json:"database" api:"required"`
 	// Defines the host (hostname or IP) of your origin database.
-	Host string `json:"host,required"`
+	Host string `json:"host" api:"required"`
 	// Defines the port (default: 5432 for Postgres) of your origin database.
-	Port int64 `json:"port,required"`
+	Port int64 `json:"port" api:"required"`
 	// Specifies the URL scheme used to connect to your origin database.
-	Scheme HyperdriveHyperdriveConfigResponseOriginPublicDatabaseScheme `json:"scheme,required"`
+	Scheme HyperdriveHyperdriveConfigResponseOriginPublicDatabaseScheme `json:"scheme" api:"required"`
 	// Set the user of your origin database.
-	User string                                                     `json:"user,required"`
+	User string                                                     `json:"user" api:"required"`
 	JSON hyperdriveHyperdriveConfigResponseOriginPublicDatabaseJSON `json:"-"`
 }
 
@@ -667,15 +667,15 @@ func (r HyperdriveHyperdriveConfigResponseOriginPublicDatabaseScheme) IsKnown() 
 type HyperdriveHyperdriveConfigResponseOriginAccessProtectedDatabaseBehindCloudflareTunnel struct {
 	// Defines the Client ID of the Access token to use when connecting to the origin
 	// database.
-	AccessClientID string `json:"access_client_id,required"`
+	AccessClientID string `json:"access_client_id" api:"required"`
 	// Set the name of your origin database.
-	Database string `json:"database,required"`
+	Database string `json:"database" api:"required"`
 	// Defines the host (hostname or IP) of your origin database.
-	Host string `json:"host,required"`
+	Host string `json:"host" api:"required"`
 	// Specifies the URL scheme used to connect to your origin database.
-	Scheme HyperdriveHyperdriveConfigResponseOriginAccessProtectedDatabaseBehindCloudflareTunnelScheme `json:"scheme,required"`
+	Scheme HyperdriveHyperdriveConfigResponseOriginAccessProtectedDatabaseBehindCloudflareTunnelScheme `json:"scheme" api:"required"`
 	// Set the user of your origin database.
-	User string                                                                                    `json:"user,required"`
+	User string                                                                                    `json:"user" api:"required"`
 	JSON hyperdriveHyperdriveConfigResponseOriginAccessProtectedDatabaseBehindCloudflareTunnelJSON `json:"-"`
 }
 
@@ -775,9 +775,9 @@ func (r HyperdriveHyperdriveDatabaseScheme) IsKnown() bool {
 
 type HyperdriveInternetOriginParam struct {
 	// Defines the host (hostname or IP) of your origin database.
-	Host param.Field[string] `json:"host,required"`
+	Host param.Field[string] `json:"host" api:"required"`
 	// Defines the port (default: 5432 for Postgres) of your origin database.
-	Port param.Field[int64] `json:"port,required"`
+	Port param.Field[int64] `json:"port" api:"required"`
 }
 
 func (r HyperdriveInternetOriginParam) MarshalJSON() (data []byte, err error) {
@@ -787,8 +787,8 @@ func (r HyperdriveInternetOriginParam) MarshalJSON() (data []byte, err error) {
 func (r HyperdriveInternetOriginParam) implementsAccountHyperdriveConfigPatchParamsOriginUnion() {}
 
 type HyperdriveMessagesItem struct {
-	Code             int64                        `json:"code,required"`
-	Message          string                       `json:"message,required"`
+	Code             int64                        `json:"code" api:"required"`
+	Message          string                       `json:"message" api:"required"`
 	DocumentationURL string                       `json:"documentation_url"`
 	Source           HyperdriveMessagesItemSource `json:"source"`
 	JSON             hyperdriveMessagesItemJSON   `json:"-"`
@@ -837,12 +837,12 @@ func (r hyperdriveMessagesItemSourceJSON) RawJSON() string {
 type HyperdriveOverAccessOriginParam struct {
 	// Defines the Client ID of the Access token to use when connecting to the origin
 	// database.
-	AccessClientID param.Field[string] `json:"access_client_id,required"`
+	AccessClientID param.Field[string] `json:"access_client_id" api:"required"`
 	// Defines the Client Secret of the Access Token to use when connecting to the
 	// origin database. The API never returns this write-only value.
-	AccessClientSecret param.Field[string] `json:"access_client_secret,required"`
+	AccessClientSecret param.Field[string] `json:"access_client_secret" api:"required"`
 	// Defines the host (hostname or IP) of your origin database.
-	Host param.Field[string] `json:"host,required"`
+	Host param.Field[string] `json:"host" api:"required"`
 }
 
 func (r HyperdriveOverAccessOriginParam) MarshalJSON() (data []byte, err error) {
@@ -852,11 +852,11 @@ func (r HyperdriveOverAccessOriginParam) MarshalJSON() (data []byte, err error) 
 func (r HyperdriveOverAccessOriginParam) implementsAccountHyperdriveConfigPatchParamsOriginUnion() {}
 
 type AccountHyperdriveConfigNewResponse struct {
-	Errors   []HyperdriveMessagesItem           `json:"errors,required"`
-	Messages []HyperdriveMessagesItem           `json:"messages,required"`
-	Result   HyperdriveHyperdriveConfigResponse `json:"result,required"`
+	Errors   []HyperdriveMessagesItem           `json:"errors" api:"required"`
+	Messages []HyperdriveMessagesItem           `json:"messages" api:"required"`
+	Result   HyperdriveHyperdriveConfigResponse `json:"result" api:"required"`
 	// Return the status of the API call success.
-	Success AccountHyperdriveConfigNewResponseSuccess `json:"success,required"`
+	Success AccountHyperdriveConfigNewResponseSuccess `json:"success" api:"required"`
 	JSON    accountHyperdriveConfigNewResponseJSON    `json:"-"`
 }
 
@@ -895,11 +895,11 @@ func (r AccountHyperdriveConfigNewResponseSuccess) IsKnown() bool {
 }
 
 type AccountHyperdriveConfigGetResponse struct {
-	Errors   []HyperdriveMessagesItem           `json:"errors,required"`
-	Messages []HyperdriveMessagesItem           `json:"messages,required"`
-	Result   HyperdriveHyperdriveConfigResponse `json:"result,required"`
+	Errors   []HyperdriveMessagesItem           `json:"errors" api:"required"`
+	Messages []HyperdriveMessagesItem           `json:"messages" api:"required"`
+	Result   HyperdriveHyperdriveConfigResponse `json:"result" api:"required"`
 	// Return the status of the API call success.
-	Success AccountHyperdriveConfigGetResponseSuccess `json:"success,required"`
+	Success AccountHyperdriveConfigGetResponseSuccess `json:"success" api:"required"`
 	JSON    accountHyperdriveConfigGetResponseJSON    `json:"-"`
 }
 
@@ -938,11 +938,11 @@ func (r AccountHyperdriveConfigGetResponseSuccess) IsKnown() bool {
 }
 
 type AccountHyperdriveConfigUpdateResponse struct {
-	Errors   []HyperdriveMessagesItem           `json:"errors,required"`
-	Messages []HyperdriveMessagesItem           `json:"messages,required"`
-	Result   HyperdriveHyperdriveConfigResponse `json:"result,required"`
+	Errors   []HyperdriveMessagesItem           `json:"errors" api:"required"`
+	Messages []HyperdriveMessagesItem           `json:"messages" api:"required"`
+	Result   HyperdriveHyperdriveConfigResponse `json:"result" api:"required"`
 	// Return the status of the API call success.
-	Success AccountHyperdriveConfigUpdateResponseSuccess `json:"success,required"`
+	Success AccountHyperdriveConfigUpdateResponseSuccess `json:"success" api:"required"`
 	JSON    accountHyperdriveConfigUpdateResponseJSON    `json:"-"`
 }
 
@@ -981,11 +981,11 @@ func (r AccountHyperdriveConfigUpdateResponseSuccess) IsKnown() bool {
 }
 
 type AccountHyperdriveConfigListResponse struct {
-	Errors   []HyperdriveMessagesItem             `json:"errors,required"`
-	Messages []HyperdriveMessagesItem             `json:"messages,required"`
-	Result   []HyperdriveHyperdriveConfigResponse `json:"result,required"`
+	Errors   []HyperdriveMessagesItem             `json:"errors" api:"required"`
+	Messages []HyperdriveMessagesItem             `json:"messages" api:"required"`
+	Result   []HyperdriveHyperdriveConfigResponse `json:"result" api:"required"`
 	// Return the status of the API call success.
-	Success    AccountHyperdriveConfigListResponseSuccess    `json:"success,required"`
+	Success    AccountHyperdriveConfigListResponseSuccess    `json:"success" api:"required"`
 	ResultInfo AccountHyperdriveConfigListResponseResultInfo `json:"result_info"`
 	JSON       accountHyperdriveConfigListResponseJSON       `json:"-"`
 }
@@ -1057,11 +1057,11 @@ func (r accountHyperdriveConfigListResponseResultInfoJSON) RawJSON() string {
 }
 
 type AccountHyperdriveConfigDeleteResponse struct {
-	Errors   []HyperdriveMessagesItem `json:"errors,required"`
-	Messages []HyperdriveMessagesItem `json:"messages,required"`
-	Result   interface{}              `json:"result,required,nullable"`
+	Errors   []HyperdriveMessagesItem `json:"errors" api:"required"`
+	Messages []HyperdriveMessagesItem `json:"messages" api:"required"`
+	Result   interface{}              `json:"result" api:"required,nullable"`
 	// Return the status of the API call success.
-	Success AccountHyperdriveConfigDeleteResponseSuccess `json:"success,required"`
+	Success AccountHyperdriveConfigDeleteResponseSuccess `json:"success" api:"required"`
 	JSON    accountHyperdriveConfigDeleteResponseJSON    `json:"-"`
 }
 
@@ -1100,11 +1100,11 @@ func (r AccountHyperdriveConfigDeleteResponseSuccess) IsKnown() bool {
 }
 
 type AccountHyperdriveConfigPatchResponse struct {
-	Errors   []HyperdriveMessagesItem           `json:"errors,required"`
-	Messages []HyperdriveMessagesItem           `json:"messages,required"`
-	Result   HyperdriveHyperdriveConfigResponse `json:"result,required"`
+	Errors   []HyperdriveMessagesItem           `json:"errors" api:"required"`
+	Messages []HyperdriveMessagesItem           `json:"messages" api:"required"`
+	Result   HyperdriveHyperdriveConfigResponse `json:"result" api:"required"`
 	// Return the status of the API call success.
-	Success AccountHyperdriveConfigPatchResponseSuccess `json:"success,required"`
+	Success AccountHyperdriveConfigPatchResponseSuccess `json:"success" api:"required"`
 	JSON    accountHyperdriveConfigPatchResponseJSON    `json:"-"`
 }
 
@@ -1143,7 +1143,7 @@ func (r AccountHyperdriveConfigPatchResponseSuccess) IsKnown() bool {
 }
 
 type AccountHyperdriveConfigNewParams struct {
-	HyperdriveHyperdriveConfig HyperdriveHyperdriveConfigParam `json:"hyperdrive_hyperdrive_config,required"`
+	HyperdriveHyperdriveConfig HyperdriveHyperdriveConfigParam `json:"hyperdrive_hyperdrive_config" api:"required"`
 }
 
 func (r AccountHyperdriveConfigNewParams) MarshalJSON() (data []byte, err error) {
@@ -1151,7 +1151,7 @@ func (r AccountHyperdriveConfigNewParams) MarshalJSON() (data []byte, err error)
 }
 
 type AccountHyperdriveConfigUpdateParams struct {
-	HyperdriveHyperdriveConfig HyperdriveHyperdriveConfigParam `json:"hyperdrive_hyperdrive_config,required"`
+	HyperdriveHyperdriveConfig HyperdriveHyperdriveConfigParam `json:"hyperdrive_hyperdrive_config" api:"required"`
 }
 
 func (r AccountHyperdriveConfigUpdateParams) MarshalJSON() (data []byte, err error) {

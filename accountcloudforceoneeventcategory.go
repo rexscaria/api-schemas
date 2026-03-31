@@ -39,11 +39,11 @@ func (r *AccountCloudforceOneEventCategoryService) New(ctx context.Context, acco
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/cloudforce-one/events/categories/create", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Reads a category
@@ -51,15 +51,15 @@ func (r *AccountCloudforceOneEventCategoryService) Get(ctx context.Context, acco
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if categoryID == "" {
 		err = errors.New("missing required category_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/cloudforce-one/events/categories/%s", accountID, categoryID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates a category
@@ -67,15 +67,15 @@ func (r *AccountCloudforceOneEventCategoryService) Update(ctx context.Context, a
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if categoryID == "" {
 		err = errors.New("missing required category_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/cloudforce-one/events/categories/%s", accountID, categoryID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists categories
@@ -83,11 +83,11 @@ func (r *AccountCloudforceOneEventCategoryService) List(ctx context.Context, acc
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/cloudforce-one/events/categories", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Deletes a category
@@ -95,21 +95,21 @@ func (r *AccountCloudforceOneEventCategoryService) Delete(ctx context.Context, a
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if categoryID == "" {
 		err = errors.New("missing required category_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/cloudforce-one/events/categories/%s", accountID, categoryID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountCloudforceOneEventCategoryNewResponse struct {
-	KillChain   float64                                          `json:"killChain,required"`
-	Name        string                                           `json:"name,required"`
-	Uuid        string                                           `json:"uuid,required"`
+	KillChain   float64                                          `json:"killChain" api:"required"`
+	Name        string                                           `json:"name" api:"required"`
+	Uuid        string                                           `json:"uuid" api:"required"`
 	MitreAttack []string                                         `json:"mitreAttack"`
 	Shortname   string                                           `json:"shortname"`
 	JSON        accountCloudforceOneEventCategoryNewResponseJSON `json:"-"`
@@ -136,9 +136,9 @@ func (r accountCloudforceOneEventCategoryNewResponseJSON) RawJSON() string {
 }
 
 type AccountCloudforceOneEventCategoryGetResponse struct {
-	KillChain   float64                                          `json:"killChain,required"`
-	Name        string                                           `json:"name,required"`
-	Uuid        string                                           `json:"uuid,required"`
+	KillChain   float64                                          `json:"killChain" api:"required"`
+	Name        string                                           `json:"name" api:"required"`
+	Uuid        string                                           `json:"uuid" api:"required"`
 	MitreAttack []string                                         `json:"mitreAttack"`
 	Shortname   string                                           `json:"shortname"`
 	JSON        accountCloudforceOneEventCategoryGetResponseJSON `json:"-"`
@@ -165,9 +165,9 @@ func (r accountCloudforceOneEventCategoryGetResponseJSON) RawJSON() string {
 }
 
 type AccountCloudforceOneEventCategoryUpdateResponse struct {
-	KillChain   float64                                             `json:"killChain,required"`
-	Name        string                                              `json:"name,required"`
-	Uuid        string                                              `json:"uuid,required"`
+	KillChain   float64                                             `json:"killChain" api:"required"`
+	Name        string                                              `json:"name" api:"required"`
+	Uuid        string                                              `json:"uuid" api:"required"`
 	MitreAttack []string                                            `json:"mitreAttack"`
 	Shortname   string                                              `json:"shortname"`
 	JSON        accountCloudforceOneEventCategoryUpdateResponseJSON `json:"-"`
@@ -194,9 +194,9 @@ func (r accountCloudforceOneEventCategoryUpdateResponseJSON) RawJSON() string {
 }
 
 type AccountCloudforceOneEventCategoryListResponse struct {
-	KillChain   float64                                           `json:"killChain,required"`
-	Name        string                                            `json:"name,required"`
-	Uuid        string                                            `json:"uuid,required"`
+	KillChain   float64                                           `json:"killChain" api:"required"`
+	Name        string                                            `json:"name" api:"required"`
+	Uuid        string                                            `json:"uuid" api:"required"`
 	MitreAttack []string                                          `json:"mitreAttack"`
 	Shortname   string                                            `json:"shortname"`
 	JSON        accountCloudforceOneEventCategoryListResponseJSON `json:"-"`
@@ -223,7 +223,7 @@ func (r accountCloudforceOneEventCategoryListResponseJSON) RawJSON() string {
 }
 
 type AccountCloudforceOneEventCategoryDeleteResponse struct {
-	Uuid string                                              `json:"uuid,required"`
+	Uuid string                                              `json:"uuid" api:"required"`
 	JSON accountCloudforceOneEventCategoryDeleteResponseJSON `json:"-"`
 }
 
@@ -244,8 +244,8 @@ func (r accountCloudforceOneEventCategoryDeleteResponseJSON) RawJSON() string {
 }
 
 type AccountCloudforceOneEventCategoryNewParams struct {
-	KillChain   param.Field[float64]  `json:"killChain,required"`
-	Name        param.Field[string]   `json:"name,required"`
+	KillChain   param.Field[float64]  `json:"killChain" api:"required"`
+	Name        param.Field[string]   `json:"name" api:"required"`
 	MitreAttack param.Field[[]string] `json:"mitreAttack"`
 	Shortname   param.Field[string]   `json:"shortname"`
 }

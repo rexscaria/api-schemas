@@ -42,15 +42,15 @@ func (r *AccountDexHTTPTestService) Get(ctx context.Context, accountID string, t
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if testID == "" {
 		err = errors.New("missing required test_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/dex/http-tests/%s", accountID, testID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Get percentiles for an http test for a given time period between 1 hour and 7
@@ -59,26 +59,26 @@ func (r *AccountDexHTTPTestService) GetPercentiles(ctx context.Context, accountI
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if testID == "" {
 		err = errors.New("missing required test_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/dex/http-tests/%s/percentiles", accountID, testID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type Percentiles struct {
 	// p50 observed in the time period
-	P50 float64 `json:"p50,nullable"`
+	P50 float64 `json:"p50" api:"nullable"`
 	// p90 observed in the time period
-	P90 float64 `json:"p90,nullable"`
+	P90 float64 `json:"p90" api:"nullable"`
 	// p95 observed in the time period
-	P95 float64 `json:"p95,nullable"`
+	P95 float64 `json:"p95" api:"nullable"`
 	// p99 observed in the time period
-	P99  float64         `json:"p99,nullable"`
+	P99  float64         `json:"p99" api:"nullable"`
 	JSON percentilesJSON `json:"-"`
 }
 
@@ -101,13 +101,13 @@ func (r percentilesJSON) RawJSON() string {
 }
 
 type TestStatOverTime struct {
-	Slots []TestStatOverTimeSlot `json:"slots,required"`
+	Slots []TestStatOverTimeSlot `json:"slots" api:"required"`
 	// average observed in the time period
-	Avg int64 `json:"avg,nullable"`
+	Avg int64 `json:"avg" api:"nullable"`
 	// highest observed in the time period
-	Max int64 `json:"max,nullable"`
+	Max int64 `json:"max" api:"nullable"`
 	// lowest observed in the time period
-	Min  int64                `json:"min,nullable"`
+	Min  int64                `json:"min" api:"nullable"`
 	JSON testStatOverTimeJSON `json:"-"`
 }
 
@@ -131,8 +131,8 @@ func (r testStatOverTimeJSON) RawJSON() string {
 }
 
 type TestStatOverTimeSlot struct {
-	Timestamp string                   `json:"timestamp,required"`
-	Value     int64                    `json:"value,required"`
+	Timestamp string                   `json:"timestamp" api:"required"`
+	Value     int64                    `json:"value" api:"required"`
 	JSON      testStatOverTimeSlotJSON `json:"-"`
 }
 
@@ -154,13 +154,13 @@ func (r testStatOverTimeSlotJSON) RawJSON() string {
 }
 
 type TestStatPctOverTime struct {
-	Slots []TestStatPctOverTimeSlot `json:"slots,required"`
+	Slots []TestStatPctOverTimeSlot `json:"slots" api:"required"`
 	// average observed in the time period
-	Avg float64 `json:"avg,nullable"`
+	Avg float64 `json:"avg" api:"nullable"`
 	// highest observed in the time period
-	Max float64 `json:"max,nullable"`
+	Max float64 `json:"max" api:"nullable"`
 	// lowest observed in the time period
-	Min  float64                 `json:"min,nullable"`
+	Min  float64                 `json:"min" api:"nullable"`
 	JSON testStatPctOverTimeJSON `json:"-"`
 }
 
@@ -184,8 +184,8 @@ func (r testStatPctOverTimeJSON) RawJSON() string {
 }
 
 type TestStatPctOverTimeSlot struct {
-	Timestamp string                      `json:"timestamp,required"`
-	Value     float64                     `json:"value,required"`
+	Timestamp string                      `json:"timestamp" api:"required"`
+	Value     float64                     `json:"value" api:"required"`
 	JSON      testStatPctOverTimeSlotJSON `json:"-"`
 }
 
@@ -207,10 +207,10 @@ func (r testStatPctOverTimeSlotJSON) RawJSON() string {
 }
 
 type AccountDexHTTPTestGetResponse struct {
-	Errors   []Item `json:"errors,required"`
-	Messages []Item `json:"messages,required"`
+	Errors   []Item `json:"errors" api:"required"`
+	Messages []Item `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountDexHTTPTestGetResponseSuccess `json:"success,required"`
+	Success AccountDexHTTPTestGetResponseSuccess `json:"success" api:"required"`
 	Result  AccountDexHTTPTestGetResponseResult  `json:"result"`
 	JSON    accountDexHTTPTestGetResponseJSON    `json:"-"`
 }
@@ -252,7 +252,7 @@ func (r AccountDexHTTPTestGetResponseSuccess) IsKnown() bool {
 type AccountDexHTTPTestGetResponseResult struct {
 	// The url of the HTTP synthetic application test
 	Host            string                                               `json:"host"`
-	HTTPStats       AccountDexHTTPTestGetResponseResultHTTPStats         `json:"httpStats,nullable"`
+	HTTPStats       AccountDexHTTPTestGetResponseResultHTTPStats         `json:"httpStats" api:"nullable"`
 	HTTPStatsByColo []AccountDexHTTPTestGetResponseResultHTTPStatsByColo `json:"httpStatsByColo"`
 	// The interval at which the HTTP synthetic application test is set to run.
 	Interval string                                  `json:"interval"`
@@ -261,7 +261,7 @@ type AccountDexHTTPTestGetResponseResult struct {
 	Method string `json:"method"`
 	// The name of the HTTP synthetic application test
 	Name           string                                            `json:"name"`
-	TargetPolicies []AccountDexHTTPTestGetResponseResultTargetPolicy `json:"target_policies,nullable"`
+	TargetPolicies []AccountDexHTTPTestGetResponseResultTargetPolicy `json:"target_policies" api:"nullable"`
 	Targeted       bool                                              `json:"targeted"`
 	JSON           accountDexHTTPTestGetResponseResultJSON           `json:"-"`
 }
@@ -291,13 +291,13 @@ func (r accountDexHTTPTestGetResponseResultJSON) RawJSON() string {
 }
 
 type AccountDexHTTPTestGetResponseResultHTTPStats struct {
-	AvailabilityPct      TestStatPctOverTime                                          `json:"availabilityPct,required"`
-	DNSResponseTimeMs    TestStatOverTime                                             `json:"dnsResponseTimeMs,required"`
-	HTTPStatusCode       []AccountDexHTTPTestGetResponseResultHTTPStatsHTTPStatusCode `json:"httpStatusCode,required"`
-	ResourceFetchTimeMs  TestStatOverTime                                             `json:"resourceFetchTimeMs,required"`
-	ServerResponseTimeMs TestStatOverTime                                             `json:"serverResponseTimeMs,required"`
+	AvailabilityPct      TestStatPctOverTime                                          `json:"availabilityPct" api:"required"`
+	DNSResponseTimeMs    TestStatOverTime                                             `json:"dnsResponseTimeMs" api:"required"`
+	HTTPStatusCode       []AccountDexHTTPTestGetResponseResultHTTPStatsHTTPStatusCode `json:"httpStatusCode" api:"required"`
+	ResourceFetchTimeMs  TestStatOverTime                                             `json:"resourceFetchTimeMs" api:"required"`
+	ServerResponseTimeMs TestStatOverTime                                             `json:"serverResponseTimeMs" api:"required"`
 	// Count of unique devices that have run this test in the given time period
-	UniqueDevicesTotal int64                                            `json:"uniqueDevicesTotal,required"`
+	UniqueDevicesTotal int64                                            `json:"uniqueDevicesTotal" api:"required"`
 	JSON               accountDexHTTPTestGetResponseResultHTTPStatsJSON `json:"-"`
 }
 
@@ -323,11 +323,11 @@ func (r accountDexHTTPTestGetResponseResultHTTPStatsJSON) RawJSON() string {
 }
 
 type AccountDexHTTPTestGetResponseResultHTTPStatsHTTPStatusCode struct {
-	Status200 int64                                                          `json:"status200,required"`
-	Status300 int64                                                          `json:"status300,required"`
-	Status400 int64                                                          `json:"status400,required"`
-	Status500 int64                                                          `json:"status500,required"`
-	Timestamp string                                                         `json:"timestamp,required"`
+	Status200 int64                                                          `json:"status200" api:"required"`
+	Status300 int64                                                          `json:"status300" api:"required"`
+	Status400 int64                                                          `json:"status400" api:"required"`
+	Status500 int64                                                          `json:"status500" api:"required"`
+	Timestamp string                                                         `json:"timestamp" api:"required"`
 	JSON      accountDexHTTPTestGetResponseResultHTTPStatsHTTPStatusCodeJSON `json:"-"`
 }
 
@@ -353,14 +353,14 @@ func (r accountDexHTTPTestGetResponseResultHTTPStatsHTTPStatusCodeJSON) RawJSON(
 }
 
 type AccountDexHTTPTestGetResponseResultHTTPStatsByColo struct {
-	AvailabilityPct      TestStatPctOverTime                                                `json:"availabilityPct,required"`
-	Colo                 string                                                             `json:"colo,required"`
-	DNSResponseTimeMs    TestStatOverTime                                                   `json:"dnsResponseTimeMs,required"`
-	HTTPStatusCode       []AccountDexHTTPTestGetResponseResultHTTPStatsByColoHTTPStatusCode `json:"httpStatusCode,required"`
-	ResourceFetchTimeMs  TestStatOverTime                                                   `json:"resourceFetchTimeMs,required"`
-	ServerResponseTimeMs TestStatOverTime                                                   `json:"serverResponseTimeMs,required"`
+	AvailabilityPct      TestStatPctOverTime                                                `json:"availabilityPct" api:"required"`
+	Colo                 string                                                             `json:"colo" api:"required"`
+	DNSResponseTimeMs    TestStatOverTime                                                   `json:"dnsResponseTimeMs" api:"required"`
+	HTTPStatusCode       []AccountDexHTTPTestGetResponseResultHTTPStatsByColoHTTPStatusCode `json:"httpStatusCode" api:"required"`
+	ResourceFetchTimeMs  TestStatOverTime                                                   `json:"resourceFetchTimeMs" api:"required"`
+	ServerResponseTimeMs TestStatOverTime                                                   `json:"serverResponseTimeMs" api:"required"`
 	// Count of unique devices that have run this test in the given time period
-	UniqueDevicesTotal int64                                                  `json:"uniqueDevicesTotal,required"`
+	UniqueDevicesTotal int64                                                  `json:"uniqueDevicesTotal" api:"required"`
 	JSON               accountDexHTTPTestGetResponseResultHTTPStatsByColoJSON `json:"-"`
 }
 
@@ -387,11 +387,11 @@ func (r accountDexHTTPTestGetResponseResultHTTPStatsByColoJSON) RawJSON() string
 }
 
 type AccountDexHTTPTestGetResponseResultHTTPStatsByColoHTTPStatusCode struct {
-	Status200 int64                                                                `json:"status200,required"`
-	Status300 int64                                                                `json:"status300,required"`
-	Status400 int64                                                                `json:"status400,required"`
-	Status500 int64                                                                `json:"status500,required"`
-	Timestamp string                                                               `json:"timestamp,required"`
+	Status200 int64                                                                `json:"status200" api:"required"`
+	Status300 int64                                                                `json:"status300" api:"required"`
+	Status400 int64                                                                `json:"status400" api:"required"`
+	Status500 int64                                                                `json:"status500" api:"required"`
+	Timestamp string                                                               `json:"timestamp" api:"required"`
 	JSON      accountDexHTTPTestGetResponseResultHTTPStatsByColoHTTPStatusCodeJSON `json:"-"`
 }
 
@@ -431,10 +431,10 @@ func (r AccountDexHTTPTestGetResponseResultKind) IsKnown() bool {
 }
 
 type AccountDexHTTPTestGetResponseResultTargetPolicy struct {
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Whether the policy is the default for the account
-	Default bool                                                `json:"default,required"`
-	Name    string                                              `json:"name,required"`
+	Default bool                                                `json:"default" api:"required"`
+	Name    string                                              `json:"name" api:"required"`
 	JSON    accountDexHTTPTestGetResponseResultTargetPolicyJSON `json:"-"`
 }
 
@@ -457,10 +457,10 @@ func (r accountDexHTTPTestGetResponseResultTargetPolicyJSON) RawJSON() string {
 }
 
 type AccountDexHTTPTestGetPercentilesResponse struct {
-	Errors   []Item `json:"errors,required"`
-	Messages []Item `json:"messages,required"`
+	Errors   []Item `json:"errors" api:"required"`
+	Messages []Item `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountDexHTTPTestGetPercentilesResponseSuccess `json:"success,required"`
+	Success AccountDexHTTPTestGetPercentilesResponseSuccess `json:"success" api:"required"`
 	Result  AccountDexHTTPTestGetPercentilesResponseResult  `json:"result"`
 	JSON    accountDexHTTPTestGetPercentilesResponseJSON    `json:"-"`
 }
@@ -526,11 +526,11 @@ func (r accountDexHTTPTestGetPercentilesResponseResultJSON) RawJSON() string {
 
 type AccountDexHTTPTestGetParams struct {
 	// Start time for aggregate metrics in ISO ms
-	From param.Field[string] `query:"from,required"`
+	From param.Field[string] `query:"from" api:"required"`
 	// Time interval for aggregate time slots.
-	Interval param.Field[AccountDexHTTPTestGetParamsInterval] `query:"interval,required"`
+	Interval param.Field[AccountDexHTTPTestGetParamsInterval] `query:"interval" api:"required"`
 	// End time for aggregate metrics in ISO ms
-	To param.Field[string] `query:"to,required"`
+	To param.Field[string] `query:"to" api:"required"`
 	// Optionally filter result stats to a Cloudflare colo. Cannot be used in
 	// combination with deviceId param.
 	Colo param.Field[string] `query:"colo"`
@@ -566,9 +566,9 @@ func (r AccountDexHTTPTestGetParamsInterval) IsKnown() bool {
 
 type AccountDexHTTPTestGetPercentilesParams struct {
 	// Start time for the query in ISO (RFC3339 - ISO 8601) format
-	From param.Field[string] `query:"from,required"`
+	From param.Field[string] `query:"from" api:"required"`
 	// End time for the query in ISO (RFC3339 - ISO 8601) format
-	To param.Field[string] `query:"to,required"`
+	To param.Field[string] `query:"to" api:"required"`
 	// Optionally filter result stats to a Cloudflare colo. Cannot be used in
 	// combination with deviceId param.
 	Colo param.Field[string] `query:"colo"`

@@ -39,11 +39,11 @@ func (r *ZoneSslUniversalSettingService) Get(ctx context.Context, zoneID string,
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/ssl/universal/settings", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Patch Universal SSL Settings for a Zone.
@@ -51,18 +51,18 @@ func (r *ZoneSslUniversalSettingService) Update(ctx context.Context, zoneID stri
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/ssl/universal/settings", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type SslUniversalSettingsResponse struct {
-	Errors   []MessagesTlsCertificatesItem `json:"errors,required"`
-	Messages []MessagesTlsCertificatesItem `json:"messages,required"`
+	Errors   []MessagesTlsCertificatesItem `json:"errors" api:"required"`
+	Messages []MessagesTlsCertificatesItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success SslUniversalSettingsResponseSuccess `json:"success,required"`
+	Success SslUniversalSettingsResponseSuccess `json:"success" api:"required"`
 	Result  Universal                           `json:"result"`
 	JSON    sslUniversalSettingsResponseJSON    `json:"-"`
 }
@@ -180,7 +180,7 @@ func (r UniversalParam) MarshalJSON() (data []byte, err error) {
 }
 
 type ZoneSslUniversalSettingUpdateParams struct {
-	Universal UniversalParam `json:"universal,required"`
+	Universal UniversalParam `json:"universal" api:"required"`
 }
 
 func (r ZoneSslUniversalSettingUpdateParams) MarshalJSON() (data []byte, err error) {

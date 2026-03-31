@@ -45,11 +45,11 @@ func (r *AccountStreamLiveInputService) New(ctx context.Context, accountID strin
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/stream/live_inputs", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves details of an existing live input.
@@ -57,15 +57,15 @@ func (r *AccountStreamLiveInputService) Get(ctx context.Context, accountID strin
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if liveInputIdentifier == "" {
 		err = errors.New("missing required live_input_identifier parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/stream/live_inputs/%s", accountID, liveInputIdentifier)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates a specified live input.
@@ -73,15 +73,15 @@ func (r *AccountStreamLiveInputService) Update(ctx context.Context, accountID st
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if liveInputIdentifier == "" {
 		err = errors.New("missing required live_input_identifier parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/stream/live_inputs/%s", accountID, liveInputIdentifier)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists the live inputs created for an account. To get the credentials needed to
@@ -90,36 +90,36 @@ func (r *AccountStreamLiveInputService) List(ctx context.Context, accountID stri
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/stream/live_inputs", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Prevents a live input from being streamed to and makes the live input
 // inaccessible to any future API calls.
 func (r *AccountStreamLiveInputService) Delete(ctx context.Context, accountID string, liveInputIdentifier string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return err
 	}
 	if liveInputIdentifier == "" {
 		err = errors.New("missing required live_input_identifier parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("accounts/%s/stream/live_inputs/%s", accountID, liveInputIdentifier)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 type LiveInputResponseSingle struct {
-	Errors   []StreamMessages `json:"errors,required"`
-	Messages []StreamMessages `json:"messages,required"`
+	Errors   []StreamMessages `json:"errors" api:"required"`
+	Messages []StreamMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success LiveInputResponseSingleSuccess `json:"success,required"`
+	Success LiveInputResponseSingleSuccess `json:"success" api:"required"`
 	// Details about a live input.
 	Result LiveInputResponseSingleResult `json:"result"`
 	JSON   liveInputResponseSingleJSON   `json:"-"`
@@ -187,7 +187,7 @@ type LiveInputResponseSingleResult struct {
 	// Details for playback from an live input using SRT.
 	SrtPlayback LiveInputResponseSingleResultSrtPlayback `json:"srtPlayback"`
 	// The connection status of a live input.
-	Status LiveInputResponseSingleResultStatus `json:"status,nullable"`
+	Status LiveInputResponseSingleResultStatus `json:"status" api:"nullable"`
 	// A unique identifier for a live input.
 	Uid string `json:"uid"`
 	// Details for streaming to a live input using WebRTC.
@@ -497,10 +497,10 @@ func (r RecordingSettingsParam) MarshalJSON() (data []byte, err error) {
 }
 
 type AccountStreamLiveInputListResponse struct {
-	Errors   []StreamMessages `json:"errors,required"`
-	Messages []StreamMessages `json:"messages,required"`
+	Errors   []StreamMessages `json:"errors" api:"required"`
+	Messages []StreamMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountStreamLiveInputListResponseSuccess `json:"success,required"`
+	Success AccountStreamLiveInputListResponseSuccess `json:"success" api:"required"`
 	Result  AccountStreamLiveInputListResponseResult  `json:"result"`
 	JSON    accountStreamLiveInputListResponseJSON    `json:"-"`
 }

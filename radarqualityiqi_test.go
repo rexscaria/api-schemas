@@ -15,7 +15,7 @@ import (
 )
 
 func TestRadarQualityIqiGetSummaryWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -27,6 +27,7 @@ func TestRadarQualityIqiGetSummaryWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.Quality.Iqi.GetSummary(context.TODO(), cfrex.RadarQualityIqiGetSummaryParams{
 		Metric:    cfrex.F(cfrex.RadarQualityIqiGetSummaryParamsMetricBandwidth),
@@ -49,7 +50,7 @@ func TestRadarQualityIqiGetSummaryWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarQualityIqiGetTimeseriesGroupsWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -61,6 +62,7 @@ func TestRadarQualityIqiGetTimeseriesGroupsWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.Quality.Iqi.GetTimeseriesGroups(context.TODO(), cfrex.RadarQualityIqiGetTimeseriesGroupsParams{
 		Metric:        cfrex.F(cfrex.RadarQualityIqiGetTimeseriesGroupsParamsMetricBandwidth),

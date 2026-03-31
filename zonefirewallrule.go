@@ -45,11 +45,11 @@ func (r *ZoneFirewallRuleService) New(ctx context.Context, zoneID string, body Z
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/firewall/rules", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetches the details of a firewall rule.
@@ -59,15 +59,15 @@ func (r *ZoneFirewallRuleService) Get(ctx context.Context, zoneID string, ruleID
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if ruleID == "" {
 		err = errors.New("missing required rule_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/firewall/rules/%s", zoneID, ruleID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates an existing firewall rule.
@@ -77,15 +77,15 @@ func (r *ZoneFirewallRuleService) Update(ctx context.Context, zoneID string, rul
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if ruleID == "" {
 		err = errors.New("missing required rule_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/firewall/rules/%s", zoneID, ruleID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetches firewall rules in a zone. You can filter the results using several
@@ -96,11 +96,11 @@ func (r *ZoneFirewallRuleService) List(ctx context.Context, zoneID string, query
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/firewall/rules", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Deletes an existing firewall rule.
@@ -110,15 +110,15 @@ func (r *ZoneFirewallRuleService) Delete(ctx context.Context, zoneID string, rul
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if ruleID == "" {
 		err = errors.New("missing required rule_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/firewall/rules/%s", zoneID, ruleID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates the priority of an existing firewall rule.
@@ -128,15 +128,15 @@ func (r *ZoneFirewallRuleService) UpdatePriority(ctx context.Context, zoneID str
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if ruleID == "" {
 		err = errors.New("missing required rule_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/firewall/rules/%s", zoneID, ruleID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // The action to perform when the threshold of matched traffic within the
@@ -464,9 +464,9 @@ func init() {
 
 type FirewallFilterRuleResponseFilterFirewallDeletedFilter struct {
 	// The unique identifier of the filter.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// When true, indicates that the firewall rule was deleted.
-	Deleted bool                                                      `json:"deleted,required"`
+	Deleted bool                                                      `json:"deleted" api:"required"`
 	JSON    firewallFilterRuleResponseFilterFirewallDeletedFilterJSON `json:"-"`
 }
 
@@ -512,11 +512,11 @@ func (r FirewallFilterRuleResponseProduct) IsKnown() bool {
 }
 
 type FirewallFilterRulesResponseCollection struct {
-	Errors   []FirewallFilterRulesResponseCollectionError   `json:"errors,required"`
-	Messages []FirewallFilterRulesResponseCollectionMessage `json:"messages,required"`
-	Result   []FirewallFilterRuleResponse                   `json:"result,required,nullable"`
+	Errors   []FirewallFilterRulesResponseCollectionError   `json:"errors" api:"required"`
+	Messages []FirewallFilterRulesResponseCollectionMessage `json:"messages" api:"required"`
+	Result   []FirewallFilterRuleResponse                   `json:"result" api:"required,nullable"`
 	// Defines whether the API call was successful.
-	Success    FirewallFilterRulesResponseCollectionSuccess    `json:"success,required"`
+	Success    FirewallFilterRulesResponseCollectionSuccess    `json:"success" api:"required"`
 	ResultInfo FirewallFilterRulesResponseCollectionResultInfo `json:"result_info"`
 	JSON       firewallFilterRulesResponseCollectionJSON       `json:"-"`
 }
@@ -542,8 +542,8 @@ func (r firewallFilterRulesResponseCollectionJSON) RawJSON() string {
 }
 
 type FirewallFilterRulesResponseCollectionError struct {
-	Code             int64                                             `json:"code,required"`
-	Message          string                                            `json:"message,required"`
+	Code             int64                                             `json:"code" api:"required"`
+	Message          string                                            `json:"message" api:"required"`
 	DocumentationURL string                                            `json:"documentation_url"`
 	Source           FirewallFilterRulesResponseCollectionErrorsSource `json:"source"`
 	JSON             firewallFilterRulesResponseCollectionErrorJSON    `json:"-"`
@@ -590,8 +590,8 @@ func (r firewallFilterRulesResponseCollectionErrorsSourceJSON) RawJSON() string 
 }
 
 type FirewallFilterRulesResponseCollectionMessage struct {
-	Code             int64                                               `json:"code,required"`
-	Message          string                                              `json:"message,required"`
+	Code             int64                                               `json:"code" api:"required"`
+	Message          string                                              `json:"message" api:"required"`
 	DocumentationURL string                                              `json:"documentation_url"`
 	Source           FirewallFilterRulesResponseCollectionMessagesSource `json:"source"`
 	JSON             firewallFilterRulesResponseCollectionMessageJSON    `json:"-"`
@@ -684,11 +684,11 @@ func (r firewallFilterRulesResponseCollectionResultInfoJSON) RawJSON() string {
 }
 
 type FirewallFilterRulesSingleResponse struct {
-	Errors   []FirewallFilterRulesSingleResponseError   `json:"errors,required"`
-	Messages []FirewallFilterRulesSingleResponseMessage `json:"messages,required"`
-	Result   FirewallFilterRuleResponse                 `json:"result,required"`
+	Errors   []FirewallFilterRulesSingleResponseError   `json:"errors" api:"required"`
+	Messages []FirewallFilterRulesSingleResponseMessage `json:"messages" api:"required"`
+	Result   FirewallFilterRuleResponse                 `json:"result" api:"required"`
 	// Defines whether the API call was successful.
-	Success FirewallFilterRulesSingleResponseSuccess `json:"success,required"`
+	Success FirewallFilterRulesSingleResponseSuccess `json:"success" api:"required"`
 	JSON    firewallFilterRulesSingleResponseJSON    `json:"-"`
 }
 
@@ -712,8 +712,8 @@ func (r firewallFilterRulesSingleResponseJSON) RawJSON() string {
 }
 
 type FirewallFilterRulesSingleResponseError struct {
-	Code             int64                                         `json:"code,required"`
-	Message          string                                        `json:"message,required"`
+	Code             int64                                         `json:"code" api:"required"`
+	Message          string                                        `json:"message" api:"required"`
 	DocumentationURL string                                        `json:"documentation_url"`
 	Source           FirewallFilterRulesSingleResponseErrorsSource `json:"source"`
 	JSON             firewallFilterRulesSingleResponseErrorJSON    `json:"-"`
@@ -760,8 +760,8 @@ func (r firewallFilterRulesSingleResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type FirewallFilterRulesSingleResponseMessage struct {
-	Code             int64                                           `json:"code,required"`
-	Message          string                                          `json:"message,required"`
+	Code             int64                                           `json:"code" api:"required"`
+	Message          string                                          `json:"message" api:"required"`
 	DocumentationURL string                                          `json:"documentation_url"`
 	Source           FirewallFilterRulesSingleResponseMessagesSource `json:"source"`
 	JSON             firewallFilterRulesSingleResponseMessageJSON    `json:"-"`
@@ -823,11 +823,11 @@ func (r FirewallFilterRulesSingleResponseSuccess) IsKnown() bool {
 }
 
 type ZoneFirewallRuleDeleteResponse struct {
-	Errors   []ZoneFirewallRuleDeleteResponseError   `json:"errors,required"`
-	Messages []ZoneFirewallRuleDeleteResponseMessage `json:"messages,required"`
-	Result   FirewallFilterRuleResponse              `json:"result,required"`
+	Errors   []ZoneFirewallRuleDeleteResponseError   `json:"errors" api:"required"`
+	Messages []ZoneFirewallRuleDeleteResponseMessage `json:"messages" api:"required"`
+	Result   FirewallFilterRuleResponse              `json:"result" api:"required"`
 	// Defines whether the API call was successful.
-	Success ZoneFirewallRuleDeleteResponseSuccess `json:"success,required"`
+	Success ZoneFirewallRuleDeleteResponseSuccess `json:"success" api:"required"`
 	JSON    zoneFirewallRuleDeleteResponseJSON    `json:"-"`
 }
 
@@ -851,8 +851,8 @@ func (r zoneFirewallRuleDeleteResponseJSON) RawJSON() string {
 }
 
 type ZoneFirewallRuleDeleteResponseError struct {
-	Code             int64                                      `json:"code,required"`
-	Message          string                                     `json:"message,required"`
+	Code             int64                                      `json:"code" api:"required"`
+	Message          string                                     `json:"message" api:"required"`
 	DocumentationURL string                                     `json:"documentation_url"`
 	Source           ZoneFirewallRuleDeleteResponseErrorsSource `json:"source"`
 	JSON             zoneFirewallRuleDeleteResponseErrorJSON    `json:"-"`
@@ -899,8 +899,8 @@ func (r zoneFirewallRuleDeleteResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type ZoneFirewallRuleDeleteResponseMessage struct {
-	Code             int64                                        `json:"code,required"`
-	Message          string                                       `json:"message,required"`
+	Code             int64                                        `json:"code" api:"required"`
+	Message          string                                       `json:"message" api:"required"`
 	DocumentationURL string                                       `json:"documentation_url"`
 	Source           ZoneFirewallRuleDeleteResponseMessagesSource `json:"source"`
 	JSON             zoneFirewallRuleDeleteResponseMessageJSON    `json:"-"`
@@ -964,8 +964,8 @@ func (r ZoneFirewallRuleDeleteResponseSuccess) IsKnown() bool {
 type ZoneFirewallRuleNewParams struct {
 	// The action to perform when the threshold of matched traffic within the
 	// configured period is exceeded.
-	Action param.Field[FirewallActionParam] `json:"action,required"`
-	Filter param.Field[FirewallFilterParam] `json:"filter,required"`
+	Action param.Field[FirewallActionParam] `json:"action" api:"required"`
+	Filter param.Field[FirewallFilterParam] `json:"filter" api:"required"`
 }
 
 func (r ZoneFirewallRuleNewParams) MarshalJSON() (data []byte, err error) {
@@ -975,8 +975,8 @@ func (r ZoneFirewallRuleNewParams) MarshalJSON() (data []byte, err error) {
 type ZoneFirewallRuleUpdateParams struct {
 	// The action to perform when the threshold of matched traffic within the
 	// configured period is exceeded.
-	Action param.Field[FirewallActionParam] `json:"action,required"`
-	Filter param.Field[FirewallFilterParam] `json:"filter,required"`
+	Action param.Field[FirewallActionParam] `json:"action" api:"required"`
+	Filter param.Field[FirewallFilterParam] `json:"filter" api:"required"`
 }
 
 func (r ZoneFirewallRuleUpdateParams) MarshalJSON() (data []byte, err error) {

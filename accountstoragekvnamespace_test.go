@@ -14,7 +14,7 @@ import (
 )
 
 func TestAccountStorageKvNamespaceNew(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,6 +26,7 @@ func TestAccountStorageKvNamespaceNew(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Storage.Kv.Namespaces.New(
 		context.TODO(),
@@ -46,7 +47,7 @@ func TestAccountStorageKvNamespaceNew(t *testing.T) {
 }
 
 func TestAccountStorageKvNamespaceGet(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -58,6 +59,7 @@ func TestAccountStorageKvNamespaceGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Storage.Kv.Namespaces.Get(
 		context.TODO(),
@@ -74,7 +76,7 @@ func TestAccountStorageKvNamespaceGet(t *testing.T) {
 }
 
 func TestAccountStorageKvNamespaceUpdate(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -86,6 +88,7 @@ func TestAccountStorageKvNamespaceUpdate(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Storage.Kv.Namespaces.Update(
 		context.TODO(),
@@ -107,7 +110,7 @@ func TestAccountStorageKvNamespaceUpdate(t *testing.T) {
 }
 
 func TestAccountStorageKvNamespaceListWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -119,6 +122,7 @@ func TestAccountStorageKvNamespaceListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Storage.Kv.Namespaces.List(
 		context.TODO(),
@@ -140,7 +144,7 @@ func TestAccountStorageKvNamespaceListWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountStorageKvNamespaceDelete(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -152,6 +156,7 @@ func TestAccountStorageKvNamespaceDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Storage.Kv.Namespaces.Delete(
 		context.TODO(),
@@ -168,7 +173,7 @@ func TestAccountStorageKvNamespaceDelete(t *testing.T) {
 }
 
 func TestAccountStorageKvNamespaceGetMetadata(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -180,6 +185,7 @@ func TestAccountStorageKvNamespaceGetMetadata(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Storage.Kv.Namespaces.GetMetadata(
 		context.TODO(),
@@ -197,7 +203,7 @@ func TestAccountStorageKvNamespaceGetMetadata(t *testing.T) {
 }
 
 func TestAccountStorageKvNamespaceListKeysWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -209,6 +215,7 @@ func TestAccountStorageKvNamespaceListKeysWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Storage.Kv.Namespaces.ListKeys(
 		context.TODO(),

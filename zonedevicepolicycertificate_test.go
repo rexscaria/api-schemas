@@ -14,7 +14,7 @@ import (
 )
 
 func TestZoneDevicePolicyCertificateGet(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,6 +26,7 @@ func TestZoneDevicePolicyCertificateGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.Devices.Policy.Certificates.Get(context.TODO(), "699d98642c564d2e855e9661899b7252")
 	if err != nil {
@@ -38,7 +39,7 @@ func TestZoneDevicePolicyCertificateGet(t *testing.T) {
 }
 
 func TestZoneDevicePolicyCertificateUpdate(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -50,6 +51,7 @@ func TestZoneDevicePolicyCertificateUpdate(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.Devices.Policy.Certificates.Update(
 		context.TODO(),

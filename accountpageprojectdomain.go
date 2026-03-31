@@ -39,15 +39,15 @@ func (r *AccountPageProjectDomainService) New(ctx context.Context, accountID str
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if projectName == "" {
 		err = errors.New("missing required project_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/pages/projects/%s/domains", accountID, projectName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetch a single domain.
@@ -55,19 +55,19 @@ func (r *AccountPageProjectDomainService) Get(ctx context.Context, accountID str
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if projectName == "" {
 		err = errors.New("missing required project_name parameter")
-		return
+		return nil, err
 	}
 	if domainName == "" {
 		err = errors.New("missing required domain_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/pages/projects/%s/domains/%s", accountID, projectName, domainName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Retry the validation status of a single domain.
@@ -75,19 +75,19 @@ func (r *AccountPageProjectDomainService) Update(ctx context.Context, accountID 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if projectName == "" {
 		err = errors.New("missing required project_name parameter")
-		return
+		return nil, err
 	}
 	if domainName == "" {
 		err = errors.New("missing required domain_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/pages/projects/%s/domains/%s", accountID, projectName, domainName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetch a list of all domains associated with a Pages project.
@@ -95,15 +95,15 @@ func (r *AccountPageProjectDomainService) List(ctx context.Context, accountID st
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if projectName == "" {
 		err = errors.New("missing required project_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/pages/projects/%s/domains", accountID, projectName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete a Pages project's domain.
@@ -111,19 +111,19 @@ func (r *AccountPageProjectDomainService) Delete(ctx context.Context, accountID 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if projectName == "" {
 		err = errors.New("missing required project_name parameter")
-		return
+		return nil, err
 	}
 	if domainName == "" {
 		err = errors.New("missing required domain_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/pages/projects/%s/domains/%s", accountID, projectName, domainName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type DomainProject struct {
@@ -300,11 +300,11 @@ func (r DomainProjectVerificationDataStatus) IsKnown() bool {
 }
 
 type ResponseSingleDomain struct {
-	Errors   []ResponseSingleDomainError   `json:"errors,required"`
-	Messages []ResponseSingleDomainMessage `json:"messages,required"`
-	Result   DomainProject                 `json:"result,required,nullable"`
+	Errors   []ResponseSingleDomainError   `json:"errors" api:"required"`
+	Messages []ResponseSingleDomainMessage `json:"messages" api:"required"`
+	Result   DomainProject                 `json:"result" api:"required,nullable"`
 	// Whether the API call was successful
-	Success ResponseSingleDomainSuccess `json:"success,required"`
+	Success ResponseSingleDomainSuccess `json:"success" api:"required"`
 	JSON    responseSingleDomainJSON    `json:"-"`
 }
 
@@ -328,8 +328,8 @@ func (r responseSingleDomainJSON) RawJSON() string {
 }
 
 type ResponseSingleDomainError struct {
-	Code             int64                            `json:"code,required"`
-	Message          string                           `json:"message,required"`
+	Code             int64                            `json:"code" api:"required"`
+	Message          string                           `json:"message" api:"required"`
 	DocumentationURL string                           `json:"documentation_url"`
 	Source           ResponseSingleDomainErrorsSource `json:"source"`
 	JSON             responseSingleDomainErrorJSON    `json:"-"`
@@ -376,8 +376,8 @@ func (r responseSingleDomainErrorsSourceJSON) RawJSON() string {
 }
 
 type ResponseSingleDomainMessage struct {
-	Code             int64                              `json:"code,required"`
-	Message          string                             `json:"message,required"`
+	Code             int64                              `json:"code" api:"required"`
+	Message          string                             `json:"message" api:"required"`
 	DocumentationURL string                             `json:"documentation_url"`
 	Source           ResponseSingleDomainMessagesSource `json:"source"`
 	JSON             responseSingleDomainMessageJSON    `json:"-"`
@@ -440,11 +440,11 @@ func (r ResponseSingleDomainSuccess) IsKnown() bool {
 }
 
 type AccountPageProjectDomainListResponse struct {
-	Errors   []AccountPageProjectDomainListResponseError   `json:"errors,required"`
-	Messages []AccountPageProjectDomainListResponseMessage `json:"messages,required"`
-	Result   []DomainProject                               `json:"result,required"`
+	Errors   []AccountPageProjectDomainListResponseError   `json:"errors" api:"required"`
+	Messages []AccountPageProjectDomainListResponseMessage `json:"messages" api:"required"`
+	Result   []DomainProject                               `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success    AccountPageProjectDomainListResponseSuccess    `json:"success,required"`
+	Success    AccountPageProjectDomainListResponseSuccess    `json:"success" api:"required"`
 	ResultInfo AccountPageProjectDomainListResponseResultInfo `json:"result_info"`
 	JSON       accountPageProjectDomainListResponseJSON       `json:"-"`
 }
@@ -470,8 +470,8 @@ func (r accountPageProjectDomainListResponseJSON) RawJSON() string {
 }
 
 type AccountPageProjectDomainListResponseError struct {
-	Code             int64                                            `json:"code,required"`
-	Message          string                                           `json:"message,required"`
+	Code             int64                                            `json:"code" api:"required"`
+	Message          string                                           `json:"message" api:"required"`
 	DocumentationURL string                                           `json:"documentation_url"`
 	Source           AccountPageProjectDomainListResponseErrorsSource `json:"source"`
 	JSON             accountPageProjectDomainListResponseErrorJSON    `json:"-"`
@@ -518,8 +518,8 @@ func (r accountPageProjectDomainListResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type AccountPageProjectDomainListResponseMessage struct {
-	Code             int64                                              `json:"code,required"`
-	Message          string                                             `json:"message,required"`
+	Code             int64                                              `json:"code" api:"required"`
+	Message          string                                             `json:"message" api:"required"`
 	DocumentationURL string                                             `json:"documentation_url"`
 	Source           AccountPageProjectDomainListResponseMessagesSource `json:"source"`
 	JSON             accountPageProjectDomainListResponseMessageJSON    `json:"-"`
@@ -583,13 +583,13 @@ func (r AccountPageProjectDomainListResponseSuccess) IsKnown() bool {
 
 type AccountPageProjectDomainListResponseResultInfo struct {
 	// The number of items on the current page.
-	Count int64 `json:"count,required"`
+	Count int64 `json:"count" api:"required"`
 	// The page currently being requested.
-	Page int64 `json:"page,required"`
+	Page int64 `json:"page" api:"required"`
 	// The number of items per page being returned.
-	PerPage int64 `json:"per_page,required"`
+	PerPage int64 `json:"per_page" api:"required"`
 	// The total count of items.
-	TotalCount int64 `json:"total_count,required"`
+	TotalCount int64 `json:"total_count" api:"required"`
 	// The total count of pages.
 	TotalPages int64                                              `json:"total_pages"`
 	JSON       accountPageProjectDomainListResponseResultInfoJSON `json:"-"`
@@ -616,11 +616,11 @@ func (r accountPageProjectDomainListResponseResultInfoJSON) RawJSON() string {
 }
 
 type AccountPageProjectDomainDeleteResponse struct {
-	Errors   []MessagesPageItem `json:"errors,required"`
-	Messages []MessagesPageItem `json:"messages,required"`
-	Result   interface{}        `json:"result,required,nullable"`
+	Errors   []MessagesPageItem `json:"errors" api:"required"`
+	Messages []MessagesPageItem `json:"messages" api:"required"`
+	Result   interface{}        `json:"result" api:"required,nullable"`
 	// Whether the API call was successful
-	Success AccountPageProjectDomainDeleteResponseSuccess `json:"success,required"`
+	Success AccountPageProjectDomainDeleteResponseSuccess `json:"success" api:"required"`
 	JSON    accountPageProjectDomainDeleteResponseJSON    `json:"-"`
 }
 
@@ -668,7 +668,7 @@ func (r AccountPageProjectDomainNewParams) MarshalJSON() (data []byte, err error
 }
 
 type AccountPageProjectDomainUpdateParams struct {
-	Body interface{} `json:"body,required"`
+	Body interface{} `json:"body" api:"required"`
 }
 
 func (r AccountPageProjectDomainUpdateParams) MarshalJSON() (data []byte, err error) {

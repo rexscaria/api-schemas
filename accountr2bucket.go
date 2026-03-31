@@ -49,69 +49,69 @@ func NewAccountR2BucketService(opts ...option.RequestOption) (r *AccountR2Bucket
 // Creates a new R2 bucket.
 func (r *AccountR2BucketService) New(ctx context.Context, accountID string, params AccountR2BucketNewParams, opts ...option.RequestOption) (res *AccountR2BucketNewResponse, err error) {
 	if params.Jurisdiction.Present {
-		opts = append(opts, option.WithHeader("cf-r2-jurisdiction", fmt.Sprintf("%s", params.Jurisdiction)))
+		opts = append(opts, option.WithHeader("cf-r2-jurisdiction", fmt.Sprintf("%v", params.Jurisdiction)))
 	}
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/r2/buckets", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Gets properties of an existing R2 bucket.
 func (r *AccountR2BucketService) Get(ctx context.Context, accountID string, bucketName string, query AccountR2BucketGetParams, opts ...option.RequestOption) (res *AccountR2BucketGetResponse, err error) {
 	if query.Jurisdiction.Present {
-		opts = append(opts, option.WithHeader("cf-r2-jurisdiction", fmt.Sprintf("%s", query.Jurisdiction)))
+		opts = append(opts, option.WithHeader("cf-r2-jurisdiction", fmt.Sprintf("%v", query.Jurisdiction)))
 	}
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if bucketName == "" {
 		err = errors.New("missing required bucket_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/r2/buckets/%s", accountID, bucketName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists all R2 buckets on your account.
 func (r *AccountR2BucketService) List(ctx context.Context, accountID string, params AccountR2BucketListParams, opts ...option.RequestOption) (res *AccountR2BucketListResponse, err error) {
 	if params.Jurisdiction.Present {
-		opts = append(opts, option.WithHeader("cf-r2-jurisdiction", fmt.Sprintf("%s", params.Jurisdiction)))
+		opts = append(opts, option.WithHeader("cf-r2-jurisdiction", fmt.Sprintf("%v", params.Jurisdiction)))
 	}
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/r2/buckets", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Deletes an existing R2 bucket.
 func (r *AccountR2BucketService) Delete(ctx context.Context, accountID string, bucketName string, body AccountR2BucketDeleteParams, opts ...option.RequestOption) (res *R2V4Response, err error) {
 	if body.Jurisdiction.Present {
-		opts = append(opts, option.WithHeader("cf-r2-jurisdiction", fmt.Sprintf("%s", body.Jurisdiction)))
+		opts = append(opts, option.WithHeader("cf-r2-jurisdiction", fmt.Sprintf("%v", body.Jurisdiction)))
 	}
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if bucketName == "" {
 		err = errors.New("missing required bucket_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/r2/buckets/%s", accountID, bucketName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // A single R2 bucket.
@@ -202,11 +202,11 @@ func (r R2StorageClass) IsKnown() bool {
 }
 
 type R2V4Response struct {
-	Errors   []R2V4ResponseError `json:"errors,required"`
-	Messages []string            `json:"messages,required"`
-	Result   interface{}         `json:"result,required"`
+	Errors   []R2V4ResponseError `json:"errors" api:"required"`
+	Messages []string            `json:"messages" api:"required"`
+	Result   interface{}         `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success R2V4ResponseSuccess `json:"success,required"`
+	Success R2V4ResponseSuccess `json:"success" api:"required"`
 	JSON    r2V4ResponseJSON    `json:"-"`
 }
 
@@ -229,8 +229,8 @@ func (r r2V4ResponseJSON) RawJSON() string {
 }
 
 type R2V4ResponseError struct {
-	Code             int64                    `json:"code,required"`
-	Message          string                   `json:"message,required"`
+	Code             int64                    `json:"code" api:"required"`
+	Message          string                   `json:"message" api:"required"`
 	DocumentationURL string                   `json:"documentation_url"`
 	Source           R2V4ResponseErrorsSource `json:"source"`
 	JSON             r2V4ResponseErrorJSON    `json:"-"`
@@ -292,12 +292,12 @@ func (r R2V4ResponseSuccess) IsKnown() bool {
 }
 
 type AccountR2BucketNewResponse struct {
-	Errors   []AccountR2BucketNewResponseError `json:"errors,required"`
-	Messages []string                          `json:"messages,required"`
+	Errors   []AccountR2BucketNewResponseError `json:"errors" api:"required"`
+	Messages []string                          `json:"messages" api:"required"`
 	// A single R2 bucket.
-	Result R2Bucket `json:"result,required"`
+	Result R2Bucket `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success AccountR2BucketNewResponseSuccess `json:"success,required"`
+	Success AccountR2BucketNewResponseSuccess `json:"success" api:"required"`
 	JSON    accountR2BucketNewResponseJSON    `json:"-"`
 }
 
@@ -321,8 +321,8 @@ func (r accountR2BucketNewResponseJSON) RawJSON() string {
 }
 
 type AccountR2BucketNewResponseError struct {
-	Code             int64                                  `json:"code,required"`
-	Message          string                                 `json:"message,required"`
+	Code             int64                                  `json:"code" api:"required"`
+	Message          string                                 `json:"message" api:"required"`
 	DocumentationURL string                                 `json:"documentation_url"`
 	Source           AccountR2BucketNewResponseErrorsSource `json:"source"`
 	JSON             accountR2BucketNewResponseErrorJSON    `json:"-"`
@@ -384,12 +384,12 @@ func (r AccountR2BucketNewResponseSuccess) IsKnown() bool {
 }
 
 type AccountR2BucketGetResponse struct {
-	Errors   []AccountR2BucketGetResponseError `json:"errors,required"`
-	Messages []string                          `json:"messages,required"`
+	Errors   []AccountR2BucketGetResponseError `json:"errors" api:"required"`
+	Messages []string                          `json:"messages" api:"required"`
 	// A single R2 bucket.
-	Result R2Bucket `json:"result,required"`
+	Result R2Bucket `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success AccountR2BucketGetResponseSuccess `json:"success,required"`
+	Success AccountR2BucketGetResponseSuccess `json:"success" api:"required"`
 	JSON    accountR2BucketGetResponseJSON    `json:"-"`
 }
 
@@ -413,8 +413,8 @@ func (r accountR2BucketGetResponseJSON) RawJSON() string {
 }
 
 type AccountR2BucketGetResponseError struct {
-	Code             int64                                  `json:"code,required"`
-	Message          string                                 `json:"message,required"`
+	Code             int64                                  `json:"code" api:"required"`
+	Message          string                                 `json:"message" api:"required"`
 	DocumentationURL string                                 `json:"documentation_url"`
 	Source           AccountR2BucketGetResponseErrorsSource `json:"source"`
 	JSON             accountR2BucketGetResponseErrorJSON    `json:"-"`
@@ -476,11 +476,11 @@ func (r AccountR2BucketGetResponseSuccess) IsKnown() bool {
 }
 
 type AccountR2BucketListResponse struct {
-	Errors   []AccountR2BucketListResponseError `json:"errors,required"`
-	Messages []string                           `json:"messages,required"`
-	Result   AccountR2BucketListResponseResult  `json:"result,required"`
+	Errors   []AccountR2BucketListResponseError `json:"errors" api:"required"`
+	Messages []string                           `json:"messages" api:"required"`
+	Result   AccountR2BucketListResponseResult  `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success    AccountR2BucketListResponseSuccess    `json:"success,required"`
+	Success    AccountR2BucketListResponseSuccess    `json:"success" api:"required"`
 	ResultInfo AccountR2BucketListResponseResultInfo `json:"result_info"`
 	JSON       accountR2BucketListResponseJSON       `json:"-"`
 }
@@ -506,8 +506,8 @@ func (r accountR2BucketListResponseJSON) RawJSON() string {
 }
 
 type AccountR2BucketListResponseError struct {
-	Code             int64                                   `json:"code,required"`
-	Message          string                                  `json:"message,required"`
+	Code             int64                                   `json:"code" api:"required"`
+	Message          string                                  `json:"message" api:"required"`
 	DocumentationURL string                                  `json:"documentation_url"`
 	Source           AccountR2BucketListResponseErrorsSource `json:"source"`
 	JSON             accountR2BucketListResponseErrorJSON    `json:"-"`
@@ -616,7 +616,7 @@ func (r accountR2BucketListResponseResultInfoJSON) RawJSON() string {
 
 type AccountR2BucketNewParams struct {
 	// Name of the bucket.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Location of the bucket.
 	LocationHint param.Field[R2BucketLocation] `json:"locationHint"`
 	// Storage class for newly uploaded objects, unless specified otherwise.

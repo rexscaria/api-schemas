@@ -39,11 +39,11 @@ func (r *AccountSlurperSourceService) CheckConnectivity(ctx context.Context, acc
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/slurper/source/connectivity-precheck", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type ConnectivityResponse struct {
@@ -246,8 +246,8 @@ func (r accountSlurperSourceCheckConnectivityResponseJSON) RawJSON() string {
 }
 
 type AccountSlurperSourceCheckConnectivityResponseError struct {
-	Code             int64                                                     `json:"code,required"`
-	Message          string                                                    `json:"message,required"`
+	Code             int64                                                     `json:"code" api:"required"`
+	Message          string                                                    `json:"message" api:"required"`
 	DocumentationURL string                                                    `json:"documentation_url"`
 	Source           AccountSlurperSourceCheckConnectivityResponseErrorsSource `json:"source"`
 	JSON             accountSlurperSourceCheckConnectivityResponseErrorJSON    `json:"-"`
@@ -310,7 +310,7 @@ func (r AccountSlurperSourceCheckConnectivityResponseSuccess) IsKnown() bool {
 }
 
 type AccountSlurperSourceCheckConnectivityParams struct {
-	SourceJobSchema SourceJobSchemaUnionParam `json:"source_job_schema,required"`
+	SourceJobSchema SourceJobSchemaUnionParam `json:"source_job_schema" api:"required"`
 }
 
 func (r AccountSlurperSourceCheckConnectivityParams) MarshalJSON() (data []byte, err error) {

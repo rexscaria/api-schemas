@@ -41,15 +41,15 @@ func (r *ZoneOriginTlsClientAuthHostnameCertificateService) Get(ctx context.Cont
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if certificateID == "" {
 		err = errors.New("missing required certificate_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/origin_tls_client_auth/hostnames/certificates/%s", zoneID, certificateID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // List Certificates
@@ -57,11 +57,11 @@ func (r *ZoneOriginTlsClientAuthHostnameCertificateService) List(ctx context.Con
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/origin_tls_client_auth/hostnames/certificates", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete Hostname Client Certificate
@@ -69,15 +69,15 @@ func (r *ZoneOriginTlsClientAuthHostnameCertificateService) Delete(ctx context.C
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if certificateID == "" {
 		err = errors.New("missing required certificate_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/origin_tls_client_auth/hostnames/certificates/%s", zoneID, certificateID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Upload a certificate to be used for client authentication on a hostname. 10
@@ -86,18 +86,18 @@ func (r *ZoneOriginTlsClientAuthHostnameCertificateService) Upload(ctx context.C
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/origin_tls_client_auth/hostnames/certificates", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type CertificateResponseSingleHostname struct {
-	Errors   []MessagesTlsCertificatesItem `json:"errors,required"`
-	Messages []MessagesTlsCertificatesItem `json:"messages,required"`
+	Errors   []MessagesTlsCertificatesItem `json:"errors" api:"required"`
+	Messages []MessagesTlsCertificatesItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success CertificateResponseSingleHostnameSuccess `json:"success,required"`
+	Success CertificateResponseSingleHostnameSuccess `json:"success" api:"required"`
 	Result  CertificateResponseSingleHostnameResult  `json:"result"`
 	JSON    certificateResponseSingleHostnameJSON    `json:"-"`
 }
@@ -180,10 +180,10 @@ func (r certificateResponseSingleHostnameResultJSON) RawJSON() string {
 }
 
 type ZoneOriginTlsClientAuthHostnameCertificateListResponse struct {
-	Errors   []MessagesTlsCertificatesItem `json:"errors,required"`
-	Messages []MessagesTlsCertificatesItem `json:"messages,required"`
+	Errors   []MessagesTlsCertificatesItem `json:"errors" api:"required"`
+	Messages []MessagesTlsCertificatesItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success    ZoneOriginTlsClientAuthHostnameCertificateListResponseSuccess    `json:"success,required"`
+	Success    ZoneOriginTlsClientAuthHostnameCertificateListResponseSuccess    `json:"success" api:"required"`
 	Result     []HostnameAuthenticatedOriginPull                                `json:"result"`
 	ResultInfo ZoneOriginTlsClientAuthHostnameCertificateListResponseResultInfo `json:"result_info"`
 	JSON       zoneOriginTlsClientAuthHostnameCertificateListResponseJSON       `json:"-"`
@@ -258,9 +258,9 @@ func (r zoneOriginTlsClientAuthHostnameCertificateListResponseResultInfoJSON) Ra
 
 type ZoneOriginTlsClientAuthHostnameCertificateUploadParams struct {
 	// The hostname certificate.
-	Certificate param.Field[string] `json:"certificate,required"`
+	Certificate param.Field[string] `json:"certificate" api:"required"`
 	// The hostname certificate's private key.
-	PrivateKey param.Field[string] `json:"private_key,required"`
+	PrivateKey param.Field[string] `json:"private_key" api:"required"`
 }
 
 func (r ZoneOriginTlsClientAuthHostnameCertificateUploadParams) MarshalJSON() (data []byte, err error) {

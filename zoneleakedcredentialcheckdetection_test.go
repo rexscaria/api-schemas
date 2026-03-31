@@ -14,7 +14,7 @@ import (
 )
 
 func TestZoneLeakedCredentialCheckDetectionNewWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,6 +26,7 @@ func TestZoneLeakedCredentialCheckDetectionNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.LeakedCredentialChecks.Detections.New(
 		context.TODO(),
@@ -47,7 +48,7 @@ func TestZoneLeakedCredentialCheckDetectionNewWithOptionalParams(t *testing.T) {
 }
 
 func TestZoneLeakedCredentialCheckDetectionUpdateWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -59,6 +60,7 @@ func TestZoneLeakedCredentialCheckDetectionUpdateWithOptionalParams(t *testing.T
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.LeakedCredentialChecks.Detections.Update(
 		context.TODO(),
@@ -81,7 +83,7 @@ func TestZoneLeakedCredentialCheckDetectionUpdateWithOptionalParams(t *testing.T
 }
 
 func TestZoneLeakedCredentialCheckDetectionList(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -93,6 +95,7 @@ func TestZoneLeakedCredentialCheckDetectionList(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.LeakedCredentialChecks.Detections.List(context.TODO(), "023e105f4ecef8ad9ca31a8372d0c353")
 	if err != nil {
@@ -105,7 +108,7 @@ func TestZoneLeakedCredentialCheckDetectionList(t *testing.T) {
 }
 
 func TestZoneLeakedCredentialCheckDetectionDelete(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -117,6 +120,7 @@ func TestZoneLeakedCredentialCheckDetectionDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.LeakedCredentialChecks.Detections.Delete(
 		context.TODO(),

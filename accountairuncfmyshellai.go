@@ -41,18 +41,18 @@ func (r *AccountAIRunCfMyshellAIService) ExecuteMelotts(ctx context.Context, acc
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai/run/@cf/myshell-ai/melotts", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountAIRunCfMyshellAIExecuteMelottsResponse = interface{}
 
 type AccountAIRunCfMyshellAIExecuteMelottsParams struct {
 	// A text description of the audio you want to generate
-	Prompt       param.Field[string] `json:"prompt,required"`
+	Prompt       param.Field[string] `json:"prompt" api:"required"`
 	QueueRequest param.Field[string] `query:"queueRequest"`
 	// The speech language (e.g., 'en' for English, 'fr' for French). Defaults to 'en'
 	// if not specified

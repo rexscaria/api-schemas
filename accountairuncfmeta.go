@@ -44,11 +44,11 @@ func (r *AccountAIRunCfMetaService) ExecuteLlama2_7bChatFp16(ctx context.Context
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai/run/@cf/meta/llama-2-7b-chat-fp16", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Execute @cf/meta/llama-2-7b-chat-int8 model.
@@ -56,11 +56,11 @@ func (r *AccountAIRunCfMetaService) ExecuteLlama2_7bChatInt8(ctx context.Context
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai/run/@cf/meta/llama-2-7b-chat-int8", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Execute @cf/meta/llama-3.1-70b-instruct model.
@@ -68,11 +68,11 @@ func (r *AccountAIRunCfMetaService) ExecuteLlama3_1_70bInstruct(ctx context.Cont
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai/run/@cf/meta/llama-3.1-70b-instruct", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Execute @cf/meta/llama-3.1-70b-instruct-preview model.
@@ -80,11 +80,11 @@ func (r *AccountAIRunCfMetaService) ExecuteLlama3_1_70bInstructPreview(ctx conte
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai/run/@cf/meta/llama-3.1-70b-instruct-preview", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Execute @cf/meta/llama-3.1-70b-preview model.
@@ -92,11 +92,11 @@ func (r *AccountAIRunCfMetaService) ExecuteLlama3_1_70bPreview(ctx context.Conte
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai/run/@cf/meta/llama-3.1-70b-preview", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Execute @cf/meta/llama-3.1-8b-instruct-awq model.
@@ -104,11 +104,11 @@ func (r *AccountAIRunCfMetaService) ExecuteLlama3_1_8bInstructAwq(ctx context.Co
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai/run/@cf/meta/llama-3.1-8b-instruct-awq", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Execute @cf/meta/llama-3.1-8b-instruct-fast model.
@@ -116,11 +116,11 @@ func (r *AccountAIRunCfMetaService) ExecuteLlama3_1_8bInstructFast(ctx context.C
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai/run/@cf/meta/llama-3.1-8b-instruct-fast", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Execute @cf/meta/llama-3.1-8b-instruct-fp8 model.
@@ -128,11 +128,11 @@ func (r *AccountAIRunCfMetaService) ExecuteLlama3_1_8bInstructFp8(ctx context.Co
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai/run/@cf/meta/llama-3.1-8b-instruct-fp8", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Execute @cf/meta/llama-3.1-8b-preview model.
@@ -140,11 +140,11 @@ func (r *AccountAIRunCfMetaService) ExecuteLlama3_1_8bPreview(ctx context.Contex
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai/run/@cf/meta/llama-3.1-8b-preview", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Execute @cf/meta/llama-3.2-11b-vision-instruct model.
@@ -152,11 +152,11 @@ func (r *AccountAIRunCfMetaService) ExecuteLlama3_2_11bVisionInstruct(ctx contex
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai/run/@cf/meta/llama-3.2-11b-vision-instruct", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Execute @cf/meta/llama-3.2-1b-instruct model.
@@ -164,11 +164,11 @@ func (r *AccountAIRunCfMetaService) ExecuteLlama3_2_1bInstruct(ctx context.Conte
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai/run/@cf/meta/llama-3.2-1b-instruct", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Execute @cf/meta/llama-3.2-3b-instruct model.
@@ -176,11 +176,11 @@ func (r *AccountAIRunCfMetaService) ExecuteLlama3_2_3bInstruct(ctx context.Conte
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai/run/@cf/meta/llama-3.2-3b-instruct", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Execute @cf/meta/llama-3-8b-instruct model.
@@ -188,11 +188,11 @@ func (r *AccountAIRunCfMetaService) ExecuteLlama3_8bInstruct(ctx context.Context
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai/run/@cf/meta/llama-3-8b-instruct", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Execute @cf/meta/llama-3-8b-instruct-awq model.
@@ -200,11 +200,11 @@ func (r *AccountAIRunCfMetaService) ExecuteLlama3_8bInstructAwq(ctx context.Cont
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai/run/@cf/meta/llama-3-8b-instruct-awq", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Execute @cf/meta/llama-guard-3-8b model.
@@ -212,11 +212,11 @@ func (r *AccountAIRunCfMetaService) ExecuteLlamaGuard3_8b(ctx context.Context, a
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai/run/@cf/meta/llama-guard-3-8b", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Execute @cf/meta/m2m100-1.2b model.
@@ -224,11 +224,11 @@ func (r *AccountAIRunCfMetaService) ExecuteM2m100_1_2b(ctx context.Context, acco
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai/run/@cf/meta/m2m100-1.2b", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountAIRunCfMetaExecuteLlama2_7bChatFp16Response = interface{}
@@ -335,7 +335,7 @@ type AccountAIRunCfMetaExecuteLlama2_7bChatFp16ParamsBodyUnion interface {
 
 type AccountAIRunCfMetaExecuteLlama2_7bChatFp16ParamsBodyPrompt struct {
 	// The input text prompt for the model to generate a response.
-	Prompt param.Field[string] `json:"prompt,required"`
+	Prompt param.Field[string] `json:"prompt" api:"required"`
 	// Decreases the likelihood of the model repeating the same lines verbatim.
 	FrequencyPenalty param.Field[float64] `json:"frequency_penalty"`
 	// Name of the LoRA (Low-Rank Adaptation) model to fine-tune the base model.
@@ -401,7 +401,7 @@ func (r AccountAIRunCfMetaExecuteLlama2_7bChatFp16ParamsBodyPromptResponseFormat
 
 type AccountAIRunCfMetaExecuteLlama2_7bChatFp16ParamsBodyMessages struct {
 	// An array of message objects representing the conversation history.
-	Messages param.Field[[]AccountAIRunCfMetaExecuteLlama2_7bChatFp16ParamsBodyMessagesMessage] `json:"messages,required"`
+	Messages param.Field[[]AccountAIRunCfMetaExecuteLlama2_7bChatFp16ParamsBodyMessagesMessage] `json:"messages" api:"required"`
 	// Decreases the likelihood of the model repeating the same lines verbatim.
 	FrequencyPenalty param.Field[float64]                                                                `json:"frequency_penalty"`
 	Functions        param.Field[[]AccountAIRunCfMetaExecuteLlama2_7bChatFp16ParamsBodyMessagesFunction] `json:"functions"`
@@ -444,9 +444,9 @@ func (r AccountAIRunCfMetaExecuteLlama2_7bChatFp16ParamsBodyMessages) implements
 
 type AccountAIRunCfMetaExecuteLlama2_7bChatFp16ParamsBodyMessagesMessage struct {
 	// The content of the message as a string.
-	Content param.Field[string] `json:"content,required"`
+	Content param.Field[string] `json:"content" api:"required"`
 	// The role of the message sender (e.g., 'user', 'assistant', 'system', 'tool').
-	Role param.Field[string] `json:"role,required"`
+	Role param.Field[string] `json:"role" api:"required"`
 }
 
 func (r AccountAIRunCfMetaExecuteLlama2_7bChatFp16ParamsBodyMessagesMessage) MarshalJSON() (data []byte, err error) {
@@ -454,8 +454,8 @@ func (r AccountAIRunCfMetaExecuteLlama2_7bChatFp16ParamsBodyMessagesMessage) Mar
 }
 
 type AccountAIRunCfMetaExecuteLlama2_7bChatFp16ParamsBodyMessagesFunction struct {
-	Code param.Field[string] `json:"code,required"`
-	Name param.Field[string] `json:"name,required"`
+	Code param.Field[string] `json:"code" api:"required"`
+	Name param.Field[string] `json:"name" api:"required"`
 }
 
 func (r AccountAIRunCfMetaExecuteLlama2_7bChatFp16ParamsBodyMessagesFunction) MarshalJSON() (data []byte, err error) {
@@ -514,11 +514,11 @@ type AccountAIRunCfMetaExecuteLlama2_7bChatFp16ParamsBodyMessagesToolUnion inter
 
 type AccountAIRunCfMetaExecuteLlama2_7bChatFp16ParamsBodyMessagesToolsObject struct {
 	// A brief description of what the tool does.
-	Description param.Field[string] `json:"description,required"`
+	Description param.Field[string] `json:"description" api:"required"`
 	// The name of the tool. More descriptive the better.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Schema defining the parameters accepted by the tool.
-	Parameters param.Field[AccountAIRunCfMetaExecuteLlama2_7bChatFp16ParamsBodyMessagesToolsObjectParameters] `json:"parameters,required"`
+	Parameters param.Field[AccountAIRunCfMetaExecuteLlama2_7bChatFp16ParamsBodyMessagesToolsObjectParameters] `json:"parameters" api:"required"`
 }
 
 func (r AccountAIRunCfMetaExecuteLlama2_7bChatFp16ParamsBodyMessagesToolsObject) MarshalJSON() (data []byte, err error) {
@@ -531,9 +531,9 @@ func (r AccountAIRunCfMetaExecuteLlama2_7bChatFp16ParamsBodyMessagesToolsObject)
 // Schema defining the parameters accepted by the tool.
 type AccountAIRunCfMetaExecuteLlama2_7bChatFp16ParamsBodyMessagesToolsObjectParameters struct {
 	// Definitions of each parameter.
-	Properties param.Field[map[string]AccountAIRunCfMetaExecuteLlama2_7bChatFp16ParamsBodyMessagesToolsObjectParametersProperties] `json:"properties,required"`
+	Properties param.Field[map[string]AccountAIRunCfMetaExecuteLlama2_7bChatFp16ParamsBodyMessagesToolsObjectParametersProperties] `json:"properties" api:"required"`
 	// The type of the parameters object (usually 'object').
-	Type param.Field[string] `json:"type,required"`
+	Type param.Field[string] `json:"type" api:"required"`
 	// List of required parameter names.
 	Required param.Field[[]string] `json:"required"`
 }
@@ -544,9 +544,9 @@ func (r AccountAIRunCfMetaExecuteLlama2_7bChatFp16ParamsBodyMessagesToolsObjectP
 
 type AccountAIRunCfMetaExecuteLlama2_7bChatFp16ParamsBodyMessagesToolsObjectParametersProperties struct {
 	// A description of the expected parameter.
-	Description param.Field[string] `json:"description,required"`
+	Description param.Field[string] `json:"description" api:"required"`
 	// The data type of the parameter.
-	Type param.Field[string] `json:"type,required"`
+	Type param.Field[string] `json:"type" api:"required"`
 }
 
 func (r AccountAIRunCfMetaExecuteLlama2_7bChatFp16ParamsBodyMessagesToolsObjectParametersProperties) MarshalJSON() (data []byte, err error) {
@@ -625,7 +625,7 @@ type AccountAIRunCfMetaExecuteLlama2_7bChatInt8ParamsBodyUnion interface {
 
 type AccountAIRunCfMetaExecuteLlama2_7bChatInt8ParamsBodyPrompt struct {
 	// The input text prompt for the model to generate a response.
-	Prompt param.Field[string] `json:"prompt,required"`
+	Prompt param.Field[string] `json:"prompt" api:"required"`
 	// Decreases the likelihood of the model repeating the same lines verbatim.
 	FrequencyPenalty param.Field[float64] `json:"frequency_penalty"`
 	// Name of the LoRA (Low-Rank Adaptation) model to fine-tune the base model.
@@ -691,7 +691,7 @@ func (r AccountAIRunCfMetaExecuteLlama2_7bChatInt8ParamsBodyPromptResponseFormat
 
 type AccountAIRunCfMetaExecuteLlama2_7bChatInt8ParamsBodyMessages struct {
 	// An array of message objects representing the conversation history.
-	Messages param.Field[[]AccountAIRunCfMetaExecuteLlama2_7bChatInt8ParamsBodyMessagesMessage] `json:"messages,required"`
+	Messages param.Field[[]AccountAIRunCfMetaExecuteLlama2_7bChatInt8ParamsBodyMessagesMessage] `json:"messages" api:"required"`
 	// Decreases the likelihood of the model repeating the same lines verbatim.
 	FrequencyPenalty param.Field[float64]                                                                `json:"frequency_penalty"`
 	Functions        param.Field[[]AccountAIRunCfMetaExecuteLlama2_7bChatInt8ParamsBodyMessagesFunction] `json:"functions"`
@@ -734,9 +734,9 @@ func (r AccountAIRunCfMetaExecuteLlama2_7bChatInt8ParamsBodyMessages) implements
 
 type AccountAIRunCfMetaExecuteLlama2_7bChatInt8ParamsBodyMessagesMessage struct {
 	// The content of the message as a string.
-	Content param.Field[string] `json:"content,required"`
+	Content param.Field[string] `json:"content" api:"required"`
 	// The role of the message sender (e.g., 'user', 'assistant', 'system', 'tool').
-	Role param.Field[string] `json:"role,required"`
+	Role param.Field[string] `json:"role" api:"required"`
 }
 
 func (r AccountAIRunCfMetaExecuteLlama2_7bChatInt8ParamsBodyMessagesMessage) MarshalJSON() (data []byte, err error) {
@@ -744,8 +744,8 @@ func (r AccountAIRunCfMetaExecuteLlama2_7bChatInt8ParamsBodyMessagesMessage) Mar
 }
 
 type AccountAIRunCfMetaExecuteLlama2_7bChatInt8ParamsBodyMessagesFunction struct {
-	Code param.Field[string] `json:"code,required"`
-	Name param.Field[string] `json:"name,required"`
+	Code param.Field[string] `json:"code" api:"required"`
+	Name param.Field[string] `json:"name" api:"required"`
 }
 
 func (r AccountAIRunCfMetaExecuteLlama2_7bChatInt8ParamsBodyMessagesFunction) MarshalJSON() (data []byte, err error) {
@@ -804,11 +804,11 @@ type AccountAIRunCfMetaExecuteLlama2_7bChatInt8ParamsBodyMessagesToolUnion inter
 
 type AccountAIRunCfMetaExecuteLlama2_7bChatInt8ParamsBodyMessagesToolsObject struct {
 	// A brief description of what the tool does.
-	Description param.Field[string] `json:"description,required"`
+	Description param.Field[string] `json:"description" api:"required"`
 	// The name of the tool. More descriptive the better.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Schema defining the parameters accepted by the tool.
-	Parameters param.Field[AccountAIRunCfMetaExecuteLlama2_7bChatInt8ParamsBodyMessagesToolsObjectParameters] `json:"parameters,required"`
+	Parameters param.Field[AccountAIRunCfMetaExecuteLlama2_7bChatInt8ParamsBodyMessagesToolsObjectParameters] `json:"parameters" api:"required"`
 }
 
 func (r AccountAIRunCfMetaExecuteLlama2_7bChatInt8ParamsBodyMessagesToolsObject) MarshalJSON() (data []byte, err error) {
@@ -821,9 +821,9 @@ func (r AccountAIRunCfMetaExecuteLlama2_7bChatInt8ParamsBodyMessagesToolsObject)
 // Schema defining the parameters accepted by the tool.
 type AccountAIRunCfMetaExecuteLlama2_7bChatInt8ParamsBodyMessagesToolsObjectParameters struct {
 	// Definitions of each parameter.
-	Properties param.Field[map[string]AccountAIRunCfMetaExecuteLlama2_7bChatInt8ParamsBodyMessagesToolsObjectParametersProperties] `json:"properties,required"`
+	Properties param.Field[map[string]AccountAIRunCfMetaExecuteLlama2_7bChatInt8ParamsBodyMessagesToolsObjectParametersProperties] `json:"properties" api:"required"`
 	// The type of the parameters object (usually 'object').
-	Type param.Field[string] `json:"type,required"`
+	Type param.Field[string] `json:"type" api:"required"`
 	// List of required parameter names.
 	Required param.Field[[]string] `json:"required"`
 }
@@ -834,9 +834,9 @@ func (r AccountAIRunCfMetaExecuteLlama2_7bChatInt8ParamsBodyMessagesToolsObjectP
 
 type AccountAIRunCfMetaExecuteLlama2_7bChatInt8ParamsBodyMessagesToolsObjectParametersProperties struct {
 	// A description of the expected parameter.
-	Description param.Field[string] `json:"description,required"`
+	Description param.Field[string] `json:"description" api:"required"`
 	// The data type of the parameter.
-	Type param.Field[string] `json:"type,required"`
+	Type param.Field[string] `json:"type" api:"required"`
 }
 
 func (r AccountAIRunCfMetaExecuteLlama2_7bChatInt8ParamsBodyMessagesToolsObjectParametersProperties) MarshalJSON() (data []byte, err error) {
@@ -915,7 +915,7 @@ type AccountAIRunCfMetaExecuteLlama3_1_70bInstructParamsBodyUnion interface {
 
 type AccountAIRunCfMetaExecuteLlama3_1_70bInstructParamsBodyPrompt struct {
 	// The input text prompt for the model to generate a response.
-	Prompt param.Field[string] `json:"prompt,required"`
+	Prompt param.Field[string] `json:"prompt" api:"required"`
 	// Decreases the likelihood of the model repeating the same lines verbatim.
 	FrequencyPenalty param.Field[float64] `json:"frequency_penalty"`
 	// Name of the LoRA (Low-Rank Adaptation) model to fine-tune the base model.
@@ -981,7 +981,7 @@ func (r AccountAIRunCfMetaExecuteLlama3_1_70bInstructParamsBodyPromptResponseFor
 
 type AccountAIRunCfMetaExecuteLlama3_1_70bInstructParamsBodyMessages struct {
 	// An array of message objects representing the conversation history.
-	Messages param.Field[[]AccountAIRunCfMetaExecuteLlama3_1_70bInstructParamsBodyMessagesMessage] `json:"messages,required"`
+	Messages param.Field[[]AccountAIRunCfMetaExecuteLlama3_1_70bInstructParamsBodyMessagesMessage] `json:"messages" api:"required"`
 	// Decreases the likelihood of the model repeating the same lines verbatim.
 	FrequencyPenalty param.Field[float64]                                                                   `json:"frequency_penalty"`
 	Functions        param.Field[[]AccountAIRunCfMetaExecuteLlama3_1_70bInstructParamsBodyMessagesFunction] `json:"functions"`
@@ -1024,9 +1024,9 @@ func (r AccountAIRunCfMetaExecuteLlama3_1_70bInstructParamsBodyMessages) impleme
 
 type AccountAIRunCfMetaExecuteLlama3_1_70bInstructParamsBodyMessagesMessage struct {
 	// The content of the message as a string.
-	Content param.Field[string] `json:"content,required"`
+	Content param.Field[string] `json:"content" api:"required"`
 	// The role of the message sender (e.g., 'user', 'assistant', 'system', 'tool').
-	Role param.Field[string] `json:"role,required"`
+	Role param.Field[string] `json:"role" api:"required"`
 }
 
 func (r AccountAIRunCfMetaExecuteLlama3_1_70bInstructParamsBodyMessagesMessage) MarshalJSON() (data []byte, err error) {
@@ -1034,8 +1034,8 @@ func (r AccountAIRunCfMetaExecuteLlama3_1_70bInstructParamsBodyMessagesMessage) 
 }
 
 type AccountAIRunCfMetaExecuteLlama3_1_70bInstructParamsBodyMessagesFunction struct {
-	Code param.Field[string] `json:"code,required"`
-	Name param.Field[string] `json:"name,required"`
+	Code param.Field[string] `json:"code" api:"required"`
+	Name param.Field[string] `json:"name" api:"required"`
 }
 
 func (r AccountAIRunCfMetaExecuteLlama3_1_70bInstructParamsBodyMessagesFunction) MarshalJSON() (data []byte, err error) {
@@ -1094,11 +1094,11 @@ type AccountAIRunCfMetaExecuteLlama3_1_70bInstructParamsBodyMessagesToolUnion in
 
 type AccountAIRunCfMetaExecuteLlama3_1_70bInstructParamsBodyMessagesToolsObject struct {
 	// A brief description of what the tool does.
-	Description param.Field[string] `json:"description,required"`
+	Description param.Field[string] `json:"description" api:"required"`
 	// The name of the tool. More descriptive the better.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Schema defining the parameters accepted by the tool.
-	Parameters param.Field[AccountAIRunCfMetaExecuteLlama3_1_70bInstructParamsBodyMessagesToolsObjectParameters] `json:"parameters,required"`
+	Parameters param.Field[AccountAIRunCfMetaExecuteLlama3_1_70bInstructParamsBodyMessagesToolsObjectParameters] `json:"parameters" api:"required"`
 }
 
 func (r AccountAIRunCfMetaExecuteLlama3_1_70bInstructParamsBodyMessagesToolsObject) MarshalJSON() (data []byte, err error) {
@@ -1111,9 +1111,9 @@ func (r AccountAIRunCfMetaExecuteLlama3_1_70bInstructParamsBodyMessagesToolsObje
 // Schema defining the parameters accepted by the tool.
 type AccountAIRunCfMetaExecuteLlama3_1_70bInstructParamsBodyMessagesToolsObjectParameters struct {
 	// Definitions of each parameter.
-	Properties param.Field[map[string]AccountAIRunCfMetaExecuteLlama3_1_70bInstructParamsBodyMessagesToolsObjectParametersProperties] `json:"properties,required"`
+	Properties param.Field[map[string]AccountAIRunCfMetaExecuteLlama3_1_70bInstructParamsBodyMessagesToolsObjectParametersProperties] `json:"properties" api:"required"`
 	// The type of the parameters object (usually 'object').
-	Type param.Field[string] `json:"type,required"`
+	Type param.Field[string] `json:"type" api:"required"`
 	// List of required parameter names.
 	Required param.Field[[]string] `json:"required"`
 }
@@ -1124,9 +1124,9 @@ func (r AccountAIRunCfMetaExecuteLlama3_1_70bInstructParamsBodyMessagesToolsObje
 
 type AccountAIRunCfMetaExecuteLlama3_1_70bInstructParamsBodyMessagesToolsObjectParametersProperties struct {
 	// A description of the expected parameter.
-	Description param.Field[string] `json:"description,required"`
+	Description param.Field[string] `json:"description" api:"required"`
 	// The data type of the parameter.
-	Type param.Field[string] `json:"type,required"`
+	Type param.Field[string] `json:"type" api:"required"`
 }
 
 func (r AccountAIRunCfMetaExecuteLlama3_1_70bInstructParamsBodyMessagesToolsObjectParametersProperties) MarshalJSON() (data []byte, err error) {
@@ -1207,7 +1207,7 @@ type AccountAIRunCfMetaExecuteLlama3_1_70bInstructPreviewParamsBodyUnion interfa
 
 type AccountAIRunCfMetaExecuteLlama3_1_70bInstructPreviewParamsBodyPrompt struct {
 	// The input text prompt for the model to generate a response.
-	Prompt param.Field[string] `json:"prompt,required"`
+	Prompt param.Field[string] `json:"prompt" api:"required"`
 	// Decreases the likelihood of the model repeating the same lines verbatim.
 	FrequencyPenalty param.Field[float64] `json:"frequency_penalty"`
 	// Name of the LoRA (Low-Rank Adaptation) model to fine-tune the base model.
@@ -1273,7 +1273,7 @@ func (r AccountAIRunCfMetaExecuteLlama3_1_70bInstructPreviewParamsBodyPromptResp
 
 type AccountAIRunCfMetaExecuteLlama3_1_70bInstructPreviewParamsBodyMessages struct {
 	// An array of message objects representing the conversation history.
-	Messages param.Field[[]AccountAIRunCfMetaExecuteLlama3_1_70bInstructPreviewParamsBodyMessagesMessage] `json:"messages,required"`
+	Messages param.Field[[]AccountAIRunCfMetaExecuteLlama3_1_70bInstructPreviewParamsBodyMessagesMessage] `json:"messages" api:"required"`
 	// Decreases the likelihood of the model repeating the same lines verbatim.
 	FrequencyPenalty param.Field[float64]                                                                          `json:"frequency_penalty"`
 	Functions        param.Field[[]AccountAIRunCfMetaExecuteLlama3_1_70bInstructPreviewParamsBodyMessagesFunction] `json:"functions"`
@@ -1316,9 +1316,9 @@ func (r AccountAIRunCfMetaExecuteLlama3_1_70bInstructPreviewParamsBodyMessages) 
 
 type AccountAIRunCfMetaExecuteLlama3_1_70bInstructPreviewParamsBodyMessagesMessage struct {
 	// The content of the message as a string.
-	Content param.Field[string] `json:"content,required"`
+	Content param.Field[string] `json:"content" api:"required"`
 	// The role of the message sender (e.g., 'user', 'assistant', 'system', 'tool').
-	Role param.Field[string] `json:"role,required"`
+	Role param.Field[string] `json:"role" api:"required"`
 }
 
 func (r AccountAIRunCfMetaExecuteLlama3_1_70bInstructPreviewParamsBodyMessagesMessage) MarshalJSON() (data []byte, err error) {
@@ -1326,8 +1326,8 @@ func (r AccountAIRunCfMetaExecuteLlama3_1_70bInstructPreviewParamsBodyMessagesMe
 }
 
 type AccountAIRunCfMetaExecuteLlama3_1_70bInstructPreviewParamsBodyMessagesFunction struct {
-	Code param.Field[string] `json:"code,required"`
-	Name param.Field[string] `json:"name,required"`
+	Code param.Field[string] `json:"code" api:"required"`
+	Name param.Field[string] `json:"name" api:"required"`
 }
 
 func (r AccountAIRunCfMetaExecuteLlama3_1_70bInstructPreviewParamsBodyMessagesFunction) MarshalJSON() (data []byte, err error) {
@@ -1386,11 +1386,11 @@ type AccountAIRunCfMetaExecuteLlama3_1_70bInstructPreviewParamsBodyMessagesToolU
 
 type AccountAIRunCfMetaExecuteLlama3_1_70bInstructPreviewParamsBodyMessagesToolsObject struct {
 	// A brief description of what the tool does.
-	Description param.Field[string] `json:"description,required"`
+	Description param.Field[string] `json:"description" api:"required"`
 	// The name of the tool. More descriptive the better.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Schema defining the parameters accepted by the tool.
-	Parameters param.Field[AccountAIRunCfMetaExecuteLlama3_1_70bInstructPreviewParamsBodyMessagesToolsObjectParameters] `json:"parameters,required"`
+	Parameters param.Field[AccountAIRunCfMetaExecuteLlama3_1_70bInstructPreviewParamsBodyMessagesToolsObjectParameters] `json:"parameters" api:"required"`
 }
 
 func (r AccountAIRunCfMetaExecuteLlama3_1_70bInstructPreviewParamsBodyMessagesToolsObject) MarshalJSON() (data []byte, err error) {
@@ -1403,9 +1403,9 @@ func (r AccountAIRunCfMetaExecuteLlama3_1_70bInstructPreviewParamsBodyMessagesTo
 // Schema defining the parameters accepted by the tool.
 type AccountAIRunCfMetaExecuteLlama3_1_70bInstructPreviewParamsBodyMessagesToolsObjectParameters struct {
 	// Definitions of each parameter.
-	Properties param.Field[map[string]AccountAIRunCfMetaExecuteLlama3_1_70bInstructPreviewParamsBodyMessagesToolsObjectParametersProperties] `json:"properties,required"`
+	Properties param.Field[map[string]AccountAIRunCfMetaExecuteLlama3_1_70bInstructPreviewParamsBodyMessagesToolsObjectParametersProperties] `json:"properties" api:"required"`
 	// The type of the parameters object (usually 'object').
-	Type param.Field[string] `json:"type,required"`
+	Type param.Field[string] `json:"type" api:"required"`
 	// List of required parameter names.
 	Required param.Field[[]string] `json:"required"`
 }
@@ -1416,9 +1416,9 @@ func (r AccountAIRunCfMetaExecuteLlama3_1_70bInstructPreviewParamsBodyMessagesTo
 
 type AccountAIRunCfMetaExecuteLlama3_1_70bInstructPreviewParamsBodyMessagesToolsObjectParametersProperties struct {
 	// A description of the expected parameter.
-	Description param.Field[string] `json:"description,required"`
+	Description param.Field[string] `json:"description" api:"required"`
 	// The data type of the parameter.
-	Type param.Field[string] `json:"type,required"`
+	Type param.Field[string] `json:"type" api:"required"`
 }
 
 func (r AccountAIRunCfMetaExecuteLlama3_1_70bInstructPreviewParamsBodyMessagesToolsObjectParametersProperties) MarshalJSON() (data []byte, err error) {
@@ -1497,7 +1497,7 @@ type AccountAIRunCfMetaExecuteLlama3_1_70bPreviewParamsBodyUnion interface {
 
 type AccountAIRunCfMetaExecuteLlama3_1_70bPreviewParamsBodyPrompt struct {
 	// The input text prompt for the model to generate a response.
-	Prompt param.Field[string] `json:"prompt,required"`
+	Prompt param.Field[string] `json:"prompt" api:"required"`
 	// Decreases the likelihood of the model repeating the same lines verbatim.
 	FrequencyPenalty param.Field[float64] `json:"frequency_penalty"`
 	// Name of the LoRA (Low-Rank Adaptation) model to fine-tune the base model.
@@ -1563,7 +1563,7 @@ func (r AccountAIRunCfMetaExecuteLlama3_1_70bPreviewParamsBodyPromptResponseForm
 
 type AccountAIRunCfMetaExecuteLlama3_1_70bPreviewParamsBodyMessages struct {
 	// An array of message objects representing the conversation history.
-	Messages param.Field[[]AccountAIRunCfMetaExecuteLlama3_1_70bPreviewParamsBodyMessagesMessage] `json:"messages,required"`
+	Messages param.Field[[]AccountAIRunCfMetaExecuteLlama3_1_70bPreviewParamsBodyMessagesMessage] `json:"messages" api:"required"`
 	// Decreases the likelihood of the model repeating the same lines verbatim.
 	FrequencyPenalty param.Field[float64]                                                                  `json:"frequency_penalty"`
 	Functions        param.Field[[]AccountAIRunCfMetaExecuteLlama3_1_70bPreviewParamsBodyMessagesFunction] `json:"functions"`
@@ -1606,9 +1606,9 @@ func (r AccountAIRunCfMetaExecuteLlama3_1_70bPreviewParamsBodyMessages) implemen
 
 type AccountAIRunCfMetaExecuteLlama3_1_70bPreviewParamsBodyMessagesMessage struct {
 	// The content of the message as a string.
-	Content param.Field[string] `json:"content,required"`
+	Content param.Field[string] `json:"content" api:"required"`
 	// The role of the message sender (e.g., 'user', 'assistant', 'system', 'tool').
-	Role param.Field[string] `json:"role,required"`
+	Role param.Field[string] `json:"role" api:"required"`
 }
 
 func (r AccountAIRunCfMetaExecuteLlama3_1_70bPreviewParamsBodyMessagesMessage) MarshalJSON() (data []byte, err error) {
@@ -1616,8 +1616,8 @@ func (r AccountAIRunCfMetaExecuteLlama3_1_70bPreviewParamsBodyMessagesMessage) M
 }
 
 type AccountAIRunCfMetaExecuteLlama3_1_70bPreviewParamsBodyMessagesFunction struct {
-	Code param.Field[string] `json:"code,required"`
-	Name param.Field[string] `json:"name,required"`
+	Code param.Field[string] `json:"code" api:"required"`
+	Name param.Field[string] `json:"name" api:"required"`
 }
 
 func (r AccountAIRunCfMetaExecuteLlama3_1_70bPreviewParamsBodyMessagesFunction) MarshalJSON() (data []byte, err error) {
@@ -1676,11 +1676,11 @@ type AccountAIRunCfMetaExecuteLlama3_1_70bPreviewParamsBodyMessagesToolUnion int
 
 type AccountAIRunCfMetaExecuteLlama3_1_70bPreviewParamsBodyMessagesToolsObject struct {
 	// A brief description of what the tool does.
-	Description param.Field[string] `json:"description,required"`
+	Description param.Field[string] `json:"description" api:"required"`
 	// The name of the tool. More descriptive the better.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Schema defining the parameters accepted by the tool.
-	Parameters param.Field[AccountAIRunCfMetaExecuteLlama3_1_70bPreviewParamsBodyMessagesToolsObjectParameters] `json:"parameters,required"`
+	Parameters param.Field[AccountAIRunCfMetaExecuteLlama3_1_70bPreviewParamsBodyMessagesToolsObjectParameters] `json:"parameters" api:"required"`
 }
 
 func (r AccountAIRunCfMetaExecuteLlama3_1_70bPreviewParamsBodyMessagesToolsObject) MarshalJSON() (data []byte, err error) {
@@ -1693,9 +1693,9 @@ func (r AccountAIRunCfMetaExecuteLlama3_1_70bPreviewParamsBodyMessagesToolsObjec
 // Schema defining the parameters accepted by the tool.
 type AccountAIRunCfMetaExecuteLlama3_1_70bPreviewParamsBodyMessagesToolsObjectParameters struct {
 	// Definitions of each parameter.
-	Properties param.Field[map[string]AccountAIRunCfMetaExecuteLlama3_1_70bPreviewParamsBodyMessagesToolsObjectParametersProperties] `json:"properties,required"`
+	Properties param.Field[map[string]AccountAIRunCfMetaExecuteLlama3_1_70bPreviewParamsBodyMessagesToolsObjectParametersProperties] `json:"properties" api:"required"`
 	// The type of the parameters object (usually 'object').
-	Type param.Field[string] `json:"type,required"`
+	Type param.Field[string] `json:"type" api:"required"`
 	// List of required parameter names.
 	Required param.Field[[]string] `json:"required"`
 }
@@ -1706,9 +1706,9 @@ func (r AccountAIRunCfMetaExecuteLlama3_1_70bPreviewParamsBodyMessagesToolsObjec
 
 type AccountAIRunCfMetaExecuteLlama3_1_70bPreviewParamsBodyMessagesToolsObjectParametersProperties struct {
 	// A description of the expected parameter.
-	Description param.Field[string] `json:"description,required"`
+	Description param.Field[string] `json:"description" api:"required"`
 	// The data type of the parameter.
-	Type param.Field[string] `json:"type,required"`
+	Type param.Field[string] `json:"type" api:"required"`
 }
 
 func (r AccountAIRunCfMetaExecuteLlama3_1_70bPreviewParamsBodyMessagesToolsObjectParametersProperties) MarshalJSON() (data []byte, err error) {
@@ -1787,7 +1787,7 @@ type AccountAIRunCfMetaExecuteLlama3_1_8bInstructAwqParamsBodyUnion interface {
 
 type AccountAIRunCfMetaExecuteLlama3_1_8bInstructAwqParamsBodyPrompt struct {
 	// The input text prompt for the model to generate a response.
-	Prompt param.Field[string] `json:"prompt,required"`
+	Prompt param.Field[string] `json:"prompt" api:"required"`
 	// Decreases the likelihood of the model repeating the same lines verbatim.
 	FrequencyPenalty param.Field[float64] `json:"frequency_penalty"`
 	// Name of the LoRA (Low-Rank Adaptation) model to fine-tune the base model.
@@ -1853,7 +1853,7 @@ func (r AccountAIRunCfMetaExecuteLlama3_1_8bInstructAwqParamsBodyPromptResponseF
 
 type AccountAIRunCfMetaExecuteLlama3_1_8bInstructAwqParamsBodyMessages struct {
 	// An array of message objects representing the conversation history.
-	Messages param.Field[[]AccountAIRunCfMetaExecuteLlama3_1_8bInstructAwqParamsBodyMessagesMessage] `json:"messages,required"`
+	Messages param.Field[[]AccountAIRunCfMetaExecuteLlama3_1_8bInstructAwqParamsBodyMessagesMessage] `json:"messages" api:"required"`
 	// Decreases the likelihood of the model repeating the same lines verbatim.
 	FrequencyPenalty param.Field[float64]                                                                     `json:"frequency_penalty"`
 	Functions        param.Field[[]AccountAIRunCfMetaExecuteLlama3_1_8bInstructAwqParamsBodyMessagesFunction] `json:"functions"`
@@ -1896,9 +1896,9 @@ func (r AccountAIRunCfMetaExecuteLlama3_1_8bInstructAwqParamsBodyMessages) imple
 
 type AccountAIRunCfMetaExecuteLlama3_1_8bInstructAwqParamsBodyMessagesMessage struct {
 	// The content of the message as a string.
-	Content param.Field[string] `json:"content,required"`
+	Content param.Field[string] `json:"content" api:"required"`
 	// The role of the message sender (e.g., 'user', 'assistant', 'system', 'tool').
-	Role param.Field[string] `json:"role,required"`
+	Role param.Field[string] `json:"role" api:"required"`
 }
 
 func (r AccountAIRunCfMetaExecuteLlama3_1_8bInstructAwqParamsBodyMessagesMessage) MarshalJSON() (data []byte, err error) {
@@ -1906,8 +1906,8 @@ func (r AccountAIRunCfMetaExecuteLlama3_1_8bInstructAwqParamsBodyMessagesMessage
 }
 
 type AccountAIRunCfMetaExecuteLlama3_1_8bInstructAwqParamsBodyMessagesFunction struct {
-	Code param.Field[string] `json:"code,required"`
-	Name param.Field[string] `json:"name,required"`
+	Code param.Field[string] `json:"code" api:"required"`
+	Name param.Field[string] `json:"name" api:"required"`
 }
 
 func (r AccountAIRunCfMetaExecuteLlama3_1_8bInstructAwqParamsBodyMessagesFunction) MarshalJSON() (data []byte, err error) {
@@ -1966,11 +1966,11 @@ type AccountAIRunCfMetaExecuteLlama3_1_8bInstructAwqParamsBodyMessagesToolUnion 
 
 type AccountAIRunCfMetaExecuteLlama3_1_8bInstructAwqParamsBodyMessagesToolsObject struct {
 	// A brief description of what the tool does.
-	Description param.Field[string] `json:"description,required"`
+	Description param.Field[string] `json:"description" api:"required"`
 	// The name of the tool. More descriptive the better.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Schema defining the parameters accepted by the tool.
-	Parameters param.Field[AccountAIRunCfMetaExecuteLlama3_1_8bInstructAwqParamsBodyMessagesToolsObjectParameters] `json:"parameters,required"`
+	Parameters param.Field[AccountAIRunCfMetaExecuteLlama3_1_8bInstructAwqParamsBodyMessagesToolsObjectParameters] `json:"parameters" api:"required"`
 }
 
 func (r AccountAIRunCfMetaExecuteLlama3_1_8bInstructAwqParamsBodyMessagesToolsObject) MarshalJSON() (data []byte, err error) {
@@ -1983,9 +1983,9 @@ func (r AccountAIRunCfMetaExecuteLlama3_1_8bInstructAwqParamsBodyMessagesToolsOb
 // Schema defining the parameters accepted by the tool.
 type AccountAIRunCfMetaExecuteLlama3_1_8bInstructAwqParamsBodyMessagesToolsObjectParameters struct {
 	// Definitions of each parameter.
-	Properties param.Field[map[string]AccountAIRunCfMetaExecuteLlama3_1_8bInstructAwqParamsBodyMessagesToolsObjectParametersProperties] `json:"properties,required"`
+	Properties param.Field[map[string]AccountAIRunCfMetaExecuteLlama3_1_8bInstructAwqParamsBodyMessagesToolsObjectParametersProperties] `json:"properties" api:"required"`
 	// The type of the parameters object (usually 'object').
-	Type param.Field[string] `json:"type,required"`
+	Type param.Field[string] `json:"type" api:"required"`
 	// List of required parameter names.
 	Required param.Field[[]string] `json:"required"`
 }
@@ -1996,9 +1996,9 @@ func (r AccountAIRunCfMetaExecuteLlama3_1_8bInstructAwqParamsBodyMessagesToolsOb
 
 type AccountAIRunCfMetaExecuteLlama3_1_8bInstructAwqParamsBodyMessagesToolsObjectParametersProperties struct {
 	// A description of the expected parameter.
-	Description param.Field[string] `json:"description,required"`
+	Description param.Field[string] `json:"description" api:"required"`
 	// The data type of the parameter.
-	Type param.Field[string] `json:"type,required"`
+	Type param.Field[string] `json:"type" api:"required"`
 }
 
 func (r AccountAIRunCfMetaExecuteLlama3_1_8bInstructAwqParamsBodyMessagesToolsObjectParametersProperties) MarshalJSON() (data []byte, err error) {
@@ -2077,7 +2077,7 @@ type AccountAIRunCfMetaExecuteLlama3_1_8bInstructFastParamsBodyUnion interface {
 
 type AccountAIRunCfMetaExecuteLlama3_1_8bInstructFastParamsBodyPrompt struct {
 	// The input text prompt for the model to generate a response.
-	Prompt param.Field[string] `json:"prompt,required"`
+	Prompt param.Field[string] `json:"prompt" api:"required"`
 	// Decreases the likelihood of the model repeating the same lines verbatim.
 	FrequencyPenalty param.Field[float64] `json:"frequency_penalty"`
 	// Name of the LoRA (Low-Rank Adaptation) model to fine-tune the base model.
@@ -2143,7 +2143,7 @@ func (r AccountAIRunCfMetaExecuteLlama3_1_8bInstructFastParamsBodyPromptResponse
 
 type AccountAIRunCfMetaExecuteLlama3_1_8bInstructFastParamsBodyMessages struct {
 	// An array of message objects representing the conversation history.
-	Messages param.Field[[]AccountAIRunCfMetaExecuteLlama3_1_8bInstructFastParamsBodyMessagesMessage] `json:"messages,required"`
+	Messages param.Field[[]AccountAIRunCfMetaExecuteLlama3_1_8bInstructFastParamsBodyMessagesMessage] `json:"messages" api:"required"`
 	// Decreases the likelihood of the model repeating the same lines verbatim.
 	FrequencyPenalty param.Field[float64]                                                                      `json:"frequency_penalty"`
 	Functions        param.Field[[]AccountAIRunCfMetaExecuteLlama3_1_8bInstructFastParamsBodyMessagesFunction] `json:"functions"`
@@ -2186,9 +2186,9 @@ func (r AccountAIRunCfMetaExecuteLlama3_1_8bInstructFastParamsBodyMessages) impl
 
 type AccountAIRunCfMetaExecuteLlama3_1_8bInstructFastParamsBodyMessagesMessage struct {
 	// The content of the message as a string.
-	Content param.Field[string] `json:"content,required"`
+	Content param.Field[string] `json:"content" api:"required"`
 	// The role of the message sender (e.g., 'user', 'assistant', 'system', 'tool').
-	Role param.Field[string] `json:"role,required"`
+	Role param.Field[string] `json:"role" api:"required"`
 }
 
 func (r AccountAIRunCfMetaExecuteLlama3_1_8bInstructFastParamsBodyMessagesMessage) MarshalJSON() (data []byte, err error) {
@@ -2196,8 +2196,8 @@ func (r AccountAIRunCfMetaExecuteLlama3_1_8bInstructFastParamsBodyMessagesMessag
 }
 
 type AccountAIRunCfMetaExecuteLlama3_1_8bInstructFastParamsBodyMessagesFunction struct {
-	Code param.Field[string] `json:"code,required"`
-	Name param.Field[string] `json:"name,required"`
+	Code param.Field[string] `json:"code" api:"required"`
+	Name param.Field[string] `json:"name" api:"required"`
 }
 
 func (r AccountAIRunCfMetaExecuteLlama3_1_8bInstructFastParamsBodyMessagesFunction) MarshalJSON() (data []byte, err error) {
@@ -2256,11 +2256,11 @@ type AccountAIRunCfMetaExecuteLlama3_1_8bInstructFastParamsBodyMessagesToolUnion
 
 type AccountAIRunCfMetaExecuteLlama3_1_8bInstructFastParamsBodyMessagesToolsObject struct {
 	// A brief description of what the tool does.
-	Description param.Field[string] `json:"description,required"`
+	Description param.Field[string] `json:"description" api:"required"`
 	// The name of the tool. More descriptive the better.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Schema defining the parameters accepted by the tool.
-	Parameters param.Field[AccountAIRunCfMetaExecuteLlama3_1_8bInstructFastParamsBodyMessagesToolsObjectParameters] `json:"parameters,required"`
+	Parameters param.Field[AccountAIRunCfMetaExecuteLlama3_1_8bInstructFastParamsBodyMessagesToolsObjectParameters] `json:"parameters" api:"required"`
 }
 
 func (r AccountAIRunCfMetaExecuteLlama3_1_8bInstructFastParamsBodyMessagesToolsObject) MarshalJSON() (data []byte, err error) {
@@ -2273,9 +2273,9 @@ func (r AccountAIRunCfMetaExecuteLlama3_1_8bInstructFastParamsBodyMessagesToolsO
 // Schema defining the parameters accepted by the tool.
 type AccountAIRunCfMetaExecuteLlama3_1_8bInstructFastParamsBodyMessagesToolsObjectParameters struct {
 	// Definitions of each parameter.
-	Properties param.Field[map[string]AccountAIRunCfMetaExecuteLlama3_1_8bInstructFastParamsBodyMessagesToolsObjectParametersProperties] `json:"properties,required"`
+	Properties param.Field[map[string]AccountAIRunCfMetaExecuteLlama3_1_8bInstructFastParamsBodyMessagesToolsObjectParametersProperties] `json:"properties" api:"required"`
 	// The type of the parameters object (usually 'object').
-	Type param.Field[string] `json:"type,required"`
+	Type param.Field[string] `json:"type" api:"required"`
 	// List of required parameter names.
 	Required param.Field[[]string] `json:"required"`
 }
@@ -2286,9 +2286,9 @@ func (r AccountAIRunCfMetaExecuteLlama3_1_8bInstructFastParamsBodyMessagesToolsO
 
 type AccountAIRunCfMetaExecuteLlama3_1_8bInstructFastParamsBodyMessagesToolsObjectParametersProperties struct {
 	// A description of the expected parameter.
-	Description param.Field[string] `json:"description,required"`
+	Description param.Field[string] `json:"description" api:"required"`
 	// The data type of the parameter.
-	Type param.Field[string] `json:"type,required"`
+	Type param.Field[string] `json:"type" api:"required"`
 }
 
 func (r AccountAIRunCfMetaExecuteLlama3_1_8bInstructFastParamsBodyMessagesToolsObjectParametersProperties) MarshalJSON() (data []byte, err error) {
@@ -2367,7 +2367,7 @@ type AccountAIRunCfMetaExecuteLlama3_1_8bInstructFp8ParamsBodyUnion interface {
 
 type AccountAIRunCfMetaExecuteLlama3_1_8bInstructFp8ParamsBodyPrompt struct {
 	// The input text prompt for the model to generate a response.
-	Prompt param.Field[string] `json:"prompt,required"`
+	Prompt param.Field[string] `json:"prompt" api:"required"`
 	// Decreases the likelihood of the model repeating the same lines verbatim.
 	FrequencyPenalty param.Field[float64] `json:"frequency_penalty"`
 	// Name of the LoRA (Low-Rank Adaptation) model to fine-tune the base model.
@@ -2433,7 +2433,7 @@ func (r AccountAIRunCfMetaExecuteLlama3_1_8bInstructFp8ParamsBodyPromptResponseF
 
 type AccountAIRunCfMetaExecuteLlama3_1_8bInstructFp8ParamsBodyMessages struct {
 	// An array of message objects representing the conversation history.
-	Messages param.Field[[]AccountAIRunCfMetaExecuteLlama3_1_8bInstructFp8ParamsBodyMessagesMessage] `json:"messages,required"`
+	Messages param.Field[[]AccountAIRunCfMetaExecuteLlama3_1_8bInstructFp8ParamsBodyMessagesMessage] `json:"messages" api:"required"`
 	// Decreases the likelihood of the model repeating the same lines verbatim.
 	FrequencyPenalty param.Field[float64]                                                                     `json:"frequency_penalty"`
 	Functions        param.Field[[]AccountAIRunCfMetaExecuteLlama3_1_8bInstructFp8ParamsBodyMessagesFunction] `json:"functions"`
@@ -2476,9 +2476,9 @@ func (r AccountAIRunCfMetaExecuteLlama3_1_8bInstructFp8ParamsBodyMessages) imple
 
 type AccountAIRunCfMetaExecuteLlama3_1_8bInstructFp8ParamsBodyMessagesMessage struct {
 	// The content of the message as a string.
-	Content param.Field[string] `json:"content,required"`
+	Content param.Field[string] `json:"content" api:"required"`
 	// The role of the message sender (e.g., 'user', 'assistant', 'system', 'tool').
-	Role param.Field[string] `json:"role,required"`
+	Role param.Field[string] `json:"role" api:"required"`
 }
 
 func (r AccountAIRunCfMetaExecuteLlama3_1_8bInstructFp8ParamsBodyMessagesMessage) MarshalJSON() (data []byte, err error) {
@@ -2486,8 +2486,8 @@ func (r AccountAIRunCfMetaExecuteLlama3_1_8bInstructFp8ParamsBodyMessagesMessage
 }
 
 type AccountAIRunCfMetaExecuteLlama3_1_8bInstructFp8ParamsBodyMessagesFunction struct {
-	Code param.Field[string] `json:"code,required"`
-	Name param.Field[string] `json:"name,required"`
+	Code param.Field[string] `json:"code" api:"required"`
+	Name param.Field[string] `json:"name" api:"required"`
 }
 
 func (r AccountAIRunCfMetaExecuteLlama3_1_8bInstructFp8ParamsBodyMessagesFunction) MarshalJSON() (data []byte, err error) {
@@ -2546,11 +2546,11 @@ type AccountAIRunCfMetaExecuteLlama3_1_8bInstructFp8ParamsBodyMessagesToolUnion 
 
 type AccountAIRunCfMetaExecuteLlama3_1_8bInstructFp8ParamsBodyMessagesToolsObject struct {
 	// A brief description of what the tool does.
-	Description param.Field[string] `json:"description,required"`
+	Description param.Field[string] `json:"description" api:"required"`
 	// The name of the tool. More descriptive the better.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Schema defining the parameters accepted by the tool.
-	Parameters param.Field[AccountAIRunCfMetaExecuteLlama3_1_8bInstructFp8ParamsBodyMessagesToolsObjectParameters] `json:"parameters,required"`
+	Parameters param.Field[AccountAIRunCfMetaExecuteLlama3_1_8bInstructFp8ParamsBodyMessagesToolsObjectParameters] `json:"parameters" api:"required"`
 }
 
 func (r AccountAIRunCfMetaExecuteLlama3_1_8bInstructFp8ParamsBodyMessagesToolsObject) MarshalJSON() (data []byte, err error) {
@@ -2563,9 +2563,9 @@ func (r AccountAIRunCfMetaExecuteLlama3_1_8bInstructFp8ParamsBodyMessagesToolsOb
 // Schema defining the parameters accepted by the tool.
 type AccountAIRunCfMetaExecuteLlama3_1_8bInstructFp8ParamsBodyMessagesToolsObjectParameters struct {
 	// Definitions of each parameter.
-	Properties param.Field[map[string]AccountAIRunCfMetaExecuteLlama3_1_8bInstructFp8ParamsBodyMessagesToolsObjectParametersProperties] `json:"properties,required"`
+	Properties param.Field[map[string]AccountAIRunCfMetaExecuteLlama3_1_8bInstructFp8ParamsBodyMessagesToolsObjectParametersProperties] `json:"properties" api:"required"`
 	// The type of the parameters object (usually 'object').
-	Type param.Field[string] `json:"type,required"`
+	Type param.Field[string] `json:"type" api:"required"`
 	// List of required parameter names.
 	Required param.Field[[]string] `json:"required"`
 }
@@ -2576,9 +2576,9 @@ func (r AccountAIRunCfMetaExecuteLlama3_1_8bInstructFp8ParamsBodyMessagesToolsOb
 
 type AccountAIRunCfMetaExecuteLlama3_1_8bInstructFp8ParamsBodyMessagesToolsObjectParametersProperties struct {
 	// A description of the expected parameter.
-	Description param.Field[string] `json:"description,required"`
+	Description param.Field[string] `json:"description" api:"required"`
 	// The data type of the parameter.
-	Type param.Field[string] `json:"type,required"`
+	Type param.Field[string] `json:"type" api:"required"`
 }
 
 func (r AccountAIRunCfMetaExecuteLlama3_1_8bInstructFp8ParamsBodyMessagesToolsObjectParametersProperties) MarshalJSON() (data []byte, err error) {
@@ -2657,7 +2657,7 @@ type AccountAIRunCfMetaExecuteLlama3_1_8bPreviewParamsBodyUnion interface {
 
 type AccountAIRunCfMetaExecuteLlama3_1_8bPreviewParamsBodyPrompt struct {
 	// The input text prompt for the model to generate a response.
-	Prompt param.Field[string] `json:"prompt,required"`
+	Prompt param.Field[string] `json:"prompt" api:"required"`
 	// Decreases the likelihood of the model repeating the same lines verbatim.
 	FrequencyPenalty param.Field[float64] `json:"frequency_penalty"`
 	// Name of the LoRA (Low-Rank Adaptation) model to fine-tune the base model.
@@ -2723,7 +2723,7 @@ func (r AccountAIRunCfMetaExecuteLlama3_1_8bPreviewParamsBodyPromptResponseForma
 
 type AccountAIRunCfMetaExecuteLlama3_1_8bPreviewParamsBodyMessages struct {
 	// An array of message objects representing the conversation history.
-	Messages param.Field[[]AccountAIRunCfMetaExecuteLlama3_1_8bPreviewParamsBodyMessagesMessage] `json:"messages,required"`
+	Messages param.Field[[]AccountAIRunCfMetaExecuteLlama3_1_8bPreviewParamsBodyMessagesMessage] `json:"messages" api:"required"`
 	// Decreases the likelihood of the model repeating the same lines verbatim.
 	FrequencyPenalty param.Field[float64]                                                                 `json:"frequency_penalty"`
 	Functions        param.Field[[]AccountAIRunCfMetaExecuteLlama3_1_8bPreviewParamsBodyMessagesFunction] `json:"functions"`
@@ -2766,9 +2766,9 @@ func (r AccountAIRunCfMetaExecuteLlama3_1_8bPreviewParamsBodyMessages) implement
 
 type AccountAIRunCfMetaExecuteLlama3_1_8bPreviewParamsBodyMessagesMessage struct {
 	// The content of the message as a string.
-	Content param.Field[string] `json:"content,required"`
+	Content param.Field[string] `json:"content" api:"required"`
 	// The role of the message sender (e.g., 'user', 'assistant', 'system', 'tool').
-	Role param.Field[string] `json:"role,required"`
+	Role param.Field[string] `json:"role" api:"required"`
 }
 
 func (r AccountAIRunCfMetaExecuteLlama3_1_8bPreviewParamsBodyMessagesMessage) MarshalJSON() (data []byte, err error) {
@@ -2776,8 +2776,8 @@ func (r AccountAIRunCfMetaExecuteLlama3_1_8bPreviewParamsBodyMessagesMessage) Ma
 }
 
 type AccountAIRunCfMetaExecuteLlama3_1_8bPreviewParamsBodyMessagesFunction struct {
-	Code param.Field[string] `json:"code,required"`
-	Name param.Field[string] `json:"name,required"`
+	Code param.Field[string] `json:"code" api:"required"`
+	Name param.Field[string] `json:"name" api:"required"`
 }
 
 func (r AccountAIRunCfMetaExecuteLlama3_1_8bPreviewParamsBodyMessagesFunction) MarshalJSON() (data []byte, err error) {
@@ -2836,11 +2836,11 @@ type AccountAIRunCfMetaExecuteLlama3_1_8bPreviewParamsBodyMessagesToolUnion inte
 
 type AccountAIRunCfMetaExecuteLlama3_1_8bPreviewParamsBodyMessagesToolsObject struct {
 	// A brief description of what the tool does.
-	Description param.Field[string] `json:"description,required"`
+	Description param.Field[string] `json:"description" api:"required"`
 	// The name of the tool. More descriptive the better.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Schema defining the parameters accepted by the tool.
-	Parameters param.Field[AccountAIRunCfMetaExecuteLlama3_1_8bPreviewParamsBodyMessagesToolsObjectParameters] `json:"parameters,required"`
+	Parameters param.Field[AccountAIRunCfMetaExecuteLlama3_1_8bPreviewParamsBodyMessagesToolsObjectParameters] `json:"parameters" api:"required"`
 }
 
 func (r AccountAIRunCfMetaExecuteLlama3_1_8bPreviewParamsBodyMessagesToolsObject) MarshalJSON() (data []byte, err error) {
@@ -2853,9 +2853,9 @@ func (r AccountAIRunCfMetaExecuteLlama3_1_8bPreviewParamsBodyMessagesToolsObject
 // Schema defining the parameters accepted by the tool.
 type AccountAIRunCfMetaExecuteLlama3_1_8bPreviewParamsBodyMessagesToolsObjectParameters struct {
 	// Definitions of each parameter.
-	Properties param.Field[map[string]AccountAIRunCfMetaExecuteLlama3_1_8bPreviewParamsBodyMessagesToolsObjectParametersProperties] `json:"properties,required"`
+	Properties param.Field[map[string]AccountAIRunCfMetaExecuteLlama3_1_8bPreviewParamsBodyMessagesToolsObjectParametersProperties] `json:"properties" api:"required"`
 	// The type of the parameters object (usually 'object').
-	Type param.Field[string] `json:"type,required"`
+	Type param.Field[string] `json:"type" api:"required"`
 	// List of required parameter names.
 	Required param.Field[[]string] `json:"required"`
 }
@@ -2866,9 +2866,9 @@ func (r AccountAIRunCfMetaExecuteLlama3_1_8bPreviewParamsBodyMessagesToolsObject
 
 type AccountAIRunCfMetaExecuteLlama3_1_8bPreviewParamsBodyMessagesToolsObjectParametersProperties struct {
 	// A description of the expected parameter.
-	Description param.Field[string] `json:"description,required"`
+	Description param.Field[string] `json:"description" api:"required"`
 	// The data type of the parameter.
-	Type param.Field[string] `json:"type,required"`
+	Type param.Field[string] `json:"type" api:"required"`
 }
 
 func (r AccountAIRunCfMetaExecuteLlama3_1_8bPreviewParamsBodyMessagesToolsObjectParametersProperties) MarshalJSON() (data []byte, err error) {
@@ -2883,7 +2883,7 @@ type AccountAIRunCfMetaExecuteLlama3_2_11bVisionInstructParams struct {
 func (r AccountAIRunCfMetaExecuteLlama3_2_11bVisionInstructParams) MarshalMultipart() (data []byte, contentType string, err error) {
 	buf := bytes.NewBuffer(nil)
 	writer := multipart.NewWriter(buf)
-	err = apiform.MarshalRoot(r, writer)
+	err = apiform.MarshalRoot(r.Body, writer)
 	if err != nil {
 		writer.Close()
 		return nil, "", err
@@ -2960,7 +2960,7 @@ type AccountAIRunCfMetaExecuteLlama3_2_11bVisionInstructParamsBodyUnion interfac
 
 type AccountAIRunCfMetaExecuteLlama3_2_11bVisionInstructParamsBodyPrompt struct {
 	// The input text prompt for the model to generate a response.
-	Prompt param.Field[string] `json:"prompt,required"`
+	Prompt param.Field[string] `json:"prompt" api:"required"`
 	// Decreases the likelihood of the model repeating the same lines verbatim.
 	FrequencyPenalty param.Field[float64] `json:"frequency_penalty"`
 	// An array of integers that represent the image data constrained to 8-bit unsigned
@@ -3019,7 +3019,7 @@ func (r AccountAIRunCfMetaExecuteLlama3_2_11bVisionInstructParamsBodyPromptImage
 
 type AccountAIRunCfMetaExecuteLlama3_2_11bVisionInstructParamsBodyMessages struct {
 	// An array of message objects representing the conversation history.
-	Messages param.Field[[]AccountAIRunCfMetaExecuteLlama3_2_11bVisionInstructParamsBodyMessagesMessage] `json:"messages,required"`
+	Messages param.Field[[]AccountAIRunCfMetaExecuteLlama3_2_11bVisionInstructParamsBodyMessagesMessage] `json:"messages" api:"required"`
 	// Decreases the likelihood of the model repeating the same lines verbatim.
 	FrequencyPenalty param.Field[float64]                                                                         `json:"frequency_penalty"`
 	Functions        param.Field[[]AccountAIRunCfMetaExecuteLlama3_2_11bVisionInstructParamsBodyMessagesFunction] `json:"functions"`
@@ -3132,8 +3132,8 @@ func (r AccountAIRunCfMetaExecuteLlama3_2_11bVisionInstructParamsBodyMessagesMes
 }
 
 type AccountAIRunCfMetaExecuteLlama3_2_11bVisionInstructParamsBodyMessagesFunction struct {
-	Code param.Field[string] `json:"code,required"`
-	Name param.Field[string] `json:"name,required"`
+	Code param.Field[string] `json:"code" api:"required"`
+	Name param.Field[string] `json:"name" api:"required"`
 }
 
 func (r AccountAIRunCfMetaExecuteLlama3_2_11bVisionInstructParamsBodyMessagesFunction) MarshalJSON() (data []byte, err error) {
@@ -3183,11 +3183,11 @@ type AccountAIRunCfMetaExecuteLlama3_2_11bVisionInstructParamsBodyMessagesToolUn
 
 type AccountAIRunCfMetaExecuteLlama3_2_11bVisionInstructParamsBodyMessagesToolsObject struct {
 	// A brief description of what the tool does.
-	Description param.Field[string] `json:"description,required"`
+	Description param.Field[string] `json:"description" api:"required"`
 	// The name of the tool. More descriptive the better.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Schema defining the parameters accepted by the tool.
-	Parameters param.Field[AccountAIRunCfMetaExecuteLlama3_2_11bVisionInstructParamsBodyMessagesToolsObjectParameters] `json:"parameters,required"`
+	Parameters param.Field[AccountAIRunCfMetaExecuteLlama3_2_11bVisionInstructParamsBodyMessagesToolsObjectParameters] `json:"parameters" api:"required"`
 }
 
 func (r AccountAIRunCfMetaExecuteLlama3_2_11bVisionInstructParamsBodyMessagesToolsObject) MarshalJSON() (data []byte, err error) {
@@ -3200,9 +3200,9 @@ func (r AccountAIRunCfMetaExecuteLlama3_2_11bVisionInstructParamsBodyMessagesToo
 // Schema defining the parameters accepted by the tool.
 type AccountAIRunCfMetaExecuteLlama3_2_11bVisionInstructParamsBodyMessagesToolsObjectParameters struct {
 	// Definitions of each parameter.
-	Properties param.Field[map[string]AccountAIRunCfMetaExecuteLlama3_2_11bVisionInstructParamsBodyMessagesToolsObjectParametersProperties] `json:"properties,required"`
+	Properties param.Field[map[string]AccountAIRunCfMetaExecuteLlama3_2_11bVisionInstructParamsBodyMessagesToolsObjectParametersProperties] `json:"properties" api:"required"`
 	// The type of the parameters object (usually 'object').
-	Type param.Field[string] `json:"type,required"`
+	Type param.Field[string] `json:"type" api:"required"`
 	// List of required parameter names.
 	Required param.Field[[]string] `json:"required"`
 }
@@ -3213,9 +3213,9 @@ func (r AccountAIRunCfMetaExecuteLlama3_2_11bVisionInstructParamsBodyMessagesToo
 
 type AccountAIRunCfMetaExecuteLlama3_2_11bVisionInstructParamsBodyMessagesToolsObjectParametersProperties struct {
 	// A description of the expected parameter.
-	Description param.Field[string] `json:"description,required"`
+	Description param.Field[string] `json:"description" api:"required"`
 	// The data type of the parameter.
-	Type param.Field[string] `json:"type,required"`
+	Type param.Field[string] `json:"type" api:"required"`
 }
 
 func (r AccountAIRunCfMetaExecuteLlama3_2_11bVisionInstructParamsBodyMessagesToolsObjectParametersProperties) MarshalJSON() (data []byte, err error) {
@@ -3294,7 +3294,7 @@ type AccountAIRunCfMetaExecuteLlama3_2_1bInstructParamsBodyUnion interface {
 
 type AccountAIRunCfMetaExecuteLlama3_2_1bInstructParamsBodyPrompt struct {
 	// The input text prompt for the model to generate a response.
-	Prompt param.Field[string] `json:"prompt,required"`
+	Prompt param.Field[string] `json:"prompt" api:"required"`
 	// Decreases the likelihood of the model repeating the same lines verbatim.
 	FrequencyPenalty param.Field[float64] `json:"frequency_penalty"`
 	// Name of the LoRA (Low-Rank Adaptation) model to fine-tune the base model.
@@ -3360,7 +3360,7 @@ func (r AccountAIRunCfMetaExecuteLlama3_2_1bInstructParamsBodyPromptResponseForm
 
 type AccountAIRunCfMetaExecuteLlama3_2_1bInstructParamsBodyMessages struct {
 	// An array of message objects representing the conversation history.
-	Messages param.Field[[]AccountAIRunCfMetaExecuteLlama3_2_1bInstructParamsBodyMessagesMessage] `json:"messages,required"`
+	Messages param.Field[[]AccountAIRunCfMetaExecuteLlama3_2_1bInstructParamsBodyMessagesMessage] `json:"messages" api:"required"`
 	// Decreases the likelihood of the model repeating the same lines verbatim.
 	FrequencyPenalty param.Field[float64]                                                                  `json:"frequency_penalty"`
 	Functions        param.Field[[]AccountAIRunCfMetaExecuteLlama3_2_1bInstructParamsBodyMessagesFunction] `json:"functions"`
@@ -3403,9 +3403,9 @@ func (r AccountAIRunCfMetaExecuteLlama3_2_1bInstructParamsBodyMessages) implemen
 
 type AccountAIRunCfMetaExecuteLlama3_2_1bInstructParamsBodyMessagesMessage struct {
 	// The content of the message as a string.
-	Content param.Field[string] `json:"content,required"`
+	Content param.Field[string] `json:"content" api:"required"`
 	// The role of the message sender (e.g., 'user', 'assistant', 'system', 'tool').
-	Role param.Field[string] `json:"role,required"`
+	Role param.Field[string] `json:"role" api:"required"`
 }
 
 func (r AccountAIRunCfMetaExecuteLlama3_2_1bInstructParamsBodyMessagesMessage) MarshalJSON() (data []byte, err error) {
@@ -3413,8 +3413,8 @@ func (r AccountAIRunCfMetaExecuteLlama3_2_1bInstructParamsBodyMessagesMessage) M
 }
 
 type AccountAIRunCfMetaExecuteLlama3_2_1bInstructParamsBodyMessagesFunction struct {
-	Code param.Field[string] `json:"code,required"`
-	Name param.Field[string] `json:"name,required"`
+	Code param.Field[string] `json:"code" api:"required"`
+	Name param.Field[string] `json:"name" api:"required"`
 }
 
 func (r AccountAIRunCfMetaExecuteLlama3_2_1bInstructParamsBodyMessagesFunction) MarshalJSON() (data []byte, err error) {
@@ -3473,11 +3473,11 @@ type AccountAIRunCfMetaExecuteLlama3_2_1bInstructParamsBodyMessagesToolUnion int
 
 type AccountAIRunCfMetaExecuteLlama3_2_1bInstructParamsBodyMessagesToolsObject struct {
 	// A brief description of what the tool does.
-	Description param.Field[string] `json:"description,required"`
+	Description param.Field[string] `json:"description" api:"required"`
 	// The name of the tool. More descriptive the better.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Schema defining the parameters accepted by the tool.
-	Parameters param.Field[AccountAIRunCfMetaExecuteLlama3_2_1bInstructParamsBodyMessagesToolsObjectParameters] `json:"parameters,required"`
+	Parameters param.Field[AccountAIRunCfMetaExecuteLlama3_2_1bInstructParamsBodyMessagesToolsObjectParameters] `json:"parameters" api:"required"`
 }
 
 func (r AccountAIRunCfMetaExecuteLlama3_2_1bInstructParamsBodyMessagesToolsObject) MarshalJSON() (data []byte, err error) {
@@ -3490,9 +3490,9 @@ func (r AccountAIRunCfMetaExecuteLlama3_2_1bInstructParamsBodyMessagesToolsObjec
 // Schema defining the parameters accepted by the tool.
 type AccountAIRunCfMetaExecuteLlama3_2_1bInstructParamsBodyMessagesToolsObjectParameters struct {
 	// Definitions of each parameter.
-	Properties param.Field[map[string]AccountAIRunCfMetaExecuteLlama3_2_1bInstructParamsBodyMessagesToolsObjectParametersProperties] `json:"properties,required"`
+	Properties param.Field[map[string]AccountAIRunCfMetaExecuteLlama3_2_1bInstructParamsBodyMessagesToolsObjectParametersProperties] `json:"properties" api:"required"`
 	// The type of the parameters object (usually 'object').
-	Type param.Field[string] `json:"type,required"`
+	Type param.Field[string] `json:"type" api:"required"`
 	// List of required parameter names.
 	Required param.Field[[]string] `json:"required"`
 }
@@ -3503,9 +3503,9 @@ func (r AccountAIRunCfMetaExecuteLlama3_2_1bInstructParamsBodyMessagesToolsObjec
 
 type AccountAIRunCfMetaExecuteLlama3_2_1bInstructParamsBodyMessagesToolsObjectParametersProperties struct {
 	// A description of the expected parameter.
-	Description param.Field[string] `json:"description,required"`
+	Description param.Field[string] `json:"description" api:"required"`
 	// The data type of the parameter.
-	Type param.Field[string] `json:"type,required"`
+	Type param.Field[string] `json:"type" api:"required"`
 }
 
 func (r AccountAIRunCfMetaExecuteLlama3_2_1bInstructParamsBodyMessagesToolsObjectParametersProperties) MarshalJSON() (data []byte, err error) {
@@ -3584,7 +3584,7 @@ type AccountAIRunCfMetaExecuteLlama3_2_3bInstructParamsBodyUnion interface {
 
 type AccountAIRunCfMetaExecuteLlama3_2_3bInstructParamsBodyPrompt struct {
 	// The input text prompt for the model to generate a response.
-	Prompt param.Field[string] `json:"prompt,required"`
+	Prompt param.Field[string] `json:"prompt" api:"required"`
 	// Decreases the likelihood of the model repeating the same lines verbatim.
 	FrequencyPenalty param.Field[float64] `json:"frequency_penalty"`
 	// Name of the LoRA (Low-Rank Adaptation) model to fine-tune the base model.
@@ -3650,7 +3650,7 @@ func (r AccountAIRunCfMetaExecuteLlama3_2_3bInstructParamsBodyPromptResponseForm
 
 type AccountAIRunCfMetaExecuteLlama3_2_3bInstructParamsBodyMessages struct {
 	// An array of message objects representing the conversation history.
-	Messages param.Field[[]AccountAIRunCfMetaExecuteLlama3_2_3bInstructParamsBodyMessagesMessage] `json:"messages,required"`
+	Messages param.Field[[]AccountAIRunCfMetaExecuteLlama3_2_3bInstructParamsBodyMessagesMessage] `json:"messages" api:"required"`
 	// Decreases the likelihood of the model repeating the same lines verbatim.
 	FrequencyPenalty param.Field[float64]                                                                  `json:"frequency_penalty"`
 	Functions        param.Field[[]AccountAIRunCfMetaExecuteLlama3_2_3bInstructParamsBodyMessagesFunction] `json:"functions"`
@@ -3693,9 +3693,9 @@ func (r AccountAIRunCfMetaExecuteLlama3_2_3bInstructParamsBodyMessages) implemen
 
 type AccountAIRunCfMetaExecuteLlama3_2_3bInstructParamsBodyMessagesMessage struct {
 	// The content of the message as a string.
-	Content param.Field[string] `json:"content,required"`
+	Content param.Field[string] `json:"content" api:"required"`
 	// The role of the message sender (e.g., 'user', 'assistant', 'system', 'tool').
-	Role param.Field[string] `json:"role,required"`
+	Role param.Field[string] `json:"role" api:"required"`
 }
 
 func (r AccountAIRunCfMetaExecuteLlama3_2_3bInstructParamsBodyMessagesMessage) MarshalJSON() (data []byte, err error) {
@@ -3703,8 +3703,8 @@ func (r AccountAIRunCfMetaExecuteLlama3_2_3bInstructParamsBodyMessagesMessage) M
 }
 
 type AccountAIRunCfMetaExecuteLlama3_2_3bInstructParamsBodyMessagesFunction struct {
-	Code param.Field[string] `json:"code,required"`
-	Name param.Field[string] `json:"name,required"`
+	Code param.Field[string] `json:"code" api:"required"`
+	Name param.Field[string] `json:"name" api:"required"`
 }
 
 func (r AccountAIRunCfMetaExecuteLlama3_2_3bInstructParamsBodyMessagesFunction) MarshalJSON() (data []byte, err error) {
@@ -3763,11 +3763,11 @@ type AccountAIRunCfMetaExecuteLlama3_2_3bInstructParamsBodyMessagesToolUnion int
 
 type AccountAIRunCfMetaExecuteLlama3_2_3bInstructParamsBodyMessagesToolsObject struct {
 	// A brief description of what the tool does.
-	Description param.Field[string] `json:"description,required"`
+	Description param.Field[string] `json:"description" api:"required"`
 	// The name of the tool. More descriptive the better.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Schema defining the parameters accepted by the tool.
-	Parameters param.Field[AccountAIRunCfMetaExecuteLlama3_2_3bInstructParamsBodyMessagesToolsObjectParameters] `json:"parameters,required"`
+	Parameters param.Field[AccountAIRunCfMetaExecuteLlama3_2_3bInstructParamsBodyMessagesToolsObjectParameters] `json:"parameters" api:"required"`
 }
 
 func (r AccountAIRunCfMetaExecuteLlama3_2_3bInstructParamsBodyMessagesToolsObject) MarshalJSON() (data []byte, err error) {
@@ -3780,9 +3780,9 @@ func (r AccountAIRunCfMetaExecuteLlama3_2_3bInstructParamsBodyMessagesToolsObjec
 // Schema defining the parameters accepted by the tool.
 type AccountAIRunCfMetaExecuteLlama3_2_3bInstructParamsBodyMessagesToolsObjectParameters struct {
 	// Definitions of each parameter.
-	Properties param.Field[map[string]AccountAIRunCfMetaExecuteLlama3_2_3bInstructParamsBodyMessagesToolsObjectParametersProperties] `json:"properties,required"`
+	Properties param.Field[map[string]AccountAIRunCfMetaExecuteLlama3_2_3bInstructParamsBodyMessagesToolsObjectParametersProperties] `json:"properties" api:"required"`
 	// The type of the parameters object (usually 'object').
-	Type param.Field[string] `json:"type,required"`
+	Type param.Field[string] `json:"type" api:"required"`
 	// List of required parameter names.
 	Required param.Field[[]string] `json:"required"`
 }
@@ -3793,9 +3793,9 @@ func (r AccountAIRunCfMetaExecuteLlama3_2_3bInstructParamsBodyMessagesToolsObjec
 
 type AccountAIRunCfMetaExecuteLlama3_2_3bInstructParamsBodyMessagesToolsObjectParametersProperties struct {
 	// A description of the expected parameter.
-	Description param.Field[string] `json:"description,required"`
+	Description param.Field[string] `json:"description" api:"required"`
 	// The data type of the parameter.
-	Type param.Field[string] `json:"type,required"`
+	Type param.Field[string] `json:"type" api:"required"`
 }
 
 func (r AccountAIRunCfMetaExecuteLlama3_2_3bInstructParamsBodyMessagesToolsObjectParametersProperties) MarshalJSON() (data []byte, err error) {
@@ -3874,7 +3874,7 @@ type AccountAIRunCfMetaExecuteLlama3_8bInstructParamsBodyUnion interface {
 
 type AccountAIRunCfMetaExecuteLlama3_8bInstructParamsBodyPrompt struct {
 	// The input text prompt for the model to generate a response.
-	Prompt param.Field[string] `json:"prompt,required"`
+	Prompt param.Field[string] `json:"prompt" api:"required"`
 	// Decreases the likelihood of the model repeating the same lines verbatim.
 	FrequencyPenalty param.Field[float64] `json:"frequency_penalty"`
 	// Name of the LoRA (Low-Rank Adaptation) model to fine-tune the base model.
@@ -3940,7 +3940,7 @@ func (r AccountAIRunCfMetaExecuteLlama3_8bInstructParamsBodyPromptResponseFormat
 
 type AccountAIRunCfMetaExecuteLlama3_8bInstructParamsBodyMessages struct {
 	// An array of message objects representing the conversation history.
-	Messages param.Field[[]AccountAIRunCfMetaExecuteLlama3_8bInstructParamsBodyMessagesMessage] `json:"messages,required"`
+	Messages param.Field[[]AccountAIRunCfMetaExecuteLlama3_8bInstructParamsBodyMessagesMessage] `json:"messages" api:"required"`
 	// Decreases the likelihood of the model repeating the same lines verbatim.
 	FrequencyPenalty param.Field[float64]                                                                `json:"frequency_penalty"`
 	Functions        param.Field[[]AccountAIRunCfMetaExecuteLlama3_8bInstructParamsBodyMessagesFunction] `json:"functions"`
@@ -3983,9 +3983,9 @@ func (r AccountAIRunCfMetaExecuteLlama3_8bInstructParamsBodyMessages) implements
 
 type AccountAIRunCfMetaExecuteLlama3_8bInstructParamsBodyMessagesMessage struct {
 	// The content of the message as a string.
-	Content param.Field[string] `json:"content,required"`
+	Content param.Field[string] `json:"content" api:"required"`
 	// The role of the message sender (e.g., 'user', 'assistant', 'system', 'tool').
-	Role param.Field[string] `json:"role,required"`
+	Role param.Field[string] `json:"role" api:"required"`
 }
 
 func (r AccountAIRunCfMetaExecuteLlama3_8bInstructParamsBodyMessagesMessage) MarshalJSON() (data []byte, err error) {
@@ -3993,8 +3993,8 @@ func (r AccountAIRunCfMetaExecuteLlama3_8bInstructParamsBodyMessagesMessage) Mar
 }
 
 type AccountAIRunCfMetaExecuteLlama3_8bInstructParamsBodyMessagesFunction struct {
-	Code param.Field[string] `json:"code,required"`
-	Name param.Field[string] `json:"name,required"`
+	Code param.Field[string] `json:"code" api:"required"`
+	Name param.Field[string] `json:"name" api:"required"`
 }
 
 func (r AccountAIRunCfMetaExecuteLlama3_8bInstructParamsBodyMessagesFunction) MarshalJSON() (data []byte, err error) {
@@ -4053,11 +4053,11 @@ type AccountAIRunCfMetaExecuteLlama3_8bInstructParamsBodyMessagesToolUnion inter
 
 type AccountAIRunCfMetaExecuteLlama3_8bInstructParamsBodyMessagesToolsObject struct {
 	// A brief description of what the tool does.
-	Description param.Field[string] `json:"description,required"`
+	Description param.Field[string] `json:"description" api:"required"`
 	// The name of the tool. More descriptive the better.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Schema defining the parameters accepted by the tool.
-	Parameters param.Field[AccountAIRunCfMetaExecuteLlama3_8bInstructParamsBodyMessagesToolsObjectParameters] `json:"parameters,required"`
+	Parameters param.Field[AccountAIRunCfMetaExecuteLlama3_8bInstructParamsBodyMessagesToolsObjectParameters] `json:"parameters" api:"required"`
 }
 
 func (r AccountAIRunCfMetaExecuteLlama3_8bInstructParamsBodyMessagesToolsObject) MarshalJSON() (data []byte, err error) {
@@ -4070,9 +4070,9 @@ func (r AccountAIRunCfMetaExecuteLlama3_8bInstructParamsBodyMessagesToolsObject)
 // Schema defining the parameters accepted by the tool.
 type AccountAIRunCfMetaExecuteLlama3_8bInstructParamsBodyMessagesToolsObjectParameters struct {
 	// Definitions of each parameter.
-	Properties param.Field[map[string]AccountAIRunCfMetaExecuteLlama3_8bInstructParamsBodyMessagesToolsObjectParametersProperties] `json:"properties,required"`
+	Properties param.Field[map[string]AccountAIRunCfMetaExecuteLlama3_8bInstructParamsBodyMessagesToolsObjectParametersProperties] `json:"properties" api:"required"`
 	// The type of the parameters object (usually 'object').
-	Type param.Field[string] `json:"type,required"`
+	Type param.Field[string] `json:"type" api:"required"`
 	// List of required parameter names.
 	Required param.Field[[]string] `json:"required"`
 }
@@ -4083,9 +4083,9 @@ func (r AccountAIRunCfMetaExecuteLlama3_8bInstructParamsBodyMessagesToolsObjectP
 
 type AccountAIRunCfMetaExecuteLlama3_8bInstructParamsBodyMessagesToolsObjectParametersProperties struct {
 	// A description of the expected parameter.
-	Description param.Field[string] `json:"description,required"`
+	Description param.Field[string] `json:"description" api:"required"`
 	// The data type of the parameter.
-	Type param.Field[string] `json:"type,required"`
+	Type param.Field[string] `json:"type" api:"required"`
 }
 
 func (r AccountAIRunCfMetaExecuteLlama3_8bInstructParamsBodyMessagesToolsObjectParametersProperties) MarshalJSON() (data []byte, err error) {
@@ -4164,7 +4164,7 @@ type AccountAIRunCfMetaExecuteLlama3_8bInstructAwqParamsBodyUnion interface {
 
 type AccountAIRunCfMetaExecuteLlama3_8bInstructAwqParamsBodyPrompt struct {
 	// The input text prompt for the model to generate a response.
-	Prompt param.Field[string] `json:"prompt,required"`
+	Prompt param.Field[string] `json:"prompt" api:"required"`
 	// Decreases the likelihood of the model repeating the same lines verbatim.
 	FrequencyPenalty param.Field[float64] `json:"frequency_penalty"`
 	// Name of the LoRA (Low-Rank Adaptation) model to fine-tune the base model.
@@ -4230,7 +4230,7 @@ func (r AccountAIRunCfMetaExecuteLlama3_8bInstructAwqParamsBodyPromptResponseFor
 
 type AccountAIRunCfMetaExecuteLlama3_8bInstructAwqParamsBodyMessages struct {
 	// An array of message objects representing the conversation history.
-	Messages param.Field[[]AccountAIRunCfMetaExecuteLlama3_8bInstructAwqParamsBodyMessagesMessage] `json:"messages,required"`
+	Messages param.Field[[]AccountAIRunCfMetaExecuteLlama3_8bInstructAwqParamsBodyMessagesMessage] `json:"messages" api:"required"`
 	// Decreases the likelihood of the model repeating the same lines verbatim.
 	FrequencyPenalty param.Field[float64]                                                                   `json:"frequency_penalty"`
 	Functions        param.Field[[]AccountAIRunCfMetaExecuteLlama3_8bInstructAwqParamsBodyMessagesFunction] `json:"functions"`
@@ -4273,9 +4273,9 @@ func (r AccountAIRunCfMetaExecuteLlama3_8bInstructAwqParamsBodyMessages) impleme
 
 type AccountAIRunCfMetaExecuteLlama3_8bInstructAwqParamsBodyMessagesMessage struct {
 	// The content of the message as a string.
-	Content param.Field[string] `json:"content,required"`
+	Content param.Field[string] `json:"content" api:"required"`
 	// The role of the message sender (e.g., 'user', 'assistant', 'system', 'tool').
-	Role param.Field[string] `json:"role,required"`
+	Role param.Field[string] `json:"role" api:"required"`
 }
 
 func (r AccountAIRunCfMetaExecuteLlama3_8bInstructAwqParamsBodyMessagesMessage) MarshalJSON() (data []byte, err error) {
@@ -4283,8 +4283,8 @@ func (r AccountAIRunCfMetaExecuteLlama3_8bInstructAwqParamsBodyMessagesMessage) 
 }
 
 type AccountAIRunCfMetaExecuteLlama3_8bInstructAwqParamsBodyMessagesFunction struct {
-	Code param.Field[string] `json:"code,required"`
-	Name param.Field[string] `json:"name,required"`
+	Code param.Field[string] `json:"code" api:"required"`
+	Name param.Field[string] `json:"name" api:"required"`
 }
 
 func (r AccountAIRunCfMetaExecuteLlama3_8bInstructAwqParamsBodyMessagesFunction) MarshalJSON() (data []byte, err error) {
@@ -4343,11 +4343,11 @@ type AccountAIRunCfMetaExecuteLlama3_8bInstructAwqParamsBodyMessagesToolUnion in
 
 type AccountAIRunCfMetaExecuteLlama3_8bInstructAwqParamsBodyMessagesToolsObject struct {
 	// A brief description of what the tool does.
-	Description param.Field[string] `json:"description,required"`
+	Description param.Field[string] `json:"description" api:"required"`
 	// The name of the tool. More descriptive the better.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Schema defining the parameters accepted by the tool.
-	Parameters param.Field[AccountAIRunCfMetaExecuteLlama3_8bInstructAwqParamsBodyMessagesToolsObjectParameters] `json:"parameters,required"`
+	Parameters param.Field[AccountAIRunCfMetaExecuteLlama3_8bInstructAwqParamsBodyMessagesToolsObjectParameters] `json:"parameters" api:"required"`
 }
 
 func (r AccountAIRunCfMetaExecuteLlama3_8bInstructAwqParamsBodyMessagesToolsObject) MarshalJSON() (data []byte, err error) {
@@ -4360,9 +4360,9 @@ func (r AccountAIRunCfMetaExecuteLlama3_8bInstructAwqParamsBodyMessagesToolsObje
 // Schema defining the parameters accepted by the tool.
 type AccountAIRunCfMetaExecuteLlama3_8bInstructAwqParamsBodyMessagesToolsObjectParameters struct {
 	// Definitions of each parameter.
-	Properties param.Field[map[string]AccountAIRunCfMetaExecuteLlama3_8bInstructAwqParamsBodyMessagesToolsObjectParametersProperties] `json:"properties,required"`
+	Properties param.Field[map[string]AccountAIRunCfMetaExecuteLlama3_8bInstructAwqParamsBodyMessagesToolsObjectParametersProperties] `json:"properties" api:"required"`
 	// The type of the parameters object (usually 'object').
-	Type param.Field[string] `json:"type,required"`
+	Type param.Field[string] `json:"type" api:"required"`
 	// List of required parameter names.
 	Required param.Field[[]string] `json:"required"`
 }
@@ -4373,9 +4373,9 @@ func (r AccountAIRunCfMetaExecuteLlama3_8bInstructAwqParamsBodyMessagesToolsObje
 
 type AccountAIRunCfMetaExecuteLlama3_8bInstructAwqParamsBodyMessagesToolsObjectParametersProperties struct {
 	// A description of the expected parameter.
-	Description param.Field[string] `json:"description,required"`
+	Description param.Field[string] `json:"description" api:"required"`
 	// The data type of the parameter.
-	Type param.Field[string] `json:"type,required"`
+	Type param.Field[string] `json:"type" api:"required"`
 }
 
 func (r AccountAIRunCfMetaExecuteLlama3_8bInstructAwqParamsBodyMessagesToolsObjectParametersProperties) MarshalJSON() (data []byte, err error) {
@@ -4384,7 +4384,7 @@ func (r AccountAIRunCfMetaExecuteLlama3_8bInstructAwqParamsBodyMessagesToolsObje
 
 type AccountAIRunCfMetaExecuteLlamaGuard3_8bParams struct {
 	// An array of message objects representing the conversation history.
-	Messages     param.Field[[]AccountAIRunCfMetaExecuteLlamaGuard3_8bParamsMessage] `json:"messages,required"`
+	Messages     param.Field[[]AccountAIRunCfMetaExecuteLlamaGuard3_8bParamsMessage] `json:"messages" api:"required"`
 	QueueRequest param.Field[string]                                                 `query:"queueRequest"`
 	// The maximum number of tokens to generate in the response.
 	MaxTokens param.Field[int64] `json:"max_tokens"`
@@ -4410,9 +4410,9 @@ func (r AccountAIRunCfMetaExecuteLlamaGuard3_8bParams) URLQuery() (v url.Values)
 
 type AccountAIRunCfMetaExecuteLlamaGuard3_8bParamsMessage struct {
 	// The content of the message as a string.
-	Content param.Field[string] `json:"content,required"`
+	Content param.Field[string] `json:"content" api:"required"`
 	// The role of the message sender must alternate between 'user' and 'assistant'.
-	Role param.Field[AccountAIRunCfMetaExecuteLlamaGuard3_8bParamsMessagesRole] `json:"role,required"`
+	Role param.Field[AccountAIRunCfMetaExecuteLlamaGuard3_8bParamsMessagesRole] `json:"role" api:"required"`
 }
 
 func (r AccountAIRunCfMetaExecuteLlamaGuard3_8bParamsMessage) MarshalJSON() (data []byte, err error) {
@@ -4490,9 +4490,9 @@ type AccountAIRunCfMetaExecuteM2m100_1_2bParamsBodyUnion interface {
 
 type AccountAIRunCfMetaExecuteM2m100_1_2bParamsBodyObject struct {
 	// The language code to translate the text into (e.g., 'es' for Spanish)
-	TargetLang param.Field[string] `json:"target_lang,required"`
+	TargetLang param.Field[string] `json:"target_lang" api:"required"`
 	// The text to be translated
-	Text param.Field[string] `json:"text,required"`
+	Text param.Field[string] `json:"text" api:"required"`
 	// The language code of the source text (e.g., 'en' for English). Defaults to 'en'
 	// if not specified
 	SourceLang param.Field[string] `json:"source_lang"`
@@ -4507,7 +4507,7 @@ func (r AccountAIRunCfMetaExecuteM2m100_1_2bParamsBodyObject) implementsAccountA
 
 type AccountAIRunCfMetaExecuteM2m100_1_2bParamsBodyRequests struct {
 	// Batch of the embeddings requests to run using async-queue
-	Requests param.Field[[]AccountAIRunCfMetaExecuteM2m100_1_2bParamsBodyRequestsRequest] `json:"requests,required"`
+	Requests param.Field[[]AccountAIRunCfMetaExecuteM2m100_1_2bParamsBodyRequestsRequest] `json:"requests" api:"required"`
 }
 
 func (r AccountAIRunCfMetaExecuteM2m100_1_2bParamsBodyRequests) MarshalJSON() (data []byte, err error) {
@@ -4519,9 +4519,9 @@ func (r AccountAIRunCfMetaExecuteM2m100_1_2bParamsBodyRequests) implementsAccoun
 
 type AccountAIRunCfMetaExecuteM2m100_1_2bParamsBodyRequestsRequest struct {
 	// The language code to translate the text into (e.g., 'es' for Spanish)
-	TargetLang param.Field[string] `json:"target_lang,required"`
+	TargetLang param.Field[string] `json:"target_lang" api:"required"`
 	// The text to be translated
-	Text param.Field[string] `json:"text,required"`
+	Text param.Field[string] `json:"text" api:"required"`
 	// The language code of the source text (e.g., 'en' for English). Defaults to 'en'
 	// if not specified
 	SourceLang param.Field[string] `json:"source_lang"`

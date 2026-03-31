@@ -50,11 +50,11 @@ func (r *RadarRankingService) GetDomainRank(ctx context.Context, domain string, 
 	opts = slices.Concat(r.Options, opts)
 	if domain == "" {
 		err = errors.New("missing required domain parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("radar/ranking/domain/%s", domain)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves domains rank over time.
@@ -62,7 +62,7 @@ func (r *RadarRankingService) GetTimeseriesGroups(ctx context.Context, query Rad
 	opts = slices.Concat(r.Options, opts)
 	path := "radar/ranking/timeseries_groups"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves the top or trending domains based on their rank. Popular domains are
@@ -73,12 +73,12 @@ func (r *RadarRankingService) GetTopDomains(ctx context.Context, query RadarRank
 	opts = slices.Concat(r.Options, opts)
 	path := "radar/ranking/top"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type RadarRankingGetDomainRankResponse struct {
-	Result  RadarRankingGetDomainRankResponseResult `json:"result,required"`
-	Success bool                                    `json:"success,required"`
+	Result  RadarRankingGetDomainRankResponseResult `json:"result" api:"required"`
+	Success bool                                    `json:"success" api:"required"`
 	JSON    radarRankingGetDomainRankResponseJSON   `json:"-"`
 }
 
@@ -100,8 +100,8 @@ func (r radarRankingGetDomainRankResponseJSON) RawJSON() string {
 }
 
 type RadarRankingGetDomainRankResponseResult struct {
-	Details0 RadarRankingGetDomainRankResponseResultDetails0 `json:"details_0,required"`
-	Meta     RadarRankingGetDomainRankResponseResultMeta     `json:"meta,required"`
+	Details0 RadarRankingGetDomainRankResponseResultDetails0 `json:"details_0" api:"required"`
+	Meta     RadarRankingGetDomainRankResponseResultMeta     `json:"meta" api:"required"`
 	JSON     radarRankingGetDomainRankResponseResultJSON     `json:"-"`
 }
 
@@ -123,7 +123,7 @@ func (r radarRankingGetDomainRankResponseResultJSON) RawJSON() string {
 }
 
 type RadarRankingGetDomainRankResponseResultDetails0 struct {
-	Categories []RadarRankingGetDomainRankResponseResultDetails0Category `json:"categories,required"`
+	Categories []RadarRankingGetDomainRankResponseResultDetails0Category `json:"categories" api:"required"`
 	// Only available in POPULAR ranking for the most recent ranking.
 	Bucket       string                                                       `json:"bucket"`
 	Rank         int64                                                        `json:"rank"`
@@ -151,9 +151,9 @@ func (r radarRankingGetDomainRankResponseResultDetails0JSON) RawJSON() string {
 }
 
 type RadarRankingGetDomainRankResponseResultDetails0Category struct {
-	ID              int64                                                       `json:"id,required"`
-	Name            string                                                      `json:"name,required"`
-	SuperCategoryID int64                                                       `json:"superCategoryId,required"`
+	ID              int64                                                       `json:"id" api:"required"`
+	Name            string                                                      `json:"name" api:"required"`
+	SuperCategoryID int64                                                       `json:"superCategoryId" api:"required"`
 	JSON            radarRankingGetDomainRankResponseResultDetails0CategoryJSON `json:"-"`
 }
 
@@ -177,9 +177,9 @@ func (r radarRankingGetDomainRankResponseResultDetails0CategoryJSON) RawJSON() s
 }
 
 type RadarRankingGetDomainRankResponseResultDetails0TopLocation struct {
-	LocationCode string                                                         `json:"locationCode,required"`
-	LocationName string                                                         `json:"locationName,required"`
-	Rank         int64                                                          `json:"rank,required"`
+	LocationCode string                                                         `json:"locationCode" api:"required"`
+	LocationName string                                                         `json:"locationName" api:"required"`
+	Rank         int64                                                          `json:"rank" api:"required"`
 	JSON         radarRankingGetDomainRankResponseResultDetails0TopLocationJSON `json:"-"`
 }
 
@@ -203,7 +203,7 @@ func (r radarRankingGetDomainRankResponseResultDetails0TopLocationJSON) RawJSON(
 }
 
 type RadarRankingGetDomainRankResponseResultMeta struct {
-	DateRange []RadarRankingGetDomainRankResponseResultMetaDateRange `json:"dateRange,required"`
+	DateRange []RadarRankingGetDomainRankResponseResultMetaDateRange `json:"dateRange" api:"required"`
 	JSON      radarRankingGetDomainRankResponseResultMetaJSON        `json:"-"`
 }
 
@@ -225,9 +225,9 @@ func (r radarRankingGetDomainRankResponseResultMetaJSON) RawJSON() string {
 
 type RadarRankingGetDomainRankResponseResultMetaDateRange struct {
 	// Adjusted end of date range.
-	EndTime time.Time `json:"endTime,required" format:"date-time"`
+	EndTime time.Time `json:"endTime" api:"required" format:"date-time"`
 	// Adjusted start of date range.
-	StartTime time.Time                                                `json:"startTime,required" format:"date-time"`
+	StartTime time.Time                                                `json:"startTime" api:"required" format:"date-time"`
 	JSON      radarRankingGetDomainRankResponseResultMetaDateRangeJSON `json:"-"`
 }
 
@@ -249,8 +249,8 @@ func (r radarRankingGetDomainRankResponseResultMetaDateRangeJSON) RawJSON() stri
 }
 
 type RadarRankingGetTimeseriesGroupsResponse struct {
-	Result  RadarRankingGetTimeseriesGroupsResponseResult `json:"result,required"`
-	Success bool                                          `json:"success,required"`
+	Result  RadarRankingGetTimeseriesGroupsResponseResult `json:"result" api:"required"`
+	Success bool                                          `json:"success" api:"required"`
 	JSON    radarRankingGetTimeseriesGroupsResponseJSON   `json:"-"`
 }
 
@@ -273,8 +273,8 @@ func (r radarRankingGetTimeseriesGroupsResponseJSON) RawJSON() string {
 
 type RadarRankingGetTimeseriesGroupsResponseResult struct {
 	// Metadata for the results.
-	Meta   RadarRankingGetTimeseriesGroupsResponseResultMeta   `json:"meta,required"`
-	Serie0 RadarRankingGetTimeseriesGroupsResponseResultSerie0 `json:"serie_0,required"`
+	Meta   RadarRankingGetTimeseriesGroupsResponseResultMeta   `json:"meta" api:"required"`
+	Serie0 RadarRankingGetTimeseriesGroupsResponseResultSerie0 `json:"serie_0" api:"required"`
 	JSON   radarRankingGetTimeseriesGroupsResponseResultJSON   `json:"-"`
 }
 
@@ -300,16 +300,16 @@ type RadarRankingGetTimeseriesGroupsResponseResultMeta struct {
 	// Aggregation interval of the results (e.g., in 15 minutes or 1 hour intervals).
 	// Refer to
 	// [Aggregation intervals](https://developers.cloudflare.com/radar/concepts/aggregation-intervals/).
-	AggInterval    RadarRankingGetTimeseriesGroupsResponseResultMetaAggInterval    `json:"aggInterval,required"`
-	ConfidenceInfo RadarRankingGetTimeseriesGroupsResponseResultMetaConfidenceInfo `json:"confidenceInfo,required"`
-	DateRange      []RadarRankingGetTimeseriesGroupsResponseResultMetaDateRange    `json:"dateRange,required"`
+	AggInterval    RadarRankingGetTimeseriesGroupsResponseResultMetaAggInterval    `json:"aggInterval" api:"required"`
+	ConfidenceInfo RadarRankingGetTimeseriesGroupsResponseResultMetaConfidenceInfo `json:"confidenceInfo" api:"required"`
+	DateRange      []RadarRankingGetTimeseriesGroupsResponseResultMetaDateRange    `json:"dateRange" api:"required"`
 	// Timestamp of the last dataset update.
-	LastUpdated time.Time `json:"lastUpdated,required" format:"date-time"`
+	LastUpdated time.Time `json:"lastUpdated" api:"required" format:"date-time"`
 	// Normalization method applied to the results. Refer to
 	// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
-	Normalization RadarRankingGetTimeseriesGroupsResponseResultMetaNormalization `json:"normalization,required"`
+	Normalization RadarRankingGetTimeseriesGroupsResponseResultMetaNormalization `json:"normalization" api:"required"`
 	// Measurement units for the results.
-	Units []RadarRankingGetTimeseriesGroupsResponseResultMetaUnit `json:"units,required"`
+	Units []RadarRankingGetTimeseriesGroupsResponseResultMetaUnit `json:"units" api:"required"`
 	JSON  radarRankingGetTimeseriesGroupsResponseResultMetaJSON   `json:"-"`
 }
 
@@ -356,9 +356,9 @@ func (r RadarRankingGetTimeseriesGroupsResponseResultMetaAggInterval) IsKnown() 
 }
 
 type RadarRankingGetTimeseriesGroupsResponseResultMetaConfidenceInfo struct {
-	Annotations []RadarRankingGetTimeseriesGroupsResponseResultMetaConfidenceInfoAnnotation `json:"annotations,required"`
+	Annotations []RadarRankingGetTimeseriesGroupsResponseResultMetaConfidenceInfoAnnotation `json:"annotations" api:"required"`
 	// Provides an indication of how much confidence Cloudflare has in the data.
-	Level int64                                                               `json:"level,required"`
+	Level int64                                                               `json:"level" api:"required"`
 	JSON  radarRankingGetTimeseriesGroupsResponseResultMetaConfidenceInfoJSON `json:"-"`
 }
 
@@ -382,14 +382,14 @@ func (r radarRankingGetTimeseriesGroupsResponseResultMetaConfidenceInfoJSON) Raw
 
 // Annotation associated with the result (e.g. outage or other type of event).
 type RadarRankingGetTimeseriesGroupsResponseResultMetaConfidenceInfoAnnotation struct {
-	DataSource  string    `json:"dataSource,required"`
-	Description string    `json:"description,required"`
-	EndDate     time.Time `json:"endDate,required" format:"date-time"`
-	EventType   string    `json:"eventType,required"`
+	DataSource  string    `json:"dataSource" api:"required"`
+	Description string    `json:"description" api:"required"`
+	EndDate     time.Time `json:"endDate" api:"required" format:"date-time"`
+	EventType   string    `json:"eventType" api:"required"`
 	// Whether event is a single point in time or a time range.
-	IsInstantaneous bool                                                                          `json:"isInstantaneous,required"`
-	LinkedURL       string                                                                        `json:"linkedUrl,required" format:"uri"`
-	StartDate       time.Time                                                                     `json:"startDate,required" format:"date-time"`
+	IsInstantaneous bool                                                                          `json:"isInstantaneous" api:"required"`
+	LinkedURL       string                                                                        `json:"linkedUrl" api:"required" format:"uri"`
+	StartDate       time.Time                                                                     `json:"startDate" api:"required" format:"date-time"`
 	JSON            radarRankingGetTimeseriesGroupsResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
 }
 
@@ -418,9 +418,9 @@ func (r radarRankingGetTimeseriesGroupsResponseResultMetaConfidenceInfoAnnotatio
 
 type RadarRankingGetTimeseriesGroupsResponseResultMetaDateRange struct {
 	// Adjusted end of date range.
-	EndTime time.Time `json:"endTime,required" format:"date-time"`
+	EndTime time.Time `json:"endTime" api:"required" format:"date-time"`
 	// Adjusted start of date range.
-	StartTime time.Time                                                      `json:"startTime,required" format:"date-time"`
+	StartTime time.Time                                                      `json:"startTime" api:"required" format:"date-time"`
 	JSON      radarRankingGetTimeseriesGroupsResponseResultMetaDateRangeJSON `json:"-"`
 }
 
@@ -466,8 +466,8 @@ func (r RadarRankingGetTimeseriesGroupsResponseResultMetaNormalization) IsKnown(
 }
 
 type RadarRankingGetTimeseriesGroupsResponseResultMetaUnit struct {
-	Name  string                                                    `json:"name,required"`
-	Value string                                                    `json:"value,required"`
+	Name  string                                                    `json:"name" api:"required"`
+	Value string                                                    `json:"value" api:"required"`
 	JSON  radarRankingGetTimeseriesGroupsResponseResultMetaUnitJSON `json:"-"`
 }
 
@@ -489,8 +489,8 @@ func (r radarRankingGetTimeseriesGroupsResponseResultMetaUnitJSON) RawJSON() str
 }
 
 type RadarRankingGetTimeseriesGroupsResponseResultSerie0 struct {
-	Timestamps  []time.Time                                                           `json:"timestamps,required" format:"date-time"`
-	ExtraFields map[string][]RadarRankingGetTimeseriesGroupsResponseResultSerie0Union `json:"-,extras"`
+	Timestamps  []time.Time                                                           `json:"timestamps" api:"required" format:"date-time"`
+	ExtraFields map[string][]RadarRankingGetTimeseriesGroupsResponseResultSerie0Union `json:"-" api:"extrafields"`
 	JSON        radarRankingGetTimeseriesGroupsResponseResultSerie0JSON               `json:"-"`
 }
 
@@ -533,8 +533,8 @@ func init() {
 }
 
 type RadarRankingGetTopDomainsResponse struct {
-	Result  RadarRankingGetTopDomainsResponseResult `json:"result,required"`
-	Success bool                                    `json:"success,required"`
+	Result  RadarRankingGetTopDomainsResponseResult `json:"result" api:"required"`
+	Success bool                                    `json:"success" api:"required"`
 	JSON    radarRankingGetTopDomainsResponseJSON   `json:"-"`
 }
 
@@ -556,8 +556,8 @@ func (r radarRankingGetTopDomainsResponseJSON) RawJSON() string {
 }
 
 type RadarRankingGetTopDomainsResponseResult struct {
-	Meta RadarRankingGetTopDomainsResponseResultMeta   `json:"meta,required"`
-	Top0 []RadarRankingGetTopDomainsResponseResultTop0 `json:"top_0,required"`
+	Meta RadarRankingGetTopDomainsResponseResultMeta   `json:"meta" api:"required"`
+	Top0 []RadarRankingGetTopDomainsResponseResultTop0 `json:"top_0" api:"required"`
 	JSON radarRankingGetTopDomainsResponseResultJSON   `json:"-"`
 }
 
@@ -579,15 +579,15 @@ func (r radarRankingGetTopDomainsResponseResultJSON) RawJSON() string {
 }
 
 type RadarRankingGetTopDomainsResponseResultMeta struct {
-	ConfidenceInfo RadarRankingGetTopDomainsResponseResultMetaConfidenceInfo `json:"confidenceInfo,required,nullable"`
-	DateRange      []RadarRankingGetTopDomainsResponseResultMetaDateRange    `json:"dateRange,required"`
+	ConfidenceInfo RadarRankingGetTopDomainsResponseResultMetaConfidenceInfo `json:"confidenceInfo" api:"required,nullable"`
+	DateRange      []RadarRankingGetTopDomainsResponseResultMetaDateRange    `json:"dateRange" api:"required"`
 	// Timestamp of the last dataset update.
-	LastUpdated time.Time `json:"lastUpdated,required" format:"date-time"`
+	LastUpdated time.Time `json:"lastUpdated" api:"required" format:"date-time"`
 	// Normalization method applied to the results. Refer to
 	// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
-	Normalization RadarRankingGetTopDomainsResponseResultMetaNormalization `json:"normalization,required"`
+	Normalization RadarRankingGetTopDomainsResponseResultMetaNormalization `json:"normalization" api:"required"`
 	// Measurement units for the results.
-	Units []RadarRankingGetTopDomainsResponseResultMetaUnit `json:"units,required"`
+	Units []RadarRankingGetTopDomainsResponseResultMetaUnit `json:"units" api:"required"`
 	JSON  radarRankingGetTopDomainsResponseResultMetaJSON   `json:"-"`
 }
 
@@ -612,9 +612,9 @@ func (r radarRankingGetTopDomainsResponseResultMetaJSON) RawJSON() string {
 }
 
 type RadarRankingGetTopDomainsResponseResultMetaConfidenceInfo struct {
-	Annotations []RadarRankingGetTopDomainsResponseResultMetaConfidenceInfoAnnotation `json:"annotations,required"`
+	Annotations []RadarRankingGetTopDomainsResponseResultMetaConfidenceInfoAnnotation `json:"annotations" api:"required"`
 	// Provides an indication of how much confidence Cloudflare has in the data.
-	Level int64                                                         `json:"level,required"`
+	Level int64                                                         `json:"level" api:"required"`
 	JSON  radarRankingGetTopDomainsResponseResultMetaConfidenceInfoJSON `json:"-"`
 }
 
@@ -638,14 +638,14 @@ func (r radarRankingGetTopDomainsResponseResultMetaConfidenceInfoJSON) RawJSON()
 
 // Annotation associated with the result (e.g. outage or other type of event).
 type RadarRankingGetTopDomainsResponseResultMetaConfidenceInfoAnnotation struct {
-	DataSource  string    `json:"dataSource,required"`
-	Description string    `json:"description,required"`
-	EndDate     time.Time `json:"endDate,required" format:"date-time"`
-	EventType   string    `json:"eventType,required"`
+	DataSource  string    `json:"dataSource" api:"required"`
+	Description string    `json:"description" api:"required"`
+	EndDate     time.Time `json:"endDate" api:"required" format:"date-time"`
+	EventType   string    `json:"eventType" api:"required"`
 	// Whether event is a single point in time or a time range.
-	IsInstantaneous bool                                                                    `json:"isInstantaneous,required"`
-	LinkedURL       string                                                                  `json:"linkedUrl,required" format:"uri"`
-	StartDate       time.Time                                                               `json:"startDate,required" format:"date-time"`
+	IsInstantaneous bool                                                                    `json:"isInstantaneous" api:"required"`
+	LinkedURL       string                                                                  `json:"linkedUrl" api:"required" format:"uri"`
+	StartDate       time.Time                                                               `json:"startDate" api:"required" format:"date-time"`
 	JSON            radarRankingGetTopDomainsResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
 }
 
@@ -674,9 +674,9 @@ func (r radarRankingGetTopDomainsResponseResultMetaConfidenceInfoAnnotationJSON)
 
 type RadarRankingGetTopDomainsResponseResultMetaDateRange struct {
 	// Adjusted end of date range.
-	EndTime time.Time `json:"endTime,required" format:"date-time"`
+	EndTime time.Time `json:"endTime" api:"required" format:"date-time"`
 	// Adjusted start of date range.
-	StartTime time.Time                                                `json:"startTime,required" format:"date-time"`
+	StartTime time.Time                                                `json:"startTime" api:"required" format:"date-time"`
 	JSON      radarRankingGetTopDomainsResponseResultMetaDateRangeJSON `json:"-"`
 }
 
@@ -721,8 +721,8 @@ func (r RadarRankingGetTopDomainsResponseResultMetaNormalization) IsKnown() bool
 }
 
 type RadarRankingGetTopDomainsResponseResultMetaUnit struct {
-	Name  string                                              `json:"name,required"`
-	Value string                                              `json:"value,required"`
+	Name  string                                              `json:"name" api:"required"`
+	Value string                                              `json:"value" api:"required"`
 	JSON  radarRankingGetTopDomainsResponseResultMetaUnitJSON `json:"-"`
 }
 
@@ -744,9 +744,9 @@ func (r radarRankingGetTopDomainsResponseResultMetaUnitJSON) RawJSON() string {
 }
 
 type RadarRankingGetTopDomainsResponseResultTop0 struct {
-	Categories []RadarRankingGetTopDomainsResponseResultTop0Category `json:"categories,required"`
-	Domain     string                                                `json:"domain,required"`
-	Rank       int64                                                 `json:"rank,required"`
+	Categories []RadarRankingGetTopDomainsResponseResultTop0Category `json:"categories" api:"required"`
+	Domain     string                                                `json:"domain" api:"required"`
+	Rank       int64                                                 `json:"rank" api:"required"`
 	// Only available in TRENDING rankings.
 	PctRankChange float64                                         `json:"pctRankChange"`
 	JSON          radarRankingGetTopDomainsResponseResultTop0JSON `json:"-"`
@@ -772,9 +772,9 @@ func (r radarRankingGetTopDomainsResponseResultTop0JSON) RawJSON() string {
 }
 
 type RadarRankingGetTopDomainsResponseResultTop0Category struct {
-	ID              float64                                                 `json:"id,required"`
-	Name            string                                                  `json:"name,required"`
-	SuperCategoryID float64                                                 `json:"superCategoryId,required"`
+	ID              float64                                                 `json:"id" api:"required"`
+	Name            string                                                  `json:"name" api:"required"`
+	SuperCategoryID float64                                                 `json:"superCategoryId" api:"required"`
 	JSON            radarRankingGetTopDomainsResponseResultTop0CategoryJSON `json:"-"`
 }
 

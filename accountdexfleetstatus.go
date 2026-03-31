@@ -41,11 +41,11 @@ func (r *AccountDexFleetStatusService) ListDevices(ctx context.Context, accountI
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/dex/fleet-status/devices", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // List details for live (up to 60 minutes) devices using WARP
@@ -53,24 +53,24 @@ func (r *AccountDexFleetStatusService) ListLiveStatus(ctx context.Context, accou
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/dex/fleet-status/live", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // List details for devices using WARP, up to 7 days
 func (r *AccountDexFleetStatusService) ListOverTime(ctx context.Context, accountID string, query AccountDexFleetStatusListOverTimeParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("accounts/%s/dex/fleet-status/over-time", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, nil, opts...)
-	return
+	return err
 }
 
 type LiveStat struct {
@@ -97,10 +97,10 @@ func (r liveStatJSON) RawJSON() string {
 }
 
 type AccountDexFleetStatusListDevicesResponse struct {
-	Errors   []Item `json:"errors,required"`
-	Messages []Item `json:"messages,required"`
+	Errors   []Item `json:"errors" api:"required"`
+	Messages []Item `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success    AccountDexFleetStatusListDevicesResponseSuccess    `json:"success,required"`
+	Success    AccountDexFleetStatusListDevicesResponseSuccess    `json:"success" api:"required"`
 	Result     []Device                                           `json:"result"`
 	ResultInfo AccountDexFleetStatusListDevicesResponseResultInfo `json:"result_info"`
 	JSON       accountDexFleetStatusListDevicesResponseJSON       `json:"-"`
@@ -173,10 +173,10 @@ func (r accountDexFleetStatusListDevicesResponseResultInfoJSON) RawJSON() string
 }
 
 type AccountDexFleetStatusListLiveStatusResponse struct {
-	Errors   []Item `json:"errors,required"`
-	Messages []Item `json:"messages,required"`
+	Errors   []Item `json:"errors" api:"required"`
+	Messages []Item `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountDexFleetStatusListLiveStatusResponseSuccess `json:"success,required"`
+	Success AccountDexFleetStatusListLiveStatusResponseSuccess `json:"success" api:"required"`
 	Result  AccountDexFleetStatusListLiveStatusResponseResult  `json:"result"`
 	JSON    accountDexFleetStatusListLiveStatusResponseJSON    `json:"-"`
 }
@@ -237,11 +237,11 @@ func (r accountDexFleetStatusListLiveStatusResponseResultJSON) RawJSON() string 
 }
 
 type AccountDexFleetStatusListLiveStatusResponseResultDeviceStats struct {
-	ByColo     []LiveStat `json:"byColo,nullable"`
-	ByMode     []LiveStat `json:"byMode,nullable"`
-	ByPlatform []LiveStat `json:"byPlatform,nullable"`
-	ByStatus   []LiveStat `json:"byStatus,nullable"`
-	ByVersion  []LiveStat `json:"byVersion,nullable"`
+	ByColo     []LiveStat `json:"byColo" api:"nullable"`
+	ByMode     []LiveStat `json:"byMode" api:"nullable"`
+	ByPlatform []LiveStat `json:"byPlatform" api:"nullable"`
+	ByStatus   []LiveStat `json:"byStatus" api:"nullable"`
+	ByVersion  []LiveStat `json:"byVersion" api:"nullable"`
 	// Number of unique devices
 	UniqueDevicesTotal float64                                                          `json:"uniqueDevicesTotal"`
 	JSON               accountDexFleetStatusListLiveStatusResponseResultDeviceStatsJSON `json:"-"`
@@ -271,13 +271,13 @@ func (r accountDexFleetStatusListLiveStatusResponseResultDeviceStatsJSON) RawJSO
 
 type AccountDexFleetStatusListDevicesParams struct {
 	// Time range beginning in ISO format
-	From param.Field[string] `query:"from,required"`
+	From param.Field[string] `query:"from" api:"required"`
 	// Page number
-	Page param.Field[float64] `query:"page,required"`
+	Page param.Field[float64] `query:"page" api:"required"`
 	// Number of results per page
-	PerPage param.Field[float64] `query:"per_page,required"`
+	PerPage param.Field[float64] `query:"per_page" api:"required"`
 	// Time range end in ISO format
-	To param.Field[string] `query:"to,required"`
+	To param.Field[string] `query:"to" api:"required"`
 	// Cloudflare colo
 	Colo param.Field[string] `query:"colo"`
 	// Device-specific ID, given as UUID v4
@@ -353,7 +353,7 @@ func (r AccountDexFleetStatusListDevicesParamsSource) IsKnown() bool {
 
 type AccountDexFleetStatusListLiveStatusParams struct {
 	// Number of minutes before current time
-	SinceMinutes param.Field[float64] `query:"since_minutes,required"`
+	SinceMinutes param.Field[float64] `query:"since_minutes" api:"required"`
 }
 
 // URLQuery serializes [AccountDexFleetStatusListLiveStatusParams]'s query
@@ -367,9 +367,9 @@ func (r AccountDexFleetStatusListLiveStatusParams) URLQuery() (v url.Values) {
 
 type AccountDexFleetStatusListOverTimeParams struct {
 	// Time range beginning in ISO format
-	From param.Field[string] `query:"from,required"`
+	From param.Field[string] `query:"from" api:"required"`
 	// Time range end in ISO format
-	To param.Field[string] `query:"to,required"`
+	To param.Field[string] `query:"to" api:"required"`
 	// Cloudflare colo
 	Colo param.Field[string] `query:"colo"`
 	// Device-specific ID, given as UUID v4

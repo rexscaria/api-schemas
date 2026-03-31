@@ -40,11 +40,11 @@ func (r *AccountDlpPayloadLogService) Get(ctx context.Context, accountID string,
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/dlp/payload_log", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Set payload log settings
@@ -52,16 +52,16 @@ func (r *AccountDlpPayloadLogService) Update(ctx context.Context, accountID stri
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/dlp/payload_log", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type Setting struct {
-	UpdatedAt time.Time   `json:"updated_at,required" format:"date-time"`
-	PublicKey string      `json:"public_key,nullable"`
+	UpdatedAt time.Time   `json:"updated_at" api:"required" format:"date-time"`
+	PublicKey string      `json:"public_key" api:"nullable"`
 	JSON      settingJSON `json:"-"`
 }
 
@@ -82,10 +82,10 @@ func (r settingJSON) RawJSON() string {
 }
 
 type AccountDlpPayloadLogGetResponse struct {
-	Errors   []MessagesDlpItems `json:"errors,required"`
-	Messages []MessagesDlpItems `json:"messages,required"`
+	Errors   []MessagesDlpItems `json:"errors" api:"required"`
+	Messages []MessagesDlpItems `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountDlpPayloadLogGetResponseSuccess `json:"success,required"`
+	Success AccountDlpPayloadLogGetResponseSuccess `json:"success" api:"required"`
 	Result  Setting                                `json:"result"`
 	JSON    accountDlpPayloadLogGetResponseJSON    `json:"-"`
 }
@@ -125,10 +125,10 @@ func (r AccountDlpPayloadLogGetResponseSuccess) IsKnown() bool {
 }
 
 type AccountDlpPayloadLogUpdateResponse struct {
-	Errors   []MessagesDlpItems `json:"errors,required"`
-	Messages []MessagesDlpItems `json:"messages,required"`
+	Errors   []MessagesDlpItems `json:"errors" api:"required"`
+	Messages []MessagesDlpItems `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountDlpPayloadLogUpdateResponseSuccess `json:"success,required"`
+	Success AccountDlpPayloadLogUpdateResponseSuccess `json:"success" api:"required"`
 	Result  Setting                                   `json:"result"`
 	JSON    accountDlpPayloadLogUpdateResponseJSON    `json:"-"`
 }

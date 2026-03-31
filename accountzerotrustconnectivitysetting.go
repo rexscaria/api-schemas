@@ -40,11 +40,11 @@ func (r *AccountZerotrustConnectivitySettingService) Get(ctx context.Context, ac
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/zerotrust/connectivity_settings", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates the Zero Trust Connectivity Settings for the given account.
@@ -52,19 +52,19 @@ func (r *AccountZerotrustConnectivitySettingService) Update(ctx context.Context,
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/zerotrust/connectivity_settings", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type ConnectivitySettingsResponse struct {
-	Errors   []MessagesTunnelItem               `json:"errors,required"`
-	Messages []MessagesTunnelItem               `json:"messages,required"`
-	Result   ConnectivitySettingsResponseResult `json:"result,required"`
+	Errors   []MessagesTunnelItem               `json:"errors" api:"required"`
+	Messages []MessagesTunnelItem               `json:"messages" api:"required"`
+	Result   ConnectivitySettingsResponseResult `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success ConnectivitySettingsResponseSuccess `json:"success,required"`
+	Success ConnectivitySettingsResponseSuccess `json:"success" api:"required"`
 	JSON    connectivitySettingsResponseJSON    `json:"-"`
 }
 

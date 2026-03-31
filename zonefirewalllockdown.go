@@ -44,11 +44,11 @@ func (r *ZoneFirewallLockdownService) New(ctx context.Context, zoneID string, bo
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/firewall/lockdowns", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetches the details of a Zone Lockdown rule.
@@ -56,15 +56,15 @@ func (r *ZoneFirewallLockdownService) Get(ctx context.Context, zoneID string, lo
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if lockDownsID == "" {
 		err = errors.New("missing required lock_downs_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/firewall/lockdowns/%s", zoneID, lockDownsID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates an existing Zone Lockdown rule.
@@ -72,15 +72,15 @@ func (r *ZoneFirewallLockdownService) Update(ctx context.Context, zoneID string,
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if lockDownsID == "" {
 		err = errors.New("missing required lock_downs_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/firewall/lockdowns/%s", zoneID, lockDownsID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetches Zone Lockdown rules. You can filter the results using several optional
@@ -89,11 +89,11 @@ func (r *ZoneFirewallLockdownService) List(ctx context.Context, zoneID string, q
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/firewall/lockdowns", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Deletes an existing Zone Lockdown rule.
@@ -101,15 +101,15 @@ func (r *ZoneFirewallLockdownService) Delete(ctx context.Context, zoneID string,
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if lockDownsID == "" {
 		err = errors.New("missing required lock_downs_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/firewall/lockdowns/%s", zoneID, lockDownsID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type FirewallLockdownConfiguration struct {
@@ -341,23 +341,23 @@ func (r FirewallLockdownConfigurationFirewallSchemasCidrConfigurationParam) impl
 
 type FirewallZonelockdown struct {
 	// The unique identifier of the Zone Lockdown rule.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// A list of IP addresses or CIDR ranges that will be allowed to access the URLs
 	// specified in the Zone Lockdown rule. You can include any number of `ip` or
 	// `ip_range` configurations.
-	Configurations []FirewallLockdownConfiguration `json:"configurations,required"`
+	Configurations []FirewallLockdownConfiguration `json:"configurations" api:"required"`
 	// The timestamp of when the rule was created.
-	CreatedOn time.Time `json:"created_on,required" format:"date-time"`
+	CreatedOn time.Time `json:"created_on" api:"required" format:"date-time"`
 	// An informative summary of the rule.
-	Description string `json:"description,required"`
+	Description string `json:"description" api:"required"`
 	// The timestamp of when the rule was last modified.
-	ModifiedOn time.Time `json:"modified_on,required" format:"date-time"`
+	ModifiedOn time.Time `json:"modified_on" api:"required" format:"date-time"`
 	// When true, indicates that the rule is currently paused.
-	Paused bool `json:"paused,required"`
+	Paused bool `json:"paused" api:"required"`
 	// The URLs to include in the rule definition. You can use wildcards. Each entered
 	// URL will be escaped before use, which means you can only use simple wildcard
 	// patterns.
-	URLs []string                 `json:"urls,required"`
+	URLs []string                 `json:"urls" api:"required"`
 	JSON firewallZonelockdownJSON `json:"-"`
 }
 
@@ -384,11 +384,11 @@ func (r firewallZonelockdownJSON) RawJSON() string {
 }
 
 type FirewallZonelockdownResponseSingle struct {
-	Errors   []FirewallMessagesItem `json:"errors,required"`
-	Messages []FirewallMessagesItem `json:"messages,required"`
-	Result   FirewallZonelockdown   `json:"result,required"`
+	Errors   []FirewallMessagesItem `json:"errors" api:"required"`
+	Messages []FirewallMessagesItem `json:"messages" api:"required"`
+	Result   FirewallZonelockdown   `json:"result" api:"required"`
 	// Defines whether the API call was successful.
-	Success FirewallZonelockdownResponseSingleSuccess `json:"success,required"`
+	Success FirewallZonelockdownResponseSingleSuccess `json:"success" api:"required"`
 	JSON    firewallZonelockdownResponseSingleJSON    `json:"-"`
 }
 
@@ -427,11 +427,11 @@ func (r FirewallZonelockdownResponseSingleSuccess) IsKnown() bool {
 }
 
 type ZoneFirewallLockdownListResponse struct {
-	Errors   []FirewallMessagesItem `json:"errors,required"`
-	Messages []FirewallMessagesItem `json:"messages,required"`
-	Result   []FirewallZonelockdown `json:"result,required,nullable"`
+	Errors   []FirewallMessagesItem `json:"errors" api:"required"`
+	Messages []FirewallMessagesItem `json:"messages" api:"required"`
+	Result   []FirewallZonelockdown `json:"result" api:"required,nullable"`
 	// Defines whether the API call was successful.
-	Success    ZoneFirewallLockdownListResponseSuccess    `json:"success,required"`
+	Success    ZoneFirewallLockdownListResponseSuccess    `json:"success" api:"required"`
 	ResultInfo ZoneFirewallLockdownListResponseResultInfo `json:"result_info"`
 	JSON       zoneFirewallLockdownListResponseJSON       `json:"-"`
 }
@@ -549,11 +549,11 @@ type ZoneFirewallLockdownNewParams struct {
 	// A list of IP addresses or CIDR ranges that will be allowed to access the URLs
 	// specified in the Zone Lockdown rule. You can include any number of `ip` or
 	// `ip_range` configurations.
-	Configurations param.Field[[]FirewallLockdownConfigurationUnionParam] `json:"configurations,required"`
+	Configurations param.Field[[]FirewallLockdownConfigurationUnionParam] `json:"configurations" api:"required"`
 	// The URLs to include in the current WAF override. You can use wildcards. Each
 	// entered URL will be escaped before use, which means you can only use simple
 	// wildcard patterns.
-	URLs param.Field[[]string] `json:"urls,required"`
+	URLs param.Field[[]string] `json:"urls" api:"required"`
 	// An informative summary of the rule. This value is sanitized and any tags will be
 	// removed.
 	Description param.Field[string] `json:"description"`
@@ -573,11 +573,11 @@ type ZoneFirewallLockdownUpdateParams struct {
 	// A list of IP addresses or CIDR ranges that will be allowed to access the URLs
 	// specified in the Zone Lockdown rule. You can include any number of `ip` or
 	// `ip_range` configurations.
-	Configurations param.Field[[]FirewallLockdownConfigurationUnionParam] `json:"configurations,required"`
+	Configurations param.Field[[]FirewallLockdownConfigurationUnionParam] `json:"configurations" api:"required"`
 	// The URLs to include in the current WAF override. You can use wildcards. Each
 	// entered URL will be escaped before use, which means you can only use simple
 	// wildcard patterns.
-	URLs param.Field[[]string] `json:"urls,required"`
+	URLs param.Field[[]string] `json:"urls" api:"required"`
 }
 
 func (r ZoneFirewallLockdownUpdateParams) MarshalJSON() (data []byte, err error) {

@@ -42,15 +42,15 @@ func (r *AccountWorkerScriptSettingService) Get(ctx context.Context, accountID s
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if scriptName == "" {
 		err = errors.New("missing required script_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/workers/scripts/%s/settings", accountID, scriptName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Patch metadata or config, such as bindings or usage model.
@@ -58,23 +58,23 @@ func (r *AccountWorkerScriptSettingService) Patch(ctx context.Context, accountID
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if scriptName == "" {
 		err = errors.New("missing required script_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/workers/scripts/%s/settings", accountID, scriptName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type ScriptVersionResponse struct {
-	Errors   []WorkersMessages `json:"errors,required"`
-	Messages []WorkersMessages `json:"messages,required"`
-	Result   ScriptVersionItem `json:"result,required"`
+	Errors   []WorkersMessages `json:"errors" api:"required"`
+	Messages []WorkersMessages `json:"messages" api:"required"`
+	Result   ScriptVersionItem `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success ScriptVersionResponseSuccess `json:"success,required"`
+	Success ScriptVersionResponseSuccess `json:"success" api:"required"`
 	JSON    scriptVersionResponseJSON    `json:"-"`
 }
 

@@ -39,7 +39,7 @@ func (r *RadarBgpRouteService) ListAses(ctx context.Context, query RadarBgpRoute
 	opts = slices.Concat(r.Options, opts)
 	path := "radar/bgp/routes/ases"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves all Multi-Origin AS (MOAS) prefixes in the global routing tables.
@@ -47,7 +47,7 @@ func (r *RadarBgpRouteService) ListMoas(ctx context.Context, query RadarBgpRoute
 	opts = slices.Concat(r.Options, opts)
 	path := "radar/bgp/routes/moas"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves the prefix-to-ASN mapping from global routing tables.
@@ -55,7 +55,7 @@ func (r *RadarBgpRouteService) GetPrefixToAs(ctx context.Context, query RadarBgp
 	opts = slices.Concat(r.Options, opts)
 	path := "radar/bgp/routes/pfx2as"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves real-time BGP routes for a prefix, using public real-time data
@@ -64,7 +64,7 @@ func (r *RadarBgpRouteService) GetRealtimeRoutes(ctx context.Context, query Rada
 	opts = slices.Concat(r.Options, opts)
 	path := "radar/bgp/routes/realtime"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves the BGP routing table stats.
@@ -72,12 +72,12 @@ func (r *RadarBgpRouteService) GetStats(ctx context.Context, query RadarBgpRoute
 	opts = slices.Concat(r.Options, opts)
 	path := "radar/bgp/routes/stats"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type RadarBgpRouteListAsesResponse struct {
-	Result  RadarBgpRouteListAsesResponseResult `json:"result,required"`
-	Success bool                                `json:"success,required"`
+	Result  RadarBgpRouteListAsesResponseResult `json:"result" api:"required"`
+	Success bool                                `json:"success" api:"required"`
 	JSON    radarBgpRouteListAsesResponseJSON   `json:"-"`
 }
 
@@ -99,8 +99,8 @@ func (r radarBgpRouteListAsesResponseJSON) RawJSON() string {
 }
 
 type RadarBgpRouteListAsesResponseResult struct {
-	Asns []RadarBgpRouteListAsesResponseResultAsn `json:"asns,required"`
-	Meta RadarBgpRouteListAsesResponseResultMeta  `json:"meta,required"`
+	Asns []RadarBgpRouteListAsesResponseResultAsn `json:"asns" api:"required"`
+	Meta RadarBgpRouteListAsesResponseResultMeta  `json:"meta" api:"required"`
 	JSON radarBgpRouteListAsesResponseResultJSON  `json:"-"`
 }
 
@@ -122,25 +122,25 @@ func (r radarBgpRouteListAsesResponseResultJSON) RawJSON() string {
 }
 
 type RadarBgpRouteListAsesResponseResultAsn struct {
-	Asn int64 `json:"asn,required"`
+	Asn int64 `json:"asn" api:"required"`
 	// AS's customer cone size.
-	ConeSize int64 `json:"coneSize,required"`
+	ConeSize int64 `json:"coneSize" api:"required"`
 	// Alpha-2 code for the AS's registration country.
-	Country string `json:"country,required"`
+	Country string `json:"country" api:"required"`
 	// Number of IPv4 addresses originated by the AS.
-	Ipv4Count int64 `json:"ipv4Count,required"`
+	Ipv4Count int64 `json:"ipv4Count" api:"required"`
 	// Number of IPv6 addresses originated by the AS.
-	Ipv6Count string `json:"ipv6Count,required"`
+	Ipv6Count string `json:"ipv6Count" api:"required"`
 	// Name of the AS.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Number of total IP prefixes originated by the AS.
-	PfxsCount int64 `json:"pfxsCount,required"`
+	PfxsCount int64 `json:"pfxsCount" api:"required"`
 	// Number of RPKI invalid prefixes originated by the AS.
-	RpkiInvalid int64 `json:"rpkiInvalid,required"`
+	RpkiInvalid int64 `json:"rpkiInvalid" api:"required"`
 	// Number of RPKI unknown prefixes originated by the AS.
-	RpkiUnknown int64 `json:"rpkiUnknown,required"`
+	RpkiUnknown int64 `json:"rpkiUnknown" api:"required"`
 	// Number of RPKI valid prefixes originated by the AS.
-	RpkiValid int64                                      `json:"rpkiValid,required"`
+	RpkiValid int64                                      `json:"rpkiValid" api:"required"`
 	JSON      radarBgpRouteListAsesResponseResultAsnJSON `json:"-"`
 }
 
@@ -171,11 +171,11 @@ func (r radarBgpRouteListAsesResponseResultAsnJSON) RawJSON() string {
 
 type RadarBgpRouteListAsesResponseResultMeta struct {
 	// The timestamp of when the data is generated.
-	DataTime string `json:"dataTime,required"`
+	DataTime string `json:"dataTime" api:"required"`
 	// The timestamp of the query.
-	QueryTime string `json:"queryTime,required"`
+	QueryTime string `json:"queryTime" api:"required"`
 	// Total number of route collector peers used to generate this data.
-	TotalPeers int64                                       `json:"totalPeers,required"`
+	TotalPeers int64                                       `json:"totalPeers" api:"required"`
 	JSON       radarBgpRouteListAsesResponseResultMetaJSON `json:"-"`
 }
 
@@ -198,8 +198,8 @@ func (r radarBgpRouteListAsesResponseResultMetaJSON) RawJSON() string {
 }
 
 type RadarBgpRouteListMoasResponse struct {
-	Result  RadarBgpRouteListMoasResponseResult `json:"result,required"`
-	Success bool                                `json:"success,required"`
+	Result  RadarBgpRouteListMoasResponseResult `json:"result" api:"required"`
+	Success bool                                `json:"success" api:"required"`
 	JSON    radarBgpRouteListMoasResponseJSON   `json:"-"`
 }
 
@@ -221,8 +221,8 @@ func (r radarBgpRouteListMoasResponseJSON) RawJSON() string {
 }
 
 type RadarBgpRouteListMoasResponseResult struct {
-	Meta RadarBgpRouteListMoasResponseResultMeta  `json:"meta,required"`
-	Moas []RadarBgpRouteListMoasResponseResultMoa `json:"moas,required"`
+	Meta RadarBgpRouteListMoasResponseResultMeta  `json:"meta" api:"required"`
+	Moas []RadarBgpRouteListMoasResponseResultMoa `json:"moas" api:"required"`
 	JSON radarBgpRouteListMoasResponseResultJSON  `json:"-"`
 }
 
@@ -244,9 +244,9 @@ func (r radarBgpRouteListMoasResponseResultJSON) RawJSON() string {
 }
 
 type RadarBgpRouteListMoasResponseResultMeta struct {
-	DataTime   string                                      `json:"data_time,required"`
-	QueryTime  string                                      `json:"query_time,required"`
-	TotalPeers int64                                       `json:"total_peers,required"`
+	DataTime   string                                      `json:"data_time" api:"required"`
+	QueryTime  string                                      `json:"query_time" api:"required"`
+	TotalPeers int64                                       `json:"total_peers" api:"required"`
 	JSON       radarBgpRouteListMoasResponseResultMetaJSON `json:"-"`
 }
 
@@ -269,8 +269,8 @@ func (r radarBgpRouteListMoasResponseResultMetaJSON) RawJSON() string {
 }
 
 type RadarBgpRouteListMoasResponseResultMoa struct {
-	Origins []RadarBgpRouteListMoasResponseResultMoasOrigin `json:"origins,required"`
-	Prefix  string                                          `json:"prefix,required"`
+	Origins []RadarBgpRouteListMoasResponseResultMoasOrigin `json:"origins" api:"required"`
+	Prefix  string                                          `json:"prefix" api:"required"`
 	JSON    radarBgpRouteListMoasResponseResultMoaJSON      `json:"-"`
 }
 
@@ -292,9 +292,9 @@ func (r radarBgpRouteListMoasResponseResultMoaJSON) RawJSON() string {
 }
 
 type RadarBgpRouteListMoasResponseResultMoasOrigin struct {
-	Origin         int64                                             `json:"origin,required"`
-	PeerCount      int64                                             `json:"peer_count,required"`
-	RpkiValidation string                                            `json:"rpki_validation,required"`
+	Origin         int64                                             `json:"origin" api:"required"`
+	PeerCount      int64                                             `json:"peer_count" api:"required"`
+	RpkiValidation string                                            `json:"rpki_validation" api:"required"`
 	JSON           radarBgpRouteListMoasResponseResultMoasOriginJSON `json:"-"`
 }
 
@@ -317,8 +317,8 @@ func (r radarBgpRouteListMoasResponseResultMoasOriginJSON) RawJSON() string {
 }
 
 type RadarBgpRouteGetPrefixToAsResponse struct {
-	Result  RadarBgpRouteGetPrefixToAsResponseResult `json:"result,required"`
-	Success bool                                     `json:"success,required"`
+	Result  RadarBgpRouteGetPrefixToAsResponseResult `json:"result" api:"required"`
+	Success bool                                     `json:"success" api:"required"`
 	JSON    radarBgpRouteGetPrefixToAsResponseJSON   `json:"-"`
 }
 
@@ -340,8 +340,8 @@ func (r radarBgpRouteGetPrefixToAsResponseJSON) RawJSON() string {
 }
 
 type RadarBgpRouteGetPrefixToAsResponseResult struct {
-	Meta          RadarBgpRouteGetPrefixToAsResponseResultMeta           `json:"meta,required"`
-	PrefixOrigins []RadarBgpRouteGetPrefixToAsResponseResultPrefixOrigin `json:"prefix_origins,required"`
+	Meta          RadarBgpRouteGetPrefixToAsResponseResultMeta           `json:"meta" api:"required"`
+	PrefixOrigins []RadarBgpRouteGetPrefixToAsResponseResultPrefixOrigin `json:"prefix_origins" api:"required"`
 	JSON          radarBgpRouteGetPrefixToAsResponseResultJSON           `json:"-"`
 }
 
@@ -363,9 +363,9 @@ func (r radarBgpRouteGetPrefixToAsResponseResultJSON) RawJSON() string {
 }
 
 type RadarBgpRouteGetPrefixToAsResponseResultMeta struct {
-	DataTime   string                                           `json:"data_time,required"`
-	QueryTime  string                                           `json:"query_time,required"`
-	TotalPeers int64                                            `json:"total_peers,required"`
+	DataTime   string                                           `json:"data_time" api:"required"`
+	QueryTime  string                                           `json:"query_time" api:"required"`
+	TotalPeers int64                                            `json:"total_peers" api:"required"`
 	JSON       radarBgpRouteGetPrefixToAsResponseResultMetaJSON `json:"-"`
 }
 
@@ -388,10 +388,10 @@ func (r radarBgpRouteGetPrefixToAsResponseResultMetaJSON) RawJSON() string {
 }
 
 type RadarBgpRouteGetPrefixToAsResponseResultPrefixOrigin struct {
-	Origin         int64                                                    `json:"origin,required"`
-	PeerCount      int64                                                    `json:"peer_count,required"`
-	Prefix         string                                                   `json:"prefix,required"`
-	RpkiValidation string                                                   `json:"rpki_validation,required"`
+	Origin         int64                                                    `json:"origin" api:"required"`
+	PeerCount      int64                                                    `json:"peer_count" api:"required"`
+	Prefix         string                                                   `json:"prefix" api:"required"`
+	RpkiValidation string                                                   `json:"rpki_validation" api:"required"`
 	JSON           radarBgpRouteGetPrefixToAsResponseResultPrefixOriginJSON `json:"-"`
 }
 
@@ -415,8 +415,8 @@ func (r radarBgpRouteGetPrefixToAsResponseResultPrefixOriginJSON) RawJSON() stri
 }
 
 type RadarBgpRouteGetRealtimeRoutesResponse struct {
-	Result  RadarBgpRouteGetRealtimeRoutesResponseResult `json:"result,required"`
-	Success bool                                         `json:"success,required"`
+	Result  RadarBgpRouteGetRealtimeRoutesResponseResult `json:"result" api:"required"`
+	Success bool                                         `json:"success" api:"required"`
 	JSON    radarBgpRouteGetRealtimeRoutesResponseJSON   `json:"-"`
 }
 
@@ -438,8 +438,8 @@ func (r radarBgpRouteGetRealtimeRoutesResponseJSON) RawJSON() string {
 }
 
 type RadarBgpRouteGetRealtimeRoutesResponseResult struct {
-	Meta   RadarBgpRouteGetRealtimeRoutesResponseResultMeta    `json:"meta,required"`
-	Routes []RadarBgpRouteGetRealtimeRoutesResponseResultRoute `json:"routes,required"`
+	Meta   RadarBgpRouteGetRealtimeRoutesResponseResultMeta    `json:"meta" api:"required"`
+	Routes []RadarBgpRouteGetRealtimeRoutesResponseResultRoute `json:"routes" api:"required"`
 	JSON   radarBgpRouteGetRealtimeRoutesResponseResultJSON    `json:"-"`
 }
 
@@ -461,13 +461,13 @@ func (r radarBgpRouteGetRealtimeRoutesResponseResultJSON) RawJSON() string {
 }
 
 type RadarBgpRouteGetRealtimeRoutesResponseResultMeta struct {
-	AsnInfo    []RadarBgpRouteGetRealtimeRoutesResponseResultMetaAsnInfo   `json:"asn_info,required"`
-	Collectors []RadarBgpRouteGetRealtimeRoutesResponseResultMetaCollector `json:"collectors,required"`
+	AsnInfo    []RadarBgpRouteGetRealtimeRoutesResponseResultMetaAsnInfo   `json:"asn_info" api:"required"`
+	Collectors []RadarBgpRouteGetRealtimeRoutesResponseResultMetaCollector `json:"collectors" api:"required"`
 	// The most recent data timestamp for from the real-time sources.
-	DataTime      string                                                         `json:"data_time,required"`
-	PrefixOrigins []RadarBgpRouteGetRealtimeRoutesResponseResultMetaPrefixOrigin `json:"prefix_origins,required"`
+	DataTime      string                                                         `json:"data_time" api:"required"`
+	PrefixOrigins []RadarBgpRouteGetRealtimeRoutesResponseResultMetaPrefixOrigin `json:"prefix_origins" api:"required"`
 	// The timestamp of this query.
-	QueryTime string                                               `json:"query_time,required"`
+	QueryTime string                                               `json:"query_time" api:"required"`
 	JSON      radarBgpRouteGetRealtimeRoutesResponseResultMetaJSON `json:"-"`
 }
 
@@ -493,15 +493,15 @@ func (r radarBgpRouteGetRealtimeRoutesResponseResultMetaJSON) RawJSON() string {
 
 type RadarBgpRouteGetRealtimeRoutesResponseResultMetaAsnInfo struct {
 	// Name of the autonomous system.
-	AsName string `json:"as_name,required"`
+	AsName string `json:"as_name" api:"required"`
 	// AS number.
-	Asn int64 `json:"asn,required"`
+	Asn int64 `json:"asn" api:"required"`
 	// Alpha-2 code for the AS's registration country.
-	CountryCode string `json:"country_code,required"`
+	CountryCode string `json:"country_code" api:"required"`
 	// Organization ID.
-	OrgID string `json:"org_id,required"`
+	OrgID string `json:"org_id" api:"required"`
 	// Organization name.
-	OrgName string                                                      `json:"org_name,required"`
+	OrgName string                                                      `json:"org_name" api:"required"`
 	JSON    radarBgpRouteGetRealtimeRoutesResponseResultMetaAsnInfoJSON `json:"-"`
 }
 
@@ -528,19 +528,19 @@ func (r radarBgpRouteGetRealtimeRoutesResponseResultMetaAsnInfoJSON) RawJSON() s
 
 type RadarBgpRouteGetRealtimeRoutesResponseResultMetaCollector struct {
 	// Public route collector ID.
-	Collector string `json:"collector,required"`
+	Collector string `json:"collector" api:"required"`
 	// Latest real-time stream timestamp for this collector.
-	LatestRealtimeTs string `json:"latest_realtime_ts,required"`
+	LatestRealtimeTs string `json:"latest_realtime_ts" api:"required"`
 	// Latest RIB dump MRT file timestamp for this collector.
-	LatestRibTs string `json:"latest_rib_ts,required"`
+	LatestRibTs string `json:"latest_rib_ts" api:"required"`
 	// Latest BGP updates MRT file timestamp for this collector.
-	LatestUpdatesTs string `json:"latest_updates_ts,required"`
+	LatestUpdatesTs string `json:"latest_updates_ts" api:"required"`
 	// Total number of collector peers used from this collector.
-	PeersCount int64 `json:"peers_count,required"`
+	PeersCount int64 `json:"peers_count" api:"required"`
 	// Total number of collector peers used from this collector for IPv4 prefixes.
-	PeersV4Count int64 `json:"peers_v4_count,required"`
+	PeersV4Count int64 `json:"peers_v4_count" api:"required"`
 	// Total number of collector peers used from this collector for IPv6 prefixes.
-	PeersV6Count int64                                                         `json:"peers_v6_count,required"`
+	PeersV6Count int64                                                         `json:"peers_v6_count" api:"required"`
 	JSON         radarBgpRouteGetRealtimeRoutesResponseResultMetaCollectorJSON `json:"-"`
 }
 
@@ -569,17 +569,17 @@ func (r radarBgpRouteGetRealtimeRoutesResponseResultMetaCollectorJSON) RawJSON()
 
 type RadarBgpRouteGetRealtimeRoutesResponseResultMetaPrefixOrigin struct {
 	// Origin ASN.
-	Origin int64 `json:"origin,required"`
+	Origin int64 `json:"origin" api:"required"`
 	// IP prefix of this query.
-	Prefix string `json:"prefix,required"`
+	Prefix string `json:"prefix" api:"required"`
 	// Prefix-origin RPKI validation: valid, invalid, unknown.
-	RpkiValidation string `json:"rpki_validation,required"`
+	RpkiValidation string `json:"rpki_validation" api:"required"`
 	// Total number of peers.
-	TotalPeers int64 `json:"total_peers,required"`
+	TotalPeers int64 `json:"total_peers" api:"required"`
 	// Total number of peers seeing this prefix.
-	TotalVisible int64 `json:"total_visible,required"`
+	TotalVisible int64 `json:"total_visible" api:"required"`
 	// Ratio of peers seeing this prefix to total number of peers.
-	Visibility float64                                                          `json:"visibility,required"`
+	Visibility float64                                                          `json:"visibility" api:"required"`
 	JSON       radarBgpRouteGetRealtimeRoutesResponseResultMetaPrefixOriginJSON `json:"-"`
 }
 
@@ -607,15 +607,15 @@ func (r radarBgpRouteGetRealtimeRoutesResponseResultMetaPrefixOriginJSON) RawJSO
 
 type RadarBgpRouteGetRealtimeRoutesResponseResultRoute struct {
 	// AS-level path for this route, from collector to origin.
-	AsPath []int64 `json:"as_path,required"`
+	AsPath []int64 `json:"as_path" api:"required"`
 	// Public collector ID for this route.
-	Collector string `json:"collector,required"`
+	Collector string `json:"collector" api:"required"`
 	// BGP community values.
-	Communities []string `json:"communities,required"`
+	Communities []string `json:"communities" api:"required"`
 	// IP prefix of this query.
-	Prefix string `json:"prefix,required"`
+	Prefix string `json:"prefix" api:"required"`
 	// Latest timestamp of change for this route.
-	Timestamp string                                                `json:"timestamp,required"`
+	Timestamp string                                                `json:"timestamp" api:"required"`
 	JSON      radarBgpRouteGetRealtimeRoutesResponseResultRouteJSON `json:"-"`
 }
 
@@ -640,8 +640,8 @@ func (r radarBgpRouteGetRealtimeRoutesResponseResultRouteJSON) RawJSON() string 
 }
 
 type RadarBgpRouteGetStatsResponse struct {
-	Result  RadarBgpRouteGetStatsResponseResult `json:"result,required"`
-	Success bool                                `json:"success,required"`
+	Result  RadarBgpRouteGetStatsResponseResult `json:"result" api:"required"`
+	Success bool                                `json:"success" api:"required"`
 	JSON    radarBgpRouteGetStatsResponseJSON   `json:"-"`
 }
 
@@ -663,8 +663,8 @@ func (r radarBgpRouteGetStatsResponseJSON) RawJSON() string {
 }
 
 type RadarBgpRouteGetStatsResponseResult struct {
-	Meta  RadarBgpRouteGetStatsResponseResultMeta  `json:"meta,required"`
-	Stats RadarBgpRouteGetStatsResponseResultStats `json:"stats,required"`
+	Meta  RadarBgpRouteGetStatsResponseResultMeta  `json:"meta" api:"required"`
+	Stats RadarBgpRouteGetStatsResponseResultStats `json:"stats" api:"required"`
 	JSON  radarBgpRouteGetStatsResponseResultJSON  `json:"-"`
 }
 
@@ -686,9 +686,9 @@ func (r radarBgpRouteGetStatsResponseResultJSON) RawJSON() string {
 }
 
 type RadarBgpRouteGetStatsResponseResultMeta struct {
-	DataTime   string                                      `json:"data_time,required"`
-	QueryTime  string                                      `json:"query_time,required"`
-	TotalPeers int64                                       `json:"total_peers,required"`
+	DataTime   string                                      `json:"data_time" api:"required"`
+	QueryTime  string                                      `json:"query_time" api:"required"`
+	TotalPeers int64                                       `json:"total_peers" api:"required"`
 	JSON       radarBgpRouteGetStatsResponseResultMetaJSON `json:"-"`
 }
 
@@ -711,24 +711,24 @@ func (r radarBgpRouteGetStatsResponseResultMetaJSON) RawJSON() string {
 }
 
 type RadarBgpRouteGetStatsResponseResultStats struct {
-	DistinctOrigins      int64                                        `json:"distinct_origins,required"`
-	DistinctOriginsIpv4  int64                                        `json:"distinct_origins_ipv4,required"`
-	DistinctOriginsIpv6  int64                                        `json:"distinct_origins_ipv6,required"`
-	DistinctPrefixes     int64                                        `json:"distinct_prefixes,required"`
-	DistinctPrefixesIpv4 int64                                        `json:"distinct_prefixes_ipv4,required"`
-	DistinctPrefixesIpv6 int64                                        `json:"distinct_prefixes_ipv6,required"`
-	RoutesInvalid        int64                                        `json:"routes_invalid,required"`
-	RoutesInvalidIpv4    int64                                        `json:"routes_invalid_ipv4,required"`
-	RoutesInvalidIpv6    int64                                        `json:"routes_invalid_ipv6,required"`
-	RoutesTotal          int64                                        `json:"routes_total,required"`
-	RoutesTotalIpv4      int64                                        `json:"routes_total_ipv4,required"`
-	RoutesTotalIpv6      int64                                        `json:"routes_total_ipv6,required"`
-	RoutesUnknown        int64                                        `json:"routes_unknown,required"`
-	RoutesUnknownIpv4    int64                                        `json:"routes_unknown_ipv4,required"`
-	RoutesUnknownIpv6    int64                                        `json:"routes_unknown_ipv6,required"`
-	RoutesValid          int64                                        `json:"routes_valid,required"`
-	RoutesValidIpv4      int64                                        `json:"routes_valid_ipv4,required"`
-	RoutesValidIpv6      int64                                        `json:"routes_valid_ipv6,required"`
+	DistinctOrigins      int64                                        `json:"distinct_origins" api:"required"`
+	DistinctOriginsIpv4  int64                                        `json:"distinct_origins_ipv4" api:"required"`
+	DistinctOriginsIpv6  int64                                        `json:"distinct_origins_ipv6" api:"required"`
+	DistinctPrefixes     int64                                        `json:"distinct_prefixes" api:"required"`
+	DistinctPrefixesIpv4 int64                                        `json:"distinct_prefixes_ipv4" api:"required"`
+	DistinctPrefixesIpv6 int64                                        `json:"distinct_prefixes_ipv6" api:"required"`
+	RoutesInvalid        int64                                        `json:"routes_invalid" api:"required"`
+	RoutesInvalidIpv4    int64                                        `json:"routes_invalid_ipv4" api:"required"`
+	RoutesInvalidIpv6    int64                                        `json:"routes_invalid_ipv6" api:"required"`
+	RoutesTotal          int64                                        `json:"routes_total" api:"required"`
+	RoutesTotalIpv4      int64                                        `json:"routes_total_ipv4" api:"required"`
+	RoutesTotalIpv6      int64                                        `json:"routes_total_ipv6" api:"required"`
+	RoutesUnknown        int64                                        `json:"routes_unknown" api:"required"`
+	RoutesUnknownIpv4    int64                                        `json:"routes_unknown_ipv4" api:"required"`
+	RoutesUnknownIpv6    int64                                        `json:"routes_unknown_ipv6" api:"required"`
+	RoutesValid          int64                                        `json:"routes_valid" api:"required"`
+	RoutesValidIpv4      int64                                        `json:"routes_valid_ipv4" api:"required"`
+	RoutesValidIpv6      int64                                        `json:"routes_valid_ipv6" api:"required"`
 	JSON                 radarBgpRouteGetStatsResponseResultStatsJSON `json:"-"`
 }
 

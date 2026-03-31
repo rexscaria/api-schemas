@@ -44,11 +44,11 @@ func (r *ZoneSpeedAPIPageService) List(ctx context.Context, zoneID string, opts 
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/speed_api/pages", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists the core web vital metrics trend over time for a specific page.
@@ -56,15 +56,15 @@ func (r *ZoneSpeedAPIPageService) GetTrend(ctx context.Context, zoneID string, u
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if url == "" {
 		err = errors.New("missing required url parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/speed_api/pages/%s/trend", zoneID, url)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // The type of device.
@@ -160,10 +160,10 @@ func (r ObservatoryScheduleFrequency) IsKnown() bool {
 }
 
 type ZoneSpeedAPIPageListResponse struct {
-	Errors   []ObservatoryMessagesItem `json:"errors,required"`
-	Messages []ObservatoryMessagesItem `json:"messages,required"`
+	Errors   []ObservatoryMessagesItem `json:"errors" api:"required"`
+	Messages []ObservatoryMessagesItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success bool                                 `json:"success,required"`
+	Success bool                                 `json:"success" api:"required"`
 	Result  []ZoneSpeedAPIPageListResponseResult `json:"result"`
 	JSON    zoneSpeedAPIPageListResponseJSON     `json:"-"`
 }
@@ -218,10 +218,10 @@ func (r zoneSpeedAPIPageListResponseResultJSON) RawJSON() string {
 }
 
 type ZoneSpeedAPIPageGetTrendResponse struct {
-	Errors   []ObservatoryMessagesItem `json:"errors,required"`
-	Messages []ObservatoryMessagesItem `json:"messages,required"`
+	Errors   []ObservatoryMessagesItem `json:"errors" api:"required"`
+	Messages []ObservatoryMessagesItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success bool                                   `json:"success,required"`
+	Success bool                                   `json:"success" api:"required"`
 	Result  ZoneSpeedAPIPageGetTrendResponseResult `json:"result"`
 	JSON    zoneSpeedAPIPageGetTrendResponseJSON   `json:"-"`
 }
@@ -290,14 +290,14 @@ func (r zoneSpeedAPIPageGetTrendResponseResultJSON) RawJSON() string {
 
 type ZoneSpeedAPIPageGetTrendParams struct {
 	// The type of device.
-	DeviceType param.Field[ObservatoryDeviceType] `query:"deviceType,required"`
+	DeviceType param.Field[ObservatoryDeviceType] `query:"deviceType" api:"required"`
 	// A comma-separated list of metrics to include in the results.
-	Metrics param.Field[string] `query:"metrics,required"`
+	Metrics param.Field[string] `query:"metrics" api:"required"`
 	// A test region.
-	Region param.Field[ObservatoryRegion] `query:"region,required"`
-	Start  param.Field[time.Time]         `query:"start,required" format:"date-time"`
+	Region param.Field[ObservatoryRegion] `query:"region" api:"required"`
+	Start  param.Field[time.Time]         `query:"start" api:"required" format:"date-time"`
 	// The timezone of the start and end timestamps.
-	Tz  param.Field[string]    `query:"tz,required"`
+	Tz  param.Field[string]    `query:"tz" api:"required"`
 	End param.Field[time.Time] `query:"end" format:"date-time"`
 }
 

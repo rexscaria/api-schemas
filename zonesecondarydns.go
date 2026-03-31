@@ -42,18 +42,18 @@ func (r *ZoneSecondaryDNSService) ForceAxfr(ctx context.Context, zoneID string, 
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/secondary_dns/force_axfr", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type ZoneSecondaryDNSForceAxfrResponse struct {
-	Errors   []SecondaryDNSMessages `json:"errors,required"`
-	Messages []SecondaryDNSMessages `json:"messages,required"`
+	Errors   []SecondaryDNSMessages `json:"errors" api:"required"`
+	Messages []SecondaryDNSMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success ZoneSecondaryDNSForceAxfrResponseSuccess `json:"success,required"`
+	Success ZoneSecondaryDNSForceAxfrResponseSuccess `json:"success" api:"required"`
 	// When force_axfr query parameter is set to true, the response is a simple string
 	Result string                                `json:"result"`
 	JSON   zoneSecondaryDNSForceAxfrResponseJSON `json:"-"`
@@ -94,7 +94,7 @@ func (r ZoneSecondaryDNSForceAxfrResponseSuccess) IsKnown() bool {
 }
 
 type ZoneSecondaryDNSForceAxfrParams struct {
-	Body interface{} `json:"body,required"`
+	Body interface{} `json:"body" api:"required"`
 }
 
 func (r ZoneSecondaryDNSForceAxfrParams) MarshalJSON() (data []byte, err error) {

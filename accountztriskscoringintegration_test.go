@@ -14,7 +14,7 @@ import (
 )
 
 func TestAccountZtRiskScoringIntegrationNewIntegrationWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,6 +26,7 @@ func TestAccountZtRiskScoringIntegrationNewIntegrationWithOptionalParams(t *test
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.ZtRiskScoring.Integrations.NewIntegration(
 		context.TODO(),
@@ -46,7 +47,7 @@ func TestAccountZtRiskScoringIntegrationNewIntegrationWithOptionalParams(t *test
 }
 
 func TestAccountZtRiskScoringIntegrationDeleteIntegration(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -58,6 +59,7 @@ func TestAccountZtRiskScoringIntegrationDeleteIntegration(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.ZtRiskScoring.Integrations.DeleteIntegration(
 		context.TODO(),
@@ -74,7 +76,7 @@ func TestAccountZtRiskScoringIntegrationDeleteIntegration(t *testing.T) {
 }
 
 func TestAccountZtRiskScoringIntegrationListIntegrations(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -86,6 +88,7 @@ func TestAccountZtRiskScoringIntegrationListIntegrations(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.ZtRiskScoring.Integrations.ListIntegrations(context.TODO(), "account_id")
 	if err != nil {
@@ -98,7 +101,7 @@ func TestAccountZtRiskScoringIntegrationListIntegrations(t *testing.T) {
 }
 
 func TestAccountZtRiskScoringIntegrationGetIntegration(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -110,6 +113,7 @@ func TestAccountZtRiskScoringIntegrationGetIntegration(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.ZtRiskScoring.Integrations.GetIntegration(
 		context.TODO(),
@@ -126,7 +130,7 @@ func TestAccountZtRiskScoringIntegrationGetIntegration(t *testing.T) {
 }
 
 func TestAccountZtRiskScoringIntegrationGetIntegrationByReferenceID(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -138,6 +142,7 @@ func TestAccountZtRiskScoringIntegrationGetIntegrationByReferenceID(t *testing.T
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.ZtRiskScoring.Integrations.GetIntegrationByReferenceID(
 		context.TODO(),
@@ -154,7 +159,7 @@ func TestAccountZtRiskScoringIntegrationGetIntegrationByReferenceID(t *testing.T
 }
 
 func TestAccountZtRiskScoringIntegrationUpdateIntegrationWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -166,6 +171,7 @@ func TestAccountZtRiskScoringIntegrationUpdateIntegrationWithOptionalParams(t *t
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.ZtRiskScoring.Integrations.UpdateIntegration(
 		context.TODO(),

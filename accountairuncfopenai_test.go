@@ -16,7 +16,7 @@ import (
 )
 
 func TestAccountAIRunCfOpenAIExecuteWhisperWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -28,11 +28,12 @@ func TestAccountAIRunCfOpenAIExecuteWhisperWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.AI.Run.Cf.OpenAI.ExecuteWhisper(
 		context.TODO(),
 		"023e105f4ecef8ad9ca31a8372d0c353",
-		io.Reader(bytes.NewBuffer([]byte("some file contents"))),
+		io.Reader(bytes.NewBuffer([]byte("Example data"))),
 		cfrex.AccountAIRunCfOpenAIExecuteWhisperParams{
 			QueueRequest: cfrex.F("true"),
 		},
@@ -47,7 +48,7 @@ func TestAccountAIRunCfOpenAIExecuteWhisperWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountAIRunCfOpenAIExecuteWhisperLargeV3TurboWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -59,6 +60,7 @@ func TestAccountAIRunCfOpenAIExecuteWhisperLargeV3TurboWithOptionalParams(t *tes
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.AI.Run.Cf.OpenAI.ExecuteWhisperLargeV3Turbo(
 		context.TODO(),
@@ -83,7 +85,7 @@ func TestAccountAIRunCfOpenAIExecuteWhisperLargeV3TurboWithOptionalParams(t *tes
 }
 
 func TestAccountAIRunCfOpenAIExecuteWhisperTinyEnWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -95,11 +97,12 @@ func TestAccountAIRunCfOpenAIExecuteWhisperTinyEnWithOptionalParams(t *testing.T
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.AI.Run.Cf.OpenAI.ExecuteWhisperTinyEn(
 		context.TODO(),
 		"023e105f4ecef8ad9ca31a8372d0c353",
-		io.Reader(bytes.NewBuffer([]byte("some file contents"))),
+		io.Reader(bytes.NewBuffer([]byte("Example data"))),
 		cfrex.AccountAIRunCfOpenAIExecuteWhisperTinyEnParams{
 			QueueRequest: cfrex.F("true"),
 		},

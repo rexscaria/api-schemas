@@ -42,11 +42,11 @@ func (r *AccountWorkerDispatchNamespaceService) New(ctx context.Context, account
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/workers/dispatch/namespaces", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get a Workers for Platforms namespace.
@@ -54,15 +54,15 @@ func (r *AccountWorkerDispatchNamespaceService) Get(ctx context.Context, account
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if dispatchNamespace == "" {
 		err = errors.New("missing required dispatch_namespace parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/workers/dispatch/namespaces/%s", accountID, dispatchNamespace)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetch a list of Workers for Platforms namespaces.
@@ -70,11 +70,11 @@ func (r *AccountWorkerDispatchNamespaceService) List(ctx context.Context, accoun
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/workers/dispatch/namespaces", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete a Workers for Platforms namespace.
@@ -82,15 +82,15 @@ func (r *AccountWorkerDispatchNamespaceService) Delete(ctx context.Context, acco
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if dispatchNamespace == "" {
 		err = errors.New("missing required dispatch_namespace parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/workers/dispatch/namespaces/%s", accountID, dispatchNamespace)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type NamespaceResponse struct {
@@ -134,11 +134,11 @@ func (r namespaceResponseJSON) RawJSON() string {
 }
 
 type NullResult struct {
-	Errors   []WorkersMessages `json:"errors,required"`
-	Messages []WorkersMessages `json:"messages,required"`
+	Errors   []WorkersMessages `json:"errors" api:"required"`
+	Messages []WorkersMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success NullResultSuccess `json:"success,required"`
-	Result  interface{}       `json:"result,nullable"`
+	Success NullResultSuccess `json:"success" api:"required"`
+	Result  interface{}       `json:"result" api:"nullable"`
 	JSON    nullResultJSON    `json:"-"`
 }
 
@@ -176,10 +176,10 @@ func (r NullResultSuccess) IsKnown() bool {
 }
 
 type SingleNamespaceResponse struct {
-	Errors   []WorkersMessages `json:"errors,required"`
-	Messages []WorkersMessages `json:"messages,required"`
+	Errors   []WorkersMessages `json:"errors" api:"required"`
+	Messages []WorkersMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success SingleNamespaceResponseSuccess `json:"success,required"`
+	Success SingleNamespaceResponseSuccess `json:"success" api:"required"`
 	Result  NamespaceResponse              `json:"result"`
 	JSON    singleNamespaceResponseJSON    `json:"-"`
 }
@@ -219,10 +219,10 @@ func (r SingleNamespaceResponseSuccess) IsKnown() bool {
 }
 
 type AccountWorkerDispatchNamespaceListResponse struct {
-	Errors   []WorkersMessages `json:"errors,required"`
-	Messages []WorkersMessages `json:"messages,required"`
+	Errors   []WorkersMessages `json:"errors" api:"required"`
+	Messages []WorkersMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountWorkerDispatchNamespaceListResponseSuccess `json:"success,required"`
+	Success AccountWorkerDispatchNamespaceListResponseSuccess `json:"success" api:"required"`
 	Result  []NamespaceResponse                               `json:"result"`
 	JSON    accountWorkerDispatchNamespaceListResponseJSON    `json:"-"`
 }

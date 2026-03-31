@@ -15,7 +15,7 @@ import (
 )
 
 func TestAccountGatewayRuleNewWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -27,6 +27,7 @@ func TestAccountGatewayRuleNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Gateway.Rules.New(
 		context.TODO(),
@@ -156,7 +157,7 @@ func TestAccountGatewayRuleNewWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountGatewayRuleGet(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -168,6 +169,7 @@ func TestAccountGatewayRuleGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Gateway.Rules.Get(
 		context.TODO(),
@@ -184,7 +186,7 @@ func TestAccountGatewayRuleGet(t *testing.T) {
 }
 
 func TestAccountGatewayRuleUpdateWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -196,6 +198,7 @@ func TestAccountGatewayRuleUpdateWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Gateway.Rules.Update(
 		context.TODO(),
@@ -326,7 +329,7 @@ func TestAccountGatewayRuleUpdateWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountGatewayRuleList(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -338,6 +341,7 @@ func TestAccountGatewayRuleList(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Gateway.Rules.List(context.TODO(), "699d98642c564d2e855e9661899b7252")
 	if err != nil {
@@ -350,7 +354,7 @@ func TestAccountGatewayRuleList(t *testing.T) {
 }
 
 func TestAccountGatewayRuleDelete(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -362,6 +366,7 @@ func TestAccountGatewayRuleDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Gateway.Rules.Delete(
 		context.TODO(),
@@ -378,7 +383,7 @@ func TestAccountGatewayRuleDelete(t *testing.T) {
 }
 
 func TestAccountGatewayRuleResetExpiration(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -390,6 +395,7 @@ func TestAccountGatewayRuleResetExpiration(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Gateway.Rules.ResetExpiration(
 		context.TODO(),

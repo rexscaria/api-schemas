@@ -14,7 +14,7 @@ import (
 )
 
 func TestZoneURLNormalizationGet(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,6 +26,7 @@ func TestZoneURLNormalizationGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.URLNormalization.Get(context.TODO(), "9f1839b6152d298aca64c4e906b6d074")
 	if err != nil {
@@ -38,7 +39,7 @@ func TestZoneURLNormalizationGet(t *testing.T) {
 }
 
 func TestZoneURLNormalizationUpdate(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -50,6 +51,7 @@ func TestZoneURLNormalizationUpdate(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.URLNormalization.Update(
 		context.TODO(),
@@ -69,7 +71,7 @@ func TestZoneURLNormalizationUpdate(t *testing.T) {
 }
 
 func TestZoneURLNormalizationDelete(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -81,6 +83,7 @@ func TestZoneURLNormalizationDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	err := client.Zones.URLNormalization.Delete(context.TODO(), "9f1839b6152d298aca64c4e906b6d074")
 	if err != nil {

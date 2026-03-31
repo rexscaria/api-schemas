@@ -40,11 +40,11 @@ func (r *AccountSubscriptionService) New(ctx context.Context, accountID string, 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/subscriptions", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates an account subscription.
@@ -52,15 +52,15 @@ func (r *AccountSubscriptionService) Update(ctx context.Context, accountID strin
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if subscriptionIdentifier == "" {
 		err = errors.New("missing required subscription_identifier parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/subscriptions/%s", accountID, subscriptionIdentifier)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists all of an account's subscriptions.
@@ -68,11 +68,11 @@ func (r *AccountSubscriptionService) List(ctx context.Context, accountID string,
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/subscriptions", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Deletes an account's subscription.
@@ -80,23 +80,23 @@ func (r *AccountSubscriptionService) Delete(ctx context.Context, accountID strin
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if subscriptionIdentifier == "" {
 		err = errors.New("missing required subscription_identifier parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/subscriptions/%s", accountID, subscriptionIdentifier)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountSubscriptionResponseSingle struct {
-	Errors   []AccountSubscriptionResponseSingleError   `json:"errors,required"`
-	Messages []AccountSubscriptionResponseSingleMessage `json:"messages,required"`
-	Result   Subscription                               `json:"result,required"`
+	Errors   []AccountSubscriptionResponseSingleError   `json:"errors" api:"required"`
+	Messages []AccountSubscriptionResponseSingleMessage `json:"messages" api:"required"`
+	Result   Subscription                               `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success AccountSubscriptionResponseSingleSuccess `json:"success,required"`
+	Success AccountSubscriptionResponseSingleSuccess `json:"success" api:"required"`
 	JSON    accountSubscriptionResponseSingleJSON    `json:"-"`
 }
 
@@ -120,8 +120,8 @@ func (r accountSubscriptionResponseSingleJSON) RawJSON() string {
 }
 
 type AccountSubscriptionResponseSingleError struct {
-	Code             int64                                         `json:"code,required"`
-	Message          string                                        `json:"message,required"`
+	Code             int64                                         `json:"code" api:"required"`
+	Message          string                                        `json:"message" api:"required"`
 	DocumentationURL string                                        `json:"documentation_url"`
 	Source           AccountSubscriptionResponseSingleErrorsSource `json:"source"`
 	JSON             accountSubscriptionResponseSingleErrorJSON    `json:"-"`
@@ -168,8 +168,8 @@ func (r accountSubscriptionResponseSingleErrorsSourceJSON) RawJSON() string {
 }
 
 type AccountSubscriptionResponseSingleMessage struct {
-	Code             int64                                           `json:"code,required"`
-	Message          string                                          `json:"message,required"`
+	Code             int64                                           `json:"code" api:"required"`
+	Message          string                                          `json:"message" api:"required"`
 	DocumentationURL string                                          `json:"documentation_url"`
 	Source           AccountSubscriptionResponseSingleMessagesSource `json:"source"`
 	JSON             accountSubscriptionResponseSingleMessageJSON    `json:"-"`
@@ -231,8 +231,8 @@ func (r AccountSubscriptionResponseSingleSuccess) IsKnown() bool {
 }
 
 type BillSubsAPIMessages struct {
-	Code             int64                     `json:"code,required"`
-	Message          string                    `json:"message,required"`
+	Code             int64                     `json:"code" api:"required"`
+	Message          string                    `json:"message" api:"required"`
 	DocumentationURL string                    `json:"documentation_url"`
 	Source           BillSubsAPIMessagesSource `json:"source"`
 	JSON             billSubsAPIMessagesJSON   `json:"-"`
@@ -522,11 +522,11 @@ func (r SubscriptionV2State) IsKnown() bool {
 }
 
 type AccountSubscriptionListResponse struct {
-	Errors   []AccountSubscriptionListResponseError   `json:"errors,required"`
-	Messages []AccountSubscriptionListResponseMessage `json:"messages,required"`
-	Result   []Subscription                           `json:"result,required,nullable"`
+	Errors   []AccountSubscriptionListResponseError   `json:"errors" api:"required"`
+	Messages []AccountSubscriptionListResponseMessage `json:"messages" api:"required"`
+	Result   []Subscription                           `json:"result" api:"required,nullable"`
 	// Whether the API call was successful
-	Success    AccountSubscriptionListResponseSuccess    `json:"success,required"`
+	Success    AccountSubscriptionListResponseSuccess    `json:"success" api:"required"`
 	ResultInfo AccountSubscriptionListResponseResultInfo `json:"result_info"`
 	JSON       accountSubscriptionListResponseJSON       `json:"-"`
 }
@@ -552,8 +552,8 @@ func (r accountSubscriptionListResponseJSON) RawJSON() string {
 }
 
 type AccountSubscriptionListResponseError struct {
-	Code             int64                                       `json:"code,required"`
-	Message          string                                      `json:"message,required"`
+	Code             int64                                       `json:"code" api:"required"`
+	Message          string                                      `json:"message" api:"required"`
 	DocumentationURL string                                      `json:"documentation_url"`
 	Source           AccountSubscriptionListResponseErrorsSource `json:"source"`
 	JSON             accountSubscriptionListResponseErrorJSON    `json:"-"`
@@ -600,8 +600,8 @@ func (r accountSubscriptionListResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type AccountSubscriptionListResponseMessage struct {
-	Code             int64                                         `json:"code,required"`
-	Message          string                                        `json:"message,required"`
+	Code             int64                                         `json:"code" api:"required"`
+	Message          string                                        `json:"message" api:"required"`
 	DocumentationURL string                                        `json:"documentation_url"`
 	Source           AccountSubscriptionListResponseMessagesSource `json:"source"`
 	JSON             accountSubscriptionListResponseMessageJSON    `json:"-"`
@@ -694,11 +694,11 @@ func (r accountSubscriptionListResponseResultInfoJSON) RawJSON() string {
 }
 
 type AccountSubscriptionDeleteResponse struct {
-	Errors   []BillSubsAPIMessages                   `json:"errors,required"`
-	Messages []BillSubsAPIMessages                   `json:"messages,required"`
-	Result   AccountSubscriptionDeleteResponseResult `json:"result,required"`
+	Errors   []BillSubsAPIMessages                   `json:"errors" api:"required"`
+	Messages []BillSubsAPIMessages                   `json:"messages" api:"required"`
+	Result   AccountSubscriptionDeleteResponseResult `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success AccountSubscriptionDeleteResponseSuccess `json:"success,required"`
+	Success AccountSubscriptionDeleteResponseSuccess `json:"success" api:"required"`
 	JSON    accountSubscriptionDeleteResponseJSON    `json:"-"`
 }
 
@@ -759,7 +759,7 @@ func (r AccountSubscriptionDeleteResponseSuccess) IsKnown() bool {
 }
 
 type AccountSubscriptionNewParams struct {
-	SubscriptionV2 SubscriptionV2Param `json:"subscription_v2,required"`
+	SubscriptionV2 SubscriptionV2Param `json:"subscription_v2" api:"required"`
 }
 
 func (r AccountSubscriptionNewParams) MarshalJSON() (data []byte, err error) {
@@ -767,7 +767,7 @@ func (r AccountSubscriptionNewParams) MarshalJSON() (data []byte, err error) {
 }
 
 type AccountSubscriptionUpdateParams struct {
-	SubscriptionV2 SubscriptionV2Param `json:"subscription_v2,required"`
+	SubscriptionV2 SubscriptionV2Param `json:"subscription_v2" api:"required"`
 }
 
 func (r AccountSubscriptionUpdateParams) MarshalJSON() (data []byte, err error) {

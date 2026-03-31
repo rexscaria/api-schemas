@@ -40,11 +40,11 @@ func (r *ZoneKeylessCertificateService) New(ctx context.Context, zoneID string, 
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/keyless_certificates", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get details for one Keyless SSL configuration.
@@ -52,15 +52,15 @@ func (r *ZoneKeylessCertificateService) Get(ctx context.Context, zoneID string, 
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if keylessCertificateID == "" {
 		err = errors.New("missing required keyless_certificate_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/keyless_certificates/%s", zoneID, keylessCertificateID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // This will update attributes of a Keyless SSL. Consists of one or more of the
@@ -69,15 +69,15 @@ func (r *ZoneKeylessCertificateService) Update(ctx context.Context, zoneID strin
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if keylessCertificateID == "" {
 		err = errors.New("missing required keyless_certificate_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/keyless_certificates/%s", zoneID, keylessCertificateID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // List all Keyless SSL configurations for a given zone.
@@ -85,11 +85,11 @@ func (r *ZoneKeylessCertificateService) List(ctx context.Context, zoneID string,
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/keyless_certificates", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete Keyless SSL Configuration
@@ -97,38 +97,38 @@ func (r *ZoneKeylessCertificateService) Delete(ctx context.Context, zoneID strin
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if keylessCertificateID == "" {
 		err = errors.New("missing required keyless_certificate_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/keyless_certificates/%s", zoneID, keylessCertificateID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type KeylessCertificate struct {
 	// Keyless certificate identifier tag.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// When the Keyless SSL was created.
-	CreatedOn time.Time `json:"created_on,required" format:"date-time"`
+	CreatedOn time.Time `json:"created_on" api:"required" format:"date-time"`
 	// Whether or not the Keyless SSL is on or off.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// The keyless SSL name.
-	Host string `json:"host,required" format:"hostname"`
+	Host string `json:"host" api:"required" format:"hostname"`
 	// When the Keyless SSL was last modified.
-	ModifiedOn time.Time `json:"modified_on,required" format:"date-time"`
+	ModifiedOn time.Time `json:"modified_on" api:"required" format:"date-time"`
 	// The keyless SSL name.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Available permissions for the Keyless SSL for the current user requesting the
 	// item.
-	Permissions []string `json:"permissions,required"`
+	Permissions []string `json:"permissions" api:"required"`
 	// The keyless SSL port used to communicate between Cloudflare and the client's
 	// Keyless SSL server.
-	Port float64 `json:"port,required"`
+	Port float64 `json:"port" api:"required"`
 	// Status of the Keyless SSL.
-	Status KeylessCertificateStatus `json:"status,required"`
+	Status KeylessCertificateStatus `json:"status" api:"required"`
 	// Configuration for using Keyless SSL through a Cloudflare Tunnel
 	Tunnel KeylessTunnel          `json:"tunnel"`
 	JSON   keylessCertificateJSON `json:"-"`
@@ -176,10 +176,10 @@ func (r KeylessCertificateStatus) IsKnown() bool {
 }
 
 type KeylessResponseSingle struct {
-	Errors   []MessagesTlsCertificatesItem `json:"errors,required"`
-	Messages []MessagesTlsCertificatesItem `json:"messages,required"`
+	Errors   []MessagesTlsCertificatesItem `json:"errors" api:"required"`
+	Messages []MessagesTlsCertificatesItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success KeylessResponseSingleSuccess `json:"success,required"`
+	Success KeylessResponseSingleSuccess `json:"success" api:"required"`
 	Result  TlsCertificateBase           `json:"result"`
 	JSON    keylessResponseSingleJSON    `json:"-"`
 }
@@ -221,9 +221,9 @@ func (r KeylessResponseSingleSuccess) IsKnown() bool {
 // Configuration for using Keyless SSL through a Cloudflare Tunnel
 type KeylessTunnel struct {
 	// Private IP of the Key Server Host
-	PrivateIP string `json:"private_ip,required"`
+	PrivateIP string `json:"private_ip" api:"required"`
 	// Cloudflare Tunnel Virtual Network ID
-	VnetID string            `json:"vnet_id,required"`
+	VnetID string            `json:"vnet_id" api:"required"`
 	JSON   keylessTunnelJSON `json:"-"`
 }
 
@@ -246,9 +246,9 @@ func (r keylessTunnelJSON) RawJSON() string {
 // Configuration for using Keyless SSL through a Cloudflare Tunnel
 type KeylessTunnelParam struct {
 	// Private IP of the Key Server Host
-	PrivateIP param.Field[string] `json:"private_ip,required"`
+	PrivateIP param.Field[string] `json:"private_ip" api:"required"`
 	// Cloudflare Tunnel Virtual Network ID
-	VnetID param.Field[string] `json:"vnet_id,required"`
+	VnetID param.Field[string] `json:"vnet_id" api:"required"`
 }
 
 func (r KeylessTunnelParam) MarshalJSON() (data []byte, err error) {
@@ -257,25 +257,25 @@ func (r KeylessTunnelParam) MarshalJSON() (data []byte, err error) {
 
 type TlsCertificateBase struct {
 	// Keyless certificate identifier tag.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// When the Keyless SSL was created.
-	CreatedOn time.Time `json:"created_on,required" format:"date-time"`
+	CreatedOn time.Time `json:"created_on" api:"required" format:"date-time"`
 	// Whether or not the Keyless SSL is on or off.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// The keyless SSL name.
-	Host string `json:"host,required" format:"hostname"`
+	Host string `json:"host" api:"required" format:"hostname"`
 	// When the Keyless SSL was last modified.
-	ModifiedOn time.Time `json:"modified_on,required" format:"date-time"`
+	ModifiedOn time.Time `json:"modified_on" api:"required" format:"date-time"`
 	// The keyless SSL name.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Available permissions for the Keyless SSL for the current user requesting the
 	// item.
-	Permissions []string `json:"permissions,required"`
+	Permissions []string `json:"permissions" api:"required"`
 	// The keyless SSL port used to communicate between Cloudflare and the client's
 	// Keyless SSL server.
-	Port float64 `json:"port,required"`
+	Port float64 `json:"port" api:"required"`
 	// Status of the Keyless SSL.
-	Status TlsCertificateBaseStatus `json:"status,required"`
+	Status TlsCertificateBaseStatus `json:"status" api:"required"`
 	// Configuration for using Keyless SSL through a Cloudflare Tunnel
 	Tunnel KeylessTunnel          `json:"tunnel"`
 	JSON   tlsCertificateBaseJSON `json:"-"`
@@ -323,10 +323,10 @@ func (r TlsCertificateBaseStatus) IsKnown() bool {
 }
 
 type ZoneKeylessCertificateListResponse struct {
-	Errors   []MessagesTlsCertificatesItem `json:"errors,required"`
-	Messages []MessagesTlsCertificatesItem `json:"messages,required"`
+	Errors   []MessagesTlsCertificatesItem `json:"errors" api:"required"`
+	Messages []MessagesTlsCertificatesItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success    ZoneKeylessCertificateListResponseSuccess    `json:"success,required"`
+	Success    ZoneKeylessCertificateListResponseSuccess    `json:"success" api:"required"`
 	Result     []KeylessCertificate                         `json:"result"`
 	ResultInfo ZoneKeylessCertificateListResponseResultInfo `json:"result_info"`
 	JSON       zoneKeylessCertificateListResponseJSON       `json:"-"`
@@ -399,10 +399,10 @@ func (r zoneKeylessCertificateListResponseResultInfoJSON) RawJSON() string {
 }
 
 type ZoneKeylessCertificateDeleteResponse struct {
-	Errors   []MessagesTlsCertificatesItem `json:"errors,required"`
-	Messages []MessagesTlsCertificatesItem `json:"messages,required"`
+	Errors   []MessagesTlsCertificatesItem `json:"errors" api:"required"`
+	Messages []MessagesTlsCertificatesItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success ZoneKeylessCertificateDeleteResponseSuccess `json:"success,required"`
+	Success ZoneKeylessCertificateDeleteResponseSuccess `json:"success" api:"required"`
 	Result  ZoneKeylessCertificateDeleteResponseResult  `json:"result"`
 	JSON    zoneKeylessCertificateDeleteResponseJSON    `json:"-"`
 }
@@ -465,12 +465,12 @@ func (r zoneKeylessCertificateDeleteResponseResultJSON) RawJSON() string {
 
 type ZoneKeylessCertificateNewParams struct {
 	// The zone's SSL certificate or SSL certificate and intermediate(s).
-	Certificate param.Field[string] `json:"certificate,required"`
+	Certificate param.Field[string] `json:"certificate" api:"required"`
 	// The keyless SSL name.
-	Host param.Field[string] `json:"host,required" format:"hostname"`
+	Host param.Field[string] `json:"host" api:"required" format:"hostname"`
 	// The keyless SSL port used to communicate between Cloudflare and the client's
 	// Keyless SSL server.
-	Port param.Field[float64] `json:"port,required"`
+	Port param.Field[float64] `json:"port" api:"required"`
 	// A ubiquitous bundle has the highest probability of being verified everywhere,
 	// even by clients using outdated or unusual trust stores. An optimal bundle uses
 	// the shortest chain and newest intermediates. And the force bundle verifies the

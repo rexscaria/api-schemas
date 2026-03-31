@@ -46,11 +46,11 @@ func (r *ZoneWaitingRoomService) New(ctx context.Context, zoneID string, body Zo
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/waiting_rooms", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetches a single configured waiting room.
@@ -58,15 +58,15 @@ func (r *ZoneWaitingRoomService) Get(ctx context.Context, zoneID string, waiting
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if waitingRoomID == "" {
 		err = errors.New("missing required waiting_room_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/waiting_rooms/%s", zoneID, waitingRoomID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates a configured waiting room.
@@ -74,15 +74,15 @@ func (r *ZoneWaitingRoomService) Update(ctx context.Context, zoneID string, wait
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if waitingRoomID == "" {
 		err = errors.New("missing required waiting_room_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/waiting_rooms/%s", zoneID, waitingRoomID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Deletes a waiting room.
@@ -90,15 +90,15 @@ func (r *ZoneWaitingRoomService) Delete(ctx context.Context, zoneID string, wait
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if waitingRoomID == "" {
 		err = errors.New("missing required waiting_room_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/waiting_rooms/%s", zoneID, waitingRoomID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Patches a configured waiting room.
@@ -106,15 +106,15 @@ func (r *ZoneWaitingRoomService) Patch(ctx context.Context, zoneID string, waiti
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if waitingRoomID == "" {
 		err = errors.New("missing required waiting_room_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/waiting_rooms/%s", zoneID, waitingRoomID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Creates a waiting room page preview. Upload a custom waiting room page for
@@ -157,11 +157,11 @@ func (r *ZoneWaitingRoomService) Preview(ctx context.Context, zoneID string, bod
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/waiting_rooms/preview", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetches the status of a configured waiting room. Response fields include:
@@ -187,15 +187,15 @@ func (r *ZoneWaitingRoomService) Status(ctx context.Context, zoneID string, wait
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if waitingRoomID == "" {
 		err = errors.New("missing required waiting_room_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/waiting_rooms/%s/status", zoneID, waitingRoomID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type AdditionalRoute struct {
@@ -407,22 +407,22 @@ type QueryWaitingroomParam struct {
 	// The host name to which the waiting room will be applied (no wildcards). Please
 	// do not include the scheme (http:// or https://). The host and path combination
 	// must be unique.
-	Host param.Field[string] `json:"host,required"`
+	Host param.Field[string] `json:"host" api:"required"`
 	// A unique name to identify the waiting room. Only alphanumeric characters,
 	// hyphens and underscores are allowed.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Sets the number of new users that will be let into the route every minute. This
 	// value is used as baseline for the number of users that are let in per minute. So
 	// it is possible that there is a little more or little less traffic coming to the
 	// route based on the traffic patterns at that time around the world.
-	NewUsersPerMinute param.Field[int64] `json:"new_users_per_minute,required"`
+	NewUsersPerMinute param.Field[int64] `json:"new_users_per_minute" api:"required"`
 	// Sets the total number of active user sessions on the route at a point in time. A
 	// route is a combination of host and path on which a waiting room is available.
 	// This value is used as a baseline for the total number of active user sessions on
 	// the route. It is possible to have a situation where there are more or less
 	// active users sessions on the route based on the traffic patterns at that time
 	// around the world.
-	TotalActiveUsers param.Field[int64] `json:"total_active_users,required"`
+	TotalActiveUsers param.Field[int64] `json:"total_active_users" api:"required"`
 	// Only available for the Waiting Room Advanced subscription. Additional hostname
 	// and path combinations to which this waiting room will be applied. There is an
 	// implied wildcard at the end of the path. The hostname and path combination must
@@ -747,7 +747,7 @@ func (r QueueingStatusCode) IsKnown() bool {
 }
 
 type SingleResponseWaitingRoom struct {
-	Result Waitingroom                   `json:"result,required"`
+	Result Waitingroom                   `json:"result" api:"required"`
 	JSON   singleResponseWaitingRoomJSON `json:"-"`
 }
 
@@ -1024,9 +1024,9 @@ type Waitingroom struct {
 	// route based on the traffic patterns at that time around the world.
 	NewUsersPerMinute int64 `json:"new_users_per_minute"`
 	// An ISO 8601 timestamp that marks when the next event will begin queueing.
-	NextEventPrequeueStartTime string `json:"next_event_prequeue_start_time,nullable"`
+	NextEventPrequeueStartTime string `json:"next_event_prequeue_start_time" api:"nullable"`
 	// An ISO 8601 timestamp that marks when the next event will start.
-	NextEventStartTime string `json:"next_event_start_time,nullable"`
+	NextEventStartTime string `json:"next_event_start_time" api:"nullable"`
 	// Sets the path within the host to enable the waiting room on. The waiting room
 	// will be enabled for all subpaths as well. If there are two waiting rooms on the
 	// same subpath, the waiting room for the most specific path will be chosen.
@@ -1136,7 +1136,7 @@ func (r waitingroomJSON) RawJSON() string {
 }
 
 type ZoneWaitingRoomDeleteResponse struct {
-	Result ZoneWaitingRoomDeleteResponseResult `json:"result,required"`
+	Result ZoneWaitingRoomDeleteResponseResult `json:"result" api:"required"`
 	JSON   zoneWaitingRoomDeleteResponseJSON   `json:"-"`
 }
 
@@ -1178,7 +1178,7 @@ func (r zoneWaitingRoomDeleteResponseResultJSON) RawJSON() string {
 }
 
 type ZoneWaitingRoomPreviewResponse struct {
-	Result ZoneWaitingRoomPreviewResponseResult `json:"result,required"`
+	Result ZoneWaitingRoomPreviewResponseResult `json:"result" api:"required"`
 	JSON   zoneWaitingRoomPreviewResponseJSON   `json:"-"`
 }
 
@@ -1221,7 +1221,7 @@ func (r zoneWaitingRoomPreviewResponseResultJSON) RawJSON() string {
 }
 
 type ZoneWaitingRoomStatusResponse struct {
-	Result ZoneWaitingRoomStatusResponseResult `json:"result,required"`
+	Result ZoneWaitingRoomStatusResponseResult `json:"result" api:"required"`
 	JSON   zoneWaitingRoomStatusResponseJSON   `json:"-"`
 }
 
@@ -1288,7 +1288,7 @@ func (r ZoneWaitingRoomStatusResponseResultStatus) IsKnown() bool {
 }
 
 type ZoneWaitingRoomNewParams struct {
-	QueryWaitingroom QueryWaitingroomParam `json:"query_waitingroom,required"`
+	QueryWaitingroom QueryWaitingroomParam `json:"query_waitingroom" api:"required"`
 }
 
 func (r ZoneWaitingRoomNewParams) MarshalJSON() (data []byte, err error) {
@@ -1296,7 +1296,7 @@ func (r ZoneWaitingRoomNewParams) MarshalJSON() (data []byte, err error) {
 }
 
 type ZoneWaitingRoomUpdateParams struct {
-	QueryWaitingroom QueryWaitingroomParam `json:"query_waitingroom,required"`
+	QueryWaitingroom QueryWaitingroomParam `json:"query_waitingroom" api:"required"`
 }
 
 func (r ZoneWaitingRoomUpdateParams) MarshalJSON() (data []byte, err error) {
@@ -1304,7 +1304,7 @@ func (r ZoneWaitingRoomUpdateParams) MarshalJSON() (data []byte, err error) {
 }
 
 type ZoneWaitingRoomPatchParams struct {
-	QueryWaitingroom QueryWaitingroomParam `json:"query_waitingroom,required"`
+	QueryWaitingroom QueryWaitingroomParam `json:"query_waitingroom" api:"required"`
 }
 
 func (r ZoneWaitingRoomPatchParams) MarshalJSON() (data []byte, err error) {
@@ -1333,7 +1333,7 @@ type ZoneWaitingRoomPreviewParams struct {
 	//
 	// To view the full list of variables, look at the `cfWaitingRoom` object described
 	// under the `json_response_enabled` property in other Waiting Room API calls.
-	CustomHTML param.Field[string] `json:"custom_html,required"`
+	CustomHTML param.Field[string] `json:"custom_html" api:"required"`
 }
 
 func (r ZoneWaitingRoomPreviewParams) MarshalJSON() (data []byte, err error) {

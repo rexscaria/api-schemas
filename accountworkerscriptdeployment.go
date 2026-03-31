@@ -45,15 +45,15 @@ func (r *AccountWorkerScriptDeploymentService) New(ctx context.Context, accountI
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if scriptName == "" {
 		err = errors.New("missing required script_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/workers/scripts/%s/deployments", accountID, scriptName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // List of Worker Deployments. The first deployment in the list is the latest
@@ -62,23 +62,23 @@ func (r *AccountWorkerScriptDeploymentService) List(ctx context.Context, account
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if scriptName == "" {
 		err = errors.New("missing required script_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/workers/scripts/%s/deployments", accountID, scriptName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountWorkerScriptDeploymentNewResponse struct {
-	Errors   []WorkersMessages                              `json:"errors,required"`
-	Messages []WorkersMessages                              `json:"messages,required"`
-	Result   AccountWorkerScriptDeploymentNewResponseResult `json:"result,required"`
+	Errors   []WorkersMessages                              `json:"errors" api:"required"`
+	Messages []WorkersMessages                              `json:"messages" api:"required"`
+	Result   AccountWorkerScriptDeploymentNewResponseResult `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success AccountWorkerScriptDeploymentNewResponseSuccess `json:"success,required"`
+	Success AccountWorkerScriptDeploymentNewResponseSuccess `json:"success" api:"required"`
 	JSON    accountWorkerScriptDeploymentNewResponseJSON    `json:"-"`
 }
 
@@ -102,11 +102,11 @@ func (r accountWorkerScriptDeploymentNewResponseJSON) RawJSON() string {
 }
 
 type AccountWorkerScriptDeploymentNewResponseResult struct {
-	ID          string                                                    `json:"id,required" format:"uuid"`
-	CreatedOn   time.Time                                                 `json:"created_on,required" format:"date-time"`
-	Source      string                                                    `json:"source,required"`
-	Strategy    AccountWorkerScriptDeploymentNewResponseResultStrategy    `json:"strategy,required"`
-	Versions    []AccountWorkerScriptDeploymentNewResponseResultVersion   `json:"versions,required"`
+	ID          string                                                    `json:"id" api:"required" format:"uuid"`
+	CreatedOn   time.Time                                                 `json:"created_on" api:"required" format:"date-time"`
+	Source      string                                                    `json:"source" api:"required"`
+	Strategy    AccountWorkerScriptDeploymentNewResponseResultStrategy    `json:"strategy" api:"required"`
+	Versions    []AccountWorkerScriptDeploymentNewResponseResultVersion   `json:"versions" api:"required"`
 	Annotations AccountWorkerScriptDeploymentNewResponseResultAnnotations `json:"annotations"`
 	AuthorEmail string                                                    `json:"author_email" format:"email"`
 	JSON        accountWorkerScriptDeploymentNewResponseResultJSON        `json:"-"`
@@ -149,8 +149,8 @@ func (r AccountWorkerScriptDeploymentNewResponseResultStrategy) IsKnown() bool {
 }
 
 type AccountWorkerScriptDeploymentNewResponseResultVersion struct {
-	Percentage float64                                                   `json:"percentage,required"`
-	VersionID  string                                                    `json:"version_id,required" format:"uuid"`
+	Percentage float64                                                   `json:"percentage" api:"required"`
+	VersionID  string                                                    `json:"version_id" api:"required" format:"uuid"`
 	JSON       accountWorkerScriptDeploymentNewResponseResultVersionJSON `json:"-"`
 }
 
@@ -210,11 +210,11 @@ func (r AccountWorkerScriptDeploymentNewResponseSuccess) IsKnown() bool {
 }
 
 type AccountWorkerScriptDeploymentListResponse struct {
-	Errors   []WorkersMessages                               `json:"errors,required"`
-	Messages []WorkersMessages                               `json:"messages,required"`
-	Result   AccountWorkerScriptDeploymentListResponseResult `json:"result,required"`
+	Errors   []WorkersMessages                               `json:"errors" api:"required"`
+	Messages []WorkersMessages                               `json:"messages" api:"required"`
+	Result   AccountWorkerScriptDeploymentListResponseResult `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success AccountWorkerScriptDeploymentListResponseSuccess `json:"success,required"`
+	Success AccountWorkerScriptDeploymentListResponseSuccess `json:"success" api:"required"`
 	JSON    accountWorkerScriptDeploymentListResponseJSON    `json:"-"`
 }
 
@@ -238,7 +238,7 @@ func (r accountWorkerScriptDeploymentListResponseJSON) RawJSON() string {
 }
 
 type AccountWorkerScriptDeploymentListResponseResult struct {
-	Deployments []AccountWorkerScriptDeploymentListResponseResultDeployment `json:"deployments,required"`
+	Deployments []AccountWorkerScriptDeploymentListResponseResultDeployment `json:"deployments" api:"required"`
 	JSON        accountWorkerScriptDeploymentListResponseResultJSON         `json:"-"`
 }
 
@@ -259,11 +259,11 @@ func (r accountWorkerScriptDeploymentListResponseResultJSON) RawJSON() string {
 }
 
 type AccountWorkerScriptDeploymentListResponseResultDeployment struct {
-	ID          string                                                                `json:"id,required" format:"uuid"`
-	CreatedOn   time.Time                                                             `json:"created_on,required" format:"date-time"`
-	Source      string                                                                `json:"source,required"`
-	Strategy    AccountWorkerScriptDeploymentListResponseResultDeploymentsStrategy    `json:"strategy,required"`
-	Versions    []AccountWorkerScriptDeploymentListResponseResultDeploymentsVersion   `json:"versions,required"`
+	ID          string                                                                `json:"id" api:"required" format:"uuid"`
+	CreatedOn   time.Time                                                             `json:"created_on" api:"required" format:"date-time"`
+	Source      string                                                                `json:"source" api:"required"`
+	Strategy    AccountWorkerScriptDeploymentListResponseResultDeploymentsStrategy    `json:"strategy" api:"required"`
+	Versions    []AccountWorkerScriptDeploymentListResponseResultDeploymentsVersion   `json:"versions" api:"required"`
 	Annotations AccountWorkerScriptDeploymentListResponseResultDeploymentsAnnotations `json:"annotations"`
 	AuthorEmail string                                                                `json:"author_email" format:"email"`
 	JSON        accountWorkerScriptDeploymentListResponseResultDeploymentJSON         `json:"-"`
@@ -307,8 +307,8 @@ func (r AccountWorkerScriptDeploymentListResponseResultDeploymentsStrategy) IsKn
 }
 
 type AccountWorkerScriptDeploymentListResponseResultDeploymentsVersion struct {
-	Percentage float64                                                               `json:"percentage,required"`
-	VersionID  string                                                                `json:"version_id,required" format:"uuid"`
+	Percentage float64                                                               `json:"percentage" api:"required"`
+	VersionID  string                                                                `json:"version_id" api:"required" format:"uuid"`
 	JSON       accountWorkerScriptDeploymentListResponseResultDeploymentsVersionJSON `json:"-"`
 }
 
@@ -369,8 +369,8 @@ func (r AccountWorkerScriptDeploymentListResponseSuccess) IsKnown() bool {
 }
 
 type AccountWorkerScriptDeploymentNewParams struct {
-	Strategy param.Field[AccountWorkerScriptDeploymentNewParamsStrategy]  `json:"strategy,required"`
-	Versions param.Field[[]AccountWorkerScriptDeploymentNewParamsVersion] `json:"versions,required"`
+	Strategy param.Field[AccountWorkerScriptDeploymentNewParamsStrategy]  `json:"strategy" api:"required"`
+	Versions param.Field[[]AccountWorkerScriptDeploymentNewParamsVersion] `json:"versions" api:"required"`
 	// If set to true, the deployment will be created even if normally blocked by
 	// something such rolling back to an older version when a secret has changed.
 	Force       param.Field[bool]                                              `query:"force"`
@@ -405,8 +405,8 @@ func (r AccountWorkerScriptDeploymentNewParamsStrategy) IsKnown() bool {
 }
 
 type AccountWorkerScriptDeploymentNewParamsVersion struct {
-	Percentage param.Field[float64] `json:"percentage,required"`
-	VersionID  param.Field[string]  `json:"version_id,required" format:"uuid"`
+	Percentage param.Field[float64] `json:"percentage" api:"required"`
+	VersionID  param.Field[string]  `json:"version_id" api:"required" format:"uuid"`
 }
 
 func (r AccountWorkerScriptDeploymentNewParamsVersion) MarshalJSON() (data []byte, err error) {

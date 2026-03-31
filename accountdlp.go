@@ -50,18 +50,18 @@ func (r *AccountDlpService) GetLimits(ctx context.Context, accountID string, opt
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/dlp/limits", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountDlpGetLimitsResponse struct {
-	Errors   []MessagesDlpItems `json:"errors,required"`
-	Messages []MessagesDlpItems `json:"messages,required"`
+	Errors   []MessagesDlpItems `json:"errors" api:"required"`
+	Messages []MessagesDlpItems `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountDlpGetLimitsResponseSuccess `json:"success,required"`
+	Success AccountDlpGetLimitsResponseSuccess `json:"success" api:"required"`
 	Result  AccountDlpGetLimitsResponseResult  `json:"result"`
 	JSON    accountDlpGetLimitsResponseJSON    `json:"-"`
 }
@@ -101,7 +101,7 @@ func (r AccountDlpGetLimitsResponseSuccess) IsKnown() bool {
 }
 
 type AccountDlpGetLimitsResponseResult struct {
-	MaxDatasetCells int64                                 `json:"max_dataset_cells,required"`
+	MaxDatasetCells int64                                 `json:"max_dataset_cells" api:"required"`
 	JSON            accountDlpGetLimitsResponseResultJSON `json:"-"`
 }
 

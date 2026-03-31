@@ -16,7 +16,7 @@ import (
 )
 
 func TestAccountWorkerScriptList(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -28,6 +28,7 @@ func TestAccountWorkerScriptList(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Workers.Scripts.List(context.TODO(), "023e105f4ecef8ad9ca31a8372d0c353")
 	if err != nil {
@@ -40,7 +41,7 @@ func TestAccountWorkerScriptList(t *testing.T) {
 }
 
 func TestAccountWorkerScriptDeleteWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -52,6 +53,7 @@ func TestAccountWorkerScriptDeleteWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Workers.Scripts.Delete(
 		context.TODO(),
@@ -71,7 +73,7 @@ func TestAccountWorkerScriptDeleteWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountWorkerScriptNewAssetsUploadSession(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -83,6 +85,7 @@ func TestAccountWorkerScriptNewAssetsUploadSession(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Workers.Scripts.NewAssetsUploadSession(
 		context.TODO(),
@@ -109,7 +112,7 @@ func TestAccountWorkerScriptNewAssetsUploadSession(t *testing.T) {
 }
 
 func TestAccountWorkerScriptDownload(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -121,6 +124,7 @@ func TestAccountWorkerScriptDownload(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Workers.Scripts.Download(
 		context.TODO(),
@@ -137,7 +141,7 @@ func TestAccountWorkerScriptDownload(t *testing.T) {
 }
 
 func TestAccountWorkerScriptUploadWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -149,6 +153,7 @@ func TestAccountWorkerScriptUploadWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Workers.Scripts.Upload(
 		context.TODO(),
@@ -215,7 +220,7 @@ func TestAccountWorkerScriptUploadWithOptionalParams(t *testing.T) {
 				}}),
 				UsageModel: cfrex.F(cfrex.UsageModelStandard),
 			}),
-			Files: cfrex.F([]io.Reader{io.Reader(bytes.NewBuffer([]byte("some file contents")))}),
+			Files: cfrex.F([]io.Reader{io.Reader(bytes.NewBuffer([]byte("Example data")))}),
 		},
 	)
 	if err != nil {

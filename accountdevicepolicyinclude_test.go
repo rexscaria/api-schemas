@@ -14,7 +14,7 @@ import (
 )
 
 func TestAccountDevicePolicyIncludeList(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,6 +26,7 @@ func TestAccountDevicePolicyIncludeList(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Devices.Policy.Include.List(
 		context.TODO(),
@@ -42,7 +43,7 @@ func TestAccountDevicePolicyIncludeList(t *testing.T) {
 }
 
 func TestAccountDevicePolicyIncludeGlobalList(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -54,6 +55,7 @@ func TestAccountDevicePolicyIncludeGlobalList(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Devices.Policy.Include.GlobalList(context.TODO(), "699d98642c564d2e855e9661899b7252")
 	if err != nil {
@@ -66,7 +68,7 @@ func TestAccountDevicePolicyIncludeGlobalList(t *testing.T) {
 }
 
 func TestAccountDevicePolicyIncludeGlobalSet(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -78,6 +80,7 @@ func TestAccountDevicePolicyIncludeGlobalSet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Devices.Policy.Include.GlobalSet(
 		context.TODO(),
@@ -99,7 +102,7 @@ func TestAccountDevicePolicyIncludeGlobalSet(t *testing.T) {
 }
 
 func TestAccountDevicePolicyIncludeSet(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -111,6 +114,7 @@ func TestAccountDevicePolicyIncludeSet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Devices.Policy.Include.Set(
 		context.TODO(),

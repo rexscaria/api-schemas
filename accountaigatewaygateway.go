@@ -48,11 +48,11 @@ func (r *AccountAIGatewayGatewayService) NewGateway(ctx context.Context, account
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai-gateway/gateways", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete a Gateway
@@ -60,15 +60,15 @@ func (r *AccountAIGatewayGatewayService) DeleteGateway(ctx context.Context, acco
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai-gateway/gateways/%s", accountID, id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetch a Gateway
@@ -76,15 +76,15 @@ func (r *AccountAIGatewayGatewayService) FetchGateway(ctx context.Context, accou
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai-gateway/gateways/%s", accountID, id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Get Gateway URL
@@ -92,19 +92,19 @@ func (r *AccountAIGatewayGatewayService) GetGatewayURL(ctx context.Context, acco
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if gatewayID == "" {
 		err = errors.New("missing required gateway_id parameter")
-		return
+		return nil, err
 	}
 	if provider == "" {
 		err = errors.New("missing required provider parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai-gateway/gateways/%s/url/%s", accountID, gatewayID, provider)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // List Gateways
@@ -112,11 +112,11 @@ func (r *AccountAIGatewayGatewayService) ListGateways(ctx context.Context, accou
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai-gateway/gateways", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Update a Gateway
@@ -124,20 +124,20 @@ func (r *AccountAIGatewayGatewayService) UpdateGateway(ctx context.Context, acco
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai-gateway/gateways/%s", accountID, id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountAIGatewayGatewayNewGatewayResponse struct {
-	Result  AccountAIGatewayGatewayNewGatewayResponseResult `json:"result,required"`
-	Success bool                                            `json:"success,required"`
+	Result  AccountAIGatewayGatewayNewGatewayResponseResult `json:"result" api:"required"`
+	Success bool                                            `json:"success" api:"required"`
 	JSON    accountAIGatewayGatewayNewGatewayResponseJSON   `json:"-"`
 }
 
@@ -160,23 +160,23 @@ func (r accountAIGatewayGatewayNewGatewayResponseJSON) RawJSON() string {
 
 type AccountAIGatewayGatewayNewGatewayResponseResult struct {
 	// gateway id
-	ID                      string                                                               `json:"id,required"`
-	AccountID               string                                                               `json:"account_id,required"`
-	AccountTag              string                                                               `json:"account_tag,required"`
-	CacheInvalidateOnUpdate bool                                                                 `json:"cache_invalidate_on_update,required"`
-	CacheTtl                int64                                                                `json:"cache_ttl,required,nullable"`
-	CollectLogs             bool                                                                 `json:"collect_logs,required"`
-	CreatedAt               time.Time                                                            `json:"created_at,required" format:"date-time"`
-	InternalID              string                                                               `json:"internal_id,required" format:"uuid"`
-	ModifiedAt              time.Time                                                            `json:"modified_at,required" format:"date-time"`
-	RateLimitingInterval    int64                                                                `json:"rate_limiting_interval,required,nullable"`
-	RateLimitingLimit       int64                                                                `json:"rate_limiting_limit,required,nullable"`
-	RateLimitingTechnique   AccountAIGatewayGatewayNewGatewayResponseResultRateLimitingTechnique `json:"rate_limiting_technique,required"`
+	ID                      string                                                               `json:"id" api:"required"`
+	AccountID               string                                                               `json:"account_id" api:"required"`
+	AccountTag              string                                                               `json:"account_tag" api:"required"`
+	CacheInvalidateOnUpdate bool                                                                 `json:"cache_invalidate_on_update" api:"required"`
+	CacheTtl                int64                                                                `json:"cache_ttl" api:"required,nullable"`
+	CollectLogs             bool                                                                 `json:"collect_logs" api:"required"`
+	CreatedAt               time.Time                                                            `json:"created_at" api:"required" format:"date-time"`
+	InternalID              string                                                               `json:"internal_id" api:"required" format:"uuid"`
+	ModifiedAt              time.Time                                                            `json:"modified_at" api:"required" format:"date-time"`
+	RateLimitingInterval    int64                                                                `json:"rate_limiting_interval" api:"required,nullable"`
+	RateLimitingLimit       int64                                                                `json:"rate_limiting_limit" api:"required,nullable"`
+	RateLimitingTechnique   AccountAIGatewayGatewayNewGatewayResponseResultRateLimitingTechnique `json:"rate_limiting_technique" api:"required"`
 	Authentication          bool                                                                 `json:"authentication"`
-	LogManagement           int64                                                                `json:"log_management,nullable"`
-	LogManagementStrategy   AccountAIGatewayGatewayNewGatewayResponseResultLogManagementStrategy `json:"log_management_strategy,nullable"`
+	LogManagement           int64                                                                `json:"log_management" api:"nullable"`
+	LogManagementStrategy   AccountAIGatewayGatewayNewGatewayResponseResultLogManagementStrategy `json:"log_management_strategy" api:"nullable"`
 	Logpush                 bool                                                                 `json:"logpush"`
-	LogpushPublicKey        string                                                               `json:"logpush_public_key,nullable"`
+	LogpushPublicKey        string                                                               `json:"logpush_public_key" api:"nullable"`
 	JSON                    accountAIGatewayGatewayNewGatewayResponseResultJSON                  `json:"-"`
 }
 
@@ -243,8 +243,8 @@ func (r AccountAIGatewayGatewayNewGatewayResponseResultLogManagementStrategy) Is
 }
 
 type AccountAIGatewayGatewayDeleteGatewayResponse struct {
-	Result  AccountAIGatewayGatewayDeleteGatewayResponseResult `json:"result,required"`
-	Success bool                                               `json:"success,required"`
+	Result  AccountAIGatewayGatewayDeleteGatewayResponseResult `json:"result" api:"required"`
+	Success bool                                               `json:"success" api:"required"`
 	JSON    accountAIGatewayGatewayDeleteGatewayResponseJSON   `json:"-"`
 }
 
@@ -267,23 +267,23 @@ func (r accountAIGatewayGatewayDeleteGatewayResponseJSON) RawJSON() string {
 
 type AccountAIGatewayGatewayDeleteGatewayResponseResult struct {
 	// gateway id
-	ID                      string                                                                  `json:"id,required"`
-	AccountID               string                                                                  `json:"account_id,required"`
-	AccountTag              string                                                                  `json:"account_tag,required"`
-	CacheInvalidateOnUpdate bool                                                                    `json:"cache_invalidate_on_update,required"`
-	CacheTtl                int64                                                                   `json:"cache_ttl,required,nullable"`
-	CollectLogs             bool                                                                    `json:"collect_logs,required"`
-	CreatedAt               time.Time                                                               `json:"created_at,required" format:"date-time"`
-	InternalID              string                                                                  `json:"internal_id,required" format:"uuid"`
-	ModifiedAt              time.Time                                                               `json:"modified_at,required" format:"date-time"`
-	RateLimitingInterval    int64                                                                   `json:"rate_limiting_interval,required,nullable"`
-	RateLimitingLimit       int64                                                                   `json:"rate_limiting_limit,required,nullable"`
-	RateLimitingTechnique   AccountAIGatewayGatewayDeleteGatewayResponseResultRateLimitingTechnique `json:"rate_limiting_technique,required"`
+	ID                      string                                                                  `json:"id" api:"required"`
+	AccountID               string                                                                  `json:"account_id" api:"required"`
+	AccountTag              string                                                                  `json:"account_tag" api:"required"`
+	CacheInvalidateOnUpdate bool                                                                    `json:"cache_invalidate_on_update" api:"required"`
+	CacheTtl                int64                                                                   `json:"cache_ttl" api:"required,nullable"`
+	CollectLogs             bool                                                                    `json:"collect_logs" api:"required"`
+	CreatedAt               time.Time                                                               `json:"created_at" api:"required" format:"date-time"`
+	InternalID              string                                                                  `json:"internal_id" api:"required" format:"uuid"`
+	ModifiedAt              time.Time                                                               `json:"modified_at" api:"required" format:"date-time"`
+	RateLimitingInterval    int64                                                                   `json:"rate_limiting_interval" api:"required,nullable"`
+	RateLimitingLimit       int64                                                                   `json:"rate_limiting_limit" api:"required,nullable"`
+	RateLimitingTechnique   AccountAIGatewayGatewayDeleteGatewayResponseResultRateLimitingTechnique `json:"rate_limiting_technique" api:"required"`
 	Authentication          bool                                                                    `json:"authentication"`
-	LogManagement           int64                                                                   `json:"log_management,nullable"`
-	LogManagementStrategy   AccountAIGatewayGatewayDeleteGatewayResponseResultLogManagementStrategy `json:"log_management_strategy,nullable"`
+	LogManagement           int64                                                                   `json:"log_management" api:"nullable"`
+	LogManagementStrategy   AccountAIGatewayGatewayDeleteGatewayResponseResultLogManagementStrategy `json:"log_management_strategy" api:"nullable"`
 	Logpush                 bool                                                                    `json:"logpush"`
-	LogpushPublicKey        string                                                                  `json:"logpush_public_key,nullable"`
+	LogpushPublicKey        string                                                                  `json:"logpush_public_key" api:"nullable"`
 	JSON                    accountAIGatewayGatewayDeleteGatewayResponseResultJSON                  `json:"-"`
 }
 
@@ -350,8 +350,8 @@ func (r AccountAIGatewayGatewayDeleteGatewayResponseResultLogManagementStrategy)
 }
 
 type AccountAIGatewayGatewayFetchGatewayResponse struct {
-	Result  AccountAIGatewayGatewayFetchGatewayResponseResult `json:"result,required"`
-	Success bool                                              `json:"success,required"`
+	Result  AccountAIGatewayGatewayFetchGatewayResponseResult `json:"result" api:"required"`
+	Success bool                                              `json:"success" api:"required"`
 	JSON    accountAIGatewayGatewayFetchGatewayResponseJSON   `json:"-"`
 }
 
@@ -374,23 +374,23 @@ func (r accountAIGatewayGatewayFetchGatewayResponseJSON) RawJSON() string {
 
 type AccountAIGatewayGatewayFetchGatewayResponseResult struct {
 	// gateway id
-	ID                      string                                                                 `json:"id,required"`
-	AccountID               string                                                                 `json:"account_id,required"`
-	AccountTag              string                                                                 `json:"account_tag,required"`
-	CacheInvalidateOnUpdate bool                                                                   `json:"cache_invalidate_on_update,required"`
-	CacheTtl                int64                                                                  `json:"cache_ttl,required,nullable"`
-	CollectLogs             bool                                                                   `json:"collect_logs,required"`
-	CreatedAt               time.Time                                                              `json:"created_at,required" format:"date-time"`
-	InternalID              string                                                                 `json:"internal_id,required" format:"uuid"`
-	ModifiedAt              time.Time                                                              `json:"modified_at,required" format:"date-time"`
-	RateLimitingInterval    int64                                                                  `json:"rate_limiting_interval,required,nullable"`
-	RateLimitingLimit       int64                                                                  `json:"rate_limiting_limit,required,nullable"`
-	RateLimitingTechnique   AccountAIGatewayGatewayFetchGatewayResponseResultRateLimitingTechnique `json:"rate_limiting_technique,required"`
+	ID                      string                                                                 `json:"id" api:"required"`
+	AccountID               string                                                                 `json:"account_id" api:"required"`
+	AccountTag              string                                                                 `json:"account_tag" api:"required"`
+	CacheInvalidateOnUpdate bool                                                                   `json:"cache_invalidate_on_update" api:"required"`
+	CacheTtl                int64                                                                  `json:"cache_ttl" api:"required,nullable"`
+	CollectLogs             bool                                                                   `json:"collect_logs" api:"required"`
+	CreatedAt               time.Time                                                              `json:"created_at" api:"required" format:"date-time"`
+	InternalID              string                                                                 `json:"internal_id" api:"required" format:"uuid"`
+	ModifiedAt              time.Time                                                              `json:"modified_at" api:"required" format:"date-time"`
+	RateLimitingInterval    int64                                                                  `json:"rate_limiting_interval" api:"required,nullable"`
+	RateLimitingLimit       int64                                                                  `json:"rate_limiting_limit" api:"required,nullable"`
+	RateLimitingTechnique   AccountAIGatewayGatewayFetchGatewayResponseResultRateLimitingTechnique `json:"rate_limiting_technique" api:"required"`
 	Authentication          bool                                                                   `json:"authentication"`
-	LogManagement           int64                                                                  `json:"log_management,nullable"`
-	LogManagementStrategy   AccountAIGatewayGatewayFetchGatewayResponseResultLogManagementStrategy `json:"log_management_strategy,nullable"`
+	LogManagement           int64                                                                  `json:"log_management" api:"nullable"`
+	LogManagementStrategy   AccountAIGatewayGatewayFetchGatewayResponseResultLogManagementStrategy `json:"log_management_strategy" api:"nullable"`
 	Logpush                 bool                                                                   `json:"logpush"`
-	LogpushPublicKey        string                                                                 `json:"logpush_public_key,nullable"`
+	LogpushPublicKey        string                                                                 `json:"logpush_public_key" api:"nullable"`
 	JSON                    accountAIGatewayGatewayFetchGatewayResponseResultJSON                  `json:"-"`
 }
 
@@ -457,8 +457,8 @@ func (r AccountAIGatewayGatewayFetchGatewayResponseResultLogManagementStrategy) 
 }
 
 type AccountAIGatewayGatewayGetGatewayURLResponse struct {
-	Result  string                                           `json:"result,required"`
-	Success bool                                             `json:"success,required"`
+	Result  string                                           `json:"result" api:"required"`
+	Success bool                                             `json:"success" api:"required"`
 	JSON    accountAIGatewayGatewayGetGatewayURLResponseJSON `json:"-"`
 }
 
@@ -480,8 +480,8 @@ func (r accountAIGatewayGatewayGetGatewayURLResponseJSON) RawJSON() string {
 }
 
 type AccountAIGatewayGatewayListGatewaysResponse struct {
-	Result  []AccountAIGatewayGatewayListGatewaysResponseResult `json:"result,required"`
-	Success bool                                                `json:"success,required"`
+	Result  []AccountAIGatewayGatewayListGatewaysResponseResult `json:"result" api:"required"`
+	Success bool                                                `json:"success" api:"required"`
 	JSON    accountAIGatewayGatewayListGatewaysResponseJSON     `json:"-"`
 }
 
@@ -504,23 +504,23 @@ func (r accountAIGatewayGatewayListGatewaysResponseJSON) RawJSON() string {
 
 type AccountAIGatewayGatewayListGatewaysResponseResult struct {
 	// gateway id
-	ID                      string                                                                 `json:"id,required"`
-	AccountID               string                                                                 `json:"account_id,required"`
-	AccountTag              string                                                                 `json:"account_tag,required"`
-	CacheInvalidateOnUpdate bool                                                                   `json:"cache_invalidate_on_update,required"`
-	CacheTtl                int64                                                                  `json:"cache_ttl,required,nullable"`
-	CollectLogs             bool                                                                   `json:"collect_logs,required"`
-	CreatedAt               time.Time                                                              `json:"created_at,required" format:"date-time"`
-	InternalID              string                                                                 `json:"internal_id,required" format:"uuid"`
-	ModifiedAt              time.Time                                                              `json:"modified_at,required" format:"date-time"`
-	RateLimitingInterval    int64                                                                  `json:"rate_limiting_interval,required,nullable"`
-	RateLimitingLimit       int64                                                                  `json:"rate_limiting_limit,required,nullable"`
-	RateLimitingTechnique   AccountAIGatewayGatewayListGatewaysResponseResultRateLimitingTechnique `json:"rate_limiting_technique,required"`
+	ID                      string                                                                 `json:"id" api:"required"`
+	AccountID               string                                                                 `json:"account_id" api:"required"`
+	AccountTag              string                                                                 `json:"account_tag" api:"required"`
+	CacheInvalidateOnUpdate bool                                                                   `json:"cache_invalidate_on_update" api:"required"`
+	CacheTtl                int64                                                                  `json:"cache_ttl" api:"required,nullable"`
+	CollectLogs             bool                                                                   `json:"collect_logs" api:"required"`
+	CreatedAt               time.Time                                                              `json:"created_at" api:"required" format:"date-time"`
+	InternalID              string                                                                 `json:"internal_id" api:"required" format:"uuid"`
+	ModifiedAt              time.Time                                                              `json:"modified_at" api:"required" format:"date-time"`
+	RateLimitingInterval    int64                                                                  `json:"rate_limiting_interval" api:"required,nullable"`
+	RateLimitingLimit       int64                                                                  `json:"rate_limiting_limit" api:"required,nullable"`
+	RateLimitingTechnique   AccountAIGatewayGatewayListGatewaysResponseResultRateLimitingTechnique `json:"rate_limiting_technique" api:"required"`
 	Authentication          bool                                                                   `json:"authentication"`
-	LogManagement           int64                                                                  `json:"log_management,nullable"`
-	LogManagementStrategy   AccountAIGatewayGatewayListGatewaysResponseResultLogManagementStrategy `json:"log_management_strategy,nullable"`
+	LogManagement           int64                                                                  `json:"log_management" api:"nullable"`
+	LogManagementStrategy   AccountAIGatewayGatewayListGatewaysResponseResultLogManagementStrategy `json:"log_management_strategy" api:"nullable"`
 	Logpush                 bool                                                                   `json:"logpush"`
-	LogpushPublicKey        string                                                                 `json:"logpush_public_key,nullable"`
+	LogpushPublicKey        string                                                                 `json:"logpush_public_key" api:"nullable"`
 	JSON                    accountAIGatewayGatewayListGatewaysResponseResultJSON                  `json:"-"`
 }
 
@@ -587,8 +587,8 @@ func (r AccountAIGatewayGatewayListGatewaysResponseResultLogManagementStrategy) 
 }
 
 type AccountAIGatewayGatewayUpdateGatewayResponse struct {
-	Result  AccountAIGatewayGatewayUpdateGatewayResponseResult `json:"result,required"`
-	Success bool                                               `json:"success,required"`
+	Result  AccountAIGatewayGatewayUpdateGatewayResponseResult `json:"result" api:"required"`
+	Success bool                                               `json:"success" api:"required"`
 	JSON    accountAIGatewayGatewayUpdateGatewayResponseJSON   `json:"-"`
 }
 
@@ -611,23 +611,23 @@ func (r accountAIGatewayGatewayUpdateGatewayResponseJSON) RawJSON() string {
 
 type AccountAIGatewayGatewayUpdateGatewayResponseResult struct {
 	// gateway id
-	ID                      string                                                                  `json:"id,required"`
-	AccountID               string                                                                  `json:"account_id,required"`
-	AccountTag              string                                                                  `json:"account_tag,required"`
-	CacheInvalidateOnUpdate bool                                                                    `json:"cache_invalidate_on_update,required"`
-	CacheTtl                int64                                                                   `json:"cache_ttl,required,nullable"`
-	CollectLogs             bool                                                                    `json:"collect_logs,required"`
-	CreatedAt               time.Time                                                               `json:"created_at,required" format:"date-time"`
-	InternalID              string                                                                  `json:"internal_id,required" format:"uuid"`
-	ModifiedAt              time.Time                                                               `json:"modified_at,required" format:"date-time"`
-	RateLimitingInterval    int64                                                                   `json:"rate_limiting_interval,required,nullable"`
-	RateLimitingLimit       int64                                                                   `json:"rate_limiting_limit,required,nullable"`
-	RateLimitingTechnique   AccountAIGatewayGatewayUpdateGatewayResponseResultRateLimitingTechnique `json:"rate_limiting_technique,required"`
+	ID                      string                                                                  `json:"id" api:"required"`
+	AccountID               string                                                                  `json:"account_id" api:"required"`
+	AccountTag              string                                                                  `json:"account_tag" api:"required"`
+	CacheInvalidateOnUpdate bool                                                                    `json:"cache_invalidate_on_update" api:"required"`
+	CacheTtl                int64                                                                   `json:"cache_ttl" api:"required,nullable"`
+	CollectLogs             bool                                                                    `json:"collect_logs" api:"required"`
+	CreatedAt               time.Time                                                               `json:"created_at" api:"required" format:"date-time"`
+	InternalID              string                                                                  `json:"internal_id" api:"required" format:"uuid"`
+	ModifiedAt              time.Time                                                               `json:"modified_at" api:"required" format:"date-time"`
+	RateLimitingInterval    int64                                                                   `json:"rate_limiting_interval" api:"required,nullable"`
+	RateLimitingLimit       int64                                                                   `json:"rate_limiting_limit" api:"required,nullable"`
+	RateLimitingTechnique   AccountAIGatewayGatewayUpdateGatewayResponseResultRateLimitingTechnique `json:"rate_limiting_technique" api:"required"`
 	Authentication          bool                                                                    `json:"authentication"`
-	LogManagement           int64                                                                   `json:"log_management,nullable"`
-	LogManagementStrategy   AccountAIGatewayGatewayUpdateGatewayResponseResultLogManagementStrategy `json:"log_management_strategy,nullable"`
+	LogManagement           int64                                                                   `json:"log_management" api:"nullable"`
+	LogManagementStrategy   AccountAIGatewayGatewayUpdateGatewayResponseResultLogManagementStrategy `json:"log_management_strategy" api:"nullable"`
 	Logpush                 bool                                                                    `json:"logpush"`
-	LogpushPublicKey        string                                                                  `json:"logpush_public_key,nullable"`
+	LogpushPublicKey        string                                                                  `json:"logpush_public_key" api:"nullable"`
 	JSON                    accountAIGatewayGatewayUpdateGatewayResponseResultJSON                  `json:"-"`
 }
 
@@ -695,13 +695,13 @@ func (r AccountAIGatewayGatewayUpdateGatewayResponseResultLogManagementStrategy)
 
 type AccountAIGatewayGatewayNewGatewayParams struct {
 	// gateway id
-	ID                      param.Field[string]                                                       `json:"id,required"`
-	CacheInvalidateOnUpdate param.Field[bool]                                                         `json:"cache_invalidate_on_update,required"`
-	CacheTtl                param.Field[int64]                                                        `json:"cache_ttl,required"`
-	CollectLogs             param.Field[bool]                                                         `json:"collect_logs,required"`
-	RateLimitingInterval    param.Field[int64]                                                        `json:"rate_limiting_interval,required"`
-	RateLimitingLimit       param.Field[int64]                                                        `json:"rate_limiting_limit,required"`
-	RateLimitingTechnique   param.Field[AccountAIGatewayGatewayNewGatewayParamsRateLimitingTechnique] `json:"rate_limiting_technique,required"`
+	ID                      param.Field[string]                                                       `json:"id" api:"required"`
+	CacheInvalidateOnUpdate param.Field[bool]                                                         `json:"cache_invalidate_on_update" api:"required"`
+	CacheTtl                param.Field[int64]                                                        `json:"cache_ttl" api:"required"`
+	CollectLogs             param.Field[bool]                                                         `json:"collect_logs" api:"required"`
+	RateLimitingInterval    param.Field[int64]                                                        `json:"rate_limiting_interval" api:"required"`
+	RateLimitingLimit       param.Field[int64]                                                        `json:"rate_limiting_limit" api:"required"`
+	RateLimitingTechnique   param.Field[AccountAIGatewayGatewayNewGatewayParamsRateLimitingTechnique] `json:"rate_limiting_technique" api:"required"`
 	Authentication          param.Field[bool]                                                         `json:"authentication"`
 	LogManagement           param.Field[int64]                                                        `json:"log_management"`
 	LogManagementStrategy   param.Field[AccountAIGatewayGatewayNewGatewayParamsLogManagementStrategy] `json:"log_management_strategy"`
@@ -760,12 +760,12 @@ func (r AccountAIGatewayGatewayListGatewaysParams) URLQuery() (v url.Values) {
 }
 
 type AccountAIGatewayGatewayUpdateGatewayParams struct {
-	CacheInvalidateOnUpdate param.Field[bool]                                                            `json:"cache_invalidate_on_update,required"`
-	CacheTtl                param.Field[int64]                                                           `json:"cache_ttl,required"`
-	CollectLogs             param.Field[bool]                                                            `json:"collect_logs,required"`
-	RateLimitingInterval    param.Field[int64]                                                           `json:"rate_limiting_interval,required"`
-	RateLimitingLimit       param.Field[int64]                                                           `json:"rate_limiting_limit,required"`
-	RateLimitingTechnique   param.Field[AccountAIGatewayGatewayUpdateGatewayParamsRateLimitingTechnique] `json:"rate_limiting_technique,required"`
+	CacheInvalidateOnUpdate param.Field[bool]                                                            `json:"cache_invalidate_on_update" api:"required"`
+	CacheTtl                param.Field[int64]                                                           `json:"cache_ttl" api:"required"`
+	CollectLogs             param.Field[bool]                                                            `json:"collect_logs" api:"required"`
+	RateLimitingInterval    param.Field[int64]                                                           `json:"rate_limiting_interval" api:"required"`
+	RateLimitingLimit       param.Field[int64]                                                           `json:"rate_limiting_limit" api:"required"`
+	RateLimitingTechnique   param.Field[AccountAIGatewayGatewayUpdateGatewayParamsRateLimitingTechnique] `json:"rate_limiting_technique" api:"required"`
 	Authentication          param.Field[bool]                                                            `json:"authentication"`
 	LogManagement           param.Field[int64]                                                           `json:"log_management"`
 	LogManagementStrategy   param.Field[AccountAIGatewayGatewayUpdateGatewayParamsLogManagementStrategy] `json:"log_management_strategy"`

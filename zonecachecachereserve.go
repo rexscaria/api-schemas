@@ -45,11 +45,11 @@ func (r *ZoneCacheCacheReserveService) Get(ctx context.Context, zoneID string, o
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/cache/cache_reserve", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Increase cache lifetimes by automatically storing all cacheable files into
@@ -62,11 +62,11 @@ func (r *ZoneCacheCacheReserveService) Update(ctx context.Context, zoneID string
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/cache/cache_reserve", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Value of the Cache Reserve zone setting.
@@ -86,10 +86,10 @@ func (r CacheReserveValue) IsKnown() bool {
 }
 
 type ZoneCacheCacheReserveGetResponse struct {
-	Errors   []MessagesCacheRulesItem `json:"errors,required"`
-	Messages []MessagesCacheRulesItem `json:"messages,required"`
+	Errors   []MessagesCacheRulesItem `json:"errors" api:"required"`
+	Messages []MessagesCacheRulesItem `json:"messages" api:"required"`
 	// Whether the API call was successful
-	Success ZoneCacheCacheReserveGetResponseSuccess `json:"success,required"`
+	Success ZoneCacheCacheReserveGetResponseSuccess `json:"success" api:"required"`
 	Result  ZoneCacheCacheReserveGetResponseResult  `json:"result"`
 	JSON    zoneCacheCacheReserveGetResponseJSON    `json:"-"`
 }
@@ -130,13 +130,13 @@ func (r ZoneCacheCacheReserveGetResponseSuccess) IsKnown() bool {
 
 type ZoneCacheCacheReserveGetResponseResult struct {
 	// ID of the zone setting.
-	ID ZoneCacheCacheReserveGetResponseResultID `json:"id,required"`
+	ID ZoneCacheCacheReserveGetResponseResultID `json:"id" api:"required"`
 	// Whether the setting is editable
-	Editable bool `json:"editable,required"`
+	Editable bool `json:"editable" api:"required"`
 	// The value of the feature
-	Value CacheReserveValue `json:"value,required"`
+	Value CacheReserveValue `json:"value" api:"required"`
 	// Last time this setting was modified.
-	ModifiedOn time.Time                                  `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time                                  `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zoneCacheCacheReserveGetResponseResultJSON `json:"-"`
 }
 
@@ -175,10 +175,10 @@ func (r ZoneCacheCacheReserveGetResponseResultID) IsKnown() bool {
 }
 
 type ZoneCacheCacheReserveUpdateResponse struct {
-	Errors   []MessagesCacheRulesItem `json:"errors,required"`
-	Messages []MessagesCacheRulesItem `json:"messages,required"`
+	Errors   []MessagesCacheRulesItem `json:"errors" api:"required"`
+	Messages []MessagesCacheRulesItem `json:"messages" api:"required"`
 	// Whether the API call was successful
-	Success ZoneCacheCacheReserveUpdateResponseSuccess `json:"success,required"`
+	Success ZoneCacheCacheReserveUpdateResponseSuccess `json:"success" api:"required"`
 	Result  ZoneCacheCacheReserveUpdateResponseResult  `json:"result"`
 	JSON    zoneCacheCacheReserveUpdateResponseJSON    `json:"-"`
 }
@@ -219,13 +219,13 @@ func (r ZoneCacheCacheReserveUpdateResponseSuccess) IsKnown() bool {
 
 type ZoneCacheCacheReserveUpdateResponseResult struct {
 	// ID of the zone setting.
-	ID ZoneCacheCacheReserveUpdateResponseResultID `json:"id,required"`
+	ID ZoneCacheCacheReserveUpdateResponseResultID `json:"id" api:"required"`
 	// Whether the setting is editable
-	Editable bool `json:"editable,required"`
+	Editable bool `json:"editable" api:"required"`
 	// The value of the feature
-	Value CacheReserveValue `json:"value,required"`
+	Value CacheReserveValue `json:"value" api:"required"`
 	// Last time this setting was modified.
-	ModifiedOn time.Time                                     `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time                                     `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zoneCacheCacheReserveUpdateResponseResultJSON `json:"-"`
 }
 
@@ -265,7 +265,7 @@ func (r ZoneCacheCacheReserveUpdateResponseResultID) IsKnown() bool {
 
 type ZoneCacheCacheReserveUpdateParams struct {
 	// Value of the Cache Reserve zone setting.
-	Value param.Field[CacheReserveValue] `json:"value,required"`
+	Value param.Field[CacheReserveValue] `json:"value" api:"required"`
 }
 
 func (r ZoneCacheCacheReserveUpdateParams) MarshalJSON() (data []byte, err error) {

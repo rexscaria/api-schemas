@@ -40,15 +40,15 @@ func (r *AccountVectorizeV2IndexMetadataIndexService) New(ctx context.Context, a
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if indexName == "" {
 		err = errors.New("missing required index_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/vectorize/v2/indexes/%s/metadata_index/create", accountID, indexName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // List Metadata Indexes for the specified Vectorize Index.
@@ -56,15 +56,15 @@ func (r *AccountVectorizeV2IndexMetadataIndexService) List(ctx context.Context, 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if indexName == "" {
 		err = errors.New("missing required index_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/vectorize/v2/indexes/%s/metadata_index/list", accountID, indexName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Allow Vectorize to delete the specified metadata index.
@@ -72,23 +72,23 @@ func (r *AccountVectorizeV2IndexMetadataIndexService) Delete(ctx context.Context
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if indexName == "" {
 		err = errors.New("missing required index_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/vectorize/v2/indexes/%s/metadata_index/delete", accountID, indexName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountVectorizeV2IndexMetadataIndexNewResponse struct {
-	Errors   []VectorizeMessages                                   `json:"errors,required"`
-	Messages []VectorizeMessages                                   `json:"messages,required"`
-	Result   AccountVectorizeV2IndexMetadataIndexNewResponseResult `json:"result,required,nullable"`
+	Errors   []VectorizeMessages                                   `json:"errors" api:"required"`
+	Messages []VectorizeMessages                                   `json:"messages" api:"required"`
+	Result   AccountVectorizeV2IndexMetadataIndexNewResponseResult `json:"result" api:"required,nullable"`
 	// Whether the API call was successful
-	Success AccountVectorizeV2IndexMetadataIndexNewResponseSuccess `json:"success,required"`
+	Success AccountVectorizeV2IndexMetadataIndexNewResponseSuccess `json:"success" api:"required"`
 	JSON    accountVectorizeV2IndexMetadataIndexNewResponseJSON    `json:"-"`
 }
 
@@ -149,11 +149,11 @@ func (r AccountVectorizeV2IndexMetadataIndexNewResponseSuccess) IsKnown() bool {
 }
 
 type AccountVectorizeV2IndexMetadataIndexListResponse struct {
-	Errors   []VectorizeMessages                                    `json:"errors,required"`
-	Messages []VectorizeMessages                                    `json:"messages,required"`
-	Result   AccountVectorizeV2IndexMetadataIndexListResponseResult `json:"result,required,nullable"`
+	Errors   []VectorizeMessages                                    `json:"errors" api:"required"`
+	Messages []VectorizeMessages                                    `json:"messages" api:"required"`
+	Result   AccountVectorizeV2IndexMetadataIndexListResponseResult `json:"result" api:"required,nullable"`
 	// Whether the API call was successful
-	Success AccountVectorizeV2IndexMetadataIndexListResponseSuccess `json:"success,required"`
+	Success AccountVectorizeV2IndexMetadataIndexListResponseSuccess `json:"success" api:"required"`
 	JSON    accountVectorizeV2IndexMetadataIndexListResponseJSON    `json:"-"`
 }
 
@@ -257,11 +257,11 @@ func (r AccountVectorizeV2IndexMetadataIndexListResponseSuccess) IsKnown() bool 
 }
 
 type AccountVectorizeV2IndexMetadataIndexDeleteResponse struct {
-	Errors   []VectorizeMessages                                      `json:"errors,required"`
-	Messages []VectorizeMessages                                      `json:"messages,required"`
-	Result   AccountVectorizeV2IndexMetadataIndexDeleteResponseResult `json:"result,required,nullable"`
+	Errors   []VectorizeMessages                                      `json:"errors" api:"required"`
+	Messages []VectorizeMessages                                      `json:"messages" api:"required"`
+	Result   AccountVectorizeV2IndexMetadataIndexDeleteResponseResult `json:"result" api:"required,nullable"`
 	// Whether the API call was successful
-	Success AccountVectorizeV2IndexMetadataIndexDeleteResponseSuccess `json:"success,required"`
+	Success AccountVectorizeV2IndexMetadataIndexDeleteResponseSuccess `json:"success" api:"required"`
 	JSON    accountVectorizeV2IndexMetadataIndexDeleteResponseJSON    `json:"-"`
 }
 
@@ -324,9 +324,9 @@ func (r AccountVectorizeV2IndexMetadataIndexDeleteResponseSuccess) IsKnown() boo
 
 type AccountVectorizeV2IndexMetadataIndexNewParams struct {
 	// Specifies the type of metadata property to index.
-	IndexType param.Field[AccountVectorizeV2IndexMetadataIndexNewParamsIndexType] `json:"indexType,required"`
+	IndexType param.Field[AccountVectorizeV2IndexMetadataIndexNewParamsIndexType] `json:"indexType" api:"required"`
 	// Specifies the metadata property to index.
-	PropertyName param.Field[string] `json:"propertyName,required"`
+	PropertyName param.Field[string] `json:"propertyName" api:"required"`
 }
 
 func (r AccountVectorizeV2IndexMetadataIndexNewParams) MarshalJSON() (data []byte, err error) {
@@ -352,7 +352,7 @@ func (r AccountVectorizeV2IndexMetadataIndexNewParamsIndexType) IsKnown() bool {
 
 type AccountVectorizeV2IndexMetadataIndexDeleteParams struct {
 	// Specifies the metadata property for which the index must be deleted.
-	PropertyName param.Field[string] `json:"propertyName,required"`
+	PropertyName param.Field[string] `json:"propertyName" api:"required"`
 }
 
 func (r AccountVectorizeV2IndexMetadataIndexDeleteParams) MarshalJSON() (data []byte, err error) {

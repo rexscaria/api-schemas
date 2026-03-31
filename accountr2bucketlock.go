@@ -40,48 +40,48 @@ func NewAccountR2BucketLockService(opts ...option.RequestOption) (r *AccountR2Bu
 // Get lock rules for a bucket.
 func (r *AccountR2BucketLockService) Get(ctx context.Context, accountID string, bucketName string, query AccountR2BucketLockGetParams, opts ...option.RequestOption) (res *AccountR2BucketLockGetResponse, err error) {
 	if query.Jurisdiction.Present {
-		opts = append(opts, option.WithHeader("cf-r2-jurisdiction", fmt.Sprintf("%s", query.Jurisdiction)))
+		opts = append(opts, option.WithHeader("cf-r2-jurisdiction", fmt.Sprintf("%v", query.Jurisdiction)))
 	}
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if bucketName == "" {
 		err = errors.New("missing required bucket_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/r2/buckets/%s/lock", accountID, bucketName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Set lock rules for a bucket.
 func (r *AccountR2BucketLockService) Update(ctx context.Context, accountID string, bucketName string, params AccountR2BucketLockUpdateParams, opts ...option.RequestOption) (res *R2V4Response, err error) {
 	if params.Jurisdiction.Present {
-		opts = append(opts, option.WithHeader("cf-r2-jurisdiction", fmt.Sprintf("%s", params.Jurisdiction)))
+		opts = append(opts, option.WithHeader("cf-r2-jurisdiction", fmt.Sprintf("%v", params.Jurisdiction)))
 	}
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if bucketName == "" {
 		err = errors.New("missing required bucket_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/r2/buckets/%s/lock", accountID, bucketName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 type R2BucketLockRule struct {
 	// Unique identifier for this rule.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Condition to apply a lock rule to an object for how long in seconds.
-	Condition R2BucketLockRuleCondition `json:"condition,required"`
+	Condition R2BucketLockRuleCondition `json:"condition" api:"required"`
 	// Whether or not this rule is in effect.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Rule will only apply to objects/uploads in the bucket that start with the given
 	// prefix, an empty prefix can be provided to scope rule to all objects/uploads.
 	Prefix string               `json:"prefix"`
@@ -109,7 +109,7 @@ func (r r2BucketLockRuleJSON) RawJSON() string {
 
 // Condition to apply a lock rule to an object for how long in seconds.
 type R2BucketLockRuleCondition struct {
-	Type          R2BucketLockRuleConditionType `json:"type,required"`
+	Type          R2BucketLockRuleConditionType `json:"type" api:"required"`
 	Date          time.Time                     `json:"date" format:"date"`
 	MaxAgeSeconds int64                         `json:"maxAgeSeconds"`
 	JSON          r2BucketLockRuleConditionJSON `json:"-"`
@@ -180,8 +180,8 @@ func init() {
 
 // Condition to apply a lock rule to an object for how long in seconds.
 type R2BucketLockRuleConditionR2LockRuleAgeCondition struct {
-	MaxAgeSeconds int64                                               `json:"maxAgeSeconds,required"`
-	Type          R2BucketLockRuleConditionR2LockRuleAgeConditionType `json:"type,required"`
+	MaxAgeSeconds int64                                               `json:"maxAgeSeconds" api:"required"`
+	Type          R2BucketLockRuleConditionR2LockRuleAgeConditionType `json:"type" api:"required"`
 	JSON          r2BucketLockRuleConditionR2LockRuleAgeConditionJSON `json:"-"`
 }
 
@@ -220,8 +220,8 @@ func (r R2BucketLockRuleConditionR2LockRuleAgeConditionType) IsKnown() bool {
 
 // Condition to apply a lock rule to an object until a specific date.
 type R2BucketLockRuleConditionR2LockRuleDateCondition struct {
-	Date time.Time                                            `json:"date,required" format:"date"`
-	Type R2BucketLockRuleConditionR2LockRuleDateConditionType `json:"type,required"`
+	Date time.Time                                            `json:"date" api:"required" format:"date"`
+	Type R2BucketLockRuleConditionR2LockRuleDateConditionType `json:"type" api:"required"`
 	JSON r2BucketLockRuleConditionR2LockRuleDateConditionJSON `json:"-"`
 }
 
@@ -260,7 +260,7 @@ func (r R2BucketLockRuleConditionR2LockRuleDateConditionType) IsKnown() bool {
 
 // Condition to apply a lock rule indefinitely.
 type R2BucketLockRuleConditionR2LockRuleIndefiniteCondition struct {
-	Type R2BucketLockRuleConditionR2LockRuleIndefiniteConditionType `json:"type,required"`
+	Type R2BucketLockRuleConditionR2LockRuleIndefiniteConditionType `json:"type" api:"required"`
 	JSON r2BucketLockRuleConditionR2LockRuleIndefiniteConditionJSON `json:"-"`
 }
 
@@ -315,11 +315,11 @@ func (r R2BucketLockRuleConditionType) IsKnown() bool {
 
 type R2BucketLockRuleParam struct {
 	// Unique identifier for this rule.
-	ID param.Field[string] `json:"id,required"`
+	ID param.Field[string] `json:"id" api:"required"`
 	// Condition to apply a lock rule to an object for how long in seconds.
-	Condition param.Field[R2BucketLockRuleConditionUnionParam] `json:"condition,required"`
+	Condition param.Field[R2BucketLockRuleConditionUnionParam] `json:"condition" api:"required"`
 	// Whether or not this rule is in effect.
-	Enabled param.Field[bool] `json:"enabled,required"`
+	Enabled param.Field[bool] `json:"enabled" api:"required"`
 	// Rule will only apply to objects/uploads in the bucket that start with the given
 	// prefix, an empty prefix can be provided to scope rule to all objects/uploads.
 	Prefix param.Field[string] `json:"prefix"`
@@ -331,7 +331,7 @@ func (r R2BucketLockRuleParam) MarshalJSON() (data []byte, err error) {
 
 // Condition to apply a lock rule to an object for how long in seconds.
 type R2BucketLockRuleConditionParam struct {
-	Type          param.Field[R2BucketLockRuleConditionType] `json:"type,required"`
+	Type          param.Field[R2BucketLockRuleConditionType] `json:"type" api:"required"`
 	Date          param.Field[time.Time]                     `json:"date" format:"date"`
 	MaxAgeSeconds param.Field[int64]                         `json:"maxAgeSeconds"`
 }
@@ -354,8 +354,8 @@ type R2BucketLockRuleConditionUnionParam interface {
 
 // Condition to apply a lock rule to an object for how long in seconds.
 type R2BucketLockRuleConditionR2LockRuleAgeConditionParam struct {
-	MaxAgeSeconds param.Field[int64]                                               `json:"maxAgeSeconds,required"`
-	Type          param.Field[R2BucketLockRuleConditionR2LockRuleAgeConditionType] `json:"type,required"`
+	MaxAgeSeconds param.Field[int64]                                               `json:"maxAgeSeconds" api:"required"`
+	Type          param.Field[R2BucketLockRuleConditionR2LockRuleAgeConditionType] `json:"type" api:"required"`
 }
 
 func (r R2BucketLockRuleConditionR2LockRuleAgeConditionParam) MarshalJSON() (data []byte, err error) {
@@ -367,8 +367,8 @@ func (r R2BucketLockRuleConditionR2LockRuleAgeConditionParam) implementsR2Bucket
 
 // Condition to apply a lock rule to an object until a specific date.
 type R2BucketLockRuleConditionR2LockRuleDateConditionParam struct {
-	Date param.Field[time.Time]                                            `json:"date,required" format:"date"`
-	Type param.Field[R2BucketLockRuleConditionR2LockRuleDateConditionType] `json:"type,required"`
+	Date param.Field[time.Time]                                            `json:"date" api:"required" format:"date"`
+	Type param.Field[R2BucketLockRuleConditionR2LockRuleDateConditionType] `json:"type" api:"required"`
 }
 
 func (r R2BucketLockRuleConditionR2LockRuleDateConditionParam) MarshalJSON() (data []byte, err error) {
@@ -380,7 +380,7 @@ func (r R2BucketLockRuleConditionR2LockRuleDateConditionParam) implementsR2Bucke
 
 // Condition to apply a lock rule indefinitely.
 type R2BucketLockRuleConditionR2LockRuleIndefiniteConditionParam struct {
-	Type param.Field[R2BucketLockRuleConditionR2LockRuleIndefiniteConditionType] `json:"type,required"`
+	Type param.Field[R2BucketLockRuleConditionR2LockRuleIndefiniteConditionType] `json:"type" api:"required"`
 }
 
 func (r R2BucketLockRuleConditionR2LockRuleIndefiniteConditionParam) MarshalJSON() (data []byte, err error) {
@@ -391,11 +391,11 @@ func (r R2BucketLockRuleConditionR2LockRuleIndefiniteConditionParam) implementsR
 }
 
 type AccountR2BucketLockGetResponse struct {
-	Errors   []AccountR2BucketLockGetResponseError `json:"errors,required"`
-	Messages []string                              `json:"messages,required"`
-	Result   AccountR2BucketLockGetResponseResult  `json:"result,required"`
+	Errors   []AccountR2BucketLockGetResponseError `json:"errors" api:"required"`
+	Messages []string                              `json:"messages" api:"required"`
+	Result   AccountR2BucketLockGetResponseResult  `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success AccountR2BucketLockGetResponseSuccess `json:"success,required"`
+	Success AccountR2BucketLockGetResponseSuccess `json:"success" api:"required"`
 	JSON    accountR2BucketLockGetResponseJSON    `json:"-"`
 }
 
@@ -419,8 +419,8 @@ func (r accountR2BucketLockGetResponseJSON) RawJSON() string {
 }
 
 type AccountR2BucketLockGetResponseError struct {
-	Code             int64                                      `json:"code,required"`
-	Message          string                                     `json:"message,required"`
+	Code             int64                                      `json:"code" api:"required"`
+	Message          string                                     `json:"message" api:"required"`
 	DocumentationURL string                                     `json:"documentation_url"`
 	Source           AccountR2BucketLockGetResponseErrorsSource `json:"source"`
 	JSON             accountR2BucketLockGetResponseErrorJSON    `json:"-"`

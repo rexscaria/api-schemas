@@ -39,15 +39,15 @@ func (r *AccountAccessServiceTokenService) Refresh(ctx context.Context, accountI
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if serviceTokenID == "" {
 		err = errors.New("missing required service_token_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/access/service_tokens/%s/refresh", accountID, serviceTokenID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Generates a new Client Secret for a service token and revokes the old one.
@@ -55,22 +55,22 @@ func (r *AccountAccessServiceTokenService) Rotate(ctx context.Context, accountID
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if serviceTokenID == "" {
 		err = errors.New("missing required service_token_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/access/service_tokens/%s/rotate", accountID, serviceTokenID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type CreateResponse struct {
-	Errors   []MessagesAccessItem `json:"errors,required"`
-	Messages []MessagesAccessItem `json:"messages,required"`
+	Errors   []MessagesAccessItem `json:"errors" api:"required"`
+	Messages []MessagesAccessItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success CreateResponseSuccess `json:"success,required"`
+	Success CreateResponseSuccess `json:"success" api:"required"`
 	Result  CreateResponseResult  `json:"result"`
 	JSON    createResponseJSON    `json:"-"`
 }
@@ -151,10 +151,10 @@ func (r createResponseResultJSON) RawJSON() string {
 }
 
 type SchemasAccessSingleResponse struct {
-	Errors   []MessagesAccessItem `json:"errors,required"`
-	Messages []MessagesAccessItem `json:"messages,required"`
+	Errors   []MessagesAccessItem `json:"errors" api:"required"`
+	Messages []MessagesAccessItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success SchemasAccessSingleResponseSuccess `json:"success,required"`
+	Success SchemasAccessSingleResponseSuccess `json:"success" api:"required"`
 	Result  ServiceTokens                      `json:"result"`
 	JSON    schemasAccessSingleResponseJSON    `json:"-"`
 }

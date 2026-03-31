@@ -41,15 +41,15 @@ func (r *ZoneWaitingRoomRuleService) New(ctx context.Context, zoneID string, wai
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if waitingRoomID == "" {
 		err = errors.New("missing required waiting_room_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/waiting_rooms/%s/rules", zoneID, waitingRoomID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists rules for a waiting room.
@@ -57,15 +57,15 @@ func (r *ZoneWaitingRoomRuleService) List(ctx context.Context, zoneID string, wa
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if waitingRoomID == "" {
 		err = errors.New("missing required waiting_room_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/waiting_rooms/%s/rules", zoneID, waitingRoomID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Deletes a rule for a waiting room.
@@ -73,19 +73,19 @@ func (r *ZoneWaitingRoomRuleService) Delete(ctx context.Context, zoneID string, 
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if waitingRoomID == "" {
 		err = errors.New("missing required waiting_room_id parameter")
-		return
+		return nil, err
 	}
 	if ruleID == "" {
 		err = errors.New("missing required rule_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/waiting_rooms/%s/rules/%s", zoneID, waitingRoomID, ruleID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Patches a rule for a waiting room.
@@ -93,19 +93,19 @@ func (r *ZoneWaitingRoomRuleService) Patch(ctx context.Context, zoneID string, w
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if waitingRoomID == "" {
 		err = errors.New("missing required waiting_room_id parameter")
-		return
+		return nil, err
 	}
 	if ruleID == "" {
 		err = errors.New("missing required rule_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/waiting_rooms/%s/rules/%s", zoneID, waitingRoomID, ruleID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Only available for the Waiting Room Advanced subscription. Replaces all rules
@@ -114,22 +114,22 @@ func (r *ZoneWaitingRoomRuleService) Replace(ctx context.Context, zoneID string,
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if waitingRoomID == "" {
 		err = errors.New("missing required waiting_room_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/waiting_rooms/%s/rules", zoneID, waitingRoomID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type CreateWaitingRoomRuleParam struct {
 	// The action to take when the expression matches.
-	Action param.Field[RuleAction] `json:"action,required"`
+	Action param.Field[RuleAction] `json:"action" api:"required"`
 	// Criteria defining when there is a match for the current rule.
-	Expression param.Field[string] `json:"expression,required"`
+	Expression param.Field[string] `json:"expression" api:"required"`
 	// The description of the rule.
 	Description param.Field[string] `json:"description"`
 	// When set to true, the rule is enabled.
@@ -141,10 +141,10 @@ func (r CreateWaitingRoomRuleParam) MarshalJSON() (data []byte, err error) {
 }
 
 type ResponseCollectionWaitingRoomRules struct {
-	Errors   []WaitingroomMessage `json:"errors,required"`
-	Messages []WaitingroomMessage `json:"messages,required"`
+	Errors   []WaitingroomMessage `json:"errors" api:"required"`
+	Messages []WaitingroomMessage `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success    ResponseCollectionWaitingRoomRulesSuccess    `json:"success,required"`
+	Success    ResponseCollectionWaitingRoomRulesSuccess    `json:"success" api:"required"`
 	Result     []ResponseCollectionWaitingRoomRulesResult   `json:"result"`
 	ResultInfo ResponseCollectionWaitingRoomRulesResultInfo `json:"result_info"`
 	JSON       responseCollectionWaitingRoomRulesJSON       `json:"-"`
@@ -271,7 +271,7 @@ func (r RuleAction) IsKnown() bool {
 }
 
 type ZoneWaitingRoomRuleNewParams struct {
-	CreateWaitingRoomRule CreateWaitingRoomRuleParam `json:"create_waiting_room_rule,required"`
+	CreateWaitingRoomRule CreateWaitingRoomRuleParam `json:"create_waiting_room_rule" api:"required"`
 }
 
 func (r ZoneWaitingRoomRuleNewParams) MarshalJSON() (data []byte, err error) {
@@ -280,9 +280,9 @@ func (r ZoneWaitingRoomRuleNewParams) MarshalJSON() (data []byte, err error) {
 
 type ZoneWaitingRoomRulePatchParams struct {
 	// The action to take when the expression matches.
-	Action param.Field[RuleAction] `json:"action,required"`
+	Action param.Field[RuleAction] `json:"action" api:"required"`
 	// Criteria defining when there is a match for the current rule.
-	Expression param.Field[string] `json:"expression,required"`
+	Expression param.Field[string] `json:"expression" api:"required"`
 	// The description of the rule.
 	Description param.Field[string] `json:"description"`
 	// When set to true, the rule is enabled.
@@ -369,7 +369,7 @@ func (r ZoneWaitingRoomRulePatchParamsPositionAfter) implementsZoneWaitingRoomRu
 }
 
 type ZoneWaitingRoomRuleReplaceParams struct {
-	Body []CreateWaitingRoomRuleParam `json:"body,required"`
+	Body []CreateWaitingRoomRuleParam `json:"body" api:"required"`
 }
 
 func (r ZoneWaitingRoomRuleReplaceParams) MarshalJSON() (data []byte, err error) {

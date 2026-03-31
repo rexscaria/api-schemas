@@ -39,15 +39,15 @@ func (r *AccountCloudforceOneEventEventTagService) Add(ctx context.Context, acco
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if eventID == "" {
 		err = errors.New("missing required event_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/cloudforce-one/events/event_tag/%s/create", accountID, eventID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Removes a tag from an event
@@ -55,20 +55,20 @@ func (r *AccountCloudforceOneEventEventTagService) Remove(ctx context.Context, a
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if eventID == "" {
 		err = errors.New("missing required event_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/cloudforce-one/events/event_tag/%s", accountID, eventID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountCloudforceOneEventEventTagAddResponse struct {
-	Result  AccountCloudforceOneEventEventTagAddResponseResult `json:"result,required"`
-	Success bool                                               `json:"success,required"`
+	Result  AccountCloudforceOneEventEventTagAddResponseResult `json:"result" api:"required"`
+	Success bool                                               `json:"success" api:"required"`
 	JSON    accountCloudforceOneEventEventTagAddResponseJSON   `json:"-"`
 }
 
@@ -90,7 +90,7 @@ func (r accountCloudforceOneEventEventTagAddResponseJSON) RawJSON() string {
 }
 
 type AccountCloudforceOneEventEventTagAddResponseResult struct {
-	Success bool                                                   `json:"success,required"`
+	Success bool                                                   `json:"success" api:"required"`
 	JSON    accountCloudforceOneEventEventTagAddResponseResultJSON `json:"-"`
 }
 
@@ -111,8 +111,8 @@ func (r accountCloudforceOneEventEventTagAddResponseResultJSON) RawJSON() string
 }
 
 type AccountCloudforceOneEventEventTagRemoveResponse struct {
-	Result  AccountCloudforceOneEventEventTagRemoveResponseResult `json:"result,required"`
-	Success bool                                                  `json:"success,required"`
+	Result  AccountCloudforceOneEventEventTagRemoveResponseResult `json:"result" api:"required"`
+	Success bool                                                  `json:"success" api:"required"`
 	JSON    accountCloudforceOneEventEventTagRemoveResponseJSON   `json:"-"`
 }
 
@@ -134,7 +134,7 @@ func (r accountCloudforceOneEventEventTagRemoveResponseJSON) RawJSON() string {
 }
 
 type AccountCloudforceOneEventEventTagRemoveResponseResult struct {
-	Success bool                                                      `json:"success,required"`
+	Success bool                                                      `json:"success" api:"required"`
 	JSON    accountCloudforceOneEventEventTagRemoveResponseResultJSON `json:"-"`
 }
 
@@ -155,7 +155,7 @@ func (r accountCloudforceOneEventEventTagRemoveResponseResultJSON) RawJSON() str
 }
 
 type AccountCloudforceOneEventEventTagAddParams struct {
-	Tags param.Field[[]string] `json:"tags,required"`
+	Tags param.Field[[]string] `json:"tags" api:"required"`
 }
 
 func (r AccountCloudforceOneEventEventTagAddParams) MarshalJSON() (data []byte, err error) {

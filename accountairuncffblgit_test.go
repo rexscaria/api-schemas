@@ -14,7 +14,7 @@ import (
 )
 
 func TestAccountAIRunCfFblgitExecuteUnaCybertron7bV2Bf16WithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,6 +26,7 @@ func TestAccountAIRunCfFblgitExecuteUnaCybertron7bV2Bf16WithOptionalParams(t *te
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.AI.Run.Cf.Fblgit.ExecuteUnaCybertron7bV2Bf16(
 		context.TODO(),

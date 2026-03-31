@@ -41,11 +41,11 @@ func (r *AccountMagicAppService) New(ctx context.Context, accountID string, body
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/apps", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates an Account App
@@ -53,15 +53,15 @@ func (r *AccountMagicAppService) Update(ctx context.Context, accountID string, a
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if accountAppID == "" {
 		err = errors.New("missing required account_app_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/apps/%s", accountID, accountAppID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists Apps associated with an account.
@@ -69,11 +69,11 @@ func (r *AccountMagicAppService) List(ctx context.Context, accountID string, opt
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/apps", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Deletes specific Account App.
@@ -81,21 +81,21 @@ func (r *AccountMagicAppService) Delete(ctx context.Context, accountID string, a
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if accountAppID == "" {
 		err = errors.New("missing required account_app_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/apps/%s", accountID, accountAppID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Custom app defined for an account.
 type MagicAccountApp struct {
 	// Magic account app ID.
-	AccountAppID string `json:"account_app_id,required"`
+	AccountAppID string `json:"account_app_id" api:"required"`
 	// FQDNs to associate with traffic decisions.
 	Hostnames []string `json:"hostnames"`
 	// IPv4 CIDRs to associate with traffic decisions. (IPv6 CIDRs are currently
@@ -130,12 +130,12 @@ func (r magicAccountAppJSON) RawJSON() string {
 func (r MagicAccountApp) implementsAccountMagicAppListResponseResult() {}
 
 type MagicAppSingleResponse struct {
-	Errors   []MagicAppSingleResponseError   `json:"errors,required"`
-	Messages []MagicAppSingleResponseMessage `json:"messages,required"`
+	Errors   []MagicAppSingleResponseError   `json:"errors" api:"required"`
+	Messages []MagicAppSingleResponseMessage `json:"messages" api:"required"`
 	// Custom app defined for an account.
-	Result MagicAccountApp `json:"result,required,nullable"`
+	Result MagicAccountApp `json:"result" api:"required,nullable"`
 	// Whether the API call was successful
-	Success MagicAppSingleResponseSuccess `json:"success,required"`
+	Success MagicAppSingleResponseSuccess `json:"success" api:"required"`
 	JSON    magicAppSingleResponseJSON    `json:"-"`
 }
 
@@ -159,8 +159,8 @@ func (r magicAppSingleResponseJSON) RawJSON() string {
 }
 
 type MagicAppSingleResponseError struct {
-	Code             int64                              `json:"code,required"`
-	Message          string                             `json:"message,required"`
+	Code             int64                              `json:"code" api:"required"`
+	Message          string                             `json:"message" api:"required"`
 	DocumentationURL string                             `json:"documentation_url"`
 	Source           MagicAppSingleResponseErrorsSource `json:"source"`
 	JSON             magicAppSingleResponseErrorJSON    `json:"-"`
@@ -207,8 +207,8 @@ func (r magicAppSingleResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type MagicAppSingleResponseMessage struct {
-	Code             int64                                `json:"code,required"`
-	Message          string                               `json:"message,required"`
+	Code             int64                                `json:"code" api:"required"`
+	Message          string                               `json:"message" api:"required"`
 	DocumentationURL string                               `json:"documentation_url"`
 	Source           MagicAppSingleResponseMessagesSource `json:"source"`
 	JSON             magicAppSingleResponseMessageJSON    `json:"-"`
@@ -274,8 +274,8 @@ type MagicAppSubnetItem = string
 type MagicAppSubnetItemParam = string
 
 type MagicMessageItem struct {
-	Code             int64                  `json:"code,required"`
-	Message          string                 `json:"message,required"`
+	Code             int64                  `json:"code" api:"required"`
+	Message          string                 `json:"message" api:"required"`
 	DocumentationURL string                 `json:"documentation_url"`
 	Source           MagicMessageItemSource `json:"source"`
 	JSON             magicMessageItemJSON   `json:"-"`
@@ -322,11 +322,11 @@ func (r magicMessageItemSourceJSON) RawJSON() string {
 }
 
 type AccountMagicAppListResponse struct {
-	Errors   []AccountMagicAppListResponseError   `json:"errors,required"`
-	Messages []AccountMagicAppListResponseMessage `json:"messages,required"`
-	Result   []AccountMagicAppListResponseResult  `json:"result,required,nullable"`
+	Errors   []AccountMagicAppListResponseError   `json:"errors" api:"required"`
+	Messages []AccountMagicAppListResponseMessage `json:"messages" api:"required"`
+	Result   []AccountMagicAppListResponseResult  `json:"result" api:"required,nullable"`
 	// Whether the API call was successful
-	Success AccountMagicAppListResponseSuccess `json:"success,required"`
+	Success AccountMagicAppListResponseSuccess `json:"success" api:"required"`
 	JSON    accountMagicAppListResponseJSON    `json:"-"`
 }
 
@@ -350,8 +350,8 @@ func (r accountMagicAppListResponseJSON) RawJSON() string {
 }
 
 type AccountMagicAppListResponseError struct {
-	Code             int64                                   `json:"code,required"`
-	Message          string                                  `json:"message,required"`
+	Code             int64                                   `json:"code" api:"required"`
+	Message          string                                  `json:"message" api:"required"`
 	DocumentationURL string                                  `json:"documentation_url"`
 	Source           AccountMagicAppListResponseErrorsSource `json:"source"`
 	JSON             accountMagicAppListResponseErrorJSON    `json:"-"`
@@ -398,8 +398,8 @@ func (r accountMagicAppListResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type AccountMagicAppListResponseMessage struct {
-	Code             int64                                     `json:"code,required"`
-	Message          string                                    `json:"message,required"`
+	Code             int64                                     `json:"code" api:"required"`
+	Message          string                                    `json:"message" api:"required"`
 	DocumentationURL string                                    `json:"documentation_url"`
 	Source           AccountMagicAppListResponseMessagesSource `json:"source"`
 	JSON             accountMagicAppListResponseMessageJSON    `json:"-"`
@@ -524,7 +524,7 @@ func init() {
 // Managed app defined by Cloudflare.
 type AccountMagicAppListResponseResultMagicManagedApp struct {
 	// Managed app ID.
-	ManagedAppID string `json:"managed_app_id,required"`
+	ManagedAppID string `json:"managed_app_id" api:"required"`
 	// FQDNs to associate with traffic decisions.
 	Hostnames []string `json:"hostnames"`
 	// IPv4 CIDRs to associate with traffic decisions. (IPv6 CIDRs are currently
@@ -577,9 +577,9 @@ func (r AccountMagicAppListResponseSuccess) IsKnown() bool {
 
 type AccountMagicAppNewParams struct {
 	// Display name for the app.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Category of the app.
-	Type param.Field[string] `json:"type,required"`
+	Type param.Field[string] `json:"type" api:"required"`
 	// FQDNs to associate with traffic decisions.
 	Hostnames param.Field[[]string] `json:"hostnames"`
 	// IPv4 CIDRs to associate with traffic decisions. (IPv6 CIDRs are currently

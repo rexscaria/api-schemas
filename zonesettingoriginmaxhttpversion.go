@@ -45,11 +45,11 @@ func (r *ZoneSettingOriginMaxHTTPVersionService) Get(ctx context.Context, zoneID
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/settings/origin_max_http_version", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Origin Max HTTP Setting Version sets the highest HTTP version Cloudflare will
@@ -62,11 +62,11 @@ func (r *ZoneSettingOriginMaxHTTPVersionService) Update(ctx context.Context, zon
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/settings/origin_max_http_version", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Value of the Origin Max HTTP Version Setting.
@@ -86,10 +86,10 @@ func (r CacheRulesOriginMaxHTTPVersionValue) IsKnown() bool {
 }
 
 type ZoneSettingOriginMaxHTTPVersionGetResponse struct {
-	Errors   []MessagesCacheRulesItem `json:"errors,required"`
-	Messages []MessagesCacheRulesItem `json:"messages,required"`
+	Errors   []MessagesCacheRulesItem `json:"errors" api:"required"`
+	Messages []MessagesCacheRulesItem `json:"messages" api:"required"`
 	// Whether the API call was successful
-	Success ZoneSettingOriginMaxHTTPVersionGetResponseSuccess `json:"success,required"`
+	Success ZoneSettingOriginMaxHTTPVersionGetResponseSuccess `json:"success" api:"required"`
 	Result  ZoneSettingOriginMaxHTTPVersionGetResponseResult  `json:"result"`
 	JSON    zoneSettingOriginMaxHTTPVersionGetResponseJSON    `json:"-"`
 }
@@ -130,13 +130,13 @@ func (r ZoneSettingOriginMaxHTTPVersionGetResponseSuccess) IsKnown() bool {
 
 type ZoneSettingOriginMaxHTTPVersionGetResponseResult struct {
 	// Value of the zone setting.
-	ID ZoneSettingOriginMaxHTTPVersionGetResponseResultID `json:"id,required"`
+	ID ZoneSettingOriginMaxHTTPVersionGetResponseResultID `json:"id" api:"required"`
 	// Whether the setting is editable
-	Editable bool `json:"editable,required"`
+	Editable bool `json:"editable" api:"required"`
 	// The value of the feature
-	Value CacheRulesOriginMaxHTTPVersionValue `json:"value,required"`
+	Value CacheRulesOriginMaxHTTPVersionValue `json:"value" api:"required"`
 	// Last time this setting was modified.
-	ModifiedOn time.Time                                            `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time                                            `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zoneSettingOriginMaxHTTPVersionGetResponseResultJSON `json:"-"`
 }
 
@@ -175,10 +175,10 @@ func (r ZoneSettingOriginMaxHTTPVersionGetResponseResultID) IsKnown() bool {
 }
 
 type ZoneSettingOriginMaxHTTPVersionUpdateResponse struct {
-	Errors   []MessagesCacheRulesItem `json:"errors,required"`
-	Messages []MessagesCacheRulesItem `json:"messages,required"`
+	Errors   []MessagesCacheRulesItem `json:"errors" api:"required"`
+	Messages []MessagesCacheRulesItem `json:"messages" api:"required"`
 	// Whether the API call was successful
-	Success ZoneSettingOriginMaxHTTPVersionUpdateResponseSuccess `json:"success,required"`
+	Success ZoneSettingOriginMaxHTTPVersionUpdateResponseSuccess `json:"success" api:"required"`
 	Result  ZoneSettingOriginMaxHTTPVersionUpdateResponseResult  `json:"result"`
 	JSON    zoneSettingOriginMaxHTTPVersionUpdateResponseJSON    `json:"-"`
 }
@@ -219,13 +219,13 @@ func (r ZoneSettingOriginMaxHTTPVersionUpdateResponseSuccess) IsKnown() bool {
 
 type ZoneSettingOriginMaxHTTPVersionUpdateResponseResult struct {
 	// Value of the zone setting.
-	ID ZoneSettingOriginMaxHTTPVersionUpdateResponseResultID `json:"id,required"`
+	ID ZoneSettingOriginMaxHTTPVersionUpdateResponseResultID `json:"id" api:"required"`
 	// Whether the setting is editable
-	Editable bool `json:"editable,required"`
+	Editable bool `json:"editable" api:"required"`
 	// The value of the feature
-	Value CacheRulesOriginMaxHTTPVersionValue `json:"value,required"`
+	Value CacheRulesOriginMaxHTTPVersionValue `json:"value" api:"required"`
 	// Last time this setting was modified.
-	ModifiedOn time.Time                                               `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time                                               `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zoneSettingOriginMaxHTTPVersionUpdateResponseResultJSON `json:"-"`
 }
 
@@ -265,7 +265,7 @@ func (r ZoneSettingOriginMaxHTTPVersionUpdateResponseResultID) IsKnown() bool {
 
 type ZoneSettingOriginMaxHTTPVersionUpdateParams struct {
 	// Value of the Origin Max HTTP Version Setting.
-	Value param.Field[CacheRulesOriginMaxHTTPVersionValue] `json:"value,required"`
+	Value param.Field[CacheRulesOriginMaxHTTPVersionValue] `json:"value" api:"required"`
 }
 
 func (r ZoneSettingOriginMaxHTTPVersionUpdateParams) MarshalJSON() (data []byte, err error) {

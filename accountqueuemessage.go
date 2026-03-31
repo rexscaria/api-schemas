@@ -39,15 +39,15 @@ func (r *AccountQueueMessageService) Acknowledge(ctx context.Context, accountID 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if queueID == "" {
 		err = errors.New("missing required queue_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/queues/%s/messages/ack", accountID, queueID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Pull a batch of messages from a Queue
@@ -55,15 +55,15 @@ func (r *AccountQueueMessageService) Pull(ctx context.Context, accountID string,
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if queueID == "" {
 		err = errors.New("missing required queue_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/queues/%s/messages/pull", accountID, queueID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountQueueMessageAcknowledgeResponse struct {
@@ -95,8 +95,8 @@ func (r accountQueueMessageAcknowledgeResponseJSON) RawJSON() string {
 }
 
 type AccountQueueMessageAcknowledgeResponseError struct {
-	Code             int64                                              `json:"code,required"`
-	Message          string                                             `json:"message,required"`
+	Code             int64                                              `json:"code" api:"required"`
+	Message          string                                             `json:"message" api:"required"`
 	DocumentationURL string                                             `json:"documentation_url"`
 	Source           AccountQueueMessageAcknowledgeResponseErrorsSource `json:"source"`
 	JSON             accountQueueMessageAcknowledgeResponseErrorJSON    `json:"-"`
@@ -213,8 +213,8 @@ func (r accountQueueMessagePullResponseJSON) RawJSON() string {
 }
 
 type AccountQueueMessagePullResponseError struct {
-	Code             int64                                       `json:"code,required"`
-	Message          string                                      `json:"message,required"`
+	Code             int64                                       `json:"code" api:"required"`
+	Message          string                                      `json:"message" api:"required"`
 	DocumentationURL string                                      `json:"documentation_url"`
 	Source           AccountQueueMessagePullResponseErrorsSource `json:"source"`
 	JSON             accountQueueMessagePullResponseErrorJSON    `json:"-"`

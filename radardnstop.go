@@ -41,7 +41,7 @@ func (r *RadarDNSTopService) GetTopAses(ctx context.Context, query RadarDNSTopGe
 	opts = slices.Concat(r.Options, opts)
 	path := "radar/dns/top/ases"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves the top locations by DNS queries made to 1.1.1.1 DNS resolver.
@@ -49,12 +49,12 @@ func (r *RadarDNSTopService) GetTopLocations(ctx context.Context, query RadarDNS
 	opts = slices.Concat(r.Options, opts)
 	path := "radar/dns/top/locations"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type RadarDNSTopGetTopAsesResponse struct {
-	Result  RadarDNSTopGetTopAsesResponseResult `json:"result,required"`
-	Success bool                                `json:"success,required"`
+	Result  RadarDNSTopGetTopAsesResponseResult `json:"result" api:"required"`
+	Success bool                                `json:"success" api:"required"`
 	JSON    radarDNSTopGetTopAsesResponseJSON   `json:"-"`
 }
 
@@ -77,8 +77,8 @@ func (r radarDNSTopGetTopAsesResponseJSON) RawJSON() string {
 
 type RadarDNSTopGetTopAsesResponseResult struct {
 	// Metadata for the results.
-	Meta RadarDNSTopGetTopAsesResponseResultMeta   `json:"meta,required"`
-	Top0 []RadarDNSTopGetTopAsesResponseResultTop0 `json:"top_0,required"`
+	Meta RadarDNSTopGetTopAsesResponseResultMeta   `json:"meta" api:"required"`
+	Top0 []RadarDNSTopGetTopAsesResponseResultTop0 `json:"top_0" api:"required"`
 	JSON radarDNSTopGetTopAsesResponseResultJSON   `json:"-"`
 }
 
@@ -101,15 +101,15 @@ func (r radarDNSTopGetTopAsesResponseResultJSON) RawJSON() string {
 
 // Metadata for the results.
 type RadarDNSTopGetTopAsesResponseResultMeta struct {
-	ConfidenceInfo RadarDNSTopGetTopAsesResponseResultMetaConfidenceInfo `json:"confidenceInfo,required,nullable"`
-	DateRange      []RadarDNSTopGetTopAsesResponseResultMetaDateRange    `json:"dateRange,required"`
+	ConfidenceInfo RadarDNSTopGetTopAsesResponseResultMetaConfidenceInfo `json:"confidenceInfo" api:"required,nullable"`
+	DateRange      []RadarDNSTopGetTopAsesResponseResultMetaDateRange    `json:"dateRange" api:"required"`
 	// Timestamp of the last dataset update.
-	LastUpdated time.Time `json:"lastUpdated,required" format:"date-time"`
+	LastUpdated time.Time `json:"lastUpdated" api:"required" format:"date-time"`
 	// Normalization method applied to the results. Refer to
 	// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
-	Normalization RadarDNSTopGetTopAsesResponseResultMetaNormalization `json:"normalization,required"`
+	Normalization RadarDNSTopGetTopAsesResponseResultMetaNormalization `json:"normalization" api:"required"`
 	// Measurement units for the results.
-	Units []RadarDNSTopGetTopAsesResponseResultMetaUnit `json:"units,required"`
+	Units []RadarDNSTopGetTopAsesResponseResultMetaUnit `json:"units" api:"required"`
 	JSON  radarDNSTopGetTopAsesResponseResultMetaJSON   `json:"-"`
 }
 
@@ -134,9 +134,9 @@ func (r radarDNSTopGetTopAsesResponseResultMetaJSON) RawJSON() string {
 }
 
 type RadarDNSTopGetTopAsesResponseResultMetaConfidenceInfo struct {
-	Annotations []RadarDNSTopGetTopAsesResponseResultMetaConfidenceInfoAnnotation `json:"annotations,required"`
+	Annotations []RadarDNSTopGetTopAsesResponseResultMetaConfidenceInfoAnnotation `json:"annotations" api:"required"`
 	// Provides an indication of how much confidence Cloudflare has in the data.
-	Level int64                                                     `json:"level,required"`
+	Level int64                                                     `json:"level" api:"required"`
 	JSON  radarDNSTopGetTopAsesResponseResultMetaConfidenceInfoJSON `json:"-"`
 }
 
@@ -159,14 +159,14 @@ func (r radarDNSTopGetTopAsesResponseResultMetaConfidenceInfoJSON) RawJSON() str
 
 // Annotation associated with the result (e.g. outage or other type of event).
 type RadarDNSTopGetTopAsesResponseResultMetaConfidenceInfoAnnotation struct {
-	DataSource  string    `json:"dataSource,required"`
-	Description string    `json:"description,required"`
-	EndDate     time.Time `json:"endDate,required" format:"date-time"`
-	EventType   string    `json:"eventType,required"`
+	DataSource  string    `json:"dataSource" api:"required"`
+	Description string    `json:"description" api:"required"`
+	EndDate     time.Time `json:"endDate" api:"required" format:"date-time"`
+	EventType   string    `json:"eventType" api:"required"`
 	// Whether event is a single point in time or a time range.
-	IsInstantaneous bool                                                                `json:"isInstantaneous,required"`
-	LinkedURL       string                                                              `json:"linkedUrl,required" format:"uri"`
-	StartDate       time.Time                                                           `json:"startDate,required" format:"date-time"`
+	IsInstantaneous bool                                                                `json:"isInstantaneous" api:"required"`
+	LinkedURL       string                                                              `json:"linkedUrl" api:"required" format:"uri"`
+	StartDate       time.Time                                                           `json:"startDate" api:"required" format:"date-time"`
 	JSON            radarDNSTopGetTopAsesResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
 }
 
@@ -195,9 +195,9 @@ func (r radarDNSTopGetTopAsesResponseResultMetaConfidenceInfoAnnotationJSON) Raw
 
 type RadarDNSTopGetTopAsesResponseResultMetaDateRange struct {
 	// Adjusted end of date range.
-	EndTime time.Time `json:"endTime,required" format:"date-time"`
+	EndTime time.Time `json:"endTime" api:"required" format:"date-time"`
 	// Adjusted start of date range.
-	StartTime time.Time                                            `json:"startTime,required" format:"date-time"`
+	StartTime time.Time                                            `json:"startTime" api:"required" format:"date-time"`
 	JSON      radarDNSTopGetTopAsesResponseResultMetaDateRangeJSON `json:"-"`
 }
 
@@ -242,8 +242,8 @@ func (r RadarDNSTopGetTopAsesResponseResultMetaNormalization) IsKnown() bool {
 }
 
 type RadarDNSTopGetTopAsesResponseResultMetaUnit struct {
-	Name  string                                          `json:"name,required"`
-	Value string                                          `json:"value,required"`
+	Name  string                                          `json:"name" api:"required"`
+	Value string                                          `json:"value" api:"required"`
 	JSON  radarDNSTopGetTopAsesResponseResultMetaUnitJSON `json:"-"`
 }
 
@@ -265,10 +265,10 @@ func (r radarDNSTopGetTopAsesResponseResultMetaUnitJSON) RawJSON() string {
 }
 
 type RadarDNSTopGetTopAsesResponseResultTop0 struct {
-	ClientAsn    int64  `json:"clientASN,required"`
-	ClientAsName string `json:"clientASName,required"`
+	ClientAsn    int64  `json:"clientASN" api:"required"`
+	ClientAsName string `json:"clientASName" api:"required"`
 	// A numeric string.
-	Value string                                      `json:"value,required"`
+	Value string                                      `json:"value" api:"required"`
 	JSON  radarDNSTopGetTopAsesResponseResultTop0JSON `json:"-"`
 }
 
@@ -291,8 +291,8 @@ func (r radarDNSTopGetTopAsesResponseResultTop0JSON) RawJSON() string {
 }
 
 type RadarDNSTopGetTopLocationsResponse struct {
-	Result  RadarDNSTopGetTopLocationsResponseResult `json:"result,required"`
-	Success bool                                     `json:"success,required"`
+	Result  RadarDNSTopGetTopLocationsResponseResult `json:"result" api:"required"`
+	Success bool                                     `json:"success" api:"required"`
 	JSON    radarDNSTopGetTopLocationsResponseJSON   `json:"-"`
 }
 
@@ -315,8 +315,8 @@ func (r radarDNSTopGetTopLocationsResponseJSON) RawJSON() string {
 
 type RadarDNSTopGetTopLocationsResponseResult struct {
 	// Metadata for the results.
-	Meta RadarDNSTopGetTopLocationsResponseResultMeta   `json:"meta,required"`
-	Top0 []RadarDNSTopGetTopLocationsResponseResultTop0 `json:"top_0,required"`
+	Meta RadarDNSTopGetTopLocationsResponseResultMeta   `json:"meta" api:"required"`
+	Top0 []RadarDNSTopGetTopLocationsResponseResultTop0 `json:"top_0" api:"required"`
 	JSON radarDNSTopGetTopLocationsResponseResultJSON   `json:"-"`
 }
 
@@ -339,15 +339,15 @@ func (r radarDNSTopGetTopLocationsResponseResultJSON) RawJSON() string {
 
 // Metadata for the results.
 type RadarDNSTopGetTopLocationsResponseResultMeta struct {
-	ConfidenceInfo RadarDNSTopGetTopLocationsResponseResultMetaConfidenceInfo `json:"confidenceInfo,required,nullable"`
-	DateRange      []RadarDNSTopGetTopLocationsResponseResultMetaDateRange    `json:"dateRange,required"`
+	ConfidenceInfo RadarDNSTopGetTopLocationsResponseResultMetaConfidenceInfo `json:"confidenceInfo" api:"required,nullable"`
+	DateRange      []RadarDNSTopGetTopLocationsResponseResultMetaDateRange    `json:"dateRange" api:"required"`
 	// Timestamp of the last dataset update.
-	LastUpdated time.Time `json:"lastUpdated,required" format:"date-time"`
+	LastUpdated time.Time `json:"lastUpdated" api:"required" format:"date-time"`
 	// Normalization method applied to the results. Refer to
 	// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
-	Normalization RadarDNSTopGetTopLocationsResponseResultMetaNormalization `json:"normalization,required"`
+	Normalization RadarDNSTopGetTopLocationsResponseResultMetaNormalization `json:"normalization" api:"required"`
 	// Measurement units for the results.
-	Units []RadarDNSTopGetTopLocationsResponseResultMetaUnit `json:"units,required"`
+	Units []RadarDNSTopGetTopLocationsResponseResultMetaUnit `json:"units" api:"required"`
 	JSON  radarDNSTopGetTopLocationsResponseResultMetaJSON   `json:"-"`
 }
 
@@ -372,9 +372,9 @@ func (r radarDNSTopGetTopLocationsResponseResultMetaJSON) RawJSON() string {
 }
 
 type RadarDNSTopGetTopLocationsResponseResultMetaConfidenceInfo struct {
-	Annotations []RadarDNSTopGetTopLocationsResponseResultMetaConfidenceInfoAnnotation `json:"annotations,required"`
+	Annotations []RadarDNSTopGetTopLocationsResponseResultMetaConfidenceInfoAnnotation `json:"annotations" api:"required"`
 	// Provides an indication of how much confidence Cloudflare has in the data.
-	Level int64                                                          `json:"level,required"`
+	Level int64                                                          `json:"level" api:"required"`
 	JSON  radarDNSTopGetTopLocationsResponseResultMetaConfidenceInfoJSON `json:"-"`
 }
 
@@ -398,14 +398,14 @@ func (r radarDNSTopGetTopLocationsResponseResultMetaConfidenceInfoJSON) RawJSON(
 
 // Annotation associated with the result (e.g. outage or other type of event).
 type RadarDNSTopGetTopLocationsResponseResultMetaConfidenceInfoAnnotation struct {
-	DataSource  string    `json:"dataSource,required"`
-	Description string    `json:"description,required"`
-	EndDate     time.Time `json:"endDate,required" format:"date-time"`
-	EventType   string    `json:"eventType,required"`
+	DataSource  string    `json:"dataSource" api:"required"`
+	Description string    `json:"description" api:"required"`
+	EndDate     time.Time `json:"endDate" api:"required" format:"date-time"`
+	EventType   string    `json:"eventType" api:"required"`
 	// Whether event is a single point in time or a time range.
-	IsInstantaneous bool                                                                     `json:"isInstantaneous,required"`
-	LinkedURL       string                                                                   `json:"linkedUrl,required" format:"uri"`
-	StartDate       time.Time                                                                `json:"startDate,required" format:"date-time"`
+	IsInstantaneous bool                                                                     `json:"isInstantaneous" api:"required"`
+	LinkedURL       string                                                                   `json:"linkedUrl" api:"required" format:"uri"`
+	StartDate       time.Time                                                                `json:"startDate" api:"required" format:"date-time"`
 	JSON            radarDNSTopGetTopLocationsResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
 }
 
@@ -434,9 +434,9 @@ func (r radarDNSTopGetTopLocationsResponseResultMetaConfidenceInfoAnnotationJSON
 
 type RadarDNSTopGetTopLocationsResponseResultMetaDateRange struct {
 	// Adjusted end of date range.
-	EndTime time.Time `json:"endTime,required" format:"date-time"`
+	EndTime time.Time `json:"endTime" api:"required" format:"date-time"`
 	// Adjusted start of date range.
-	StartTime time.Time                                                 `json:"startTime,required" format:"date-time"`
+	StartTime time.Time                                                 `json:"startTime" api:"required" format:"date-time"`
 	JSON      radarDNSTopGetTopLocationsResponseResultMetaDateRangeJSON `json:"-"`
 }
 
@@ -481,8 +481,8 @@ func (r RadarDNSTopGetTopLocationsResponseResultMetaNormalization) IsKnown() boo
 }
 
 type RadarDNSTopGetTopLocationsResponseResultMetaUnit struct {
-	Name  string                                               `json:"name,required"`
-	Value string                                               `json:"value,required"`
+	Name  string                                               `json:"name" api:"required"`
+	Value string                                               `json:"value" api:"required"`
 	JSON  radarDNSTopGetTopLocationsResponseResultMetaUnitJSON `json:"-"`
 }
 
@@ -504,10 +504,10 @@ func (r radarDNSTopGetTopLocationsResponseResultMetaUnitJSON) RawJSON() string {
 }
 
 type RadarDNSTopGetTopLocationsResponseResultTop0 struct {
-	ClientCountryAlpha2 string `json:"clientCountryAlpha2,required"`
-	ClientCountryName   string `json:"clientCountryName,required"`
+	ClientCountryAlpha2 string `json:"clientCountryAlpha2" api:"required"`
+	ClientCountryName   string `json:"clientCountryName" api:"required"`
 	// A numeric string.
-	Value string                                           `json:"value,required"`
+	Value string                                           `json:"value" api:"required"`
 	JSON  radarDNSTopGetTopLocationsResponseResultTop0JSON `json:"-"`
 }
 

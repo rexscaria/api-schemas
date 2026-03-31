@@ -14,7 +14,7 @@ import (
 )
 
 func TestAccountCloudforceOneEventCategoryNewWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,6 +26,7 @@ func TestAccountCloudforceOneEventCategoryNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.CloudforceOne.Events.Categories.New(
 		context.TODO(),
@@ -47,7 +48,7 @@ func TestAccountCloudforceOneEventCategoryNewWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountCloudforceOneEventCategoryGet(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -59,6 +60,7 @@ func TestAccountCloudforceOneEventCategoryGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.CloudforceOne.Events.Categories.Get(
 		context.TODO(),
@@ -75,7 +77,7 @@ func TestAccountCloudforceOneEventCategoryGet(t *testing.T) {
 }
 
 func TestAccountCloudforceOneEventCategoryUpdateWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -87,6 +89,7 @@ func TestAccountCloudforceOneEventCategoryUpdateWithOptionalParams(t *testing.T)
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.CloudforceOne.Events.Categories.Update(
 		context.TODO(),
@@ -109,7 +112,7 @@ func TestAccountCloudforceOneEventCategoryUpdateWithOptionalParams(t *testing.T)
 }
 
 func TestAccountCloudforceOneEventCategoryList(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -121,6 +124,7 @@ func TestAccountCloudforceOneEventCategoryList(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.CloudforceOne.Events.Categories.List(context.TODO(), "account_id")
 	if err != nil {
@@ -133,7 +137,7 @@ func TestAccountCloudforceOneEventCategoryList(t *testing.T) {
 }
 
 func TestAccountCloudforceOneEventCategoryDelete(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -145,6 +149,7 @@ func TestAccountCloudforceOneEventCategoryDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.CloudforceOne.Events.Categories.Delete(
 		context.TODO(),

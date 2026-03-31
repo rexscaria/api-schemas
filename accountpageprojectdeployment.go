@@ -47,15 +47,15 @@ func (r *AccountPageProjectDeploymentService) New(ctx context.Context, accountID
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if projectName == "" {
 		err = errors.New("missing required project_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/pages/projects/%s/deployments", accountID, projectName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetch information about a deployment.
@@ -63,19 +63,19 @@ func (r *AccountPageProjectDeploymentService) Get(ctx context.Context, accountID
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if projectName == "" {
 		err = errors.New("missing required project_name parameter")
-		return
+		return nil, err
 	}
 	if deploymentID == "" {
 		err = errors.New("missing required deployment_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/pages/projects/%s/deployments/%s", accountID, projectName, deploymentID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetch a list of project deployments.
@@ -83,15 +83,15 @@ func (r *AccountPageProjectDeploymentService) List(ctx context.Context, accountI
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if projectName == "" {
 		err = errors.New("missing required project_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/pages/projects/%s/deployments", accountID, projectName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete a deployment.
@@ -99,19 +99,19 @@ func (r *AccountPageProjectDeploymentService) Delete(ctx context.Context, accoun
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if projectName == "" {
 		err = errors.New("missing required project_name parameter")
-		return
+		return nil, err
 	}
 	if deploymentID == "" {
 		err = errors.New("missing required deployment_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/pages/projects/%s/deployments/%s", accountID, projectName, deploymentID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Retry a previous deployment.
@@ -119,19 +119,19 @@ func (r *AccountPageProjectDeploymentService) Retry(ctx context.Context, account
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if projectName == "" {
 		err = errors.New("missing required project_name parameter")
-		return
+		return nil, err
 	}
 	if deploymentID == "" {
 		err = errors.New("missing required deployment_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/pages/projects/%s/deployments/%s/retry", accountID, projectName, deploymentID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Rollback the production deployment to a previous deployment. You can only
@@ -140,27 +140,27 @@ func (r *AccountPageProjectDeploymentService) Rollback(ctx context.Context, acco
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if projectName == "" {
 		err = errors.New("missing required project_name parameter")
-		return
+		return nil, err
 	}
 	if deploymentID == "" {
 		err = errors.New("missing required deployment_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/pages/projects/%s/deployments/%s/rollback", accountID, projectName, deploymentID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type NewDeployment struct {
-	Errors   []NewDeploymentError   `json:"errors,required"`
-	Messages []NewDeploymentMessage `json:"messages,required"`
-	Result   Deployments            `json:"result,required"`
+	Errors   []NewDeploymentError   `json:"errors" api:"required"`
+	Messages []NewDeploymentMessage `json:"messages" api:"required"`
+	Result   Deployments            `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success NewDeploymentSuccess `json:"success,required"`
+	Success NewDeploymentSuccess `json:"success" api:"required"`
 	JSON    newDeploymentJSON    `json:"-"`
 }
 
@@ -183,8 +183,8 @@ func (r newDeploymentJSON) RawJSON() string {
 }
 
 type NewDeploymentError struct {
-	Code             int64                     `json:"code,required"`
-	Message          string                    `json:"message,required"`
+	Code             int64                     `json:"code" api:"required"`
+	Message          string                    `json:"message" api:"required"`
 	DocumentationURL string                    `json:"documentation_url"`
 	Source           NewDeploymentErrorsSource `json:"source"`
 	JSON             newDeploymentErrorJSON    `json:"-"`
@@ -231,8 +231,8 @@ func (r newDeploymentErrorsSourceJSON) RawJSON() string {
 }
 
 type NewDeploymentMessage struct {
-	Code             int64                       `json:"code,required"`
-	Message          string                      `json:"message,required"`
+	Code             int64                       `json:"code" api:"required"`
+	Message          string                      `json:"message" api:"required"`
 	DocumentationURL string                      `json:"documentation_url"`
 	Source           NewDeploymentMessagesSource `json:"source"`
 	JSON             newDeploymentMessageJSON    `json:"-"`
@@ -295,11 +295,11 @@ func (r NewDeploymentSuccess) IsKnown() bool {
 }
 
 type ResponseDetails struct {
-	Errors   []ResponseDetailsError   `json:"errors,required"`
-	Messages []ResponseDetailsMessage `json:"messages,required"`
-	Result   Deployments              `json:"result,required"`
+	Errors   []ResponseDetailsError   `json:"errors" api:"required"`
+	Messages []ResponseDetailsMessage `json:"messages" api:"required"`
+	Result   Deployments              `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success ResponseDetailsSuccess `json:"success,required"`
+	Success ResponseDetailsSuccess `json:"success" api:"required"`
 	JSON    responseDetailsJSON    `json:"-"`
 }
 
@@ -322,8 +322,8 @@ func (r responseDetailsJSON) RawJSON() string {
 }
 
 type ResponseDetailsError struct {
-	Code             int64                       `json:"code,required"`
-	Message          string                      `json:"message,required"`
+	Code             int64                       `json:"code" api:"required"`
+	Message          string                      `json:"message" api:"required"`
 	DocumentationURL string                      `json:"documentation_url"`
 	Source           ResponseDetailsErrorsSource `json:"source"`
 	JSON             responseDetailsErrorJSON    `json:"-"`
@@ -370,8 +370,8 @@ func (r responseDetailsErrorsSourceJSON) RawJSON() string {
 }
 
 type ResponseDetailsMessage struct {
-	Code             int64                         `json:"code,required"`
-	Message          string                        `json:"message,required"`
+	Code             int64                         `json:"code" api:"required"`
+	Message          string                        `json:"message" api:"required"`
 	DocumentationURL string                        `json:"documentation_url"`
 	Source           ResponseDetailsMessagesSource `json:"source"`
 	JSON             responseDetailsMessageJSON    `json:"-"`
@@ -434,11 +434,11 @@ func (r ResponseDetailsSuccess) IsKnown() bool {
 }
 
 type AccountPageProjectDeploymentListResponse struct {
-	Errors   []AccountPageProjectDeploymentListResponseError   `json:"errors,required"`
-	Messages []AccountPageProjectDeploymentListResponseMessage `json:"messages,required"`
-	Result   []Deployments                                     `json:"result,required"`
+	Errors   []AccountPageProjectDeploymentListResponseError   `json:"errors" api:"required"`
+	Messages []AccountPageProjectDeploymentListResponseMessage `json:"messages" api:"required"`
+	Result   []Deployments                                     `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success    AccountPageProjectDeploymentListResponseSuccess    `json:"success,required"`
+	Success    AccountPageProjectDeploymentListResponseSuccess    `json:"success" api:"required"`
 	ResultInfo AccountPageProjectDeploymentListResponseResultInfo `json:"result_info"`
 	JSON       accountPageProjectDeploymentListResponseJSON       `json:"-"`
 }
@@ -464,8 +464,8 @@ func (r accountPageProjectDeploymentListResponseJSON) RawJSON() string {
 }
 
 type AccountPageProjectDeploymentListResponseError struct {
-	Code             int64                                                `json:"code,required"`
-	Message          string                                               `json:"message,required"`
+	Code             int64                                                `json:"code" api:"required"`
+	Message          string                                               `json:"message" api:"required"`
 	DocumentationURL string                                               `json:"documentation_url"`
 	Source           AccountPageProjectDeploymentListResponseErrorsSource `json:"source"`
 	JSON             accountPageProjectDeploymentListResponseErrorJSON    `json:"-"`
@@ -512,8 +512,8 @@ func (r accountPageProjectDeploymentListResponseErrorsSourceJSON) RawJSON() stri
 }
 
 type AccountPageProjectDeploymentListResponseMessage struct {
-	Code             int64                                                  `json:"code,required"`
-	Message          string                                                 `json:"message,required"`
+	Code             int64                                                  `json:"code" api:"required"`
+	Message          string                                                 `json:"message" api:"required"`
 	DocumentationURL string                                                 `json:"documentation_url"`
 	Source           AccountPageProjectDeploymentListResponseMessagesSource `json:"source"`
 	JSON             accountPageProjectDeploymentListResponseMessageJSON    `json:"-"`
@@ -577,13 +577,13 @@ func (r AccountPageProjectDeploymentListResponseSuccess) IsKnown() bool {
 
 type AccountPageProjectDeploymentListResponseResultInfo struct {
 	// The number of items on the current page.
-	Count int64 `json:"count,required"`
+	Count int64 `json:"count" api:"required"`
 	// The page currently being requested.
-	Page int64 `json:"page,required"`
+	Page int64 `json:"page" api:"required"`
 	// The number of items per page being returned.
-	PerPage int64 `json:"per_page,required"`
+	PerPage int64 `json:"per_page" api:"required"`
 	// The total count of items.
-	TotalCount int64 `json:"total_count,required"`
+	TotalCount int64 `json:"total_count" api:"required"`
 	// The total count of pages.
 	TotalPages int64                                                  `json:"total_pages"`
 	JSON       accountPageProjectDeploymentListResponseResultInfoJSON `json:"-"`
@@ -610,11 +610,11 @@ func (r accountPageProjectDeploymentListResponseResultInfoJSON) RawJSON() string
 }
 
 type AccountPageProjectDeploymentDeleteResponse struct {
-	Errors   []MessagesPageItem `json:"errors,required"`
-	Messages []MessagesPageItem `json:"messages,required"`
-	Result   interface{}        `json:"result,required,nullable"`
+	Errors   []MessagesPageItem `json:"errors" api:"required"`
+	Messages []MessagesPageItem `json:"messages" api:"required"`
+	Result   interface{}        `json:"result" api:"required,nullable"`
 	// Whether the API call was successful
-	Success AccountPageProjectDeploymentDeleteResponseSuccess `json:"success,required"`
+	Success AccountPageProjectDeploymentDeleteResponseSuccess `json:"success" api:"required"`
 	JSON    accountPageProjectDeploymentDeleteResponseJSON    `json:"-"`
 }
 
@@ -705,7 +705,7 @@ func (r AccountPageProjectDeploymentListParamsEnv) IsKnown() bool {
 }
 
 type AccountPageProjectDeploymentRetryParams struct {
-	Body interface{} `json:"body,required"`
+	Body interface{} `json:"body" api:"required"`
 }
 
 func (r AccountPageProjectDeploymentRetryParams) MarshalJSON() (data []byte, err error) {
@@ -713,7 +713,7 @@ func (r AccountPageProjectDeploymentRetryParams) MarshalJSON() (data []byte, err
 }
 
 type AccountPageProjectDeploymentRollbackParams struct {
-	Body interface{} `json:"body,required"`
+	Body interface{} `json:"body" api:"required"`
 }
 
 func (r AccountPageProjectDeploymentRollbackParams) MarshalJSON() (data []byte, err error) {

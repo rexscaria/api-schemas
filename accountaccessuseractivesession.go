@@ -38,19 +38,19 @@ func (r *AccountAccessUserActiveSessionService) Get(ctx context.Context, account
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if userID == "" {
 		err = errors.New("missing required user_id parameter")
-		return
+		return nil, err
 	}
 	if nonce == "" {
 		err = errors.New("missing required nonce parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/access/users/%s/active_sessions/%s", accountID, userID, nonce)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Get active sessions for a single user.
@@ -58,15 +58,15 @@ func (r *AccountAccessUserActiveSessionService) List(ctx context.Context, accoun
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if userID == "" {
 		err = errors.New("missing required user_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/access/users/%s/active_sessions", accountID, userID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type Identity struct {
@@ -276,10 +276,10 @@ func (r identityMtlsAuthJSON) RawJSON() string {
 }
 
 type AccountAccessUserActiveSessionGetResponse struct {
-	Errors   []MessagesAccessItem `json:"errors,required"`
-	Messages []MessagesAccessItem `json:"messages,required"`
+	Errors   []MessagesAccessItem `json:"errors" api:"required"`
+	Messages []MessagesAccessItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountAccessUserActiveSessionGetResponseSuccess `json:"success,required"`
+	Success AccountAccessUserActiveSessionGetResponseSuccess `json:"success" api:"required"`
 	Result  AccountAccessUserActiveSessionGetResponseResult  `json:"result"`
 	JSON    accountAccessUserActiveSessionGetResponseJSON    `json:"-"`
 }
@@ -534,10 +534,10 @@ func (r accountAccessUserActiveSessionGetResponseResultMtlsAuthJSON) RawJSON() s
 }
 
 type AccountAccessUserActiveSessionListResponse struct {
-	Errors   []MessagesAccessItem `json:"errors,required"`
-	Messages []MessagesAccessItem `json:"messages,required"`
+	Errors   []MessagesAccessItem `json:"errors" api:"required"`
+	Messages []MessagesAccessItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success    AccountAccessUserActiveSessionListResponseSuccess    `json:"success,required"`
+	Success    AccountAccessUserActiveSessionListResponseSuccess    `json:"success" api:"required"`
 	Result     []AccountAccessUserActiveSessionListResponseResult   `json:"result"`
 	ResultInfo AccountAccessUserActiveSessionListResponseResultInfo `json:"result_info"`
 	JSON       accountAccessUserActiveSessionListResponseJSON       `json:"-"`

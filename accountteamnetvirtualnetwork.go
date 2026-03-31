@@ -42,11 +42,11 @@ func (r *AccountTeamnetVirtualNetworkService) New(ctx context.Context, accountID
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/teamnet/virtual_networks", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get a virtual network.
@@ -54,15 +54,15 @@ func (r *AccountTeamnetVirtualNetworkService) Get(ctx context.Context, accountID
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if virtualNetworkID == "" {
 		err = errors.New("missing required virtual_network_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/teamnet/virtual_networks/%s", accountID, virtualNetworkID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates an existing virtual network.
@@ -70,15 +70,15 @@ func (r *AccountTeamnetVirtualNetworkService) Update(ctx context.Context, accoun
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if virtualNetworkID == "" {
 		err = errors.New("missing required virtual_network_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/teamnet/virtual_networks/%s", accountID, virtualNetworkID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists and filters virtual networks in an account.
@@ -86,11 +86,11 @@ func (r *AccountTeamnetVirtualNetworkService) List(ctx context.Context, accountI
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/teamnet/virtual_networks", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Deletes an existing virtual network.
@@ -98,28 +98,28 @@ func (r *AccountTeamnetVirtualNetworkService) Delete(ctx context.Context, accoun
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if virtualNetworkID == "" {
 		err = errors.New("missing required virtual_network_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/teamnet/virtual_networks/%s", accountID, virtualNetworkID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type VirtualNetwork struct {
 	// UUID of the virtual network.
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// Optional remark describing the virtual network.
-	Comment string `json:"comment,required"`
+	Comment string `json:"comment" api:"required"`
 	// Timestamp of when the resource was created.
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// If `true`, this virtual network is the default for the account.
-	IsDefaultNetwork bool `json:"is_default_network,required"`
+	IsDefaultNetwork bool `json:"is_default_network" api:"required"`
 	// A user-friendly name for the virtual network.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Timestamp of when the resource was deleted. If `null`, the resource has not been
 	// deleted.
 	DeletedAt time.Time          `json:"deleted_at" format:"date-time"`
@@ -147,11 +147,11 @@ func (r virtualNetworkJSON) RawJSON() string {
 }
 
 type VnetResponseSingle struct {
-	Errors   []MessagesTunnelItem `json:"errors,required"`
-	Messages []MessagesTunnelItem `json:"messages,required"`
-	Result   VirtualNetwork       `json:"result,required"`
+	Errors   []MessagesTunnelItem `json:"errors" api:"required"`
+	Messages []MessagesTunnelItem `json:"messages" api:"required"`
+	Result   VirtualNetwork       `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success VnetResponseSingleSuccess `json:"success,required"`
+	Success VnetResponseSingleSuccess `json:"success" api:"required"`
 	JSON    vnetResponseSingleJSON    `json:"-"`
 }
 
@@ -190,11 +190,11 @@ func (r VnetResponseSingleSuccess) IsKnown() bool {
 }
 
 type AccountTeamnetVirtualNetworkListResponse struct {
-	Errors   []MessagesTunnelItem `json:"errors,required"`
-	Messages []MessagesTunnelItem `json:"messages,required"`
-	Result   []VirtualNetwork     `json:"result,required,nullable"`
+	Errors   []MessagesTunnelItem `json:"errors" api:"required"`
+	Messages []MessagesTunnelItem `json:"messages" api:"required"`
+	Result   []VirtualNetwork     `json:"result" api:"required,nullable"`
 	// Whether the API call was successful
-	Success    AccountTeamnetVirtualNetworkListResponseSuccess    `json:"success,required"`
+	Success    AccountTeamnetVirtualNetworkListResponseSuccess    `json:"success" api:"required"`
 	ResultInfo AccountTeamnetVirtualNetworkListResponseResultInfo `json:"result_info"`
 	JSON       accountTeamnetVirtualNetworkListResponseJSON       `json:"-"`
 }
@@ -267,7 +267,7 @@ func (r accountTeamnetVirtualNetworkListResponseResultInfoJSON) RawJSON() string
 
 type AccountTeamnetVirtualNetworkNewParams struct {
 	// A user-friendly name for the virtual network.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Optional remark describing the virtual network.
 	Comment param.Field[string] `json:"comment"`
 	// If `true`, this virtual network is the default for the account.

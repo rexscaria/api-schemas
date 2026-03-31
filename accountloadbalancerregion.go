@@ -41,11 +41,11 @@ func (r *AccountLoadBalancerRegionService) Get(ctx context.Context, accountID st
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/load_balancers/regions/%v", accountID, regionID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // List all region mappings.
@@ -53,20 +53,20 @@ func (r *AccountLoadBalancerRegionService) List(ctx context.Context, accountID s
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/load_balancers/regions", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountLoadBalancerRegionGetResponse struct {
-	Errors   []AccountLoadBalancerRegionGetResponseError   `json:"errors,required"`
-	Messages []AccountLoadBalancerRegionGetResponseMessage `json:"messages,required"`
+	Errors   []AccountLoadBalancerRegionGetResponseError   `json:"errors" api:"required"`
+	Messages []AccountLoadBalancerRegionGetResponseMessage `json:"messages" api:"required"`
 	// A list of countries and subdivisions mapped to a region.
-	Result interface{} `json:"result,required"`
+	Result interface{} `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success AccountLoadBalancerRegionGetResponseSuccess `json:"success,required"`
+	Success AccountLoadBalancerRegionGetResponseSuccess `json:"success" api:"required"`
 	JSON    accountLoadBalancerRegionGetResponseJSON    `json:"-"`
 }
 
@@ -90,8 +90,8 @@ func (r accountLoadBalancerRegionGetResponseJSON) RawJSON() string {
 }
 
 type AccountLoadBalancerRegionGetResponseError struct {
-	Code             int64                                            `json:"code,required"`
-	Message          string                                           `json:"message,required"`
+	Code             int64                                            `json:"code" api:"required"`
+	Message          string                                           `json:"message" api:"required"`
 	DocumentationURL string                                           `json:"documentation_url"`
 	Source           AccountLoadBalancerRegionGetResponseErrorsSource `json:"source"`
 	JSON             accountLoadBalancerRegionGetResponseErrorJSON    `json:"-"`
@@ -138,8 +138,8 @@ func (r accountLoadBalancerRegionGetResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type AccountLoadBalancerRegionGetResponseMessage struct {
-	Code             int64                                              `json:"code,required"`
-	Message          string                                             `json:"message,required"`
+	Code             int64                                              `json:"code" api:"required"`
+	Message          string                                             `json:"message" api:"required"`
 	DocumentationURL string                                             `json:"documentation_url"`
 	Source           AccountLoadBalancerRegionGetResponseMessagesSource `json:"source"`
 	JSON             accountLoadBalancerRegionGetResponseMessageJSON    `json:"-"`
@@ -201,11 +201,11 @@ func (r AccountLoadBalancerRegionGetResponseSuccess) IsKnown() bool {
 }
 
 type AccountLoadBalancerRegionListResponse struct {
-	Errors   []LoadBalancingMessages `json:"errors,required"`
-	Messages []LoadBalancingMessages `json:"messages,required"`
-	Result   interface{}             `json:"result,required"`
+	Errors   []LoadBalancingMessages `json:"errors" api:"required"`
+	Messages []LoadBalancingMessages `json:"messages" api:"required"`
+	Result   interface{}             `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success AccountLoadBalancerRegionListResponseSuccess `json:"success,required"`
+	Success AccountLoadBalancerRegionListResponseSuccess `json:"success" api:"required"`
 	JSON    accountLoadBalancerRegionListResponseJSON    `json:"-"`
 }
 

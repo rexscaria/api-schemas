@@ -39,16 +39,16 @@ func (r *AccountRequestTracerService) Trace(ctx context.Context, accountID strin
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/request-tracer/trace", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type RequestTracerMessagesItems struct {
-	Code             int64                            `json:"code,required"`
-	Message          string                           `json:"message,required"`
+	Code             int64                            `json:"code" api:"required"`
+	Message          string                           `json:"message" api:"required"`
 	DocumentationURL string                           `json:"documentation_url"`
 	Source           RequestTracerMessagesItemsSource `json:"source"`
 	JSON             requestTracerMessagesItemsJSON   `json:"-"`
@@ -95,10 +95,10 @@ func (r requestTracerMessagesItemsSourceJSON) RawJSON() string {
 }
 
 type AccountRequestTracerTraceResponse struct {
-	Errors   []RequestTracerMessagesItems `json:"errors,required"`
-	Messages []RequestTracerMessagesItems `json:"messages,required"`
+	Errors   []RequestTracerMessagesItems `json:"errors" api:"required"`
+	Messages []RequestTracerMessagesItems `json:"messages" api:"required"`
 	// Whether the API call was successful
-	Success AccountRequestTracerTraceResponseSuccess `json:"success,required"`
+	Success AccountRequestTracerTraceResponseSuccess `json:"success" api:"required"`
 	// Trace result with an origin status code
 	Result AccountRequestTracerTraceResponseResult `json:"result"`
 	JSON   accountRequestTracerTraceResponseJSON   `json:"-"`
@@ -214,9 +214,9 @@ func (r accountRequestTracerTraceResponseResultTraceJSON) RawJSON() string {
 
 type AccountRequestTracerTraceParams struct {
 	// HTTP Method of tracing request
-	Method param.Field[string] `json:"method,required"`
+	Method param.Field[string] `json:"method" api:"required"`
 	// URL to which perform tracing request
-	URL  param.Field[string]                              `json:"url,required"`
+	URL  param.Field[string]                              `json:"url" api:"required"`
 	Body param.Field[AccountRequestTracerTraceParamsBody] `json:"body"`
 	// Additional request parameters
 	Context param.Field[AccountRequestTracerTraceParamsContext] `json:"context"`

@@ -42,11 +42,11 @@ func (r *ZoneCacheCacheReserveClearService) Get(ctx context.Context, zoneID stri
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/cache/cache_reserve_clear", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // You can use Cache Reserve Clear to clear your Cache Reserve, but you must first
@@ -57,16 +57,16 @@ func (r *ZoneCacheCacheReserveClearService) Start(ctx context.Context, zoneID st
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/cache/cache_reserve_clear", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type MessagesCacheRulesItem struct {
-	Code             int64                        `json:"code,required"`
-	Message          string                       `json:"message,required"`
+	Code             int64                        `json:"code" api:"required"`
+	Message          string                       `json:"message" api:"required"`
 	DocumentationURL string                       `json:"documentation_url"`
 	Source           MessagesCacheRulesItemSource `json:"source"`
 	JSON             messagesCacheRulesItemJSON   `json:"-"`
@@ -113,10 +113,10 @@ func (r messagesCacheRulesItemSourceJSON) RawJSON() string {
 }
 
 type ZoneCacheCacheReserveClearGetResponse struct {
-	Errors   []MessagesCacheRulesItem `json:"errors,required"`
-	Messages []MessagesCacheRulesItem `json:"messages,required"`
+	Errors   []MessagesCacheRulesItem `json:"errors" api:"required"`
+	Messages []MessagesCacheRulesItem `json:"messages" api:"required"`
 	// Whether the API call was successful
-	Success ZoneCacheCacheReserveClearGetResponseSuccess `json:"success,required"`
+	Success ZoneCacheCacheReserveClearGetResponseSuccess `json:"success" api:"required"`
 	// You can use Cache Reserve Clear to clear your Cache Reserve, but you must first
 	// disable Cache Reserve. In most cases, this will be accomplished within 24 hours.
 	// You cannot re-enable Cache Reserve while this process is ongoing. Keep in mind
@@ -165,15 +165,15 @@ func (r ZoneCacheCacheReserveClearGetResponseSuccess) IsKnown() bool {
 // that you cannot undo or cancel this operation.
 type ZoneCacheCacheReserveClearGetResponseResult struct {
 	// ID of the zone setting.
-	ID ZoneCacheCacheReserveClearGetResponseResultID `json:"id,required"`
+	ID ZoneCacheCacheReserveClearGetResponseResultID `json:"id" api:"required"`
 	// The time that the latest Cache Reserve Clear operation started.
-	StartTs time.Time `json:"start_ts,required" format:"date-time"`
+	StartTs time.Time `json:"start_ts" api:"required" format:"date-time"`
 	// The current state of the Cache Reserve Clear operation.
-	State ZoneCacheCacheReserveClearGetResponseResultState `json:"state,required"`
+	State ZoneCacheCacheReserveClearGetResponseResultState `json:"state" api:"required"`
 	// The time that the latest Cache Reserve Clear operation completed.
 	EndTs time.Time `json:"end_ts" format:"date-time"`
 	// Last time this setting was modified.
-	ModifiedOn time.Time                                       `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time                                       `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zoneCacheCacheReserveClearGetResponseResultJSON `json:"-"`
 }
 
@@ -229,10 +229,10 @@ func (r ZoneCacheCacheReserveClearGetResponseResultState) IsKnown() bool {
 }
 
 type ZoneCacheCacheReserveClearStartResponse struct {
-	Errors   []MessagesCacheRulesItem `json:"errors,required"`
-	Messages []MessagesCacheRulesItem `json:"messages,required"`
+	Errors   []MessagesCacheRulesItem `json:"errors" api:"required"`
+	Messages []MessagesCacheRulesItem `json:"messages" api:"required"`
 	// Whether the API call was successful
-	Success ZoneCacheCacheReserveClearStartResponseSuccess `json:"success,required"`
+	Success ZoneCacheCacheReserveClearStartResponseSuccess `json:"success" api:"required"`
 	// You can use Cache Reserve Clear to clear your Cache Reserve, but you must first
 	// disable Cache Reserve. In most cases, this will be accomplished within 24 hours.
 	// You cannot re-enable Cache Reserve while this process is ongoing. Keep in mind
@@ -281,15 +281,15 @@ func (r ZoneCacheCacheReserveClearStartResponseSuccess) IsKnown() bool {
 // that you cannot undo or cancel this operation.
 type ZoneCacheCacheReserveClearStartResponseResult struct {
 	// ID of the zone setting.
-	ID ZoneCacheCacheReserveClearStartResponseResultID `json:"id,required"`
+	ID ZoneCacheCacheReserveClearStartResponseResultID `json:"id" api:"required"`
 	// The time that the latest Cache Reserve Clear operation started.
-	StartTs time.Time `json:"start_ts,required" format:"date-time"`
+	StartTs time.Time `json:"start_ts" api:"required" format:"date-time"`
 	// The current state of the Cache Reserve Clear operation.
-	State ZoneCacheCacheReserveClearStartResponseResultState `json:"state,required"`
+	State ZoneCacheCacheReserveClearStartResponseResultState `json:"state" api:"required"`
 	// The time that the latest Cache Reserve Clear operation completed.
 	EndTs time.Time `json:"end_ts" format:"date-time"`
 	// Last time this setting was modified.
-	ModifiedOn time.Time                                         `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time                                         `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zoneCacheCacheReserveClearStartResponseResultJSON `json:"-"`
 }
 
@@ -345,7 +345,7 @@ func (r ZoneCacheCacheReserveClearStartResponseResultState) IsKnown() bool {
 }
 
 type ZoneCacheCacheReserveClearStartParams struct {
-	Body interface{} `json:"body,required"`
+	Body interface{} `json:"body" api:"required"`
 }
 
 func (r ZoneCacheCacheReserveClearStartParams) MarshalJSON() (data []byte, err error) {

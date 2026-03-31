@@ -15,7 +15,7 @@ import (
 )
 
 func TestRadarAs112TimeseriesGroupGetDnssecWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -27,6 +27,7 @@ func TestRadarAs112TimeseriesGroupGetDnssecWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.As112.TimeseriesGroups.GetDnssec(context.TODO(), cfrex.RadarAs112TimeseriesGroupGetDnssecParams{
 		AggInterval:  cfrex.F(cfrex.RadarAs112TimeseriesGroupGetDnssecParamsAggInterval1h),
@@ -51,7 +52,7 @@ func TestRadarAs112TimeseriesGroupGetDnssecWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarAs112TimeseriesGroupGetEdnsWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -63,6 +64,7 @@ func TestRadarAs112TimeseriesGroupGetEdnsWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.As112.TimeseriesGroups.GetEdns(context.TODO(), cfrex.RadarAs112TimeseriesGroupGetEdnsParams{
 		AggInterval:  cfrex.F(cfrex.RadarAs112TimeseriesGroupGetEdnsParamsAggInterval1h),
@@ -87,7 +89,7 @@ func TestRadarAs112TimeseriesGroupGetEdnsWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarAs112TimeseriesGroupGetIPVersionWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -99,6 +101,7 @@ func TestRadarAs112TimeseriesGroupGetIPVersionWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.As112.TimeseriesGroups.GetIPVersion(context.TODO(), cfrex.RadarAs112TimeseriesGroupGetIPVersionParams{
 		AggInterval:  cfrex.F(cfrex.RadarAs112TimeseriesGroupGetIPVersionParamsAggInterval1h),
@@ -123,7 +126,7 @@ func TestRadarAs112TimeseriesGroupGetIPVersionWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarAs112TimeseriesGroupGetProtocolWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -135,6 +138,7 @@ func TestRadarAs112TimeseriesGroupGetProtocolWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.As112.TimeseriesGroups.GetProtocol(context.TODO(), cfrex.RadarAs112TimeseriesGroupGetProtocolParams{
 		AggInterval:  cfrex.F(cfrex.RadarAs112TimeseriesGroupGetProtocolParamsAggInterval1h),
@@ -158,7 +162,7 @@ func TestRadarAs112TimeseriesGroupGetProtocolWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarAs112TimeseriesGroupGetQueryTypeWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -170,6 +174,7 @@ func TestRadarAs112TimeseriesGroupGetQueryTypeWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.As112.TimeseriesGroups.GetQueryType(context.TODO(), cfrex.RadarAs112TimeseriesGroupGetQueryTypeParams{
 		AggInterval:   cfrex.F(cfrex.RadarAs112TimeseriesGroupGetQueryTypeParamsAggInterval1h),
@@ -194,7 +199,7 @@ func TestRadarAs112TimeseriesGroupGetQueryTypeWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarAs112TimeseriesGroupGetResponseCodesWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -206,6 +211,7 @@ func TestRadarAs112TimeseriesGroupGetResponseCodesWithOptionalParams(t *testing.
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.As112.TimeseriesGroups.GetResponseCodes(context.TODO(), cfrex.RadarAs112TimeseriesGroupGetResponseCodesParams{
 		AggInterval:   cfrex.F(cfrex.RadarAs112TimeseriesGroupGetResponseCodesParamsAggInterval1h),

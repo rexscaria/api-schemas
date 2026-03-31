@@ -60,15 +60,15 @@ func (r *AccountDeviceService) Get(ctx context.Context, accountID string, device
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if deviceID == "" {
 		err = errors.New("missing required device_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/devices/%s", accountID, deviceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // List WARP devices. Not supported when
@@ -85,11 +85,11 @@ func (r *AccountDeviceService) List(ctx context.Context, accountID string, opts 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/devices", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetches a one-time use admin override code for a device. This relies on the
@@ -105,15 +105,15 @@ func (r *AccountDeviceService) GetOverrideCode(ctx context.Context, accountID st
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if deviceID == "" {
 		err = errors.New("missing required device_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/devices/%s/override_codes", accountID, deviceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetches a list of the device settings profiles for an account.
@@ -121,11 +121,11 @@ func (r *AccountDeviceService) ListPolicies(ctx context.Context, accountID strin
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/devices/policies", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Revokes a list of devices. Not supported when
@@ -140,11 +140,11 @@ func (r *AccountDeviceService) Revoke(ctx context.Context, accountID string, bod
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/devices/revoke", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Unrevokes a list of devices. Not supported when
@@ -159,19 +159,19 @@ func (r *AccountDeviceService) Unrevoke(ctx context.Context, accountID string, b
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/devices/unrevoke", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type APIResponseSingleTeamsDevices struct {
-	Errors   []APIResponseSingleTeamsDevicesError   `json:"errors,required"`
-	Messages []APIResponseSingleTeamsDevicesMessage `json:"messages,required"`
-	Result   interface{}                            `json:"result,required,nullable"`
+	Errors   []APIResponseSingleTeamsDevicesError   `json:"errors" api:"required"`
+	Messages []APIResponseSingleTeamsDevicesMessage `json:"messages" api:"required"`
+	Result   interface{}                            `json:"result" api:"required,nullable"`
 	// Whether the API call was successful.
-	Success APIResponseSingleTeamsDevicesSuccess `json:"success,required"`
+	Success APIResponseSingleTeamsDevicesSuccess `json:"success" api:"required"`
 	JSON    apiResponseSingleTeamsDevicesJSON    `json:"-"`
 }
 
@@ -195,8 +195,8 @@ func (r apiResponseSingleTeamsDevicesJSON) RawJSON() string {
 }
 
 type APIResponseSingleTeamsDevicesError struct {
-	Code             int64                                     `json:"code,required"`
-	Message          string                                    `json:"message,required"`
+	Code             int64                                     `json:"code" api:"required"`
+	Message          string                                    `json:"message" api:"required"`
 	DocumentationURL string                                    `json:"documentation_url"`
 	Source           APIResponseSingleTeamsDevicesErrorsSource `json:"source"`
 	JSON             apiResponseSingleTeamsDevicesErrorJSON    `json:"-"`
@@ -243,8 +243,8 @@ func (r apiResponseSingleTeamsDevicesErrorsSourceJSON) RawJSON() string {
 }
 
 type APIResponseSingleTeamsDevicesMessage struct {
-	Code             int64                                       `json:"code,required"`
-	Message          string                                      `json:"message,required"`
+	Code             int64                                       `json:"code" api:"required"`
+	Message          string                                      `json:"message" api:"required"`
 	DocumentationURL string                                      `json:"documentation_url"`
 	Source           APIResponseSingleTeamsDevicesMessagesSource `json:"source"`
 	JSON             apiResponseSingleTeamsDevicesMessageJSON    `json:"-"`
@@ -306,11 +306,11 @@ func (r APIResponseSingleTeamsDevicesSuccess) IsKnown() bool {
 }
 
 type DeviceSettingsResponseCollection struct {
-	Errors   []DeviceSettingsResponseCollectionError   `json:"errors,required"`
-	Messages []DeviceSettingsResponseCollectionMessage `json:"messages,required"`
-	Result   []DeviceSettingsPolicy                    `json:"result,required,nullable"`
+	Errors   []DeviceSettingsResponseCollectionError   `json:"errors" api:"required"`
+	Messages []DeviceSettingsResponseCollectionMessage `json:"messages" api:"required"`
+	Result   []DeviceSettingsPolicy                    `json:"result" api:"required,nullable"`
 	// Whether the API call was successful.
-	Success    DeviceSettingsResponseCollectionSuccess    `json:"success,required"`
+	Success    DeviceSettingsResponseCollectionSuccess    `json:"success" api:"required"`
 	ResultInfo DeviceSettingsResponseCollectionResultInfo `json:"result_info"`
 	JSON       deviceSettingsResponseCollectionJSON       `json:"-"`
 }
@@ -336,8 +336,8 @@ func (r deviceSettingsResponseCollectionJSON) RawJSON() string {
 }
 
 type DeviceSettingsResponseCollectionError struct {
-	Code             int64                                        `json:"code,required"`
-	Message          string                                       `json:"message,required"`
+	Code             int64                                        `json:"code" api:"required"`
+	Message          string                                       `json:"message" api:"required"`
 	DocumentationURL string                                       `json:"documentation_url"`
 	Source           DeviceSettingsResponseCollectionErrorsSource `json:"source"`
 	JSON             deviceSettingsResponseCollectionErrorJSON    `json:"-"`
@@ -384,8 +384,8 @@ func (r deviceSettingsResponseCollectionErrorsSourceJSON) RawJSON() string {
 }
 
 type DeviceSettingsResponseCollectionMessage struct {
-	Code             int64                                          `json:"code,required"`
-	Message          string                                         `json:"message,required"`
+	Code             int64                                          `json:"code" api:"required"`
+	Message          string                                         `json:"message" api:"required"`
 	DocumentationURL string                                         `json:"documentation_url"`
 	Source           DeviceSettingsResponseCollectionMessagesSource `json:"source"`
 	JSON             deviceSettingsResponseCollectionMessageJSON    `json:"-"`
@@ -505,11 +505,11 @@ func (r userJSON) RawJSON() string {
 }
 
 type AccountDeviceGetResponse struct {
-	Errors   []AccountDeviceGetResponseError   `json:"errors,required"`
-	Messages []AccountDeviceGetResponseMessage `json:"messages,required"`
-	Result   AccountDeviceGetResponseResult    `json:"result,required,nullable"`
+	Errors   []AccountDeviceGetResponseError   `json:"errors" api:"required"`
+	Messages []AccountDeviceGetResponseMessage `json:"messages" api:"required"`
+	Result   AccountDeviceGetResponseResult    `json:"result" api:"required,nullable"`
 	// Whether the API call was successful.
-	Success AccountDeviceGetResponseSuccess `json:"success,required"`
+	Success AccountDeviceGetResponseSuccess `json:"success" api:"required"`
 	JSON    accountDeviceGetResponseJSON    `json:"-"`
 }
 
@@ -533,8 +533,8 @@ func (r accountDeviceGetResponseJSON) RawJSON() string {
 }
 
 type AccountDeviceGetResponseError struct {
-	Code             int64                                `json:"code,required"`
-	Message          string                               `json:"message,required"`
+	Code             int64                                `json:"code" api:"required"`
+	Message          string                               `json:"message" api:"required"`
 	DocumentationURL string                               `json:"documentation_url"`
 	Source           AccountDeviceGetResponseErrorsSource `json:"source"`
 	JSON             accountDeviceGetResponseErrorJSON    `json:"-"`
@@ -581,8 +581,8 @@ func (r accountDeviceGetResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type AccountDeviceGetResponseMessage struct {
-	Code             int64                                  `json:"code,required"`
-	Message          string                                 `json:"message,required"`
+	Code             int64                                  `json:"code" api:"required"`
+	Message          string                                 `json:"message" api:"required"`
 	DocumentationURL string                                 `json:"documentation_url"`
 	Source           AccountDeviceGetResponseMessagesSource `json:"source"`
 	JSON             accountDeviceGetResponseMessageJSON    `json:"-"`
@@ -746,11 +746,11 @@ func (r AccountDeviceGetResponseSuccess) IsKnown() bool {
 }
 
 type AccountDeviceListResponse struct {
-	Errors   []AccountDeviceListResponseError   `json:"errors,required"`
-	Messages []AccountDeviceListResponseMessage `json:"messages,required"`
-	Result   []AccountDeviceListResponseResult  `json:"result,required,nullable"`
+	Errors   []AccountDeviceListResponseError   `json:"errors" api:"required"`
+	Messages []AccountDeviceListResponseMessage `json:"messages" api:"required"`
+	Result   []AccountDeviceListResponseResult  `json:"result" api:"required,nullable"`
 	// Whether the API call was successful.
-	Success    AccountDeviceListResponseSuccess    `json:"success,required"`
+	Success    AccountDeviceListResponseSuccess    `json:"success" api:"required"`
 	ResultInfo AccountDeviceListResponseResultInfo `json:"result_info"`
 	JSON       accountDeviceListResponseJSON       `json:"-"`
 }
@@ -776,8 +776,8 @@ func (r accountDeviceListResponseJSON) RawJSON() string {
 }
 
 type AccountDeviceListResponseError struct {
-	Code             int64                                 `json:"code,required"`
-	Message          string                                `json:"message,required"`
+	Code             int64                                 `json:"code" api:"required"`
+	Message          string                                `json:"message" api:"required"`
 	DocumentationURL string                                `json:"documentation_url"`
 	Source           AccountDeviceListResponseErrorsSource `json:"source"`
 	JSON             accountDeviceListResponseErrorJSON    `json:"-"`
@@ -824,8 +824,8 @@ func (r accountDeviceListResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type AccountDeviceListResponseMessage struct {
-	Code             int64                                   `json:"code,required"`
-	Message          string                                  `json:"message,required"`
+	Code             int64                                   `json:"code" api:"required"`
+	Message          string                                  `json:"message" api:"required"`
 	DocumentationURL string                                  `json:"documentation_url"`
 	Source           AccountDeviceListResponseMessagesSource `json:"source"`
 	JSON             accountDeviceListResponseMessageJSON    `json:"-"`
@@ -996,11 +996,11 @@ func (r accountDeviceListResponseResultInfoJSON) RawJSON() string {
 }
 
 type AccountDeviceGetOverrideCodeResponse struct {
-	Errors   []MessagesDeviceTestsItems `json:"errors,required"`
-	Messages []MessagesDeviceTestsItems `json:"messages,required"`
-	Result   []interface{}              `json:"result,required,nullable"`
+	Errors   []MessagesDeviceTestsItems `json:"errors" api:"required"`
+	Messages []MessagesDeviceTestsItems `json:"messages" api:"required"`
+	Result   []interface{}              `json:"result" api:"required,nullable"`
 	// Whether the API call was successful.
-	Success    AccountDeviceGetOverrideCodeResponseSuccess    `json:"success,required"`
+	Success    AccountDeviceGetOverrideCodeResponseSuccess    `json:"success" api:"required"`
 	ResultInfo AccountDeviceGetOverrideCodeResponseResultInfo `json:"result_info"`
 	JSON       accountDeviceGetOverrideCodeResponseJSON       `json:"-"`
 }
@@ -1073,7 +1073,7 @@ func (r accountDeviceGetOverrideCodeResponseResultInfoJSON) RawJSON() string {
 
 type AccountDeviceRevokeParams struct {
 	// A list of Registration IDs to revoke.
-	Body []string `json:"body,required"`
+	Body []string `json:"body" api:"required"`
 }
 
 func (r AccountDeviceRevokeParams) MarshalJSON() (data []byte, err error) {
@@ -1082,7 +1082,7 @@ func (r AccountDeviceRevokeParams) MarshalJSON() (data []byte, err error) {
 
 type AccountDeviceUnrevokeParams struct {
 	// A list of Registration IDs to unrevoke.
-	Body []string `json:"body,required"`
+	Body []string `json:"body" api:"required"`
 }
 
 func (r AccountDeviceUnrevokeParams) MarshalJSON() (data []byte, err error) {

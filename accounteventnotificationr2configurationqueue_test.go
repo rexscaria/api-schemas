@@ -14,7 +14,7 @@ import (
 )
 
 func TestAccountEventNotificationR2ConfigurationQueueNewWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,6 +26,7 @@ func TestAccountEventNotificationR2ConfigurationQueueNewWithOptionalParams(t *te
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.EventNotifications.R2.Configuration.Queues.New(
 		context.TODO(),
@@ -52,7 +53,7 @@ func TestAccountEventNotificationR2ConfigurationQueueNewWithOptionalParams(t *te
 }
 
 func TestAccountEventNotificationR2ConfigurationQueueDeleteWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -64,6 +65,7 @@ func TestAccountEventNotificationR2ConfigurationQueueDeleteWithOptionalParams(t 
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.EventNotifications.R2.Configuration.Queues.Delete(
 		context.TODO(),

@@ -43,11 +43,11 @@ func (r *AccountEmailSecuritySettingBlockSenderService) New(ctx context.Context,
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/email-security/settings/block_senders", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get a blocked email sender
@@ -55,11 +55,11 @@ func (r *AccountEmailSecuritySettingBlockSenderService) Get(ctx context.Context,
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/email-security/settings/block_senders/%v", accountID, patternID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update a blocked email sender
@@ -67,11 +67,11 @@ func (r *AccountEmailSecuritySettingBlockSenderService) Update(ctx context.Conte
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/email-security/settings/block_senders/%v", accountID, patternID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // List blocked email senders
@@ -79,11 +79,11 @@ func (r *AccountEmailSecuritySettingBlockSenderService) List(ctx context.Context
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/email-security/settings/block_senders", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete a blocked email sender
@@ -91,18 +91,18 @@ func (r *AccountEmailSecuritySettingBlockSenderService) Delete(ctx context.Conte
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/email-security/settings/block_senders/%v", accountID, patternID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountEmailSecuritySettingBlockSenderNewResponse struct {
-	Errors   []EmailSecurityMessage                                  `json:"errors,required"`
-	Messages []EmailSecurityMessage                                  `json:"messages,required"`
-	Result   AccountEmailSecuritySettingBlockSenderNewResponseResult `json:"result,required"`
-	Success  bool                                                    `json:"success,required"`
+	Errors   []EmailSecurityMessage                                  `json:"errors" api:"required"`
+	Messages []EmailSecurityMessage                                  `json:"messages" api:"required"`
+	Result   AccountEmailSecuritySettingBlockSenderNewResponseResult `json:"result" api:"required"`
+	Success  bool                                                    `json:"success" api:"required"`
 	JSON     accountEmailSecuritySettingBlockSenderNewResponseJSON   `json:"-"`
 }
 
@@ -127,13 +127,13 @@ func (r accountEmailSecuritySettingBlockSenderNewResponseJSON) RawJSON() string 
 
 type AccountEmailSecuritySettingBlockSenderNewResponseResult struct {
 	// The unique identifier for the allow policy.
-	ID           int64                                                       `json:"id,required"`
-	CreatedAt    time.Time                                                   `json:"created_at,required" format:"date-time"`
-	IsRegex      bool                                                        `json:"is_regex,required"`
-	LastModified time.Time                                                   `json:"last_modified,required" format:"date-time"`
-	Pattern      string                                                      `json:"pattern,required"`
-	PatternType  PatternType                                                 `json:"pattern_type,required"`
-	Comments     string                                                      `json:"comments,nullable"`
+	ID           int64                                                       `json:"id" api:"required"`
+	CreatedAt    time.Time                                                   `json:"created_at" api:"required" format:"date-time"`
+	IsRegex      bool                                                        `json:"is_regex" api:"required"`
+	LastModified time.Time                                                   `json:"last_modified" api:"required" format:"date-time"`
+	Pattern      string                                                      `json:"pattern" api:"required"`
+	PatternType  PatternType                                                 `json:"pattern_type" api:"required"`
+	Comments     string                                                      `json:"comments" api:"nullable"`
 	JSON         accountEmailSecuritySettingBlockSenderNewResponseResultJSON `json:"-"`
 }
 
@@ -161,10 +161,10 @@ func (r accountEmailSecuritySettingBlockSenderNewResponseResultJSON) RawJSON() s
 }
 
 type AccountEmailSecuritySettingBlockSenderGetResponse struct {
-	Errors   []EmailSecurityMessage                                  `json:"errors,required"`
-	Messages []EmailSecurityMessage                                  `json:"messages,required"`
-	Result   AccountEmailSecuritySettingBlockSenderGetResponseResult `json:"result,required"`
-	Success  bool                                                    `json:"success,required"`
+	Errors   []EmailSecurityMessage                                  `json:"errors" api:"required"`
+	Messages []EmailSecurityMessage                                  `json:"messages" api:"required"`
+	Result   AccountEmailSecuritySettingBlockSenderGetResponseResult `json:"result" api:"required"`
+	Success  bool                                                    `json:"success" api:"required"`
 	JSON     accountEmailSecuritySettingBlockSenderGetResponseJSON   `json:"-"`
 }
 
@@ -189,13 +189,13 @@ func (r accountEmailSecuritySettingBlockSenderGetResponseJSON) RawJSON() string 
 
 type AccountEmailSecuritySettingBlockSenderGetResponseResult struct {
 	// The unique identifier for the allow policy.
-	ID           int64                                                       `json:"id,required"`
-	CreatedAt    time.Time                                                   `json:"created_at,required" format:"date-time"`
-	IsRegex      bool                                                        `json:"is_regex,required"`
-	LastModified time.Time                                                   `json:"last_modified,required" format:"date-time"`
-	Pattern      string                                                      `json:"pattern,required"`
-	PatternType  PatternType                                                 `json:"pattern_type,required"`
-	Comments     string                                                      `json:"comments,nullable"`
+	ID           int64                                                       `json:"id" api:"required"`
+	CreatedAt    time.Time                                                   `json:"created_at" api:"required" format:"date-time"`
+	IsRegex      bool                                                        `json:"is_regex" api:"required"`
+	LastModified time.Time                                                   `json:"last_modified" api:"required" format:"date-time"`
+	Pattern      string                                                      `json:"pattern" api:"required"`
+	PatternType  PatternType                                                 `json:"pattern_type" api:"required"`
+	Comments     string                                                      `json:"comments" api:"nullable"`
 	JSON         accountEmailSecuritySettingBlockSenderGetResponseResultJSON `json:"-"`
 }
 
@@ -223,10 +223,10 @@ func (r accountEmailSecuritySettingBlockSenderGetResponseResultJSON) RawJSON() s
 }
 
 type AccountEmailSecuritySettingBlockSenderUpdateResponse struct {
-	Errors   []EmailSecurityMessage                                     `json:"errors,required"`
-	Messages []EmailSecurityMessage                                     `json:"messages,required"`
-	Result   AccountEmailSecuritySettingBlockSenderUpdateResponseResult `json:"result,required"`
-	Success  bool                                                       `json:"success,required"`
+	Errors   []EmailSecurityMessage                                     `json:"errors" api:"required"`
+	Messages []EmailSecurityMessage                                     `json:"messages" api:"required"`
+	Result   AccountEmailSecuritySettingBlockSenderUpdateResponseResult `json:"result" api:"required"`
+	Success  bool                                                       `json:"success" api:"required"`
 	JSON     accountEmailSecuritySettingBlockSenderUpdateResponseJSON   `json:"-"`
 }
 
@@ -251,13 +251,13 @@ func (r accountEmailSecuritySettingBlockSenderUpdateResponseJSON) RawJSON() stri
 
 type AccountEmailSecuritySettingBlockSenderUpdateResponseResult struct {
 	// The unique identifier for the allow policy.
-	ID           int64                                                          `json:"id,required"`
-	CreatedAt    time.Time                                                      `json:"created_at,required" format:"date-time"`
-	IsRegex      bool                                                           `json:"is_regex,required"`
-	LastModified time.Time                                                      `json:"last_modified,required" format:"date-time"`
-	Pattern      string                                                         `json:"pattern,required"`
-	PatternType  PatternType                                                    `json:"pattern_type,required"`
-	Comments     string                                                         `json:"comments,nullable"`
+	ID           int64                                                          `json:"id" api:"required"`
+	CreatedAt    time.Time                                                      `json:"created_at" api:"required" format:"date-time"`
+	IsRegex      bool                                                           `json:"is_regex" api:"required"`
+	LastModified time.Time                                                      `json:"last_modified" api:"required" format:"date-time"`
+	Pattern      string                                                         `json:"pattern" api:"required"`
+	PatternType  PatternType                                                    `json:"pattern_type" api:"required"`
+	Comments     string                                                         `json:"comments" api:"nullable"`
 	JSON         accountEmailSecuritySettingBlockSenderUpdateResponseResultJSON `json:"-"`
 }
 
@@ -285,11 +285,11 @@ func (r accountEmailSecuritySettingBlockSenderUpdateResponseResultJSON) RawJSON(
 }
 
 type AccountEmailSecuritySettingBlockSenderListResponse struct {
-	Errors     []EmailSecurityMessage                                     `json:"errors,required"`
-	Messages   []EmailSecurityMessage                                     `json:"messages,required"`
-	Result     []AccountEmailSecuritySettingBlockSenderListResponseResult `json:"result,required"`
-	ResultInfo ResultInfoEmailSecurity                                    `json:"result_info,required"`
-	Success    bool                                                       `json:"success,required"`
+	Errors     []EmailSecurityMessage                                     `json:"errors" api:"required"`
+	Messages   []EmailSecurityMessage                                     `json:"messages" api:"required"`
+	Result     []AccountEmailSecuritySettingBlockSenderListResponseResult `json:"result" api:"required"`
+	ResultInfo ResultInfoEmailSecurity                                    `json:"result_info" api:"required"`
+	Success    bool                                                       `json:"success" api:"required"`
 	JSON       accountEmailSecuritySettingBlockSenderListResponseJSON     `json:"-"`
 }
 
@@ -315,13 +315,13 @@ func (r accountEmailSecuritySettingBlockSenderListResponseJSON) RawJSON() string
 
 type AccountEmailSecuritySettingBlockSenderListResponseResult struct {
 	// The unique identifier for the allow policy.
-	ID           int64                                                        `json:"id,required"`
-	CreatedAt    time.Time                                                    `json:"created_at,required" format:"date-time"`
-	IsRegex      bool                                                         `json:"is_regex,required"`
-	LastModified time.Time                                                    `json:"last_modified,required" format:"date-time"`
-	Pattern      string                                                       `json:"pattern,required"`
-	PatternType  PatternType                                                  `json:"pattern_type,required"`
-	Comments     string                                                       `json:"comments,nullable"`
+	ID           int64                                                        `json:"id" api:"required"`
+	CreatedAt    time.Time                                                    `json:"created_at" api:"required" format:"date-time"`
+	IsRegex      bool                                                         `json:"is_regex" api:"required"`
+	LastModified time.Time                                                    `json:"last_modified" api:"required" format:"date-time"`
+	Pattern      string                                                       `json:"pattern" api:"required"`
+	PatternType  PatternType                                                  `json:"pattern_type" api:"required"`
+	Comments     string                                                       `json:"comments" api:"nullable"`
 	JSON         accountEmailSecuritySettingBlockSenderListResponseResultJSON `json:"-"`
 }
 
@@ -349,10 +349,10 @@ func (r accountEmailSecuritySettingBlockSenderListResponseResultJSON) RawJSON() 
 }
 
 type AccountEmailSecuritySettingBlockSenderDeleteResponse struct {
-	Errors   []EmailSecurityMessage                                     `json:"errors,required"`
-	Messages []EmailSecurityMessage                                     `json:"messages,required"`
-	Result   AccountEmailSecuritySettingBlockSenderDeleteResponseResult `json:"result,required"`
-	Success  bool                                                       `json:"success,required"`
+	Errors   []EmailSecurityMessage                                     `json:"errors" api:"required"`
+	Messages []EmailSecurityMessage                                     `json:"messages" api:"required"`
+	Result   AccountEmailSecuritySettingBlockSenderDeleteResponseResult `json:"result" api:"required"`
+	Success  bool                                                       `json:"success" api:"required"`
 	JSON     accountEmailSecuritySettingBlockSenderDeleteResponseJSON   `json:"-"`
 }
 
@@ -377,7 +377,7 @@ func (r accountEmailSecuritySettingBlockSenderDeleteResponseJSON) RawJSON() stri
 
 type AccountEmailSecuritySettingBlockSenderDeleteResponseResult struct {
 	// The unique identifier for the allow policy.
-	ID   int64                                                          `json:"id,required"`
+	ID   int64                                                          `json:"id" api:"required"`
 	JSON accountEmailSecuritySettingBlockSenderDeleteResponseResultJSON `json:"-"`
 }
 
@@ -399,9 +399,9 @@ func (r accountEmailSecuritySettingBlockSenderDeleteResponseResultJSON) RawJSON(
 }
 
 type AccountEmailSecuritySettingBlockSenderNewParams struct {
-	IsRegex     param.Field[bool]        `json:"is_regex,required"`
-	Pattern     param.Field[string]      `json:"pattern,required"`
-	PatternType param.Field[PatternType] `json:"pattern_type,required"`
+	IsRegex     param.Field[bool]        `json:"is_regex" api:"required"`
+	Pattern     param.Field[string]      `json:"pattern" api:"required"`
+	PatternType param.Field[PatternType] `json:"pattern_type" api:"required"`
 	Comments    param.Field[string]      `json:"comments"`
 }
 

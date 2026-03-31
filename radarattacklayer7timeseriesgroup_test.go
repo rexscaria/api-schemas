@@ -15,7 +15,7 @@ import (
 )
 
 func TestRadarAttackLayer7TimeseriesGroupGetHTTPMethodTimeseriesWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -27,6 +27,7 @@ func TestRadarAttackLayer7TimeseriesGroupGetHTTPMethodTimeseriesWithOptionalPara
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.Attacks.Layer7.TimeseriesGroups.GetHTTPMethodTimeseries(context.TODO(), cfrex.RadarAttackLayer7TimeseriesGroupGetHTTPMethodTimeseriesParams{
 		AggInterval:       cfrex.F(cfrex.RadarAttackLayer7TimeseriesGroupGetHTTPMethodTimeseriesParamsAggInterval1h),
@@ -54,7 +55,7 @@ func TestRadarAttackLayer7TimeseriesGroupGetHTTPMethodTimeseriesWithOptionalPara
 }
 
 func TestRadarAttackLayer7TimeseriesGroupGetHTTPVersionTimeseriesWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -66,6 +67,7 @@ func TestRadarAttackLayer7TimeseriesGroupGetHTTPVersionTimeseriesWithOptionalPar
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.Attacks.Layer7.TimeseriesGroups.GetHTTPVersionTimeseries(context.TODO(), cfrex.RadarAttackLayer7TimeseriesGroupGetHTTPVersionTimeseriesParams{
 		AggInterval:       cfrex.F(cfrex.RadarAttackLayer7TimeseriesGroupGetHTTPVersionTimeseriesParamsAggInterval1h),
@@ -92,7 +94,7 @@ func TestRadarAttackLayer7TimeseriesGroupGetHTTPVersionTimeseriesWithOptionalPar
 }
 
 func TestRadarAttackLayer7TimeseriesGroupGetIndustryTimeseriesWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -104,6 +106,7 @@ func TestRadarAttackLayer7TimeseriesGroupGetIndustryTimeseriesWithOptionalParams
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.Attacks.Layer7.TimeseriesGroups.GetIndustryTimeseries(context.TODO(), cfrex.RadarAttackLayer7TimeseriesGroupGetIndustryTimeseriesParams{
 		AggInterval:       cfrex.F(cfrex.RadarAttackLayer7TimeseriesGroupGetIndustryTimeseriesParamsAggInterval1h),
@@ -132,7 +135,7 @@ func TestRadarAttackLayer7TimeseriesGroupGetIndustryTimeseriesWithOptionalParams
 }
 
 func TestRadarAttackLayer7TimeseriesGroupGetIPVersionTimeseriesWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -144,6 +147,7 @@ func TestRadarAttackLayer7TimeseriesGroupGetIPVersionTimeseriesWithOptionalParam
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.Attacks.Layer7.TimeseriesGroups.GetIPVersionTimeseries(context.TODO(), cfrex.RadarAttackLayer7TimeseriesGroupGetIPVersionTimeseriesParams{
 		AggInterval:       cfrex.F(cfrex.RadarAttackLayer7TimeseriesGroupGetIPVersionTimeseriesParamsAggInterval1h),
@@ -170,7 +174,7 @@ func TestRadarAttackLayer7TimeseriesGroupGetIPVersionTimeseriesWithOptionalParam
 }
 
 func TestRadarAttackLayer7TimeseriesGroupGetManagedRulesTimeseriesWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -182,6 +186,7 @@ func TestRadarAttackLayer7TimeseriesGroupGetManagedRulesTimeseriesWithOptionalPa
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.Attacks.Layer7.TimeseriesGroups.GetManagedRulesTimeseries(context.TODO(), cfrex.RadarAttackLayer7TimeseriesGroupGetManagedRulesTimeseriesParams{
 		AggInterval:       cfrex.F(cfrex.RadarAttackLayer7TimeseriesGroupGetManagedRulesTimeseriesParamsAggInterval1h),
@@ -210,7 +215,7 @@ func TestRadarAttackLayer7TimeseriesGroupGetManagedRulesTimeseriesWithOptionalPa
 }
 
 func TestRadarAttackLayer7TimeseriesGroupGetMitigationProductTimeseriesWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -222,6 +227,7 @@ func TestRadarAttackLayer7TimeseriesGroupGetMitigationProductTimeseriesWithOptio
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.Attacks.Layer7.TimeseriesGroups.GetMitigationProductTimeseries(context.TODO(), cfrex.RadarAttackLayer7TimeseriesGroupGetMitigationProductTimeseriesParams{
 		AggInterval:   cfrex.F(cfrex.RadarAttackLayer7TimeseriesGroupGetMitigationProductTimeseriesParamsAggInterval1h),
@@ -249,7 +255,7 @@ func TestRadarAttackLayer7TimeseriesGroupGetMitigationProductTimeseriesWithOptio
 }
 
 func TestRadarAttackLayer7TimeseriesGroupGetVerticalTimeseriesWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -261,6 +267,7 @@ func TestRadarAttackLayer7TimeseriesGroupGetVerticalTimeseriesWithOptionalParams
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.Attacks.Layer7.TimeseriesGroups.GetVerticalTimeseries(context.TODO(), cfrex.RadarAttackLayer7TimeseriesGroupGetVerticalTimeseriesParams{
 		AggInterval:       cfrex.F(cfrex.RadarAttackLayer7TimeseriesGroupGetVerticalTimeseriesParamsAggInterval1h),

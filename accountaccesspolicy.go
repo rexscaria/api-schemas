@@ -39,11 +39,11 @@ func (r *AccountAccessPolicyService) New(ctx context.Context, accountID string, 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/access/policies", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetches a single Access reusable policy.
@@ -51,15 +51,15 @@ func (r *AccountAccessPolicyService) Get(ctx context.Context, accountID string, 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if policyID == "" {
 		err = errors.New("missing required policy_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/access/policies/%s", accountID, policyID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates a Access reusable policy.
@@ -67,15 +67,15 @@ func (r *AccountAccessPolicyService) Update(ctx context.Context, accountID strin
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if policyID == "" {
 		err = errors.New("missing required policy_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/access/policies/%s", accountID, policyID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists Access reusable policies.
@@ -83,11 +83,11 @@ func (r *AccountAccessPolicyService) List(ctx context.Context, accountID string,
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/access/policies", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Deletes an Access reusable policy.
@@ -95,15 +95,15 @@ func (r *AccountAccessPolicyService) Delete(ctx context.Context, accountID strin
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if policyID == "" {
 		err = errors.New("missing required policy_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/access/policies/%s", accountID, policyID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // The action Access will take if a user matches this policy. Infrastructure
@@ -128,7 +128,7 @@ func (r AccessDecision) IsKnown() bool {
 // A group of email addresses that can approve a temporary authentication request.
 type ApprovalGroupEmail struct {
 	// The number of approvals needed to obtain access.
-	ApprovalsNeeded float64 `json:"approvals_needed,required"`
+	ApprovalsNeeded float64 `json:"approvals_needed" api:"required"`
 	// A list of emails that can approve the access request.
 	EmailAddresses []string `json:"email_addresses"`
 	// The UUID of an re-usable email list.
@@ -157,7 +157,7 @@ func (r approvalGroupEmailJSON) RawJSON() string {
 // A group of email addresses that can approve a temporary authentication request.
 type ApprovalGroupEmailParam struct {
 	// The number of approvals needed to obtain access.
-	ApprovalsNeeded param.Field[float64] `json:"approvals_needed,required"`
+	ApprovalsNeeded param.Field[float64] `json:"approvals_needed" api:"required"`
 	// A list of emails that can approve the access request.
 	EmailAddresses param.Field[[]string] `json:"email_addresses"`
 	// The UUID of an re-usable email list.
@@ -171,12 +171,12 @@ func (r ApprovalGroupEmailParam) MarshalJSON() (data []byte, err error) {
 type BasePolicyRequestParam struct {
 	// The action Access will take if a user matches this policy. Infrastructure
 	// application policies can only use the Allow action.
-	Decision param.Field[AccessDecision] `json:"decision,required"`
+	Decision param.Field[AccessDecision] `json:"decision" api:"required"`
 	// Rules evaluated with an OR logical operator. A user needs to meet only one of
 	// the Include rules.
-	Include param.Field[[]AccessRuleUnionParam] `json:"include,required"`
+	Include param.Field[[]AccessRuleUnionParam] `json:"include" api:"required"`
 	// The name of the Access policy.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Rules evaluated with a NOT logical operator. To match the policy, a user cannot
 	// meet any of the Exclude rules.
 	Exclude param.Field[[]AccessRuleUnionParam] `json:"exclude"`
@@ -279,10 +279,10 @@ func (r ReusablePolicyResponseReusable) IsKnown() bool {
 }
 
 type ReusableSingleResponse struct {
-	Errors   []MessagesAccessItem `json:"errors,required"`
-	Messages []MessagesAccessItem `json:"messages,required"`
+	Errors   []MessagesAccessItem `json:"errors" api:"required"`
+	Messages []MessagesAccessItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success ReusableSingleResponseSuccess `json:"success,required"`
+	Success ReusableSingleResponseSuccess `json:"success" api:"required"`
 	Result  ReusablePolicyResponse        `json:"result"`
 	JSON    reusableSingleResponseJSON    `json:"-"`
 }
@@ -322,10 +322,10 @@ func (r ReusableSingleResponseSuccess) IsKnown() bool {
 }
 
 type AccountAccessPolicyListResponse struct {
-	Errors   []MessagesAccessItem `json:"errors,required"`
-	Messages []MessagesAccessItem `json:"messages,required"`
+	Errors   []MessagesAccessItem `json:"errors" api:"required"`
+	Messages []MessagesAccessItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success    AccountAccessPolicyListResponseSuccess    `json:"success,required"`
+	Success    AccountAccessPolicyListResponseSuccess    `json:"success" api:"required"`
 	Result     []ReusablePolicyResponse                  `json:"result"`
 	ResultInfo AccountAccessPolicyListResponseResultInfo `json:"result_info"`
 	JSON       accountAccessPolicyListResponseJSON       `json:"-"`
@@ -398,10 +398,10 @@ func (r accountAccessPolicyListResponseResultInfoJSON) RawJSON() string {
 }
 
 type AccountAccessPolicyDeleteResponse struct {
-	Errors   []MessagesAccessItem `json:"errors,required"`
-	Messages []MessagesAccessItem `json:"messages,required"`
+	Errors   []MessagesAccessItem `json:"errors" api:"required"`
+	Messages []MessagesAccessItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountAccessPolicyDeleteResponseSuccess `json:"success,required"`
+	Success AccountAccessPolicyDeleteResponseSuccess `json:"success" api:"required"`
 	Result  AccountAccessPolicyDeleteResponseResult  `json:"result"`
 	JSON    accountAccessPolicyDeleteResponseJSON    `json:"-"`
 }
@@ -463,7 +463,7 @@ func (r accountAccessPolicyDeleteResponseResultJSON) RawJSON() string {
 }
 
 type AccountAccessPolicyNewParams struct {
-	PolicyRequestForAccess PolicyRequestForAccessParam `json:"policy_request_for_access,required"`
+	PolicyRequestForAccess PolicyRequestForAccessParam `json:"policy_request_for_access" api:"required"`
 }
 
 func (r AccountAccessPolicyNewParams) MarshalJSON() (data []byte, err error) {
@@ -471,7 +471,7 @@ func (r AccountAccessPolicyNewParams) MarshalJSON() (data []byte, err error) {
 }
 
 type AccountAccessPolicyUpdateParams struct {
-	PolicyRequestForAccess PolicyRequestForAccessParam `json:"policy_request_for_access,required"`
+	PolicyRequestForAccess PolicyRequestForAccessParam `json:"policy_request_for_access" api:"required"`
 }
 
 func (r AccountAccessPolicyUpdateParams) MarshalJSON() (data []byte, err error) {

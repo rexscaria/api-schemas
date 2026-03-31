@@ -15,7 +15,7 @@ import (
 )
 
 func TestRadarAttackLayer3TopLocationGetTopOriginLocationsWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -27,6 +27,7 @@ func TestRadarAttackLayer3TopLocationGetTopOriginLocationsWithOptionalParams(t *
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.Attacks.Layer3.Top.Locations.GetTopOriginLocations(context.TODO(), cfrex.RadarAttackLayer3TopLocationGetTopOriginLocationsParams{
 		Continent: cfrex.F([]string{"string"}),
@@ -50,7 +51,7 @@ func TestRadarAttackLayer3TopLocationGetTopOriginLocationsWithOptionalParams(t *
 }
 
 func TestRadarAttackLayer3TopLocationGetTopTargetLocationsWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -62,6 +63,7 @@ func TestRadarAttackLayer3TopLocationGetTopTargetLocationsWithOptionalParams(t *
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.Attacks.Layer3.Top.Locations.GetTopTargetLocations(context.TODO(), cfrex.RadarAttackLayer3TopLocationGetTopTargetLocationsParams{
 		Continent: cfrex.F([]string{"string"}),

@@ -45,15 +45,15 @@ func (r *AccountWorkerScriptVersionService) List(ctx context.Context, accountID 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if scriptName == "" {
 		err = errors.New("missing required script_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/workers/scripts/%s/versions", accountID, scriptName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Get Version Detail
@@ -61,19 +61,19 @@ func (r *AccountWorkerScriptVersionService) GetDetail(ctx context.Context, accou
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if scriptName == "" {
 		err = errors.New("missing required script_name parameter")
-		return
+		return nil, err
 	}
 	if versionID == "" {
 		err = errors.New("missing required version_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/workers/scripts/%s/versions/%s", accountID, scriptName, versionID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Upload a Worker Version without deploying to Cloudflare's network. You can find
@@ -83,19 +83,19 @@ func (r *AccountWorkerScriptVersionService) Upload(ctx context.Context, accountI
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if scriptName == "" {
 		err = errors.New("missing required script_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/workers/scripts/%s/versions", accountID, scriptName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type VersionItemFull struct {
-	Resources VersionItemFullResources `json:"resources,required"`
+	Resources VersionItemFullResources `json:"resources" api:"required"`
 	ID        string                   `json:"id"`
 	Metadata  VersionItemFullMetadata  `json:"metadata"`
 	Number    float64                  `json:"number"`
@@ -398,11 +398,11 @@ func (r VersionItemShortMetadataSource) IsKnown() bool {
 }
 
 type AccountWorkerScriptVersionListResponse struct {
-	Errors   []WorkersMessages                            `json:"errors,required"`
-	Messages []WorkersMessages                            `json:"messages,required"`
-	Result   AccountWorkerScriptVersionListResponseResult `json:"result,required"`
+	Errors   []WorkersMessages                            `json:"errors" api:"required"`
+	Messages []WorkersMessages                            `json:"messages" api:"required"`
+	Result   AccountWorkerScriptVersionListResponseResult `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success AccountWorkerScriptVersionListResponseSuccess `json:"success,required"`
+	Success AccountWorkerScriptVersionListResponseSuccess `json:"success" api:"required"`
 	JSON    accountWorkerScriptVersionListResponseJSON    `json:"-"`
 }
 
@@ -462,11 +462,11 @@ func (r AccountWorkerScriptVersionListResponseSuccess) IsKnown() bool {
 }
 
 type AccountWorkerScriptVersionGetDetailResponse struct {
-	Errors   []WorkersMessages `json:"errors,required"`
-	Messages []WorkersMessages `json:"messages,required"`
-	Result   VersionItemFull   `json:"result,required"`
+	Errors   []WorkersMessages `json:"errors" api:"required"`
+	Messages []WorkersMessages `json:"messages" api:"required"`
+	Result   VersionItemFull   `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success AccountWorkerScriptVersionGetDetailResponseSuccess `json:"success,required"`
+	Success AccountWorkerScriptVersionGetDetailResponseSuccess `json:"success" api:"required"`
 	JSON    accountWorkerScriptVersionGetDetailResponseJSON    `json:"-"`
 }
 
@@ -505,11 +505,11 @@ func (r AccountWorkerScriptVersionGetDetailResponseSuccess) IsKnown() bool {
 }
 
 type AccountWorkerScriptVersionUploadResponse struct {
-	Errors   []WorkersMessages                              `json:"errors,required"`
-	Messages []WorkersMessages                              `json:"messages,required"`
-	Result   AccountWorkerScriptVersionUploadResponseResult `json:"result,required"`
+	Errors   []WorkersMessages                              `json:"errors" api:"required"`
+	Messages []WorkersMessages                              `json:"messages" api:"required"`
+	Result   AccountWorkerScriptVersionUploadResponseResult `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success AccountWorkerScriptVersionUploadResponseSuccess `json:"success,required"`
+	Success AccountWorkerScriptVersionUploadResponseSuccess `json:"success" api:"required"`
 	JSON    accountWorkerScriptVersionUploadResponseJSON    `json:"-"`
 }
 
@@ -533,7 +533,7 @@ func (r accountWorkerScriptVersionUploadResponseJSON) RawJSON() string {
 }
 
 type AccountWorkerScriptVersionUploadResponseResult struct {
-	Resources     AccountWorkerScriptVersionUploadResponseResultResources `json:"resources,required"`
+	Resources     AccountWorkerScriptVersionUploadResponseResultResources `json:"resources" api:"required"`
 	ID            string                                                  `json:"id"`
 	Metadata      AccountWorkerScriptVersionUploadResponseResultMetadata  `json:"metadata"`
 	Number        float64                                                 `json:"number"`
@@ -799,7 +799,7 @@ func (r AccountWorkerScriptVersionListParams) URLQuery() (v url.Values) {
 
 type AccountWorkerScriptVersionUploadParams struct {
 	// JSON encoded metadata about the uploaded parts and Worker configuration.
-	Metadata param.Field[AccountWorkerScriptVersionUploadParamsMetadata] `json:"metadata,required"`
+	Metadata param.Field[AccountWorkerScriptVersionUploadParamsMetadata] `json:"metadata" api:"required"`
 	// An array of modules (often JavaScript files) comprising a Worker script. At
 	// least one module must be present and referenced in the metadata as `main_module`
 	// or `body_part` by filename.<br/>Possible Content-Type(s) are:
@@ -829,7 +829,7 @@ type AccountWorkerScriptVersionUploadParamsMetadata struct {
 	// Name of the uploaded file that contains the main module (e.g. the file exporting
 	// a `fetch` handler). Indicates a `module syntax` Worker, which is required for
 	// Version Upload.
-	MainModule  param.Field[string]                                                    `json:"main_module,required"`
+	MainModule  param.Field[string]                                                    `json:"main_module" api:"required"`
 	Annotations param.Field[AccountWorkerScriptVersionUploadParamsMetadataAnnotations] `json:"annotations"`
 	// List of bindings attached to a Worker. You can find more about bindings on our
 	// docs:

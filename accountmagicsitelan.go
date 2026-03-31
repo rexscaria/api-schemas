@@ -40,15 +40,15 @@ func (r *AccountMagicSiteLanService) New(ctx context.Context, accountID string, 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if siteID == "" {
 		err = errors.New("missing required site_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/sites/%s/lans", accountID, siteID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get a specific Site LAN.
@@ -56,19 +56,19 @@ func (r *AccountMagicSiteLanService) Get(ctx context.Context, accountID string, 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if siteID == "" {
 		err = errors.New("missing required site_id parameter")
-		return
+		return nil, err
 	}
 	if lanID == "" {
 		err = errors.New("missing required lan_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/sites/%s/lans/%s", accountID, siteID, lanID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update a specific Site LAN.
@@ -76,19 +76,19 @@ func (r *AccountMagicSiteLanService) Update(ctx context.Context, accountID strin
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if siteID == "" {
 		err = errors.New("missing required site_id parameter")
-		return
+		return nil, err
 	}
 	if lanID == "" {
 		err = errors.New("missing required lan_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/sites/%s/lans/%s", accountID, siteID, lanID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists Site LANs associated with an account.
@@ -96,15 +96,15 @@ func (r *AccountMagicSiteLanService) List(ctx context.Context, accountID string,
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if siteID == "" {
 		err = errors.New("missing required site_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/sites/%s/lans", accountID, siteID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Remove a specific Site LAN.
@@ -112,19 +112,19 @@ func (r *AccountMagicSiteLanService) Delete(ctx context.Context, accountID strin
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if siteID == "" {
 		err = errors.New("missing required site_id parameter")
-		return
+		return nil, err
 	}
 	if lanID == "" {
 		err = errors.New("missing required lan_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/sites/%s/lans/%s", accountID, siteID, lanID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Patch a specific Site LAN.
@@ -132,19 +132,19 @@ func (r *AccountMagicSiteLanService) Patch(ctx context.Context, accountID string
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if siteID == "" {
 		err = errors.New("missing required site_id parameter")
-		return
+		return nil, err
 	}
 	if lanID == "" {
 		err = errors.New("missing required lan_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/sites/%s/lans/%s", accountID, siteID, lanID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type MagicLan struct {
@@ -192,11 +192,11 @@ func (r magicLanJSON) RawJSON() string {
 }
 
 type MagicLanModifiedResponse struct {
-	Errors   []MagicLanModifiedResponseError   `json:"errors,required"`
-	Messages []MagicLanModifiedResponseMessage `json:"messages,required"`
-	Result   MagicLan                          `json:"result,required"`
+	Errors   []MagicLanModifiedResponseError   `json:"errors" api:"required"`
+	Messages []MagicLanModifiedResponseMessage `json:"messages" api:"required"`
+	Result   MagicLan                          `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success MagicLanModifiedResponseSuccess `json:"success,required"`
+	Success MagicLanModifiedResponseSuccess `json:"success" api:"required"`
 	JSON    magicLanModifiedResponseJSON    `json:"-"`
 }
 
@@ -220,8 +220,8 @@ func (r magicLanModifiedResponseJSON) RawJSON() string {
 }
 
 type MagicLanModifiedResponseError struct {
-	Code             int64                                `json:"code,required"`
-	Message          string                               `json:"message,required"`
+	Code             int64                                `json:"code" api:"required"`
+	Message          string                               `json:"message" api:"required"`
 	DocumentationURL string                               `json:"documentation_url"`
 	Source           MagicLanModifiedResponseErrorsSource `json:"source"`
 	JSON             magicLanModifiedResponseErrorJSON    `json:"-"`
@@ -268,8 +268,8 @@ func (r magicLanModifiedResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type MagicLanModifiedResponseMessage struct {
-	Code             int64                                  `json:"code,required"`
-	Message          string                                 `json:"message,required"`
+	Code             int64                                  `json:"code" api:"required"`
+	Message          string                                 `json:"message" api:"required"`
 	DocumentationURL string                                 `json:"documentation_url"`
 	Source           MagicLanModifiedResponseMessagesSource `json:"source"`
 	JSON             magicLanModifiedResponseMessageJSON    `json:"-"`
@@ -335,7 +335,7 @@ func (r MagicLanModifiedResponseSuccess) IsKnown() bool {
 // static_address is required along with secondary and virtual address.
 type MagicLanStaticAddressing struct {
 	// A valid CIDR notation representing an IP range.
-	Address    string                             `json:"address,required"`
+	Address    string                             `json:"address" api:"required"`
 	DhcpRelay  MagicLanStaticAddressingDhcpRelay  `json:"dhcp_relay"`
 	DhcpServer MagicLanStaticAddressingDhcpServer `json:"dhcp_server"`
 	// A valid CIDR notation representing an IP range.
@@ -425,7 +425,7 @@ func (r magicLanStaticAddressingDhcpServerJSON) RawJSON() string {
 // static_address is required along with secondary and virtual address.
 type MagicLanStaticAddressingParam struct {
 	// A valid CIDR notation representing an IP range.
-	Address    param.Field[string]                                  `json:"address,required"`
+	Address    param.Field[string]                                  `json:"address" api:"required"`
 	DhcpRelay  param.Field[MagicLanStaticAddressingDhcpRelayParam]  `json:"dhcp_relay"`
 	DhcpServer param.Field[MagicLanStaticAddressingDhcpServerParam] `json:"dhcp_server"`
 	// A valid CIDR notation representing an IP range.
@@ -481,11 +481,11 @@ func (r MagicLanUpdateRequestParam) MarshalJSON() (data []byte, err error) {
 }
 
 type MagicLansCollectionResponse struct {
-	Errors   []MagicLansCollectionResponseError   `json:"errors,required"`
-	Messages []MagicLansCollectionResponseMessage `json:"messages,required"`
-	Result   []MagicLan                           `json:"result,required"`
+	Errors   []MagicLansCollectionResponseError   `json:"errors" api:"required"`
+	Messages []MagicLansCollectionResponseMessage `json:"messages" api:"required"`
+	Result   []MagicLan                           `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success MagicLansCollectionResponseSuccess `json:"success,required"`
+	Success MagicLansCollectionResponseSuccess `json:"success" api:"required"`
 	JSON    magicLansCollectionResponseJSON    `json:"-"`
 }
 
@@ -509,8 +509,8 @@ func (r magicLansCollectionResponseJSON) RawJSON() string {
 }
 
 type MagicLansCollectionResponseError struct {
-	Code             int64                                   `json:"code,required"`
-	Message          string                                  `json:"message,required"`
+	Code             int64                                   `json:"code" api:"required"`
+	Message          string                                  `json:"message" api:"required"`
 	DocumentationURL string                                  `json:"documentation_url"`
 	Source           MagicLansCollectionResponseErrorsSource `json:"source"`
 	JSON             magicLansCollectionResponseErrorJSON    `json:"-"`
@@ -557,8 +557,8 @@ func (r magicLansCollectionResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type MagicLansCollectionResponseMessage struct {
-	Code             int64                                     `json:"code,required"`
-	Message          string                                    `json:"message,required"`
+	Code             int64                                     `json:"code" api:"required"`
+	Message          string                                    `json:"message" api:"required"`
 	DocumentationURL string                                    `json:"documentation_url"`
 	Source           MagicLansCollectionResponseMessagesSource `json:"source"`
 	JSON             magicLansCollectionResponseMessageJSON    `json:"-"`
@@ -651,9 +651,9 @@ func (r MagicNatParam) MarshalJSON() (data []byte, err error) {
 
 type MagicRoutedSubnet struct {
 	// A valid IPv4 address.
-	NextHop string `json:"next_hop,required"`
+	NextHop string `json:"next_hop" api:"required"`
 	// A valid CIDR notation representing an IP range.
-	Prefix string                `json:"prefix,required"`
+	Prefix string                `json:"prefix" api:"required"`
 	Nat    MagicNat              `json:"nat"`
 	JSON   magicRoutedSubnetJSON `json:"-"`
 }
@@ -678,9 +678,9 @@ func (r magicRoutedSubnetJSON) RawJSON() string {
 
 type MagicRoutedSubnetParam struct {
 	// A valid IPv4 address.
-	NextHop param.Field[string] `json:"next_hop,required"`
+	NextHop param.Field[string] `json:"next_hop" api:"required"`
 	// A valid CIDR notation representing an IP range.
-	Prefix param.Field[string]        `json:"prefix,required"`
+	Prefix param.Field[string]        `json:"prefix" api:"required"`
 	Nat    param.Field[MagicNatParam] `json:"nat"`
 }
 
@@ -689,11 +689,11 @@ func (r MagicRoutedSubnetParam) MarshalJSON() (data []byte, err error) {
 }
 
 type AccountMagicSiteLanGetResponse struct {
-	Errors   []AccountMagicSiteLanGetResponseError   `json:"errors,required"`
-	Messages []AccountMagicSiteLanGetResponseMessage `json:"messages,required"`
-	Result   MagicLan                                `json:"result,required"`
+	Errors   []AccountMagicSiteLanGetResponseError   `json:"errors" api:"required"`
+	Messages []AccountMagicSiteLanGetResponseMessage `json:"messages" api:"required"`
+	Result   MagicLan                                `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success AccountMagicSiteLanGetResponseSuccess `json:"success,required"`
+	Success AccountMagicSiteLanGetResponseSuccess `json:"success" api:"required"`
 	JSON    accountMagicSiteLanGetResponseJSON    `json:"-"`
 }
 
@@ -717,8 +717,8 @@ func (r accountMagicSiteLanGetResponseJSON) RawJSON() string {
 }
 
 type AccountMagicSiteLanGetResponseError struct {
-	Code             int64                                      `json:"code,required"`
-	Message          string                                     `json:"message,required"`
+	Code             int64                                      `json:"code" api:"required"`
+	Message          string                                     `json:"message" api:"required"`
 	DocumentationURL string                                     `json:"documentation_url"`
 	Source           AccountMagicSiteLanGetResponseErrorsSource `json:"source"`
 	JSON             accountMagicSiteLanGetResponseErrorJSON    `json:"-"`
@@ -765,8 +765,8 @@ func (r accountMagicSiteLanGetResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type AccountMagicSiteLanGetResponseMessage struct {
-	Code             int64                                        `json:"code,required"`
-	Message          string                                       `json:"message,required"`
+	Code             int64                                        `json:"code" api:"required"`
+	Message          string                                       `json:"message" api:"required"`
 	DocumentationURL string                                       `json:"documentation_url"`
 	Source           AccountMagicSiteLanGetResponseMessagesSource `json:"source"`
 	JSON             accountMagicSiteLanGetResponseMessageJSON    `json:"-"`
@@ -828,11 +828,11 @@ func (r AccountMagicSiteLanGetResponseSuccess) IsKnown() bool {
 }
 
 type AccountMagicSiteLanDeleteResponse struct {
-	Errors   []AccountMagicSiteLanDeleteResponseError   `json:"errors,required"`
-	Messages []AccountMagicSiteLanDeleteResponseMessage `json:"messages,required"`
-	Result   MagicLan                                   `json:"result,required"`
+	Errors   []AccountMagicSiteLanDeleteResponseError   `json:"errors" api:"required"`
+	Messages []AccountMagicSiteLanDeleteResponseMessage `json:"messages" api:"required"`
+	Result   MagicLan                                   `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success AccountMagicSiteLanDeleteResponseSuccess `json:"success,required"`
+	Success AccountMagicSiteLanDeleteResponseSuccess `json:"success" api:"required"`
 	JSON    accountMagicSiteLanDeleteResponseJSON    `json:"-"`
 }
 
@@ -856,8 +856,8 @@ func (r accountMagicSiteLanDeleteResponseJSON) RawJSON() string {
 }
 
 type AccountMagicSiteLanDeleteResponseError struct {
-	Code             int64                                         `json:"code,required"`
-	Message          string                                        `json:"message,required"`
+	Code             int64                                         `json:"code" api:"required"`
+	Message          string                                        `json:"message" api:"required"`
 	DocumentationURL string                                        `json:"documentation_url"`
 	Source           AccountMagicSiteLanDeleteResponseErrorsSource `json:"source"`
 	JSON             accountMagicSiteLanDeleteResponseErrorJSON    `json:"-"`
@@ -904,8 +904,8 @@ func (r accountMagicSiteLanDeleteResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type AccountMagicSiteLanDeleteResponseMessage struct {
-	Code             int64                                           `json:"code,required"`
-	Message          string                                          `json:"message,required"`
+	Code             int64                                           `json:"code" api:"required"`
+	Message          string                                          `json:"message" api:"required"`
 	DocumentationURL string                                          `json:"documentation_url"`
 	Source           AccountMagicSiteLanDeleteResponseMessagesSource `json:"source"`
 	JSON             accountMagicSiteLanDeleteResponseMessageJSON    `json:"-"`
@@ -967,7 +967,7 @@ func (r AccountMagicSiteLanDeleteResponseSuccess) IsKnown() bool {
 }
 
 type AccountMagicSiteLanNewParams struct {
-	Physport param.Field[int64] `json:"physport,required"`
+	Physport param.Field[int64] `json:"physport" api:"required"`
 	// mark true to use this LAN for HA probing. only works for site with HA turned on.
 	// only one LAN can be set as the ha_link.
 	HaLink        param.Field[bool]                     `json:"ha_link"`
@@ -987,7 +987,7 @@ func (r AccountMagicSiteLanNewParams) MarshalJSON() (data []byte, err error) {
 }
 
 type AccountMagicSiteLanUpdateParams struct {
-	MagicLanUpdateRequest MagicLanUpdateRequestParam `json:"magic_lan_update_request,required"`
+	MagicLanUpdateRequest MagicLanUpdateRequestParam `json:"magic_lan_update_request" api:"required"`
 }
 
 func (r AccountMagicSiteLanUpdateParams) MarshalJSON() (data []byte, err error) {
@@ -995,7 +995,7 @@ func (r AccountMagicSiteLanUpdateParams) MarshalJSON() (data []byte, err error) 
 }
 
 type AccountMagicSiteLanPatchParams struct {
-	MagicLanUpdateRequest MagicLanUpdateRequestParam `json:"magic_lan_update_request,required"`
+	MagicLanUpdateRequest MagicLanUpdateRequestParam `json:"magic_lan_update_request" api:"required"`
 }
 
 func (r AccountMagicSiteLanPatchParams) MarshalJSON() (data []byte, err error) {

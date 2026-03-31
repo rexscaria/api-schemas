@@ -15,7 +15,7 @@ import (
 )
 
 func TestRadarAnnotationOutageGetByLocationWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -27,6 +27,7 @@ func TestRadarAnnotationOutageGetByLocationWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.Annotations.Outages.GetByLocation(context.TODO(), cfrex.RadarAnnotationOutageGetByLocationParams{
 		DateEnd:   cfrex.F(time.Now()),
@@ -45,7 +46,7 @@ func TestRadarAnnotationOutageGetByLocationWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarAnnotationOutageGetLatestWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -57,6 +58,7 @@ func TestRadarAnnotationOutageGetLatestWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.Annotations.Outages.GetLatest(context.TODO(), cfrex.RadarAnnotationOutageGetLatestParams{
 		Asn:       cfrex.F(int64(174)),

@@ -40,11 +40,11 @@ func (r *ZoneSecurityCenterSecuritytxtService) Get(ctx context.Context, zoneID s
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/security-center/securitytxt", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update security.txt
@@ -52,11 +52,11 @@ func (r *ZoneSecurityCenterSecuritytxtService) Update(ctx context.Context, zoneI
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/security-center/securitytxt", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete security.txt
@@ -64,11 +64,11 @@ func (r *ZoneSecurityCenterSecuritytxtService) Delete(ctx context.Context, zoneI
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/security-center/securitytxt", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type SecurityTxt struct {
@@ -124,10 +124,10 @@ func (r SecurityTxtParam) MarshalJSON() (data []byte, err error) {
 }
 
 type ZoneSecurityCenterSecuritytxtGetResponse struct {
-	Errors   []AttackSurfaceReportMessage `json:"errors,required"`
-	Messages []AttackSurfaceReportMessage `json:"messages,required"`
+	Errors   []AttackSurfaceReportMessage `json:"errors" api:"required"`
+	Messages []AttackSurfaceReportMessage `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success ZoneSecurityCenterSecuritytxtGetResponseSuccess `json:"success,required"`
+	Success ZoneSecurityCenterSecuritytxtGetResponseSuccess `json:"success" api:"required"`
 	Result  SecurityTxt                                     `json:"result"`
 	JSON    zoneSecurityCenterSecuritytxtGetResponseJSON    `json:"-"`
 }
@@ -167,7 +167,7 @@ func (r ZoneSecurityCenterSecuritytxtGetResponseSuccess) IsKnown() bool {
 }
 
 type ZoneSecurityCenterSecuritytxtUpdateParams struct {
-	SecurityTxt SecurityTxtParam `json:"security_txt,required"`
+	SecurityTxt SecurityTxtParam `json:"security_txt" api:"required"`
 }
 
 func (r ZoneSecurityCenterSecuritytxtUpdateParams) MarshalJSON() (data []byte, err error) {

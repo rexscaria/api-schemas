@@ -14,7 +14,7 @@ import (
 )
 
 func TestZoneLogpushEdgeNewJobWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,6 +26,7 @@ func TestZoneLogpushEdgeNewJobWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.Logpush.Edge.NewJob(
 		context.TODO(),
@@ -46,7 +47,7 @@ func TestZoneLogpushEdgeNewJobWithOptionalParams(t *testing.T) {
 }
 
 func TestZoneLogpushEdgeListJobs(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -58,6 +59,7 @@ func TestZoneLogpushEdgeListJobs(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.Logpush.Edge.ListJobs(context.TODO(), "023e105f4ecef8ad9ca31a8372d0c353")
 	if err != nil {

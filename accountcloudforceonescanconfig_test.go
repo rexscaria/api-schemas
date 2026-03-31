@@ -14,7 +14,7 @@ import (
 )
 
 func TestAccountCloudforceOneScanConfigNewWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,6 +26,7 @@ func TestAccountCloudforceOneScanConfigNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.CloudforceOne.Scans.Config.New(
 		context.TODO(),
@@ -46,7 +47,7 @@ func TestAccountCloudforceOneScanConfigNewWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountCloudforceOneScanConfigUpdateWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -58,6 +59,7 @@ func TestAccountCloudforceOneScanConfigUpdateWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.CloudforceOne.Scans.Config.Update(
 		context.TODO(),
@@ -79,7 +81,7 @@ func TestAccountCloudforceOneScanConfigUpdateWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountCloudforceOneScanConfigList(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -91,6 +93,7 @@ func TestAccountCloudforceOneScanConfigList(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.CloudforceOne.Scans.Config.List(context.TODO(), "account_id")
 	if err != nil {
@@ -103,7 +106,7 @@ func TestAccountCloudforceOneScanConfigList(t *testing.T) {
 }
 
 func TestAccountCloudforceOneScanConfigDelete(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -115,6 +118,7 @@ func TestAccountCloudforceOneScanConfigDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.CloudforceOne.Scans.Config.Delete(
 		context.TODO(),

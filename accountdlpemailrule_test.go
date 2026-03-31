@@ -14,7 +14,7 @@ import (
 )
 
 func TestAccountDlpEmailRuleNewWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,6 +26,7 @@ func TestAccountDlpEmailRuleNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Dlp.Email.Rules.New(
 		context.TODO(),
@@ -57,7 +58,7 @@ func TestAccountDlpEmailRuleNewWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountDlpEmailRuleGet(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -69,6 +70,7 @@ func TestAccountDlpEmailRuleGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Dlp.Email.Rules.Get(
 		context.TODO(),
@@ -85,7 +87,7 @@ func TestAccountDlpEmailRuleGet(t *testing.T) {
 }
 
 func TestAccountDlpEmailRuleUpdateWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -97,6 +99,7 @@ func TestAccountDlpEmailRuleUpdateWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Dlp.Email.Rules.Update(
 		context.TODO(),
@@ -129,7 +132,7 @@ func TestAccountDlpEmailRuleUpdateWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountDlpEmailRuleList(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -141,6 +144,7 @@ func TestAccountDlpEmailRuleList(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Dlp.Email.Rules.List(context.TODO(), "account_id")
 	if err != nil {
@@ -153,7 +157,7 @@ func TestAccountDlpEmailRuleList(t *testing.T) {
 }
 
 func TestAccountDlpEmailRuleDelete(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -165,6 +169,7 @@ func TestAccountDlpEmailRuleDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Dlp.Email.Rules.Delete(
 		context.TODO(),
@@ -181,7 +186,7 @@ func TestAccountDlpEmailRuleDelete(t *testing.T) {
 }
 
 func TestAccountDlpEmailRuleUpdatePriorities(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -193,6 +198,7 @@ func TestAccountDlpEmailRuleUpdatePriorities(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Dlp.Email.Rules.UpdatePriorities(
 		context.TODO(),

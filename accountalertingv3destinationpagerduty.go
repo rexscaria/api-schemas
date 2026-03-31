@@ -41,11 +41,11 @@ func (r *AccountAlertingV3DestinationPagerdutyService) List(ctx context.Context,
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/alerting/v3/destinations/pagerduty", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Deletes all the PagerDuty Services connected to the account.
@@ -53,18 +53,18 @@ func (r *AccountAlertingV3DestinationPagerdutyService) DeleteAll(ctx context.Con
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/alerting/v3/destinations/pagerduty", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type APIResponseAlerting struct {
-	Errors   []APIResponseAlertingError   `json:"errors,required"`
-	Messages []APIResponseAlertingMessage `json:"messages,required"`
+	Errors   []APIResponseAlertingError   `json:"errors" api:"required"`
+	Messages []APIResponseAlertingMessage `json:"messages" api:"required"`
 	// Whether the API call was successful
-	Success APIResponseAlertingSuccess `json:"success,required"`
+	Success APIResponseAlertingSuccess `json:"success" api:"required"`
 	JSON    apiResponseAlertingJSON    `json:"-"`
 }
 
@@ -89,8 +89,8 @@ func (r apiResponseAlertingJSON) RawJSON() string {
 func (r APIResponseAlerting) implementsAaaAuditLogs() {}
 
 type APIResponseAlertingError struct {
-	Code             int64                           `json:"code,required"`
-	Message          string                          `json:"message,required"`
+	Code             int64                           `json:"code" api:"required"`
+	Message          string                          `json:"message" api:"required"`
 	DocumentationURL string                          `json:"documentation_url"`
 	Source           APIResponseAlertingErrorsSource `json:"source"`
 	JSON             apiResponseAlertingErrorJSON    `json:"-"`
@@ -137,8 +137,8 @@ func (r apiResponseAlertingErrorsSourceJSON) RawJSON() string {
 }
 
 type APIResponseAlertingMessage struct {
-	Code             int64                             `json:"code,required"`
-	Message          string                            `json:"message,required"`
+	Code             int64                             `json:"code" api:"required"`
+	Message          string                            `json:"message" api:"required"`
 	DocumentationURL string                            `json:"documentation_url"`
 	Source           APIResponseAlertingMessagesSource `json:"source"`
 	JSON             apiResponseAlertingMessageJSON    `json:"-"`
@@ -200,10 +200,10 @@ func (r APIResponseAlertingSuccess) IsKnown() bool {
 }
 
 type APIResponseCollectionAlerting struct {
-	Errors   []APIResponseCollectionAlertingError   `json:"errors,required"`
-	Messages []APIResponseCollectionAlertingMessage `json:"messages,required"`
+	Errors   []APIResponseCollectionAlertingError   `json:"errors" api:"required"`
+	Messages []APIResponseCollectionAlertingMessage `json:"messages" api:"required"`
 	// Whether the API call was successful
-	Success    APIResponseCollectionAlertingSuccess    `json:"success,required"`
+	Success    APIResponseCollectionAlertingSuccess    `json:"success" api:"required"`
 	ResultInfo APIResponseCollectionAlertingResultInfo `json:"result_info"`
 	JSON       apiResponseCollectionAlertingJSON       `json:"-"`
 }
@@ -228,8 +228,8 @@ func (r apiResponseCollectionAlertingJSON) RawJSON() string {
 }
 
 type APIResponseCollectionAlertingError struct {
-	Code             int64                                     `json:"code,required"`
-	Message          string                                    `json:"message,required"`
+	Code             int64                                     `json:"code" api:"required"`
+	Message          string                                    `json:"message" api:"required"`
 	DocumentationURL string                                    `json:"documentation_url"`
 	Source           APIResponseCollectionAlertingErrorsSource `json:"source"`
 	JSON             apiResponseCollectionAlertingErrorJSON    `json:"-"`
@@ -276,8 +276,8 @@ func (r apiResponseCollectionAlertingErrorsSourceJSON) RawJSON() string {
 }
 
 type APIResponseCollectionAlertingMessage struct {
-	Code             int64                                       `json:"code,required"`
-	Message          string                                      `json:"message,required"`
+	Code             int64                                       `json:"code" api:"required"`
+	Message          string                                      `json:"message" api:"required"`
 	DocumentationURL string                                      `json:"documentation_url"`
 	Source           APIResponseCollectionAlertingMessagesSource `json:"source"`
 	JSON             apiResponseCollectionAlertingMessageJSON    `json:"-"`
@@ -370,10 +370,10 @@ func (r apiResponseCollectionAlertingResultInfoJSON) RawJSON() string {
 }
 
 type AccountAlertingV3DestinationPagerdutyListResponse struct {
-	Errors   []AccountAlertingV3DestinationPagerdutyListResponseError   `json:"errors,required"`
-	Messages []AccountAlertingV3DestinationPagerdutyListResponseMessage `json:"messages,required"`
+	Errors   []AccountAlertingV3DestinationPagerdutyListResponseError   `json:"errors" api:"required"`
+	Messages []AccountAlertingV3DestinationPagerdutyListResponseMessage `json:"messages" api:"required"`
 	// Whether the API call was successful
-	Success    AccountAlertingV3DestinationPagerdutyListResponseSuccess    `json:"success,required"`
+	Success    AccountAlertingV3DestinationPagerdutyListResponseSuccess    `json:"success" api:"required"`
 	Result     []AccountAlertingV3DestinationPagerdutyListResponseResult   `json:"result"`
 	ResultInfo AccountAlertingV3DestinationPagerdutyListResponseResultInfo `json:"result_info"`
 	JSON       accountAlertingV3DestinationPagerdutyListResponseJSON       `json:"-"`
@@ -400,8 +400,8 @@ func (r accountAlertingV3DestinationPagerdutyListResponseJSON) RawJSON() string 
 }
 
 type AccountAlertingV3DestinationPagerdutyListResponseError struct {
-	Code             int64                                                         `json:"code,required"`
-	Message          string                                                        `json:"message,required"`
+	Code             int64                                                         `json:"code" api:"required"`
+	Message          string                                                        `json:"message" api:"required"`
 	DocumentationURL string                                                        `json:"documentation_url"`
 	Source           AccountAlertingV3DestinationPagerdutyListResponseErrorsSource `json:"source"`
 	JSON             accountAlertingV3DestinationPagerdutyListResponseErrorJSON    `json:"-"`
@@ -449,8 +449,8 @@ func (r accountAlertingV3DestinationPagerdutyListResponseErrorsSourceJSON) RawJS
 }
 
 type AccountAlertingV3DestinationPagerdutyListResponseMessage struct {
-	Code             int64                                                           `json:"code,required"`
-	Message          string                                                          `json:"message,required"`
+	Code             int64                                                           `json:"code" api:"required"`
+	Message          string                                                          `json:"message" api:"required"`
 	DocumentationURL string                                                          `json:"documentation_url"`
 	Source           AccountAlertingV3DestinationPagerdutyListResponseMessagesSource `json:"source"`
 	JSON             accountAlertingV3DestinationPagerdutyListResponseMessageJSON    `json:"-"`

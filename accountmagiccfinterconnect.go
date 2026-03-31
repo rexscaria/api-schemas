@@ -41,20 +41,20 @@ func NewAccountMagicCfInterconnectService(opts ...option.RequestOption) (r *Acco
 // Lists details for a specific interconnect.
 func (r *AccountMagicCfInterconnectService) Get(ctx context.Context, accountID string, cfInterconnectID string, query AccountMagicCfInterconnectGetParams, opts ...option.RequestOption) (res *AccountMagicCfInterconnectGetResponse, err error) {
 	if query.XMagicNewHcTarget.Present {
-		opts = append(opts, option.WithHeader("x-magic-new-hc-target", fmt.Sprintf("%s", query.XMagicNewHcTarget)))
+		opts = append(opts, option.WithHeader("x-magic-new-hc-target", fmt.Sprintf("%v", query.XMagicNewHcTarget)))
 	}
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if cfInterconnectID == "" {
 		err = errors.New("missing required cf_interconnect_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/cf_interconnects/%s", accountID, cfInterconnectID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates a specific interconnect associated with an account. Use
@@ -62,35 +62,35 @@ func (r *AccountMagicCfInterconnectService) Get(ctx context.Context, accountID s
 // without persisting changes.
 func (r *AccountMagicCfInterconnectService) Update(ctx context.Context, accountID string, cfInterconnectID string, params AccountMagicCfInterconnectUpdateParams, opts ...option.RequestOption) (res *AccountMagicCfInterconnectUpdateResponse, err error) {
 	if params.XMagicNewHcTarget.Present {
-		opts = append(opts, option.WithHeader("x-magic-new-hc-target", fmt.Sprintf("%s", params.XMagicNewHcTarget)))
+		opts = append(opts, option.WithHeader("x-magic-new-hc-target", fmt.Sprintf("%v", params.XMagicNewHcTarget)))
 	}
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if cfInterconnectID == "" {
 		err = errors.New("missing required cf_interconnect_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/cf_interconnects/%s", accountID, cfInterconnectID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists interconnects associated with an account.
 func (r *AccountMagicCfInterconnectService) List(ctx context.Context, accountID string, query AccountMagicCfInterconnectListParams, opts ...option.RequestOption) (res *AccountMagicCfInterconnectListResponse, err error) {
 	if query.XMagicNewHcTarget.Present {
-		opts = append(opts, option.WithHeader("x-magic-new-hc-target", fmt.Sprintf("%s", query.XMagicNewHcTarget)))
+		opts = append(opts, option.WithHeader("x-magic-new-hc-target", fmt.Sprintf("%v", query.XMagicNewHcTarget)))
 	}
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/cf_interconnects", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // The configuration specific to GRE interconnects.
@@ -367,11 +367,11 @@ func (r magicInterconnectJSON) RawJSON() string {
 }
 
 type AccountMagicCfInterconnectGetResponse struct {
-	Errors   []AccountMagicCfInterconnectGetResponseError   `json:"errors,required"`
-	Messages []AccountMagicCfInterconnectGetResponseMessage `json:"messages,required"`
-	Result   AccountMagicCfInterconnectGetResponseResult    `json:"result,required"`
+	Errors   []AccountMagicCfInterconnectGetResponseError   `json:"errors" api:"required"`
+	Messages []AccountMagicCfInterconnectGetResponseMessage `json:"messages" api:"required"`
+	Result   AccountMagicCfInterconnectGetResponseResult    `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success AccountMagicCfInterconnectGetResponseSuccess `json:"success,required"`
+	Success AccountMagicCfInterconnectGetResponseSuccess `json:"success" api:"required"`
 	JSON    accountMagicCfInterconnectGetResponseJSON    `json:"-"`
 }
 
@@ -395,8 +395,8 @@ func (r accountMagicCfInterconnectGetResponseJSON) RawJSON() string {
 }
 
 type AccountMagicCfInterconnectGetResponseError struct {
-	Code             int64                                             `json:"code,required"`
-	Message          string                                            `json:"message,required"`
+	Code             int64                                             `json:"code" api:"required"`
+	Message          string                                            `json:"message" api:"required"`
 	DocumentationURL string                                            `json:"documentation_url"`
 	Source           AccountMagicCfInterconnectGetResponseErrorsSource `json:"source"`
 	JSON             accountMagicCfInterconnectGetResponseErrorJSON    `json:"-"`
@@ -443,8 +443,8 @@ func (r accountMagicCfInterconnectGetResponseErrorsSourceJSON) RawJSON() string 
 }
 
 type AccountMagicCfInterconnectGetResponseMessage struct {
-	Code             int64                                               `json:"code,required"`
-	Message          string                                              `json:"message,required"`
+	Code             int64                                               `json:"code" api:"required"`
+	Message          string                                              `json:"message" api:"required"`
 	DocumentationURL string                                              `json:"documentation_url"`
 	Source           AccountMagicCfInterconnectGetResponseMessagesSource `json:"source"`
 	JSON             accountMagicCfInterconnectGetResponseMessageJSON    `json:"-"`
@@ -527,11 +527,11 @@ func (r AccountMagicCfInterconnectGetResponseSuccess) IsKnown() bool {
 }
 
 type AccountMagicCfInterconnectUpdateResponse struct {
-	Errors   []AccountMagicCfInterconnectUpdateResponseError   `json:"errors,required"`
-	Messages []AccountMagicCfInterconnectUpdateResponseMessage `json:"messages,required"`
-	Result   AccountMagicCfInterconnectUpdateResponseResult    `json:"result,required"`
+	Errors   []AccountMagicCfInterconnectUpdateResponseError   `json:"errors" api:"required"`
+	Messages []AccountMagicCfInterconnectUpdateResponseMessage `json:"messages" api:"required"`
+	Result   AccountMagicCfInterconnectUpdateResponseResult    `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success AccountMagicCfInterconnectUpdateResponseSuccess `json:"success,required"`
+	Success AccountMagicCfInterconnectUpdateResponseSuccess `json:"success" api:"required"`
 	JSON    accountMagicCfInterconnectUpdateResponseJSON    `json:"-"`
 }
 
@@ -555,8 +555,8 @@ func (r accountMagicCfInterconnectUpdateResponseJSON) RawJSON() string {
 }
 
 type AccountMagicCfInterconnectUpdateResponseError struct {
-	Code             int64                                                `json:"code,required"`
-	Message          string                                               `json:"message,required"`
+	Code             int64                                                `json:"code" api:"required"`
+	Message          string                                               `json:"message" api:"required"`
 	DocumentationURL string                                               `json:"documentation_url"`
 	Source           AccountMagicCfInterconnectUpdateResponseErrorsSource `json:"source"`
 	JSON             accountMagicCfInterconnectUpdateResponseErrorJSON    `json:"-"`
@@ -603,8 +603,8 @@ func (r accountMagicCfInterconnectUpdateResponseErrorsSourceJSON) RawJSON() stri
 }
 
 type AccountMagicCfInterconnectUpdateResponseMessage struct {
-	Code             int64                                                  `json:"code,required"`
-	Message          string                                                 `json:"message,required"`
+	Code             int64                                                  `json:"code" api:"required"`
+	Message          string                                                 `json:"message" api:"required"`
 	DocumentationURL string                                                 `json:"documentation_url"`
 	Source           AccountMagicCfInterconnectUpdateResponseMessagesSource `json:"source"`
 	JSON             accountMagicCfInterconnectUpdateResponseMessageJSON    `json:"-"`
@@ -689,11 +689,11 @@ func (r AccountMagicCfInterconnectUpdateResponseSuccess) IsKnown() bool {
 }
 
 type AccountMagicCfInterconnectListResponse struct {
-	Errors   []AccountMagicCfInterconnectListResponseError   `json:"errors,required"`
-	Messages []AccountMagicCfInterconnectListResponseMessage `json:"messages,required"`
-	Result   AccountMagicCfInterconnectListResponseResult    `json:"result,required"`
+	Errors   []AccountMagicCfInterconnectListResponseError   `json:"errors" api:"required"`
+	Messages []AccountMagicCfInterconnectListResponseMessage `json:"messages" api:"required"`
+	Result   AccountMagicCfInterconnectListResponseResult    `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success AccountMagicCfInterconnectListResponseSuccess `json:"success,required"`
+	Success AccountMagicCfInterconnectListResponseSuccess `json:"success" api:"required"`
 	JSON    accountMagicCfInterconnectListResponseJSON    `json:"-"`
 }
 
@@ -717,8 +717,8 @@ func (r accountMagicCfInterconnectListResponseJSON) RawJSON() string {
 }
 
 type AccountMagicCfInterconnectListResponseError struct {
-	Code             int64                                              `json:"code,required"`
-	Message          string                                             `json:"message,required"`
+	Code             int64                                              `json:"code" api:"required"`
+	Message          string                                             `json:"message" api:"required"`
 	DocumentationURL string                                             `json:"documentation_url"`
 	Source           AccountMagicCfInterconnectListResponseErrorsSource `json:"source"`
 	JSON             accountMagicCfInterconnectListResponseErrorJSON    `json:"-"`
@@ -765,8 +765,8 @@ func (r accountMagicCfInterconnectListResponseErrorsSourceJSON) RawJSON() string
 }
 
 type AccountMagicCfInterconnectListResponseMessage struct {
-	Code             int64                                                `json:"code,required"`
-	Message          string                                               `json:"message,required"`
+	Code             int64                                                `json:"code" api:"required"`
+	Message          string                                               `json:"message" api:"required"`
 	DocumentationURL string                                               `json:"documentation_url"`
 	Source           AccountMagicCfInterconnectListResponseMessagesSource `json:"source"`
 	JSON             accountMagicCfInterconnectListResponseMessageJSON    `json:"-"`

@@ -57,26 +57,26 @@ func NewAccountStreamService(opts ...option.RequestOption) (r *AccountStreamServ
 // details.
 func (r *AccountStreamService) New(ctx context.Context, accountID string, params AccountStreamNewParams, opts ...option.RequestOption) (err error) {
 	if params.TusResumable.Present {
-		opts = append(opts, option.WithHeader("Tus-Resumable", fmt.Sprintf("%s", params.TusResumable)))
+		opts = append(opts, option.WithHeader("Tus-Resumable", fmt.Sprintf("%v", params.TusResumable)))
 	}
 	if params.UploadLength.Present {
-		opts = append(opts, option.WithHeader("Upload-Length", fmt.Sprintf("%s", params.UploadLength)))
+		opts = append(opts, option.WithHeader("Upload-Length", fmt.Sprintf("%v", params.UploadLength)))
 	}
 	if params.UploadCreator.Present {
-		opts = append(opts, option.WithHeader("Upload-Creator", fmt.Sprintf("%s", params.UploadCreator)))
+		opts = append(opts, option.WithHeader("Upload-Creator", fmt.Sprintf("%v", params.UploadCreator)))
 	}
 	if params.UploadMetadata.Present {
-		opts = append(opts, option.WithHeader("Upload-Metadata", fmt.Sprintf("%s", params.UploadMetadata)))
+		opts = append(opts, option.WithHeader("Upload-Metadata", fmt.Sprintf("%v", params.UploadMetadata)))
 	}
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("accounts/%s/stream", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, nil, opts...)
-	return
+	return err
 }
 
 // Fetches details for a single video.
@@ -84,15 +84,15 @@ func (r *AccountStreamService) Get(ctx context.Context, accountID string, identi
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if identifier == "" {
 		err = errors.New("missing required identifier parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/stream/%s", accountID, identifier)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Edit details for a single video.
@@ -100,15 +100,15 @@ func (r *AccountStreamService) Update(ctx context.Context, accountID string, ide
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if identifier == "" {
 		err = errors.New("missing required identifier parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/stream/%s", accountID, identifier)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists up to 1000 videos from a single request. For a specific range, refer to
@@ -117,28 +117,28 @@ func (r *AccountStreamService) List(ctx context.Context, accountID string, query
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/stream", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Deletes a video and its copies from Cloudflare Stream.
 func (r *AccountStreamService) Delete(ctx context.Context, accountID string, identifier string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return err
 	}
 	if identifier == "" {
 		err = errors.New("missing required identifier parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("accounts/%s/stream/%s", accountID, identifier)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Clips a video based on the specified start and end times provided in seconds.
@@ -146,26 +146,26 @@ func (r *AccountStreamService) Clip(ctx context.Context, accountID string, body 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/stream/clip", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Uploads a video to Stream from a provided URL.
 func (r *AccountStreamService) Copy(ctx context.Context, accountID string, params AccountStreamCopyParams, opts ...option.RequestOption) (res *VideoResponseSingle, err error) {
 	if params.UploadCreator.Present {
-		opts = append(opts, option.WithHeader("Upload-Creator", fmt.Sprintf("%s", params.UploadCreator)))
+		opts = append(opts, option.WithHeader("Upload-Creator", fmt.Sprintf("%v", params.UploadCreator)))
 	}
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/stream/copy", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Creates a signed URL token for a video. If a body is not provided in the
@@ -174,30 +174,30 @@ func (r *AccountStreamService) NewSignedURL(ctx context.Context, accountID strin
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if identifier == "" {
 		err = errors.New("missing required identifier parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/stream/%s/token", accountID, identifier)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Creates a direct upload that allows video uploads without an API key.
 func (r *AccountStreamService) DirectUpload(ctx context.Context, accountID string, params AccountStreamDirectUploadParams, opts ...option.RequestOption) (res *AccountStreamDirectUploadResponse, err error) {
 	if params.UploadCreator.Present {
-		opts = append(opts, option.WithHeader("Upload-Creator", fmt.Sprintf("%s", params.UploadCreator)))
+		opts = append(opts, option.WithHeader("Upload-Creator", fmt.Sprintf("%v", params.UploadCreator)))
 	}
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/stream/direct_upload", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetches an HTML code snippet to embed a video in a web page delivered through
@@ -207,15 +207,15 @@ func (r *AccountStreamService) GetEmbedCode(ctx context.Context, accountID strin
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if identifier == "" {
 		err = errors.New("missing required identifier parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/stream/%s/embed", accountID, identifier)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns information about an account's storage use.
@@ -223,11 +223,11 @@ func (r *AccountStreamService) GetStorageUsage(ctx context.Context, accountID st
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/stream/storage-usage", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Specifies the processing status for all quality levels for a video.
@@ -276,10 +276,10 @@ func (r playbackJSON) RawJSON() string {
 }
 
 type VideoResponseSingle struct {
-	Errors   []StreamMessages `json:"errors,required"`
-	Messages []StreamMessages `json:"messages,required"`
+	Errors   []StreamMessages `json:"errors" api:"required"`
+	Messages []StreamMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success VideoResponseSingleSuccess `json:"success,required"`
+	Success VideoResponseSingleSuccess `json:"success" api:"required"`
 	Result  Videos                     `json:"result"`
 	JSON    videoResponseSingleJSON    `json:"-"`
 }
@@ -529,10 +529,10 @@ func (r WatermarkAtUploadStreamParam) MarshalJSON() (data []byte, err error) {
 }
 
 type AccountStreamListResponse struct {
-	Errors   []StreamMessages `json:"errors,required"`
-	Messages []StreamMessages `json:"messages,required"`
+	Errors   []StreamMessages `json:"errors" api:"required"`
+	Messages []StreamMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountStreamListResponseSuccess `json:"success,required"`
+	Success AccountStreamListResponseSuccess `json:"success" api:"required"`
 	// The total number of remaining videos based on cursor position.
 	Range  int64    `json:"range"`
 	Result []Videos `json:"result"`
@@ -578,10 +578,10 @@ func (r AccountStreamListResponseSuccess) IsKnown() bool {
 }
 
 type AccountStreamClipResponse struct {
-	Errors   []StreamMessages `json:"errors,required"`
-	Messages []StreamMessages `json:"messages,required"`
+	Errors   []StreamMessages `json:"errors" api:"required"`
+	Messages []StreamMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountStreamClipResponseSuccess `json:"success,required"`
+	Success AccountStreamClipResponseSuccess `json:"success" api:"required"`
 	Result  AccountStreamClipResponseResult  `json:"result"`
 	JSON    accountStreamClipResponseJSON    `json:"-"`
 }
@@ -693,10 +693,10 @@ func (r accountStreamClipResponseResultJSON) RawJSON() string {
 }
 
 type AccountStreamNewSignedURLResponse struct {
-	Errors   []StreamMessages `json:"errors,required"`
-	Messages []StreamMessages `json:"messages,required"`
+	Errors   []StreamMessages `json:"errors" api:"required"`
+	Messages []StreamMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountStreamNewSignedURLResponseSuccess `json:"success,required"`
+	Success AccountStreamNewSignedURLResponseSuccess `json:"success" api:"required"`
 	Result  AccountStreamNewSignedURLResponseResult  `json:"result"`
 	JSON    accountStreamNewSignedURLResponseJSON    `json:"-"`
 }
@@ -758,10 +758,10 @@ func (r accountStreamNewSignedURLResponseResultJSON) RawJSON() string {
 }
 
 type AccountStreamDirectUploadResponse struct {
-	Errors   []StreamMessages `json:"errors,required"`
-	Messages []StreamMessages `json:"messages,required"`
+	Errors   []StreamMessages `json:"errors" api:"required"`
+	Messages []StreamMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountStreamDirectUploadResponseSuccess `json:"success,required"`
+	Success AccountStreamDirectUploadResponseSuccess `json:"success" api:"required"`
 	Result  AccountStreamDirectUploadResponseResult  `json:"result"`
 	JSON    accountStreamDirectUploadResponseJSON    `json:"-"`
 }
@@ -834,10 +834,10 @@ func (r accountStreamDirectUploadResponseResultJSON) RawJSON() string {
 }
 
 type AccountStreamGetStorageUsageResponse struct {
-	Errors   []StreamMessages `json:"errors,required"`
-	Messages []StreamMessages `json:"messages,required"`
+	Errors   []StreamMessages `json:"errors" api:"required"`
+	Messages []StreamMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountStreamGetStorageUsageResponseSuccess `json:"success,required"`
+	Success AccountStreamGetStorageUsageResponseSuccess `json:"success" api:"required"`
 	Result  AccountStreamGetStorageUsageResponseResult  `json:"result"`
 	JSON    accountStreamGetStorageUsageResponseJSON    `json:"-"`
 }
@@ -908,13 +908,13 @@ func (r accountStreamGetStorageUsageResponseResultJSON) RawJSON() string {
 }
 
 type AccountStreamNewParams struct {
-	Body interface{} `json:"body,required"`
+	Body interface{} `json:"body" api:"required"`
 	// Specifies the TUS protocol version. This value must be included in every upload
 	// request. Notes: The only supported version of TUS protocol is 1.0.0.
-	TusResumable param.Field[AccountStreamNewParamsTusResumable] `header:"Tus-Resumable,required"`
+	TusResumable param.Field[AccountStreamNewParamsTusResumable] `header:"Tus-Resumable" api:"required"`
 	// Indicates the size of the entire upload in bytes. The value must be a
 	// non-negative integer.
-	UploadLength param.Field[int64] `header:"Upload-Length,required"`
+	UploadLength param.Field[int64] `header:"Upload-Length" api:"required"`
 	// Provisions a URL to let your end users upload videos directly to Cloudflare
 	// Stream without exposing your API token to clients.
 	DirectUser param.Field[bool] `query:"direct_user"`
@@ -1023,11 +1023,11 @@ func (r AccountStreamListParams) URLQuery() (v url.Values) {
 
 type AccountStreamClipParams struct {
 	// The unique video identifier (UID).
-	ClippedFromVideoUid param.Field[string] `json:"clippedFromVideoUID,required"`
+	ClippedFromVideoUid param.Field[string] `json:"clippedFromVideoUID" api:"required"`
 	// Specifies the end time for the video clip in seconds.
-	EndTimeSeconds param.Field[int64] `json:"endTimeSeconds,required"`
+	EndTimeSeconds param.Field[int64] `json:"endTimeSeconds" api:"required"`
 	// Specifies the start time for the video clip in seconds.
-	StartTimeSeconds param.Field[int64] `json:"startTimeSeconds,required"`
+	StartTimeSeconds param.Field[int64] `json:"startTimeSeconds" api:"required"`
 	// Lists the origins allowed to display the video. Enter allowed origin domains in
 	// an array and use `*` for wildcard subdomains. Empty arrays allow the video to be
 	// viewed on any origin.
@@ -1058,7 +1058,7 @@ type AccountStreamCopyParams struct {
 	// A video's URL. The server must be publicly routable and support `HTTP HEAD`
 	// requests and `HTTP GET` range requests. The server should respond to `HTTP HEAD`
 	// requests with a `content-range` header that includes the size of the file.
-	URL param.Field[string] `json:"url,required" format:"uri"`
+	URL param.Field[string] `json:"url" api:"required" format:"uri"`
 	// Lists the origins allowed to display the video. Enter allowed origin domains in
 	// an array and use `*` for wildcard subdomains. Empty arrays allow the video to be
 	// viewed on any origin.
@@ -1181,7 +1181,7 @@ type AccountStreamDirectUploadParams struct {
 	// is not yet uploaded to limit its duration. Uploads that exceed the specified
 	// duration will fail during processing. A value of `-1` means the value is
 	// unknown.
-	MaxDurationSeconds param.Field[int64] `json:"maxDurationSeconds,required"`
+	MaxDurationSeconds param.Field[int64] `json:"maxDurationSeconds" api:"required"`
 	// Lists the origins allowed to display the video. Enter allowed origin domains in
 	// an array and use `*` for wildcard subdomains. Empty arrays allow the video to be
 	// viewed on any origin.

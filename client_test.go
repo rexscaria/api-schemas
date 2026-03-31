@@ -39,7 +39,7 @@ func TestUserAgentHeader(t *testing.T) {
 			},
 		}),
 	)
-	client.Accounts.Access.UpdateSeats(
+	_, _ = client.Accounts.Access.UpdateSeats(
 		context.Background(),
 		"699d98642c564d2e855e9661899b7252",
 		cfrex.AccountAccessUpdateSeatsParams{

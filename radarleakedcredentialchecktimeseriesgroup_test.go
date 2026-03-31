@@ -15,7 +15,7 @@ import (
 )
 
 func TestRadarLeakedCredentialCheckTimeseriesGroupGetByBotClassWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -27,6 +27,7 @@ func TestRadarLeakedCredentialCheckTimeseriesGroupGetByBotClassWithOptionalParam
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.LeakedCredentialChecks.TimeseriesGroups.GetByBotClass(context.TODO(), cfrex.RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassParams{
 		AggInterval: cfrex.F(cfrex.RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassParamsAggInterval1h),
@@ -47,7 +48,7 @@ func TestRadarLeakedCredentialCheckTimeseriesGroupGetByBotClassWithOptionalParam
 }
 
 func TestRadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -59,6 +60,7 @@ func TestRadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusWithOpti
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.LeakedCredentialChecks.TimeseriesGroups.GetByCompromisedStatus(context.TODO(), cfrex.RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusParams{
 		AggInterval: cfrex.F(cfrex.RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusParamsAggInterval1h),

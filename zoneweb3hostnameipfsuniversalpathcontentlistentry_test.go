@@ -14,7 +14,7 @@ import (
 )
 
 func TestZoneWeb3HostnameIpfsUniversalPathContentListEntryNewWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,6 +26,7 @@ func TestZoneWeb3HostnameIpfsUniversalPathContentListEntryNewWithOptionalParams(
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.Web3.Hostnames.IpfsUniversalPath.ContentList.Entries.New(
 		context.TODO(),
@@ -49,7 +50,7 @@ func TestZoneWeb3HostnameIpfsUniversalPathContentListEntryNewWithOptionalParams(
 }
 
 func TestZoneWeb3HostnameIpfsUniversalPathContentListEntryGet(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -61,6 +62,7 @@ func TestZoneWeb3HostnameIpfsUniversalPathContentListEntryGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.Web3.Hostnames.IpfsUniversalPath.ContentList.Entries.Get(
 		context.TODO(),
@@ -78,7 +80,7 @@ func TestZoneWeb3HostnameIpfsUniversalPathContentListEntryGet(t *testing.T) {
 }
 
 func TestZoneWeb3HostnameIpfsUniversalPathContentListEntryUpdateWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -90,6 +92,7 @@ func TestZoneWeb3HostnameIpfsUniversalPathContentListEntryUpdateWithOptionalPara
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.Web3.Hostnames.IpfsUniversalPath.ContentList.Entries.Update(
 		context.TODO(),
@@ -114,7 +117,7 @@ func TestZoneWeb3HostnameIpfsUniversalPathContentListEntryUpdateWithOptionalPara
 }
 
 func TestZoneWeb3HostnameIpfsUniversalPathContentListEntryList(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -126,6 +129,7 @@ func TestZoneWeb3HostnameIpfsUniversalPathContentListEntryList(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.Web3.Hostnames.IpfsUniversalPath.ContentList.Entries.List(
 		context.TODO(),
@@ -142,7 +146,7 @@ func TestZoneWeb3HostnameIpfsUniversalPathContentListEntryList(t *testing.T) {
 }
 
 func TestZoneWeb3HostnameIpfsUniversalPathContentListEntryDelete(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -154,6 +158,7 @@ func TestZoneWeb3HostnameIpfsUniversalPathContentListEntryDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.Web3.Hostnames.IpfsUniversalPath.ContentList.Entries.Delete(
 		context.TODO(),

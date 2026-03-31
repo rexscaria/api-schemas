@@ -39,11 +39,11 @@ func (r *ZoneLogControlRetentionFlagService) Update(ctx context.Context, zoneID 
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/logs/control/retention/flag", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Gets log retention flag for Logpull API.
@@ -51,11 +51,11 @@ func (r *ZoneLogControlRetentionFlagService) Get(ctx context.Context, zoneID str
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/logs/control/retention/flag", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type Flag struct {
@@ -89,11 +89,11 @@ func (r FlagParam) MarshalJSON() (data []byte, err error) {
 }
 
 type FlagResponseSingle struct {
-	Errors   []MessagesLogcontrolItem `json:"errors,required"`
-	Messages []MessagesLogcontrolItem `json:"messages,required"`
+	Errors   []MessagesLogcontrolItem `json:"errors" api:"required"`
+	Messages []MessagesLogcontrolItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success FlagResponseSingleSuccess `json:"success,required"`
-	Result  Flag                      `json:"result,nullable"`
+	Success FlagResponseSingleSuccess `json:"success" api:"required"`
+	Result  Flag                      `json:"result" api:"nullable"`
 	JSON    flagResponseSingleJSON    `json:"-"`
 }
 
@@ -132,7 +132,7 @@ func (r FlagResponseSingleSuccess) IsKnown() bool {
 }
 
 type ZoneLogControlRetentionFlagUpdateParams struct {
-	Flag FlagParam `json:"flag,required"`
+	Flag FlagParam `json:"flag" api:"required"`
 }
 
 func (r ZoneLogControlRetentionFlagUpdateParams) MarshalJSON() (data []byte, err error) {

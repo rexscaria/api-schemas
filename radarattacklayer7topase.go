@@ -42,12 +42,12 @@ func (r *RadarAttackLayer7TopAseService) GetTopOriginAs(ctx context.Context, que
 	opts = slices.Concat(r.Options, opts)
 	path := "radar/attacks/layer7/top/ases/origin"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type RadarAttackLayer7TopAseGetTopOriginAsResponse struct {
-	Result  RadarAttackLayer7TopAseGetTopOriginAsResponseResult `json:"result,required"`
-	Success bool                                                `json:"success,required"`
+	Result  RadarAttackLayer7TopAseGetTopOriginAsResponseResult `json:"result" api:"required"`
+	Success bool                                                `json:"success" api:"required"`
 	JSON    radarAttackLayer7TopAseGetTopOriginAsResponseJSON   `json:"-"`
 }
 
@@ -70,8 +70,8 @@ func (r radarAttackLayer7TopAseGetTopOriginAsResponseJSON) RawJSON() string {
 
 type RadarAttackLayer7TopAseGetTopOriginAsResponseResult struct {
 	// Metadata for the results.
-	Meta RadarAttackLayer7TopAseGetTopOriginAsResponseResultMeta   `json:"meta,required"`
-	Top0 []RadarAttackLayer7TopAseGetTopOriginAsResponseResultTop0 `json:"top_0,required"`
+	Meta RadarAttackLayer7TopAseGetTopOriginAsResponseResultMeta   `json:"meta" api:"required"`
+	Top0 []RadarAttackLayer7TopAseGetTopOriginAsResponseResultTop0 `json:"top_0" api:"required"`
 	JSON radarAttackLayer7TopAseGetTopOriginAsResponseResultJSON   `json:"-"`
 }
 
@@ -94,15 +94,15 @@ func (r radarAttackLayer7TopAseGetTopOriginAsResponseResultJSON) RawJSON() strin
 
 // Metadata for the results.
 type RadarAttackLayer7TopAseGetTopOriginAsResponseResultMeta struct {
-	ConfidenceInfo RadarAttackLayer7TopAseGetTopOriginAsResponseResultMetaConfidenceInfo `json:"confidenceInfo,required,nullable"`
-	DateRange      []RadarAttackLayer7TopAseGetTopOriginAsResponseResultMetaDateRange    `json:"dateRange,required"`
+	ConfidenceInfo RadarAttackLayer7TopAseGetTopOriginAsResponseResultMetaConfidenceInfo `json:"confidenceInfo" api:"required,nullable"`
+	DateRange      []RadarAttackLayer7TopAseGetTopOriginAsResponseResultMetaDateRange    `json:"dateRange" api:"required"`
 	// Timestamp of the last dataset update.
-	LastUpdated time.Time `json:"lastUpdated,required" format:"date-time"`
+	LastUpdated time.Time `json:"lastUpdated" api:"required" format:"date-time"`
 	// Normalization method applied to the results. Refer to
 	// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
-	Normalization RadarAttackLayer7TopAseGetTopOriginAsResponseResultMetaNormalization `json:"normalization,required"`
+	Normalization RadarAttackLayer7TopAseGetTopOriginAsResponseResultMetaNormalization `json:"normalization" api:"required"`
 	// Measurement units for the results.
-	Units []RadarAttackLayer7TopAseGetTopOriginAsResponseResultMetaUnit `json:"units,required"`
+	Units []RadarAttackLayer7TopAseGetTopOriginAsResponseResultMetaUnit `json:"units" api:"required"`
 	JSON  radarAttackLayer7TopAseGetTopOriginAsResponseResultMetaJSON   `json:"-"`
 }
 
@@ -128,9 +128,9 @@ func (r radarAttackLayer7TopAseGetTopOriginAsResponseResultMetaJSON) RawJSON() s
 }
 
 type RadarAttackLayer7TopAseGetTopOriginAsResponseResultMetaConfidenceInfo struct {
-	Annotations []RadarAttackLayer7TopAseGetTopOriginAsResponseResultMetaConfidenceInfoAnnotation `json:"annotations,required"`
+	Annotations []RadarAttackLayer7TopAseGetTopOriginAsResponseResultMetaConfidenceInfoAnnotation `json:"annotations" api:"required"`
 	// Provides an indication of how much confidence Cloudflare has in the data.
-	Level int64                                                                     `json:"level,required"`
+	Level int64                                                                     `json:"level" api:"required"`
 	JSON  radarAttackLayer7TopAseGetTopOriginAsResponseResultMetaConfidenceInfoJSON `json:"-"`
 }
 
@@ -154,14 +154,14 @@ func (r radarAttackLayer7TopAseGetTopOriginAsResponseResultMetaConfidenceInfoJSO
 
 // Annotation associated with the result (e.g. outage or other type of event).
 type RadarAttackLayer7TopAseGetTopOriginAsResponseResultMetaConfidenceInfoAnnotation struct {
-	DataSource  string    `json:"dataSource,required"`
-	Description string    `json:"description,required"`
-	EndDate     time.Time `json:"endDate,required" format:"date-time"`
-	EventType   string    `json:"eventType,required"`
+	DataSource  string    `json:"dataSource" api:"required"`
+	Description string    `json:"description" api:"required"`
+	EndDate     time.Time `json:"endDate" api:"required" format:"date-time"`
+	EventType   string    `json:"eventType" api:"required"`
 	// Whether event is a single point in time or a time range.
-	IsInstantaneous bool                                                                                `json:"isInstantaneous,required"`
-	LinkedURL       string                                                                              `json:"linkedUrl,required" format:"uri"`
-	StartDate       time.Time                                                                           `json:"startDate,required" format:"date-time"`
+	IsInstantaneous bool                                                                                `json:"isInstantaneous" api:"required"`
+	LinkedURL       string                                                                              `json:"linkedUrl" api:"required" format:"uri"`
+	StartDate       time.Time                                                                           `json:"startDate" api:"required" format:"date-time"`
 	JSON            radarAttackLayer7TopAseGetTopOriginAsResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
 }
 
@@ -190,9 +190,9 @@ func (r radarAttackLayer7TopAseGetTopOriginAsResponseResultMetaConfidenceInfoAnn
 
 type RadarAttackLayer7TopAseGetTopOriginAsResponseResultMetaDateRange struct {
 	// Adjusted end of date range.
-	EndTime time.Time `json:"endTime,required" format:"date-time"`
+	EndTime time.Time `json:"endTime" api:"required" format:"date-time"`
 	// Adjusted start of date range.
-	StartTime time.Time                                                            `json:"startTime,required" format:"date-time"`
+	StartTime time.Time                                                            `json:"startTime" api:"required" format:"date-time"`
 	JSON      radarAttackLayer7TopAseGetTopOriginAsResponseResultMetaDateRangeJSON `json:"-"`
 }
 
@@ -238,8 +238,8 @@ func (r RadarAttackLayer7TopAseGetTopOriginAsResponseResultMetaNormalization) Is
 }
 
 type RadarAttackLayer7TopAseGetTopOriginAsResponseResultMetaUnit struct {
-	Name  string                                                          `json:"name,required"`
-	Value string                                                          `json:"value,required"`
+	Name  string                                                          `json:"name" api:"required"`
+	Value string                                                          `json:"value" api:"required"`
 	JSON  radarAttackLayer7TopAseGetTopOriginAsResponseResultMetaUnitJSON `json:"-"`
 }
 
@@ -262,10 +262,10 @@ func (r radarAttackLayer7TopAseGetTopOriginAsResponseResultMetaUnitJSON) RawJSON
 }
 
 type RadarAttackLayer7TopAseGetTopOriginAsResponseResultTop0 struct {
-	OriginAsn     string                                                      `json:"originAsn,required"`
-	OriginAsnName string                                                      `json:"originAsnName,required"`
-	Rank          float64                                                     `json:"rank,required"`
-	Value         string                                                      `json:"value,required"`
+	OriginAsn     string                                                      `json:"originAsn" api:"required"`
+	OriginAsnName string                                                      `json:"originAsnName" api:"required"`
+	Rank          float64                                                     `json:"rank" api:"required"`
+	Value         string                                                      `json:"value" api:"required"`
 	JSON          radarAttackLayer7TopAseGetTopOriginAsResponseResultTop0JSON `json:"-"`
 }
 

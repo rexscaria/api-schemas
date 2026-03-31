@@ -15,7 +15,7 @@ import (
 )
 
 func TestRadarAs112SummaryGetDnssecWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -27,6 +27,7 @@ func TestRadarAs112SummaryGetDnssecWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.As112.Summary.GetDnssec(context.TODO(), cfrex.RadarAs112SummaryGetDnssecParams{
 		Continent:    cfrex.F([]string{"string"}),
@@ -50,7 +51,7 @@ func TestRadarAs112SummaryGetDnssecWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarAs112SummaryGetEdnsWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -62,6 +63,7 @@ func TestRadarAs112SummaryGetEdnsWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.As112.Summary.GetEdns(context.TODO(), cfrex.RadarAs112SummaryGetEdnsParams{
 		Continent:    cfrex.F([]string{"string"}),
@@ -85,7 +87,7 @@ func TestRadarAs112SummaryGetEdnsWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarAs112SummaryGetIPVersionWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -97,6 +99,7 @@ func TestRadarAs112SummaryGetIPVersionWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.As112.Summary.GetIPVersion(context.TODO(), cfrex.RadarAs112SummaryGetIPVersionParams{
 		Continent:    cfrex.F([]string{"string"}),
@@ -120,7 +123,7 @@ func TestRadarAs112SummaryGetIPVersionWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarAs112SummaryGetProtocolWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -132,6 +135,7 @@ func TestRadarAs112SummaryGetProtocolWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.As112.Summary.GetProtocol(context.TODO(), cfrex.RadarAs112SummaryGetProtocolParams{
 		Continent:    cfrex.F([]string{"string"}),
@@ -154,7 +158,7 @@ func TestRadarAs112SummaryGetProtocolWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarAs112SummaryGetQueryTypeWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -166,6 +170,7 @@ func TestRadarAs112SummaryGetQueryTypeWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.As112.Summary.GetQueryType(context.TODO(), cfrex.RadarAs112SummaryGetQueryTypeParams{
 		Continent:     cfrex.F([]string{"string"}),
@@ -189,7 +194,7 @@ func TestRadarAs112SummaryGetQueryTypeWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarAs112SummaryGetResponseCodesWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -201,6 +206,7 @@ func TestRadarAs112SummaryGetResponseCodesWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.As112.Summary.GetResponseCodes(context.TODO(), cfrex.RadarAs112SummaryGetResponseCodesParams{
 		Continent:     cfrex.F([]string{"string"}),

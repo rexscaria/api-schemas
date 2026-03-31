@@ -56,7 +56,7 @@ func (r *UserService) Get(ctx context.Context, opts ...option.RequestOption) (re
 	opts = slices.Concat(r.Options, opts)
 	path := "user"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Edit part of your user details.
@@ -64,7 +64,7 @@ func (r *UserService) Update(ctx context.Context, body UserUpdateParams, opts ..
 	opts = slices.Concat(r.Options, opts)
 	path := "user"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Gets a list of audit logs for a user account. Can be filtered by who made the
@@ -73,14 +73,14 @@ func (r *UserService) ListAuditLogs(ctx context.Context, query UserListAuditLogs
 	opts = slices.Concat(r.Options, opts)
 	path := "user/audit_logs"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type IamSingleUser struct {
-	Errors   []IamSingleUserError   `json:"errors,required"`
-	Messages []IamSingleUserMessage `json:"messages,required"`
+	Errors   []IamSingleUserError   `json:"errors" api:"required"`
+	Messages []IamSingleUserMessage `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success IamSingleUserSuccess `json:"success,required"`
+	Success IamSingleUserSuccess `json:"success" api:"required"`
 	Result  IamSingleUserResult  `json:"result"`
 	JSON    iamSingleUserJSON    `json:"-"`
 }
@@ -104,8 +104,8 @@ func (r iamSingleUserJSON) RawJSON() string {
 }
 
 type IamSingleUserError struct {
-	Code             int64                     `json:"code,required"`
-	Message          string                    `json:"message,required"`
+	Code             int64                     `json:"code" api:"required"`
+	Message          string                    `json:"message" api:"required"`
 	DocumentationURL string                    `json:"documentation_url"`
 	Source           IamSingleUserErrorsSource `json:"source"`
 	JSON             iamSingleUserErrorJSON    `json:"-"`
@@ -152,8 +152,8 @@ func (r iamSingleUserErrorsSourceJSON) RawJSON() string {
 }
 
 type IamSingleUserMessage struct {
-	Code             int64                       `json:"code,required"`
-	Message          string                      `json:"message,required"`
+	Code             int64                       `json:"code" api:"required"`
+	Message          string                      `json:"message" api:"required"`
 	DocumentationURL string                      `json:"documentation_url"`
 	Source           IamSingleUserMessagesSource `json:"source"`
 	JSON             iamSingleUserMessageJSON    `json:"-"`
@@ -220,9 +220,9 @@ type IamSingleUserResult struct {
 	// Lists the betas that the user is participating in.
 	Betas []string `json:"betas"`
 	// The country in which the user lives.
-	Country string `json:"country,nullable"`
+	Country string `json:"country" api:"nullable"`
 	// User's first name
-	FirstName string `json:"first_name,nullable"`
+	FirstName string `json:"first_name" api:"nullable"`
 	// Indicates whether user has any business zones
 	HasBusinessZones bool `json:"has_business_zones"`
 	// Indicates whether user has any enterprise zones
@@ -230,12 +230,12 @@ type IamSingleUserResult struct {
 	// Indicates whether user has any pro zones
 	HasProZones bool `json:"has_pro_zones"`
 	// User's last name
-	LastName      string                            `json:"last_name,nullable"`
+	LastName      string                            `json:"last_name" api:"nullable"`
 	Organizations []IamSingleUserResultOrganization `json:"organizations"`
 	// Indicates whether user has been suspended
 	Suspended bool `json:"suspended"`
 	// User's telephone number
-	Telephone string `json:"telephone,nullable"`
+	Telephone string `json:"telephone" api:"nullable"`
 	// Indicates whether two-factor authentication is enabled for the user account.
 	// Does not apply to API authentication.
 	TwoFactorAuthenticationEnabled bool `json:"two_factor_authentication_enabled"`
@@ -243,7 +243,7 @@ type IamSingleUserResult struct {
 	// that the user is a member of.
 	TwoFactorAuthenticationLocked bool `json:"two_factor_authentication_locked"`
 	// The zipcode or postal code where the user lives.
-	Zipcode string                  `json:"zipcode,nullable"`
+	Zipcode string                  `json:"zipcode" api:"nullable"`
 	JSON    iamSingleUserResultJSON `json:"-"`
 }
 

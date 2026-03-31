@@ -41,7 +41,7 @@ func (r *RadarEmailSecurityTopTldService) Get(ctx context.Context, query RadarEm
 	opts = slices.Concat(r.Options, opts)
 	path := "radar/email/security/top/tlds"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves the top TLDs by emails classified as malicious or not.
@@ -49,7 +49,7 @@ func (r *RadarEmailSecurityTopTldService) GetMalicious(ctx context.Context, mali
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("radar/email/security/top/tlds/malicious/%v", malicious)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves the top TLDs by emails classified as spam or not.
@@ -57,7 +57,7 @@ func (r *RadarEmailSecurityTopTldService) GetSpam(ctx context.Context, spam Rada
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("radar/email/security/top/tlds/spam/%v", spam)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves the top TLDs by emails classified as spoof or not.
@@ -65,12 +65,12 @@ func (r *RadarEmailSecurityTopTldService) GetSpoof(ctx context.Context, spoof Ra
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("radar/email/security/top/tlds/spoof/%v", spoof)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type RadarEmailSecurityTopTldGetResponse struct {
-	Result  RadarEmailSecurityTopTldGetResponseResult `json:"result,required"`
-	Success bool                                      `json:"success,required"`
+	Result  RadarEmailSecurityTopTldGetResponseResult `json:"result" api:"required"`
+	Success bool                                      `json:"success" api:"required"`
 	JSON    radarEmailSecurityTopTldGetResponseJSON   `json:"-"`
 }
 
@@ -93,8 +93,8 @@ func (r radarEmailSecurityTopTldGetResponseJSON) RawJSON() string {
 
 type RadarEmailSecurityTopTldGetResponseResult struct {
 	// Metadata for the results.
-	Meta RadarEmailSecurityTopTldGetResponseResultMeta   `json:"meta,required"`
-	Top0 []RadarEmailSecurityTopTldGetResponseResultTop0 `json:"top_0,required"`
+	Meta RadarEmailSecurityTopTldGetResponseResultMeta   `json:"meta" api:"required"`
+	Top0 []RadarEmailSecurityTopTldGetResponseResultTop0 `json:"top_0" api:"required"`
 	JSON radarEmailSecurityTopTldGetResponseResultJSON   `json:"-"`
 }
 
@@ -117,15 +117,15 @@ func (r radarEmailSecurityTopTldGetResponseResultJSON) RawJSON() string {
 
 // Metadata for the results.
 type RadarEmailSecurityTopTldGetResponseResultMeta struct {
-	ConfidenceInfo RadarEmailSecurityTopTldGetResponseResultMetaConfidenceInfo `json:"confidenceInfo,required,nullable"`
-	DateRange      []RadarEmailSecurityTopTldGetResponseResultMetaDateRange    `json:"dateRange,required"`
+	ConfidenceInfo RadarEmailSecurityTopTldGetResponseResultMetaConfidenceInfo `json:"confidenceInfo" api:"required,nullable"`
+	DateRange      []RadarEmailSecurityTopTldGetResponseResultMetaDateRange    `json:"dateRange" api:"required"`
 	// Timestamp of the last dataset update.
-	LastUpdated time.Time `json:"lastUpdated,required" format:"date-time"`
+	LastUpdated time.Time `json:"lastUpdated" api:"required" format:"date-time"`
 	// Normalization method applied to the results. Refer to
 	// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
-	Normalization RadarEmailSecurityTopTldGetResponseResultMetaNormalization `json:"normalization,required"`
+	Normalization RadarEmailSecurityTopTldGetResponseResultMetaNormalization `json:"normalization" api:"required"`
 	// Measurement units for the results.
-	Units []RadarEmailSecurityTopTldGetResponseResultMetaUnit `json:"units,required"`
+	Units []RadarEmailSecurityTopTldGetResponseResultMetaUnit `json:"units" api:"required"`
 	JSON  radarEmailSecurityTopTldGetResponseResultMetaJSON   `json:"-"`
 }
 
@@ -150,9 +150,9 @@ func (r radarEmailSecurityTopTldGetResponseResultMetaJSON) RawJSON() string {
 }
 
 type RadarEmailSecurityTopTldGetResponseResultMetaConfidenceInfo struct {
-	Annotations []RadarEmailSecurityTopTldGetResponseResultMetaConfidenceInfoAnnotation `json:"annotations,required"`
+	Annotations []RadarEmailSecurityTopTldGetResponseResultMetaConfidenceInfoAnnotation `json:"annotations" api:"required"`
 	// Provides an indication of how much confidence Cloudflare has in the data.
-	Level int64                                                           `json:"level,required"`
+	Level int64                                                           `json:"level" api:"required"`
 	JSON  radarEmailSecurityTopTldGetResponseResultMetaConfidenceInfoJSON `json:"-"`
 }
 
@@ -176,14 +176,14 @@ func (r radarEmailSecurityTopTldGetResponseResultMetaConfidenceInfoJSON) RawJSON
 
 // Annotation associated with the result (e.g. outage or other type of event).
 type RadarEmailSecurityTopTldGetResponseResultMetaConfidenceInfoAnnotation struct {
-	DataSource  string    `json:"dataSource,required"`
-	Description string    `json:"description,required"`
-	EndDate     time.Time `json:"endDate,required" format:"date-time"`
-	EventType   string    `json:"eventType,required"`
+	DataSource  string    `json:"dataSource" api:"required"`
+	Description string    `json:"description" api:"required"`
+	EndDate     time.Time `json:"endDate" api:"required" format:"date-time"`
+	EventType   string    `json:"eventType" api:"required"`
 	// Whether event is a single point in time or a time range.
-	IsInstantaneous bool                                                                      `json:"isInstantaneous,required"`
-	LinkedURL       string                                                                    `json:"linkedUrl,required" format:"uri"`
-	StartDate       time.Time                                                                 `json:"startDate,required" format:"date-time"`
+	IsInstantaneous bool                                                                      `json:"isInstantaneous" api:"required"`
+	LinkedURL       string                                                                    `json:"linkedUrl" api:"required" format:"uri"`
+	StartDate       time.Time                                                                 `json:"startDate" api:"required" format:"date-time"`
 	JSON            radarEmailSecurityTopTldGetResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
 }
 
@@ -212,9 +212,9 @@ func (r radarEmailSecurityTopTldGetResponseResultMetaConfidenceInfoAnnotationJSO
 
 type RadarEmailSecurityTopTldGetResponseResultMetaDateRange struct {
 	// Adjusted end of date range.
-	EndTime time.Time `json:"endTime,required" format:"date-time"`
+	EndTime time.Time `json:"endTime" api:"required" format:"date-time"`
 	// Adjusted start of date range.
-	StartTime time.Time                                                  `json:"startTime,required" format:"date-time"`
+	StartTime time.Time                                                  `json:"startTime" api:"required" format:"date-time"`
 	JSON      radarEmailSecurityTopTldGetResponseResultMetaDateRangeJSON `json:"-"`
 }
 
@@ -259,8 +259,8 @@ func (r RadarEmailSecurityTopTldGetResponseResultMetaNormalization) IsKnown() bo
 }
 
 type RadarEmailSecurityTopTldGetResponseResultMetaUnit struct {
-	Name  string                                                `json:"name,required"`
-	Value string                                                `json:"value,required"`
+	Name  string                                                `json:"name" api:"required"`
+	Value string                                                `json:"value" api:"required"`
 	JSON  radarEmailSecurityTopTldGetResponseResultMetaUnitJSON `json:"-"`
 }
 
@@ -282,9 +282,9 @@ func (r radarEmailSecurityTopTldGetResponseResultMetaUnitJSON) RawJSON() string 
 }
 
 type RadarEmailSecurityTopTldGetResponseResultTop0 struct {
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// A numeric string.
-	Value string                                            `json:"value,required"`
+	Value string                                            `json:"value" api:"required"`
 	JSON  radarEmailSecurityTopTldGetResponseResultTop0JSON `json:"-"`
 }
 
@@ -306,8 +306,8 @@ func (r radarEmailSecurityTopTldGetResponseResultTop0JSON) RawJSON() string {
 }
 
 type RadarEmailSecurityTopTldGetMaliciousResponse struct {
-	Result  RadarEmailSecurityTopTldGetMaliciousResponseResult `json:"result,required"`
-	Success bool                                               `json:"success,required"`
+	Result  RadarEmailSecurityTopTldGetMaliciousResponseResult `json:"result" api:"required"`
+	Success bool                                               `json:"success" api:"required"`
 	JSON    radarEmailSecurityTopTldGetMaliciousResponseJSON   `json:"-"`
 }
 
@@ -330,8 +330,8 @@ func (r radarEmailSecurityTopTldGetMaliciousResponseJSON) RawJSON() string {
 
 type RadarEmailSecurityTopTldGetMaliciousResponseResult struct {
 	// Metadata for the results.
-	Meta RadarEmailSecurityTopTldGetMaliciousResponseResultMeta   `json:"meta,required"`
-	Top0 []RadarEmailSecurityTopTldGetMaliciousResponseResultTop0 `json:"top_0,required"`
+	Meta RadarEmailSecurityTopTldGetMaliciousResponseResultMeta   `json:"meta" api:"required"`
+	Top0 []RadarEmailSecurityTopTldGetMaliciousResponseResultTop0 `json:"top_0" api:"required"`
 	JSON radarEmailSecurityTopTldGetMaliciousResponseResultJSON   `json:"-"`
 }
 
@@ -354,15 +354,15 @@ func (r radarEmailSecurityTopTldGetMaliciousResponseResultJSON) RawJSON() string
 
 // Metadata for the results.
 type RadarEmailSecurityTopTldGetMaliciousResponseResultMeta struct {
-	ConfidenceInfo RadarEmailSecurityTopTldGetMaliciousResponseResultMetaConfidenceInfo `json:"confidenceInfo,required,nullable"`
-	DateRange      []RadarEmailSecurityTopTldGetMaliciousResponseResultMetaDateRange    `json:"dateRange,required"`
+	ConfidenceInfo RadarEmailSecurityTopTldGetMaliciousResponseResultMetaConfidenceInfo `json:"confidenceInfo" api:"required,nullable"`
+	DateRange      []RadarEmailSecurityTopTldGetMaliciousResponseResultMetaDateRange    `json:"dateRange" api:"required"`
 	// Timestamp of the last dataset update.
-	LastUpdated time.Time `json:"lastUpdated,required" format:"date-time"`
+	LastUpdated time.Time `json:"lastUpdated" api:"required" format:"date-time"`
 	// Normalization method applied to the results. Refer to
 	// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
-	Normalization RadarEmailSecurityTopTldGetMaliciousResponseResultMetaNormalization `json:"normalization,required"`
+	Normalization RadarEmailSecurityTopTldGetMaliciousResponseResultMetaNormalization `json:"normalization" api:"required"`
 	// Measurement units for the results.
-	Units []RadarEmailSecurityTopTldGetMaliciousResponseResultMetaUnit `json:"units,required"`
+	Units []RadarEmailSecurityTopTldGetMaliciousResponseResultMetaUnit `json:"units" api:"required"`
 	JSON  radarEmailSecurityTopTldGetMaliciousResponseResultMetaJSON   `json:"-"`
 }
 
@@ -387,9 +387,9 @@ func (r radarEmailSecurityTopTldGetMaliciousResponseResultMetaJSON) RawJSON() st
 }
 
 type RadarEmailSecurityTopTldGetMaliciousResponseResultMetaConfidenceInfo struct {
-	Annotations []RadarEmailSecurityTopTldGetMaliciousResponseResultMetaConfidenceInfoAnnotation `json:"annotations,required"`
+	Annotations []RadarEmailSecurityTopTldGetMaliciousResponseResultMetaConfidenceInfoAnnotation `json:"annotations" api:"required"`
 	// Provides an indication of how much confidence Cloudflare has in the data.
-	Level int64                                                                    `json:"level,required"`
+	Level int64                                                                    `json:"level" api:"required"`
 	JSON  radarEmailSecurityTopTldGetMaliciousResponseResultMetaConfidenceInfoJSON `json:"-"`
 }
 
@@ -413,14 +413,14 @@ func (r radarEmailSecurityTopTldGetMaliciousResponseResultMetaConfidenceInfoJSON
 
 // Annotation associated with the result (e.g. outage or other type of event).
 type RadarEmailSecurityTopTldGetMaliciousResponseResultMetaConfidenceInfoAnnotation struct {
-	DataSource  string    `json:"dataSource,required"`
-	Description string    `json:"description,required"`
-	EndDate     time.Time `json:"endDate,required" format:"date-time"`
-	EventType   string    `json:"eventType,required"`
+	DataSource  string    `json:"dataSource" api:"required"`
+	Description string    `json:"description" api:"required"`
+	EndDate     time.Time `json:"endDate" api:"required" format:"date-time"`
+	EventType   string    `json:"eventType" api:"required"`
 	// Whether event is a single point in time or a time range.
-	IsInstantaneous bool                                                                               `json:"isInstantaneous,required"`
-	LinkedURL       string                                                                             `json:"linkedUrl,required" format:"uri"`
-	StartDate       time.Time                                                                          `json:"startDate,required" format:"date-time"`
+	IsInstantaneous bool                                                                               `json:"isInstantaneous" api:"required"`
+	LinkedURL       string                                                                             `json:"linkedUrl" api:"required" format:"uri"`
+	StartDate       time.Time                                                                          `json:"startDate" api:"required" format:"date-time"`
 	JSON            radarEmailSecurityTopTldGetMaliciousResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
 }
 
@@ -449,9 +449,9 @@ func (r radarEmailSecurityTopTldGetMaliciousResponseResultMetaConfidenceInfoAnno
 
 type RadarEmailSecurityTopTldGetMaliciousResponseResultMetaDateRange struct {
 	// Adjusted end of date range.
-	EndTime time.Time `json:"endTime,required" format:"date-time"`
+	EndTime time.Time `json:"endTime" api:"required" format:"date-time"`
 	// Adjusted start of date range.
-	StartTime time.Time                                                           `json:"startTime,required" format:"date-time"`
+	StartTime time.Time                                                           `json:"startTime" api:"required" format:"date-time"`
 	JSON      radarEmailSecurityTopTldGetMaliciousResponseResultMetaDateRangeJSON `json:"-"`
 }
 
@@ -497,8 +497,8 @@ func (r RadarEmailSecurityTopTldGetMaliciousResponseResultMetaNormalization) IsK
 }
 
 type RadarEmailSecurityTopTldGetMaliciousResponseResultMetaUnit struct {
-	Name  string                                                         `json:"name,required"`
-	Value string                                                         `json:"value,required"`
+	Name  string                                                         `json:"name" api:"required"`
+	Value string                                                         `json:"value" api:"required"`
 	JSON  radarEmailSecurityTopTldGetMaliciousResponseResultMetaUnitJSON `json:"-"`
 }
 
@@ -521,9 +521,9 @@ func (r radarEmailSecurityTopTldGetMaliciousResponseResultMetaUnitJSON) RawJSON(
 }
 
 type RadarEmailSecurityTopTldGetMaliciousResponseResultTop0 struct {
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// A numeric string.
-	Value string                                                     `json:"value,required"`
+	Value string                                                     `json:"value" api:"required"`
 	JSON  radarEmailSecurityTopTldGetMaliciousResponseResultTop0JSON `json:"-"`
 }
 
@@ -545,8 +545,8 @@ func (r radarEmailSecurityTopTldGetMaliciousResponseResultTop0JSON) RawJSON() st
 }
 
 type RadarEmailSecurityTopTldGetSpamResponse struct {
-	Result  RadarEmailSecurityTopTldGetSpamResponseResult `json:"result,required"`
-	Success bool                                          `json:"success,required"`
+	Result  RadarEmailSecurityTopTldGetSpamResponseResult `json:"result" api:"required"`
+	Success bool                                          `json:"success" api:"required"`
 	JSON    radarEmailSecurityTopTldGetSpamResponseJSON   `json:"-"`
 }
 
@@ -569,8 +569,8 @@ func (r radarEmailSecurityTopTldGetSpamResponseJSON) RawJSON() string {
 
 type RadarEmailSecurityTopTldGetSpamResponseResult struct {
 	// Metadata for the results.
-	Meta RadarEmailSecurityTopTldGetSpamResponseResultMeta   `json:"meta,required"`
-	Top0 []RadarEmailSecurityTopTldGetSpamResponseResultTop0 `json:"top_0,required"`
+	Meta RadarEmailSecurityTopTldGetSpamResponseResultMeta   `json:"meta" api:"required"`
+	Top0 []RadarEmailSecurityTopTldGetSpamResponseResultTop0 `json:"top_0" api:"required"`
 	JSON radarEmailSecurityTopTldGetSpamResponseResultJSON   `json:"-"`
 }
 
@@ -593,15 +593,15 @@ func (r radarEmailSecurityTopTldGetSpamResponseResultJSON) RawJSON() string {
 
 // Metadata for the results.
 type RadarEmailSecurityTopTldGetSpamResponseResultMeta struct {
-	ConfidenceInfo RadarEmailSecurityTopTldGetSpamResponseResultMetaConfidenceInfo `json:"confidenceInfo,required,nullable"`
-	DateRange      []RadarEmailSecurityTopTldGetSpamResponseResultMetaDateRange    `json:"dateRange,required"`
+	ConfidenceInfo RadarEmailSecurityTopTldGetSpamResponseResultMetaConfidenceInfo `json:"confidenceInfo" api:"required,nullable"`
+	DateRange      []RadarEmailSecurityTopTldGetSpamResponseResultMetaDateRange    `json:"dateRange" api:"required"`
 	// Timestamp of the last dataset update.
-	LastUpdated time.Time `json:"lastUpdated,required" format:"date-time"`
+	LastUpdated time.Time `json:"lastUpdated" api:"required" format:"date-time"`
 	// Normalization method applied to the results. Refer to
 	// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
-	Normalization RadarEmailSecurityTopTldGetSpamResponseResultMetaNormalization `json:"normalization,required"`
+	Normalization RadarEmailSecurityTopTldGetSpamResponseResultMetaNormalization `json:"normalization" api:"required"`
 	// Measurement units for the results.
-	Units []RadarEmailSecurityTopTldGetSpamResponseResultMetaUnit `json:"units,required"`
+	Units []RadarEmailSecurityTopTldGetSpamResponseResultMetaUnit `json:"units" api:"required"`
 	JSON  radarEmailSecurityTopTldGetSpamResponseResultMetaJSON   `json:"-"`
 }
 
@@ -626,9 +626,9 @@ func (r radarEmailSecurityTopTldGetSpamResponseResultMetaJSON) RawJSON() string 
 }
 
 type RadarEmailSecurityTopTldGetSpamResponseResultMetaConfidenceInfo struct {
-	Annotations []RadarEmailSecurityTopTldGetSpamResponseResultMetaConfidenceInfoAnnotation `json:"annotations,required"`
+	Annotations []RadarEmailSecurityTopTldGetSpamResponseResultMetaConfidenceInfoAnnotation `json:"annotations" api:"required"`
 	// Provides an indication of how much confidence Cloudflare has in the data.
-	Level int64                                                               `json:"level,required"`
+	Level int64                                                               `json:"level" api:"required"`
 	JSON  radarEmailSecurityTopTldGetSpamResponseResultMetaConfidenceInfoJSON `json:"-"`
 }
 
@@ -652,14 +652,14 @@ func (r radarEmailSecurityTopTldGetSpamResponseResultMetaConfidenceInfoJSON) Raw
 
 // Annotation associated with the result (e.g. outage or other type of event).
 type RadarEmailSecurityTopTldGetSpamResponseResultMetaConfidenceInfoAnnotation struct {
-	DataSource  string    `json:"dataSource,required"`
-	Description string    `json:"description,required"`
-	EndDate     time.Time `json:"endDate,required" format:"date-time"`
-	EventType   string    `json:"eventType,required"`
+	DataSource  string    `json:"dataSource" api:"required"`
+	Description string    `json:"description" api:"required"`
+	EndDate     time.Time `json:"endDate" api:"required" format:"date-time"`
+	EventType   string    `json:"eventType" api:"required"`
 	// Whether event is a single point in time or a time range.
-	IsInstantaneous bool                                                                          `json:"isInstantaneous,required"`
-	LinkedURL       string                                                                        `json:"linkedUrl,required" format:"uri"`
-	StartDate       time.Time                                                                     `json:"startDate,required" format:"date-time"`
+	IsInstantaneous bool                                                                          `json:"isInstantaneous" api:"required"`
+	LinkedURL       string                                                                        `json:"linkedUrl" api:"required" format:"uri"`
+	StartDate       time.Time                                                                     `json:"startDate" api:"required" format:"date-time"`
 	JSON            radarEmailSecurityTopTldGetSpamResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
 }
 
@@ -688,9 +688,9 @@ func (r radarEmailSecurityTopTldGetSpamResponseResultMetaConfidenceInfoAnnotatio
 
 type RadarEmailSecurityTopTldGetSpamResponseResultMetaDateRange struct {
 	// Adjusted end of date range.
-	EndTime time.Time `json:"endTime,required" format:"date-time"`
+	EndTime time.Time `json:"endTime" api:"required" format:"date-time"`
 	// Adjusted start of date range.
-	StartTime time.Time                                                      `json:"startTime,required" format:"date-time"`
+	StartTime time.Time                                                      `json:"startTime" api:"required" format:"date-time"`
 	JSON      radarEmailSecurityTopTldGetSpamResponseResultMetaDateRangeJSON `json:"-"`
 }
 
@@ -736,8 +736,8 @@ func (r RadarEmailSecurityTopTldGetSpamResponseResultMetaNormalization) IsKnown(
 }
 
 type RadarEmailSecurityTopTldGetSpamResponseResultMetaUnit struct {
-	Name  string                                                    `json:"name,required"`
-	Value string                                                    `json:"value,required"`
+	Name  string                                                    `json:"name" api:"required"`
+	Value string                                                    `json:"value" api:"required"`
 	JSON  radarEmailSecurityTopTldGetSpamResponseResultMetaUnitJSON `json:"-"`
 }
 
@@ -759,9 +759,9 @@ func (r radarEmailSecurityTopTldGetSpamResponseResultMetaUnitJSON) RawJSON() str
 }
 
 type RadarEmailSecurityTopTldGetSpamResponseResultTop0 struct {
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// A numeric string.
-	Value string                                                `json:"value,required"`
+	Value string                                                `json:"value" api:"required"`
 	JSON  radarEmailSecurityTopTldGetSpamResponseResultTop0JSON `json:"-"`
 }
 
@@ -783,8 +783,8 @@ func (r radarEmailSecurityTopTldGetSpamResponseResultTop0JSON) RawJSON() string 
 }
 
 type RadarEmailSecurityTopTldGetSpoofResponse struct {
-	Result  RadarEmailSecurityTopTldGetSpoofResponseResult `json:"result,required"`
-	Success bool                                           `json:"success,required"`
+	Result  RadarEmailSecurityTopTldGetSpoofResponseResult `json:"result" api:"required"`
+	Success bool                                           `json:"success" api:"required"`
 	JSON    radarEmailSecurityTopTldGetSpoofResponseJSON   `json:"-"`
 }
 
@@ -807,8 +807,8 @@ func (r radarEmailSecurityTopTldGetSpoofResponseJSON) RawJSON() string {
 
 type RadarEmailSecurityTopTldGetSpoofResponseResult struct {
 	// Metadata for the results.
-	Meta RadarEmailSecurityTopTldGetSpoofResponseResultMeta   `json:"meta,required"`
-	Top0 []RadarEmailSecurityTopTldGetSpoofResponseResultTop0 `json:"top_0,required"`
+	Meta RadarEmailSecurityTopTldGetSpoofResponseResultMeta   `json:"meta" api:"required"`
+	Top0 []RadarEmailSecurityTopTldGetSpoofResponseResultTop0 `json:"top_0" api:"required"`
 	JSON radarEmailSecurityTopTldGetSpoofResponseResultJSON   `json:"-"`
 }
 
@@ -831,15 +831,15 @@ func (r radarEmailSecurityTopTldGetSpoofResponseResultJSON) RawJSON() string {
 
 // Metadata for the results.
 type RadarEmailSecurityTopTldGetSpoofResponseResultMeta struct {
-	ConfidenceInfo RadarEmailSecurityTopTldGetSpoofResponseResultMetaConfidenceInfo `json:"confidenceInfo,required,nullable"`
-	DateRange      []RadarEmailSecurityTopTldGetSpoofResponseResultMetaDateRange    `json:"dateRange,required"`
+	ConfidenceInfo RadarEmailSecurityTopTldGetSpoofResponseResultMetaConfidenceInfo `json:"confidenceInfo" api:"required,nullable"`
+	DateRange      []RadarEmailSecurityTopTldGetSpoofResponseResultMetaDateRange    `json:"dateRange" api:"required"`
 	// Timestamp of the last dataset update.
-	LastUpdated time.Time `json:"lastUpdated,required" format:"date-time"`
+	LastUpdated time.Time `json:"lastUpdated" api:"required" format:"date-time"`
 	// Normalization method applied to the results. Refer to
 	// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
-	Normalization RadarEmailSecurityTopTldGetSpoofResponseResultMetaNormalization `json:"normalization,required"`
+	Normalization RadarEmailSecurityTopTldGetSpoofResponseResultMetaNormalization `json:"normalization" api:"required"`
 	// Measurement units for the results.
-	Units []RadarEmailSecurityTopTldGetSpoofResponseResultMetaUnit `json:"units,required"`
+	Units []RadarEmailSecurityTopTldGetSpoofResponseResultMetaUnit `json:"units" api:"required"`
 	JSON  radarEmailSecurityTopTldGetSpoofResponseResultMetaJSON   `json:"-"`
 }
 
@@ -864,9 +864,9 @@ func (r radarEmailSecurityTopTldGetSpoofResponseResultMetaJSON) RawJSON() string
 }
 
 type RadarEmailSecurityTopTldGetSpoofResponseResultMetaConfidenceInfo struct {
-	Annotations []RadarEmailSecurityTopTldGetSpoofResponseResultMetaConfidenceInfoAnnotation `json:"annotations,required"`
+	Annotations []RadarEmailSecurityTopTldGetSpoofResponseResultMetaConfidenceInfoAnnotation `json:"annotations" api:"required"`
 	// Provides an indication of how much confidence Cloudflare has in the data.
-	Level int64                                                                `json:"level,required"`
+	Level int64                                                                `json:"level" api:"required"`
 	JSON  radarEmailSecurityTopTldGetSpoofResponseResultMetaConfidenceInfoJSON `json:"-"`
 }
 
@@ -890,14 +890,14 @@ func (r radarEmailSecurityTopTldGetSpoofResponseResultMetaConfidenceInfoJSON) Ra
 
 // Annotation associated with the result (e.g. outage or other type of event).
 type RadarEmailSecurityTopTldGetSpoofResponseResultMetaConfidenceInfoAnnotation struct {
-	DataSource  string    `json:"dataSource,required"`
-	Description string    `json:"description,required"`
-	EndDate     time.Time `json:"endDate,required" format:"date-time"`
-	EventType   string    `json:"eventType,required"`
+	DataSource  string    `json:"dataSource" api:"required"`
+	Description string    `json:"description" api:"required"`
+	EndDate     time.Time `json:"endDate" api:"required" format:"date-time"`
+	EventType   string    `json:"eventType" api:"required"`
 	// Whether event is a single point in time or a time range.
-	IsInstantaneous bool                                                                           `json:"isInstantaneous,required"`
-	LinkedURL       string                                                                         `json:"linkedUrl,required" format:"uri"`
-	StartDate       time.Time                                                                      `json:"startDate,required" format:"date-time"`
+	IsInstantaneous bool                                                                           `json:"isInstantaneous" api:"required"`
+	LinkedURL       string                                                                         `json:"linkedUrl" api:"required" format:"uri"`
+	StartDate       time.Time                                                                      `json:"startDate" api:"required" format:"date-time"`
 	JSON            radarEmailSecurityTopTldGetSpoofResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
 }
 
@@ -926,9 +926,9 @@ func (r radarEmailSecurityTopTldGetSpoofResponseResultMetaConfidenceInfoAnnotati
 
 type RadarEmailSecurityTopTldGetSpoofResponseResultMetaDateRange struct {
 	// Adjusted end of date range.
-	EndTime time.Time `json:"endTime,required" format:"date-time"`
+	EndTime time.Time `json:"endTime" api:"required" format:"date-time"`
 	// Adjusted start of date range.
-	StartTime time.Time                                                       `json:"startTime,required" format:"date-time"`
+	StartTime time.Time                                                       `json:"startTime" api:"required" format:"date-time"`
 	JSON      radarEmailSecurityTopTldGetSpoofResponseResultMetaDateRangeJSON `json:"-"`
 }
 
@@ -974,8 +974,8 @@ func (r RadarEmailSecurityTopTldGetSpoofResponseResultMetaNormalization) IsKnown
 }
 
 type RadarEmailSecurityTopTldGetSpoofResponseResultMetaUnit struct {
-	Name  string                                                     `json:"name,required"`
-	Value string                                                     `json:"value,required"`
+	Name  string                                                     `json:"name" api:"required"`
+	Value string                                                     `json:"value" api:"required"`
 	JSON  radarEmailSecurityTopTldGetSpoofResponseResultMetaUnitJSON `json:"-"`
 }
 
@@ -997,9 +997,9 @@ func (r radarEmailSecurityTopTldGetSpoofResponseResultMetaUnitJSON) RawJSON() st
 }
 
 type RadarEmailSecurityTopTldGetSpoofResponseResultTop0 struct {
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// A numeric string.
-	Value string                                                 `json:"value,required"`
+	Value string                                                 `json:"value" api:"required"`
 	JSON  radarEmailSecurityTopTldGetSpoofResponseResultTop0JSON `json:"-"`
 }
 

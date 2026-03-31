@@ -38,7 +38,7 @@ func (r *UserLoadBalancerMonitorService) New(ctx context.Context, body UserLoadB
 	opts = slices.Concat(r.Options, opts)
 	path := "user/load_balancers/monitors"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // List a single configured monitor for a user.
@@ -46,11 +46,11 @@ func (r *UserLoadBalancerMonitorService) Get(ctx context.Context, monitorID stri
 	opts = slices.Concat(r.Options, opts)
 	if monitorID == "" {
 		err = errors.New("missing required monitor_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("user/load_balancers/monitors/%s", monitorID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Modify a configured monitor.
@@ -58,11 +58,11 @@ func (r *UserLoadBalancerMonitorService) Update(ctx context.Context, monitorID s
 	opts = slices.Concat(r.Options, opts)
 	if monitorID == "" {
 		err = errors.New("missing required monitor_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("user/load_balancers/monitors/%s", monitorID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // List configured monitors for a user.
@@ -70,7 +70,7 @@ func (r *UserLoadBalancerMonitorService) List(ctx context.Context, opts ...optio
 	opts = slices.Concat(r.Options, opts)
 	path := "user/load_balancers/monitors"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete a configured monitor.
@@ -78,11 +78,11 @@ func (r *UserLoadBalancerMonitorService) Delete(ctx context.Context, monitorID s
 	opts = slices.Concat(r.Options, opts)
 	if monitorID == "" {
 		err = errors.New("missing required monitor_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("user/load_balancers/monitors/%s", monitorID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Get the list of resources that reference the provided monitor.
@@ -90,11 +90,11 @@ func (r *UserLoadBalancerMonitorService) ListReferences(ctx context.Context, mon
 	opts = slices.Concat(r.Options, opts)
 	if monitorID == "" {
 		err = errors.New("missing required monitor_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("user/load_balancers/monitors/%s/references", monitorID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Apply changes to an existing monitor, overwriting the supplied properties.
@@ -102,11 +102,11 @@ func (r *UserLoadBalancerMonitorService) Patch(ctx context.Context, monitorID st
 	opts = slices.Concat(r.Options, opts)
 	if monitorID == "" {
 		err = errors.New("missing required monitor_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("user/load_balancers/monitors/%s", monitorID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Preview pools using the specified monitor with provided monitor details. The
@@ -115,15 +115,15 @@ func (r *UserLoadBalancerMonitorService) Preview(ctx context.Context, monitorID 
 	opts = slices.Concat(r.Options, opts)
 	if monitorID == "" {
 		err = errors.New("missing required monitor_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("user/load_balancers/monitors/%s/preview", monitorID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type UserLoadBalancerMonitorNewParams struct {
-	EditableMonitor EditableMonitorParam `json:"editable_monitor,required"`
+	EditableMonitor EditableMonitorParam `json:"editable_monitor" api:"required"`
 }
 
 func (r UserLoadBalancerMonitorNewParams) MarshalJSON() (data []byte, err error) {
@@ -131,7 +131,7 @@ func (r UserLoadBalancerMonitorNewParams) MarshalJSON() (data []byte, err error)
 }
 
 type UserLoadBalancerMonitorUpdateParams struct {
-	EditableMonitor EditableMonitorParam `json:"editable_monitor,required"`
+	EditableMonitor EditableMonitorParam `json:"editable_monitor" api:"required"`
 }
 
 func (r UserLoadBalancerMonitorUpdateParams) MarshalJSON() (data []byte, err error) {
@@ -139,7 +139,7 @@ func (r UserLoadBalancerMonitorUpdateParams) MarshalJSON() (data []byte, err err
 }
 
 type UserLoadBalancerMonitorPatchParams struct {
-	EditableMonitor EditableMonitorParam `json:"editable_monitor,required"`
+	EditableMonitor EditableMonitorParam `json:"editable_monitor" api:"required"`
 }
 
 func (r UserLoadBalancerMonitorPatchParams) MarshalJSON() (data []byte, err error) {
@@ -147,7 +147,7 @@ func (r UserLoadBalancerMonitorPatchParams) MarshalJSON() (data []byte, err erro
 }
 
 type UserLoadBalancerMonitorPreviewParams struct {
-	EditableMonitor EditableMonitorParam `json:"editable_monitor,required"`
+	EditableMonitor EditableMonitorParam `json:"editable_monitor" api:"required"`
 }
 
 func (r UserLoadBalancerMonitorPreviewParams) MarshalJSON() (data []byte, err error) {

@@ -39,11 +39,11 @@ func (r *ZoneAcmTotalTlService) Get(ctx context.Context, zoneID string, opts ...
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/acm/total_tls", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Set Total TLS Settings or disable the feature for a Zone.
@@ -51,11 +51,11 @@ func (r *ZoneAcmTotalTlService) Update(ctx context.Context, zoneID string, body 
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/acm/total_tls", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // The Certificate Authority that Total TLS certificates will be issued through.
@@ -76,10 +76,10 @@ func (r CertificateAuthorityTotalTls) IsKnown() bool {
 }
 
 type SettingsResponseTotalTls struct {
-	Errors   []MessagesTlsCertificatesItem `json:"errors,required"`
-	Messages []MessagesTlsCertificatesItem `json:"messages,required"`
+	Errors   []MessagesTlsCertificatesItem `json:"errors" api:"required"`
+	Messages []MessagesTlsCertificatesItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success SettingsResponseTotalTlsSuccess `json:"success,required"`
+	Success SettingsResponseTotalTlsSuccess `json:"success" api:"required"`
 	Result  SettingsResponseTotalTlsResult  `json:"result"`
 	JSON    settingsResponseTotalTlsJSON    `json:"-"`
 }
@@ -165,7 +165,7 @@ func (r SettingsResponseTotalTlsResultValidityPeriod) IsKnown() bool {
 type ZoneAcmTotalTlUpdateParams struct {
 	// If enabled, Total TLS will order a hostname specific TLS certificate for any
 	// proxied A, AAAA, or CNAME record in your zone.
-	Enabled param.Field[bool] `json:"enabled,required"`
+	Enabled param.Field[bool] `json:"enabled" api:"required"`
 	// The Certificate Authority that Total TLS certificates will be issued through.
 	CertificateAuthority param.Field[CertificateAuthorityTotalTls] `json:"certificate_authority"`
 }

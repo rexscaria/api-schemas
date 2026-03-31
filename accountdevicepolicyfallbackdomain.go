@@ -41,15 +41,15 @@ func (r *AccountDevicePolicyFallbackDomainService) List(ctx context.Context, acc
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if policyID == "" {
 		err = errors.New("missing required policy_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/devices/policy/%s/fallback_domains", accountID, policyID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetches a list of domains to bypass Gateway DNS resolution. These domains will
@@ -58,11 +58,11 @@ func (r *AccountDevicePolicyFallbackDomainService) GlobalList(ctx context.Contex
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/devices/policy/fallback_domains", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Sets the list of domains to bypass Gateway DNS resolution. These domains will
@@ -71,11 +71,11 @@ func (r *AccountDevicePolicyFallbackDomainService) GlobalSet(ctx context.Context
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/devices/policy/fallback_domains", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Sets the list of domains to bypass Gateway DNS resolution. These domains will
@@ -85,20 +85,20 @@ func (r *AccountDevicePolicyFallbackDomainService) Set(ctx context.Context, acco
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if policyID == "" {
 		err = errors.New("missing required policy_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/devices/policy/%s/fallback_domains", accountID, policyID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type FallbackDomain struct {
 	// The domain suffix to match when resolving locally.
-	Suffix string `json:"suffix,required"`
+	Suffix string `json:"suffix" api:"required"`
 	// A description of the fallback domain, displayed in the client UI.
 	Description string `json:"description"`
 	// A list of IP addresses to handle domain resolution.
@@ -125,7 +125,7 @@ func (r fallbackDomainJSON) RawJSON() string {
 
 type FallbackDomainParam struct {
 	// The domain suffix to match when resolving locally.
-	Suffix param.Field[string] `json:"suffix,required"`
+	Suffix param.Field[string] `json:"suffix" api:"required"`
 	// A description of the fallback domain, displayed in the client UI.
 	Description param.Field[string] `json:"description"`
 	// A list of IP addresses to handle domain resolution.
@@ -137,11 +137,11 @@ func (r FallbackDomainParam) MarshalJSON() (data []byte, err error) {
 }
 
 type FallbackDomainResponseCollection struct {
-	Errors   []FallbackDomainResponseCollectionError   `json:"errors,required"`
-	Messages []FallbackDomainResponseCollectionMessage `json:"messages,required"`
-	Result   []FallbackDomain                          `json:"result,required,nullable"`
+	Errors   []FallbackDomainResponseCollectionError   `json:"errors" api:"required"`
+	Messages []FallbackDomainResponseCollectionMessage `json:"messages" api:"required"`
+	Result   []FallbackDomain                          `json:"result" api:"required,nullable"`
 	// Whether the API call was successful.
-	Success    FallbackDomainResponseCollectionSuccess    `json:"success,required"`
+	Success    FallbackDomainResponseCollectionSuccess    `json:"success" api:"required"`
 	ResultInfo FallbackDomainResponseCollectionResultInfo `json:"result_info"`
 	JSON       fallbackDomainResponseCollectionJSON       `json:"-"`
 }
@@ -167,8 +167,8 @@ func (r fallbackDomainResponseCollectionJSON) RawJSON() string {
 }
 
 type FallbackDomainResponseCollectionError struct {
-	Code             int64                                        `json:"code,required"`
-	Message          string                                       `json:"message,required"`
+	Code             int64                                        `json:"code" api:"required"`
+	Message          string                                       `json:"message" api:"required"`
 	DocumentationURL string                                       `json:"documentation_url"`
 	Source           FallbackDomainResponseCollectionErrorsSource `json:"source"`
 	JSON             fallbackDomainResponseCollectionErrorJSON    `json:"-"`
@@ -215,8 +215,8 @@ func (r fallbackDomainResponseCollectionErrorsSourceJSON) RawJSON() string {
 }
 
 type FallbackDomainResponseCollectionMessage struct {
-	Code             int64                                          `json:"code,required"`
-	Message          string                                         `json:"message,required"`
+	Code             int64                                          `json:"code" api:"required"`
+	Message          string                                         `json:"message" api:"required"`
 	DocumentationURL string                                         `json:"documentation_url"`
 	Source           FallbackDomainResponseCollectionMessagesSource `json:"source"`
 	JSON             fallbackDomainResponseCollectionMessageJSON    `json:"-"`
@@ -309,7 +309,7 @@ func (r fallbackDomainResponseCollectionResultInfoJSON) RawJSON() string {
 }
 
 type AccountDevicePolicyFallbackDomainGlobalSetParams struct {
-	Body []FallbackDomainParam `json:"body,required"`
+	Body []FallbackDomainParam `json:"body" api:"required"`
 }
 
 func (r AccountDevicePolicyFallbackDomainGlobalSetParams) MarshalJSON() (data []byte, err error) {
@@ -317,7 +317,7 @@ func (r AccountDevicePolicyFallbackDomainGlobalSetParams) MarshalJSON() (data []
 }
 
 type AccountDevicePolicyFallbackDomainSetParams struct {
-	Body []FallbackDomainParam `json:"body,required"`
+	Body []FallbackDomainParam `json:"body" api:"required"`
 }
 
 func (r AccountDevicePolicyFallbackDomainSetParams) MarshalJSON() (data []byte, err error) {

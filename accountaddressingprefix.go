@@ -46,15 +46,15 @@ func (r *AccountAddressingPrefixService) Get(ctx context.Context, accountID stri
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if prefixID == "" {
 		err = errors.New("missing required prefix_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/addressing/prefixes/%s", accountID, prefixID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Modify the description for a prefix owned by the account.
@@ -62,15 +62,15 @@ func (r *AccountAddressingPrefixService) Update(ctx context.Context, accountID s
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if prefixID == "" {
 		err = errors.New("missing required prefix_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/addressing/prefixes/%s", accountID, prefixID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // List all prefixes owned by the account.
@@ -78,11 +78,11 @@ func (r *AccountAddressingPrefixService) List(ctx context.Context, accountID str
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/addressing/prefixes", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete an unapproved prefix owned by the account.
@@ -90,15 +90,15 @@ func (r *AccountAddressingPrefixService) Delete(ctx context.Context, accountID s
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if prefixID == "" {
 		err = errors.New("missing required prefix_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/addressing/prefixes/%s", accountID, prefixID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Add a new prefix under the account.
@@ -106,11 +106,11 @@ func (r *AccountAddressingPrefixService) Add(ctx context.Context, accountID stri
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/addressing/prefixes", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type IpamPrefixes struct {
@@ -120,21 +120,21 @@ type IpamPrefixes struct {
 	AccountID string `json:"account_id"`
 	// Prefix advertisement status to the Internet. This field is only not 'null' if on
 	// demand is enabled.
-	Advertised bool `json:"advertised,nullable"`
+	Advertised bool `json:"advertised" api:"nullable"`
 	// Last time the advertisement status was changed. This field is only not 'null' if
 	// on demand is enabled.
-	AdvertisedModifiedAt time.Time `json:"advertised_modified_at,nullable" format:"date-time"`
+	AdvertisedModifiedAt time.Time `json:"advertised_modified_at" api:"nullable" format:"date-time"`
 	// Approval state of the prefix (P = pending, V = active).
 	Approved string `json:"approved"`
 	// Autonomous System Number (ASN) the prefix will be advertised under.
-	Asn int64 `json:"asn,nullable"`
+	Asn int64 `json:"asn" api:"nullable"`
 	// IP Prefix in Classless Inter-Domain Routing format.
 	Cidr      string    `json:"cidr"`
 	CreatedAt time.Time `json:"created_at" format:"date-time"`
 	// Description of the prefix.
 	Description string `json:"description"`
 	// Identifier for the uploaded LOA document.
-	LoaDocumentID string    `json:"loa_document_id,nullable"`
+	LoaDocumentID string    `json:"loa_document_id" api:"nullable"`
 	ModifiedAt    time.Time `json:"modified_at" format:"date-time"`
 	// Whether advertisement of the prefix to the Internet may be dynamically enabled
 	// or disabled.
@@ -173,10 +173,10 @@ func (r ipamPrefixesJSON) RawJSON() string {
 }
 
 type SingleResponsePrefix struct {
-	Errors   []AddressingMessages `json:"errors,required"`
-	Messages []AddressingMessages `json:"messages,required"`
+	Errors   []AddressingMessages `json:"errors" api:"required"`
+	Messages []AddressingMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success SingleResponsePrefixSuccess `json:"success,required"`
+	Success SingleResponsePrefixSuccess `json:"success" api:"required"`
 	Result  IpamPrefixes                `json:"result"`
 	JSON    singleResponsePrefixJSON    `json:"-"`
 }
@@ -216,10 +216,10 @@ func (r SingleResponsePrefixSuccess) IsKnown() bool {
 }
 
 type AccountAddressingPrefixListResponse struct {
-	Errors   []AddressingMessages `json:"errors,required"`
-	Messages []AddressingMessages `json:"messages,required"`
+	Errors   []AddressingMessages `json:"errors" api:"required"`
+	Messages []AddressingMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success    AccountAddressingPrefixListResponseSuccess    `json:"success,required"`
+	Success    AccountAddressingPrefixListResponseSuccess    `json:"success" api:"required"`
 	Result     []IpamPrefixes                                `json:"result"`
 	ResultInfo AccountAddressingPrefixListResponseResultInfo `json:"result_info"`
 	JSON       accountAddressingPrefixListResponseJSON       `json:"-"`
@@ -293,7 +293,7 @@ func (r accountAddressingPrefixListResponseResultInfoJSON) RawJSON() string {
 
 type AccountAddressingPrefixUpdateParams struct {
 	// Description of the prefix.
-	Description param.Field[string] `json:"description,required"`
+	Description param.Field[string] `json:"description" api:"required"`
 }
 
 func (r AccountAddressingPrefixUpdateParams) MarshalJSON() (data []byte, err error) {
@@ -302,11 +302,11 @@ func (r AccountAddressingPrefixUpdateParams) MarshalJSON() (data []byte, err err
 
 type AccountAddressingPrefixAddParams struct {
 	// Autonomous System Number (ASN) the prefix will be advertised under.
-	Asn param.Field[int64] `json:"asn,required"`
+	Asn param.Field[int64] `json:"asn" api:"required"`
 	// IP Prefix in Classless Inter-Domain Routing format.
-	Cidr param.Field[string] `json:"cidr,required"`
+	Cidr param.Field[string] `json:"cidr" api:"required"`
 	// Identifier for the uploaded LOA document.
-	LoaDocumentID param.Field[string] `json:"loa_document_id,required"`
+	LoaDocumentID param.Field[string] `json:"loa_document_id" api:"required"`
 }
 
 func (r AccountAddressingPrefixAddParams) MarshalJSON() (data []byte, err error) {

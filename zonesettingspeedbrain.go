@@ -41,11 +41,11 @@ func (r *ZoneSettingSpeedBrainService) Get(ctx context.Context, zoneID string, o
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/settings/speed_brain", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Speed Brain lets compatible browsers speculate on content which can be
@@ -55,11 +55,11 @@ func (r *ZoneSettingSpeedBrainService) Update(ctx context.Context, zoneID string
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/settings/speed_brain", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type SpeedCloudflareSpeedBrainResponse struct {
@@ -87,10 +87,10 @@ func (r speedCloudflareSpeedBrainResponseJSON) RawJSON() string {
 }
 
 type ZoneSettingSpeedBrainGetResponse struct {
-	Errors   []SpeedMessagesItems `json:"errors,required"`
-	Messages []SpeedMessagesItems `json:"messages,required"`
+	Errors   []SpeedMessagesItems `json:"errors" api:"required"`
+	Messages []SpeedMessagesItems `json:"messages" api:"required"`
 	// Whether the API call was successful
-	Success bool                                 `json:"success,required"`
+	Success bool                                 `json:"success" api:"required"`
 	Result  SpeedCloudflareSpeedBrainResponse    `json:"result"`
 	JSON    zoneSettingSpeedBrainGetResponseJSON `json:"-"`
 }
@@ -115,10 +115,10 @@ func (r zoneSettingSpeedBrainGetResponseJSON) RawJSON() string {
 }
 
 type ZoneSettingSpeedBrainUpdateResponse struct {
-	Errors   []SpeedMessagesItems `json:"errors,required"`
-	Messages []SpeedMessagesItems `json:"messages,required"`
+	Errors   []SpeedMessagesItems `json:"errors" api:"required"`
+	Messages []SpeedMessagesItems `json:"messages" api:"required"`
 	// Whether the API call was successful
-	Success bool                                    `json:"success,required"`
+	Success bool                                    `json:"success" api:"required"`
 	Result  SpeedCloudflareSpeedBrainResponse       `json:"result"`
 	JSON    zoneSettingSpeedBrainUpdateResponseJSON `json:"-"`
 }
@@ -144,7 +144,7 @@ func (r zoneSettingSpeedBrainUpdateResponseJSON) RawJSON() string {
 
 type ZoneSettingSpeedBrainUpdateParams struct {
 	// Whether the feature is enabled or disabled.
-	Value param.Field[ZoneSettingSpeedBrainUpdateParamsValue] `json:"value,required"`
+	Value param.Field[ZoneSettingSpeedBrainUpdateParamsValue] `json:"value" api:"required"`
 }
 
 func (r ZoneSettingSpeedBrainUpdateParams) MarshalJSON() (data []byte, err error) {

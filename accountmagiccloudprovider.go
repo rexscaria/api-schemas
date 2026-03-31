@@ -41,16 +41,16 @@ func NewAccountMagicCloudProviderService(opts ...option.RequestOption) (r *Accou
 // Create a new Cloud Integration (Closed Beta).
 func (r *AccountMagicCloudProviderService) New(ctx context.Context, accountID string, params AccountMagicCloudProviderNewParams, opts ...option.RequestOption) (res *AccountMagicCloudProviderNewResponse, err error) {
 	if params.Forwarded.Present {
-		opts = append(opts, option.WithHeader("forwarded", fmt.Sprintf("%s", params.Forwarded)))
+		opts = append(opts, option.WithHeader("forwarded", fmt.Sprintf("%v", params.Forwarded)))
 	}
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/cloud/providers", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Read a Cloud Integration (Closed Beta).
@@ -58,15 +58,15 @@ func (r *AccountMagicCloudProviderService) Get(ctx context.Context, accountID st
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if providerID == "" {
 		err = errors.New("missing required provider_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/cloud/providers/%s", accountID, providerID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Update a Cloud Integration (Closed Beta).
@@ -74,15 +74,15 @@ func (r *AccountMagicCloudProviderService) Update(ctx context.Context, accountID
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if providerID == "" {
 		err = errors.New("missing required provider_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/cloud/providers/%s", accountID, providerID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // List Cloud Integrations (Closed Beta).
@@ -90,11 +90,11 @@ func (r *AccountMagicCloudProviderService) List(ctx context.Context, accountID s
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/cloud/providers", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete a Cloud Integration (Closed Beta).
@@ -102,15 +102,15 @@ func (r *AccountMagicCloudProviderService) Delete(ctx context.Context, accountID
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if providerID == "" {
 		err = errors.New("missing required provider_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/cloud/providers/%s", accountID, providerID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Run discovery for a Cloud Integration (Closed Beta).
@@ -118,15 +118,15 @@ func (r *AccountMagicCloudProviderService) Discover(ctx context.Context, account
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if providerID == "" {
 		err = errors.New("missing required provider_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/cloud/providers/%s/discover", accountID, providerID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Run discovery for all Cloud Integrations in an account (Closed Beta).
@@ -134,11 +134,11 @@ func (r *AccountMagicCloudProviderService) DiscoverAll(ctx context.Context, acco
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/cloud/providers/discover", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Get initial configuration to complete Cloud Integration setup (Closed Beta).
@@ -146,15 +146,15 @@ func (r *AccountMagicCloudProviderService) GetSetupConfig(ctx context.Context, a
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if providerID == "" {
 		err = errors.New("missing required provider_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/cloud/providers/%s/initial_setup", accountID, providerID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update a Cloud Integration (Closed Beta).
@@ -162,15 +162,15 @@ func (r *AccountMagicCloudProviderService) Patch(ctx context.Context, accountID 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if providerID == "" {
 		err = errors.New("missing required provider_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/cloud/providers/%s", accountID, providerID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type McnCloudType string
@@ -191,13 +191,13 @@ func (r McnCloudType) IsKnown() bool {
 }
 
 type McnProvider struct {
-	ID                     string                     `json:"id,required" format:"uuid"`
-	CloudType              McnCloudType               `json:"cloud_type,required"`
-	FriendlyName           string                     `json:"friendly_name,required"`
-	LastUpdated            string                     `json:"last_updated,required"`
-	LifecycleState         McnProviderLifecycleState  `json:"lifecycle_state,required"`
-	State                  McnProviderDiscoveryStatus `json:"state,required"`
-	StateV2                McnProviderDiscoveryStatus `json:"state_v2,required"`
+	ID                     string                     `json:"id" api:"required" format:"uuid"`
+	CloudType              McnCloudType               `json:"cloud_type" api:"required"`
+	FriendlyName           string                     `json:"friendly_name" api:"required"`
+	LastUpdated            string                     `json:"last_updated" api:"required"`
+	LifecycleState         McnProviderLifecycleState  `json:"lifecycle_state" api:"required"`
+	State                  McnProviderDiscoveryStatus `json:"state" api:"required"`
+	StateV2                McnProviderDiscoveryStatus `json:"state_v2" api:"required"`
 	AwsArn                 string                     `json:"aws_arn"`
 	AzureSubscriptionID    string                     `json:"azure_subscription_id"`
 	AzureTenantID          string                     `json:"azure_tenant_id"`
@@ -253,11 +253,11 @@ func (r McnProviderLifecycleState) IsKnown() bool {
 }
 
 type McnProviderStatus struct {
-	DiscoveryProgress          McnProviderDiscoveryProgress `json:"discovery_progress,required"`
-	DiscoveryProgressV2        McnProviderDiscoveryProgress `json:"discovery_progress_v2,required"`
-	LastDiscoveryStatus        McnProviderDiscoveryStatus   `json:"last_discovery_status,required"`
-	LastDiscoveryStatusV2      McnProviderDiscoveryStatus   `json:"last_discovery_status_v2,required"`
-	Regions                    []string                     `json:"regions,required"`
+	DiscoveryProgress          McnProviderDiscoveryProgress `json:"discovery_progress" api:"required"`
+	DiscoveryProgressV2        McnProviderDiscoveryProgress `json:"discovery_progress_v2" api:"required"`
+	LastDiscoveryStatus        McnProviderDiscoveryStatus   `json:"last_discovery_status" api:"required"`
+	LastDiscoveryStatusV2      McnProviderDiscoveryStatus   `json:"last_discovery_status_v2" api:"required"`
+	Regions                    []string                     `json:"regions" api:"required"`
 	CredentialsGoodSince       string                       `json:"credentials_good_since"`
 	CredentialsMissingSince    string                       `json:"credentials_missing_since"`
 	CredentialsRejectedSince   string                       `json:"credentials_rejected_since"`
@@ -304,9 +304,9 @@ func (r mcnProviderStatusJSON) RawJSON() string {
 }
 
 type McnProviderDiscoveryProgress struct {
-	Done  int64                            `json:"done,required"`
-	Total int64                            `json:"total,required"`
-	Unit  string                           `json:"unit,required"`
+	Done  int64                            `json:"done" api:"required"`
+	Total int64                            `json:"total" api:"required"`
+	Unit  string                           `json:"unit" api:"required"`
 	JSON  mcnProviderDiscoveryProgressJSON `json:"-"`
 }
 
@@ -361,10 +361,10 @@ func (r McnUpdateProviderRequestParam) MarshalJSON() (data []byte, err error) {
 }
 
 type McnUpdateProviderResponse struct {
-	Errors   []McnError                    `json:"errors,required"`
-	Messages []McnError                    `json:"messages,required"`
-	Result   McnProvider                   `json:"result,required"`
-	Success  bool                          `json:"success,required"`
+	Errors   []McnError                    `json:"errors" api:"required"`
+	Messages []McnError                    `json:"messages" api:"required"`
+	Result   McnProvider                   `json:"result" api:"required"`
+	Success  bool                          `json:"success" api:"required"`
 	JSON     mcnUpdateProviderResponseJSON `json:"-"`
 }
 
@@ -388,10 +388,10 @@ func (r mcnUpdateProviderResponseJSON) RawJSON() string {
 }
 
 type AccountMagicCloudProviderNewResponse struct {
-	Errors   []McnError                               `json:"errors,required"`
-	Messages []McnError                               `json:"messages,required"`
-	Result   McnProvider                              `json:"result,required"`
-	Success  bool                                     `json:"success,required"`
+	Errors   []McnError                               `json:"errors" api:"required"`
+	Messages []McnError                               `json:"messages" api:"required"`
+	Result   McnProvider                              `json:"result" api:"required"`
+	Success  bool                                     `json:"success" api:"required"`
 	JSON     accountMagicCloudProviderNewResponseJSON `json:"-"`
 }
 
@@ -415,10 +415,10 @@ func (r accountMagicCloudProviderNewResponseJSON) RawJSON() string {
 }
 
 type AccountMagicCloudProviderGetResponse struct {
-	Errors   []McnError                               `json:"errors,required"`
-	Messages []McnError                               `json:"messages,required"`
-	Result   McnProvider                              `json:"result,required"`
-	Success  bool                                     `json:"success,required"`
+	Errors   []McnError                               `json:"errors" api:"required"`
+	Messages []McnError                               `json:"messages" api:"required"`
+	Result   McnProvider                              `json:"result" api:"required"`
+	Success  bool                                     `json:"success" api:"required"`
 	JSON     accountMagicCloudProviderGetResponseJSON `json:"-"`
 }
 
@@ -442,10 +442,10 @@ func (r accountMagicCloudProviderGetResponseJSON) RawJSON() string {
 }
 
 type AccountMagicCloudProviderListResponse struct {
-	Errors   []McnError                                `json:"errors,required"`
-	Messages []McnError                                `json:"messages,required"`
-	Result   []McnProvider                             `json:"result,required"`
-	Success  bool                                      `json:"success,required"`
+	Errors   []McnError                                `json:"errors" api:"required"`
+	Messages []McnError                                `json:"messages" api:"required"`
+	Result   []McnProvider                             `json:"result" api:"required"`
+	Success  bool                                      `json:"success" api:"required"`
 	JSON     accountMagicCloudProviderListResponseJSON `json:"-"`
 }
 
@@ -469,10 +469,10 @@ func (r accountMagicCloudProviderListResponseJSON) RawJSON() string {
 }
 
 type AccountMagicCloudProviderDeleteResponse struct {
-	Errors   []McnError                                    `json:"errors,required"`
-	Messages []McnError                                    `json:"messages,required"`
-	Result   AccountMagicCloudProviderDeleteResponseResult `json:"result,required"`
-	Success  bool                                          `json:"success,required"`
+	Errors   []McnError                                    `json:"errors" api:"required"`
+	Messages []McnError                                    `json:"messages" api:"required"`
+	Result   AccountMagicCloudProviderDeleteResponseResult `json:"result" api:"required"`
+	Success  bool                                          `json:"success" api:"required"`
 	JSON     accountMagicCloudProviderDeleteResponseJSON   `json:"-"`
 }
 
@@ -496,7 +496,7 @@ func (r accountMagicCloudProviderDeleteResponseJSON) RawJSON() string {
 }
 
 type AccountMagicCloudProviderDeleteResponseResult struct {
-	ID   string                                            `json:"id,required" format:"uuid"`
+	ID   string                                            `json:"id" api:"required" format:"uuid"`
 	JSON accountMagicCloudProviderDeleteResponseResultJSON `json:"-"`
 }
 
@@ -517,10 +517,10 @@ func (r accountMagicCloudProviderDeleteResponseResultJSON) RawJSON() string {
 }
 
 type AccountMagicCloudProviderGetSetupConfigResponse struct {
-	Errors   []McnError                                            `json:"errors,required"`
-	Messages []McnError                                            `json:"messages,required"`
-	Result   AccountMagicCloudProviderGetSetupConfigResponseResult `json:"result,required"`
-	Success  bool                                                  `json:"success,required"`
+	Errors   []McnError                                            `json:"errors" api:"required"`
+	Messages []McnError                                            `json:"messages" api:"required"`
+	Result   AccountMagicCloudProviderGetSetupConfigResponseResult `json:"result" api:"required"`
+	Success  bool                                                  `json:"success" api:"required"`
 	JSON     accountMagicCloudProviderGetSetupConfigResponseJSON   `json:"-"`
 }
 
@@ -544,7 +544,7 @@ func (r accountMagicCloudProviderGetSetupConfigResponseJSON) RawJSON() string {
 }
 
 type AccountMagicCloudProviderGetSetupConfigResponseResult struct {
-	ItemType               string                                                    `json:"item_type,required"`
+	ItemType               string                                                    `json:"item_type" api:"required"`
 	AwsTrustPolicy         string                                                    `json:"aws_trust_policy"`
 	AzureConsentURL        string                                                    `json:"azure_consent_url"`
 	IntegrationIdentityTag string                                                    `json:"integration_identity_tag"`
@@ -617,8 +617,8 @@ func init() {
 }
 
 type AccountMagicCloudProviderGetSetupConfigResponseResultMcnAwsTrustPolicy struct {
-	AwsTrustPolicy string                                                                     `json:"aws_trust_policy,required"`
-	ItemType       string                                                                     `json:"item_type,required"`
+	AwsTrustPolicy string                                                                     `json:"aws_trust_policy" api:"required"`
+	ItemType       string                                                                     `json:"item_type" api:"required"`
 	JSON           accountMagicCloudProviderGetSetupConfigResponseResultMcnAwsTrustPolicyJSON `json:"-"`
 }
 
@@ -644,10 +644,10 @@ func (r AccountMagicCloudProviderGetSetupConfigResponseResultMcnAwsTrustPolicy) 
 }
 
 type AccountMagicCloudProviderGetSetupConfigResponseResultMcnAzureSetup struct {
-	AzureConsentURL        string                                                                 `json:"azure_consent_url,required"`
-	IntegrationIdentityTag string                                                                 `json:"integration_identity_tag,required"`
-	ItemType               string                                                                 `json:"item_type,required"`
-	TagCliCommand          string                                                                 `json:"tag_cli_command,required"`
+	AzureConsentURL        string                                                                 `json:"azure_consent_url" api:"required"`
+	IntegrationIdentityTag string                                                                 `json:"integration_identity_tag" api:"required"`
+	ItemType               string                                                                 `json:"item_type" api:"required"`
+	TagCliCommand          string                                                                 `json:"tag_cli_command" api:"required"`
 	JSON                   accountMagicCloudProviderGetSetupConfigResponseResultMcnAzureSetupJSON `json:"-"`
 }
 
@@ -675,9 +675,9 @@ func (r AccountMagicCloudProviderGetSetupConfigResponseResultMcnAzureSetup) impl
 }
 
 type AccountMagicCloudProviderGetSetupConfigResponseResultMcnGcpSetup struct {
-	IntegrationIdentityTag string                                                               `json:"integration_identity_tag,required"`
-	ItemType               string                                                               `json:"item_type,required"`
-	TagCliCommand          string                                                               `json:"tag_cli_command,required"`
+	IntegrationIdentityTag string                                                               `json:"integration_identity_tag" api:"required"`
+	ItemType               string                                                               `json:"item_type" api:"required"`
+	TagCliCommand          string                                                               `json:"tag_cli_command" api:"required"`
 	JSON                   accountMagicCloudProviderGetSetupConfigResponseResultMcnGcpSetupJSON `json:"-"`
 }
 
@@ -704,8 +704,8 @@ func (r AccountMagicCloudProviderGetSetupConfigResponseResultMcnGcpSetup) implem
 }
 
 type AccountMagicCloudProviderNewParams struct {
-	CloudType    param.Field[McnCloudType] `json:"cloud_type,required"`
-	FriendlyName param.Field[string]       `json:"friendly_name,required"`
+	CloudType    param.Field[McnCloudType] `json:"cloud_type" api:"required"`
+	FriendlyName param.Field[string]       `json:"friendly_name" api:"required"`
 	Description  param.Field[string]       `json:"description"`
 	Forwarded    param.Field[string]       `header:"forwarded"`
 }
@@ -728,7 +728,7 @@ func (r AccountMagicCloudProviderGetParams) URLQuery() (v url.Values) {
 }
 
 type AccountMagicCloudProviderUpdateParams struct {
-	McnUpdateProviderRequest McnUpdateProviderRequestParam `json:"mcn_update_provider_request,required"`
+	McnUpdateProviderRequest McnUpdateProviderRequestParam `json:"mcn_update_provider_request" api:"required"`
 }
 
 func (r AccountMagicCloudProviderUpdateParams) MarshalJSON() (data []byte, err error) {
@@ -766,7 +766,7 @@ func (r AccountMagicCloudProviderDiscoverParams) URLQuery() (v url.Values) {
 }
 
 type AccountMagicCloudProviderPatchParams struct {
-	McnUpdateProviderRequest McnUpdateProviderRequestParam `json:"mcn_update_provider_request,required"`
+	McnUpdateProviderRequest McnUpdateProviderRequestParam `json:"mcn_update_provider_request" api:"required"`
 }
 
 func (r AccountMagicCloudProviderPatchParams) MarshalJSON() (data []byte, err error) {

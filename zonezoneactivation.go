@@ -27,8 +27,8 @@ func NewZoneZoneActivationService(opts ...option.RequestOption) (r *ZoneZoneActi
 }
 
 type MessageItem struct {
-	Code             int64             `json:"code,required"`
-	Message          string            `json:"message,required"`
+	Code             int64             `json:"code" api:"required"`
+	Message          string            `json:"message" api:"required"`
 	DocumentationURL string            `json:"documentation_url"`
 	Source           MessageItemSource `json:"source"`
 	JSON             messageItemJSON   `json:"-"`

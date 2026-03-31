@@ -44,7 +44,7 @@ func (r *UserFirewallAccessRuleRuleService) New(ctx context.Context, body UserFi
 	opts = slices.Concat(r.Options, opts)
 	path := "user/firewall/access_rules/rules"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates an IP Access rule defined at the user level. You can only update the
@@ -53,11 +53,11 @@ func (r *UserFirewallAccessRuleRuleService) Update(ctx context.Context, ruleID s
 	opts = slices.Concat(r.Options, opts)
 	if ruleID == "" {
 		err = errors.New("missing required rule_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("user/firewall/access_rules/rules/%s", ruleID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetches IP Access rules of the user. You can filter the results using several
@@ -66,7 +66,7 @@ func (r *UserFirewallAccessRuleRuleService) List(ctx context.Context, query User
 	opts = slices.Concat(r.Options, opts)
 	path := "user/firewall/access_rules/rules"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Deletes an IP Access rule at the user level.
@@ -76,19 +76,19 @@ func (r *UserFirewallAccessRuleRuleService) Delete(ctx context.Context, ruleID s
 	opts = slices.Concat(r.Options, opts)
 	if ruleID == "" {
 		err = errors.New("missing required rule_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("user/firewall/access_rules/rules/%s", ruleID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type FirewallRuleCollection struct {
-	Errors   []FirewallMessagesItem `json:"errors,required"`
-	Messages []FirewallMessagesItem `json:"messages,required"`
-	Result   []FirewallRule         `json:"result,required,nullable"`
+	Errors   []FirewallMessagesItem `json:"errors" api:"required"`
+	Messages []FirewallMessagesItem `json:"messages" api:"required"`
+	Result   []FirewallRule         `json:"result" api:"required,nullable"`
 	// Defines whether the API call was successful.
-	Success    FirewallRuleCollectionSuccess    `json:"success,required"`
+	Success    FirewallRuleCollectionSuccess    `json:"success" api:"required"`
 	ResultInfo FirewallRuleCollectionResultInfo `json:"result_info"`
 	JSON       firewallRuleCollectionJSON       `json:"-"`
 }
@@ -160,11 +160,11 @@ func (r firewallRuleCollectionResultInfoJSON) RawJSON() string {
 }
 
 type FirewallRuleSingle struct {
-	Errors   []FirewallMessagesItem `json:"errors,required"`
-	Messages []FirewallMessagesItem `json:"messages,required"`
-	Result   FirewallRule           `json:"result,required"`
+	Errors   []FirewallMessagesItem `json:"errors" api:"required"`
+	Messages []FirewallMessagesItem `json:"messages" api:"required"`
+	Result   FirewallRule           `json:"result" api:"required"`
 	// Defines whether the API call was successful.
-	Success FirewallRuleSingleSuccess `json:"success,required"`
+	Success FirewallRuleSingleSuccess `json:"success" api:"required"`
 	JSON    firewallRuleSingleJSON    `json:"-"`
 }
 
@@ -203,11 +203,11 @@ func (r FirewallRuleSingleSuccess) IsKnown() bool {
 }
 
 type FirewallRuleSingleID struct {
-	Errors   []FirewallMessagesItem     `json:"errors,required"`
-	Messages []FirewallMessagesItem     `json:"messages,required"`
-	Result   FirewallRuleSingleIDResult `json:"result,required"`
+	Errors   []FirewallMessagesItem     `json:"errors" api:"required"`
+	Messages []FirewallMessagesItem     `json:"messages" api:"required"`
+	Result   FirewallRuleSingleIDResult `json:"result" api:"required"`
 	// Defines whether the API call was successful.
-	Success FirewallRuleSingleIDSuccess `json:"success,required"`
+	Success FirewallRuleSingleIDSuccess `json:"success" api:"required"`
 	JSON    firewallRuleSingleIDJSON    `json:"-"`
 }
 
@@ -269,9 +269,9 @@ func (r FirewallRuleSingleIDSuccess) IsKnown() bool {
 
 type UserFirewallAccessRuleRuleNewParams struct {
 	// The rule configuration.
-	Configuration param.Field[FirewallRuleConfigurationUnionParam] `json:"configuration,required"`
+	Configuration param.Field[FirewallRuleConfigurationUnionParam] `json:"configuration" api:"required"`
 	// The action to apply to a matched request.
-	Mode param.Field[FirewallSchemasMode] `json:"mode,required"`
+	Mode param.Field[FirewallSchemasMode] `json:"mode" api:"required"`
 	// An informative summary of the rule, typically used as a reminder or explanation.
 	Notes param.Field[string] `json:"notes"`
 }

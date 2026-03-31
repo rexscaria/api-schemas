@@ -14,7 +14,7 @@ import (
 )
 
 func TestAccountAIRunCfDeepseekAIExecuteDeepseekMath7bInstructWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,6 +26,7 @@ func TestAccountAIRunCfDeepseekAIExecuteDeepseekMath7bInstructWithOptionalParams
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.AI.Run.Cf.DeepseekAI.ExecuteDeepseekMath7bInstruct(
 		context.TODO(),
@@ -62,7 +63,7 @@ func TestAccountAIRunCfDeepseekAIExecuteDeepseekMath7bInstructWithOptionalParams
 }
 
 func TestAccountAIRunCfDeepseekAIExecuteDeepseekR1DistillQwen32bWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -74,6 +75,7 @@ func TestAccountAIRunCfDeepseekAIExecuteDeepseekR1DistillQwen32bWithOptionalPara
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.AI.Run.Cf.DeepseekAI.ExecuteDeepseekR1DistillQwen32b(
 		context.TODO(),

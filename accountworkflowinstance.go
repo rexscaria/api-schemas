@@ -45,15 +45,15 @@ func (r *AccountWorkflowInstanceService) New(ctx context.Context, accountID stri
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if workflowName == "" {
 		err = errors.New("missing required workflow_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/workflows/%s/instances", accountID, workflowName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get logs and status from instance
@@ -61,19 +61,19 @@ func (r *AccountWorkflowInstanceService) Get(ctx context.Context, accountID stri
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if workflowName == "" {
 		err = errors.New("missing required workflow_name parameter")
-		return
+		return nil, err
 	}
 	if instanceID == "" {
 		err = errors.New("missing required instance_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/workflows/%s/instances/%s", accountID, workflowName, instanceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // List of workflow instances
@@ -81,15 +81,15 @@ func (r *AccountWorkflowInstanceService) List(ctx context.Context, accountID str
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if workflowName == "" {
 		err = errors.New("missing required workflow_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/workflows/%s/instances", accountID, workflowName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Batch create new Workflow instances
@@ -97,15 +97,15 @@ func (r *AccountWorkflowInstanceService) BatchNew(ctx context.Context, accountID
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if workflowName == "" {
 		err = errors.New("missing required workflow_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/workflows/%s/instances/batch", accountID, workflowName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Send event to instance
@@ -113,23 +113,23 @@ func (r *AccountWorkflowInstanceService) SendEvent(ctx context.Context, accountI
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if workflowName == "" {
 		err = errors.New("missing required workflow_name parameter")
-		return
+		return nil, err
 	}
 	if instanceID == "" {
 		err = errors.New("missing required instance_id parameter")
-		return
+		return nil, err
 	}
 	if eventType == "" {
 		err = errors.New("missing required event_type parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/workflows/%s/instances/%s/events/%s", accountID, workflowName, instanceID, eventType)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Change status of instance
@@ -137,26 +137,26 @@ func (r *AccountWorkflowInstanceService) UpdateStatus(ctx context.Context, accou
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if workflowName == "" {
 		err = errors.New("missing required workflow_name parameter")
-		return
+		return nil, err
 	}
 	if instanceID == "" {
 		err = errors.New("missing required instance_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/workflows/%s/instances/%s/status", accountID, workflowName, instanceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountWorkflowInstanceNewResponse struct {
-	Errors     []AccountWorkflowInstanceNewResponseError    `json:"errors,required"`
-	Messages   []AccountWorkflowInstanceNewResponseMessage  `json:"messages,required"`
-	Result     AccountWorkflowInstanceNewResponseResult     `json:"result,required"`
-	Success    AccountWorkflowInstanceNewResponseSuccess    `json:"success,required"`
+	Errors     []AccountWorkflowInstanceNewResponseError    `json:"errors" api:"required"`
+	Messages   []AccountWorkflowInstanceNewResponseMessage  `json:"messages" api:"required"`
+	Result     AccountWorkflowInstanceNewResponseResult     `json:"result" api:"required"`
+	Success    AccountWorkflowInstanceNewResponseSuccess    `json:"success" api:"required"`
 	ResultInfo AccountWorkflowInstanceNewResponseResultInfo `json:"result_info"`
 	JSON       accountWorkflowInstanceNewResponseJSON       `json:"-"`
 }
@@ -182,8 +182,8 @@ func (r accountWorkflowInstanceNewResponseJSON) RawJSON() string {
 }
 
 type AccountWorkflowInstanceNewResponseError struct {
-	Code    float64                                     `json:"code,required"`
-	Message string                                      `json:"message,required"`
+	Code    float64                                     `json:"code" api:"required"`
+	Message string                                      `json:"message" api:"required"`
 	JSON    accountWorkflowInstanceNewResponseErrorJSON `json:"-"`
 }
 
@@ -205,8 +205,8 @@ func (r accountWorkflowInstanceNewResponseErrorJSON) RawJSON() string {
 }
 
 type AccountWorkflowInstanceNewResponseMessage struct {
-	Code    float64                                       `json:"code,required"`
-	Message string                                        `json:"message,required"`
+	Code    float64                                       `json:"code" api:"required"`
+	Message string                                        `json:"message" api:"required"`
 	JSON    accountWorkflowInstanceNewResponseMessageJSON `json:"-"`
 }
 
@@ -228,10 +228,10 @@ func (r accountWorkflowInstanceNewResponseMessageJSON) RawJSON() string {
 }
 
 type AccountWorkflowInstanceNewResponseResult struct {
-	ID         string                                         `json:"id,required"`
-	Status     AccountWorkflowInstanceNewResponseResultStatus `json:"status,required"`
-	VersionID  string                                         `json:"version_id,required" format:"uuid"`
-	WorkflowID string                                         `json:"workflow_id,required" format:"uuid"`
+	ID         string                                         `json:"id" api:"required"`
+	Status     AccountWorkflowInstanceNewResponseResultStatus `json:"status" api:"required"`
+	VersionID  string                                         `json:"version_id" api:"required" format:"uuid"`
+	WorkflowID string                                         `json:"workflow_id" api:"required" format:"uuid"`
 	JSON       accountWorkflowInstanceNewResponseResultJSON   `json:"-"`
 }
 
@@ -290,10 +290,10 @@ func (r AccountWorkflowInstanceNewResponseSuccess) IsKnown() bool {
 }
 
 type AccountWorkflowInstanceNewResponseResultInfo struct {
-	Count      float64                                          `json:"count,required"`
-	Page       float64                                          `json:"page,required"`
-	PerPage    float64                                          `json:"per_page,required"`
-	TotalCount float64                                          `json:"total_count,required"`
+	Count      float64                                          `json:"count" api:"required"`
+	Page       float64                                          `json:"page" api:"required"`
+	PerPage    float64                                          `json:"per_page" api:"required"`
+	TotalCount float64                                          `json:"total_count" api:"required"`
 	JSON       accountWorkflowInstanceNewResponseResultInfoJSON `json:"-"`
 }
 
@@ -317,10 +317,10 @@ func (r accountWorkflowInstanceNewResponseResultInfoJSON) RawJSON() string {
 }
 
 type AccountWorkflowInstanceGetResponse struct {
-	Errors     []AccountWorkflowInstanceGetResponseError    `json:"errors,required"`
-	Messages   []AccountWorkflowInstanceGetResponseMessage  `json:"messages,required"`
-	Result     AccountWorkflowInstanceGetResponseResult     `json:"result,required"`
-	Success    AccountWorkflowInstanceGetResponseSuccess    `json:"success,required"`
+	Errors     []AccountWorkflowInstanceGetResponseError    `json:"errors" api:"required"`
+	Messages   []AccountWorkflowInstanceGetResponseMessage  `json:"messages" api:"required"`
+	Result     AccountWorkflowInstanceGetResponseResult     `json:"result" api:"required"`
+	Success    AccountWorkflowInstanceGetResponseSuccess    `json:"success" api:"required"`
 	ResultInfo AccountWorkflowInstanceGetResponseResultInfo `json:"result_info"`
 	JSON       accountWorkflowInstanceGetResponseJSON       `json:"-"`
 }
@@ -346,8 +346,8 @@ func (r accountWorkflowInstanceGetResponseJSON) RawJSON() string {
 }
 
 type AccountWorkflowInstanceGetResponseError struct {
-	Code    float64                                     `json:"code,required"`
-	Message string                                      `json:"message,required"`
+	Code    float64                                     `json:"code" api:"required"`
+	Message string                                      `json:"message" api:"required"`
 	JSON    accountWorkflowInstanceGetResponseErrorJSON `json:"-"`
 }
 
@@ -369,8 +369,8 @@ func (r accountWorkflowInstanceGetResponseErrorJSON) RawJSON() string {
 }
 
 type AccountWorkflowInstanceGetResponseMessage struct {
-	Code    float64                                       `json:"code,required"`
-	Message string                                        `json:"message,required"`
+	Code    float64                                       `json:"code" api:"required"`
+	Message string                                        `json:"message" api:"required"`
 	JSON    accountWorkflowInstanceGetResponseMessageJSON `json:"-"`
 }
 
@@ -392,17 +392,17 @@ func (r accountWorkflowInstanceGetResponseMessageJSON) RawJSON() string {
 }
 
 type AccountWorkflowInstanceGetResponseResult struct {
-	End       time.Time                                           `json:"end,required,nullable" format:"date-time"`
-	Error     AccountWorkflowInstanceGetResponseResultError       `json:"error,required,nullable"`
-	Output    AccountWorkflowInstanceGetResponseResultOutputUnion `json:"output,required"`
-	Params    interface{}                                         `json:"params,required"`
-	Queued    time.Time                                           `json:"queued,required" format:"date-time"`
-	Start     time.Time                                           `json:"start,required,nullable" format:"date-time"`
-	Status    AccountWorkflowInstanceGetResponseResultStatus      `json:"status,required"`
-	Steps     []AccountWorkflowInstanceGetResponseResultStep      `json:"steps,required"`
-	Success   bool                                                `json:"success,required,nullable"`
-	Trigger   AccountWorkflowInstanceGetResponseResultTrigger     `json:"trigger,required"`
-	VersionID string                                              `json:"versionId,required" format:"uuid"`
+	End       time.Time                                           `json:"end" api:"required,nullable" format:"date-time"`
+	Error     AccountWorkflowInstanceGetResponseResultError       `json:"error" api:"required,nullable"`
+	Output    AccountWorkflowInstanceGetResponseResultOutputUnion `json:"output" api:"required"`
+	Params    interface{}                                         `json:"params" api:"required"`
+	Queued    time.Time                                           `json:"queued" api:"required" format:"date-time"`
+	Start     time.Time                                           `json:"start" api:"required,nullable" format:"date-time"`
+	Status    AccountWorkflowInstanceGetResponseResultStatus      `json:"status" api:"required"`
+	Steps     []AccountWorkflowInstanceGetResponseResultStep      `json:"steps" api:"required"`
+	Success   bool                                                `json:"success" api:"required,nullable"`
+	Trigger   AccountWorkflowInstanceGetResponseResultTrigger     `json:"trigger" api:"required"`
+	VersionID string                                              `json:"versionId" api:"required" format:"uuid"`
 	JSON      accountWorkflowInstanceGetResponseResultJSON        `json:"-"`
 }
 
@@ -433,8 +433,8 @@ func (r accountWorkflowInstanceGetResponseResultJSON) RawJSON() string {
 }
 
 type AccountWorkflowInstanceGetResponseResultError struct {
-	Message string                                            `json:"message,required"`
-	Name    string                                            `json:"name,required"`
+	Message string                                            `json:"message" api:"required"`
+	Name    string                                            `json:"name" api:"required"`
 	JSON    accountWorkflowInstanceGetResponseResultErrorJSON `json:"-"`
 }
 
@@ -497,14 +497,14 @@ func (r AccountWorkflowInstanceGetResponseResultStatus) IsKnown() bool {
 }
 
 type AccountWorkflowInstanceGetResponseResultStep struct {
-	Type AccountWorkflowInstanceGetResponseResultStepsType `json:"type,required"`
+	Type AccountWorkflowInstanceGetResponseResultStepsType `json:"type" api:"required"`
 	// This field can have the runtime type of
 	// [[]AccountWorkflowInstanceGetResponseResultStepsObjectAttempt].
 	Attempts interface{} `json:"attempts"`
 	// This field can have the runtime type of
 	// [AccountWorkflowInstanceGetResponseResultStepsObjectConfig].
 	Config interface{} `json:"config"`
-	End    time.Time   `json:"end,nullable" format:"date-time"`
+	End    time.Time   `json:"end" api:"nullable" format:"date-time"`
 	// This field can have the runtime type of
 	// [AccountWorkflowInstanceGetResponseResultStepsObjectError].
 	Error    interface{} `json:"error"`
@@ -513,7 +513,7 @@ type AccountWorkflowInstanceGetResponseResultStep struct {
 	// This field can have the runtime type of [interface{}].
 	Output  interface{} `json:"output"`
 	Start   time.Time   `json:"start" format:"date-time"`
-	Success bool        `json:"success,nullable"`
+	Success bool        `json:"success" api:"nullable"`
 	// This field can have the runtime type of
 	// [AccountWorkflowInstanceGetResponseResultStepsObjectTrigger].
 	Trigger interface{}                                      `json:"trigger"`
@@ -596,14 +596,14 @@ func init() {
 }
 
 type AccountWorkflowInstanceGetResponseResultStepsObject struct {
-	Attempts []AccountWorkflowInstanceGetResponseResultStepsObjectAttempt `json:"attempts,required"`
-	Config   AccountWorkflowInstanceGetResponseResultStepsObjectConfig    `json:"config,required"`
-	End      time.Time                                                    `json:"end,required,nullable" format:"date-time"`
-	Name     string                                                       `json:"name,required"`
-	Output   interface{}                                                  `json:"output,required"`
-	Start    time.Time                                                    `json:"start,required" format:"date-time"`
-	Success  bool                                                         `json:"success,required,nullable"`
-	Type     AccountWorkflowInstanceGetResponseResultStepsObjectType      `json:"type,required"`
+	Attempts []AccountWorkflowInstanceGetResponseResultStepsObjectAttempt `json:"attempts" api:"required"`
+	Config   AccountWorkflowInstanceGetResponseResultStepsObjectConfig    `json:"config" api:"required"`
+	End      time.Time                                                    `json:"end" api:"required,nullable" format:"date-time"`
+	Name     string                                                       `json:"name" api:"required"`
+	Output   interface{}                                                  `json:"output" api:"required"`
+	Start    time.Time                                                    `json:"start" api:"required" format:"date-time"`
+	Success  bool                                                         `json:"success" api:"required,nullable"`
+	Type     AccountWorkflowInstanceGetResponseResultStepsObjectType      `json:"type" api:"required"`
 	JSON     accountWorkflowInstanceGetResponseResultStepsObjectJSON      `json:"-"`
 }
 
@@ -634,10 +634,10 @@ func (r AccountWorkflowInstanceGetResponseResultStepsObject) implementsAccountWo
 }
 
 type AccountWorkflowInstanceGetResponseResultStepsObjectAttempt struct {
-	End     time.Time                                                        `json:"end,required,nullable" format:"date-time"`
-	Error   AccountWorkflowInstanceGetResponseResultStepsObjectAttemptsError `json:"error,required,nullable"`
-	Start   time.Time                                                        `json:"start,required" format:"date-time"`
-	Success bool                                                             `json:"success,required,nullable"`
+	End     time.Time                                                        `json:"end" api:"required,nullable" format:"date-time"`
+	Error   AccountWorkflowInstanceGetResponseResultStepsObjectAttemptsError `json:"error" api:"required,nullable"`
+	Start   time.Time                                                        `json:"start" api:"required" format:"date-time"`
+	Success bool                                                             `json:"success" api:"required,nullable"`
 	JSON    accountWorkflowInstanceGetResponseResultStepsObjectAttemptJSON   `json:"-"`
 }
 
@@ -662,8 +662,8 @@ func (r accountWorkflowInstanceGetResponseResultStepsObjectAttemptJSON) RawJSON(
 }
 
 type AccountWorkflowInstanceGetResponseResultStepsObjectAttemptsError struct {
-	Message string                                                               `json:"message,required"`
-	Name    string                                                               `json:"name,required"`
+	Message string                                                               `json:"message" api:"required"`
+	Name    string                                                               `json:"name" api:"required"`
 	JSON    accountWorkflowInstanceGetResponseResultStepsObjectAttemptsErrorJSON `json:"-"`
 }
 
@@ -686,8 +686,8 @@ func (r accountWorkflowInstanceGetResponseResultStepsObjectAttemptsErrorJSON) Ra
 }
 
 type AccountWorkflowInstanceGetResponseResultStepsObjectConfig struct {
-	Retries AccountWorkflowInstanceGetResponseResultStepsObjectConfigRetries `json:"retries,required"`
-	Timeout interface{}                                                      `json:"timeout,required"`
+	Retries AccountWorkflowInstanceGetResponseResultStepsObjectConfigRetries `json:"retries" api:"required"`
+	Timeout interface{}                                                      `json:"timeout" api:"required"`
 	JSON    accountWorkflowInstanceGetResponseResultStepsObjectConfigJSON    `json:"-"`
 }
 
@@ -710,8 +710,8 @@ func (r accountWorkflowInstanceGetResponseResultStepsObjectConfigJSON) RawJSON()
 }
 
 type AccountWorkflowInstanceGetResponseResultStepsObjectConfigRetries struct {
-	Delay   interface{}                                                             `json:"delay,required"`
-	Limit   float64                                                                 `json:"limit,required"`
+	Delay   interface{}                                                             `json:"delay" api:"required"`
+	Limit   float64                                                                 `json:"limit" api:"required"`
 	Backoff AccountWorkflowInstanceGetResponseResultStepsObjectConfigRetriesBackoff `json:"backoff"`
 	JSON    accountWorkflowInstanceGetResponseResultStepsObjectConfigRetriesJSON    `json:"-"`
 }
@@ -783,7 +783,7 @@ func (r AccountWorkflowInstanceGetResponseResultStepsType) IsKnown() bool {
 }
 
 type AccountWorkflowInstanceGetResponseResultTrigger struct {
-	Source AccountWorkflowInstanceGetResponseResultTriggerSource `json:"source,required"`
+	Source AccountWorkflowInstanceGetResponseResultTriggerSource `json:"source" api:"required"`
 	JSON   accountWorkflowInstanceGetResponseResultTriggerJSON   `json:"-"`
 }
 
@@ -836,10 +836,10 @@ func (r AccountWorkflowInstanceGetResponseSuccess) IsKnown() bool {
 }
 
 type AccountWorkflowInstanceGetResponseResultInfo struct {
-	Count      float64                                          `json:"count,required"`
-	Page       float64                                          `json:"page,required"`
-	PerPage    float64                                          `json:"per_page,required"`
-	TotalCount float64                                          `json:"total_count,required"`
+	Count      float64                                          `json:"count" api:"required"`
+	Page       float64                                          `json:"page" api:"required"`
+	PerPage    float64                                          `json:"per_page" api:"required"`
+	TotalCount float64                                          `json:"total_count" api:"required"`
 	JSON       accountWorkflowInstanceGetResponseResultInfoJSON `json:"-"`
 }
 
@@ -863,10 +863,10 @@ func (r accountWorkflowInstanceGetResponseResultInfoJSON) RawJSON() string {
 }
 
 type AccountWorkflowInstanceListResponse struct {
-	Errors     []AccountWorkflowInstanceListResponseError    `json:"errors,required"`
-	Messages   []AccountWorkflowInstanceListResponseMessage  `json:"messages,required"`
-	Result     []AccountWorkflowInstanceListResponseResult   `json:"result,required"`
-	Success    AccountWorkflowInstanceListResponseSuccess    `json:"success,required"`
+	Errors     []AccountWorkflowInstanceListResponseError    `json:"errors" api:"required"`
+	Messages   []AccountWorkflowInstanceListResponseMessage  `json:"messages" api:"required"`
+	Result     []AccountWorkflowInstanceListResponseResult   `json:"result" api:"required"`
+	Success    AccountWorkflowInstanceListResponseSuccess    `json:"success" api:"required"`
 	ResultInfo AccountWorkflowInstanceListResponseResultInfo `json:"result_info"`
 	JSON       accountWorkflowInstanceListResponseJSON       `json:"-"`
 }
@@ -892,8 +892,8 @@ func (r accountWorkflowInstanceListResponseJSON) RawJSON() string {
 }
 
 type AccountWorkflowInstanceListResponseError struct {
-	Code    float64                                      `json:"code,required"`
-	Message string                                       `json:"message,required"`
+	Code    float64                                      `json:"code" api:"required"`
+	Message string                                       `json:"message" api:"required"`
 	JSON    accountWorkflowInstanceListResponseErrorJSON `json:"-"`
 }
 
@@ -915,8 +915,8 @@ func (r accountWorkflowInstanceListResponseErrorJSON) RawJSON() string {
 }
 
 type AccountWorkflowInstanceListResponseMessage struct {
-	Code    float64                                        `json:"code,required"`
-	Message string                                         `json:"message,required"`
+	Code    float64                                        `json:"code" api:"required"`
+	Message string                                         `json:"message" api:"required"`
 	JSON    accountWorkflowInstanceListResponseMessageJSON `json:"-"`
 }
 
@@ -938,14 +938,14 @@ func (r accountWorkflowInstanceListResponseMessageJSON) RawJSON() string {
 }
 
 type AccountWorkflowInstanceListResponseResult struct {
-	ID         string                                          `json:"id,required"`
-	CreatedOn  time.Time                                       `json:"created_on,required" format:"date-time"`
-	EndedOn    time.Time                                       `json:"ended_on,required,nullable" format:"date-time"`
-	ModifiedOn time.Time                                       `json:"modified_on,required" format:"date-time"`
-	StartedOn  time.Time                                       `json:"started_on,required,nullable" format:"date-time"`
-	Status     AccountWorkflowInstanceListResponseResultStatus `json:"status,required"`
-	VersionID  string                                          `json:"version_id,required" format:"uuid"`
-	WorkflowID string                                          `json:"workflow_id,required" format:"uuid"`
+	ID         string                                          `json:"id" api:"required"`
+	CreatedOn  time.Time                                       `json:"created_on" api:"required" format:"date-time"`
+	EndedOn    time.Time                                       `json:"ended_on" api:"required,nullable" format:"date-time"`
+	ModifiedOn time.Time                                       `json:"modified_on" api:"required" format:"date-time"`
+	StartedOn  time.Time                                       `json:"started_on" api:"required,nullable" format:"date-time"`
+	Status     AccountWorkflowInstanceListResponseResultStatus `json:"status" api:"required"`
+	VersionID  string                                          `json:"version_id" api:"required" format:"uuid"`
+	WorkflowID string                                          `json:"workflow_id" api:"required" format:"uuid"`
 	JSON       accountWorkflowInstanceListResponseResultJSON   `json:"-"`
 }
 
@@ -1008,10 +1008,10 @@ func (r AccountWorkflowInstanceListResponseSuccess) IsKnown() bool {
 }
 
 type AccountWorkflowInstanceListResponseResultInfo struct {
-	Count      float64                                           `json:"count,required"`
-	Page       float64                                           `json:"page,required"`
-	PerPage    float64                                           `json:"per_page,required"`
-	TotalCount float64                                           `json:"total_count,required"`
+	Count      float64                                           `json:"count" api:"required"`
+	Page       float64                                           `json:"page" api:"required"`
+	PerPage    float64                                           `json:"per_page" api:"required"`
+	TotalCount float64                                           `json:"total_count" api:"required"`
 	JSON       accountWorkflowInstanceListResponseResultInfoJSON `json:"-"`
 }
 
@@ -1035,10 +1035,10 @@ func (r accountWorkflowInstanceListResponseResultInfoJSON) RawJSON() string {
 }
 
 type AccountWorkflowInstanceBatchNewResponse struct {
-	Errors     []AccountWorkflowInstanceBatchNewResponseError    `json:"errors,required"`
-	Messages   []AccountWorkflowInstanceBatchNewResponseMessage  `json:"messages,required"`
-	Result     []AccountWorkflowInstanceBatchNewResponseResult   `json:"result,required"`
-	Success    AccountWorkflowInstanceBatchNewResponseSuccess    `json:"success,required"`
+	Errors     []AccountWorkflowInstanceBatchNewResponseError    `json:"errors" api:"required"`
+	Messages   []AccountWorkflowInstanceBatchNewResponseMessage  `json:"messages" api:"required"`
+	Result     []AccountWorkflowInstanceBatchNewResponseResult   `json:"result" api:"required"`
+	Success    AccountWorkflowInstanceBatchNewResponseSuccess    `json:"success" api:"required"`
 	ResultInfo AccountWorkflowInstanceBatchNewResponseResultInfo `json:"result_info"`
 	JSON       accountWorkflowInstanceBatchNewResponseJSON       `json:"-"`
 }
@@ -1064,8 +1064,8 @@ func (r accountWorkflowInstanceBatchNewResponseJSON) RawJSON() string {
 }
 
 type AccountWorkflowInstanceBatchNewResponseError struct {
-	Code    float64                                          `json:"code,required"`
-	Message string                                           `json:"message,required"`
+	Code    float64                                          `json:"code" api:"required"`
+	Message string                                           `json:"message" api:"required"`
 	JSON    accountWorkflowInstanceBatchNewResponseErrorJSON `json:"-"`
 }
 
@@ -1087,8 +1087,8 @@ func (r accountWorkflowInstanceBatchNewResponseErrorJSON) RawJSON() string {
 }
 
 type AccountWorkflowInstanceBatchNewResponseMessage struct {
-	Code    float64                                            `json:"code,required"`
-	Message string                                             `json:"message,required"`
+	Code    float64                                            `json:"code" api:"required"`
+	Message string                                             `json:"message" api:"required"`
 	JSON    accountWorkflowInstanceBatchNewResponseMessageJSON `json:"-"`
 }
 
@@ -1110,10 +1110,10 @@ func (r accountWorkflowInstanceBatchNewResponseMessageJSON) RawJSON() string {
 }
 
 type AccountWorkflowInstanceBatchNewResponseResult struct {
-	ID         string                                              `json:"id,required"`
-	Status     AccountWorkflowInstanceBatchNewResponseResultStatus `json:"status,required"`
-	VersionID  string                                              `json:"version_id,required" format:"uuid"`
-	WorkflowID string                                              `json:"workflow_id,required" format:"uuid"`
+	ID         string                                              `json:"id" api:"required"`
+	Status     AccountWorkflowInstanceBatchNewResponseResultStatus `json:"status" api:"required"`
+	VersionID  string                                              `json:"version_id" api:"required" format:"uuid"`
+	WorkflowID string                                              `json:"workflow_id" api:"required" format:"uuid"`
 	JSON       accountWorkflowInstanceBatchNewResponseResultJSON   `json:"-"`
 }
 
@@ -1172,10 +1172,10 @@ func (r AccountWorkflowInstanceBatchNewResponseSuccess) IsKnown() bool {
 }
 
 type AccountWorkflowInstanceBatchNewResponseResultInfo struct {
-	Count      float64                                               `json:"count,required"`
-	Page       float64                                               `json:"page,required"`
-	PerPage    float64                                               `json:"per_page,required"`
-	TotalCount float64                                               `json:"total_count,required"`
+	Count      float64                                               `json:"count" api:"required"`
+	Page       float64                                               `json:"page" api:"required"`
+	PerPage    float64                                               `json:"per_page" api:"required"`
+	TotalCount float64                                               `json:"total_count" api:"required"`
 	JSON       accountWorkflowInstanceBatchNewResponseResultInfoJSON `json:"-"`
 }
 
@@ -1199,9 +1199,9 @@ func (r accountWorkflowInstanceBatchNewResponseResultInfoJSON) RawJSON() string 
 }
 
 type AccountWorkflowInstanceSendEventResponse struct {
-	Errors     []AccountWorkflowInstanceSendEventResponseError    `json:"errors,required"`
-	Messages   []AccountWorkflowInstanceSendEventResponseMessage  `json:"messages,required"`
-	Success    AccountWorkflowInstanceSendEventResponseSuccess    `json:"success,required"`
+	Errors     []AccountWorkflowInstanceSendEventResponseError    `json:"errors" api:"required"`
+	Messages   []AccountWorkflowInstanceSendEventResponseMessage  `json:"messages" api:"required"`
+	Success    AccountWorkflowInstanceSendEventResponseSuccess    `json:"success" api:"required"`
 	Result     interface{}                                        `json:"result"`
 	ResultInfo AccountWorkflowInstanceSendEventResponseResultInfo `json:"result_info"`
 	JSON       accountWorkflowInstanceSendEventResponseJSON       `json:"-"`
@@ -1228,8 +1228,8 @@ func (r accountWorkflowInstanceSendEventResponseJSON) RawJSON() string {
 }
 
 type AccountWorkflowInstanceSendEventResponseError struct {
-	Code    float64                                           `json:"code,required"`
-	Message string                                            `json:"message,required"`
+	Code    float64                                           `json:"code" api:"required"`
+	Message string                                            `json:"message" api:"required"`
 	JSON    accountWorkflowInstanceSendEventResponseErrorJSON `json:"-"`
 }
 
@@ -1251,8 +1251,8 @@ func (r accountWorkflowInstanceSendEventResponseErrorJSON) RawJSON() string {
 }
 
 type AccountWorkflowInstanceSendEventResponseMessage struct {
-	Code    float64                                             `json:"code,required"`
-	Message string                                              `json:"message,required"`
+	Code    float64                                             `json:"code" api:"required"`
+	Message string                                              `json:"message" api:"required"`
 	JSON    accountWorkflowInstanceSendEventResponseMessageJSON `json:"-"`
 }
 
@@ -1288,10 +1288,10 @@ func (r AccountWorkflowInstanceSendEventResponseSuccess) IsKnown() bool {
 }
 
 type AccountWorkflowInstanceSendEventResponseResultInfo struct {
-	Count      float64                                                `json:"count,required"`
-	Page       float64                                                `json:"page,required"`
-	PerPage    float64                                                `json:"per_page,required"`
-	TotalCount float64                                                `json:"total_count,required"`
+	Count      float64                                                `json:"count" api:"required"`
+	Page       float64                                                `json:"page" api:"required"`
+	PerPage    float64                                                `json:"per_page" api:"required"`
+	TotalCount float64                                                `json:"total_count" api:"required"`
 	JSON       accountWorkflowInstanceSendEventResponseResultInfoJSON `json:"-"`
 }
 
@@ -1315,10 +1315,10 @@ func (r accountWorkflowInstanceSendEventResponseResultInfoJSON) RawJSON() string
 }
 
 type AccountWorkflowInstanceUpdateStatusResponse struct {
-	Errors     []AccountWorkflowInstanceUpdateStatusResponseError    `json:"errors,required"`
-	Messages   []AccountWorkflowInstanceUpdateStatusResponseMessage  `json:"messages,required"`
-	Result     AccountWorkflowInstanceUpdateStatusResponseResult     `json:"result,required"`
-	Success    AccountWorkflowInstanceUpdateStatusResponseSuccess    `json:"success,required"`
+	Errors     []AccountWorkflowInstanceUpdateStatusResponseError    `json:"errors" api:"required"`
+	Messages   []AccountWorkflowInstanceUpdateStatusResponseMessage  `json:"messages" api:"required"`
+	Result     AccountWorkflowInstanceUpdateStatusResponseResult     `json:"result" api:"required"`
+	Success    AccountWorkflowInstanceUpdateStatusResponseSuccess    `json:"success" api:"required"`
 	ResultInfo AccountWorkflowInstanceUpdateStatusResponseResultInfo `json:"result_info"`
 	JSON       accountWorkflowInstanceUpdateStatusResponseJSON       `json:"-"`
 }
@@ -1344,8 +1344,8 @@ func (r accountWorkflowInstanceUpdateStatusResponseJSON) RawJSON() string {
 }
 
 type AccountWorkflowInstanceUpdateStatusResponseError struct {
-	Code    float64                                              `json:"code,required"`
-	Message string                                               `json:"message,required"`
+	Code    float64                                              `json:"code" api:"required"`
+	Message string                                               `json:"message" api:"required"`
 	JSON    accountWorkflowInstanceUpdateStatusResponseErrorJSON `json:"-"`
 }
 
@@ -1367,8 +1367,8 @@ func (r accountWorkflowInstanceUpdateStatusResponseErrorJSON) RawJSON() string {
 }
 
 type AccountWorkflowInstanceUpdateStatusResponseMessage struct {
-	Code    float64                                                `json:"code,required"`
-	Message string                                                 `json:"message,required"`
+	Code    float64                                                `json:"code" api:"required"`
+	Message string                                                 `json:"message" api:"required"`
 	JSON    accountWorkflowInstanceUpdateStatusResponseMessageJSON `json:"-"`
 }
 
@@ -1390,9 +1390,9 @@ func (r accountWorkflowInstanceUpdateStatusResponseMessageJSON) RawJSON() string
 }
 
 type AccountWorkflowInstanceUpdateStatusResponseResult struct {
-	Status AccountWorkflowInstanceUpdateStatusResponseResultStatus `json:"status,required"`
+	Status AccountWorkflowInstanceUpdateStatusResponseResultStatus `json:"status" api:"required"`
 	// Accepts ISO 8601 with no timezone offsets and in UTC.
-	Timestamp time.Time                                             `json:"timestamp,required" format:"date-time"`
+	Timestamp time.Time                                             `json:"timestamp" api:"required" format:"date-time"`
 	JSON      accountWorkflowInstanceUpdateStatusResponseResultJSON `json:"-"`
 }
 
@@ -1449,10 +1449,10 @@ func (r AccountWorkflowInstanceUpdateStatusResponseSuccess) IsKnown() bool {
 }
 
 type AccountWorkflowInstanceUpdateStatusResponseResultInfo struct {
-	Count      float64                                                   `json:"count,required"`
-	Page       float64                                                   `json:"page,required"`
-	PerPage    float64                                                   `json:"per_page,required"`
-	TotalCount float64                                                   `json:"total_count,required"`
+	Count      float64                                                   `json:"count" api:"required"`
+	Page       float64                                                   `json:"page" api:"required"`
+	PerPage    float64                                                   `json:"per_page" api:"required"`
+	TotalCount float64                                                   `json:"total_count" api:"required"`
 	JSON       accountWorkflowInstanceUpdateStatusResponseResultInfoJSON `json:"-"`
 }
 
@@ -1553,7 +1553,7 @@ func (r AccountWorkflowInstanceSendEventParams) MarshalJSON() (data []byte, err 
 
 type AccountWorkflowInstanceUpdateStatusParams struct {
 	// Apply action to instance.
-	Status param.Field[AccountWorkflowInstanceUpdateStatusParamsStatus] `json:"status,required"`
+	Status param.Field[AccountWorkflowInstanceUpdateStatusParamsStatus] `json:"status" api:"required"`
 }
 
 func (r AccountWorkflowInstanceUpdateStatusParams) MarshalJSON() (data []byte, err error) {

@@ -41,11 +41,11 @@ func (r *ZoneSslVerificationService) Get(ctx context.Context, zoneID string, que
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/ssl/verification", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Edit SSL validation method for a certificate pack. A PATCH request will request
@@ -56,15 +56,15 @@ func (r *ZoneSslVerificationService) Update(ctx context.Context, zoneID string, 
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if certificatePackID == "" {
 		err = errors.New("missing required certificate_pack_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/ssl/verification/%s", zoneID, certificatePackID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Desired validation method.
@@ -108,7 +108,7 @@ func (r zoneSslVerificationGetResponseJSON) RawJSON() string {
 
 type ZoneSslVerificationGetResponseResult struct {
 	// Current status of certificate.
-	CertificateStatus ZoneSslVerificationGetResponseResultCertificateStatus `json:"certificate_status,required"`
+	CertificateStatus ZoneSslVerificationGetResponseResultCertificateStatus `json:"certificate_status" api:"required"`
 	// Certificate Authority is manually reviewing the order.
 	BrandCheck bool `json:"brand_check"`
 	// Certificate Pack UUID.
@@ -284,10 +284,10 @@ func (r ZoneSslVerificationGetResponseResultVerificationType) IsKnown() bool {
 }
 
 type ZoneSslVerificationUpdateResponse struct {
-	Errors   []MessagesTlsCertificatesItem `json:"errors,required"`
-	Messages []MessagesTlsCertificatesItem `json:"messages,required"`
+	Errors   []MessagesTlsCertificatesItem `json:"errors" api:"required"`
+	Messages []MessagesTlsCertificatesItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success ZoneSslVerificationUpdateResponseSuccess `json:"success,required"`
+	Success ZoneSslVerificationUpdateResponseSuccess `json:"success" api:"required"`
 	Result  ZoneSslVerificationUpdateResponseResult  `json:"result"`
 	JSON    zoneSslVerificationUpdateResponseJSON    `json:"-"`
 }
@@ -382,7 +382,7 @@ func (r ZoneSslVerificationGetParamsRetry) IsKnown() bool {
 
 type ZoneSslVerificationUpdateParams struct {
 	// Desired validation method.
-	ValidationMethod param.Field[ValidationMethodDefinition] `json:"validation_method,required"`
+	ValidationMethod param.Field[ValidationMethodDefinition] `json:"validation_method" api:"required"`
 }
 
 func (r ZoneSslVerificationUpdateParams) MarshalJSON() (data []byte, err error) {

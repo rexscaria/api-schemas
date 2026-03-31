@@ -16,7 +16,7 @@ import (
 )
 
 func TestAccountDlpDatasetUploadPrepare(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -28,6 +28,7 @@ func TestAccountDlpDatasetUploadPrepare(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Dlp.Datasets.Upload.Prepare(
 		context.TODO(),
@@ -44,7 +45,7 @@ func TestAccountDlpDatasetUploadPrepare(t *testing.T) {
 }
 
 func TestAccountDlpDatasetUploadVersion(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -56,13 +57,14 @@ func TestAccountDlpDatasetUploadVersion(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Dlp.Datasets.Upload.Version(
 		context.TODO(),
 		"account_id",
 		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		int64(0),
-		io.Reader(bytes.NewBuffer([]byte("some file contents"))),
+		io.Reader(bytes.NewBuffer([]byte("Example data"))),
 	)
 	if err != nil {
 		var apierr *cfrex.Error

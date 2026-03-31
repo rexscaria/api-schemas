@@ -42,11 +42,11 @@ func (r *AccountChallengeWidgetService) New(ctx context.Context, accountID strin
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/challenges/widgets", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Show a single challenge widget configuration.
@@ -54,15 +54,15 @@ func (r *AccountChallengeWidgetService) Get(ctx context.Context, accountID strin
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if sitekey == "" {
 		err = errors.New("missing required sitekey parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/challenges/widgets/%s", accountID, sitekey)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update the configuration of a widget.
@@ -70,15 +70,15 @@ func (r *AccountChallengeWidgetService) Update(ctx context.Context, accountID st
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if sitekey == "" {
 		err = errors.New("missing required sitekey parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/challenges/widgets/%s", accountID, sitekey)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists all turnstile widgets of an account.
@@ -86,11 +86,11 @@ func (r *AccountChallengeWidgetService) List(ctx context.Context, accountID stri
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/challenges/widgets", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Destroy a Turnstile Widget.
@@ -98,15 +98,15 @@ func (r *AccountChallengeWidgetService) Delete(ctx context.Context, accountID st
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if sitekey == "" {
 		err = errors.New("missing required sitekey parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/challenges/widgets/%s", accountID, sitekey)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Generate a new secret key for this widget. If `invalidate_immediately` is set to
@@ -117,15 +117,15 @@ func (r *AccountChallengeWidgetService) RotateSecret(ctx context.Context, accoun
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if sitekey == "" {
 		err = errors.New("missing required sitekey parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/challenges/widgets/%s/rotate_secret", accountID, sitekey)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // If Turnstile is embedded on a Cloudflare site and the widget should grant
@@ -148,8 +148,8 @@ func (r TurnstileClearanceLevel) IsKnown() bool {
 }
 
 type TurnstileMessages struct {
-	Code             int64                   `json:"code,required"`
-	Message          string                  `json:"message,required"`
+	Code             int64                   `json:"code" api:"required"`
+	Message          string                  `json:"message" api:"required"`
 	DocumentationURL string                  `json:"documentation_url"`
 	Source           TurnstileMessagesSource `json:"source"`
 	JSON             turnstileMessagesJSON   `json:"-"`
@@ -213,13 +213,13 @@ func (r TurnstileRegion) IsKnown() bool {
 
 type TurnstileResultInfo struct {
 	// Total number of results for the requested service
-	Count float64 `json:"count,required"`
+	Count float64 `json:"count" api:"required"`
 	// Current page within paginated list of results
-	Page float64 `json:"page,required"`
+	Page float64 `json:"page" api:"required"`
 	// Number of results per page of results
-	PerPage float64 `json:"per_page,required"`
+	PerPage float64 `json:"per_page" api:"required"`
 	// Total results available without any search parameters
-	TotalCount float64                 `json:"total_count,required"`
+	TotalCount float64                 `json:"total_count" api:"required"`
 	JSON       turnstileResultInfoJSON `json:"-"`
 }
 
@@ -246,31 +246,31 @@ func (r turnstileResultInfoJSON) RawJSON() string {
 type TurnstileWidgetDetail struct {
 	// If bot_fight_mode is set to `true`, Cloudflare issues computationally expensive
 	// challenges in response to malicious bots (ENT only).
-	BotFightMode bool `json:"bot_fight_mode,required"`
+	BotFightMode bool `json:"bot_fight_mode" api:"required"`
 	// If Turnstile is embedded on a Cloudflare site and the widget should grant
 	// challenge clearance, this setting can determine the clearance level to be set
-	ClearanceLevel TurnstileClearanceLevel `json:"clearance_level,required"`
+	ClearanceLevel TurnstileClearanceLevel `json:"clearance_level" api:"required"`
 	// When the widget was created.
-	CreatedOn time.Time `json:"created_on,required" format:"date-time"`
-	Domains   []string  `json:"domains,required"`
+	CreatedOn time.Time `json:"created_on" api:"required" format:"date-time"`
+	Domains   []string  `json:"domains" api:"required"`
 	// Return the Ephemeral ID in /siteverify (ENT only).
-	EphemeralID bool `json:"ephemeral_id,required"`
+	EphemeralID bool `json:"ephemeral_id" api:"required"`
 	// Widget Mode
-	Mode TurnstileWidgetMode `json:"mode,required"`
+	Mode TurnstileWidgetMode `json:"mode" api:"required"`
 	// When the widget was modified.
-	ModifiedOn time.Time `json:"modified_on,required" format:"date-time"`
+	ModifiedOn time.Time `json:"modified_on" api:"required" format:"date-time"`
 	// Human readable widget name. Not unique. Cloudflare suggests that you set this to
 	// a meaningful string to make it easier to identify your widget, and where it is
 	// used.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Do not show any Cloudflare branding on the widget (ENT only).
-	Offlabel bool `json:"offlabel,required"`
+	Offlabel bool `json:"offlabel" api:"required"`
 	// Region where this widget can be used. This cannot be changed after creation.
-	Region TurnstileRegion `json:"region,required"`
+	Region TurnstileRegion `json:"region" api:"required"`
 	// Secret key for this widget.
-	Secret string `json:"secret,required"`
+	Secret string `json:"secret" api:"required"`
 	// Widget item identifier tag.
-	Sitekey string                    `json:"sitekey,required"`
+	Sitekey string                    `json:"sitekey" api:"required"`
 	JSON    turnstileWidgetDetailJSON `json:"-"`
 }
 
@@ -319,10 +319,10 @@ func (r TurnstileWidgetMode) IsKnown() bool {
 }
 
 type AccountChallengeWidgetNewResponse struct {
-	Errors   []TurnstileMessages `json:"errors,required"`
-	Messages []TurnstileMessages `json:"messages,required"`
+	Errors   []TurnstileMessages `json:"errors" api:"required"`
+	Messages []TurnstileMessages `json:"messages" api:"required"`
 	// Whether the API call was successful
-	Success bool `json:"success,required"`
+	Success bool `json:"success" api:"required"`
 	// A Turnstile widget's detailed configuration
 	Result     TurnstileWidgetDetail                 `json:"result"`
 	ResultInfo TurnstileResultInfo                   `json:"result_info"`
@@ -350,10 +350,10 @@ func (r accountChallengeWidgetNewResponseJSON) RawJSON() string {
 }
 
 type AccountChallengeWidgetGetResponse struct {
-	Errors   []TurnstileMessages `json:"errors,required"`
-	Messages []TurnstileMessages `json:"messages,required"`
+	Errors   []TurnstileMessages `json:"errors" api:"required"`
+	Messages []TurnstileMessages `json:"messages" api:"required"`
 	// Whether the API call was successful
-	Success bool `json:"success,required"`
+	Success bool `json:"success" api:"required"`
 	// A Turnstile widget's detailed configuration
 	Result TurnstileWidgetDetail                 `json:"result"`
 	JSON   accountChallengeWidgetGetResponseJSON `json:"-"`
@@ -379,10 +379,10 @@ func (r accountChallengeWidgetGetResponseJSON) RawJSON() string {
 }
 
 type AccountChallengeWidgetUpdateResponse struct {
-	Errors   []TurnstileMessages `json:"errors,required"`
-	Messages []TurnstileMessages `json:"messages,required"`
+	Errors   []TurnstileMessages `json:"errors" api:"required"`
+	Messages []TurnstileMessages `json:"messages" api:"required"`
 	// Whether the API call was successful
-	Success bool `json:"success,required"`
+	Success bool `json:"success" api:"required"`
 	// A Turnstile widget's detailed configuration
 	Result TurnstileWidgetDetail                    `json:"result"`
 	JSON   accountChallengeWidgetUpdateResponseJSON `json:"-"`
@@ -408,10 +408,10 @@ func (r accountChallengeWidgetUpdateResponseJSON) RawJSON() string {
 }
 
 type AccountChallengeWidgetListResponse struct {
-	Errors   []TurnstileMessages `json:"errors,required"`
-	Messages []TurnstileMessages `json:"messages,required"`
+	Errors   []TurnstileMessages `json:"errors" api:"required"`
+	Messages []TurnstileMessages `json:"messages" api:"required"`
 	// Whether the API call was successful
-	Success    bool                                       `json:"success,required"`
+	Success    bool                                       `json:"success" api:"required"`
 	Result     []AccountChallengeWidgetListResponseResult `json:"result"`
 	ResultInfo TurnstileResultInfo                        `json:"result_info"`
 	JSON       accountChallengeWidgetListResponseJSON     `json:"-"`
@@ -441,29 +441,29 @@ func (r accountChallengeWidgetListResponseJSON) RawJSON() string {
 type AccountChallengeWidgetListResponseResult struct {
 	// If bot_fight_mode is set to `true`, Cloudflare issues computationally expensive
 	// challenges in response to malicious bots (ENT only).
-	BotFightMode bool `json:"bot_fight_mode,required"`
+	BotFightMode bool `json:"bot_fight_mode" api:"required"`
 	// If Turnstile is embedded on a Cloudflare site and the widget should grant
 	// challenge clearance, this setting can determine the clearance level to be set
-	ClearanceLevel TurnstileClearanceLevel `json:"clearance_level,required"`
+	ClearanceLevel TurnstileClearanceLevel `json:"clearance_level" api:"required"`
 	// When the widget was created.
-	CreatedOn time.Time `json:"created_on,required" format:"date-time"`
-	Domains   []string  `json:"domains,required"`
+	CreatedOn time.Time `json:"created_on" api:"required" format:"date-time"`
+	Domains   []string  `json:"domains" api:"required"`
 	// Return the Ephemeral ID in /siteverify (ENT only).
-	EphemeralID bool `json:"ephemeral_id,required"`
+	EphemeralID bool `json:"ephemeral_id" api:"required"`
 	// Widget Mode
-	Mode TurnstileWidgetMode `json:"mode,required"`
+	Mode TurnstileWidgetMode `json:"mode" api:"required"`
 	// When the widget was modified.
-	ModifiedOn time.Time `json:"modified_on,required" format:"date-time"`
+	ModifiedOn time.Time `json:"modified_on" api:"required" format:"date-time"`
 	// Human readable widget name. Not unique. Cloudflare suggests that you set this to
 	// a meaningful string to make it easier to identify your widget, and where it is
 	// used.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Do not show any Cloudflare branding on the widget (ENT only).
-	Offlabel bool `json:"offlabel,required"`
+	Offlabel bool `json:"offlabel" api:"required"`
 	// Region where this widget can be used. This cannot be changed after creation.
-	Region TurnstileRegion `json:"region,required"`
+	Region TurnstileRegion `json:"region" api:"required"`
 	// Widget item identifier tag.
-	Sitekey string                                       `json:"sitekey,required"`
+	Sitekey string                                       `json:"sitekey" api:"required"`
 	JSON    accountChallengeWidgetListResponseResultJSON `json:"-"`
 }
 
@@ -494,10 +494,10 @@ func (r accountChallengeWidgetListResponseResultJSON) RawJSON() string {
 }
 
 type AccountChallengeWidgetDeleteResponse struct {
-	Errors   []TurnstileMessages `json:"errors,required"`
-	Messages []TurnstileMessages `json:"messages,required"`
+	Errors   []TurnstileMessages `json:"errors" api:"required"`
+	Messages []TurnstileMessages `json:"messages" api:"required"`
 	// Whether the API call was successful
-	Success bool `json:"success,required"`
+	Success bool `json:"success" api:"required"`
 	// A Turnstile widget's detailed configuration
 	Result TurnstileWidgetDetail                    `json:"result"`
 	JSON   accountChallengeWidgetDeleteResponseJSON `json:"-"`
@@ -523,10 +523,10 @@ func (r accountChallengeWidgetDeleteResponseJSON) RawJSON() string {
 }
 
 type AccountChallengeWidgetRotateSecretResponse struct {
-	Errors   []TurnstileMessages `json:"errors,required"`
-	Messages []TurnstileMessages `json:"messages,required"`
+	Errors   []TurnstileMessages `json:"errors" api:"required"`
+	Messages []TurnstileMessages `json:"messages" api:"required"`
 	// Whether the API call was successful
-	Success bool `json:"success,required"`
+	Success bool `json:"success" api:"required"`
 	// A Turnstile widget's detailed configuration
 	Result TurnstileWidgetDetail                          `json:"result"`
 	JSON   accountChallengeWidgetRotateSecretResponseJSON `json:"-"`
@@ -552,13 +552,13 @@ func (r accountChallengeWidgetRotateSecretResponseJSON) RawJSON() string {
 }
 
 type AccountChallengeWidgetNewParams struct {
-	Domains param.Field[[]string] `json:"domains,required"`
+	Domains param.Field[[]string] `json:"domains" api:"required"`
 	// Widget Mode
-	Mode param.Field[TurnstileWidgetMode] `json:"mode,required"`
+	Mode param.Field[TurnstileWidgetMode] `json:"mode" api:"required"`
 	// Human readable widget name. Not unique. Cloudflare suggests that you set this to
 	// a meaningful string to make it easier to identify your widget, and where it is
 	// used.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Direction to order widgets.
 	Direction param.Field[AccountChallengeWidgetNewParamsDirection] `query:"direction"`
 	// Field to order widgets by.
@@ -630,13 +630,13 @@ func (r AccountChallengeWidgetNewParamsOrder) IsKnown() bool {
 }
 
 type AccountChallengeWidgetUpdateParams struct {
-	Domains param.Field[[]string] `json:"domains,required"`
+	Domains param.Field[[]string] `json:"domains" api:"required"`
 	// Widget Mode
-	Mode param.Field[TurnstileWidgetMode] `json:"mode,required"`
+	Mode param.Field[TurnstileWidgetMode] `json:"mode" api:"required"`
 	// Human readable widget name. Not unique. Cloudflare suggests that you set this to
 	// a meaningful string to make it easier to identify your widget, and where it is
 	// used.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// If bot_fight_mode is set to `true`, Cloudflare issues computationally expensive
 	// challenges in response to malicious bots (ENT only).
 	BotFightMode param.Field[bool] `json:"bot_fight_mode"`

@@ -42,7 +42,7 @@ func (r *UserTokenService) New(ctx context.Context, body UserTokenNewParams, opt
 	opts = slices.Concat(r.Options, opts)
 	path := "user/tokens"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get information about a specific token.
@@ -50,11 +50,11 @@ func (r *UserTokenService) Get(ctx context.Context, tokenID string, opts ...opti
 	opts = slices.Concat(r.Options, opts)
 	if tokenID == "" {
 		err = errors.New("missing required token_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("user/tokens/%s", tokenID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update an existing token.
@@ -62,11 +62,11 @@ func (r *UserTokenService) Update(ctx context.Context, tokenID string, body User
 	opts = slices.Concat(r.Options, opts)
 	if tokenID == "" {
 		err = errors.New("missing required token_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("user/tokens/%s", tokenID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // List all access tokens you created.
@@ -74,7 +74,7 @@ func (r *UserTokenService) List(ctx context.Context, query UserTokenListParams, 
 	opts = slices.Concat(r.Options, opts)
 	path := "user/tokens"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Destroy a token.
@@ -82,11 +82,11 @@ func (r *UserTokenService) Delete(ctx context.Context, tokenID string, opts ...o
 	opts = slices.Concat(r.Options, opts)
 	if tokenID == "" {
 		err = errors.New("missing required token_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("user/tokens/%s", tokenID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Find all available permission groups for API Tokens
@@ -94,7 +94,7 @@ func (r *UserTokenService) ListPermissionGroups(ctx context.Context, query UserT
 	opts = slices.Concat(r.Options, opts)
 	path := "user/tokens/permission_groups"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Roll the token secret.
@@ -102,11 +102,11 @@ func (r *UserTokenService) Roll(ctx context.Context, tokenID string, body UserTo
 	opts = slices.Concat(r.Options, opts)
 	if tokenID == "" {
 		err = errors.New("missing required token_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("user/tokens/%s/value", tokenID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Test whether a token works.
@@ -114,14 +114,14 @@ func (r *UserTokenService) Verify(ctx context.Context, opts ...option.RequestOpt
 	opts = slices.Concat(r.Options, opts)
 	path := "user/tokens/verify"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type UserTokenVerifyResponse struct {
-	Errors   []UserTokenVerifyResponseError   `json:"errors,required"`
-	Messages []UserTokenVerifyResponseMessage `json:"messages,required"`
+	Errors   []UserTokenVerifyResponseError   `json:"errors" api:"required"`
+	Messages []UserTokenVerifyResponseMessage `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success UserTokenVerifyResponseSuccess `json:"success,required"`
+	Success UserTokenVerifyResponseSuccess `json:"success" api:"required"`
 	Result  UserTokenVerifyResponseResult  `json:"result"`
 	JSON    userTokenVerifyResponseJSON    `json:"-"`
 }
@@ -146,8 +146,8 @@ func (r userTokenVerifyResponseJSON) RawJSON() string {
 }
 
 type UserTokenVerifyResponseError struct {
-	Code             int64                               `json:"code,required"`
-	Message          string                              `json:"message,required"`
+	Code             int64                               `json:"code" api:"required"`
+	Message          string                              `json:"message" api:"required"`
 	DocumentationURL string                              `json:"documentation_url"`
 	Source           UserTokenVerifyResponseErrorsSource `json:"source"`
 	JSON             userTokenVerifyResponseErrorJSON    `json:"-"`
@@ -194,8 +194,8 @@ func (r userTokenVerifyResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type UserTokenVerifyResponseMessage struct {
-	Code             int64                                 `json:"code,required"`
-	Message          string                                `json:"message,required"`
+	Code             int64                                 `json:"code" api:"required"`
+	Message          string                                `json:"message" api:"required"`
 	DocumentationURL string                                `json:"documentation_url"`
 	Source           UserTokenVerifyResponseMessagesSource `json:"source"`
 	JSON             userTokenVerifyResponseMessageJSON    `json:"-"`
@@ -258,9 +258,9 @@ func (r UserTokenVerifyResponseSuccess) IsKnown() bool {
 
 type UserTokenVerifyResponseResult struct {
 	// Token identifier tag.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Status of the token.
-	Status UserTokenVerifyResponseResultStatus `json:"status,required"`
+	Status UserTokenVerifyResponseResultStatus `json:"status" api:"required"`
 	// The expiration time on or after which the JWT MUST NOT be accepted for
 	// processing.
 	ExpiresOn time.Time `json:"expires_on" format:"date-time"`
@@ -306,7 +306,7 @@ func (r UserTokenVerifyResponseResultStatus) IsKnown() bool {
 }
 
 type UserTokenNewParams struct {
-	IamCreatePayload IamCreatePayloadParam `json:"iam_create_payload,required"`
+	IamCreatePayload IamCreatePayloadParam `json:"iam_create_payload" api:"required"`
 }
 
 func (r UserTokenNewParams) MarshalJSON() (data []byte, err error) {
@@ -314,7 +314,7 @@ func (r UserTokenNewParams) MarshalJSON() (data []byte, err error) {
 }
 
 type UserTokenUpdateParams struct {
-	IamTokenBody IamTokenBodyParam `json:"iam_token_body,required"`
+	IamTokenBody IamTokenBodyParam `json:"iam_token_body" api:"required"`
 }
 
 func (r UserTokenUpdateParams) MarshalJSON() (data []byte, err error) {
@@ -371,7 +371,7 @@ func (r UserTokenListPermissionGroupsParams) URLQuery() (v url.Values) {
 }
 
 type UserTokenRollParams struct {
-	Body interface{} `json:"body,required"`
+	Body interface{} `json:"body" api:"required"`
 }
 
 func (r UserTokenRollParams) MarshalJSON() (data []byte, err error) {

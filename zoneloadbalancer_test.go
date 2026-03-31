@@ -14,7 +14,7 @@ import (
 )
 
 func TestZoneLoadBalancerNewWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,6 +26,7 @@ func TestZoneLoadBalancerNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.LoadBalancers.New(
 		context.TODO(),
@@ -144,7 +145,7 @@ func TestZoneLoadBalancerNewWithOptionalParams(t *testing.T) {
 }
 
 func TestZoneLoadBalancerGet(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -156,6 +157,7 @@ func TestZoneLoadBalancerGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.LoadBalancers.Get(
 		context.TODO(),
@@ -172,7 +174,7 @@ func TestZoneLoadBalancerGet(t *testing.T) {
 }
 
 func TestZoneLoadBalancerUpdateWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -184,6 +186,7 @@ func TestZoneLoadBalancerUpdateWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.LoadBalancers.Update(
 		context.TODO(),
@@ -304,7 +307,7 @@ func TestZoneLoadBalancerUpdateWithOptionalParams(t *testing.T) {
 }
 
 func TestZoneLoadBalancerList(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -316,6 +319,7 @@ func TestZoneLoadBalancerList(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.LoadBalancers.List(context.TODO(), "699d98642c564d2e855e9661899b7252")
 	if err != nil {
@@ -328,7 +332,7 @@ func TestZoneLoadBalancerList(t *testing.T) {
 }
 
 func TestZoneLoadBalancerDelete(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -340,6 +344,7 @@ func TestZoneLoadBalancerDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.LoadBalancers.Delete(
 		context.TODO(),
@@ -356,7 +361,7 @@ func TestZoneLoadBalancerDelete(t *testing.T) {
 }
 
 func TestZoneLoadBalancerPatchWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -368,6 +373,7 @@ func TestZoneLoadBalancerPatchWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.LoadBalancers.Patch(
 		context.TODO(),

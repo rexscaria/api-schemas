@@ -39,19 +39,19 @@ func (r *ZoneAPIGatewayExpressionTemplateService) GenerateFallthrough(ctx contex
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/api_gateway/expression-template/fallthrough", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type ZoneAPIGatewayExpressionTemplateGenerateFallthroughResponse struct {
-	Errors   []MessagesAPIShieldItem                                           `json:"errors,required"`
-	Messages []MessagesAPIShieldItem                                           `json:"messages,required"`
-	Result   ZoneAPIGatewayExpressionTemplateGenerateFallthroughResponseResult `json:"result,required"`
+	Errors   []MessagesAPIShieldItem                                           `json:"errors" api:"required"`
+	Messages []MessagesAPIShieldItem                                           `json:"messages" api:"required"`
+	Result   ZoneAPIGatewayExpressionTemplateGenerateFallthroughResponseResult `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success ZoneAPIGatewayExpressionTemplateGenerateFallthroughResponseSuccess `json:"success,required"`
+	Success ZoneAPIGatewayExpressionTemplateGenerateFallthroughResponseSuccess `json:"success" api:"required"`
 	JSON    zoneAPIGatewayExpressionTemplateGenerateFallthroughResponseJSON    `json:"-"`
 }
 
@@ -77,9 +77,9 @@ func (r zoneAPIGatewayExpressionTemplateGenerateFallthroughResponseJSON) RawJSON
 
 type ZoneAPIGatewayExpressionTemplateGenerateFallthroughResponseResult struct {
 	// WAF Expression for fallthrough
-	Expression string `json:"expression,required"`
+	Expression string `json:"expression" api:"required"`
 	// Title for the expression
-	Title string                                                                `json:"title,required"`
+	Title string                                                                `json:"title" api:"required"`
 	JSON  zoneAPIGatewayExpressionTemplateGenerateFallthroughResponseResultJSON `json:"-"`
 }
 
@@ -118,7 +118,7 @@ func (r ZoneAPIGatewayExpressionTemplateGenerateFallthroughResponseSuccess) IsKn
 
 type ZoneAPIGatewayExpressionTemplateGenerateFallthroughParams struct {
 	// List of hosts to be targeted in the expression
-	Hosts param.Field[[]string] `json:"hosts,required"`
+	Hosts param.Field[[]string] `json:"hosts" api:"required"`
 }
 
 func (r ZoneAPIGatewayExpressionTemplateGenerateFallthroughParams) MarshalJSON() (data []byte, err error) {

@@ -42,11 +42,11 @@ func (r *AccountRumSiteInfoService) New(ctx context.Context, accountID string, b
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/rum/site_info", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves a Web Analytics site.
@@ -54,15 +54,15 @@ func (r *AccountRumSiteInfoService) Get(ctx context.Context, accountID string, s
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if siteID == "" {
 		err = errors.New("missing required site_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/rum/site_info/%s", accountID, siteID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates an existing Web Analytics site.
@@ -70,15 +70,15 @@ func (r *AccountRumSiteInfoService) Update(ctx context.Context, accountID string
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if siteID == "" {
 		err = errors.New("missing required site_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/rum/site_info/%s", accountID, siteID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists all Web Analytics sites of an account.
@@ -86,11 +86,11 @@ func (r *AccountRumSiteInfoService) List(ctx context.Context, accountID string, 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/rum/site_info/list", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Deletes an existing Web Analytics site.
@@ -98,22 +98,22 @@ func (r *AccountRumSiteInfoService) Delete(ctx context.Context, accountID string
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if siteID == "" {
 		err = errors.New("missing required site_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/rum/site_info/%s", accountID, siteID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type ResponseSingleSite struct {
-	Errors   []RumMessages `json:"errors,required"`
-	Messages []RumMessages `json:"messages,required"`
+	Errors   []RumMessages `json:"errors" api:"required"`
+	Messages []RumMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success bool                   `json:"success,required"`
+	Success bool                   `json:"success" api:"required"`
 	Result  Site                   `json:"result"`
 	JSON    responseSingleSiteJSON `json:"-"`
 }
@@ -138,8 +138,8 @@ func (r responseSingleSiteJSON) RawJSON() string {
 }
 
 type RumMessages struct {
-	Code             int64             `json:"code,required"`
-	Message          string            `json:"message,required"`
+	Code             int64             `json:"code" api:"required"`
+	Message          string            `json:"message" api:"required"`
 	DocumentationURL string            `json:"documentation_url"`
 	Source           RumMessagesSource `json:"source"`
 	JSON             rumMessagesJSON   `json:"-"`
@@ -223,10 +223,10 @@ func (r siteJSON) RawJSON() string {
 }
 
 type AccountRumSiteInfoListResponse struct {
-	Errors   []RumMessages `json:"errors,required"`
-	Messages []RumMessages `json:"messages,required"`
+	Errors   []RumMessages `json:"errors" api:"required"`
+	Messages []RumMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success    bool                                     `json:"success,required"`
+	Success    bool                                     `json:"success" api:"required"`
 	Result     []Site                                   `json:"result"`
 	ResultInfo AccountRumSiteInfoListResponseResultInfo `json:"result_info"`
 	JSON       accountRumSiteInfoListResponseJSON       `json:"-"`
@@ -262,7 +262,7 @@ type AccountRumSiteInfoListResponseResultInfo struct {
 	// The total number of items.
 	TotalCount int64 `json:"total_count"`
 	// The total number of pages.
-	TotalPages int64                                        `json:"total_pages,nullable"`
+	TotalPages int64                                        `json:"total_pages" api:"nullable"`
 	JSON       accountRumSiteInfoListResponseResultInfoJSON `json:"-"`
 }
 
@@ -287,10 +287,10 @@ func (r accountRumSiteInfoListResponseResultInfoJSON) RawJSON() string {
 }
 
 type AccountRumSiteInfoDeleteResponse struct {
-	Errors   []RumMessages `json:"errors,required"`
-	Messages []RumMessages `json:"messages,required"`
+	Errors   []RumMessages `json:"errors" api:"required"`
+	Messages []RumMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success bool                                   `json:"success,required"`
+	Success bool                                   `json:"success" api:"required"`
 	Result  AccountRumSiteInfoDeleteResponseResult `json:"result"`
 	JSON    accountRumSiteInfoDeleteResponseJSON   `json:"-"`
 }

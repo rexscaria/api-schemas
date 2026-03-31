@@ -47,11 +47,11 @@ func (r *ZoneSslService) AnalyzeCertificate(ctx context.Context, zoneID string, 
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/ssl/analyze", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve the SSL/TLS Recommender's recommendation for a zone.
@@ -62,18 +62,18 @@ func (r *ZoneSslService) GetRecommendation(ctx context.Context, zoneID string, o
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/ssl/recommendation", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type ZoneSslAnalyzeCertificateResponse struct {
-	Errors   []MessagesTlsCertificatesItem `json:"errors,required"`
-	Messages []MessagesTlsCertificatesItem `json:"messages,required"`
+	Errors   []MessagesTlsCertificatesItem `json:"errors" api:"required"`
+	Messages []MessagesTlsCertificatesItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success ZoneSslAnalyzeCertificateResponseSuccess `json:"success,required"`
+	Success ZoneSslAnalyzeCertificateResponseSuccess `json:"success" api:"required"`
 	Result  interface{}                              `json:"result"`
 	JSON    zoneSslAnalyzeCertificateResponseJSON    `json:"-"`
 }
@@ -113,11 +113,11 @@ func (r ZoneSslAnalyzeCertificateResponseSuccess) IsKnown() bool {
 }
 
 type ZoneSslGetRecommendationResponse struct {
-	Errors   []ZoneSslGetRecommendationResponseError   `json:"errors,required"`
-	Messages []ZoneSslGetRecommendationResponseMessage `json:"messages,required"`
-	Result   ZoneSslGetRecommendationResponseResult    `json:"result,required"`
+	Errors   []ZoneSslGetRecommendationResponseError   `json:"errors" api:"required"`
+	Messages []ZoneSslGetRecommendationResponseMessage `json:"messages" api:"required"`
+	Result   ZoneSslGetRecommendationResponseResult    `json:"result" api:"required"`
 	// Indicates the API call's success or failure.
-	Success bool                                 `json:"success,required"`
+	Success bool                                 `json:"success" api:"required"`
 	JSON    zoneSslGetRecommendationResponseJSON `json:"-"`
 }
 
@@ -141,8 +141,8 @@ func (r zoneSslGetRecommendationResponseJSON) RawJSON() string {
 }
 
 type ZoneSslGetRecommendationResponseError struct {
-	Code             int64                                        `json:"code,required"`
-	Message          string                                       `json:"message,required"`
+	Code             int64                                        `json:"code" api:"required"`
+	Message          string                                       `json:"message" api:"required"`
 	DocumentationURL string                                       `json:"documentation_url"`
 	Source           ZoneSslGetRecommendationResponseErrorsSource `json:"source"`
 	JSON             zoneSslGetRecommendationResponseErrorJSON    `json:"-"`
@@ -189,8 +189,8 @@ func (r zoneSslGetRecommendationResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type ZoneSslGetRecommendationResponseMessage struct {
-	Code             int64                                          `json:"code,required"`
-	Message          string                                         `json:"message,required"`
+	Code             int64                                          `json:"code" api:"required"`
+	Message          string                                         `json:"message" api:"required"`
 	DocumentationURL string                                         `json:"documentation_url"`
 	Source           ZoneSslGetRecommendationResponseMessagesSource `json:"source"`
 	JSON             zoneSslGetRecommendationResponseMessageJSON    `json:"-"`
@@ -237,15 +237,15 @@ func (r zoneSslGetRecommendationResponseMessagesSourceJSON) RawJSON() string {
 }
 
 type ZoneSslGetRecommendationResponseResult struct {
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Whether this setting can be updated or not.
-	Editable bool `json:"editable,required"`
+	Editable bool `json:"editable" api:"required"`
 	// Last time this setting was modified.
-	ModifiedOn time.Time `json:"modified_on,required" format:"date-time"`
+	ModifiedOn time.Time `json:"modified_on" api:"required" format:"date-time"`
 	// Current setting of the automatic SSL/TLS.
-	Value ZoneSslGetRecommendationResponseResultValue `json:"value,required"`
+	Value ZoneSslGetRecommendationResponseResultValue `json:"value" api:"required"`
 	// Next time this zone will be scanned by the Automatic SSL/TLS.
-	NextScheduledScan time.Time                                  `json:"next_scheduled_scan,nullable" format:"date-time"`
+	NextScheduledScan time.Time                                  `json:"next_scheduled_scan" api:"nullable" format:"date-time"`
 	JSON              zoneSslGetRecommendationResponseResultJSON `json:"-"`
 }
 

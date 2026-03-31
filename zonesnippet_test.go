@@ -18,7 +18,7 @@ import (
 )
 
 func TestZoneSnippetGet(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -30,6 +30,7 @@ func TestZoneSnippetGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.Snippets.Get(
 		context.TODO(),
@@ -46,7 +47,7 @@ func TestZoneSnippetGet(t *testing.T) {
 }
 
 func TestZoneSnippetUpdate(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -58,13 +59,14 @@ func TestZoneSnippetUpdate(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.Snippets.Update(
 		context.TODO(),
 		"9f1839b6152d298aca64c4e906b6d074",
 		"my_snippet",
 		cfrex.ZoneSnippetUpdateParams{
-			Files: cfrex.F([]io.Reader{io.Reader(bytes.NewBuffer([]byte("some file contents")))}),
+			Files: cfrex.F([]io.Reader{io.Reader(bytes.NewBuffer([]byte("Example data")))}),
 			Metadata: cfrex.F(cfrex.ZoneSnippetUpdateParamsMetadata{
 				MainModule: cfrex.F("main.js"),
 			}),
@@ -80,7 +82,7 @@ func TestZoneSnippetUpdate(t *testing.T) {
 }
 
 func TestZoneSnippetListWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -92,6 +94,7 @@ func TestZoneSnippetListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.Snippets.List(
 		context.TODO(),
@@ -111,7 +114,7 @@ func TestZoneSnippetListWithOptionalParams(t *testing.T) {
 }
 
 func TestZoneSnippetDelete(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -123,6 +126,7 @@ func TestZoneSnippetDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.Snippets.Delete(
 		context.TODO(),
@@ -149,6 +153,7 @@ func TestZoneSnippetGetContent(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	resp, err := client.Zones.Snippets.GetContent(
 		context.TODO(),

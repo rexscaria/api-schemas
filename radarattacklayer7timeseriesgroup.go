@@ -40,7 +40,7 @@ func (r *RadarAttackLayer7TimeseriesGroupService) GetHTTPMethodTimeseries(ctx co
 	opts = slices.Concat(r.Options, opts)
 	path := "radar/attacks/layer7/timeseries_groups/http_method"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves the distribution of layer 7 attacks by HTTP version over time.
@@ -48,7 +48,7 @@ func (r *RadarAttackLayer7TimeseriesGroupService) GetHTTPVersionTimeseries(ctx c
 	opts = slices.Concat(r.Options, opts)
 	path := "radar/attacks/layer7/timeseries_groups/http_version"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves the distribution of layer 7 attacks by targeted industry over time.
@@ -56,7 +56,7 @@ func (r *RadarAttackLayer7TimeseriesGroupService) GetIndustryTimeseries(ctx cont
 	opts = slices.Concat(r.Options, opts)
 	path := "radar/attacks/layer7/timeseries_groups/industry"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves the distribution of layer 7 attacks by IP version used over time.
@@ -64,7 +64,7 @@ func (r *RadarAttackLayer7TimeseriesGroupService) GetIPVersionTimeseries(ctx con
 	opts = slices.Concat(r.Options, opts)
 	path := "radar/attacks/layer7/timeseries_groups/ip_version"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves the distribution of layer 7 attacks by managed rules over time.
@@ -72,7 +72,7 @@ func (r *RadarAttackLayer7TimeseriesGroupService) GetManagedRulesTimeseries(ctx 
 	opts = slices.Concat(r.Options, opts)
 	path := "radar/attacks/layer7/timeseries_groups/managed_rules"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves the distribution of layer 7 attacks by mitigation product over time.
@@ -80,7 +80,7 @@ func (r *RadarAttackLayer7TimeseriesGroupService) GetMitigationProductTimeseries
 	opts = slices.Concat(r.Options, opts)
 	path := "radar/attacks/layer7/timeseries_groups/mitigation_product"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves the distribution of layer 7 attacks by targeted vertical over time.
@@ -88,12 +88,12 @@ func (r *RadarAttackLayer7TimeseriesGroupService) GetVerticalTimeseries(ctx cont
 	opts = slices.Concat(r.Options, opts)
 	path := "radar/attacks/layer7/timeseries_groups/vertical"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type RadarAttackLayer7TimeseriesGroupGetHTTPMethodTimeseriesResponse struct {
-	Result  RadarAttackLayer7TimeseriesGroupGetHTTPMethodTimeseriesResponseResult `json:"result,required"`
-	Success bool                                                                  `json:"success,required"`
+	Result  RadarAttackLayer7TimeseriesGroupGetHTTPMethodTimeseriesResponseResult `json:"result" api:"required"`
+	Success bool                                                                  `json:"success" api:"required"`
 	JSON    radarAttackLayer7TimeseriesGroupGetHTTPMethodTimeseriesResponseJSON   `json:"-"`
 }
 
@@ -117,8 +117,8 @@ func (r radarAttackLayer7TimeseriesGroupGetHTTPMethodTimeseriesResponseJSON) Raw
 
 type RadarAttackLayer7TimeseriesGroupGetHTTPMethodTimeseriesResponseResult struct {
 	// Metadata for the results.
-	Meta   RadarAttackLayer7TimeseriesGroupGetHTTPMethodTimeseriesResponseResultMeta   `json:"meta,required"`
-	Serie0 RadarAttackLayer7TimeseriesGroupGetHTTPMethodTimeseriesResponseResultSerie0 `json:"serie_0,required"`
+	Meta   RadarAttackLayer7TimeseriesGroupGetHTTPMethodTimeseriesResponseResultMeta   `json:"meta" api:"required"`
+	Serie0 RadarAttackLayer7TimeseriesGroupGetHTTPMethodTimeseriesResponseResultSerie0 `json:"serie_0" api:"required"`
 	JSON   radarAttackLayer7TimeseriesGroupGetHTTPMethodTimeseriesResponseResultJSON   `json:"-"`
 }
 
@@ -145,16 +145,16 @@ type RadarAttackLayer7TimeseriesGroupGetHTTPMethodTimeseriesResponseResultMeta s
 	// Aggregation interval of the results (e.g., in 15 minutes or 1 hour intervals).
 	// Refer to
 	// [Aggregation intervals](https://developers.cloudflare.com/radar/concepts/aggregation-intervals/).
-	AggInterval    RadarAttackLayer7TimeseriesGroupGetHTTPMethodTimeseriesResponseResultMetaAggInterval    `json:"aggInterval,required"`
-	ConfidenceInfo RadarAttackLayer7TimeseriesGroupGetHTTPMethodTimeseriesResponseResultMetaConfidenceInfo `json:"confidenceInfo,required"`
-	DateRange      []RadarAttackLayer7TimeseriesGroupGetHTTPMethodTimeseriesResponseResultMetaDateRange    `json:"dateRange,required"`
+	AggInterval    RadarAttackLayer7TimeseriesGroupGetHTTPMethodTimeseriesResponseResultMetaAggInterval    `json:"aggInterval" api:"required"`
+	ConfidenceInfo RadarAttackLayer7TimeseriesGroupGetHTTPMethodTimeseriesResponseResultMetaConfidenceInfo `json:"confidenceInfo" api:"required"`
+	DateRange      []RadarAttackLayer7TimeseriesGroupGetHTTPMethodTimeseriesResponseResultMetaDateRange    `json:"dateRange" api:"required"`
 	// Timestamp of the last dataset update.
-	LastUpdated time.Time `json:"lastUpdated,required" format:"date-time"`
+	LastUpdated time.Time `json:"lastUpdated" api:"required" format:"date-time"`
 	// Normalization method applied to the results. Refer to
 	// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
-	Normalization RadarAttackLayer7TimeseriesGroupGetHTTPMethodTimeseriesResponseResultMetaNormalization `json:"normalization,required"`
+	Normalization RadarAttackLayer7TimeseriesGroupGetHTTPMethodTimeseriesResponseResultMetaNormalization `json:"normalization" api:"required"`
 	// Measurement units for the results.
-	Units []RadarAttackLayer7TimeseriesGroupGetHTTPMethodTimeseriesResponseResultMetaUnit `json:"units,required"`
+	Units []RadarAttackLayer7TimeseriesGroupGetHTTPMethodTimeseriesResponseResultMetaUnit `json:"units" api:"required"`
 	JSON  radarAttackLayer7TimeseriesGroupGetHTTPMethodTimeseriesResponseResultMetaJSON   `json:"-"`
 }
 
@@ -202,9 +202,9 @@ func (r RadarAttackLayer7TimeseriesGroupGetHTTPMethodTimeseriesResponseResultMet
 }
 
 type RadarAttackLayer7TimeseriesGroupGetHTTPMethodTimeseriesResponseResultMetaConfidenceInfo struct {
-	Annotations []RadarAttackLayer7TimeseriesGroupGetHTTPMethodTimeseriesResponseResultMetaConfidenceInfoAnnotation `json:"annotations,required"`
+	Annotations []RadarAttackLayer7TimeseriesGroupGetHTTPMethodTimeseriesResponseResultMetaConfidenceInfoAnnotation `json:"annotations" api:"required"`
 	// Provides an indication of how much confidence Cloudflare has in the data.
-	Level int64                                                                                       `json:"level,required"`
+	Level int64                                                                                       `json:"level" api:"required"`
 	JSON  radarAttackLayer7TimeseriesGroupGetHTTPMethodTimeseriesResponseResultMetaConfidenceInfoJSON `json:"-"`
 }
 
@@ -228,14 +228,14 @@ func (r radarAttackLayer7TimeseriesGroupGetHTTPMethodTimeseriesResponseResultMet
 
 // Annotation associated with the result (e.g. outage or other type of event).
 type RadarAttackLayer7TimeseriesGroupGetHTTPMethodTimeseriesResponseResultMetaConfidenceInfoAnnotation struct {
-	DataSource  string    `json:"dataSource,required"`
-	Description string    `json:"description,required"`
-	EndDate     time.Time `json:"endDate,required" format:"date-time"`
-	EventType   string    `json:"eventType,required"`
+	DataSource  string    `json:"dataSource" api:"required"`
+	Description string    `json:"description" api:"required"`
+	EndDate     time.Time `json:"endDate" api:"required" format:"date-time"`
+	EventType   string    `json:"eventType" api:"required"`
 	// Whether event is a single point in time or a time range.
-	IsInstantaneous bool                                                                                                  `json:"isInstantaneous,required"`
-	LinkedURL       string                                                                                                `json:"linkedUrl,required" format:"uri"`
-	StartDate       time.Time                                                                                             `json:"startDate,required" format:"date-time"`
+	IsInstantaneous bool                                                                                                  `json:"isInstantaneous" api:"required"`
+	LinkedURL       string                                                                                                `json:"linkedUrl" api:"required" format:"uri"`
+	StartDate       time.Time                                                                                             `json:"startDate" api:"required" format:"date-time"`
 	JSON            radarAttackLayer7TimeseriesGroupGetHTTPMethodTimeseriesResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
 }
 
@@ -264,9 +264,9 @@ func (r radarAttackLayer7TimeseriesGroupGetHTTPMethodTimeseriesResponseResultMet
 
 type RadarAttackLayer7TimeseriesGroupGetHTTPMethodTimeseriesResponseResultMetaDateRange struct {
 	// Adjusted end of date range.
-	EndTime time.Time `json:"endTime,required" format:"date-time"`
+	EndTime time.Time `json:"endTime" api:"required" format:"date-time"`
 	// Adjusted start of date range.
-	StartTime time.Time                                                                              `json:"startTime,required" format:"date-time"`
+	StartTime time.Time                                                                              `json:"startTime" api:"required" format:"date-time"`
 	JSON      radarAttackLayer7TimeseriesGroupGetHTTPMethodTimeseriesResponseResultMetaDateRangeJSON `json:"-"`
 }
 
@@ -312,8 +312,8 @@ func (r RadarAttackLayer7TimeseriesGroupGetHTTPMethodTimeseriesResponseResultMet
 }
 
 type RadarAttackLayer7TimeseriesGroupGetHTTPMethodTimeseriesResponseResultMetaUnit struct {
-	Name  string                                                                            `json:"name,required"`
-	Value string                                                                            `json:"value,required"`
+	Name  string                                                                            `json:"name" api:"required"`
+	Value string                                                                            `json:"value" api:"required"`
 	JSON  radarAttackLayer7TimeseriesGroupGetHTTPMethodTimeseriesResponseResultMetaUnitJSON `json:"-"`
 }
 
@@ -336,8 +336,8 @@ func (r radarAttackLayer7TimeseriesGroupGetHTTPMethodTimeseriesResponseResultMet
 }
 
 type RadarAttackLayer7TimeseriesGroupGetHTTPMethodTimeseriesResponseResultSerie0 struct {
-	Timestamps  []time.Time                                                                     `json:"timestamps,required" format:"date-time"`
-	ExtraFields map[string][]string                                                             `json:"-,extras"`
+	Timestamps  []time.Time                                                                     `json:"timestamps" api:"required" format:"date-time"`
+	ExtraFields map[string][]string                                                             `json:"-" api:"extrafields"`
 	JSON        radarAttackLayer7TimeseriesGroupGetHTTPMethodTimeseriesResponseResultSerie0JSON `json:"-"`
 }
 
@@ -359,8 +359,8 @@ func (r radarAttackLayer7TimeseriesGroupGetHTTPMethodTimeseriesResponseResultSer
 }
 
 type RadarAttackLayer7TimeseriesGroupGetHTTPVersionTimeseriesResponse struct {
-	Result  RadarAttackLayer7TimeseriesGroupGetHTTPVersionTimeseriesResponseResult `json:"result,required"`
-	Success bool                                                                   `json:"success,required"`
+	Result  RadarAttackLayer7TimeseriesGroupGetHTTPVersionTimeseriesResponseResult `json:"result" api:"required"`
+	Success bool                                                                   `json:"success" api:"required"`
 	JSON    radarAttackLayer7TimeseriesGroupGetHTTPVersionTimeseriesResponseJSON   `json:"-"`
 }
 
@@ -384,8 +384,8 @@ func (r radarAttackLayer7TimeseriesGroupGetHTTPVersionTimeseriesResponseJSON) Ra
 
 type RadarAttackLayer7TimeseriesGroupGetHTTPVersionTimeseriesResponseResult struct {
 	// Metadata for the results.
-	Meta   RadarAttackLayer7TimeseriesGroupGetHTTPVersionTimeseriesResponseResultMeta   `json:"meta,required"`
-	Serie0 RadarAttackLayer7TimeseriesGroupGetHTTPVersionTimeseriesResponseResultSerie0 `json:"serie_0,required"`
+	Meta   RadarAttackLayer7TimeseriesGroupGetHTTPVersionTimeseriesResponseResultMeta   `json:"meta" api:"required"`
+	Serie0 RadarAttackLayer7TimeseriesGroupGetHTTPVersionTimeseriesResponseResultSerie0 `json:"serie_0" api:"required"`
 	JSON   radarAttackLayer7TimeseriesGroupGetHTTPVersionTimeseriesResponseResultJSON   `json:"-"`
 }
 
@@ -412,16 +412,16 @@ type RadarAttackLayer7TimeseriesGroupGetHTTPVersionTimeseriesResponseResultMeta 
 	// Aggregation interval of the results (e.g., in 15 minutes or 1 hour intervals).
 	// Refer to
 	// [Aggregation intervals](https://developers.cloudflare.com/radar/concepts/aggregation-intervals/).
-	AggInterval    RadarAttackLayer7TimeseriesGroupGetHTTPVersionTimeseriesResponseResultMetaAggInterval    `json:"aggInterval,required"`
-	ConfidenceInfo RadarAttackLayer7TimeseriesGroupGetHTTPVersionTimeseriesResponseResultMetaConfidenceInfo `json:"confidenceInfo,required"`
-	DateRange      []RadarAttackLayer7TimeseriesGroupGetHTTPVersionTimeseriesResponseResultMetaDateRange    `json:"dateRange,required"`
+	AggInterval    RadarAttackLayer7TimeseriesGroupGetHTTPVersionTimeseriesResponseResultMetaAggInterval    `json:"aggInterval" api:"required"`
+	ConfidenceInfo RadarAttackLayer7TimeseriesGroupGetHTTPVersionTimeseriesResponseResultMetaConfidenceInfo `json:"confidenceInfo" api:"required"`
+	DateRange      []RadarAttackLayer7TimeseriesGroupGetHTTPVersionTimeseriesResponseResultMetaDateRange    `json:"dateRange" api:"required"`
 	// Timestamp of the last dataset update.
-	LastUpdated time.Time `json:"lastUpdated,required" format:"date-time"`
+	LastUpdated time.Time `json:"lastUpdated" api:"required" format:"date-time"`
 	// Normalization method applied to the results. Refer to
 	// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
-	Normalization RadarAttackLayer7TimeseriesGroupGetHTTPVersionTimeseriesResponseResultMetaNormalization `json:"normalization,required"`
+	Normalization RadarAttackLayer7TimeseriesGroupGetHTTPVersionTimeseriesResponseResultMetaNormalization `json:"normalization" api:"required"`
 	// Measurement units for the results.
-	Units []RadarAttackLayer7TimeseriesGroupGetHTTPVersionTimeseriesResponseResultMetaUnit `json:"units,required"`
+	Units []RadarAttackLayer7TimeseriesGroupGetHTTPVersionTimeseriesResponseResultMetaUnit `json:"units" api:"required"`
 	JSON  radarAttackLayer7TimeseriesGroupGetHTTPVersionTimeseriesResponseResultMetaJSON   `json:"-"`
 }
 
@@ -469,9 +469,9 @@ func (r RadarAttackLayer7TimeseriesGroupGetHTTPVersionTimeseriesResponseResultMe
 }
 
 type RadarAttackLayer7TimeseriesGroupGetHTTPVersionTimeseriesResponseResultMetaConfidenceInfo struct {
-	Annotations []RadarAttackLayer7TimeseriesGroupGetHTTPVersionTimeseriesResponseResultMetaConfidenceInfoAnnotation `json:"annotations,required"`
+	Annotations []RadarAttackLayer7TimeseriesGroupGetHTTPVersionTimeseriesResponseResultMetaConfidenceInfoAnnotation `json:"annotations" api:"required"`
 	// Provides an indication of how much confidence Cloudflare has in the data.
-	Level int64                                                                                        `json:"level,required"`
+	Level int64                                                                                        `json:"level" api:"required"`
 	JSON  radarAttackLayer7TimeseriesGroupGetHTTPVersionTimeseriesResponseResultMetaConfidenceInfoJSON `json:"-"`
 }
 
@@ -495,14 +495,14 @@ func (r radarAttackLayer7TimeseriesGroupGetHTTPVersionTimeseriesResponseResultMe
 
 // Annotation associated with the result (e.g. outage or other type of event).
 type RadarAttackLayer7TimeseriesGroupGetHTTPVersionTimeseriesResponseResultMetaConfidenceInfoAnnotation struct {
-	DataSource  string    `json:"dataSource,required"`
-	Description string    `json:"description,required"`
-	EndDate     time.Time `json:"endDate,required" format:"date-time"`
-	EventType   string    `json:"eventType,required"`
+	DataSource  string    `json:"dataSource" api:"required"`
+	Description string    `json:"description" api:"required"`
+	EndDate     time.Time `json:"endDate" api:"required" format:"date-time"`
+	EventType   string    `json:"eventType" api:"required"`
 	// Whether event is a single point in time or a time range.
-	IsInstantaneous bool                                                                                                   `json:"isInstantaneous,required"`
-	LinkedURL       string                                                                                                 `json:"linkedUrl,required" format:"uri"`
-	StartDate       time.Time                                                                                              `json:"startDate,required" format:"date-time"`
+	IsInstantaneous bool                                                                                                   `json:"isInstantaneous" api:"required"`
+	LinkedURL       string                                                                                                 `json:"linkedUrl" api:"required" format:"uri"`
+	StartDate       time.Time                                                                                              `json:"startDate" api:"required" format:"date-time"`
 	JSON            radarAttackLayer7TimeseriesGroupGetHTTPVersionTimeseriesResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
 }
 
@@ -531,9 +531,9 @@ func (r radarAttackLayer7TimeseriesGroupGetHTTPVersionTimeseriesResponseResultMe
 
 type RadarAttackLayer7TimeseriesGroupGetHTTPVersionTimeseriesResponseResultMetaDateRange struct {
 	// Adjusted end of date range.
-	EndTime time.Time `json:"endTime,required" format:"date-time"`
+	EndTime time.Time `json:"endTime" api:"required" format:"date-time"`
 	// Adjusted start of date range.
-	StartTime time.Time                                                                               `json:"startTime,required" format:"date-time"`
+	StartTime time.Time                                                                               `json:"startTime" api:"required" format:"date-time"`
 	JSON      radarAttackLayer7TimeseriesGroupGetHTTPVersionTimeseriesResponseResultMetaDateRangeJSON `json:"-"`
 }
 
@@ -579,8 +579,8 @@ func (r RadarAttackLayer7TimeseriesGroupGetHTTPVersionTimeseriesResponseResultMe
 }
 
 type RadarAttackLayer7TimeseriesGroupGetHTTPVersionTimeseriesResponseResultMetaUnit struct {
-	Name  string                                                                             `json:"name,required"`
-	Value string                                                                             `json:"value,required"`
+	Name  string                                                                             `json:"name" api:"required"`
+	Value string                                                                             `json:"value" api:"required"`
 	JSON  radarAttackLayer7TimeseriesGroupGetHTTPVersionTimeseriesResponseResultMetaUnitJSON `json:"-"`
 }
 
@@ -603,10 +603,10 @@ func (r radarAttackLayer7TimeseriesGroupGetHTTPVersionTimeseriesResponseResultMe
 }
 
 type RadarAttackLayer7TimeseriesGroupGetHTTPVersionTimeseriesResponseResultSerie0 struct {
-	HTTP1X     []string                                                                         `json:"HTTP/1.x,required"`
-	HTTP2      []string                                                                         `json:"HTTP/2,required"`
-	HTTP3      []string                                                                         `json:"HTTP/3,required"`
-	Timestamps []time.Time                                                                      `json:"timestamps,required" format:"date-time"`
+	HTTP1X     []string                                                                         `json:"HTTP/1.x" api:"required"`
+	HTTP2      []string                                                                         `json:"HTTP/2" api:"required"`
+	HTTP3      []string                                                                         `json:"HTTP/3" api:"required"`
+	Timestamps []time.Time                                                                      `json:"timestamps" api:"required" format:"date-time"`
 	JSON       radarAttackLayer7TimeseriesGroupGetHTTPVersionTimeseriesResponseResultSerie0JSON `json:"-"`
 }
 
@@ -631,8 +631,8 @@ func (r radarAttackLayer7TimeseriesGroupGetHTTPVersionTimeseriesResponseResultSe
 }
 
 type RadarAttackLayer7TimeseriesGroupGetIndustryTimeseriesResponse struct {
-	Result  RadarAttackLayer7TimeseriesGroupGetIndustryTimeseriesResponseResult `json:"result,required"`
-	Success bool                                                                `json:"success,required"`
+	Result  RadarAttackLayer7TimeseriesGroupGetIndustryTimeseriesResponseResult `json:"result" api:"required"`
+	Success bool                                                                `json:"success" api:"required"`
 	JSON    radarAttackLayer7TimeseriesGroupGetIndustryTimeseriesResponseJSON   `json:"-"`
 }
 
@@ -656,8 +656,8 @@ func (r radarAttackLayer7TimeseriesGroupGetIndustryTimeseriesResponseJSON) RawJS
 
 type RadarAttackLayer7TimeseriesGroupGetIndustryTimeseriesResponseResult struct {
 	// Metadata for the results.
-	Meta   RadarAttackLayer7TimeseriesGroupGetIndustryTimeseriesResponseResultMeta   `json:"meta,required"`
-	Serie0 RadarAttackLayer7TimeseriesGroupGetIndustryTimeseriesResponseResultSerie0 `json:"serie_0,required"`
+	Meta   RadarAttackLayer7TimeseriesGroupGetIndustryTimeseriesResponseResultMeta   `json:"meta" api:"required"`
+	Serie0 RadarAttackLayer7TimeseriesGroupGetIndustryTimeseriesResponseResultSerie0 `json:"serie_0" api:"required"`
 	JSON   radarAttackLayer7TimeseriesGroupGetIndustryTimeseriesResponseResultJSON   `json:"-"`
 }
 
@@ -684,16 +684,16 @@ type RadarAttackLayer7TimeseriesGroupGetIndustryTimeseriesResponseResultMeta str
 	// Aggregation interval of the results (e.g., in 15 minutes or 1 hour intervals).
 	// Refer to
 	// [Aggregation intervals](https://developers.cloudflare.com/radar/concepts/aggregation-intervals/).
-	AggInterval    RadarAttackLayer7TimeseriesGroupGetIndustryTimeseriesResponseResultMetaAggInterval    `json:"aggInterval,required"`
-	ConfidenceInfo RadarAttackLayer7TimeseriesGroupGetIndustryTimeseriesResponseResultMetaConfidenceInfo `json:"confidenceInfo,required"`
-	DateRange      []RadarAttackLayer7TimeseriesGroupGetIndustryTimeseriesResponseResultMetaDateRange    `json:"dateRange,required"`
+	AggInterval    RadarAttackLayer7TimeseriesGroupGetIndustryTimeseriesResponseResultMetaAggInterval    `json:"aggInterval" api:"required"`
+	ConfidenceInfo RadarAttackLayer7TimeseriesGroupGetIndustryTimeseriesResponseResultMetaConfidenceInfo `json:"confidenceInfo" api:"required"`
+	DateRange      []RadarAttackLayer7TimeseriesGroupGetIndustryTimeseriesResponseResultMetaDateRange    `json:"dateRange" api:"required"`
 	// Timestamp of the last dataset update.
-	LastUpdated time.Time `json:"lastUpdated,required" format:"date-time"`
+	LastUpdated time.Time `json:"lastUpdated" api:"required" format:"date-time"`
 	// Normalization method applied to the results. Refer to
 	// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
-	Normalization RadarAttackLayer7TimeseriesGroupGetIndustryTimeseriesResponseResultMetaNormalization `json:"normalization,required"`
+	Normalization RadarAttackLayer7TimeseriesGroupGetIndustryTimeseriesResponseResultMetaNormalization `json:"normalization" api:"required"`
 	// Measurement units for the results.
-	Units []RadarAttackLayer7TimeseriesGroupGetIndustryTimeseriesResponseResultMetaUnit `json:"units,required"`
+	Units []RadarAttackLayer7TimeseriesGroupGetIndustryTimeseriesResponseResultMetaUnit `json:"units" api:"required"`
 	JSON  radarAttackLayer7TimeseriesGroupGetIndustryTimeseriesResponseResultMetaJSON   `json:"-"`
 }
 
@@ -741,9 +741,9 @@ func (r RadarAttackLayer7TimeseriesGroupGetIndustryTimeseriesResponseResultMetaA
 }
 
 type RadarAttackLayer7TimeseriesGroupGetIndustryTimeseriesResponseResultMetaConfidenceInfo struct {
-	Annotations []RadarAttackLayer7TimeseriesGroupGetIndustryTimeseriesResponseResultMetaConfidenceInfoAnnotation `json:"annotations,required"`
+	Annotations []RadarAttackLayer7TimeseriesGroupGetIndustryTimeseriesResponseResultMetaConfidenceInfoAnnotation `json:"annotations" api:"required"`
 	// Provides an indication of how much confidence Cloudflare has in the data.
-	Level int64                                                                                     `json:"level,required"`
+	Level int64                                                                                     `json:"level" api:"required"`
 	JSON  radarAttackLayer7TimeseriesGroupGetIndustryTimeseriesResponseResultMetaConfidenceInfoJSON `json:"-"`
 }
 
@@ -767,14 +767,14 @@ func (r radarAttackLayer7TimeseriesGroupGetIndustryTimeseriesResponseResultMetaC
 
 // Annotation associated with the result (e.g. outage or other type of event).
 type RadarAttackLayer7TimeseriesGroupGetIndustryTimeseriesResponseResultMetaConfidenceInfoAnnotation struct {
-	DataSource  string    `json:"dataSource,required"`
-	Description string    `json:"description,required"`
-	EndDate     time.Time `json:"endDate,required" format:"date-time"`
-	EventType   string    `json:"eventType,required"`
+	DataSource  string    `json:"dataSource" api:"required"`
+	Description string    `json:"description" api:"required"`
+	EndDate     time.Time `json:"endDate" api:"required" format:"date-time"`
+	EventType   string    `json:"eventType" api:"required"`
 	// Whether event is a single point in time or a time range.
-	IsInstantaneous bool                                                                                                `json:"isInstantaneous,required"`
-	LinkedURL       string                                                                                              `json:"linkedUrl,required" format:"uri"`
-	StartDate       time.Time                                                                                           `json:"startDate,required" format:"date-time"`
+	IsInstantaneous bool                                                                                                `json:"isInstantaneous" api:"required"`
+	LinkedURL       string                                                                                              `json:"linkedUrl" api:"required" format:"uri"`
+	StartDate       time.Time                                                                                           `json:"startDate" api:"required" format:"date-time"`
 	JSON            radarAttackLayer7TimeseriesGroupGetIndustryTimeseriesResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
 }
 
@@ -803,9 +803,9 @@ func (r radarAttackLayer7TimeseriesGroupGetIndustryTimeseriesResponseResultMetaC
 
 type RadarAttackLayer7TimeseriesGroupGetIndustryTimeseriesResponseResultMetaDateRange struct {
 	// Adjusted end of date range.
-	EndTime time.Time `json:"endTime,required" format:"date-time"`
+	EndTime time.Time `json:"endTime" api:"required" format:"date-time"`
 	// Adjusted start of date range.
-	StartTime time.Time                                                                            `json:"startTime,required" format:"date-time"`
+	StartTime time.Time                                                                            `json:"startTime" api:"required" format:"date-time"`
 	JSON      radarAttackLayer7TimeseriesGroupGetIndustryTimeseriesResponseResultMetaDateRangeJSON `json:"-"`
 }
 
@@ -851,8 +851,8 @@ func (r RadarAttackLayer7TimeseriesGroupGetIndustryTimeseriesResponseResultMetaN
 }
 
 type RadarAttackLayer7TimeseriesGroupGetIndustryTimeseriesResponseResultMetaUnit struct {
-	Name  string                                                                          `json:"name,required"`
-	Value string                                                                          `json:"value,required"`
+	Name  string                                                                          `json:"name" api:"required"`
+	Value string                                                                          `json:"value" api:"required"`
 	JSON  radarAttackLayer7TimeseriesGroupGetIndustryTimeseriesResponseResultMetaUnitJSON `json:"-"`
 }
 
@@ -875,8 +875,8 @@ func (r radarAttackLayer7TimeseriesGroupGetIndustryTimeseriesResponseResultMetaU
 }
 
 type RadarAttackLayer7TimeseriesGroupGetIndustryTimeseriesResponseResultSerie0 struct {
-	Timestamps  []time.Time                                                                   `json:"timestamps,required" format:"date-time"`
-	ExtraFields map[string][]string                                                           `json:"-,extras"`
+	Timestamps  []time.Time                                                                   `json:"timestamps" api:"required" format:"date-time"`
+	ExtraFields map[string][]string                                                           `json:"-" api:"extrafields"`
 	JSON        radarAttackLayer7TimeseriesGroupGetIndustryTimeseriesResponseResultSerie0JSON `json:"-"`
 }
 
@@ -898,8 +898,8 @@ func (r radarAttackLayer7TimeseriesGroupGetIndustryTimeseriesResponseResultSerie
 }
 
 type RadarAttackLayer7TimeseriesGroupGetIPVersionTimeseriesResponse struct {
-	Result  RadarAttackLayer7TimeseriesGroupGetIPVersionTimeseriesResponseResult `json:"result,required"`
-	Success bool                                                                 `json:"success,required"`
+	Result  RadarAttackLayer7TimeseriesGroupGetIPVersionTimeseriesResponseResult `json:"result" api:"required"`
+	Success bool                                                                 `json:"success" api:"required"`
 	JSON    radarAttackLayer7TimeseriesGroupGetIPVersionTimeseriesResponseJSON   `json:"-"`
 }
 
@@ -923,8 +923,8 @@ func (r radarAttackLayer7TimeseriesGroupGetIPVersionTimeseriesResponseJSON) RawJ
 
 type RadarAttackLayer7TimeseriesGroupGetIPVersionTimeseriesResponseResult struct {
 	// Metadata for the results.
-	Meta   RadarAttackLayer7TimeseriesGroupGetIPVersionTimeseriesResponseResultMeta   `json:"meta,required"`
-	Serie0 RadarAttackLayer7TimeseriesGroupGetIPVersionTimeseriesResponseResultSerie0 `json:"serie_0,required"`
+	Meta   RadarAttackLayer7TimeseriesGroupGetIPVersionTimeseriesResponseResultMeta   `json:"meta" api:"required"`
+	Serie0 RadarAttackLayer7TimeseriesGroupGetIPVersionTimeseriesResponseResultSerie0 `json:"serie_0" api:"required"`
 	JSON   radarAttackLayer7TimeseriesGroupGetIPVersionTimeseriesResponseResultJSON   `json:"-"`
 }
 
@@ -951,16 +951,16 @@ type RadarAttackLayer7TimeseriesGroupGetIPVersionTimeseriesResponseResultMeta st
 	// Aggregation interval of the results (e.g., in 15 minutes or 1 hour intervals).
 	// Refer to
 	// [Aggregation intervals](https://developers.cloudflare.com/radar/concepts/aggregation-intervals/).
-	AggInterval    RadarAttackLayer7TimeseriesGroupGetIPVersionTimeseriesResponseResultMetaAggInterval    `json:"aggInterval,required"`
-	ConfidenceInfo RadarAttackLayer7TimeseriesGroupGetIPVersionTimeseriesResponseResultMetaConfidenceInfo `json:"confidenceInfo,required"`
-	DateRange      []RadarAttackLayer7TimeseriesGroupGetIPVersionTimeseriesResponseResultMetaDateRange    `json:"dateRange,required"`
+	AggInterval    RadarAttackLayer7TimeseriesGroupGetIPVersionTimeseriesResponseResultMetaAggInterval    `json:"aggInterval" api:"required"`
+	ConfidenceInfo RadarAttackLayer7TimeseriesGroupGetIPVersionTimeseriesResponseResultMetaConfidenceInfo `json:"confidenceInfo" api:"required"`
+	DateRange      []RadarAttackLayer7TimeseriesGroupGetIPVersionTimeseriesResponseResultMetaDateRange    `json:"dateRange" api:"required"`
 	// Timestamp of the last dataset update.
-	LastUpdated time.Time `json:"lastUpdated,required" format:"date-time"`
+	LastUpdated time.Time `json:"lastUpdated" api:"required" format:"date-time"`
 	// Normalization method applied to the results. Refer to
 	// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
-	Normalization RadarAttackLayer7TimeseriesGroupGetIPVersionTimeseriesResponseResultMetaNormalization `json:"normalization,required"`
+	Normalization RadarAttackLayer7TimeseriesGroupGetIPVersionTimeseriesResponseResultMetaNormalization `json:"normalization" api:"required"`
 	// Measurement units for the results.
-	Units []RadarAttackLayer7TimeseriesGroupGetIPVersionTimeseriesResponseResultMetaUnit `json:"units,required"`
+	Units []RadarAttackLayer7TimeseriesGroupGetIPVersionTimeseriesResponseResultMetaUnit `json:"units" api:"required"`
 	JSON  radarAttackLayer7TimeseriesGroupGetIPVersionTimeseriesResponseResultMetaJSON   `json:"-"`
 }
 
@@ -1008,9 +1008,9 @@ func (r RadarAttackLayer7TimeseriesGroupGetIPVersionTimeseriesResponseResultMeta
 }
 
 type RadarAttackLayer7TimeseriesGroupGetIPVersionTimeseriesResponseResultMetaConfidenceInfo struct {
-	Annotations []RadarAttackLayer7TimeseriesGroupGetIPVersionTimeseriesResponseResultMetaConfidenceInfoAnnotation `json:"annotations,required"`
+	Annotations []RadarAttackLayer7TimeseriesGroupGetIPVersionTimeseriesResponseResultMetaConfidenceInfoAnnotation `json:"annotations" api:"required"`
 	// Provides an indication of how much confidence Cloudflare has in the data.
-	Level int64                                                                                      `json:"level,required"`
+	Level int64                                                                                      `json:"level" api:"required"`
 	JSON  radarAttackLayer7TimeseriesGroupGetIPVersionTimeseriesResponseResultMetaConfidenceInfoJSON `json:"-"`
 }
 
@@ -1034,14 +1034,14 @@ func (r radarAttackLayer7TimeseriesGroupGetIPVersionTimeseriesResponseResultMeta
 
 // Annotation associated with the result (e.g. outage or other type of event).
 type RadarAttackLayer7TimeseriesGroupGetIPVersionTimeseriesResponseResultMetaConfidenceInfoAnnotation struct {
-	DataSource  string    `json:"dataSource,required"`
-	Description string    `json:"description,required"`
-	EndDate     time.Time `json:"endDate,required" format:"date-time"`
-	EventType   string    `json:"eventType,required"`
+	DataSource  string    `json:"dataSource" api:"required"`
+	Description string    `json:"description" api:"required"`
+	EndDate     time.Time `json:"endDate" api:"required" format:"date-time"`
+	EventType   string    `json:"eventType" api:"required"`
 	// Whether event is a single point in time or a time range.
-	IsInstantaneous bool                                                                                                 `json:"isInstantaneous,required"`
-	LinkedURL       string                                                                                               `json:"linkedUrl,required" format:"uri"`
-	StartDate       time.Time                                                                                            `json:"startDate,required" format:"date-time"`
+	IsInstantaneous bool                                                                                                 `json:"isInstantaneous" api:"required"`
+	LinkedURL       string                                                                                               `json:"linkedUrl" api:"required" format:"uri"`
+	StartDate       time.Time                                                                                            `json:"startDate" api:"required" format:"date-time"`
 	JSON            radarAttackLayer7TimeseriesGroupGetIPVersionTimeseriesResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
 }
 
@@ -1070,9 +1070,9 @@ func (r radarAttackLayer7TimeseriesGroupGetIPVersionTimeseriesResponseResultMeta
 
 type RadarAttackLayer7TimeseriesGroupGetIPVersionTimeseriesResponseResultMetaDateRange struct {
 	// Adjusted end of date range.
-	EndTime time.Time `json:"endTime,required" format:"date-time"`
+	EndTime time.Time `json:"endTime" api:"required" format:"date-time"`
 	// Adjusted start of date range.
-	StartTime time.Time                                                                             `json:"startTime,required" format:"date-time"`
+	StartTime time.Time                                                                             `json:"startTime" api:"required" format:"date-time"`
 	JSON      radarAttackLayer7TimeseriesGroupGetIPVersionTimeseriesResponseResultMetaDateRangeJSON `json:"-"`
 }
 
@@ -1118,8 +1118,8 @@ func (r RadarAttackLayer7TimeseriesGroupGetIPVersionTimeseriesResponseResultMeta
 }
 
 type RadarAttackLayer7TimeseriesGroupGetIPVersionTimeseriesResponseResultMetaUnit struct {
-	Name  string                                                                           `json:"name,required"`
-	Value string                                                                           `json:"value,required"`
+	Name  string                                                                           `json:"name" api:"required"`
+	Value string                                                                           `json:"value" api:"required"`
 	JSON  radarAttackLayer7TimeseriesGroupGetIPVersionTimeseriesResponseResultMetaUnitJSON `json:"-"`
 }
 
@@ -1142,9 +1142,9 @@ func (r radarAttackLayer7TimeseriesGroupGetIPVersionTimeseriesResponseResultMeta
 }
 
 type RadarAttackLayer7TimeseriesGroupGetIPVersionTimeseriesResponseResultSerie0 struct {
-	IPv4       []string                                                                       `json:"IPv4,required"`
-	IPv6       []string                                                                       `json:"IPv6,required"`
-	Timestamps []time.Time                                                                    `json:"timestamps,required" format:"date-time"`
+	IPv4       []string                                                                       `json:"IPv4" api:"required"`
+	IPv6       []string                                                                       `json:"IPv6" api:"required"`
+	Timestamps []time.Time                                                                    `json:"timestamps" api:"required" format:"date-time"`
 	JSON       radarAttackLayer7TimeseriesGroupGetIPVersionTimeseriesResponseResultSerie0JSON `json:"-"`
 }
 
@@ -1168,8 +1168,8 @@ func (r radarAttackLayer7TimeseriesGroupGetIPVersionTimeseriesResponseResultSeri
 }
 
 type RadarAttackLayer7TimeseriesGroupGetManagedRulesTimeseriesResponse struct {
-	Result  RadarAttackLayer7TimeseriesGroupGetManagedRulesTimeseriesResponseResult `json:"result,required"`
-	Success bool                                                                    `json:"success,required"`
+	Result  RadarAttackLayer7TimeseriesGroupGetManagedRulesTimeseriesResponseResult `json:"result" api:"required"`
+	Success bool                                                                    `json:"success" api:"required"`
 	JSON    radarAttackLayer7TimeseriesGroupGetManagedRulesTimeseriesResponseJSON   `json:"-"`
 }
 
@@ -1193,8 +1193,8 @@ func (r radarAttackLayer7TimeseriesGroupGetManagedRulesTimeseriesResponseJSON) R
 
 type RadarAttackLayer7TimeseriesGroupGetManagedRulesTimeseriesResponseResult struct {
 	// Metadata for the results.
-	Meta   RadarAttackLayer7TimeseriesGroupGetManagedRulesTimeseriesResponseResultMeta   `json:"meta,required"`
-	Serie0 RadarAttackLayer7TimeseriesGroupGetManagedRulesTimeseriesResponseResultSerie0 `json:"serie_0,required"`
+	Meta   RadarAttackLayer7TimeseriesGroupGetManagedRulesTimeseriesResponseResultMeta   `json:"meta" api:"required"`
+	Serie0 RadarAttackLayer7TimeseriesGroupGetManagedRulesTimeseriesResponseResultSerie0 `json:"serie_0" api:"required"`
 	JSON   radarAttackLayer7TimeseriesGroupGetManagedRulesTimeseriesResponseResultJSON   `json:"-"`
 }
 
@@ -1221,16 +1221,16 @@ type RadarAttackLayer7TimeseriesGroupGetManagedRulesTimeseriesResponseResultMeta
 	// Aggregation interval of the results (e.g., in 15 minutes or 1 hour intervals).
 	// Refer to
 	// [Aggregation intervals](https://developers.cloudflare.com/radar/concepts/aggregation-intervals/).
-	AggInterval    RadarAttackLayer7TimeseriesGroupGetManagedRulesTimeseriesResponseResultMetaAggInterval    `json:"aggInterval,required"`
-	ConfidenceInfo RadarAttackLayer7TimeseriesGroupGetManagedRulesTimeseriesResponseResultMetaConfidenceInfo `json:"confidenceInfo,required"`
-	DateRange      []RadarAttackLayer7TimeseriesGroupGetManagedRulesTimeseriesResponseResultMetaDateRange    `json:"dateRange,required"`
+	AggInterval    RadarAttackLayer7TimeseriesGroupGetManagedRulesTimeseriesResponseResultMetaAggInterval    `json:"aggInterval" api:"required"`
+	ConfidenceInfo RadarAttackLayer7TimeseriesGroupGetManagedRulesTimeseriesResponseResultMetaConfidenceInfo `json:"confidenceInfo" api:"required"`
+	DateRange      []RadarAttackLayer7TimeseriesGroupGetManagedRulesTimeseriesResponseResultMetaDateRange    `json:"dateRange" api:"required"`
 	// Timestamp of the last dataset update.
-	LastUpdated time.Time `json:"lastUpdated,required" format:"date-time"`
+	LastUpdated time.Time `json:"lastUpdated" api:"required" format:"date-time"`
 	// Normalization method applied to the results. Refer to
 	// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
-	Normalization RadarAttackLayer7TimeseriesGroupGetManagedRulesTimeseriesResponseResultMetaNormalization `json:"normalization,required"`
+	Normalization RadarAttackLayer7TimeseriesGroupGetManagedRulesTimeseriesResponseResultMetaNormalization `json:"normalization" api:"required"`
 	// Measurement units for the results.
-	Units []RadarAttackLayer7TimeseriesGroupGetManagedRulesTimeseriesResponseResultMetaUnit `json:"units,required"`
+	Units []RadarAttackLayer7TimeseriesGroupGetManagedRulesTimeseriesResponseResultMetaUnit `json:"units" api:"required"`
 	JSON  radarAttackLayer7TimeseriesGroupGetManagedRulesTimeseriesResponseResultMetaJSON   `json:"-"`
 }
 
@@ -1278,9 +1278,9 @@ func (r RadarAttackLayer7TimeseriesGroupGetManagedRulesTimeseriesResponseResultM
 }
 
 type RadarAttackLayer7TimeseriesGroupGetManagedRulesTimeseriesResponseResultMetaConfidenceInfo struct {
-	Annotations []RadarAttackLayer7TimeseriesGroupGetManagedRulesTimeseriesResponseResultMetaConfidenceInfoAnnotation `json:"annotations,required"`
+	Annotations []RadarAttackLayer7TimeseriesGroupGetManagedRulesTimeseriesResponseResultMetaConfidenceInfoAnnotation `json:"annotations" api:"required"`
 	// Provides an indication of how much confidence Cloudflare has in the data.
-	Level int64                                                                                         `json:"level,required"`
+	Level int64                                                                                         `json:"level" api:"required"`
 	JSON  radarAttackLayer7TimeseriesGroupGetManagedRulesTimeseriesResponseResultMetaConfidenceInfoJSON `json:"-"`
 }
 
@@ -1304,14 +1304,14 @@ func (r radarAttackLayer7TimeseriesGroupGetManagedRulesTimeseriesResponseResultM
 
 // Annotation associated with the result (e.g. outage or other type of event).
 type RadarAttackLayer7TimeseriesGroupGetManagedRulesTimeseriesResponseResultMetaConfidenceInfoAnnotation struct {
-	DataSource  string    `json:"dataSource,required"`
-	Description string    `json:"description,required"`
-	EndDate     time.Time `json:"endDate,required" format:"date-time"`
-	EventType   string    `json:"eventType,required"`
+	DataSource  string    `json:"dataSource" api:"required"`
+	Description string    `json:"description" api:"required"`
+	EndDate     time.Time `json:"endDate" api:"required" format:"date-time"`
+	EventType   string    `json:"eventType" api:"required"`
 	// Whether event is a single point in time or a time range.
-	IsInstantaneous bool                                                                                                    `json:"isInstantaneous,required"`
-	LinkedURL       string                                                                                                  `json:"linkedUrl,required" format:"uri"`
-	StartDate       time.Time                                                                                               `json:"startDate,required" format:"date-time"`
+	IsInstantaneous bool                                                                                                    `json:"isInstantaneous" api:"required"`
+	LinkedURL       string                                                                                                  `json:"linkedUrl" api:"required" format:"uri"`
+	StartDate       time.Time                                                                                               `json:"startDate" api:"required" format:"date-time"`
 	JSON            radarAttackLayer7TimeseriesGroupGetManagedRulesTimeseriesResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
 }
 
@@ -1340,9 +1340,9 @@ func (r radarAttackLayer7TimeseriesGroupGetManagedRulesTimeseriesResponseResultM
 
 type RadarAttackLayer7TimeseriesGroupGetManagedRulesTimeseriesResponseResultMetaDateRange struct {
 	// Adjusted end of date range.
-	EndTime time.Time `json:"endTime,required" format:"date-time"`
+	EndTime time.Time `json:"endTime" api:"required" format:"date-time"`
 	// Adjusted start of date range.
-	StartTime time.Time                                                                                `json:"startTime,required" format:"date-time"`
+	StartTime time.Time                                                                                `json:"startTime" api:"required" format:"date-time"`
 	JSON      radarAttackLayer7TimeseriesGroupGetManagedRulesTimeseriesResponseResultMetaDateRangeJSON `json:"-"`
 }
 
@@ -1388,8 +1388,8 @@ func (r RadarAttackLayer7TimeseriesGroupGetManagedRulesTimeseriesResponseResultM
 }
 
 type RadarAttackLayer7TimeseriesGroupGetManagedRulesTimeseriesResponseResultMetaUnit struct {
-	Name  string                                                                              `json:"name,required"`
-	Value string                                                                              `json:"value,required"`
+	Name  string                                                                              `json:"name" api:"required"`
+	Value string                                                                              `json:"value" api:"required"`
 	JSON  radarAttackLayer7TimeseriesGroupGetManagedRulesTimeseriesResponseResultMetaUnitJSON `json:"-"`
 }
 
@@ -1412,8 +1412,8 @@ func (r radarAttackLayer7TimeseriesGroupGetManagedRulesTimeseriesResponseResultM
 }
 
 type RadarAttackLayer7TimeseriesGroupGetManagedRulesTimeseriesResponseResultSerie0 struct {
-	Timestamps  []time.Time                                                                       `json:"timestamps,required" format:"date-time"`
-	ExtraFields map[string][]string                                                               `json:"-,extras"`
+	Timestamps  []time.Time                                                                       `json:"timestamps" api:"required" format:"date-time"`
+	ExtraFields map[string][]string                                                               `json:"-" api:"extrafields"`
 	JSON        radarAttackLayer7TimeseriesGroupGetManagedRulesTimeseriesResponseResultSerie0JSON `json:"-"`
 }
 
@@ -1435,8 +1435,8 @@ func (r radarAttackLayer7TimeseriesGroupGetManagedRulesTimeseriesResponseResultS
 }
 
 type RadarAttackLayer7TimeseriesGroupGetMitigationProductTimeseriesResponse struct {
-	Result  RadarAttackLayer7TimeseriesGroupGetMitigationProductTimeseriesResponseResult `json:"result,required"`
-	Success bool                                                                         `json:"success,required"`
+	Result  RadarAttackLayer7TimeseriesGroupGetMitigationProductTimeseriesResponseResult `json:"result" api:"required"`
+	Success bool                                                                         `json:"success" api:"required"`
 	JSON    radarAttackLayer7TimeseriesGroupGetMitigationProductTimeseriesResponseJSON   `json:"-"`
 }
 
@@ -1460,8 +1460,8 @@ func (r radarAttackLayer7TimeseriesGroupGetMitigationProductTimeseriesResponseJS
 
 type RadarAttackLayer7TimeseriesGroupGetMitigationProductTimeseriesResponseResult struct {
 	// Metadata for the results.
-	Meta   RadarAttackLayer7TimeseriesGroupGetMitigationProductTimeseriesResponseResultMeta   `json:"meta,required"`
-	Serie0 RadarAttackLayer7TimeseriesGroupGetMitigationProductTimeseriesResponseResultSerie0 `json:"serie_0,required"`
+	Meta   RadarAttackLayer7TimeseriesGroupGetMitigationProductTimeseriesResponseResultMeta   `json:"meta" api:"required"`
+	Serie0 RadarAttackLayer7TimeseriesGroupGetMitigationProductTimeseriesResponseResultSerie0 `json:"serie_0" api:"required"`
 	JSON   radarAttackLayer7TimeseriesGroupGetMitigationProductTimeseriesResponseResultJSON   `json:"-"`
 }
 
@@ -1488,16 +1488,16 @@ type RadarAttackLayer7TimeseriesGroupGetMitigationProductTimeseriesResponseResul
 	// Aggregation interval of the results (e.g., in 15 minutes or 1 hour intervals).
 	// Refer to
 	// [Aggregation intervals](https://developers.cloudflare.com/radar/concepts/aggregation-intervals/).
-	AggInterval    RadarAttackLayer7TimeseriesGroupGetMitigationProductTimeseriesResponseResultMetaAggInterval    `json:"aggInterval,required"`
-	ConfidenceInfo RadarAttackLayer7TimeseriesGroupGetMitigationProductTimeseriesResponseResultMetaConfidenceInfo `json:"confidenceInfo,required"`
-	DateRange      []RadarAttackLayer7TimeseriesGroupGetMitigationProductTimeseriesResponseResultMetaDateRange    `json:"dateRange,required"`
+	AggInterval    RadarAttackLayer7TimeseriesGroupGetMitigationProductTimeseriesResponseResultMetaAggInterval    `json:"aggInterval" api:"required"`
+	ConfidenceInfo RadarAttackLayer7TimeseriesGroupGetMitigationProductTimeseriesResponseResultMetaConfidenceInfo `json:"confidenceInfo" api:"required"`
+	DateRange      []RadarAttackLayer7TimeseriesGroupGetMitigationProductTimeseriesResponseResultMetaDateRange    `json:"dateRange" api:"required"`
 	// Timestamp of the last dataset update.
-	LastUpdated time.Time `json:"lastUpdated,required" format:"date-time"`
+	LastUpdated time.Time `json:"lastUpdated" api:"required" format:"date-time"`
 	// Normalization method applied to the results. Refer to
 	// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
-	Normalization RadarAttackLayer7TimeseriesGroupGetMitigationProductTimeseriesResponseResultMetaNormalization `json:"normalization,required"`
+	Normalization RadarAttackLayer7TimeseriesGroupGetMitigationProductTimeseriesResponseResultMetaNormalization `json:"normalization" api:"required"`
 	// Measurement units for the results.
-	Units []RadarAttackLayer7TimeseriesGroupGetMitigationProductTimeseriesResponseResultMetaUnit `json:"units,required"`
+	Units []RadarAttackLayer7TimeseriesGroupGetMitigationProductTimeseriesResponseResultMetaUnit `json:"units" api:"required"`
 	JSON  radarAttackLayer7TimeseriesGroupGetMitigationProductTimeseriesResponseResultMetaJSON   `json:"-"`
 }
 
@@ -1545,9 +1545,9 @@ func (r RadarAttackLayer7TimeseriesGroupGetMitigationProductTimeseriesResponseRe
 }
 
 type RadarAttackLayer7TimeseriesGroupGetMitigationProductTimeseriesResponseResultMetaConfidenceInfo struct {
-	Annotations []RadarAttackLayer7TimeseriesGroupGetMitigationProductTimeseriesResponseResultMetaConfidenceInfoAnnotation `json:"annotations,required"`
+	Annotations []RadarAttackLayer7TimeseriesGroupGetMitigationProductTimeseriesResponseResultMetaConfidenceInfoAnnotation `json:"annotations" api:"required"`
 	// Provides an indication of how much confidence Cloudflare has in the data.
-	Level int64                                                                                              `json:"level,required"`
+	Level int64                                                                                              `json:"level" api:"required"`
 	JSON  radarAttackLayer7TimeseriesGroupGetMitigationProductTimeseriesResponseResultMetaConfidenceInfoJSON `json:"-"`
 }
 
@@ -1571,14 +1571,14 @@ func (r radarAttackLayer7TimeseriesGroupGetMitigationProductTimeseriesResponseRe
 
 // Annotation associated with the result (e.g. outage or other type of event).
 type RadarAttackLayer7TimeseriesGroupGetMitigationProductTimeseriesResponseResultMetaConfidenceInfoAnnotation struct {
-	DataSource  string    `json:"dataSource,required"`
-	Description string    `json:"description,required"`
-	EndDate     time.Time `json:"endDate,required" format:"date-time"`
-	EventType   string    `json:"eventType,required"`
+	DataSource  string    `json:"dataSource" api:"required"`
+	Description string    `json:"description" api:"required"`
+	EndDate     time.Time `json:"endDate" api:"required" format:"date-time"`
+	EventType   string    `json:"eventType" api:"required"`
 	// Whether event is a single point in time or a time range.
-	IsInstantaneous bool                                                                                                         `json:"isInstantaneous,required"`
-	LinkedURL       string                                                                                                       `json:"linkedUrl,required" format:"uri"`
-	StartDate       time.Time                                                                                                    `json:"startDate,required" format:"date-time"`
+	IsInstantaneous bool                                                                                                         `json:"isInstantaneous" api:"required"`
+	LinkedURL       string                                                                                                       `json:"linkedUrl" api:"required" format:"uri"`
+	StartDate       time.Time                                                                                                    `json:"startDate" api:"required" format:"date-time"`
 	JSON            radarAttackLayer7TimeseriesGroupGetMitigationProductTimeseriesResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
 }
 
@@ -1607,9 +1607,9 @@ func (r radarAttackLayer7TimeseriesGroupGetMitigationProductTimeseriesResponseRe
 
 type RadarAttackLayer7TimeseriesGroupGetMitigationProductTimeseriesResponseResultMetaDateRange struct {
 	// Adjusted end of date range.
-	EndTime time.Time `json:"endTime,required" format:"date-time"`
+	EndTime time.Time `json:"endTime" api:"required" format:"date-time"`
 	// Adjusted start of date range.
-	StartTime time.Time                                                                                     `json:"startTime,required" format:"date-time"`
+	StartTime time.Time                                                                                     `json:"startTime" api:"required" format:"date-time"`
 	JSON      radarAttackLayer7TimeseriesGroupGetMitigationProductTimeseriesResponseResultMetaDateRangeJSON `json:"-"`
 }
 
@@ -1655,8 +1655,8 @@ func (r RadarAttackLayer7TimeseriesGroupGetMitigationProductTimeseriesResponseRe
 }
 
 type RadarAttackLayer7TimeseriesGroupGetMitigationProductTimeseriesResponseResultMetaUnit struct {
-	Name  string                                                                                   `json:"name,required"`
-	Value string                                                                                   `json:"value,required"`
+	Name  string                                                                                   `json:"name" api:"required"`
+	Value string                                                                                   `json:"value" api:"required"`
 	JSON  radarAttackLayer7TimeseriesGroupGetMitigationProductTimeseriesResponseResultMetaUnitJSON `json:"-"`
 }
 
@@ -1679,8 +1679,8 @@ func (r radarAttackLayer7TimeseriesGroupGetMitigationProductTimeseriesResponseRe
 }
 
 type RadarAttackLayer7TimeseriesGroupGetMitigationProductTimeseriesResponseResultSerie0 struct {
-	Timestamps  []time.Time                                                                            `json:"timestamps,required" format:"date-time"`
-	ExtraFields map[string][]string                                                                    `json:"-,extras"`
+	Timestamps  []time.Time                                                                            `json:"timestamps" api:"required" format:"date-time"`
+	ExtraFields map[string][]string                                                                    `json:"-" api:"extrafields"`
 	JSON        radarAttackLayer7TimeseriesGroupGetMitigationProductTimeseriesResponseResultSerie0JSON `json:"-"`
 }
 
@@ -1702,8 +1702,8 @@ func (r radarAttackLayer7TimeseriesGroupGetMitigationProductTimeseriesResponseRe
 }
 
 type RadarAttackLayer7TimeseriesGroupGetVerticalTimeseriesResponse struct {
-	Result  RadarAttackLayer7TimeseriesGroupGetVerticalTimeseriesResponseResult `json:"result,required"`
-	Success bool                                                                `json:"success,required"`
+	Result  RadarAttackLayer7TimeseriesGroupGetVerticalTimeseriesResponseResult `json:"result" api:"required"`
+	Success bool                                                                `json:"success" api:"required"`
 	JSON    radarAttackLayer7TimeseriesGroupGetVerticalTimeseriesResponseJSON   `json:"-"`
 }
 
@@ -1727,8 +1727,8 @@ func (r radarAttackLayer7TimeseriesGroupGetVerticalTimeseriesResponseJSON) RawJS
 
 type RadarAttackLayer7TimeseriesGroupGetVerticalTimeseriesResponseResult struct {
 	// Metadata for the results.
-	Meta   RadarAttackLayer7TimeseriesGroupGetVerticalTimeseriesResponseResultMeta   `json:"meta,required"`
-	Serie0 RadarAttackLayer7TimeseriesGroupGetVerticalTimeseriesResponseResultSerie0 `json:"serie_0,required"`
+	Meta   RadarAttackLayer7TimeseriesGroupGetVerticalTimeseriesResponseResultMeta   `json:"meta" api:"required"`
+	Serie0 RadarAttackLayer7TimeseriesGroupGetVerticalTimeseriesResponseResultSerie0 `json:"serie_0" api:"required"`
 	JSON   radarAttackLayer7TimeseriesGroupGetVerticalTimeseriesResponseResultJSON   `json:"-"`
 }
 
@@ -1755,16 +1755,16 @@ type RadarAttackLayer7TimeseriesGroupGetVerticalTimeseriesResponseResultMeta str
 	// Aggregation interval of the results (e.g., in 15 minutes or 1 hour intervals).
 	// Refer to
 	// [Aggregation intervals](https://developers.cloudflare.com/radar/concepts/aggregation-intervals/).
-	AggInterval    RadarAttackLayer7TimeseriesGroupGetVerticalTimeseriesResponseResultMetaAggInterval    `json:"aggInterval,required"`
-	ConfidenceInfo RadarAttackLayer7TimeseriesGroupGetVerticalTimeseriesResponseResultMetaConfidenceInfo `json:"confidenceInfo,required"`
-	DateRange      []RadarAttackLayer7TimeseriesGroupGetVerticalTimeseriesResponseResultMetaDateRange    `json:"dateRange,required"`
+	AggInterval    RadarAttackLayer7TimeseriesGroupGetVerticalTimeseriesResponseResultMetaAggInterval    `json:"aggInterval" api:"required"`
+	ConfidenceInfo RadarAttackLayer7TimeseriesGroupGetVerticalTimeseriesResponseResultMetaConfidenceInfo `json:"confidenceInfo" api:"required"`
+	DateRange      []RadarAttackLayer7TimeseriesGroupGetVerticalTimeseriesResponseResultMetaDateRange    `json:"dateRange" api:"required"`
 	// Timestamp of the last dataset update.
-	LastUpdated time.Time `json:"lastUpdated,required" format:"date-time"`
+	LastUpdated time.Time `json:"lastUpdated" api:"required" format:"date-time"`
 	// Normalization method applied to the results. Refer to
 	// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
-	Normalization RadarAttackLayer7TimeseriesGroupGetVerticalTimeseriesResponseResultMetaNormalization `json:"normalization,required"`
+	Normalization RadarAttackLayer7TimeseriesGroupGetVerticalTimeseriesResponseResultMetaNormalization `json:"normalization" api:"required"`
 	// Measurement units for the results.
-	Units []RadarAttackLayer7TimeseriesGroupGetVerticalTimeseriesResponseResultMetaUnit `json:"units,required"`
+	Units []RadarAttackLayer7TimeseriesGroupGetVerticalTimeseriesResponseResultMetaUnit `json:"units" api:"required"`
 	JSON  radarAttackLayer7TimeseriesGroupGetVerticalTimeseriesResponseResultMetaJSON   `json:"-"`
 }
 
@@ -1812,9 +1812,9 @@ func (r RadarAttackLayer7TimeseriesGroupGetVerticalTimeseriesResponseResultMetaA
 }
 
 type RadarAttackLayer7TimeseriesGroupGetVerticalTimeseriesResponseResultMetaConfidenceInfo struct {
-	Annotations []RadarAttackLayer7TimeseriesGroupGetVerticalTimeseriesResponseResultMetaConfidenceInfoAnnotation `json:"annotations,required"`
+	Annotations []RadarAttackLayer7TimeseriesGroupGetVerticalTimeseriesResponseResultMetaConfidenceInfoAnnotation `json:"annotations" api:"required"`
 	// Provides an indication of how much confidence Cloudflare has in the data.
-	Level int64                                                                                     `json:"level,required"`
+	Level int64                                                                                     `json:"level" api:"required"`
 	JSON  radarAttackLayer7TimeseriesGroupGetVerticalTimeseriesResponseResultMetaConfidenceInfoJSON `json:"-"`
 }
 
@@ -1838,14 +1838,14 @@ func (r radarAttackLayer7TimeseriesGroupGetVerticalTimeseriesResponseResultMetaC
 
 // Annotation associated with the result (e.g. outage or other type of event).
 type RadarAttackLayer7TimeseriesGroupGetVerticalTimeseriesResponseResultMetaConfidenceInfoAnnotation struct {
-	DataSource  string    `json:"dataSource,required"`
-	Description string    `json:"description,required"`
-	EndDate     time.Time `json:"endDate,required" format:"date-time"`
-	EventType   string    `json:"eventType,required"`
+	DataSource  string    `json:"dataSource" api:"required"`
+	Description string    `json:"description" api:"required"`
+	EndDate     time.Time `json:"endDate" api:"required" format:"date-time"`
+	EventType   string    `json:"eventType" api:"required"`
 	// Whether event is a single point in time or a time range.
-	IsInstantaneous bool                                                                                                `json:"isInstantaneous,required"`
-	LinkedURL       string                                                                                              `json:"linkedUrl,required" format:"uri"`
-	StartDate       time.Time                                                                                           `json:"startDate,required" format:"date-time"`
+	IsInstantaneous bool                                                                                                `json:"isInstantaneous" api:"required"`
+	LinkedURL       string                                                                                              `json:"linkedUrl" api:"required" format:"uri"`
+	StartDate       time.Time                                                                                           `json:"startDate" api:"required" format:"date-time"`
 	JSON            radarAttackLayer7TimeseriesGroupGetVerticalTimeseriesResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
 }
 
@@ -1874,9 +1874,9 @@ func (r radarAttackLayer7TimeseriesGroupGetVerticalTimeseriesResponseResultMetaC
 
 type RadarAttackLayer7TimeseriesGroupGetVerticalTimeseriesResponseResultMetaDateRange struct {
 	// Adjusted end of date range.
-	EndTime time.Time `json:"endTime,required" format:"date-time"`
+	EndTime time.Time `json:"endTime" api:"required" format:"date-time"`
 	// Adjusted start of date range.
-	StartTime time.Time                                                                            `json:"startTime,required" format:"date-time"`
+	StartTime time.Time                                                                            `json:"startTime" api:"required" format:"date-time"`
 	JSON      radarAttackLayer7TimeseriesGroupGetVerticalTimeseriesResponseResultMetaDateRangeJSON `json:"-"`
 }
 
@@ -1922,8 +1922,8 @@ func (r RadarAttackLayer7TimeseriesGroupGetVerticalTimeseriesResponseResultMetaN
 }
 
 type RadarAttackLayer7TimeseriesGroupGetVerticalTimeseriesResponseResultMetaUnit struct {
-	Name  string                                                                          `json:"name,required"`
-	Value string                                                                          `json:"value,required"`
+	Name  string                                                                          `json:"name" api:"required"`
+	Value string                                                                          `json:"value" api:"required"`
 	JSON  radarAttackLayer7TimeseriesGroupGetVerticalTimeseriesResponseResultMetaUnitJSON `json:"-"`
 }
 
@@ -1946,8 +1946,8 @@ func (r radarAttackLayer7TimeseriesGroupGetVerticalTimeseriesResponseResultMetaU
 }
 
 type RadarAttackLayer7TimeseriesGroupGetVerticalTimeseriesResponseResultSerie0 struct {
-	Timestamps  []time.Time                                                                   `json:"timestamps,required" format:"date-time"`
-	ExtraFields map[string][]string                                                           `json:"-,extras"`
+	Timestamps  []time.Time                                                                   `json:"timestamps" api:"required" format:"date-time"`
+	ExtraFields map[string][]string                                                           `json:"-" api:"extrafields"`
 	JSON        radarAttackLayer7TimeseriesGroupGetVerticalTimeseriesResponseResultSerie0JSON `json:"-"`
 }
 

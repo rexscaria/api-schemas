@@ -41,11 +41,11 @@ func (r *AccountCallAppService) New(ctx context.Context, accountID string, body 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/calls/apps", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetches details for a single Calls app.
@@ -53,15 +53,15 @@ func (r *AccountCallAppService) Get(ctx context.Context, accountID string, appID
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if appID == "" {
 		err = errors.New("missing required app_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/calls/apps/%s", accountID, appID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Edit details for a single app.
@@ -69,15 +69,15 @@ func (r *AccountCallAppService) Update(ctx context.Context, accountID string, ap
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if appID == "" {
 		err = errors.New("missing required app_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/calls/apps/%s", accountID, appID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists all apps in the Cloudflare account
@@ -85,11 +85,11 @@ func (r *AccountCallAppService) List(ctx context.Context, accountID string, opts
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/calls/apps", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Deletes an app from Cloudflare Calls
@@ -97,15 +97,15 @@ func (r *AccountCallAppService) Delete(ctx context.Context, accountID string, ap
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if appID == "" {
 		err = errors.New("missing required app_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/calls/apps/%s", accountID, appID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type CallsApp struct {
@@ -148,10 +148,10 @@ func (r CallsAppEditableFieldsParam) MarshalJSON() (data []byte, err error) {
 }
 
 type CallsAppResponseSingle struct {
-	Errors   []CallsMessageItem `json:"errors,required"`
-	Messages []CallsMessageItem `json:"messages,required"`
+	Errors   []CallsMessageItem `json:"errors" api:"required"`
+	Messages []CallsMessageItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success CallsAppResponseSingleSuccess `json:"success,required"`
+	Success CallsAppResponseSingleSuccess `json:"success" api:"required"`
 	Result  CallsApp                      `json:"result"`
 	JSON    callsAppResponseSingleJSON    `json:"-"`
 }
@@ -191,8 +191,8 @@ func (r CallsAppResponseSingleSuccess) IsKnown() bool {
 }
 
 type CallsMessageItem struct {
-	Code             int64                  `json:"code,required"`
-	Message          string                 `json:"message,required"`
+	Code             int64                  `json:"code" api:"required"`
+	Message          string                 `json:"message" api:"required"`
 	DocumentationURL string                 `json:"documentation_url"`
 	Source           CallsMessageItemSource `json:"source"`
 	JSON             callsMessageItemJSON   `json:"-"`
@@ -239,10 +239,10 @@ func (r callsMessageItemSourceJSON) RawJSON() string {
 }
 
 type AccountCallAppNewResponse struct {
-	Errors   []CallsMessageItem `json:"errors,required"`
-	Messages []CallsMessageItem `json:"messages,required"`
+	Errors   []CallsMessageItem `json:"errors" api:"required"`
+	Messages []CallsMessageItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountCallAppNewResponseSuccess `json:"success,required"`
+	Success AccountCallAppNewResponseSuccess `json:"success" api:"required"`
 	Result  AccountCallAppNewResponseResult  `json:"result"`
 	JSON    accountCallAppNewResponseJSON    `json:"-"`
 }
@@ -316,10 +316,10 @@ func (r accountCallAppNewResponseResultJSON) RawJSON() string {
 }
 
 type AccountCallAppListResponse struct {
-	Errors   []CallsMessageItem `json:"errors,required"`
-	Messages []CallsMessageItem `json:"messages,required"`
+	Errors   []CallsMessageItem `json:"errors" api:"required"`
+	Messages []CallsMessageItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountCallAppListResponseSuccess `json:"success,required"`
+	Success AccountCallAppListResponseSuccess `json:"success" api:"required"`
 	Result  []CallsApp                        `json:"result"`
 	JSON    accountCallAppListResponseJSON    `json:"-"`
 }
@@ -359,7 +359,7 @@ func (r AccountCallAppListResponseSuccess) IsKnown() bool {
 }
 
 type AccountCallAppNewParams struct {
-	CallsAppEditableFields CallsAppEditableFieldsParam `json:"calls_app_editable_fields,required"`
+	CallsAppEditableFields CallsAppEditableFieldsParam `json:"calls_app_editable_fields" api:"required"`
 }
 
 func (r AccountCallAppNewParams) MarshalJSON() (data []byte, err error) {
@@ -367,7 +367,7 @@ func (r AccountCallAppNewParams) MarshalJSON() (data []byte, err error) {
 }
 
 type AccountCallAppUpdateParams struct {
-	CallsAppEditableFields CallsAppEditableFieldsParam `json:"calls_app_editable_fields,required"`
+	CallsAppEditableFields CallsAppEditableFieldsParam `json:"calls_app_editable_fields" api:"required"`
 }
 
 func (r AccountCallAppUpdateParams) MarshalJSON() (data []byte, err error) {

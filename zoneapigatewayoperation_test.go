@@ -14,7 +14,7 @@ import (
 )
 
 func TestZoneAPIGatewayOperationGetWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,6 +26,7 @@ func TestZoneAPIGatewayOperationGetWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.APIGateway.Operations.Get(
 		context.TODO(),
@@ -45,7 +46,7 @@ func TestZoneAPIGatewayOperationGetWithOptionalParams(t *testing.T) {
 }
 
 func TestZoneAPIGatewayOperationListWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -57,6 +58,7 @@ func TestZoneAPIGatewayOperationListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.APIGateway.Operations.List(
 		context.TODO(),
@@ -82,7 +84,7 @@ func TestZoneAPIGatewayOperationListWithOptionalParams(t *testing.T) {
 }
 
 func TestZoneAPIGatewayOperationAddMultiple(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -94,6 +96,7 @@ func TestZoneAPIGatewayOperationAddMultiple(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.APIGateway.Operations.AddMultiple(
 		context.TODO(),
@@ -116,7 +119,7 @@ func TestZoneAPIGatewayOperationAddMultiple(t *testing.T) {
 }
 
 func TestZoneAPIGatewayOperationAddSingle(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -128,6 +131,7 @@ func TestZoneAPIGatewayOperationAddSingle(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.APIGateway.Operations.AddSingle(
 		context.TODO(),
@@ -150,7 +154,7 @@ func TestZoneAPIGatewayOperationAddSingle(t *testing.T) {
 }
 
 func TestZoneAPIGatewayOperationDeleteMultiple(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -162,6 +166,7 @@ func TestZoneAPIGatewayOperationDeleteMultiple(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.APIGateway.Operations.DeleteMultiple(context.TODO(), "023e105f4ecef8ad9ca31a8372d0c353")
 	if err != nil {
@@ -174,7 +179,7 @@ func TestZoneAPIGatewayOperationDeleteMultiple(t *testing.T) {
 }
 
 func TestZoneAPIGatewayOperationDeleteSingle(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -186,6 +191,7 @@ func TestZoneAPIGatewayOperationDeleteSingle(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.APIGateway.Operations.DeleteSingle(
 		context.TODO(),

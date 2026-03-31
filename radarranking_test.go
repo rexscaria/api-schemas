@@ -15,7 +15,7 @@ import (
 )
 
 func TestRadarRankingGetDomainRankWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -27,6 +27,7 @@ func TestRadarRankingGetDomainRankWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.Ranking.GetDomainRank(
 		context.TODO(),
@@ -50,7 +51,7 @@ func TestRadarRankingGetDomainRankWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarRankingGetTimeseriesGroupsWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -62,6 +63,7 @@ func TestRadarRankingGetTimeseriesGroupsWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.Ranking.GetTimeseriesGroups(context.TODO(), cfrex.RadarRankingGetTimeseriesGroupsParams{
 		DateEnd:        cfrex.F([]time.Time{time.Now()}),
@@ -85,7 +87,7 @@ func TestRadarRankingGetTimeseriesGroupsWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarRankingGetTopDomainsWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -97,6 +99,7 @@ func TestRadarRankingGetTopDomainsWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.Ranking.GetTopDomains(context.TODO(), cfrex.RadarRankingGetTopDomainsParams{
 		Date:           cfrex.F([]time.Time{time.Now()}),

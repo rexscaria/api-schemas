@@ -50,11 +50,11 @@ func (r *ZoneArgoTieredCachingService) Get(ctx context.Context, zoneID string, o
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/argo/tiered_caching", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Tiered Cache works by dividing Cloudflare's data centers into a hierarchy of
@@ -72,18 +72,18 @@ func (r *ZoneArgoTieredCachingService) Update(ctx context.Context, zoneID string
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/argo/tiered_caching", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type ZoneArgoTieredCachingGetResponse struct {
-	Errors   []MessagesCacheRulesItem `json:"errors,required"`
-	Messages []MessagesCacheRulesItem `json:"messages,required"`
+	Errors   []MessagesCacheRulesItem `json:"errors" api:"required"`
+	Messages []MessagesCacheRulesItem `json:"messages" api:"required"`
 	// Whether the API call was successful
-	Success ZoneArgoTieredCachingGetResponseSuccess `json:"success,required"`
+	Success ZoneArgoTieredCachingGetResponseSuccess `json:"success" api:"required"`
 	Result  ZoneArgoTieredCachingGetResponseResult  `json:"result"`
 	JSON    zoneArgoTieredCachingGetResponseJSON    `json:"-"`
 }
@@ -124,13 +124,13 @@ func (r ZoneArgoTieredCachingGetResponseSuccess) IsKnown() bool {
 
 type ZoneArgoTieredCachingGetResponseResult struct {
 	// ID of the zone setting.
-	ID ZoneArgoTieredCachingGetResponseResultID `json:"id,required"`
+	ID ZoneArgoTieredCachingGetResponseResultID `json:"id" api:"required"`
 	// Whether the setting is editable
-	Editable bool `json:"editable,required"`
+	Editable bool `json:"editable" api:"required"`
 	// The value of the feature
-	Value ZoneArgoTieredCachingGetResponseResultValue `json:"value,required"`
+	Value ZoneArgoTieredCachingGetResponseResultValue `json:"value" api:"required"`
 	// Last time this setting was modified.
-	ModifiedOn time.Time                                  `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time                                  `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zoneArgoTieredCachingGetResponseResultJSON `json:"-"`
 }
 
@@ -185,10 +185,10 @@ func (r ZoneArgoTieredCachingGetResponseResultValue) IsKnown() bool {
 }
 
 type ZoneArgoTieredCachingUpdateResponse struct {
-	Errors   []MessagesCacheRulesItem `json:"errors,required"`
-	Messages []MessagesCacheRulesItem `json:"messages,required"`
+	Errors   []MessagesCacheRulesItem `json:"errors" api:"required"`
+	Messages []MessagesCacheRulesItem `json:"messages" api:"required"`
 	// Whether the API call was successful
-	Success ZoneArgoTieredCachingUpdateResponseSuccess `json:"success,required"`
+	Success ZoneArgoTieredCachingUpdateResponseSuccess `json:"success" api:"required"`
 	Result  ZoneArgoTieredCachingUpdateResponseResult  `json:"result"`
 	JSON    zoneArgoTieredCachingUpdateResponseJSON    `json:"-"`
 }
@@ -229,13 +229,13 @@ func (r ZoneArgoTieredCachingUpdateResponseSuccess) IsKnown() bool {
 
 type ZoneArgoTieredCachingUpdateResponseResult struct {
 	// ID of the zone setting.
-	ID ZoneArgoTieredCachingUpdateResponseResultID `json:"id,required"`
+	ID ZoneArgoTieredCachingUpdateResponseResultID `json:"id" api:"required"`
 	// Whether the setting is editable
-	Editable bool `json:"editable,required"`
+	Editable bool `json:"editable" api:"required"`
 	// The value of the feature
-	Value ZoneArgoTieredCachingUpdateResponseResultValue `json:"value,required"`
+	Value ZoneArgoTieredCachingUpdateResponseResultValue `json:"value" api:"required"`
 	// Last time this setting was modified.
-	ModifiedOn time.Time                                     `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time                                     `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zoneArgoTieredCachingUpdateResponseResultJSON `json:"-"`
 }
 
@@ -291,7 +291,7 @@ func (r ZoneArgoTieredCachingUpdateResponseResultValue) IsKnown() bool {
 
 type ZoneArgoTieredCachingUpdateParams struct {
 	// Enables Tiered Caching.
-	Value param.Field[ZoneArgoTieredCachingUpdateParamsValue] `json:"value,required"`
+	Value param.Field[ZoneArgoTieredCachingUpdateParamsValue] `json:"value" api:"required"`
 }
 
 func (r ZoneArgoTieredCachingUpdateParams) MarshalJSON() (data []byte, err error) {

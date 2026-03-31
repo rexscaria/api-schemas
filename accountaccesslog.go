@@ -44,18 +44,18 @@ func (r *AccountAccessLogService) AccessRequests(ctx context.Context, accountID 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/access/logs/access_requests", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountAccessLogAccessRequestsResponse struct {
-	Errors   []MessagesAccessItem `json:"errors,required"`
-	Messages []MessagesAccessItem `json:"messages,required"`
+	Errors   []MessagesAccessItem `json:"errors" api:"required"`
+	Messages []MessagesAccessItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountAccessLogAccessRequestsResponseSuccess  `json:"success,required"`
+	Success AccountAccessLogAccessRequestsResponseSuccess  `json:"success" api:"required"`
 	Result  []AccountAccessLogAccessRequestsResponseResult `json:"result"`
 	JSON    accountAccessLogAccessRequestsResponseJSON     `json:"-"`
 }

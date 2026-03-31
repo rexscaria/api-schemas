@@ -45,11 +45,11 @@ func (r *ZoneEmailRoutingRuleService) New(ctx context.Context, zoneID string, bo
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/email/routing/rules", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get information for a specific routing rule already created.
@@ -57,15 +57,15 @@ func (r *ZoneEmailRoutingRuleService) Get(ctx context.Context, zoneID string, ru
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if ruleIdentifier == "" {
 		err = errors.New("missing required rule_identifier parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/email/routing/rules/%s", zoneID, ruleIdentifier)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update actions and matches, or enable/disable specific routing rules.
@@ -73,15 +73,15 @@ func (r *ZoneEmailRoutingRuleService) Update(ctx context.Context, zoneID string,
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if ruleIdentifier == "" {
 		err = errors.New("missing required rule_identifier parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/email/routing/rules/%s", zoneID, ruleIdentifier)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists existing routing rules.
@@ -89,11 +89,11 @@ func (r *ZoneEmailRoutingRuleService) List(ctx context.Context, zoneID string, q
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/email/routing/rules", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete a specific routing rule.
@@ -101,21 +101,21 @@ func (r *ZoneEmailRoutingRuleService) Delete(ctx context.Context, zoneID string,
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if ruleIdentifier == "" {
 		err = errors.New("missing required rule_identifier parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/email/routing/rules/%s", zoneID, ruleIdentifier)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Actions pattern.
 type EmailRuleActionPattern struct {
 	// Type of supported action.
-	Type  EmailRuleActionPatternType `json:"type,required"`
+	Type  EmailRuleActionPatternType `json:"type" api:"required"`
 	Value []string                   `json:"value"`
 	JSON  emailRuleActionPatternJSON `json:"-"`
 }
@@ -157,7 +157,7 @@ func (r EmailRuleActionPatternType) IsKnown() bool {
 // Actions pattern.
 type EmailRuleActionPatternParam struct {
 	// Type of supported action.
-	Type  param.Field[EmailRuleActionPatternType] `json:"type,required"`
+	Type  param.Field[EmailRuleActionPatternType] `json:"type" api:"required"`
 	Value param.Field[[]string]                   `json:"value"`
 }
 
@@ -184,7 +184,7 @@ func (r EmailRuleEnabled) IsKnown() bool {
 // Matching pattern to forward your actions.
 type EmailRuleMatcher struct {
 	// Type of matcher.
-	Type EmailRuleMatcherType `json:"type,required"`
+	Type EmailRuleMatcherType `json:"type" api:"required"`
 	// Field for type matcher.
 	Field EmailRuleMatcherField `json:"field"`
 	// Value for matcher.
@@ -244,7 +244,7 @@ func (r EmailRuleMatcherField) IsKnown() bool {
 // Matching pattern to forward your actions.
 type EmailRuleMatcherParam struct {
 	// Type of matcher.
-	Type param.Field[EmailRuleMatcherType] `json:"type,required"`
+	Type param.Field[EmailRuleMatcherType] `json:"type" api:"required"`
 	// Field for type matcher.
 	Field param.Field[EmailRuleMatcherField] `json:"field"`
 	// Value for matcher.
@@ -256,10 +256,10 @@ func (r EmailRuleMatcherParam) MarshalJSON() (data []byte, err error) {
 }
 
 type EmailRuleResponseSingle struct {
-	Errors   []EmailMessagesItem `json:"errors,required"`
-	Messages []EmailMessagesItem `json:"messages,required"`
+	Errors   []EmailMessagesItem `json:"errors" api:"required"`
+	Messages []EmailMessagesItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success EmailRuleResponseSingleSuccess `json:"success,required"`
+	Success EmailRuleResponseSingleSuccess `json:"success" api:"required"`
 	Result  EmailRules                     `json:"result"`
 	JSON    emailRuleResponseSingleJSON    `json:"-"`
 }
@@ -340,10 +340,10 @@ func (r emailRulesJSON) RawJSON() string {
 }
 
 type ZoneEmailRoutingRuleListResponse struct {
-	Errors   []EmailMessagesItem `json:"errors,required"`
-	Messages []EmailMessagesItem `json:"messages,required"`
+	Errors   []EmailMessagesItem `json:"errors" api:"required"`
+	Messages []EmailMessagesItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success    ZoneEmailRoutingRuleListResponseSuccess    `json:"success,required"`
+	Success    ZoneEmailRoutingRuleListResponseSuccess    `json:"success" api:"required"`
 	Result     []EmailRules                               `json:"result"`
 	ResultInfo ZoneEmailRoutingRuleListResponseResultInfo `json:"result_info"`
 	JSON       zoneEmailRoutingRuleListResponseJSON       `json:"-"`
@@ -417,9 +417,9 @@ func (r zoneEmailRoutingRuleListResponseResultInfoJSON) RawJSON() string {
 
 type ZoneEmailRoutingRuleNewParams struct {
 	// List actions patterns.
-	Actions param.Field[[]EmailRuleActionPatternParam] `json:"actions,required"`
+	Actions param.Field[[]EmailRuleActionPatternParam] `json:"actions" api:"required"`
 	// Matching patterns to forward to your actions.
-	Matchers param.Field[[]EmailRuleMatcherParam] `json:"matchers,required"`
+	Matchers param.Field[[]EmailRuleMatcherParam] `json:"matchers" api:"required"`
 	// Routing rule status.
 	Enabled param.Field[EmailRuleEnabled] `json:"enabled"`
 	// Routing rule name.
@@ -434,9 +434,9 @@ func (r ZoneEmailRoutingRuleNewParams) MarshalJSON() (data []byte, err error) {
 
 type ZoneEmailRoutingRuleUpdateParams struct {
 	// List actions patterns.
-	Actions param.Field[[]EmailRuleActionPatternParam] `json:"actions,required"`
+	Actions param.Field[[]EmailRuleActionPatternParam] `json:"actions" api:"required"`
 	// Matching patterns to forward to your actions.
-	Matchers param.Field[[]EmailRuleMatcherParam] `json:"matchers,required"`
+	Matchers param.Field[[]EmailRuleMatcherParam] `json:"matchers" api:"required"`
 	// Routing rule status.
 	Enabled param.Field[EmailRuleEnabled] `json:"enabled"`
 	// Routing rule name.

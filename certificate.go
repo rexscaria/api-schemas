@@ -43,7 +43,7 @@ func (r *CertificateService) New(ctx context.Context, body CertificateNewParams,
 	opts = slices.Concat(r.Options, opts)
 	path := "certificates"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get an existing Origin CA certificate by its serial number. You can use an
@@ -53,11 +53,11 @@ func (r *CertificateService) Get(ctx context.Context, certificateID string, opts
 	opts = slices.Concat(r.Options, opts)
 	if certificateID == "" {
 		err = errors.New("missing required certificate_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("certificates/%s", certificateID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // List all existing Origin CA certificates for a given zone. You can use an Origin
@@ -67,7 +67,7 @@ func (r *CertificateService) List(ctx context.Context, query CertificateListPara
 	opts = slices.Concat(r.Options, opts)
 	path := "certificates"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Revoke an existing Origin CA certificate by its serial number. You can use an
@@ -77,11 +77,11 @@ func (r *CertificateService) Revoke(ctx context.Context, certificateID string, o
 	opts = slices.Concat(r.Options, opts)
 	if certificateID == "" {
 		err = errors.New("missing required certificate_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("certificates/%s", certificateID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Signature type desired on certificate ("origin-rsa" (rsa), "origin-ecc" (ecdsa),
@@ -124,10 +124,10 @@ func (r RequestedValidity) IsKnown() bool {
 }
 
 type SingleCertificateResponse struct {
-	Errors   []MessagesTlsCertificatesItem `json:"errors,required"`
-	Messages []MessagesTlsCertificatesItem `json:"messages,required"`
+	Errors   []MessagesTlsCertificatesItem `json:"errors" api:"required"`
+	Messages []MessagesTlsCertificatesItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success SingleCertificateResponseSuccess `json:"success,required"`
+	Success SingleCertificateResponseSuccess `json:"success" api:"required"`
 	Result  TlsCertificates                  `json:"result"`
 	JSON    singleCertificateResponseJSON    `json:"-"`
 }
@@ -168,15 +168,15 @@ func (r SingleCertificateResponseSuccess) IsKnown() bool {
 
 type TlsCertificates struct {
 	// The Certificate Signing Request (CSR). Must be newline-encoded.
-	Csr string `json:"csr,required"`
+	Csr string `json:"csr" api:"required"`
 	// Array of hostnames or wildcard names (e.g., \*.example.com) bound to the
 	// certificate.
-	Hostnames []string `json:"hostnames,required"`
+	Hostnames []string `json:"hostnames" api:"required"`
 	// Signature type desired on certificate ("origin-rsa" (rsa), "origin-ecc" (ecdsa),
 	// or "keyless-certificate" (for Keyless SSL servers).
-	RequestType RequestType `json:"request_type,required"`
+	RequestType RequestType `json:"request_type" api:"required"`
 	// The number of days for which the certificate should be valid.
-	RequestedValidity RequestedValidity `json:"requested_validity,required"`
+	RequestedValidity RequestedValidity `json:"requested_validity" api:"required"`
 	// Identifier.
 	ID string `json:"id"`
 	// The Origin CA certificate. Will be newline-encoded.
@@ -208,10 +208,10 @@ func (r tlsCertificatesJSON) RawJSON() string {
 }
 
 type CertificateListResponse struct {
-	Errors   []MessagesTlsCertificatesItem `json:"errors,required"`
-	Messages []MessagesTlsCertificatesItem `json:"messages,required"`
+	Errors   []MessagesTlsCertificatesItem `json:"errors" api:"required"`
+	Messages []MessagesTlsCertificatesItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success    CertificateListResponseSuccess    `json:"success,required"`
+	Success    CertificateListResponseSuccess    `json:"success" api:"required"`
 	Result     []TlsCertificates                 `json:"result"`
 	ResultInfo CertificateListResponseResultInfo `json:"result_info"`
 	JSON       certificateListResponseJSON       `json:"-"`
@@ -348,7 +348,7 @@ func (r CertificateNewParams) MarshalJSON() (data []byte, err error) {
 
 type CertificateListParams struct {
 	// Identifier.
-	ZoneID param.Field[string] `query:"zone_id,required"`
+	ZoneID param.Field[string] `query:"zone_id" api:"required"`
 	// Limit to the number of records returned.
 	Limit param.Field[int64] `query:"limit"`
 	// Offset the results

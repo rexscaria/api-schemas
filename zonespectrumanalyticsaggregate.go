@@ -42,16 +42,16 @@ func (r *ZoneSpectrumAnalyticsAggregateService) GetCurrent(ctx context.Context, 
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/spectrum/analytics/aggregate/current", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type SpectrumAnalyticsMessageItem struct {
-	Code             int64                              `json:"code,required"`
-	Message          string                             `json:"message,required"`
+	Code             int64                              `json:"code" api:"required"`
+	Message          string                             `json:"message" api:"required"`
 	DocumentationURL string                             `json:"documentation_url"`
 	Source           SpectrumAnalyticsMessageItemSource `json:"source"`
 	JSON             spectrumAnalyticsMessageItemJSON   `json:"-"`
@@ -98,10 +98,10 @@ func (r spectrumAnalyticsMessageItemSourceJSON) RawJSON() string {
 }
 
 type ZoneSpectrumAnalyticsAggregateGetCurrentResponse struct {
-	Errors   []SpectrumAnalyticsMessageItem `json:"errors,required"`
-	Messages []SpectrumAnalyticsMessageItem `json:"messages,required"`
+	Errors   []SpectrumAnalyticsMessageItem `json:"errors" api:"required"`
+	Messages []SpectrumAnalyticsMessageItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success ZoneSpectrumAnalyticsAggregateGetCurrentResponseSuccess  `json:"success,required"`
+	Success ZoneSpectrumAnalyticsAggregateGetCurrentResponseSuccess  `json:"success" api:"required"`
 	Result  []ZoneSpectrumAnalyticsAggregateGetCurrentResponseResult `json:"result"`
 	JSON    zoneSpectrumAnalyticsAggregateGetCurrentResponseJSON     `json:"-"`
 }
@@ -142,15 +142,15 @@ func (r ZoneSpectrumAnalyticsAggregateGetCurrentResponseSuccess) IsKnown() bool 
 
 type ZoneSpectrumAnalyticsAggregateGetCurrentResponseResult struct {
 	// Application identifier.
-	AppID string `json:"appID,required"`
+	AppID string `json:"appID" api:"required"`
 	// Number of bytes sent
-	BytesEgress float64 `json:"bytesEgress,required"`
+	BytesEgress float64 `json:"bytesEgress" api:"required"`
 	// Number of bytes received
-	BytesIngress float64 `json:"bytesIngress,required"`
+	BytesIngress float64 `json:"bytesIngress" api:"required"`
 	// Number of connections
-	Connections float64 `json:"connections,required"`
+	Connections float64 `json:"connections" api:"required"`
 	// Average duration of connections
-	DurationAvg float64                                                    `json:"durationAvg,required"`
+	DurationAvg float64                                                    `json:"durationAvg" api:"required"`
 	JSON        zoneSpectrumAnalyticsAggregateGetCurrentResponseResultJSON `json:"-"`
 }
 

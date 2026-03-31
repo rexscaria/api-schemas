@@ -44,15 +44,15 @@ func (r *ZoneOriginTlsClientAuthService) Get(ctx context.Context, zoneID string,
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if certificateID == "" {
 		err = errors.New("missing required certificate_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/origin_tls_client_auth/%s", zoneID, certificateID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // List Certificates
@@ -60,11 +60,11 @@ func (r *ZoneOriginTlsClientAuthService) List(ctx context.Context, zoneID string
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/origin_tls_client_auth", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete Certificate
@@ -72,15 +72,15 @@ func (r *ZoneOriginTlsClientAuthService) Delete(ctx context.Context, zoneID stri
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if certificateID == "" {
 		err = errors.New("missing required certificate_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/origin_tls_client_auth/%s", zoneID, certificateID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Upload your own certificate you want Cloudflare to use for edge-to-origin
@@ -92,18 +92,18 @@ func (r *ZoneOriginTlsClientAuthService) Upload(ctx context.Context, zoneID stri
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/origin_tls_client_auth", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type CertificateResponseSingleOrigin struct {
-	Errors   []MessagesTlsCertificatesItem `json:"errors,required"`
-	Messages []MessagesTlsCertificatesItem `json:"messages,required"`
+	Errors   []MessagesTlsCertificatesItem `json:"errors" api:"required"`
+	Messages []MessagesTlsCertificatesItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success CertificateResponseSingleOriginSuccess `json:"success,required"`
+	Success CertificateResponseSingleOriginSuccess `json:"success" api:"required"`
 	Result  ZoneAuthenticatedOriginPull            `json:"result"`
 	JSON    certificateResponseSingleOriginJSON    `json:"-"`
 }
@@ -210,10 +210,10 @@ func (r ZoneAuthenticatedOriginPullStatus) IsKnown() bool {
 }
 
 type ZoneOriginTlsClientAuthListResponse struct {
-	Errors   []MessagesTlsCertificatesItem `json:"errors,required"`
-	Messages []MessagesTlsCertificatesItem `json:"messages,required"`
+	Errors   []MessagesTlsCertificatesItem `json:"errors" api:"required"`
+	Messages []MessagesTlsCertificatesItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success    ZoneOriginTlsClientAuthListResponseSuccess    `json:"success,required"`
+	Success    ZoneOriginTlsClientAuthListResponseSuccess    `json:"success" api:"required"`
 	Result     []ZoneAuthenticatedOriginPull                 `json:"result"`
 	ResultInfo ZoneOriginTlsClientAuthListResponseResultInfo `json:"result_info"`
 	JSON       zoneOriginTlsClientAuthListResponseJSON       `json:"-"`
@@ -287,9 +287,9 @@ func (r zoneOriginTlsClientAuthListResponseResultInfoJSON) RawJSON() string {
 
 type ZoneOriginTlsClientAuthUploadParams struct {
 	// The zone's leaf certificate.
-	Certificate param.Field[string] `json:"certificate,required"`
+	Certificate param.Field[string] `json:"certificate" api:"required"`
 	// The zone's private key.
-	PrivateKey param.Field[string] `json:"private_key,required"`
+	PrivateKey param.Field[string] `json:"private_key" api:"required"`
 }
 
 func (r ZoneOriginTlsClientAuthUploadParams) MarshalJSON() (data []byte, err error) {

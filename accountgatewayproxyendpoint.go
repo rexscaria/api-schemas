@@ -40,11 +40,11 @@ func (r *AccountGatewayProxyEndpointService) New(ctx context.Context, accountID 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/gateway/proxy_endpoints", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetches a single Zero Trust Gateway proxy endpoint.
@@ -52,15 +52,15 @@ func (r *AccountGatewayProxyEndpointService) Get(ctx context.Context, accountID 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if proxyEndpointID == "" {
 		err = errors.New("missing required proxy_endpoint_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/gateway/proxy_endpoints/%s", accountID, proxyEndpointID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates a configured Zero Trust Gateway proxy endpoint.
@@ -68,15 +68,15 @@ func (r *AccountGatewayProxyEndpointService) Update(ctx context.Context, account
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if proxyEndpointID == "" {
 		err = errors.New("missing required proxy_endpoint_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/gateway/proxy_endpoints/%s", accountID, proxyEndpointID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetches all Zero Trust Gateway proxy endpoints for an account.
@@ -84,11 +84,11 @@ func (r *AccountGatewayProxyEndpointService) List(ctx context.Context, accountID
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/gateway/proxy_endpoints", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Deletes a configured Zero Trust Gateway proxy endpoint.
@@ -96,15 +96,15 @@ func (r *AccountGatewayProxyEndpointService) Delete(ctx context.Context, account
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if proxyEndpointID == "" {
 		err = errors.New("missing required proxy_endpoint_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/gateway/proxy_endpoints/%s", accountID, proxyEndpointID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type Endpoint struct {
@@ -141,10 +141,10 @@ func (r endpointJSON) RawJSON() string {
 }
 
 type SingleResponseProxy struct {
-	Errors   []ZeroTrustGatewayMessages `json:"errors,required"`
-	Messages []ZeroTrustGatewayMessages `json:"messages,required"`
+	Errors   []ZeroTrustGatewayMessages `json:"errors" api:"required"`
+	Messages []ZeroTrustGatewayMessages `json:"messages" api:"required"`
 	// Whether the API call was successful
-	Success SingleResponseProxySuccess `json:"success,required"`
+	Success SingleResponseProxySuccess `json:"success" api:"required"`
 	Result  Endpoint                   `json:"result"`
 	JSON    singleResponseProxyJSON    `json:"-"`
 }
@@ -184,10 +184,10 @@ func (r SingleResponseProxySuccess) IsKnown() bool {
 }
 
 type AccountGatewayProxyEndpointGetResponse struct {
-	Errors   []ZeroTrustGatewayMessages `json:"errors,required"`
-	Messages []ZeroTrustGatewayMessages `json:"messages,required"`
+	Errors   []ZeroTrustGatewayMessages `json:"errors" api:"required"`
+	Messages []ZeroTrustGatewayMessages `json:"messages" api:"required"`
 	// Whether the API call was successful
-	Success    AccountGatewayProxyEndpointGetResponseSuccess    `json:"success,required"`
+	Success    AccountGatewayProxyEndpointGetResponseSuccess    `json:"success" api:"required"`
 	Result     []Endpoint                                       `json:"result"`
 	ResultInfo AccountGatewayProxyEndpointGetResponseResultInfo `json:"result_info"`
 	JSON       accountGatewayProxyEndpointGetResponseJSON       `json:"-"`
@@ -261,9 +261,9 @@ func (r accountGatewayProxyEndpointGetResponseResultInfoJSON) RawJSON() string {
 
 type AccountGatewayProxyEndpointNewParams struct {
 	// A list of CIDRs to restrict ingress connections.
-	IPs param.Field[[]string] `json:"ips,required"`
+	IPs param.Field[[]string] `json:"ips" api:"required"`
 	// The name of the proxy endpoint.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 }
 
 func (r AccountGatewayProxyEndpointNewParams) MarshalJSON() (data []byte, err error) {

@@ -43,15 +43,15 @@ func (r *AccountMagicCloudResourceService) Get(ctx context.Context, accountID st
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if resourceID == "" {
 		err = errors.New("missing required resource_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/cloud/resources/%s", accountID, resourceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // List resources in the Resource Catalog (Closed Beta).
@@ -59,11 +59,11 @@ func (r *AccountMagicCloudResourceService) List(ctx context.Context, accountID s
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/cloud/resources", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Export resources in the Resource Catalog as a JSON file (Closed Beta).
@@ -72,11 +72,11 @@ func (r *AccountMagicCloudResourceService) Export(ctx context.Context, accountID
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "application/octet-stream")}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/cloud/resources/export", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Preview Rego query result against the latest resource catalog (Closed Beta).
@@ -84,17 +84,17 @@ func (r *AccountMagicCloudResourceService) PreviewPolicy(ctx context.Context, ac
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/cloud/resources/policy-preview", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type McnCloudPlatformClient struct {
-	ID         string                           `json:"id,required" format:"uuid"`
-	ClientType McnCloudPlatformClientClientType `json:"client_type,required"`
-	Name       string                           `json:"name,required"`
+	ID         string                           `json:"id" api:"required" format:"uuid"`
+	ClientType McnCloudPlatformClientClientType `json:"client_type" api:"required"`
+	Name       string                           `json:"name" api:"required"`
 	JSON       mcnCloudPlatformClientJSON       `json:"-"`
 }
 
@@ -131,26 +131,26 @@ func (r McnCloudPlatformClientClientType) IsKnown() bool {
 }
 
 type McnResourceDetails struct {
-	ID                  string                                   `json:"id,required" format:"uuid"`
-	AccountID           string                                   `json:"account_id,required"`
-	CloudType           McnCloudType                             `json:"cloud_type,required"`
-	Config              map[string]interface{}                   `json:"config,required"`
-	DeploymentProvider  string                                   `json:"deployment_provider,required" format:"uuid"`
-	Managed             bool                                     `json:"managed,required"`
-	MonthlyCostEstimate McnCost                                  `json:"monthly_cost_estimate,required"`
-	Name                string                                   `json:"name,required"`
-	NativeID            string                                   `json:"native_id,required"`
-	Observations        map[string]McnResourceDetailsObservation `json:"observations,required"`
-	ProviderIDs         []string                                 `json:"provider_ids,required" format:"uuid"`
-	ProviderNamesByID   map[string]string                        `json:"provider_names_by_id,required"`
-	Region              string                                   `json:"region,required"`
-	ResourceGroup       string                                   `json:"resource_group,required"`
-	ResourceType        McnResourceType                          `json:"resource_type,required"`
-	Sections            []McnResourceDetailsSection              `json:"sections,required"`
-	State               map[string]interface{}                   `json:"state,required"`
-	Tags                map[string]string                        `json:"tags,required"`
-	UpdatedAt           string                                   `json:"updated_at,required"`
-	URL                 string                                   `json:"url,required"`
+	ID                  string                                   `json:"id" api:"required" format:"uuid"`
+	AccountID           string                                   `json:"account_id" api:"required"`
+	CloudType           McnCloudType                             `json:"cloud_type" api:"required"`
+	Config              map[string]interface{}                   `json:"config" api:"required"`
+	DeploymentProvider  string                                   `json:"deployment_provider" api:"required" format:"uuid"`
+	Managed             bool                                     `json:"managed" api:"required"`
+	MonthlyCostEstimate McnCost                                  `json:"monthly_cost_estimate" api:"required"`
+	Name                string                                   `json:"name" api:"required"`
+	NativeID            string                                   `json:"native_id" api:"required"`
+	Observations        map[string]McnResourceDetailsObservation `json:"observations" api:"required"`
+	ProviderIDs         []string                                 `json:"provider_ids" api:"required" format:"uuid"`
+	ProviderNamesByID   map[string]string                        `json:"provider_names_by_id" api:"required"`
+	Region              string                                   `json:"region" api:"required"`
+	ResourceGroup       string                                   `json:"resource_group" api:"required"`
+	ResourceType        McnResourceType                          `json:"resource_type" api:"required"`
+	Sections            []McnResourceDetailsSection              `json:"sections" api:"required"`
+	State               map[string]interface{}                   `json:"state" api:"required"`
+	Tags                map[string]string                        `json:"tags" api:"required"`
+	UpdatedAt           string                                   `json:"updated_at" api:"required"`
+	URL                 string                                   `json:"url" api:"required"`
 	ManagedBy           []McnCloudPlatformClient                 `json:"managed_by"`
 	JSON                mcnResourceDetailsJSON                   `json:"-"`
 }
@@ -192,10 +192,10 @@ func (r mcnResourceDetailsJSON) RawJSON() string {
 }
 
 type McnResourceDetailsObservation struct {
-	FirstObservedAt string                            `json:"first_observed_at,required"`
-	LastObservedAt  string                            `json:"last_observed_at,required"`
-	ProviderID      string                            `json:"provider_id,required" format:"uuid"`
-	ResourceID      string                            `json:"resource_id,required" format:"uuid"`
+	FirstObservedAt string                            `json:"first_observed_at" api:"required"`
+	LastObservedAt  string                            `json:"last_observed_at" api:"required"`
+	ProviderID      string                            `json:"provider_id" api:"required" format:"uuid"`
+	ResourceID      string                            `json:"resource_id" api:"required" format:"uuid"`
 	JSON            mcnResourceDetailsObservationJSON `json:"-"`
 }
 
@@ -219,9 +219,9 @@ func (r mcnResourceDetailsObservationJSON) RawJSON() string {
 }
 
 type McnResourceDetailsSection struct {
-	HiddenItems  []McnResourceDetailsSectionItem `json:"hidden_items,required"`
-	Name         string                          `json:"name,required"`
-	VisibleItems []McnResourceDetailsSectionItem `json:"visible_items,required"`
+	HiddenItems  []McnResourceDetailsSectionItem `json:"hidden_items" api:"required"`
+	Name         string                          `json:"name" api:"required"`
+	VisibleItems []McnResourceDetailsSectionItem `json:"visible_items" api:"required"`
 	HelpText     string                          `json:"help_text"`
 	JSON         mcnResourceDetailsSectionJSON   `json:"-"`
 }
@@ -271,7 +271,7 @@ func (r mcnResourceDetailsSectionItemJSON) RawJSON() string {
 }
 
 type McnResourceDetailsSectionItemValue struct {
-	ItemType string `json:"item_type,required"`
+	ItemType string `json:"item_type" api:"required"`
 	// This field can have the runtime type of
 	// [[]McnResourceDetailsSectionItemValueMcnListItemList].
 	List            interface{}                            `json:"list"`
@@ -356,8 +356,8 @@ func init() {
 }
 
 type McnResourceDetailsSectionItemValueMcnYamlItem struct {
-	ItemType string                                            `json:"item_type,required"`
-	Yaml     string                                            `json:"yaml,required"`
+	ItemType string                                            `json:"item_type" api:"required"`
+	Yaml     string                                            `json:"yaml" api:"required"`
 	JSON     mcnResourceDetailsSectionItemValueMcnYamlItemJSON `json:"-"`
 }
 
@@ -382,8 +382,8 @@ func (r McnResourceDetailsSectionItemValueMcnYamlItem) implementsMcnResourceDeta
 }
 
 type McnResourceDetailsSectionItemValueMcnYamlDiffItem struct {
-	ItemType string                                                `json:"item_type,required"`
-	YamlDiff McnYamlDiff                                           `json:"yaml_diff,required"`
+	ItemType string                                                `json:"item_type" api:"required"`
+	YamlDiff McnYamlDiff                                           `json:"yaml_diff" api:"required"`
 	JSON     mcnResourceDetailsSectionItemValueMcnYamlDiffItemJSON `json:"-"`
 }
 
@@ -408,8 +408,8 @@ func (r McnResourceDetailsSectionItemValueMcnYamlDiffItem) implementsMcnResource
 }
 
 type McnResourceDetailsSectionItemValueMcnListItem struct {
-	ItemType string                                              `json:"item_type,required"`
-	List     []McnResourceDetailsSectionItemValueMcnListItemList `json:"list,required"`
+	ItemType string                                              `json:"item_type" api:"required"`
+	List     []McnResourceDetailsSectionItemValueMcnListItemList `json:"list" api:"required"`
 	JSON     mcnResourceDetailsSectionItemValueMcnListItemJSON   `json:"-"`
 }
 
@@ -434,7 +434,7 @@ func (r McnResourceDetailsSectionItemValueMcnListItem) implementsMcnResourceDeta
 }
 
 type McnResourceDetailsSectionItemValueMcnListItemList struct {
-	ItemType        string                                                `json:"item_type,required"`
+	ItemType        string                                                `json:"item_type" api:"required"`
 	ResourcePreview McnResourcePreview                                    `json:"resource_preview"`
 	String          string                                                `json:"string"`
 	JSON            mcnResourceDetailsSectionItemValueMcnListItemListJSON `json:"-"`
@@ -494,8 +494,8 @@ func init() {
 }
 
 type McnResourcePreviewItem struct {
-	ItemType        string                     `json:"item_type,required"`
-	ResourcePreview McnResourcePreview         `json:"resource_preview,required"`
+	ItemType        string                     `json:"item_type" api:"required"`
+	ResourcePreview McnResourcePreview         `json:"resource_preview" api:"required"`
 	JSON            mcnResourcePreviewItemJSON `json:"-"`
 }
 
@@ -592,13 +592,13 @@ func (r McnResourceType) IsKnown() bool {
 
 type McnResultInfo struct {
 	// The number of items in the current result set.
-	Count int64 `json:"count,required"`
+	Count int64 `json:"count" api:"required"`
 	// The current page (starts from zero).
-	Page int64 `json:"page,required"`
+	Page int64 `json:"page" api:"required"`
 	// The maximum numnber of items per page.
-	PerPage int64 `json:"per_page,required"`
+	PerPage int64 `json:"per_page" api:"required"`
 	// The total number of items in the entire result set.
-	TotalCount int64 `json:"total_count,required"`
+	TotalCount int64 `json:"total_count" api:"required"`
 	// The number of total pages in the entire result set.
 	TotalPages int64             `json:"total_pages"`
 	JSON       mcnResultInfoJSON `json:"-"`
@@ -624,8 +624,8 @@ func (r mcnResultInfoJSON) RawJSON() string {
 }
 
 type McnStringItem struct {
-	ItemType string            `json:"item_type,required"`
-	String   string            `json:"string,required"`
+	ItemType string            `json:"item_type" api:"required"`
+	String   string            `json:"string" api:"required"`
 	JSON     mcnStringItemJSON `json:"-"`
 }
 
@@ -650,10 +650,10 @@ func (r McnStringItem) implementsMcnResourceDetailsSectionItemValue() {}
 func (r McnStringItem) implementsMcnResourceDetailsSectionItemValueMcnListItemList() {}
 
 type AccountMagicCloudResourceGetResponse struct {
-	Errors   []McnError                               `json:"errors,required"`
-	Messages []McnError                               `json:"messages,required"`
-	Result   McnResourceDetails                       `json:"result,required"`
-	Success  bool                                     `json:"success,required"`
+	Errors   []McnError                               `json:"errors" api:"required"`
+	Messages []McnError                               `json:"messages" api:"required"`
+	Result   McnResourceDetails                       `json:"result" api:"required"`
+	Success  bool                                     `json:"success" api:"required"`
 	JSON     accountMagicCloudResourceGetResponseJSON `json:"-"`
 }
 
@@ -677,10 +677,10 @@ func (r accountMagicCloudResourceGetResponseJSON) RawJSON() string {
 }
 
 type AccountMagicCloudResourceListResponse struct {
-	Errors     []McnError                                `json:"errors,required"`
-	Messages   []McnError                                `json:"messages,required"`
-	Result     []McnResourceDetails                      `json:"result,required"`
-	Success    bool                                      `json:"success,required"`
+	Errors     []McnError                                `json:"errors" api:"required"`
+	Messages   []McnError                                `json:"messages" api:"required"`
+	Result     []McnResourceDetails                      `json:"result" api:"required"`
+	Success    bool                                      `json:"success" api:"required"`
 	ResultInfo McnResultInfo                             `json:"result_info"`
 	JSON       accountMagicCloudResourceListResponseJSON `json:"-"`
 }
@@ -706,10 +706,10 @@ func (r accountMagicCloudResourceListResponseJSON) RawJSON() string {
 }
 
 type AccountMagicCloudResourcePreviewPolicyResponse struct {
-	Errors   []McnError                                         `json:"errors,required"`
-	Messages []McnError                                         `json:"messages,required"`
-	Result   string                                             `json:"result,required"`
-	Success  bool                                               `json:"success,required"`
+	Errors   []McnError                                         `json:"errors" api:"required"`
+	Messages []McnError                                         `json:"messages" api:"required"`
+	Result   string                                             `json:"result" api:"required"`
+	Success  bool                                               `json:"success" api:"required"`
 	JSON     accountMagicCloudResourcePreviewPolicyResponseJSON `json:"-"`
 }
 
@@ -794,7 +794,7 @@ func (r AccountMagicCloudResourceExportParams) URLQuery() (v url.Values) {
 }
 
 type AccountMagicCloudResourcePreviewPolicyParams struct {
-	Policy param.Field[string] `json:"policy,required"`
+	Policy param.Field[string] `json:"policy" api:"required"`
 }
 
 func (r AccountMagicCloudResourcePreviewPolicyParams) MarshalJSON() (data []byte, err error) {

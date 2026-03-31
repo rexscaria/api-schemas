@@ -40,15 +40,15 @@ func (r *AccountRegistrarDomainService) Get(ctx context.Context, accountID strin
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if domainName == "" {
 		err = errors.New("missing required domain_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/registrar/domains/%s", accountID, domainName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update individual domain.
@@ -56,15 +56,15 @@ func (r *AccountRegistrarDomainService) Update(ctx context.Context, accountID st
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if domainName == "" {
 		err = errors.New("missing required domain_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/registrar/domains/%s", accountID, domainName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // List domains handled by Registrar.
@@ -72,19 +72,19 @@ func (r *AccountRegistrarDomainService) List(ctx context.Context, accountID stri
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/registrar/domains", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type RegistrarAPIDomainResponseSingle struct {
-	Errors   []RegistrarAPIDomainResponseSingleError   `json:"errors,required"`
-	Messages []RegistrarAPIDomainResponseSingleMessage `json:"messages,required"`
-	Result   interface{}                               `json:"result,required,nullable"`
+	Errors   []RegistrarAPIDomainResponseSingleError   `json:"errors" api:"required"`
+	Messages []RegistrarAPIDomainResponseSingleMessage `json:"messages" api:"required"`
+	Result   interface{}                               `json:"result" api:"required,nullable"`
 	// Whether the API call was successful
-	Success RegistrarAPIDomainResponseSingleSuccess `json:"success,required"`
+	Success RegistrarAPIDomainResponseSingleSuccess `json:"success" api:"required"`
 	JSON    registrarAPIDomainResponseSingleJSON    `json:"-"`
 }
 
@@ -108,8 +108,8 @@ func (r registrarAPIDomainResponseSingleJSON) RawJSON() string {
 }
 
 type RegistrarAPIDomainResponseSingleError struct {
-	Code             int64                                        `json:"code,required"`
-	Message          string                                       `json:"message,required"`
+	Code             int64                                        `json:"code" api:"required"`
+	Message          string                                       `json:"message" api:"required"`
 	DocumentationURL string                                       `json:"documentation_url"`
 	Source           RegistrarAPIDomainResponseSingleErrorsSource `json:"source"`
 	JSON             registrarAPIDomainResponseSingleErrorJSON    `json:"-"`
@@ -156,8 +156,8 @@ func (r registrarAPIDomainResponseSingleErrorsSourceJSON) RawJSON() string {
 }
 
 type RegistrarAPIDomainResponseSingleMessage struct {
-	Code             int64                                          `json:"code,required"`
-	Message          string                                         `json:"message,required"`
+	Code             int64                                          `json:"code" api:"required"`
+	Message          string                                         `json:"message" api:"required"`
 	DocumentationURL string                                         `json:"documentation_url"`
 	Source           RegistrarAPIDomainResponseSingleMessagesSource `json:"source"`
 	JSON             registrarAPIDomainResponseSingleMessageJSON    `json:"-"`
@@ -219,11 +219,11 @@ func (r RegistrarAPIDomainResponseSingleSuccess) IsKnown() bool {
 }
 
 type AccountRegistrarDomainListResponse struct {
-	Errors   []AccountRegistrarDomainListResponseError   `json:"errors,required"`
-	Messages []AccountRegistrarDomainListResponseMessage `json:"messages,required"`
-	Result   []AccountRegistrarDomainListResponseResult  `json:"result,required,nullable"`
+	Errors   []AccountRegistrarDomainListResponseError   `json:"errors" api:"required"`
+	Messages []AccountRegistrarDomainListResponseMessage `json:"messages" api:"required"`
+	Result   []AccountRegistrarDomainListResponseResult  `json:"result" api:"required,nullable"`
 	// Whether the API call was successful
-	Success    AccountRegistrarDomainListResponseSuccess    `json:"success,required"`
+	Success    AccountRegistrarDomainListResponseSuccess    `json:"success" api:"required"`
 	ResultInfo AccountRegistrarDomainListResponseResultInfo `json:"result_info"`
 	JSON       accountRegistrarDomainListResponseJSON       `json:"-"`
 }
@@ -249,8 +249,8 @@ func (r accountRegistrarDomainListResponseJSON) RawJSON() string {
 }
 
 type AccountRegistrarDomainListResponseError struct {
-	Code             int64                                          `json:"code,required"`
-	Message          string                                         `json:"message,required"`
+	Code             int64                                          `json:"code" api:"required"`
+	Message          string                                         `json:"message" api:"required"`
 	DocumentationURL string                                         `json:"documentation_url"`
 	Source           AccountRegistrarDomainListResponseErrorsSource `json:"source"`
 	JSON             accountRegistrarDomainListResponseErrorJSON    `json:"-"`
@@ -297,8 +297,8 @@ func (r accountRegistrarDomainListResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type AccountRegistrarDomainListResponseMessage struct {
-	Code             int64                                            `json:"code,required"`
-	Message          string                                           `json:"message,required"`
+	Code             int64                                            `json:"code" api:"required"`
+	Message          string                                           `json:"message" api:"required"`
 	DocumentationURL string                                           `json:"documentation_url"`
 	Source           AccountRegistrarDomainListResponseMessagesSource `json:"source"`
 	JSON             accountRegistrarDomainListResponseMessageJSON    `json:"-"`
@@ -406,23 +406,23 @@ func (r accountRegistrarDomainListResponseResultJSON) RawJSON() string {
 // Shows contact information for domain registrant.
 type AccountRegistrarDomainListResponseResultRegistrantContact struct {
 	// Address.
-	Address string `json:"address,required"`
+	Address string `json:"address" api:"required"`
 	// City.
-	City string `json:"city,required"`
+	City string `json:"city" api:"required"`
 	// The country in which the user lives.
-	Country string `json:"country,required,nullable"`
+	Country string `json:"country" api:"required,nullable"`
 	// User's first name
-	FirstName string `json:"first_name,required,nullable"`
+	FirstName string `json:"first_name" api:"required,nullable"`
 	// User's last name
-	LastName string `json:"last_name,required,nullable"`
+	LastName string `json:"last_name" api:"required,nullable"`
 	// Name of organization.
-	Organization string `json:"organization,required"`
+	Organization string `json:"organization" api:"required"`
 	// User's telephone number
-	Phone string `json:"phone,required,nullable"`
+	Phone string `json:"phone" api:"required,nullable"`
 	// State.
-	State string `json:"state,required"`
+	State string `json:"state" api:"required"`
 	// The zipcode or postal code where the user lives.
-	Zip string `json:"zip,required,nullable"`
+	Zip string `json:"zip" api:"required,nullable"`
 	// Contact Identifier.
 	ID string `json:"id"`
 	// Optional address line for unit, floor, suite, etc.

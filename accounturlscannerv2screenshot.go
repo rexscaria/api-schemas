@@ -41,15 +41,15 @@ func (r *AccountUrlscannerV2ScreenshotService) GetScreenshot(ctx context.Context
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "image/png")}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if scanID == "" {
 		err = errors.New("missing required scan_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/urlscanner/v2/screenshots/%s.png", accountID, scanID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountUrlscannerV2ScreenshotGetScreenshotParams struct {

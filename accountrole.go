@@ -41,15 +41,15 @@ func (r *AccountRoleService) Get(ctx context.Context, accountID string, roleID s
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if roleID == "" {
 		err = errors.New("missing required role_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/roles/%s", accountID, roleID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Get all available roles for an account.
@@ -57,11 +57,11 @@ func (r *AccountRoleService) List(ctx context.Context, accountID string, query A
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/roles", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type IamGrants struct {
@@ -158,12 +158,12 @@ func (r IamPermissionsParam) MarshalJSON() (data []byte, err error) {
 
 type IamRole struct {
 	// Role identifier tag.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Description of role's permissions.
-	Description string `json:"description,required"`
+	Description string `json:"description" api:"required"`
 	// Role name.
-	Name        string         `json:"name,required"`
-	Permissions IamPermissions `json:"permissions,required"`
+	Name        string         `json:"name" api:"required"`
+	Permissions IamPermissions `json:"permissions" api:"required"`
 	JSON        iamRoleJSON    `json:"-"`
 }
 
@@ -187,7 +187,7 @@ func (r iamRoleJSON) RawJSON() string {
 
 type IamRoleParam struct {
 	// Role identifier tag.
-	ID param.Field[string] `json:"id,required"`
+	ID param.Field[string] `json:"id" api:"required"`
 }
 
 func (r IamRoleParam) MarshalJSON() (data []byte, err error) {
@@ -195,10 +195,10 @@ func (r IamRoleParam) MarshalJSON() (data []byte, err error) {
 }
 
 type AccountRoleGetResponse struct {
-	Errors   []AccountRoleGetResponseError   `json:"errors,required"`
-	Messages []AccountRoleGetResponseMessage `json:"messages,required"`
+	Errors   []AccountRoleGetResponseError   `json:"errors" api:"required"`
+	Messages []AccountRoleGetResponseMessage `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountRoleGetResponseSuccess `json:"success,required"`
+	Success AccountRoleGetResponseSuccess `json:"success" api:"required"`
 	Result  IamRole                       `json:"result"`
 	JSON    accountRoleGetResponseJSON    `json:"-"`
 }
@@ -223,8 +223,8 @@ func (r accountRoleGetResponseJSON) RawJSON() string {
 }
 
 type AccountRoleGetResponseError struct {
-	Code             int64                              `json:"code,required"`
-	Message          string                             `json:"message,required"`
+	Code             int64                              `json:"code" api:"required"`
+	Message          string                             `json:"message" api:"required"`
 	DocumentationURL string                             `json:"documentation_url"`
 	Source           AccountRoleGetResponseErrorsSource `json:"source"`
 	JSON             accountRoleGetResponseErrorJSON    `json:"-"`
@@ -271,8 +271,8 @@ func (r accountRoleGetResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type AccountRoleGetResponseMessage struct {
-	Code             int64                                `json:"code,required"`
-	Message          string                               `json:"message,required"`
+	Code             int64                                `json:"code" api:"required"`
+	Message          string                               `json:"message" api:"required"`
 	DocumentationURL string                               `json:"documentation_url"`
 	Source           AccountRoleGetResponseMessagesSource `json:"source"`
 	JSON             accountRoleGetResponseMessageJSON    `json:"-"`
@@ -334,10 +334,10 @@ func (r AccountRoleGetResponseSuccess) IsKnown() bool {
 }
 
 type AccountRoleListResponse struct {
-	Errors   []AccountRoleListResponseError   `json:"errors,required"`
-	Messages []AccountRoleListResponseMessage `json:"messages,required"`
+	Errors   []AccountRoleListResponseError   `json:"errors" api:"required"`
+	Messages []AccountRoleListResponseMessage `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success    AccountRoleListResponseSuccess    `json:"success,required"`
+	Success    AccountRoleListResponseSuccess    `json:"success" api:"required"`
 	Result     []IamRole                         `json:"result"`
 	ResultInfo AccountRoleListResponseResultInfo `json:"result_info"`
 	JSON       accountRoleListResponseJSON       `json:"-"`
@@ -364,8 +364,8 @@ func (r accountRoleListResponseJSON) RawJSON() string {
 }
 
 type AccountRoleListResponseError struct {
-	Code             int64                               `json:"code,required"`
-	Message          string                              `json:"message,required"`
+	Code             int64                               `json:"code" api:"required"`
+	Message          string                              `json:"message" api:"required"`
 	DocumentationURL string                              `json:"documentation_url"`
 	Source           AccountRoleListResponseErrorsSource `json:"source"`
 	JSON             accountRoleListResponseErrorJSON    `json:"-"`
@@ -412,8 +412,8 @@ func (r accountRoleListResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type AccountRoleListResponseMessage struct {
-	Code             int64                                 `json:"code,required"`
-	Message          string                                `json:"message,required"`
+	Code             int64                                 `json:"code" api:"required"`
+	Message          string                                `json:"message" api:"required"`
 	DocumentationURL string                                `json:"documentation_url"`
 	Source           AccountRoleListResponseMessagesSource `json:"source"`
 	JSON             accountRoleListResponseMessageJSON    `json:"-"`

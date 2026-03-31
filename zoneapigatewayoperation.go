@@ -43,15 +43,15 @@ func (r *ZoneAPIGatewayOperationService) Get(ctx context.Context, zoneID string,
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if operationID == "" {
 		err = errors.New("missing required operation_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/api_gateway/operations/%s", zoneID, operationID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve information about all operations on a zone
@@ -59,11 +59,11 @@ func (r *ZoneAPIGatewayOperationService) List(ctx context.Context, zoneID string
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/api_gateway/operations", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Add one or more operations to a zone. Endpoints can contain path variables.
@@ -75,11 +75,11 @@ func (r *ZoneAPIGatewayOperationService) AddMultiple(ctx context.Context, zoneID
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/api_gateway/operations", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Add one operation to a zone. Endpoints can contain path variables. Host, method,
@@ -91,11 +91,11 @@ func (r *ZoneAPIGatewayOperationService) AddSingle(ctx context.Context, zoneID s
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/api_gateway/operations/item", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete multiple operations
@@ -103,11 +103,11 @@ func (r *ZoneAPIGatewayOperationService) DeleteMultiple(ctx context.Context, zon
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/api_gateway/operations", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete an operation
@@ -115,15 +115,15 @@ func (r *ZoneAPIGatewayOperationService) DeleteSingle(ctx context.Context, zoneI
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if operationID == "" {
 		err = errors.New("missing required operation_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/api_gateway/operations/%s", zoneID, operationID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type BasicOperation struct {
@@ -131,11 +131,11 @@ type BasicOperation struct {
 	// will be replaced from left to right with {varN}, starting with {var1}, during
 	// insertion. This will further be Cloudflare-normalized upon insertion. See:
 	// https://developers.cloudflare.com/rules/normalization/how-it-works/.
-	Endpoint string `json:"endpoint,required" format:"uri-template"`
+	Endpoint string `json:"endpoint" api:"required" format:"uri-template"`
 	// RFC3986-compliant host.
-	Host string `json:"host,required" format:"hostname"`
+	Host string `json:"host" api:"required" format:"hostname"`
 	// The HTTP method used to access the endpoint.
-	Method BasicOperationMethod `json:"method,required"`
+	Method BasicOperationMethod `json:"method" api:"required"`
 	JSON   basicOperationJSON   `json:"-"`
 }
 
@@ -186,11 +186,11 @@ type BasicOperationParam struct {
 	// will be replaced from left to right with {varN}, starting with {var1}, during
 	// insertion. This will further be Cloudflare-normalized upon insertion. See:
 	// https://developers.cloudflare.com/rules/normalization/how-it-works/.
-	Endpoint param.Field[string] `json:"endpoint,required" format:"uri-template"`
+	Endpoint param.Field[string] `json:"endpoint" api:"required" format:"uri-template"`
 	// RFC3986-compliant host.
-	Host param.Field[string] `json:"host,required" format:"hostname"`
+	Host param.Field[string] `json:"host" api:"required" format:"hostname"`
 	// The HTTP method used to access the endpoint.
-	Method param.Field[BasicOperationMethod] `json:"method,required"`
+	Method param.Field[BasicOperationMethod] `json:"method" api:"required"`
 }
 
 func (r BasicOperationParam) MarshalJSON() (data []byte, err error) {
@@ -198,11 +198,11 @@ func (r BasicOperationParam) MarshalJSON() (data []byte, err error) {
 }
 
 type SingleOperationResponse struct {
-	Errors   []MessagesAPIShieldItem `json:"errors,required"`
-	Messages []MessagesAPIShieldItem `json:"messages,required"`
-	Result   Operation               `json:"result,required"`
+	Errors   []MessagesAPIShieldItem `json:"errors" api:"required"`
+	Messages []MessagesAPIShieldItem `json:"messages" api:"required"`
+	Result   Operation               `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success SingleOperationResponseSuccess `json:"success,required"`
+	Success SingleOperationResponseSuccess `json:"success" api:"required"`
 	JSON    singleOperationResponseJSON    `json:"-"`
 }
 
@@ -241,11 +241,11 @@ func (r SingleOperationResponseSuccess) IsKnown() bool {
 }
 
 type ZoneAPIGatewayOperationListResponse struct {
-	Errors   []MessagesAPIShieldItem `json:"errors,required"`
-	Messages []MessagesAPIShieldItem `json:"messages,required"`
-	Result   []Operation             `json:"result,required"`
+	Errors   []MessagesAPIShieldItem `json:"errors" api:"required"`
+	Messages []MessagesAPIShieldItem `json:"messages" api:"required"`
+	Result   []Operation             `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success    ZoneAPIGatewayOperationListResponseSuccess    `json:"success,required"`
+	Success    ZoneAPIGatewayOperationListResponseSuccess    `json:"success" api:"required"`
 	ResultInfo ZoneAPIGatewayOperationListResponseResultInfo `json:"result_info"`
 	JSON       zoneAPIGatewayOperationListResponseJSON       `json:"-"`
 }
@@ -317,11 +317,11 @@ func (r zoneAPIGatewayOperationListResponseResultInfoJSON) RawJSON() string {
 }
 
 type ZoneAPIGatewayOperationAddMultipleResponse struct {
-	Errors   []MessagesAPIShieldItem `json:"errors,required"`
-	Messages []MessagesAPIShieldItem `json:"messages,required"`
-	Result   []Operation             `json:"result,required"`
+	Errors   []MessagesAPIShieldItem `json:"errors" api:"required"`
+	Messages []MessagesAPIShieldItem `json:"messages" api:"required"`
+	Result   []Operation             `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success ZoneAPIGatewayOperationAddMultipleResponseSuccess `json:"success,required"`
+	Success ZoneAPIGatewayOperationAddMultipleResponseSuccess `json:"success" api:"required"`
 	JSON    zoneAPIGatewayOperationAddMultipleResponseJSON    `json:"-"`
 }
 
@@ -474,7 +474,7 @@ func (r ZoneAPIGatewayOperationListParamsOrder) IsKnown() bool {
 }
 
 type ZoneAPIGatewayOperationAddMultipleParams struct {
-	Body []BasicOperationParam `json:"body,required"`
+	Body []BasicOperationParam `json:"body" api:"required"`
 }
 
 func (r ZoneAPIGatewayOperationAddMultipleParams) MarshalJSON() (data []byte, err error) {
@@ -482,7 +482,7 @@ func (r ZoneAPIGatewayOperationAddMultipleParams) MarshalJSON() (data []byte, er
 }
 
 type ZoneAPIGatewayOperationAddSingleParams struct {
-	BasicOperation BasicOperationParam `json:"basic_operation,required"`
+	BasicOperation BasicOperationParam `json:"basic_operation" api:"required"`
 }
 
 func (r ZoneAPIGatewayOperationAddSingleParams) MarshalJSON() (data []byte, err error) {

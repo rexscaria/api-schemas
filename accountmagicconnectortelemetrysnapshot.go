@@ -42,15 +42,15 @@ func (r *AccountMagicConnectorTelemetrySnapshotService) List(ctx context.Context
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if connectorID == "" {
 		err = errors.New("missing required connector_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/connectors/%s/telemetry/snapshots", accountID, connectorID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Get Snapshot
@@ -58,20 +58,20 @@ func (r *AccountMagicConnectorTelemetrySnapshotService) Get(ctx context.Context,
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if connectorID == "" {
 		err = errors.New("missing required connector_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/connectors/%s/telemetry/snapshots/%v", accountID, connectorID, snapshotT)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountMagicConnectorTelemetrySnapshotListResponse struct {
-	Result   AccountMagicConnectorTelemetrySnapshotListResponseResult `json:"result,required"`
-	Success  bool                                                     `json:"success,required"`
+	Result   AccountMagicConnectorTelemetrySnapshotListResponseResult `json:"result" api:"required"`
+	Success  bool                                                     `json:"success" api:"required"`
 	Errors   []MconnCodedMessage                                      `json:"errors"`
 	Messages []MconnCodedMessage                                      `json:"messages"`
 	JSON     accountMagicConnectorTelemetrySnapshotListResponseJSON   `json:"-"`
@@ -97,8 +97,8 @@ func (r accountMagicConnectorTelemetrySnapshotListResponseJSON) RawJSON() string
 }
 
 type AccountMagicConnectorTelemetrySnapshotListResponseResult struct {
-	Count  float64                                                        `json:"count,required"`
-	Items  []AccountMagicConnectorTelemetrySnapshotListResponseResultItem `json:"items,required"`
+	Count  float64                                                        `json:"count" api:"required"`
+	Items  []AccountMagicConnectorTelemetrySnapshotListResponseResultItem `json:"items" api:"required"`
 	Cursor string                                                         `json:"cursor"`
 	JSON   accountMagicConnectorTelemetrySnapshotListResponseResultJSON   `json:"-"`
 }
@@ -124,9 +124,9 @@ func (r accountMagicConnectorTelemetrySnapshotListResponseResultJSON) RawJSON() 
 
 type AccountMagicConnectorTelemetrySnapshotListResponseResultItem struct {
 	// Time the Snapshot was collected (seconds since the Unix epoch)
-	A float64 `json:"a,required"`
+	A float64 `json:"a" api:"required"`
 	// Time the Snapshot was recorded (seconds since the Unix epoch)
-	T    float64                                                          `json:"t,required"`
+	T    float64                                                          `json:"t" api:"required"`
 	JSON accountMagicConnectorTelemetrySnapshotListResponseResultItemJSON `json:"-"`
 }
 
@@ -150,8 +150,8 @@ func (r accountMagicConnectorTelemetrySnapshotListResponseResultItemJSON) RawJSO
 
 type AccountMagicConnectorTelemetrySnapshotGetResponse struct {
 	// Snapshot
-	Result   AccountMagicConnectorTelemetrySnapshotGetResponseResult `json:"result,required"`
-	Success  bool                                                    `json:"success,required"`
+	Result   AccountMagicConnectorTelemetrySnapshotGetResponseResult `json:"result" api:"required"`
+	Success  bool                                                    `json:"success" api:"required"`
 	Errors   []MconnCodedMessage                                     `json:"errors"`
 	Messages []MconnCodedMessage                                     `json:"messages"`
 	JSON     accountMagicConnectorTelemetrySnapshotGetResponseJSON   `json:"-"`
@@ -179,17 +179,17 @@ func (r accountMagicConnectorTelemetrySnapshotGetResponseJSON) RawJSON() string 
 // Snapshot
 type AccountMagicConnectorTelemetrySnapshotGetResponseResult struct {
 	// Count of failures to reclaim space
-	CountReclaimFailures float64 `json:"count_reclaim_failures,required"`
+	CountReclaimFailures float64 `json:"count_reclaim_failures" api:"required"`
 	// Count of reclaimed paths
-	CountReclaimedPaths float64 `json:"count_reclaimed_paths,required"`
+	CountReclaimedPaths float64 `json:"count_reclaimed_paths" api:"required"`
 	// Count of failed snapshot recordings
-	CountRecordFailed float64 `json:"count_record_failed,required"`
+	CountRecordFailed float64 `json:"count_record_failed" api:"required"`
 	// Count of failed snapshot transmissions
-	CountTransmitFailures float64 `json:"count_transmit_failures,required"`
+	CountTransmitFailures float64 `json:"count_transmit_failures" api:"required"`
 	// Time the Snapshot was recorded (seconds since the Unix epoch)
-	T float64 `json:"t,required"`
+	T float64 `json:"t" api:"required"`
 	// Version
-	V string `json:"v,required"`
+	V string `json:"v" api:"required"`
 	// Count of processors/cores
 	CPUCount float64 `json:"cpu_count"`
 	// Percentage of time over a 10 second window that tasks were stalled
@@ -708,17 +708,17 @@ func (r accountMagicConnectorTelemetrySnapshotGetResponseResultJSON) RawJSON() s
 // Snapshot DHCP lease
 type AccountMagicConnectorTelemetrySnapshotGetResponseResultDhcpLease struct {
 	// Client ID of the device the IP Address was leased to
-	ClientID string `json:"client_id,required"`
+	ClientID string `json:"client_id" api:"required"`
 	// Expiry time of the DHCP lease (seconds since the Unix epoch)
-	ExpiryTime float64 `json:"expiry_time,required"`
+	ExpiryTime float64 `json:"expiry_time" api:"required"`
 	// Hostname of the device the IP Address was leased to
-	Hostname string `json:"hostname,required"`
+	Hostname string `json:"hostname" api:"required"`
 	// Name of the network interface
-	InterfaceName string `json:"interface_name,required"`
+	InterfaceName string `json:"interface_name" api:"required"`
 	// IP Address that was leased
-	IPAddress string `json:"ip_address,required"`
+	IPAddress string `json:"ip_address" api:"required"`
 	// MAC Address of the device the IP Address was leased to
-	MacAddress string `json:"mac_address,required"`
+	MacAddress string `json:"mac_address" api:"required"`
 	// Connector identifier
 	ConnectorID string                                                               `json:"connector_id"`
 	JSON        accountMagicConnectorTelemetrySnapshotGetResponseResultDhcpLeaseJSON `json:"-"`
@@ -750,33 +750,33 @@ func (r accountMagicConnectorTelemetrySnapshotGetResponseResultDhcpLeaseJSON) Ra
 // Snapshot Disk
 type AccountMagicConnectorTelemetrySnapshotGetResponseResultDisk struct {
 	// I/Os currently in progress
-	InProgress float64 `json:"in_progress,required"`
+	InProgress float64 `json:"in_progress" api:"required"`
 	// Device major number
-	Major float64 `json:"major,required"`
+	Major float64 `json:"major" api:"required"`
 	// Reads merged
-	Merged float64 `json:"merged,required"`
+	Merged float64 `json:"merged" api:"required"`
 	// Device minor number
-	Minor float64 `json:"minor,required"`
+	Minor float64 `json:"minor" api:"required"`
 	// Device name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Reads completed successfully
-	Reads float64 `json:"reads,required"`
+	Reads float64 `json:"reads" api:"required"`
 	// Sectors read successfully
-	SectorsRead float64 `json:"sectors_read,required"`
+	SectorsRead float64 `json:"sectors_read" api:"required"`
 	// Sectors written successfully
-	SectorsWritten float64 `json:"sectors_written,required"`
+	SectorsWritten float64 `json:"sectors_written" api:"required"`
 	// Time spent doing I/Os (milliseconds)
-	TimeInProgressMs float64 `json:"time_in_progress_ms,required"`
+	TimeInProgressMs float64 `json:"time_in_progress_ms" api:"required"`
 	// Time spent reading (milliseconds)
-	TimeReadingMs float64 `json:"time_reading_ms,required"`
+	TimeReadingMs float64 `json:"time_reading_ms" api:"required"`
 	// Time spent writing (milliseconds)
-	TimeWritingMs float64 `json:"time_writing_ms,required"`
+	TimeWritingMs float64 `json:"time_writing_ms" api:"required"`
 	// Weighted time spent doing I/Os (milliseconds)
-	WeightedTimeInProgressMs float64 `json:"weighted_time_in_progress_ms,required"`
+	WeightedTimeInProgressMs float64 `json:"weighted_time_in_progress_ms" api:"required"`
 	// Writes completed
-	Writes float64 `json:"writes,required"`
+	Writes float64 `json:"writes" api:"required"`
 	// Writes merged
-	WritesMerged float64 `json:"writes_merged,required"`
+	WritesMerged float64 `json:"writes_merged" api:"required"`
 	// Connector identifier
 	ConnectorID string `json:"connector_id"`
 	// Discards completed successfully
@@ -834,9 +834,9 @@ func (r accountMagicConnectorTelemetrySnapshotGetResponseResultDiskJSON) RawJSON
 // Snapshot Interface
 type AccountMagicConnectorTelemetrySnapshotGetResponseResultInterface struct {
 	// Name of the network interface
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// UP/DOWN state of the network interface
-	Operstate string `json:"operstate,required"`
+	Operstate string `json:"operstate" api:"required"`
 	// Connector identifier
 	ConnectorID string                                                                       `json:"connector_id"`
 	IPAddresses []AccountMagicConnectorTelemetrySnapshotGetResponseResultInterfacesIPAddress `json:"ip_addresses"`
@@ -869,9 +869,9 @@ func (r accountMagicConnectorTelemetrySnapshotGetResponseResultInterfaceJSON) Ra
 // Snapshot Interface Address
 type AccountMagicConnectorTelemetrySnapshotGetResponseResultInterfacesIPAddress struct {
 	// Name of the network interface
-	InterfaceName string `json:"interface_name,required"`
+	InterfaceName string `json:"interface_name" api:"required"`
 	// IP address of the network interface
-	IPAddress string `json:"ip_address,required"`
+	IPAddress string `json:"ip_address" api:"required"`
 	// Connector identifier
 	ConnectorID string                                                                         `json:"connector_id"`
 	JSON        accountMagicConnectorTelemetrySnapshotGetResponseResultInterfacesIPAddressJSON `json:"-"`
@@ -899,13 +899,13 @@ func (r accountMagicConnectorTelemetrySnapshotGetResponseResultInterfacesIPAddre
 // Snapshot Mount
 type AccountMagicConnectorTelemetrySnapshotGetResponseResultMount struct {
 	// File system on disk (EXT4, NTFS, etc.)
-	FileSystem string `json:"file_system,required"`
+	FileSystem string `json:"file_system" api:"required"`
 	// Kind of disk (HDD, SSD, etc.)
-	Kind string `json:"kind,required"`
+	Kind string `json:"kind" api:"required"`
 	// Path where disk is mounted
-	MountPoint string `json:"mount_point,required"`
+	MountPoint string `json:"mount_point" api:"required"`
 	// Name of the disk mount
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Available disk size (bytes)
 	AvailableBytes float64 `json:"available_bytes"`
 	// Connector identifier
@@ -947,39 +947,39 @@ func (r accountMagicConnectorTelemetrySnapshotGetResponseResultMountJSON) RawJSO
 // Snapshot Netdev
 type AccountMagicConnectorTelemetrySnapshotGetResponseResultNetdev struct {
 	// Name of the network device
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Total bytes received
-	RecvBytes float64 `json:"recv_bytes,required"`
+	RecvBytes float64 `json:"recv_bytes" api:"required"`
 	// Compressed packets received
-	RecvCompressed float64 `json:"recv_compressed,required"`
+	RecvCompressed float64 `json:"recv_compressed" api:"required"`
 	// Packets dropped
-	RecvDrop float64 `json:"recv_drop,required"`
+	RecvDrop float64 `json:"recv_drop" api:"required"`
 	// Bad packets received
-	RecvErrs float64 `json:"recv_errs,required"`
+	RecvErrs float64 `json:"recv_errs" api:"required"`
 	// FIFO overruns
-	RecvFifo float64 `json:"recv_fifo,required"`
+	RecvFifo float64 `json:"recv_fifo" api:"required"`
 	// Frame alignment errors
-	RecvFrame float64 `json:"recv_frame,required"`
+	RecvFrame float64 `json:"recv_frame" api:"required"`
 	// Multicast packets received
-	RecvMulticast float64 `json:"recv_multicast,required"`
+	RecvMulticast float64 `json:"recv_multicast" api:"required"`
 	// Total packets received
-	RecvPackets float64 `json:"recv_packets,required"`
+	RecvPackets float64 `json:"recv_packets" api:"required"`
 	// Total bytes transmitted
-	SentBytes float64 `json:"sent_bytes,required"`
+	SentBytes float64 `json:"sent_bytes" api:"required"`
 	// Number of packets not sent due to carrier errors
-	SentCarrier float64 `json:"sent_carrier,required"`
+	SentCarrier float64 `json:"sent_carrier" api:"required"`
 	// Number of collisions
-	SentColls float64 `json:"sent_colls,required"`
+	SentColls float64 `json:"sent_colls" api:"required"`
 	// Number of compressed packets transmitted
-	SentCompressed float64 `json:"sent_compressed,required"`
+	SentCompressed float64 `json:"sent_compressed" api:"required"`
 	// Number of packets dropped during transmission
-	SentDrop float64 `json:"sent_drop,required"`
+	SentDrop float64 `json:"sent_drop" api:"required"`
 	// Number of transmission errors
-	SentErrs float64 `json:"sent_errs,required"`
+	SentErrs float64 `json:"sent_errs" api:"required"`
 	// FIFO overruns
-	SentFifo float64 `json:"sent_fifo,required"`
+	SentFifo float64 `json:"sent_fifo" api:"required"`
 	// Total packets transmitted
-	SentPackets float64 `json:"sent_packets,required"`
+	SentPackets float64 `json:"sent_packets" api:"required"`
 	// Connector identifier
 	ConnectorID string                                                            `json:"connector_id"`
 	JSON        accountMagicConnectorTelemetrySnapshotGetResponseResultNetdevJSON `json:"-"`
@@ -1022,7 +1022,7 @@ func (r accountMagicConnectorTelemetrySnapshotGetResponseResultNetdevJSON) RawJS
 // Snapshot Thermal
 type AccountMagicConnectorTelemetrySnapshotGetResponseResultThermal struct {
 	// Sensor identifier for the component
-	Label string `json:"label,required"`
+	Label string `json:"label" api:"required"`
 	// Connector identifier
 	ConnectorID string `json:"connector_id"`
 	// Critical failure temperature of the component (degrees Celsius)
@@ -1058,14 +1058,14 @@ func (r accountMagicConnectorTelemetrySnapshotGetResponseResultThermalJSON) RawJ
 // Snapshot Tunnels
 type AccountMagicConnectorTelemetrySnapshotGetResponseResultTunnel struct {
 	// Name of tunnel health state (unknown, healthy, degraded, down)
-	HealthState string `json:"health_state,required"`
+	HealthState string `json:"health_state" api:"required"`
 	// Numeric value associated with tunnel state (0 = unknown, 1 = healthy, 2 =
 	// degraded, 3 = down)
-	HealthValue float64 `json:"health_value,required"`
+	HealthValue float64 `json:"health_value" api:"required"`
 	// The tunnel interface name (i.e. xfrm1, xfrm3.99, etc.)
-	InterfaceName string `json:"interface_name,required"`
+	InterfaceName string `json:"interface_name" api:"required"`
 	// Tunnel identifier
-	TunnelID string `json:"tunnel_id,required"`
+	TunnelID string `json:"tunnel_id" api:"required"`
 	// Connector identifier
 	ConnectorID string                                                            `json:"connector_id"`
 	JSON        accountMagicConnectorTelemetrySnapshotGetResponseResultTunnelJSON `json:"-"`
@@ -1093,8 +1093,8 @@ func (r accountMagicConnectorTelemetrySnapshotGetResponseResultTunnelJSON) RawJS
 }
 
 type AccountMagicConnectorTelemetrySnapshotListParams struct {
-	From   param.Field[float64] `query:"from,required"`
-	To     param.Field[float64] `query:"to,required"`
+	From   param.Field[float64] `query:"from" api:"required"`
+	To     param.Field[float64] `query:"to" api:"required"`
 	Cursor param.Field[string]  `query:"cursor"`
 	Limit  param.Field[float64] `query:"limit"`
 }

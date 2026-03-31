@@ -45,11 +45,11 @@ func (r *AccountIntelIndicatorFeedService) NewFeed(ctx context.Context, accountI
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/intel/indicator-feeds", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Download indicator feed data
@@ -57,11 +57,11 @@ func (r *AccountIntelIndicatorFeedService) DownloadData(ctx context.Context, acc
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/intel/indicator_feeds/%v/download", accountID, feedID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Get indicator feed data
@@ -70,11 +70,11 @@ func (r *AccountIntelIndicatorFeedService) GetData(ctx context.Context, accountI
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "text/csv")}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/intel/indicator-feeds/%v/data", accountID, feedID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Get indicator feeds owned by this account
@@ -82,11 +82,11 @@ func (r *AccountIntelIndicatorFeedService) ListFeeds(ctx context.Context, accoun
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/intel/indicator-feeds", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Get indicator feed metadata
@@ -94,11 +94,11 @@ func (r *AccountIntelIndicatorFeedService) GetMetadata(ctx context.Context, acco
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/intel/indicator-feeds/%v", accountID, feedID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update indicator feed data
@@ -106,11 +106,11 @@ func (r *AccountIntelIndicatorFeedService) UpdateData(ctx context.Context, accou
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/intel/indicator-feeds/%v/snapshot", accountID, feedID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Update indicator feed metadata
@@ -118,11 +118,11 @@ func (r *AccountIntelIndicatorFeedService) UpdateMetadata(ctx context.Context, a
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/intel/indicator-feeds/%v", accountID, feedID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type FeedItem struct {
@@ -168,10 +168,10 @@ func (r feedItemJSON) RawJSON() string {
 }
 
 type UpdateFeedResponse struct {
-	Errors   []UpdateFeedResponseError   `json:"errors,required"`
-	Messages []UpdateFeedResponseMessage `json:"messages,required"`
+	Errors   []UpdateFeedResponseError   `json:"errors" api:"required"`
+	Messages []UpdateFeedResponseMessage `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success UpdateFeedResponseSuccess `json:"success,required"`
+	Success UpdateFeedResponseSuccess `json:"success" api:"required"`
 	Result  UpdateFeedResponseResult  `json:"result"`
 	JSON    updateFeedResponseJSON    `json:"-"`
 }
@@ -196,8 +196,8 @@ func (r updateFeedResponseJSON) RawJSON() string {
 }
 
 type UpdateFeedResponseError struct {
-	Code             int64                          `json:"code,required"`
-	Message          string                         `json:"message,required"`
+	Code             int64                          `json:"code" api:"required"`
+	Message          string                         `json:"message" api:"required"`
 	DocumentationURL string                         `json:"documentation_url"`
 	Source           UpdateFeedResponseErrorsSource `json:"source"`
 	JSON             updateFeedResponseErrorJSON    `json:"-"`
@@ -244,8 +244,8 @@ func (r updateFeedResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type UpdateFeedResponseMessage struct {
-	Code             int64                            `json:"code,required"`
-	Message          string                           `json:"message,required"`
+	Code             int64                            `json:"code" api:"required"`
+	Message          string                           `json:"message" api:"required"`
 	DocumentationURL string                           `json:"documentation_url"`
 	Source           UpdateFeedResponseMessagesSource `json:"source"`
 	JSON             updateFeedResponseMessageJSON    `json:"-"`
@@ -335,10 +335,10 @@ func (r updateFeedResponseResultJSON) RawJSON() string {
 }
 
 type AccountIntelIndicatorFeedNewFeedResponse struct {
-	Errors   []AccountIntelIndicatorFeedNewFeedResponseError   `json:"errors,required"`
-	Messages []AccountIntelIndicatorFeedNewFeedResponseMessage `json:"messages,required"`
+	Errors   []AccountIntelIndicatorFeedNewFeedResponseError   `json:"errors" api:"required"`
+	Messages []AccountIntelIndicatorFeedNewFeedResponseMessage `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountIntelIndicatorFeedNewFeedResponseSuccess `json:"success,required"`
+	Success AccountIntelIndicatorFeedNewFeedResponseSuccess `json:"success" api:"required"`
 	Result  FeedItem                                        `json:"result"`
 	JSON    accountIntelIndicatorFeedNewFeedResponseJSON    `json:"-"`
 }
@@ -363,8 +363,8 @@ func (r accountIntelIndicatorFeedNewFeedResponseJSON) RawJSON() string {
 }
 
 type AccountIntelIndicatorFeedNewFeedResponseError struct {
-	Code             int64                                                `json:"code,required"`
-	Message          string                                               `json:"message,required"`
+	Code             int64                                                `json:"code" api:"required"`
+	Message          string                                               `json:"message" api:"required"`
 	DocumentationURL string                                               `json:"documentation_url"`
 	Source           AccountIntelIndicatorFeedNewFeedResponseErrorsSource `json:"source"`
 	JSON             accountIntelIndicatorFeedNewFeedResponseErrorJSON    `json:"-"`
@@ -411,8 +411,8 @@ func (r accountIntelIndicatorFeedNewFeedResponseErrorsSourceJSON) RawJSON() stri
 }
 
 type AccountIntelIndicatorFeedNewFeedResponseMessage struct {
-	Code             int64                                                  `json:"code,required"`
-	Message          string                                                 `json:"message,required"`
+	Code             int64                                                  `json:"code" api:"required"`
+	Message          string                                                 `json:"message" api:"required"`
 	DocumentationURL string                                                 `json:"documentation_url"`
 	Source           AccountIntelIndicatorFeedNewFeedResponseMessagesSource `json:"source"`
 	JSON             accountIntelIndicatorFeedNewFeedResponseMessageJSON    `json:"-"`
@@ -474,10 +474,10 @@ func (r AccountIntelIndicatorFeedNewFeedResponseSuccess) IsKnown() bool {
 }
 
 type AccountIntelIndicatorFeedListFeedsResponse struct {
-	Errors   []AccountIntelIndicatorFeedListFeedsResponseError   `json:"errors,required"`
-	Messages []AccountIntelIndicatorFeedListFeedsResponseMessage `json:"messages,required"`
+	Errors   []AccountIntelIndicatorFeedListFeedsResponseError   `json:"errors" api:"required"`
+	Messages []AccountIntelIndicatorFeedListFeedsResponseMessage `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountIntelIndicatorFeedListFeedsResponseSuccess `json:"success,required"`
+	Success AccountIntelIndicatorFeedListFeedsResponseSuccess `json:"success" api:"required"`
 	Result  []FeedItem                                        `json:"result"`
 	JSON    accountIntelIndicatorFeedListFeedsResponseJSON    `json:"-"`
 }
@@ -502,8 +502,8 @@ func (r accountIntelIndicatorFeedListFeedsResponseJSON) RawJSON() string {
 }
 
 type AccountIntelIndicatorFeedListFeedsResponseError struct {
-	Code             int64                                                  `json:"code,required"`
-	Message          string                                                 `json:"message,required"`
+	Code             int64                                                  `json:"code" api:"required"`
+	Message          string                                                 `json:"message" api:"required"`
 	DocumentationURL string                                                 `json:"documentation_url"`
 	Source           AccountIntelIndicatorFeedListFeedsResponseErrorsSource `json:"source"`
 	JSON             accountIntelIndicatorFeedListFeedsResponseErrorJSON    `json:"-"`
@@ -550,8 +550,8 @@ func (r accountIntelIndicatorFeedListFeedsResponseErrorsSourceJSON) RawJSON() st
 }
 
 type AccountIntelIndicatorFeedListFeedsResponseMessage struct {
-	Code             int64                                                    `json:"code,required"`
-	Message          string                                                   `json:"message,required"`
+	Code             int64                                                    `json:"code" api:"required"`
+	Message          string                                                   `json:"message" api:"required"`
 	DocumentationURL string                                                   `json:"documentation_url"`
 	Source           AccountIntelIndicatorFeedListFeedsResponseMessagesSource `json:"source"`
 	JSON             accountIntelIndicatorFeedListFeedsResponseMessageJSON    `json:"-"`
@@ -614,10 +614,10 @@ func (r AccountIntelIndicatorFeedListFeedsResponseSuccess) IsKnown() bool {
 }
 
 type AccountIntelIndicatorFeedGetMetadataResponse struct {
-	Errors   []AccountIntelIndicatorFeedGetMetadataResponseError   `json:"errors,required"`
-	Messages []AccountIntelIndicatorFeedGetMetadataResponseMessage `json:"messages,required"`
+	Errors   []AccountIntelIndicatorFeedGetMetadataResponseError   `json:"errors" api:"required"`
+	Messages []AccountIntelIndicatorFeedGetMetadataResponseMessage `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountIntelIndicatorFeedGetMetadataResponseSuccess `json:"success,required"`
+	Success AccountIntelIndicatorFeedGetMetadataResponseSuccess `json:"success" api:"required"`
 	Result  AccountIntelIndicatorFeedGetMetadataResponseResult  `json:"result"`
 	JSON    accountIntelIndicatorFeedGetMetadataResponseJSON    `json:"-"`
 }
@@ -642,8 +642,8 @@ func (r accountIntelIndicatorFeedGetMetadataResponseJSON) RawJSON() string {
 }
 
 type AccountIntelIndicatorFeedGetMetadataResponseError struct {
-	Code             int64                                                    `json:"code,required"`
-	Message          string                                                   `json:"message,required"`
+	Code             int64                                                    `json:"code" api:"required"`
+	Message          string                                                   `json:"message" api:"required"`
 	DocumentationURL string                                                   `json:"documentation_url"`
 	Source           AccountIntelIndicatorFeedGetMetadataResponseErrorsSource `json:"source"`
 	JSON             accountIntelIndicatorFeedGetMetadataResponseErrorJSON    `json:"-"`
@@ -691,8 +691,8 @@ func (r accountIntelIndicatorFeedGetMetadataResponseErrorsSourceJSON) RawJSON() 
 }
 
 type AccountIntelIndicatorFeedGetMetadataResponseMessage struct {
-	Code             int64                                                      `json:"code,required"`
-	Message          string                                                     `json:"message,required"`
+	Code             int64                                                      `json:"code" api:"required"`
+	Message          string                                                     `json:"message" api:"required"`
 	DocumentationURL string                                                     `json:"documentation_url"`
 	Source           AccountIntelIndicatorFeedGetMetadataResponseMessagesSource `json:"source"`
 	JSON             accountIntelIndicatorFeedGetMetadataResponseMessageJSON    `json:"-"`
@@ -827,10 +827,10 @@ func (r AccountIntelIndicatorFeedGetMetadataResponseResultLatestUploadStatus) Is
 }
 
 type AccountIntelIndicatorFeedUpdateMetadataResponse struct {
-	Errors   []AccountIntelIndicatorFeedUpdateMetadataResponseError   `json:"errors,required"`
-	Messages []AccountIntelIndicatorFeedUpdateMetadataResponseMessage `json:"messages,required"`
+	Errors   []AccountIntelIndicatorFeedUpdateMetadataResponseError   `json:"errors" api:"required"`
+	Messages []AccountIntelIndicatorFeedUpdateMetadataResponseMessage `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountIntelIndicatorFeedUpdateMetadataResponseSuccess `json:"success,required"`
+	Success AccountIntelIndicatorFeedUpdateMetadataResponseSuccess `json:"success" api:"required"`
 	Result  FeedItem                                               `json:"result"`
 	JSON    accountIntelIndicatorFeedUpdateMetadataResponseJSON    `json:"-"`
 }
@@ -855,8 +855,8 @@ func (r accountIntelIndicatorFeedUpdateMetadataResponseJSON) RawJSON() string {
 }
 
 type AccountIntelIndicatorFeedUpdateMetadataResponseError struct {
-	Code             int64                                                       `json:"code,required"`
-	Message          string                                                      `json:"message,required"`
+	Code             int64                                                       `json:"code" api:"required"`
+	Message          string                                                      `json:"message" api:"required"`
 	DocumentationURL string                                                      `json:"documentation_url"`
 	Source           AccountIntelIndicatorFeedUpdateMetadataResponseErrorsSource `json:"source"`
 	JSON             accountIntelIndicatorFeedUpdateMetadataResponseErrorJSON    `json:"-"`
@@ -904,8 +904,8 @@ func (r accountIntelIndicatorFeedUpdateMetadataResponseErrorsSourceJSON) RawJSON
 }
 
 type AccountIntelIndicatorFeedUpdateMetadataResponseMessage struct {
-	Code             int64                                                         `json:"code,required"`
-	Message          string                                                        `json:"message,required"`
+	Code             int64                                                         `json:"code" api:"required"`
+	Message          string                                                        `json:"message" api:"required"`
 	DocumentationURL string                                                        `json:"documentation_url"`
 	Source           AccountIntelIndicatorFeedUpdateMetadataResponseMessagesSource `json:"source"`
 	JSON             accountIntelIndicatorFeedUpdateMetadataResponseMessageJSON    `json:"-"`

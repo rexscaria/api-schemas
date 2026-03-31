@@ -40,11 +40,11 @@ func (r *AccountCallTurnKeyService) New(ctx context.Context, accountID string, b
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/calls/turn_keys", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetches details for a single TURN key.
@@ -52,15 +52,15 @@ func (r *AccountCallTurnKeyService) Get(ctx context.Context, accountID string, k
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if keyID == "" {
 		err = errors.New("missing required key_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/calls/turn_keys/%s", accountID, keyID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Edit details for a single TURN key.
@@ -68,15 +68,15 @@ func (r *AccountCallTurnKeyService) Update(ctx context.Context, accountID string
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if keyID == "" {
 		err = errors.New("missing required key_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/calls/turn_keys/%s", accountID, keyID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists all TURN keys in the Cloudflare account
@@ -84,11 +84,11 @@ func (r *AccountCallTurnKeyService) List(ctx context.Context, accountID string, 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/calls/turn_keys", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Deletes a TURN key from Cloudflare Calls
@@ -96,15 +96,15 @@ func (r *AccountCallTurnKeyService) Delete(ctx context.Context, accountID string
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if keyID == "" {
 		err = errors.New("missing required key_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/calls/turn_keys/%s", accountID, keyID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type CallsTurnKeyEditableFieldsParam struct {
@@ -148,10 +148,10 @@ func (r callsTurnKeyObjectJSON) RawJSON() string {
 }
 
 type CallsTurnKeyResponseSingle struct {
-	Errors   []CallsMessageItem `json:"errors,required"`
-	Messages []CallsMessageItem `json:"messages,required"`
+	Errors   []CallsMessageItem `json:"errors" api:"required"`
+	Messages []CallsMessageItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success CallsTurnKeyResponseSingleSuccess `json:"success,required"`
+	Success CallsTurnKeyResponseSingleSuccess `json:"success" api:"required"`
 	Result  CallsTurnKeyObject                `json:"result"`
 	JSON    callsTurnKeyResponseSingleJSON    `json:"-"`
 }
@@ -225,10 +225,10 @@ func (r accountCallTurnKeyNewResponseJSON) RawJSON() string {
 }
 
 type AccountCallTurnKeyListResponse struct {
-	Errors   []CallsMessageItem `json:"errors,required"`
-	Messages []CallsMessageItem `json:"messages,required"`
+	Errors   []CallsMessageItem `json:"errors" api:"required"`
+	Messages []CallsMessageItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountCallTurnKeyListResponseSuccess `json:"success,required"`
+	Success AccountCallTurnKeyListResponseSuccess `json:"success" api:"required"`
 	Result  []CallsTurnKeyObject                  `json:"result"`
 	JSON    accountCallTurnKeyListResponseJSON    `json:"-"`
 }
@@ -268,7 +268,7 @@ func (r AccountCallTurnKeyListResponseSuccess) IsKnown() bool {
 }
 
 type AccountCallTurnKeyNewParams struct {
-	CallsTurnKeyEditableFields CallsTurnKeyEditableFieldsParam `json:"calls_turn_key_editable_fields,required"`
+	CallsTurnKeyEditableFields CallsTurnKeyEditableFieldsParam `json:"calls_turn_key_editable_fields" api:"required"`
 }
 
 func (r AccountCallTurnKeyNewParams) MarshalJSON() (data []byte, err error) {
@@ -276,7 +276,7 @@ func (r AccountCallTurnKeyNewParams) MarshalJSON() (data []byte, err error) {
 }
 
 type AccountCallTurnKeyUpdateParams struct {
-	CallsTurnKeyEditableFields CallsTurnKeyEditableFieldsParam `json:"calls_turn_key_editable_fields,required"`
+	CallsTurnKeyEditableFields CallsTurnKeyEditableFieldsParam `json:"calls_turn_key_editable_fields" api:"required"`
 }
 
 func (r AccountCallTurnKeyUpdateParams) MarshalJSON() (data []byte, err error) {

@@ -14,7 +14,7 @@ import (
 )
 
 func TestAccountStorageKvNamespaceBulkDelete(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,6 +26,7 @@ func TestAccountStorageKvNamespaceBulkDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Storage.Kv.Namespaces.Bulk.Delete(
 		context.TODO(),
@@ -42,7 +43,7 @@ func TestAccountStorageKvNamespaceBulkDelete(t *testing.T) {
 }
 
 func TestAccountStorageKvNamespaceBulkDeleteMultiple(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -54,6 +55,7 @@ func TestAccountStorageKvNamespaceBulkDeleteMultiple(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Storage.Kv.Namespaces.Bulk.DeleteMultiple(
 		context.TODO(),
@@ -73,7 +75,7 @@ func TestAccountStorageKvNamespaceBulkDeleteMultiple(t *testing.T) {
 }
 
 func TestAccountStorageKvNamespaceBulkGetMultipleWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -85,6 +87,7 @@ func TestAccountStorageKvNamespaceBulkGetMultipleWithOptionalParams(t *testing.T
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Storage.Kv.Namespaces.Bulk.GetMultiple(
 		context.TODO(),
@@ -106,7 +109,7 @@ func TestAccountStorageKvNamespaceBulkGetMultipleWithOptionalParams(t *testing.T
 }
 
 func TestAccountStorageKvNamespaceBulkWrite(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -118,6 +121,7 @@ func TestAccountStorageKvNamespaceBulkWrite(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Storage.Kv.Namespaces.Bulk.Write(
 		context.TODO(),

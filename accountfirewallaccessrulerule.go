@@ -32,11 +32,11 @@ func NewAccountFirewallAccessRuleRuleService(opts ...option.RequestOption) (r *A
 }
 
 type FirewallAPIResponseCollection struct {
-	Errors   []FirewallAPIResponseCollectionError   `json:"errors,required"`
-	Messages []FirewallAPIResponseCollectionMessage `json:"messages,required"`
-	Result   []interface{}                          `json:"result,required,nullable"`
+	Errors   []FirewallAPIResponseCollectionError   `json:"errors" api:"required"`
+	Messages []FirewallAPIResponseCollectionMessage `json:"messages" api:"required"`
+	Result   []interface{}                          `json:"result" api:"required,nullable"`
 	// Defines whether the API call was successful.
-	Success    FirewallAPIResponseCollectionSuccess    `json:"success,required"`
+	Success    FirewallAPIResponseCollectionSuccess    `json:"success" api:"required"`
 	ResultInfo FirewallAPIResponseCollectionResultInfo `json:"result_info"`
 	JSON       firewallAPIResponseCollectionJSON       `json:"-"`
 }
@@ -64,8 +64,8 @@ func (r firewallAPIResponseCollectionJSON) RawJSON() string {
 func (r FirewallAPIResponseCollection) implementsZoneFirewallWafPackageListResponse() {}
 
 type FirewallAPIResponseCollectionError struct {
-	Code             int64                                     `json:"code,required"`
-	Message          string                                    `json:"message,required"`
+	Code             int64                                     `json:"code" api:"required"`
+	Message          string                                    `json:"message" api:"required"`
 	DocumentationURL string                                    `json:"documentation_url"`
 	Source           FirewallAPIResponseCollectionErrorsSource `json:"source"`
 	JSON             firewallAPIResponseCollectionErrorJSON    `json:"-"`
@@ -112,8 +112,8 @@ func (r firewallAPIResponseCollectionErrorsSourceJSON) RawJSON() string {
 }
 
 type FirewallAPIResponseCollectionMessage struct {
-	Code             int64                                       `json:"code,required"`
-	Message          string                                      `json:"message,required"`
+	Code             int64                                       `json:"code" api:"required"`
+	Message          string                                      `json:"message" api:"required"`
 	DocumentationURL string                                      `json:"documentation_url"`
 	Source           FirewallAPIResponseCollectionMessagesSource `json:"source"`
 	JSON             firewallAPIResponseCollectionMessageJSON    `json:"-"`
@@ -206,11 +206,11 @@ func (r firewallAPIResponseCollectionResultInfoJSON) RawJSON() string {
 }
 
 type FirewallAPIResponseSingle struct {
-	Errors   []FirewallAPIResponseSingleError   `json:"errors,required"`
-	Messages []FirewallAPIResponseSingleMessage `json:"messages,required"`
-	Result   interface{}                        `json:"result,required"`
+	Errors   []FirewallAPIResponseSingleError   `json:"errors" api:"required"`
+	Messages []FirewallAPIResponseSingleMessage `json:"messages" api:"required"`
+	Result   interface{}                        `json:"result" api:"required"`
 	// Defines whether the API call was successful.
-	Success FirewallAPIResponseSingleSuccess `json:"success,required"`
+	Success FirewallAPIResponseSingleSuccess `json:"success" api:"required"`
 	JSON    firewallAPIResponseSingleJSON    `json:"-"`
 }
 
@@ -236,8 +236,8 @@ func (r firewallAPIResponseSingleJSON) RawJSON() string {
 func (r FirewallAPIResponseSingle) implementsFirewallPackageResponseSingle() {}
 
 type FirewallAPIResponseSingleError struct {
-	Code             int64                                 `json:"code,required"`
-	Message          string                                `json:"message,required"`
+	Code             int64                                 `json:"code" api:"required"`
+	Message          string                                `json:"message" api:"required"`
 	DocumentationURL string                                `json:"documentation_url"`
 	Source           FirewallAPIResponseSingleErrorsSource `json:"source"`
 	JSON             firewallAPIResponseSingleErrorJSON    `json:"-"`
@@ -284,8 +284,8 @@ func (r firewallAPIResponseSingleErrorsSourceJSON) RawJSON() string {
 }
 
 type FirewallAPIResponseSingleMessage struct {
-	Code             int64                                   `json:"code,required"`
-	Message          string                                  `json:"message,required"`
+	Code             int64                                   `json:"code" api:"required"`
+	Message          string                                  `json:"message" api:"required"`
 	DocumentationURL string                                  `json:"documentation_url"`
 	Source           FirewallAPIResponseSingleMessagesSource `json:"source"`
 	JSON             firewallAPIResponseSingleMessageJSON    `json:"-"`
@@ -347,8 +347,8 @@ func (r FirewallAPIResponseSingleSuccess) IsKnown() bool {
 }
 
 type FirewallMessagesItem struct {
-	Code             int64                      `json:"code,required"`
-	Message          string                     `json:"message,required"`
+	Code             int64                      `json:"code" api:"required"`
+	Message          string                     `json:"message" api:"required"`
 	DocumentationURL string                     `json:"documentation_url"`
 	Source           FirewallMessagesItemSource `json:"source"`
 	JSON             firewallMessagesItemJSON   `json:"-"`
@@ -396,13 +396,13 @@ func (r firewallMessagesItemSourceJSON) RawJSON() string {
 
 type FirewallRule struct {
 	// The unique identifier of the IP Access rule.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The available actions that a rule can apply to a matched request.
-	AllowedModes []FirewallSchemasMode `json:"allowed_modes,required"`
+	AllowedModes []FirewallSchemasMode `json:"allowed_modes" api:"required"`
 	// The rule configuration.
-	Configuration FirewallRuleConfiguration `json:"configuration,required"`
+	Configuration FirewallRuleConfiguration `json:"configuration" api:"required"`
 	// The action to apply to a matched request.
-	Mode FirewallSchemasMode `json:"mode,required"`
+	Mode FirewallSchemasMode `json:"mode" api:"required"`
 	// The timestamp of when the rule was created.
 	CreatedOn time.Time `json:"created_on" format:"date-time"`
 	// The timestamp of when the rule was last modified.

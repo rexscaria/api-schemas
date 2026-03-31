@@ -47,11 +47,11 @@ func (r *AccountImageV2Service) List(ctx context.Context, accountID string, quer
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/images/v2", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Direct uploads allow users to upload images without API keys. A common use case
@@ -65,19 +65,19 @@ func (r *AccountImageV2Service) NewDirectUpload(ctx context.Context, accountID s
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/images/v2/direct_upload", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountImageV2ListResponse struct {
-	Errors   []AccountImageV2ListResponseError   `json:"errors,required"`
-	Messages []AccountImageV2ListResponseMessage `json:"messages,required"`
-	Result   AccountImageV2ListResponseResult    `json:"result,required"`
+	Errors   []AccountImageV2ListResponseError   `json:"errors" api:"required"`
+	Messages []AccountImageV2ListResponseMessage `json:"messages" api:"required"`
+	Result   AccountImageV2ListResponseResult    `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success AccountImageV2ListResponseSuccess `json:"success,required"`
+	Success AccountImageV2ListResponseSuccess `json:"success" api:"required"`
 	JSON    accountImageV2ListResponseJSON    `json:"-"`
 }
 
@@ -101,8 +101,8 @@ func (r accountImageV2ListResponseJSON) RawJSON() string {
 }
 
 type AccountImageV2ListResponseError struct {
-	Code             int64                                  `json:"code,required"`
-	Message          string                                 `json:"message,required"`
+	Code             int64                                  `json:"code" api:"required"`
+	Message          string                                 `json:"message" api:"required"`
 	DocumentationURL string                                 `json:"documentation_url"`
 	Source           AccountImageV2ListResponseErrorsSource `json:"source"`
 	JSON             accountImageV2ListResponseErrorJSON    `json:"-"`
@@ -149,8 +149,8 @@ func (r accountImageV2ListResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type AccountImageV2ListResponseMessage struct {
-	Code             int64                                    `json:"code,required"`
-	Message          string                                   `json:"message,required"`
+	Code             int64                                    `json:"code" api:"required"`
+	Message          string                                   `json:"message" api:"required"`
 	DocumentationURL string                                   `json:"documentation_url"`
 	Source           AccountImageV2ListResponseMessagesSource `json:"source"`
 	JSON             accountImageV2ListResponseMessageJSON    `json:"-"`
@@ -199,7 +199,7 @@ func (r accountImageV2ListResponseMessagesSourceJSON) RawJSON() string {
 type AccountImageV2ListResponseResult struct {
 	// Continuation token to fetch next page. Passed as a query param when requesting
 	// List V2 api endpoint.
-	ContinuationToken string                               `json:"continuation_token,nullable"`
+	ContinuationToken string                               `json:"continuation_token" api:"nullable"`
 	Images            []Image                              `json:"images"`
 	JSON              accountImageV2ListResponseResultJSON `json:"-"`
 }
@@ -237,11 +237,11 @@ func (r AccountImageV2ListResponseSuccess) IsKnown() bool {
 }
 
 type AccountImageV2NewDirectUploadResponse struct {
-	Errors   []AccountImageV2NewDirectUploadResponseError   `json:"errors,required"`
-	Messages []AccountImageV2NewDirectUploadResponseMessage `json:"messages,required"`
-	Result   AccountImageV2NewDirectUploadResponseResult    `json:"result,required"`
+	Errors   []AccountImageV2NewDirectUploadResponseError   `json:"errors" api:"required"`
+	Messages []AccountImageV2NewDirectUploadResponseMessage `json:"messages" api:"required"`
+	Result   AccountImageV2NewDirectUploadResponseResult    `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success AccountImageV2NewDirectUploadResponseSuccess `json:"success,required"`
+	Success AccountImageV2NewDirectUploadResponseSuccess `json:"success" api:"required"`
 	JSON    accountImageV2NewDirectUploadResponseJSON    `json:"-"`
 }
 
@@ -265,8 +265,8 @@ func (r accountImageV2NewDirectUploadResponseJSON) RawJSON() string {
 }
 
 type AccountImageV2NewDirectUploadResponseError struct {
-	Code             int64                                             `json:"code,required"`
-	Message          string                                            `json:"message,required"`
+	Code             int64                                             `json:"code" api:"required"`
+	Message          string                                            `json:"message" api:"required"`
 	DocumentationURL string                                            `json:"documentation_url"`
 	Source           AccountImageV2NewDirectUploadResponseErrorsSource `json:"source"`
 	JSON             accountImageV2NewDirectUploadResponseErrorJSON    `json:"-"`
@@ -313,8 +313,8 @@ func (r accountImageV2NewDirectUploadResponseErrorsSourceJSON) RawJSON() string 
 }
 
 type AccountImageV2NewDirectUploadResponseMessage struct {
-	Code             int64                                               `json:"code,required"`
-	Message          string                                              `json:"message,required"`
+	Code             int64                                               `json:"code" api:"required"`
+	Message          string                                              `json:"message" api:"required"`
 	DocumentationURL string                                              `json:"documentation_url"`
 	Source           AccountImageV2NewDirectUploadResponseMessagesSource `json:"source"`
 	JSON             accountImageV2NewDirectUploadResponseMessageJSON    `json:"-"`

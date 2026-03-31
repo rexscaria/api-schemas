@@ -41,11 +41,11 @@ func (r *AccountAIRunCfRunwaymlService) ExecuteStableDiffusionV1_5Img2img(ctx co
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai/run/@cf/runwayml/stable-diffusion-v1-5-img2img", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Execute @cf/runwayml/stable-diffusion-v1-5-inpainting model.
@@ -53,11 +53,11 @@ func (r *AccountAIRunCfRunwaymlService) ExecuteStableDiffusionV1_5Inpainting(ctx
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai/run/@cf/runwayml/stable-diffusion-v1-5-inpainting", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountAIRunCfRunwaymlExecuteStableDiffusionV1_5Img2imgResponse = interface{}
@@ -66,7 +66,7 @@ type AccountAIRunCfRunwaymlExecuteStableDiffusionV1_5InpaintingResponse = interf
 
 type AccountAIRunCfRunwaymlExecuteStableDiffusionV1_5Img2imgParams struct {
 	// A text description of the image you want to generate
-	Prompt       param.Field[string] `json:"prompt,required"`
+	Prompt       param.Field[string] `json:"prompt" api:"required"`
 	QueueRequest param.Field[string] `query:"queueRequest"`
 	// Controls how closely the generated image should adhere to the prompt; higher
 	// values make the image more aligned with the prompt
@@ -110,7 +110,7 @@ func (r AccountAIRunCfRunwaymlExecuteStableDiffusionV1_5Img2imgParams) URLQuery(
 
 type AccountAIRunCfRunwaymlExecuteStableDiffusionV1_5InpaintingParams struct {
 	// A text description of the image you want to generate
-	Prompt       param.Field[string] `json:"prompt,required"`
+	Prompt       param.Field[string] `json:"prompt" api:"required"`
 	QueueRequest param.Field[string] `query:"queueRequest"`
 	// Controls how closely the generated image should adhere to the prompt; higher
 	// values make the image more aligned with the prompt

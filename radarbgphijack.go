@@ -40,13 +40,13 @@ func (r *RadarBgpHijackService) ListEvents(ctx context.Context, query RadarBgpHi
 	opts = slices.Concat(r.Options, opts)
 	path := "radar/bgp/hijacks/events"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type RadarBgpHijackListEventsResponse struct {
-	Result     RadarBgpHijackListEventsResponseResult     `json:"result,required"`
-	ResultInfo RadarBgpHijackListEventsResponseResultInfo `json:"result_info,required"`
-	Success    bool                                       `json:"success,required"`
+	Result     RadarBgpHijackListEventsResponseResult     `json:"result" api:"required"`
+	ResultInfo RadarBgpHijackListEventsResponseResultInfo `json:"result_info" api:"required"`
+	Success    bool                                       `json:"success" api:"required"`
 	JSON       radarBgpHijackListEventsResponseJSON       `json:"-"`
 }
 
@@ -69,9 +69,9 @@ func (r radarBgpHijackListEventsResponseJSON) RawJSON() string {
 }
 
 type RadarBgpHijackListEventsResponseResult struct {
-	AsnInfo       []RadarBgpHijackListEventsResponseResultAsnInfo `json:"asn_info,required"`
-	Events        []RadarBgpHijackListEventsResponseResultEvent   `json:"events,required"`
-	TotalMonitors int64                                           `json:"total_monitors,required"`
+	AsnInfo       []RadarBgpHijackListEventsResponseResultAsnInfo `json:"asn_info" api:"required"`
+	Events        []RadarBgpHijackListEventsResponseResultEvent   `json:"events" api:"required"`
+	TotalMonitors int64                                           `json:"total_monitors" api:"required"`
 	JSON          radarBgpHijackListEventsResponseResultJSON      `json:"-"`
 }
 
@@ -94,9 +94,9 @@ func (r radarBgpHijackListEventsResponseResultJSON) RawJSON() string {
 }
 
 type RadarBgpHijackListEventsResponseResultAsnInfo struct {
-	Asn         int64                                             `json:"asn,required"`
-	CountryCode string                                            `json:"country_code,required"`
-	OrgName     string                                            `json:"org_name,required"`
+	Asn         int64                                             `json:"asn" api:"required"`
+	CountryCode string                                            `json:"country_code" api:"required"`
+	OrgName     string                                            `json:"org_name" api:"required"`
 	JSON        radarBgpHijackListEventsResponseResultAsnInfoJSON `json:"-"`
 }
 
@@ -119,24 +119,24 @@ func (r radarBgpHijackListEventsResponseResultAsnInfoJSON) RawJSON() string {
 }
 
 type RadarBgpHijackListEventsResponseResultEvent struct {
-	ID              int64                                             `json:"id,required"`
-	ConfidenceScore int64                                             `json:"confidence_score,required"`
-	Duration        int64                                             `json:"duration,required"`
-	EventType       int64                                             `json:"event_type,required"`
-	HijackMsgsCount int64                                             `json:"hijack_msgs_count,required"`
-	HijackerAsn     int64                                             `json:"hijacker_asn,required"`
-	HijackerCountry string                                            `json:"hijacker_country,required"`
-	IsStale         bool                                              `json:"is_stale,required"`
-	MaxHijackTs     string                                            `json:"max_hijack_ts,required"`
-	MaxMsgTs        string                                            `json:"max_msg_ts,required"`
-	MinHijackTs     string                                            `json:"min_hijack_ts,required"`
-	OnGoingCount    int64                                             `json:"on_going_count,required"`
-	PeerAsns        []int64                                           `json:"peer_asns,required"`
-	PeerIPCount     int64                                             `json:"peer_ip_count,required"`
-	Prefixes        []string                                          `json:"prefixes,required"`
-	Tags            []RadarBgpHijackListEventsResponseResultEventsTag `json:"tags,required"`
-	VictimAsns      []int64                                           `json:"victim_asns,required"`
-	VictimCountries []string                                          `json:"victim_countries,required"`
+	ID              int64                                             `json:"id" api:"required"`
+	ConfidenceScore int64                                             `json:"confidence_score" api:"required"`
+	Duration        int64                                             `json:"duration" api:"required"`
+	EventType       int64                                             `json:"event_type" api:"required"`
+	HijackMsgsCount int64                                             `json:"hijack_msgs_count" api:"required"`
+	HijackerAsn     int64                                             `json:"hijacker_asn" api:"required"`
+	HijackerCountry string                                            `json:"hijacker_country" api:"required"`
+	IsStale         bool                                              `json:"is_stale" api:"required"`
+	MaxHijackTs     string                                            `json:"max_hijack_ts" api:"required"`
+	MaxMsgTs        string                                            `json:"max_msg_ts" api:"required"`
+	MinHijackTs     string                                            `json:"min_hijack_ts" api:"required"`
+	OnGoingCount    int64                                             `json:"on_going_count" api:"required"`
+	PeerAsns        []int64                                           `json:"peer_asns" api:"required"`
+	PeerIPCount     int64                                             `json:"peer_ip_count" api:"required"`
+	Prefixes        []string                                          `json:"prefixes" api:"required"`
+	Tags            []RadarBgpHijackListEventsResponseResultEventsTag `json:"tags" api:"required"`
+	VictimAsns      []int64                                           `json:"victim_asns" api:"required"`
+	VictimCountries []string                                          `json:"victim_countries" api:"required"`
 	JSON            radarBgpHijackListEventsResponseResultEventJSON   `json:"-"`
 }
 
@@ -174,8 +174,8 @@ func (r radarBgpHijackListEventsResponseResultEventJSON) RawJSON() string {
 }
 
 type RadarBgpHijackListEventsResponseResultEventsTag struct {
-	Name  string                                              `json:"name,required"`
-	Score int64                                               `json:"score,required"`
+	Name  string                                              `json:"name" api:"required"`
+	Score int64                                               `json:"score" api:"required"`
 	JSON  radarBgpHijackListEventsResponseResultEventsTagJSON `json:"-"`
 }
 
@@ -197,10 +197,10 @@ func (r radarBgpHijackListEventsResponseResultEventsTagJSON) RawJSON() string {
 }
 
 type RadarBgpHijackListEventsResponseResultInfo struct {
-	Count      int64                                          `json:"count,required"`
-	Page       int64                                          `json:"page,required"`
-	PerPage    int64                                          `json:"per_page,required"`
-	TotalCount int64                                          `json:"total_count,required"`
+	Count      int64                                          `json:"count" api:"required"`
+	Page       int64                                          `json:"page" api:"required"`
+	PerPage    int64                                          `json:"per_page" api:"required"`
+	TotalCount int64                                          `json:"total_count" api:"required"`
 	JSON       radarBgpHijackListEventsResponseResultInfoJSON `json:"-"`
 }
 

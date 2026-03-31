@@ -41,7 +41,7 @@ func (r *RadarHTTPTopAseService) List(ctx context.Context, query RadarHTTPTopAse
 	opts = slices.Concat(r.Options, opts)
 	path := "radar/http/top/ases"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves the top autonomous systems, by HTTP requests, of the requested bot
@@ -50,7 +50,7 @@ func (r *RadarHTTPTopAseService) ListByBotClass(ctx context.Context, botClass Ra
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("radar/http/top/ases/bot_class/%v", botClass)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves the top autonomous systems, by HTTP requests, of the requested browser
@@ -59,7 +59,7 @@ func (r *RadarHTTPTopAseService) ListByBrowserFamily(ctx context.Context, browse
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("radar/http/top/ases/browser_family/%v", browserFamily)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves the top autonomous systems, by HTTP requests, of the requested device
@@ -68,7 +68,7 @@ func (r *RadarHTTPTopAseService) ListByDeviceType(ctx context.Context, deviceTyp
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("radar/http/top/ases/device_type/%v", deviceType)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves the top autonomous systems, by HTTP requests, of the requested HTTP
@@ -77,7 +77,7 @@ func (r *RadarHTTPTopAseService) ListByHTTPProtocol(ctx context.Context, httpPro
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("radar/http/top/ases/http_protocol/%v", httpProtocol)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves the top autonomous systems, by HTTP requests, of the requested HTTP
@@ -86,7 +86,7 @@ func (r *RadarHTTPTopAseService) ListByHTTPVersion(ctx context.Context, httpVers
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("radar/http/top/ases/http_version/%v", httpVersion)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves the top autonomous systems, by HTTP requests, of the requested IP
@@ -95,7 +95,7 @@ func (r *RadarHTTPTopAseService) ListByIPVersion(ctx context.Context, ipVersion 
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("radar/http/top/ases/ip_version/%v", ipVersion)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves the top autonomous systems, by HTTP requests, of the requested
@@ -104,7 +104,7 @@ func (r *RadarHTTPTopAseService) ListByOs(ctx context.Context, os RadarHTTPTopAs
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("radar/http/top/ases/os/%v", os)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves the top autonomous systems, by HTTP requests, of the requested TLS
@@ -113,12 +113,12 @@ func (r *RadarHTTPTopAseService) ListByTlsVersion(ctx context.Context, tlsVersio
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("radar/http/top/ases/tls_version/%v", tlsVersion)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type RadarHTTPTopAseListResponse struct {
-	Result  RadarHTTPTopAseListResponseResult `json:"result,required"`
-	Success bool                              `json:"success,required"`
+	Result  RadarHTTPTopAseListResponseResult `json:"result" api:"required"`
+	Success bool                              `json:"success" api:"required"`
 	JSON    radarHTTPTopAseListResponseJSON   `json:"-"`
 }
 
@@ -141,8 +141,8 @@ func (r radarHTTPTopAseListResponseJSON) RawJSON() string {
 
 type RadarHTTPTopAseListResponseResult struct {
 	// Metadata for the results.
-	Meta RadarHTTPTopAseListResponseResultMeta   `json:"meta,required"`
-	Top0 []RadarHTTPTopAseListResponseResultTop0 `json:"top_0,required"`
+	Meta RadarHTTPTopAseListResponseResultMeta   `json:"meta" api:"required"`
+	Top0 []RadarHTTPTopAseListResponseResultTop0 `json:"top_0" api:"required"`
 	JSON radarHTTPTopAseListResponseResultJSON   `json:"-"`
 }
 
@@ -165,15 +165,15 @@ func (r radarHTTPTopAseListResponseResultJSON) RawJSON() string {
 
 // Metadata for the results.
 type RadarHTTPTopAseListResponseResultMeta struct {
-	ConfidenceInfo RadarHTTPTopAseListResponseResultMetaConfidenceInfo `json:"confidenceInfo,required,nullable"`
-	DateRange      []RadarHTTPTopAseListResponseResultMetaDateRange    `json:"dateRange,required"`
+	ConfidenceInfo RadarHTTPTopAseListResponseResultMetaConfidenceInfo `json:"confidenceInfo" api:"required,nullable"`
+	DateRange      []RadarHTTPTopAseListResponseResultMetaDateRange    `json:"dateRange" api:"required"`
 	// Timestamp of the last dataset update.
-	LastUpdated time.Time `json:"lastUpdated,required" format:"date-time"`
+	LastUpdated time.Time `json:"lastUpdated" api:"required" format:"date-time"`
 	// Normalization method applied to the results. Refer to
 	// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
-	Normalization RadarHTTPTopAseListResponseResultMetaNormalization `json:"normalization,required"`
+	Normalization RadarHTTPTopAseListResponseResultMetaNormalization `json:"normalization" api:"required"`
 	// Measurement units for the results.
-	Units []RadarHTTPTopAseListResponseResultMetaUnit `json:"units,required"`
+	Units []RadarHTTPTopAseListResponseResultMetaUnit `json:"units" api:"required"`
 	JSON  radarHTTPTopAseListResponseResultMetaJSON   `json:"-"`
 }
 
@@ -198,9 +198,9 @@ func (r radarHTTPTopAseListResponseResultMetaJSON) RawJSON() string {
 }
 
 type RadarHTTPTopAseListResponseResultMetaConfidenceInfo struct {
-	Annotations []RadarHTTPTopAseListResponseResultMetaConfidenceInfoAnnotation `json:"annotations,required"`
+	Annotations []RadarHTTPTopAseListResponseResultMetaConfidenceInfoAnnotation `json:"annotations" api:"required"`
 	// Provides an indication of how much confidence Cloudflare has in the data.
-	Level int64                                                   `json:"level,required"`
+	Level int64                                                   `json:"level" api:"required"`
 	JSON  radarHTTPTopAseListResponseResultMetaConfidenceInfoJSON `json:"-"`
 }
 
@@ -223,14 +223,14 @@ func (r radarHTTPTopAseListResponseResultMetaConfidenceInfoJSON) RawJSON() strin
 
 // Annotation associated with the result (e.g. outage or other type of event).
 type RadarHTTPTopAseListResponseResultMetaConfidenceInfoAnnotation struct {
-	DataSource  string    `json:"dataSource,required"`
-	Description string    `json:"description,required"`
-	EndDate     time.Time `json:"endDate,required" format:"date-time"`
-	EventType   string    `json:"eventType,required"`
+	DataSource  string    `json:"dataSource" api:"required"`
+	Description string    `json:"description" api:"required"`
+	EndDate     time.Time `json:"endDate" api:"required" format:"date-time"`
+	EventType   string    `json:"eventType" api:"required"`
 	// Whether event is a single point in time or a time range.
-	IsInstantaneous bool                                                              `json:"isInstantaneous,required"`
-	LinkedURL       string                                                            `json:"linkedUrl,required" format:"uri"`
-	StartDate       time.Time                                                         `json:"startDate,required" format:"date-time"`
+	IsInstantaneous bool                                                              `json:"isInstantaneous" api:"required"`
+	LinkedURL       string                                                            `json:"linkedUrl" api:"required" format:"uri"`
+	StartDate       time.Time                                                         `json:"startDate" api:"required" format:"date-time"`
 	JSON            radarHTTPTopAseListResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
 }
 
@@ -259,9 +259,9 @@ func (r radarHTTPTopAseListResponseResultMetaConfidenceInfoAnnotationJSON) RawJS
 
 type RadarHTTPTopAseListResponseResultMetaDateRange struct {
 	// Adjusted end of date range.
-	EndTime time.Time `json:"endTime,required" format:"date-time"`
+	EndTime time.Time `json:"endTime" api:"required" format:"date-time"`
 	// Adjusted start of date range.
-	StartTime time.Time                                          `json:"startTime,required" format:"date-time"`
+	StartTime time.Time                                          `json:"startTime" api:"required" format:"date-time"`
 	JSON      radarHTTPTopAseListResponseResultMetaDateRangeJSON `json:"-"`
 }
 
@@ -306,8 +306,8 @@ func (r RadarHTTPTopAseListResponseResultMetaNormalization) IsKnown() bool {
 }
 
 type RadarHTTPTopAseListResponseResultMetaUnit struct {
-	Name  string                                        `json:"name,required"`
-	Value string                                        `json:"value,required"`
+	Name  string                                        `json:"name" api:"required"`
+	Value string                                        `json:"value" api:"required"`
 	JSON  radarHTTPTopAseListResponseResultMetaUnitJSON `json:"-"`
 }
 
@@ -329,10 +329,10 @@ func (r radarHTTPTopAseListResponseResultMetaUnitJSON) RawJSON() string {
 }
 
 type RadarHTTPTopAseListResponseResultTop0 struct {
-	ClientAsn    int64  `json:"clientASN,required"`
-	ClientAsName string `json:"clientASName,required"`
+	ClientAsn    int64  `json:"clientASN" api:"required"`
+	ClientAsName string `json:"clientASName" api:"required"`
 	// A numeric string.
-	Value string                                    `json:"value,required"`
+	Value string                                    `json:"value" api:"required"`
 	JSON  radarHTTPTopAseListResponseResultTop0JSON `json:"-"`
 }
 
@@ -355,8 +355,8 @@ func (r radarHTTPTopAseListResponseResultTop0JSON) RawJSON() string {
 }
 
 type RadarHTTPTopAseListByBotClassResponse struct {
-	Result  RadarHTTPTopAseListByBotClassResponseResult `json:"result,required"`
-	Success bool                                        `json:"success,required"`
+	Result  RadarHTTPTopAseListByBotClassResponseResult `json:"result" api:"required"`
+	Success bool                                        `json:"success" api:"required"`
 	JSON    radarHTTPTopAseListByBotClassResponseJSON   `json:"-"`
 }
 
@@ -379,8 +379,8 @@ func (r radarHTTPTopAseListByBotClassResponseJSON) RawJSON() string {
 
 type RadarHTTPTopAseListByBotClassResponseResult struct {
 	// Metadata for the results.
-	Meta RadarHTTPTopAseListByBotClassResponseResultMeta   `json:"meta,required"`
-	Top0 []RadarHTTPTopAseListByBotClassResponseResultTop0 `json:"top_0,required"`
+	Meta RadarHTTPTopAseListByBotClassResponseResultMeta   `json:"meta" api:"required"`
+	Top0 []RadarHTTPTopAseListByBotClassResponseResultTop0 `json:"top_0" api:"required"`
 	JSON radarHTTPTopAseListByBotClassResponseResultJSON   `json:"-"`
 }
 
@@ -403,15 +403,15 @@ func (r radarHTTPTopAseListByBotClassResponseResultJSON) RawJSON() string {
 
 // Metadata for the results.
 type RadarHTTPTopAseListByBotClassResponseResultMeta struct {
-	ConfidenceInfo RadarHTTPTopAseListByBotClassResponseResultMetaConfidenceInfo `json:"confidenceInfo,required,nullable"`
-	DateRange      []RadarHTTPTopAseListByBotClassResponseResultMetaDateRange    `json:"dateRange,required"`
+	ConfidenceInfo RadarHTTPTopAseListByBotClassResponseResultMetaConfidenceInfo `json:"confidenceInfo" api:"required,nullable"`
+	DateRange      []RadarHTTPTopAseListByBotClassResponseResultMetaDateRange    `json:"dateRange" api:"required"`
 	// Timestamp of the last dataset update.
-	LastUpdated time.Time `json:"lastUpdated,required" format:"date-time"`
+	LastUpdated time.Time `json:"lastUpdated" api:"required" format:"date-time"`
 	// Normalization method applied to the results. Refer to
 	// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
-	Normalization RadarHTTPTopAseListByBotClassResponseResultMetaNormalization `json:"normalization,required"`
+	Normalization RadarHTTPTopAseListByBotClassResponseResultMetaNormalization `json:"normalization" api:"required"`
 	// Measurement units for the results.
-	Units []RadarHTTPTopAseListByBotClassResponseResultMetaUnit `json:"units,required"`
+	Units []RadarHTTPTopAseListByBotClassResponseResultMetaUnit `json:"units" api:"required"`
 	JSON  radarHTTPTopAseListByBotClassResponseResultMetaJSON   `json:"-"`
 }
 
@@ -436,9 +436,9 @@ func (r radarHTTPTopAseListByBotClassResponseResultMetaJSON) RawJSON() string {
 }
 
 type RadarHTTPTopAseListByBotClassResponseResultMetaConfidenceInfo struct {
-	Annotations []RadarHTTPTopAseListByBotClassResponseResultMetaConfidenceInfoAnnotation `json:"annotations,required"`
+	Annotations []RadarHTTPTopAseListByBotClassResponseResultMetaConfidenceInfoAnnotation `json:"annotations" api:"required"`
 	// Provides an indication of how much confidence Cloudflare has in the data.
-	Level int64                                                             `json:"level,required"`
+	Level int64                                                             `json:"level" api:"required"`
 	JSON  radarHTTPTopAseListByBotClassResponseResultMetaConfidenceInfoJSON `json:"-"`
 }
 
@@ -462,14 +462,14 @@ func (r radarHTTPTopAseListByBotClassResponseResultMetaConfidenceInfoJSON) RawJS
 
 // Annotation associated with the result (e.g. outage or other type of event).
 type RadarHTTPTopAseListByBotClassResponseResultMetaConfidenceInfoAnnotation struct {
-	DataSource  string    `json:"dataSource,required"`
-	Description string    `json:"description,required"`
-	EndDate     time.Time `json:"endDate,required" format:"date-time"`
-	EventType   string    `json:"eventType,required"`
+	DataSource  string    `json:"dataSource" api:"required"`
+	Description string    `json:"description" api:"required"`
+	EndDate     time.Time `json:"endDate" api:"required" format:"date-time"`
+	EventType   string    `json:"eventType" api:"required"`
 	// Whether event is a single point in time or a time range.
-	IsInstantaneous bool                                                                        `json:"isInstantaneous,required"`
-	LinkedURL       string                                                                      `json:"linkedUrl,required" format:"uri"`
-	StartDate       time.Time                                                                   `json:"startDate,required" format:"date-time"`
+	IsInstantaneous bool                                                                        `json:"isInstantaneous" api:"required"`
+	LinkedURL       string                                                                      `json:"linkedUrl" api:"required" format:"uri"`
+	StartDate       time.Time                                                                   `json:"startDate" api:"required" format:"date-time"`
 	JSON            radarHTTPTopAseListByBotClassResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
 }
 
@@ -498,9 +498,9 @@ func (r radarHTTPTopAseListByBotClassResponseResultMetaConfidenceInfoAnnotationJ
 
 type RadarHTTPTopAseListByBotClassResponseResultMetaDateRange struct {
 	// Adjusted end of date range.
-	EndTime time.Time `json:"endTime,required" format:"date-time"`
+	EndTime time.Time `json:"endTime" api:"required" format:"date-time"`
 	// Adjusted start of date range.
-	StartTime time.Time                                                    `json:"startTime,required" format:"date-time"`
+	StartTime time.Time                                                    `json:"startTime" api:"required" format:"date-time"`
 	JSON      radarHTTPTopAseListByBotClassResponseResultMetaDateRangeJSON `json:"-"`
 }
 
@@ -546,8 +546,8 @@ func (r RadarHTTPTopAseListByBotClassResponseResultMetaNormalization) IsKnown() 
 }
 
 type RadarHTTPTopAseListByBotClassResponseResultMetaUnit struct {
-	Name  string                                                  `json:"name,required"`
-	Value string                                                  `json:"value,required"`
+	Name  string                                                  `json:"name" api:"required"`
+	Value string                                                  `json:"value" api:"required"`
 	JSON  radarHTTPTopAseListByBotClassResponseResultMetaUnitJSON `json:"-"`
 }
 
@@ -569,10 +569,10 @@ func (r radarHTTPTopAseListByBotClassResponseResultMetaUnitJSON) RawJSON() strin
 }
 
 type RadarHTTPTopAseListByBotClassResponseResultTop0 struct {
-	ClientAsn    int64  `json:"clientASN,required"`
-	ClientAsName string `json:"clientASName,required"`
+	ClientAsn    int64  `json:"clientASN" api:"required"`
+	ClientAsName string `json:"clientASName" api:"required"`
 	// A numeric string.
-	Value string                                              `json:"value,required"`
+	Value string                                              `json:"value" api:"required"`
 	JSON  radarHTTPTopAseListByBotClassResponseResultTop0JSON `json:"-"`
 }
 
@@ -595,8 +595,8 @@ func (r radarHTTPTopAseListByBotClassResponseResultTop0JSON) RawJSON() string {
 }
 
 type RadarHTTPTopAseListByBrowserFamilyResponse struct {
-	Result  RadarHTTPTopAseListByBrowserFamilyResponseResult `json:"result,required"`
-	Success bool                                             `json:"success,required"`
+	Result  RadarHTTPTopAseListByBrowserFamilyResponseResult `json:"result" api:"required"`
+	Success bool                                             `json:"success" api:"required"`
 	JSON    radarHTTPTopAseListByBrowserFamilyResponseJSON   `json:"-"`
 }
 
@@ -619,8 +619,8 @@ func (r radarHTTPTopAseListByBrowserFamilyResponseJSON) RawJSON() string {
 
 type RadarHTTPTopAseListByBrowserFamilyResponseResult struct {
 	// Metadata for the results.
-	Meta RadarHTTPTopAseListByBrowserFamilyResponseResultMeta   `json:"meta,required"`
-	Top0 []RadarHTTPTopAseListByBrowserFamilyResponseResultTop0 `json:"top_0,required"`
+	Meta RadarHTTPTopAseListByBrowserFamilyResponseResultMeta   `json:"meta" api:"required"`
+	Top0 []RadarHTTPTopAseListByBrowserFamilyResponseResultTop0 `json:"top_0" api:"required"`
 	JSON radarHTTPTopAseListByBrowserFamilyResponseResultJSON   `json:"-"`
 }
 
@@ -643,15 +643,15 @@ func (r radarHTTPTopAseListByBrowserFamilyResponseResultJSON) RawJSON() string {
 
 // Metadata for the results.
 type RadarHTTPTopAseListByBrowserFamilyResponseResultMeta struct {
-	ConfidenceInfo RadarHTTPTopAseListByBrowserFamilyResponseResultMetaConfidenceInfo `json:"confidenceInfo,required,nullable"`
-	DateRange      []RadarHTTPTopAseListByBrowserFamilyResponseResultMetaDateRange    `json:"dateRange,required"`
+	ConfidenceInfo RadarHTTPTopAseListByBrowserFamilyResponseResultMetaConfidenceInfo `json:"confidenceInfo" api:"required,nullable"`
+	DateRange      []RadarHTTPTopAseListByBrowserFamilyResponseResultMetaDateRange    `json:"dateRange" api:"required"`
 	// Timestamp of the last dataset update.
-	LastUpdated time.Time `json:"lastUpdated,required" format:"date-time"`
+	LastUpdated time.Time `json:"lastUpdated" api:"required" format:"date-time"`
 	// Normalization method applied to the results. Refer to
 	// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
-	Normalization RadarHTTPTopAseListByBrowserFamilyResponseResultMetaNormalization `json:"normalization,required"`
+	Normalization RadarHTTPTopAseListByBrowserFamilyResponseResultMetaNormalization `json:"normalization" api:"required"`
 	// Measurement units for the results.
-	Units []RadarHTTPTopAseListByBrowserFamilyResponseResultMetaUnit `json:"units,required"`
+	Units []RadarHTTPTopAseListByBrowserFamilyResponseResultMetaUnit `json:"units" api:"required"`
 	JSON  radarHTTPTopAseListByBrowserFamilyResponseResultMetaJSON   `json:"-"`
 }
 
@@ -676,9 +676,9 @@ func (r radarHTTPTopAseListByBrowserFamilyResponseResultMetaJSON) RawJSON() stri
 }
 
 type RadarHTTPTopAseListByBrowserFamilyResponseResultMetaConfidenceInfo struct {
-	Annotations []RadarHTTPTopAseListByBrowserFamilyResponseResultMetaConfidenceInfoAnnotation `json:"annotations,required"`
+	Annotations []RadarHTTPTopAseListByBrowserFamilyResponseResultMetaConfidenceInfoAnnotation `json:"annotations" api:"required"`
 	// Provides an indication of how much confidence Cloudflare has in the data.
-	Level int64                                                                  `json:"level,required"`
+	Level int64                                                                  `json:"level" api:"required"`
 	JSON  radarHTTPTopAseListByBrowserFamilyResponseResultMetaConfidenceInfoJSON `json:"-"`
 }
 
@@ -702,14 +702,14 @@ func (r radarHTTPTopAseListByBrowserFamilyResponseResultMetaConfidenceInfoJSON) 
 
 // Annotation associated with the result (e.g. outage or other type of event).
 type RadarHTTPTopAseListByBrowserFamilyResponseResultMetaConfidenceInfoAnnotation struct {
-	DataSource  string    `json:"dataSource,required"`
-	Description string    `json:"description,required"`
-	EndDate     time.Time `json:"endDate,required" format:"date-time"`
-	EventType   string    `json:"eventType,required"`
+	DataSource  string    `json:"dataSource" api:"required"`
+	Description string    `json:"description" api:"required"`
+	EndDate     time.Time `json:"endDate" api:"required" format:"date-time"`
+	EventType   string    `json:"eventType" api:"required"`
 	// Whether event is a single point in time or a time range.
-	IsInstantaneous bool                                                                             `json:"isInstantaneous,required"`
-	LinkedURL       string                                                                           `json:"linkedUrl,required" format:"uri"`
-	StartDate       time.Time                                                                        `json:"startDate,required" format:"date-time"`
+	IsInstantaneous bool                                                                             `json:"isInstantaneous" api:"required"`
+	LinkedURL       string                                                                           `json:"linkedUrl" api:"required" format:"uri"`
+	StartDate       time.Time                                                                        `json:"startDate" api:"required" format:"date-time"`
 	JSON            radarHTTPTopAseListByBrowserFamilyResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
 }
 
@@ -738,9 +738,9 @@ func (r radarHTTPTopAseListByBrowserFamilyResponseResultMetaConfidenceInfoAnnota
 
 type RadarHTTPTopAseListByBrowserFamilyResponseResultMetaDateRange struct {
 	// Adjusted end of date range.
-	EndTime time.Time `json:"endTime,required" format:"date-time"`
+	EndTime time.Time `json:"endTime" api:"required" format:"date-time"`
 	// Adjusted start of date range.
-	StartTime time.Time                                                         `json:"startTime,required" format:"date-time"`
+	StartTime time.Time                                                         `json:"startTime" api:"required" format:"date-time"`
 	JSON      radarHTTPTopAseListByBrowserFamilyResponseResultMetaDateRangeJSON `json:"-"`
 }
 
@@ -786,8 +786,8 @@ func (r RadarHTTPTopAseListByBrowserFamilyResponseResultMetaNormalization) IsKno
 }
 
 type RadarHTTPTopAseListByBrowserFamilyResponseResultMetaUnit struct {
-	Name  string                                                       `json:"name,required"`
-	Value string                                                       `json:"value,required"`
+	Name  string                                                       `json:"name" api:"required"`
+	Value string                                                       `json:"value" api:"required"`
 	JSON  radarHTTPTopAseListByBrowserFamilyResponseResultMetaUnitJSON `json:"-"`
 }
 
@@ -810,10 +810,10 @@ func (r radarHTTPTopAseListByBrowserFamilyResponseResultMetaUnitJSON) RawJSON() 
 }
 
 type RadarHTTPTopAseListByBrowserFamilyResponseResultTop0 struct {
-	ClientAsn    int64  `json:"clientASN,required"`
-	ClientAsName string `json:"clientASName,required"`
+	ClientAsn    int64  `json:"clientASN" api:"required"`
+	ClientAsName string `json:"clientASName" api:"required"`
 	// A numeric string.
-	Value string                                                   `json:"value,required"`
+	Value string                                                   `json:"value" api:"required"`
 	JSON  radarHTTPTopAseListByBrowserFamilyResponseResultTop0JSON `json:"-"`
 }
 
@@ -836,8 +836,8 @@ func (r radarHTTPTopAseListByBrowserFamilyResponseResultTop0JSON) RawJSON() stri
 }
 
 type RadarHTTPTopAseListByDeviceTypeResponse struct {
-	Result  RadarHTTPTopAseListByDeviceTypeResponseResult `json:"result,required"`
-	Success bool                                          `json:"success,required"`
+	Result  RadarHTTPTopAseListByDeviceTypeResponseResult `json:"result" api:"required"`
+	Success bool                                          `json:"success" api:"required"`
 	JSON    radarHTTPTopAseListByDeviceTypeResponseJSON   `json:"-"`
 }
 
@@ -860,8 +860,8 @@ func (r radarHTTPTopAseListByDeviceTypeResponseJSON) RawJSON() string {
 
 type RadarHTTPTopAseListByDeviceTypeResponseResult struct {
 	// Metadata for the results.
-	Meta RadarHTTPTopAseListByDeviceTypeResponseResultMeta   `json:"meta,required"`
-	Top0 []RadarHTTPTopAseListByDeviceTypeResponseResultTop0 `json:"top_0,required"`
+	Meta RadarHTTPTopAseListByDeviceTypeResponseResultMeta   `json:"meta" api:"required"`
+	Top0 []RadarHTTPTopAseListByDeviceTypeResponseResultTop0 `json:"top_0" api:"required"`
 	JSON radarHTTPTopAseListByDeviceTypeResponseResultJSON   `json:"-"`
 }
 
@@ -884,15 +884,15 @@ func (r radarHTTPTopAseListByDeviceTypeResponseResultJSON) RawJSON() string {
 
 // Metadata for the results.
 type RadarHTTPTopAseListByDeviceTypeResponseResultMeta struct {
-	ConfidenceInfo RadarHTTPTopAseListByDeviceTypeResponseResultMetaConfidenceInfo `json:"confidenceInfo,required,nullable"`
-	DateRange      []RadarHTTPTopAseListByDeviceTypeResponseResultMetaDateRange    `json:"dateRange,required"`
+	ConfidenceInfo RadarHTTPTopAseListByDeviceTypeResponseResultMetaConfidenceInfo `json:"confidenceInfo" api:"required,nullable"`
+	DateRange      []RadarHTTPTopAseListByDeviceTypeResponseResultMetaDateRange    `json:"dateRange" api:"required"`
 	// Timestamp of the last dataset update.
-	LastUpdated time.Time `json:"lastUpdated,required" format:"date-time"`
+	LastUpdated time.Time `json:"lastUpdated" api:"required" format:"date-time"`
 	// Normalization method applied to the results. Refer to
 	// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
-	Normalization RadarHTTPTopAseListByDeviceTypeResponseResultMetaNormalization `json:"normalization,required"`
+	Normalization RadarHTTPTopAseListByDeviceTypeResponseResultMetaNormalization `json:"normalization" api:"required"`
 	// Measurement units for the results.
-	Units []RadarHTTPTopAseListByDeviceTypeResponseResultMetaUnit `json:"units,required"`
+	Units []RadarHTTPTopAseListByDeviceTypeResponseResultMetaUnit `json:"units" api:"required"`
 	JSON  radarHTTPTopAseListByDeviceTypeResponseResultMetaJSON   `json:"-"`
 }
 
@@ -917,9 +917,9 @@ func (r radarHTTPTopAseListByDeviceTypeResponseResultMetaJSON) RawJSON() string 
 }
 
 type RadarHTTPTopAseListByDeviceTypeResponseResultMetaConfidenceInfo struct {
-	Annotations []RadarHTTPTopAseListByDeviceTypeResponseResultMetaConfidenceInfoAnnotation `json:"annotations,required"`
+	Annotations []RadarHTTPTopAseListByDeviceTypeResponseResultMetaConfidenceInfoAnnotation `json:"annotations" api:"required"`
 	// Provides an indication of how much confidence Cloudflare has in the data.
-	Level int64                                                               `json:"level,required"`
+	Level int64                                                               `json:"level" api:"required"`
 	JSON  radarHTTPTopAseListByDeviceTypeResponseResultMetaConfidenceInfoJSON `json:"-"`
 }
 
@@ -943,14 +943,14 @@ func (r radarHTTPTopAseListByDeviceTypeResponseResultMetaConfidenceInfoJSON) Raw
 
 // Annotation associated with the result (e.g. outage or other type of event).
 type RadarHTTPTopAseListByDeviceTypeResponseResultMetaConfidenceInfoAnnotation struct {
-	DataSource  string    `json:"dataSource,required"`
-	Description string    `json:"description,required"`
-	EndDate     time.Time `json:"endDate,required" format:"date-time"`
-	EventType   string    `json:"eventType,required"`
+	DataSource  string    `json:"dataSource" api:"required"`
+	Description string    `json:"description" api:"required"`
+	EndDate     time.Time `json:"endDate" api:"required" format:"date-time"`
+	EventType   string    `json:"eventType" api:"required"`
 	// Whether event is a single point in time or a time range.
-	IsInstantaneous bool                                                                          `json:"isInstantaneous,required"`
-	LinkedURL       string                                                                        `json:"linkedUrl,required" format:"uri"`
-	StartDate       time.Time                                                                     `json:"startDate,required" format:"date-time"`
+	IsInstantaneous bool                                                                          `json:"isInstantaneous" api:"required"`
+	LinkedURL       string                                                                        `json:"linkedUrl" api:"required" format:"uri"`
+	StartDate       time.Time                                                                     `json:"startDate" api:"required" format:"date-time"`
 	JSON            radarHTTPTopAseListByDeviceTypeResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
 }
 
@@ -979,9 +979,9 @@ func (r radarHTTPTopAseListByDeviceTypeResponseResultMetaConfidenceInfoAnnotatio
 
 type RadarHTTPTopAseListByDeviceTypeResponseResultMetaDateRange struct {
 	// Adjusted end of date range.
-	EndTime time.Time `json:"endTime,required" format:"date-time"`
+	EndTime time.Time `json:"endTime" api:"required" format:"date-time"`
 	// Adjusted start of date range.
-	StartTime time.Time                                                      `json:"startTime,required" format:"date-time"`
+	StartTime time.Time                                                      `json:"startTime" api:"required" format:"date-time"`
 	JSON      radarHTTPTopAseListByDeviceTypeResponseResultMetaDateRangeJSON `json:"-"`
 }
 
@@ -1027,8 +1027,8 @@ func (r RadarHTTPTopAseListByDeviceTypeResponseResultMetaNormalization) IsKnown(
 }
 
 type RadarHTTPTopAseListByDeviceTypeResponseResultMetaUnit struct {
-	Name  string                                                    `json:"name,required"`
-	Value string                                                    `json:"value,required"`
+	Name  string                                                    `json:"name" api:"required"`
+	Value string                                                    `json:"value" api:"required"`
 	JSON  radarHTTPTopAseListByDeviceTypeResponseResultMetaUnitJSON `json:"-"`
 }
 
@@ -1050,10 +1050,10 @@ func (r radarHTTPTopAseListByDeviceTypeResponseResultMetaUnitJSON) RawJSON() str
 }
 
 type RadarHTTPTopAseListByDeviceTypeResponseResultTop0 struct {
-	ClientAsn    int64  `json:"clientASN,required"`
-	ClientAsName string `json:"clientASName,required"`
+	ClientAsn    int64  `json:"clientASN" api:"required"`
+	ClientAsName string `json:"clientASName" api:"required"`
 	// A numeric string.
-	Value string                                                `json:"value,required"`
+	Value string                                                `json:"value" api:"required"`
 	JSON  radarHTTPTopAseListByDeviceTypeResponseResultTop0JSON `json:"-"`
 }
 
@@ -1076,8 +1076,8 @@ func (r radarHTTPTopAseListByDeviceTypeResponseResultTop0JSON) RawJSON() string 
 }
 
 type RadarHTTPTopAseListByHTTPProtocolResponse struct {
-	Result  RadarHTTPTopAseListByHTTPProtocolResponseResult `json:"result,required"`
-	Success bool                                            `json:"success,required"`
+	Result  RadarHTTPTopAseListByHTTPProtocolResponseResult `json:"result" api:"required"`
+	Success bool                                            `json:"success" api:"required"`
 	JSON    radarHTTPTopAseListByHTTPProtocolResponseJSON   `json:"-"`
 }
 
@@ -1100,8 +1100,8 @@ func (r radarHTTPTopAseListByHTTPProtocolResponseJSON) RawJSON() string {
 
 type RadarHTTPTopAseListByHTTPProtocolResponseResult struct {
 	// Metadata for the results.
-	Meta RadarHTTPTopAseListByHTTPProtocolResponseResultMeta   `json:"meta,required"`
-	Top0 []RadarHTTPTopAseListByHTTPProtocolResponseResultTop0 `json:"top_0,required"`
+	Meta RadarHTTPTopAseListByHTTPProtocolResponseResultMeta   `json:"meta" api:"required"`
+	Top0 []RadarHTTPTopAseListByHTTPProtocolResponseResultTop0 `json:"top_0" api:"required"`
 	JSON radarHTTPTopAseListByHTTPProtocolResponseResultJSON   `json:"-"`
 }
 
@@ -1124,15 +1124,15 @@ func (r radarHTTPTopAseListByHTTPProtocolResponseResultJSON) RawJSON() string {
 
 // Metadata for the results.
 type RadarHTTPTopAseListByHTTPProtocolResponseResultMeta struct {
-	ConfidenceInfo RadarHTTPTopAseListByHTTPProtocolResponseResultMetaConfidenceInfo `json:"confidenceInfo,required,nullable"`
-	DateRange      []RadarHTTPTopAseListByHTTPProtocolResponseResultMetaDateRange    `json:"dateRange,required"`
+	ConfidenceInfo RadarHTTPTopAseListByHTTPProtocolResponseResultMetaConfidenceInfo `json:"confidenceInfo" api:"required,nullable"`
+	DateRange      []RadarHTTPTopAseListByHTTPProtocolResponseResultMetaDateRange    `json:"dateRange" api:"required"`
 	// Timestamp of the last dataset update.
-	LastUpdated time.Time `json:"lastUpdated,required" format:"date-time"`
+	LastUpdated time.Time `json:"lastUpdated" api:"required" format:"date-time"`
 	// Normalization method applied to the results. Refer to
 	// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
-	Normalization RadarHTTPTopAseListByHTTPProtocolResponseResultMetaNormalization `json:"normalization,required"`
+	Normalization RadarHTTPTopAseListByHTTPProtocolResponseResultMetaNormalization `json:"normalization" api:"required"`
 	// Measurement units for the results.
-	Units []RadarHTTPTopAseListByHTTPProtocolResponseResultMetaUnit `json:"units,required"`
+	Units []RadarHTTPTopAseListByHTTPProtocolResponseResultMetaUnit `json:"units" api:"required"`
 	JSON  radarHTTPTopAseListByHTTPProtocolResponseResultMetaJSON   `json:"-"`
 }
 
@@ -1157,9 +1157,9 @@ func (r radarHTTPTopAseListByHTTPProtocolResponseResultMetaJSON) RawJSON() strin
 }
 
 type RadarHTTPTopAseListByHTTPProtocolResponseResultMetaConfidenceInfo struct {
-	Annotations []RadarHTTPTopAseListByHTTPProtocolResponseResultMetaConfidenceInfoAnnotation `json:"annotations,required"`
+	Annotations []RadarHTTPTopAseListByHTTPProtocolResponseResultMetaConfidenceInfoAnnotation `json:"annotations" api:"required"`
 	// Provides an indication of how much confidence Cloudflare has in the data.
-	Level int64                                                                 `json:"level,required"`
+	Level int64                                                                 `json:"level" api:"required"`
 	JSON  radarHTTPTopAseListByHTTPProtocolResponseResultMetaConfidenceInfoJSON `json:"-"`
 }
 
@@ -1183,14 +1183,14 @@ func (r radarHTTPTopAseListByHTTPProtocolResponseResultMetaConfidenceInfoJSON) R
 
 // Annotation associated with the result (e.g. outage or other type of event).
 type RadarHTTPTopAseListByHTTPProtocolResponseResultMetaConfidenceInfoAnnotation struct {
-	DataSource  string    `json:"dataSource,required"`
-	Description string    `json:"description,required"`
-	EndDate     time.Time `json:"endDate,required" format:"date-time"`
-	EventType   string    `json:"eventType,required"`
+	DataSource  string    `json:"dataSource" api:"required"`
+	Description string    `json:"description" api:"required"`
+	EndDate     time.Time `json:"endDate" api:"required" format:"date-time"`
+	EventType   string    `json:"eventType" api:"required"`
 	// Whether event is a single point in time or a time range.
-	IsInstantaneous bool                                                                            `json:"isInstantaneous,required"`
-	LinkedURL       string                                                                          `json:"linkedUrl,required" format:"uri"`
-	StartDate       time.Time                                                                       `json:"startDate,required" format:"date-time"`
+	IsInstantaneous bool                                                                            `json:"isInstantaneous" api:"required"`
+	LinkedURL       string                                                                          `json:"linkedUrl" api:"required" format:"uri"`
+	StartDate       time.Time                                                                       `json:"startDate" api:"required" format:"date-time"`
 	JSON            radarHTTPTopAseListByHTTPProtocolResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
 }
 
@@ -1219,9 +1219,9 @@ func (r radarHTTPTopAseListByHTTPProtocolResponseResultMetaConfidenceInfoAnnotat
 
 type RadarHTTPTopAseListByHTTPProtocolResponseResultMetaDateRange struct {
 	// Adjusted end of date range.
-	EndTime time.Time `json:"endTime,required" format:"date-time"`
+	EndTime time.Time `json:"endTime" api:"required" format:"date-time"`
 	// Adjusted start of date range.
-	StartTime time.Time                                                        `json:"startTime,required" format:"date-time"`
+	StartTime time.Time                                                        `json:"startTime" api:"required" format:"date-time"`
 	JSON      radarHTTPTopAseListByHTTPProtocolResponseResultMetaDateRangeJSON `json:"-"`
 }
 
@@ -1267,8 +1267,8 @@ func (r RadarHTTPTopAseListByHTTPProtocolResponseResultMetaNormalization) IsKnow
 }
 
 type RadarHTTPTopAseListByHTTPProtocolResponseResultMetaUnit struct {
-	Name  string                                                      `json:"name,required"`
-	Value string                                                      `json:"value,required"`
+	Name  string                                                      `json:"name" api:"required"`
+	Value string                                                      `json:"value" api:"required"`
 	JSON  radarHTTPTopAseListByHTTPProtocolResponseResultMetaUnitJSON `json:"-"`
 }
 
@@ -1291,10 +1291,10 @@ func (r radarHTTPTopAseListByHTTPProtocolResponseResultMetaUnitJSON) RawJSON() s
 }
 
 type RadarHTTPTopAseListByHTTPProtocolResponseResultTop0 struct {
-	ClientAsn    int64  `json:"clientASN,required"`
-	ClientAsName string `json:"clientASName,required"`
+	ClientAsn    int64  `json:"clientASN" api:"required"`
+	ClientAsName string `json:"clientASName" api:"required"`
 	// A numeric string.
-	Value string                                                  `json:"value,required"`
+	Value string                                                  `json:"value" api:"required"`
 	JSON  radarHTTPTopAseListByHTTPProtocolResponseResultTop0JSON `json:"-"`
 }
 
@@ -1317,8 +1317,8 @@ func (r radarHTTPTopAseListByHTTPProtocolResponseResultTop0JSON) RawJSON() strin
 }
 
 type RadarHTTPTopAseListByHTTPVersionResponse struct {
-	Result  RadarHTTPTopAseListByHTTPVersionResponseResult `json:"result,required"`
-	Success bool                                           `json:"success,required"`
+	Result  RadarHTTPTopAseListByHTTPVersionResponseResult `json:"result" api:"required"`
+	Success bool                                           `json:"success" api:"required"`
 	JSON    radarHTTPTopAseListByHTTPVersionResponseJSON   `json:"-"`
 }
 
@@ -1341,8 +1341,8 @@ func (r radarHTTPTopAseListByHTTPVersionResponseJSON) RawJSON() string {
 
 type RadarHTTPTopAseListByHTTPVersionResponseResult struct {
 	// Metadata for the results.
-	Meta RadarHTTPTopAseListByHTTPVersionResponseResultMeta   `json:"meta,required"`
-	Top0 []RadarHTTPTopAseListByHTTPVersionResponseResultTop0 `json:"top_0,required"`
+	Meta RadarHTTPTopAseListByHTTPVersionResponseResultMeta   `json:"meta" api:"required"`
+	Top0 []RadarHTTPTopAseListByHTTPVersionResponseResultTop0 `json:"top_0" api:"required"`
 	JSON radarHTTPTopAseListByHTTPVersionResponseResultJSON   `json:"-"`
 }
 
@@ -1365,15 +1365,15 @@ func (r radarHTTPTopAseListByHTTPVersionResponseResultJSON) RawJSON() string {
 
 // Metadata for the results.
 type RadarHTTPTopAseListByHTTPVersionResponseResultMeta struct {
-	ConfidenceInfo RadarHTTPTopAseListByHTTPVersionResponseResultMetaConfidenceInfo `json:"confidenceInfo,required,nullable"`
-	DateRange      []RadarHTTPTopAseListByHTTPVersionResponseResultMetaDateRange    `json:"dateRange,required"`
+	ConfidenceInfo RadarHTTPTopAseListByHTTPVersionResponseResultMetaConfidenceInfo `json:"confidenceInfo" api:"required,nullable"`
+	DateRange      []RadarHTTPTopAseListByHTTPVersionResponseResultMetaDateRange    `json:"dateRange" api:"required"`
 	// Timestamp of the last dataset update.
-	LastUpdated time.Time `json:"lastUpdated,required" format:"date-time"`
+	LastUpdated time.Time `json:"lastUpdated" api:"required" format:"date-time"`
 	// Normalization method applied to the results. Refer to
 	// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
-	Normalization RadarHTTPTopAseListByHTTPVersionResponseResultMetaNormalization `json:"normalization,required"`
+	Normalization RadarHTTPTopAseListByHTTPVersionResponseResultMetaNormalization `json:"normalization" api:"required"`
 	// Measurement units for the results.
-	Units []RadarHTTPTopAseListByHTTPVersionResponseResultMetaUnit `json:"units,required"`
+	Units []RadarHTTPTopAseListByHTTPVersionResponseResultMetaUnit `json:"units" api:"required"`
 	JSON  radarHTTPTopAseListByHTTPVersionResponseResultMetaJSON   `json:"-"`
 }
 
@@ -1398,9 +1398,9 @@ func (r radarHTTPTopAseListByHTTPVersionResponseResultMetaJSON) RawJSON() string
 }
 
 type RadarHTTPTopAseListByHTTPVersionResponseResultMetaConfidenceInfo struct {
-	Annotations []RadarHTTPTopAseListByHTTPVersionResponseResultMetaConfidenceInfoAnnotation `json:"annotations,required"`
+	Annotations []RadarHTTPTopAseListByHTTPVersionResponseResultMetaConfidenceInfoAnnotation `json:"annotations" api:"required"`
 	// Provides an indication of how much confidence Cloudflare has in the data.
-	Level int64                                                                `json:"level,required"`
+	Level int64                                                                `json:"level" api:"required"`
 	JSON  radarHTTPTopAseListByHTTPVersionResponseResultMetaConfidenceInfoJSON `json:"-"`
 }
 
@@ -1424,14 +1424,14 @@ func (r radarHTTPTopAseListByHTTPVersionResponseResultMetaConfidenceInfoJSON) Ra
 
 // Annotation associated with the result (e.g. outage or other type of event).
 type RadarHTTPTopAseListByHTTPVersionResponseResultMetaConfidenceInfoAnnotation struct {
-	DataSource  string    `json:"dataSource,required"`
-	Description string    `json:"description,required"`
-	EndDate     time.Time `json:"endDate,required" format:"date-time"`
-	EventType   string    `json:"eventType,required"`
+	DataSource  string    `json:"dataSource" api:"required"`
+	Description string    `json:"description" api:"required"`
+	EndDate     time.Time `json:"endDate" api:"required" format:"date-time"`
+	EventType   string    `json:"eventType" api:"required"`
 	// Whether event is a single point in time or a time range.
-	IsInstantaneous bool                                                                           `json:"isInstantaneous,required"`
-	LinkedURL       string                                                                         `json:"linkedUrl,required" format:"uri"`
-	StartDate       time.Time                                                                      `json:"startDate,required" format:"date-time"`
+	IsInstantaneous bool                                                                           `json:"isInstantaneous" api:"required"`
+	LinkedURL       string                                                                         `json:"linkedUrl" api:"required" format:"uri"`
+	StartDate       time.Time                                                                      `json:"startDate" api:"required" format:"date-time"`
 	JSON            radarHTTPTopAseListByHTTPVersionResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
 }
 
@@ -1460,9 +1460,9 @@ func (r radarHTTPTopAseListByHTTPVersionResponseResultMetaConfidenceInfoAnnotati
 
 type RadarHTTPTopAseListByHTTPVersionResponseResultMetaDateRange struct {
 	// Adjusted end of date range.
-	EndTime time.Time `json:"endTime,required" format:"date-time"`
+	EndTime time.Time `json:"endTime" api:"required" format:"date-time"`
 	// Adjusted start of date range.
-	StartTime time.Time                                                       `json:"startTime,required" format:"date-time"`
+	StartTime time.Time                                                       `json:"startTime" api:"required" format:"date-time"`
 	JSON      radarHTTPTopAseListByHTTPVersionResponseResultMetaDateRangeJSON `json:"-"`
 }
 
@@ -1508,8 +1508,8 @@ func (r RadarHTTPTopAseListByHTTPVersionResponseResultMetaNormalization) IsKnown
 }
 
 type RadarHTTPTopAseListByHTTPVersionResponseResultMetaUnit struct {
-	Name  string                                                     `json:"name,required"`
-	Value string                                                     `json:"value,required"`
+	Name  string                                                     `json:"name" api:"required"`
+	Value string                                                     `json:"value" api:"required"`
 	JSON  radarHTTPTopAseListByHTTPVersionResponseResultMetaUnitJSON `json:"-"`
 }
 
@@ -1531,10 +1531,10 @@ func (r radarHTTPTopAseListByHTTPVersionResponseResultMetaUnitJSON) RawJSON() st
 }
 
 type RadarHTTPTopAseListByHTTPVersionResponseResultTop0 struct {
-	ClientAsn    int64  `json:"clientASN,required"`
-	ClientAsName string `json:"clientASName,required"`
+	ClientAsn    int64  `json:"clientASN" api:"required"`
+	ClientAsName string `json:"clientASName" api:"required"`
 	// A numeric string.
-	Value string                                                 `json:"value,required"`
+	Value string                                                 `json:"value" api:"required"`
 	JSON  radarHTTPTopAseListByHTTPVersionResponseResultTop0JSON `json:"-"`
 }
 
@@ -1557,8 +1557,8 @@ func (r radarHTTPTopAseListByHTTPVersionResponseResultTop0JSON) RawJSON() string
 }
 
 type RadarHTTPTopAseListByIPVersionResponse struct {
-	Result  RadarHTTPTopAseListByIPVersionResponseResult `json:"result,required"`
-	Success bool                                         `json:"success,required"`
+	Result  RadarHTTPTopAseListByIPVersionResponseResult `json:"result" api:"required"`
+	Success bool                                         `json:"success" api:"required"`
 	JSON    radarHTTPTopAseListByIPVersionResponseJSON   `json:"-"`
 }
 
@@ -1581,8 +1581,8 @@ func (r radarHTTPTopAseListByIPVersionResponseJSON) RawJSON() string {
 
 type RadarHTTPTopAseListByIPVersionResponseResult struct {
 	// Metadata for the results.
-	Meta RadarHTTPTopAseListByIPVersionResponseResultMeta   `json:"meta,required"`
-	Top0 []RadarHTTPTopAseListByIPVersionResponseResultTop0 `json:"top_0,required"`
+	Meta RadarHTTPTopAseListByIPVersionResponseResultMeta   `json:"meta" api:"required"`
+	Top0 []RadarHTTPTopAseListByIPVersionResponseResultTop0 `json:"top_0" api:"required"`
 	JSON radarHTTPTopAseListByIPVersionResponseResultJSON   `json:"-"`
 }
 
@@ -1605,15 +1605,15 @@ func (r radarHTTPTopAseListByIPVersionResponseResultJSON) RawJSON() string {
 
 // Metadata for the results.
 type RadarHTTPTopAseListByIPVersionResponseResultMeta struct {
-	ConfidenceInfo RadarHTTPTopAseListByIPVersionResponseResultMetaConfidenceInfo `json:"confidenceInfo,required,nullable"`
-	DateRange      []RadarHTTPTopAseListByIPVersionResponseResultMetaDateRange    `json:"dateRange,required"`
+	ConfidenceInfo RadarHTTPTopAseListByIPVersionResponseResultMetaConfidenceInfo `json:"confidenceInfo" api:"required,nullable"`
+	DateRange      []RadarHTTPTopAseListByIPVersionResponseResultMetaDateRange    `json:"dateRange" api:"required"`
 	// Timestamp of the last dataset update.
-	LastUpdated time.Time `json:"lastUpdated,required" format:"date-time"`
+	LastUpdated time.Time `json:"lastUpdated" api:"required" format:"date-time"`
 	// Normalization method applied to the results. Refer to
 	// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
-	Normalization RadarHTTPTopAseListByIPVersionResponseResultMetaNormalization `json:"normalization,required"`
+	Normalization RadarHTTPTopAseListByIPVersionResponseResultMetaNormalization `json:"normalization" api:"required"`
 	// Measurement units for the results.
-	Units []RadarHTTPTopAseListByIPVersionResponseResultMetaUnit `json:"units,required"`
+	Units []RadarHTTPTopAseListByIPVersionResponseResultMetaUnit `json:"units" api:"required"`
 	JSON  radarHTTPTopAseListByIPVersionResponseResultMetaJSON   `json:"-"`
 }
 
@@ -1638,9 +1638,9 @@ func (r radarHTTPTopAseListByIPVersionResponseResultMetaJSON) RawJSON() string {
 }
 
 type RadarHTTPTopAseListByIPVersionResponseResultMetaConfidenceInfo struct {
-	Annotations []RadarHTTPTopAseListByIPVersionResponseResultMetaConfidenceInfoAnnotation `json:"annotations,required"`
+	Annotations []RadarHTTPTopAseListByIPVersionResponseResultMetaConfidenceInfoAnnotation `json:"annotations" api:"required"`
 	// Provides an indication of how much confidence Cloudflare has in the data.
-	Level int64                                                              `json:"level,required"`
+	Level int64                                                              `json:"level" api:"required"`
 	JSON  radarHTTPTopAseListByIPVersionResponseResultMetaConfidenceInfoJSON `json:"-"`
 }
 
@@ -1664,14 +1664,14 @@ func (r radarHTTPTopAseListByIPVersionResponseResultMetaConfidenceInfoJSON) RawJ
 
 // Annotation associated with the result (e.g. outage or other type of event).
 type RadarHTTPTopAseListByIPVersionResponseResultMetaConfidenceInfoAnnotation struct {
-	DataSource  string    `json:"dataSource,required"`
-	Description string    `json:"description,required"`
-	EndDate     time.Time `json:"endDate,required" format:"date-time"`
-	EventType   string    `json:"eventType,required"`
+	DataSource  string    `json:"dataSource" api:"required"`
+	Description string    `json:"description" api:"required"`
+	EndDate     time.Time `json:"endDate" api:"required" format:"date-time"`
+	EventType   string    `json:"eventType" api:"required"`
 	// Whether event is a single point in time or a time range.
-	IsInstantaneous bool                                                                         `json:"isInstantaneous,required"`
-	LinkedURL       string                                                                       `json:"linkedUrl,required" format:"uri"`
-	StartDate       time.Time                                                                    `json:"startDate,required" format:"date-time"`
+	IsInstantaneous bool                                                                         `json:"isInstantaneous" api:"required"`
+	LinkedURL       string                                                                       `json:"linkedUrl" api:"required" format:"uri"`
+	StartDate       time.Time                                                                    `json:"startDate" api:"required" format:"date-time"`
 	JSON            radarHTTPTopAseListByIPVersionResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
 }
 
@@ -1700,9 +1700,9 @@ func (r radarHTTPTopAseListByIPVersionResponseResultMetaConfidenceInfoAnnotation
 
 type RadarHTTPTopAseListByIPVersionResponseResultMetaDateRange struct {
 	// Adjusted end of date range.
-	EndTime time.Time `json:"endTime,required" format:"date-time"`
+	EndTime time.Time `json:"endTime" api:"required" format:"date-time"`
 	// Adjusted start of date range.
-	StartTime time.Time                                                     `json:"startTime,required" format:"date-time"`
+	StartTime time.Time                                                     `json:"startTime" api:"required" format:"date-time"`
 	JSON      radarHTTPTopAseListByIPVersionResponseResultMetaDateRangeJSON `json:"-"`
 }
 
@@ -1748,8 +1748,8 @@ func (r RadarHTTPTopAseListByIPVersionResponseResultMetaNormalization) IsKnown()
 }
 
 type RadarHTTPTopAseListByIPVersionResponseResultMetaUnit struct {
-	Name  string                                                   `json:"name,required"`
-	Value string                                                   `json:"value,required"`
+	Name  string                                                   `json:"name" api:"required"`
+	Value string                                                   `json:"value" api:"required"`
 	JSON  radarHTTPTopAseListByIPVersionResponseResultMetaUnitJSON `json:"-"`
 }
 
@@ -1771,10 +1771,10 @@ func (r radarHTTPTopAseListByIPVersionResponseResultMetaUnitJSON) RawJSON() stri
 }
 
 type RadarHTTPTopAseListByIPVersionResponseResultTop0 struct {
-	ClientAsn    int64  `json:"clientASN,required"`
-	ClientAsName string `json:"clientASName,required"`
+	ClientAsn    int64  `json:"clientASN" api:"required"`
+	ClientAsName string `json:"clientASName" api:"required"`
 	// A numeric string.
-	Value string                                               `json:"value,required"`
+	Value string                                               `json:"value" api:"required"`
 	JSON  radarHTTPTopAseListByIPVersionResponseResultTop0JSON `json:"-"`
 }
 
@@ -1797,8 +1797,8 @@ func (r radarHTTPTopAseListByIPVersionResponseResultTop0JSON) RawJSON() string {
 }
 
 type RadarHTTPTopAseListByOsResponse struct {
-	Result  RadarHTTPTopAseListByOsResponseResult `json:"result,required"`
-	Success bool                                  `json:"success,required"`
+	Result  RadarHTTPTopAseListByOsResponseResult `json:"result" api:"required"`
+	Success bool                                  `json:"success" api:"required"`
 	JSON    radarHTTPTopAseListByOsResponseJSON   `json:"-"`
 }
 
@@ -1821,8 +1821,8 @@ func (r radarHTTPTopAseListByOsResponseJSON) RawJSON() string {
 
 type RadarHTTPTopAseListByOsResponseResult struct {
 	// Metadata for the results.
-	Meta RadarHTTPTopAseListByOsResponseResultMeta   `json:"meta,required"`
-	Top0 []RadarHTTPTopAseListByOsResponseResultTop0 `json:"top_0,required"`
+	Meta RadarHTTPTopAseListByOsResponseResultMeta   `json:"meta" api:"required"`
+	Top0 []RadarHTTPTopAseListByOsResponseResultTop0 `json:"top_0" api:"required"`
 	JSON radarHTTPTopAseListByOsResponseResultJSON   `json:"-"`
 }
 
@@ -1845,15 +1845,15 @@ func (r radarHTTPTopAseListByOsResponseResultJSON) RawJSON() string {
 
 // Metadata for the results.
 type RadarHTTPTopAseListByOsResponseResultMeta struct {
-	ConfidenceInfo RadarHTTPTopAseListByOsResponseResultMetaConfidenceInfo `json:"confidenceInfo,required,nullable"`
-	DateRange      []RadarHTTPTopAseListByOsResponseResultMetaDateRange    `json:"dateRange,required"`
+	ConfidenceInfo RadarHTTPTopAseListByOsResponseResultMetaConfidenceInfo `json:"confidenceInfo" api:"required,nullable"`
+	DateRange      []RadarHTTPTopAseListByOsResponseResultMetaDateRange    `json:"dateRange" api:"required"`
 	// Timestamp of the last dataset update.
-	LastUpdated time.Time `json:"lastUpdated,required" format:"date-time"`
+	LastUpdated time.Time `json:"lastUpdated" api:"required" format:"date-time"`
 	// Normalization method applied to the results. Refer to
 	// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
-	Normalization RadarHTTPTopAseListByOsResponseResultMetaNormalization `json:"normalization,required"`
+	Normalization RadarHTTPTopAseListByOsResponseResultMetaNormalization `json:"normalization" api:"required"`
 	// Measurement units for the results.
-	Units []RadarHTTPTopAseListByOsResponseResultMetaUnit `json:"units,required"`
+	Units []RadarHTTPTopAseListByOsResponseResultMetaUnit `json:"units" api:"required"`
 	JSON  radarHTTPTopAseListByOsResponseResultMetaJSON   `json:"-"`
 }
 
@@ -1878,9 +1878,9 @@ func (r radarHTTPTopAseListByOsResponseResultMetaJSON) RawJSON() string {
 }
 
 type RadarHTTPTopAseListByOsResponseResultMetaConfidenceInfo struct {
-	Annotations []RadarHTTPTopAseListByOsResponseResultMetaConfidenceInfoAnnotation `json:"annotations,required"`
+	Annotations []RadarHTTPTopAseListByOsResponseResultMetaConfidenceInfoAnnotation `json:"annotations" api:"required"`
 	// Provides an indication of how much confidence Cloudflare has in the data.
-	Level int64                                                       `json:"level,required"`
+	Level int64                                                       `json:"level" api:"required"`
 	JSON  radarHTTPTopAseListByOsResponseResultMetaConfidenceInfoJSON `json:"-"`
 }
 
@@ -1904,14 +1904,14 @@ func (r radarHTTPTopAseListByOsResponseResultMetaConfidenceInfoJSON) RawJSON() s
 
 // Annotation associated with the result (e.g. outage or other type of event).
 type RadarHTTPTopAseListByOsResponseResultMetaConfidenceInfoAnnotation struct {
-	DataSource  string    `json:"dataSource,required"`
-	Description string    `json:"description,required"`
-	EndDate     time.Time `json:"endDate,required" format:"date-time"`
-	EventType   string    `json:"eventType,required"`
+	DataSource  string    `json:"dataSource" api:"required"`
+	Description string    `json:"description" api:"required"`
+	EndDate     time.Time `json:"endDate" api:"required" format:"date-time"`
+	EventType   string    `json:"eventType" api:"required"`
 	// Whether event is a single point in time or a time range.
-	IsInstantaneous bool                                                                  `json:"isInstantaneous,required"`
-	LinkedURL       string                                                                `json:"linkedUrl,required" format:"uri"`
-	StartDate       time.Time                                                             `json:"startDate,required" format:"date-time"`
+	IsInstantaneous bool                                                                  `json:"isInstantaneous" api:"required"`
+	LinkedURL       string                                                                `json:"linkedUrl" api:"required" format:"uri"`
+	StartDate       time.Time                                                             `json:"startDate" api:"required" format:"date-time"`
 	JSON            radarHTTPTopAseListByOsResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
 }
 
@@ -1940,9 +1940,9 @@ func (r radarHTTPTopAseListByOsResponseResultMetaConfidenceInfoAnnotationJSON) R
 
 type RadarHTTPTopAseListByOsResponseResultMetaDateRange struct {
 	// Adjusted end of date range.
-	EndTime time.Time `json:"endTime,required" format:"date-time"`
+	EndTime time.Time `json:"endTime" api:"required" format:"date-time"`
 	// Adjusted start of date range.
-	StartTime time.Time                                              `json:"startTime,required" format:"date-time"`
+	StartTime time.Time                                              `json:"startTime" api:"required" format:"date-time"`
 	JSON      radarHTTPTopAseListByOsResponseResultMetaDateRangeJSON `json:"-"`
 }
 
@@ -1987,8 +1987,8 @@ func (r RadarHTTPTopAseListByOsResponseResultMetaNormalization) IsKnown() bool {
 }
 
 type RadarHTTPTopAseListByOsResponseResultMetaUnit struct {
-	Name  string                                            `json:"name,required"`
-	Value string                                            `json:"value,required"`
+	Name  string                                            `json:"name" api:"required"`
+	Value string                                            `json:"value" api:"required"`
 	JSON  radarHTTPTopAseListByOsResponseResultMetaUnitJSON `json:"-"`
 }
 
@@ -2010,10 +2010,10 @@ func (r radarHTTPTopAseListByOsResponseResultMetaUnitJSON) RawJSON() string {
 }
 
 type RadarHTTPTopAseListByOsResponseResultTop0 struct {
-	ClientAsn    int64  `json:"clientASN,required"`
-	ClientAsName string `json:"clientASName,required"`
+	ClientAsn    int64  `json:"clientASN" api:"required"`
+	ClientAsName string `json:"clientASName" api:"required"`
 	// A numeric string.
-	Value string                                        `json:"value,required"`
+	Value string                                        `json:"value" api:"required"`
 	JSON  radarHTTPTopAseListByOsResponseResultTop0JSON `json:"-"`
 }
 
@@ -2036,8 +2036,8 @@ func (r radarHTTPTopAseListByOsResponseResultTop0JSON) RawJSON() string {
 }
 
 type RadarHTTPTopAseListByTlsVersionResponse struct {
-	Result  RadarHTTPTopAseListByTlsVersionResponseResult `json:"result,required"`
-	Success bool                                          `json:"success,required"`
+	Result  RadarHTTPTopAseListByTlsVersionResponseResult `json:"result" api:"required"`
+	Success bool                                          `json:"success" api:"required"`
 	JSON    radarHTTPTopAseListByTlsVersionResponseJSON   `json:"-"`
 }
 
@@ -2060,8 +2060,8 @@ func (r radarHTTPTopAseListByTlsVersionResponseJSON) RawJSON() string {
 
 type RadarHTTPTopAseListByTlsVersionResponseResult struct {
 	// Metadata for the results.
-	Meta RadarHTTPTopAseListByTlsVersionResponseResultMeta   `json:"meta,required"`
-	Top0 []RadarHTTPTopAseListByTlsVersionResponseResultTop0 `json:"top_0,required"`
+	Meta RadarHTTPTopAseListByTlsVersionResponseResultMeta   `json:"meta" api:"required"`
+	Top0 []RadarHTTPTopAseListByTlsVersionResponseResultTop0 `json:"top_0" api:"required"`
 	JSON radarHTTPTopAseListByTlsVersionResponseResultJSON   `json:"-"`
 }
 
@@ -2084,15 +2084,15 @@ func (r radarHTTPTopAseListByTlsVersionResponseResultJSON) RawJSON() string {
 
 // Metadata for the results.
 type RadarHTTPTopAseListByTlsVersionResponseResultMeta struct {
-	ConfidenceInfo RadarHTTPTopAseListByTlsVersionResponseResultMetaConfidenceInfo `json:"confidenceInfo,required,nullable"`
-	DateRange      []RadarHTTPTopAseListByTlsVersionResponseResultMetaDateRange    `json:"dateRange,required"`
+	ConfidenceInfo RadarHTTPTopAseListByTlsVersionResponseResultMetaConfidenceInfo `json:"confidenceInfo" api:"required,nullable"`
+	DateRange      []RadarHTTPTopAseListByTlsVersionResponseResultMetaDateRange    `json:"dateRange" api:"required"`
 	// Timestamp of the last dataset update.
-	LastUpdated time.Time `json:"lastUpdated,required" format:"date-time"`
+	LastUpdated time.Time `json:"lastUpdated" api:"required" format:"date-time"`
 	// Normalization method applied to the results. Refer to
 	// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
-	Normalization RadarHTTPTopAseListByTlsVersionResponseResultMetaNormalization `json:"normalization,required"`
+	Normalization RadarHTTPTopAseListByTlsVersionResponseResultMetaNormalization `json:"normalization" api:"required"`
 	// Measurement units for the results.
-	Units []RadarHTTPTopAseListByTlsVersionResponseResultMetaUnit `json:"units,required"`
+	Units []RadarHTTPTopAseListByTlsVersionResponseResultMetaUnit `json:"units" api:"required"`
 	JSON  radarHTTPTopAseListByTlsVersionResponseResultMetaJSON   `json:"-"`
 }
 
@@ -2117,9 +2117,9 @@ func (r radarHTTPTopAseListByTlsVersionResponseResultMetaJSON) RawJSON() string 
 }
 
 type RadarHTTPTopAseListByTlsVersionResponseResultMetaConfidenceInfo struct {
-	Annotations []RadarHTTPTopAseListByTlsVersionResponseResultMetaConfidenceInfoAnnotation `json:"annotations,required"`
+	Annotations []RadarHTTPTopAseListByTlsVersionResponseResultMetaConfidenceInfoAnnotation `json:"annotations" api:"required"`
 	// Provides an indication of how much confidence Cloudflare has in the data.
-	Level int64                                                               `json:"level,required"`
+	Level int64                                                               `json:"level" api:"required"`
 	JSON  radarHTTPTopAseListByTlsVersionResponseResultMetaConfidenceInfoJSON `json:"-"`
 }
 
@@ -2143,14 +2143,14 @@ func (r radarHTTPTopAseListByTlsVersionResponseResultMetaConfidenceInfoJSON) Raw
 
 // Annotation associated with the result (e.g. outage or other type of event).
 type RadarHTTPTopAseListByTlsVersionResponseResultMetaConfidenceInfoAnnotation struct {
-	DataSource  string    `json:"dataSource,required"`
-	Description string    `json:"description,required"`
-	EndDate     time.Time `json:"endDate,required" format:"date-time"`
-	EventType   string    `json:"eventType,required"`
+	DataSource  string    `json:"dataSource" api:"required"`
+	Description string    `json:"description" api:"required"`
+	EndDate     time.Time `json:"endDate" api:"required" format:"date-time"`
+	EventType   string    `json:"eventType" api:"required"`
 	// Whether event is a single point in time or a time range.
-	IsInstantaneous bool                                                                          `json:"isInstantaneous,required"`
-	LinkedURL       string                                                                        `json:"linkedUrl,required" format:"uri"`
-	StartDate       time.Time                                                                     `json:"startDate,required" format:"date-time"`
+	IsInstantaneous bool                                                                          `json:"isInstantaneous" api:"required"`
+	LinkedURL       string                                                                        `json:"linkedUrl" api:"required" format:"uri"`
+	StartDate       time.Time                                                                     `json:"startDate" api:"required" format:"date-time"`
 	JSON            radarHTTPTopAseListByTlsVersionResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
 }
 
@@ -2179,9 +2179,9 @@ func (r radarHTTPTopAseListByTlsVersionResponseResultMetaConfidenceInfoAnnotatio
 
 type RadarHTTPTopAseListByTlsVersionResponseResultMetaDateRange struct {
 	// Adjusted end of date range.
-	EndTime time.Time `json:"endTime,required" format:"date-time"`
+	EndTime time.Time `json:"endTime" api:"required" format:"date-time"`
 	// Adjusted start of date range.
-	StartTime time.Time                                                      `json:"startTime,required" format:"date-time"`
+	StartTime time.Time                                                      `json:"startTime" api:"required" format:"date-time"`
 	JSON      radarHTTPTopAseListByTlsVersionResponseResultMetaDateRangeJSON `json:"-"`
 }
 
@@ -2227,8 +2227,8 @@ func (r RadarHTTPTopAseListByTlsVersionResponseResultMetaNormalization) IsKnown(
 }
 
 type RadarHTTPTopAseListByTlsVersionResponseResultMetaUnit struct {
-	Name  string                                                    `json:"name,required"`
-	Value string                                                    `json:"value,required"`
+	Name  string                                                    `json:"name" api:"required"`
+	Value string                                                    `json:"value" api:"required"`
 	JSON  radarHTTPTopAseListByTlsVersionResponseResultMetaUnitJSON `json:"-"`
 }
 
@@ -2250,10 +2250,10 @@ func (r radarHTTPTopAseListByTlsVersionResponseResultMetaUnitJSON) RawJSON() str
 }
 
 type RadarHTTPTopAseListByTlsVersionResponseResultTop0 struct {
-	ClientAsn    int64  `json:"clientASN,required"`
-	ClientAsName string `json:"clientASName,required"`
+	ClientAsn    int64  `json:"clientASN" api:"required"`
+	ClientAsName string `json:"clientASName" api:"required"`
 	// A numeric string.
-	Value string                                                `json:"value,required"`
+	Value string                                                `json:"value" api:"required"`
 	JSON  radarHTTPTopAseListByTlsVersionResponseResultTop0JSON `json:"-"`
 }
 

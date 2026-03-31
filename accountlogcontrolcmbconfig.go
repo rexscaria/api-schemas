@@ -39,11 +39,11 @@ func (r *AccountLogControlCmbConfigService) Get(ctx context.Context, accountID s
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/logs/control/cmb/config", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates CMB config.
@@ -51,11 +51,11 @@ func (r *AccountLogControlCmbConfigService) Update(ctx context.Context, accountI
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/logs/control/cmb/config", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Deletes CMB config.
@@ -63,11 +63,11 @@ func (r *AccountLogControlCmbConfigService) Delete(ctx context.Context, accountI
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/logs/control/cmb/config", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type CmbConfig struct {
@@ -106,11 +106,11 @@ func (r CmbConfigParam) MarshalJSON() (data []byte, err error) {
 }
 
 type CmbConfigSingleResponse struct {
-	Errors   []MessagesLogcontrolItem `json:"errors,required"`
-	Messages []MessagesLogcontrolItem `json:"messages,required"`
+	Errors   []MessagesLogcontrolItem `json:"errors" api:"required"`
+	Messages []MessagesLogcontrolItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success CmbConfigSingleResponseSuccess `json:"success,required"`
-	Result  CmbConfig                      `json:"result,nullable"`
+	Success CmbConfigSingleResponseSuccess `json:"success" api:"required"`
+	Result  CmbConfig                      `json:"result" api:"nullable"`
 	JSON    cmbConfigSingleResponseJSON    `json:"-"`
 }
 
@@ -149,8 +149,8 @@ func (r CmbConfigSingleResponseSuccess) IsKnown() bool {
 }
 
 type MessagesLogcontrolItem struct {
-	Code             int64                        `json:"code,required"`
-	Message          string                       `json:"message,required"`
+	Code             int64                        `json:"code" api:"required"`
+	Message          string                       `json:"message" api:"required"`
 	DocumentationURL string                       `json:"documentation_url"`
 	Source           MessagesLogcontrolItemSource `json:"source"`
 	JSON             messagesLogcontrolItemJSON   `json:"-"`
@@ -197,11 +197,11 @@ func (r messagesLogcontrolItemSourceJSON) RawJSON() string {
 }
 
 type AccountLogControlCmbConfigDeleteResponse struct {
-	Errors   []MessagesLogcontrolItem `json:"errors,required"`
-	Messages []MessagesLogcontrolItem `json:"messages,required"`
+	Errors   []MessagesLogcontrolItem `json:"errors" api:"required"`
+	Messages []MessagesLogcontrolItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountLogControlCmbConfigDeleteResponseSuccess `json:"success,required"`
-	Result  interface{}                                     `json:"result,nullable"`
+	Success AccountLogControlCmbConfigDeleteResponseSuccess `json:"success" api:"required"`
+	Result  interface{}                                     `json:"result" api:"nullable"`
 	JSON    accountLogControlCmbConfigDeleteResponseJSON    `json:"-"`
 }
 
@@ -240,7 +240,7 @@ func (r AccountLogControlCmbConfigDeleteResponseSuccess) IsKnown() bool {
 }
 
 type AccountLogControlCmbConfigUpdateParams struct {
-	CmbConfig CmbConfigParam `json:"cmb_config,required"`
+	CmbConfig CmbConfigParam `json:"cmb_config" api:"required"`
 }
 
 func (r AccountLogControlCmbConfigUpdateParams) MarshalJSON() (data []byte, err error) {

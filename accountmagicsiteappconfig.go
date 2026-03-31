@@ -41,15 +41,15 @@ func (r *AccountMagicSiteAppConfigService) New(ctx context.Context, accountID st
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if siteID == "" {
 		err = errors.New("missing required site_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/sites/%s/app_configs", accountID, siteID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates an App Config for a site
@@ -57,19 +57,19 @@ func (r *AccountMagicSiteAppConfigService) Update(ctx context.Context, accountID
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if siteID == "" {
 		err = errors.New("missing required site_id parameter")
-		return
+		return nil, err
 	}
 	if appConfigID == "" {
 		err = errors.New("missing required app_config_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/sites/%s/app_configs/%s", accountID, siteID, appConfigID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists App Configs associated with a site.
@@ -77,15 +77,15 @@ func (r *AccountMagicSiteAppConfigService) List(ctx context.Context, accountID s
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if siteID == "" {
 		err = errors.New("missing required site_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/sites/%s/app_configs", accountID, siteID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Deletes specific App Config associated with a site.
@@ -93,19 +93,19 @@ func (r *AccountMagicSiteAppConfigService) Delete(ctx context.Context, accountID
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if siteID == "" {
 		err = errors.New("missing required site_id parameter")
-		return
+		return nil, err
 	}
 	if appConfigID == "" {
 		err = errors.New("missing required app_config_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/sites/%s/app_configs/%s", accountID, siteID, appConfigID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Traffic decision configuration for an app.
@@ -186,7 +186,7 @@ func init() {
 
 type MagicAppConfigAccountApp struct {
 	// Magic account app ID.
-	AccountAppID string `json:"account_app_id,required"`
+	AccountAppID string `json:"account_app_id" api:"required"`
 	// Identifier
 	ID string `json:"id"`
 	// Whether to breakout traffic to the app's endpoints directly. Null preserves
@@ -224,7 +224,7 @@ func (r MagicAppConfigAccountApp) implementsMagicAppConfig() {}
 
 type MagicAppConfigManagedApp struct {
 	// Managed app ID.
-	ManagedAppID string `json:"managed_app_id,required"`
+	ManagedAppID string `json:"managed_app_id" api:"required"`
 	// Identifier
 	ID string `json:"id"`
 	// Whether to breakout traffic to the app's endpoints directly. Null preserves
@@ -261,12 +261,12 @@ func (r magicAppConfigManagedAppJSON) RawJSON() string {
 func (r MagicAppConfigManagedApp) implementsMagicAppConfig() {}
 
 type MagicAppConfigSingleResponse struct {
-	Errors   []MagicAppConfigSingleResponseError   `json:"errors,required"`
-	Messages []MagicAppConfigSingleResponseMessage `json:"messages,required"`
+	Errors   []MagicAppConfigSingleResponseError   `json:"errors" api:"required"`
+	Messages []MagicAppConfigSingleResponseMessage `json:"messages" api:"required"`
 	// Traffic decision configuration for an app.
-	Result MagicAppConfig `json:"result,required,nullable"`
+	Result MagicAppConfig `json:"result" api:"required,nullable"`
 	// Whether the API call was successful
-	Success MagicAppConfigSingleResponseSuccess `json:"success,required"`
+	Success MagicAppConfigSingleResponseSuccess `json:"success" api:"required"`
 	JSON    magicAppConfigSingleResponseJSON    `json:"-"`
 }
 
@@ -290,8 +290,8 @@ func (r magicAppConfigSingleResponseJSON) RawJSON() string {
 }
 
 type MagicAppConfigSingleResponseError struct {
-	Code             int64                                    `json:"code,required"`
-	Message          string                                   `json:"message,required"`
+	Code             int64                                    `json:"code" api:"required"`
+	Message          string                                   `json:"message" api:"required"`
 	DocumentationURL string                                   `json:"documentation_url"`
 	Source           MagicAppConfigSingleResponseErrorsSource `json:"source"`
 	JSON             magicAppConfigSingleResponseErrorJSON    `json:"-"`
@@ -338,8 +338,8 @@ func (r magicAppConfigSingleResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type MagicAppConfigSingleResponseMessage struct {
-	Code             int64                                      `json:"code,required"`
-	Message          string                                     `json:"message,required"`
+	Code             int64                                      `json:"code" api:"required"`
+	Message          string                                     `json:"message" api:"required"`
 	DocumentationURL string                                     `json:"documentation_url"`
 	Source           MagicAppConfigSingleResponseMessagesSource `json:"source"`
 	JSON             magicAppConfigSingleResponseMessageJSON    `json:"-"`
@@ -401,11 +401,11 @@ func (r MagicAppConfigSingleResponseSuccess) IsKnown() bool {
 }
 
 type AccountMagicSiteAppConfigListResponse struct {
-	Errors   []AccountMagicSiteAppConfigListResponseError   `json:"errors,required"`
-	Messages []AccountMagicSiteAppConfigListResponseMessage `json:"messages,required"`
-	Result   []MagicAppConfig                               `json:"result,required,nullable"`
+	Errors   []AccountMagicSiteAppConfigListResponseError   `json:"errors" api:"required"`
+	Messages []AccountMagicSiteAppConfigListResponseMessage `json:"messages" api:"required"`
+	Result   []MagicAppConfig                               `json:"result" api:"required,nullable"`
 	// Whether the API call was successful
-	Success AccountMagicSiteAppConfigListResponseSuccess `json:"success,required"`
+	Success AccountMagicSiteAppConfigListResponseSuccess `json:"success" api:"required"`
 	JSON    accountMagicSiteAppConfigListResponseJSON    `json:"-"`
 }
 
@@ -429,8 +429,8 @@ func (r accountMagicSiteAppConfigListResponseJSON) RawJSON() string {
 }
 
 type AccountMagicSiteAppConfigListResponseError struct {
-	Code             int64                                             `json:"code,required"`
-	Message          string                                            `json:"message,required"`
+	Code             int64                                             `json:"code" api:"required"`
+	Message          string                                            `json:"message" api:"required"`
 	DocumentationURL string                                            `json:"documentation_url"`
 	Source           AccountMagicSiteAppConfigListResponseErrorsSource `json:"source"`
 	JSON             accountMagicSiteAppConfigListResponseErrorJSON    `json:"-"`
@@ -477,8 +477,8 @@ func (r accountMagicSiteAppConfigListResponseErrorsSourceJSON) RawJSON() string 
 }
 
 type AccountMagicSiteAppConfigListResponseMessage struct {
-	Code             int64                                               `json:"code,required"`
-	Message          string                                              `json:"message,required"`
+	Code             int64                                               `json:"code" api:"required"`
+	Message          string                                              `json:"message" api:"required"`
 	DocumentationURL string                                              `json:"documentation_url"`
 	Source           AccountMagicSiteAppConfigListResponseMessagesSource `json:"source"`
 	JSON             accountMagicSiteAppConfigListResponseMessageJSON    `json:"-"`
@@ -540,7 +540,7 @@ func (r AccountMagicSiteAppConfigListResponseSuccess) IsKnown() bool {
 }
 
 type AccountMagicSiteAppConfigNewParams struct {
-	Body AccountMagicSiteAppConfigNewParamsBodyUnion `json:"body,required"`
+	Body AccountMagicSiteAppConfigNewParamsBodyUnion `json:"body" api:"required"`
 }
 
 func (r AccountMagicSiteAppConfigNewParams) MarshalJSON() (data []byte, err error) {
@@ -576,7 +576,7 @@ type AccountMagicSiteAppConfigNewParamsBodyUnion interface {
 
 type AccountMagicSiteAppConfigNewParamsBodyAccountApp struct {
 	// Magic account app ID.
-	AccountAppID param.Field[string] `json:"account_app_id,required"`
+	AccountAppID param.Field[string] `json:"account_app_id" api:"required"`
 	// Whether to breakout traffic to the app's endpoints directly. Null preserves
 	// default behavior.
 	Breakout param.Field[bool] `json:"breakout"`
@@ -594,7 +594,7 @@ func (r AccountMagicSiteAppConfigNewParamsBodyAccountApp) implementsAccountMagic
 
 type AccountMagicSiteAppConfigNewParamsBodyManagedApp struct {
 	// Managed app ID.
-	ManagedAppID param.Field[string] `json:"managed_app_id,required"`
+	ManagedAppID param.Field[string] `json:"managed_app_id" api:"required"`
 	// Whether to breakout traffic to the app's endpoints directly. Null preserves
 	// default behavior.
 	Breakout param.Field[bool] `json:"breakout"`

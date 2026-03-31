@@ -42,11 +42,11 @@ func (r *AccountEmailSecuritySettingDomainService) Get(ctx context.Context, acco
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/email-security/settings/domains/%v", accountID, domainID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update an email domain
@@ -54,11 +54,11 @@ func (r *AccountEmailSecuritySettingDomainService) Update(ctx context.Context, a
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/email-security/settings/domains/%v", accountID, domainID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists, searches, and sorts an account’s email domains.
@@ -66,11 +66,11 @@ func (r *AccountEmailSecuritySettingDomainService) List(ctx context.Context, acc
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/email-security/settings/domains", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Unprotect an email domain
@@ -78,11 +78,11 @@ func (r *AccountEmailSecuritySettingDomainService) Unprotect(ctx context.Context
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/email-security/settings/domains/%v", accountID, domainID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Unprotect multiple email domains
@@ -90,11 +90,11 @@ func (r *AccountEmailSecuritySettingDomainService) UnprotectMultiple(ctx context
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/email-security/settings/domains", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type DeliveryMode string
@@ -154,10 +154,10 @@ func (r ScannableFolder) IsKnown() bool {
 }
 
 type AccountEmailSecuritySettingDomainGetResponse struct {
-	Errors   []EmailSecurityMessage                             `json:"errors,required"`
-	Messages []EmailSecurityMessage                             `json:"messages,required"`
-	Result   AccountEmailSecuritySettingDomainGetResponseResult `json:"result,required"`
-	Success  bool                                               `json:"success,required"`
+	Errors   []EmailSecurityMessage                             `json:"errors" api:"required"`
+	Messages []EmailSecurityMessage                             `json:"messages" api:"required"`
+	Result   AccountEmailSecuritySettingDomainGetResponseResult `json:"result" api:"required"`
+	Success  bool                                               `json:"success" api:"required"`
 	JSON     accountEmailSecuritySettingDomainGetResponseJSON   `json:"-"`
 }
 
@@ -182,23 +182,23 @@ func (r accountEmailSecuritySettingDomainGetResponseJSON) RawJSON() string {
 
 type AccountEmailSecuritySettingDomainGetResponseResult struct {
 	// The unique identifier for the domain.
-	ID                   int64                                                             `json:"id,required"`
-	AllowedDeliveryModes []DeliveryMode                                                    `json:"allowed_delivery_modes,required"`
-	CreatedAt            time.Time                                                         `json:"created_at,required" format:"date-time"`
-	Domain               string                                                            `json:"domain,required"`
-	DropDispositions     []DispositionLabel                                                `json:"drop_dispositions,required"`
-	IPRestrictions       []string                                                          `json:"ip_restrictions,required"`
-	LastModified         time.Time                                                         `json:"last_modified,required" format:"date-time"`
-	LookbackHops         int64                                                             `json:"lookback_hops,required"`
-	Transport            string                                                            `json:"transport,required"`
-	Authorization        AccountEmailSecuritySettingDomainGetResponseResultAuthorization   `json:"authorization,nullable"`
-	EmailsProcessed      AccountEmailSecuritySettingDomainGetResponseResultEmailsProcessed `json:"emails_processed,nullable"`
-	Folder               ScannableFolder                                                   `json:"folder,nullable"`
-	InboxProvider        AccountEmailSecuritySettingDomainGetResponseResultInboxProvider   `json:"inbox_provider,nullable"`
-	IntegrationID        string                                                            `json:"integration_id,nullable" format:"uuid"`
-	O365TenantID         string                                                            `json:"o365_tenant_id,nullable"`
-	RequireTlsInbound    bool                                                              `json:"require_tls_inbound,nullable"`
-	RequireTlsOutbound   bool                                                              `json:"require_tls_outbound,nullable"`
+	ID                   int64                                                             `json:"id" api:"required"`
+	AllowedDeliveryModes []DeliveryMode                                                    `json:"allowed_delivery_modes" api:"required"`
+	CreatedAt            time.Time                                                         `json:"created_at" api:"required" format:"date-time"`
+	Domain               string                                                            `json:"domain" api:"required"`
+	DropDispositions     []DispositionLabel                                                `json:"drop_dispositions" api:"required"`
+	IPRestrictions       []string                                                          `json:"ip_restrictions" api:"required"`
+	LastModified         time.Time                                                         `json:"last_modified" api:"required" format:"date-time"`
+	LookbackHops         int64                                                             `json:"lookback_hops" api:"required"`
+	Transport            string                                                            `json:"transport" api:"required"`
+	Authorization        AccountEmailSecuritySettingDomainGetResponseResultAuthorization   `json:"authorization" api:"nullable"`
+	EmailsProcessed      AccountEmailSecuritySettingDomainGetResponseResultEmailsProcessed `json:"emails_processed" api:"nullable"`
+	Folder               ScannableFolder                                                   `json:"folder" api:"nullable"`
+	InboxProvider        AccountEmailSecuritySettingDomainGetResponseResultInboxProvider   `json:"inbox_provider" api:"nullable"`
+	IntegrationID        string                                                            `json:"integration_id" api:"nullable" format:"uuid"`
+	O365TenantID         string                                                            `json:"o365_tenant_id" api:"nullable"`
+	RequireTlsInbound    bool                                                              `json:"require_tls_inbound" api:"nullable"`
+	RequireTlsOutbound   bool                                                              `json:"require_tls_outbound" api:"nullable"`
 	JSON                 accountEmailSecuritySettingDomainGetResponseResultJSON            `json:"-"`
 }
 
@@ -235,9 +235,9 @@ func (r accountEmailSecuritySettingDomainGetResponseResultJSON) RawJSON() string
 }
 
 type AccountEmailSecuritySettingDomainGetResponseResultAuthorization struct {
-	Authorized    bool                                                                `json:"authorized,required"`
-	Timestamp     time.Time                                                           `json:"timestamp,required" format:"date-time"`
-	StatusMessage string                                                              `json:"status_message,nullable"`
+	Authorized    bool                                                                `json:"authorized" api:"required"`
+	Timestamp     time.Time                                                           `json:"timestamp" api:"required" format:"date-time"`
+	StatusMessage string                                                              `json:"status_message" api:"nullable"`
 	JSON          accountEmailSecuritySettingDomainGetResponseResultAuthorizationJSON `json:"-"`
 }
 
@@ -261,9 +261,9 @@ func (r accountEmailSecuritySettingDomainGetResponseResultAuthorizationJSON) Raw
 }
 
 type AccountEmailSecuritySettingDomainGetResponseResultEmailsProcessed struct {
-	Timestamp                    time.Time                                                             `json:"timestamp,required" format:"date-time"`
-	TotalEmailsProcessed         int64                                                                 `json:"total_emails_processed,required"`
-	TotalEmailsProcessedPrevious int64                                                                 `json:"total_emails_processed_previous,required"`
+	Timestamp                    time.Time                                                             `json:"timestamp" api:"required" format:"date-time"`
+	TotalEmailsProcessed         int64                                                                 `json:"total_emails_processed" api:"required"`
+	TotalEmailsProcessedPrevious int64                                                                 `json:"total_emails_processed_previous" api:"required"`
 	JSON                         accountEmailSecuritySettingDomainGetResponseResultEmailsProcessedJSON `json:"-"`
 }
 
@@ -302,10 +302,10 @@ func (r AccountEmailSecuritySettingDomainGetResponseResultInboxProvider) IsKnown
 }
 
 type AccountEmailSecuritySettingDomainUpdateResponse struct {
-	Errors   []EmailSecurityMessage                                `json:"errors,required"`
-	Messages []EmailSecurityMessage                                `json:"messages,required"`
-	Result   AccountEmailSecuritySettingDomainUpdateResponseResult `json:"result,required"`
-	Success  bool                                                  `json:"success,required"`
+	Errors   []EmailSecurityMessage                                `json:"errors" api:"required"`
+	Messages []EmailSecurityMessage                                `json:"messages" api:"required"`
+	Result   AccountEmailSecuritySettingDomainUpdateResponseResult `json:"result" api:"required"`
+	Success  bool                                                  `json:"success" api:"required"`
 	JSON     accountEmailSecuritySettingDomainUpdateResponseJSON   `json:"-"`
 }
 
@@ -330,23 +330,23 @@ func (r accountEmailSecuritySettingDomainUpdateResponseJSON) RawJSON() string {
 
 type AccountEmailSecuritySettingDomainUpdateResponseResult struct {
 	// The unique identifier for the domain.
-	ID                   int64                                                                `json:"id,required"`
-	AllowedDeliveryModes []DeliveryMode                                                       `json:"allowed_delivery_modes,required"`
-	CreatedAt            time.Time                                                            `json:"created_at,required" format:"date-time"`
-	Domain               string                                                               `json:"domain,required"`
-	DropDispositions     []DispositionLabel                                                   `json:"drop_dispositions,required"`
-	IPRestrictions       []string                                                             `json:"ip_restrictions,required"`
-	LastModified         time.Time                                                            `json:"last_modified,required" format:"date-time"`
-	LookbackHops         int64                                                                `json:"lookback_hops,required"`
-	Transport            string                                                               `json:"transport,required"`
-	Authorization        AccountEmailSecuritySettingDomainUpdateResponseResultAuthorization   `json:"authorization,nullable"`
-	EmailsProcessed      AccountEmailSecuritySettingDomainUpdateResponseResultEmailsProcessed `json:"emails_processed,nullable"`
-	Folder               ScannableFolder                                                      `json:"folder,nullable"`
-	InboxProvider        AccountEmailSecuritySettingDomainUpdateResponseResultInboxProvider   `json:"inbox_provider,nullable"`
-	IntegrationID        string                                                               `json:"integration_id,nullable" format:"uuid"`
-	O365TenantID         string                                                               `json:"o365_tenant_id,nullable"`
-	RequireTlsInbound    bool                                                                 `json:"require_tls_inbound,nullable"`
-	RequireTlsOutbound   bool                                                                 `json:"require_tls_outbound,nullable"`
+	ID                   int64                                                                `json:"id" api:"required"`
+	AllowedDeliveryModes []DeliveryMode                                                       `json:"allowed_delivery_modes" api:"required"`
+	CreatedAt            time.Time                                                            `json:"created_at" api:"required" format:"date-time"`
+	Domain               string                                                               `json:"domain" api:"required"`
+	DropDispositions     []DispositionLabel                                                   `json:"drop_dispositions" api:"required"`
+	IPRestrictions       []string                                                             `json:"ip_restrictions" api:"required"`
+	LastModified         time.Time                                                            `json:"last_modified" api:"required" format:"date-time"`
+	LookbackHops         int64                                                                `json:"lookback_hops" api:"required"`
+	Transport            string                                                               `json:"transport" api:"required"`
+	Authorization        AccountEmailSecuritySettingDomainUpdateResponseResultAuthorization   `json:"authorization" api:"nullable"`
+	EmailsProcessed      AccountEmailSecuritySettingDomainUpdateResponseResultEmailsProcessed `json:"emails_processed" api:"nullable"`
+	Folder               ScannableFolder                                                      `json:"folder" api:"nullable"`
+	InboxProvider        AccountEmailSecuritySettingDomainUpdateResponseResultInboxProvider   `json:"inbox_provider" api:"nullable"`
+	IntegrationID        string                                                               `json:"integration_id" api:"nullable" format:"uuid"`
+	O365TenantID         string                                                               `json:"o365_tenant_id" api:"nullable"`
+	RequireTlsInbound    bool                                                                 `json:"require_tls_inbound" api:"nullable"`
+	RequireTlsOutbound   bool                                                                 `json:"require_tls_outbound" api:"nullable"`
 	JSON                 accountEmailSecuritySettingDomainUpdateResponseResultJSON            `json:"-"`
 }
 
@@ -383,9 +383,9 @@ func (r accountEmailSecuritySettingDomainUpdateResponseResultJSON) RawJSON() str
 }
 
 type AccountEmailSecuritySettingDomainUpdateResponseResultAuthorization struct {
-	Authorized    bool                                                                   `json:"authorized,required"`
-	Timestamp     time.Time                                                              `json:"timestamp,required" format:"date-time"`
-	StatusMessage string                                                                 `json:"status_message,nullable"`
+	Authorized    bool                                                                   `json:"authorized" api:"required"`
+	Timestamp     time.Time                                                              `json:"timestamp" api:"required" format:"date-time"`
+	StatusMessage string                                                                 `json:"status_message" api:"nullable"`
 	JSON          accountEmailSecuritySettingDomainUpdateResponseResultAuthorizationJSON `json:"-"`
 }
 
@@ -409,9 +409,9 @@ func (r accountEmailSecuritySettingDomainUpdateResponseResultAuthorizationJSON) 
 }
 
 type AccountEmailSecuritySettingDomainUpdateResponseResultEmailsProcessed struct {
-	Timestamp                    time.Time                                                                `json:"timestamp,required" format:"date-time"`
-	TotalEmailsProcessed         int64                                                                    `json:"total_emails_processed,required"`
-	TotalEmailsProcessedPrevious int64                                                                    `json:"total_emails_processed_previous,required"`
+	Timestamp                    time.Time                                                                `json:"timestamp" api:"required" format:"date-time"`
+	TotalEmailsProcessed         int64                                                                    `json:"total_emails_processed" api:"required"`
+	TotalEmailsProcessedPrevious int64                                                                    `json:"total_emails_processed_previous" api:"required"`
 	JSON                         accountEmailSecuritySettingDomainUpdateResponseResultEmailsProcessedJSON `json:"-"`
 }
 
@@ -450,11 +450,11 @@ func (r AccountEmailSecuritySettingDomainUpdateResponseResultInboxProvider) IsKn
 }
 
 type AccountEmailSecuritySettingDomainListResponse struct {
-	Errors     []EmailSecurityMessage                                `json:"errors,required"`
-	Messages   []EmailSecurityMessage                                `json:"messages,required"`
-	Result     []AccountEmailSecuritySettingDomainListResponseResult `json:"result,required"`
-	ResultInfo ResultInfoEmailSecurity                               `json:"result_info,required"`
-	Success    bool                                                  `json:"success,required"`
+	Errors     []EmailSecurityMessage                                `json:"errors" api:"required"`
+	Messages   []EmailSecurityMessage                                `json:"messages" api:"required"`
+	Result     []AccountEmailSecuritySettingDomainListResponseResult `json:"result" api:"required"`
+	ResultInfo ResultInfoEmailSecurity                               `json:"result_info" api:"required"`
+	Success    bool                                                  `json:"success" api:"required"`
 	JSON       accountEmailSecuritySettingDomainListResponseJSON     `json:"-"`
 }
 
@@ -480,23 +480,23 @@ func (r accountEmailSecuritySettingDomainListResponseJSON) RawJSON() string {
 
 type AccountEmailSecuritySettingDomainListResponseResult struct {
 	// The unique identifier for the domain.
-	ID                   int64                                                              `json:"id,required"`
-	AllowedDeliveryModes []DeliveryMode                                                     `json:"allowed_delivery_modes,required"`
-	CreatedAt            time.Time                                                          `json:"created_at,required" format:"date-time"`
-	Domain               string                                                             `json:"domain,required"`
-	DropDispositions     []DispositionLabel                                                 `json:"drop_dispositions,required"`
-	IPRestrictions       []string                                                           `json:"ip_restrictions,required"`
-	LastModified         time.Time                                                          `json:"last_modified,required" format:"date-time"`
-	LookbackHops         int64                                                              `json:"lookback_hops,required"`
-	Transport            string                                                             `json:"transport,required"`
-	Authorization        AccountEmailSecuritySettingDomainListResponseResultAuthorization   `json:"authorization,nullable"`
-	EmailsProcessed      AccountEmailSecuritySettingDomainListResponseResultEmailsProcessed `json:"emails_processed,nullable"`
-	Folder               ScannableFolder                                                    `json:"folder,nullable"`
-	InboxProvider        AccountEmailSecuritySettingDomainListResponseResultInboxProvider   `json:"inbox_provider,nullable"`
-	IntegrationID        string                                                             `json:"integration_id,nullable" format:"uuid"`
-	O365TenantID         string                                                             `json:"o365_tenant_id,nullable"`
-	RequireTlsInbound    bool                                                               `json:"require_tls_inbound,nullable"`
-	RequireTlsOutbound   bool                                                               `json:"require_tls_outbound,nullable"`
+	ID                   int64                                                              `json:"id" api:"required"`
+	AllowedDeliveryModes []DeliveryMode                                                     `json:"allowed_delivery_modes" api:"required"`
+	CreatedAt            time.Time                                                          `json:"created_at" api:"required" format:"date-time"`
+	Domain               string                                                             `json:"domain" api:"required"`
+	DropDispositions     []DispositionLabel                                                 `json:"drop_dispositions" api:"required"`
+	IPRestrictions       []string                                                           `json:"ip_restrictions" api:"required"`
+	LastModified         time.Time                                                          `json:"last_modified" api:"required" format:"date-time"`
+	LookbackHops         int64                                                              `json:"lookback_hops" api:"required"`
+	Transport            string                                                             `json:"transport" api:"required"`
+	Authorization        AccountEmailSecuritySettingDomainListResponseResultAuthorization   `json:"authorization" api:"nullable"`
+	EmailsProcessed      AccountEmailSecuritySettingDomainListResponseResultEmailsProcessed `json:"emails_processed" api:"nullable"`
+	Folder               ScannableFolder                                                    `json:"folder" api:"nullable"`
+	InboxProvider        AccountEmailSecuritySettingDomainListResponseResultInboxProvider   `json:"inbox_provider" api:"nullable"`
+	IntegrationID        string                                                             `json:"integration_id" api:"nullable" format:"uuid"`
+	O365TenantID         string                                                             `json:"o365_tenant_id" api:"nullable"`
+	RequireTlsInbound    bool                                                               `json:"require_tls_inbound" api:"nullable"`
+	RequireTlsOutbound   bool                                                               `json:"require_tls_outbound" api:"nullable"`
 	JSON                 accountEmailSecuritySettingDomainListResponseResultJSON            `json:"-"`
 }
 
@@ -533,9 +533,9 @@ func (r accountEmailSecuritySettingDomainListResponseResultJSON) RawJSON() strin
 }
 
 type AccountEmailSecuritySettingDomainListResponseResultAuthorization struct {
-	Authorized    bool                                                                 `json:"authorized,required"`
-	Timestamp     time.Time                                                            `json:"timestamp,required" format:"date-time"`
-	StatusMessage string                                                               `json:"status_message,nullable"`
+	Authorized    bool                                                                 `json:"authorized" api:"required"`
+	Timestamp     time.Time                                                            `json:"timestamp" api:"required" format:"date-time"`
+	StatusMessage string                                                               `json:"status_message" api:"nullable"`
 	JSON          accountEmailSecuritySettingDomainListResponseResultAuthorizationJSON `json:"-"`
 }
 
@@ -559,9 +559,9 @@ func (r accountEmailSecuritySettingDomainListResponseResultAuthorizationJSON) Ra
 }
 
 type AccountEmailSecuritySettingDomainListResponseResultEmailsProcessed struct {
-	Timestamp                    time.Time                                                              `json:"timestamp,required" format:"date-time"`
-	TotalEmailsProcessed         int64                                                                  `json:"total_emails_processed,required"`
-	TotalEmailsProcessedPrevious int64                                                                  `json:"total_emails_processed_previous,required"`
+	Timestamp                    time.Time                                                              `json:"timestamp" api:"required" format:"date-time"`
+	TotalEmailsProcessed         int64                                                                  `json:"total_emails_processed" api:"required"`
+	TotalEmailsProcessedPrevious int64                                                                  `json:"total_emails_processed_previous" api:"required"`
 	JSON                         accountEmailSecuritySettingDomainListResponseResultEmailsProcessedJSON `json:"-"`
 }
 
@@ -600,10 +600,10 @@ func (r AccountEmailSecuritySettingDomainListResponseResultInboxProvider) IsKnow
 }
 
 type AccountEmailSecuritySettingDomainUnprotectResponse struct {
-	Errors   []EmailSecurityMessage                                   `json:"errors,required"`
-	Messages []EmailSecurityMessage                                   `json:"messages,required"`
-	Result   AccountEmailSecuritySettingDomainUnprotectResponseResult `json:"result,required"`
-	Success  bool                                                     `json:"success,required"`
+	Errors   []EmailSecurityMessage                                   `json:"errors" api:"required"`
+	Messages []EmailSecurityMessage                                   `json:"messages" api:"required"`
+	Result   AccountEmailSecuritySettingDomainUnprotectResponseResult `json:"result" api:"required"`
+	Success  bool                                                     `json:"success" api:"required"`
 	JSON     accountEmailSecuritySettingDomainUnprotectResponseJSON   `json:"-"`
 }
 
@@ -628,7 +628,7 @@ func (r accountEmailSecuritySettingDomainUnprotectResponseJSON) RawJSON() string
 
 type AccountEmailSecuritySettingDomainUnprotectResponseResult struct {
 	// The unique identifier for the domain.
-	ID   int64                                                        `json:"id,required"`
+	ID   int64                                                        `json:"id" api:"required"`
 	JSON accountEmailSecuritySettingDomainUnprotectResponseResultJSON `json:"-"`
 }
 
@@ -650,10 +650,10 @@ func (r accountEmailSecuritySettingDomainUnprotectResponseResultJSON) RawJSON() 
 }
 
 type AccountEmailSecuritySettingDomainUnprotectMultipleResponse struct {
-	Errors   []EmailSecurityMessage                                             `json:"errors,required"`
-	Messages []EmailSecurityMessage                                             `json:"messages,required"`
-	Result   []AccountEmailSecuritySettingDomainUnprotectMultipleResponseResult `json:"result,required"`
-	Success  bool                                                               `json:"success,required"`
+	Errors   []EmailSecurityMessage                                             `json:"errors" api:"required"`
+	Messages []EmailSecurityMessage                                             `json:"messages" api:"required"`
+	Result   []AccountEmailSecuritySettingDomainUnprotectMultipleResponseResult `json:"result" api:"required"`
+	Success  bool                                                               `json:"success" api:"required"`
 	JSON     accountEmailSecuritySettingDomainUnprotectMultipleResponseJSON     `json:"-"`
 }
 
@@ -679,7 +679,7 @@ func (r accountEmailSecuritySettingDomainUnprotectMultipleResponseJSON) RawJSON(
 
 type AccountEmailSecuritySettingDomainUnprotectMultipleResponseResult struct {
 	// The unique identifier for the domain.
-	ID   int64                                                                `json:"id,required"`
+	ID   int64                                                                `json:"id" api:"required"`
 	JSON accountEmailSecuritySettingDomainUnprotectMultipleResponseResultJSON `json:"-"`
 }
 
@@ -701,7 +701,7 @@ func (r accountEmailSecuritySettingDomainUnprotectMultipleResponseResultJSON) Ra
 }
 
 type AccountEmailSecuritySettingDomainUpdateParams struct {
-	IPRestrictions       param.Field[[]string]           `json:"ip_restrictions,required"`
+	IPRestrictions       param.Field[[]string]           `json:"ip_restrictions" api:"required"`
 	AllowedDeliveryModes param.Field[[]DeliveryMode]     `json:"allowed_delivery_modes"`
 	Domain               param.Field[string]             `json:"domain"`
 	DropDispositions     param.Field[[]DispositionLabel] `json:"drop_dispositions"`

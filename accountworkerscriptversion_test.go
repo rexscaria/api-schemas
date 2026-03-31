@@ -16,7 +16,7 @@ import (
 )
 
 func TestAccountWorkerScriptVersionListWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -28,6 +28,7 @@ func TestAccountWorkerScriptVersionListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Workers.Scripts.Versions.List(
 		context.TODO(),
@@ -49,7 +50,7 @@ func TestAccountWorkerScriptVersionListWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountWorkerScriptVersionGetDetail(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -61,6 +62,7 @@ func TestAccountWorkerScriptVersionGetDetail(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Workers.Scripts.Versions.GetDetail(
 		context.TODO(),
@@ -78,7 +80,7 @@ func TestAccountWorkerScriptVersionGetDetail(t *testing.T) {
 }
 
 func TestAccountWorkerScriptVersionUploadWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -90,6 +92,7 @@ func TestAccountWorkerScriptVersionUploadWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Workers.Scripts.Versions.Upload(
 		context.TODO(),
@@ -112,7 +115,7 @@ func TestAccountWorkerScriptVersionUploadWithOptionalParams(t *testing.T) {
 				KeepBindings:       cfrex.F([]string{"string"}),
 				UsageModel:         cfrex.F(cfrex.UsageModelStandard),
 			}),
-			Files: cfrex.F([]io.Reader{io.Reader(bytes.NewBuffer([]byte("some file contents")))}),
+			Files: cfrex.F([]io.Reader{io.Reader(bytes.NewBuffer([]byte("Example data")))}),
 		},
 	)
 	if err != nil {

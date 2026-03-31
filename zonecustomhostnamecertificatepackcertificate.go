@@ -43,23 +43,23 @@ func (r *ZoneCustomHostnameCertificatePackCertificateService) Delete(ctx context
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if customHostnameID == "" {
 		err = errors.New("missing required custom_hostname_id parameter")
-		return
+		return nil, err
 	}
 	if certificatePackID == "" {
 		err = errors.New("missing required certificate_pack_id parameter")
-		return
+		return nil, err
 	}
 	if certificateID == "" {
 		err = errors.New("missing required certificate_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/custom_hostnames/%s/certificate_pack/%s/certificates/%s", zoneID, customHostnameID, certificatePackID, certificateID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Replace a single custom certificate within a certificate pack that contains two
@@ -70,30 +70,30 @@ func (r *ZoneCustomHostnameCertificatePackCertificateService) Replace(ctx contex
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if customHostnameID == "" {
 		err = errors.New("missing required custom_hostname_id parameter")
-		return
+		return nil, err
 	}
 	if certificatePackID == "" {
 		err = errors.New("missing required certificate_pack_id parameter")
-		return
+		return nil, err
 	}
 	if certificateID == "" {
 		err = errors.New("missing required certificate_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/custom_hostnames/%s/certificate_pack/%s/certificates/%s", zoneID, customHostnameID, certificatePackID, certificateID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type CustomCertAndKeyParam struct {
 	// If a custom uploaded certificate is used.
-	CustomCertificate param.Field[string] `json:"custom_certificate,required"`
+	CustomCertificate param.Field[string] `json:"custom_certificate" api:"required"`
 	// The key for a custom uploaded certificate.
-	CustomKey param.Field[string] `json:"custom_key,required"`
+	CustomKey param.Field[string] `json:"custom_key" api:"required"`
 }
 
 func (r CustomCertAndKeyParam) MarshalJSON() (data []byte, err error) {
@@ -124,7 +124,7 @@ func (r zoneCustomHostnameCertificatePackCertificateDeleteResponseJSON) RawJSON(
 }
 
 type ZoneCustomHostnameCertificatePackCertificateReplaceParams struct {
-	CustomCertAndKey CustomCertAndKeyParam `json:"custom_cert_and_key,required"`
+	CustomCertAndKey CustomCertAndKeyParam `json:"custom_cert_and_key" api:"required"`
 }
 
 func (r ZoneCustomHostnameCertificatePackCertificateReplaceParams) MarshalJSON() (data []byte, err error) {

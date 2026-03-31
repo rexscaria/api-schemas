@@ -42,15 +42,15 @@ func (r *AccountDevicePolicyIncludeService) List(ctx context.Context, accountID 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if policyID == "" {
 		err = errors.New("missing required policy_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/devices/policy/%s/include", accountID, policyID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetches the list of routes included in the WARP client's tunnel.
@@ -58,11 +58,11 @@ func (r *AccountDevicePolicyIncludeService) GlobalList(ctx context.Context, acco
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/devices/policy/include", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Sets the list of routes included in the WARP client's tunnel.
@@ -70,11 +70,11 @@ func (r *AccountDevicePolicyIncludeService) GlobalSet(ctx context.Context, accou
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/devices/policy/include", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Sets the list of routes included in the WARP client's tunnel for a specific
@@ -83,15 +83,15 @@ func (r *AccountDevicePolicyIncludeService) Set(ctx context.Context, accountID s
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if policyID == "" {
 		err = errors.New("missing required policy_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/devices/policy/%s/include", accountID, policyID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type SplitTunnelInclude struct {
@@ -164,7 +164,7 @@ func init() {
 type SplitTunnelIncludeTeamsDevicesIncludeSplitTunnelWithAddress struct {
 	// The address in CIDR format to include in the tunnel. If `address` is present,
 	// `host` must not be present.
-	Address string `json:"address,required"`
+	Address string `json:"address" api:"required"`
 	// A description of the Split Tunnel item, displayed in the client UI.
 	Description string                                                          `json:"description"`
 	JSON        splitTunnelIncludeTeamsDevicesIncludeSplitTunnelWithAddressJSON `json:"-"`
@@ -193,7 +193,7 @@ func (r SplitTunnelIncludeTeamsDevicesIncludeSplitTunnelWithAddress) implementsS
 type SplitTunnelIncludeTeamsDevicesIncludeSplitTunnelWithHost struct {
 	// The domain name to include in the tunnel. If `host` is present, `address` must
 	// not be present.
-	Host string `json:"host,required"`
+	Host string `json:"host" api:"required"`
 	// A description of the Split Tunnel item, displayed in the client UI.
 	Description string                                                       `json:"description"`
 	JSON        splitTunnelIncludeTeamsDevicesIncludeSplitTunnelWithHostJSON `json:"-"`
@@ -246,7 +246,7 @@ type SplitTunnelIncludeUnionParam interface {
 type SplitTunnelIncludeTeamsDevicesIncludeSplitTunnelWithAddressParam struct {
 	// The address in CIDR format to include in the tunnel. If `address` is present,
 	// `host` must not be present.
-	Address param.Field[string] `json:"address,required"`
+	Address param.Field[string] `json:"address" api:"required"`
 	// A description of the Split Tunnel item, displayed in the client UI.
 	Description param.Field[string] `json:"description"`
 }
@@ -261,7 +261,7 @@ func (r SplitTunnelIncludeTeamsDevicesIncludeSplitTunnelWithAddressParam) implem
 type SplitTunnelIncludeTeamsDevicesIncludeSplitTunnelWithHostParam struct {
 	// The domain name to include in the tunnel. If `host` is present, `address` must
 	// not be present.
-	Host param.Field[string] `json:"host,required"`
+	Host param.Field[string] `json:"host" api:"required"`
 	// A description of the Split Tunnel item, displayed in the client UI.
 	Description param.Field[string] `json:"description"`
 }
@@ -274,11 +274,11 @@ func (r SplitTunnelIncludeTeamsDevicesIncludeSplitTunnelWithHostParam) implement
 }
 
 type SplitTunnelIncludeResponseCollection struct {
-	Errors   []MessagesDeviceTestsItems `json:"errors,required"`
-	Messages []MessagesDeviceTestsItems `json:"messages,required"`
-	Result   []SplitTunnelInclude       `json:"result,required,nullable"`
+	Errors   []MessagesDeviceTestsItems `json:"errors" api:"required"`
+	Messages []MessagesDeviceTestsItems `json:"messages" api:"required"`
+	Result   []SplitTunnelInclude       `json:"result" api:"required,nullable"`
 	// Whether the API call was successful.
-	Success    SplitTunnelIncludeResponseCollectionSuccess    `json:"success,required"`
+	Success    SplitTunnelIncludeResponseCollectionSuccess    `json:"success" api:"required"`
 	ResultInfo SplitTunnelIncludeResponseCollectionResultInfo `json:"result_info"`
 	JSON       splitTunnelIncludeResponseCollectionJSON       `json:"-"`
 }
@@ -350,7 +350,7 @@ func (r splitTunnelIncludeResponseCollectionResultInfoJSON) RawJSON() string {
 }
 
 type AccountDevicePolicyIncludeGlobalSetParams struct {
-	Body []SplitTunnelIncludeUnionParam `json:"body,required"`
+	Body []SplitTunnelIncludeUnionParam `json:"body" api:"required"`
 }
 
 func (r AccountDevicePolicyIncludeGlobalSetParams) MarshalJSON() (data []byte, err error) {
@@ -358,7 +358,7 @@ func (r AccountDevicePolicyIncludeGlobalSetParams) MarshalJSON() (data []byte, e
 }
 
 type AccountDevicePolicyIncludeSetParams struct {
-	Body []SplitTunnelIncludeUnionParam `json:"body,required"`
+	Body []SplitTunnelIncludeUnionParam `json:"body" api:"required"`
 }
 
 func (r AccountDevicePolicyIncludeSetParams) MarshalJSON() (data []byte, err error) {

@@ -38,53 +38,53 @@ func NewAccountEventNotificationR2ConfigurationQueueService(opts ...option.Reque
 // Create event notification rule.
 func (r *AccountEventNotificationR2ConfigurationQueueService) New(ctx context.Context, accountID string, bucketName string, queueID string, params AccountEventNotificationR2ConfigurationQueueNewParams, opts ...option.RequestOption) (res *R2V4Response, err error) {
 	if params.Jurisdiction.Present {
-		opts = append(opts, option.WithHeader("cf-r2-jurisdiction", fmt.Sprintf("%s", params.Jurisdiction)))
+		opts = append(opts, option.WithHeader("cf-r2-jurisdiction", fmt.Sprintf("%v", params.Jurisdiction)))
 	}
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if bucketName == "" {
 		err = errors.New("missing required bucket_name parameter")
-		return
+		return nil, err
 	}
 	if queueID == "" {
 		err = errors.New("missing required queue_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/event_notifications/r2/%s/configuration/queues/%s", accountID, bucketName, queueID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete an event notification rule. **If no body is provided, all rules for
 // specified queue will be deleted**.
 func (r *AccountEventNotificationR2ConfigurationQueueService) Delete(ctx context.Context, accountID string, bucketName string, queueID string, body AccountEventNotificationR2ConfigurationQueueDeleteParams, opts ...option.RequestOption) (res *R2V4Response, err error) {
 	if body.Jurisdiction.Present {
-		opts = append(opts, option.WithHeader("cf-r2-jurisdiction", fmt.Sprintf("%s", body.Jurisdiction)))
+		opts = append(opts, option.WithHeader("cf-r2-jurisdiction", fmt.Sprintf("%v", body.Jurisdiction)))
 	}
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if bucketName == "" {
 		err = errors.New("missing required bucket_name parameter")
-		return
+		return nil, err
 	}
 	if queueID == "" {
 		err = errors.New("missing required queue_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/event_notifications/r2/%s/configuration/queues/%s", accountID, bucketName, queueID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type R2RuleParam struct {
 	// Array of R2 object actions that will trigger notifications.
-	Actions param.Field[[]R2RuleAction] `json:"actions,required"`
+	Actions param.Field[[]R2RuleAction] `json:"actions" api:"required"`
 	// A description that can be used to identify the event notification rule after
 	// creation.
 	Description param.Field[string] `json:"description"`

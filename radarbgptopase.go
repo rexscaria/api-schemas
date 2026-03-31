@@ -40,7 +40,7 @@ func (r *RadarBgpTopAseService) ListTopAses(ctx context.Context, query RadarBgpT
 	opts = slices.Concat(r.Options, opts)
 	path := "radar/bgp/top/ases"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves the full list of autonomous systems on the global routing table
@@ -50,12 +50,12 @@ func (r *RadarBgpTopAseService) ListTopPrefixes(ctx context.Context, query Radar
 	opts = slices.Concat(r.Options, opts)
 	path := "radar/bgp/top/ases/prefixes"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type RadarBgpTopAseListTopAsesResponse struct {
-	Result  RadarBgpTopAseListTopAsesResponseResult `json:"result,required"`
-	Success bool                                    `json:"success,required"`
+	Result  RadarBgpTopAseListTopAsesResponseResult `json:"result" api:"required"`
+	Success bool                                    `json:"success" api:"required"`
 	JSON    radarBgpTopAseListTopAsesResponseJSON   `json:"-"`
 }
 
@@ -77,8 +77,8 @@ func (r radarBgpTopAseListTopAsesResponseJSON) RawJSON() string {
 }
 
 type RadarBgpTopAseListTopAsesResponseResult struct {
-	Meta RadarBgpTopAseListTopAsesResponseResultMeta   `json:"meta,required"`
-	Top0 []RadarBgpTopAseListTopAsesResponseResultTop0 `json:"top_0,required"`
+	Meta RadarBgpTopAseListTopAsesResponseResultMeta   `json:"meta" api:"required"`
+	Top0 []RadarBgpTopAseListTopAsesResponseResultTop0 `json:"top_0" api:"required"`
 	JSON radarBgpTopAseListTopAsesResponseResultJSON   `json:"-"`
 }
 
@@ -100,7 +100,7 @@ func (r radarBgpTopAseListTopAsesResponseResultJSON) RawJSON() string {
 }
 
 type RadarBgpTopAseListTopAsesResponseResultMeta struct {
-	DateRange []RadarBgpTopAseListTopAsesResponseResultMetaDateRange `json:"dateRange,required"`
+	DateRange []RadarBgpTopAseListTopAsesResponseResultMetaDateRange `json:"dateRange" api:"required"`
 	JSON      radarBgpTopAseListTopAsesResponseResultMetaJSON        `json:"-"`
 }
 
@@ -122,9 +122,9 @@ func (r radarBgpTopAseListTopAsesResponseResultMetaJSON) RawJSON() string {
 
 type RadarBgpTopAseListTopAsesResponseResultMetaDateRange struct {
 	// Adjusted end of date range.
-	EndTime time.Time `json:"endTime,required" format:"date-time"`
+	EndTime time.Time `json:"endTime" api:"required" format:"date-time"`
 	// Adjusted start of date range.
-	StartTime time.Time                                                `json:"startTime,required" format:"date-time"`
+	StartTime time.Time                                                `json:"startTime" api:"required" format:"date-time"`
 	JSON      radarBgpTopAseListTopAsesResponseResultMetaDateRangeJSON `json:"-"`
 }
 
@@ -146,11 +146,11 @@ func (r radarBgpTopAseListTopAsesResponseResultMetaDateRangeJSON) RawJSON() stri
 }
 
 type RadarBgpTopAseListTopAsesResponseResultTop0 struct {
-	Asn    int64  `json:"asn,required"`
-	AsName string `json:"ASName,required"`
+	Asn    int64  `json:"asn" api:"required"`
+	AsName string `json:"ASName" api:"required"`
 	// Percentage of updates by this AS out of the total updates by all autonomous
 	// systems.
-	Value string                                          `json:"value,required"`
+	Value string                                          `json:"value" api:"required"`
 	JSON  radarBgpTopAseListTopAsesResponseResultTop0JSON `json:"-"`
 }
 
@@ -173,8 +173,8 @@ func (r radarBgpTopAseListTopAsesResponseResultTop0JSON) RawJSON() string {
 }
 
 type RadarBgpTopAseListTopPrefixesResponse struct {
-	Result  RadarBgpTopAseListTopPrefixesResponseResult `json:"result,required"`
-	Success bool                                        `json:"success,required"`
+	Result  RadarBgpTopAseListTopPrefixesResponseResult `json:"result" api:"required"`
+	Success bool                                        `json:"success" api:"required"`
 	JSON    radarBgpTopAseListTopPrefixesResponseJSON   `json:"-"`
 }
 
@@ -196,8 +196,8 @@ func (r radarBgpTopAseListTopPrefixesResponseJSON) RawJSON() string {
 }
 
 type RadarBgpTopAseListTopPrefixesResponseResult struct {
-	Asns []RadarBgpTopAseListTopPrefixesResponseResultAsn `json:"asns,required"`
-	Meta RadarBgpTopAseListTopPrefixesResponseResultMeta  `json:"meta,required"`
+	Asns []RadarBgpTopAseListTopPrefixesResponseResultAsn `json:"asns" api:"required"`
+	Meta RadarBgpTopAseListTopPrefixesResponseResultMeta  `json:"meta" api:"required"`
 	JSON radarBgpTopAseListTopPrefixesResponseResultJSON  `json:"-"`
 }
 
@@ -219,10 +219,10 @@ func (r radarBgpTopAseListTopPrefixesResponseResultJSON) RawJSON() string {
 }
 
 type RadarBgpTopAseListTopPrefixesResponseResultAsn struct {
-	Asn       int64                                              `json:"asn,required"`
-	Country   string                                             `json:"country,required"`
-	Name      string                                             `json:"name,required"`
-	PfxsCount int64                                              `json:"pfxs_count,required"`
+	Asn       int64                                              `json:"asn" api:"required"`
+	Country   string                                             `json:"country" api:"required"`
+	Name      string                                             `json:"name" api:"required"`
+	PfxsCount int64                                              `json:"pfxs_count" api:"required"`
 	JSON      radarBgpTopAseListTopPrefixesResponseResultAsnJSON `json:"-"`
 }
 
@@ -246,9 +246,9 @@ func (r radarBgpTopAseListTopPrefixesResponseResultAsnJSON) RawJSON() string {
 }
 
 type RadarBgpTopAseListTopPrefixesResponseResultMeta struct {
-	DataTime   string                                              `json:"data_time,required"`
-	QueryTime  string                                              `json:"query_time,required"`
-	TotalPeers int64                                               `json:"total_peers,required"`
+	DataTime   string                                              `json:"data_time" api:"required"`
+	QueryTime  string                                              `json:"query_time" api:"required"`
+	TotalPeers int64                                               `json:"total_peers" api:"required"`
 	JSON       radarBgpTopAseListTopPrefixesResponseResultMetaJSON `json:"-"`
 }
 

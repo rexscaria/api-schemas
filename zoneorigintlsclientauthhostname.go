@@ -42,15 +42,15 @@ func (r *ZoneOriginTlsClientAuthHostnameService) Get(ctx context.Context, zoneID
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if hostname == "" {
 		err = errors.New("missing required hostname parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/origin_tls_client_auth/hostnames/%s", zoneID, hostname)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Associate a hostname to a certificate and enable, disable or invalidate the
@@ -62,11 +62,11 @@ func (r *ZoneOriginTlsClientAuthHostnameService) Update(ctx context.Context, zon
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/origin_tls_client_auth/hostnames", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type CertidObject struct {
@@ -84,7 +84,7 @@ type CertidObject struct {
 	CreatedAt time.Time `json:"created_at" format:"date-time"`
 	// Indicates whether hostname-level authenticated origin pulls is enabled. A null
 	// value voids the association.
-	Enabled bool `json:"enabled,nullable"`
+	Enabled bool `json:"enabled" api:"nullable"`
 	// The date when the certificate expires.
 	ExpiresOn time.Time `json:"expires_on" format:"date-time"`
 	// The hostname on the origin for which the client certificate uploaded will be
@@ -140,7 +140,7 @@ type HostnameAuthenticatedOriginPull struct {
 	Certificate string `json:"certificate"`
 	// Indicates whether hostname-level authenticated origin pulls is enabled. A null
 	// value voids the association.
-	Enabled bool `json:"enabled,nullable"`
+	Enabled bool `json:"enabled" api:"nullable"`
 	// The hostname on the origin for which the client certificate uploaded will be
 	// used.
 	Hostname string `json:"hostname"`
@@ -193,10 +193,10 @@ func (r StatusCertificate) IsKnown() bool {
 }
 
 type ZoneOriginTlsClientAuthHostnameGetResponse struct {
-	Errors   []MessagesTlsCertificatesItem `json:"errors,required"`
-	Messages []MessagesTlsCertificatesItem `json:"messages,required"`
+	Errors   []MessagesTlsCertificatesItem `json:"errors" api:"required"`
+	Messages []MessagesTlsCertificatesItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success ZoneOriginTlsClientAuthHostnameGetResponseSuccess `json:"success,required"`
+	Success ZoneOriginTlsClientAuthHostnameGetResponseSuccess `json:"success" api:"required"`
 	Result  CertidObject                                      `json:"result"`
 	JSON    zoneOriginTlsClientAuthHostnameGetResponseJSON    `json:"-"`
 }
@@ -236,10 +236,10 @@ func (r ZoneOriginTlsClientAuthHostnameGetResponseSuccess) IsKnown() bool {
 }
 
 type ZoneOriginTlsClientAuthHostnameUpdateResponse struct {
-	Errors   []MessagesTlsCertificatesItem `json:"errors,required"`
-	Messages []MessagesTlsCertificatesItem `json:"messages,required"`
+	Errors   []MessagesTlsCertificatesItem `json:"errors" api:"required"`
+	Messages []MessagesTlsCertificatesItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success    ZoneOriginTlsClientAuthHostnameUpdateResponseSuccess    `json:"success,required"`
+	Success    ZoneOriginTlsClientAuthHostnameUpdateResponseSuccess    `json:"success" api:"required"`
 	Result     []HostnameAuthenticatedOriginPull                       `json:"result"`
 	ResultInfo ZoneOriginTlsClientAuthHostnameUpdateResponseResultInfo `json:"result_info"`
 	JSON       zoneOriginTlsClientAuthHostnameUpdateResponseJSON       `json:"-"`
@@ -313,7 +313,7 @@ func (r zoneOriginTlsClientAuthHostnameUpdateResponseResultInfoJSON) RawJSON() s
 }
 
 type ZoneOriginTlsClientAuthHostnameUpdateParams struct {
-	Config param.Field[[]ZoneOriginTlsClientAuthHostnameUpdateParamsConfig] `json:"config,required"`
+	Config param.Field[[]ZoneOriginTlsClientAuthHostnameUpdateParamsConfig] `json:"config" api:"required"`
 }
 
 func (r ZoneOriginTlsClientAuthHostnameUpdateParams) MarshalJSON() (data []byte, err error) {

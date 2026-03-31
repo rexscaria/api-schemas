@@ -14,7 +14,7 @@ import (
 )
 
 func TestZoneFirewallWafOverrideNew(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,6 +26,7 @@ func TestZoneFirewallWafOverrideNew(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.Firewall.Waf.Overrides.New(
 		context.TODO(),
@@ -44,7 +45,7 @@ func TestZoneFirewallWafOverrideNew(t *testing.T) {
 }
 
 func TestZoneFirewallWafOverrideGet(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -56,6 +57,7 @@ func TestZoneFirewallWafOverrideGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.Firewall.Waf.Overrides.Get(
 		context.TODO(),
@@ -72,7 +74,7 @@ func TestZoneFirewallWafOverrideGet(t *testing.T) {
 }
 
 func TestZoneFirewallWafOverrideUpdateWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -84,6 +86,7 @@ func TestZoneFirewallWafOverrideUpdateWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.Firewall.Waf.Overrides.Update(
 		context.TODO(),
@@ -114,7 +117,7 @@ func TestZoneFirewallWafOverrideUpdateWithOptionalParams(t *testing.T) {
 }
 
 func TestZoneFirewallWafOverrideListWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -126,6 +129,7 @@ func TestZoneFirewallWafOverrideListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.Firewall.Waf.Overrides.List(
 		context.TODO(),
@@ -145,7 +149,7 @@ func TestZoneFirewallWafOverrideListWithOptionalParams(t *testing.T) {
 }
 
 func TestZoneFirewallWafOverrideDelete(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -157,6 +161,7 @@ func TestZoneFirewallWafOverrideDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.Firewall.Waf.Overrides.Delete(
 		context.TODO(),

@@ -46,18 +46,18 @@ func (r *AccountWorkerAssetService) Upload(ctx context.Context, accountID string
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/workers/assets/upload", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountWorkerAssetUploadResponse struct {
-	Errors   []WorkersMessages `json:"errors,required"`
-	Messages []WorkersMessages `json:"messages,required"`
+	Errors   []WorkersMessages `json:"errors" api:"required"`
+	Messages []WorkersMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountWorkerAssetUploadResponseSuccess `json:"success,required"`
+	Success AccountWorkerAssetUploadResponseSuccess `json:"success" api:"required"`
 	Result  AccountWorkerAssetUploadResponseResult  `json:"result"`
 	JSON    accountWorkerAssetUploadResponseJSON    `json:"-"`
 }
@@ -120,14 +120,14 @@ func (r accountWorkerAssetUploadResponseResultJSON) RawJSON() string {
 
 type AccountWorkerAssetUploadParams struct {
 	// Whether the file contents are base64-encoded. Must be `true`.
-	Base64 param.Field[AccountWorkerAssetUploadParamsBase64] `query:"base64,required"`
-	Body   map[string]string                                 `json:"body,required"`
+	Base64 param.Field[AccountWorkerAssetUploadParamsBase64] `query:"base64" api:"required"`
+	Body   map[string]string                                 `json:"body" api:"required"`
 }
 
 func (r AccountWorkerAssetUploadParams) MarshalMultipart() (data []byte, contentType string, err error) {
 	buf := bytes.NewBuffer(nil)
 	writer := multipart.NewWriter(buf)
-	err = apiform.MarshalRoot(r, writer)
+	err = apiform.MarshalRoot(r.Body, writer)
 	if err != nil {
 		writer.Close()
 		return nil, "", err

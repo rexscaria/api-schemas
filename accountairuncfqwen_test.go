@@ -14,7 +14,7 @@ import (
 )
 
 func TestAccountAIRunCfQwenExecuteQwen1_5_0_5bChatWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,6 +26,7 @@ func TestAccountAIRunCfQwenExecuteQwen1_5_0_5bChatWithOptionalParams(t *testing.
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.AI.Run.Cf.Qwen.ExecuteQwen1_5_0_5bChat(
 		context.TODO(),
@@ -62,7 +63,7 @@ func TestAccountAIRunCfQwenExecuteQwen1_5_0_5bChatWithOptionalParams(t *testing.
 }
 
 func TestAccountAIRunCfQwenExecuteQwen1_5_1_8bChatWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -74,6 +75,7 @@ func TestAccountAIRunCfQwenExecuteQwen1_5_1_8bChatWithOptionalParams(t *testing.
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.AI.Run.Cf.Qwen.ExecuteQwen1_5_1_8bChat(
 		context.TODO(),
@@ -110,7 +112,7 @@ func TestAccountAIRunCfQwenExecuteQwen1_5_1_8bChatWithOptionalParams(t *testing.
 }
 
 func TestAccountAIRunCfQwenExecuteQwen1_5_14bChatAwqWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -122,6 +124,7 @@ func TestAccountAIRunCfQwenExecuteQwen1_5_14bChatAwqWithOptionalParams(t *testin
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.AI.Run.Cf.Qwen.ExecuteQwen1_5_14bChatAwq(
 		context.TODO(),
@@ -158,7 +161,7 @@ func TestAccountAIRunCfQwenExecuteQwen1_5_14bChatAwqWithOptionalParams(t *testin
 }
 
 func TestAccountAIRunCfQwenExecuteQwen1_5_7bChatAwqWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -170,6 +173,7 @@ func TestAccountAIRunCfQwenExecuteQwen1_5_7bChatAwqWithOptionalParams(t *testing
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.AI.Run.Cf.Qwen.ExecuteQwen1_5_7bChatAwq(
 		context.TODO(),

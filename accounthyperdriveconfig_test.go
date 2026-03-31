@@ -14,7 +14,7 @@ import (
 )
 
 func TestAccountHyperdriveConfigNewWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,6 +26,7 @@ func TestAccountHyperdriveConfigNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Hyperdrive.Configs.New(
 		context.TODO(),
@@ -63,7 +64,7 @@ func TestAccountHyperdriveConfigNewWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountHyperdriveConfigGet(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -75,6 +76,7 @@ func TestAccountHyperdriveConfigGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Hyperdrive.Configs.Get(
 		context.TODO(),
@@ -91,7 +93,7 @@ func TestAccountHyperdriveConfigGet(t *testing.T) {
 }
 
 func TestAccountHyperdriveConfigUpdateWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -103,6 +105,7 @@ func TestAccountHyperdriveConfigUpdateWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Hyperdrive.Configs.Update(
 		context.TODO(),
@@ -141,7 +144,7 @@ func TestAccountHyperdriveConfigUpdateWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountHyperdriveConfigList(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -153,6 +156,7 @@ func TestAccountHyperdriveConfigList(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Hyperdrive.Configs.List(context.TODO(), "023e105f4ecef8ad9ca31a8372d0c353")
 	if err != nil {
@@ -165,7 +169,7 @@ func TestAccountHyperdriveConfigList(t *testing.T) {
 }
 
 func TestAccountHyperdriveConfigDelete(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -177,6 +181,7 @@ func TestAccountHyperdriveConfigDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Hyperdrive.Configs.Delete(
 		context.TODO(),
@@ -193,7 +198,7 @@ func TestAccountHyperdriveConfigDelete(t *testing.T) {
 }
 
 func TestAccountHyperdriveConfigPatchWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -205,6 +210,7 @@ func TestAccountHyperdriveConfigPatchWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Hyperdrive.Configs.Patch(
 		context.TODO(),

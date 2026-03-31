@@ -44,11 +44,11 @@ func (r *AccountTokenService) New(ctx context.Context, accountID string, body Ac
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/tokens", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get information about a specific Account Owned API token.
@@ -56,15 +56,15 @@ func (r *AccountTokenService) Get(ctx context.Context, accountID string, tokenID
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if tokenID == "" {
 		err = errors.New("missing required token_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/tokens/%s", accountID, tokenID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update an existing token.
@@ -72,15 +72,15 @@ func (r *AccountTokenService) Update(ctx context.Context, accountID string, toke
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if tokenID == "" {
 		err = errors.New("missing required token_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/tokens/%s", accountID, tokenID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // List all Account Owned API tokens created for this account.
@@ -88,11 +88,11 @@ func (r *AccountTokenService) List(ctx context.Context, accountID string, query 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/tokens", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Destroy an Account Owned API token.
@@ -100,15 +100,15 @@ func (r *AccountTokenService) Delete(ctx context.Context, accountID string, toke
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if tokenID == "" {
 		err = errors.New("missing required token_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/tokens/%s", accountID, tokenID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Find all available permission groups for Account Owned API Tokens
@@ -116,11 +116,11 @@ func (r *AccountTokenService) ListPermissionGroups(ctx context.Context, accountI
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/tokens/permission_groups", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Roll the Account Owned API token secret.
@@ -128,15 +128,15 @@ func (r *AccountTokenService) Roll(ctx context.Context, accountID string, tokenI
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if tokenID == "" {
 		err = errors.New("missing required token_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/tokens/%s/value", accountID, tokenID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Test whether a token works.
@@ -144,18 +144,18 @@ func (r *AccountTokenService) Verify(ctx context.Context, accountID string, opts
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/tokens/verify", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type IamCollectionTokensResponse struct {
-	Errors   []IamCollectionTokensResponseError   `json:"errors,required"`
-	Messages []IamCollectionTokensResponseMessage `json:"messages,required"`
+	Errors   []IamCollectionTokensResponseError   `json:"errors" api:"required"`
+	Messages []IamCollectionTokensResponseMessage `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success    IamCollectionTokensResponseSuccess    `json:"success,required"`
+	Success    IamCollectionTokensResponseSuccess    `json:"success" api:"required"`
 	Result     []IamTokenBase                        `json:"result"`
 	ResultInfo IamCollectionTokensResponseResultInfo `json:"result_info"`
 	JSON       iamCollectionTokensResponseJSON       `json:"-"`
@@ -182,8 +182,8 @@ func (r iamCollectionTokensResponseJSON) RawJSON() string {
 }
 
 type IamCollectionTokensResponseError struct {
-	Code             int64                                   `json:"code,required"`
-	Message          string                                  `json:"message,required"`
+	Code             int64                                   `json:"code" api:"required"`
+	Message          string                                  `json:"message" api:"required"`
 	DocumentationURL string                                  `json:"documentation_url"`
 	Source           IamCollectionTokensResponseErrorsSource `json:"source"`
 	JSON             iamCollectionTokensResponseErrorJSON    `json:"-"`
@@ -230,8 +230,8 @@ func (r iamCollectionTokensResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type IamCollectionTokensResponseMessage struct {
-	Code             int64                                     `json:"code,required"`
-	Message          string                                    `json:"message,required"`
+	Code             int64                                     `json:"code" api:"required"`
+	Message          string                                    `json:"message" api:"required"`
 	DocumentationURL string                                    `json:"documentation_url"`
 	Source           IamCollectionTokensResponseMessagesSource `json:"source"`
 	JSON             iamCollectionTokensResponseMessageJSON    `json:"-"`
@@ -393,9 +393,9 @@ func (r IamConditionRequestIPParam) MarshalJSON() (data []byte, err error) {
 
 type IamCreatePayloadParam struct {
 	// Token name.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// List of access policies assigned to the token.
-	Policies  param.Field[[]IamPolicyWithPermissionGroupsAndResourcesParam] `json:"policies,required"`
+	Policies  param.Field[[]IamPolicyWithPermissionGroupsAndResourcesParam] `json:"policies" api:"required"`
 	Condition param.Field[IamConditionParam]                                `json:"condition"`
 	// The expiration time on or after which the JWT MUST NOT be accepted for
 	// processing.
@@ -409,10 +409,10 @@ func (r IamCreatePayloadParam) MarshalJSON() (data []byte, err error) {
 }
 
 type IamPermissionsGroupResponseCollection struct {
-	Errors   []IamPermissionsGroupResponseCollectionError   `json:"errors,required"`
-	Messages []IamPermissionsGroupResponseCollectionMessage `json:"messages,required"`
+	Errors   []IamPermissionsGroupResponseCollectionError   `json:"errors" api:"required"`
+	Messages []IamPermissionsGroupResponseCollectionMessage `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success    IamPermissionsGroupResponseCollectionSuccess    `json:"success,required"`
+	Success    IamPermissionsGroupResponseCollectionSuccess    `json:"success" api:"required"`
 	Result     []IamPermissionsGroupResponseCollectionResult   `json:"result"`
 	ResultInfo IamPermissionsGroupResponseCollectionResultInfo `json:"result_info"`
 	JSON       iamPermissionsGroupResponseCollectionJSON       `json:"-"`
@@ -439,8 +439,8 @@ func (r iamPermissionsGroupResponseCollectionJSON) RawJSON() string {
 }
 
 type IamPermissionsGroupResponseCollectionError struct {
-	Code             int64                                             `json:"code,required"`
-	Message          string                                            `json:"message,required"`
+	Code             int64                                             `json:"code" api:"required"`
+	Message          string                                            `json:"message" api:"required"`
 	DocumentationURL string                                            `json:"documentation_url"`
 	Source           IamPermissionsGroupResponseCollectionErrorsSource `json:"source"`
 	JSON             iamPermissionsGroupResponseCollectionErrorJSON    `json:"-"`
@@ -487,8 +487,8 @@ func (r iamPermissionsGroupResponseCollectionErrorsSourceJSON) RawJSON() string 
 }
 
 type IamPermissionsGroupResponseCollectionMessage struct {
-	Code             int64                                               `json:"code,required"`
-	Message          string                                              `json:"message,required"`
+	Code             int64                                               `json:"code" api:"required"`
+	Message          string                                              `json:"message" api:"required"`
 	DocumentationURL string                                              `json:"documentation_url"`
 	Source           IamPermissionsGroupResponseCollectionMessagesSource `json:"source"`
 	JSON             iamPermissionsGroupResponseCollectionMessageJSON    `json:"-"`
@@ -627,13 +627,13 @@ func (r iamPermissionsGroupResponseCollectionResultInfoJSON) RawJSON() string {
 
 type IamPolicyWithPermissionGroupsAndResources struct {
 	// Policy identifier.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Allow or deny operations against the resources.
-	Effect IamPolicyWithPermissionGroupsAndResourcesEffect `json:"effect,required"`
+	Effect IamPolicyWithPermissionGroupsAndResourcesEffect `json:"effect" api:"required"`
 	// A set of permission groups that are specified to the policy.
-	PermissionGroups []IamPermissionGroup `json:"permission_groups,required"`
+	PermissionGroups []IamPermissionGroup `json:"permission_groups" api:"required"`
 	// A list of resource names that the policy applies to.
-	Resources IamPolicyWithPermissionGroupsAndResourcesResourcesUnion `json:"resources,required"`
+	Resources IamPolicyWithPermissionGroupsAndResourcesResourcesUnion `json:"resources" api:"required"`
 	JSON      iamPolicyWithPermissionGroupsAndResourcesJSON           `json:"-"`
 }
 
@@ -709,11 +709,11 @@ func (r IamPolicyWithPermissionGroupsAndResourcesResourcesIamResourcesTypeObject
 
 type IamPolicyWithPermissionGroupsAndResourcesParam struct {
 	// Allow or deny operations against the resources.
-	Effect param.Field[IamPolicyWithPermissionGroupsAndResourcesEffect] `json:"effect,required"`
+	Effect param.Field[IamPolicyWithPermissionGroupsAndResourcesEffect] `json:"effect" api:"required"`
 	// A set of permission groups that are specified to the policy.
-	PermissionGroups param.Field[[]IamPermissionGroupParam] `json:"permission_groups,required"`
+	PermissionGroups param.Field[[]IamPermissionGroupParam] `json:"permission_groups" api:"required"`
 	// A list of resource names that the policy applies to.
-	Resources param.Field[IamPolicyWithPermissionGroupsAndResourcesResourcesUnionParam] `json:"resources,required"`
+	Resources param.Field[IamPolicyWithPermissionGroupsAndResourcesResourcesUnionParam] `json:"resources" api:"required"`
 }
 
 func (r IamPolicyWithPermissionGroupsAndResourcesParam) MarshalJSON() (data []byte, err error) {
@@ -740,10 +740,10 @@ func (r IamPolicyWithPermissionGroupsAndResourcesResourcesIamResourcesTypeObject
 }
 
 type IamResponseSingleValue struct {
-	Errors   []IamResponseSingleValueError   `json:"errors,required"`
-	Messages []IamResponseSingleValueMessage `json:"messages,required"`
+	Errors   []IamResponseSingleValueError   `json:"errors" api:"required"`
+	Messages []IamResponseSingleValueMessage `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success IamResponseSingleValueSuccess `json:"success,required"`
+	Success IamResponseSingleValueSuccess `json:"success" api:"required"`
 	// The token value.
 	Result string                     `json:"result"`
 	JSON   iamResponseSingleValueJSON `json:"-"`
@@ -769,8 +769,8 @@ func (r iamResponseSingleValueJSON) RawJSON() string {
 }
 
 type IamResponseSingleValueError struct {
-	Code             int64                              `json:"code,required"`
-	Message          string                             `json:"message,required"`
+	Code             int64                              `json:"code" api:"required"`
+	Message          string                             `json:"message" api:"required"`
 	DocumentationURL string                             `json:"documentation_url"`
 	Source           IamResponseSingleValueErrorsSource `json:"source"`
 	JSON             iamResponseSingleValueErrorJSON    `json:"-"`
@@ -817,8 +817,8 @@ func (r iamResponseSingleValueErrorsSourceJSON) RawJSON() string {
 }
 
 type IamResponseSingleValueMessage struct {
-	Code             int64                                `json:"code,required"`
-	Message          string                               `json:"message,required"`
+	Code             int64                                `json:"code" api:"required"`
+	Message          string                               `json:"message" api:"required"`
 	DocumentationURL string                               `json:"documentation_url"`
 	Source           IamResponseSingleValueMessagesSource `json:"source"`
 	JSON             iamResponseSingleValueMessageJSON    `json:"-"`
@@ -880,10 +880,10 @@ func (r IamResponseSingleValueSuccess) IsKnown() bool {
 }
 
 type IamSingleTokenCreateResponse struct {
-	Errors   []IamSingleTokenCreateResponseError   `json:"errors,required"`
-	Messages []IamSingleTokenCreateResponseMessage `json:"messages,required"`
+	Errors   []IamSingleTokenCreateResponseError   `json:"errors" api:"required"`
+	Messages []IamSingleTokenCreateResponseMessage `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success IamSingleTokenCreateResponseSuccess `json:"success,required"`
+	Success IamSingleTokenCreateResponseSuccess `json:"success" api:"required"`
 	Result  IamSingleTokenCreateResponseResult  `json:"result"`
 	JSON    iamSingleTokenCreateResponseJSON    `json:"-"`
 }
@@ -908,8 +908,8 @@ func (r iamSingleTokenCreateResponseJSON) RawJSON() string {
 }
 
 type IamSingleTokenCreateResponseError struct {
-	Code             int64                                    `json:"code,required"`
-	Message          string                                   `json:"message,required"`
+	Code             int64                                    `json:"code" api:"required"`
+	Message          string                                   `json:"message" api:"required"`
 	DocumentationURL string                                   `json:"documentation_url"`
 	Source           IamSingleTokenCreateResponseErrorsSource `json:"source"`
 	JSON             iamSingleTokenCreateResponseErrorJSON    `json:"-"`
@@ -956,8 +956,8 @@ func (r iamSingleTokenCreateResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type IamSingleTokenCreateResponseMessage struct {
-	Code             int64                                      `json:"code,required"`
-	Message          string                                     `json:"message,required"`
+	Code             int64                                      `json:"code" api:"required"`
+	Message          string                                     `json:"message" api:"required"`
 	DocumentationURL string                                     `json:"documentation_url"`
 	Source           IamSingleTokenCreateResponseMessagesSource `json:"source"`
 	JSON             iamSingleTokenCreateResponseMessageJSON    `json:"-"`
@@ -1088,10 +1088,10 @@ func (r IamSingleTokenCreateResponseResultStatus) IsKnown() bool {
 }
 
 type IamSingleTokenResponse struct {
-	Errors   []IamSingleTokenResponseError   `json:"errors,required"`
-	Messages []IamSingleTokenResponseMessage `json:"messages,required"`
+	Errors   []IamSingleTokenResponseError   `json:"errors" api:"required"`
+	Messages []IamSingleTokenResponseMessage `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success IamSingleTokenResponseSuccess `json:"success,required"`
+	Success IamSingleTokenResponseSuccess `json:"success" api:"required"`
 	Result  IamTokenBase                  `json:"result"`
 	JSON    iamSingleTokenResponseJSON    `json:"-"`
 }
@@ -1116,8 +1116,8 @@ func (r iamSingleTokenResponseJSON) RawJSON() string {
 }
 
 type IamSingleTokenResponseError struct {
-	Code             int64                              `json:"code,required"`
-	Message          string                             `json:"message,required"`
+	Code             int64                              `json:"code" api:"required"`
+	Message          string                             `json:"message" api:"required"`
 	DocumentationURL string                             `json:"documentation_url"`
 	Source           IamSingleTokenResponseErrorsSource `json:"source"`
 	JSON             iamSingleTokenResponseErrorJSON    `json:"-"`
@@ -1164,8 +1164,8 @@ func (r iamSingleTokenResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type IamSingleTokenResponseMessage struct {
-	Code             int64                                `json:"code,required"`
-	Message          string                               `json:"message,required"`
+	Code             int64                                `json:"code" api:"required"`
+	Message          string                               `json:"message" api:"required"`
 	DocumentationURL string                               `json:"documentation_url"`
 	Source           IamSingleTokenResponseMessagesSource `json:"source"`
 	JSON             iamSingleTokenResponseMessageJSON    `json:"-"`
@@ -1293,9 +1293,9 @@ func (r IamTokenBaseStatus) IsKnown() bool {
 
 type IamTokenBodyParam struct {
 	// Token name.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// List of access policies assigned to the token.
-	Policies  param.Field[[]IamPolicyWithPermissionGroupsAndResourcesParam] `json:"policies,required"`
+	Policies  param.Field[[]IamPolicyWithPermissionGroupsAndResourcesParam] `json:"policies" api:"required"`
 	Condition param.Field[IamConditionParam]                                `json:"condition"`
 	// The expiration time on or after which the JWT MUST NOT be accepted for
 	// processing.
@@ -1328,10 +1328,10 @@ func (r IamTokenBodyStatus) IsKnown() bool {
 }
 
 type AccountTokenVerifyResponse struct {
-	Errors   []AccountTokenVerifyResponseError   `json:"errors,required"`
-	Messages []AccountTokenVerifyResponseMessage `json:"messages,required"`
+	Errors   []AccountTokenVerifyResponseError   `json:"errors" api:"required"`
+	Messages []AccountTokenVerifyResponseMessage `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountTokenVerifyResponseSuccess `json:"success,required"`
+	Success AccountTokenVerifyResponseSuccess `json:"success" api:"required"`
 	Result  AccountTokenVerifyResponseResult  `json:"result"`
 	JSON    accountTokenVerifyResponseJSON    `json:"-"`
 }
@@ -1356,8 +1356,8 @@ func (r accountTokenVerifyResponseJSON) RawJSON() string {
 }
 
 type AccountTokenVerifyResponseError struct {
-	Code             int64                                  `json:"code,required"`
-	Message          string                                 `json:"message,required"`
+	Code             int64                                  `json:"code" api:"required"`
+	Message          string                                 `json:"message" api:"required"`
 	DocumentationURL string                                 `json:"documentation_url"`
 	Source           AccountTokenVerifyResponseErrorsSource `json:"source"`
 	JSON             accountTokenVerifyResponseErrorJSON    `json:"-"`
@@ -1404,8 +1404,8 @@ func (r accountTokenVerifyResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type AccountTokenVerifyResponseMessage struct {
-	Code             int64                                    `json:"code,required"`
-	Message          string                                   `json:"message,required"`
+	Code             int64                                    `json:"code" api:"required"`
+	Message          string                                   `json:"message" api:"required"`
 	DocumentationURL string                                   `json:"documentation_url"`
 	Source           AccountTokenVerifyResponseMessagesSource `json:"source"`
 	JSON             accountTokenVerifyResponseMessageJSON    `json:"-"`
@@ -1468,9 +1468,9 @@ func (r AccountTokenVerifyResponseSuccess) IsKnown() bool {
 
 type AccountTokenVerifyResponseResult struct {
 	// Token identifier tag.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Status of the token.
-	Status AccountTokenVerifyResponseResultStatus `json:"status,required"`
+	Status AccountTokenVerifyResponseResultStatus `json:"status" api:"required"`
 	// The expiration time on or after which the JWT MUST NOT be accepted for
 	// processing.
 	ExpiresOn time.Time `json:"expires_on" format:"date-time"`
@@ -1516,7 +1516,7 @@ func (r AccountTokenVerifyResponseResultStatus) IsKnown() bool {
 }
 
 type AccountTokenNewParams struct {
-	IamCreatePayload IamCreatePayloadParam `json:"iam_create_payload,required"`
+	IamCreatePayload IamCreatePayloadParam `json:"iam_create_payload" api:"required"`
 }
 
 func (r AccountTokenNewParams) MarshalJSON() (data []byte, err error) {
@@ -1524,7 +1524,7 @@ func (r AccountTokenNewParams) MarshalJSON() (data []byte, err error) {
 }
 
 type AccountTokenUpdateParams struct {
-	IamTokenBody IamTokenBodyParam `json:"iam_token_body,required"`
+	IamTokenBody IamTokenBodyParam `json:"iam_token_body" api:"required"`
 }
 
 func (r AccountTokenUpdateParams) MarshalJSON() (data []byte, err error) {
@@ -1581,7 +1581,7 @@ func (r AccountTokenListPermissionGroupsParams) URLQuery() (v url.Values) {
 }
 
 type AccountTokenRollParams struct {
-	Body interface{} `json:"body,required"`
+	Body interface{} `json:"body" api:"required"`
 }
 
 func (r AccountTokenRollParams) MarshalJSON() (data []byte, err error) {

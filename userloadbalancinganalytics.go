@@ -40,15 +40,15 @@ func (r *UserLoadBalancingAnalyticsService) ListEvents(ctx context.Context, quer
 	opts = slices.Concat(r.Options, opts)
 	path := "user/load_balancing_analytics/events"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type UserLoadBalancingAnalyticsListEventsResponse struct {
-	Errors   []UserLoadBalancingAnalyticsListEventsResponseError   `json:"errors,required"`
-	Messages []UserLoadBalancingAnalyticsListEventsResponseMessage `json:"messages,required"`
-	Result   []UserLoadBalancingAnalyticsListEventsResponseResult  `json:"result,required"`
+	Errors   []UserLoadBalancingAnalyticsListEventsResponseError   `json:"errors" api:"required"`
+	Messages []UserLoadBalancingAnalyticsListEventsResponseMessage `json:"messages" api:"required"`
+	Result   []UserLoadBalancingAnalyticsListEventsResponseResult  `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success    UserLoadBalancingAnalyticsListEventsResponseSuccess    `json:"success,required"`
+	Success    UserLoadBalancingAnalyticsListEventsResponseSuccess    `json:"success" api:"required"`
 	ResultInfo UserLoadBalancingAnalyticsListEventsResponseResultInfo `json:"result_info"`
 	JSON       userLoadBalancingAnalyticsListEventsResponseJSON       `json:"-"`
 }
@@ -74,8 +74,8 @@ func (r userLoadBalancingAnalyticsListEventsResponseJSON) RawJSON() string {
 }
 
 type UserLoadBalancingAnalyticsListEventsResponseError struct {
-	Code             int64                                                    `json:"code,required"`
-	Message          string                                                   `json:"message,required"`
+	Code             int64                                                    `json:"code" api:"required"`
+	Message          string                                                   `json:"message" api:"required"`
 	DocumentationURL string                                                   `json:"documentation_url"`
 	Source           UserLoadBalancingAnalyticsListEventsResponseErrorsSource `json:"source"`
 	JSON             userLoadBalancingAnalyticsListEventsResponseErrorJSON    `json:"-"`
@@ -123,8 +123,8 @@ func (r userLoadBalancingAnalyticsListEventsResponseErrorsSourceJSON) RawJSON() 
 }
 
 type UserLoadBalancingAnalyticsListEventsResponseMessage struct {
-	Code             int64                                                      `json:"code,required"`
-	Message          string                                                     `json:"message,required"`
+	Code             int64                                                      `json:"code" api:"required"`
+	Message          string                                                     `json:"message" api:"required"`
 	DocumentationURL string                                                     `json:"documentation_url"`
 	Source           UserLoadBalancingAnalyticsListEventsResponseMessagesSource `json:"source"`
 	JSON             userLoadBalancingAnalyticsListEventsResponseMessageJSON    `json:"-"`

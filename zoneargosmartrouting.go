@@ -39,11 +39,11 @@ func (r *ZoneArgoSmartRoutingService) Get(ctx context.Context, zoneID string, op
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/argo/smart_routing", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Configures the value of the Argo Smart Routing enablement setting.
@@ -51,16 +51,16 @@ func (r *ZoneArgoSmartRoutingService) Update(ctx context.Context, zoneID string,
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/argo/smart_routing", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type ArgoConfigMessage struct {
-	Code             int64                   `json:"code,required"`
-	Message          string                  `json:"message,required"`
+	Code             int64                   `json:"code" api:"required"`
+	Message          string                  `json:"message" api:"required"`
 	DocumentationURL string                  `json:"documentation_url"`
 	Source           ArgoConfigMessageSource `json:"source"`
 	JSON             argoConfigMessageJSON   `json:"-"`
@@ -107,10 +107,10 @@ func (r argoConfigMessageSourceJSON) RawJSON() string {
 }
 
 type ArgoConfigResponse struct {
-	Errors   []ArgoConfigMessage `json:"errors,required"`
-	Messages []ArgoConfigMessage `json:"messages,required"`
+	Errors   []ArgoConfigMessage `json:"errors" api:"required"`
+	Messages []ArgoConfigMessage `json:"messages" api:"required"`
 	// Describes a successful API response.
-	Success ArgoConfigResponseSuccess `json:"success,required"`
+	Success ArgoConfigResponseSuccess `json:"success" api:"required"`
 	Result  interface{}               `json:"result"`
 	JSON    argoConfigResponseJSON    `json:"-"`
 }
@@ -151,7 +151,7 @@ func (r ArgoConfigResponseSuccess) IsKnown() bool {
 
 type ZoneArgoSmartRoutingUpdateParams struct {
 	// Enables Argo Smart Routing.
-	Value param.Field[ZoneArgoSmartRoutingUpdateParamsValue] `json:"value,required"`
+	Value param.Field[ZoneArgoSmartRoutingUpdateParamsValue] `json:"value" api:"required"`
 }
 
 func (r ZoneArgoSmartRoutingUpdateParams) MarshalJSON() (data []byte, err error) {

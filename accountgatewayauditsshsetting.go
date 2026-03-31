@@ -41,11 +41,11 @@ func (r *AccountGatewayAuditSSHSettingService) Get(ctx context.Context, accountI
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/gateway/audit_ssh_settings", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates Zero Trust Audit SSH and SSH with Access for Infrastructure settings for
@@ -54,11 +54,11 @@ func (r *AccountGatewayAuditSSHSettingService) Update(ctx context.Context, accou
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/gateway/audit_ssh_settings", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Rotates the SSH account seed that is used for generating the host key identity
@@ -67,18 +67,18 @@ func (r *AccountGatewayAuditSSHSettingService) RotateSeed(ctx context.Context, a
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/gateway/audit_ssh_settings/rotate_seed", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type SingleResponseAudit struct {
-	Errors   []SingleResponseAuditError   `json:"errors,required"`
-	Messages []SingleResponseAuditMessage `json:"messages,required"`
+	Errors   []SingleResponseAuditError   `json:"errors" api:"required"`
+	Messages []SingleResponseAuditMessage `json:"messages" api:"required"`
 	// Whether the API call was successful
-	Success SingleResponseAuditSuccess `json:"success,required"`
+	Success SingleResponseAuditSuccess `json:"success" api:"required"`
 	Result  SingleResponseAuditResult  `json:"result"`
 	JSON    singleResponseAuditJSON    `json:"-"`
 }
@@ -103,8 +103,8 @@ func (r singleResponseAuditJSON) RawJSON() string {
 }
 
 type SingleResponseAuditError struct {
-	Code             int64                           `json:"code,required"`
-	Message          string                          `json:"message,required"`
+	Code             int64                           `json:"code" api:"required"`
+	Message          string                          `json:"message" api:"required"`
 	DocumentationURL string                          `json:"documentation_url"`
 	Source           SingleResponseAuditErrorsSource `json:"source"`
 	JSON             singleResponseAuditErrorJSON    `json:"-"`
@@ -151,8 +151,8 @@ func (r singleResponseAuditErrorsSourceJSON) RawJSON() string {
 }
 
 type SingleResponseAuditMessage struct {
-	Code             int64                             `json:"code,required"`
-	Message          string                            `json:"message,required"`
+	Code             int64                             `json:"code" api:"required"`
+	Message          string                            `json:"message" api:"required"`
 	DocumentationURL string                            `json:"documentation_url"`
 	Source           SingleResponseAuditMessagesSource `json:"source"`
 	JSON             singleResponseAuditMessageJSON    `json:"-"`
@@ -246,7 +246,7 @@ func (r singleResponseAuditResultJSON) RawJSON() string {
 type AccountGatewayAuditSSHSettingUpdateParams struct {
 	// Base64 encoded HPKE public key used to encrypt all your ssh session logs.
 	// https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/use-cases/ssh/ssh-infrastructure-access/#enable-ssh-command-logging
-	PublicKey param.Field[string] `json:"public_key,required"`
+	PublicKey param.Field[string] `json:"public_key" api:"required"`
 }
 
 func (r AccountGatewayAuditSSHSettingUpdateParams) MarshalJSON() (data []byte, err error) {

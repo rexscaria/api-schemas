@@ -43,11 +43,11 @@ func (r *ZoneAddressingRegionalHostnameService) New(ctx context.Context, zoneID 
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/addressing/regional_hostnames", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetch the configuration for a specific Regional Hostname, within a zone.
@@ -55,15 +55,15 @@ func (r *ZoneAddressingRegionalHostnameService) Get(ctx context.Context, zoneID 
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if hostname == "" {
 		err = errors.New("missing required hostname parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/addressing/regional_hostnames/%s", zoneID, hostname)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update the configuration for a specific Regional Hostname. Only the region_key
@@ -72,15 +72,15 @@ func (r *ZoneAddressingRegionalHostnameService) Update(ctx context.Context, zone
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if hostname == "" {
 		err = errors.New("missing required hostname parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/addressing/regional_hostnames/%s", zoneID, hostname)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // List all Regional Hostnames within a zone.
@@ -88,11 +88,11 @@ func (r *ZoneAddressingRegionalHostnameService) List(ctx context.Context, zoneID
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/addressing/regional_hostnames", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete the region configuration for a specific Regional Hostname.
@@ -100,22 +100,22 @@ func (r *ZoneAddressingRegionalHostnameService) Delete(ctx context.Context, zone
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if hostname == "" {
 		err = errors.New("missing required hostname parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/addressing/regional_hostnames/%s", zoneID, hostname)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type APIResponseDls struct {
-	Errors   []MessagesDlsItem `json:"errors,required"`
-	Messages []MessagesDlsItem `json:"messages,required"`
+	Errors   []MessagesDlsItem `json:"errors" api:"required"`
+	Messages []MessagesDlsItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success APIResponseDlsSuccess `json:"success,required"`
+	Success APIResponseDlsSuccess `json:"success" api:"required"`
 	JSON    apiResponseDlsJSON    `json:"-"`
 }
 
@@ -152,8 +152,8 @@ func (r APIResponseDlsSuccess) IsKnown() bool {
 }
 
 type MessagesDlsItem struct {
-	Code             int64                 `json:"code,required"`
-	Message          string                `json:"message,required"`
+	Code             int64                 `json:"code" api:"required"`
+	Message          string                `json:"message" api:"required"`
 	DocumentationURL string                `json:"documentation_url"`
 	Source           MessagesDlsItemSource `json:"source"`
 	JSON             messagesDlsItemJSON   `json:"-"`
@@ -200,12 +200,12 @@ func (r messagesDlsItemSourceJSON) RawJSON() string {
 
 type RegionalHostnameResponse struct {
 	// When the regional hostname was created
-	CreatedOn time.Time `json:"created_on,required" format:"date-time"`
+	CreatedOn time.Time `json:"created_on" api:"required" format:"date-time"`
 	// DNS hostname to be regionalized, must be a subdomain of the zone. Wildcards are
 	// supported for one level, e.g `*.example.com`
-	Hostname string `json:"hostname,required"`
+	Hostname string `json:"hostname" api:"required"`
 	// Identifying key for the region
-	RegionKey string `json:"region_key,required"`
+	RegionKey string `json:"region_key" api:"required"`
 	// Configure which routing method to use for the regional hostname
 	Routing string                       `json:"routing"`
 	JSON    regionalHostnameResponseJSON `json:"-"`
@@ -231,10 +231,10 @@ func (r regionalHostnameResponseJSON) RawJSON() string {
 }
 
 type ZoneAddressingRegionalHostnameNewResponse struct {
-	Errors   []MessagesDlsItem `json:"errors,required"`
-	Messages []MessagesDlsItem `json:"messages,required"`
+	Errors   []MessagesDlsItem `json:"errors" api:"required"`
+	Messages []MessagesDlsItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success ZoneAddressingRegionalHostnameNewResponseSuccess `json:"success,required"`
+	Success ZoneAddressingRegionalHostnameNewResponseSuccess `json:"success" api:"required"`
 	Result  RegionalHostnameResponse                         `json:"result"`
 	JSON    zoneAddressingRegionalHostnameNewResponseJSON    `json:"-"`
 }
@@ -274,10 +274,10 @@ func (r ZoneAddressingRegionalHostnameNewResponseSuccess) IsKnown() bool {
 }
 
 type ZoneAddressingRegionalHostnameGetResponse struct {
-	Errors   []MessagesDlsItem `json:"errors,required"`
-	Messages []MessagesDlsItem `json:"messages,required"`
+	Errors   []MessagesDlsItem `json:"errors" api:"required"`
+	Messages []MessagesDlsItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success ZoneAddressingRegionalHostnameGetResponseSuccess `json:"success,required"`
+	Success ZoneAddressingRegionalHostnameGetResponseSuccess `json:"success" api:"required"`
 	Result  RegionalHostnameResponse                         `json:"result"`
 	JSON    zoneAddressingRegionalHostnameGetResponseJSON    `json:"-"`
 }
@@ -317,10 +317,10 @@ func (r ZoneAddressingRegionalHostnameGetResponseSuccess) IsKnown() bool {
 }
 
 type ZoneAddressingRegionalHostnameUpdateResponse struct {
-	Errors   []MessagesDlsItem `json:"errors,required"`
-	Messages []MessagesDlsItem `json:"messages,required"`
+	Errors   []MessagesDlsItem `json:"errors" api:"required"`
+	Messages []MessagesDlsItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success ZoneAddressingRegionalHostnameUpdateResponseSuccess `json:"success,required"`
+	Success ZoneAddressingRegionalHostnameUpdateResponseSuccess `json:"success" api:"required"`
 	Result  RegionalHostnameResponse                            `json:"result"`
 	JSON    zoneAddressingRegionalHostnameUpdateResponseJSON    `json:"-"`
 }
@@ -360,10 +360,10 @@ func (r ZoneAddressingRegionalHostnameUpdateResponseSuccess) IsKnown() bool {
 }
 
 type ZoneAddressingRegionalHostnameListResponse struct {
-	Errors   []MessagesDlsItem `json:"errors,required"`
-	Messages []MessagesDlsItem `json:"messages,required"`
+	Errors   []MessagesDlsItem `json:"errors" api:"required"`
+	Messages []MessagesDlsItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success    ZoneAddressingRegionalHostnameListResponseSuccess    `json:"success,required"`
+	Success    ZoneAddressingRegionalHostnameListResponseSuccess    `json:"success" api:"required"`
 	Result     []RegionalHostnameResponse                           `json:"result"`
 	ResultInfo ZoneAddressingRegionalHostnameListResponseResultInfo `json:"result_info"`
 	JSON       zoneAddressingRegionalHostnameListResponseJSON       `json:"-"`
@@ -438,9 +438,9 @@ func (r zoneAddressingRegionalHostnameListResponseResultInfoJSON) RawJSON() stri
 type ZoneAddressingRegionalHostnameNewParams struct {
 	// DNS hostname to be regionalized, must be a subdomain of the zone. Wildcards are
 	// supported for one level, e.g `*.example.com`
-	Hostname param.Field[string] `json:"hostname,required"`
+	Hostname param.Field[string] `json:"hostname" api:"required"`
 	// Identifying key for the region
-	RegionKey param.Field[string] `json:"region_key,required"`
+	RegionKey param.Field[string] `json:"region_key" api:"required"`
 	// Configure which routing method to use for the regional hostname
 	Routing param.Field[string] `json:"routing"`
 }
@@ -451,7 +451,7 @@ func (r ZoneAddressingRegionalHostnameNewParams) MarshalJSON() (data []byte, err
 
 type ZoneAddressingRegionalHostnameUpdateParams struct {
 	// Identifying key for the region
-	RegionKey param.Field[string] `json:"region_key,required"`
+	RegionKey param.Field[string] `json:"region_key" api:"required"`
 }
 
 func (r ZoneAddressingRegionalHostnameUpdateParams) MarshalJSON() (data []byte, err error) {

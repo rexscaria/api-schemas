@@ -15,7 +15,7 @@ import (
 )
 
 func TestAccountAIRunCfBaaiExecuteBgeBaseEnV1_5WithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -27,6 +27,7 @@ func TestAccountAIRunCfBaaiExecuteBgeBaseEnV1_5WithOptionalParams(t *testing.T) 
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.AI.Run.Cf.Baai.ExecuteBgeBaseEnV1_5(
 		context.TODO(),
@@ -49,7 +50,7 @@ func TestAccountAIRunCfBaaiExecuteBgeBaseEnV1_5WithOptionalParams(t *testing.T) 
 }
 
 func TestAccountAIRunCfBaaiExecuteBgeLargeEnV1_5WithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -61,6 +62,7 @@ func TestAccountAIRunCfBaaiExecuteBgeLargeEnV1_5WithOptionalParams(t *testing.T)
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.AI.Run.Cf.Baai.ExecuteBgeLargeEnV1_5(
 		context.TODO(),
@@ -83,7 +85,7 @@ func TestAccountAIRunCfBaaiExecuteBgeLargeEnV1_5WithOptionalParams(t *testing.T)
 }
 
 func TestAccountAIRunCfBaaiExecuteBgeM3WithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -95,6 +97,7 @@ func TestAccountAIRunCfBaaiExecuteBgeM3WithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.AI.Run.Cf.Baai.ExecuteBgeM3(
 		context.TODO(),
@@ -120,7 +123,7 @@ func TestAccountAIRunCfBaaiExecuteBgeM3WithOptionalParams(t *testing.T) {
 }
 
 func TestAccountAIRunCfBaaiExecuteBgeRerankerBaseWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -132,6 +135,7 @@ func TestAccountAIRunCfBaaiExecuteBgeRerankerBaseWithOptionalParams(t *testing.T
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.AI.Run.Cf.Baai.ExecuteBgeRerankerBase(
 		context.TODO(),
@@ -155,7 +159,7 @@ func TestAccountAIRunCfBaaiExecuteBgeRerankerBaseWithOptionalParams(t *testing.T
 }
 
 func TestAccountAIRunCfBaaiExecuteBgeSmallEnV1_5WithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -167,6 +171,7 @@ func TestAccountAIRunCfBaaiExecuteBgeSmallEnV1_5WithOptionalParams(t *testing.T)
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.AI.Run.Cf.Baai.ExecuteBgeSmallEnV1_5(
 		context.TODO(),

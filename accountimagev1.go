@@ -50,15 +50,15 @@ func (r *AccountImageV1Service) Get(ctx context.Context, accountID string, image
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if imageID == "" {
 		err = errors.New("missing required image_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/images/v1/%s", accountID, imageID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update image access control. On access control change, all copies of the image
@@ -67,15 +67,15 @@ func (r *AccountImageV1Service) Update(ctx context.Context, accountID string, im
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if imageID == "" {
 		err = errors.New("missing required image_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/images/v1/%s", accountID, imageID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // List up to 100 images with one request. Use the optional parameters below to get
@@ -86,11 +86,11 @@ func (r *AccountImageV1Service) List(ctx context.Context, accountID string, quer
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/images/v1", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete an image on Cloudflare Images. On success, all copies of the image are
@@ -99,15 +99,15 @@ func (r *AccountImageV1Service) Delete(ctx context.Context, accountID string, im
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if imageID == "" {
 		err = errors.New("missing required image_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/images/v1/%s", accountID, imageID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetch base image. For most images this will be the originally uploaded file. For
@@ -117,15 +117,15 @@ func (r *AccountImageV1Service) FetchBase(ctx context.Context, accountID string,
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "image/*")}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if imageID == "" {
 		err = errors.New("missing required image_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/images/v1/%s/blob", accountID, imageID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetch usage statistics details for Cloudflare Images.
@@ -133,11 +133,11 @@ func (r *AccountImageV1Service) Stats(ctx context.Context, accountID string, opt
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/images/v1/stats", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Upload an image with up to 10 Megabytes using a single HTTP POST
@@ -147,19 +147,19 @@ func (r *AccountImageV1Service) Upload(ctx context.Context, accountID string, bo
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/images/v1", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type DeletedImagesResponse struct {
-	Errors   []DeletedImagesResponseError   `json:"errors,required"`
-	Messages []DeletedImagesResponseMessage `json:"messages,required"`
-	Result   interface{}                    `json:"result,required"`
+	Errors   []DeletedImagesResponseError   `json:"errors" api:"required"`
+	Messages []DeletedImagesResponseMessage `json:"messages" api:"required"`
+	Result   interface{}                    `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success DeletedImagesResponseSuccess `json:"success,required"`
+	Success DeletedImagesResponseSuccess `json:"success" api:"required"`
 	JSON    deletedImagesResponseJSON    `json:"-"`
 }
 
@@ -183,8 +183,8 @@ func (r deletedImagesResponseJSON) RawJSON() string {
 }
 
 type DeletedImagesResponseError struct {
-	Code             int64                             `json:"code,required"`
-	Message          string                            `json:"message,required"`
+	Code             int64                             `json:"code" api:"required"`
+	Message          string                            `json:"message" api:"required"`
 	DocumentationURL string                            `json:"documentation_url"`
 	Source           DeletedImagesResponseErrorsSource `json:"source"`
 	JSON             deletedImagesResponseErrorJSON    `json:"-"`
@@ -231,8 +231,8 @@ func (r deletedImagesResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type DeletedImagesResponseMessage struct {
-	Code             int64                               `json:"code,required"`
-	Message          string                              `json:"message,required"`
+	Code             int64                               `json:"code" api:"required"`
+	Message          string                              `json:"message" api:"required"`
 	DocumentationURL string                              `json:"documentation_url"`
 	Source           DeletedImagesResponseMessagesSource `json:"source"`
 	JSON             deletedImagesResponseMessageJSON    `json:"-"`
@@ -297,7 +297,7 @@ type Image struct {
 	// Image unique identifier.
 	ID string `json:"id"`
 	// Can set the creator field with an internal user ID.
-	Creator string `json:"creator,nullable"`
+	Creator string `json:"creator" api:"nullable"`
 	// Image file name.
 	Filename string `json:"filename"`
 	// User modifiable key-value store. Can be used for keeping references to another
@@ -335,11 +335,11 @@ func (r imageJSON) RawJSON() string {
 }
 
 type ImageResponseSingle struct {
-	Errors   []ImageResponseSingleError   `json:"errors,required"`
-	Messages []ImageResponseSingleMessage `json:"messages,required"`
-	Result   Image                        `json:"result,required"`
+	Errors   []ImageResponseSingleError   `json:"errors" api:"required"`
+	Messages []ImageResponseSingleMessage `json:"messages" api:"required"`
+	Result   Image                        `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success ImageResponseSingleSuccess `json:"success,required"`
+	Success ImageResponseSingleSuccess `json:"success" api:"required"`
 	JSON    imageResponseSingleJSON    `json:"-"`
 }
 
@@ -363,8 +363,8 @@ func (r imageResponseSingleJSON) RawJSON() string {
 }
 
 type ImageResponseSingleError struct {
-	Code             int64                           `json:"code,required"`
-	Message          string                          `json:"message,required"`
+	Code             int64                           `json:"code" api:"required"`
+	Message          string                          `json:"message" api:"required"`
 	DocumentationURL string                          `json:"documentation_url"`
 	Source           ImageResponseSingleErrorsSource `json:"source"`
 	JSON             imageResponseSingleErrorJSON    `json:"-"`
@@ -411,8 +411,8 @@ func (r imageResponseSingleErrorsSourceJSON) RawJSON() string {
 }
 
 type ImageResponseSingleMessage struct {
-	Code             int64                             `json:"code,required"`
-	Message          string                            `json:"message,required"`
+	Code             int64                             `json:"code" api:"required"`
+	Message          string                            `json:"message" api:"required"`
 	DocumentationURL string                            `json:"documentation_url"`
 	Source           ImageResponseSingleMessagesSource `json:"source"`
 	JSON             imageResponseSingleMessageJSON    `json:"-"`
@@ -474,11 +474,11 @@ func (r ImageResponseSingleSuccess) IsKnown() bool {
 }
 
 type AccountImageV1ListResponse struct {
-	Errors   []AccountImageV1ListResponseError   `json:"errors,required"`
-	Messages []AccountImageV1ListResponseMessage `json:"messages,required"`
-	Result   AccountImageV1ListResponseResult    `json:"result,required"`
+	Errors   []AccountImageV1ListResponseError   `json:"errors" api:"required"`
+	Messages []AccountImageV1ListResponseMessage `json:"messages" api:"required"`
+	Result   AccountImageV1ListResponseResult    `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success AccountImageV1ListResponseSuccess `json:"success,required"`
+	Success AccountImageV1ListResponseSuccess `json:"success" api:"required"`
 	JSON    accountImageV1ListResponseJSON    `json:"-"`
 }
 
@@ -502,8 +502,8 @@ func (r accountImageV1ListResponseJSON) RawJSON() string {
 }
 
 type AccountImageV1ListResponseError struct {
-	Code             int64                                  `json:"code,required"`
-	Message          string                                 `json:"message,required"`
+	Code             int64                                  `json:"code" api:"required"`
+	Message          string                                 `json:"message" api:"required"`
 	DocumentationURL string                                 `json:"documentation_url"`
 	Source           AccountImageV1ListResponseErrorsSource `json:"source"`
 	JSON             accountImageV1ListResponseErrorJSON    `json:"-"`
@@ -550,8 +550,8 @@ func (r accountImageV1ListResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type AccountImageV1ListResponseMessage struct {
-	Code             int64                                    `json:"code,required"`
-	Message          string                                   `json:"message,required"`
+	Code             int64                                    `json:"code" api:"required"`
+	Message          string                                   `json:"message" api:"required"`
 	DocumentationURL string                                   `json:"documentation_url"`
 	Source           AccountImageV1ListResponseMessagesSource `json:"source"`
 	JSON             accountImageV1ListResponseMessageJSON    `json:"-"`
@@ -634,11 +634,11 @@ func (r AccountImageV1ListResponseSuccess) IsKnown() bool {
 }
 
 type AccountImageV1StatsResponse struct {
-	Errors   []AccountImageV1StatsResponseError   `json:"errors,required"`
-	Messages []AccountImageV1StatsResponseMessage `json:"messages,required"`
-	Result   AccountImageV1StatsResponseResult    `json:"result,required"`
+	Errors   []AccountImageV1StatsResponseError   `json:"errors" api:"required"`
+	Messages []AccountImageV1StatsResponseMessage `json:"messages" api:"required"`
+	Result   AccountImageV1StatsResponseResult    `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success AccountImageV1StatsResponseSuccess `json:"success,required"`
+	Success AccountImageV1StatsResponseSuccess `json:"success" api:"required"`
 	JSON    accountImageV1StatsResponseJSON    `json:"-"`
 }
 
@@ -662,8 +662,8 @@ func (r accountImageV1StatsResponseJSON) RawJSON() string {
 }
 
 type AccountImageV1StatsResponseError struct {
-	Code             int64                                   `json:"code,required"`
-	Message          string                                  `json:"message,required"`
+	Code             int64                                   `json:"code" api:"required"`
+	Message          string                                  `json:"message" api:"required"`
 	DocumentationURL string                                  `json:"documentation_url"`
 	Source           AccountImageV1StatsResponseErrorsSource `json:"source"`
 	JSON             accountImageV1StatsResponseErrorJSON    `json:"-"`
@@ -710,8 +710,8 @@ func (r accountImageV1StatsResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type AccountImageV1StatsResponseMessage struct {
-	Code             int64                                     `json:"code,required"`
-	Message          string                                    `json:"message,required"`
+	Code             int64                                     `json:"code" api:"required"`
+	Message          string                                    `json:"message" api:"required"`
 	DocumentationURL string                                    `json:"documentation_url"`
 	Source           AccountImageV1StatsResponseMessagesSource `json:"source"`
 	JSON             accountImageV1StatsResponseMessageJSON    `json:"-"`

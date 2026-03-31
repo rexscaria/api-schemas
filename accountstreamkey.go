@@ -41,11 +41,11 @@ func (r *AccountStreamKeyService) New(ctx context.Context, accountID string, bod
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/stream/keys", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists the video ID and creation date and time when a signing key was created.
@@ -53,11 +53,11 @@ func (r *AccountStreamKeyService) List(ctx context.Context, accountID string, op
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/stream/keys", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Deletes signing keys and revokes all signed URLs generated with the key.
@@ -65,22 +65,22 @@ func (r *AccountStreamKeyService) Delete(ctx context.Context, accountID string, 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if identifier == "" {
 		err = errors.New("missing required identifier parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/stream/keys/%s", accountID, identifier)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountStreamKeyNewResponse struct {
-	Errors   []StreamMessages `json:"errors,required"`
-	Messages []StreamMessages `json:"messages,required"`
+	Errors   []StreamMessages `json:"errors" api:"required"`
+	Messages []StreamMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountStreamKeyNewResponseSuccess `json:"success,required"`
+	Success AccountStreamKeyNewResponseSuccess `json:"success" api:"required"`
 	Result  AccountStreamKeyNewResponseResult  `json:"result"`
 	JSON    accountStreamKeyNewResponseJSON    `json:"-"`
 }
@@ -151,10 +151,10 @@ func (r accountStreamKeyNewResponseResultJSON) RawJSON() string {
 }
 
 type AccountStreamKeyListResponse struct {
-	Errors   []StreamMessages `json:"errors,required"`
-	Messages []StreamMessages `json:"messages,required"`
+	Errors   []StreamMessages `json:"errors" api:"required"`
+	Messages []StreamMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountStreamKeyListResponseSuccess  `json:"success,required"`
+	Success AccountStreamKeyListResponseSuccess  `json:"success" api:"required"`
 	Result  []AccountStreamKeyListResponseResult `json:"result"`
 	JSON    accountStreamKeyListResponseJSON     `json:"-"`
 }
@@ -219,7 +219,7 @@ func (r accountStreamKeyListResponseResultJSON) RawJSON() string {
 }
 
 type AccountStreamKeyNewParams struct {
-	Body interface{} `json:"body,required"`
+	Body interface{} `json:"body" api:"required"`
 }
 
 func (r AccountStreamKeyNewParams) MarshalJSON() (data []byte, err error) {

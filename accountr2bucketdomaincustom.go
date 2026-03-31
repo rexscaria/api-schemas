@@ -37,116 +37,116 @@ func NewAccountR2BucketDomainCustomService(opts ...option.RequestOption) (r *Acc
 // Get the configuration for a custom domain on an existing R2 bucket.
 func (r *AccountR2BucketDomainCustomService) Get(ctx context.Context, accountID string, bucketName string, domain string, query AccountR2BucketDomainCustomGetParams, opts ...option.RequestOption) (res *AccountR2BucketDomainCustomGetResponse, err error) {
 	if query.Jurisdiction.Present {
-		opts = append(opts, option.WithHeader("cf-r2-jurisdiction", fmt.Sprintf("%s", query.Jurisdiction)))
+		opts = append(opts, option.WithHeader("cf-r2-jurisdiction", fmt.Sprintf("%v", query.Jurisdiction)))
 	}
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if bucketName == "" {
 		err = errors.New("missing required bucket_name parameter")
-		return
+		return nil, err
 	}
 	if domain == "" {
 		err = errors.New("missing required domain parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/r2/buckets/%s/domains/custom/%s", accountID, bucketName, domain)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Edit the configuration for a custom domain on an existing R2 bucket.
 func (r *AccountR2BucketDomainCustomService) Update(ctx context.Context, accountID string, bucketName string, domain string, params AccountR2BucketDomainCustomUpdateParams, opts ...option.RequestOption) (res *AccountR2BucketDomainCustomUpdateResponse, err error) {
 	if params.Jurisdiction.Present {
-		opts = append(opts, option.WithHeader("cf-r2-jurisdiction", fmt.Sprintf("%s", params.Jurisdiction)))
+		opts = append(opts, option.WithHeader("cf-r2-jurisdiction", fmt.Sprintf("%v", params.Jurisdiction)))
 	}
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if bucketName == "" {
 		err = errors.New("missing required bucket_name parameter")
-		return
+		return nil, err
 	}
 	if domain == "" {
 		err = errors.New("missing required domain parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/r2/buckets/%s/domains/custom/%s", accountID, bucketName, domain)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Gets a list of all custom domains registered with an existing R2 bucket.
 func (r *AccountR2BucketDomainCustomService) List(ctx context.Context, accountID string, bucketName string, query AccountR2BucketDomainCustomListParams, opts ...option.RequestOption) (res *AccountR2BucketDomainCustomListResponse, err error) {
 	if query.Jurisdiction.Present {
-		opts = append(opts, option.WithHeader("cf-r2-jurisdiction", fmt.Sprintf("%s", query.Jurisdiction)))
+		opts = append(opts, option.WithHeader("cf-r2-jurisdiction", fmt.Sprintf("%v", query.Jurisdiction)))
 	}
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if bucketName == "" {
 		err = errors.New("missing required bucket_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/r2/buckets/%s/domains/custom", accountID, bucketName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Register a new custom domain for an existing R2 bucket.
 func (r *AccountR2BucketDomainCustomService) Attach(ctx context.Context, accountID string, bucketName string, params AccountR2BucketDomainCustomAttachParams, opts ...option.RequestOption) (res *AccountR2BucketDomainCustomAttachResponse, err error) {
 	if params.Jurisdiction.Present {
-		opts = append(opts, option.WithHeader("cf-r2-jurisdiction", fmt.Sprintf("%s", params.Jurisdiction)))
+		opts = append(opts, option.WithHeader("cf-r2-jurisdiction", fmt.Sprintf("%v", params.Jurisdiction)))
 	}
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if bucketName == "" {
 		err = errors.New("missing required bucket_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/r2/buckets/%s/domains/custom", accountID, bucketName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Remove custom domain registration from an existing R2 bucket.
 func (r *AccountR2BucketDomainCustomService) Remove(ctx context.Context, accountID string, bucketName string, domain string, body AccountR2BucketDomainCustomRemoveParams, opts ...option.RequestOption) (res *AccountR2BucketDomainCustomRemoveResponse, err error) {
 	if body.Jurisdiction.Present {
-		opts = append(opts, option.WithHeader("cf-r2-jurisdiction", fmt.Sprintf("%s", body.Jurisdiction)))
+		opts = append(opts, option.WithHeader("cf-r2-jurisdiction", fmt.Sprintf("%v", body.Jurisdiction)))
 	}
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if bucketName == "" {
 		err = errors.New("missing required bucket_name parameter")
-		return
+		return nil, err
 	}
 	if domain == "" {
 		err = errors.New("missing required domain parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/r2/buckets/%s/domains/custom/%s", accountID, bucketName, domain)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountR2BucketDomainCustomGetResponse struct {
-	Errors   []AccountR2BucketDomainCustomGetResponseError `json:"errors,required"`
-	Messages []string                                      `json:"messages,required"`
-	Result   AccountR2BucketDomainCustomGetResponseResult  `json:"result,required"`
+	Errors   []AccountR2BucketDomainCustomGetResponseError `json:"errors" api:"required"`
+	Messages []string                                      `json:"messages" api:"required"`
+	Result   AccountR2BucketDomainCustomGetResponseResult  `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success AccountR2BucketDomainCustomGetResponseSuccess `json:"success,required"`
+	Success AccountR2BucketDomainCustomGetResponseSuccess `json:"success" api:"required"`
 	JSON    accountR2BucketDomainCustomGetResponseJSON    `json:"-"`
 }
 
@@ -170,8 +170,8 @@ func (r accountR2BucketDomainCustomGetResponseJSON) RawJSON() string {
 }
 
 type AccountR2BucketDomainCustomGetResponseError struct {
-	Code             int64                                              `json:"code,required"`
-	Message          string                                             `json:"message,required"`
+	Code             int64                                              `json:"code" api:"required"`
+	Message          string                                             `json:"message" api:"required"`
 	DocumentationURL string                                             `json:"documentation_url"`
 	Source           AccountR2BucketDomainCustomGetResponseErrorsSource `json:"source"`
 	JSON             accountR2BucketDomainCustomGetResponseErrorJSON    `json:"-"`
@@ -219,10 +219,10 @@ func (r accountR2BucketDomainCustomGetResponseErrorsSourceJSON) RawJSON() string
 
 type AccountR2BucketDomainCustomGetResponseResult struct {
 	// Domain name of the custom domain to be added.
-	Domain string `json:"domain,required"`
+	Domain string `json:"domain" api:"required"`
 	// Whether this bucket is publicly accessible at the specified custom domain.
-	Enabled bool                                               `json:"enabled,required"`
-	Status  AccountR2BucketDomainCustomGetResponseResultStatus `json:"status,required"`
+	Enabled bool                                               `json:"enabled" api:"required"`
+	Status  AccountR2BucketDomainCustomGetResponseResultStatus `json:"status" api:"required"`
 	// Minimum TLS Version the custom domain will accept for incoming connections. If
 	// not set, defaults to 1.0.
 	MinTls AccountR2BucketDomainCustomGetResponseResultMinTls `json:"minTLS"`
@@ -256,9 +256,9 @@ func (r accountR2BucketDomainCustomGetResponseResultJSON) RawJSON() string {
 
 type AccountR2BucketDomainCustomGetResponseResultStatus struct {
 	// Ownership status of the domain.
-	Ownership AccountR2BucketDomainCustomGetResponseResultStatusOwnership `json:"ownership,required"`
+	Ownership AccountR2BucketDomainCustomGetResponseResultStatusOwnership `json:"ownership" api:"required"`
 	// SSL certificate status.
-	Ssl  AccountR2BucketDomainCustomGetResponseResultStatusSsl  `json:"ssl,required"`
+	Ssl  AccountR2BucketDomainCustomGetResponseResultStatusSsl  `json:"ssl" api:"required"`
 	JSON accountR2BucketDomainCustomGetResponseResultStatusJSON `json:"-"`
 }
 
@@ -354,11 +354,11 @@ func (r AccountR2BucketDomainCustomGetResponseSuccess) IsKnown() bool {
 }
 
 type AccountR2BucketDomainCustomUpdateResponse struct {
-	Errors   []AccountR2BucketDomainCustomUpdateResponseError `json:"errors,required"`
-	Messages []string                                         `json:"messages,required"`
-	Result   AccountR2BucketDomainCustomUpdateResponseResult  `json:"result,required"`
+	Errors   []AccountR2BucketDomainCustomUpdateResponseError `json:"errors" api:"required"`
+	Messages []string                                         `json:"messages" api:"required"`
+	Result   AccountR2BucketDomainCustomUpdateResponseResult  `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success AccountR2BucketDomainCustomUpdateResponseSuccess `json:"success,required"`
+	Success AccountR2BucketDomainCustomUpdateResponseSuccess `json:"success" api:"required"`
 	JSON    accountR2BucketDomainCustomUpdateResponseJSON    `json:"-"`
 }
 
@@ -382,8 +382,8 @@ func (r accountR2BucketDomainCustomUpdateResponseJSON) RawJSON() string {
 }
 
 type AccountR2BucketDomainCustomUpdateResponseError struct {
-	Code             int64                                                 `json:"code,required"`
-	Message          string                                                `json:"message,required"`
+	Code             int64                                                 `json:"code" api:"required"`
+	Message          string                                                `json:"message" api:"required"`
 	DocumentationURL string                                                `json:"documentation_url"`
 	Source           AccountR2BucketDomainCustomUpdateResponseErrorsSource `json:"source"`
 	JSON             accountR2BucketDomainCustomUpdateResponseErrorJSON    `json:"-"`
@@ -431,7 +431,7 @@ func (r accountR2BucketDomainCustomUpdateResponseErrorsSourceJSON) RawJSON() str
 
 type AccountR2BucketDomainCustomUpdateResponseResult struct {
 	// Domain name of the affected custom domain.
-	Domain string `json:"domain,required"`
+	Domain string `json:"domain" api:"required"`
 	// Whether this bucket is publicly accessible at the specified custom domain.
 	Enabled bool `json:"enabled"`
 	// Minimum TLS Version the custom domain will accept for incoming connections. If
@@ -493,11 +493,11 @@ func (r AccountR2BucketDomainCustomUpdateResponseSuccess) IsKnown() bool {
 }
 
 type AccountR2BucketDomainCustomListResponse struct {
-	Errors   []AccountR2BucketDomainCustomListResponseError `json:"errors,required"`
-	Messages []string                                       `json:"messages,required"`
-	Result   AccountR2BucketDomainCustomListResponseResult  `json:"result,required"`
+	Errors   []AccountR2BucketDomainCustomListResponseError `json:"errors" api:"required"`
+	Messages []string                                       `json:"messages" api:"required"`
+	Result   AccountR2BucketDomainCustomListResponseResult  `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success AccountR2BucketDomainCustomListResponseSuccess `json:"success,required"`
+	Success AccountR2BucketDomainCustomListResponseSuccess `json:"success" api:"required"`
 	JSON    accountR2BucketDomainCustomListResponseJSON    `json:"-"`
 }
 
@@ -521,8 +521,8 @@ func (r accountR2BucketDomainCustomListResponseJSON) RawJSON() string {
 }
 
 type AccountR2BucketDomainCustomListResponseError struct {
-	Code             int64                                               `json:"code,required"`
-	Message          string                                              `json:"message,required"`
+	Code             int64                                               `json:"code" api:"required"`
+	Message          string                                              `json:"message" api:"required"`
 	DocumentationURL string                                              `json:"documentation_url"`
 	Source           AccountR2BucketDomainCustomListResponseErrorsSource `json:"source"`
 	JSON             accountR2BucketDomainCustomListResponseErrorJSON    `json:"-"`
@@ -569,7 +569,7 @@ func (r accountR2BucketDomainCustomListResponseErrorsSourceJSON) RawJSON() strin
 }
 
 type AccountR2BucketDomainCustomListResponseResult struct {
-	Domains []AccountR2BucketDomainCustomListResponseResultDomain `json:"domains,required"`
+	Domains []AccountR2BucketDomainCustomListResponseResultDomain `json:"domains" api:"required"`
 	JSON    accountR2BucketDomainCustomListResponseResultJSON     `json:"-"`
 }
 
@@ -591,10 +591,10 @@ func (r accountR2BucketDomainCustomListResponseResultJSON) RawJSON() string {
 
 type AccountR2BucketDomainCustomListResponseResultDomain struct {
 	// Domain name of the custom domain to be added.
-	Domain string `json:"domain,required"`
+	Domain string `json:"domain" api:"required"`
 	// Whether this bucket is publicly accessible at the specified custom domain.
-	Enabled bool                                                       `json:"enabled,required"`
-	Status  AccountR2BucketDomainCustomListResponseResultDomainsStatus `json:"status,required"`
+	Enabled bool                                                       `json:"enabled" api:"required"`
+	Status  AccountR2BucketDomainCustomListResponseResultDomainsStatus `json:"status" api:"required"`
 	// Minimum TLS Version the custom domain will accept for incoming connections. If
 	// not set, defaults to 1.0.
 	MinTls AccountR2BucketDomainCustomListResponseResultDomainsMinTls `json:"minTLS"`
@@ -628,9 +628,9 @@ func (r accountR2BucketDomainCustomListResponseResultDomainJSON) RawJSON() strin
 
 type AccountR2BucketDomainCustomListResponseResultDomainsStatus struct {
 	// Ownership status of the domain.
-	Ownership AccountR2BucketDomainCustomListResponseResultDomainsStatusOwnership `json:"ownership,required"`
+	Ownership AccountR2BucketDomainCustomListResponseResultDomainsStatusOwnership `json:"ownership" api:"required"`
 	// SSL certificate status.
-	Ssl  AccountR2BucketDomainCustomListResponseResultDomainsStatusSsl  `json:"ssl,required"`
+	Ssl  AccountR2BucketDomainCustomListResponseResultDomainsStatusSsl  `json:"ssl" api:"required"`
 	JSON accountR2BucketDomainCustomListResponseResultDomainsStatusJSON `json:"-"`
 }
 
@@ -727,11 +727,11 @@ func (r AccountR2BucketDomainCustomListResponseSuccess) IsKnown() bool {
 }
 
 type AccountR2BucketDomainCustomAttachResponse struct {
-	Errors   []AccountR2BucketDomainCustomAttachResponseError `json:"errors,required"`
-	Messages []string                                         `json:"messages,required"`
-	Result   AccountR2BucketDomainCustomAttachResponseResult  `json:"result,required"`
+	Errors   []AccountR2BucketDomainCustomAttachResponseError `json:"errors" api:"required"`
+	Messages []string                                         `json:"messages" api:"required"`
+	Result   AccountR2BucketDomainCustomAttachResponseResult  `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success AccountR2BucketDomainCustomAttachResponseSuccess `json:"success,required"`
+	Success AccountR2BucketDomainCustomAttachResponseSuccess `json:"success" api:"required"`
 	JSON    accountR2BucketDomainCustomAttachResponseJSON    `json:"-"`
 }
 
@@ -755,8 +755,8 @@ func (r accountR2BucketDomainCustomAttachResponseJSON) RawJSON() string {
 }
 
 type AccountR2BucketDomainCustomAttachResponseError struct {
-	Code             int64                                                 `json:"code,required"`
-	Message          string                                                `json:"message,required"`
+	Code             int64                                                 `json:"code" api:"required"`
+	Message          string                                                `json:"message" api:"required"`
 	DocumentationURL string                                                `json:"documentation_url"`
 	Source           AccountR2BucketDomainCustomAttachResponseErrorsSource `json:"source"`
 	JSON             accountR2BucketDomainCustomAttachResponseErrorJSON    `json:"-"`
@@ -804,9 +804,9 @@ func (r accountR2BucketDomainCustomAttachResponseErrorsSourceJSON) RawJSON() str
 
 type AccountR2BucketDomainCustomAttachResponseResult struct {
 	// Domain name of the affected custom domain.
-	Domain string `json:"domain,required"`
+	Domain string `json:"domain" api:"required"`
 	// Whether this bucket is publicly accessible at the specified custom domain.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Minimum TLS Version the custom domain will accept for incoming connections. If
 	// not set, defaults to 1.0.
 	MinTls AccountR2BucketDomainCustomAttachResponseResultMinTls `json:"minTLS"`
@@ -866,11 +866,11 @@ func (r AccountR2BucketDomainCustomAttachResponseSuccess) IsKnown() bool {
 }
 
 type AccountR2BucketDomainCustomRemoveResponse struct {
-	Errors   []AccountR2BucketDomainCustomRemoveResponseError `json:"errors,required"`
-	Messages []string                                         `json:"messages,required"`
-	Result   AccountR2BucketDomainCustomRemoveResponseResult  `json:"result,required"`
+	Errors   []AccountR2BucketDomainCustomRemoveResponseError `json:"errors" api:"required"`
+	Messages []string                                         `json:"messages" api:"required"`
+	Result   AccountR2BucketDomainCustomRemoveResponseResult  `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success AccountR2BucketDomainCustomRemoveResponseSuccess `json:"success,required"`
+	Success AccountR2BucketDomainCustomRemoveResponseSuccess `json:"success" api:"required"`
 	JSON    accountR2BucketDomainCustomRemoveResponseJSON    `json:"-"`
 }
 
@@ -894,8 +894,8 @@ func (r accountR2BucketDomainCustomRemoveResponseJSON) RawJSON() string {
 }
 
 type AccountR2BucketDomainCustomRemoveResponseError struct {
-	Code             int64                                                 `json:"code,required"`
-	Message          string                                                `json:"message,required"`
+	Code             int64                                                 `json:"code" api:"required"`
+	Message          string                                                `json:"message" api:"required"`
 	DocumentationURL string                                                `json:"documentation_url"`
 	Source           AccountR2BucketDomainCustomRemoveResponseErrorsSource `json:"source"`
 	JSON             accountR2BucketDomainCustomRemoveResponseErrorJSON    `json:"-"`
@@ -943,7 +943,7 @@ func (r accountR2BucketDomainCustomRemoveResponseErrorsSourceJSON) RawJSON() str
 
 type AccountR2BucketDomainCustomRemoveResponseResult struct {
 	// Name of the removed custom domain.
-	Domain string                                              `json:"domain,required"`
+	Domain string                                              `json:"domain" api:"required"`
 	JSON   accountR2BucketDomainCustomRemoveResponseResultJSON `json:"-"`
 }
 
@@ -1074,12 +1074,12 @@ func (r AccountR2BucketDomainCustomListParamsCfR2Jurisdiction) IsKnown() bool {
 
 type AccountR2BucketDomainCustomAttachParams struct {
 	// Name of the custom domain to be added.
-	Domain param.Field[string] `json:"domain,required"`
+	Domain param.Field[string] `json:"domain" api:"required"`
 	// Whether to enable public bucket access at the custom domain. If undefined, the
 	// domain will be enabled.
-	Enabled param.Field[bool] `json:"enabled,required"`
+	Enabled param.Field[bool] `json:"enabled" api:"required"`
 	// Zone ID of the custom domain.
-	ZoneID param.Field[string] `json:"zoneId,required"`
+	ZoneID param.Field[string] `json:"zoneId" api:"required"`
 	// Minimum TLS Version the custom domain will accept for incoming connections. If
 	// not set, defaults to 1.0.
 	MinTls param.Field[AccountR2BucketDomainCustomAttachParamsMinTls] `json:"minTLS"`

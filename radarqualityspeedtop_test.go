@@ -15,7 +15,7 @@ import (
 )
 
 func TestRadarQualitySpeedTopGetTopAsWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -27,6 +27,7 @@ func TestRadarQualitySpeedTopGetTopAsWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.Quality.Speed.Top.GetTopAs(context.TODO(), cfrex.RadarQualitySpeedTopGetTopAsParams{
 		Asn:       cfrex.F([]string{"string"}),
@@ -49,7 +50,7 @@ func TestRadarQualitySpeedTopGetTopAsWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarQualitySpeedTopGetTopLocationsWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -61,6 +62,7 @@ func TestRadarQualitySpeedTopGetTopLocationsWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.Quality.Speed.Top.GetTopLocations(context.TODO(), cfrex.RadarQualitySpeedTopGetTopLocationsParams{
 		Asn:       cfrex.F([]string{"string"}),

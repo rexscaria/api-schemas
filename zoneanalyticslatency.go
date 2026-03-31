@@ -41,11 +41,11 @@ func (r *ZoneAnalyticsLatencyService) Get(ctx context.Context, zoneID string, qu
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/analytics/latency", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Argo Analytics for a zone at different PoPs
@@ -53,16 +53,16 @@ func (r *ZoneAnalyticsLatencyService) ListColos(ctx context.Context, zoneID stri
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/analytics/latency/colos", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type ArgoAnalyticsMessage struct {
-	Code             int64                      `json:"code,required"`
-	Message          string                     `json:"message,required"`
+	Code             int64                      `json:"code" api:"required"`
+	Message          string                     `json:"message" api:"required"`
 	DocumentationURL string                     `json:"documentation_url"`
 	Source           ArgoAnalyticsMessageSource `json:"source"`
 	JSON             argoAnalyticsMessageJSON   `json:"-"`
@@ -109,11 +109,11 @@ func (r argoAnalyticsMessageSourceJSON) RawJSON() string {
 }
 
 type ArgoAnalyticsResponse struct {
-	Errors   []ArgoAnalyticsMessage `json:"errors,required"`
-	Messages []ArgoAnalyticsMessage `json:"messages,required"`
-	Result   interface{}            `json:"result,required"`
+	Errors   []ArgoAnalyticsMessage `json:"errors" api:"required"`
+	Messages []ArgoAnalyticsMessage `json:"messages" api:"required"`
+	Result   interface{}            `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success ArgoAnalyticsResponseSuccess `json:"success,required"`
+	Success ArgoAnalyticsResponseSuccess `json:"success" api:"required"`
 	JSON    argoAnalyticsResponseJSON    `json:"-"`
 }
 

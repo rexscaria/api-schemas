@@ -43,11 +43,11 @@ func (r *AccountEmailSecuritySettingAllowPolicyService) New(ctx context.Context,
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/email-security/settings/allow_policies", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get an email allow policy
@@ -55,11 +55,11 @@ func (r *AccountEmailSecuritySettingAllowPolicyService) Get(ctx context.Context,
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/email-security/settings/allow_policies/%v", accountID, policyID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update an email allow policy
@@ -67,11 +67,11 @@ func (r *AccountEmailSecuritySettingAllowPolicyService) Update(ctx context.Conte
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/email-security/settings/allow_policies/%v", accountID, policyID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists, searches, and sorts an account’s email allow policies.
@@ -79,11 +79,11 @@ func (r *AccountEmailSecuritySettingAllowPolicyService) List(ctx context.Context
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/email-security/settings/allow_policies", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete an email allow policy
@@ -91,11 +91,11 @@ func (r *AccountEmailSecuritySettingAllowPolicyService) Delete(ctx context.Conte
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/email-security/settings/allow_policies/%v", accountID, policyID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type PatternType string
@@ -131,10 +131,10 @@ func (r SortingDirection) IsKnown() bool {
 }
 
 type AccountEmailSecuritySettingAllowPolicyNewResponse struct {
-	Errors   []EmailSecurityMessage                                  `json:"errors,required"`
-	Messages []EmailSecurityMessage                                  `json:"messages,required"`
-	Result   AccountEmailSecuritySettingAllowPolicyNewResponseResult `json:"result,required"`
-	Success  bool                                                    `json:"success,required"`
+	Errors   []EmailSecurityMessage                                  `json:"errors" api:"required"`
+	Messages []EmailSecurityMessage                                  `json:"messages" api:"required"`
+	Result   AccountEmailSecuritySettingAllowPolicyNewResponseResult `json:"result" api:"required"`
+	Success  bool                                                    `json:"success" api:"required"`
 	JSON     accountEmailSecuritySettingAllowPolicyNewResponseJSON   `json:"-"`
 }
 
@@ -159,24 +159,24 @@ func (r accountEmailSecuritySettingAllowPolicyNewResponseJSON) RawJSON() string 
 
 type AccountEmailSecuritySettingAllowPolicyNewResponseResult struct {
 	// The unique identifier for the allow policy.
-	ID        int64     `json:"id,required"`
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	ID        int64     `json:"id" api:"required"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Messages from this sender will be exempted from Spam, Spoof and Bulk
 	// dispositions. Note: This will not exempt messages with Malicious or Suspicious
 	// dispositions.
-	IsAcceptableSender bool `json:"is_acceptable_sender,required"`
+	IsAcceptableSender bool `json:"is_acceptable_sender" api:"required"`
 	// Messages to this recipient will bypass all detections.
-	IsExemptRecipient bool `json:"is_exempt_recipient,required"`
-	IsRegex           bool `json:"is_regex,required"`
+	IsExemptRecipient bool `json:"is_exempt_recipient" api:"required"`
+	IsRegex           bool `json:"is_regex" api:"required"`
 	// Messages from this sender will bypass all detections and link following.
-	IsTrustedSender bool        `json:"is_trusted_sender,required"`
-	LastModified    time.Time   `json:"last_modified,required" format:"date-time"`
-	Pattern         string      `json:"pattern,required"`
-	PatternType     PatternType `json:"pattern_type,required"`
+	IsTrustedSender bool        `json:"is_trusted_sender" api:"required"`
+	LastModified    time.Time   `json:"last_modified" api:"required" format:"date-time"`
+	Pattern         string      `json:"pattern" api:"required"`
+	PatternType     PatternType `json:"pattern_type" api:"required"`
 	// Enforce DMARC, SPF or DKIM authentication. When on, Email Security only honors
 	// policies that pass authentication.
-	VerifySender bool   `json:"verify_sender,required"`
-	Comments     string `json:"comments,nullable"`
+	VerifySender bool   `json:"verify_sender" api:"required"`
+	Comments     string `json:"comments" api:"nullable"`
 	// Deprecated: deprecated
 	IsRecipient bool `json:"is_recipient"`
 	// Deprecated: deprecated
@@ -217,10 +217,10 @@ func (r accountEmailSecuritySettingAllowPolicyNewResponseResultJSON) RawJSON() s
 }
 
 type AccountEmailSecuritySettingAllowPolicyGetResponse struct {
-	Errors   []EmailSecurityMessage                                  `json:"errors,required"`
-	Messages []EmailSecurityMessage                                  `json:"messages,required"`
-	Result   AccountEmailSecuritySettingAllowPolicyGetResponseResult `json:"result,required"`
-	Success  bool                                                    `json:"success,required"`
+	Errors   []EmailSecurityMessage                                  `json:"errors" api:"required"`
+	Messages []EmailSecurityMessage                                  `json:"messages" api:"required"`
+	Result   AccountEmailSecuritySettingAllowPolicyGetResponseResult `json:"result" api:"required"`
+	Success  bool                                                    `json:"success" api:"required"`
 	JSON     accountEmailSecuritySettingAllowPolicyGetResponseJSON   `json:"-"`
 }
 
@@ -245,24 +245,24 @@ func (r accountEmailSecuritySettingAllowPolicyGetResponseJSON) RawJSON() string 
 
 type AccountEmailSecuritySettingAllowPolicyGetResponseResult struct {
 	// The unique identifier for the allow policy.
-	ID        int64     `json:"id,required"`
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	ID        int64     `json:"id" api:"required"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Messages from this sender will be exempted from Spam, Spoof and Bulk
 	// dispositions. Note: This will not exempt messages with Malicious or Suspicious
 	// dispositions.
-	IsAcceptableSender bool `json:"is_acceptable_sender,required"`
+	IsAcceptableSender bool `json:"is_acceptable_sender" api:"required"`
 	// Messages to this recipient will bypass all detections.
-	IsExemptRecipient bool `json:"is_exempt_recipient,required"`
-	IsRegex           bool `json:"is_regex,required"`
+	IsExemptRecipient bool `json:"is_exempt_recipient" api:"required"`
+	IsRegex           bool `json:"is_regex" api:"required"`
 	// Messages from this sender will bypass all detections and link following.
-	IsTrustedSender bool        `json:"is_trusted_sender,required"`
-	LastModified    time.Time   `json:"last_modified,required" format:"date-time"`
-	Pattern         string      `json:"pattern,required"`
-	PatternType     PatternType `json:"pattern_type,required"`
+	IsTrustedSender bool        `json:"is_trusted_sender" api:"required"`
+	LastModified    time.Time   `json:"last_modified" api:"required" format:"date-time"`
+	Pattern         string      `json:"pattern" api:"required"`
+	PatternType     PatternType `json:"pattern_type" api:"required"`
 	// Enforce DMARC, SPF or DKIM authentication. When on, Email Security only honors
 	// policies that pass authentication.
-	VerifySender bool   `json:"verify_sender,required"`
-	Comments     string `json:"comments,nullable"`
+	VerifySender bool   `json:"verify_sender" api:"required"`
+	Comments     string `json:"comments" api:"nullable"`
 	// Deprecated: deprecated
 	IsRecipient bool `json:"is_recipient"`
 	// Deprecated: deprecated
@@ -303,10 +303,10 @@ func (r accountEmailSecuritySettingAllowPolicyGetResponseResultJSON) RawJSON() s
 }
 
 type AccountEmailSecuritySettingAllowPolicyUpdateResponse struct {
-	Errors   []EmailSecurityMessage                                     `json:"errors,required"`
-	Messages []EmailSecurityMessage                                     `json:"messages,required"`
-	Result   AccountEmailSecuritySettingAllowPolicyUpdateResponseResult `json:"result,required"`
-	Success  bool                                                       `json:"success,required"`
+	Errors   []EmailSecurityMessage                                     `json:"errors" api:"required"`
+	Messages []EmailSecurityMessage                                     `json:"messages" api:"required"`
+	Result   AccountEmailSecuritySettingAllowPolicyUpdateResponseResult `json:"result" api:"required"`
+	Success  bool                                                       `json:"success" api:"required"`
 	JSON     accountEmailSecuritySettingAllowPolicyUpdateResponseJSON   `json:"-"`
 }
 
@@ -331,24 +331,24 @@ func (r accountEmailSecuritySettingAllowPolicyUpdateResponseJSON) RawJSON() stri
 
 type AccountEmailSecuritySettingAllowPolicyUpdateResponseResult struct {
 	// The unique identifier for the allow policy.
-	ID        int64     `json:"id,required"`
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	ID        int64     `json:"id" api:"required"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Messages from this sender will be exempted from Spam, Spoof and Bulk
 	// dispositions. Note: This will not exempt messages with Malicious or Suspicious
 	// dispositions.
-	IsAcceptableSender bool `json:"is_acceptable_sender,required"`
+	IsAcceptableSender bool `json:"is_acceptable_sender" api:"required"`
 	// Messages to this recipient will bypass all detections.
-	IsExemptRecipient bool `json:"is_exempt_recipient,required"`
-	IsRegex           bool `json:"is_regex,required"`
+	IsExemptRecipient bool `json:"is_exempt_recipient" api:"required"`
+	IsRegex           bool `json:"is_regex" api:"required"`
 	// Messages from this sender will bypass all detections and link following.
-	IsTrustedSender bool        `json:"is_trusted_sender,required"`
-	LastModified    time.Time   `json:"last_modified,required" format:"date-time"`
-	Pattern         string      `json:"pattern,required"`
-	PatternType     PatternType `json:"pattern_type,required"`
+	IsTrustedSender bool        `json:"is_trusted_sender" api:"required"`
+	LastModified    time.Time   `json:"last_modified" api:"required" format:"date-time"`
+	Pattern         string      `json:"pattern" api:"required"`
+	PatternType     PatternType `json:"pattern_type" api:"required"`
 	// Enforce DMARC, SPF or DKIM authentication. When on, Email Security only honors
 	// policies that pass authentication.
-	VerifySender bool   `json:"verify_sender,required"`
-	Comments     string `json:"comments,nullable"`
+	VerifySender bool   `json:"verify_sender" api:"required"`
+	Comments     string `json:"comments" api:"nullable"`
 	// Deprecated: deprecated
 	IsRecipient bool `json:"is_recipient"`
 	// Deprecated: deprecated
@@ -389,11 +389,11 @@ func (r accountEmailSecuritySettingAllowPolicyUpdateResponseResultJSON) RawJSON(
 }
 
 type AccountEmailSecuritySettingAllowPolicyListResponse struct {
-	Errors     []EmailSecurityMessage                                     `json:"errors,required"`
-	Messages   []EmailSecurityMessage                                     `json:"messages,required"`
-	Result     []AccountEmailSecuritySettingAllowPolicyListResponseResult `json:"result,required"`
-	ResultInfo ResultInfoEmailSecurity                                    `json:"result_info,required"`
-	Success    bool                                                       `json:"success,required"`
+	Errors     []EmailSecurityMessage                                     `json:"errors" api:"required"`
+	Messages   []EmailSecurityMessage                                     `json:"messages" api:"required"`
+	Result     []AccountEmailSecuritySettingAllowPolicyListResponseResult `json:"result" api:"required"`
+	ResultInfo ResultInfoEmailSecurity                                    `json:"result_info" api:"required"`
+	Success    bool                                                       `json:"success" api:"required"`
 	JSON       accountEmailSecuritySettingAllowPolicyListResponseJSON     `json:"-"`
 }
 
@@ -419,24 +419,24 @@ func (r accountEmailSecuritySettingAllowPolicyListResponseJSON) RawJSON() string
 
 type AccountEmailSecuritySettingAllowPolicyListResponseResult struct {
 	// The unique identifier for the allow policy.
-	ID        int64     `json:"id,required"`
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	ID        int64     `json:"id" api:"required"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Messages from this sender will be exempted from Spam, Spoof and Bulk
 	// dispositions. Note: This will not exempt messages with Malicious or Suspicious
 	// dispositions.
-	IsAcceptableSender bool `json:"is_acceptable_sender,required"`
+	IsAcceptableSender bool `json:"is_acceptable_sender" api:"required"`
 	// Messages to this recipient will bypass all detections.
-	IsExemptRecipient bool `json:"is_exempt_recipient,required"`
-	IsRegex           bool `json:"is_regex,required"`
+	IsExemptRecipient bool `json:"is_exempt_recipient" api:"required"`
+	IsRegex           bool `json:"is_regex" api:"required"`
 	// Messages from this sender will bypass all detections and link following.
-	IsTrustedSender bool        `json:"is_trusted_sender,required"`
-	LastModified    time.Time   `json:"last_modified,required" format:"date-time"`
-	Pattern         string      `json:"pattern,required"`
-	PatternType     PatternType `json:"pattern_type,required"`
+	IsTrustedSender bool        `json:"is_trusted_sender" api:"required"`
+	LastModified    time.Time   `json:"last_modified" api:"required" format:"date-time"`
+	Pattern         string      `json:"pattern" api:"required"`
+	PatternType     PatternType `json:"pattern_type" api:"required"`
 	// Enforce DMARC, SPF or DKIM authentication. When on, Email Security only honors
 	// policies that pass authentication.
-	VerifySender bool   `json:"verify_sender,required"`
-	Comments     string `json:"comments,nullable"`
+	VerifySender bool   `json:"verify_sender" api:"required"`
+	Comments     string `json:"comments" api:"nullable"`
 	// Deprecated: deprecated
 	IsRecipient bool `json:"is_recipient"`
 	// Deprecated: deprecated
@@ -477,10 +477,10 @@ func (r accountEmailSecuritySettingAllowPolicyListResponseResultJSON) RawJSON() 
 }
 
 type AccountEmailSecuritySettingAllowPolicyDeleteResponse struct {
-	Errors   []EmailSecurityMessage                                     `json:"errors,required"`
-	Messages []EmailSecurityMessage                                     `json:"messages,required"`
-	Result   AccountEmailSecuritySettingAllowPolicyDeleteResponseResult `json:"result,required"`
-	Success  bool                                                       `json:"success,required"`
+	Errors   []EmailSecurityMessage                                     `json:"errors" api:"required"`
+	Messages []EmailSecurityMessage                                     `json:"messages" api:"required"`
+	Result   AccountEmailSecuritySettingAllowPolicyDeleteResponseResult `json:"result" api:"required"`
+	Success  bool                                                       `json:"success" api:"required"`
 	JSON     accountEmailSecuritySettingAllowPolicyDeleteResponseJSON   `json:"-"`
 }
 
@@ -505,7 +505,7 @@ func (r accountEmailSecuritySettingAllowPolicyDeleteResponseJSON) RawJSON() stri
 
 type AccountEmailSecuritySettingAllowPolicyDeleteResponseResult struct {
 	// The unique identifier for the allow policy.
-	ID   int64                                                          `json:"id,required"`
+	ID   int64                                                          `json:"id" api:"required"`
 	JSON accountEmailSecuritySettingAllowPolicyDeleteResponseResultJSON `json:"-"`
 }
 
@@ -530,17 +530,17 @@ type AccountEmailSecuritySettingAllowPolicyNewParams struct {
 	// Messages from this sender will be exempted from Spam, Spoof and Bulk
 	// dispositions. Note: This will not exempt messages with Malicious or Suspicious
 	// dispositions.
-	IsAcceptableSender param.Field[bool] `json:"is_acceptable_sender,required"`
+	IsAcceptableSender param.Field[bool] `json:"is_acceptable_sender" api:"required"`
 	// Messages to this recipient will bypass all detections.
-	IsExemptRecipient param.Field[bool] `json:"is_exempt_recipient,required"`
-	IsRegex           param.Field[bool] `json:"is_regex,required"`
+	IsExemptRecipient param.Field[bool] `json:"is_exempt_recipient" api:"required"`
+	IsRegex           param.Field[bool] `json:"is_regex" api:"required"`
 	// Messages from this sender will bypass all detections and link following.
-	IsTrustedSender param.Field[bool]        `json:"is_trusted_sender,required"`
-	Pattern         param.Field[string]      `json:"pattern,required"`
-	PatternType     param.Field[PatternType] `json:"pattern_type,required"`
+	IsTrustedSender param.Field[bool]        `json:"is_trusted_sender" api:"required"`
+	Pattern         param.Field[string]      `json:"pattern" api:"required"`
+	PatternType     param.Field[PatternType] `json:"pattern_type" api:"required"`
 	// Enforce DMARC, SPF or DKIM authentication. When on, Email Security only honors
 	// policies that pass authentication.
-	VerifySender param.Field[bool]   `json:"verify_sender,required"`
+	VerifySender param.Field[bool]   `json:"verify_sender" api:"required"`
 	Comments     param.Field[string] `json:"comments"`
 	IsRecipient  param.Field[bool]   `json:"is_recipient"`
 	IsSender     param.Field[bool]   `json:"is_sender"`

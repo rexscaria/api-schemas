@@ -44,11 +44,11 @@ func (r *AccountAccessUserService) List(ctx context.Context, accountID string, q
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/access/users", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Get all failed login attempts for a single user.
@@ -56,15 +56,15 @@ func (r *AccountAccessUserService) FailedLogins(ctx context.Context, accountID s
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if userID == "" {
 		err = errors.New("missing required user_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/access/users/%s/failed_logins", accountID, userID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Get last seen identity for a single user.
@@ -72,22 +72,22 @@ func (r *AccountAccessUserService) LastSeenIdentity(ctx context.Context, account
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if userID == "" {
 		err = errors.New("missing required user_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/access/users/%s/last_seen_identity", accountID, userID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountAccessUserListResponse struct {
-	Errors   []MessagesAccessItem `json:"errors,required"`
-	Messages []MessagesAccessItem `json:"messages,required"`
+	Errors   []MessagesAccessItem `json:"errors" api:"required"`
+	Messages []MessagesAccessItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success    AccountAccessUserListResponseSuccess    `json:"success,required"`
+	Success    AccountAccessUserListResponseSuccess    `json:"success" api:"required"`
 	Result     []AccountAccessUserListResponseResult   `json:"result"`
 	ResultInfo AccountAccessUserListResponseResultInfo `json:"result_info"`
 	JSON       accountAccessUserListResponseJSON       `json:"-"`
@@ -210,10 +210,10 @@ func (r accountAccessUserListResponseResultInfoJSON) RawJSON() string {
 }
 
 type AccountAccessUserFailedLoginsResponse struct {
-	Errors   []MessagesAccessItem `json:"errors,required"`
-	Messages []MessagesAccessItem `json:"messages,required"`
+	Errors   []MessagesAccessItem `json:"errors" api:"required"`
+	Messages []MessagesAccessItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success    AccountAccessUserFailedLoginsResponseSuccess    `json:"success,required"`
+	Success    AccountAccessUserFailedLoginsResponseSuccess    `json:"success" api:"required"`
 	Result     []AccountAccessUserFailedLoginsResponseResult   `json:"result"`
 	ResultInfo AccountAccessUserFailedLoginsResponseResultInfo `json:"result_info"`
 	JSON       accountAccessUserFailedLoginsResponseJSON       `json:"-"`
@@ -309,10 +309,10 @@ func (r accountAccessUserFailedLoginsResponseResultInfoJSON) RawJSON() string {
 }
 
 type AccountAccessUserLastSeenIdentityResponse struct {
-	Errors   []MessagesAccessItem `json:"errors,required"`
-	Messages []MessagesAccessItem `json:"messages,required"`
+	Errors   []MessagesAccessItem `json:"errors" api:"required"`
+	Messages []MessagesAccessItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountAccessUserLastSeenIdentityResponseSuccess `json:"success,required"`
+	Success AccountAccessUserLastSeenIdentityResponseSuccess `json:"success" api:"required"`
 	Result  Identity                                         `json:"result"`
 	JSON    accountAccessUserLastSeenIdentityResponseJSON    `json:"-"`
 }

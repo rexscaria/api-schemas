@@ -44,11 +44,11 @@ func (r *ZoneSpectrumAnalyticsEventService) GetByTime(ctx context.Context, zoneI
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/spectrum/analytics/events/bytime", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves a list of summarised aggregate metrics over a given time period.
@@ -56,11 +56,11 @@ func (r *ZoneSpectrumAnalyticsEventService) GetSummary(ctx context.Context, zone
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/spectrum/analytics/events/summary", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type DimensionItem string
@@ -101,10 +101,10 @@ func (r MetricItem) IsKnown() bool {
 }
 
 type QueryResponseSingle struct {
-	Errors   []SpectrumAnalyticsMessageItem `json:"errors,required"`
-	Messages []SpectrumAnalyticsMessageItem `json:"messages,required"`
+	Errors   []SpectrumAnalyticsMessageItem `json:"errors" api:"required"`
+	Messages []SpectrumAnalyticsMessageItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success QueryResponseSingleSuccess `json:"success,required"`
+	Success QueryResponseSingleSuccess `json:"success" api:"required"`
 	Result  QueryResponseSingleResult  `json:"result"`
 	JSON    queryResponseSingleJSON    `json:"-"`
 }
@@ -145,19 +145,19 @@ func (r QueryResponseSingleSuccess) IsKnown() bool {
 
 type QueryResponseSingleResult struct {
 	// List of columns returned by the analytics query.
-	Data []QueryResponseSingleResultData `json:"data,required"`
+	Data []QueryResponseSingleResultData `json:"data" api:"required"`
 	// Number of seconds between current time and last processed event, i.e. how many
 	// seconds of data could be missing.
-	DataLag float64 `json:"data_lag,required"`
+	DataLag float64 `json:"data_lag" api:"required"`
 	// Maximum result for each selected metrics across all data.
-	Max map[string]float64 `json:"max,required"`
+	Max map[string]float64 `json:"max" api:"required"`
 	// Minimum result for each selected metrics across all data.
-	Min   map[string]float64             `json:"min,required"`
-	Query QueryResponseSingleResultQuery `json:"query,required"`
+	Min   map[string]float64             `json:"min" api:"required"`
+	Query QueryResponseSingleResultQuery `json:"query" api:"required"`
 	// Total number of rows in the result.
-	Rows float64 `json:"rows,required"`
+	Rows float64 `json:"rows" api:"required"`
 	// Total result for each selected metrics across all data.
-	Totals map[string]float64 `json:"totals,required"`
+	Totals map[string]float64 `json:"totals" api:"required"`
 	// List of time interval buckets: [start, end]
 	TimeIntervals [][]time.Time                 `json:"time_intervals" format:"date-time"`
 	JSON          queryResponseSingleResultJSON `json:"-"`
@@ -315,7 +315,7 @@ type UntilParam = time.Time
 
 type ZoneSpectrumAnalyticsEventGetByTimeParams struct {
 	// Used to select time series resolution.
-	TimeDelta param.Field[ZoneSpectrumAnalyticsEventGetByTimeParamsTimeDelta] `query:"time_delta,required"`
+	TimeDelta param.Field[ZoneSpectrumAnalyticsEventGetByTimeParamsTimeDelta] `query:"time_delta" api:"required"`
 	// Can be used to break down the data by given attributes. Options are:
 	//
 	// | Dimension | Name                          | Example                                                    |

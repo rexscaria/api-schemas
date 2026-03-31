@@ -42,11 +42,11 @@ func (r *AccountGatewayListService) New(ctx context.Context, accountID string, b
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/gateway/lists", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetches a single Zero Trust list.
@@ -54,15 +54,15 @@ func (r *AccountGatewayListService) Get(ctx context.Context, accountID string, l
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if listID == "" {
 		err = errors.New("missing required list_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/gateway/lists/%s", accountID, listID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates a configured Zero Trust list. Skips updating list items if not included
@@ -71,15 +71,15 @@ func (r *AccountGatewayListService) Update(ctx context.Context, accountID string
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if listID == "" {
 		err = errors.New("missing required list_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/gateway/lists/%s", accountID, listID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetches all Zero Trust lists for an account.
@@ -87,11 +87,11 @@ func (r *AccountGatewayListService) List(ctx context.Context, accountID string, 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/gateway/lists", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Deletes a Zero Trust list.
@@ -99,15 +99,15 @@ func (r *AccountGatewayListService) Delete(ctx context.Context, accountID string
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if listID == "" {
 		err = errors.New("missing required list_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/gateway/lists/%s", accountID, listID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetches all items in a single Zero Trust list.
@@ -115,15 +115,15 @@ func (r *AccountGatewayListService) ListItems(ctx context.Context, accountID str
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if listID == "" {
 		err = errors.New("missing required list_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/gateway/lists/%s/items", accountID, listID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Appends or removes an item from a configured Zero Trust list.
@@ -131,15 +131,15 @@ func (r *AccountGatewayListService) Patch(ctx context.Context, accountID string,
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if listID == "" {
 		err = errors.New("missing required list_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/gateway/lists/%s", accountID, listID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type Items struct {
@@ -228,10 +228,10 @@ func (r SchemasListType) IsKnown() bool {
 }
 
 type SchemasZeroTrustGatewaySingleResponse struct {
-	Errors   []ZeroTrustGatewayMessages `json:"errors,required"`
-	Messages []ZeroTrustGatewayMessages `json:"messages,required"`
+	Errors   []ZeroTrustGatewayMessages `json:"errors" api:"required"`
+	Messages []ZeroTrustGatewayMessages `json:"messages" api:"required"`
 	// Whether the API call was successful
-	Success SchemasZeroTrustGatewaySingleResponseSuccess `json:"success,required"`
+	Success SchemasZeroTrustGatewaySingleResponseSuccess `json:"success" api:"required"`
 	Result  Location                                     `json:"result"`
 	JSON    schemasZeroTrustGatewaySingleResponseJSON    `json:"-"`
 }
@@ -271,10 +271,10 @@ func (r SchemasZeroTrustGatewaySingleResponseSuccess) IsKnown() bool {
 }
 
 type ZeroTrustGatewayEmptyResponse struct {
-	Errors   []ZeroTrustGatewayEmptyResponseError   `json:"errors,required"`
-	Messages []ZeroTrustGatewayEmptyResponseMessage `json:"messages,required"`
+	Errors   []ZeroTrustGatewayEmptyResponseError   `json:"errors" api:"required"`
+	Messages []ZeroTrustGatewayEmptyResponseMessage `json:"messages" api:"required"`
 	// Whether the API call was successful
-	Success ZeroTrustGatewayEmptyResponseSuccess `json:"success,required"`
+	Success ZeroTrustGatewayEmptyResponseSuccess `json:"success" api:"required"`
 	Result  interface{}                          `json:"result"`
 	JSON    zeroTrustGatewayEmptyResponseJSON    `json:"-"`
 }
@@ -299,8 +299,8 @@ func (r zeroTrustGatewayEmptyResponseJSON) RawJSON() string {
 }
 
 type ZeroTrustGatewayEmptyResponseError struct {
-	Code             int64                                     `json:"code,required"`
-	Message          string                                    `json:"message,required"`
+	Code             int64                                     `json:"code" api:"required"`
+	Message          string                                    `json:"message" api:"required"`
 	DocumentationURL string                                    `json:"documentation_url"`
 	Source           ZeroTrustGatewayEmptyResponseErrorsSource `json:"source"`
 	JSON             zeroTrustGatewayEmptyResponseErrorJSON    `json:"-"`
@@ -347,8 +347,8 @@ func (r zeroTrustGatewayEmptyResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type ZeroTrustGatewayEmptyResponseMessage struct {
-	Code             int64                                       `json:"code,required"`
-	Message          string                                      `json:"message,required"`
+	Code             int64                                       `json:"code" api:"required"`
+	Message          string                                      `json:"message" api:"required"`
 	DocumentationURL string                                      `json:"documentation_url"`
 	Source           ZeroTrustGatewayEmptyResponseMessagesSource `json:"source"`
 	JSON             zeroTrustGatewayEmptyResponseMessageJSON    `json:"-"`
@@ -410,10 +410,10 @@ func (r ZeroTrustGatewayEmptyResponseSuccess) IsKnown() bool {
 }
 
 type AccountGatewayListNewResponse struct {
-	Errors   []ZeroTrustGatewayMessages `json:"errors,required"`
-	Messages []ZeroTrustGatewayMessages `json:"messages,required"`
+	Errors   []ZeroTrustGatewayMessages `json:"errors" api:"required"`
+	Messages []ZeroTrustGatewayMessages `json:"messages" api:"required"`
 	// Whether the API call was successful
-	Success AccountGatewayListNewResponseSuccess `json:"success,required"`
+	Success AccountGatewayListNewResponseSuccess `json:"success" api:"required"`
 	Result  AccountGatewayListNewResponseResult  `json:"result"`
 	JSON    accountGatewayListNewResponseJSON    `json:"-"`
 }
@@ -491,10 +491,10 @@ func (r accountGatewayListNewResponseResultJSON) RawJSON() string {
 }
 
 type AccountGatewayListGetResponse struct {
-	Errors   []AccountGatewayListGetResponseError   `json:"errors,required"`
-	Messages []AccountGatewayListGetResponseMessage `json:"messages,required"`
+	Errors   []AccountGatewayListGetResponseError   `json:"errors" api:"required"`
+	Messages []AccountGatewayListGetResponseMessage `json:"messages" api:"required"`
 	// Whether the API call was successful
-	Success AccountGatewayListGetResponseSuccess `json:"success,required"`
+	Success AccountGatewayListGetResponseSuccess `json:"success" api:"required"`
 	Result  ListGateway                          `json:"result"`
 	JSON    accountGatewayListGetResponseJSON    `json:"-"`
 }
@@ -519,8 +519,8 @@ func (r accountGatewayListGetResponseJSON) RawJSON() string {
 }
 
 type AccountGatewayListGetResponseError struct {
-	Code             int64                                     `json:"code,required"`
-	Message          string                                    `json:"message,required"`
+	Code             int64                                     `json:"code" api:"required"`
+	Message          string                                    `json:"message" api:"required"`
 	DocumentationURL string                                    `json:"documentation_url"`
 	Source           AccountGatewayListGetResponseErrorsSource `json:"source"`
 	JSON             accountGatewayListGetResponseErrorJSON    `json:"-"`
@@ -567,8 +567,8 @@ func (r accountGatewayListGetResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type AccountGatewayListGetResponseMessage struct {
-	Code             int64                                       `json:"code,required"`
-	Message          string                                      `json:"message,required"`
+	Code             int64                                       `json:"code" api:"required"`
+	Message          string                                      `json:"message" api:"required"`
 	DocumentationURL string                                      `json:"documentation_url"`
 	Source           AccountGatewayListGetResponseMessagesSource `json:"source"`
 	JSON             accountGatewayListGetResponseMessageJSON    `json:"-"`
@@ -630,10 +630,10 @@ func (r AccountGatewayListGetResponseSuccess) IsKnown() bool {
 }
 
 type AccountGatewayListUpdateResponse struct {
-	Errors   []AccountGatewayListUpdateResponseError   `json:"errors,required"`
-	Messages []AccountGatewayListUpdateResponseMessage `json:"messages,required"`
+	Errors   []AccountGatewayListUpdateResponseError   `json:"errors" api:"required"`
+	Messages []AccountGatewayListUpdateResponseMessage `json:"messages" api:"required"`
 	// Whether the API call was successful
-	Success AccountGatewayListUpdateResponseSuccess `json:"success,required"`
+	Success AccountGatewayListUpdateResponseSuccess `json:"success" api:"required"`
 	Result  ListGateway                             `json:"result"`
 	JSON    accountGatewayListUpdateResponseJSON    `json:"-"`
 }
@@ -658,8 +658,8 @@ func (r accountGatewayListUpdateResponseJSON) RawJSON() string {
 }
 
 type AccountGatewayListUpdateResponseError struct {
-	Code             int64                                        `json:"code,required"`
-	Message          string                                       `json:"message,required"`
+	Code             int64                                        `json:"code" api:"required"`
+	Message          string                                       `json:"message" api:"required"`
 	DocumentationURL string                                       `json:"documentation_url"`
 	Source           AccountGatewayListUpdateResponseErrorsSource `json:"source"`
 	JSON             accountGatewayListUpdateResponseErrorJSON    `json:"-"`
@@ -706,8 +706,8 @@ func (r accountGatewayListUpdateResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type AccountGatewayListUpdateResponseMessage struct {
-	Code             int64                                          `json:"code,required"`
-	Message          string                                         `json:"message,required"`
+	Code             int64                                          `json:"code" api:"required"`
+	Message          string                                         `json:"message" api:"required"`
 	DocumentationURL string                                         `json:"documentation_url"`
 	Source           AccountGatewayListUpdateResponseMessagesSource `json:"source"`
 	JSON             accountGatewayListUpdateResponseMessageJSON    `json:"-"`
@@ -769,10 +769,10 @@ func (r AccountGatewayListUpdateResponseSuccess) IsKnown() bool {
 }
 
 type AccountGatewayListListResponse struct {
-	Errors   []ZeroTrustGatewayMessages `json:"errors,required"`
-	Messages []ZeroTrustGatewayMessages `json:"messages,required"`
+	Errors   []ZeroTrustGatewayMessages `json:"errors" api:"required"`
+	Messages []ZeroTrustGatewayMessages `json:"messages" api:"required"`
 	// Whether the API call was successful
-	Success    AccountGatewayListListResponseSuccess    `json:"success,required"`
+	Success    AccountGatewayListListResponseSuccess    `json:"success" api:"required"`
 	Result     []ListGateway                            `json:"result"`
 	ResultInfo AccountGatewayListListResponseResultInfo `json:"result_info"`
 	JSON       accountGatewayListListResponseJSON       `json:"-"`
@@ -845,10 +845,10 @@ func (r accountGatewayListListResponseResultInfoJSON) RawJSON() string {
 }
 
 type AccountGatewayListListItemsResponse struct {
-	Errors   []AccountGatewayListListItemsResponseError   `json:"errors,required"`
-	Messages []AccountGatewayListListItemsResponseMessage `json:"messages,required"`
+	Errors   []AccountGatewayListListItemsResponseError   `json:"errors" api:"required"`
+	Messages []AccountGatewayListListItemsResponseMessage `json:"messages" api:"required"`
 	// Whether the API call was successful
-	Success    AccountGatewayListListItemsResponseSuccess    `json:"success,required"`
+	Success    AccountGatewayListListItemsResponseSuccess    `json:"success" api:"required"`
 	Result     [][]Items                                     `json:"result"`
 	ResultInfo AccountGatewayListListItemsResponseResultInfo `json:"result_info"`
 	JSON       accountGatewayListListItemsResponseJSON       `json:"-"`
@@ -875,8 +875,8 @@ func (r accountGatewayListListItemsResponseJSON) RawJSON() string {
 }
 
 type AccountGatewayListListItemsResponseError struct {
-	Code             int64                                           `json:"code,required"`
-	Message          string                                          `json:"message,required"`
+	Code             int64                                           `json:"code" api:"required"`
+	Message          string                                          `json:"message" api:"required"`
 	DocumentationURL string                                          `json:"documentation_url"`
 	Source           AccountGatewayListListItemsResponseErrorsSource `json:"source"`
 	JSON             accountGatewayListListItemsResponseErrorJSON    `json:"-"`
@@ -923,8 +923,8 @@ func (r accountGatewayListListItemsResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type AccountGatewayListListItemsResponseMessage struct {
-	Code             int64                                             `json:"code,required"`
-	Message          string                                            `json:"message,required"`
+	Code             int64                                             `json:"code" api:"required"`
+	Message          string                                            `json:"message" api:"required"`
 	DocumentationURL string                                            `json:"documentation_url"`
 	Source           AccountGatewayListListItemsResponseMessagesSource `json:"source"`
 	JSON             accountGatewayListListItemsResponseMessageJSON    `json:"-"`
@@ -1017,10 +1017,10 @@ func (r accountGatewayListListItemsResponseResultInfoJSON) RawJSON() string {
 }
 
 type AccountGatewayListPatchResponse struct {
-	Errors   []AccountGatewayListPatchResponseError   `json:"errors,required"`
-	Messages []AccountGatewayListPatchResponseMessage `json:"messages,required"`
+	Errors   []AccountGatewayListPatchResponseError   `json:"errors" api:"required"`
+	Messages []AccountGatewayListPatchResponseMessage `json:"messages" api:"required"`
 	// Whether the API call was successful
-	Success AccountGatewayListPatchResponseSuccess `json:"success,required"`
+	Success AccountGatewayListPatchResponseSuccess `json:"success" api:"required"`
 	Result  ListGateway                            `json:"result"`
 	JSON    accountGatewayListPatchResponseJSON    `json:"-"`
 }
@@ -1045,8 +1045,8 @@ func (r accountGatewayListPatchResponseJSON) RawJSON() string {
 }
 
 type AccountGatewayListPatchResponseError struct {
-	Code             int64                                       `json:"code,required"`
-	Message          string                                      `json:"message,required"`
+	Code             int64                                       `json:"code" api:"required"`
+	Message          string                                      `json:"message" api:"required"`
 	DocumentationURL string                                      `json:"documentation_url"`
 	Source           AccountGatewayListPatchResponseErrorsSource `json:"source"`
 	JSON             accountGatewayListPatchResponseErrorJSON    `json:"-"`
@@ -1093,8 +1093,8 @@ func (r accountGatewayListPatchResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type AccountGatewayListPatchResponseMessage struct {
-	Code             int64                                         `json:"code,required"`
-	Message          string                                        `json:"message,required"`
+	Code             int64                                         `json:"code" api:"required"`
+	Message          string                                        `json:"message" api:"required"`
 	DocumentationURL string                                        `json:"documentation_url"`
 	Source           AccountGatewayListPatchResponseMessagesSource `json:"source"`
 	JSON             accountGatewayListPatchResponseMessageJSON    `json:"-"`
@@ -1157,9 +1157,9 @@ func (r AccountGatewayListPatchResponseSuccess) IsKnown() bool {
 
 type AccountGatewayListNewParams struct {
 	// The name of the list.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// The type of list.
-	Type param.Field[SchemasListType] `json:"type,required"`
+	Type param.Field[SchemasListType] `json:"type" api:"required"`
 	// The description of the list.
 	Description param.Field[string] `json:"description"`
 	// items to add to the list.
@@ -1183,7 +1183,7 @@ func (r AccountGatewayListNewParamsItem) MarshalJSON() (data []byte, err error) 
 
 type AccountGatewayListUpdateParams struct {
 	// The name of the list.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// The description of the list.
 	Description param.Field[string] `json:"description"`
 	// items to add to the list.

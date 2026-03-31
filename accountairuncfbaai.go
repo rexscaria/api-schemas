@@ -41,11 +41,11 @@ func (r *AccountAIRunCfBaaiService) ExecuteBgeBaseEnV1_5(ctx context.Context, ac
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai/run/@cf/baai/bge-base-en-v1.5", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Execute @cf/baai/bge-large-en-v1.5 model.
@@ -53,11 +53,11 @@ func (r *AccountAIRunCfBaaiService) ExecuteBgeLargeEnV1_5(ctx context.Context, a
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai/run/@cf/baai/bge-large-en-v1.5", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Execute @cf/baai/bge-m3 model.
@@ -65,11 +65,11 @@ func (r *AccountAIRunCfBaaiService) ExecuteBgeM3(ctx context.Context, accountID 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai/run/@cf/baai/bge-m3", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Execute @cf/baai/bge-reranker-base model.
@@ -77,11 +77,11 @@ func (r *AccountAIRunCfBaaiService) ExecuteBgeRerankerBase(ctx context.Context, 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai/run/@cf/baai/bge-reranker-base", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Execute @cf/baai/bge-small-en-v1.5 model.
@@ -89,11 +89,11 @@ func (r *AccountAIRunCfBaaiService) ExecuteBgeSmallEnV1_5(ctx context.Context, a
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai/run/@cf/baai/bge-small-en-v1.5", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountAIRunCfBaaiExecuteBgeBaseEnV1_5Response = interface{}
@@ -151,7 +151,7 @@ type AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyUnion interface {
 
 type AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyObject struct {
 	// The text to embed
-	Text param.Field[AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyObjectTextUnion] `json:"text,required"`
+	Text param.Field[AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyObjectTextUnion] `json:"text" api:"required"`
 	// The pooling method used in the embedding process. `cls` pooling will generate
 	// more accurate embeddings on larger inputs - however, embeddings created with cls
 	// pooling are not compatible with embeddings generated with mean pooling. The
@@ -202,7 +202,7 @@ func (r AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyObjectPooling) IsKnown()
 
 type AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyRequests struct {
 	// Batch of the embeddings requests to run using async-queue
-	Requests param.Field[[]AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyRequestsRequest] `json:"requests,required"`
+	Requests param.Field[[]AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyRequestsRequest] `json:"requests" api:"required"`
 }
 
 func (r AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyRequests) MarshalJSON() (data []byte, err error) {
@@ -214,7 +214,7 @@ func (r AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyRequests) implementsAcco
 
 type AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyRequestsRequest struct {
 	// The text to embed
-	Text param.Field[AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyRequestsRequestsTextUnion] `json:"text,required"`
+	Text param.Field[AccountAIRunCfBaaiExecuteBgeBaseEnV1_5ParamsBodyRequestsRequestsTextUnion] `json:"text" api:"required"`
 	// The pooling method used in the embedding process. `cls` pooling will generate
 	// more accurate embeddings on larger inputs - however, embeddings created with cls
 	// pooling are not compatible with embeddings generated with mean pooling. The
@@ -325,7 +325,7 @@ type AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyUnion interface {
 
 type AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyObject struct {
 	// The text to embed
-	Text param.Field[AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyObjectTextUnion] `json:"text,required"`
+	Text param.Field[AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyObjectTextUnion] `json:"text" api:"required"`
 	// The pooling method used in the embedding process. `cls` pooling will generate
 	// more accurate embeddings on larger inputs - however, embeddings created with cls
 	// pooling are not compatible with embeddings generated with mean pooling. The
@@ -376,7 +376,7 @@ func (r AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyObjectPooling) IsKnown(
 
 type AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyRequests struct {
 	// Batch of the embeddings requests to run using async-queue
-	Requests param.Field[[]AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyRequestsRequest] `json:"requests,required"`
+	Requests param.Field[[]AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyRequestsRequest] `json:"requests" api:"required"`
 }
 
 func (r AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyRequests) MarshalJSON() (data []byte, err error) {
@@ -388,7 +388,7 @@ func (r AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyRequests) implementsAcc
 
 type AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyRequestsRequest struct {
 	// The text to embed
-	Text param.Field[AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyRequestsRequestsTextUnion] `json:"text,required"`
+	Text param.Field[AccountAIRunCfBaaiExecuteBgeLargeEnV1_5ParamsBodyRequestsRequestsTextUnion] `json:"text" api:"required"`
 	// The pooling method used in the embedding process. `cls` pooling will generate
 	// more accurate embeddings on larger inputs - however, embeddings created with cls
 	// pooling are not compatible with embeddings generated with mean pooling. The
@@ -503,7 +503,7 @@ type AccountAIRunCfBaaiExecuteBgeM3ParamsBodyUnion interface {
 type AccountAIRunCfBaaiExecuteBgeM3ParamsBodyBgeM3InputQueryAndContexts struct {
 	// List of provided contexts. Note that the index in this array is important, as
 	// the response will refer to it.
-	Contexts param.Field[[]AccountAIRunCfBaaiExecuteBgeM3ParamsBodyBgeM3InputQueryAndContextsContext] `json:"contexts,required"`
+	Contexts param.Field[[]AccountAIRunCfBaaiExecuteBgeM3ParamsBodyBgeM3InputQueryAndContextsContext] `json:"contexts" api:"required"`
 	// A query you wish to perform against the provided contexts. If no query is
 	// provided the model with respond with embeddings for contexts
 	Query param.Field[string] `json:"query"`
@@ -530,7 +530,7 @@ func (r AccountAIRunCfBaaiExecuteBgeM3ParamsBodyBgeM3InputQueryAndContextsContex
 
 type AccountAIRunCfBaaiExecuteBgeM3ParamsBodyBgeM3InputEmbedding struct {
 	// The text to embed
-	Text param.Field[AccountAIRunCfBaaiExecuteBgeM3ParamsBodyBgeM3InputEmbeddingTextUnion] `json:"text,required"`
+	Text param.Field[AccountAIRunCfBaaiExecuteBgeM3ParamsBodyBgeM3InputEmbeddingTextUnion] `json:"text" api:"required"`
 	// When provided with too long context should the model error out or truncate the
 	// context to fit?
 	TruncateInputs param.Field[bool] `json:"truncate_inputs"`
@@ -558,7 +558,7 @@ func (r AccountAIRunCfBaaiExecuteBgeM3ParamsBodyBgeM3InputEmbeddingTextArray) Im
 
 type AccountAIRunCfBaaiExecuteBgeM3ParamsBodyRequests struct {
 	// Batch of the embeddings requests to run using async-queue
-	Requests param.Field[[]AccountAIRunCfBaaiExecuteBgeM3ParamsBodyRequestsRequestUnion] `json:"requests,required"`
+	Requests param.Field[[]AccountAIRunCfBaaiExecuteBgeM3ParamsBodyRequestsRequestUnion] `json:"requests" api:"required"`
 }
 
 func (r AccountAIRunCfBaaiExecuteBgeM3ParamsBodyRequests) MarshalJSON() (data []byte, err error) {
@@ -597,7 +597,7 @@ type AccountAIRunCfBaaiExecuteBgeM3ParamsBodyRequestsRequestUnion interface {
 type AccountAIRunCfBaaiExecuteBgeM3ParamsBodyRequestsRequestsBgeM3InputQueryAndContexts struct {
 	// List of provided contexts. Note that the index in this array is important, as
 	// the response will refer to it.
-	Contexts param.Field[[]AccountAIRunCfBaaiExecuteBgeM3ParamsBodyRequestsRequestsBgeM3InputQueryAndContextsContext] `json:"contexts,required"`
+	Contexts param.Field[[]AccountAIRunCfBaaiExecuteBgeM3ParamsBodyRequestsRequestsBgeM3InputQueryAndContextsContext] `json:"contexts" api:"required"`
 	// A query you wish to perform against the provided contexts. If no query is
 	// provided the model with respond with embeddings for contexts
 	Query param.Field[string] `json:"query"`
@@ -624,7 +624,7 @@ func (r AccountAIRunCfBaaiExecuteBgeM3ParamsBodyRequestsRequestsBgeM3InputQueryA
 
 type AccountAIRunCfBaaiExecuteBgeM3ParamsBodyRequestsRequestsBgeM3InputEmbedding struct {
 	// The text to embed
-	Text param.Field[AccountAIRunCfBaaiExecuteBgeM3ParamsBodyRequestsRequestsBgeM3InputEmbeddingTextUnion] `json:"text,required"`
+	Text param.Field[AccountAIRunCfBaaiExecuteBgeM3ParamsBodyRequestsRequestsBgeM3InputEmbeddingTextUnion] `json:"text" api:"required"`
 	// When provided with too long context should the model error out or truncate the
 	// context to fit?
 	TruncateInputs param.Field[bool] `json:"truncate_inputs"`
@@ -653,9 +653,9 @@ func (r AccountAIRunCfBaaiExecuteBgeM3ParamsBodyRequestsRequestsBgeM3InputEmbedd
 type AccountAIRunCfBaaiExecuteBgeRerankerBaseParams struct {
 	// List of provided contexts. Note that the index in this array is important, as
 	// the response will refer to it.
-	Contexts param.Field[[]AccountAIRunCfBaaiExecuteBgeRerankerBaseParamsContext] `json:"contexts,required"`
+	Contexts param.Field[[]AccountAIRunCfBaaiExecuteBgeRerankerBaseParamsContext] `json:"contexts" api:"required"`
 	// A query you wish to perform against the provided contexts.
-	Query        param.Field[string] `json:"query,required"`
+	Query        param.Field[string] `json:"query" api:"required"`
 	QueueRequest param.Field[string] `query:"queueRequest"`
 	// Number of returned results starting with the best score.
 	TopK param.Field[int64] `json:"top_k"`
@@ -728,7 +728,7 @@ type AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyUnion interface {
 
 type AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyObject struct {
 	// The text to embed
-	Text param.Field[AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyObjectTextUnion] `json:"text,required"`
+	Text param.Field[AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyObjectTextUnion] `json:"text" api:"required"`
 	// The pooling method used in the embedding process. `cls` pooling will generate
 	// more accurate embeddings on larger inputs - however, embeddings created with cls
 	// pooling are not compatible with embeddings generated with mean pooling. The
@@ -779,7 +779,7 @@ func (r AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyObjectPooling) IsKnown(
 
 type AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyRequests struct {
 	// Batch of the embeddings requests to run using async-queue
-	Requests param.Field[[]AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyRequestsRequest] `json:"requests,required"`
+	Requests param.Field[[]AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyRequestsRequest] `json:"requests" api:"required"`
 }
 
 func (r AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyRequests) MarshalJSON() (data []byte, err error) {
@@ -791,7 +791,7 @@ func (r AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyRequests) implementsAcc
 
 type AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyRequestsRequest struct {
 	// The text to embed
-	Text param.Field[AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyRequestsRequestsTextUnion] `json:"text,required"`
+	Text param.Field[AccountAIRunCfBaaiExecuteBgeSmallEnV1_5ParamsBodyRequestsRequestsTextUnion] `json:"text" api:"required"`
 	// The pooling method used in the embedding process. `cls` pooling will generate
 	// more accurate embeddings on larger inputs - however, embeddings created with cls
 	// pooling are not compatible with embeddings generated with mean pooling. The

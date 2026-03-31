@@ -45,19 +45,19 @@ func (r *AccountWorkerDispatchNamespaceScriptSettingService) Get(ctx context.Con
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if dispatchNamespace == "" {
 		err = errors.New("missing required dispatch_namespace parameter")
-		return
+		return nil, err
 	}
 	if scriptName == "" {
 		err = errors.New("missing required script_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/workers/dispatch/namespaces/%s/scripts/%s/settings", accountID, dispatchNamespace, scriptName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Patch script metadata, such as bindings.
@@ -65,19 +65,19 @@ func (r *AccountWorkerDispatchNamespaceScriptSettingService) Patch(ctx context.C
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if dispatchNamespace == "" {
 		err = errors.New("missing required dispatch_namespace parameter")
-		return
+		return nil, err
 	}
 	if scriptName == "" {
 		err = errors.New("missing required script_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/workers/dispatch/namespaces/%s/scripts/%s/settings", accountID, dispatchNamespace, scriptName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type MigrationStep struct {
@@ -699,10 +699,10 @@ func (r UsageModel) IsKnown() bool {
 }
 
 type AccountWorkerDispatchNamespaceScriptSettingGetResponse struct {
-	Errors   []WorkersMessages `json:"errors,required"`
-	Messages []WorkersMessages `json:"messages,required"`
+	Errors   []WorkersMessages `json:"errors" api:"required"`
+	Messages []WorkersMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountWorkerDispatchNamespaceScriptSettingGetResponseSuccess `json:"success,required"`
+	Success AccountWorkerDispatchNamespaceScriptSettingGetResponseSuccess `json:"success" api:"required"`
 	Result  ScriptVersionItem                                             `json:"result"`
 	JSON    accountWorkerDispatchNamespaceScriptSettingGetResponseJSON    `json:"-"`
 }
@@ -742,10 +742,10 @@ func (r AccountWorkerDispatchNamespaceScriptSettingGetResponseSuccess) IsKnown()
 }
 
 type AccountWorkerDispatchNamespaceScriptSettingPatchResponse struct {
-	Errors   []WorkersMessages `json:"errors,required"`
-	Messages []WorkersMessages `json:"messages,required"`
+	Errors   []WorkersMessages `json:"errors" api:"required"`
+	Messages []WorkersMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountWorkerDispatchNamespaceScriptSettingPatchResponseSuccess `json:"success,required"`
+	Success AccountWorkerDispatchNamespaceScriptSettingPatchResponseSuccess `json:"success" api:"required"`
 	Result  ScriptVersionItem                                               `json:"result"`
 	JSON    accountWorkerDispatchNamespaceScriptSettingPatchResponseJSON    `json:"-"`
 }

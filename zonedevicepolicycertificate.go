@@ -39,11 +39,11 @@ func (r *ZoneDevicePolicyCertificateService) Get(ctx context.Context, zoneID str
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/devices/policy/certificates", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Enable Zero Trust Clients to provision a certificate, containing a x509 subject,
@@ -53,19 +53,19 @@ func (r *ZoneDevicePolicyCertificateService) Update(ctx context.Context, zoneID 
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/devices/policy/certificates", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type DevicePolicyCertificate struct {
-	Errors   []DevicePolicyCertificateError   `json:"errors,required"`
-	Messages []DevicePolicyCertificateMessage `json:"messages,required"`
-	Result   DevicePolicyCertificateResult    `json:"result,required,nullable"`
+	Errors   []DevicePolicyCertificateError   `json:"errors" api:"required"`
+	Messages []DevicePolicyCertificateMessage `json:"messages" api:"required"`
+	Result   DevicePolicyCertificateResult    `json:"result" api:"required,nullable"`
 	// Whether the API call was successful.
-	Success DevicePolicyCertificateSuccess `json:"success,required"`
+	Success DevicePolicyCertificateSuccess `json:"success" api:"required"`
 	JSON    devicePolicyCertificateJSON    `json:"-"`
 }
 
@@ -89,8 +89,8 @@ func (r devicePolicyCertificateJSON) RawJSON() string {
 }
 
 type DevicePolicyCertificateError struct {
-	Code             int64                               `json:"code,required"`
-	Message          string                              `json:"message,required"`
+	Code             int64                               `json:"code" api:"required"`
+	Message          string                              `json:"message" api:"required"`
 	DocumentationURL string                              `json:"documentation_url"`
 	Source           DevicePolicyCertificateErrorsSource `json:"source"`
 	JSON             devicePolicyCertificateErrorJSON    `json:"-"`
@@ -137,8 +137,8 @@ func (r devicePolicyCertificateErrorsSourceJSON) RawJSON() string {
 }
 
 type DevicePolicyCertificateMessage struct {
-	Code             int64                                 `json:"code,required"`
-	Message          string                                `json:"message,required"`
+	Code             int64                                 `json:"code" api:"required"`
+	Message          string                                `json:"message" api:"required"`
 	DocumentationURL string                                `json:"documentation_url"`
 	Source           DevicePolicyCertificateMessagesSource `json:"source"`
 	JSON             devicePolicyCertificateMessageJSON    `json:"-"`
@@ -187,7 +187,7 @@ func (r devicePolicyCertificateMessagesSourceJSON) RawJSON() string {
 type DevicePolicyCertificateResult struct {
 	// The current status of the device policy certificate provisioning feature for
 	// WARP clients.
-	Enabled bool                              `json:"enabled,required"`
+	Enabled bool                              `json:"enabled" api:"required"`
 	JSON    devicePolicyCertificateResultJSON `json:"-"`
 }
 
@@ -225,7 +225,7 @@ func (r DevicePolicyCertificateSuccess) IsKnown() bool {
 type ZoneDevicePolicyCertificateUpdateParams struct {
 	// The current status of the device policy certificate provisioning feature for
 	// WARP clients.
-	Enabled param.Field[bool] `json:"enabled,required"`
+	Enabled param.Field[bool] `json:"enabled" api:"required"`
 }
 
 func (r ZoneDevicePolicyCertificateUpdateParams) MarshalJSON() (data []byte, err error) {

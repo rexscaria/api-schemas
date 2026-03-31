@@ -19,7 +19,7 @@ import (
 )
 
 func TestAccountBrowserRenderingGetHTMLContentWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -31,6 +31,7 @@ func TestAccountBrowserRenderingGetHTMLContentWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.BrowserRendering.GetHTMLContent(
 		context.TODO(),
@@ -114,7 +115,7 @@ func TestAccountBrowserRenderingGetHTMLContentWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountBrowserRenderingGetJsonWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -126,6 +127,7 @@ func TestAccountBrowserRenderingGetJsonWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.BrowserRendering.GetJson(
 		context.TODO(),
@@ -216,7 +218,7 @@ func TestAccountBrowserRenderingGetJsonWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountBrowserRenderingGetLinksWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -228,6 +230,7 @@ func TestAccountBrowserRenderingGetLinksWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.BrowserRendering.GetLinks(
 		context.TODO(),
@@ -312,7 +315,7 @@ func TestAccountBrowserRenderingGetLinksWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountBrowserRenderingGetMarkdownWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -324,6 +327,7 @@ func TestAccountBrowserRenderingGetMarkdownWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.BrowserRendering.GetMarkdown(
 		context.TODO(),
@@ -417,6 +421,7 @@ func TestAccountBrowserRenderingGetPdfWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	resp, err := client.Accounts.BrowserRendering.GetPdf(
 		context.TODO(),
@@ -536,7 +541,7 @@ func TestAccountBrowserRenderingGetPdfWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountBrowserRenderingGetScreenshotWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -548,6 +553,7 @@ func TestAccountBrowserRenderingGetScreenshotWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.BrowserRendering.GetScreenshot(
 		context.TODO(),
@@ -650,7 +656,7 @@ func TestAccountBrowserRenderingGetScreenshotWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountBrowserRenderingGetSnapshotWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -662,6 +668,7 @@ func TestAccountBrowserRenderingGetSnapshotWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.BrowserRendering.GetSnapshot(
 		context.TODO(),
@@ -761,7 +768,7 @@ func TestAccountBrowserRenderingGetSnapshotWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountBrowserRenderingScrapeElementsWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -773,6 +780,7 @@ func TestAccountBrowserRenderingScrapeElementsWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.BrowserRendering.ScrapeElements(
 		context.TODO(),

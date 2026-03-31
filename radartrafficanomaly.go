@@ -42,7 +42,7 @@ func (r *RadarTrafficAnomalyService) List(ctx context.Context, query RadarTraffi
 	opts = slices.Concat(r.Options, opts)
 	path := "radar/traffic_anomalies"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves the sum of Internet traffic anomalies, grouped by location. These
@@ -52,12 +52,12 @@ func (r *RadarTrafficAnomalyService) Locations(ctx context.Context, query RadarT
 	opts = slices.Concat(r.Options, opts)
 	path := "radar/traffic_anomalies/locations"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type RadarTrafficAnomalyListResponse struct {
-	Result  RadarTrafficAnomalyListResponseResult `json:"result,required"`
-	Success bool                                  `json:"success,required"`
+	Result  RadarTrafficAnomalyListResponseResult `json:"result" api:"required"`
+	Success bool                                  `json:"success" api:"required"`
 	JSON    radarTrafficAnomalyListResponseJSON   `json:"-"`
 }
 
@@ -79,7 +79,7 @@ func (r radarTrafficAnomalyListResponseJSON) RawJSON() string {
 }
 
 type RadarTrafficAnomalyListResponseResult struct {
-	TrafficAnomalies []RadarTrafficAnomalyListResponseResultTrafficAnomaly `json:"trafficAnomalies,required"`
+	TrafficAnomalies []RadarTrafficAnomalyListResponseResultTrafficAnomaly `json:"trafficAnomalies" api:"required"`
 	JSON             radarTrafficAnomalyListResponseResultJSON             `json:"-"`
 }
 
@@ -100,10 +100,10 @@ func (r radarTrafficAnomalyListResponseResultJSON) RawJSON() string {
 }
 
 type RadarTrafficAnomalyListResponseResultTrafficAnomaly struct {
-	StartDate            string                                                               `json:"startDate,required"`
-	Status               string                                                               `json:"status,required"`
-	Type                 string                                                               `json:"type,required"`
-	Uuid                 string                                                               `json:"uuid,required"`
+	StartDate            string                                                               `json:"startDate" api:"required"`
+	Status               string                                                               `json:"status" api:"required"`
+	Type                 string                                                               `json:"type" api:"required"`
+	Uuid                 string                                                               `json:"uuid" api:"required"`
 	AsnDetails           RadarTrafficAnomalyListResponseResultTrafficAnomaliesAsnDetails      `json:"asnDetails"`
 	EndDate              time.Time                                                            `json:"endDate" format:"date-time"`
 	LocationDetails      RadarTrafficAnomalyListResponseResultTrafficAnomaliesLocationDetails `json:"locationDetails"`
@@ -135,8 +135,8 @@ func (r radarTrafficAnomalyListResponseResultTrafficAnomalyJSON) RawJSON() strin
 }
 
 type RadarTrafficAnomalyListResponseResultTrafficAnomaliesAsnDetails struct {
-	Asn       string                                                                   `json:"asn,required"`
-	Name      string                                                                   `json:"name,required"`
+	Asn       string                                                                   `json:"asn" api:"required"`
+	Name      string                                                                   `json:"name" api:"required"`
 	Locations RadarTrafficAnomalyListResponseResultTrafficAnomaliesAsnDetailsLocations `json:"locations"`
 	JSON      radarTrafficAnomalyListResponseResultTrafficAnomaliesAsnDetailsJSON      `json:"-"`
 }
@@ -161,8 +161,8 @@ func (r radarTrafficAnomalyListResponseResultTrafficAnomaliesAsnDetailsJSON) Raw
 }
 
 type RadarTrafficAnomalyListResponseResultTrafficAnomaliesAsnDetailsLocations struct {
-	Code string                                                                       `json:"code,required"`
-	Name string                                                                       `json:"name,required"`
+	Code string                                                                       `json:"code" api:"required"`
+	Name string                                                                       `json:"name" api:"required"`
 	JSON radarTrafficAnomalyListResponseResultTrafficAnomaliesAsnDetailsLocationsJSON `json:"-"`
 }
 
@@ -185,8 +185,8 @@ func (r radarTrafficAnomalyListResponseResultTrafficAnomaliesAsnDetailsLocations
 }
 
 type RadarTrafficAnomalyListResponseResultTrafficAnomaliesLocationDetails struct {
-	Code string                                                                   `json:"code,required"`
-	Name string                                                                   `json:"name,required"`
+	Code string                                                                   `json:"code" api:"required"`
+	Name string                                                                   `json:"name" api:"required"`
 	JSON radarTrafficAnomalyListResponseResultTrafficAnomaliesLocationDetailsJSON `json:"-"`
 }
 
@@ -209,8 +209,8 @@ func (r radarTrafficAnomalyListResponseResultTrafficAnomaliesLocationDetailsJSON
 }
 
 type RadarTrafficAnomalyLocationsResponse struct {
-	Result  RadarTrafficAnomalyLocationsResponseResult `json:"result,required"`
-	Success bool                                       `json:"success,required"`
+	Result  RadarTrafficAnomalyLocationsResponseResult `json:"result" api:"required"`
+	Success bool                                       `json:"success" api:"required"`
 	JSON    radarTrafficAnomalyLocationsResponseJSON   `json:"-"`
 }
 
@@ -232,7 +232,7 @@ func (r radarTrafficAnomalyLocationsResponseJSON) RawJSON() string {
 }
 
 type RadarTrafficAnomalyLocationsResponseResult struct {
-	TrafficAnomalies []RadarTrafficAnomalyLocationsResponseResultTrafficAnomaly `json:"trafficAnomalies,required"`
+	TrafficAnomalies []RadarTrafficAnomalyLocationsResponseResultTrafficAnomaly `json:"trafficAnomalies" api:"required"`
 	JSON             radarTrafficAnomalyLocationsResponseResultJSON             `json:"-"`
 }
 
@@ -253,10 +253,10 @@ func (r radarTrafficAnomalyLocationsResponseResultJSON) RawJSON() string {
 }
 
 type RadarTrafficAnomalyLocationsResponseResultTrafficAnomaly struct {
-	ClientCountryAlpha2 string `json:"clientCountryAlpha2,required"`
-	ClientCountryName   string `json:"clientCountryName,required"`
+	ClientCountryAlpha2 string `json:"clientCountryAlpha2" api:"required"`
+	ClientCountryName   string `json:"clientCountryName" api:"required"`
 	// A numeric string.
-	Value string                                                       `json:"value,required"`
+	Value string                                                       `json:"value" api:"required"`
 	JSON  radarTrafficAnomalyLocationsResponseResultTrafficAnomalyJSON `json:"-"`
 }
 

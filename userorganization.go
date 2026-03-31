@@ -43,11 +43,11 @@ func (r *UserOrganizationService) Get(ctx context.Context, organizationID string
 	opts = slices.Concat(r.Options, opts)
 	if organizationID == "" {
 		err = errors.New("missing required organization_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("user/organizations/%s", organizationID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists organizations the user is associated with.
@@ -57,7 +57,7 @@ func (r *UserOrganizationService) List(ctx context.Context, query UserOrganizati
 	opts = slices.Concat(r.Options, opts)
 	path := "user/organizations"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Removes association to an organization.
@@ -67,18 +67,18 @@ func (r *UserOrganizationService) Leave(ctx context.Context, organizationID stri
 	opts = slices.Concat(r.Options, opts)
 	if organizationID == "" {
 		err = errors.New("missing required organization_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("user/organizations/%s", organizationID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type UserOrganizationGetResponse struct {
-	Errors   []UserOrganizationGetResponseError   `json:"errors,required"`
-	Messages []UserOrganizationGetResponseMessage `json:"messages,required"`
+	Errors   []UserOrganizationGetResponseError   `json:"errors" api:"required"`
+	Messages []UserOrganizationGetResponseMessage `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success UserOrganizationGetResponseSuccess `json:"success,required"`
+	Success UserOrganizationGetResponseSuccess `json:"success" api:"required"`
 	Result  interface{}                        `json:"result"`
 	JSON    userOrganizationGetResponseJSON    `json:"-"`
 }
@@ -103,8 +103,8 @@ func (r userOrganizationGetResponseJSON) RawJSON() string {
 }
 
 type UserOrganizationGetResponseError struct {
-	Code             int64                                   `json:"code,required"`
-	Message          string                                  `json:"message,required"`
+	Code             int64                                   `json:"code" api:"required"`
+	Message          string                                  `json:"message" api:"required"`
 	DocumentationURL string                                  `json:"documentation_url"`
 	Source           UserOrganizationGetResponseErrorsSource `json:"source"`
 	JSON             userOrganizationGetResponseErrorJSON    `json:"-"`
@@ -151,8 +151,8 @@ func (r userOrganizationGetResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type UserOrganizationGetResponseMessage struct {
-	Code             int64                                     `json:"code,required"`
-	Message          string                                    `json:"message,required"`
+	Code             int64                                     `json:"code" api:"required"`
+	Message          string                                    `json:"message" api:"required"`
 	DocumentationURL string                                    `json:"documentation_url"`
 	Source           UserOrganizationGetResponseMessagesSource `json:"source"`
 	JSON             userOrganizationGetResponseMessageJSON    `json:"-"`
@@ -214,10 +214,10 @@ func (r UserOrganizationGetResponseSuccess) IsKnown() bool {
 }
 
 type UserOrganizationListResponse struct {
-	Errors   []UserOrganizationListResponseError   `json:"errors,required"`
-	Messages []UserOrganizationListResponseMessage `json:"messages,required"`
+	Errors   []UserOrganizationListResponseError   `json:"errors" api:"required"`
+	Messages []UserOrganizationListResponseMessage `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success    UserOrganizationListResponseSuccess    `json:"success,required"`
+	Success    UserOrganizationListResponseSuccess    `json:"success" api:"required"`
 	Result     []UserOrganizationListResponseResult   `json:"result"`
 	ResultInfo UserOrganizationListResponseResultInfo `json:"result_info"`
 	JSON       userOrganizationListResponseJSON       `json:"-"`
@@ -244,8 +244,8 @@ func (r userOrganizationListResponseJSON) RawJSON() string {
 }
 
 type UserOrganizationListResponseError struct {
-	Code             int64                                    `json:"code,required"`
-	Message          string                                   `json:"message,required"`
+	Code             int64                                    `json:"code" api:"required"`
+	Message          string                                   `json:"message" api:"required"`
 	DocumentationURL string                                   `json:"documentation_url"`
 	Source           UserOrganizationListResponseErrorsSource `json:"source"`
 	JSON             userOrganizationListResponseErrorJSON    `json:"-"`
@@ -292,8 +292,8 @@ func (r userOrganizationListResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type UserOrganizationListResponseMessage struct {
-	Code             int64                                      `json:"code,required"`
-	Message          string                                     `json:"message,required"`
+	Code             int64                                      `json:"code" api:"required"`
+	Message          string                                     `json:"message" api:"required"`
 	DocumentationURL string                                     `json:"documentation_url"`
 	Source           UserOrganizationListResponseMessagesSource `json:"source"`
 	JSON             userOrganizationListResponseMessageJSON    `json:"-"`

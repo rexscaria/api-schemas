@@ -46,19 +46,19 @@ func (r *AccountEmailSecurityService) GetSubmissions(ctx context.Context, accoun
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/email-security/submissions", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountEmailSecurityGetSubmissionsResponse struct {
-	Errors     []EmailSecurityMessage                             `json:"errors,required"`
-	Messages   []EmailSecurityMessage                             `json:"messages,required"`
-	Result     []AccountEmailSecurityGetSubmissionsResponseResult `json:"result,required"`
-	ResultInfo ResultInfoEmailSecurity                            `json:"result_info,required"`
-	Success    bool                                               `json:"success,required"`
+	Errors     []EmailSecurityMessage                             `json:"errors" api:"required"`
+	Messages   []EmailSecurityMessage                             `json:"messages" api:"required"`
+	Result     []AccountEmailSecurityGetSubmissionsResponseResult `json:"result" api:"required"`
+	ResultInfo ResultInfoEmailSecurity                            `json:"result_info" api:"required"`
+	Success    bool                                               `json:"success" api:"required"`
 	JSON       accountEmailSecurityGetSubmissionsResponseJSON     `json:"-"`
 }
 
@@ -83,17 +83,17 @@ func (r accountEmailSecurityGetSubmissionsResponseJSON) RawJSON() string {
 }
 
 type AccountEmailSecurityGetSubmissionsResponseResult struct {
-	RequestedTs          time.Time                                            `json:"requested_ts,required" format:"date-time"`
-	SubmissionID         string                                               `json:"submission_id,required"`
-	OriginalDisposition  DispositionLabel                                     `json:"original_disposition,nullable"`
-	OriginalEdfHash      string                                               `json:"original_edf_hash,nullable"`
-	Outcome              string                                               `json:"outcome,nullable"`
-	OutcomeDisposition   DispositionLabel                                     `json:"outcome_disposition,nullable"`
-	RequestedBy          string                                               `json:"requested_by,nullable"`
-	RequestedDisposition DispositionLabel                                     `json:"requested_disposition,nullable"`
-	Status               string                                               `json:"status,nullable"`
-	Subject              string                                               `json:"subject,nullable"`
-	Type                 string                                               `json:"type,nullable"`
+	RequestedTs          time.Time                                            `json:"requested_ts" api:"required" format:"date-time"`
+	SubmissionID         string                                               `json:"submission_id" api:"required"`
+	OriginalDisposition  DispositionLabel                                     `json:"original_disposition" api:"nullable"`
+	OriginalEdfHash      string                                               `json:"original_edf_hash" api:"nullable"`
+	Outcome              string                                               `json:"outcome" api:"nullable"`
+	OutcomeDisposition   DispositionLabel                                     `json:"outcome_disposition" api:"nullable"`
+	RequestedBy          string                                               `json:"requested_by" api:"nullable"`
+	RequestedDisposition DispositionLabel                                     `json:"requested_disposition" api:"nullable"`
+	Status               string                                               `json:"status" api:"nullable"`
+	Subject              string                                               `json:"subject" api:"nullable"`
+	Type                 string                                               `json:"type" api:"nullable"`
 	JSON                 accountEmailSecurityGetSubmissionsResponseResultJSON `json:"-"`
 }
 

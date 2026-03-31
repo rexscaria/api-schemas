@@ -40,11 +40,11 @@ func (r *AccountAccessOrganizationDohService) Get(ctx context.Context, accountID
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/access/organizations/doh", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates the DoH settings for your Zero Trust organization.
@@ -52,18 +52,18 @@ func (r *AccountAccessOrganizationDohService) Update(ctx context.Context, accoun
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/access/organizations/doh", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountAccessOrganizationDohGetResponse struct {
-	Errors   []MessagesAccessItem `json:"errors,required"`
-	Messages []MessagesAccessItem `json:"messages,required"`
+	Errors   []MessagesAccessItem `json:"errors" api:"required"`
+	Messages []MessagesAccessItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountAccessOrganizationDohGetResponseSuccess `json:"success,required"`
+	Success AccountAccessOrganizationDohGetResponseSuccess `json:"success" api:"required"`
 	Result  AccountAccessOrganizationDohGetResponseResult  `json:"result"`
 	JSON    accountAccessOrganizationDohGetResponseJSON    `json:"-"`
 }
@@ -150,10 +150,10 @@ func (r accountAccessOrganizationDohGetResponseResultJSON) RawJSON() string {
 }
 
 type AccountAccessOrganizationDohUpdateResponse struct {
-	Errors   []MessagesAccessItem `json:"errors,required"`
-	Messages []MessagesAccessItem `json:"messages,required"`
+	Errors   []MessagesAccessItem `json:"errors" api:"required"`
+	Messages []MessagesAccessItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountAccessOrganizationDohUpdateResponseSuccess `json:"success,required"`
+	Success AccountAccessOrganizationDohUpdateResponseSuccess `json:"success" api:"required"`
 	Result  AccountAccessOrganizationDohUpdateResponseResult  `json:"result"`
 	JSON    accountAccessOrganizationDohUpdateResponseJSON    `json:"-"`
 }

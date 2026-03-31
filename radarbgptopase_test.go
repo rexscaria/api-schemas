@@ -15,7 +15,7 @@ import (
 )
 
 func TestRadarBgpTopAseListTopAsesWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -27,6 +27,7 @@ func TestRadarBgpTopAseListTopAsesWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.Bgp.Top.Ases.ListTopAses(context.TODO(), cfrex.RadarBgpTopAseListTopAsesParams{
 		Asn:        cfrex.F([]string{"string"}),
@@ -49,7 +50,7 @@ func TestRadarBgpTopAseListTopAsesWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarBgpTopAseListTopPrefixesWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -61,6 +62,7 @@ func TestRadarBgpTopAseListTopPrefixesWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.Bgp.Top.Ases.ListTopPrefixes(context.TODO(), cfrex.RadarBgpTopAseListTopPrefixesParams{
 		Country: cfrex.F("NZ"),

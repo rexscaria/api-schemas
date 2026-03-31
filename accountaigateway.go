@@ -44,17 +44,17 @@ func (r *AccountAIGatewayService) ListEvaluators(ctx context.Context, accountID 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai-gateway/evaluation-types", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountAIGatewayListEvaluatorsResponse struct {
-	Result     []AccountAIGatewayListEvaluatorsResponseResult   `json:"result,required"`
-	ResultInfo AccountAIGatewayListEvaluatorsResponseResultInfo `json:"result_info,required"`
-	Success    bool                                             `json:"success,required"`
+	Result     []AccountAIGatewayListEvaluatorsResponseResult   `json:"result" api:"required"`
+	ResultInfo AccountAIGatewayListEvaluatorsResponseResultInfo `json:"result_info" api:"required"`
+	Success    bool                                             `json:"success" api:"required"`
 	JSON       accountAIGatewayListEvaluatorsResponseJSON       `json:"-"`
 }
 
@@ -77,14 +77,14 @@ func (r accountAIGatewayListEvaluatorsResponseJSON) RawJSON() string {
 }
 
 type AccountAIGatewayListEvaluatorsResponseResult struct {
-	ID          string                                           `json:"id,required"`
-	CreatedAt   time.Time                                        `json:"created_at,required" format:"date-time"`
-	Description string                                           `json:"description,required"`
-	Enable      bool                                             `json:"enable,required"`
-	Mandatory   bool                                             `json:"mandatory,required"`
-	ModifiedAt  time.Time                                        `json:"modified_at,required" format:"date-time"`
-	Name        string                                           `json:"name,required"`
-	Type        string                                           `json:"type,required"`
+	ID          string                                           `json:"id" api:"required"`
+	CreatedAt   time.Time                                        `json:"created_at" api:"required" format:"date-time"`
+	Description string                                           `json:"description" api:"required"`
+	Enable      bool                                             `json:"enable" api:"required"`
+	Mandatory   bool                                             `json:"mandatory" api:"required"`
+	ModifiedAt  time.Time                                        `json:"modified_at" api:"required" format:"date-time"`
+	Name        string                                           `json:"name" api:"required"`
+	Type        string                                           `json:"type" api:"required"`
 	JSON        accountAIGatewayListEvaluatorsResponseResultJSON `json:"-"`
 }
 
@@ -112,10 +112,10 @@ func (r accountAIGatewayListEvaluatorsResponseResultJSON) RawJSON() string {
 }
 
 type AccountAIGatewayListEvaluatorsResponseResultInfo struct {
-	Count      float64                                              `json:"count,required"`
-	Page       float64                                              `json:"page,required"`
-	PerPage    float64                                              `json:"per_page,required"`
-	TotalCount float64                                              `json:"total_count,required"`
+	Count      float64                                              `json:"count" api:"required"`
+	Page       float64                                              `json:"page" api:"required"`
+	PerPage    float64                                              `json:"per_page" api:"required"`
+	TotalCount float64                                              `json:"total_count" api:"required"`
 	JSON       accountAIGatewayListEvaluatorsResponseResultInfoJSON `json:"-"`
 }
 

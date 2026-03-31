@@ -46,11 +46,11 @@ func (r *ZoneSpectrumAppService) New(ctx context.Context, zoneID ZoneIdentifierP
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/spectrum/apps", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Gets the application configuration of a specific application inside a zone.
@@ -58,15 +58,15 @@ func (r *ZoneSpectrumAppService) Get(ctx context.Context, zoneID ZoneIdentifierP
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if appID == "" {
 		err = errors.New("missing required app_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/spectrum/apps/%s", zoneID, appID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates a previously existing application's configuration that uses a name for
@@ -75,15 +75,15 @@ func (r *ZoneSpectrumAppService) Update(ctx context.Context, zoneID ZoneIdentifi
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if appID == "" {
 		err = errors.New("missing required app_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/spectrum/apps/%s", zoneID, appID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves a list of currently existing Spectrum applications inside a zone.
@@ -91,11 +91,11 @@ func (r *ZoneSpectrumAppService) List(ctx context.Context, zoneID ZoneIdentifier
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/spectrum/apps", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Deletes a previously existing application.
@@ -103,45 +103,45 @@ func (r *ZoneSpectrumAppService) Delete(ctx context.Context, zoneID ZoneIdentifi
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if appID == "" {
 		err = errors.New("missing required app_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/spectrum/apps/%s", zoneID, appID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type AppConfig struct {
 	// App identifier.
-	ID AppIdentifier `json:"id,required"`
+	ID AppIdentifier `json:"id" api:"required"`
 	// When the Application was created.
-	CreatedOn time.Time `json:"created_on,required" format:"date-time"`
+	CreatedOn time.Time `json:"created_on" api:"required" format:"date-time"`
 	// The name and type of DNS record for the Spectrum application.
-	DNS DNS `json:"dns,required"`
+	DNS DNS `json:"dns" api:"required"`
 	// Enables IP Access Rules for this application. Notes: Only available for TCP
 	// applications.
-	IPFirewall bool `json:"ip_firewall,required"`
+	IPFirewall bool `json:"ip_firewall" api:"required"`
 	// When the Application was last modified.
-	ModifiedOn time.Time `json:"modified_on,required" format:"date-time"`
+	ModifiedOn time.Time `json:"modified_on" api:"required" format:"date-time"`
 	// The port configuration at Cloudflare's edge. May specify a single port, for
 	// example `"tcp/1000"`, or a range of ports, for example `"tcp/1000-2000"`.
-	Protocol string `json:"protocol,required"`
+	Protocol string `json:"protocol" api:"required"`
 	// Enables Proxy Protocol to the origin. Refer to
 	// [Enable Proxy protocol](https://developers.cloudflare.com/spectrum/getting-started/proxy-protocol/)
 	// for implementation details on PROXY Protocol V1, PROXY Protocol V2, and Simple
 	// Proxy Protocol.
-	ProxyProtocol AppConfigProxyProtocol `json:"proxy_protocol,required"`
+	ProxyProtocol AppConfigProxyProtocol `json:"proxy_protocol" api:"required"`
 	// The type of TLS termination associated with the application.
-	Tls AppConfigTls `json:"tls,required"`
+	Tls AppConfigTls `json:"tls" api:"required"`
 	// Determines how data travels from the edge to your origin. When set to "direct",
 	// Spectrum will send traffic directly to your origin, and the application's type
 	// is derived from the `protocol`. When set to "http" or "https", Spectrum will
 	// apply Cloudflare's HTTP/HTTPS features as it sends traffic to your origin, and
 	// the application type matches this property exactly.
-	TrafficType AppConfigTrafficType `json:"traffic_type,required"`
+	TrafficType AppConfigTrafficType `json:"traffic_type" api:"required"`
 	// Enables Argo Smart Routing for this application. Notes: Only available for TCP
 	// applications with traffic_type set to "direct".
 	ArgoSmartRouting bool `json:"argo_smart_routing"`
@@ -541,26 +541,26 @@ func init() {
 
 type AppConfigParam struct {
 	// The name and type of DNS record for the Spectrum application.
-	DNS param.Field[DNSParam] `json:"dns,required"`
+	DNS param.Field[DNSParam] `json:"dns" api:"required"`
 	// Enables IP Access Rules for this application. Notes: Only available for TCP
 	// applications.
-	IPFirewall param.Field[bool] `json:"ip_firewall,required"`
+	IPFirewall param.Field[bool] `json:"ip_firewall" api:"required"`
 	// The port configuration at Cloudflare's edge. May specify a single port, for
 	// example `"tcp/1000"`, or a range of ports, for example `"tcp/1000-2000"`.
-	Protocol param.Field[string] `json:"protocol,required"`
+	Protocol param.Field[string] `json:"protocol" api:"required"`
 	// Enables Proxy Protocol to the origin. Refer to
 	// [Enable Proxy protocol](https://developers.cloudflare.com/spectrum/getting-started/proxy-protocol/)
 	// for implementation details on PROXY Protocol V1, PROXY Protocol V2, and Simple
 	// Proxy Protocol.
-	ProxyProtocol param.Field[AppConfigProxyProtocol] `json:"proxy_protocol,required"`
+	ProxyProtocol param.Field[AppConfigProxyProtocol] `json:"proxy_protocol" api:"required"`
 	// The type of TLS termination associated with the application.
-	Tls param.Field[AppConfigTls] `json:"tls,required"`
+	Tls param.Field[AppConfigTls] `json:"tls" api:"required"`
 	// Determines how data travels from the edge to your origin. When set to "direct",
 	// Spectrum will send traffic directly to your origin, and the application's type
 	// is derived from the `protocol`. When set to "http" or "https", Spectrum will
 	// apply Cloudflare's HTTP/HTTPS features as it sends traffic to your origin, and
 	// the application type matches this property exactly.
-	TrafficType param.Field[AppConfigTrafficType] `json:"traffic_type,required"`
+	TrafficType param.Field[AppConfigTrafficType] `json:"traffic_type" api:"required"`
 	// Enables Argo Smart Routing for this application. Notes: Only available for TCP
 	// applications with traffic_type set to "direct".
 	ArgoSmartRouting param.Field[bool] `json:"argo_smart_routing"`
@@ -668,10 +668,10 @@ type AppConfigOriginPortUnionParam interface {
 }
 
 type AppConfigSingle struct {
-	Errors   []SpectrumConfigMessageItem `json:"errors,required"`
-	Messages []SpectrumConfigMessageItem `json:"messages,required"`
+	Errors   []SpectrumConfigMessageItem `json:"errors" api:"required"`
+	Messages []SpectrumConfigMessageItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AppConfigSingleSuccess `json:"success,required"`
+	Success AppConfigSingleSuccess `json:"success" api:"required"`
 	Result  AppConfigSingleResult  `json:"result"`
 	JSON    appConfigSingleJSON    `json:"-"`
 }
@@ -711,16 +711,16 @@ func (r AppConfigSingleSuccess) IsKnown() bool {
 
 type AppConfigSingleResult struct {
 	// App identifier.
-	ID shared.UnionString `json:"id,required"`
+	ID shared.UnionString `json:"id" api:"required"`
 	// When the Application was created.
-	CreatedOn time.Time `json:"created_on,required" format:"date-time"`
+	CreatedOn time.Time `json:"created_on" api:"required" format:"date-time"`
 	// The name and type of DNS record for the Spectrum application.
-	DNS DNS `json:"dns,required"`
+	DNS DNS `json:"dns" api:"required"`
 	// When the Application was last modified.
-	ModifiedOn time.Time `json:"modified_on,required" format:"date-time"`
+	ModifiedOn time.Time `json:"modified_on" api:"required" format:"date-time"`
 	// The port configuration at Cloudflare's edge. May specify a single port, for
 	// example `"tcp/1000"`, or a range of ports, for example `"tcp/1000-2000"`.
-	Protocol string `json:"protocol,required"`
+	Protocol string `json:"protocol" api:"required"`
 	// Enables Argo Smart Routing for this application. Notes: Only available for TCP
 	// applications with traffic_type set to "direct".
 	ArgoSmartRouting bool `json:"argo_smart_routing"`
@@ -933,16 +933,16 @@ func (r DNSParam) MarshalJSON() (data []byte, err error) {
 
 type PaygoAppConfig struct {
 	// App identifier.
-	ID AppIdentifier `json:"id,required"`
+	ID AppIdentifier `json:"id" api:"required"`
 	// When the Application was created.
-	CreatedOn time.Time `json:"created_on,required" format:"date-time"`
+	CreatedOn time.Time `json:"created_on" api:"required" format:"date-time"`
 	// The name and type of DNS record for the Spectrum application.
-	DNS DNS `json:"dns,required"`
+	DNS DNS `json:"dns" api:"required"`
 	// When the Application was last modified.
-	ModifiedOn time.Time `json:"modified_on,required" format:"date-time"`
+	ModifiedOn time.Time `json:"modified_on" api:"required" format:"date-time"`
 	// The port configuration at Cloudflare's edge. May specify a single port, for
 	// example `"tcp/1000"`, or a range of ports, for example `"tcp/1000-2000"`.
-	Protocol string `json:"protocol,required"`
+	Protocol string `json:"protocol" api:"required"`
 	// List of origin IP addresses. Array may contain multiple IP addresses for load
 	// balancing.
 	OriginDirect []string           `json:"origin_direct" format:"URI"`
@@ -973,10 +973,10 @@ func (r PaygoAppConfig) implementsAppConfigSingleResult() {}
 
 type PaygoAppConfigParam struct {
 	// The name and type of DNS record for the Spectrum application.
-	DNS param.Field[DNSParam] `json:"dns,required"`
+	DNS param.Field[DNSParam] `json:"dns" api:"required"`
 	// The port configuration at Cloudflare's edge. May specify a single port, for
 	// example `"tcp/1000"`, or a range of ports, for example `"tcp/1000-2000"`.
-	Protocol param.Field[string] `json:"protocol,required"`
+	Protocol param.Field[string] `json:"protocol" api:"required"`
 	// List of origin IP addresses. Array may contain multiple IP addresses for load
 	// balancing.
 	OriginDirect param.Field[[]string] `json:"origin_direct" format:"URI"`
@@ -989,8 +989,8 @@ func (r PaygoAppConfigParam) MarshalJSON() (data []byte, err error) {
 func (r PaygoAppConfigParam) implementsUpdateAppConfigUnionParam() {}
 
 type SpectrumConfigMessageItem struct {
-	Code             int64                           `json:"code,required"`
-	Message          string                          `json:"message,required"`
+	Code             int64                           `json:"code" api:"required"`
+	Message          string                          `json:"message" api:"required"`
 	DocumentationURL string                          `json:"documentation_url"`
 	Source           SpectrumConfigMessageItemSource `json:"source"`
 	JSON             spectrumConfigMessageItemJSON   `json:"-"`
@@ -1038,10 +1038,10 @@ func (r spectrumConfigMessageItemSourceJSON) RawJSON() string {
 
 type UpdateAppConfigParam struct {
 	// The name and type of DNS record for the Spectrum application.
-	DNS param.Field[DNSParam] `json:"dns,required"`
+	DNS param.Field[DNSParam] `json:"dns" api:"required"`
 	// The port configuration at Cloudflare's edge. May specify a single port, for
 	// example `"tcp/1000"`, or a range of ports, for example `"tcp/1000-2000"`.
-	Protocol param.Field[string] `json:"protocol,required"`
+	Protocol param.Field[string] `json:"protocol" api:"required"`
 	// Enables Argo Smart Routing for this application. Notes: Only available for TCP
 	// applications with traffic_type set to "direct".
 	ArgoSmartRouting param.Field[bool]        `json:"argo_smart_routing"`
@@ -1141,10 +1141,10 @@ func (r UpdateAppConfigTrafficType) IsKnown() bool {
 type ZoneIdentifierParam = string
 
 type ZoneSpectrumAppListResponse struct {
-	Errors   []SpectrumConfigMessageItem `json:"errors,required"`
-	Messages []SpectrumConfigMessageItem `json:"messages,required"`
+	Errors   []SpectrumConfigMessageItem `json:"errors" api:"required"`
+	Messages []SpectrumConfigMessageItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success    ZoneSpectrumAppListResponseSuccess     `json:"success,required"`
+	Success    ZoneSpectrumAppListResponseSuccess     `json:"success" api:"required"`
 	Result     ZoneSpectrumAppListResponseResultUnion `json:"result"`
 	ResultInfo ZoneSpectrumAppListResponseResultInfo  `json:"result_info"`
 	JSON       zoneSpectrumAppListResponseJSON        `json:"-"`
@@ -1242,11 +1242,11 @@ func (r zoneSpectrumAppListResponseResultInfoJSON) RawJSON() string {
 }
 
 type ZoneSpectrumAppDeleteResponse struct {
-	Errors   []SpectrumConfigMessageItem `json:"errors,required"`
-	Messages []SpectrumConfigMessageItem `json:"messages,required"`
+	Errors   []SpectrumConfigMessageItem `json:"errors" api:"required"`
+	Messages []SpectrumConfigMessageItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success ZoneSpectrumAppDeleteResponseSuccess `json:"success,required"`
-	Result  ZoneSpectrumAppDeleteResponseResult  `json:"result,nullable"`
+	Success ZoneSpectrumAppDeleteResponseSuccess `json:"success" api:"required"`
+	Result  ZoneSpectrumAppDeleteResponseResult  `json:"result" api:"nullable"`
 	JSON    zoneSpectrumAppDeleteResponseJSON    `json:"-"`
 }
 
@@ -1286,7 +1286,7 @@ func (r ZoneSpectrumAppDeleteResponseSuccess) IsKnown() bool {
 
 type ZoneSpectrumAppDeleteResponseResult struct {
 	// Identifier.
-	ID   string                                  `json:"id,required"`
+	ID   string                                  `json:"id" api:"required"`
 	JSON zoneSpectrumAppDeleteResponseResultJSON `json:"-"`
 }
 
@@ -1307,7 +1307,7 @@ func (r zoneSpectrumAppDeleteResponseResultJSON) RawJSON() string {
 }
 
 type ZoneSpectrumAppNewParams struct {
-	UpdateAppConfig UpdateAppConfigUnionParam `json:"update_app_config,required"`
+	UpdateAppConfig UpdateAppConfigUnionParam `json:"update_app_config" api:"required"`
 }
 
 func (r ZoneSpectrumAppNewParams) MarshalJSON() (data []byte, err error) {
@@ -1315,7 +1315,7 @@ func (r ZoneSpectrumAppNewParams) MarshalJSON() (data []byte, err error) {
 }
 
 type ZoneSpectrumAppUpdateParams struct {
-	UpdateAppConfig UpdateAppConfigUnionParam `json:"update_app_config,required"`
+	UpdateAppConfig UpdateAppConfigUnionParam `json:"update_app_config" api:"required"`
 }
 
 func (r ZoneSpectrumAppUpdateParams) MarshalJSON() (data []byte, err error) {

@@ -14,7 +14,7 @@ import (
 )
 
 func TestZoneSnippetSnippetRuleUpdate(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,6 +26,7 @@ func TestZoneSnippetSnippetRuleUpdate(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.Snippets.SnippetRules.Update(
 		context.TODO(),
@@ -49,7 +50,7 @@ func TestZoneSnippetSnippetRuleUpdate(t *testing.T) {
 }
 
 func TestZoneSnippetSnippetRuleList(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -61,6 +62,7 @@ func TestZoneSnippetSnippetRuleList(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.Snippets.SnippetRules.List(context.TODO(), "9f1839b6152d298aca64c4e906b6d074")
 	if err != nil {
@@ -73,7 +75,7 @@ func TestZoneSnippetSnippetRuleList(t *testing.T) {
 }
 
 func TestZoneSnippetSnippetRuleDeleteAll(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -85,6 +87,7 @@ func TestZoneSnippetSnippetRuleDeleteAll(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.Snippets.SnippetRules.DeleteAll(context.TODO(), "9f1839b6152d298aca64c4e906b6d074")
 	if err != nil {

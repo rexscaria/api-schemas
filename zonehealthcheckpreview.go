@@ -38,11 +38,11 @@ func (r *ZoneHealthcheckPreviewService) New(ctx context.Context, zoneID string, 
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/healthchecks/preview", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetch a single configured health check preview.
@@ -50,15 +50,15 @@ func (r *ZoneHealthcheckPreviewService) Get(ctx context.Context, zoneID string, 
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if healthcheckID == "" {
 		err = errors.New("missing required healthcheck_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/healthchecks/preview/%s", zoneID, healthcheckID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete a health check.
@@ -66,19 +66,19 @@ func (r *ZoneHealthcheckPreviewService) Delete(ctx context.Context, zoneID strin
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if healthcheckID == "" {
 		err = errors.New("missing required healthcheck_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/healthchecks/preview/%s", zoneID, healthcheckID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type ZoneHealthcheckPreviewNewParams struct {
-	HealthcheckQuery HealthcheckQueryParam `json:"healthcheck_query,required"`
+	HealthcheckQuery HealthcheckQueryParam `json:"healthcheck_query" api:"required"`
 }
 
 func (r ZoneHealthcheckPreviewNewParams) MarshalJSON() (data []byte, err error) {

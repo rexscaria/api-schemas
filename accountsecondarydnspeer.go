@@ -39,11 +39,11 @@ func (r *AccountSecondaryDNSPeerService) New(ctx context.Context, accountID stri
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/secondary_dns/peers", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get Peer.
@@ -51,15 +51,15 @@ func (r *AccountSecondaryDNSPeerService) Get(ctx context.Context, accountID stri
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if peerID == "" {
 		err = errors.New("missing required peer_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/secondary_dns/peers/%s", accountID, peerID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Modify Peer.
@@ -67,15 +67,15 @@ func (r *AccountSecondaryDNSPeerService) Update(ctx context.Context, accountID s
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if peerID == "" {
 		err = errors.New("missing required peer_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/secondary_dns/peers/%s", accountID, peerID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // List Peers.
@@ -83,11 +83,11 @@ func (r *AccountSecondaryDNSPeerService) List(ctx context.Context, accountID str
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/secondary_dns/peers", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete Peer.
@@ -95,21 +95,21 @@ func (r *AccountSecondaryDNSPeerService) Delete(ctx context.Context, accountID s
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if peerID == "" {
 		err = errors.New("missing required peer_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/secondary_dns/peers/%s", accountID, peerID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type Peer struct {
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The name of the peer.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// IPv4/IPv6 address of primary or secondary nameserver, depending on what zone
 	// this peer is linked to. For primary zones this IP defines the IP of the
 	// secondary nameserver Cloudflare will NOTIFY upon zone changes. For secondary
@@ -149,7 +149,7 @@ func (r peerJSON) RawJSON() string {
 
 type PeerParam struct {
 	// The name of the peer.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// IPv4/IPv6 address of primary or secondary nameserver, depending on what zone
 	// this peer is linked to. For primary zones this IP defines the IP of the
 	// secondary nameserver Cloudflare will NOTIFY upon zone changes. For secondary
@@ -171,10 +171,10 @@ func (r PeerParam) MarshalJSON() (data []byte, err error) {
 }
 
 type SchemasSecondaryDNSPeersSingleResponse struct {
-	Errors   []SecondaryDNSMessages `json:"errors,required"`
-	Messages []SecondaryDNSMessages `json:"messages,required"`
+	Errors   []SecondaryDNSMessages `json:"errors" api:"required"`
+	Messages []SecondaryDNSMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success SchemasSecondaryDNSPeersSingleResponseSuccess `json:"success,required"`
+	Success SchemasSecondaryDNSPeersSingleResponseSuccess `json:"success" api:"required"`
 	Result  Peer                                          `json:"result"`
 	JSON    schemasSecondaryDNSPeersSingleResponseJSON    `json:"-"`
 }
@@ -214,10 +214,10 @@ func (r SchemasSecondaryDNSPeersSingleResponseSuccess) IsKnown() bool {
 }
 
 type AccountSecondaryDNSPeerListResponse struct {
-	Errors   []SecondaryDNSMessages `json:"errors,required"`
-	Messages []SecondaryDNSMessages `json:"messages,required"`
+	Errors   []SecondaryDNSMessages `json:"errors" api:"required"`
+	Messages []SecondaryDNSMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success    AccountSecondaryDNSPeerListResponseSuccess    `json:"success,required"`
+	Success    AccountSecondaryDNSPeerListResponseSuccess    `json:"success" api:"required"`
 	Result     []Peer                                        `json:"result"`
 	ResultInfo AccountSecondaryDNSPeerListResponseResultInfo `json:"result_info"`
 	JSON       accountSecondaryDNSPeerListResponseJSON       `json:"-"`
@@ -291,7 +291,7 @@ func (r accountSecondaryDNSPeerListResponseResultInfoJSON) RawJSON() string {
 
 type AccountSecondaryDNSPeerNewParams struct {
 	// The name of the peer.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 }
 
 func (r AccountSecondaryDNSPeerNewParams) MarshalJSON() (data []byte, err error) {
@@ -299,7 +299,7 @@ func (r AccountSecondaryDNSPeerNewParams) MarshalJSON() (data []byte, err error)
 }
 
 type AccountSecondaryDNSPeerUpdateParams struct {
-	Peer PeerParam `json:"peer,required"`
+	Peer PeerParam `json:"peer" api:"required"`
 }
 
 func (r AccountSecondaryDNSPeerUpdateParams) MarshalJSON() (data []byte, err error) {

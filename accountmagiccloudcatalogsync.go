@@ -39,16 +39,16 @@ func NewAccountMagicCloudCatalogSyncService(opts ...option.RequestOption) (r *Ac
 // Create a new Catalog Sync (Closed Beta).
 func (r *AccountMagicCloudCatalogSyncService) New(ctx context.Context, accountID string, params AccountMagicCloudCatalogSyncNewParams, opts ...option.RequestOption) (res *AccountMagicCloudCatalogSyncNewResponse, err error) {
 	if params.Forwarded.Present {
-		opts = append(opts, option.WithHeader("forwarded", fmt.Sprintf("%s", params.Forwarded)))
+		opts = append(opts, option.WithHeader("forwarded", fmt.Sprintf("%v", params.Forwarded)))
 	}
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/cloud/catalog-syncs", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Read a Catalog Sync (Closed Beta).
@@ -56,15 +56,15 @@ func (r *AccountMagicCloudCatalogSyncService) Get(ctx context.Context, accountID
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if syncID == "" {
 		err = errors.New("missing required sync_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/cloud/catalog-syncs/%s", accountID, syncID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update a Catalog Sync (Closed Beta).
@@ -72,15 +72,15 @@ func (r *AccountMagicCloudCatalogSyncService) Update(ctx context.Context, accoun
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if syncID == "" {
 		err = errors.New("missing required sync_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/cloud/catalog-syncs/%s", accountID, syncID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // List Catalog Syncs (Closed Beta).
@@ -88,11 +88,11 @@ func (r *AccountMagicCloudCatalogSyncService) List(ctx context.Context, accountI
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/cloud/catalog-syncs", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete a Catalog Sync (Closed Beta).
@@ -100,15 +100,15 @@ func (r *AccountMagicCloudCatalogSyncService) Delete(ctx context.Context, accoun
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if syncID == "" {
 		err = errors.New("missing required sync_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/cloud/catalog-syncs/%s", accountID, syncID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // List prebuilt catalog sync policies (Closed Beta).
@@ -116,11 +116,11 @@ func (r *AccountMagicCloudCatalogSyncService) ListPolicies(ctx context.Context, 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/cloud/catalog-syncs/prebuilt-policies", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Update a Catalog Sync (Closed Beta).
@@ -128,15 +128,15 @@ func (r *AccountMagicCloudCatalogSyncService) Patch(ctx context.Context, account
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if syncID == "" {
 		err = errors.New("missing required sync_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/cloud/catalog-syncs/%s", accountID, syncID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Refresh a Catalog Sync's destination by running the sync policy against latest
@@ -145,26 +145,26 @@ func (r *AccountMagicCloudCatalogSyncService) Run(ctx context.Context, accountID
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if syncID == "" {
 		err = errors.New("missing required sync_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/cloud/catalog-syncs/%s/refresh", accountID, syncID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type McnCatalogSync struct {
-	ID                       string                        `json:"id,required" format:"uuid"`
-	Description              string                        `json:"description,required"`
-	DestinationID            string                        `json:"destination_id,required" format:"uuid"`
-	DestinationType          McnCatalogSyncDestinationType `json:"destination_type,required"`
-	LastUserUpdateAt         string                        `json:"last_user_update_at,required"`
-	Name                     string                        `json:"name,required"`
-	Policy                   string                        `json:"policy,required"`
-	UpdateMode               McnCatalogSyncUpdateMode      `json:"update_mode,required"`
+	ID                       string                        `json:"id" api:"required" format:"uuid"`
+	Description              string                        `json:"description" api:"required"`
+	DestinationID            string                        `json:"destination_id" api:"required" format:"uuid"`
+	DestinationType          McnCatalogSyncDestinationType `json:"destination_type" api:"required"`
+	LastUserUpdateAt         string                        `json:"last_user_update_at" api:"required"`
+	Name                     string                        `json:"name" api:"required"`
+	Policy                   string                        `json:"policy" api:"required"`
+	UpdateMode               McnCatalogSyncUpdateMode      `json:"update_mode" api:"required"`
 	Errors                   map[string]McnError           `json:"errors"`
 	IncludesDiscoveriesUntil string                        `json:"includes_discoveries_until"`
 	LastAttemptedUpdateAt    string                        `json:"last_attempted_update_at"`
@@ -240,10 +240,10 @@ func (r McnUpdateCatalogSyncRequestParam) MarshalJSON() (data []byte, err error)
 }
 
 type McnUpdateCatalogSyncResponse struct {
-	Errors   []McnError                       `json:"errors,required"`
-	Messages []McnError                       `json:"messages,required"`
-	Result   McnCatalogSync                   `json:"result,required"`
-	Success  bool                             `json:"success,required"`
+	Errors   []McnError                       `json:"errors" api:"required"`
+	Messages []McnError                       `json:"messages" api:"required"`
+	Result   McnCatalogSync                   `json:"result" api:"required"`
+	Success  bool                             `json:"success" api:"required"`
 	JSON     mcnUpdateCatalogSyncResponseJSON `json:"-"`
 }
 
@@ -267,10 +267,10 @@ func (r mcnUpdateCatalogSyncResponseJSON) RawJSON() string {
 }
 
 type AccountMagicCloudCatalogSyncNewResponse struct {
-	Errors   []McnError                                  `json:"errors,required"`
-	Messages []McnError                                  `json:"messages,required"`
-	Result   McnCatalogSync                              `json:"result,required"`
-	Success  bool                                        `json:"success,required"`
+	Errors   []McnError                                  `json:"errors" api:"required"`
+	Messages []McnError                                  `json:"messages" api:"required"`
+	Result   McnCatalogSync                              `json:"result" api:"required"`
+	Success  bool                                        `json:"success" api:"required"`
 	JSON     accountMagicCloudCatalogSyncNewResponseJSON `json:"-"`
 }
 
@@ -294,10 +294,10 @@ func (r accountMagicCloudCatalogSyncNewResponseJSON) RawJSON() string {
 }
 
 type AccountMagicCloudCatalogSyncGetResponse struct {
-	Errors   []McnError                                  `json:"errors,required"`
-	Messages []McnError                                  `json:"messages,required"`
-	Result   McnCatalogSync                              `json:"result,required"`
-	Success  bool                                        `json:"success,required"`
+	Errors   []McnError                                  `json:"errors" api:"required"`
+	Messages []McnError                                  `json:"messages" api:"required"`
+	Result   McnCatalogSync                              `json:"result" api:"required"`
+	Success  bool                                        `json:"success" api:"required"`
 	JSON     accountMagicCloudCatalogSyncGetResponseJSON `json:"-"`
 }
 
@@ -321,10 +321,10 @@ func (r accountMagicCloudCatalogSyncGetResponseJSON) RawJSON() string {
 }
 
 type AccountMagicCloudCatalogSyncListResponse struct {
-	Errors   []McnError                                   `json:"errors,required"`
-	Messages []McnError                                   `json:"messages,required"`
-	Result   []McnCatalogSync                             `json:"result,required"`
-	Success  bool                                         `json:"success,required"`
+	Errors   []McnError                                   `json:"errors" api:"required"`
+	Messages []McnError                                   `json:"messages" api:"required"`
+	Result   []McnCatalogSync                             `json:"result" api:"required"`
+	Success  bool                                         `json:"success" api:"required"`
 	JSON     accountMagicCloudCatalogSyncListResponseJSON `json:"-"`
 }
 
@@ -348,10 +348,10 @@ func (r accountMagicCloudCatalogSyncListResponseJSON) RawJSON() string {
 }
 
 type AccountMagicCloudCatalogSyncDeleteResponse struct {
-	Errors   []McnError                                       `json:"errors,required"`
-	Messages []McnError                                       `json:"messages,required"`
-	Result   AccountMagicCloudCatalogSyncDeleteResponseResult `json:"result,required"`
-	Success  bool                                             `json:"success,required"`
+	Errors   []McnError                                       `json:"errors" api:"required"`
+	Messages []McnError                                       `json:"messages" api:"required"`
+	Result   AccountMagicCloudCatalogSyncDeleteResponseResult `json:"result" api:"required"`
+	Success  bool                                             `json:"success" api:"required"`
 	JSON     accountMagicCloudCatalogSyncDeleteResponseJSON   `json:"-"`
 }
 
@@ -375,7 +375,7 @@ func (r accountMagicCloudCatalogSyncDeleteResponseJSON) RawJSON() string {
 }
 
 type AccountMagicCloudCatalogSyncDeleteResponseResult struct {
-	ID   string                                               `json:"id,required" format:"uuid"`
+	ID   string                                               `json:"id" api:"required" format:"uuid"`
 	JSON accountMagicCloudCatalogSyncDeleteResponseResultJSON `json:"-"`
 }
 
@@ -396,10 +396,10 @@ func (r accountMagicCloudCatalogSyncDeleteResponseResultJSON) RawJSON() string {
 }
 
 type AccountMagicCloudCatalogSyncListPoliciesResponse struct {
-	Errors   []McnError                                               `json:"errors,required"`
-	Messages []McnError                                               `json:"messages,required"`
-	Result   []AccountMagicCloudCatalogSyncListPoliciesResponseResult `json:"result,required"`
-	Success  bool                                                     `json:"success,required"`
+	Errors   []McnError                                               `json:"errors" api:"required"`
+	Messages []McnError                                               `json:"messages" api:"required"`
+	Result   []AccountMagicCloudCatalogSyncListPoliciesResponseResult `json:"result" api:"required"`
+	Success  bool                                                     `json:"success" api:"required"`
 	JSON     accountMagicCloudCatalogSyncListPoliciesResponseJSON     `json:"-"`
 }
 
@@ -423,10 +423,10 @@ func (r accountMagicCloudCatalogSyncListPoliciesResponseJSON) RawJSON() string {
 }
 
 type AccountMagicCloudCatalogSyncListPoliciesResponseResult struct {
-	ApplicableDestinations []McnCatalogSyncDestinationType                            `json:"applicable_destinations,required"`
-	PolicyDescription      string                                                     `json:"policy_description,required"`
-	PolicyName             string                                                     `json:"policy_name,required"`
-	PolicyString           string                                                     `json:"policy_string,required"`
+	ApplicableDestinations []McnCatalogSyncDestinationType                            `json:"applicable_destinations" api:"required"`
+	PolicyDescription      string                                                     `json:"policy_description" api:"required"`
+	PolicyName             string                                                     `json:"policy_name" api:"required"`
+	PolicyString           string                                                     `json:"policy_string" api:"required"`
 	JSON                   accountMagicCloudCatalogSyncListPoliciesResponseResultJSON `json:"-"`
 }
 
@@ -450,10 +450,10 @@ func (r accountMagicCloudCatalogSyncListPoliciesResponseResultJSON) RawJSON() st
 }
 
 type AccountMagicCloudCatalogSyncRunResponse struct {
-	Errors   []McnError                                  `json:"errors,required"`
-	Messages []McnError                                  `json:"messages,required"`
-	Result   string                                      `json:"result,required"`
-	Success  bool                                        `json:"success,required"`
+	Errors   []McnError                                  `json:"errors" api:"required"`
+	Messages []McnError                                  `json:"messages" api:"required"`
+	Result   string                                      `json:"result" api:"required"`
+	Success  bool                                        `json:"success" api:"required"`
 	JSON     accountMagicCloudCatalogSyncRunResponseJSON `json:"-"`
 }
 
@@ -477,9 +477,9 @@ func (r accountMagicCloudCatalogSyncRunResponseJSON) RawJSON() string {
 }
 
 type AccountMagicCloudCatalogSyncNewParams struct {
-	DestinationType param.Field[McnCatalogSyncDestinationType] `json:"destination_type,required"`
-	Name            param.Field[string]                        `json:"name,required"`
-	UpdateMode      param.Field[McnCatalogSyncUpdateMode]      `json:"update_mode,required"`
+	DestinationType param.Field[McnCatalogSyncDestinationType] `json:"destination_type" api:"required"`
+	Name            param.Field[string]                        `json:"name" api:"required"`
+	UpdateMode      param.Field[McnCatalogSyncUpdateMode]      `json:"update_mode" api:"required"`
 	Description     param.Field[string]                        `json:"description"`
 	Policy          param.Field[string]                        `json:"policy"`
 	Forwarded       param.Field[string]                        `header:"forwarded"`
@@ -490,7 +490,7 @@ func (r AccountMagicCloudCatalogSyncNewParams) MarshalJSON() (data []byte, err e
 }
 
 type AccountMagicCloudCatalogSyncUpdateParams struct {
-	McnUpdateCatalogSyncRequest McnUpdateCatalogSyncRequestParam `json:"mcn_update_catalog_sync_request,required"`
+	McnUpdateCatalogSyncRequest McnUpdateCatalogSyncRequestParam `json:"mcn_update_catalog_sync_request" api:"required"`
 }
 
 func (r AccountMagicCloudCatalogSyncUpdateParams) MarshalJSON() (data []byte, err error) {
@@ -525,7 +525,7 @@ func (r AccountMagicCloudCatalogSyncListPoliciesParams) URLQuery() (v url.Values
 }
 
 type AccountMagicCloudCatalogSyncPatchParams struct {
-	McnUpdateCatalogSyncRequest McnUpdateCatalogSyncRequestParam `json:"mcn_update_catalog_sync_request,required"`
+	McnUpdateCatalogSyncRequest McnUpdateCatalogSyncRequestParam `json:"mcn_update_catalog_sync_request" api:"required"`
 }
 
 func (r AccountMagicCloudCatalogSyncPatchParams) MarshalJSON() (data []byte, err error) {

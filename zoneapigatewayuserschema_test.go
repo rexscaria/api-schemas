@@ -16,7 +16,7 @@ import (
 )
 
 func TestZoneAPIGatewayUserSchemaGetWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -28,6 +28,7 @@ func TestZoneAPIGatewayUserSchemaGetWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.APIGateway.UserSchemas.Get(
 		context.TODO(),
@@ -47,7 +48,7 @@ func TestZoneAPIGatewayUserSchemaGetWithOptionalParams(t *testing.T) {
 }
 
 func TestZoneAPIGatewayUserSchemaListWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -59,6 +60,7 @@ func TestZoneAPIGatewayUserSchemaListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.APIGateway.UserSchemas.List(
 		context.TODO(),
@@ -80,7 +82,7 @@ func TestZoneAPIGatewayUserSchemaListWithOptionalParams(t *testing.T) {
 }
 
 func TestZoneAPIGatewayUserSchemaDelete(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -92,6 +94,7 @@ func TestZoneAPIGatewayUserSchemaDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.APIGateway.UserSchemas.Delete(
 		context.TODO(),
@@ -108,7 +111,7 @@ func TestZoneAPIGatewayUserSchemaDelete(t *testing.T) {
 }
 
 func TestZoneAPIGatewayUserSchemaEnableValidationWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -120,6 +123,7 @@ func TestZoneAPIGatewayUserSchemaEnableValidationWithOptionalParams(t *testing.T
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.APIGateway.UserSchemas.EnableValidation(
 		context.TODO(),
@@ -139,7 +143,7 @@ func TestZoneAPIGatewayUserSchemaEnableValidationWithOptionalParams(t *testing.T
 }
 
 func TestZoneAPIGatewayUserSchemaGetHostsWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -151,6 +155,7 @@ func TestZoneAPIGatewayUserSchemaGetHostsWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.APIGateway.UserSchemas.GetHosts(
 		context.TODO(),
@@ -170,7 +175,7 @@ func TestZoneAPIGatewayUserSchemaGetHostsWithOptionalParams(t *testing.T) {
 }
 
 func TestZoneAPIGatewayUserSchemaGetOperationsWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -182,6 +187,7 @@ func TestZoneAPIGatewayUserSchemaGetOperationsWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.APIGateway.UserSchemas.GetOperations(
 		context.TODO(),
@@ -207,7 +213,7 @@ func TestZoneAPIGatewayUserSchemaGetOperationsWithOptionalParams(t *testing.T) {
 }
 
 func TestZoneAPIGatewayUserSchemaUploadWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -219,12 +225,13 @@ func TestZoneAPIGatewayUserSchemaUploadWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.APIGateway.UserSchemas.Upload(
 		context.TODO(),
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.ZoneAPIGatewayUserSchemaUploadParams{
-			File:              cfrex.F(io.Reader(bytes.NewBuffer([]byte("some file contents")))),
+			File:              cfrex.F(io.Reader(bytes.NewBuffer([]byte("Example data")))),
 			Kind:              cfrex.F(cfrex.APIShieldKindOpenAPIV3),
 			Name:              cfrex.F("petstore schema"),
 			ValidationEnabled: cfrex.F(cfrex.ZoneAPIGatewayUserSchemaUploadParamsValidationEnabledTrue),

@@ -42,7 +42,7 @@ func (r *UserBillingService) ListHistory(ctx context.Context, query UserBillingL
 	opts = slices.Concat(r.Options, opts)
 	path := "user/billing/history"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Accesses your billing profile object.
@@ -52,15 +52,15 @@ func (r *UserBillingService) GetProfile(ctx context.Context, opts ...option.Requ
 	opts = slices.Concat(r.Options, opts)
 	path := "user/billing/profile"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type UserBillingListHistoryResponse struct {
-	Errors   []UserBillingListHistoryResponseError   `json:"errors,required"`
-	Messages []UserBillingListHistoryResponseMessage `json:"messages,required"`
-	Result   []UserBillingListHistoryResponseResult  `json:"result,required,nullable"`
+	Errors   []UserBillingListHistoryResponseError   `json:"errors" api:"required"`
+	Messages []UserBillingListHistoryResponseMessage `json:"messages" api:"required"`
+	Result   []UserBillingListHistoryResponseResult  `json:"result" api:"required,nullable"`
 	// Whether the API call was successful
-	Success    UserBillingListHistoryResponseSuccess    `json:"success,required"`
+	Success    UserBillingListHistoryResponseSuccess    `json:"success" api:"required"`
 	ResultInfo UserBillingListHistoryResponseResultInfo `json:"result_info"`
 	JSON       userBillingListHistoryResponseJSON       `json:"-"`
 }
@@ -86,8 +86,8 @@ func (r userBillingListHistoryResponseJSON) RawJSON() string {
 }
 
 type UserBillingListHistoryResponseError struct {
-	Code             int64                                      `json:"code,required"`
-	Message          string                                     `json:"message,required"`
+	Code             int64                                      `json:"code" api:"required"`
+	Message          string                                     `json:"message" api:"required"`
 	DocumentationURL string                                     `json:"documentation_url"`
 	Source           UserBillingListHistoryResponseErrorsSource `json:"source"`
 	JSON             userBillingListHistoryResponseErrorJSON    `json:"-"`
@@ -134,8 +134,8 @@ func (r userBillingListHistoryResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type UserBillingListHistoryResponseMessage struct {
-	Code             int64                                        `json:"code,required"`
-	Message          string                                       `json:"message,required"`
+	Code             int64                                        `json:"code" api:"required"`
+	Message          string                                       `json:"message" api:"required"`
 	DocumentationURL string                                       `json:"documentation_url"`
 	Source           UserBillingListHistoryResponseMessagesSource `json:"source"`
 	JSON             userBillingListHistoryResponseMessageJSON    `json:"-"`
@@ -183,20 +183,20 @@ func (r userBillingListHistoryResponseMessagesSourceJSON) RawJSON() string {
 
 type UserBillingListHistoryResponseResult struct {
 	// Billing item identifier tag.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The billing item action.
-	Action string `json:"action,required"`
+	Action string `json:"action" api:"required"`
 	// The amount associated with this billing item.
-	Amount float64 `json:"amount,required"`
+	Amount float64 `json:"amount" api:"required"`
 	// The monetary unit in which pricing information is displayed.
-	Currency string `json:"currency,required"`
+	Currency string `json:"currency" api:"required"`
 	// The billing item description.
-	Description string `json:"description,required"`
+	Description string `json:"description" api:"required"`
 	// When the billing item was created.
-	OccurredAt time.Time `json:"occurred_at,required" format:"date-time"`
+	OccurredAt time.Time `json:"occurred_at" api:"required" format:"date-time"`
 	// The billing item type.
-	Type string                                   `json:"type,required"`
-	Zone UserBillingListHistoryResponseResultZone `json:"zone,required"`
+	Type string                                   `json:"type" api:"required"`
+	Zone UserBillingListHistoryResponseResultZone `json:"zone" api:"required"`
 	JSON userBillingListHistoryResponseResultJSON `json:"-"`
 }
 

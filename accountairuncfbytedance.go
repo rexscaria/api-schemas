@@ -41,18 +41,18 @@ func (r *AccountAIRunCfBytedanceService) ExecuteStableDiffusionXlLightning(ctx c
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai/run/@cf/bytedance/stable-diffusion-xl-lightning", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountAIRunCfBytedanceExecuteStableDiffusionXlLightningResponse = interface{}
 
 type AccountAIRunCfBytedanceExecuteStableDiffusionXlLightningParams struct {
 	// A text description of the image you want to generate
-	Prompt       param.Field[string] `json:"prompt,required"`
+	Prompt       param.Field[string] `json:"prompt" api:"required"`
 	QueueRequest param.Field[string] `query:"queueRequest"`
 	// Controls how closely the generated image should adhere to the prompt; higher
 	// values make the image more aligned with the prompt

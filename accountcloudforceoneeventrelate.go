@@ -39,15 +39,15 @@ func (r *AccountCloudforceOneEventRelateService) New(ctx context.Context, accoun
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if eventID == "" {
 		err = errors.New("missing required event_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/cloudforce-one/events/relate/%s/create", accountID, eventID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Removes an event reference
@@ -55,20 +55,20 @@ func (r *AccountCloudforceOneEventRelateService) Remove(ctx context.Context, acc
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if eventID == "" {
 		err = errors.New("missing required event_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/cloudforce-one/events/relate/%s", accountID, eventID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountCloudforceOneEventRelateNewResponse struct {
-	Result  AccountCloudforceOneEventRelateNewResponseResult `json:"result,required"`
-	Success bool                                             `json:"success,required"`
+	Result  AccountCloudforceOneEventRelateNewResponseResult `json:"result" api:"required"`
+	Success bool                                             `json:"success" api:"required"`
 	JSON    accountCloudforceOneEventRelateNewResponseJSON   `json:"-"`
 }
 
@@ -90,7 +90,7 @@ func (r accountCloudforceOneEventRelateNewResponseJSON) RawJSON() string {
 }
 
 type AccountCloudforceOneEventRelateNewResponseResult struct {
-	Success bool                                                 `json:"success,required"`
+	Success bool                                                 `json:"success" api:"required"`
 	JSON    accountCloudforceOneEventRelateNewResponseResultJSON `json:"-"`
 }
 
@@ -111,8 +111,8 @@ func (r accountCloudforceOneEventRelateNewResponseResultJSON) RawJSON() string {
 }
 
 type AccountCloudforceOneEventRelateRemoveResponse struct {
-	Result  AccountCloudforceOneEventRelateRemoveResponseResult `json:"result,required"`
-	Success bool                                                `json:"success,required"`
+	Result  AccountCloudforceOneEventRelateRemoveResponseResult `json:"result" api:"required"`
+	Success bool                                                `json:"success" api:"required"`
 	JSON    accountCloudforceOneEventRelateRemoveResponseJSON   `json:"-"`
 }
 
@@ -134,7 +134,7 @@ func (r accountCloudforceOneEventRelateRemoveResponseJSON) RawJSON() string {
 }
 
 type AccountCloudforceOneEventRelateRemoveResponseResult struct {
-	Success bool                                                    `json:"success,required"`
+	Success bool                                                    `json:"success" api:"required"`
 	JSON    accountCloudforceOneEventRelateRemoveResponseResultJSON `json:"-"`
 }
 
@@ -155,7 +155,7 @@ func (r accountCloudforceOneEventRelateRemoveResponseResultJSON) RawJSON() strin
 }
 
 type AccountCloudforceOneEventRelateNewParams struct {
-	Events param.Field[[]string] `json:"events,required"`
+	Events param.Field[[]string] `json:"events" api:"required"`
 }
 
 func (r AccountCloudforceOneEventRelateNewParams) MarshalJSON() (data []byte, err error) {

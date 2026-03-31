@@ -39,11 +39,11 @@ func (r *AccountAlertingV3DestinationPagerdutyConnectService) NewToken(ctx conte
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/alerting/v3/destinations/pagerduty/connect", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Links PagerDuty with the account using the integration token.
@@ -51,22 +51,22 @@ func (r *AccountAlertingV3DestinationPagerdutyConnectService) Link(ctx context.C
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if tokenID == "" {
 		err = errors.New("missing required token_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/alerting/v3/destinations/pagerduty/connect/%s", accountID, tokenID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type IDResponseAlerting struct {
-	Errors   []IDResponseAlertingError   `json:"errors,required"`
-	Messages []IDResponseAlertingMessage `json:"messages,required"`
+	Errors   []IDResponseAlertingError   `json:"errors" api:"required"`
+	Messages []IDResponseAlertingMessage `json:"messages" api:"required"`
 	// Whether the API call was successful
-	Success IDResponseAlertingSuccess `json:"success,required"`
+	Success IDResponseAlertingSuccess `json:"success" api:"required"`
 	Result  IDResponseAlertingResult  `json:"result"`
 	JSON    idResponseAlertingJSON    `json:"-"`
 }
@@ -91,8 +91,8 @@ func (r idResponseAlertingJSON) RawJSON() string {
 }
 
 type IDResponseAlertingError struct {
-	Code             int64                          `json:"code,required"`
-	Message          string                         `json:"message,required"`
+	Code             int64                          `json:"code" api:"required"`
+	Message          string                         `json:"message" api:"required"`
 	DocumentationURL string                         `json:"documentation_url"`
 	Source           IDResponseAlertingErrorsSource `json:"source"`
 	JSON             idResponseAlertingErrorJSON    `json:"-"`
@@ -139,8 +139,8 @@ func (r idResponseAlertingErrorsSourceJSON) RawJSON() string {
 }
 
 type IDResponseAlertingMessage struct {
-	Code             int64                            `json:"code,required"`
-	Message          string                           `json:"message,required"`
+	Code             int64                            `json:"code" api:"required"`
+	Message          string                           `json:"message" api:"required"`
 	DocumentationURL string                           `json:"documentation_url"`
 	Source           IDResponseAlertingMessagesSource `json:"source"`
 	JSON             idResponseAlertingMessageJSON    `json:"-"`
@@ -224,10 +224,10 @@ func (r idResponseAlertingResultJSON) RawJSON() string {
 }
 
 type AccountAlertingV3DestinationPagerdutyConnectNewTokenResponse struct {
-	Errors   []AaaMessage `json:"errors,required"`
-	Messages []AaaMessage `json:"messages,required"`
+	Errors   []AaaMessage `json:"errors" api:"required"`
+	Messages []AaaMessage `json:"messages" api:"required"`
 	// Whether the API call was successful
-	Success AccountAlertingV3DestinationPagerdutyConnectNewTokenResponseSuccess `json:"success,required"`
+	Success AccountAlertingV3DestinationPagerdutyConnectNewTokenResponseSuccess `json:"success" api:"required"`
 	Result  AccountAlertingV3DestinationPagerdutyConnectNewTokenResponseResult  `json:"result"`
 	JSON    accountAlertingV3DestinationPagerdutyConnectNewTokenResponseJSON    `json:"-"`
 }

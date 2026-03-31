@@ -39,11 +39,11 @@ func (r *AccountCniSettingService) Get(ctx context.Context, accountID string, op
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/cni/settings", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update the current settings for the active account
@@ -51,15 +51,15 @@ func (r *AccountCniSettingService) Update(ctx context.Context, accountID string,
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/cni/settings", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type NscSettings struct {
-	DefaultAsn int64           `json:"default_asn,required"`
+	DefaultAsn int64           `json:"default_asn" api:"required"`
 	JSON       nscSettingsJSON `json:"-"`
 }
 

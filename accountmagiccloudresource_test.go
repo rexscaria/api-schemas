@@ -18,7 +18,7 @@ import (
 )
 
 func TestAccountMagicCloudResourceGetWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -30,6 +30,7 @@ func TestAccountMagicCloudResourceGetWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Magic.Cloud.Resources.Get(
 		context.TODO(),
@@ -49,7 +50,7 @@ func TestAccountMagicCloudResourceGetWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountMagicCloudResourceListWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -61,6 +62,7 @@ func TestAccountMagicCloudResourceListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Magic.Cloud.Resources.List(
 		context.TODO(),
@@ -101,6 +103,7 @@ func TestAccountMagicCloudResourceExportWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	resp, err := client.Accounts.Magic.Cloud.Resources.Export(
 		context.TODO(),
@@ -140,7 +143,7 @@ func TestAccountMagicCloudResourceExportWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountMagicCloudResourcePreviewPolicy(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -152,6 +155,7 @@ func TestAccountMagicCloudResourcePreviewPolicy(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Magic.Cloud.Resources.PreviewPolicy(
 		context.TODO(),

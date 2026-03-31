@@ -14,7 +14,7 @@ import (
 )
 
 func TestAccountDevicePostureIntegrationNewWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,6 +26,7 @@ func TestAccountDevicePostureIntegrationNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Devices.Posture.Integration.New(
 		context.TODO(),
@@ -52,7 +53,7 @@ func TestAccountDevicePostureIntegrationNewWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountDevicePostureIntegrationGet(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -64,6 +65,7 @@ func TestAccountDevicePostureIntegrationGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Devices.Posture.Integration.Get(
 		context.TODO(),
@@ -80,7 +82,7 @@ func TestAccountDevicePostureIntegrationGet(t *testing.T) {
 }
 
 func TestAccountDevicePostureIntegrationUpdateWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -92,6 +94,7 @@ func TestAccountDevicePostureIntegrationUpdateWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Devices.Posture.Integration.Update(
 		context.TODO(),
@@ -119,7 +122,7 @@ func TestAccountDevicePostureIntegrationUpdateWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountDevicePostureIntegrationList(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -131,6 +134,7 @@ func TestAccountDevicePostureIntegrationList(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Devices.Posture.Integration.List(context.TODO(), "699d98642c564d2e855e9661899b7252")
 	if err != nil {
@@ -143,7 +147,7 @@ func TestAccountDevicePostureIntegrationList(t *testing.T) {
 }
 
 func TestAccountDevicePostureIntegrationDelete(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -155,6 +159,7 @@ func TestAccountDevicePostureIntegrationDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Devices.Posture.Integration.Delete(
 		context.TODO(),

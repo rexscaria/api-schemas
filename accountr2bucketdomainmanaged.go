@@ -37,48 +37,48 @@ func NewAccountR2BucketDomainManagedService(opts ...option.RequestOption) (r *Ac
 // Gets state of public access over the bucket's R2-managed (r2.dev) domain.
 func (r *AccountR2BucketDomainManagedService) Get(ctx context.Context, accountID string, bucketName string, query AccountR2BucketDomainManagedGetParams, opts ...option.RequestOption) (res *AccountR2BucketDomainManagedGetResponse, err error) {
 	if query.Jurisdiction.Present {
-		opts = append(opts, option.WithHeader("cf-r2-jurisdiction", fmt.Sprintf("%s", query.Jurisdiction)))
+		opts = append(opts, option.WithHeader("cf-r2-jurisdiction", fmt.Sprintf("%v", query.Jurisdiction)))
 	}
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if bucketName == "" {
 		err = errors.New("missing required bucket_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/r2/buckets/%s/domains/managed", accountID, bucketName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates state of public access over the bucket's R2-managed (r2.dev) domain.
 func (r *AccountR2BucketDomainManagedService) Update(ctx context.Context, accountID string, bucketName string, params AccountR2BucketDomainManagedUpdateParams, opts ...option.RequestOption) (res *AccountR2BucketDomainManagedUpdateResponse, err error) {
 	if params.Jurisdiction.Present {
-		opts = append(opts, option.WithHeader("cf-r2-jurisdiction", fmt.Sprintf("%s", params.Jurisdiction)))
+		opts = append(opts, option.WithHeader("cf-r2-jurisdiction", fmt.Sprintf("%v", params.Jurisdiction)))
 	}
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if bucketName == "" {
 		err = errors.New("missing required bucket_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/r2/buckets/%s/domains/managed", accountID, bucketName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 type R2ManagedDomainResponse struct {
 	// Bucket ID.
-	BucketID string `json:"bucketId,required"`
+	BucketID string `json:"bucketId" api:"required"`
 	// Domain name of the bucket's r2.dev domain.
-	Domain string `json:"domain,required"`
+	Domain string `json:"domain" api:"required"`
 	// Whether this bucket is publicly accessible at the r2.dev domain.
-	Enabled bool                        `json:"enabled,required"`
+	Enabled bool                        `json:"enabled" api:"required"`
 	JSON    r2ManagedDomainResponseJSON `json:"-"`
 }
 
@@ -101,11 +101,11 @@ func (r r2ManagedDomainResponseJSON) RawJSON() string {
 }
 
 type AccountR2BucketDomainManagedGetResponse struct {
-	Errors   []AccountR2BucketDomainManagedGetResponseError `json:"errors,required"`
-	Messages []string                                       `json:"messages,required"`
-	Result   R2ManagedDomainResponse                        `json:"result,required"`
+	Errors   []AccountR2BucketDomainManagedGetResponseError `json:"errors" api:"required"`
+	Messages []string                                       `json:"messages" api:"required"`
+	Result   R2ManagedDomainResponse                        `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success AccountR2BucketDomainManagedGetResponseSuccess `json:"success,required"`
+	Success AccountR2BucketDomainManagedGetResponseSuccess `json:"success" api:"required"`
 	JSON    accountR2BucketDomainManagedGetResponseJSON    `json:"-"`
 }
 
@@ -129,8 +129,8 @@ func (r accountR2BucketDomainManagedGetResponseJSON) RawJSON() string {
 }
 
 type AccountR2BucketDomainManagedGetResponseError struct {
-	Code             int64                                               `json:"code,required"`
-	Message          string                                              `json:"message,required"`
+	Code             int64                                               `json:"code" api:"required"`
+	Message          string                                              `json:"message" api:"required"`
 	DocumentationURL string                                              `json:"documentation_url"`
 	Source           AccountR2BucketDomainManagedGetResponseErrorsSource `json:"source"`
 	JSON             accountR2BucketDomainManagedGetResponseErrorJSON    `json:"-"`
@@ -192,11 +192,11 @@ func (r AccountR2BucketDomainManagedGetResponseSuccess) IsKnown() bool {
 }
 
 type AccountR2BucketDomainManagedUpdateResponse struct {
-	Errors   []AccountR2BucketDomainManagedUpdateResponseError `json:"errors,required"`
-	Messages []string                                          `json:"messages,required"`
-	Result   R2ManagedDomainResponse                           `json:"result,required"`
+	Errors   []AccountR2BucketDomainManagedUpdateResponseError `json:"errors" api:"required"`
+	Messages []string                                          `json:"messages" api:"required"`
+	Result   R2ManagedDomainResponse                           `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success AccountR2BucketDomainManagedUpdateResponseSuccess `json:"success,required"`
+	Success AccountR2BucketDomainManagedUpdateResponseSuccess `json:"success" api:"required"`
 	JSON    accountR2BucketDomainManagedUpdateResponseJSON    `json:"-"`
 }
 
@@ -220,8 +220,8 @@ func (r accountR2BucketDomainManagedUpdateResponseJSON) RawJSON() string {
 }
 
 type AccountR2BucketDomainManagedUpdateResponseError struct {
-	Code             int64                                                  `json:"code,required"`
-	Message          string                                                 `json:"message,required"`
+	Code             int64                                                  `json:"code" api:"required"`
+	Message          string                                                 `json:"message" api:"required"`
 	DocumentationURL string                                                 `json:"documentation_url"`
 	Source           AccountR2BucketDomainManagedUpdateResponseErrorsSource `json:"source"`
 	JSON             accountR2BucketDomainManagedUpdateResponseErrorJSON    `json:"-"`
@@ -306,7 +306,7 @@ func (r AccountR2BucketDomainManagedGetParamsCfR2Jurisdiction) IsKnown() bool {
 
 type AccountR2BucketDomainManagedUpdateParams struct {
 	// Whether to enable public bucket access at the r2.dev domain.
-	Enabled param.Field[bool] `json:"enabled,required"`
+	Enabled param.Field[bool] `json:"enabled" api:"required"`
 	// Jurisdiction where objects in this bucket are guaranteed to be stored.
 	Jurisdiction param.Field[AccountR2BucketDomainManagedUpdateParamsCfR2Jurisdiction] `header:"cf-r2-jurisdiction"`
 }

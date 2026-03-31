@@ -41,11 +41,11 @@ func (r *AccountAlertingV3DestinationWebhookService) New(ctx context.Context, ac
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/alerting/v3/destinations/webhooks", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get details for a single webhooks destination.
@@ -53,15 +53,15 @@ func (r *AccountAlertingV3DestinationWebhookService) Get(ctx context.Context, ac
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if webhookID == "" {
 		err = errors.New("missing required webhook_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/alerting/v3/destinations/webhooks/%s", accountID, webhookID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update a webhook destination.
@@ -69,15 +69,15 @@ func (r *AccountAlertingV3DestinationWebhookService) Update(ctx context.Context,
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if webhookID == "" {
 		err = errors.New("missing required webhook_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/alerting/v3/destinations/webhooks/%s", accountID, webhookID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Gets a list of all configured webhook destinations.
@@ -85,11 +85,11 @@ func (r *AccountAlertingV3DestinationWebhookService) List(ctx context.Context, a
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/alerting/v3/destinations/webhooks", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete a configured webhook destination.
@@ -97,15 +97,15 @@ func (r *AccountAlertingV3DestinationWebhookService) Delete(ctx context.Context,
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if webhookID == "" {
 		err = errors.New("missing required webhook_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/alerting/v3/destinations/webhooks/%s", accountID, webhookID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type Webhooks struct {
@@ -168,10 +168,10 @@ func (r WebhooksType) IsKnown() bool {
 }
 
 type AccountAlertingV3DestinationWebhookGetResponse struct {
-	Errors   []AaaMessage `json:"errors,required"`
-	Messages []AaaMessage `json:"messages,required"`
+	Errors   []AaaMessage `json:"errors" api:"required"`
+	Messages []AaaMessage `json:"messages" api:"required"`
 	// Whether the API call was successful
-	Success AccountAlertingV3DestinationWebhookGetResponseSuccess `json:"success,required"`
+	Success AccountAlertingV3DestinationWebhookGetResponseSuccess `json:"success" api:"required"`
 	Result  Webhooks                                              `json:"result"`
 	JSON    accountAlertingV3DestinationWebhookGetResponseJSON    `json:"-"`
 }
@@ -211,10 +211,10 @@ func (r AccountAlertingV3DestinationWebhookGetResponseSuccess) IsKnown() bool {
 }
 
 type AccountAlertingV3DestinationWebhookListResponse struct {
-	Errors   []AaaMessage `json:"errors,required"`
-	Messages []AaaMessage `json:"messages,required"`
+	Errors   []AaaMessage `json:"errors" api:"required"`
+	Messages []AaaMessage `json:"messages" api:"required"`
 	// Whether the API call was successful
-	Success    AccountAlertingV3DestinationWebhookListResponseSuccess    `json:"success,required"`
+	Success    AccountAlertingV3DestinationWebhookListResponseSuccess    `json:"success" api:"required"`
 	Result     []Webhooks                                                `json:"result"`
 	ResultInfo AccountAlertingV3DestinationWebhookListResponseResultInfo `json:"result_info"`
 	JSON       accountAlertingV3DestinationWebhookListResponseJSON       `json:"-"`
@@ -290,9 +290,9 @@ func (r accountAlertingV3DestinationWebhookListResponseResultInfoJSON) RawJSON()
 type AccountAlertingV3DestinationWebhookNewParams struct {
 	// The name of the webhook destination. This will be included in the request body
 	// when you receive a webhook notification.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// The POST endpoint to call when dispatching a notification.
-	URL param.Field[string] `json:"url,required"`
+	URL param.Field[string] `json:"url" api:"required"`
 	// Optional secret that will be passed in the `cf-webhook-auth` header when
 	// dispatching generic webhook notifications or formatted for supported
 	// destinations. Secrets are not returned in any API response body.
@@ -306,9 +306,9 @@ func (r AccountAlertingV3DestinationWebhookNewParams) MarshalJSON() (data []byte
 type AccountAlertingV3DestinationWebhookUpdateParams struct {
 	// The name of the webhook destination. This will be included in the request body
 	// when you receive a webhook notification.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// The POST endpoint to call when dispatching a notification.
-	URL param.Field[string] `json:"url,required"`
+	URL param.Field[string] `json:"url" api:"required"`
 	// Optional secret that will be passed in the `cf-webhook-auth` header when
 	// dispatching generic webhook notifications or formatted for supported
 	// destinations. Secrets are not returned in any API response body.

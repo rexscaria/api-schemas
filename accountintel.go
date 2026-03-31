@@ -50,11 +50,11 @@ func (r *AccountIntelService) NewMiscategorization(ctx context.Context, accountI
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/intel/miscategorization", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Gets historical security threat and content categories currently and previously
@@ -63,11 +63,11 @@ func (r *AccountIntelService) GetDomainHistory(ctx context.Context, accountID st
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/intel/domain-history", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Gets the geolocation, ASN, infrastructure type of the ASN, and any security
@@ -77,11 +77,11 @@ func (r *AccountIntelService) GetIPOverview(ctx context.Context, accountID strin
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/intel/ip", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Gets a list of all the domains that have resolved to a specific IP address.
@@ -89,11 +89,11 @@ func (r *AccountIntelService) GetPassiveDNS(ctx context.Context, accountID strin
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/intel/dns", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Get WHOIS Record
@@ -101,11 +101,11 @@ func (r *AccountIntelService) GetWhoisRecord(ctx context.Context, accountID stri
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/intel/whois", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Get IP Lists.
@@ -113,11 +113,11 @@ func (r *AccountIntelService) ListIPLists(ctx context.Context, accountID string,
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/intel/ip-list", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // List sinkholes owned by this account
@@ -125,16 +125,16 @@ func (r *AccountIntelService) ListSinkholes(ctx context.Context, accountID strin
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/intel/sinkholes", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type IntelMessage struct {
-	Code             int64              `json:"code,required"`
-	Message          string             `json:"message,required"`
+	Code             int64              `json:"code" api:"required"`
+	Message          string             `json:"message" api:"required"`
 	DocumentationURL string             `json:"documentation_url"`
 	Source           IntelMessageSource `json:"source"`
 	JSON             intelMessageJSON   `json:"-"`
@@ -210,10 +210,10 @@ func (r resultInfoIntelJSON) RawJSON() string {
 }
 
 type SingleResponseIntel struct {
-	Errors   []SingleResponseIntelError   `json:"errors,required"`
-	Messages []SingleResponseIntelMessage `json:"messages,required"`
+	Errors   []SingleResponseIntelError   `json:"errors" api:"required"`
+	Messages []SingleResponseIntelMessage `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success SingleResponseIntelSuccess `json:"success,required"`
+	Success SingleResponseIntelSuccess `json:"success" api:"required"`
 	JSON    singleResponseIntelJSON    `json:"-"`
 }
 
@@ -236,8 +236,8 @@ func (r singleResponseIntelJSON) RawJSON() string {
 }
 
 type SingleResponseIntelError struct {
-	Code             int64                           `json:"code,required"`
-	Message          string                          `json:"message,required"`
+	Code             int64                           `json:"code" api:"required"`
+	Message          string                          `json:"message" api:"required"`
 	DocumentationURL string                          `json:"documentation_url"`
 	Source           SingleResponseIntelErrorsSource `json:"source"`
 	JSON             singleResponseIntelErrorJSON    `json:"-"`
@@ -284,8 +284,8 @@ func (r singleResponseIntelErrorsSourceJSON) RawJSON() string {
 }
 
 type SingleResponseIntelMessage struct {
-	Code             int64                             `json:"code,required"`
-	Message          string                            `json:"message,required"`
+	Code             int64                             `json:"code" api:"required"`
+	Message          string                            `json:"message" api:"required"`
 	DocumentationURL string                            `json:"documentation_url"`
 	Source           SingleResponseIntelMessagesSource `json:"source"`
 	JSON             singleResponseIntelMessageJSON    `json:"-"`
@@ -347,8 +347,8 @@ func (r SingleResponseIntelSuccess) IsKnown() bool {
 }
 
 type SinkholesMessage struct {
-	Code             int64                  `json:"code,required"`
-	Message          string                 `json:"message,required"`
+	Code             int64                  `json:"code" api:"required"`
+	Message          string                 `json:"message" api:"required"`
 	DocumentationURL string                 `json:"documentation_url"`
 	Source           SinkholesMessageSource `json:"source"`
 	JSON             sinkholesMessageJSON   `json:"-"`
@@ -395,11 +395,11 @@ func (r sinkholesMessageSourceJSON) RawJSON() string {
 }
 
 type AccountIntelGetDomainHistoryResponse struct {
-	Errors   []IntelMessage                               `json:"errors,required"`
-	Messages []IntelMessage                               `json:"messages,required"`
-	Result   []AccountIntelGetDomainHistoryResponseResult `json:"result,required,nullable"`
+	Errors   []IntelMessage                               `json:"errors" api:"required"`
+	Messages []IntelMessage                               `json:"messages" api:"required"`
+	Result   []AccountIntelGetDomainHistoryResponseResult `json:"result" api:"required,nullable"`
 	// Whether the API call was successful.
-	Success    AccountIntelGetDomainHistoryResponseSuccess `json:"success,required"`
+	Success    AccountIntelGetDomainHistoryResponseSuccess `json:"success" api:"required"`
 	ResultInfo ResultInfoIntel                             `json:"result_info"`
 	JSON       accountIntelGetDomainHistoryResponseJSON    `json:"-"`
 }
@@ -513,11 +513,11 @@ func (r AccountIntelGetDomainHistoryResponseSuccess) IsKnown() bool {
 }
 
 type AccountIntelGetIPOverviewResponse struct {
-	Errors   []IntelMessage                            `json:"errors,required"`
-	Messages []IntelMessage                            `json:"messages,required"`
-	Result   []AccountIntelGetIPOverviewResponseResult `json:"result,required,nullable"`
+	Errors   []IntelMessage                            `json:"errors" api:"required"`
+	Messages []IntelMessage                            `json:"messages" api:"required"`
+	Result   []AccountIntelGetIPOverviewResponseResult `json:"result" api:"required,nullable"`
 	// Whether the API call was successful.
-	Success    AccountIntelGetIPOverviewResponseSuccess `json:"success,required"`
+	Success    AccountIntelGetIPOverviewResponseSuccess `json:"success" api:"required"`
 	ResultInfo ResultInfoIntel                          `json:"result_info"`
 	JSON       accountIntelGetIPOverviewResponseJSON    `json:"-"`
 }
@@ -659,10 +659,10 @@ func (r AccountIntelGetIPOverviewResponseSuccess) IsKnown() bool {
 }
 
 type AccountIntelGetPassiveDNSResponse struct {
-	Errors   []AccountIntelGetPassiveDNSResponseError   `json:"errors,required"`
-	Messages []AccountIntelGetPassiveDNSResponseMessage `json:"messages,required"`
+	Errors   []AccountIntelGetPassiveDNSResponseError   `json:"errors" api:"required"`
+	Messages []AccountIntelGetPassiveDNSResponseMessage `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success    AccountIntelGetPassiveDNSResponseSuccess    `json:"success,required"`
+	Success    AccountIntelGetPassiveDNSResponseSuccess    `json:"success" api:"required"`
 	Result     AccountIntelGetPassiveDNSResponseResult     `json:"result"`
 	ResultInfo AccountIntelGetPassiveDNSResponseResultInfo `json:"result_info"`
 	JSON       accountIntelGetPassiveDNSResponseJSON       `json:"-"`
@@ -689,8 +689,8 @@ func (r accountIntelGetPassiveDNSResponseJSON) RawJSON() string {
 }
 
 type AccountIntelGetPassiveDNSResponseError struct {
-	Code             int64                                         `json:"code,required"`
-	Message          string                                        `json:"message,required"`
+	Code             int64                                         `json:"code" api:"required"`
+	Message          string                                        `json:"message" api:"required"`
 	DocumentationURL string                                        `json:"documentation_url"`
 	Source           AccountIntelGetPassiveDNSResponseErrorsSource `json:"source"`
 	JSON             accountIntelGetPassiveDNSResponseErrorJSON    `json:"-"`
@@ -737,8 +737,8 @@ func (r accountIntelGetPassiveDNSResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type AccountIntelGetPassiveDNSResponseMessage struct {
-	Code             int64                                           `json:"code,required"`
-	Message          string                                          `json:"message,required"`
+	Code             int64                                           `json:"code" api:"required"`
+	Message          string                                          `json:"message" api:"required"`
 	DocumentationURL string                                          `json:"documentation_url"`
 	Source           AccountIntelGetPassiveDNSResponseMessagesSource `json:"source"`
 	JSON             accountIntelGetPassiveDNSResponseMessageJSON    `json:"-"`
@@ -890,10 +890,10 @@ func (r accountIntelGetPassiveDNSResponseResultInfoJSON) RawJSON() string {
 }
 
 type AccountIntelGetWhoisRecordResponse struct {
-	Errors   []AccountIntelGetWhoisRecordResponseError   `json:"errors,required"`
-	Messages []AccountIntelGetWhoisRecordResponseMessage `json:"messages,required"`
+	Errors   []AccountIntelGetWhoisRecordResponseError   `json:"errors" api:"required"`
+	Messages []AccountIntelGetWhoisRecordResponseMessage `json:"messages" api:"required"`
 	// Returns a boolean for the success/failure of the API call.
-	Success AccountIntelGetWhoisRecordResponseSuccess `json:"success,required"`
+	Success AccountIntelGetWhoisRecordResponseSuccess `json:"success" api:"required"`
 	Result  AccountIntelGetWhoisRecordResponseResult  `json:"result"`
 	JSON    accountIntelGetWhoisRecordResponseJSON    `json:"-"`
 }
@@ -918,8 +918,8 @@ func (r accountIntelGetWhoisRecordResponseJSON) RawJSON() string {
 }
 
 type AccountIntelGetWhoisRecordResponseError struct {
-	Code             int64                                          `json:"code,required"`
-	Message          string                                         `json:"message,required"`
+	Code             int64                                          `json:"code" api:"required"`
+	Message          string                                         `json:"message" api:"required"`
 	DocumentationURL string                                         `json:"documentation_url"`
 	Source           AccountIntelGetWhoisRecordResponseErrorsSource `json:"source"`
 	JSON             accountIntelGetWhoisRecordResponseErrorJSON    `json:"-"`
@@ -966,8 +966,8 @@ func (r accountIntelGetWhoisRecordResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type AccountIntelGetWhoisRecordResponseMessage struct {
-	Code             int64                                            `json:"code,required"`
-	Message          string                                           `json:"message,required"`
+	Code             int64                                            `json:"code" api:"required"`
+	Message          string                                           `json:"message" api:"required"`
 	DocumentationURL string                                           `json:"documentation_url"`
 	Source           AccountIntelGetWhoisRecordResponseMessagesSource `json:"source"`
 	JSON             accountIntelGetWhoisRecordResponseMessageJSON    `json:"-"`
@@ -1029,14 +1029,14 @@ func (r AccountIntelGetWhoisRecordResponseSuccess) IsKnown() bool {
 }
 
 type AccountIntelGetWhoisRecordResponseResult struct {
-	Dnssec                    bool                                         `json:"dnssec,required"`
-	Domain                    string                                       `json:"domain,required"`
-	Extension                 string                                       `json:"extension,required"`
-	Found                     bool                                         `json:"found,required"`
-	Nameservers               []string                                     `json:"nameservers,required"`
-	Punycode                  string                                       `json:"punycode,required"`
-	Registrant                string                                       `json:"registrant,required"`
-	Registrar                 string                                       `json:"registrar,required"`
+	Dnssec                    bool                                         `json:"dnssec" api:"required"`
+	Domain                    string                                       `json:"domain" api:"required"`
+	Extension                 string                                       `json:"extension" api:"required"`
+	Found                     bool                                         `json:"found" api:"required"`
+	Nameservers               []string                                     `json:"nameservers" api:"required"`
+	Punycode                  string                                       `json:"punycode" api:"required"`
+	Registrant                string                                       `json:"registrant" api:"required"`
+	Registrar                 string                                       `json:"registrar" api:"required"`
 	ID                        string                                       `json:"id"`
 	AdministrativeCity        string                                       `json:"administrative_city"`
 	AdministrativeCountry     string                                       `json:"administrative_country"`
@@ -1222,11 +1222,11 @@ func (r accountIntelGetWhoisRecordResponseResultJSON) RawJSON() string {
 }
 
 type AccountIntelListIPListsResponse struct {
-	Errors   []AccountIntelListIPListsResponseError   `json:"errors,required"`
-	Messages []AccountIntelListIPListsResponseMessage `json:"messages,required"`
-	Result   []AccountIntelListIPListsResponseResult  `json:"result,required,nullable"`
+	Errors   []AccountIntelListIPListsResponseError   `json:"errors" api:"required"`
+	Messages []AccountIntelListIPListsResponseMessage `json:"messages" api:"required"`
+	Result   []AccountIntelListIPListsResponseResult  `json:"result" api:"required,nullable"`
 	// Whether the API call was successful.
-	Success    AccountIntelListIPListsResponseSuccess `json:"success,required"`
+	Success    AccountIntelListIPListsResponseSuccess `json:"success" api:"required"`
 	ResultInfo ResultInfoIntel                        `json:"result_info"`
 	JSON       accountIntelListIPListsResponseJSON    `json:"-"`
 }
@@ -1252,8 +1252,8 @@ func (r accountIntelListIPListsResponseJSON) RawJSON() string {
 }
 
 type AccountIntelListIPListsResponseError struct {
-	Code             int64                                       `json:"code,required"`
-	Message          string                                      `json:"message,required"`
+	Code             int64                                       `json:"code" api:"required"`
+	Message          string                                      `json:"message" api:"required"`
 	DocumentationURL string                                      `json:"documentation_url"`
 	Source           AccountIntelListIPListsResponseErrorsSource `json:"source"`
 	JSON             accountIntelListIPListsResponseErrorJSON    `json:"-"`
@@ -1300,8 +1300,8 @@ func (r accountIntelListIPListsResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type AccountIntelListIPListsResponseMessage struct {
-	Code             int64                                         `json:"code,required"`
-	Message          string                                        `json:"message,required"`
+	Code             int64                                         `json:"code" api:"required"`
+	Message          string                                        `json:"message" api:"required"`
 	DocumentationURL string                                        `json:"documentation_url"`
 	Source           AccountIntelListIPListsResponseMessagesSource `json:"source"`
 	JSON             accountIntelListIPListsResponseMessageJSON    `json:"-"`
@@ -1388,10 +1388,10 @@ func (r AccountIntelListIPListsResponseSuccess) IsKnown() bool {
 }
 
 type AccountIntelListSinkholesResponse struct {
-	Errors   []SinkholesMessage `json:"errors,required"`
-	Messages []SinkholesMessage `json:"messages,required"`
+	Errors   []SinkholesMessage `json:"errors" api:"required"`
+	Messages []SinkholesMessage `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountIntelListSinkholesResponseSuccess  `json:"success,required"`
+	Success AccountIntelListSinkholesResponseSuccess  `json:"success" api:"required"`
 	Result  []AccountIntelListSinkholesResponseResult `json:"result"`
 	JSON    accountIntelListSinkholesResponseJSON     `json:"-"`
 }

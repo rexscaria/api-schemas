@@ -38,11 +38,11 @@ func (r *ZoneSettingZarazWorkflowService) Get(ctx context.Context, zoneID string
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/settings/zaraz/workflow", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates Zaraz workflow for a zone.
@@ -50,11 +50,11 @@ func (r *ZoneSettingZarazWorkflowService) Update(ctx context.Context, zoneID str
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/settings/zaraz/workflow", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Zaraz workflow
@@ -74,12 +74,12 @@ func (r ZarazWorkflow) IsKnown() bool {
 }
 
 type ZarazWorkflowResponse struct {
-	Errors   []ZarazMessagesItems `json:"errors,required"`
-	Messages []ZarazMessagesItems `json:"messages,required"`
+	Errors   []ZarazMessagesItems `json:"errors" api:"required"`
+	Messages []ZarazMessagesItems `json:"messages" api:"required"`
 	// Zaraz workflow
-	Result ZarazWorkflow `json:"result,required"`
+	Result ZarazWorkflow `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success bool                      `json:"success,required"`
+	Success bool                      `json:"success" api:"required"`
 	JSON    zarazWorkflowResponseJSON `json:"-"`
 }
 
@@ -104,7 +104,7 @@ func (r zarazWorkflowResponseJSON) RawJSON() string {
 
 type ZoneSettingZarazWorkflowUpdateParams struct {
 	// Zaraz workflow
-	ZarazWorkflow ZarazWorkflow `json:"zaraz_workflow,required"`
+	ZarazWorkflow ZarazWorkflow `json:"zaraz_workflow" api:"required"`
 }
 
 func (r ZoneSettingZarazWorkflowUpdateParams) MarshalJSON() (data []byte, err error) {

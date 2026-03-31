@@ -15,7 +15,7 @@ import (
 )
 
 func TestRadarEmailSecuritySummaryGetArcWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -27,6 +27,7 @@ func TestRadarEmailSecuritySummaryGetArcWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.Email.Security.Summary.GetArc(context.TODO(), cfrex.RadarEmailSecuritySummaryGetArcParams{
 		DateEnd:    cfrex.F([]time.Time{time.Now()}),
@@ -49,7 +50,7 @@ func TestRadarEmailSecuritySummaryGetArcWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarEmailSecuritySummaryGetDkimWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -61,6 +62,7 @@ func TestRadarEmailSecuritySummaryGetDkimWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.Email.Security.Summary.GetDkim(context.TODO(), cfrex.RadarEmailSecuritySummaryGetDkimParams{
 		Arc:        cfrex.F([]cfrex.RadarEmailSecuritySummaryGetDkimParamsArc{cfrex.RadarEmailSecuritySummaryGetDkimParamsArcPass}),
@@ -83,7 +85,7 @@ func TestRadarEmailSecuritySummaryGetDkimWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarEmailSecuritySummaryGetDmarcWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -95,6 +97,7 @@ func TestRadarEmailSecuritySummaryGetDmarcWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.Email.Security.Summary.GetDmarc(context.TODO(), cfrex.RadarEmailSecuritySummaryGetDmarcParams{
 		Arc:        cfrex.F([]cfrex.RadarEmailSecuritySummaryGetDmarcParamsArc{cfrex.RadarEmailSecuritySummaryGetDmarcParamsArcPass}),
@@ -117,7 +120,7 @@ func TestRadarEmailSecuritySummaryGetDmarcWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarEmailSecuritySummaryGetMaliciousWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -129,6 +132,7 @@ func TestRadarEmailSecuritySummaryGetMaliciousWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.Email.Security.Summary.GetMalicious(context.TODO(), cfrex.RadarEmailSecuritySummaryGetMaliciousParams{
 		Arc:        cfrex.F([]cfrex.RadarEmailSecuritySummaryGetMaliciousParamsArc{cfrex.RadarEmailSecuritySummaryGetMaliciousParamsArcPass}),
@@ -152,7 +156,7 @@ func TestRadarEmailSecuritySummaryGetMaliciousWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarEmailSecuritySummaryGetSpamWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -164,6 +168,7 @@ func TestRadarEmailSecuritySummaryGetSpamWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.Email.Security.Summary.GetSpam(context.TODO(), cfrex.RadarEmailSecuritySummaryGetSpamParams{
 		Arc:        cfrex.F([]cfrex.RadarEmailSecuritySummaryGetSpamParamsArc{cfrex.RadarEmailSecuritySummaryGetSpamParamsArcPass}),
@@ -187,7 +192,7 @@ func TestRadarEmailSecuritySummaryGetSpamWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarEmailSecuritySummaryGetSpfWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -199,6 +204,7 @@ func TestRadarEmailSecuritySummaryGetSpfWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.Email.Security.Summary.GetSpf(context.TODO(), cfrex.RadarEmailSecuritySummaryGetSpfParams{
 		Arc:        cfrex.F([]cfrex.RadarEmailSecuritySummaryGetSpfParamsArc{cfrex.RadarEmailSecuritySummaryGetSpfParamsArcPass}),
@@ -221,7 +227,7 @@ func TestRadarEmailSecuritySummaryGetSpfWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarEmailSecuritySummaryGetSpoofWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -233,6 +239,7 @@ func TestRadarEmailSecuritySummaryGetSpoofWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.Email.Security.Summary.GetSpoof(context.TODO(), cfrex.RadarEmailSecuritySummaryGetSpoofParams{
 		Arc:        cfrex.F([]cfrex.RadarEmailSecuritySummaryGetSpoofParamsArc{cfrex.RadarEmailSecuritySummaryGetSpoofParamsArcPass}),
@@ -256,7 +263,7 @@ func TestRadarEmailSecuritySummaryGetSpoofWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarEmailSecuritySummaryGetThreatCategoryWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -268,6 +275,7 @@ func TestRadarEmailSecuritySummaryGetThreatCategoryWithOptionalParams(t *testing
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.Email.Security.Summary.GetThreatCategory(context.TODO(), cfrex.RadarEmailSecuritySummaryGetThreatCategoryParams{
 		Arc:        cfrex.F([]cfrex.RadarEmailSecuritySummaryGetThreatCategoryParamsArc{cfrex.RadarEmailSecuritySummaryGetThreatCategoryParamsArcPass}),
@@ -291,7 +299,7 @@ func TestRadarEmailSecuritySummaryGetThreatCategoryWithOptionalParams(t *testing
 }
 
 func TestRadarEmailSecuritySummaryGetTlsVersionWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -303,6 +311,7 @@ func TestRadarEmailSecuritySummaryGetTlsVersionWithOptionalParams(t *testing.T) 
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.Email.Security.Summary.GetTlsVersion(context.TODO(), cfrex.RadarEmailSecuritySummaryGetTlsVersionParams{
 		Arc:       cfrex.F([]cfrex.RadarEmailSecuritySummaryGetTlsVersionParamsArc{cfrex.RadarEmailSecuritySummaryGetTlsVersionParamsArcPass}),

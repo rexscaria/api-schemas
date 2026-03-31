@@ -49,18 +49,18 @@ func (r *AccountAddressingService) ListServices(ctx context.Context, accountID s
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/addressing/services", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountAddressingListServicesResponse struct {
-	Errors   []AddressingMessages `json:"errors,required"`
-	Messages []AddressingMessages `json:"messages,required"`
+	Errors   []AddressingMessages `json:"errors" api:"required"`
+	Messages []AddressingMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountAddressingListServicesResponseSuccess  `json:"success,required"`
+	Success AccountAddressingListServicesResponseSuccess  `json:"success" api:"required"`
 	Result  []AccountAddressingListServicesResponseResult `json:"result"`
 	JSON    accountAddressingListServicesResponseJSON     `json:"-"`
 }

@@ -47,15 +47,15 @@ func (r *ZoneWaitingRoomEventService) New(ctx context.Context, zoneID string, wa
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if waitingRoomID == "" {
 		err = errors.New("missing required waiting_room_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/waiting_rooms/%s/events", zoneID, waitingRoomID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetches a single configured event for a waiting room.
@@ -63,19 +63,19 @@ func (r *ZoneWaitingRoomEventService) Get(ctx context.Context, zoneID string, wa
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if waitingRoomID == "" {
 		err = errors.New("missing required waiting_room_id parameter")
-		return
+		return nil, err
 	}
 	if eventID == "" {
 		err = errors.New("missing required event_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/waiting_rooms/%s/events/%s", zoneID, waitingRoomID, eventID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates a configured event for a waiting room.
@@ -83,19 +83,19 @@ func (r *ZoneWaitingRoomEventService) Update(ctx context.Context, zoneID string,
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if waitingRoomID == "" {
 		err = errors.New("missing required waiting_room_id parameter")
-		return
+		return nil, err
 	}
 	if eventID == "" {
 		err = errors.New("missing required event_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/waiting_rooms/%s/events/%s", zoneID, waitingRoomID, eventID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists events for a waiting room.
@@ -103,15 +103,15 @@ func (r *ZoneWaitingRoomEventService) List(ctx context.Context, zoneID string, w
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if waitingRoomID == "" {
 		err = errors.New("missing required waiting_room_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/waiting_rooms/%s/events", zoneID, waitingRoomID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Deletes an event for a waiting room.
@@ -119,19 +119,19 @@ func (r *ZoneWaitingRoomEventService) Delete(ctx context.Context, zoneID string,
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if waitingRoomID == "" {
 		err = errors.New("missing required waiting_room_id parameter")
-		return
+		return nil, err
 	}
 	if eventID == "" {
 		err = errors.New("missing required event_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/waiting_rooms/%s/events/%s", zoneID, waitingRoomID, eventID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Patches a configured event for a waiting room.
@@ -139,19 +139,19 @@ func (r *ZoneWaitingRoomEventService) Patch(ctx context.Context, zoneID string, 
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if waitingRoomID == "" {
 		err = errors.New("missing required waiting_room_id parameter")
-		return
+		return nil, err
 	}
 	if eventID == "" {
 		err = errors.New("missing required event_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/waiting_rooms/%s/events/%s", zoneID, waitingRoomID, eventID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Previews an event's configuration as if it was active. Inherited fields from the
@@ -160,23 +160,23 @@ func (r *ZoneWaitingRoomEventService) Preview(ctx context.Context, zoneID string
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if waitingRoomID == "" {
 		err = errors.New("missing required waiting_room_id parameter")
-		return
+		return nil, err
 	}
 	if eventID == "" {
 		err = errors.New("missing required event_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/waiting_rooms/%s/events/%s/details", zoneID, waitingRoomID, eventID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type EventResponse struct {
-	Result EventResult       `json:"result,required"`
+	Result EventResult       `json:"result" api:"required"`
 	JSON   eventResponseJSON `json:"-"`
 }
 
@@ -200,12 +200,12 @@ type EventResult struct {
 	CreatedOn time.Time `json:"created_on" format:"date-time"`
 	// If set, the event will override the waiting room's `custom_page_html` property
 	// while it is active. If null, the event will inherit it.
-	CustomPageHTML string `json:"custom_page_html,nullable"`
+	CustomPageHTML string `json:"custom_page_html" api:"nullable"`
 	// A note that you can use to add more details about the event.
 	Description string `json:"description"`
 	// If set, the event will override the waiting room's `disable_session_renewal`
 	// property while it is active. If null, the event will inherit it.
-	DisableSessionRenewal bool `json:"disable_session_renewal,nullable"`
+	DisableSessionRenewal bool `json:"disable_session_renewal" api:"nullable"`
 	// An ISO 8601 timestamp that marks the end of the event.
 	EventEndTime string `json:"event_end_time"`
 	// An ISO 8601 timestamp that marks the start of the event. At this time, queued
@@ -219,17 +219,17 @@ type EventResult struct {
 	// If set, the event will override the waiting room's `new_users_per_minute`
 	// property while it is active. If null, the event will inherit it. This can only
 	// be set if the event's `total_active_users` property is also set.
-	NewUsersPerMinute int64 `json:"new_users_per_minute,nullable"`
+	NewUsersPerMinute int64 `json:"new_users_per_minute" api:"nullable"`
 	// An ISO 8601 timestamp that marks when to begin queueing all users before the
 	// event starts. The prequeue must start at least five minutes before
 	// `event_start_time`.
-	PrequeueStartTime string `json:"prequeue_start_time,nullable"`
+	PrequeueStartTime string `json:"prequeue_start_time" api:"nullable"`
 	// If set, the event will override the waiting room's `queueing_method` property
 	// while it is active. If null, the event will inherit it.
-	QueueingMethod string `json:"queueing_method,nullable"`
+	QueueingMethod string `json:"queueing_method" api:"nullable"`
 	// If set, the event will override the waiting room's `session_duration` property
 	// while it is active. If null, the event will inherit it.
-	SessionDuration int64 `json:"session_duration,nullable"`
+	SessionDuration int64 `json:"session_duration" api:"nullable"`
 	// If enabled, users in the prequeue will be shuffled randomly at the
 	// `event_start_time`. Requires that `prequeue_start_time` is not null. This is
 	// useful for situations when many users will join the event prequeue at the same
@@ -243,13 +243,13 @@ type EventResult struct {
 	// If set, the event will override the waiting room's `total_active_users` property
 	// while it is active. If null, the event will inherit it. This can only be set if
 	// the event's `new_users_per_minute` property is also set.
-	TotalActiveUsers int64 `json:"total_active_users,nullable"`
+	TotalActiveUsers int64 `json:"total_active_users" api:"nullable"`
 	// If set, the event will override the waiting room's `turnstile_action` property
 	// while it is active. If null, the event will inherit it.
-	TurnstileAction TurnstileEventAction `json:"turnstile_action,nullable"`
+	TurnstileAction TurnstileEventAction `json:"turnstile_action" api:"nullable"`
 	// If set, the event will override the waiting room's `turnstile_mode` property
 	// while it is active. If null, the event will inherit it.
-	TurnstileMode TurnstileEventMode `json:"turnstile_mode,nullable"`
+	TurnstileMode TurnstileEventMode `json:"turnstile_mode" api:"nullable"`
 	JSON          eventResultJSON    `json:"-"`
 }
 
@@ -287,14 +287,14 @@ func (r eventResultJSON) RawJSON() string {
 
 type QueryEventParam struct {
 	// An ISO 8601 timestamp that marks the end of the event.
-	EventEndTime param.Field[string] `json:"event_end_time,required"`
+	EventEndTime param.Field[string] `json:"event_end_time" api:"required"`
 	// An ISO 8601 timestamp that marks the start of the event. At this time, queued
 	// users will be processed with the event's configuration. The start time must be
 	// at least one minute before `event_end_time`.
-	EventStartTime param.Field[string] `json:"event_start_time,required"`
+	EventStartTime param.Field[string] `json:"event_start_time" api:"required"`
 	// A unique name to identify the event. Only alphanumeric characters, hyphens and
 	// underscores are allowed.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// If set, the event will override the waiting room's `custom_page_html` property
 	// while it is active. If null, the event will inherit it.
 	CustomPageHTML param.Field[string] `json:"custom_page_html"`
@@ -380,10 +380,10 @@ func (r TurnstileEventMode) IsKnown() bool {
 }
 
 type ZoneWaitingRoomEventListResponse struct {
-	Errors   []WaitingroomMessage `json:"errors,required"`
-	Messages []WaitingroomMessage `json:"messages,required"`
+	Errors   []WaitingroomMessage `json:"errors" api:"required"`
+	Messages []WaitingroomMessage `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success    ZoneWaitingRoomEventListResponseSuccess    `json:"success,required"`
+	Success    ZoneWaitingRoomEventListResponseSuccess    `json:"success" api:"required"`
 	Result     []EventResult                              `json:"result"`
 	ResultInfo ZoneWaitingRoomEventListResponseResultInfo `json:"result_info"`
 	JSON       zoneWaitingRoomEventListResponseJSON       `json:"-"`
@@ -456,7 +456,7 @@ func (r zoneWaitingRoomEventListResponseResultInfoJSON) RawJSON() string {
 }
 
 type ZoneWaitingRoomEventDeleteResponse struct {
-	Result ZoneWaitingRoomEventDeleteResponseResult `json:"result,required"`
+	Result ZoneWaitingRoomEventDeleteResponseResult `json:"result" api:"required"`
 	JSON   zoneWaitingRoomEventDeleteResponseJSON   `json:"-"`
 }
 
@@ -498,7 +498,7 @@ func (r zoneWaitingRoomEventDeleteResponseResultJSON) RawJSON() string {
 }
 
 type ZoneWaitingRoomEventPreviewResponse struct {
-	Result ZoneWaitingRoomEventPreviewResponseResult `json:"result,required"`
+	Result ZoneWaitingRoomEventPreviewResponseResult `json:"result" api:"required"`
 	JSON   zoneWaitingRoomEventPreviewResponseJSON   `json:"-"`
 }
 
@@ -539,7 +539,7 @@ type ZoneWaitingRoomEventPreviewResponseResult struct {
 	// An ISO 8601 timestamp that marks when to begin queueing all users before the
 	// event starts. The prequeue must start at least five minutes before
 	// `event_start_time`.
-	PrequeueStartTime string `json:"prequeue_start_time,nullable"`
+	PrequeueStartTime string `json:"prequeue_start_time" api:"nullable"`
 	QueueingMethod    string `json:"queueing_method"`
 	SessionDuration   int64  `json:"session_duration"`
 	// If enabled, users in the prequeue will be shuffled randomly at the
@@ -588,7 +588,7 @@ func (r zoneWaitingRoomEventPreviewResponseResultJSON) RawJSON() string {
 }
 
 type ZoneWaitingRoomEventNewParams struct {
-	QueryEvent QueryEventParam `json:"query_event,required"`
+	QueryEvent QueryEventParam `json:"query_event" api:"required"`
 }
 
 func (r ZoneWaitingRoomEventNewParams) MarshalJSON() (data []byte, err error) {
@@ -596,7 +596,7 @@ func (r ZoneWaitingRoomEventNewParams) MarshalJSON() (data []byte, err error) {
 }
 
 type ZoneWaitingRoomEventUpdateParams struct {
-	QueryEvent QueryEventParam `json:"query_event,required"`
+	QueryEvent QueryEventParam `json:"query_event" api:"required"`
 }
 
 func (r ZoneWaitingRoomEventUpdateParams) MarshalJSON() (data []byte, err error) {
@@ -620,7 +620,7 @@ func (r ZoneWaitingRoomEventListParams) URLQuery() (v url.Values) {
 }
 
 type ZoneWaitingRoomEventPatchParams struct {
-	QueryEvent QueryEventParam `json:"query_event,required"`
+	QueryEvent QueryEventParam `json:"query_event" api:"required"`
 }
 
 func (r ZoneWaitingRoomEventPatchParams) MarshalJSON() (data []byte, err error) {

@@ -46,11 +46,11 @@ func (r *AccountAlertingV3Service) ListAvailableAlerts(ctx context.Context, acco
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/alerting/v3/available_alerts", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Gets a list of history records for notifications sent to an account. The records
@@ -60,18 +60,18 @@ func (r *AccountAlertingV3Service) ListHistory(ctx context.Context, accountID st
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/alerting/v3/history", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountAlertingV3ListAvailableAlertsResponse struct {
-	Errors   []AaaMessage `json:"errors,required"`
-	Messages []AaaMessage `json:"messages,required"`
+	Errors   []AaaMessage `json:"errors" api:"required"`
+	Messages []AaaMessage `json:"messages" api:"required"`
 	// Whether the API call was successful
-	Success    AccountAlertingV3ListAvailableAlertsResponseSuccess             `json:"success,required"`
+	Success    AccountAlertingV3ListAvailableAlertsResponseSuccess             `json:"success" api:"required"`
 	Result     map[string][]AccountAlertingV3ListAvailableAlertsResponseResult `json:"result"`
 	ResultInfo AccountAlertingV3ListAvailableAlertsResponseResultInfo          `json:"result_info"`
 	JSON       accountAlertingV3ListAvailableAlertsResponseJSON                `json:"-"`
@@ -176,10 +176,10 @@ func (r accountAlertingV3ListAvailableAlertsResponseResultInfoJSON) RawJSON() st
 }
 
 type AccountAlertingV3ListHistoryResponse struct {
-	Errors   []AccountAlertingV3ListHistoryResponseError   `json:"errors,required"`
-	Messages []AccountAlertingV3ListHistoryResponseMessage `json:"messages,required"`
+	Errors   []AccountAlertingV3ListHistoryResponseError   `json:"errors" api:"required"`
+	Messages []AccountAlertingV3ListHistoryResponseMessage `json:"messages" api:"required"`
 	// Whether the API call was successful
-	Success    AccountAlertingV3ListHistoryResponseSuccess    `json:"success,required"`
+	Success    AccountAlertingV3ListHistoryResponseSuccess    `json:"success" api:"required"`
 	Result     []AccountAlertingV3ListHistoryResponseResult   `json:"result"`
 	ResultInfo AccountAlertingV3ListHistoryResponseResultInfo `json:"result_info"`
 	JSON       accountAlertingV3ListHistoryResponseJSON       `json:"-"`
@@ -206,8 +206,8 @@ func (r accountAlertingV3ListHistoryResponseJSON) RawJSON() string {
 }
 
 type AccountAlertingV3ListHistoryResponseError struct {
-	Code             int64                                            `json:"code,required"`
-	Message          string                                           `json:"message,required"`
+	Code             int64                                            `json:"code" api:"required"`
+	Message          string                                           `json:"message" api:"required"`
 	DocumentationURL string                                           `json:"documentation_url"`
 	Source           AccountAlertingV3ListHistoryResponseErrorsSource `json:"source"`
 	JSON             accountAlertingV3ListHistoryResponseErrorJSON    `json:"-"`
@@ -254,8 +254,8 @@ func (r accountAlertingV3ListHistoryResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type AccountAlertingV3ListHistoryResponseMessage struct {
-	Code             int64                                              `json:"code,required"`
-	Message          string                                             `json:"message,required"`
+	Code             int64                                              `json:"code" api:"required"`
+	Message          string                                             `json:"message" api:"required"`
 	DocumentationURL string                                             `json:"documentation_url"`
 	Source           AccountAlertingV3ListHistoryResponseMessagesSource `json:"source"`
 	JSON             accountAlertingV3ListHistoryResponseMessageJSON    `json:"-"`

@@ -42,11 +42,11 @@ func (r *ZoneWeb3HostnameService) New(ctx context.Context, zoneID string, body Z
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/web3/hostnames", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Web3 Hostname Details
@@ -54,15 +54,15 @@ func (r *ZoneWeb3HostnameService) Get(ctx context.Context, zoneID string, identi
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if identifier == "" {
 		err = errors.New("missing required identifier parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/web3/hostnames/%s", zoneID, identifier)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // List Web3 Hostnames
@@ -70,11 +70,11 @@ func (r *ZoneWeb3HostnameService) List(ctx context.Context, zoneID string, opts 
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/web3/hostnames", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete Web3 Hostname
@@ -82,15 +82,15 @@ func (r *ZoneWeb3HostnameService) Delete(ctx context.Context, zoneID string, ide
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if identifier == "" {
 		err = errors.New("missing required identifier parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/web3/hostnames/%s", zoneID, identifier)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Edit Web3 Hostname
@@ -98,23 +98,23 @@ func (r *ZoneWeb3HostnameService) Patch(ctx context.Context, zoneID string, iden
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if identifier == "" {
 		err = errors.New("missing required identifier parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/web3/hostnames/%s", zoneID, identifier)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type APIResponseSingleID struct {
-	Errors   []APIResponseSingleIDError   `json:"errors,required"`
-	Messages []APIResponseSingleIDMessage `json:"messages,required"`
-	Result   APIResponseSingleIDResult    `json:"result,required,nullable"`
+	Errors   []APIResponseSingleIDError   `json:"errors" api:"required"`
+	Messages []APIResponseSingleIDMessage `json:"messages" api:"required"`
+	Result   APIResponseSingleIDResult    `json:"result" api:"required,nullable"`
 	// Specifies whether the API call was successful.
-	Success APIResponseSingleIDSuccess `json:"success,required"`
+	Success APIResponseSingleIDSuccess `json:"success" api:"required"`
 	JSON    apiResponseSingleIDJSON    `json:"-"`
 }
 
@@ -138,8 +138,8 @@ func (r apiResponseSingleIDJSON) RawJSON() string {
 }
 
 type APIResponseSingleIDError struct {
-	Code             int64                           `json:"code,required"`
-	Message          string                          `json:"message,required"`
+	Code             int64                           `json:"code" api:"required"`
+	Message          string                          `json:"message" api:"required"`
 	DocumentationURL string                          `json:"documentation_url"`
 	Source           APIResponseSingleIDErrorsSource `json:"source"`
 	JSON             apiResponseSingleIDErrorJSON    `json:"-"`
@@ -186,8 +186,8 @@ func (r apiResponseSingleIDErrorsSourceJSON) RawJSON() string {
 }
 
 type APIResponseSingleIDMessage struct {
-	Code             int64                             `json:"code,required"`
-	Message          string                            `json:"message,required"`
+	Code             int64                             `json:"code" api:"required"`
+	Message          string                            `json:"message" api:"required"`
 	DocumentationURL string                            `json:"documentation_url"`
 	Source           APIResponseSingleIDMessagesSource `json:"source"`
 	JSON             apiResponseSingleIDMessageJSON    `json:"-"`
@@ -235,7 +235,7 @@ func (r apiResponseSingleIDMessagesSourceJSON) RawJSON() string {
 
 type APIResponseSingleIDResult struct {
 	// Specify the identifier of the hostname.
-	ID   string                        `json:"id,required"`
+	ID   string                        `json:"id" api:"required"`
 	JSON apiResponseSingleIDResultJSON `json:"-"`
 }
 
@@ -271,8 +271,8 @@ func (r APIResponseSingleIDSuccess) IsKnown() bool {
 }
 
 type MessageItems struct {
-	Code             int64              `json:"code,required"`
-	Message          string             `json:"message,required"`
+	Code             int64              `json:"code" api:"required"`
+	Message          string             `json:"message" api:"required"`
 	DocumentationURL string             `json:"documentation_url"`
 	Source           MessageItemsSource `json:"source"`
 	JSON             messageItemsJSON   `json:"-"`
@@ -318,11 +318,11 @@ func (r messageItemsSourceJSON) RawJSON() string {
 }
 
 type SingleResponseWeb3 struct {
-	Errors   []MessageItems `json:"errors,required"`
-	Messages []MessageItems `json:"messages,required"`
-	Result   Web3Hostname   `json:"result,required"`
+	Errors   []MessageItems `json:"errors" api:"required"`
+	Messages []MessageItems `json:"messages" api:"required"`
+	Result   Web3Hostname   `json:"result" api:"required"`
 	// Specifies whether the API call was successful.
-	Success SingleResponseWeb3Success `json:"success,required"`
+	Success SingleResponseWeb3Success `json:"success" api:"required"`
 	// Provides the API response.
 	ResultInfo interface{}            `json:"result_info"`
 	JSON       singleResponseWeb3JSON `json:"-"`
@@ -439,11 +439,11 @@ func (r Web3HostnameStatus) IsKnown() bool {
 }
 
 type ZoneWeb3HostnameListResponse struct {
-	Errors   []ZoneWeb3HostnameListResponseError   `json:"errors,required"`
-	Messages []ZoneWeb3HostnameListResponseMessage `json:"messages,required"`
-	Result   []Web3Hostname                        `json:"result,required,nullable"`
+	Errors   []ZoneWeb3HostnameListResponseError   `json:"errors" api:"required"`
+	Messages []ZoneWeb3HostnameListResponseMessage `json:"messages" api:"required"`
+	Result   []Web3Hostname                        `json:"result" api:"required,nullable"`
 	// Specifies whether the API call was successful.
-	Success    ZoneWeb3HostnameListResponseSuccess    `json:"success,required"`
+	Success    ZoneWeb3HostnameListResponseSuccess    `json:"success" api:"required"`
 	ResultInfo ZoneWeb3HostnameListResponseResultInfo `json:"result_info"`
 	JSON       zoneWeb3HostnameListResponseJSON       `json:"-"`
 }
@@ -469,8 +469,8 @@ func (r zoneWeb3HostnameListResponseJSON) RawJSON() string {
 }
 
 type ZoneWeb3HostnameListResponseError struct {
-	Code             int64                                    `json:"code,required"`
-	Message          string                                   `json:"message,required"`
+	Code             int64                                    `json:"code" api:"required"`
+	Message          string                                   `json:"message" api:"required"`
 	DocumentationURL string                                   `json:"documentation_url"`
 	Source           ZoneWeb3HostnameListResponseErrorsSource `json:"source"`
 	JSON             zoneWeb3HostnameListResponseErrorJSON    `json:"-"`
@@ -517,8 +517,8 @@ func (r zoneWeb3HostnameListResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type ZoneWeb3HostnameListResponseMessage struct {
-	Code             int64                                      `json:"code,required"`
-	Message          string                                     `json:"message,required"`
+	Code             int64                                      `json:"code" api:"required"`
+	Message          string                                     `json:"message" api:"required"`
 	DocumentationURL string                                     `json:"documentation_url"`
 	Source           ZoneWeb3HostnameListResponseMessagesSource `json:"source"`
 	JSON             zoneWeb3HostnameListResponseMessageJSON    `json:"-"`
@@ -612,9 +612,9 @@ func (r zoneWeb3HostnameListResponseResultInfoJSON) RawJSON() string {
 
 type ZoneWeb3HostnameNewParams struct {
 	// Specify the hostname that points to the target gateway via CNAME.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Specify the target gateway of the hostname.
-	Target param.Field[TargetGateway] `json:"target,required"`
+	Target param.Field[TargetGateway] `json:"target" api:"required"`
 	// Specify an optional description of the hostname.
 	Description param.Field[string] `json:"description"`
 	// Specify the DNSLink value used if the target is ipfs.

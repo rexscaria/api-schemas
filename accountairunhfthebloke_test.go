@@ -14,7 +14,7 @@ import (
 )
 
 func TestAccountAIRunHfTheblokeExecuteDeepseekCoder6_7bBaseAwqWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,6 +26,7 @@ func TestAccountAIRunHfTheblokeExecuteDeepseekCoder6_7bBaseAwqWithOptionalParams
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.AI.Run.Hf.Thebloke.ExecuteDeepseekCoder6_7bBaseAwq(
 		context.TODO(),
@@ -62,7 +63,7 @@ func TestAccountAIRunHfTheblokeExecuteDeepseekCoder6_7bBaseAwqWithOptionalParams
 }
 
 func TestAccountAIRunHfTheblokeExecuteDeepseekCoder6_7bInstructAwqWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -74,6 +75,7 @@ func TestAccountAIRunHfTheblokeExecuteDeepseekCoder6_7bInstructAwqWithOptionalPa
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.AI.Run.Hf.Thebloke.ExecuteDeepseekCoder6_7bInstructAwq(
 		context.TODO(),
@@ -110,7 +112,7 @@ func TestAccountAIRunHfTheblokeExecuteDeepseekCoder6_7bInstructAwqWithOptionalPa
 }
 
 func TestAccountAIRunHfTheblokeExecuteLlama2_13bChatAwqWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -122,6 +124,7 @@ func TestAccountAIRunHfTheblokeExecuteLlama2_13bChatAwqWithOptionalParams(t *tes
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.AI.Run.Hf.Thebloke.ExecuteLlama2_13bChatAwq(
 		context.TODO(),
@@ -158,7 +161,7 @@ func TestAccountAIRunHfTheblokeExecuteLlama2_13bChatAwqWithOptionalParams(t *tes
 }
 
 func TestAccountAIRunHfTheblokeExecuteLlamaguard7bAwqWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -170,6 +173,7 @@ func TestAccountAIRunHfTheblokeExecuteLlamaguard7bAwqWithOptionalParams(t *testi
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.AI.Run.Hf.Thebloke.ExecuteLlamaguard7bAwq(
 		context.TODO(),
@@ -206,7 +210,7 @@ func TestAccountAIRunHfTheblokeExecuteLlamaguard7bAwqWithOptionalParams(t *testi
 }
 
 func TestAccountAIRunHfTheblokeExecuteMistral7bInstructV0_1AwqWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -218,6 +222,7 @@ func TestAccountAIRunHfTheblokeExecuteMistral7bInstructV0_1AwqWithOptionalParams
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.AI.Run.Hf.Thebloke.ExecuteMistral7bInstructV0_1Awq(
 		context.TODO(),
@@ -254,7 +259,7 @@ func TestAccountAIRunHfTheblokeExecuteMistral7bInstructV0_1AwqWithOptionalParams
 }
 
 func TestAccountAIRunHfTheblokeExecuteNeuralChat7bV3_1AwqWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -266,6 +271,7 @@ func TestAccountAIRunHfTheblokeExecuteNeuralChat7bV3_1AwqWithOptionalParams(t *t
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.AI.Run.Hf.Thebloke.ExecuteNeuralChat7bV3_1Awq(
 		context.TODO(),
@@ -302,7 +308,7 @@ func TestAccountAIRunHfTheblokeExecuteNeuralChat7bV3_1AwqWithOptionalParams(t *t
 }
 
 func TestAccountAIRunHfTheblokeExecuteOpenhermes2_5Mistral7bAwqWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -314,6 +320,7 @@ func TestAccountAIRunHfTheblokeExecuteOpenhermes2_5Mistral7bAwqWithOptionalParam
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.AI.Run.Hf.Thebloke.ExecuteOpenhermes2_5Mistral7bAwq(
 		context.TODO(),
@@ -350,7 +357,7 @@ func TestAccountAIRunHfTheblokeExecuteOpenhermes2_5Mistral7bAwqWithOptionalParam
 }
 
 func TestAccountAIRunHfTheblokeExecuteZephyr7bBetaAwqWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -362,6 +369,7 @@ func TestAccountAIRunHfTheblokeExecuteZephyr7bBetaAwqWithOptionalParams(t *testi
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.AI.Run.Hf.Thebloke.ExecuteZephyr7bBetaAwq(
 		context.TODO(),

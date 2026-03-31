@@ -42,11 +42,11 @@ func (r *ZoneCacheRegionalTieredCacheService) Get(ctx context.Context, zoneID st
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/cache/regional_tiered_cache", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Instructs Cloudflare to check a regional hub data center on the way to your
@@ -56,11 +56,11 @@ func (r *ZoneCacheRegionalTieredCacheService) Update(ctx context.Context, zoneID
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/cache/regional_tiered_cache", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Value of the Regional Tiered Cache zone setting.
@@ -80,10 +80,10 @@ func (r RegionalTieredCacheValue) IsKnown() bool {
 }
 
 type ZoneCacheRegionalTieredCacheGetResponse struct {
-	Errors   []MessagesCacheRulesItem `json:"errors,required"`
-	Messages []MessagesCacheRulesItem `json:"messages,required"`
+	Errors   []MessagesCacheRulesItem `json:"errors" api:"required"`
+	Messages []MessagesCacheRulesItem `json:"messages" api:"required"`
 	// Whether the API call was successful
-	Success ZoneCacheRegionalTieredCacheGetResponseSuccess `json:"success,required"`
+	Success ZoneCacheRegionalTieredCacheGetResponseSuccess `json:"success" api:"required"`
 	Result  ZoneCacheRegionalTieredCacheGetResponseResult  `json:"result"`
 	JSON    zoneCacheRegionalTieredCacheGetResponseJSON    `json:"-"`
 }
@@ -124,13 +124,13 @@ func (r ZoneCacheRegionalTieredCacheGetResponseSuccess) IsKnown() bool {
 
 type ZoneCacheRegionalTieredCacheGetResponseResult struct {
 	// ID of the zone setting.
-	ID ZoneCacheRegionalTieredCacheGetResponseResultID `json:"id,required"`
+	ID ZoneCacheRegionalTieredCacheGetResponseResultID `json:"id" api:"required"`
 	// Whether the setting is editable
-	Editable bool `json:"editable,required"`
+	Editable bool `json:"editable" api:"required"`
 	// The value of the feature
-	Value RegionalTieredCacheValue `json:"value,required"`
+	Value RegionalTieredCacheValue `json:"value" api:"required"`
 	// Last time this setting was modified.
-	ModifiedOn time.Time                                         `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time                                         `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zoneCacheRegionalTieredCacheGetResponseResultJSON `json:"-"`
 }
 
@@ -169,10 +169,10 @@ func (r ZoneCacheRegionalTieredCacheGetResponseResultID) IsKnown() bool {
 }
 
 type ZoneCacheRegionalTieredCacheUpdateResponse struct {
-	Errors   []MessagesCacheRulesItem `json:"errors,required"`
-	Messages []MessagesCacheRulesItem `json:"messages,required"`
+	Errors   []MessagesCacheRulesItem `json:"errors" api:"required"`
+	Messages []MessagesCacheRulesItem `json:"messages" api:"required"`
 	// Whether the API call was successful
-	Success ZoneCacheRegionalTieredCacheUpdateResponseSuccess `json:"success,required"`
+	Success ZoneCacheRegionalTieredCacheUpdateResponseSuccess `json:"success" api:"required"`
 	Result  ZoneCacheRegionalTieredCacheUpdateResponseResult  `json:"result"`
 	JSON    zoneCacheRegionalTieredCacheUpdateResponseJSON    `json:"-"`
 }
@@ -213,13 +213,13 @@ func (r ZoneCacheRegionalTieredCacheUpdateResponseSuccess) IsKnown() bool {
 
 type ZoneCacheRegionalTieredCacheUpdateResponseResult struct {
 	// ID of the zone setting.
-	ID ZoneCacheRegionalTieredCacheUpdateResponseResultID `json:"id,required"`
+	ID ZoneCacheRegionalTieredCacheUpdateResponseResultID `json:"id" api:"required"`
 	// Whether the setting is editable
-	Editable bool `json:"editable,required"`
+	Editable bool `json:"editable" api:"required"`
 	// The value of the feature
-	Value RegionalTieredCacheValue `json:"value,required"`
+	Value RegionalTieredCacheValue `json:"value" api:"required"`
 	// Last time this setting was modified.
-	ModifiedOn time.Time                                            `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time                                            `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zoneCacheRegionalTieredCacheUpdateResponseResultJSON `json:"-"`
 }
 
@@ -259,7 +259,7 @@ func (r ZoneCacheRegionalTieredCacheUpdateResponseResultID) IsKnown() bool {
 
 type ZoneCacheRegionalTieredCacheUpdateParams struct {
 	// Value of the Regional Tiered Cache zone setting.
-	Value param.Field[RegionalTieredCacheValue] `json:"value,required"`
+	Value param.Field[RegionalTieredCacheValue] `json:"value" api:"required"`
 }
 
 func (r ZoneCacheRegionalTieredCacheUpdateParams) MarshalJSON() (data []byte, err error) {

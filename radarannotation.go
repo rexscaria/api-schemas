@@ -42,12 +42,12 @@ func (r *RadarAnnotationService) GetLatest(ctx context.Context, query RadarAnnot
 	opts = slices.Concat(r.Options, opts)
 	path := "radar/annotations"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type RadarAnnotationGetLatestResponse struct {
-	Result  RadarAnnotationGetLatestResponseResult `json:"result,required"`
-	Success bool                                   `json:"success,required"`
+	Result  RadarAnnotationGetLatestResponseResult `json:"result" api:"required"`
+	Success bool                                   `json:"success" api:"required"`
 	JSON    radarAnnotationGetLatestResponseJSON   `json:"-"`
 }
 
@@ -69,7 +69,7 @@ func (r radarAnnotationGetLatestResponseJSON) RawJSON() string {
 }
 
 type RadarAnnotationGetLatestResponseResult struct {
-	Annotations []RadarAnnotationGetLatestResponseResultAnnotation `json:"annotations,required"`
+	Annotations []RadarAnnotationGetLatestResponseResultAnnotation `json:"annotations" api:"required"`
 	JSON        radarAnnotationGetLatestResponseResultJSON         `json:"-"`
 }
 
@@ -90,15 +90,15 @@ func (r radarAnnotationGetLatestResponseResultJSON) RawJSON() string {
 }
 
 type RadarAnnotationGetLatestResponseResultAnnotation struct {
-	ID               string                                                             `json:"id,required"`
-	Asns             []int64                                                            `json:"asns,required"`
-	AsnsDetails      []RadarAnnotationGetLatestResponseResultAnnotationsAsnsDetail      `json:"asnsDetails,required"`
-	DataSource       string                                                             `json:"dataSource,required"`
-	EventType        string                                                             `json:"eventType,required"`
-	Locations        []string                                                           `json:"locations,required"`
-	LocationsDetails []RadarAnnotationGetLatestResponseResultAnnotationsLocationsDetail `json:"locationsDetails,required"`
-	Outage           RadarAnnotationGetLatestResponseResultAnnotationsOutage            `json:"outage,required"`
-	StartDate        string                                                             `json:"startDate,required"`
+	ID               string                                                             `json:"id" api:"required"`
+	Asns             []int64                                                            `json:"asns" api:"required"`
+	AsnsDetails      []RadarAnnotationGetLatestResponseResultAnnotationsAsnsDetail      `json:"asnsDetails" api:"required"`
+	DataSource       string                                                             `json:"dataSource" api:"required"`
+	EventType        string                                                             `json:"eventType" api:"required"`
+	Locations        []string                                                           `json:"locations" api:"required"`
+	LocationsDetails []RadarAnnotationGetLatestResponseResultAnnotationsLocationsDetail `json:"locationsDetails" api:"required"`
+	Outage           RadarAnnotationGetLatestResponseResultAnnotationsOutage            `json:"outage" api:"required"`
+	StartDate        string                                                             `json:"startDate" api:"required"`
 	Description      string                                                             `json:"description"`
 	EndDate          string                                                             `json:"endDate"`
 	LinkedURL        string                                                             `json:"linkedUrl"`
@@ -135,8 +135,8 @@ func (r radarAnnotationGetLatestResponseResultAnnotationJSON) RawJSON() string {
 }
 
 type RadarAnnotationGetLatestResponseResultAnnotationsAsnsDetail struct {
-	Asn       string                                                                `json:"asn,required"`
-	Name      string                                                                `json:"name,required"`
+	Asn       string                                                                `json:"asn" api:"required"`
+	Name      string                                                                `json:"name" api:"required"`
 	Locations RadarAnnotationGetLatestResponseResultAnnotationsAsnsDetailsLocations `json:"locations"`
 	JSON      radarAnnotationGetLatestResponseResultAnnotationsAsnsDetailJSON       `json:"-"`
 }
@@ -161,8 +161,8 @@ func (r radarAnnotationGetLatestResponseResultAnnotationsAsnsDetailJSON) RawJSON
 }
 
 type RadarAnnotationGetLatestResponseResultAnnotationsAsnsDetailsLocations struct {
-	Code string                                                                    `json:"code,required"`
-	Name string                                                                    `json:"name,required"`
+	Code string                                                                    `json:"code" api:"required"`
+	Name string                                                                    `json:"name" api:"required"`
 	JSON radarAnnotationGetLatestResponseResultAnnotationsAsnsDetailsLocationsJSON `json:"-"`
 }
 
@@ -185,8 +185,8 @@ func (r radarAnnotationGetLatestResponseResultAnnotationsAsnsDetailsLocationsJSO
 }
 
 type RadarAnnotationGetLatestResponseResultAnnotationsLocationsDetail struct {
-	Code string                                                               `json:"code,required"`
-	Name string                                                               `json:"name,required"`
+	Code string                                                               `json:"code" api:"required"`
+	Name string                                                               `json:"name" api:"required"`
 	JSON radarAnnotationGetLatestResponseResultAnnotationsLocationsDetailJSON `json:"-"`
 }
 
@@ -209,8 +209,8 @@ func (r radarAnnotationGetLatestResponseResultAnnotationsLocationsDetailJSON) Ra
 }
 
 type RadarAnnotationGetLatestResponseResultAnnotationsOutage struct {
-	OutageCause string                                                      `json:"outageCause,required"`
-	OutageType  string                                                      `json:"outageType,required"`
+	OutageCause string                                                      `json:"outageCause" api:"required"`
+	OutageType  string                                                      `json:"outageType" api:"required"`
 	JSON        radarAnnotationGetLatestResponseResultAnnotationsOutageJSON `json:"-"`
 }
 

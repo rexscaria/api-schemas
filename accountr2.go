@@ -42,11 +42,11 @@ func (r *AccountR2Service) NewTempAccessCredentials(ctx context.Context, account
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/r2/temp-access-credentials", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get Storage/Object Count Metrics across all buckets in your account. Note that
@@ -55,11 +55,11 @@ func (r *AccountR2Service) GetMetrics(ctx context.Context, accountID string, opt
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/r2/metrics", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Metrics based on what state they are in(uploaded or published).
@@ -118,11 +118,11 @@ func (r r2ObjectSizeMetricsJSON) RawJSON() string {
 }
 
 type AccountR2NewTempAccessCredentialsResponse struct {
-	Errors   []AccountR2NewTempAccessCredentialsResponseError `json:"errors,required"`
-	Messages []string                                         `json:"messages,required"`
-	Result   AccountR2NewTempAccessCredentialsResponseResult  `json:"result,required"`
+	Errors   []AccountR2NewTempAccessCredentialsResponseError `json:"errors" api:"required"`
+	Messages []string                                         `json:"messages" api:"required"`
+	Result   AccountR2NewTempAccessCredentialsResponseResult  `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success AccountR2NewTempAccessCredentialsResponseSuccess `json:"success,required"`
+	Success AccountR2NewTempAccessCredentialsResponseSuccess `json:"success" api:"required"`
 	JSON    accountR2NewTempAccessCredentialsResponseJSON    `json:"-"`
 }
 
@@ -146,8 +146,8 @@ func (r accountR2NewTempAccessCredentialsResponseJSON) RawJSON() string {
 }
 
 type AccountR2NewTempAccessCredentialsResponseError struct {
-	Code             int64                                                 `json:"code,required"`
-	Message          string                                                `json:"message,required"`
+	Code             int64                                                 `json:"code" api:"required"`
+	Message          string                                                `json:"message" api:"required"`
 	DocumentationURL string                                                `json:"documentation_url"`
 	Source           AccountR2NewTempAccessCredentialsResponseErrorsSource `json:"source"`
 	JSON             accountR2NewTempAccessCredentialsResponseErrorJSON    `json:"-"`
@@ -237,12 +237,12 @@ func (r AccountR2NewTempAccessCredentialsResponseSuccess) IsKnown() bool {
 }
 
 type AccountR2GetMetricsResponse struct {
-	Errors   []AccountR2GetMetricsResponseError `json:"errors,required"`
-	Messages []string                           `json:"messages,required"`
+	Errors   []AccountR2GetMetricsResponseError `json:"errors" api:"required"`
+	Messages []string                           `json:"messages" api:"required"`
 	// Metrics based on the class they belong to.
-	Result AccountR2GetMetricsResponseResult `json:"result,required"`
+	Result AccountR2GetMetricsResponseResult `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success AccountR2GetMetricsResponseSuccess `json:"success,required"`
+	Success AccountR2GetMetricsResponseSuccess `json:"success" api:"required"`
 	JSON    accountR2GetMetricsResponseJSON    `json:"-"`
 }
 
@@ -266,8 +266,8 @@ func (r accountR2GetMetricsResponseJSON) RawJSON() string {
 }
 
 type AccountR2GetMetricsResponseError struct {
-	Code             int64                                   `json:"code,required"`
-	Message          string                                  `json:"message,required"`
+	Code             int64                                   `json:"code" api:"required"`
+	Message          string                                  `json:"message" api:"required"`
 	DocumentationURL string                                  `json:"documentation_url"`
 	Source           AccountR2GetMetricsResponseErrorsSource `json:"source"`
 	JSON             accountR2GetMetricsResponseErrorJSON    `json:"-"`
@@ -356,13 +356,13 @@ func (r AccountR2GetMetricsResponseSuccess) IsKnown() bool {
 
 type AccountR2NewTempAccessCredentialsParams struct {
 	// Name of the R2 bucket.
-	Bucket param.Field[string] `json:"bucket,required"`
+	Bucket param.Field[string] `json:"bucket" api:"required"`
 	// The parent access key id to use for signing.
-	ParentAccessKeyID param.Field[string] `json:"parentAccessKeyId,required"`
+	ParentAccessKeyID param.Field[string] `json:"parentAccessKeyId" api:"required"`
 	// Permissions allowed on the credentials.
-	Permission param.Field[AccountR2NewTempAccessCredentialsParamsPermission] `json:"permission,required"`
+	Permission param.Field[AccountR2NewTempAccessCredentialsParamsPermission] `json:"permission" api:"required"`
 	// How long the credentials will live for in seconds.
-	TtlSeconds param.Field[float64] `json:"ttlSeconds,required"`
+	TtlSeconds param.Field[float64] `json:"ttlSeconds" api:"required"`
 	// Optional object paths to scope the credentials to.
 	Objects param.Field[[]string] `json:"objects"`
 	// Optional prefix paths to scope the credentials to.

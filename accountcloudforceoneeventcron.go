@@ -38,11 +38,11 @@ func (r *AccountCloudforceOneEventCronService) Get(ctx context.Context, accountI
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/cloudforce-one/events/cron", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Reads the last cron update time
@@ -50,15 +50,15 @@ func (r *AccountCloudforceOneEventCronService) Update(ctx context.Context, accou
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/cloudforce-one/events/cron", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountCloudforceOneEventCronGetResponse struct {
-	Update string                                       `json:"update,required"`
+	Update string                                       `json:"update" api:"required"`
 	JSON   accountCloudforceOneEventCronGetResponseJSON `json:"-"`
 }
 
@@ -79,8 +79,8 @@ func (r accountCloudforceOneEventCronGetResponseJSON) RawJSON() string {
 }
 
 type AccountCloudforceOneEventCronUpdateResponse struct {
-	ID     float64                                         `json:"id,required"`
-	Update string                                          `json:"update,required"`
+	ID     float64                                         `json:"id" api:"required"`
+	Update string                                          `json:"update" api:"required"`
 	JSON   accountCloudforceOneEventCronUpdateResponseJSON `json:"-"`
 }
 

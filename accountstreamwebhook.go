@@ -39,11 +39,11 @@ func (r *AccountStreamWebhookService) New(ctx context.Context, accountID string,
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/stream/webhook", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves a list of webhooks.
@@ -51,11 +51,11 @@ func (r *AccountStreamWebhookService) List(ctx context.Context, accountID string
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/stream/webhook", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Deletes a webhook.
@@ -63,18 +63,18 @@ func (r *AccountStreamWebhookService) Delete(ctx context.Context, accountID stri
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/stream/webhook", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type WebhookResponseSingle struct {
-	Errors   []StreamMessages `json:"errors,required"`
-	Messages []StreamMessages `json:"messages,required"`
+	Errors   []StreamMessages `json:"errors" api:"required"`
+	Messages []StreamMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success WebhookResponseSingleSuccess `json:"success,required"`
+	Success WebhookResponseSingleSuccess `json:"success" api:"required"`
 	Result  interface{}                  `json:"result"`
 	JSON    webhookResponseSingleJSON    `json:"-"`
 }
@@ -115,7 +115,7 @@ func (r WebhookResponseSingleSuccess) IsKnown() bool {
 
 type AccountStreamWebhookNewParams struct {
 	// The URL where webhooks will be sent.
-	NotificationURL param.Field[string] `json:"notificationUrl,required" format:"uri"`
+	NotificationURL param.Field[string] `json:"notificationUrl" api:"required" format:"uri"`
 }
 
 func (r AccountStreamWebhookNewParams) MarshalJSON() (data []byte, err error) {

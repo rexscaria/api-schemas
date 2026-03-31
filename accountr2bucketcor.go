@@ -37,63 +37,63 @@ func NewAccountR2BucketCorService(opts ...option.RequestOption) (r *AccountR2Buc
 // Get the CORS policy for a bucket.
 func (r *AccountR2BucketCorService) Get(ctx context.Context, accountID string, bucketName string, query AccountR2BucketCorGetParams, opts ...option.RequestOption) (res *AccountR2BucketCorGetResponse, err error) {
 	if query.Jurisdiction.Present {
-		opts = append(opts, option.WithHeader("cf-r2-jurisdiction", fmt.Sprintf("%s", query.Jurisdiction)))
+		opts = append(opts, option.WithHeader("cf-r2-jurisdiction", fmt.Sprintf("%v", query.Jurisdiction)))
 	}
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if bucketName == "" {
 		err = errors.New("missing required bucket_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/r2/buckets/%s/cors", accountID, bucketName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Set the CORS policy for a bucket.
 func (r *AccountR2BucketCorService) Update(ctx context.Context, accountID string, bucketName string, params AccountR2BucketCorUpdateParams, opts ...option.RequestOption) (res *R2V4Response, err error) {
 	if params.Jurisdiction.Present {
-		opts = append(opts, option.WithHeader("cf-r2-jurisdiction", fmt.Sprintf("%s", params.Jurisdiction)))
+		opts = append(opts, option.WithHeader("cf-r2-jurisdiction", fmt.Sprintf("%v", params.Jurisdiction)))
 	}
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if bucketName == "" {
 		err = errors.New("missing required bucket_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/r2/buckets/%s/cors", accountID, bucketName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete the CORS policy for a bucket.
 func (r *AccountR2BucketCorService) Delete(ctx context.Context, accountID string, bucketName string, body AccountR2BucketCorDeleteParams, opts ...option.RequestOption) (res *R2V4Response, err error) {
 	if body.Jurisdiction.Present {
-		opts = append(opts, option.WithHeader("cf-r2-jurisdiction", fmt.Sprintf("%s", body.Jurisdiction)))
+		opts = append(opts, option.WithHeader("cf-r2-jurisdiction", fmt.Sprintf("%v", body.Jurisdiction)))
 	}
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if bucketName == "" {
 		err = errors.New("missing required bucket_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/r2/buckets/%s/cors", accountID, bucketName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type R2CorsRule struct {
 	// Object specifying allowed origins, methods and headers for this CORS rule.
-	Allowed R2CorsRuleAllowed `json:"allowed,required"`
+	Allowed R2CorsRuleAllowed `json:"allowed" api:"required"`
 	// Identifier for this rule.
 	ID string `json:"id"`
 	// Specifies the headers that can be exposed back, and accessed by, the JavaScript
@@ -130,10 +130,10 @@ func (r r2CorsRuleJSON) RawJSON() string {
 type R2CorsRuleAllowed struct {
 	// Specifies the value for the Access-Control-Allow-Methods header R2 sets when
 	// requesting objects in a bucket from a browser.
-	Methods []R2CorsRuleAllowedMethod `json:"methods,required"`
+	Methods []R2CorsRuleAllowedMethod `json:"methods" api:"required"`
 	// Specifies the value for the Access-Control-Allow-Origin header R2 sets when
 	// requesting objects in a bucket from a browser.
-	Origins []string `json:"origins,required"`
+	Origins []string `json:"origins" api:"required"`
 	// Specifies the value for the Access-Control-Allow-Headers header R2 sets when
 	// requesting objects in this bucket from a browser. Cross-origin requests that
 	// include custom headers (e.g. x-user-id) should specify these headers as
@@ -180,7 +180,7 @@ func (r R2CorsRuleAllowedMethod) IsKnown() bool {
 
 type R2CorsRuleParam struct {
 	// Object specifying allowed origins, methods and headers for this CORS rule.
-	Allowed param.Field[R2CorsRuleAllowedParam] `json:"allowed,required"`
+	Allowed param.Field[R2CorsRuleAllowedParam] `json:"allowed" api:"required"`
 	// Identifier for this rule.
 	ID param.Field[string] `json:"id"`
 	// Specifies the headers that can be exposed back, and accessed by, the JavaScript
@@ -202,10 +202,10 @@ func (r R2CorsRuleParam) MarshalJSON() (data []byte, err error) {
 type R2CorsRuleAllowedParam struct {
 	// Specifies the value for the Access-Control-Allow-Methods header R2 sets when
 	// requesting objects in a bucket from a browser.
-	Methods param.Field[[]R2CorsRuleAllowedMethod] `json:"methods,required"`
+	Methods param.Field[[]R2CorsRuleAllowedMethod] `json:"methods" api:"required"`
 	// Specifies the value for the Access-Control-Allow-Origin header R2 sets when
 	// requesting objects in a bucket from a browser.
-	Origins param.Field[[]string] `json:"origins,required"`
+	Origins param.Field[[]string] `json:"origins" api:"required"`
 	// Specifies the value for the Access-Control-Allow-Headers header R2 sets when
 	// requesting objects in this bucket from a browser. Cross-origin requests that
 	// include custom headers (e.g. x-user-id) should specify these headers as
@@ -218,11 +218,11 @@ func (r R2CorsRuleAllowedParam) MarshalJSON() (data []byte, err error) {
 }
 
 type AccountR2BucketCorGetResponse struct {
-	Errors   []AccountR2BucketCorGetResponseError `json:"errors,required"`
-	Messages []string                             `json:"messages,required"`
-	Result   AccountR2BucketCorGetResponseResult  `json:"result,required"`
+	Errors   []AccountR2BucketCorGetResponseError `json:"errors" api:"required"`
+	Messages []string                             `json:"messages" api:"required"`
+	Result   AccountR2BucketCorGetResponseResult  `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success AccountR2BucketCorGetResponseSuccess `json:"success,required"`
+	Success AccountR2BucketCorGetResponseSuccess `json:"success" api:"required"`
 	JSON    accountR2BucketCorGetResponseJSON    `json:"-"`
 }
 
@@ -246,8 +246,8 @@ func (r accountR2BucketCorGetResponseJSON) RawJSON() string {
 }
 
 type AccountR2BucketCorGetResponseError struct {
-	Code             int64                                     `json:"code,required"`
-	Message          string                                    `json:"message,required"`
+	Code             int64                                     `json:"code" api:"required"`
+	Message          string                                    `json:"message" api:"required"`
 	DocumentationURL string                                    `json:"documentation_url"`
 	Source           AccountR2BucketCorGetResponseErrorsSource `json:"source"`
 	JSON             accountR2BucketCorGetResponseErrorJSON    `json:"-"`

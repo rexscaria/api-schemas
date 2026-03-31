@@ -43,11 +43,11 @@ func (r *RadarEntityLocationService) Get(ctx context.Context, location string, q
 	opts = slices.Concat(r.Options, opts)
 	if location == "" {
 		err = errors.New("missing required location parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("radar/entities/locations/%s", location)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves a list of locations.
@@ -55,12 +55,12 @@ func (r *RadarEntityLocationService) List(ctx context.Context, query RadarEntity
 	opts = slices.Concat(r.Options, opts)
 	path := "radar/entities/locations"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type RadarEntityLocationGetResponse struct {
-	Result  RadarEntityLocationGetResponseResult `json:"result,required"`
-	Success bool                                 `json:"success,required"`
+	Result  RadarEntityLocationGetResponseResult `json:"result" api:"required"`
+	Success bool                                 `json:"success" api:"required"`
 	JSON    radarEntityLocationGetResponseJSON   `json:"-"`
 }
 
@@ -82,7 +82,7 @@ func (r radarEntityLocationGetResponseJSON) RawJSON() string {
 }
 
 type RadarEntityLocationGetResponseResult struct {
-	Location RadarEntityLocationGetResponseResultLocation `json:"location,required"`
+	Location RadarEntityLocationGetResponseResultLocation `json:"location" api:"required"`
 	JSON     radarEntityLocationGetResponseResultJSON     `json:"-"`
 }
 
@@ -103,15 +103,15 @@ func (r radarEntityLocationGetResponseResultJSON) RawJSON() string {
 }
 
 type RadarEntityLocationGetResponseResultLocation struct {
-	Alpha2          string `json:"alpha2,required"`
-	ConfidenceLevel int64  `json:"confidenceLevel,required"`
+	Alpha2          string `json:"alpha2" api:"required"`
+	ConfidenceLevel int64  `json:"confidenceLevel" api:"required"`
 	// A numeric string.
-	Latitude string `json:"latitude,required"`
+	Latitude string `json:"latitude" api:"required"`
 	// A numeric string.
-	Longitude string                                           `json:"longitude,required"`
-	Name      string                                           `json:"name,required"`
-	Region    string                                           `json:"region,required"`
-	Subregion string                                           `json:"subregion,required"`
+	Longitude string                                           `json:"longitude" api:"required"`
+	Name      string                                           `json:"name" api:"required"`
+	Region    string                                           `json:"region" api:"required"`
+	Subregion string                                           `json:"subregion" api:"required"`
 	JSON      radarEntityLocationGetResponseResultLocationJSON `json:"-"`
 }
 
@@ -138,8 +138,8 @@ func (r radarEntityLocationGetResponseResultLocationJSON) RawJSON() string {
 }
 
 type RadarEntityLocationListResponse struct {
-	Result  RadarEntityLocationListResponseResult `json:"result,required"`
-	Success bool                                  `json:"success,required"`
+	Result  RadarEntityLocationListResponseResult `json:"result" api:"required"`
+	Success bool                                  `json:"success" api:"required"`
 	JSON    radarEntityLocationListResponseJSON   `json:"-"`
 }
 
@@ -161,7 +161,7 @@ func (r radarEntityLocationListResponseJSON) RawJSON() string {
 }
 
 type RadarEntityLocationListResponseResult struct {
-	Locations []RadarEntityLocationListResponseResultLocation `json:"locations,required"`
+	Locations []RadarEntityLocationListResponseResultLocation `json:"locations" api:"required"`
 	JSON      radarEntityLocationListResponseResultJSON       `json:"-"`
 }
 
@@ -182,12 +182,12 @@ func (r radarEntityLocationListResponseResultJSON) RawJSON() string {
 }
 
 type RadarEntityLocationListResponseResultLocation struct {
-	Alpha2 string `json:"alpha2,required"`
+	Alpha2 string `json:"alpha2" api:"required"`
 	// A numeric string.
-	Latitude string `json:"latitude,required"`
+	Latitude string `json:"latitude" api:"required"`
 	// A numeric string.
-	Longitude string                                            `json:"longitude,required"`
-	Name      string                                            `json:"name,required"`
+	Longitude string                                            `json:"longitude" api:"required"`
+	Name      string                                            `json:"name" api:"required"`
 	JSON      radarEntityLocationListResponseResultLocationJSON `json:"-"`
 }
 

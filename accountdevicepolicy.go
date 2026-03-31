@@ -46,11 +46,11 @@ func (r *AccountDevicePolicyService) New(ctx context.Context, accountID string, 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/devices/policy", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetches the default device settings profile for an account.
@@ -58,11 +58,11 @@ func (r *AccountDevicePolicyService) Get(ctx context.Context, accountID string, 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/devices/policy", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates the default device settings profile for an account.
@@ -70,11 +70,11 @@ func (r *AccountDevicePolicyService) Update(ctx context.Context, accountID strin
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/devices/policy", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Deletes a device settings profile and fetches a list of the remaining profiles
@@ -83,15 +83,15 @@ func (r *AccountDevicePolicyService) Delete(ctx context.Context, accountID strin
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if policyID == "" {
 		err = errors.New("missing required policy_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/devices/policy/%s", accountID, policyID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetches a device settings profile by ID.
@@ -99,15 +99,15 @@ func (r *AccountDevicePolicyService) GetByID(ctx context.Context, accountID stri
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if policyID == "" {
 		err = errors.New("missing required policy_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/devices/policy/%s", accountID, policyID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates a configured device settings profile.
@@ -115,23 +115,23 @@ func (r *AccountDevicePolicyService) UpdateByID(ctx context.Context, accountID s
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if policyID == "" {
 		err = errors.New("missing required policy_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/devices/policy/%s", accountID, policyID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type DefaultDeviceSettingsResponse struct {
-	Errors   []DefaultDeviceSettingsResponseError   `json:"errors,required"`
-	Messages []DefaultDeviceSettingsResponseMessage `json:"messages,required"`
-	Result   DefaultDeviceSettingsResponseResult    `json:"result,required,nullable"`
+	Errors   []DefaultDeviceSettingsResponseError   `json:"errors" api:"required"`
+	Messages []DefaultDeviceSettingsResponseMessage `json:"messages" api:"required"`
+	Result   DefaultDeviceSettingsResponseResult    `json:"result" api:"required,nullable"`
 	// Whether the API call was successful.
-	Success DefaultDeviceSettingsResponseSuccess `json:"success,required"`
+	Success DefaultDeviceSettingsResponseSuccess `json:"success" api:"required"`
 	JSON    defaultDeviceSettingsResponseJSON    `json:"-"`
 }
 
@@ -155,8 +155,8 @@ func (r defaultDeviceSettingsResponseJSON) RawJSON() string {
 }
 
 type DefaultDeviceSettingsResponseError struct {
-	Code             int64                                     `json:"code,required"`
-	Message          string                                    `json:"message,required"`
+	Code             int64                                     `json:"code" api:"required"`
+	Message          string                                    `json:"message" api:"required"`
 	DocumentationURL string                                    `json:"documentation_url"`
 	Source           DefaultDeviceSettingsResponseErrorsSource `json:"source"`
 	JSON             defaultDeviceSettingsResponseErrorJSON    `json:"-"`
@@ -203,8 +203,8 @@ func (r defaultDeviceSettingsResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type DefaultDeviceSettingsResponseMessage struct {
-	Code             int64                                       `json:"code,required"`
-	Message          string                                      `json:"message,required"`
+	Code             int64                                       `json:"code" api:"required"`
+	Message          string                                      `json:"message" api:"required"`
 	DocumentationURL string                                      `json:"documentation_url"`
 	Source           DefaultDeviceSettingsResponseMessagesSource `json:"source"`
 	JSON             defaultDeviceSettingsResponseMessageJSON    `json:"-"`
@@ -477,11 +477,11 @@ func (r deviceSettingsPolicyTargetTestJSON) RawJSON() string {
 }
 
 type DeviceSettingsResponse struct {
-	Errors   []DeviceSettingsResponseError   `json:"errors,required"`
-	Messages []DeviceSettingsResponseMessage `json:"messages,required"`
-	Result   DeviceSettingsPolicy            `json:"result,required,nullable"`
+	Errors   []DeviceSettingsResponseError   `json:"errors" api:"required"`
+	Messages []DeviceSettingsResponseMessage `json:"messages" api:"required"`
+	Result   DeviceSettingsPolicy            `json:"result" api:"required,nullable"`
 	// Whether the API call was successful.
-	Success DeviceSettingsResponseSuccess `json:"success,required"`
+	Success DeviceSettingsResponseSuccess `json:"success" api:"required"`
 	JSON    deviceSettingsResponseJSON    `json:"-"`
 }
 
@@ -505,8 +505,8 @@ func (r deviceSettingsResponseJSON) RawJSON() string {
 }
 
 type DeviceSettingsResponseError struct {
-	Code             int64                              `json:"code,required"`
-	Message          string                             `json:"message,required"`
+	Code             int64                              `json:"code" api:"required"`
+	Message          string                             `json:"message" api:"required"`
 	DocumentationURL string                             `json:"documentation_url"`
 	Source           DeviceSettingsResponseErrorsSource `json:"source"`
 	JSON             deviceSettingsResponseErrorJSON    `json:"-"`
@@ -553,8 +553,8 @@ func (r deviceSettingsResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type DeviceSettingsResponseMessage struct {
-	Code             int64                                `json:"code,required"`
-	Message          string                               `json:"message,required"`
+	Code             int64                                `json:"code" api:"required"`
+	Message          string                               `json:"message" api:"required"`
 	DocumentationURL string                               `json:"documentation_url"`
 	Source           DeviceSettingsResponseMessagesSource `json:"source"`
 	JSON             deviceSettingsResponseMessageJSON    `json:"-"`
@@ -655,12 +655,12 @@ type AccountDevicePolicyNewParams struct {
 	// "identity.groups.id", "identity.groups.name", "identity.groups.email",
 	// "identity.service_token_uuid", "identity.saml_attributes", "network", "os.name",
 	// "os.version".
-	Match param.Field[string] `json:"match,required"`
+	Match param.Field[string] `json:"match" api:"required"`
 	// The name of the device settings profile.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// The precedence of the policy. Lower values indicate higher precedence. Policies
 	// will be evaluated in ascending order of this field.
-	Precedence param.Field[float64] `json:"precedence,required"`
+	Precedence param.Field[float64] `json:"precedence" api:"required"`
 	// Whether to allow the user to switch WARP between modes.
 	AllowModeSwitch param.Field[bool] `json:"allow_mode_switch"`
 	// Whether to receive update notifications when a new version of the client is

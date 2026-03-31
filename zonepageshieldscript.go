@@ -42,15 +42,15 @@ func (r *ZonePageShieldScriptService) Get(ctx context.Context, zoneID string, sc
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if scriptID == "" {
 		err = errors.New("missing required script_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/page_shield/scripts/%s", zoneID, scriptID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists all scripts detected by Page Shield.
@@ -58,42 +58,42 @@ func (r *ZonePageShieldScriptService) List(ctx context.Context, zoneID string, q
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/page_shield/scripts", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type Script struct {
 	// Identifier
-	ID                    string    `json:"id,required"`
-	AddedAt               time.Time `json:"added_at,required" format:"date-time"`
-	FirstSeenAt           time.Time `json:"first_seen_at,required" format:"date-time"`
-	Host                  string    `json:"host,required"`
-	LastSeenAt            time.Time `json:"last_seen_at,required" format:"date-time"`
-	URL                   string    `json:"url,required"`
-	URLContainsCdnCgiPath bool      `json:"url_contains_cdn_cgi_path,required"`
+	ID                    string    `json:"id" api:"required"`
+	AddedAt               time.Time `json:"added_at" api:"required" format:"date-time"`
+	FirstSeenAt           time.Time `json:"first_seen_at" api:"required" format:"date-time"`
+	Host                  string    `json:"host" api:"required"`
+	LastSeenAt            time.Time `json:"last_seen_at" api:"required" format:"date-time"`
+	URL                   string    `json:"url" api:"required"`
+	URLContainsCdnCgiPath bool      `json:"url_contains_cdn_cgi_path" api:"required"`
 	// The cryptomining score of the JavaScript content.
-	CryptominingScore int64 `json:"cryptomining_score,nullable"`
+	CryptominingScore int64 `json:"cryptomining_score" api:"nullable"`
 	// The dataflow score of the JavaScript content.
-	DataflowScore           int64 `json:"dataflow_score,nullable"`
+	DataflowScore           int64 `json:"dataflow_score" api:"nullable"`
 	DomainReportedMalicious bool  `json:"domain_reported_malicious"`
 	// The timestamp of when the script was last fetched.
-	FetchedAt    string `json:"fetched_at,nullable"`
+	FetchedAt    string `json:"fetched_at" api:"nullable"`
 	FirstPageURL string `json:"first_page_url"`
 	// The computed hash of the analyzed script.
-	Hash string `json:"hash,nullable"`
+	Hash string `json:"hash" api:"nullable"`
 	// The integrity score of the JavaScript content.
-	JsIntegrityScore int64 `json:"js_integrity_score,nullable"`
+	JsIntegrityScore int64 `json:"js_integrity_score" api:"nullable"`
 	// The magecart score of the JavaScript content.
-	MagecartScore             int64    `json:"magecart_score,nullable"`
+	MagecartScore             int64    `json:"magecart_score" api:"nullable"`
 	MaliciousDomainCategories []string `json:"malicious_domain_categories"`
 	MaliciousURLCategories    []string `json:"malicious_url_categories"`
 	// The malware score of the JavaScript content.
-	MalwareScore int64 `json:"malware_score,nullable"`
+	MalwareScore int64 `json:"malware_score" api:"nullable"`
 	// The obfuscation score of the JavaScript content.
-	ObfuscationScore     int64      `json:"obfuscation_score,nullable"`
+	ObfuscationScore     int64      `json:"obfuscation_score" api:"nullable"`
 	PageURLs             []string   `json:"page_urls"`
 	URLReportedMalicious bool       `json:"url_reported_malicious"`
 	JSON                 scriptJSON `json:"-"`
@@ -135,9 +135,9 @@ func (r scriptJSON) RawJSON() string {
 }
 
 type ZonePageShieldScriptGetResponse struct {
-	Result ZonePageShieldScriptGetResponseResult `json:"result,required,nullable"`
+	Result ZonePageShieldScriptGetResponseResult `json:"result" api:"required,nullable"`
 	// Whether the API call was successful
-	Success  ZonePageShieldScriptGetResponseSuccess   `json:"success,required"`
+	Success  ZonePageShieldScriptGetResponseSuccess   `json:"success" api:"required"`
 	Errors   []ZonePageShieldScriptGetResponseError   `json:"errors"`
 	Messages []ZonePageShieldScriptGetResponseMessage `json:"messages"`
 	JSON     zonePageShieldScriptGetResponseJSON      `json:"-"`
@@ -164,36 +164,36 @@ func (r zonePageShieldScriptGetResponseJSON) RawJSON() string {
 
 type ZonePageShieldScriptGetResponseResult struct {
 	// Identifier
-	ID                    string    `json:"id,required"`
-	AddedAt               time.Time `json:"added_at,required" format:"date-time"`
-	FirstSeenAt           time.Time `json:"first_seen_at,required" format:"date-time"`
-	Host                  string    `json:"host,required"`
-	LastSeenAt            time.Time `json:"last_seen_at,required" format:"date-time"`
-	URL                   string    `json:"url,required"`
-	URLContainsCdnCgiPath bool      `json:"url_contains_cdn_cgi_path,required"`
+	ID                    string    `json:"id" api:"required"`
+	AddedAt               time.Time `json:"added_at" api:"required" format:"date-time"`
+	FirstSeenAt           time.Time `json:"first_seen_at" api:"required" format:"date-time"`
+	Host                  string    `json:"host" api:"required"`
+	LastSeenAt            time.Time `json:"last_seen_at" api:"required" format:"date-time"`
+	URL                   string    `json:"url" api:"required"`
+	URLContainsCdnCgiPath bool      `json:"url_contains_cdn_cgi_path" api:"required"`
 	// The cryptomining score of the JavaScript content.
-	CryptominingScore int64 `json:"cryptomining_score,nullable"`
+	CryptominingScore int64 `json:"cryptomining_score" api:"nullable"`
 	// The dataflow score of the JavaScript content.
-	DataflowScore           int64 `json:"dataflow_score,nullable"`
+	DataflowScore           int64 `json:"dataflow_score" api:"nullable"`
 	DomainReportedMalicious bool  `json:"domain_reported_malicious"`
 	// The timestamp of when the script was last fetched.
-	FetchedAt    string `json:"fetched_at,nullable"`
+	FetchedAt    string `json:"fetched_at" api:"nullable"`
 	FirstPageURL string `json:"first_page_url"`
 	// The computed hash of the analyzed script.
-	Hash string `json:"hash,nullable"`
+	Hash string `json:"hash" api:"nullable"`
 	// The integrity score of the JavaScript content.
-	JsIntegrityScore int64 `json:"js_integrity_score,nullable"`
+	JsIntegrityScore int64 `json:"js_integrity_score" api:"nullable"`
 	// The magecart score of the JavaScript content.
-	MagecartScore             int64    `json:"magecart_score,nullable"`
+	MagecartScore             int64    `json:"magecart_score" api:"nullable"`
 	MaliciousDomainCategories []string `json:"malicious_domain_categories"`
 	MaliciousURLCategories    []string `json:"malicious_url_categories"`
 	// The malware score of the JavaScript content.
-	MalwareScore int64 `json:"malware_score,nullable"`
+	MalwareScore int64 `json:"malware_score" api:"nullable"`
 	// The obfuscation score of the JavaScript content.
-	ObfuscationScore     int64                                          `json:"obfuscation_score,nullable"`
+	ObfuscationScore     int64                                          `json:"obfuscation_score" api:"nullable"`
 	PageURLs             []string                                       `json:"page_urls"`
 	URLReportedMalicious bool                                           `json:"url_reported_malicious"`
-	Versions             []ZonePageShieldScriptGetResponseResultVersion `json:"versions,nullable"`
+	Versions             []ZonePageShieldScriptGetResponseResultVersion `json:"versions" api:"nullable"`
 	JSON                 zonePageShieldScriptGetResponseResultJSON      `json:"-"`
 }
 
@@ -237,21 +237,21 @@ func (r zonePageShieldScriptGetResponseResultJSON) RawJSON() string {
 // The version of the analyzed script.
 type ZonePageShieldScriptGetResponseResultVersion struct {
 	// The cryptomining score of the JavaScript content.
-	CryptominingScore int64 `json:"cryptomining_score,nullable"`
+	CryptominingScore int64 `json:"cryptomining_score" api:"nullable"`
 	// The dataflow score of the JavaScript content.
-	DataflowScore int64 `json:"dataflow_score,nullable"`
+	DataflowScore int64 `json:"dataflow_score" api:"nullable"`
 	// The timestamp of when the script was last fetched.
-	FetchedAt string `json:"fetched_at,nullable"`
+	FetchedAt string `json:"fetched_at" api:"nullable"`
 	// The computed hash of the analyzed script.
-	Hash string `json:"hash,nullable"`
+	Hash string `json:"hash" api:"nullable"`
 	// The integrity score of the JavaScript content.
-	JsIntegrityScore int64 `json:"js_integrity_score,nullable"`
+	JsIntegrityScore int64 `json:"js_integrity_score" api:"nullable"`
 	// The magecart score of the JavaScript content.
-	MagecartScore int64 `json:"magecart_score,nullable"`
+	MagecartScore int64 `json:"magecart_score" api:"nullable"`
 	// The malware score of the JavaScript content.
-	MalwareScore int64 `json:"malware_score,nullable"`
+	MalwareScore int64 `json:"malware_score" api:"nullable"`
 	// The obfuscation score of the JavaScript content.
-	ObfuscationScore int64                                            `json:"obfuscation_score,nullable"`
+	ObfuscationScore int64                                            `json:"obfuscation_score" api:"nullable"`
 	JSON             zonePageShieldScriptGetResponseResultVersionJSON `json:"-"`
 }
 
@@ -294,8 +294,8 @@ func (r ZonePageShieldScriptGetResponseSuccess) IsKnown() bool {
 }
 
 type ZonePageShieldScriptGetResponseError struct {
-	Code             int64                                       `json:"code,required"`
-	Message          string                                      `json:"message,required"`
+	Code             int64                                       `json:"code" api:"required"`
+	Message          string                                      `json:"message" api:"required"`
 	DocumentationURL string                                      `json:"documentation_url"`
 	Source           ZonePageShieldScriptGetResponseErrorsSource `json:"source"`
 	JSON             zonePageShieldScriptGetResponseErrorJSON    `json:"-"`
@@ -342,8 +342,8 @@ func (r zonePageShieldScriptGetResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type ZonePageShieldScriptGetResponseMessage struct {
-	Code             int64                                         `json:"code,required"`
-	Message          string                                        `json:"message,required"`
+	Code             int64                                         `json:"code" api:"required"`
+	Message          string                                        `json:"message" api:"required"`
 	DocumentationURL string                                        `json:"documentation_url"`
 	Source           ZonePageShieldScriptGetResponseMessagesSource `json:"source"`
 	JSON             zonePageShieldScriptGetResponseMessageJSON    `json:"-"`
@@ -390,10 +390,10 @@ func (r zonePageShieldScriptGetResponseMessagesSourceJSON) RawJSON() string {
 }
 
 type ZonePageShieldScriptListResponse struct {
-	Result     []Script                                   `json:"result,required"`
-	ResultInfo ZonePageShieldScriptListResponseResultInfo `json:"result_info,required"`
+	Result     []Script                                   `json:"result" api:"required"`
+	ResultInfo ZonePageShieldScriptListResponseResultInfo `json:"result_info" api:"required"`
 	// Whether the API call was successful
-	Success  ZonePageShieldScriptListResponseSuccess   `json:"success,required"`
+	Success  ZonePageShieldScriptListResponseSuccess   `json:"success" api:"required"`
 	Errors   []ZonePageShieldScriptListResponseError   `json:"errors"`
 	Messages []ZonePageShieldScriptListResponseMessage `json:"messages"`
 	JSON     zonePageShieldScriptListResponseJSON      `json:"-"`
@@ -421,15 +421,15 @@ func (r zonePageShieldScriptListResponseJSON) RawJSON() string {
 
 type ZonePageShieldScriptListResponseResultInfo struct {
 	// Total number of results for the requested service
-	Count float64 `json:"count,required"`
+	Count float64 `json:"count" api:"required"`
 	// Current page within paginated list of results
-	Page float64 `json:"page,required"`
+	Page float64 `json:"page" api:"required"`
 	// Number of results per page of results
-	PerPage float64 `json:"per_page,required"`
+	PerPage float64 `json:"per_page" api:"required"`
 	// Total results available without any search parameters
-	TotalCount float64 `json:"total_count,required"`
+	TotalCount float64 `json:"total_count" api:"required"`
 	// Total number of pages
-	TotalPages float64                                        `json:"total_pages,required"`
+	TotalPages float64                                        `json:"total_pages" api:"required"`
 	JSON       zonePageShieldScriptListResponseResultInfoJSON `json:"-"`
 }
 
@@ -469,8 +469,8 @@ func (r ZonePageShieldScriptListResponseSuccess) IsKnown() bool {
 }
 
 type ZonePageShieldScriptListResponseError struct {
-	Code             int64                                        `json:"code,required"`
-	Message          string                                       `json:"message,required"`
+	Code             int64                                        `json:"code" api:"required"`
+	Message          string                                       `json:"message" api:"required"`
 	DocumentationURL string                                       `json:"documentation_url"`
 	Source           ZonePageShieldScriptListResponseErrorsSource `json:"source"`
 	JSON             zonePageShieldScriptListResponseErrorJSON    `json:"-"`
@@ -517,8 +517,8 @@ func (r zonePageShieldScriptListResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type ZonePageShieldScriptListResponseMessage struct {
-	Code             int64                                          `json:"code,required"`
-	Message          string                                         `json:"message,required"`
+	Code             int64                                          `json:"code" api:"required"`
+	Message          string                                         `json:"message" api:"required"`
 	DocumentationURL string                                         `json:"documentation_url"`
 	Source           ZonePageShieldScriptListResponseMessagesSource `json:"source"`
 	JSON             zonePageShieldScriptListResponseMessageJSON    `json:"-"`

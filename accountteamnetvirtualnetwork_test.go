@@ -14,7 +14,7 @@ import (
 )
 
 func TestAccountTeamnetVirtualNetworkNewWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,6 +26,7 @@ func TestAccountTeamnetVirtualNetworkNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Teamnet.VirtualNetworks.New(
 		context.TODO(),
@@ -47,7 +48,7 @@ func TestAccountTeamnetVirtualNetworkNewWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountTeamnetVirtualNetworkGet(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -59,6 +60,7 @@ func TestAccountTeamnetVirtualNetworkGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Teamnet.VirtualNetworks.Get(
 		context.TODO(),
@@ -75,7 +77,7 @@ func TestAccountTeamnetVirtualNetworkGet(t *testing.T) {
 }
 
 func TestAccountTeamnetVirtualNetworkUpdateWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -87,6 +89,7 @@ func TestAccountTeamnetVirtualNetworkUpdateWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Teamnet.VirtualNetworks.Update(
 		context.TODO(),
@@ -108,7 +111,7 @@ func TestAccountTeamnetVirtualNetworkUpdateWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountTeamnetVirtualNetworkListWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -120,6 +123,7 @@ func TestAccountTeamnetVirtualNetworkListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Teamnet.VirtualNetworks.List(
 		context.TODO(),
@@ -141,7 +145,7 @@ func TestAccountTeamnetVirtualNetworkListWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountTeamnetVirtualNetworkDelete(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -153,6 +157,7 @@ func TestAccountTeamnetVirtualNetworkDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Teamnet.VirtualNetworks.Delete(
 		context.TODO(),

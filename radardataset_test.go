@@ -15,7 +15,7 @@ import (
 )
 
 func TestRadarDatasetGetDownloadURLWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -27,6 +27,7 @@ func TestRadarDatasetGetDownloadURLWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.Datasets.GetDownloadURL(context.TODO(), cfrex.RadarDatasetGetDownloadURLParams{
 		DatasetID: cfrex.F(int64(3)),
@@ -42,7 +43,7 @@ func TestRadarDatasetGetDownloadURLWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarDatasetListDatasetsWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -54,6 +55,7 @@ func TestRadarDatasetListDatasetsWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.Datasets.ListDatasets(context.TODO(), cfrex.RadarDatasetListDatasetsParams{
 		DatasetType: cfrex.F(cfrex.RadarDatasetListDatasetsParamsDatasetTypeRankingBucket),
@@ -72,7 +74,7 @@ func TestRadarDatasetListDatasetsWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarDatasetGetCsv(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -84,6 +86,7 @@ func TestRadarDatasetGetCsv(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.Datasets.GetCsv(context.TODO(), "ranking_top_1000")
 	if err != nil {

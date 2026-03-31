@@ -41,11 +41,11 @@ func (r *AccountDlpEmailAccountMappingService) New(ctx context.Context, accountI
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/dlp/email/account_mapping", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get mapping
@@ -53,16 +53,16 @@ func (r *AccountDlpEmailAccountMappingService) Get(ctx context.Context, accountI
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/dlp/email/account_mapping", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountMapping struct {
-	AddinIdentifierToken string             `json:"addin_identifier_token,required" format:"uuid"`
-	AuthRequirements     Auth               `json:"auth_requirements,required"`
+	AddinIdentifierToken string             `json:"addin_identifier_token" api:"required" format:"uuid"`
+	AuthRequirements     Auth               `json:"auth_requirements" api:"required"`
 	JSON                 accountMappingJSON `json:"-"`
 }
 
@@ -83,7 +83,7 @@ func (r accountMappingJSON) RawJSON() string {
 }
 
 type Auth struct {
-	Type AuthType `json:"type,required"`
+	Type AuthType `json:"type" api:"required"`
 	// This field can have the runtime type of [[]string].
 	AllowedMicrosoftOrganizations interface{} `json:"allowed_microsoft_organizations"`
 	JSON                          authJSON    `json:"-"`
@@ -140,8 +140,8 @@ func init() {
 }
 
 type AuthObject struct {
-	AllowedMicrosoftOrganizations []string       `json:"allowed_microsoft_organizations,required"`
-	Type                          AuthObjectType `json:"type,required"`
+	AllowedMicrosoftOrganizations []string       `json:"allowed_microsoft_organizations" api:"required"`
+	Type                          AuthObjectType `json:"type" api:"required"`
 	JSON                          authObjectJSON `json:"-"`
 }
 
@@ -178,7 +178,7 @@ func (r AuthObjectType) IsKnown() bool {
 }
 
 type AuthType struct {
-	Type AuthTypeType `json:"type,required"`
+	Type AuthTypeType `json:"type" api:"required"`
 	JSON authTypeJSON `json:"-"`
 }
 
@@ -214,7 +214,7 @@ func (r AuthTypeType) IsKnown() bool {
 }
 
 type AuthParam struct {
-	Type                          param.Field[AuthType]    `json:"type,required"`
+	Type                          param.Field[AuthType]    `json:"type" api:"required"`
 	AllowedMicrosoftOrganizations param.Field[interface{}] `json:"allowed_microsoft_organizations"`
 }
 
@@ -230,8 +230,8 @@ type AuthUnionParam interface {
 }
 
 type AuthObjectParam struct {
-	AllowedMicrosoftOrganizations param.Field[[]string]       `json:"allowed_microsoft_organizations,required"`
-	Type                          param.Field[AuthObjectType] `json:"type,required"`
+	AllowedMicrosoftOrganizations param.Field[[]string]       `json:"allowed_microsoft_organizations" api:"required"`
+	Type                          param.Field[AuthObjectType] `json:"type" api:"required"`
 }
 
 func (r AuthObjectParam) MarshalJSON() (data []byte, err error) {
@@ -241,7 +241,7 @@ func (r AuthObjectParam) MarshalJSON() (data []byte, err error) {
 func (r AuthObjectParam) implementsAuthUnionParam() {}
 
 type AuthTypeParam struct {
-	Type param.Field[AuthTypeType] `json:"type,required"`
+	Type param.Field[AuthTypeType] `json:"type" api:"required"`
 }
 
 func (r AuthTypeParam) MarshalJSON() (data []byte, err error) {
@@ -251,10 +251,10 @@ func (r AuthTypeParam) MarshalJSON() (data []byte, err error) {
 func (r AuthTypeParam) implementsAuthUnionParam() {}
 
 type AccountDlpEmailAccountMappingNewResponse struct {
-	Errors   []MessagesDlpItems `json:"errors,required"`
-	Messages []MessagesDlpItems `json:"messages,required"`
+	Errors   []MessagesDlpItems `json:"errors" api:"required"`
+	Messages []MessagesDlpItems `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountDlpEmailAccountMappingNewResponseSuccess `json:"success,required"`
+	Success AccountDlpEmailAccountMappingNewResponseSuccess `json:"success" api:"required"`
 	Result  AccountMapping                                  `json:"result"`
 	JSON    accountDlpEmailAccountMappingNewResponseJSON    `json:"-"`
 }
@@ -294,10 +294,10 @@ func (r AccountDlpEmailAccountMappingNewResponseSuccess) IsKnown() bool {
 }
 
 type AccountDlpEmailAccountMappingGetResponse struct {
-	Errors   []MessagesDlpItems `json:"errors,required"`
-	Messages []MessagesDlpItems `json:"messages,required"`
+	Errors   []MessagesDlpItems `json:"errors" api:"required"`
+	Messages []MessagesDlpItems `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountDlpEmailAccountMappingGetResponseSuccess `json:"success,required"`
+	Success AccountDlpEmailAccountMappingGetResponseSuccess `json:"success" api:"required"`
 	Result  AccountMapping                                  `json:"result"`
 	JSON    accountDlpEmailAccountMappingGetResponseJSON    `json:"-"`
 }
@@ -337,7 +337,7 @@ func (r AccountDlpEmailAccountMappingGetResponseSuccess) IsKnown() bool {
 }
 
 type AccountDlpEmailAccountMappingNewParams struct {
-	AuthRequirements param.Field[AuthUnionParam] `json:"auth_requirements,required"`
+	AuthRequirements param.Field[AuthUnionParam] `json:"auth_requirements" api:"required"`
 }
 
 func (r AccountDlpEmailAccountMappingNewParams) MarshalJSON() (data []byte, err error) {

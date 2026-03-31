@@ -39,11 +39,11 @@ func (r *AccountZtRiskScoringBehaviorService) ListBehaviors(ctx context.Context,
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/zt_risk_scoring/behaviors", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update configuration for risk behaviors
@@ -51,15 +51,15 @@ func (r *AccountZtRiskScoringBehaviorService) UpdateBehaviors(ctx context.Contex
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/zt_risk_scoring/behaviors", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type UpdateBehaviors struct {
-	Behaviors map[string]UpdateBehaviorsBehavior `json:"behaviors,required"`
+	Behaviors map[string]UpdateBehaviorsBehavior `json:"behaviors" api:"required"`
 	JSON      updateBehaviorsJSON                `json:"-"`
 }
 
@@ -79,8 +79,8 @@ func (r updateBehaviorsJSON) RawJSON() string {
 }
 
 type UpdateBehaviorsBehavior struct {
-	Enabled   bool                        `json:"enabled,required"`
-	RiskLevel RiskLevel                   `json:"risk_level,required"`
+	Enabled   bool                        `json:"enabled" api:"required"`
+	RiskLevel RiskLevel                   `json:"risk_level" api:"required"`
 	JSON      updateBehaviorsBehaviorJSON `json:"-"`
 }
 
@@ -102,7 +102,7 @@ func (r updateBehaviorsBehaviorJSON) RawJSON() string {
 }
 
 type UpdateBehaviorsParam struct {
-	Behaviors param.Field[map[string]UpdateBehaviorsBehaviorParam] `json:"behaviors,required"`
+	Behaviors param.Field[map[string]UpdateBehaviorsBehaviorParam] `json:"behaviors" api:"required"`
 }
 
 func (r UpdateBehaviorsParam) MarshalJSON() (data []byte, err error) {
@@ -110,8 +110,8 @@ func (r UpdateBehaviorsParam) MarshalJSON() (data []byte, err error) {
 }
 
 type UpdateBehaviorsBehaviorParam struct {
-	Enabled   param.Field[bool]      `json:"enabled,required"`
-	RiskLevel param.Field[RiskLevel] `json:"risk_level,required"`
+	Enabled   param.Field[bool]      `json:"enabled" api:"required"`
+	RiskLevel param.Field[RiskLevel] `json:"risk_level" api:"required"`
 }
 
 func (r UpdateBehaviorsBehaviorParam) MarshalJSON() (data []byte, err error) {
@@ -119,10 +119,10 @@ func (r UpdateBehaviorsBehaviorParam) MarshalJSON() (data []byte, err error) {
 }
 
 type AccountZtRiskScoringBehaviorListBehaviorsResponse struct {
-	Errors   []MessagesDlpItems `json:"errors,required"`
-	Messages []MessagesDlpItems `json:"messages,required"`
+	Errors   []MessagesDlpItems `json:"errors" api:"required"`
+	Messages []MessagesDlpItems `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountZtRiskScoringBehaviorListBehaviorsResponseSuccess `json:"success,required"`
+	Success AccountZtRiskScoringBehaviorListBehaviorsResponseSuccess `json:"success" api:"required"`
 	Result  AccountZtRiskScoringBehaviorListBehaviorsResponseResult  `json:"result"`
 	JSON    accountZtRiskScoringBehaviorListBehaviorsResponseJSON    `json:"-"`
 }
@@ -162,7 +162,7 @@ func (r AccountZtRiskScoringBehaviorListBehaviorsResponseSuccess) IsKnown() bool
 }
 
 type AccountZtRiskScoringBehaviorListBehaviorsResponseResult struct {
-	Behaviors map[string]AccountZtRiskScoringBehaviorListBehaviorsResponseResultBehavior `json:"behaviors,required"`
+	Behaviors map[string]AccountZtRiskScoringBehaviorListBehaviorsResponseResultBehavior `json:"behaviors" api:"required"`
 	JSON      accountZtRiskScoringBehaviorListBehaviorsResponseResultJSON                `json:"-"`
 }
 
@@ -184,10 +184,10 @@ func (r accountZtRiskScoringBehaviorListBehaviorsResponseResultJSON) RawJSON() s
 }
 
 type AccountZtRiskScoringBehaviorListBehaviorsResponseResultBehavior struct {
-	Description string                                                              `json:"description,required"`
-	Enabled     bool                                                                `json:"enabled,required"`
-	Name        string                                                              `json:"name,required"`
-	RiskLevel   RiskLevel                                                           `json:"risk_level,required"`
+	Description string                                                              `json:"description" api:"required"`
+	Enabled     bool                                                                `json:"enabled" api:"required"`
+	Name        string                                                              `json:"name" api:"required"`
+	RiskLevel   RiskLevel                                                           `json:"risk_level" api:"required"`
 	JSON        accountZtRiskScoringBehaviorListBehaviorsResponseResultBehaviorJSON `json:"-"`
 }
 
@@ -212,10 +212,10 @@ func (r accountZtRiskScoringBehaviorListBehaviorsResponseResultBehaviorJSON) Raw
 }
 
 type AccountZtRiskScoringBehaviorUpdateBehaviorsResponse struct {
-	Errors   []MessagesDlpItems `json:"errors,required"`
-	Messages []MessagesDlpItems `json:"messages,required"`
+	Errors   []MessagesDlpItems `json:"errors" api:"required"`
+	Messages []MessagesDlpItems `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountZtRiskScoringBehaviorUpdateBehaviorsResponseSuccess `json:"success,required"`
+	Success AccountZtRiskScoringBehaviorUpdateBehaviorsResponseSuccess `json:"success" api:"required"`
 	Result  UpdateBehaviors                                            `json:"result"`
 	JSON    accountZtRiskScoringBehaviorUpdateBehaviorsResponseJSON    `json:"-"`
 }
@@ -255,7 +255,7 @@ func (r AccountZtRiskScoringBehaviorUpdateBehaviorsResponseSuccess) IsKnown() bo
 }
 
 type AccountZtRiskScoringBehaviorUpdateBehaviorsParams struct {
-	UpdateBehaviors UpdateBehaviorsParam `json:"update_behaviors,required"`
+	UpdateBehaviors UpdateBehaviorsParam `json:"update_behaviors" api:"required"`
 }
 
 func (r AccountZtRiskScoringBehaviorUpdateBehaviorsParams) MarshalJSON() (data []byte, err error) {

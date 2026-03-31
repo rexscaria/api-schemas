@@ -41,15 +41,15 @@ func (r *AccountWorkerScriptScriptSettingService) Get(ctx context.Context, accou
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if scriptName == "" {
 		err = errors.New("missing required script_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/workers/scripts/%s/script-settings", accountID, scriptName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Patch script-level settings when using
@@ -59,26 +59,26 @@ func (r *AccountWorkerScriptScriptSettingService) Patch(ctx context.Context, acc
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if scriptName == "" {
 		err = errors.New("missing required script_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/workers/scripts/%s/script-settings", accountID, scriptName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Observability settings for the Worker.
 type Observability struct {
 	// Whether observability is enabled for the Worker.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// The sampling rate for incoming requests. From 0 to 1 (1 = 100%, 0.1 = 10%).
 	// Default is 1.
-	HeadSamplingRate float64 `json:"head_sampling_rate,nullable"`
+	HeadSamplingRate float64 `json:"head_sampling_rate" api:"nullable"`
 	// Log settings for the Worker.
-	Logs ObservabilityLogs `json:"logs,nullable"`
+	Logs ObservabilityLogs `json:"logs" api:"nullable"`
 	JSON observabilityJSON `json:"-"`
 }
 
@@ -102,13 +102,13 @@ func (r observabilityJSON) RawJSON() string {
 // Log settings for the Worker.
 type ObservabilityLogs struct {
 	// Whether logs are enabled for the Worker.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Whether
 	// [invocation logs](https://developers.cloudflare.com/workers/observability/logs/workers-logs/#invocation-logs)
 	// are enabled for the Worker.
-	InvocationLogs bool `json:"invocation_logs,required"`
+	InvocationLogs bool `json:"invocation_logs" api:"required"`
 	// The sampling rate for logs. From 0 to 1 (1 = 100%, 0.1 = 10%). Default is 1.
-	HeadSamplingRate float64               `json:"head_sampling_rate,nullable"`
+	HeadSamplingRate float64               `json:"head_sampling_rate" api:"nullable"`
 	JSON             observabilityLogsJSON `json:"-"`
 }
 
@@ -133,7 +133,7 @@ func (r observabilityLogsJSON) RawJSON() string {
 // Observability settings for the Worker.
 type ObservabilityParam struct {
 	// Whether observability is enabled for the Worker.
-	Enabled param.Field[bool] `json:"enabled,required"`
+	Enabled param.Field[bool] `json:"enabled" api:"required"`
 	// The sampling rate for incoming requests. From 0 to 1 (1 = 100%, 0.1 = 10%).
 	// Default is 1.
 	HeadSamplingRate param.Field[float64] `json:"head_sampling_rate"`
@@ -148,11 +148,11 @@ func (r ObservabilityParam) MarshalJSON() (data []byte, err error) {
 // Log settings for the Worker.
 type ObservabilityLogsParam struct {
 	// Whether logs are enabled for the Worker.
-	Enabled param.Field[bool] `json:"enabled,required"`
+	Enabled param.Field[bool] `json:"enabled" api:"required"`
 	// Whether
 	// [invocation logs](https://developers.cloudflare.com/workers/observability/logs/workers-logs/#invocation-logs)
 	// are enabled for the Worker.
-	InvocationLogs param.Field[bool] `json:"invocation_logs,required"`
+	InvocationLogs param.Field[bool] `json:"invocation_logs" api:"required"`
 	// The sampling rate for logs. From 0 to 1 (1 = 100%, 0.1 = 10%). Default is 1.
 	HeadSamplingRate param.Field[float64] `json:"head_sampling_rate"`
 }
@@ -165,9 +165,9 @@ type SettingsItem struct {
 	// Whether Logpush is turned on for the Worker.
 	Logpush bool `json:"logpush"`
 	// Observability settings for the Worker.
-	Observability Observability `json:"observability,nullable"`
+	Observability Observability `json:"observability" api:"nullable"`
 	// List of Workers that will consume logs from the attached Worker.
-	TailConsumers []TailConsumersScript `json:"tail_consumers,nullable"`
+	TailConsumers []TailConsumersScript `json:"tail_consumers" api:"nullable"`
 	JSON          settingsItemJSON      `json:"-"`
 }
 
@@ -202,11 +202,11 @@ func (r SettingsItemParam) MarshalJSON() (data []byte, err error) {
 }
 
 type SettingsResponseScriptSettings struct {
-	Errors   []WorkersMessages `json:"errors,required"`
-	Messages []WorkersMessages `json:"messages,required"`
-	Result   SettingsItem      `json:"result,required"`
+	Errors   []WorkersMessages `json:"errors" api:"required"`
+	Messages []WorkersMessages `json:"messages" api:"required"`
+	Result   SettingsItem      `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success SettingsResponseScriptSettingsSuccess `json:"success,required"`
+	Success SettingsResponseScriptSettingsSuccess `json:"success" api:"required"`
 	JSON    settingsResponseScriptSettingsJSON    `json:"-"`
 }
 
@@ -245,11 +245,11 @@ func (r SettingsResponseScriptSettingsSuccess) IsKnown() bool {
 }
 
 type SettingsResponseScriptSettingsParam struct {
-	Errors   param.Field[[]WorkersMessagesParam] `json:"errors,required"`
-	Messages param.Field[[]WorkersMessagesParam] `json:"messages,required"`
-	Result   param.Field[SettingsItemParam]      `json:"result,required"`
+	Errors   param.Field[[]WorkersMessagesParam] `json:"errors" api:"required"`
+	Messages param.Field[[]WorkersMessagesParam] `json:"messages" api:"required"`
+	Result   param.Field[SettingsItemParam]      `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success param.Field[SettingsResponseScriptSettingsSuccess] `json:"success,required"`
+	Success param.Field[SettingsResponseScriptSettingsSuccess] `json:"success" api:"required"`
 }
 
 func (r SettingsResponseScriptSettingsParam) MarshalJSON() (data []byte, err error) {
@@ -259,7 +259,7 @@ func (r SettingsResponseScriptSettingsParam) MarshalJSON() (data []byte, err err
 // A reference to a script that will consume logs from the attached Worker.
 type TailConsumersScript struct {
 	// Name of Worker that is to be the consumer.
-	Service string `json:"service,required"`
+	Service string `json:"service" api:"required"`
 	// Optional environment if the Worker utilizes one.
 	Environment string `json:"environment"`
 	// Optional dispatch namespace the script belongs to.
@@ -288,7 +288,7 @@ func (r tailConsumersScriptJSON) RawJSON() string {
 // A reference to a script that will consume logs from the attached Worker.
 type TailConsumersScriptParam struct {
 	// Name of Worker that is to be the consumer.
-	Service param.Field[string] `json:"service,required"`
+	Service param.Field[string] `json:"service" api:"required"`
 	// Optional environment if the Worker utilizes one.
 	Environment param.Field[string] `json:"environment"`
 	// Optional dispatch namespace the script belongs to.
@@ -300,7 +300,7 @@ func (r TailConsumersScriptParam) MarshalJSON() (data []byte, err error) {
 }
 
 type AccountWorkerScriptScriptSettingPatchParams struct {
-	SettingsItem SettingsItemParam `json:"settings_item,required"`
+	SettingsItem SettingsItemParam `json:"settings_item" api:"required"`
 }
 
 func (r AccountWorkerScriptScriptSettingPatchParams) MarshalJSON() (data []byte, err error) {

@@ -40,28 +40,28 @@ func NewAccountEventNotificationR2ConfigurationService(opts ...option.RequestOpt
 // List all event notification rules for a bucket.
 func (r *AccountEventNotificationR2ConfigurationService) List(ctx context.Context, accountID string, bucketName string, query AccountEventNotificationR2ConfigurationListParams, opts ...option.RequestOption) (res *AccountEventNotificationR2ConfigurationListResponse, err error) {
 	if query.Jurisdiction.Present {
-		opts = append(opts, option.WithHeader("cf-r2-jurisdiction", fmt.Sprintf("%s", query.Jurisdiction)))
+		opts = append(opts, option.WithHeader("cf-r2-jurisdiction", fmt.Sprintf("%v", query.Jurisdiction)))
 	}
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if bucketName == "" {
 		err = errors.New("missing required bucket_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/event_notifications/r2/%s/configuration", accountID, bucketName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountEventNotificationR2ConfigurationListResponse struct {
-	Errors   []AccountEventNotificationR2ConfigurationListResponseError `json:"errors,required"`
-	Messages []string                                                   `json:"messages,required"`
-	Result   AccountEventNotificationR2ConfigurationListResponseResult  `json:"result,required"`
+	Errors   []AccountEventNotificationR2ConfigurationListResponseError `json:"errors" api:"required"`
+	Messages []string                                                   `json:"messages" api:"required"`
+	Result   AccountEventNotificationR2ConfigurationListResponseResult  `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success AccountEventNotificationR2ConfigurationListResponseSuccess `json:"success,required"`
+	Success AccountEventNotificationR2ConfigurationListResponseSuccess `json:"success" api:"required"`
 	JSON    accountEventNotificationR2ConfigurationListResponseJSON    `json:"-"`
 }
 
@@ -85,8 +85,8 @@ func (r accountEventNotificationR2ConfigurationListResponseJSON) RawJSON() strin
 }
 
 type AccountEventNotificationR2ConfigurationListResponseError struct {
-	Code             int64                                                           `json:"code,required"`
-	Message          string                                                          `json:"message,required"`
+	Code             int64                                                           `json:"code" api:"required"`
+	Message          string                                                          `json:"message" api:"required"`
 	DocumentationURL string                                                          `json:"documentation_url"`
 	Source           AccountEventNotificationR2ConfigurationListResponseErrorsSource `json:"source"`
 	JSON             accountEventNotificationR2ConfigurationListResponseErrorJSON    `json:"-"`
@@ -190,7 +190,7 @@ func (r accountEventNotificationR2ConfigurationListResponseResultQueueJSON) RawJ
 
 type AccountEventNotificationR2ConfigurationListResponseResultQueuesRule struct {
 	// Array of R2 object actions that will trigger notifications.
-	Actions []AccountEventNotificationR2ConfigurationListResponseResultQueuesRulesAction `json:"actions,required"`
+	Actions []AccountEventNotificationR2ConfigurationListResponseResultQueuesRulesAction `json:"actions" api:"required"`
 	// Timestamp when the rule was created.
 	CreatedAt string `json:"createdAt"`
 	// A description that can be used to identify the event notification rule after

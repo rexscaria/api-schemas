@@ -40,15 +40,15 @@ func (r *AccountMtlsCertificateService) Get(ctx context.Context, accountID strin
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if mtlsCertificateID == "" {
 		err = errors.New("missing required mtls_certificate_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/mtls_certificates/%s", accountID, mtlsCertificateID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists all mTLS certificates.
@@ -56,11 +56,11 @@ func (r *AccountMtlsCertificateService) List(ctx context.Context, accountID stri
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/mtls_certificates", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Deletes the mTLS certificate unless the certificate is in use by one or more
@@ -69,15 +69,15 @@ func (r *AccountMtlsCertificateService) Delete(ctx context.Context, accountID st
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if mtlsCertificateID == "" {
 		err = errors.New("missing required mtls_certificate_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/mtls_certificates/%s", accountID, mtlsCertificateID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists all active associations between the certificate and Cloudflare services.
@@ -85,15 +85,15 @@ func (r *AccountMtlsCertificateService) ListAssociations(ctx context.Context, ac
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if mtlsCertificateID == "" {
 		err = errors.New("missing required mtls_certificate_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/mtls_certificates/%s/associations", accountID, mtlsCertificateID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Upload a certificate that you want to use with mTLS-enabled Cloudflare services.
@@ -101,11 +101,11 @@ func (r *AccountMtlsCertificateService) Upload(ctx context.Context, accountID st
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/mtls_certificates", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type CertificateObject struct {
@@ -155,10 +155,10 @@ func (r certificateObjectJSON) RawJSON() string {
 }
 
 type CertificateResponseSingleMtls struct {
-	Errors   []MessagesTlsCertificatesItem `json:"errors,required"`
-	Messages []MessagesTlsCertificatesItem `json:"messages,required"`
+	Errors   []MessagesTlsCertificatesItem `json:"errors" api:"required"`
+	Messages []MessagesTlsCertificatesItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success CertificateResponseSingleMtlsSuccess `json:"success,required"`
+	Success CertificateResponseSingleMtlsSuccess `json:"success" api:"required"`
 	Result  CertificateObject                    `json:"result"`
 	JSON    certificateResponseSingleMtlsJSON    `json:"-"`
 }
@@ -198,8 +198,8 @@ func (r CertificateResponseSingleMtlsSuccess) IsKnown() bool {
 }
 
 type MessagesTlsCertificatesItem struct {
-	Code             int64                             `json:"code,required"`
-	Message          string                            `json:"message,required"`
+	Code             int64                             `json:"code" api:"required"`
+	Message          string                            `json:"message" api:"required"`
 	DocumentationURL string                            `json:"documentation_url"`
 	Source           MessagesTlsCertificatesItemSource `json:"source"`
 	JSON             messagesTlsCertificatesItemJSON   `json:"-"`
@@ -246,10 +246,10 @@ func (r messagesTlsCertificatesItemSourceJSON) RawJSON() string {
 }
 
 type AccountMtlsCertificateListResponse struct {
-	Errors   []MessagesTlsCertificatesItem `json:"errors,required"`
-	Messages []MessagesTlsCertificatesItem `json:"messages,required"`
+	Errors   []MessagesTlsCertificatesItem `json:"errors" api:"required"`
+	Messages []MessagesTlsCertificatesItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success    AccountMtlsCertificateListResponseSuccess    `json:"success,required"`
+	Success    AccountMtlsCertificateListResponseSuccess    `json:"success" api:"required"`
 	Result     []CertificateObject                          `json:"result"`
 	ResultInfo AccountMtlsCertificateListResponseResultInfo `json:"result_info"`
 	JSON       accountMtlsCertificateListResponseJSON       `json:"-"`
@@ -325,10 +325,10 @@ func (r accountMtlsCertificateListResponseResultInfoJSON) RawJSON() string {
 }
 
 type AccountMtlsCertificateListAssociationsResponse struct {
-	Errors   []MessagesTlsCertificatesItem `json:"errors,required"`
-	Messages []MessagesTlsCertificatesItem `json:"messages,required"`
+	Errors   []MessagesTlsCertificatesItem `json:"errors" api:"required"`
+	Messages []MessagesTlsCertificatesItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success    AccountMtlsCertificateListAssociationsResponseSuccess    `json:"success,required"`
+	Success    AccountMtlsCertificateListAssociationsResponseSuccess    `json:"success" api:"required"`
 	Result     []AccountMtlsCertificateListAssociationsResponseResult   `json:"result"`
 	ResultInfo AccountMtlsCertificateListAssociationsResponseResultInfo `json:"result_info"`
 	JSON       accountMtlsCertificateListAssociationsResponseJSON       `json:"-"`
@@ -427,10 +427,10 @@ func (r accountMtlsCertificateListAssociationsResponseResultInfoJSON) RawJSON() 
 }
 
 type AccountMtlsCertificateUploadResponse struct {
-	Errors   []MessagesTlsCertificatesItem `json:"errors,required"`
-	Messages []MessagesTlsCertificatesItem `json:"messages,required"`
+	Errors   []MessagesTlsCertificatesItem `json:"errors" api:"required"`
+	Messages []MessagesTlsCertificatesItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountMtlsCertificateUploadResponseSuccess `json:"success,required"`
+	Success AccountMtlsCertificateUploadResponseSuccess `json:"success" api:"required"`
 	Result  AccountMtlsCertificateUploadResponseResult  `json:"result"`
 	JSON    accountMtlsCertificateUploadResponseJSON    `json:"-"`
 }
@@ -520,9 +520,9 @@ func (r accountMtlsCertificateUploadResponseResultJSON) RawJSON() string {
 
 type AccountMtlsCertificateUploadParams struct {
 	// Indicates whether the certificate is a CA or leaf certificate.
-	Ca param.Field[bool] `json:"ca,required"`
+	Ca param.Field[bool] `json:"ca" api:"required"`
 	// The uploaded root CA certificate.
-	Certificates param.Field[string] `json:"certificates,required"`
+	Certificates param.Field[string] `json:"certificates" api:"required"`
 	// Optional unique name for the certificate. Only used for human readability.
 	Name param.Field[string] `json:"name"`
 	// The private key for the certificate. This field is only needed for specific use

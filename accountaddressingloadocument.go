@@ -44,15 +44,15 @@ func (r *AccountAddressingLoaDocumentService) Download(ctx context.Context, acco
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "application/pdf")}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if loaDocumentID == "" {
 		err = errors.New("missing required loa_document_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/addressing/loa_documents/%s/download", accountID, loaDocumentID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Submit LOA document (pdf format) under the account.
@@ -60,18 +60,18 @@ func (r *AccountAddressingLoaDocumentService) Upload(ctx context.Context, accoun
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/addressing/loa_documents", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountAddressingLoaDocumentUploadResponse struct {
-	Errors   []AddressingMessages `json:"errors,required"`
-	Messages []AddressingMessages `json:"messages,required"`
+	Errors   []AddressingMessages `json:"errors" api:"required"`
+	Messages []AddressingMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountAddressingLoaDocumentUploadResponseSuccess `json:"success,required"`
+	Success AccountAddressingLoaDocumentUploadResponseSuccess `json:"success" api:"required"`
 	Result  AccountAddressingLoaDocumentUploadResponseResult  `json:"result"`
 	JSON    accountAddressingLoaDocumentUploadResponseJSON    `json:"-"`
 }
@@ -112,7 +112,7 @@ func (r AccountAddressingLoaDocumentUploadResponseSuccess) IsKnown() bool {
 
 type AccountAddressingLoaDocumentUploadResponseResult struct {
 	// Identifier for the uploaded LOA document.
-	ID string `json:"id,nullable"`
+	ID string `json:"id" api:"nullable"`
 	// Identifier of a Cloudflare account.
 	AccountID string    `json:"account_id"`
 	Created   time.Time `json:"created" format:"date-time"`
@@ -123,7 +123,7 @@ type AccountAddressingLoaDocumentUploadResponseResult struct {
 	// Whether the LOA has been verified by Cloudflare staff.
 	Verified bool `json:"verified"`
 	// Timestamp of the moment the LOA was marked as validated.
-	VerifiedAt time.Time                                            `json:"verified_at,nullable" format:"date-time"`
+	VerifiedAt time.Time                                            `json:"verified_at" api:"nullable" format:"date-time"`
 	JSON       accountAddressingLoaDocumentUploadResponseResultJSON `json:"-"`
 }
 
@@ -151,7 +151,7 @@ func (r accountAddressingLoaDocumentUploadResponseResultJSON) RawJSON() string {
 
 type AccountAddressingLoaDocumentUploadParams struct {
 	// LOA document to upload.
-	LoaDocument param.Field[string] `json:"loa_document,required"`
+	LoaDocument param.Field[string] `json:"loa_document" api:"required"`
 }
 
 func (r AccountAddressingLoaDocumentUploadParams) MarshalMultipart() (data []byte, contentType string, err error) {

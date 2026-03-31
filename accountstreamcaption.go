@@ -42,19 +42,19 @@ func (r *AccountStreamCaptionService) Get(ctx context.Context, accountID string,
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if identifier == "" {
 		err = errors.New("missing required identifier parameter")
-		return
+		return nil, err
 	}
 	if language == "" {
 		err = errors.New("missing required language parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/stream/%s/captions/%s", accountID, identifier, language)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists the available captions or subtitles for a specific video.
@@ -62,15 +62,15 @@ func (r *AccountStreamCaptionService) List(ctx context.Context, accountID string
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if identifier == "" {
 		err = errors.New("missing required identifier parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/stream/%s/captions", accountID, identifier)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Removes the captions or subtitles from a video.
@@ -78,19 +78,19 @@ func (r *AccountStreamCaptionService) Delete(ctx context.Context, accountID stri
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if identifier == "" {
 		err = errors.New("missing required identifier parameter")
-		return
+		return nil, err
 	}
 	if language == "" {
 		err = errors.New("missing required language parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/stream/%s/captions/%s", accountID, identifier, language)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Generate captions or subtitles for provided language via AI.
@@ -98,19 +98,19 @@ func (r *AccountStreamCaptionService) Generate(ctx context.Context, accountID st
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if identifier == "" {
 		err = errors.New("missing required identifier parameter")
-		return
+		return nil, err
 	}
 	if language == "" {
 		err = errors.New("missing required language parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/stream/%s/captions/%s/generate", accountID, identifier, language)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Return WebVTT captions for a provided language.
@@ -119,19 +119,19 @@ func (r *AccountStreamCaptionService) GetVtt(ctx context.Context, accountID stri
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "text/vtt")}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if identifier == "" {
 		err = errors.New("missing required identifier parameter")
-		return
+		return nil, err
 	}
 	if language == "" {
 		err = errors.New("missing required language parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/stream/%s/captions/%s/vtt", accountID, identifier, language)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Uploads the caption or subtitle file to the endpoint for a specific BCP47
@@ -140,19 +140,19 @@ func (r *AccountStreamCaptionService) Upload(ctx context.Context, accountID stri
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if identifier == "" {
 		err = errors.New("missing required identifier parameter")
-		return
+		return nil, err
 	}
 	if language == "" {
 		err = errors.New("missing required language parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/stream/%s/captions/%s", accountID, identifier, language)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type Captions struct {
@@ -203,10 +203,10 @@ func (r CaptionsStatus) IsKnown() bool {
 }
 
 type LanguageResponseSingle struct {
-	Errors   []StreamMessages `json:"errors,required"`
-	Messages []StreamMessages `json:"messages,required"`
+	Errors   []StreamMessages `json:"errors" api:"required"`
+	Messages []StreamMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success LanguageResponseSingleSuccess `json:"success,required"`
+	Success LanguageResponseSingleSuccess `json:"success" api:"required"`
 	Result  Captions                      `json:"result"`
 	JSON    languageResponseSingleJSON    `json:"-"`
 }
@@ -246,8 +246,8 @@ func (r LanguageResponseSingleSuccess) IsKnown() bool {
 }
 
 type StreamMessages struct {
-	Code             int64                `json:"code,required"`
-	Message          string               `json:"message,required"`
+	Code             int64                `json:"code" api:"required"`
+	Message          string               `json:"message" api:"required"`
 	DocumentationURL string               `json:"documentation_url"`
 	Source           StreamMessagesSource `json:"source"`
 	JSON             streamMessagesJSON   `json:"-"`
@@ -293,10 +293,10 @@ func (r streamMessagesSourceJSON) RawJSON() string {
 }
 
 type AccountStreamCaptionListResponse struct {
-	Errors   []StreamMessages `json:"errors,required"`
-	Messages []StreamMessages `json:"messages,required"`
+	Errors   []StreamMessages `json:"errors" api:"required"`
+	Messages []StreamMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountStreamCaptionListResponseSuccess `json:"success,required"`
+	Success AccountStreamCaptionListResponseSuccess `json:"success" api:"required"`
 	Result  []Captions                              `json:"result"`
 	JSON    accountStreamCaptionListResponseJSON    `json:"-"`
 }
@@ -336,10 +336,10 @@ func (r AccountStreamCaptionListResponseSuccess) IsKnown() bool {
 }
 
 type AccountStreamCaptionDeleteResponse struct {
-	Errors   []StreamMessages `json:"errors,required"`
-	Messages []StreamMessages `json:"messages,required"`
+	Errors   []StreamMessages `json:"errors" api:"required"`
+	Messages []StreamMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountStreamCaptionDeleteResponseSuccess `json:"success,required"`
+	Success AccountStreamCaptionDeleteResponseSuccess `json:"success" api:"required"`
 	Result  string                                    `json:"result"`
 	JSON    accountStreamCaptionDeleteResponseJSON    `json:"-"`
 }
@@ -380,7 +380,7 @@ func (r AccountStreamCaptionDeleteResponseSuccess) IsKnown() bool {
 
 type AccountStreamCaptionUploadParams struct {
 	// The WebVTT file containing the caption or subtitle content.
-	File param.Field[string] `json:"file,required"`
+	File param.Field[string] `json:"file" api:"required"`
 }
 
 func (r AccountStreamCaptionUploadParams) MarshalMultipart() (data []byte, contentType string, err error) {

@@ -40,11 +40,11 @@ func (r *ZoneSnippetSnippetRuleService) Update(ctx context.Context, zoneID strin
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/snippets/snippet_rules", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetches all snippet rules belonging to the zone.
@@ -52,11 +52,11 @@ func (r *ZoneSnippetSnippetRuleService) List(ctx context.Context, zoneID string,
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/snippets/snippet_rules", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Deletes all snippet rules belonging to the zone.
@@ -64,23 +64,23 @@ func (r *ZoneSnippetSnippetRuleService) DeleteAll(ctx context.Context, zoneID st
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/snippets/snippet_rules", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // A response object.
 type ZoneSnippetSnippetRuleUpdateResponse struct {
 	// A list of error messages.
-	Errors []ZoneSnippetSnippetRuleUpdateResponseError `json:"errors,required"`
+	Errors []ZoneSnippetSnippetRuleUpdateResponseError `json:"errors" api:"required"`
 	// A list of warning messages.
-	Messages []ZoneSnippetSnippetRuleUpdateResponseMessage `json:"messages,required"`
+	Messages []ZoneSnippetSnippetRuleUpdateResponseMessage `json:"messages" api:"required"`
 	// A result.
-	Result []ZoneSnippetSnippetRuleUpdateResponseResult `json:"result,required"`
+	Result []ZoneSnippetSnippetRuleUpdateResponseResult `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success ZoneSnippetSnippetRuleUpdateResponseSuccess `json:"success,required"`
+	Success ZoneSnippetSnippetRuleUpdateResponseSuccess `json:"success" api:"required"`
 	JSON    zoneSnippetSnippetRuleUpdateResponseJSON    `json:"-"`
 }
 
@@ -106,7 +106,7 @@ func (r zoneSnippetSnippetRuleUpdateResponseJSON) RawJSON() string {
 // A message.
 type ZoneSnippetSnippetRuleUpdateResponseError struct {
 	// A text description of this message.
-	Message string `json:"message,required"`
+	Message string `json:"message" api:"required"`
 	// A unique code for this message.
 	Code int64                                         `json:"code"`
 	JSON zoneSnippetSnippetRuleUpdateResponseErrorJSON `json:"-"`
@@ -132,7 +132,7 @@ func (r zoneSnippetSnippetRuleUpdateResponseErrorJSON) RawJSON() string {
 // A message.
 type ZoneSnippetSnippetRuleUpdateResponseMessage struct {
 	// A text description of this message.
-	Message string `json:"message,required"`
+	Message string `json:"message" api:"required"`
 	// A unique code for this message.
 	Code int64                                           `json:"code"`
 	JSON zoneSnippetSnippetRuleUpdateResponseMessageJSON `json:"-"`
@@ -158,13 +158,13 @@ func (r zoneSnippetSnippetRuleUpdateResponseMessageJSON) RawJSON() string {
 // A snippet rule.
 type ZoneSnippetSnippetRuleUpdateResponseResult struct {
 	// The unique ID of the rule.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The expression defining which traffic will match the rule.
-	Expression string `json:"expression,required"`
+	Expression string `json:"expression" api:"required"`
 	// The timestamp of when the rule was last modified.
-	LastUpdated time.Time `json:"last_updated,required" format:"date-time"`
+	LastUpdated time.Time `json:"last_updated" api:"required" format:"date-time"`
 	// The identifying name of the snippet.
-	SnippetName string `json:"snippet_name,required"`
+	SnippetName string `json:"snippet_name" api:"required"`
 	// An informative description of the rule.
 	Description string `json:"description"`
 	// Whether the rule should be executed.
@@ -211,13 +211,13 @@ func (r ZoneSnippetSnippetRuleUpdateResponseSuccess) IsKnown() bool {
 // A response object.
 type ZoneSnippetSnippetRuleListResponse struct {
 	// A list of error messages.
-	Errors []ZoneSnippetSnippetRuleListResponseError `json:"errors,required"`
+	Errors []ZoneSnippetSnippetRuleListResponseError `json:"errors" api:"required"`
 	// A list of warning messages.
-	Messages []ZoneSnippetSnippetRuleListResponseMessage `json:"messages,required"`
+	Messages []ZoneSnippetSnippetRuleListResponseMessage `json:"messages" api:"required"`
 	// A result.
-	Result []ZoneSnippetSnippetRuleListResponseResult `json:"result,required"`
+	Result []ZoneSnippetSnippetRuleListResponseResult `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success ZoneSnippetSnippetRuleListResponseSuccess `json:"success,required"`
+	Success ZoneSnippetSnippetRuleListResponseSuccess `json:"success" api:"required"`
 	JSON    zoneSnippetSnippetRuleListResponseJSON    `json:"-"`
 }
 
@@ -243,7 +243,7 @@ func (r zoneSnippetSnippetRuleListResponseJSON) RawJSON() string {
 // A message.
 type ZoneSnippetSnippetRuleListResponseError struct {
 	// A text description of this message.
-	Message string `json:"message,required"`
+	Message string `json:"message" api:"required"`
 	// A unique code for this message.
 	Code int64                                       `json:"code"`
 	JSON zoneSnippetSnippetRuleListResponseErrorJSON `json:"-"`
@@ -269,7 +269,7 @@ func (r zoneSnippetSnippetRuleListResponseErrorJSON) RawJSON() string {
 // A message.
 type ZoneSnippetSnippetRuleListResponseMessage struct {
 	// A text description of this message.
-	Message string `json:"message,required"`
+	Message string `json:"message" api:"required"`
 	// A unique code for this message.
 	Code int64                                         `json:"code"`
 	JSON zoneSnippetSnippetRuleListResponseMessageJSON `json:"-"`
@@ -295,13 +295,13 @@ func (r zoneSnippetSnippetRuleListResponseMessageJSON) RawJSON() string {
 // A snippet rule.
 type ZoneSnippetSnippetRuleListResponseResult struct {
 	// The unique ID of the rule.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The expression defining which traffic will match the rule.
-	Expression string `json:"expression,required"`
+	Expression string `json:"expression" api:"required"`
 	// The timestamp of when the rule was last modified.
-	LastUpdated time.Time `json:"last_updated,required" format:"date-time"`
+	LastUpdated time.Time `json:"last_updated" api:"required" format:"date-time"`
 	// The identifying name of the snippet.
-	SnippetName string `json:"snippet_name,required"`
+	SnippetName string `json:"snippet_name" api:"required"`
 	// An informative description of the rule.
 	Description string `json:"description"`
 	// Whether the rule should be executed.
@@ -348,13 +348,13 @@ func (r ZoneSnippetSnippetRuleListResponseSuccess) IsKnown() bool {
 // A response object.
 type ZoneSnippetSnippetRuleDeleteAllResponse struct {
 	// A list of error messages.
-	Errors []ZoneSnippetSnippetRuleDeleteAllResponseError `json:"errors,required"`
+	Errors []ZoneSnippetSnippetRuleDeleteAllResponseError `json:"errors" api:"required"`
 	// A list of warning messages.
-	Messages []ZoneSnippetSnippetRuleDeleteAllResponseMessage `json:"messages,required"`
+	Messages []ZoneSnippetSnippetRuleDeleteAllResponseMessage `json:"messages" api:"required"`
 	// A result.
-	Result []ZoneSnippetSnippetRuleDeleteAllResponseResult `json:"result,required"`
+	Result []ZoneSnippetSnippetRuleDeleteAllResponseResult `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success ZoneSnippetSnippetRuleDeleteAllResponseSuccess `json:"success,required"`
+	Success ZoneSnippetSnippetRuleDeleteAllResponseSuccess `json:"success" api:"required"`
 	JSON    zoneSnippetSnippetRuleDeleteAllResponseJSON    `json:"-"`
 }
 
@@ -380,7 +380,7 @@ func (r zoneSnippetSnippetRuleDeleteAllResponseJSON) RawJSON() string {
 // A message.
 type ZoneSnippetSnippetRuleDeleteAllResponseError struct {
 	// A text description of this message.
-	Message string `json:"message,required"`
+	Message string `json:"message" api:"required"`
 	// A unique code for this message.
 	Code int64                                            `json:"code"`
 	JSON zoneSnippetSnippetRuleDeleteAllResponseErrorJSON `json:"-"`
@@ -406,7 +406,7 @@ func (r zoneSnippetSnippetRuleDeleteAllResponseErrorJSON) RawJSON() string {
 // A message.
 type ZoneSnippetSnippetRuleDeleteAllResponseMessage struct {
 	// A text description of this message.
-	Message string `json:"message,required"`
+	Message string `json:"message" api:"required"`
 	// A unique code for this message.
 	Code int64                                              `json:"code"`
 	JSON zoneSnippetSnippetRuleDeleteAllResponseMessageJSON `json:"-"`
@@ -432,13 +432,13 @@ func (r zoneSnippetSnippetRuleDeleteAllResponseMessageJSON) RawJSON() string {
 // A snippet rule.
 type ZoneSnippetSnippetRuleDeleteAllResponseResult struct {
 	// The unique ID of the rule.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The expression defining which traffic will match the rule.
-	Expression string `json:"expression,required"`
+	Expression string `json:"expression" api:"required"`
 	// The timestamp of when the rule was last modified.
-	LastUpdated time.Time `json:"last_updated,required" format:"date-time"`
+	LastUpdated time.Time `json:"last_updated" api:"required" format:"date-time"`
 	// The identifying name of the snippet.
-	SnippetName string `json:"snippet_name,required"`
+	SnippetName string `json:"snippet_name" api:"required"`
 	// An informative description of the rule.
 	Description string `json:"description"`
 	// Whether the rule should be executed.
@@ -484,7 +484,7 @@ func (r ZoneSnippetSnippetRuleDeleteAllResponseSuccess) IsKnown() bool {
 
 type ZoneSnippetSnippetRuleUpdateParams struct {
 	// A list of snippet rules.
-	Body []ZoneSnippetSnippetRuleUpdateParamsBody `json:"body,required"`
+	Body []ZoneSnippetSnippetRuleUpdateParamsBody `json:"body" api:"required"`
 }
 
 func (r ZoneSnippetSnippetRuleUpdateParams) MarshalJSON() (data []byte, err error) {
@@ -494,9 +494,9 @@ func (r ZoneSnippetSnippetRuleUpdateParams) MarshalJSON() (data []byte, err erro
 // A snippet rule.
 type ZoneSnippetSnippetRuleUpdateParamsBody struct {
 	// The expression defining which traffic will match the rule.
-	Expression param.Field[string] `json:"expression,required"`
+	Expression param.Field[string] `json:"expression" api:"required"`
 	// The identifying name of the snippet.
-	SnippetName param.Field[string] `json:"snippet_name,required"`
+	SnippetName param.Field[string] `json:"snippet_name" api:"required"`
 	// An informative description of the rule.
 	Description param.Field[string] `json:"description"`
 	// Whether the rule should be executed.

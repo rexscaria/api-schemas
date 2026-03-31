@@ -44,11 +44,11 @@ func (r *ZoneCacheVariantService) Get(ctx context.Context, zoneID string, opts .
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/cache/variants", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Variant support enables caching variants of images with certain file extensions
@@ -60,11 +60,11 @@ func (r *ZoneCacheVariantService) Update(ctx context.Context, zoneID string, bod
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/cache/variants", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Variant support enables caching variants of images with certain file extensions
@@ -76,11 +76,11 @@ func (r *ZoneCacheVariantService) Delete(ctx context.Context, zoneID string, opt
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/cache/variants", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Value of the zone setting.
@@ -188,10 +188,10 @@ func (r VariantsValueParam) MarshalJSON() (data []byte, err error) {
 }
 
 type ZoneCacheVariantGetResponse struct {
-	Errors   []MessagesCacheRulesItem `json:"errors,required"`
-	Messages []MessagesCacheRulesItem `json:"messages,required"`
+	Errors   []MessagesCacheRulesItem `json:"errors" api:"required"`
+	Messages []MessagesCacheRulesItem `json:"messages" api:"required"`
 	// Whether the API call was successful
-	Success ZoneCacheVariantGetResponseSuccess `json:"success,required"`
+	Success ZoneCacheVariantGetResponseSuccess `json:"success" api:"required"`
 	Result  ZoneCacheVariantGetResponseResult  `json:"result"`
 	JSON    zoneCacheVariantGetResponseJSON    `json:"-"`
 }
@@ -232,13 +232,13 @@ func (r ZoneCacheVariantGetResponseSuccess) IsKnown() bool {
 
 type ZoneCacheVariantGetResponseResult struct {
 	// ID of the zone setting.
-	ID ZoneCacheVariantGetResponseResultID `json:"id,required"`
+	ID ZoneCacheVariantGetResponseResultID `json:"id" api:"required"`
 	// Whether the setting is editable
-	Editable bool `json:"editable,required"`
+	Editable bool `json:"editable" api:"required"`
 	// The value of the feature
-	Value VariantsValue `json:"value,required"`
+	Value VariantsValue `json:"value" api:"required"`
 	// Last time this setting was modified.
-	ModifiedOn time.Time                             `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time                             `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zoneCacheVariantGetResponseResultJSON `json:"-"`
 }
 
@@ -277,10 +277,10 @@ func (r ZoneCacheVariantGetResponseResultID) IsKnown() bool {
 }
 
 type ZoneCacheVariantUpdateResponse struct {
-	Errors   []MessagesCacheRulesItem `json:"errors,required"`
-	Messages []MessagesCacheRulesItem `json:"messages,required"`
+	Errors   []MessagesCacheRulesItem `json:"errors" api:"required"`
+	Messages []MessagesCacheRulesItem `json:"messages" api:"required"`
 	// Whether the API call was successful
-	Success ZoneCacheVariantUpdateResponseSuccess `json:"success,required"`
+	Success ZoneCacheVariantUpdateResponseSuccess `json:"success" api:"required"`
 	Result  ZoneCacheVariantUpdateResponseResult  `json:"result"`
 	JSON    zoneCacheVariantUpdateResponseJSON    `json:"-"`
 }
@@ -321,13 +321,13 @@ func (r ZoneCacheVariantUpdateResponseSuccess) IsKnown() bool {
 
 type ZoneCacheVariantUpdateResponseResult struct {
 	// ID of the zone setting.
-	ID ZoneCacheVariantUpdateResponseResultID `json:"id,required"`
+	ID ZoneCacheVariantUpdateResponseResultID `json:"id" api:"required"`
 	// Whether the setting is editable
-	Editable bool `json:"editable,required"`
+	Editable bool `json:"editable" api:"required"`
 	// The value of the feature
-	Value VariantsValue `json:"value,required"`
+	Value VariantsValue `json:"value" api:"required"`
 	// Last time this setting was modified.
-	ModifiedOn time.Time                                `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time                                `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zoneCacheVariantUpdateResponseResultJSON `json:"-"`
 }
 
@@ -366,10 +366,10 @@ func (r ZoneCacheVariantUpdateResponseResultID) IsKnown() bool {
 }
 
 type ZoneCacheVariantDeleteResponse struct {
-	Errors   []MessagesCacheRulesItem `json:"errors,required"`
-	Messages []MessagesCacheRulesItem `json:"messages,required"`
+	Errors   []MessagesCacheRulesItem `json:"errors" api:"required"`
+	Messages []MessagesCacheRulesItem `json:"messages" api:"required"`
 	// Whether the API call was successful
-	Success ZoneCacheVariantDeleteResponseSuccess `json:"success,required"`
+	Success ZoneCacheVariantDeleteResponseSuccess `json:"success" api:"required"`
 	Result  ZoneCacheVariantDeleteResponseResult  `json:"result"`
 	JSON    zoneCacheVariantDeleteResponseJSON    `json:"-"`
 }
@@ -410,11 +410,11 @@ func (r ZoneCacheVariantDeleteResponseSuccess) IsKnown() bool {
 
 type ZoneCacheVariantDeleteResponseResult struct {
 	// ID of the zone setting.
-	ID ZoneCacheVariantDeleteResponseResultID `json:"id,required"`
+	ID ZoneCacheVariantDeleteResponseResultID `json:"id" api:"required"`
 	// Whether the setting is editable
-	Editable bool `json:"editable,required"`
+	Editable bool `json:"editable" api:"required"`
 	// Last time this setting was modified.
-	ModifiedOn time.Time                                `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time                                `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zoneCacheVariantDeleteResponseResultJSON `json:"-"`
 }
 
@@ -453,7 +453,7 @@ func (r ZoneCacheVariantDeleteResponseResultID) IsKnown() bool {
 
 type ZoneCacheVariantUpdateParams struct {
 	// Value of the zone setting.
-	Value param.Field[VariantsValueParam] `json:"value,required"`
+	Value param.Field[VariantsValueParam] `json:"value" api:"required"`
 }
 
 func (r ZoneCacheVariantUpdateParams) MarshalJSON() (data []byte, err error) {

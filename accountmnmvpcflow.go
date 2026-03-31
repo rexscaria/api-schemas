@@ -38,20 +38,20 @@ func (r *AccountMnmVpcFlowService) GenerateToken(ctx context.Context, accountID 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/mnm/vpc-flows/token", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountMnmVpcFlowGenerateTokenResponse struct {
-	Errors   []MessagesMagicVisibilityMnmItem `json:"errors,required"`
-	Messages []MessagesMagicVisibilityMnmItem `json:"messages,required"`
+	Errors   []MessagesMagicVisibilityMnmItem `json:"errors" api:"required"`
+	Messages []MessagesMagicVisibilityMnmItem `json:"messages" api:"required"`
 	// Authentication token to be used for VPC Flows export authentication.
-	Result string `json:"result,required"`
+	Result string `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success AccountMnmVpcFlowGenerateTokenResponseSuccess `json:"success,required"`
+	Success AccountMnmVpcFlowGenerateTokenResponseSuccess `json:"success" api:"required"`
 	JSON    accountMnmVpcFlowGenerateTokenResponseJSON    `json:"-"`
 }
 

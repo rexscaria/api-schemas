@@ -41,15 +41,15 @@ func (r *AccountQueueConsumerService) New(ctx context.Context, accountID string,
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if queueID == "" {
 		err = errors.New("missing required queue_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/queues/%s/consumers", accountID, queueID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates the consumer for a queue, or creates one if it does not exist.
@@ -57,19 +57,19 @@ func (r *AccountQueueConsumerService) Update(ctx context.Context, accountID stri
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if queueID == "" {
 		err = errors.New("missing required queue_id parameter")
-		return
+		return nil, err
 	}
 	if consumerID == "" {
 		err = errors.New("missing required consumer_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/queues/%s/consumers/%s", accountID, queueID, consumerID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns the consumers for a Queue
@@ -77,15 +77,15 @@ func (r *AccountQueueConsumerService) List(ctx context.Context, accountID string
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if queueID == "" {
 		err = errors.New("missing required queue_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/queues/%s/consumers", accountID, queueID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Deletes the consumer for a queue.
@@ -93,19 +93,19 @@ func (r *AccountQueueConsumerService) Delete(ctx context.Context, accountID stri
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if queueID == "" {
 		err = errors.New("missing required queue_id parameter")
-		return
+		return nil, err
 	}
 	if consumerID == "" {
 		err = errors.New("missing required consumer_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/queues/%s/consumers/%s", accountID, queueID, consumerID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type MqConsumer struct {
@@ -469,8 +469,8 @@ func (r accountQueueConsumerNewResponseJSON) RawJSON() string {
 }
 
 type AccountQueueConsumerNewResponseError struct {
-	Code             int64                                       `json:"code,required"`
-	Message          string                                      `json:"message,required"`
+	Code             int64                                       `json:"code" api:"required"`
+	Message          string                                      `json:"message" api:"required"`
 	DocumentationURL string                                      `json:"documentation_url"`
 	Source           AccountQueueConsumerNewResponseErrorsSource `json:"source"`
 	JSON             accountQueueConsumerNewResponseErrorJSON    `json:"-"`
@@ -560,8 +560,8 @@ func (r accountQueueConsumerUpdateResponseJSON) RawJSON() string {
 }
 
 type AccountQueueConsumerUpdateResponseError struct {
-	Code             int64                                          `json:"code,required"`
-	Message          string                                         `json:"message,required"`
+	Code             int64                                          `json:"code" api:"required"`
+	Message          string                                         `json:"message" api:"required"`
 	DocumentationURL string                                         `json:"documentation_url"`
 	Source           AccountQueueConsumerUpdateResponseErrorsSource `json:"source"`
 	JSON             accountQueueConsumerUpdateResponseErrorJSON    `json:"-"`
@@ -651,8 +651,8 @@ func (r accountQueueConsumerListResponseJSON) RawJSON() string {
 }
 
 type AccountQueueConsumerListResponseError struct {
-	Code             int64                                        `json:"code,required"`
-	Message          string                                       `json:"message,required"`
+	Code             int64                                        `json:"code" api:"required"`
+	Message          string                                       `json:"message" api:"required"`
 	DocumentationURL string                                       `json:"documentation_url"`
 	Source           AccountQueueConsumerListResponseErrorsSource `json:"source"`
 	JSON             accountQueueConsumerListResponseErrorJSON    `json:"-"`
@@ -851,7 +851,7 @@ func (r AccountQueueConsumerNewParamsBodyType) IsKnown() bool {
 }
 
 type AccountQueueConsumerUpdateParams struct {
-	Body AccountQueueConsumerUpdateParamsBodyUnion `json:"body,required"`
+	Body AccountQueueConsumerUpdateParamsBodyUnion `json:"body" api:"required"`
 }
 
 func (r AccountQueueConsumerUpdateParams) MarshalJSON() (data []byte, err error) {

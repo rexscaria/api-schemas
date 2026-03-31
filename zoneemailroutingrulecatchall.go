@@ -39,11 +39,11 @@ func (r *ZoneEmailRoutingRuleCatchAllService) Get(ctx context.Context, zoneID st
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/email/routing/rules/catch_all", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Enable or disable catch-all routing rule, or change action to forward to
@@ -52,18 +52,18 @@ func (r *ZoneEmailRoutingRuleCatchAllService) Update(ctx context.Context, zoneID
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/email/routing/rules/catch_all", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type EmailCatchAllRuleResponseSingle struct {
-	Errors   []EmailMessagesItem `json:"errors,required"`
-	Messages []EmailMessagesItem `json:"messages,required"`
+	Errors   []EmailMessagesItem `json:"errors" api:"required"`
+	Messages []EmailMessagesItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success EmailCatchAllRuleResponseSingleSuccess `json:"success,required"`
+	Success EmailCatchAllRuleResponseSingleSuccess `json:"success" api:"required"`
 	Result  EmailCatchAllRuleResponseSingleResult  `json:"result"`
 	JSON    emailCatchAllRuleResponseSingleJSON    `json:"-"`
 }
@@ -144,7 +144,7 @@ func (r emailCatchAllRuleResponseSingleResultJSON) RawJSON() string {
 // Action for the catch-all routing rule.
 type EmailRuleCatchallAction struct {
 	// Type of action for catch-all rule.
-	Type  EmailRuleCatchallActionType `json:"type,required"`
+	Type  EmailRuleCatchallActionType `json:"type" api:"required"`
 	Value []string                    `json:"value"`
 	JSON  emailRuleCatchallActionJSON `json:"-"`
 }
@@ -186,7 +186,7 @@ func (r EmailRuleCatchallActionType) IsKnown() bool {
 // Action for the catch-all routing rule.
 type EmailRuleCatchallActionParam struct {
 	// Type of action for catch-all rule.
-	Type  param.Field[EmailRuleCatchallActionType] `json:"type,required"`
+	Type  param.Field[EmailRuleCatchallActionType] `json:"type" api:"required"`
 	Value param.Field[[]string]                    `json:"value"`
 }
 
@@ -197,7 +197,7 @@ func (r EmailRuleCatchallActionParam) MarshalJSON() (data []byte, err error) {
 // Matcher for catch-all routing rule.
 type EmailRuleCatchallMatcher struct {
 	// Type of matcher. Default is 'all'.
-	Type EmailRuleCatchallMatcherType `json:"type,required"`
+	Type EmailRuleCatchallMatcherType `json:"type" api:"required"`
 	JSON emailRuleCatchallMatcherJSON `json:"-"`
 }
 
@@ -235,7 +235,7 @@ func (r EmailRuleCatchallMatcherType) IsKnown() bool {
 // Matcher for catch-all routing rule.
 type EmailRuleCatchallMatcherParam struct {
 	// Type of matcher. Default is 'all'.
-	Type param.Field[EmailRuleCatchallMatcherType] `json:"type,required"`
+	Type param.Field[EmailRuleCatchallMatcherType] `json:"type" api:"required"`
 }
 
 func (r EmailRuleCatchallMatcherParam) MarshalJSON() (data []byte, err error) {
@@ -244,9 +244,9 @@ func (r EmailRuleCatchallMatcherParam) MarshalJSON() (data []byte, err error) {
 
 type ZoneEmailRoutingRuleCatchAllUpdateParams struct {
 	// List actions for the catch-all routing rule.
-	Actions param.Field[[]EmailRuleCatchallActionParam] `json:"actions,required"`
+	Actions param.Field[[]EmailRuleCatchallActionParam] `json:"actions" api:"required"`
 	// List of matchers for the catch-all routing rule.
-	Matchers param.Field[[]EmailRuleCatchallMatcherParam] `json:"matchers,required"`
+	Matchers param.Field[[]EmailRuleCatchallMatcherParam] `json:"matchers" api:"required"`
 	// Routing rule status.
 	Enabled param.Field[EmailRuleEnabled] `json:"enabled"`
 	// Routing rule name.

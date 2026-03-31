@@ -41,15 +41,15 @@ func (r *AccountCfdTunnelConnectionService) List(ctx context.Context, accountID 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if tunnelID == "" {
 		err = errors.New("missing required tunnel_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/cfd_tunnel/%s/connections", accountID, tunnelID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Removes a connection (aka Cloudflare Tunnel Connector) from a Cloudflare Tunnel
@@ -60,23 +60,23 @@ func (r *AccountCfdTunnelConnectionService) Cleanup(ctx context.Context, account
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if tunnelID == "" {
 		err = errors.New("missing required tunnel_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/cfd_tunnel/%s/connections", accountID, tunnelID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountCfdTunnelConnectionListResponse struct {
-	Errors   []MessagesTunnelItem `json:"errors,required"`
-	Messages []MessagesTunnelItem `json:"messages,required"`
-	Result   []TunnelClient       `json:"result,required,nullable"`
+	Errors   []MessagesTunnelItem `json:"errors" api:"required"`
+	Messages []MessagesTunnelItem `json:"messages" api:"required"`
+	Result   []TunnelClient       `json:"result" api:"required,nullable"`
 	// Whether the API call was successful
-	Success    AccountCfdTunnelConnectionListResponseSuccess    `json:"success,required"`
+	Success    AccountCfdTunnelConnectionListResponseSuccess    `json:"success" api:"required"`
 	ResultInfo AccountCfdTunnelConnectionListResponseResultInfo `json:"result_info"`
 	JSON       accountCfdTunnelConnectionListResponseJSON       `json:"-"`
 }
@@ -148,11 +148,11 @@ func (r accountCfdTunnelConnectionListResponseResultInfoJSON) RawJSON() string {
 }
 
 type AccountCfdTunnelConnectionCleanupResponse struct {
-	Errors   []AccountCfdTunnelConnectionCleanupResponseError   `json:"errors,required"`
-	Messages []AccountCfdTunnelConnectionCleanupResponseMessage `json:"messages,required"`
-	Result   interface{}                                        `json:"result,required,nullable"`
+	Errors   []AccountCfdTunnelConnectionCleanupResponseError   `json:"errors" api:"required"`
+	Messages []AccountCfdTunnelConnectionCleanupResponseMessage `json:"messages" api:"required"`
+	Result   interface{}                                        `json:"result" api:"required,nullable"`
 	// Whether the API call was successful
-	Success AccountCfdTunnelConnectionCleanupResponseSuccess `json:"success,required"`
+	Success AccountCfdTunnelConnectionCleanupResponseSuccess `json:"success" api:"required"`
 	JSON    accountCfdTunnelConnectionCleanupResponseJSON    `json:"-"`
 }
 
@@ -176,8 +176,8 @@ func (r accountCfdTunnelConnectionCleanupResponseJSON) RawJSON() string {
 }
 
 type AccountCfdTunnelConnectionCleanupResponseError struct {
-	Code             int64                                                 `json:"code,required"`
-	Message          string                                                `json:"message,required"`
+	Code             int64                                                 `json:"code" api:"required"`
+	Message          string                                                `json:"message" api:"required"`
 	DocumentationURL string                                                `json:"documentation_url"`
 	Source           AccountCfdTunnelConnectionCleanupResponseErrorsSource `json:"source"`
 	JSON             accountCfdTunnelConnectionCleanupResponseErrorJSON    `json:"-"`
@@ -224,8 +224,8 @@ func (r accountCfdTunnelConnectionCleanupResponseErrorsSourceJSON) RawJSON() str
 }
 
 type AccountCfdTunnelConnectionCleanupResponseMessage struct {
-	Code             int64                                                   `json:"code,required"`
-	Message          string                                                  `json:"message,required"`
+	Code             int64                                                   `json:"code" api:"required"`
+	Message          string                                                  `json:"message" api:"required"`
 	DocumentationURL string                                                  `json:"documentation_url"`
 	Source           AccountCfdTunnelConnectionCleanupResponseMessagesSource `json:"source"`
 	JSON             accountCfdTunnelConnectionCleanupResponseMessageJSON    `json:"-"`

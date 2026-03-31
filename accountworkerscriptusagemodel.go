@@ -40,15 +40,15 @@ func (r *AccountWorkerScriptUsageModelService) Update(ctx context.Context, accou
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if scriptName == "" {
 		err = errors.New("missing required script_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/workers/scripts/%s/usage-model", accountID, scriptName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetches the Usage Model for a given Worker.
@@ -56,23 +56,23 @@ func (r *AccountWorkerScriptUsageModelService) Get(ctx context.Context, accountI
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if scriptName == "" {
 		err = errors.New("missing required script_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/workers/scripts/%s/usage-model", accountID, scriptName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type UsageModelResponse struct {
-	Errors   []WorkersMessages        `json:"errors,required"`
-	Messages []WorkersMessages        `json:"messages,required"`
-	Result   UsageModelResponseResult `json:"result,required"`
+	Errors   []WorkersMessages        `json:"errors" api:"required"`
+	Messages []WorkersMessages        `json:"messages" api:"required"`
+	Result   UsageModelResponseResult `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success UsageModelResponseSuccess `json:"success,required"`
+	Success UsageModelResponseSuccess `json:"success" api:"required"`
 	JSON    usageModelResponseJSON    `json:"-"`
 }
 

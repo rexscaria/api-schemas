@@ -14,7 +14,7 @@ import (
 )
 
 func TestAccountAIGatewayGatewayNewGatewayWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,6 +26,7 @@ func TestAccountAIGatewayGatewayNewGatewayWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.AIGateway.Gateways.NewGateway(
 		context.TODO(),
@@ -55,7 +56,7 @@ func TestAccountAIGatewayGatewayNewGatewayWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountAIGatewayGatewayDeleteGateway(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -67,6 +68,7 @@ func TestAccountAIGatewayGatewayDeleteGateway(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.AIGateway.Gateways.DeleteGateway(
 		context.TODO(),
@@ -83,7 +85,7 @@ func TestAccountAIGatewayGatewayDeleteGateway(t *testing.T) {
 }
 
 func TestAccountAIGatewayGatewayFetchGateway(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -95,6 +97,7 @@ func TestAccountAIGatewayGatewayFetchGateway(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.AIGateway.Gateways.FetchGateway(
 		context.TODO(),
@@ -111,7 +114,7 @@ func TestAccountAIGatewayGatewayFetchGateway(t *testing.T) {
 }
 
 func TestAccountAIGatewayGatewayGetGatewayURL(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -123,6 +126,7 @@ func TestAccountAIGatewayGatewayGetGatewayURL(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.AIGateway.Gateways.GetGatewayURL(
 		context.TODO(),
@@ -140,7 +144,7 @@ func TestAccountAIGatewayGatewayGetGatewayURL(t *testing.T) {
 }
 
 func TestAccountAIGatewayGatewayListGatewaysWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -152,6 +156,7 @@ func TestAccountAIGatewayGatewayListGatewaysWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.AIGateway.Gateways.ListGateways(
 		context.TODO(),
@@ -172,7 +177,7 @@ func TestAccountAIGatewayGatewayListGatewaysWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountAIGatewayGatewayUpdateGatewayWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -184,6 +189,7 @@ func TestAccountAIGatewayGatewayUpdateGatewayWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.AIGateway.Gateways.UpdateGateway(
 		context.TODO(),

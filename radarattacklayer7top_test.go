@@ -15,7 +15,7 @@ import (
 )
 
 func TestRadarAttackLayer7TopGetTopAttacksWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -27,6 +27,7 @@ func TestRadarAttackLayer7TopGetTopAttacksWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.Attacks.Layer7.Top.GetTopAttacks(context.TODO(), cfrex.RadarAttackLayer7TopGetTopAttacksParams{
 		Asn:               cfrex.F([]string{"string"}),
@@ -53,7 +54,7 @@ func TestRadarAttackLayer7TopGetTopAttacksWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarAttackLayer7TopGetTopIndustryWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -65,6 +66,7 @@ func TestRadarAttackLayer7TopGetTopIndustryWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.Attacks.Layer7.Top.GetTopIndustry(context.TODO(), cfrex.RadarAttackLayer7TopGetTopIndustryParams{
 		Asn:               cfrex.F([]string{"string"}),
@@ -91,7 +93,7 @@ func TestRadarAttackLayer7TopGetTopIndustryWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarAttackLayer7TopGetTopVerticalsWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -103,6 +105,7 @@ func TestRadarAttackLayer7TopGetTopVerticalsWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.Attacks.Layer7.Top.GetTopVerticals(context.TODO(), cfrex.RadarAttackLayer7TopGetTopVerticalsParams{
 		Asn:               cfrex.F([]string{"string"}),

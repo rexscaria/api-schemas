@@ -42,15 +42,15 @@ func (r *ZonePageShieldCookieService) Get(ctx context.Context, zoneID string, co
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if cookieID == "" {
 		err = errors.New("missing required cookie_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/page_shield/cookies/%s", zoneID, cookieID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists all cookies collected by Page Shield.
@@ -58,21 +58,21 @@ func (r *ZonePageShieldCookieService) List(ctx context.Context, zoneID string, q
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/page_shield/cookies", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type Cookie struct {
 	// Identifier
-	ID                string                  `json:"id,required"`
-	FirstSeenAt       time.Time               `json:"first_seen_at,required" format:"date-time"`
-	Host              string                  `json:"host,required"`
-	LastSeenAt        time.Time               `json:"last_seen_at,required" format:"date-time"`
-	Name              string                  `json:"name,required"`
-	Type              CookieType              `json:"type,required"`
+	ID                string                  `json:"id" api:"required"`
+	FirstSeenAt       time.Time               `json:"first_seen_at" api:"required" format:"date-time"`
+	Host              string                  `json:"host" api:"required"`
+	LastSeenAt        time.Time               `json:"last_seen_at" api:"required" format:"date-time"`
+	Name              string                  `json:"name" api:"required"`
+	Type              CookieType              `json:"type" api:"required"`
 	DomainAttribute   string                  `json:"domain_attribute"`
 	ExpiresAttribute  time.Time               `json:"expires_attribute" format:"date-time"`
 	HTTPOnlyAttribute bool                    `json:"http_only_attribute"`
@@ -144,9 +144,9 @@ func (r CookieSameSiteAttribute) IsKnown() bool {
 }
 
 type ZonePageShieldCookieGetResponse struct {
-	Result Cookie `json:"result,required,nullable"`
+	Result Cookie `json:"result" api:"required,nullable"`
 	// Whether the API call was successful
-	Success  ZonePageShieldCookieGetResponseSuccess   `json:"success,required"`
+	Success  ZonePageShieldCookieGetResponseSuccess   `json:"success" api:"required"`
 	Errors   []ZonePageShieldCookieGetResponseError   `json:"errors"`
 	Messages []ZonePageShieldCookieGetResponseMessage `json:"messages"`
 	JSON     zonePageShieldCookieGetResponseJSON      `json:"-"`
@@ -187,8 +187,8 @@ func (r ZonePageShieldCookieGetResponseSuccess) IsKnown() bool {
 }
 
 type ZonePageShieldCookieGetResponseError struct {
-	Code             int64                                       `json:"code,required"`
-	Message          string                                      `json:"message,required"`
+	Code             int64                                       `json:"code" api:"required"`
+	Message          string                                      `json:"message" api:"required"`
 	DocumentationURL string                                      `json:"documentation_url"`
 	Source           ZonePageShieldCookieGetResponseErrorsSource `json:"source"`
 	JSON             zonePageShieldCookieGetResponseErrorJSON    `json:"-"`
@@ -235,8 +235,8 @@ func (r zonePageShieldCookieGetResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type ZonePageShieldCookieGetResponseMessage struct {
-	Code             int64                                         `json:"code,required"`
-	Message          string                                        `json:"message,required"`
+	Code             int64                                         `json:"code" api:"required"`
+	Message          string                                        `json:"message" api:"required"`
 	DocumentationURL string                                        `json:"documentation_url"`
 	Source           ZonePageShieldCookieGetResponseMessagesSource `json:"source"`
 	JSON             zonePageShieldCookieGetResponseMessageJSON    `json:"-"`
@@ -283,10 +283,10 @@ func (r zonePageShieldCookieGetResponseMessagesSourceJSON) RawJSON() string {
 }
 
 type ZonePageShieldCookieListResponse struct {
-	Result     []Cookie                                   `json:"result,required"`
-	ResultInfo ZonePageShieldCookieListResponseResultInfo `json:"result_info,required"`
+	Result     []Cookie                                   `json:"result" api:"required"`
+	ResultInfo ZonePageShieldCookieListResponseResultInfo `json:"result_info" api:"required"`
 	// Whether the API call was successful
-	Success  ZonePageShieldCookieListResponseSuccess   `json:"success,required"`
+	Success  ZonePageShieldCookieListResponseSuccess   `json:"success" api:"required"`
 	Errors   []ZonePageShieldCookieListResponseError   `json:"errors"`
 	Messages []ZonePageShieldCookieListResponseMessage `json:"messages"`
 	JSON     zonePageShieldCookieListResponseJSON      `json:"-"`
@@ -314,15 +314,15 @@ func (r zonePageShieldCookieListResponseJSON) RawJSON() string {
 
 type ZonePageShieldCookieListResponseResultInfo struct {
 	// Total number of results for the requested service
-	Count float64 `json:"count,required"`
+	Count float64 `json:"count" api:"required"`
 	// Current page within paginated list of results
-	Page float64 `json:"page,required"`
+	Page float64 `json:"page" api:"required"`
 	// Number of results per page of results
-	PerPage float64 `json:"per_page,required"`
+	PerPage float64 `json:"per_page" api:"required"`
 	// Total results available without any search parameters
-	TotalCount float64 `json:"total_count,required"`
+	TotalCount float64 `json:"total_count" api:"required"`
 	// Total number of pages
-	TotalPages float64                                        `json:"total_pages,required"`
+	TotalPages float64                                        `json:"total_pages" api:"required"`
 	JSON       zonePageShieldCookieListResponseResultInfoJSON `json:"-"`
 }
 
@@ -362,8 +362,8 @@ func (r ZonePageShieldCookieListResponseSuccess) IsKnown() bool {
 }
 
 type ZonePageShieldCookieListResponseError struct {
-	Code             int64                                        `json:"code,required"`
-	Message          string                                       `json:"message,required"`
+	Code             int64                                        `json:"code" api:"required"`
+	Message          string                                       `json:"message" api:"required"`
 	DocumentationURL string                                       `json:"documentation_url"`
 	Source           ZonePageShieldCookieListResponseErrorsSource `json:"source"`
 	JSON             zonePageShieldCookieListResponseErrorJSON    `json:"-"`
@@ -410,8 +410,8 @@ func (r zonePageShieldCookieListResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type ZonePageShieldCookieListResponseMessage struct {
-	Code             int64                                          `json:"code,required"`
-	Message          string                                         `json:"message,required"`
+	Code             int64                                          `json:"code" api:"required"`
+	Message          string                                         `json:"message" api:"required"`
 	DocumentationURL string                                         `json:"documentation_url"`
 	Source           ZonePageShieldCookieListResponseMessagesSource `json:"source"`
 	JSON             zonePageShieldCookieListResponseMessageJSON    `json:"-"`

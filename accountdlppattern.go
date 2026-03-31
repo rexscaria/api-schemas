@@ -42,18 +42,18 @@ func (r *AccountDlpPatternService) Validate(ctx context.Context, accountID strin
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/dlp/patterns/validate", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountDlpPatternValidateResponse struct {
-	Errors   []MessagesDlpItems `json:"errors,required"`
-	Messages []MessagesDlpItems `json:"messages,required"`
+	Errors   []MessagesDlpItems `json:"errors" api:"required"`
+	Messages []MessagesDlpItems `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountDlpPatternValidateResponseSuccess `json:"success,required"`
+	Success AccountDlpPatternValidateResponseSuccess `json:"success" api:"required"`
 	Result  AccountDlpPatternValidateResponseResult  `json:"result"`
 	JSON    accountDlpPatternValidateResponseJSON    `json:"-"`
 }
@@ -93,7 +93,7 @@ func (r AccountDlpPatternValidateResponseSuccess) IsKnown() bool {
 }
 
 type AccountDlpPatternValidateResponseResult struct {
-	Valid bool                                        `json:"valid,required"`
+	Valid bool                                        `json:"valid" api:"required"`
 	JSON  accountDlpPatternValidateResponseResultJSON `json:"-"`
 }
 
@@ -114,7 +114,7 @@ func (r accountDlpPatternValidateResponseResultJSON) RawJSON() string {
 }
 
 type AccountDlpPatternValidateParams struct {
-	Regex param.Field[string] `json:"regex,required"`
+	Regex param.Field[string] `json:"regex" api:"required"`
 	// Maximum number of bytes that the regular expression can match.
 	//
 	// If this is `null` then there is no limit on the length. Patterns can use `*` and

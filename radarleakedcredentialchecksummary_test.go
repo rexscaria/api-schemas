@@ -15,7 +15,7 @@ import (
 )
 
 func TestRadarLeakedCredentialCheckSummaryGetByBotClassWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -27,6 +27,7 @@ func TestRadarLeakedCredentialCheckSummaryGetByBotClassWithOptionalParams(t *tes
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.LeakedCredentialChecks.Summary.GetByBotClass(context.TODO(), cfrex.RadarLeakedCredentialCheckSummaryGetByBotClassParams{
 		Compromised: cfrex.F([]cfrex.RadarLeakedCredentialCheckSummaryGetByBotClassParamsCompromised{cfrex.RadarLeakedCredentialCheckSummaryGetByBotClassParamsCompromisedClean}),
@@ -46,7 +47,7 @@ func TestRadarLeakedCredentialCheckSummaryGetByBotClassWithOptionalParams(t *tes
 }
 
 func TestRadarLeakedCredentialCheckSummaryGetByCompromisedStatusWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -58,6 +59,7 @@ func TestRadarLeakedCredentialCheckSummaryGetByCompromisedStatusWithOptionalPara
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.LeakedCredentialChecks.Summary.GetByCompromisedStatus(context.TODO(), cfrex.RadarLeakedCredentialCheckSummaryGetByCompromisedStatusParams{
 		BotClass:  cfrex.F([]cfrex.RadarLeakedCredentialCheckSummaryGetByCompromisedStatusParamsBotClass{cfrex.RadarLeakedCredentialCheckSummaryGetByCompromisedStatusParamsBotClassLikelyAutomated}),

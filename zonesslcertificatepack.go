@@ -41,15 +41,15 @@ func (r *ZoneSslCertificatePackService) Get(ctx context.Context, zoneID string, 
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if certificatePackID == "" {
 		err = errors.New("missing required certificate_pack_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/ssl/certificate_packs/%s", zoneID, certificatePackID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // For a given zone, restart validation or add cloudflare branding for an advanced
@@ -59,15 +59,15 @@ func (r *ZoneSslCertificatePackService) Update(ctx context.Context, zoneID strin
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if certificatePackID == "" {
 		err = errors.New("missing required certificate_pack_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/ssl/certificate_packs/%s", zoneID, certificatePackID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // For a given zone, list all active certificate packs.
@@ -75,11 +75,11 @@ func (r *ZoneSslCertificatePackService) List(ctx context.Context, zoneID string,
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/ssl/certificate_packs", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // For a given zone, delete an advanced certificate pack.
@@ -87,15 +87,15 @@ func (r *ZoneSslCertificatePackService) Delete(ctx context.Context, zoneID strin
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if certificatePackID == "" {
 		err = errors.New("missing required certificate_pack_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/ssl/certificate_packs/%s", zoneID, certificatePackID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // For a given zone, list certificate pack quotas.
@@ -103,11 +103,11 @@ func (r *ZoneSslCertificatePackService) GetQuota(ctx context.Context, zoneID str
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/ssl/certificate_packs/quota", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // For a given zone, order an advanced certificate pack.
@@ -115,18 +115,18 @@ func (r *ZoneSslCertificatePackService) Order(ctx context.Context, zoneID string
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/ssl/certificate_packs/order", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type AdvancedCertificatePackResponseSingle struct {
-	Errors   []MessagesTlsCertificatesItem `json:"errors,required"`
-	Messages []MessagesTlsCertificatesItem `json:"messages,required"`
+	Errors   []MessagesTlsCertificatesItem `json:"errors" api:"required"`
+	Messages []MessagesTlsCertificatesItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AdvancedCertificatePackResponseSingleSuccess `json:"success,required"`
+	Success AdvancedCertificatePackResponseSingleSuccess `json:"success" api:"required"`
 	Result  AdvancedCertificatePackResponseSingleResult  `json:"result"`
 	JSON    advancedCertificatePackResponseSingleJSON    `json:"-"`
 }
@@ -317,10 +317,10 @@ func (r ValidityDays) IsKnown() bool {
 }
 
 type ZoneSslCertificatePackGetResponse struct {
-	Errors   []MessagesTlsCertificatesItem `json:"errors,required"`
-	Messages []MessagesTlsCertificatesItem `json:"messages,required"`
+	Errors   []MessagesTlsCertificatesItem `json:"errors" api:"required"`
+	Messages []MessagesTlsCertificatesItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success ZoneSslCertificatePackGetResponseSuccess `json:"success,required"`
+	Success ZoneSslCertificatePackGetResponseSuccess `json:"success" api:"required"`
 	Result  interface{}                              `json:"result"`
 	JSON    zoneSslCertificatePackGetResponseJSON    `json:"-"`
 }
@@ -360,10 +360,10 @@ func (r ZoneSslCertificatePackGetResponseSuccess) IsKnown() bool {
 }
 
 type ZoneSslCertificatePackListResponse struct {
-	Errors   []MessagesTlsCertificatesItem `json:"errors,required"`
-	Messages []MessagesTlsCertificatesItem `json:"messages,required"`
+	Errors   []MessagesTlsCertificatesItem `json:"errors" api:"required"`
+	Messages []MessagesTlsCertificatesItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success    ZoneSslCertificatePackListResponseSuccess    `json:"success,required"`
+	Success    ZoneSslCertificatePackListResponseSuccess    `json:"success" api:"required"`
 	Result     []interface{}                                `json:"result"`
 	ResultInfo ZoneSslCertificatePackListResponseResultInfo `json:"result_info"`
 	JSON       zoneSslCertificatePackListResponseJSON       `json:"-"`
@@ -436,10 +436,10 @@ func (r zoneSslCertificatePackListResponseResultInfoJSON) RawJSON() string {
 }
 
 type ZoneSslCertificatePackDeleteResponse struct {
-	Errors   []MessagesTlsCertificatesItem `json:"errors,required"`
-	Messages []MessagesTlsCertificatesItem `json:"messages,required"`
+	Errors   []MessagesTlsCertificatesItem `json:"errors" api:"required"`
+	Messages []MessagesTlsCertificatesItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success ZoneSslCertificatePackDeleteResponseSuccess `json:"success,required"`
+	Success ZoneSslCertificatePackDeleteResponseSuccess `json:"success" api:"required"`
 	Result  ZoneSslCertificatePackDeleteResponseResult  `json:"result"`
 	JSON    zoneSslCertificatePackDeleteResponseJSON    `json:"-"`
 }
@@ -501,10 +501,10 @@ func (r zoneSslCertificatePackDeleteResponseResultJSON) RawJSON() string {
 }
 
 type ZoneSslCertificatePackGetQuotaResponse struct {
-	Errors   []MessagesTlsCertificatesItem `json:"errors,required"`
-	Messages []MessagesTlsCertificatesItem `json:"messages,required"`
+	Errors   []MessagesTlsCertificatesItem `json:"errors" api:"required"`
+	Messages []MessagesTlsCertificatesItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success ZoneSslCertificatePackGetQuotaResponseSuccess `json:"success,required"`
+	Success ZoneSslCertificatePackGetQuotaResponseSuccess `json:"success" api:"required"`
 	Result  ZoneSslCertificatePackGetQuotaResponseResult  `json:"result"`
 	JSON    zoneSslCertificatePackGetQuotaResponseJSON    `json:"-"`
 }
@@ -632,16 +632,16 @@ type ZoneSslCertificatePackOrderParams struct {
 	// Certificate Authority selected for the order. For information on any certificate
 	// authority specific details or restrictions
 	// [see this page for more details.](https://developers.cloudflare.com/ssl/reference/certificate-authorities)
-	CertificateAuthority param.Field[CertificateAuthoritySslPack] `json:"certificate_authority,required"`
+	CertificateAuthority param.Field[CertificateAuthoritySslPack] `json:"certificate_authority" api:"required"`
 	// Comma separated list of valid host names for the certificate packs. Must contain
 	// the zone apex, may not contain more than 50 hosts, and may not be empty.
-	Hosts param.Field[[]string] `json:"hosts,required"`
+	Hosts param.Field[[]string] `json:"hosts" api:"required"`
 	// Type of certificate pack.
-	Type param.Field[AdvancedType] `json:"type,required"`
+	Type param.Field[AdvancedType] `json:"type" api:"required"`
 	// Validation Method selected for the order.
-	ValidationMethod param.Field[ValidationMethod] `json:"validation_method,required"`
+	ValidationMethod param.Field[ValidationMethod] `json:"validation_method" api:"required"`
 	// Validity Days selected for the order.
-	ValidityDays param.Field[ValidityDays] `json:"validity_days,required"`
+	ValidityDays param.Field[ValidityDays] `json:"validity_days" api:"required"`
 	// Whether or not to add Cloudflare Branding for the order. This will add a
 	// subdomain of sni.cloudflaressl.com as the Common Name if set to true.
 	CloudflareBranding param.Field[bool] `json:"cloudflare_branding"`

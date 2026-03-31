@@ -14,7 +14,7 @@ import (
 )
 
 func TestAccountR2BucketDomainCustomGetWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,6 +26,7 @@ func TestAccountR2BucketDomainCustomGetWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.R2.Buckets.Domains.Custom.Get(
 		context.TODO(),
@@ -46,7 +47,7 @@ func TestAccountR2BucketDomainCustomGetWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountR2BucketDomainCustomUpdateWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -58,6 +59,7 @@ func TestAccountR2BucketDomainCustomUpdateWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.R2.Buckets.Domains.Custom.Update(
 		context.TODO(),
@@ -80,7 +82,7 @@ func TestAccountR2BucketDomainCustomUpdateWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountR2BucketDomainCustomListWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -92,6 +94,7 @@ func TestAccountR2BucketDomainCustomListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.R2.Buckets.Domains.Custom.List(
 		context.TODO(),
@@ -111,7 +114,7 @@ func TestAccountR2BucketDomainCustomListWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountR2BucketDomainCustomAttachWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -123,6 +126,7 @@ func TestAccountR2BucketDomainCustomAttachWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.R2.Buckets.Domains.Custom.Attach(
 		context.TODO(),
@@ -146,7 +150,7 @@ func TestAccountR2BucketDomainCustomAttachWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountR2BucketDomainCustomRemoveWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -158,6 +162,7 @@ func TestAccountR2BucketDomainCustomRemoveWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.R2.Buckets.Domains.Custom.Remove(
 		context.TODO(),

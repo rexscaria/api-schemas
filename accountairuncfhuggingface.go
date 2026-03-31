@@ -41,18 +41,18 @@ func (r *AccountAIRunCfHuggingfaceService) ExecuteDistilbertSst2Int8(ctx context
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai/run/@cf/huggingface/distilbert-sst-2-int8", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountAIRunCfHuggingfaceExecuteDistilbertSst2Int8Response = interface{}
 
 type AccountAIRunCfHuggingfaceExecuteDistilbertSst2Int8Params struct {
 	// The text that you want to classify
-	Text         param.Field[string] `json:"text,required"`
+	Text         param.Field[string] `json:"text" api:"required"`
 	QueueRequest param.Field[string] `query:"queueRequest"`
 }
 

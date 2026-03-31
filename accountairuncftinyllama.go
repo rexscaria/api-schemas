@@ -41,11 +41,11 @@ func (r *AccountAIRunCfTinyllamaService) ExecuteTinyllama1_1bChatV1_0(ctx contex
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai/run/@cf/tinyllama/tinyllama-1.1b-chat-v1.0", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountAIRunCfTinyllamaExecuteTinyllama1_1bChatV1_0Response = interface{}
@@ -124,7 +124,7 @@ type AccountAIRunCfTinyllamaExecuteTinyllama1_1bChatV1_0ParamsBodyUnion interfac
 
 type AccountAIRunCfTinyllamaExecuteTinyllama1_1bChatV1_0ParamsBodyPrompt struct {
 	// The input text prompt for the model to generate a response.
-	Prompt param.Field[string] `json:"prompt,required"`
+	Prompt param.Field[string] `json:"prompt" api:"required"`
 	// Decreases the likelihood of the model repeating the same lines verbatim.
 	FrequencyPenalty param.Field[float64] `json:"frequency_penalty"`
 	// Name of the LoRA (Low-Rank Adaptation) model to fine-tune the base model.
@@ -190,7 +190,7 @@ func (r AccountAIRunCfTinyllamaExecuteTinyllama1_1bChatV1_0ParamsBodyPromptRespo
 
 type AccountAIRunCfTinyllamaExecuteTinyllama1_1bChatV1_0ParamsBodyMessages struct {
 	// An array of message objects representing the conversation history.
-	Messages param.Field[[]AccountAIRunCfTinyllamaExecuteTinyllama1_1bChatV1_0ParamsBodyMessagesMessage] `json:"messages,required"`
+	Messages param.Field[[]AccountAIRunCfTinyllamaExecuteTinyllama1_1bChatV1_0ParamsBodyMessagesMessage] `json:"messages" api:"required"`
 	// Decreases the likelihood of the model repeating the same lines verbatim.
 	FrequencyPenalty param.Field[float64]                                                                         `json:"frequency_penalty"`
 	Functions        param.Field[[]AccountAIRunCfTinyllamaExecuteTinyllama1_1bChatV1_0ParamsBodyMessagesFunction] `json:"functions"`
@@ -233,9 +233,9 @@ func (r AccountAIRunCfTinyllamaExecuteTinyllama1_1bChatV1_0ParamsBodyMessages) i
 
 type AccountAIRunCfTinyllamaExecuteTinyllama1_1bChatV1_0ParamsBodyMessagesMessage struct {
 	// The content of the message as a string.
-	Content param.Field[string] `json:"content,required"`
+	Content param.Field[string] `json:"content" api:"required"`
 	// The role of the message sender (e.g., 'user', 'assistant', 'system', 'tool').
-	Role param.Field[string] `json:"role,required"`
+	Role param.Field[string] `json:"role" api:"required"`
 }
 
 func (r AccountAIRunCfTinyllamaExecuteTinyllama1_1bChatV1_0ParamsBodyMessagesMessage) MarshalJSON() (data []byte, err error) {
@@ -243,8 +243,8 @@ func (r AccountAIRunCfTinyllamaExecuteTinyllama1_1bChatV1_0ParamsBodyMessagesMes
 }
 
 type AccountAIRunCfTinyllamaExecuteTinyllama1_1bChatV1_0ParamsBodyMessagesFunction struct {
-	Code param.Field[string] `json:"code,required"`
-	Name param.Field[string] `json:"name,required"`
+	Code param.Field[string] `json:"code" api:"required"`
+	Name param.Field[string] `json:"name" api:"required"`
 }
 
 func (r AccountAIRunCfTinyllamaExecuteTinyllama1_1bChatV1_0ParamsBodyMessagesFunction) MarshalJSON() (data []byte, err error) {
@@ -303,11 +303,11 @@ type AccountAIRunCfTinyllamaExecuteTinyllama1_1bChatV1_0ParamsBodyMessagesToolUn
 
 type AccountAIRunCfTinyllamaExecuteTinyllama1_1bChatV1_0ParamsBodyMessagesToolsObject struct {
 	// A brief description of what the tool does.
-	Description param.Field[string] `json:"description,required"`
+	Description param.Field[string] `json:"description" api:"required"`
 	// The name of the tool. More descriptive the better.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Schema defining the parameters accepted by the tool.
-	Parameters param.Field[AccountAIRunCfTinyllamaExecuteTinyllama1_1bChatV1_0ParamsBodyMessagesToolsObjectParameters] `json:"parameters,required"`
+	Parameters param.Field[AccountAIRunCfTinyllamaExecuteTinyllama1_1bChatV1_0ParamsBodyMessagesToolsObjectParameters] `json:"parameters" api:"required"`
 }
 
 func (r AccountAIRunCfTinyllamaExecuteTinyllama1_1bChatV1_0ParamsBodyMessagesToolsObject) MarshalJSON() (data []byte, err error) {
@@ -320,9 +320,9 @@ func (r AccountAIRunCfTinyllamaExecuteTinyllama1_1bChatV1_0ParamsBodyMessagesToo
 // Schema defining the parameters accepted by the tool.
 type AccountAIRunCfTinyllamaExecuteTinyllama1_1bChatV1_0ParamsBodyMessagesToolsObjectParameters struct {
 	// Definitions of each parameter.
-	Properties param.Field[map[string]AccountAIRunCfTinyllamaExecuteTinyllama1_1bChatV1_0ParamsBodyMessagesToolsObjectParametersProperties] `json:"properties,required"`
+	Properties param.Field[map[string]AccountAIRunCfTinyllamaExecuteTinyllama1_1bChatV1_0ParamsBodyMessagesToolsObjectParametersProperties] `json:"properties" api:"required"`
 	// The type of the parameters object (usually 'object').
-	Type param.Field[string] `json:"type,required"`
+	Type param.Field[string] `json:"type" api:"required"`
 	// List of required parameter names.
 	Required param.Field[[]string] `json:"required"`
 }
@@ -333,9 +333,9 @@ func (r AccountAIRunCfTinyllamaExecuteTinyllama1_1bChatV1_0ParamsBodyMessagesToo
 
 type AccountAIRunCfTinyllamaExecuteTinyllama1_1bChatV1_0ParamsBodyMessagesToolsObjectParametersProperties struct {
 	// A description of the expected parameter.
-	Description param.Field[string] `json:"description,required"`
+	Description param.Field[string] `json:"description" api:"required"`
 	// The data type of the parameter.
-	Type param.Field[string] `json:"type,required"`
+	Type param.Field[string] `json:"type" api:"required"`
 }
 
 func (r AccountAIRunCfTinyllamaExecuteTinyllama1_1bChatV1_0ParamsBodyMessagesToolsObjectParametersProperties) MarshalJSON() (data []byte, err error) {

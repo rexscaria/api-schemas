@@ -39,11 +39,11 @@ func (r *ZoneDNSSettingService) Update(ctx context.Context, zoneID string, body 
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/dns_settings", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Show DNS settings for a zone
@@ -51,11 +51,11 @@ func (r *ZoneDNSSettingService) Show(ctx context.Context, zoneID string, opts ..
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/dns_settings", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type SettingsZone struct {
@@ -133,7 +133,7 @@ func (r settingsZoneInternalDNSJSON) RawJSON() string {
 // Settings determining the nameservers through which the zone should be available.
 type SettingsZoneNameservers struct {
 	// Nameserver type
-	Type SettingsZoneNameserversType `json:"type,required"`
+	Type SettingsZoneNameserversType `json:"type" api:"required"`
 	// Configured nameserver set to be used for this zone
 	NsSet int64                       `json:"ns_set"`
 	JSON  settingsZoneNameserversJSON `json:"-"`
@@ -178,22 +178,22 @@ func (r SettingsZoneNameserversType) IsKnown() bool {
 type SettingsZoneSoa struct {
 	// Time in seconds of being unable to query the primary server after which
 	// secondary servers should stop serving the zone.
-	Expire float64 `json:"expire,required"`
+	Expire float64 `json:"expire" api:"required"`
 	// The time to live (TTL) for negative caching of records within the zone.
-	MinTtl float64 `json:"min_ttl,required"`
+	MinTtl float64 `json:"min_ttl" api:"required"`
 	// The primary nameserver, which may be used for outbound zone transfers.
-	Mname string `json:"mname,required"`
+	Mname string `json:"mname" api:"required"`
 	// Time in seconds after which secondary servers should re-check the SOA record to
 	// see if the zone has been updated.
-	Refresh float64 `json:"refresh,required"`
+	Refresh float64 `json:"refresh" api:"required"`
 	// Time in seconds after which secondary servers should retry queries after the
 	// primary server was unresponsive.
-	Retry float64 `json:"retry,required"`
+	Retry float64 `json:"retry" api:"required"`
 	// The email address of the zone administrator, with the first label representing
 	// the local part of the email address.
-	Rname string `json:"rname,required"`
+	Rname string `json:"rname" api:"required"`
 	// The time to live (TTL) of the SOA record itself.
-	Ttl  float64             `json:"ttl,required"`
+	Ttl  float64             `json:"ttl" api:"required"`
 	JSON settingsZoneSoaJSON `json:"-"`
 }
 
@@ -277,7 +277,7 @@ func (r SettingsZoneInternalDNSParam) MarshalJSON() (data []byte, err error) {
 // Settings determining the nameservers through which the zone should be available.
 type SettingsZoneNameserversParam struct {
 	// Nameserver type
-	Type param.Field[SettingsZoneNameserversType] `json:"type,required"`
+	Type param.Field[SettingsZoneNameserversType] `json:"type" api:"required"`
 	// Configured nameserver set to be used for this zone
 	NsSet param.Field[int64] `json:"ns_set"`
 }
@@ -290,22 +290,22 @@ func (r SettingsZoneNameserversParam) MarshalJSON() (data []byte, err error) {
 type SettingsZoneSoaParam struct {
 	// Time in seconds of being unable to query the primary server after which
 	// secondary servers should stop serving the zone.
-	Expire param.Field[float64] `json:"expire,required"`
+	Expire param.Field[float64] `json:"expire" api:"required"`
 	// The time to live (TTL) for negative caching of records within the zone.
-	MinTtl param.Field[float64] `json:"min_ttl,required"`
+	MinTtl param.Field[float64] `json:"min_ttl" api:"required"`
 	// The primary nameserver, which may be used for outbound zone transfers.
-	Mname param.Field[string] `json:"mname,required"`
+	Mname param.Field[string] `json:"mname" api:"required"`
 	// Time in seconds after which secondary servers should re-check the SOA record to
 	// see if the zone has been updated.
-	Refresh param.Field[float64] `json:"refresh,required"`
+	Refresh param.Field[float64] `json:"refresh" api:"required"`
 	// Time in seconds after which secondary servers should retry queries after the
 	// primary server was unresponsive.
-	Retry param.Field[float64] `json:"retry,required"`
+	Retry param.Field[float64] `json:"retry" api:"required"`
 	// The email address of the zone administrator, with the first label representing
 	// the local part of the email address.
-	Rname param.Field[string] `json:"rname,required"`
+	Rname param.Field[string] `json:"rname" api:"required"`
 	// The time to live (TTL) of the SOA record itself.
-	Ttl param.Field[float64] `json:"ttl,required"`
+	Ttl param.Field[float64] `json:"ttl" api:"required"`
 }
 
 func (r SettingsZoneSoaParam) MarshalJSON() (data []byte, err error) {
@@ -313,10 +313,10 @@ func (r SettingsZoneSoaParam) MarshalJSON() (data []byte, err error) {
 }
 
 type SingleResponseDNSSettingsZone struct {
-	Errors   []DNSSettingsMessages `json:"errors,required"`
-	Messages []DNSSettingsMessages `json:"messages,required"`
+	Errors   []DNSSettingsMessages `json:"errors" api:"required"`
+	Messages []DNSSettingsMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success SingleResponseDNSSettingsZoneSuccess `json:"success,required"`
+	Success SingleResponseDNSSettingsZoneSuccess `json:"success" api:"required"`
 	Result  SettingsZone                         `json:"result"`
 	JSON    singleResponseDNSSettingsZoneJSON    `json:"-"`
 }
@@ -356,7 +356,7 @@ func (r SingleResponseDNSSettingsZoneSuccess) IsKnown() bool {
 }
 
 type ZoneDNSSettingUpdateParams struct {
-	SettingsZone SettingsZoneParam `json:"settings_zone,required"`
+	SettingsZone SettingsZoneParam `json:"settings_zone" api:"required"`
 }
 
 func (r ZoneDNSSettingUpdateParams) MarshalJSON() (data []byte, err error) {

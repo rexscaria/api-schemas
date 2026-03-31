@@ -41,15 +41,15 @@ func (r *AccountCniSlotService) Get(ctx context.Context, accountID string, slot 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if slot == "" {
 		err = errors.New("missing required slot parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/cni/slots/%s", accountID, slot)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve a list of all slots matching the specified parameters
@@ -57,16 +57,16 @@ func (r *AccountCniSlotService) List(ctx context.Context, accountID string, quer
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/cni/slots", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type NscFacilityInfo struct {
-	Address []string            `json:"address,required"`
-	Name    string              `json:"name,required"`
+	Address []string            `json:"address" api:"required"`
+	Name    string              `json:"name" api:"required"`
 	JSON    nscFacilityInfoJSON `json:"-"`
 }
 
@@ -88,12 +88,12 @@ func (r nscFacilityInfoJSON) RawJSON() string {
 
 type NscSlotInfo struct {
 	// Slot ID
-	ID       string          `json:"id,required" format:"uuid"`
-	Facility NscFacilityInfo `json:"facility,required"`
+	ID       string          `json:"id" api:"required" format:"uuid"`
+	Facility NscFacilityInfo `json:"facility" api:"required"`
 	// Whether the slot is occupied or not
-	Occupied bool   `json:"occupied,required"`
-	Site     string `json:"site,required"`
-	Speed    string `json:"speed,required"`
+	Occupied bool   `json:"occupied" api:"required"`
+	Site     string `json:"site" api:"required"`
+	Speed    string `json:"speed" api:"required"`
 	// Customer account tag
 	Account string          `json:"account"`
 	JSON    nscSlotInfoJSON `json:"-"`
@@ -120,8 +120,8 @@ func (r nscSlotInfoJSON) RawJSON() string {
 }
 
 type AccountCniSlotListResponse struct {
-	Items []NscSlotInfo                  `json:"items,required"`
-	Next  int64                          `json:"next,nullable"`
+	Items []NscSlotInfo                  `json:"items" api:"required"`
+	Next  int64                          `json:"next" api:"nullable"`
 	JSON  accountCniSlotListResponseJSON `json:"-"`
 }
 

@@ -41,15 +41,15 @@ func (r *AccountMemberService) Get(ctx context.Context, accountID string, member
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if memberID == "" {
 		err = errors.New("missing required member_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/members/%s", accountID, memberID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Modify an account member.
@@ -57,15 +57,15 @@ func (r *AccountMemberService) Update(ctx context.Context, accountID string, mem
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if memberID == "" {
 		err = errors.New("missing required member_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/members/%s", accountID, memberID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // List all members of an account.
@@ -73,11 +73,11 @@ func (r *AccountMemberService) List(ctx context.Context, accountID string, query
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/members", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Add a user to the list of members for this account.
@@ -85,11 +85,11 @@ func (r *AccountMemberService) Add(ctx context.Context, accountID string, body A
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/members", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Remove a member from an account.
@@ -97,15 +97,15 @@ func (r *AccountMemberService) Remove(ctx context.Context, accountID string, mem
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if memberID == "" {
 		err = errors.New("missing required member_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/members/%s", accountID, memberID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Allow or deny operations against the resources.
@@ -126,11 +126,11 @@ func (r IamAccess) IsKnown() bool {
 
 type IamCreateMemberPolicyParam struct {
 	// Allow or deny operations against the resources.
-	Access param.Field[IamAccess] `json:"access,required"`
+	Access param.Field[IamAccess] `json:"access" api:"required"`
 	// A set of permission groups that are specified to the policy.
-	PermissionGroups param.Field[[]IamCreateMemberPolicyPermissionGroupParam] `json:"permission_groups,required"`
+	PermissionGroups param.Field[[]IamCreateMemberPolicyPermissionGroupParam] `json:"permission_groups" api:"required"`
 	// A list of resource groups that the policy applies to.
-	ResourceGroups param.Field[[]IamCreateMemberPolicyResourceGroupParam] `json:"resource_groups,required"`
+	ResourceGroups param.Field[[]IamCreateMemberPolicyResourceGroupParam] `json:"resource_groups" api:"required"`
 }
 
 func (r IamCreateMemberPolicyParam) MarshalJSON() (data []byte, err error) {
@@ -140,7 +140,7 @@ func (r IamCreateMemberPolicyParam) MarshalJSON() (data []byte, err error) {
 // A group of permissions.
 type IamCreateMemberPolicyPermissionGroupParam struct {
 	// Identifier of the group.
-	ID param.Field[string] `json:"id,required"`
+	ID param.Field[string] `json:"id" api:"required"`
 }
 
 func (r IamCreateMemberPolicyPermissionGroupParam) MarshalJSON() (data []byte, err error) {
@@ -150,7 +150,7 @@ func (r IamCreateMemberPolicyPermissionGroupParam) MarshalJSON() (data []byte, e
 // A group of scoped resources.
 type IamCreateMemberPolicyResourceGroupParam struct {
 	// Identifier of the group.
-	ID param.Field[string] `json:"id,required"`
+	ID param.Field[string] `json:"id" api:"required"`
 }
 
 func (r IamCreateMemberPolicyResourceGroupParam) MarshalJSON() (data []byte, err error) {
@@ -241,13 +241,13 @@ func (r IamMemberWithPoliciesStatus) IsKnown() bool {
 // Details of the user associated to the membership.
 type IamMemberWithPoliciesUser struct {
 	// The contact email address of the user.
-	Email string `json:"email,required"`
+	Email string `json:"email" api:"required"`
 	// Identifier
 	ID string `json:"id"`
 	// User's first name
-	FirstName string `json:"first_name,nullable"`
+	FirstName string `json:"first_name" api:"nullable"`
 	// User's last name
-	LastName string `json:"last_name,nullable"`
+	LastName string `json:"last_name" api:"nullable"`
 	// Indicates whether two-factor authentication is enabled for the user account.
 	// Does not apply to API authentication.
 	TwoFactorAuthenticationEnabled bool                          `json:"two_factor_authentication_enabled"`
@@ -275,10 +275,10 @@ func (r iamMemberWithPoliciesUserJSON) RawJSON() string {
 }
 
 type IamSingleMemberResponseWithPolicies struct {
-	Errors   []IamSingleMemberResponseWithPoliciesError   `json:"errors,required"`
-	Messages []IamSingleMemberResponseWithPoliciesMessage `json:"messages,required"`
+	Errors   []IamSingleMemberResponseWithPoliciesError   `json:"errors" api:"required"`
+	Messages []IamSingleMemberResponseWithPoliciesMessage `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success IamSingleMemberResponseWithPoliciesSuccess `json:"success,required"`
+	Success IamSingleMemberResponseWithPoliciesSuccess `json:"success" api:"required"`
 	Result  IamMemberWithPolicies                      `json:"result"`
 	JSON    iamSingleMemberResponseWithPoliciesJSON    `json:"-"`
 }
@@ -303,8 +303,8 @@ func (r iamSingleMemberResponseWithPoliciesJSON) RawJSON() string {
 }
 
 type IamSingleMemberResponseWithPoliciesError struct {
-	Code             int64                                           `json:"code,required"`
-	Message          string                                          `json:"message,required"`
+	Code             int64                                           `json:"code" api:"required"`
+	Message          string                                          `json:"message" api:"required"`
 	DocumentationURL string                                          `json:"documentation_url"`
 	Source           IamSingleMemberResponseWithPoliciesErrorsSource `json:"source"`
 	JSON             iamSingleMemberResponseWithPoliciesErrorJSON    `json:"-"`
@@ -351,8 +351,8 @@ func (r iamSingleMemberResponseWithPoliciesErrorsSourceJSON) RawJSON() string {
 }
 
 type IamSingleMemberResponseWithPoliciesMessage struct {
-	Code             int64                                             `json:"code,required"`
-	Message          string                                            `json:"message,required"`
+	Code             int64                                             `json:"code" api:"required"`
+	Message          string                                            `json:"message" api:"required"`
 	DocumentationURL string                                            `json:"documentation_url"`
 	Source           IamSingleMemberResponseWithPoliciesMessagesSource `json:"source"`
 	JSON             iamSingleMemberResponseWithPoliciesMessageJSON    `json:"-"`
@@ -414,10 +414,10 @@ func (r IamSingleMemberResponseWithPoliciesSuccess) IsKnown() bool {
 }
 
 type AccountMemberListResponse struct {
-	Errors   []AccountMemberListResponseError   `json:"errors,required"`
-	Messages []AccountMemberListResponseMessage `json:"messages,required"`
+	Errors   []AccountMemberListResponseError   `json:"errors" api:"required"`
+	Messages []AccountMemberListResponseMessage `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success    AccountMemberListResponseSuccess    `json:"success,required"`
+	Success    AccountMemberListResponseSuccess    `json:"success" api:"required"`
 	Result     []IamMemberWithPolicies             `json:"result"`
 	ResultInfo AccountMemberListResponseResultInfo `json:"result_info"`
 	JSON       accountMemberListResponseJSON       `json:"-"`
@@ -444,8 +444,8 @@ func (r accountMemberListResponseJSON) RawJSON() string {
 }
 
 type AccountMemberListResponseError struct {
-	Code             int64                                 `json:"code,required"`
-	Message          string                                `json:"message,required"`
+	Code             int64                                 `json:"code" api:"required"`
+	Message          string                                `json:"message" api:"required"`
 	DocumentationURL string                                `json:"documentation_url"`
 	Source           AccountMemberListResponseErrorsSource `json:"source"`
 	JSON             accountMemberListResponseErrorJSON    `json:"-"`
@@ -492,8 +492,8 @@ func (r accountMemberListResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type AccountMemberListResponseMessage struct {
-	Code             int64                                   `json:"code,required"`
-	Message          string                                  `json:"message,required"`
+	Code             int64                                   `json:"code" api:"required"`
+	Message          string                                  `json:"message" api:"required"`
 	DocumentationURL string                                  `json:"documentation_url"`
 	Source           AccountMemberListResponseMessagesSource `json:"source"`
 	JSON             accountMemberListResponseMessageJSON    `json:"-"`
@@ -586,7 +586,7 @@ func (r accountMemberListResponseResultInfoJSON) RawJSON() string {
 }
 
 type AccountMemberUpdateParams struct {
-	Body AccountMemberUpdateParamsBodyUnion `json:"body,required"`
+	Body AccountMemberUpdateParamsBodyUnion `json:"body" api:"required"`
 }
 
 func (r AccountMemberUpdateParams) MarshalJSON() (data []byte, err error) {
@@ -643,7 +643,7 @@ func (r AccountMemberUpdateParamsBodyIamUpdateMemberWithRolesStatus) IsKnown() b
 // Details of the user associated to the membership.
 type AccountMemberUpdateParamsBodyIamUpdateMemberWithRolesUser struct {
 	// The contact email address of the user.
-	Email param.Field[string] `json:"email,required"`
+	Email param.Field[string] `json:"email" api:"required"`
 	// Identifier
 	ID param.Field[string] `json:"id"`
 	// User's first name
@@ -658,7 +658,7 @@ func (r AccountMemberUpdateParamsBodyIamUpdateMemberWithRolesUser) MarshalJSON()
 
 type AccountMemberUpdateParamsBodyIamUpdateMemberWithPolicies struct {
 	// Array of policies associated with this member.
-	Policies param.Field[[]IamCreateMemberPolicyParam] `json:"policies,required"`
+	Policies param.Field[[]IamCreateMemberPolicyParam] `json:"policies" api:"required"`
 }
 
 func (r AccountMemberUpdateParamsBodyIamUpdateMemberWithPolicies) MarshalJSON() (data []byte, err error) {
@@ -758,7 +758,7 @@ func (r AccountMemberListParamsStatus) IsKnown() bool {
 }
 
 type AccountMemberAddParams struct {
-	Body AccountMemberAddParamsBodyUnion `json:"body,required"`
+	Body AccountMemberAddParamsBodyUnion `json:"body" api:"required"`
 }
 
 func (r AccountMemberAddParams) MarshalJSON() (data []byte, err error) {
@@ -767,7 +767,7 @@ func (r AccountMemberAddParams) MarshalJSON() (data []byte, err error) {
 
 type AccountMemberAddParamsBody struct {
 	// The contact email address of the user.
-	Email    param.Field[string]                           `json:"email,required"`
+	Email    param.Field[string]                           `json:"email" api:"required"`
 	Policies param.Field[interface{}]                      `json:"policies"`
 	Roles    param.Field[interface{}]                      `json:"roles"`
 	Status   param.Field[AccountMemberAddParamsBodyStatus] `json:"status"`
@@ -788,9 +788,9 @@ type AccountMemberAddParamsBodyUnion interface {
 
 type AccountMemberAddParamsBodyIamCreateMemberWithRoles struct {
 	// The contact email address of the user.
-	Email param.Field[string] `json:"email,required"`
+	Email param.Field[string] `json:"email" api:"required"`
 	// Array of roles associated with this member.
-	Roles  param.Field[[]string]                                                 `json:"roles,required"`
+	Roles  param.Field[[]string]                                                 `json:"roles" api:"required"`
 	Status param.Field[AccountMemberAddParamsBodyIamCreateMemberWithRolesStatus] `json:"status"`
 }
 
@@ -818,9 +818,9 @@ func (r AccountMemberAddParamsBodyIamCreateMemberWithRolesStatus) IsKnown() bool
 
 type AccountMemberAddParamsBodyIamCreateMemberWithPolicies struct {
 	// The contact email address of the user.
-	Email param.Field[string] `json:"email,required"`
+	Email param.Field[string] `json:"email" api:"required"`
 	// Array of policies associated with this member.
-	Policies param.Field[[]IamCreateMemberPolicyParam]                                `json:"policies,required"`
+	Policies param.Field[[]IamCreateMemberPolicyParam]                                `json:"policies" api:"required"`
 	Status   param.Field[AccountMemberAddParamsBodyIamCreateMemberWithPoliciesStatus] `json:"status"`
 }
 

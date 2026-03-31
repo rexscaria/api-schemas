@@ -39,15 +39,15 @@ func (r *AccountRumV2RuleService) New(ctx context.Context, accountID string, rul
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if rulesetID == "" {
 		err = errors.New("missing required ruleset_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/rum/v2/%s/rule", accountID, rulesetID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists all the rules in a Web Analytics ruleset.
@@ -55,15 +55,15 @@ func (r *AccountRumV2RuleService) List(ctx context.Context, accountID string, ru
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if rulesetID == "" {
 		err = errors.New("missing required ruleset_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/rum/v2/%s/rules", accountID, rulesetID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Deletes an existing rule from a Web Analytics ruleset.
@@ -71,19 +71,19 @@ func (r *AccountRumV2RuleService) Delete(ctx context.Context, accountID string, 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if rulesetID == "" {
 		err = errors.New("missing required ruleset_id parameter")
-		return
+		return nil, err
 	}
 	if ruleID == "" {
 		err = errors.New("missing required rule_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/rum/v2/%s/rule/%s", accountID, rulesetID, ruleID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates a rule in a Web Analytics ruleset.
@@ -91,19 +91,19 @@ func (r *AccountRumV2RuleService) Update0(ctx context.Context, accountID string,
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if rulesetID == "" {
 		err = errors.New("missing required ruleset_id parameter")
-		return
+		return nil, err
 	}
 	if ruleID == "" {
 		err = errors.New("missing required rule_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/rum/v2/%s/rule/%s", accountID, rulesetID, ruleID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Modifies one or more rules in a Web Analytics ruleset with a single request.
@@ -111,15 +111,15 @@ func (r *AccountRumV2RuleService) Update1(ctx context.Context, accountID string,
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if rulesetID == "" {
 		err = errors.New("missing required ruleset_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/rum/v2/%s/rules", accountID, rulesetID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type CreateRequestParam struct {
@@ -136,10 +136,10 @@ func (r CreateRequestParam) MarshalJSON() (data []byte, err error) {
 }
 
 type ResponseCollectionRules struct {
-	Errors   []RumMessages `json:"errors,required"`
-	Messages []RumMessages `json:"messages,required"`
+	Errors   []RumMessages `json:"errors" api:"required"`
+	Messages []RumMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success bool                          `json:"success,required"`
+	Success bool                          `json:"success" api:"required"`
 	Result  ResponseCollectionRulesResult `json:"result"`
 	JSON    responseCollectionRulesJSON   `json:"-"`
 }
@@ -188,10 +188,10 @@ func (r responseCollectionRulesResultJSON) RawJSON() string {
 }
 
 type ResponseSingleRule struct {
-	Errors   []RumMessages `json:"errors,required"`
-	Messages []RumMessages `json:"messages,required"`
+	Errors   []RumMessages `json:"errors" api:"required"`
+	Messages []RumMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success bool                   `json:"success,required"`
+	Success bool                   `json:"success" api:"required"`
 	Result  RumRule                `json:"result"`
 	JSON    responseSingleRuleJSON `json:"-"`
 }
@@ -245,10 +245,10 @@ func (r rulesetJSON) RawJSON() string {
 }
 
 type AccountRumV2RuleDeleteResponse struct {
-	Errors   []RumMessages `json:"errors,required"`
-	Messages []RumMessages `json:"messages,required"`
+	Errors   []RumMessages `json:"errors" api:"required"`
+	Messages []RumMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success bool                                 `json:"success,required"`
+	Success bool                                 `json:"success" api:"required"`
 	Result  AccountRumV2RuleDeleteResponseResult `json:"result"`
 	JSON    accountRumV2RuleDeleteResponseJSON   `json:"-"`
 }
@@ -295,7 +295,7 @@ func (r accountRumV2RuleDeleteResponseResultJSON) RawJSON() string {
 }
 
 type AccountRumV2RuleNewParams struct {
-	CreateRequest CreateRequestParam `json:"create_request,required"`
+	CreateRequest CreateRequestParam `json:"create_request" api:"required"`
 }
 
 func (r AccountRumV2RuleNewParams) MarshalJSON() (data []byte, err error) {
@@ -303,7 +303,7 @@ func (r AccountRumV2RuleNewParams) MarshalJSON() (data []byte, err error) {
 }
 
 type AccountRumV2RuleUpdate0Params struct {
-	CreateRequest CreateRequestParam `json:"create_request,required"`
+	CreateRequest CreateRequestParam `json:"create_request" api:"required"`
 }
 
 func (r AccountRumV2RuleUpdate0Params) MarshalJSON() (data []byte, err error) {

@@ -42,15 +42,15 @@ func (r *ZoneWeb3HostnameIpfsUniversalPathContentListEntryService) New(ctx conte
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if identifier == "" {
 		err = errors.New("missing required identifier parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/web3/hostnames/%s/ipfs_universal_path/content_list/entries", zoneID, identifier)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // IPFS Universal Path Gateway Content List Entry Details
@@ -58,19 +58,19 @@ func (r *ZoneWeb3HostnameIpfsUniversalPathContentListEntryService) Get(ctx conte
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if identifier == "" {
 		err = errors.New("missing required identifier parameter")
-		return
+		return nil, err
 	}
 	if contentListEntryIdentifier == "" {
 		err = errors.New("missing required content_list_entry_identifier parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/web3/hostnames/%s/ipfs_universal_path/content_list/entries/%s", zoneID, identifier, contentListEntryIdentifier)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Edit IPFS Universal Path Gateway Content List Entry
@@ -78,19 +78,19 @@ func (r *ZoneWeb3HostnameIpfsUniversalPathContentListEntryService) Update(ctx co
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if identifier == "" {
 		err = errors.New("missing required identifier parameter")
-		return
+		return nil, err
 	}
 	if contentListEntryIdentifier == "" {
 		err = errors.New("missing required content_list_entry_identifier parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/web3/hostnames/%s/ipfs_universal_path/content_list/entries/%s", zoneID, identifier, contentListEntryIdentifier)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // List IPFS Universal Path Gateway Content List Entries
@@ -98,15 +98,15 @@ func (r *ZoneWeb3HostnameIpfsUniversalPathContentListEntryService) List(ctx cont
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if identifier == "" {
 		err = errors.New("missing required identifier parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/web3/hostnames/%s/ipfs_universal_path/content_list/entries", zoneID, identifier)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete IPFS Universal Path Gateway Content List Entry
@@ -114,19 +114,19 @@ func (r *ZoneWeb3HostnameIpfsUniversalPathContentListEntryService) Delete(ctx co
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if identifier == "" {
 		err = errors.New("missing required identifier parameter")
-		return
+		return nil, err
 	}
 	if contentListEntryIdentifier == "" {
 		err = errors.New("missing required content_list_entry_identifier parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/web3/hostnames/%s/ipfs_universal_path/content_list/entries/%s", zoneID, identifier, contentListEntryIdentifier)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Specify a content list entry to block.
@@ -181,9 +181,9 @@ func (r ContentListEntryParam) MarshalJSON() (data []byte, err error) {
 
 type EntryCreateRequestParam struct {
 	// Specify the CID or content path of content to block.
-	Content param.Field[string] `json:"content,required"`
+	Content param.Field[string] `json:"content" api:"required"`
 	// Specify the type of content list entry to block.
-	Type param.Field[EntryType] `json:"type,required"`
+	Type param.Field[EntryType] `json:"type" api:"required"`
 	// Specify an optional description of the content list entry.
 	Description param.Field[string] `json:"description"`
 }
@@ -193,12 +193,12 @@ func (r EntryCreateRequestParam) MarshalJSON() (data []byte, err error) {
 }
 
 type EntrySingleResponse struct {
-	Errors   []EntrySingleResponseError   `json:"errors,required"`
-	Messages []EntrySingleResponseMessage `json:"messages,required"`
+	Errors   []EntrySingleResponseError   `json:"errors" api:"required"`
+	Messages []EntrySingleResponseMessage `json:"messages" api:"required"`
 	// Specify a content list entry to block.
-	Result ContentListEntry `json:"result,required"`
+	Result ContentListEntry `json:"result" api:"required"`
 	// Specifies whether the API call was successful.
-	Success EntrySingleResponseSuccess `json:"success,required"`
+	Success EntrySingleResponseSuccess `json:"success" api:"required"`
 	// Provides the API response.
 	ResultInfo interface{}             `json:"result_info"`
 	JSON       entrySingleResponseJSON `json:"-"`
@@ -225,8 +225,8 @@ func (r entrySingleResponseJSON) RawJSON() string {
 }
 
 type EntrySingleResponseError struct {
-	Code             int64                           `json:"code,required"`
-	Message          string                          `json:"message,required"`
+	Code             int64                           `json:"code" api:"required"`
+	Message          string                          `json:"message" api:"required"`
 	DocumentationURL string                          `json:"documentation_url"`
 	Source           EntrySingleResponseErrorsSource `json:"source"`
 	JSON             entrySingleResponseErrorJSON    `json:"-"`
@@ -273,8 +273,8 @@ func (r entrySingleResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type EntrySingleResponseMessage struct {
-	Code             int64                             `json:"code,required"`
-	Message          string                            `json:"message,required"`
+	Code             int64                             `json:"code" api:"required"`
+	Message          string                            `json:"message" api:"required"`
 	DocumentationURL string                            `json:"documentation_url"`
 	Source           EntrySingleResponseMessagesSource `json:"source"`
 	JSON             entrySingleResponseMessageJSON    `json:"-"`
@@ -352,11 +352,11 @@ func (r EntryType) IsKnown() bool {
 }
 
 type ZoneWeb3HostnameIpfsUniversalPathContentListEntryListResponse struct {
-	Errors   []ZoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseError   `json:"errors,required"`
-	Messages []ZoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseMessage `json:"messages,required"`
-	Result   ZoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseResult    `json:"result,required,nullable"`
+	Errors   []ZoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseError   `json:"errors" api:"required"`
+	Messages []ZoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseMessage `json:"messages" api:"required"`
+	Result   ZoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseResult    `json:"result" api:"required,nullable"`
 	// Specifies whether the API call was successful.
-	Success    ZoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseSuccess    `json:"success,required"`
+	Success    ZoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseSuccess    `json:"success" api:"required"`
 	ResultInfo ZoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseResultInfo `json:"result_info"`
 	JSON       zoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseJSON       `json:"-"`
 }
@@ -383,8 +383,8 @@ func (r zoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseJSON) RawJS
 }
 
 type ZoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseError struct {
-	Code             int64                                                                     `json:"code,required"`
-	Message          string                                                                    `json:"message,required"`
+	Code             int64                                                                     `json:"code" api:"required"`
+	Message          string                                                                    `json:"message" api:"required"`
 	DocumentationURL string                                                                    `json:"documentation_url"`
 	Source           ZoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseErrorsSource `json:"source"`
 	JSON             zoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseErrorJSON    `json:"-"`
@@ -433,8 +433,8 @@ func (r zoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseErrorsSourc
 }
 
 type ZoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseMessage struct {
-	Code             int64                                                                       `json:"code,required"`
-	Message          string                                                                      `json:"message,required"`
+	Code             int64                                                                       `json:"code" api:"required"`
+	Message          string                                                                      `json:"message" api:"required"`
 	DocumentationURL string                                                                      `json:"documentation_url"`
 	Source           ZoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseMessagesSource `json:"source"`
 	JSON             zoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseMessageJSON    `json:"-"`
@@ -553,7 +553,7 @@ func (r zoneWeb3HostnameIpfsUniversalPathContentListEntryListResponseResultInfoJ
 }
 
 type ZoneWeb3HostnameIpfsUniversalPathContentListEntryNewParams struct {
-	EntryCreateRequest EntryCreateRequestParam `json:"entry_create_request,required"`
+	EntryCreateRequest EntryCreateRequestParam `json:"entry_create_request" api:"required"`
 }
 
 func (r ZoneWeb3HostnameIpfsUniversalPathContentListEntryNewParams) MarshalJSON() (data []byte, err error) {
@@ -561,7 +561,7 @@ func (r ZoneWeb3HostnameIpfsUniversalPathContentListEntryNewParams) MarshalJSON(
 }
 
 type ZoneWeb3HostnameIpfsUniversalPathContentListEntryUpdateParams struct {
-	EntryCreateRequest EntryCreateRequestParam `json:"entry_create_request,required"`
+	EntryCreateRequest EntryCreateRequestParam `json:"entry_create_request" api:"required"`
 }
 
 func (r ZoneWeb3HostnameIpfsUniversalPathContentListEntryUpdateParams) MarshalJSON() (data []byte, err error) {

@@ -41,15 +41,15 @@ func (r *AccountMagicConnectorService) Get(ctx context.Context, accountID string
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if connectorID == "" {
 		err = errors.New("missing required connector_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/connectors/%s", accountID, connectorID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // List Connectors
@@ -57,11 +57,11 @@ func (r *AccountMagicConnectorService) List(ctx context.Context, accountID strin
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/connectors", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Edit Connector to update specific properties
@@ -69,15 +69,15 @@ func (r *AccountMagicConnectorService) Patch(ctx context.Context, accountID stri
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if connectorID == "" {
 		err = errors.New("missing required connector_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/connectors/%s", accountID, connectorID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Replace Connector
@@ -85,25 +85,25 @@ func (r *AccountMagicConnectorService) Replace(ctx context.Context, accountID st
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if connectorID == "" {
 		err = errors.New("missing required connector_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/connectors/%s", accountID, connectorID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type MconnCustomerConnector struct {
-	ID                           string                       `json:"id,required"`
-	Activated                    bool                         `json:"activated,required"`
-	InterruptWindowDurationHours float64                      `json:"interrupt_window_duration_hours,required"`
-	InterruptWindowHourOfDay     float64                      `json:"interrupt_window_hour_of_day,required"`
-	LastUpdated                  string                       `json:"last_updated,required"`
-	Notes                        string                       `json:"notes,required"`
-	Timezone                     string                       `json:"timezone,required"`
+	ID                           string                       `json:"id" api:"required"`
+	Activated                    bool                         `json:"activated" api:"required"`
+	InterruptWindowDurationHours float64                      `json:"interrupt_window_duration_hours" api:"required"`
+	InterruptWindowHourOfDay     float64                      `json:"interrupt_window_hour_of_day" api:"required"`
+	LastUpdated                  string                       `json:"last_updated" api:"required"`
+	Notes                        string                       `json:"notes" api:"required"`
+	Timezone                     string                       `json:"timezone" api:"required"`
 	Device                       MconnCustomerConnectorDevice `json:"device"`
 	LastHeartbeat                string                       `json:"last_heartbeat"`
 	LastSeenVersion              string                       `json:"last_seen_version"`
@@ -136,7 +136,7 @@ func (r mconnCustomerConnectorJSON) RawJSON() string {
 }
 
 type MconnCustomerConnectorDevice struct {
-	ID           string                           `json:"id,required"`
+	ID           string                           `json:"id" api:"required"`
 	SerialNumber string                           `json:"serial_number"`
 	JSON         mconnCustomerConnectorDeviceJSON `json:"-"`
 }
@@ -171,10 +171,10 @@ func (r MconnCustomerConnectorFieldsParam) MarshalJSON() (data []byte, err error
 }
 
 type MconnCustomerConnectorUpdateResponse struct {
-	Errors   []MconnCodedMessage                      `json:"errors,required"`
-	Messages []MconnCodedMessage                      `json:"messages,required"`
-	Result   MconnCustomerConnector                   `json:"result,required"`
-	Success  bool                                     `json:"success,required"`
+	Errors   []MconnCodedMessage                      `json:"errors" api:"required"`
+	Messages []MconnCodedMessage                      `json:"messages" api:"required"`
+	Result   MconnCustomerConnector                   `json:"result" api:"required"`
+	Success  bool                                     `json:"success" api:"required"`
 	JSON     mconnCustomerConnectorUpdateResponseJSON `json:"-"`
 }
 
@@ -198,10 +198,10 @@ func (r mconnCustomerConnectorUpdateResponseJSON) RawJSON() string {
 }
 
 type AccountMagicConnectorGetResponse struct {
-	Errors   []MconnCodedMessage                  `json:"errors,required"`
-	Messages []MconnCodedMessage                  `json:"messages,required"`
-	Result   MconnCustomerConnector               `json:"result,required"`
-	Success  bool                                 `json:"success,required"`
+	Errors   []MconnCodedMessage                  `json:"errors" api:"required"`
+	Messages []MconnCodedMessage                  `json:"messages" api:"required"`
+	Result   MconnCustomerConnector               `json:"result" api:"required"`
+	Success  bool                                 `json:"success" api:"required"`
 	JSON     accountMagicConnectorGetResponseJSON `json:"-"`
 }
 
@@ -225,10 +225,10 @@ func (r accountMagicConnectorGetResponseJSON) RawJSON() string {
 }
 
 type AccountMagicConnectorListResponse struct {
-	Errors   []MconnCodedMessage                   `json:"errors,required"`
-	Messages []MconnCodedMessage                   `json:"messages,required"`
-	Result   []MconnCustomerConnector              `json:"result,required"`
-	Success  bool                                  `json:"success,required"`
+	Errors   []MconnCodedMessage                   `json:"errors" api:"required"`
+	Messages []MconnCodedMessage                   `json:"messages" api:"required"`
+	Result   []MconnCustomerConnector              `json:"result" api:"required"`
+	Success  bool                                  `json:"success" api:"required"`
 	JSON     accountMagicConnectorListResponseJSON `json:"-"`
 }
 
@@ -252,7 +252,7 @@ func (r accountMagicConnectorListResponseJSON) RawJSON() string {
 }
 
 type AccountMagicConnectorPatchParams struct {
-	MconnCustomerConnectorFields MconnCustomerConnectorFieldsParam `json:"mconn_customer_connector_fields,required"`
+	MconnCustomerConnectorFields MconnCustomerConnectorFieldsParam `json:"mconn_customer_connector_fields" api:"required"`
 }
 
 func (r AccountMagicConnectorPatchParams) MarshalJSON() (data []byte, err error) {
@@ -260,7 +260,7 @@ func (r AccountMagicConnectorPatchParams) MarshalJSON() (data []byte, err error)
 }
 
 type AccountMagicConnectorReplaceParams struct {
-	MconnCustomerConnectorFields MconnCustomerConnectorFieldsParam `json:"mconn_customer_connector_fields,required"`
+	MconnCustomerConnectorFields MconnCustomerConnectorFieldsParam `json:"mconn_customer_connector_fields" api:"required"`
 }
 
 func (r AccountMagicConnectorReplaceParams) MarshalJSON() (data []byte, err error) {
