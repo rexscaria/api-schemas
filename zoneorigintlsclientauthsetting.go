@@ -40,11 +40,11 @@ func (r *ZoneOriginTlsClientAuthSettingService) Get(ctx context.Context, zoneID 
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/origin_tls_client_auth/settings", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Enable or disable zone-level authenticated origin pulls. 'enabled' should be set
@@ -54,18 +54,18 @@ func (r *ZoneOriginTlsClientAuthSettingService) Update(ctx context.Context, zone
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/origin_tls_client_auth/settings", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type EnabledResponse struct {
-	Errors   []MessagesTlsCertificatesItem `json:"errors,required"`
-	Messages []MessagesTlsCertificatesItem `json:"messages,required"`
+	Errors   []MessagesTlsCertificatesItem `json:"errors" api:"required"`
+	Messages []MessagesTlsCertificatesItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success EnabledResponseSuccess `json:"success,required"`
+	Success EnabledResponseSuccess `json:"success" api:"required"`
 	Result  EnabledResponseResult  `json:"result"`
 	JSON    enabledResponseJSON    `json:"-"`
 }
@@ -127,7 +127,7 @@ func (r enabledResponseResultJSON) RawJSON() string {
 
 type ZoneOriginTlsClientAuthSettingUpdateParams struct {
 	// Indicates whether zone-level authenticated origin pulls is enabled.
-	Enabled param.Field[bool] `json:"enabled,required"`
+	Enabled param.Field[bool] `json:"enabled" api:"required"`
 }
 
 func (r ZoneOriginTlsClientAuthSettingUpdateParams) MarshalJSON() (data []byte, err error) {

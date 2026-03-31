@@ -39,15 +39,15 @@ func (r *AccountMagicSiteWanService) New(ctx context.Context, accountID string, 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if siteID == "" {
 		err = errors.New("missing required site_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/sites/%s/wans", accountID, siteID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get a specific Site WAN.
@@ -55,19 +55,19 @@ func (r *AccountMagicSiteWanService) Get(ctx context.Context, accountID string, 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if siteID == "" {
 		err = errors.New("missing required site_id parameter")
-		return
+		return nil, err
 	}
 	if wanID == "" {
 		err = errors.New("missing required wan_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/sites/%s/wans/%s", accountID, siteID, wanID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update a specific Site WAN.
@@ -75,19 +75,19 @@ func (r *AccountMagicSiteWanService) Update(ctx context.Context, accountID strin
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if siteID == "" {
 		err = errors.New("missing required site_id parameter")
-		return
+		return nil, err
 	}
 	if wanID == "" {
 		err = errors.New("missing required wan_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/sites/%s/wans/%s", accountID, siteID, wanID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists Site WANs associated with an account.
@@ -95,15 +95,15 @@ func (r *AccountMagicSiteWanService) List(ctx context.Context, accountID string,
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if siteID == "" {
 		err = errors.New("missing required site_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/sites/%s/wans", accountID, siteID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Remove a specific Site WAN.
@@ -111,19 +111,19 @@ func (r *AccountMagicSiteWanService) Delete(ctx context.Context, accountID strin
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if siteID == "" {
 		err = errors.New("missing required site_id parameter")
-		return
+		return nil, err
 	}
 	if wanID == "" {
 		err = errors.New("missing required wan_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/sites/%s/wans/%s", accountID, siteID, wanID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Patch a specific Site WAN.
@@ -131,19 +131,19 @@ func (r *AccountMagicSiteWanService) Patch(ctx context.Context, accountID string
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if siteID == "" {
 		err = errors.New("missing required site_id parameter")
-		return
+		return nil, err
 	}
 	if wanID == "" {
 		err = errors.New("missing required wan_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/sites/%s/wans/%s", accountID, siteID, wanID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type MagicWan struct {
@@ -207,11 +207,11 @@ func (r MagicWanHealthCheckRate) IsKnown() bool {
 }
 
 type MagicWanModifiedResponse struct {
-	Errors   []MagicMessageItem `json:"errors,required"`
-	Messages []MagicMessageItem `json:"messages,required"`
-	Result   MagicWan           `json:"result,required"`
+	Errors   []MagicMessageItem `json:"errors" api:"required"`
+	Messages []MagicMessageItem `json:"messages" api:"required"`
+	Result   MagicWan           `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success MagicWanModifiedResponseSuccess `json:"success,required"`
+	Success MagicWanModifiedResponseSuccess `json:"success" api:"required"`
 	JSON    magicWanModifiedResponseJSON    `json:"-"`
 }
 
@@ -253,9 +253,9 @@ func (r MagicWanModifiedResponseSuccess) IsKnown() bool {
 // availability mode.
 type MagicWanStaticAddressing struct {
 	// A valid CIDR notation representing an IP range.
-	Address string `json:"address,required"`
+	Address string `json:"address" api:"required"`
 	// A valid IPv4 address.
-	GatewayAddress string `json:"gateway_address,required"`
+	GatewayAddress string `json:"gateway_address" api:"required"`
 	// A valid CIDR notation representing an IP range.
 	SecondaryAddress string                       `json:"secondary_address"`
 	JSON             magicWanStaticAddressingJSON `json:"-"`
@@ -283,9 +283,9 @@ func (r magicWanStaticAddressingJSON) RawJSON() string {
 // availability mode.
 type MagicWanStaticAddressingParam struct {
 	// A valid CIDR notation representing an IP range.
-	Address param.Field[string] `json:"address,required"`
+	Address param.Field[string] `json:"address" api:"required"`
 	// A valid IPv4 address.
-	GatewayAddress param.Field[string] `json:"gateway_address,required"`
+	GatewayAddress param.Field[string] `json:"gateway_address" api:"required"`
 	// A valid CIDR notation representing an IP range.
 	SecondaryAddress param.Field[string] `json:"secondary_address"`
 }
@@ -310,11 +310,11 @@ func (r MagicWanUpdateRequestParam) MarshalJSON() (data []byte, err error) {
 }
 
 type MagicWansCollectionResponse struct {
-	Errors   []MagicMessageItem `json:"errors,required"`
-	Messages []MagicMessageItem `json:"messages,required"`
-	Result   []MagicWan         `json:"result,required"`
+	Errors   []MagicMessageItem `json:"errors" api:"required"`
+	Messages []MagicMessageItem `json:"messages" api:"required"`
+	Result   []MagicWan         `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success MagicWansCollectionResponseSuccess `json:"success,required"`
+	Success MagicWansCollectionResponseSuccess `json:"success" api:"required"`
 	JSON    magicWansCollectionResponseJSON    `json:"-"`
 }
 
@@ -353,11 +353,11 @@ func (r MagicWansCollectionResponseSuccess) IsKnown() bool {
 }
 
 type AccountMagicSiteWanGetResponse struct {
-	Errors   []MagicMessageItem `json:"errors,required"`
-	Messages []MagicMessageItem `json:"messages,required"`
-	Result   MagicWan           `json:"result,required"`
+	Errors   []MagicMessageItem `json:"errors" api:"required"`
+	Messages []MagicMessageItem `json:"messages" api:"required"`
+	Result   MagicWan           `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success AccountMagicSiteWanGetResponseSuccess `json:"success,required"`
+	Success AccountMagicSiteWanGetResponseSuccess `json:"success" api:"required"`
 	JSON    accountMagicSiteWanGetResponseJSON    `json:"-"`
 }
 
@@ -396,11 +396,11 @@ func (r AccountMagicSiteWanGetResponseSuccess) IsKnown() bool {
 }
 
 type AccountMagicSiteWanDeleteResponse struct {
-	Errors   []MagicMessageItem `json:"errors,required"`
-	Messages []MagicMessageItem `json:"messages,required"`
-	Result   MagicWan           `json:"result,required"`
+	Errors   []MagicMessageItem `json:"errors" api:"required"`
+	Messages []MagicMessageItem `json:"messages" api:"required"`
+	Result   MagicWan           `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success AccountMagicSiteWanDeleteResponseSuccess `json:"success,required"`
+	Success AccountMagicSiteWanDeleteResponseSuccess `json:"success" api:"required"`
 	JSON    accountMagicSiteWanDeleteResponseJSON    `json:"-"`
 }
 
@@ -439,7 +439,7 @@ func (r AccountMagicSiteWanDeleteResponseSuccess) IsKnown() bool {
 }
 
 type AccountMagicSiteWanNewParams struct {
-	Physport param.Field[int64]  `json:"physport,required"`
+	Physport param.Field[int64]  `json:"physport" api:"required"`
 	Name     param.Field[string] `json:"name"`
 	Priority param.Field[int64]  `json:"priority"`
 	// (optional) if omitted, use DHCP. Submit secondary_address when site is in high
@@ -454,7 +454,7 @@ func (r AccountMagicSiteWanNewParams) MarshalJSON() (data []byte, err error) {
 }
 
 type AccountMagicSiteWanUpdateParams struct {
-	MagicWanUpdateRequest MagicWanUpdateRequestParam `json:"magic_wan_update_request,required"`
+	MagicWanUpdateRequest MagicWanUpdateRequestParam `json:"magic_wan_update_request" api:"required"`
 }
 
 func (r AccountMagicSiteWanUpdateParams) MarshalJSON() (data []byte, err error) {
@@ -462,7 +462,7 @@ func (r AccountMagicSiteWanUpdateParams) MarshalJSON() (data []byte, err error) 
 }
 
 type AccountMagicSiteWanPatchParams struct {
-	MagicWanUpdateRequest MagicWanUpdateRequestParam `json:"magic_wan_update_request,required"`
+	MagicWanUpdateRequest MagicWanUpdateRequestParam `json:"magic_wan_update_request" api:"required"`
 }
 
 func (r AccountMagicSiteWanPatchParams) MarshalJSON() (data []byte, err error) {

@@ -14,7 +14,7 @@ import (
 )
 
 func TestAccountMagicRouteNewWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,6 +26,7 @@ func TestAccountMagicRouteNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Magic.Routes.New(
 		context.TODO(),
@@ -52,7 +53,7 @@ func TestAccountMagicRouteNewWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountMagicRouteGet(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -64,6 +65,7 @@ func TestAccountMagicRouteGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Magic.Routes.Get(
 		context.TODO(),
@@ -80,7 +82,7 @@ func TestAccountMagicRouteGet(t *testing.T) {
 }
 
 func TestAccountMagicRouteUpdateWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -92,6 +94,7 @@ func TestAccountMagicRouteUpdateWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Magic.Routes.Update(
 		context.TODO(),
@@ -121,7 +124,7 @@ func TestAccountMagicRouteUpdateWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountMagicRouteList(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -133,6 +136,7 @@ func TestAccountMagicRouteList(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Magic.Routes.List(context.TODO(), "023e105f4ecef8ad9ca31a8372d0c353")
 	if err != nil {
@@ -145,7 +149,7 @@ func TestAccountMagicRouteList(t *testing.T) {
 }
 
 func TestAccountMagicRouteDelete(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -157,6 +161,7 @@ func TestAccountMagicRouteDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Magic.Routes.Delete(
 		context.TODO(),
@@ -173,7 +178,7 @@ func TestAccountMagicRouteDelete(t *testing.T) {
 }
 
 func TestAccountMagicRouteDeleteMany(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -185,6 +190,7 @@ func TestAccountMagicRouteDeleteMany(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Magic.Routes.DeleteMany(context.TODO(), "023e105f4ecef8ad9ca31a8372d0c353")
 	if err != nil {
@@ -197,7 +203,7 @@ func TestAccountMagicRouteDeleteMany(t *testing.T) {
 }
 
 func TestAccountMagicRouteUpdateMany(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -209,6 +215,7 @@ func TestAccountMagicRouteUpdateMany(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Magic.Routes.UpdateMany(
 		context.TODO(),

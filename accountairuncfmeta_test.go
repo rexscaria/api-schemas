@@ -14,7 +14,7 @@ import (
 )
 
 func TestAccountAIRunCfMetaExecuteLlama2_7bChatFp16WithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,6 +26,7 @@ func TestAccountAIRunCfMetaExecuteLlama2_7bChatFp16WithOptionalParams(t *testing
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.AI.Run.Cf.Meta.ExecuteLlama2_7bChatFp16(
 		context.TODO(),
@@ -62,7 +63,7 @@ func TestAccountAIRunCfMetaExecuteLlama2_7bChatFp16WithOptionalParams(t *testing
 }
 
 func TestAccountAIRunCfMetaExecuteLlama2_7bChatInt8WithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -74,6 +75,7 @@ func TestAccountAIRunCfMetaExecuteLlama2_7bChatInt8WithOptionalParams(t *testing
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.AI.Run.Cf.Meta.ExecuteLlama2_7bChatInt8(
 		context.TODO(),
@@ -110,7 +112,7 @@ func TestAccountAIRunCfMetaExecuteLlama2_7bChatInt8WithOptionalParams(t *testing
 }
 
 func TestAccountAIRunCfMetaExecuteLlama3_1_70bInstructWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -122,6 +124,7 @@ func TestAccountAIRunCfMetaExecuteLlama3_1_70bInstructWithOptionalParams(t *test
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.AI.Run.Cf.Meta.ExecuteLlama3_1_70bInstruct(
 		context.TODO(),
@@ -158,7 +161,7 @@ func TestAccountAIRunCfMetaExecuteLlama3_1_70bInstructWithOptionalParams(t *test
 }
 
 func TestAccountAIRunCfMetaExecuteLlama3_1_70bInstructPreviewWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -170,6 +173,7 @@ func TestAccountAIRunCfMetaExecuteLlama3_1_70bInstructPreviewWithOptionalParams(
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.AI.Run.Cf.Meta.ExecuteLlama3_1_70bInstructPreview(
 		context.TODO(),
@@ -206,7 +210,7 @@ func TestAccountAIRunCfMetaExecuteLlama3_1_70bInstructPreviewWithOptionalParams(
 }
 
 func TestAccountAIRunCfMetaExecuteLlama3_1_70bPreviewWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -218,6 +222,7 @@ func TestAccountAIRunCfMetaExecuteLlama3_1_70bPreviewWithOptionalParams(t *testi
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.AI.Run.Cf.Meta.ExecuteLlama3_1_70bPreview(
 		context.TODO(),
@@ -254,7 +259,7 @@ func TestAccountAIRunCfMetaExecuteLlama3_1_70bPreviewWithOptionalParams(t *testi
 }
 
 func TestAccountAIRunCfMetaExecuteLlama3_1_8bInstructAwqWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -266,6 +271,7 @@ func TestAccountAIRunCfMetaExecuteLlama3_1_8bInstructAwqWithOptionalParams(t *te
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.AI.Run.Cf.Meta.ExecuteLlama3_1_8bInstructAwq(
 		context.TODO(),
@@ -302,7 +308,7 @@ func TestAccountAIRunCfMetaExecuteLlama3_1_8bInstructAwqWithOptionalParams(t *te
 }
 
 func TestAccountAIRunCfMetaExecuteLlama3_1_8bInstructFastWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -314,6 +320,7 @@ func TestAccountAIRunCfMetaExecuteLlama3_1_8bInstructFastWithOptionalParams(t *t
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.AI.Run.Cf.Meta.ExecuteLlama3_1_8bInstructFast(
 		context.TODO(),
@@ -350,7 +357,7 @@ func TestAccountAIRunCfMetaExecuteLlama3_1_8bInstructFastWithOptionalParams(t *t
 }
 
 func TestAccountAIRunCfMetaExecuteLlama3_1_8bInstructFp8WithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -362,6 +369,7 @@ func TestAccountAIRunCfMetaExecuteLlama3_1_8bInstructFp8WithOptionalParams(t *te
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.AI.Run.Cf.Meta.ExecuteLlama3_1_8bInstructFp8(
 		context.TODO(),
@@ -398,7 +406,7 @@ func TestAccountAIRunCfMetaExecuteLlama3_1_8bInstructFp8WithOptionalParams(t *te
 }
 
 func TestAccountAIRunCfMetaExecuteLlama3_1_8bPreviewWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -410,6 +418,7 @@ func TestAccountAIRunCfMetaExecuteLlama3_1_8bPreviewWithOptionalParams(t *testin
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.AI.Run.Cf.Meta.ExecuteLlama3_1_8bPreview(
 		context.TODO(),
@@ -446,7 +455,7 @@ func TestAccountAIRunCfMetaExecuteLlama3_1_8bPreviewWithOptionalParams(t *testin
 }
 
 func TestAccountAIRunCfMetaExecuteLlama3_2_11bVisionInstructWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -458,6 +467,7 @@ func TestAccountAIRunCfMetaExecuteLlama3_2_11bVisionInstructWithOptionalParams(t
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.AI.Run.Cf.Meta.ExecuteLlama3_2_11bVisionInstruct(
 		context.TODO(),
@@ -491,7 +501,7 @@ func TestAccountAIRunCfMetaExecuteLlama3_2_11bVisionInstructWithOptionalParams(t
 }
 
 func TestAccountAIRunCfMetaExecuteLlama3_2_1bInstructWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -503,6 +513,7 @@ func TestAccountAIRunCfMetaExecuteLlama3_2_1bInstructWithOptionalParams(t *testi
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.AI.Run.Cf.Meta.ExecuteLlama3_2_1bInstruct(
 		context.TODO(),
@@ -539,7 +550,7 @@ func TestAccountAIRunCfMetaExecuteLlama3_2_1bInstructWithOptionalParams(t *testi
 }
 
 func TestAccountAIRunCfMetaExecuteLlama3_2_3bInstructWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -551,6 +562,7 @@ func TestAccountAIRunCfMetaExecuteLlama3_2_3bInstructWithOptionalParams(t *testi
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.AI.Run.Cf.Meta.ExecuteLlama3_2_3bInstruct(
 		context.TODO(),
@@ -587,7 +599,7 @@ func TestAccountAIRunCfMetaExecuteLlama3_2_3bInstructWithOptionalParams(t *testi
 }
 
 func TestAccountAIRunCfMetaExecuteLlama3_8bInstructWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -599,6 +611,7 @@ func TestAccountAIRunCfMetaExecuteLlama3_8bInstructWithOptionalParams(t *testing
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.AI.Run.Cf.Meta.ExecuteLlama3_8bInstruct(
 		context.TODO(),
@@ -635,7 +648,7 @@ func TestAccountAIRunCfMetaExecuteLlama3_8bInstructWithOptionalParams(t *testing
 }
 
 func TestAccountAIRunCfMetaExecuteLlama3_8bInstructAwqWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -647,6 +660,7 @@ func TestAccountAIRunCfMetaExecuteLlama3_8bInstructAwqWithOptionalParams(t *test
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.AI.Run.Cf.Meta.ExecuteLlama3_8bInstructAwq(
 		context.TODO(),
@@ -683,7 +697,7 @@ func TestAccountAIRunCfMetaExecuteLlama3_8bInstructAwqWithOptionalParams(t *test
 }
 
 func TestAccountAIRunCfMetaExecuteLlamaGuard3_8bWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -695,6 +709,7 @@ func TestAccountAIRunCfMetaExecuteLlamaGuard3_8bWithOptionalParams(t *testing.T)
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.AI.Run.Cf.Meta.ExecuteLlamaGuard3_8b(
 		context.TODO(),
@@ -722,7 +737,7 @@ func TestAccountAIRunCfMetaExecuteLlamaGuard3_8bWithOptionalParams(t *testing.T)
 }
 
 func TestAccountAIRunCfMetaExecuteM2m100_1_2bWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -734,6 +749,7 @@ func TestAccountAIRunCfMetaExecuteM2m100_1_2bWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.AI.Run.Cf.Meta.ExecuteM2m100_1_2b(
 		context.TODO(),

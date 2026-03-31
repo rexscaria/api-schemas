@@ -48,11 +48,11 @@ func (r *AccountCfdTunnelService) New(ctx context.Context, accountID string, bod
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/cfd_tunnel", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetches a single Cloudflare Tunnel.
@@ -60,15 +60,15 @@ func (r *AccountCfdTunnelService) Get(ctx context.Context, accountID string, tun
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if tunnelID == "" {
 		err = errors.New("missing required tunnel_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/cfd_tunnel/%s", accountID, tunnelID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates an existing Cloudflare Tunnel.
@@ -76,15 +76,15 @@ func (r *AccountCfdTunnelService) Update(ctx context.Context, accountID string, 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if tunnelID == "" {
 		err = errors.New("missing required tunnel_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/cfd_tunnel/%s", accountID, tunnelID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists and filters Cloudflare Tunnels in an account.
@@ -92,11 +92,11 @@ func (r *AccountCfdTunnelService) List(ctx context.Context, accountID string, qu
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/cfd_tunnel", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Deletes a Cloudflare Tunnel from an account.
@@ -104,15 +104,15 @@ func (r *AccountCfdTunnelService) Delete(ctx context.Context, accountID string, 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if tunnelID == "" {
 		err = errors.New("missing required tunnel_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/cfd_tunnel/%s", accountID, tunnelID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetches connector and connection details for a Cloudflare Tunnel.
@@ -120,19 +120,19 @@ func (r *AccountCfdTunnelService) GetConnector(ctx context.Context, accountID st
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if tunnelID == "" {
 		err = errors.New("missing required tunnel_id parameter")
-		return
+		return nil, err
 	}
 	if connectorID == "" {
 		err = errors.New("missing required connector_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/cfd_tunnel/%s/connectors/%s", accountID, tunnelID, connectorID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Gets a management token used to access the management resources (i.e. Streaming
@@ -141,15 +141,15 @@ func (r *AccountCfdTunnelService) GetManagementToken(ctx context.Context, accoun
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if tunnelID == "" {
 		err = errors.New("missing required tunnel_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/cfd_tunnel/%s/management", accountID, tunnelID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Gets the token used to associate cloudflared with a specific tunnel.
@@ -157,15 +157,15 @@ func (r *AccountCfdTunnelService) GetToken(ctx context.Context, accountID string
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if tunnelID == "" {
 		err = errors.New("missing required tunnel_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/cfd_tunnel/%s/token", accountID, tunnelID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // A Cloudflare Tunnel that connects your origin to Cloudflare's edge.
@@ -239,8 +239,8 @@ func (r CfdTunnel) implementsTunnelResponseCollectionResult() {}
 func (r CfdTunnel) implementsTunnelResponseSingleResult() {}
 
 type MessagesTunnelItem struct {
-	Code             int64                    `json:"code,required"`
-	Message          string                   `json:"message,required"`
+	Code             int64                    `json:"code" api:"required"`
+	Message          string                   `json:"message" api:"required"`
 	DocumentationURL string                   `json:"documentation_url"`
 	Source           MessagesTunnelItemSource `json:"source"`
 	JSON             messagesTunnelItemJSON   `json:"-"`
@@ -396,11 +396,11 @@ func (r tunnelClientJSON) RawJSON() string {
 }
 
 type TunnelResponseCollection struct {
-	Errors   []MessagesTunnelItem             `json:"errors,required"`
-	Messages []MessagesTunnelItem             `json:"messages,required"`
-	Result   []TunnelResponseCollectionResult `json:"result,required,nullable"`
+	Errors   []MessagesTunnelItem             `json:"errors" api:"required"`
+	Messages []MessagesTunnelItem             `json:"messages" api:"required"`
+	Result   []TunnelResponseCollectionResult `json:"result" api:"required,nullable"`
 	// Whether the API call was successful
-	Success    TunnelResponseCollectionSuccess    `json:"success,required"`
+	Success    TunnelResponseCollectionSuccess    `json:"success" api:"required"`
 	ResultInfo TunnelResponseCollectionResultInfo `json:"result_info"`
 	JSON       tunnelResponseCollectionJSON       `json:"-"`
 }
@@ -571,12 +571,12 @@ func (r tunnelResponseCollectionResultInfoJSON) RawJSON() string {
 }
 
 type TunnelResponseSingle struct {
-	Errors   []MessagesTunnelItem `json:"errors,required"`
-	Messages []MessagesTunnelItem `json:"messages,required"`
+	Errors   []MessagesTunnelItem `json:"errors" api:"required"`
+	Messages []MessagesTunnelItem `json:"messages" api:"required"`
 	// A Cloudflare Tunnel that connects your origin to Cloudflare's edge.
-	Result TunnelResponseSingleResult `json:"result,required"`
+	Result TunnelResponseSingleResult `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success TunnelResponseSingleSuccess `json:"success,required"`
+	Success TunnelResponseSingleSuccess `json:"success" api:"required"`
 	JSON    tunnelResponseSingleJSON    `json:"-"`
 }
 
@@ -714,13 +714,13 @@ func (r TunnelResponseSingleSuccess) IsKnown() bool {
 }
 
 type TunnelResponseToken struct {
-	Errors   []MessagesTunnelItem `json:"errors,required"`
-	Messages []MessagesTunnelItem `json:"messages,required"`
+	Errors   []MessagesTunnelItem `json:"errors" api:"required"`
+	Messages []MessagesTunnelItem `json:"messages" api:"required"`
 	// The Tunnel Token is used as a mechanism to authenticate the operation of a
 	// tunnel.
-	Result string `json:"result,required"`
+	Result string `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success TunnelResponseTokenSuccess `json:"success,required"`
+	Success TunnelResponseTokenSuccess `json:"success" api:"required"`
 	JSON    tunnelResponseTokenJSON    `json:"-"`
 }
 
@@ -826,13 +826,13 @@ func (r WarpConnectorTunnel) implementsTunnelResponseCollectionResult() {}
 func (r WarpConnectorTunnel) implementsTunnelResponseSingleResult() {}
 
 type AccountCfdTunnelGetConnectorResponse struct {
-	Errors   []MessagesTunnelItem `json:"errors,required"`
-	Messages []MessagesTunnelItem `json:"messages,required"`
+	Errors   []MessagesTunnelItem `json:"errors" api:"required"`
+	Messages []MessagesTunnelItem `json:"messages" api:"required"`
 	// A client (typically cloudflared) that maintains connections to a Cloudflare data
 	// center.
-	Result TunnelClient `json:"result,required"`
+	Result TunnelClient `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success AccountCfdTunnelGetConnectorResponseSuccess `json:"success,required"`
+	Success AccountCfdTunnelGetConnectorResponseSuccess `json:"success" api:"required"`
 	JSON    accountCfdTunnelGetConnectorResponseJSON    `json:"-"`
 }
 
@@ -872,7 +872,7 @@ func (r AccountCfdTunnelGetConnectorResponseSuccess) IsKnown() bool {
 
 type AccountCfdTunnelNewParams struct {
 	// A user-friendly name for a tunnel.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Indicates if this is a locally or remotely configured tunnel. If `local`, manage
 	// the tunnel using a YAML file on the origin machine. If `cloudflare`, manage the
 	// tunnel on the Zero Trust dashboard.
@@ -952,7 +952,7 @@ func (r AccountCfdTunnelListParams) URLQuery() (v url.Values) {
 }
 
 type AccountCfdTunnelGetManagementTokenParams struct {
-	Resources param.Field[[]AccountCfdTunnelGetManagementTokenParamsResource] `json:"resources,required"`
+	Resources param.Field[[]AccountCfdTunnelGetManagementTokenParamsResource] `json:"resources" api:"required"`
 }
 
 func (r AccountCfdTunnelGetManagementTokenParams) MarshalJSON() (data []byte, err error) {

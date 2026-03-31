@@ -41,11 +41,11 @@ func (r *AccountMagicRouteService) New(ctx context.Context, accountID string, bo
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/routes", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get a specific Magic static route.
@@ -53,15 +53,15 @@ func (r *AccountMagicRouteService) Get(ctx context.Context, accountID string, ro
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if routeID == "" {
 		err = errors.New("missing required route_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/routes/%s", accountID, routeID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update a specific Magic static route. Use `?validate_only=true` as an optional
@@ -70,15 +70,15 @@ func (r *AccountMagicRouteService) Update(ctx context.Context, accountID string,
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if routeID == "" {
 		err = errors.New("missing required route_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/routes/%s", accountID, routeID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // List all Magic static routes.
@@ -86,11 +86,11 @@ func (r *AccountMagicRouteService) List(ctx context.Context, accountID string, o
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/routes", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Disable and remove a specific Magic static route.
@@ -98,15 +98,15 @@ func (r *AccountMagicRouteService) Delete(ctx context.Context, accountID string,
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if routeID == "" {
 		err = errors.New("missing required route_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/routes/%s", accountID, routeID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete multiple Magic static routes.
@@ -114,11 +114,11 @@ func (r *AccountMagicRouteService) DeleteMany(ctx context.Context, accountID str
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/routes", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update multiple Magic static routes. Use `?validate_only=true` as an optional
@@ -128,22 +128,22 @@ func (r *AccountMagicRouteService) UpdateMany(ctx context.Context, accountID str
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/routes", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type MagicRoute struct {
 	// Identifier
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The next-hop IP Address for the static route.
-	Nexthop string `json:"nexthop,required"`
+	Nexthop string `json:"nexthop" api:"required"`
 	// IP Prefix in Classless Inter-Domain Routing format.
-	Prefix string `json:"prefix,required"`
+	Prefix string `json:"prefix" api:"required"`
 	// Priority of the static route.
-	Priority int64 `json:"priority,required"`
+	Priority int64 `json:"priority" api:"required"`
 	// When the route was created.
 	CreatedOn time.Time `json:"created_on" format:"date-time"`
 	// An optional human provided description of the static route.
@@ -182,11 +182,11 @@ func (r magicRouteJSON) RawJSON() string {
 
 type MagicRouteAddSingleRequestParam struct {
 	// The next-hop IP Address for the static route.
-	Nexthop param.Field[string] `json:"nexthop,required"`
+	Nexthop param.Field[string] `json:"nexthop" api:"required"`
 	// IP Prefix in Classless Inter-Domain Routing format.
-	Prefix param.Field[string] `json:"prefix,required"`
+	Prefix param.Field[string] `json:"prefix" api:"required"`
 	// Priority of the static route.
-	Priority param.Field[int64] `json:"priority,required"`
+	Priority param.Field[int64] `json:"priority" api:"required"`
 	// An optional human provided description of the static route.
 	Description param.Field[string] `json:"description"`
 	// Used only for ECMP routes.
@@ -200,11 +200,11 @@ func (r MagicRouteAddSingleRequestParam) MarshalJSON() (data []byte, err error) 
 }
 
 type MagicRoutesCollectionResponse struct {
-	Errors   []MagicMessageItem                  `json:"errors,required"`
-	Messages []MagicMessageItem                  `json:"messages,required"`
-	Result   MagicRoutesCollectionResponseResult `json:"result,required"`
+	Errors   []MagicMessageItem                  `json:"errors" api:"required"`
+	Messages []MagicMessageItem                  `json:"messages" api:"required"`
+	Result   MagicRoutesCollectionResponseResult `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success MagicRoutesCollectionResponseSuccess `json:"success,required"`
+	Success MagicRoutesCollectionResponseSuccess `json:"success" api:"required"`
 	JSON    magicRoutesCollectionResponseJSON    `json:"-"`
 }
 
@@ -301,11 +301,11 @@ func (r MagicScopeParam) MarshalJSON() (data []byte, err error) {
 }
 
 type AccountMagicRouteNewResponse struct {
-	Errors   []AccountMagicRouteNewResponseError   `json:"errors,required"`
-	Messages []AccountMagicRouteNewResponseMessage `json:"messages,required"`
-	Result   MagicRoute                            `json:"result,required"`
+	Errors   []AccountMagicRouteNewResponseError   `json:"errors" api:"required"`
+	Messages []AccountMagicRouteNewResponseMessage `json:"messages" api:"required"`
+	Result   MagicRoute                            `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success AccountMagicRouteNewResponseSuccess `json:"success,required"`
+	Success AccountMagicRouteNewResponseSuccess `json:"success" api:"required"`
 	JSON    accountMagicRouteNewResponseJSON    `json:"-"`
 }
 
@@ -329,8 +329,8 @@ func (r accountMagicRouteNewResponseJSON) RawJSON() string {
 }
 
 type AccountMagicRouteNewResponseError struct {
-	Code             int64                                    `json:"code,required"`
-	Message          string                                   `json:"message,required"`
+	Code             int64                                    `json:"code" api:"required"`
+	Message          string                                   `json:"message" api:"required"`
 	DocumentationURL string                                   `json:"documentation_url"`
 	Source           AccountMagicRouteNewResponseErrorsSource `json:"source"`
 	JSON             accountMagicRouteNewResponseErrorJSON    `json:"-"`
@@ -377,8 +377,8 @@ func (r accountMagicRouteNewResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type AccountMagicRouteNewResponseMessage struct {
-	Code             int64                                      `json:"code,required"`
-	Message          string                                     `json:"message,required"`
+	Code             int64                                      `json:"code" api:"required"`
+	Message          string                                     `json:"message" api:"required"`
 	DocumentationURL string                                     `json:"documentation_url"`
 	Source           AccountMagicRouteNewResponseMessagesSource `json:"source"`
 	JSON             accountMagicRouteNewResponseMessageJSON    `json:"-"`
@@ -440,11 +440,11 @@ func (r AccountMagicRouteNewResponseSuccess) IsKnown() bool {
 }
 
 type AccountMagicRouteGetResponse struct {
-	Errors   []MagicMessageItem                 `json:"errors,required"`
-	Messages []MagicMessageItem                 `json:"messages,required"`
-	Result   AccountMagicRouteGetResponseResult `json:"result,required"`
+	Errors   []MagicMessageItem                 `json:"errors" api:"required"`
+	Messages []MagicMessageItem                 `json:"messages" api:"required"`
+	Result   AccountMagicRouteGetResponseResult `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success AccountMagicRouteGetResponseSuccess `json:"success,required"`
+	Success AccountMagicRouteGetResponseSuccess `json:"success" api:"required"`
 	JSON    accountMagicRouteGetResponseJSON    `json:"-"`
 }
 
@@ -504,11 +504,11 @@ func (r AccountMagicRouteGetResponseSuccess) IsKnown() bool {
 }
 
 type AccountMagicRouteUpdateResponse struct {
-	Errors   []MagicMessageItem                    `json:"errors,required"`
-	Messages []MagicMessageItem                    `json:"messages,required"`
-	Result   AccountMagicRouteUpdateResponseResult `json:"result,required"`
+	Errors   []MagicMessageItem                    `json:"errors" api:"required"`
+	Messages []MagicMessageItem                    `json:"messages" api:"required"`
+	Result   AccountMagicRouteUpdateResponseResult `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success AccountMagicRouteUpdateResponseSuccess `json:"success,required"`
+	Success AccountMagicRouteUpdateResponseSuccess `json:"success" api:"required"`
 	JSON    accountMagicRouteUpdateResponseJSON    `json:"-"`
 }
 
@@ -570,11 +570,11 @@ func (r AccountMagicRouteUpdateResponseSuccess) IsKnown() bool {
 }
 
 type AccountMagicRouteDeleteResponse struct {
-	Errors   []MagicMessageItem                    `json:"errors,required"`
-	Messages []MagicMessageItem                    `json:"messages,required"`
-	Result   AccountMagicRouteDeleteResponseResult `json:"result,required"`
+	Errors   []MagicMessageItem                    `json:"errors" api:"required"`
+	Messages []MagicMessageItem                    `json:"messages" api:"required"`
+	Result   AccountMagicRouteDeleteResponseResult `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success AccountMagicRouteDeleteResponseSuccess `json:"success,required"`
+	Success AccountMagicRouteDeleteResponseSuccess `json:"success" api:"required"`
 	JSON    accountMagicRouteDeleteResponseJSON    `json:"-"`
 }
 
@@ -636,11 +636,11 @@ func (r AccountMagicRouteDeleteResponseSuccess) IsKnown() bool {
 }
 
 type AccountMagicRouteDeleteManyResponse struct {
-	Errors   []MagicMessageItem                        `json:"errors,required"`
-	Messages []MagicMessageItem                        `json:"messages,required"`
-	Result   AccountMagicRouteDeleteManyResponseResult `json:"result,required"`
+	Errors   []MagicMessageItem                        `json:"errors" api:"required"`
+	Messages []MagicMessageItem                        `json:"messages" api:"required"`
+	Result   AccountMagicRouteDeleteManyResponseResult `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success AccountMagicRouteDeleteManyResponseSuccess `json:"success,required"`
+	Success AccountMagicRouteDeleteManyResponseSuccess `json:"success" api:"required"`
 	JSON    accountMagicRouteDeleteManyResponseJSON    `json:"-"`
 }
 
@@ -702,11 +702,11 @@ func (r AccountMagicRouteDeleteManyResponseSuccess) IsKnown() bool {
 }
 
 type AccountMagicRouteUpdateManyResponse struct {
-	Errors   []MagicMessageItem                        `json:"errors,required"`
-	Messages []MagicMessageItem                        `json:"messages,required"`
-	Result   AccountMagicRouteUpdateManyResponseResult `json:"result,required"`
+	Errors   []MagicMessageItem                        `json:"errors" api:"required"`
+	Messages []MagicMessageItem                        `json:"messages" api:"required"`
+	Result   AccountMagicRouteUpdateManyResponseResult `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success AccountMagicRouteUpdateManyResponseSuccess `json:"success,required"`
+	Success AccountMagicRouteUpdateManyResponseSuccess `json:"success" api:"required"`
 	JSON    accountMagicRouteUpdateManyResponseJSON    `json:"-"`
 }
 
@@ -769,11 +769,11 @@ func (r AccountMagicRouteUpdateManyResponseSuccess) IsKnown() bool {
 
 type AccountMagicRouteNewParams struct {
 	// The next-hop IP Address for the static route.
-	Nexthop param.Field[string] `json:"nexthop,required"`
+	Nexthop param.Field[string] `json:"nexthop" api:"required"`
 	// IP Prefix in Classless Inter-Domain Routing format.
-	Prefix param.Field[string] `json:"prefix,required"`
+	Prefix param.Field[string] `json:"prefix" api:"required"`
 	// Priority of the static route.
-	Priority param.Field[int64] `json:"priority,required"`
+	Priority param.Field[int64] `json:"priority" api:"required"`
 	// An optional human provided description of the static route.
 	Description param.Field[string] `json:"description"`
 	// Used only for ECMP routes.
@@ -787,7 +787,7 @@ func (r AccountMagicRouteNewParams) MarshalJSON() (data []byte, err error) {
 }
 
 type AccountMagicRouteUpdateParams struct {
-	MagicRouteAddSingleRequest MagicRouteAddSingleRequestParam `json:"magic_route_add_single_request,required"`
+	MagicRouteAddSingleRequest MagicRouteAddSingleRequestParam `json:"magic_route_add_single_request" api:"required"`
 }
 
 func (r AccountMagicRouteUpdateParams) MarshalJSON() (data []byte, err error) {
@@ -795,7 +795,7 @@ func (r AccountMagicRouteUpdateParams) MarshalJSON() (data []byte, err error) {
 }
 
 type AccountMagicRouteUpdateManyParams struct {
-	Routes param.Field[[]AccountMagicRouteUpdateManyParamsRoute] `json:"routes,required"`
+	Routes param.Field[[]AccountMagicRouteUpdateManyParamsRoute] `json:"routes" api:"required"`
 }
 
 func (r AccountMagicRouteUpdateManyParams) MarshalJSON() (data []byte, err error) {
@@ -804,13 +804,13 @@ func (r AccountMagicRouteUpdateManyParams) MarshalJSON() (data []byte, err error
 
 type AccountMagicRouteUpdateManyParamsRoute struct {
 	// Identifier
-	ID param.Field[string] `json:"id,required"`
+	ID param.Field[string] `json:"id" api:"required"`
 	// The next-hop IP Address for the static route.
-	Nexthop param.Field[string] `json:"nexthop,required"`
+	Nexthop param.Field[string] `json:"nexthop" api:"required"`
 	// IP Prefix in Classless Inter-Domain Routing format.
-	Prefix param.Field[string] `json:"prefix,required"`
+	Prefix param.Field[string] `json:"prefix" api:"required"`
 	// Priority of the static route.
-	Priority param.Field[int64] `json:"priority,required"`
+	Priority param.Field[int64] `json:"priority" api:"required"`
 	// An optional human provided description of the static route.
 	Description param.Field[string] `json:"description"`
 	// Used only for ECMP routes.

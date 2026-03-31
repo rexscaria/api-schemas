@@ -43,7 +43,7 @@ func (r *RadarEntityAsnService) Get(ctx context.Context, asn int64, query RadarE
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("radar/entities/asns/%v", asn)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves a list of autonomous systems.
@@ -51,7 +51,7 @@ func (r *RadarEntityAsnService) List(ctx context.Context, query RadarEntityAsnLi
 	opts = slices.Concat(r.Options, opts)
 	path := "radar/entities/asns"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves AS-level relationship for given networks.
@@ -59,7 +59,7 @@ func (r *RadarEntityAsnService) GetRelationships(ctx context.Context, asn int64,
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("radar/entities/asns/%v/rel", asn)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves the requested autonomous system information based on IP address.
@@ -68,12 +68,12 @@ func (r *RadarEntityAsnService) GetByIP(ctx context.Context, query RadarEntityAs
 	opts = slices.Concat(r.Options, opts)
 	path := "radar/entities/asns/ip"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type RadarEntityAsnGetResponse struct {
-	Result  RadarEntityAsnGetResponseResult `json:"result,required"`
-	Success bool                            `json:"success,required"`
+	Result  RadarEntityAsnGetResponseResult `json:"result" api:"required"`
+	Success bool                            `json:"success" api:"required"`
 	JSON    radarEntityAsnGetResponseJSON   `json:"-"`
 }
 
@@ -95,7 +95,7 @@ func (r radarEntityAsnGetResponseJSON) RawJSON() string {
 }
 
 type RadarEntityAsnGetResponseResult struct {
-	Asn  RadarEntityAsnGetResponseResultAsn  `json:"asn,required"`
+	Asn  RadarEntityAsnGetResponseResultAsn  `json:"asn" api:"required"`
 	JSON radarEntityAsnGetResponseResultJSON `json:"-"`
 }
 
@@ -116,17 +116,17 @@ func (r radarEntityAsnGetResponseResultJSON) RawJSON() string {
 }
 
 type RadarEntityAsnGetResponseResultAsn struct {
-	Asn             int64                                            `json:"asn,required"`
-	ConfidenceLevel int64                                            `json:"confidenceLevel,required"`
-	Country         string                                           `json:"country,required"`
-	CountryName     string                                           `json:"countryName,required"`
-	EstimatedUsers  RadarEntityAsnGetResponseResultAsnEstimatedUsers `json:"estimatedUsers,required"`
-	Name            string                                           `json:"name,required"`
-	OrgName         string                                           `json:"orgName,required"`
-	Related         []RadarEntityAsnGetResponseResultAsnRelated      `json:"related,required"`
+	Asn             int64                                            `json:"asn" api:"required"`
+	ConfidenceLevel int64                                            `json:"confidenceLevel" api:"required"`
+	Country         string                                           `json:"country" api:"required"`
+	CountryName     string                                           `json:"countryName" api:"required"`
+	EstimatedUsers  RadarEntityAsnGetResponseResultAsnEstimatedUsers `json:"estimatedUsers" api:"required"`
+	Name            string                                           `json:"name" api:"required"`
+	OrgName         string                                           `json:"orgName" api:"required"`
+	Related         []RadarEntityAsnGetResponseResultAsnRelated      `json:"related" api:"required"`
 	// Regional Internet Registry.
-	Source  string                                 `json:"source,required"`
-	Website string                                 `json:"website,required"`
+	Source  string                                 `json:"source" api:"required"`
+	Website string                                 `json:"website" api:"required"`
 	Aka     string                                 `json:"aka"`
 	JSON    radarEntityAsnGetResponseResultAsnJSON `json:"-"`
 }
@@ -158,7 +158,7 @@ func (r radarEntityAsnGetResponseResultAsnJSON) RawJSON() string {
 }
 
 type RadarEntityAsnGetResponseResultAsnEstimatedUsers struct {
-	Locations []RadarEntityAsnGetResponseResultAsnEstimatedUsersLocation `json:"locations,required"`
+	Locations []RadarEntityAsnGetResponseResultAsnEstimatedUsersLocation `json:"locations" api:"required"`
 	// Total estimated users.
 	EstimatedUsers int64                                                `json:"estimatedUsers"`
 	JSON           radarEntityAsnGetResponseResultAsnEstimatedUsersJSON `json:"-"`
@@ -182,8 +182,8 @@ func (r radarEntityAsnGetResponseResultAsnEstimatedUsersJSON) RawJSON() string {
 }
 
 type RadarEntityAsnGetResponseResultAsnEstimatedUsersLocation struct {
-	LocationAlpha2 string `json:"locationAlpha2,required"`
-	LocationName   string `json:"locationName,required"`
+	LocationAlpha2 string `json:"locationAlpha2" api:"required"`
+	LocationName   string `json:"locationName" api:"required"`
 	// Estimated users per location.
 	EstimatedUsers int64                                                        `json:"estimatedUsers"`
 	JSON           radarEntityAsnGetResponseResultAsnEstimatedUsersLocationJSON `json:"-"`
@@ -209,8 +209,8 @@ func (r radarEntityAsnGetResponseResultAsnEstimatedUsersLocationJSON) RawJSON() 
 }
 
 type RadarEntityAsnGetResponseResultAsnRelated struct {
-	Asn  int64  `json:"asn,required"`
-	Name string `json:"name,required"`
+	Asn  int64  `json:"asn" api:"required"`
+	Name string `json:"name" api:"required"`
 	Aka  string `json:"aka"`
 	// Total estimated users.
 	EstimatedUsers int64                                         `json:"estimatedUsers"`
@@ -237,8 +237,8 @@ func (r radarEntityAsnGetResponseResultAsnRelatedJSON) RawJSON() string {
 }
 
 type RadarEntityAsnListResponse struct {
-	Result  RadarEntityAsnListResponseResult `json:"result,required"`
-	Success bool                             `json:"success,required"`
+	Result  RadarEntityAsnListResponseResult `json:"result" api:"required"`
+	Success bool                             `json:"success" api:"required"`
 	JSON    radarEntityAsnListResponseJSON   `json:"-"`
 }
 
@@ -260,7 +260,7 @@ func (r radarEntityAsnListResponseJSON) RawJSON() string {
 }
 
 type RadarEntityAsnListResponseResult struct {
-	Asns []RadarEntityAsnListResponseResultAsn `json:"asns,required"`
+	Asns []RadarEntityAsnListResponseResultAsn `json:"asns" api:"required"`
 	JSON radarEntityAsnListResponseResultJSON  `json:"-"`
 }
 
@@ -281,10 +281,10 @@ func (r radarEntityAsnListResponseResultJSON) RawJSON() string {
 }
 
 type RadarEntityAsnListResponseResultAsn struct {
-	Asn         int64                                   `json:"asn,required"`
-	Country     string                                  `json:"country,required"`
-	CountryName string                                  `json:"countryName,required"`
-	Name        string                                  `json:"name,required"`
+	Asn         int64                                   `json:"asn" api:"required"`
+	Country     string                                  `json:"country" api:"required"`
+	CountryName string                                  `json:"countryName" api:"required"`
+	Name        string                                  `json:"name" api:"required"`
 	Aka         string                                  `json:"aka"`
 	OrgName     string                                  `json:"orgName"`
 	Website     string                                  `json:"website"`
@@ -314,8 +314,8 @@ func (r radarEntityAsnListResponseResultAsnJSON) RawJSON() string {
 }
 
 type RadarEntityAsnGetRelationshipsResponse struct {
-	Result  RadarEntityAsnGetRelationshipsResponseResult `json:"result,required"`
-	Success bool                                         `json:"success,required"`
+	Result  RadarEntityAsnGetRelationshipsResponseResult `json:"result" api:"required"`
+	Success bool                                         `json:"success" api:"required"`
 	JSON    radarEntityAsnGetRelationshipsResponseJSON   `json:"-"`
 }
 
@@ -337,8 +337,8 @@ func (r radarEntityAsnGetRelationshipsResponseJSON) RawJSON() string {
 }
 
 type RadarEntityAsnGetRelationshipsResponseResult struct {
-	Meta RadarEntityAsnGetRelationshipsResponseResultMeta  `json:"meta,required"`
-	Rels []RadarEntityAsnGetRelationshipsResponseResultRel `json:"rels,required"`
+	Meta RadarEntityAsnGetRelationshipsResponseResultMeta  `json:"meta" api:"required"`
+	Rels []RadarEntityAsnGetRelationshipsResponseResultRel `json:"rels" api:"required"`
 	JSON radarEntityAsnGetRelationshipsResponseResultJSON  `json:"-"`
 }
 
@@ -360,9 +360,9 @@ func (r radarEntityAsnGetRelationshipsResponseResultJSON) RawJSON() string {
 }
 
 type RadarEntityAsnGetRelationshipsResponseResultMeta struct {
-	DataTime   string                                               `json:"data_time,required"`
-	QueryTime  string                                               `json:"query_time,required"`
-	TotalPeers int64                                                `json:"total_peers,required"`
+	DataTime   string                                               `json:"data_time" api:"required"`
+	QueryTime  string                                               `json:"query_time" api:"required"`
+	TotalPeers int64                                                `json:"total_peers" api:"required"`
 	JSON       radarEntityAsnGetRelationshipsResponseResultMetaJSON `json:"-"`
 }
 
@@ -385,13 +385,13 @@ func (r radarEntityAsnGetRelationshipsResponseResultMetaJSON) RawJSON() string {
 }
 
 type RadarEntityAsnGetRelationshipsResponseResultRel struct {
-	Asn1        int64                                               `json:"asn1,required"`
-	Asn1Country string                                              `json:"asn1_country,required"`
-	Asn1Name    string                                              `json:"asn1_name,required"`
-	Asn2        int64                                               `json:"asn2,required"`
-	Asn2Country string                                              `json:"asn2_country,required"`
-	Asn2Name    string                                              `json:"asn2_name,required"`
-	Rel         string                                              `json:"rel,required"`
+	Asn1        int64                                               `json:"asn1" api:"required"`
+	Asn1Country string                                              `json:"asn1_country" api:"required"`
+	Asn1Name    string                                              `json:"asn1_name" api:"required"`
+	Asn2        int64                                               `json:"asn2" api:"required"`
+	Asn2Country string                                              `json:"asn2_country" api:"required"`
+	Asn2Name    string                                              `json:"asn2_name" api:"required"`
+	Rel         string                                              `json:"rel" api:"required"`
 	JSON        radarEntityAsnGetRelationshipsResponseResultRelJSON `json:"-"`
 }
 
@@ -418,8 +418,8 @@ func (r radarEntityAsnGetRelationshipsResponseResultRelJSON) RawJSON() string {
 }
 
 type RadarEntityAsnGetByIPResponse struct {
-	Result  RadarEntityAsnGetByIPResponseResult `json:"result,required"`
-	Success bool                                `json:"success,required"`
+	Result  RadarEntityAsnGetByIPResponseResult `json:"result" api:"required"`
+	Success bool                                `json:"success" api:"required"`
 	JSON    radarEntityAsnGetByIPResponseJSON   `json:"-"`
 }
 
@@ -441,7 +441,7 @@ func (r radarEntityAsnGetByIPResponseJSON) RawJSON() string {
 }
 
 type RadarEntityAsnGetByIPResponseResult struct {
-	Asn  RadarEntityAsnGetByIPResponseResultAsn  `json:"asn,required"`
+	Asn  RadarEntityAsnGetByIPResponseResultAsn  `json:"asn" api:"required"`
 	JSON radarEntityAsnGetByIPResponseResultJSON `json:"-"`
 }
 
@@ -462,16 +462,16 @@ func (r radarEntityAsnGetByIPResponseResultJSON) RawJSON() string {
 }
 
 type RadarEntityAsnGetByIPResponseResultAsn struct {
-	Asn            int64                                                `json:"asn,required"`
-	Country        string                                               `json:"country,required"`
-	CountryName    string                                               `json:"countryName,required"`
-	EstimatedUsers RadarEntityAsnGetByIPResponseResultAsnEstimatedUsers `json:"estimatedUsers,required"`
-	Name           string                                               `json:"name,required"`
-	OrgName        string                                               `json:"orgName,required"`
-	Related        []RadarEntityAsnGetByIPResponseResultAsnRelated      `json:"related,required"`
+	Asn            int64                                                `json:"asn" api:"required"`
+	Country        string                                               `json:"country" api:"required"`
+	CountryName    string                                               `json:"countryName" api:"required"`
+	EstimatedUsers RadarEntityAsnGetByIPResponseResultAsnEstimatedUsers `json:"estimatedUsers" api:"required"`
+	Name           string                                               `json:"name" api:"required"`
+	OrgName        string                                               `json:"orgName" api:"required"`
+	Related        []RadarEntityAsnGetByIPResponseResultAsnRelated      `json:"related" api:"required"`
 	// Regional Internet Registry.
-	Source  string                                     `json:"source,required"`
-	Website string                                     `json:"website,required"`
+	Source  string                                     `json:"source" api:"required"`
+	Website string                                     `json:"website" api:"required"`
 	Aka     string                                     `json:"aka"`
 	JSON    radarEntityAsnGetByIPResponseResultAsnJSON `json:"-"`
 }
@@ -502,7 +502,7 @@ func (r radarEntityAsnGetByIPResponseResultAsnJSON) RawJSON() string {
 }
 
 type RadarEntityAsnGetByIPResponseResultAsnEstimatedUsers struct {
-	Locations []RadarEntityAsnGetByIPResponseResultAsnEstimatedUsersLocation `json:"locations,required"`
+	Locations []RadarEntityAsnGetByIPResponseResultAsnEstimatedUsersLocation `json:"locations" api:"required"`
 	// Total estimated users.
 	EstimatedUsers int64                                                    `json:"estimatedUsers"`
 	JSON           radarEntityAsnGetByIPResponseResultAsnEstimatedUsersJSON `json:"-"`
@@ -526,8 +526,8 @@ func (r radarEntityAsnGetByIPResponseResultAsnEstimatedUsersJSON) RawJSON() stri
 }
 
 type RadarEntityAsnGetByIPResponseResultAsnEstimatedUsersLocation struct {
-	LocationAlpha2 string `json:"locationAlpha2,required"`
-	LocationName   string `json:"locationName,required"`
+	LocationAlpha2 string `json:"locationAlpha2" api:"required"`
+	LocationName   string `json:"locationName" api:"required"`
 	// Estimated users per location.
 	EstimatedUsers int64                                                            `json:"estimatedUsers"`
 	JSON           radarEntityAsnGetByIPResponseResultAsnEstimatedUsersLocationJSON `json:"-"`
@@ -553,8 +553,8 @@ func (r radarEntityAsnGetByIPResponseResultAsnEstimatedUsersLocationJSON) RawJSO
 }
 
 type RadarEntityAsnGetByIPResponseResultAsnRelated struct {
-	Asn  int64  `json:"asn,required"`
-	Name string `json:"name,required"`
+	Asn  int64  `json:"asn" api:"required"`
+	Name string `json:"name" api:"required"`
 	Aka  string `json:"aka"`
 	// Total estimated users.
 	EstimatedUsers int64                                             `json:"estimatedUsers"`
@@ -701,7 +701,7 @@ func (r RadarEntityAsnGetRelationshipsParamsFormat) IsKnown() bool {
 
 type RadarEntityAsnGetByIPParams struct {
 	// IP address.
-	IP param.Field[string] `query:"ip,required" format:"ip"`
+	IP param.Field[string] `query:"ip" api:"required" format:"ip"`
 	// Format in which results will be returned.
 	Format param.Field[RadarEntityAsnGetByIPParamsFormat] `query:"format"`
 }

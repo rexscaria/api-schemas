@@ -39,27 +39,27 @@ func (r *AccountPageProjectDeploymentHistoryService) GetLogs(ctx context.Context
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if projectName == "" {
 		err = errors.New("missing required project_name parameter")
-		return
+		return nil, err
 	}
 	if deploymentID == "" {
 		err = errors.New("missing required deployment_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/pages/projects/%s/deployments/%s/history/logs", accountID, projectName, deploymentID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountPageProjectDeploymentHistoryGetLogsResponse struct {
-	Errors   []AccountPageProjectDeploymentHistoryGetLogsResponseError   `json:"errors,required"`
-	Messages []AccountPageProjectDeploymentHistoryGetLogsResponseMessage `json:"messages,required"`
-	Result   AccountPageProjectDeploymentHistoryGetLogsResponseResult    `json:"result,required"`
+	Errors   []AccountPageProjectDeploymentHistoryGetLogsResponseError   `json:"errors" api:"required"`
+	Messages []AccountPageProjectDeploymentHistoryGetLogsResponseMessage `json:"messages" api:"required"`
+	Result   AccountPageProjectDeploymentHistoryGetLogsResponseResult    `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success AccountPageProjectDeploymentHistoryGetLogsResponseSuccess `json:"success,required"`
+	Success AccountPageProjectDeploymentHistoryGetLogsResponseSuccess `json:"success" api:"required"`
 	JSON    accountPageProjectDeploymentHistoryGetLogsResponseJSON    `json:"-"`
 }
 
@@ -83,8 +83,8 @@ func (r accountPageProjectDeploymentHistoryGetLogsResponseJSON) RawJSON() string
 }
 
 type AccountPageProjectDeploymentHistoryGetLogsResponseError struct {
-	Code             int64                                                          `json:"code,required"`
-	Message          string                                                         `json:"message,required"`
+	Code             int64                                                          `json:"code" api:"required"`
+	Message          string                                                         `json:"message" api:"required"`
 	DocumentationURL string                                                         `json:"documentation_url"`
 	Source           AccountPageProjectDeploymentHistoryGetLogsResponseErrorsSource `json:"source"`
 	JSON             accountPageProjectDeploymentHistoryGetLogsResponseErrorJSON    `json:"-"`
@@ -133,8 +133,8 @@ func (r accountPageProjectDeploymentHistoryGetLogsResponseErrorsSourceJSON) RawJ
 }
 
 type AccountPageProjectDeploymentHistoryGetLogsResponseMessage struct {
-	Code             int64                                                            `json:"code,required"`
-	Message          string                                                           `json:"message,required"`
+	Code             int64                                                            `json:"code" api:"required"`
+	Message          string                                                           `json:"message" api:"required"`
 	DocumentationURL string                                                           `json:"documentation_url"`
 	Source           AccountPageProjectDeploymentHistoryGetLogsResponseMessagesSource `json:"source"`
 	JSON             accountPageProjectDeploymentHistoryGetLogsResponseMessageJSON    `json:"-"`

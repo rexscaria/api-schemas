@@ -41,15 +41,15 @@ func (r *AccountWorkerDomainService) Get(ctx context.Context, accountID string, 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if domainID == "" {
 		err = errors.New("missing required domain_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/workers/domains/%s", accountID, domainID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists all Worker Domains for an account.
@@ -57,11 +57,11 @@ func (r *AccountWorkerDomainService) List(ctx context.Context, accountID string,
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/workers/domains", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Attaches a Worker to a zone and hostname.
@@ -69,35 +69,35 @@ func (r *AccountWorkerDomainService) Attach(ctx context.Context, accountID strin
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/workers/domains", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Detaches a Worker from a zone and hostname.
 func (r *AccountWorkerDomainService) Detach(ctx context.Context, accountID string, domainID string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return err
 	}
 	if domainID == "" {
 		err = errors.New("missing required domain_id parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("accounts/%s/workers/domains/%s", accountID, domainID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 type DomainResponse struct {
-	Errors   []WorkersMessages `json:"errors,required"`
-	Messages []WorkersMessages `json:"messages,required"`
+	Errors   []WorkersMessages `json:"errors" api:"required"`
+	Messages []WorkersMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success DomainResponseSuccess `json:"success,required"`
+	Success DomainResponseSuccess `json:"success" api:"required"`
 	Result  DomainWorker          `json:"result"`
 	JSON    domainResponseJSON    `json:"-"`
 }
@@ -172,10 +172,10 @@ func (r domainWorkerJSON) RawJSON() string {
 }
 
 type AccountWorkerDomainListResponse struct {
-	Errors   []WorkersMessages `json:"errors,required"`
-	Messages []WorkersMessages `json:"messages,required"`
+	Errors   []WorkersMessages `json:"errors" api:"required"`
+	Messages []WorkersMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountWorkerDomainListResponseSuccess `json:"success,required"`
+	Success AccountWorkerDomainListResponseSuccess `json:"success" api:"required"`
 	Result  []DomainWorker                         `json:"result"`
 	JSON    accountWorkerDomainListResponseJSON    `json:"-"`
 }
@@ -238,13 +238,13 @@ func (r AccountWorkerDomainListParams) URLQuery() (v url.Values) {
 
 type AccountWorkerDomainAttachParams struct {
 	// Worker environment associated with the zone and hostname.
-	Environment param.Field[string] `json:"environment,required"`
+	Environment param.Field[string] `json:"environment" api:"required"`
 	// Hostname of the Worker Domain.
-	Hostname param.Field[string] `json:"hostname,required"`
+	Hostname param.Field[string] `json:"hostname" api:"required"`
 	// Worker service associated with the zone and hostname.
-	Service param.Field[string] `json:"service,required"`
+	Service param.Field[string] `json:"service" api:"required"`
 	// Identifier of the zone.
-	ZoneID param.Field[string] `json:"zone_id,required"`
+	ZoneID param.Field[string] `json:"zone_id" api:"required"`
 }
 
 func (r AccountWorkerDomainAttachParams) MarshalJSON() (data []byte, err error) {

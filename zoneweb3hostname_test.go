@@ -14,7 +14,7 @@ import (
 )
 
 func TestZoneWeb3HostnameNewWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,6 +26,7 @@ func TestZoneWeb3HostnameNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.Web3.Hostnames.New(
 		context.TODO(),
@@ -47,7 +48,7 @@ func TestZoneWeb3HostnameNewWithOptionalParams(t *testing.T) {
 }
 
 func TestZoneWeb3HostnameGet(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -59,6 +60,7 @@ func TestZoneWeb3HostnameGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.Web3.Hostnames.Get(
 		context.TODO(),
@@ -75,7 +77,7 @@ func TestZoneWeb3HostnameGet(t *testing.T) {
 }
 
 func TestZoneWeb3HostnameList(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -87,6 +89,7 @@ func TestZoneWeb3HostnameList(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.Web3.Hostnames.List(context.TODO(), "023e105f4ecef8ad9ca31a8372d0c353")
 	if err != nil {
@@ -99,7 +102,7 @@ func TestZoneWeb3HostnameList(t *testing.T) {
 }
 
 func TestZoneWeb3HostnameDelete(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -111,6 +114,7 @@ func TestZoneWeb3HostnameDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.Web3.Hostnames.Delete(
 		context.TODO(),
@@ -127,7 +131,7 @@ func TestZoneWeb3HostnameDelete(t *testing.T) {
 }
 
 func TestZoneWeb3HostnamePatchWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -139,6 +143,7 @@ func TestZoneWeb3HostnamePatchWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.Web3.Hostnames.Patch(
 		context.TODO(),

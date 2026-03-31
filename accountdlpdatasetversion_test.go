@@ -16,7 +16,7 @@ import (
 )
 
 func TestAccountDlpDatasetVersionSetColumnInfo(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -28,6 +28,7 @@ func TestAccountDlpDatasetVersionSetColumnInfo(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Dlp.Datasets.Versions.SetColumnInfo(
 		context.TODO(),
@@ -52,7 +53,7 @@ func TestAccountDlpDatasetVersionSetColumnInfo(t *testing.T) {
 }
 
 func TestAccountDlpDatasetVersionUploadEntry(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -64,6 +65,7 @@ func TestAccountDlpDatasetVersionUploadEntry(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Dlp.Datasets.Versions.UploadEntry(
 		context.TODO(),
@@ -71,7 +73,7 @@ func TestAccountDlpDatasetVersionUploadEntry(t *testing.T) {
 		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		int64(0),
 		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
-		io.Reader(bytes.NewBuffer([]byte("some file contents"))),
+		io.Reader(bytes.NewBuffer([]byte("Example data"))),
 	)
 	if err != nil {
 		var apierr *cfrex.Error

@@ -46,11 +46,11 @@ func (r *AccountUrlscannerV2Service) BulkNewScans(ctx context.Context, accountID
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/urlscanner/v2/bulk", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Submit a URL to scan. Check limits at
@@ -59,11 +59,11 @@ func (r *AccountUrlscannerV2Service) NewScan(ctx context.Context, accountID stri
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/urlscanner/v2/scan", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns a plain text response, with the scan's DOM content as rendered by
@@ -73,15 +73,15 @@ func (r *AccountUrlscannerV2Service) GetDom(ctx context.Context, accountID strin
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "text/plain")}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if scanID == "" {
 		err = errors.New("missing required scan_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/urlscanner/v2/dom/%s", accountID, scanID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Get a URL scan's HAR file. See HAR spec at
@@ -90,15 +90,15 @@ func (r *AccountUrlscannerV2Service) GetHar(ctx context.Context, accountID strin
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if scanID == "" {
 		err = errors.New("missing required scan_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/urlscanner/v2/har/%s", accountID, scanID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns the raw response of the network request. Find the `response_id` in the
@@ -108,15 +108,15 @@ func (r *AccountUrlscannerV2Service) GetRawResponse(ctx context.Context, account
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "text/plain")}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if responseID == "" {
 		err = errors.New("missing required response_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/urlscanner/v2/responses/%s", accountID, responseID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Get URL scan by uuid
@@ -124,15 +124,15 @@ func (r *AccountUrlscannerV2Service) GetScan(ctx context.Context, accountID stri
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if scanID == "" {
 		err = errors.New("missing required scan_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/urlscanner/v2/result/%s", accountID, scanID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Use a subset of ElasticSearch Query syntax to filter scans. Some example
@@ -147,24 +147,24 @@ func (r *AccountUrlscannerV2Service) SearchScans(ctx context.Context, accountID 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/urlscanner/v2/search", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountUrlscannerV2BulkNewScansResponse struct {
 	// URL to api report.
-	API string `json:"api,required"`
+	API string `json:"api" api:"required"`
 	// URL to report.
-	Result string `json:"result,required"`
+	Result string `json:"result" api:"required"`
 	// Submitted URL
-	URL string `json:"url,required"`
+	URL string `json:"url" api:"required"`
 	// Scan ID.
-	Uuid string `json:"uuid,required" format:"uuid"`
+	Uuid string `json:"uuid" api:"required" format:"uuid"`
 	// Submitted visibility status.
-	Visibility AccountUrlscannerV2BulkNewScansResponseVisibility `json:"visibility,required"`
+	Visibility AccountUrlscannerV2BulkNewScansResponseVisibility `json:"visibility" api:"required"`
 	Options    AccountUrlscannerV2BulkNewScansResponseOptions    `json:"options"`
 	JSON       accountUrlscannerV2BulkNewScansResponseJSON       `json:"-"`
 }
@@ -229,16 +229,16 @@ func (r accountUrlscannerV2BulkNewScansResponseOptionsJSON) RawJSON() string {
 
 type AccountUrlscannerV2NewScanResponse struct {
 	// URL to api report.
-	API     string `json:"api,required"`
-	Message string `json:"message,required"`
+	API     string `json:"api" api:"required"`
+	Message string `json:"message" api:"required"`
 	// Public URL to report.
-	Result string `json:"result,required"`
+	Result string `json:"result" api:"required"`
 	// Canonical form of submitted URL. Use this if you want to later search by URL.
-	URL string `json:"url,required"`
+	URL string `json:"url" api:"required"`
 	// Scan ID.
-	Uuid string `json:"uuid,required" format:"uuid"`
+	Uuid string `json:"uuid" api:"required" format:"uuid"`
 	// Submitted visibility status.
-	Visibility AccountUrlscannerV2NewScanResponseVisibility `json:"visibility,required"`
+	Visibility AccountUrlscannerV2NewScanResponseVisibility `json:"visibility" api:"required"`
 	Options    AccountUrlscannerV2NewScanResponseOptions    `json:"options"`
 	JSON       accountUrlscannerV2NewScanResponseJSON       `json:"-"`
 }
@@ -303,7 +303,7 @@ func (r accountUrlscannerV2NewScanResponseOptionsJSON) RawJSON() string {
 }
 
 type AccountUrlscannerV2GetHarResponse struct {
-	Log  AccountUrlscannerV2GetHarResponseLog  `json:"log,required"`
+	Log  AccountUrlscannerV2GetHarResponseLog  `json:"log" api:"required"`
 	JSON accountUrlscannerV2GetHarResponseJSON `json:"-"`
 }
 
@@ -324,10 +324,10 @@ func (r accountUrlscannerV2GetHarResponseJSON) RawJSON() string {
 }
 
 type AccountUrlscannerV2GetHarResponseLog struct {
-	Creator AccountUrlscannerV2GetHarResponseLogCreator `json:"creator,required"`
-	Entries []AccountUrlscannerV2GetHarResponseLogEntry `json:"entries,required"`
-	Pages   []AccountUrlscannerV2GetHarResponseLogPage  `json:"pages,required"`
-	Version string                                      `json:"version,required"`
+	Creator AccountUrlscannerV2GetHarResponseLogCreator `json:"creator" api:"required"`
+	Entries []AccountUrlscannerV2GetHarResponseLogEntry `json:"entries" api:"required"`
+	Pages   []AccountUrlscannerV2GetHarResponseLogPage  `json:"pages" api:"required"`
+	Version string                                      `json:"version" api:"required"`
 	JSON    accountUrlscannerV2GetHarResponseLogJSON    `json:"-"`
 }
 
@@ -351,9 +351,9 @@ func (r accountUrlscannerV2GetHarResponseLogJSON) RawJSON() string {
 }
 
 type AccountUrlscannerV2GetHarResponseLogCreator struct {
-	Comment string                                          `json:"comment,required"`
-	Name    string                                          `json:"name,required"`
-	Version string                                          `json:"version,required"`
+	Comment string                                          `json:"comment" api:"required"`
+	Name    string                                          `json:"name" api:"required"`
+	Version string                                          `json:"version" api:"required"`
 	JSON    accountUrlscannerV2GetHarResponseLogCreatorJSON `json:"-"`
 }
 
@@ -376,20 +376,20 @@ func (r accountUrlscannerV2GetHarResponseLogCreatorJSON) RawJSON() string {
 }
 
 type AccountUrlscannerV2GetHarResponseLogEntry struct {
-	InitialPriority string                                              `json:"_initialPriority,required"`
-	InitiatorType   string                                              `json:"_initiator_type,required"`
-	Priority        string                                              `json:"_priority,required"`
-	RequestID       string                                              `json:"_requestId,required"`
-	RequestTime     float64                                             `json:"_requestTime,required"`
-	ResourceType    string                                              `json:"_resourceType,required"`
-	Cache           interface{}                                         `json:"cache,required"`
-	Connection      string                                              `json:"connection,required"`
-	Pageref         string                                              `json:"pageref,required"`
-	Request         AccountUrlscannerV2GetHarResponseLogEntriesRequest  `json:"request,required"`
-	Response        AccountUrlscannerV2GetHarResponseLogEntriesResponse `json:"response,required"`
-	ServerIPAddress string                                              `json:"serverIPAddress,required"`
-	StartedDateTime string                                              `json:"startedDateTime,required"`
-	Time            float64                                             `json:"time,required"`
+	InitialPriority string                                              `json:"_initialPriority" api:"required"`
+	InitiatorType   string                                              `json:"_initiator_type" api:"required"`
+	Priority        string                                              `json:"_priority" api:"required"`
+	RequestID       string                                              `json:"_requestId" api:"required"`
+	RequestTime     float64                                             `json:"_requestTime" api:"required"`
+	ResourceType    string                                              `json:"_resourceType" api:"required"`
+	Cache           interface{}                                         `json:"cache" api:"required"`
+	Connection      string                                              `json:"connection" api:"required"`
+	Pageref         string                                              `json:"pageref" api:"required"`
+	Request         AccountUrlscannerV2GetHarResponseLogEntriesRequest  `json:"request" api:"required"`
+	Response        AccountUrlscannerV2GetHarResponseLogEntriesResponse `json:"response" api:"required"`
+	ServerIPAddress string                                              `json:"serverIPAddress" api:"required"`
+	StartedDateTime string                                              `json:"startedDateTime" api:"required"`
+	Time            float64                                             `json:"time" api:"required"`
 	JSON            accountUrlscannerV2GetHarResponseLogEntryJSON       `json:"-"`
 }
 
@@ -423,12 +423,12 @@ func (r accountUrlscannerV2GetHarResponseLogEntryJSON) RawJSON() string {
 }
 
 type AccountUrlscannerV2GetHarResponseLogEntriesRequest struct {
-	BodySize    float64                                                    `json:"bodySize,required"`
-	Headers     []AccountUrlscannerV2GetHarResponseLogEntriesRequestHeader `json:"headers,required"`
-	HeadersSize float64                                                    `json:"headersSize,required"`
-	HTTPVersion string                                                     `json:"httpVersion,required"`
-	Method      string                                                     `json:"method,required"`
-	URL         string                                                     `json:"url,required"`
+	BodySize    float64                                                    `json:"bodySize" api:"required"`
+	Headers     []AccountUrlscannerV2GetHarResponseLogEntriesRequestHeader `json:"headers" api:"required"`
+	HeadersSize float64                                                    `json:"headersSize" api:"required"`
+	HTTPVersion string                                                     `json:"httpVersion" api:"required"`
+	Method      string                                                     `json:"method" api:"required"`
+	URL         string                                                     `json:"url" api:"required"`
 	JSON        accountUrlscannerV2GetHarResponseLogEntriesRequestJSON     `json:"-"`
 }
 
@@ -454,8 +454,8 @@ func (r accountUrlscannerV2GetHarResponseLogEntriesRequestJSON) RawJSON() string
 }
 
 type AccountUrlscannerV2GetHarResponseLogEntriesRequestHeader struct {
-	Name  string                                                       `json:"name,required"`
-	Value string                                                       `json:"value,required"`
+	Name  string                                                       `json:"name" api:"required"`
+	Value string                                                       `json:"value" api:"required"`
 	JSON  accountUrlscannerV2GetHarResponseLogEntriesRequestHeaderJSON `json:"-"`
 }
 
@@ -478,15 +478,15 @@ func (r accountUrlscannerV2GetHarResponseLogEntriesRequestHeaderJSON) RawJSON() 
 }
 
 type AccountUrlscannerV2GetHarResponseLogEntriesResponse struct {
-	TransferSize float64                                                     `json:"_transferSize,required"`
-	BodySize     float64                                                     `json:"bodySize,required"`
-	Content      AccountUrlscannerV2GetHarResponseLogEntriesResponseContent  `json:"content,required"`
-	Headers      []AccountUrlscannerV2GetHarResponseLogEntriesResponseHeader `json:"headers,required"`
-	HeadersSize  float64                                                     `json:"headersSize,required"`
-	HTTPVersion  string                                                      `json:"httpVersion,required"`
-	RedirectURL  string                                                      `json:"redirectURL,required"`
-	Status       float64                                                     `json:"status,required"`
-	StatusText   string                                                      `json:"statusText,required"`
+	TransferSize float64                                                     `json:"_transferSize" api:"required"`
+	BodySize     float64                                                     `json:"bodySize" api:"required"`
+	Content      AccountUrlscannerV2GetHarResponseLogEntriesResponseContent  `json:"content" api:"required"`
+	Headers      []AccountUrlscannerV2GetHarResponseLogEntriesResponseHeader `json:"headers" api:"required"`
+	HeadersSize  float64                                                     `json:"headersSize" api:"required"`
+	HTTPVersion  string                                                      `json:"httpVersion" api:"required"`
+	RedirectURL  string                                                      `json:"redirectURL" api:"required"`
+	Status       float64                                                     `json:"status" api:"required"`
+	StatusText   string                                                      `json:"statusText" api:"required"`
 	JSON         accountUrlscannerV2GetHarResponseLogEntriesResponseJSON     `json:"-"`
 }
 
@@ -515,8 +515,8 @@ func (r accountUrlscannerV2GetHarResponseLogEntriesResponseJSON) RawJSON() strin
 }
 
 type AccountUrlscannerV2GetHarResponseLogEntriesResponseContent struct {
-	MimeType    string                                                         `json:"mimeType,required"`
-	Size        float64                                                        `json:"size,required"`
+	MimeType    string                                                         `json:"mimeType" api:"required"`
+	Size        float64                                                        `json:"size" api:"required"`
 	Compression int64                                                          `json:"compression"`
 	JSON        accountUrlscannerV2GetHarResponseLogEntriesResponseContentJSON `json:"-"`
 }
@@ -541,8 +541,8 @@ func (r accountUrlscannerV2GetHarResponseLogEntriesResponseContentJSON) RawJSON(
 }
 
 type AccountUrlscannerV2GetHarResponseLogEntriesResponseHeader struct {
-	Name  string                                                        `json:"name,required"`
-	Value string                                                        `json:"value,required"`
+	Name  string                                                        `json:"name" api:"required"`
+	Value string                                                        `json:"value" api:"required"`
 	JSON  accountUrlscannerV2GetHarResponseLogEntriesResponseHeaderJSON `json:"-"`
 }
 
@@ -565,10 +565,10 @@ func (r accountUrlscannerV2GetHarResponseLogEntriesResponseHeaderJSON) RawJSON()
 }
 
 type AccountUrlscannerV2GetHarResponseLogPage struct {
-	ID              string                                               `json:"id,required"`
-	PageTimings     AccountUrlscannerV2GetHarResponseLogPagesPageTimings `json:"pageTimings,required"`
-	StartedDateTime string                                               `json:"startedDateTime,required"`
-	Title           string                                               `json:"title,required"`
+	ID              string                                               `json:"id" api:"required"`
+	PageTimings     AccountUrlscannerV2GetHarResponseLogPagesPageTimings `json:"pageTimings" api:"required"`
+	StartedDateTime string                                               `json:"startedDateTime" api:"required"`
+	Title           string                                               `json:"title" api:"required"`
 	JSON            accountUrlscannerV2GetHarResponseLogPageJSON         `json:"-"`
 }
 
@@ -592,8 +592,8 @@ func (r accountUrlscannerV2GetHarResponseLogPageJSON) RawJSON() string {
 }
 
 type AccountUrlscannerV2GetHarResponseLogPagesPageTimings struct {
-	OnContentLoad float64                                                  `json:"onContentLoad,required"`
-	OnLoad        float64                                                  `json:"onLoad,required"`
+	OnContentLoad float64                                                  `json:"onContentLoad" api:"required"`
+	OnLoad        float64                                                  `json:"onLoad" api:"required"`
 	JSON          accountUrlscannerV2GetHarResponseLogPagesPageTimingsJSON `json:"-"`
 }
 
@@ -615,14 +615,14 @@ func (r accountUrlscannerV2GetHarResponseLogPagesPageTimingsJSON) RawJSON() stri
 }
 
 type AccountUrlscannerV2GetScanResponse struct {
-	Data     AccountUrlscannerV2GetScanResponseData     `json:"data,required"`
-	Lists    AccountUrlscannerV2GetScanResponseLists    `json:"lists,required"`
-	Meta     AccountUrlscannerV2GetScanResponseMeta     `json:"meta,required"`
-	Page     AccountUrlscannerV2GetScanResponsePage     `json:"page,required"`
-	Scanner  AccountUrlscannerV2GetScanResponseScanner  `json:"scanner,required"`
-	Stats    AccountUrlscannerV2GetScanResponseStats    `json:"stats,required"`
-	Task     AccountUrlscannerV2GetScanResponseTask     `json:"task,required"`
-	Verdicts AccountUrlscannerV2GetScanResponseVerdicts `json:"verdicts,required"`
+	Data     AccountUrlscannerV2GetScanResponseData     `json:"data" api:"required"`
+	Lists    AccountUrlscannerV2GetScanResponseLists    `json:"lists" api:"required"`
+	Meta     AccountUrlscannerV2GetScanResponseMeta     `json:"meta" api:"required"`
+	Page     AccountUrlscannerV2GetScanResponsePage     `json:"page" api:"required"`
+	Scanner  AccountUrlscannerV2GetScanResponseScanner  `json:"scanner" api:"required"`
+	Stats    AccountUrlscannerV2GetScanResponseStats    `json:"stats" api:"required"`
+	Task     AccountUrlscannerV2GetScanResponseTask     `json:"task" api:"required"`
+	Verdicts AccountUrlscannerV2GetScanResponseVerdicts `json:"verdicts" api:"required"`
 	JSON     accountUrlscannerV2GetScanResponseJSON     `json:"-"`
 }
 
@@ -650,12 +650,12 @@ func (r accountUrlscannerV2GetScanResponseJSON) RawJSON() string {
 }
 
 type AccountUrlscannerV2GetScanResponseData struct {
-	Console     []AccountUrlscannerV2GetScanResponseDataConsole     `json:"console,required"`
-	Cookies     []AccountUrlscannerV2GetScanResponseDataCookie      `json:"cookies,required"`
-	Globals     []AccountUrlscannerV2GetScanResponseDataGlobal      `json:"globals,required"`
-	Links       []AccountUrlscannerV2GetScanResponseDataLink        `json:"links,required"`
-	Performance []AccountUrlscannerV2GetScanResponseDataPerformance `json:"performance,required"`
-	Requests    []AccountUrlscannerV2GetScanResponseDataRequest     `json:"requests,required"`
+	Console     []AccountUrlscannerV2GetScanResponseDataConsole     `json:"console" api:"required"`
+	Cookies     []AccountUrlscannerV2GetScanResponseDataCookie      `json:"cookies" api:"required"`
+	Globals     []AccountUrlscannerV2GetScanResponseDataGlobal      `json:"globals" api:"required"`
+	Links       []AccountUrlscannerV2GetScanResponseDataLink        `json:"links" api:"required"`
+	Performance []AccountUrlscannerV2GetScanResponseDataPerformance `json:"performance" api:"required"`
+	Requests    []AccountUrlscannerV2GetScanResponseDataRequest     `json:"requests" api:"required"`
 	JSON        accountUrlscannerV2GetScanResponseDataJSON          `json:"-"`
 }
 
@@ -681,7 +681,7 @@ func (r accountUrlscannerV2GetScanResponseDataJSON) RawJSON() string {
 }
 
 type AccountUrlscannerV2GetScanResponseDataConsole struct {
-	Message AccountUrlscannerV2GetScanResponseDataConsoleMessage `json:"message,required"`
+	Message AccountUrlscannerV2GetScanResponseDataConsoleMessage `json:"message" api:"required"`
 	JSON    accountUrlscannerV2GetScanResponseDataConsoleJSON    `json:"-"`
 }
 
@@ -702,10 +702,10 @@ func (r accountUrlscannerV2GetScanResponseDataConsoleJSON) RawJSON() string {
 }
 
 type AccountUrlscannerV2GetScanResponseDataConsoleMessage struct {
-	Level  string                                                   `json:"level,required"`
-	Source string                                                   `json:"source,required"`
-	Text   string                                                   `json:"text,required"`
-	URL    string                                                   `json:"url,required"`
+	Level  string                                                   `json:"level" api:"required"`
+	Source string                                                   `json:"source" api:"required"`
+	Text   string                                                   `json:"text" api:"required"`
+	URL    string                                                   `json:"url" api:"required"`
 	JSON   accountUrlscannerV2GetScanResponseDataConsoleMessageJSON `json:"-"`
 }
 
@@ -729,19 +729,19 @@ func (r accountUrlscannerV2GetScanResponseDataConsoleMessageJSON) RawJSON() stri
 }
 
 type AccountUrlscannerV2GetScanResponseDataCookie struct {
-	Domain       string                                           `json:"domain,required"`
-	Expires      float64                                          `json:"expires,required"`
-	HTTPOnly     bool                                             `json:"httpOnly,required"`
-	Name         string                                           `json:"name,required"`
-	Path         string                                           `json:"path,required"`
-	Priority     string                                           `json:"priority,required"`
-	SameParty    bool                                             `json:"sameParty,required"`
-	Secure       bool                                             `json:"secure,required"`
-	Session      bool                                             `json:"session,required"`
-	Size         float64                                          `json:"size,required"`
-	SourcePort   float64                                          `json:"sourcePort,required"`
-	SourceScheme string                                           `json:"sourceScheme,required"`
-	Value        string                                           `json:"value,required"`
+	Domain       string                                           `json:"domain" api:"required"`
+	Expires      float64                                          `json:"expires" api:"required"`
+	HTTPOnly     bool                                             `json:"httpOnly" api:"required"`
+	Name         string                                           `json:"name" api:"required"`
+	Path         string                                           `json:"path" api:"required"`
+	Priority     string                                           `json:"priority" api:"required"`
+	SameParty    bool                                             `json:"sameParty" api:"required"`
+	Secure       bool                                             `json:"secure" api:"required"`
+	Session      bool                                             `json:"session" api:"required"`
+	Size         float64                                          `json:"size" api:"required"`
+	SourcePort   float64                                          `json:"sourcePort" api:"required"`
+	SourceScheme string                                           `json:"sourceScheme" api:"required"`
+	Value        string                                           `json:"value" api:"required"`
 	JSON         accountUrlscannerV2GetScanResponseDataCookieJSON `json:"-"`
 }
 
@@ -774,8 +774,8 @@ func (r accountUrlscannerV2GetScanResponseDataCookieJSON) RawJSON() string {
 }
 
 type AccountUrlscannerV2GetScanResponseDataGlobal struct {
-	Prop string                                           `json:"prop,required"`
-	Type string                                           `json:"type,required"`
+	Prop string                                           `json:"prop" api:"required"`
+	Type string                                           `json:"type" api:"required"`
 	JSON accountUrlscannerV2GetScanResponseDataGlobalJSON `json:"-"`
 }
 
@@ -797,8 +797,8 @@ func (r accountUrlscannerV2GetScanResponseDataGlobalJSON) RawJSON() string {
 }
 
 type AccountUrlscannerV2GetScanResponseDataLink struct {
-	Href string                                         `json:"href,required"`
-	Text string                                         `json:"text,required"`
+	Href string                                         `json:"href" api:"required"`
+	Text string                                         `json:"text" api:"required"`
 	JSON accountUrlscannerV2GetScanResponseDataLinkJSON `json:"-"`
 }
 
@@ -820,10 +820,10 @@ func (r accountUrlscannerV2GetScanResponseDataLinkJSON) RawJSON() string {
 }
 
 type AccountUrlscannerV2GetScanResponseDataPerformance struct {
-	Duration  float64                                               `json:"duration,required"`
-	EntryType string                                                `json:"entryType,required"`
-	Name      string                                                `json:"name,required"`
-	StartTime float64                                               `json:"startTime,required"`
+	Duration  float64                                               `json:"duration" api:"required"`
+	EntryType string                                                `json:"entryType" api:"required"`
+	Name      string                                                `json:"name" api:"required"`
+	StartTime float64                                               `json:"startTime" api:"required"`
 	JSON      accountUrlscannerV2GetScanResponseDataPerformanceJSON `json:"-"`
 }
 
@@ -847,8 +847,8 @@ func (r accountUrlscannerV2GetScanResponseDataPerformanceJSON) RawJSON() string 
 }
 
 type AccountUrlscannerV2GetScanResponseDataRequest struct {
-	Request  AccountUrlscannerV2GetScanResponseDataRequestsRequest   `json:"request,required"`
-	Response AccountUrlscannerV2GetScanResponseDataRequestsResponse  `json:"response,required"`
+	Request  AccountUrlscannerV2GetScanResponseDataRequestsRequest   `json:"request" api:"required"`
+	Response AccountUrlscannerV2GetScanResponseDataRequestsResponse  `json:"response" api:"required"`
 	Requests []AccountUrlscannerV2GetScanResponseDataRequestsRequest `json:"requests"`
 	JSON     accountUrlscannerV2GetScanResponseDataRequestJSON       `json:"-"`
 }
@@ -872,14 +872,14 @@ func (r accountUrlscannerV2GetScanResponseDataRequestJSON) RawJSON() string {
 }
 
 type AccountUrlscannerV2GetScanResponseDataRequestsRequest struct {
-	DocumentURL          string                                                                `json:"documentURL,required"`
-	HasUserGesture       bool                                                                  `json:"hasUserGesture,required"`
-	Initiator            AccountUrlscannerV2GetScanResponseDataRequestsRequestInitiator        `json:"initiator,required"`
-	RedirectHasExtraInfo bool                                                                  `json:"redirectHasExtraInfo,required"`
-	Request              AccountUrlscannerV2GetScanResponseDataRequestsRequestRequest          `json:"request,required"`
-	RequestID            string                                                                `json:"requestId,required"`
-	Type                 string                                                                `json:"type,required"`
-	WallTime             float64                                                               `json:"wallTime,required"`
+	DocumentURL          string                                                                `json:"documentURL" api:"required"`
+	HasUserGesture       bool                                                                  `json:"hasUserGesture" api:"required"`
+	Initiator            AccountUrlscannerV2GetScanResponseDataRequestsRequestInitiator        `json:"initiator" api:"required"`
+	RedirectHasExtraInfo bool                                                                  `json:"redirectHasExtraInfo" api:"required"`
+	Request              AccountUrlscannerV2GetScanResponseDataRequestsRequestRequest          `json:"request" api:"required"`
+	RequestID            string                                                                `json:"requestId" api:"required"`
+	Type                 string                                                                `json:"type" api:"required"`
+	WallTime             float64                                                               `json:"wallTime" api:"required"`
 	FrameID              string                                                                `json:"frameId"`
 	LoaderID             string                                                                `json:"loaderId"`
 	PrimaryRequest       bool                                                                  `json:"primaryRequest"`
@@ -915,9 +915,9 @@ func (r accountUrlscannerV2GetScanResponseDataRequestsRequestJSON) RawJSON() str
 }
 
 type AccountUrlscannerV2GetScanResponseDataRequestsRequestInitiator struct {
-	Host string                                                             `json:"host,required"`
-	Type string                                                             `json:"type,required"`
-	URL  string                                                             `json:"url,required"`
+	Host string                                                             `json:"host" api:"required"`
+	Type string                                                             `json:"type" api:"required"`
+	URL  string                                                             `json:"url" api:"required"`
 	JSON accountUrlscannerV2GetScanResponseDataRequestsRequestInitiatorJSON `json:"-"`
 }
 
@@ -941,12 +941,12 @@ func (r accountUrlscannerV2GetScanResponseDataRequestsRequestInitiatorJSON) RawJ
 }
 
 type AccountUrlscannerV2GetScanResponseDataRequestsRequestRequest struct {
-	InitialPriority  string                                                           `json:"initialPriority,required"`
-	IsSameSite       bool                                                             `json:"isSameSite,required"`
-	Method           string                                                           `json:"method,required"`
-	MixedContentType string                                                           `json:"mixedContentType,required"`
-	ReferrerPolicy   string                                                           `json:"referrerPolicy,required"`
-	URL              string                                                           `json:"url,required"`
+	InitialPriority  string                                                           `json:"initialPriority" api:"required"`
+	IsSameSite       bool                                                             `json:"isSameSite" api:"required"`
+	Method           string                                                           `json:"method" api:"required"`
+	MixedContentType string                                                           `json:"mixedContentType" api:"required"`
+	ReferrerPolicy   string                                                           `json:"referrerPolicy" api:"required"`
+	URL              string                                                           `json:"url" api:"required"`
 	Headers          interface{}                                                      `json:"headers"`
 	JSON             accountUrlscannerV2GetScanResponseDataRequestsRequestRequestJSON `json:"-"`
 }
@@ -975,16 +975,16 @@ func (r accountUrlscannerV2GetScanResponseDataRequestsRequestRequestJSON) RawJSO
 }
 
 type AccountUrlscannerV2GetScanResponseDataRequestsRequestRedirectResponse struct {
-	Charset         string                                                                                `json:"charset,required"`
-	MimeType        string                                                                                `json:"mimeType,required"`
-	Protocol        string                                                                                `json:"protocol,required"`
-	RemoteIPAddress string                                                                                `json:"remoteIPAddress,required"`
-	RemotePort      float64                                                                               `json:"remotePort,required"`
-	SecurityHeaders []AccountUrlscannerV2GetScanResponseDataRequestsRequestRedirectResponseSecurityHeader `json:"securityHeaders,required"`
-	SecurityState   string                                                                                `json:"securityState,required"`
-	Status          float64                                                                               `json:"status,required"`
-	StatusText      string                                                                                `json:"statusText,required"`
-	URL             string                                                                                `json:"url,required"`
+	Charset         string                                                                                `json:"charset" api:"required"`
+	MimeType        string                                                                                `json:"mimeType" api:"required"`
+	Protocol        string                                                                                `json:"protocol" api:"required"`
+	RemoteIPAddress string                                                                                `json:"remoteIPAddress" api:"required"`
+	RemotePort      float64                                                                               `json:"remotePort" api:"required"`
+	SecurityHeaders []AccountUrlscannerV2GetScanResponseDataRequestsRequestRedirectResponseSecurityHeader `json:"securityHeaders" api:"required"`
+	SecurityState   string                                                                                `json:"securityState" api:"required"`
+	Status          float64                                                                               `json:"status" api:"required"`
+	StatusText      string                                                                                `json:"statusText" api:"required"`
+	URL             string                                                                                `json:"url" api:"required"`
 	Headers         interface{}                                                                           `json:"headers"`
 	JSON            accountUrlscannerV2GetScanResponseDataRequestsRequestRedirectResponseJSON             `json:"-"`
 }
@@ -1017,8 +1017,8 @@ func (r accountUrlscannerV2GetScanResponseDataRequestsRequestRedirectResponseJSO
 }
 
 type AccountUrlscannerV2GetScanResponseDataRequestsRequestRedirectResponseSecurityHeader struct {
-	Name  string                                                                                  `json:"name,required"`
-	Value string                                                                                  `json:"value,required"`
+	Name  string                                                                                  `json:"name" api:"required"`
+	Value string                                                                                  `json:"value" api:"required"`
 	JSON  accountUrlscannerV2GetScanResponseDataRequestsRequestRedirectResponseSecurityHeaderJSON `json:"-"`
 }
 
@@ -1041,15 +1041,15 @@ func (r accountUrlscannerV2GetScanResponseDataRequestsRequestRedirectResponseSec
 }
 
 type AccountUrlscannerV2GetScanResponseDataRequestsResponse struct {
-	Asn               AccountUrlscannerV2GetScanResponseDataRequestsResponseAsn      `json:"asn,required"`
-	DataLength        float64                                                        `json:"dataLength,required"`
-	EncodedDataLength float64                                                        `json:"encodedDataLength,required"`
-	Geoip             AccountUrlscannerV2GetScanResponseDataRequestsResponseGeoip    `json:"geoip,required"`
-	HasExtraInfo      bool                                                           `json:"hasExtraInfo,required"`
-	RequestID         string                                                         `json:"requestId,required"`
-	Response          AccountUrlscannerV2GetScanResponseDataRequestsResponseResponse `json:"response,required"`
-	Size              float64                                                        `json:"size,required"`
-	Type              string                                                         `json:"type,required"`
+	Asn               AccountUrlscannerV2GetScanResponseDataRequestsResponseAsn      `json:"asn" api:"required"`
+	DataLength        float64                                                        `json:"dataLength" api:"required"`
+	EncodedDataLength float64                                                        `json:"encodedDataLength" api:"required"`
+	Geoip             AccountUrlscannerV2GetScanResponseDataRequestsResponseGeoip    `json:"geoip" api:"required"`
+	HasExtraInfo      bool                                                           `json:"hasExtraInfo" api:"required"`
+	RequestID         string                                                         `json:"requestId" api:"required"`
+	Response          AccountUrlscannerV2GetScanResponseDataRequestsResponseResponse `json:"response" api:"required"`
+	Size              float64                                                        `json:"size" api:"required"`
+	Type              string                                                         `json:"type" api:"required"`
 	ContentAvailable  bool                                                           `json:"contentAvailable"`
 	Hash              string                                                         `json:"hash"`
 	JSON              accountUrlscannerV2GetScanResponseDataRequestsResponseJSON     `json:"-"`
@@ -1082,12 +1082,12 @@ func (r accountUrlscannerV2GetScanResponseDataRequestsResponseJSON) RawJSON() st
 }
 
 type AccountUrlscannerV2GetScanResponseDataRequestsResponseAsn struct {
-	Asn         string                                                        `json:"asn,required"`
-	Country     string                                                        `json:"country,required"`
-	Description string                                                        `json:"description,required"`
-	IP          string                                                        `json:"ip,required"`
-	Name        string                                                        `json:"name,required"`
-	Org         string                                                        `json:"org,required"`
+	Asn         string                                                        `json:"asn" api:"required"`
+	Country     string                                                        `json:"country" api:"required"`
+	Description string                                                        `json:"description" api:"required"`
+	IP          string                                                        `json:"ip" api:"required"`
+	Name        string                                                        `json:"name" api:"required"`
+	Org         string                                                        `json:"org" api:"required"`
 	JSON        accountUrlscannerV2GetScanResponseDataRequestsResponseAsnJSON `json:"-"`
 }
 
@@ -1114,12 +1114,12 @@ func (r accountUrlscannerV2GetScanResponseDataRequestsResponseAsnJSON) RawJSON()
 }
 
 type AccountUrlscannerV2GetScanResponseDataRequestsResponseGeoip struct {
-	City        string                                                          `json:"city,required"`
-	Country     string                                                          `json:"country,required"`
-	CountryName string                                                          `json:"country_name,required"`
-	GeonameID   string                                                          `json:"geonameId,required"`
-	Ll          []float64                                                       `json:"ll,required"`
-	Region      string                                                          `json:"region,required"`
+	City        string                                                          `json:"city" api:"required"`
+	Country     string                                                          `json:"country" api:"required"`
+	CountryName string                                                          `json:"country_name" api:"required"`
+	GeonameID   string                                                          `json:"geonameId" api:"required"`
+	Ll          []float64                                                       `json:"ll" api:"required"`
+	Region      string                                                          `json:"region" api:"required"`
 	JSON        accountUrlscannerV2GetScanResponseDataRequestsResponseGeoipJSON `json:"-"`
 }
 
@@ -1146,17 +1146,17 @@ func (r accountUrlscannerV2GetScanResponseDataRequestsResponseGeoipJSON) RawJSON
 }
 
 type AccountUrlscannerV2GetScanResponseDataRequestsResponseResponse struct {
-	Charset         string                                                                         `json:"charset,required"`
-	MimeType        string                                                                         `json:"mimeType,required"`
-	Protocol        string                                                                         `json:"protocol,required"`
-	RemoteIPAddress string                                                                         `json:"remoteIPAddress,required"`
-	RemotePort      float64                                                                        `json:"remotePort,required"`
-	SecurityDetails AccountUrlscannerV2GetScanResponseDataRequestsResponseResponseSecurityDetails  `json:"securityDetails,required"`
-	SecurityHeaders []AccountUrlscannerV2GetScanResponseDataRequestsResponseResponseSecurityHeader `json:"securityHeaders,required"`
-	SecurityState   string                                                                         `json:"securityState,required"`
-	Status          float64                                                                        `json:"status,required"`
-	StatusText      string                                                                         `json:"statusText,required"`
-	URL             string                                                                         `json:"url,required"`
+	Charset         string                                                                         `json:"charset" api:"required"`
+	MimeType        string                                                                         `json:"mimeType" api:"required"`
+	Protocol        string                                                                         `json:"protocol" api:"required"`
+	RemoteIPAddress string                                                                         `json:"remoteIPAddress" api:"required"`
+	RemotePort      float64                                                                        `json:"remotePort" api:"required"`
+	SecurityDetails AccountUrlscannerV2GetScanResponseDataRequestsResponseResponseSecurityDetails  `json:"securityDetails" api:"required"`
+	SecurityHeaders []AccountUrlscannerV2GetScanResponseDataRequestsResponseResponseSecurityHeader `json:"securityHeaders" api:"required"`
+	SecurityState   string                                                                         `json:"securityState" api:"required"`
+	Status          float64                                                                        `json:"status" api:"required"`
+	StatusText      string                                                                         `json:"statusText" api:"required"`
+	URL             string                                                                         `json:"url" api:"required"`
 	Headers         interface{}                                                                    `json:"headers"`
 	JSON            accountUrlscannerV2GetScanResponseDataRequestsResponseResponseJSON             `json:"-"`
 }
@@ -1190,19 +1190,19 @@ func (r accountUrlscannerV2GetScanResponseDataRequestsResponseResponseJSON) RawJ
 }
 
 type AccountUrlscannerV2GetScanResponseDataRequestsResponseResponseSecurityDetails struct {
-	CertificateID                     float64                                                                           `json:"certificateId,required"`
-	CertificateTransparencyCompliance string                                                                            `json:"certificateTransparencyCompliance,required"`
-	Cipher                            string                                                                            `json:"cipher,required"`
-	EncryptedClientHello              bool                                                                              `json:"encryptedClientHello,required"`
-	Issuer                            string                                                                            `json:"issuer,required"`
-	KeyExchange                       string                                                                            `json:"keyExchange,required"`
-	KeyExchangeGroup                  string                                                                            `json:"keyExchangeGroup,required"`
-	Protocol                          string                                                                            `json:"protocol,required"`
-	SanList                           []string                                                                          `json:"sanList,required"`
-	ServerSignatureAlgorithm          float64                                                                           `json:"serverSignatureAlgorithm,required"`
-	SubjectName                       string                                                                            `json:"subjectName,required"`
-	ValidFrom                         float64                                                                           `json:"validFrom,required"`
-	ValidTo                           float64                                                                           `json:"validTo,required"`
+	CertificateID                     float64                                                                           `json:"certificateId" api:"required"`
+	CertificateTransparencyCompliance string                                                                            `json:"certificateTransparencyCompliance" api:"required"`
+	Cipher                            string                                                                            `json:"cipher" api:"required"`
+	EncryptedClientHello              bool                                                                              `json:"encryptedClientHello" api:"required"`
+	Issuer                            string                                                                            `json:"issuer" api:"required"`
+	KeyExchange                       string                                                                            `json:"keyExchange" api:"required"`
+	KeyExchangeGroup                  string                                                                            `json:"keyExchangeGroup" api:"required"`
+	Protocol                          string                                                                            `json:"protocol" api:"required"`
+	SanList                           []string                                                                          `json:"sanList" api:"required"`
+	ServerSignatureAlgorithm          float64                                                                           `json:"serverSignatureAlgorithm" api:"required"`
+	SubjectName                       string                                                                            `json:"subjectName" api:"required"`
+	ValidFrom                         float64                                                                           `json:"validFrom" api:"required"`
+	ValidTo                           float64                                                                           `json:"validTo" api:"required"`
 	JSON                              accountUrlscannerV2GetScanResponseDataRequestsResponseResponseSecurityDetailsJSON `json:"-"`
 }
 
@@ -1236,8 +1236,8 @@ func (r accountUrlscannerV2GetScanResponseDataRequestsResponseResponseSecurityDe
 }
 
 type AccountUrlscannerV2GetScanResponseDataRequestsResponseResponseSecurityHeader struct {
-	Name  string                                                                           `json:"name,required"`
-	Value string                                                                           `json:"value,required"`
+	Name  string                                                                           `json:"name" api:"required"`
+	Value string                                                                           `json:"value" api:"required"`
 	JSON  accountUrlscannerV2GetScanResponseDataRequestsResponseResponseSecurityHeaderJSON `json:"-"`
 }
 
@@ -1260,16 +1260,16 @@ func (r accountUrlscannerV2GetScanResponseDataRequestsResponseResponseSecurityHe
 }
 
 type AccountUrlscannerV2GetScanResponseLists struct {
-	Asns         []string                                             `json:"asns,required"`
-	Certificates []AccountUrlscannerV2GetScanResponseListsCertificate `json:"certificates,required"`
-	Continents   []string                                             `json:"continents,required"`
-	Countries    []string                                             `json:"countries,required"`
-	Domains      []string                                             `json:"domains,required"`
-	Hashes       []string                                             `json:"hashes,required"`
-	IPs          []string                                             `json:"ips,required"`
-	LinkDomains  []string                                             `json:"linkDomains,required"`
-	Servers      []string                                             `json:"servers,required"`
-	URLs         []string                                             `json:"urls,required"`
+	Asns         []string                                             `json:"asns" api:"required"`
+	Certificates []AccountUrlscannerV2GetScanResponseListsCertificate `json:"certificates" api:"required"`
+	Continents   []string                                             `json:"continents" api:"required"`
+	Countries    []string                                             `json:"countries" api:"required"`
+	Domains      []string                                             `json:"domains" api:"required"`
+	Hashes       []string                                             `json:"hashes" api:"required"`
+	IPs          []string                                             `json:"ips" api:"required"`
+	LinkDomains  []string                                             `json:"linkDomains" api:"required"`
+	Servers      []string                                             `json:"servers" api:"required"`
+	URLs         []string                                             `json:"urls" api:"required"`
 	JSON         accountUrlscannerV2GetScanResponseListsJSON          `json:"-"`
 }
 
@@ -1299,10 +1299,10 @@ func (r accountUrlscannerV2GetScanResponseListsJSON) RawJSON() string {
 }
 
 type AccountUrlscannerV2GetScanResponseListsCertificate struct {
-	Issuer      string                                                 `json:"issuer,required"`
-	SubjectName string                                                 `json:"subjectName,required"`
-	ValidFrom   float64                                                `json:"validFrom,required"`
-	ValidTo     float64                                                `json:"validTo,required"`
+	Issuer      string                                                 `json:"issuer" api:"required"`
+	SubjectName string                                                 `json:"subjectName" api:"required"`
+	ValidFrom   float64                                                `json:"validFrom" api:"required"`
+	ValidTo     float64                                                `json:"validTo" api:"required"`
 	JSON        accountUrlscannerV2GetScanResponseListsCertificateJSON `json:"-"`
 }
 
@@ -1326,7 +1326,7 @@ func (r accountUrlscannerV2GetScanResponseListsCertificateJSON) RawJSON() string
 }
 
 type AccountUrlscannerV2GetScanResponseMeta struct {
-	Processors AccountUrlscannerV2GetScanResponseMetaProcessors `json:"processors,required"`
+	Processors AccountUrlscannerV2GetScanResponseMetaProcessors `json:"processors" api:"required"`
 	JSON       accountUrlscannerV2GetScanResponseMetaJSON       `json:"-"`
 }
 
@@ -1347,13 +1347,13 @@ func (r accountUrlscannerV2GetScanResponseMetaJSON) RawJSON() string {
 }
 
 type AccountUrlscannerV2GetScanResponseMetaProcessors struct {
-	Asn              AccountUrlscannerV2GetScanResponseMetaProcessorsAsn              `json:"asn,required"`
-	DNS              AccountUrlscannerV2GetScanResponseMetaProcessorsDNS              `json:"dns,required"`
-	DomainCategories AccountUrlscannerV2GetScanResponseMetaProcessorsDomainCategories `json:"domainCategories,required"`
-	Geoip            AccountUrlscannerV2GetScanResponseMetaProcessorsGeoip            `json:"geoip,required"`
-	Phishing         AccountUrlscannerV2GetScanResponseMetaProcessorsPhishing         `json:"phishing,required"`
-	RadarRank        AccountUrlscannerV2GetScanResponseMetaProcessorsRadarRank        `json:"radarRank,required"`
-	Wappa            AccountUrlscannerV2GetScanResponseMetaProcessorsWappa            `json:"wappa,required"`
+	Asn              AccountUrlscannerV2GetScanResponseMetaProcessorsAsn              `json:"asn" api:"required"`
+	DNS              AccountUrlscannerV2GetScanResponseMetaProcessorsDNS              `json:"dns" api:"required"`
+	DomainCategories AccountUrlscannerV2GetScanResponseMetaProcessorsDomainCategories `json:"domainCategories" api:"required"`
+	Geoip            AccountUrlscannerV2GetScanResponseMetaProcessorsGeoip            `json:"geoip" api:"required"`
+	Phishing         AccountUrlscannerV2GetScanResponseMetaProcessorsPhishing         `json:"phishing" api:"required"`
+	RadarRank        AccountUrlscannerV2GetScanResponseMetaProcessorsRadarRank        `json:"radarRank" api:"required"`
+	Wappa            AccountUrlscannerV2GetScanResponseMetaProcessorsWappa            `json:"wappa" api:"required"`
 	URLCategories    AccountUrlscannerV2GetScanResponseMetaProcessorsURLCategories    `json:"urlCategories"`
 	JSON             accountUrlscannerV2GetScanResponseMetaProcessorsJSON             `json:"-"`
 }
@@ -1382,7 +1382,7 @@ func (r accountUrlscannerV2GetScanResponseMetaProcessorsJSON) RawJSON() string {
 }
 
 type AccountUrlscannerV2GetScanResponseMetaProcessorsAsn struct {
-	Data []AccountUrlscannerV2GetScanResponseMetaProcessorsAsnData `json:"data,required"`
+	Data []AccountUrlscannerV2GetScanResponseMetaProcessorsAsnData `json:"data" api:"required"`
 	JSON accountUrlscannerV2GetScanResponseMetaProcessorsAsnJSON   `json:"-"`
 }
 
@@ -1403,11 +1403,11 @@ func (r accountUrlscannerV2GetScanResponseMetaProcessorsAsnJSON) RawJSON() strin
 }
 
 type AccountUrlscannerV2GetScanResponseMetaProcessorsAsnData struct {
-	Asn         string                                                      `json:"asn,required"`
-	Country     string                                                      `json:"country,required"`
-	Description string                                                      `json:"description,required"`
-	IP          string                                                      `json:"ip,required"`
-	Name        string                                                      `json:"name,required"`
+	Asn         string                                                      `json:"asn" api:"required"`
+	Country     string                                                      `json:"country" api:"required"`
+	Description string                                                      `json:"description" api:"required"`
+	IP          string                                                      `json:"ip" api:"required"`
+	Name        string                                                      `json:"name" api:"required"`
 	JSON        accountUrlscannerV2GetScanResponseMetaProcessorsAsnDataJSON `json:"-"`
 }
 
@@ -1433,7 +1433,7 @@ func (r accountUrlscannerV2GetScanResponseMetaProcessorsAsnDataJSON) RawJSON() s
 }
 
 type AccountUrlscannerV2GetScanResponseMetaProcessorsDNS struct {
-	Data []AccountUrlscannerV2GetScanResponseMetaProcessorsDNSData `json:"data,required"`
+	Data []AccountUrlscannerV2GetScanResponseMetaProcessorsDNSData `json:"data" api:"required"`
 	JSON accountUrlscannerV2GetScanResponseMetaProcessorsDNSJSON   `json:"-"`
 }
 
@@ -1454,10 +1454,10 @@ func (r accountUrlscannerV2GetScanResponseMetaProcessorsDNSJSON) RawJSON() strin
 }
 
 type AccountUrlscannerV2GetScanResponseMetaProcessorsDNSData struct {
-	Address     string                                                      `json:"address,required"`
-	DnssecValid bool                                                        `json:"dnssec_valid,required"`
-	Name        string                                                      `json:"name,required"`
-	Type        string                                                      `json:"type,required"`
+	Address     string                                                      `json:"address" api:"required"`
+	DnssecValid bool                                                        `json:"dnssec_valid" api:"required"`
+	Name        string                                                      `json:"name" api:"required"`
+	Type        string                                                      `json:"type" api:"required"`
 	JSON        accountUrlscannerV2GetScanResponseMetaProcessorsDNSDataJSON `json:"-"`
 }
 
@@ -1482,7 +1482,7 @@ func (r accountUrlscannerV2GetScanResponseMetaProcessorsDNSDataJSON) RawJSON() s
 }
 
 type AccountUrlscannerV2GetScanResponseMetaProcessorsDomainCategories struct {
-	Data []AccountUrlscannerV2GetScanResponseMetaProcessorsDomainCategoriesData `json:"data,required"`
+	Data []AccountUrlscannerV2GetScanResponseMetaProcessorsDomainCategoriesData `json:"data" api:"required"`
 	JSON accountUrlscannerV2GetScanResponseMetaProcessorsDomainCategoriesJSON   `json:"-"`
 }
 
@@ -1504,9 +1504,9 @@ func (r accountUrlscannerV2GetScanResponseMetaProcessorsDomainCategoriesJSON) Ra
 }
 
 type AccountUrlscannerV2GetScanResponseMetaProcessorsDomainCategoriesData struct {
-	Inherited interface{}                                                              `json:"inherited,required"`
-	IsPrimary bool                                                                     `json:"isPrimary,required"`
-	Name      string                                                                   `json:"name,required"`
+	Inherited interface{}                                                              `json:"inherited" api:"required"`
+	IsPrimary bool                                                                     `json:"isPrimary" api:"required"`
+	Name      string                                                                   `json:"name" api:"required"`
 	JSON      accountUrlscannerV2GetScanResponseMetaProcessorsDomainCategoriesDataJSON `json:"-"`
 }
 
@@ -1530,7 +1530,7 @@ func (r accountUrlscannerV2GetScanResponseMetaProcessorsDomainCategoriesDataJSON
 }
 
 type AccountUrlscannerV2GetScanResponseMetaProcessorsGeoip struct {
-	Data []AccountUrlscannerV2GetScanResponseMetaProcessorsGeoipData `json:"data,required"`
+	Data []AccountUrlscannerV2GetScanResponseMetaProcessorsGeoipData `json:"data" api:"required"`
 	JSON accountUrlscannerV2GetScanResponseMetaProcessorsGeoipJSON   `json:"-"`
 }
 
@@ -1551,8 +1551,8 @@ func (r accountUrlscannerV2GetScanResponseMetaProcessorsGeoipJSON) RawJSON() str
 }
 
 type AccountUrlscannerV2GetScanResponseMetaProcessorsGeoipData struct {
-	Geoip AccountUrlscannerV2GetScanResponseMetaProcessorsGeoipDataGeoip `json:"geoip,required"`
-	IP    string                                                         `json:"ip,required"`
+	Geoip AccountUrlscannerV2GetScanResponseMetaProcessorsGeoipDataGeoip `json:"geoip" api:"required"`
+	IP    string                                                         `json:"ip" api:"required"`
 	JSON  accountUrlscannerV2GetScanResponseMetaProcessorsGeoipDataJSON  `json:"-"`
 }
 
@@ -1575,11 +1575,11 @@ func (r accountUrlscannerV2GetScanResponseMetaProcessorsGeoipDataJSON) RawJSON()
 }
 
 type AccountUrlscannerV2GetScanResponseMetaProcessorsGeoipDataGeoip struct {
-	City        string                                                             `json:"city,required"`
-	Country     string                                                             `json:"country,required"`
-	CountryName string                                                             `json:"country_name,required"`
-	Ll          []float64                                                          `json:"ll,required"`
-	Region      string                                                             `json:"region,required"`
+	City        string                                                             `json:"city" api:"required"`
+	Country     string                                                             `json:"country" api:"required"`
+	CountryName string                                                             `json:"country_name" api:"required"`
+	Ll          []float64                                                          `json:"ll" api:"required"`
+	Region      string                                                             `json:"region" api:"required"`
 	JSON        accountUrlscannerV2GetScanResponseMetaProcessorsGeoipDataGeoipJSON `json:"-"`
 }
 
@@ -1605,7 +1605,7 @@ func (r accountUrlscannerV2GetScanResponseMetaProcessorsGeoipDataGeoipJSON) RawJ
 }
 
 type AccountUrlscannerV2GetScanResponseMetaProcessorsPhishing struct {
-	Data []string                                                     `json:"data,required"`
+	Data []string                                                     `json:"data" api:"required"`
 	JSON accountUrlscannerV2GetScanResponseMetaProcessorsPhishingJSON `json:"-"`
 }
 
@@ -1627,7 +1627,7 @@ func (r accountUrlscannerV2GetScanResponseMetaProcessorsPhishingJSON) RawJSON() 
 }
 
 type AccountUrlscannerV2GetScanResponseMetaProcessorsRadarRank struct {
-	Data []AccountUrlscannerV2GetScanResponseMetaProcessorsRadarRankData `json:"data,required"`
+	Data []AccountUrlscannerV2GetScanResponseMetaProcessorsRadarRankData `json:"data" api:"required"`
 	JSON accountUrlscannerV2GetScanResponseMetaProcessorsRadarRankJSON   `json:"-"`
 }
 
@@ -1649,8 +1649,8 @@ func (r accountUrlscannerV2GetScanResponseMetaProcessorsRadarRankJSON) RawJSON()
 }
 
 type AccountUrlscannerV2GetScanResponseMetaProcessorsRadarRankData struct {
-	Bucket   string                                                            `json:"bucket,required"`
-	Hostname string                                                            `json:"hostname,required"`
+	Bucket   string                                                            `json:"bucket" api:"required"`
+	Hostname string                                                            `json:"hostname" api:"required"`
 	Rank     float64                                                           `json:"rank"`
 	JSON     accountUrlscannerV2GetScanResponseMetaProcessorsRadarRankDataJSON `json:"-"`
 }
@@ -1675,7 +1675,7 @@ func (r accountUrlscannerV2GetScanResponseMetaProcessorsRadarRankDataJSON) RawJS
 }
 
 type AccountUrlscannerV2GetScanResponseMetaProcessorsWappa struct {
-	Data []AccountUrlscannerV2GetScanResponseMetaProcessorsWappaData `json:"data,required"`
+	Data []AccountUrlscannerV2GetScanResponseMetaProcessorsWappaData `json:"data" api:"required"`
 	JSON accountUrlscannerV2GetScanResponseMetaProcessorsWappaJSON   `json:"-"`
 }
 
@@ -1696,12 +1696,12 @@ func (r accountUrlscannerV2GetScanResponseMetaProcessorsWappaJSON) RawJSON() str
 }
 
 type AccountUrlscannerV2GetScanResponseMetaProcessorsWappaData struct {
-	App             string                                                                `json:"app,required"`
-	Categories      []AccountUrlscannerV2GetScanResponseMetaProcessorsWappaDataCategory   `json:"categories,required"`
-	Confidence      []AccountUrlscannerV2GetScanResponseMetaProcessorsWappaDataConfidence `json:"confidence,required"`
-	ConfidenceTotal float64                                                               `json:"confidenceTotal,required"`
-	Icon            string                                                                `json:"icon,required"`
-	Website         string                                                                `json:"website,required"`
+	App             string                                                                `json:"app" api:"required"`
+	Categories      []AccountUrlscannerV2GetScanResponseMetaProcessorsWappaDataCategory   `json:"categories" api:"required"`
+	Confidence      []AccountUrlscannerV2GetScanResponseMetaProcessorsWappaDataConfidence `json:"confidence" api:"required"`
+	ConfidenceTotal float64                                                               `json:"confidenceTotal" api:"required"`
+	Icon            string                                                                `json:"icon" api:"required"`
+	Website         string                                                                `json:"website" api:"required"`
 	JSON            accountUrlscannerV2GetScanResponseMetaProcessorsWappaDataJSON         `json:"-"`
 }
 
@@ -1728,8 +1728,8 @@ func (r accountUrlscannerV2GetScanResponseMetaProcessorsWappaDataJSON) RawJSON()
 }
 
 type AccountUrlscannerV2GetScanResponseMetaProcessorsWappaDataCategory struct {
-	Name     string                                                                `json:"name,required"`
-	Priority float64                                                               `json:"priority,required"`
+	Name     string                                                                `json:"name" api:"required"`
+	Priority float64                                                               `json:"priority" api:"required"`
 	JSON     accountUrlscannerV2GetScanResponseMetaProcessorsWappaDataCategoryJSON `json:"-"`
 }
 
@@ -1752,10 +1752,10 @@ func (r accountUrlscannerV2GetScanResponseMetaProcessorsWappaDataCategoryJSON) R
 }
 
 type AccountUrlscannerV2GetScanResponseMetaProcessorsWappaDataConfidence struct {
-	Confidence  float64                                                                 `json:"confidence,required"`
-	Name        string                                                                  `json:"name,required"`
-	Pattern     string                                                                  `json:"pattern,required"`
-	PatternType string                                                                  `json:"patternType,required"`
+	Confidence  float64                                                                 `json:"confidence" api:"required"`
+	Name        string                                                                  `json:"name" api:"required"`
+	Pattern     string                                                                  `json:"pattern" api:"required"`
+	PatternType string                                                                  `json:"patternType" api:"required"`
 	JSON        accountUrlscannerV2GetScanResponseMetaProcessorsWappaDataConfidenceJSON `json:"-"`
 }
 
@@ -1780,7 +1780,7 @@ func (r accountUrlscannerV2GetScanResponseMetaProcessorsWappaDataConfidenceJSON)
 }
 
 type AccountUrlscannerV2GetScanResponseMetaProcessorsURLCategories struct {
-	Data []AccountUrlscannerV2GetScanResponseMetaProcessorsURLCategoriesData `json:"data,required"`
+	Data []AccountUrlscannerV2GetScanResponseMetaProcessorsURLCategoriesData `json:"data" api:"required"`
 	JSON accountUrlscannerV2GetScanResponseMetaProcessorsURLCategoriesJSON   `json:"-"`
 }
 
@@ -1802,10 +1802,10 @@ func (r accountUrlscannerV2GetScanResponseMetaProcessorsURLCategoriesJSON) RawJS
 }
 
 type AccountUrlscannerV2GetScanResponseMetaProcessorsURLCategoriesData struct {
-	Content   []AccountUrlscannerV2GetScanResponseMetaProcessorsURLCategoriesDataContent `json:"content,required"`
-	Inherited AccountUrlscannerV2GetScanResponseMetaProcessorsURLCategoriesDataInherited `json:"inherited,required"`
-	Name      string                                                                     `json:"name,required"`
-	Risks     []AccountUrlscannerV2GetScanResponseMetaProcessorsURLCategoriesDataRisk    `json:"risks,required"`
+	Content   []AccountUrlscannerV2GetScanResponseMetaProcessorsURLCategoriesDataContent `json:"content" api:"required"`
+	Inherited AccountUrlscannerV2GetScanResponseMetaProcessorsURLCategoriesDataInherited `json:"inherited" api:"required"`
+	Name      string                                                                     `json:"name" api:"required"`
+	Risks     []AccountUrlscannerV2GetScanResponseMetaProcessorsURLCategoriesDataRisk    `json:"risks" api:"required"`
 	JSON      accountUrlscannerV2GetScanResponseMetaProcessorsURLCategoriesDataJSON      `json:"-"`
 }
 
@@ -1830,9 +1830,9 @@ func (r accountUrlscannerV2GetScanResponseMetaProcessorsURLCategoriesDataJSON) R
 }
 
 type AccountUrlscannerV2GetScanResponseMetaProcessorsURLCategoriesDataContent struct {
-	ID              float64                                                                      `json:"id,required"`
-	Name            string                                                                       `json:"name,required"`
-	SuperCategoryID float64                                                                      `json:"super_category_id,required"`
+	ID              float64                                                                      `json:"id" api:"required"`
+	Name            string                                                                       `json:"name" api:"required"`
+	SuperCategoryID float64                                                                      `json:"super_category_id" api:"required"`
 	JSON            accountUrlscannerV2GetScanResponseMetaProcessorsURLCategoriesDataContentJSON `json:"-"`
 }
 
@@ -1856,9 +1856,9 @@ func (r accountUrlscannerV2GetScanResponseMetaProcessorsURLCategoriesDataContent
 }
 
 type AccountUrlscannerV2GetScanResponseMetaProcessorsURLCategoriesDataInherited struct {
-	Content []AccountUrlscannerV2GetScanResponseMetaProcessorsURLCategoriesDataInheritedContent `json:"content,required"`
-	From    string                                                                              `json:"from,required"`
-	Risks   []AccountUrlscannerV2GetScanResponseMetaProcessorsURLCategoriesDataInheritedRisk    `json:"risks,required"`
+	Content []AccountUrlscannerV2GetScanResponseMetaProcessorsURLCategoriesDataInheritedContent `json:"content" api:"required"`
+	From    string                                                                              `json:"from" api:"required"`
+	Risks   []AccountUrlscannerV2GetScanResponseMetaProcessorsURLCategoriesDataInheritedRisk    `json:"risks" api:"required"`
 	JSON    accountUrlscannerV2GetScanResponseMetaProcessorsURLCategoriesDataInheritedJSON      `json:"-"`
 }
 
@@ -1882,9 +1882,9 @@ func (r accountUrlscannerV2GetScanResponseMetaProcessorsURLCategoriesDataInherit
 }
 
 type AccountUrlscannerV2GetScanResponseMetaProcessorsURLCategoriesDataInheritedContent struct {
-	ID              float64                                                                               `json:"id,required"`
-	Name            string                                                                                `json:"name,required"`
-	SuperCategoryID float64                                                                               `json:"super_category_id,required"`
+	ID              float64                                                                               `json:"id" api:"required"`
+	Name            string                                                                                `json:"name" api:"required"`
+	SuperCategoryID float64                                                                               `json:"super_category_id" api:"required"`
 	JSON            accountUrlscannerV2GetScanResponseMetaProcessorsURLCategoriesDataInheritedContentJSON `json:"-"`
 }
 
@@ -1908,9 +1908,9 @@ func (r accountUrlscannerV2GetScanResponseMetaProcessorsURLCategoriesDataInherit
 }
 
 type AccountUrlscannerV2GetScanResponseMetaProcessorsURLCategoriesDataInheritedRisk struct {
-	ID              float64                                                                            `json:"id,required"`
-	Name            string                                                                             `json:"name,required"`
-	SuperCategoryID float64                                                                            `json:"super_category_id,required"`
+	ID              float64                                                                            `json:"id" api:"required"`
+	Name            string                                                                             `json:"name" api:"required"`
+	SuperCategoryID float64                                                                            `json:"super_category_id" api:"required"`
 	JSON            accountUrlscannerV2GetScanResponseMetaProcessorsURLCategoriesDataInheritedRiskJSON `json:"-"`
 }
 
@@ -1934,9 +1934,9 @@ func (r accountUrlscannerV2GetScanResponseMetaProcessorsURLCategoriesDataInherit
 }
 
 type AccountUrlscannerV2GetScanResponseMetaProcessorsURLCategoriesDataRisk struct {
-	ID              float64                                                                   `json:"id,required"`
-	Name            string                                                                    `json:"name,required"`
-	SuperCategoryID float64                                                                   `json:"super_category_id,required"`
+	ID              float64                                                                   `json:"id" api:"required"`
+	Name            string                                                                    `json:"name" api:"required"`
+	SuperCategoryID float64                                                                   `json:"super_category_id" api:"required"`
 	JSON            accountUrlscannerV2GetScanResponseMetaProcessorsURLCategoriesDataRiskJSON `json:"-"`
 }
 
@@ -1960,22 +1960,22 @@ func (r accountUrlscannerV2GetScanResponseMetaProcessorsURLCategoriesDataRiskJSO
 }
 
 type AccountUrlscannerV2GetScanResponsePage struct {
-	ApexDomain   string                                           `json:"apexDomain,required"`
-	Asn          string                                           `json:"asn,required"`
-	Asnname      string                                           `json:"asnname,required"`
-	City         string                                           `json:"city,required"`
-	Country      string                                           `json:"country,required"`
-	Domain       string                                           `json:"domain,required"`
-	IP           string                                           `json:"ip,required"`
-	MimeType     string                                           `json:"mimeType,required"`
-	Server       string                                           `json:"server,required"`
-	Status       string                                           `json:"status,required"`
-	Title        string                                           `json:"title,required"`
-	TlsAgeDays   float64                                          `json:"tlsAgeDays,required"`
-	TlsIssuer    string                                           `json:"tlsIssuer,required"`
-	TlsValidDays float64                                          `json:"tlsValidDays,required"`
-	TlsValidFrom string                                           `json:"tlsValidFrom,required"`
-	URL          string                                           `json:"url,required"`
+	ApexDomain   string                                           `json:"apexDomain" api:"required"`
+	Asn          string                                           `json:"asn" api:"required"`
+	Asnname      string                                           `json:"asnname" api:"required"`
+	City         string                                           `json:"city" api:"required"`
+	Country      string                                           `json:"country" api:"required"`
+	Domain       string                                           `json:"domain" api:"required"`
+	IP           string                                           `json:"ip" api:"required"`
+	MimeType     string                                           `json:"mimeType" api:"required"`
+	Server       string                                           `json:"server" api:"required"`
+	Status       string                                           `json:"status" api:"required"`
+	Title        string                                           `json:"title" api:"required"`
+	TlsAgeDays   float64                                          `json:"tlsAgeDays" api:"required"`
+	TlsIssuer    string                                           `json:"tlsIssuer" api:"required"`
+	TlsValidDays float64                                          `json:"tlsValidDays" api:"required"`
+	TlsValidFrom string                                           `json:"tlsValidFrom" api:"required"`
+	URL          string                                           `json:"url" api:"required"`
 	Screenshot   AccountUrlscannerV2GetScanResponsePageScreenshot `json:"screenshot"`
 	JSON         accountUrlscannerV2GetScanResponsePageJSON       `json:"-"`
 }
@@ -2013,10 +2013,10 @@ func (r accountUrlscannerV2GetScanResponsePageJSON) RawJSON() string {
 }
 
 type AccountUrlscannerV2GetScanResponsePageScreenshot struct {
-	Dhash   string                                               `json:"dhash,required"`
-	Mm3Hash float64                                              `json:"mm3Hash,required"`
-	Name    string                                               `json:"name,required"`
-	Phash   string                                               `json:"phash,required"`
+	Dhash   string                                               `json:"dhash" api:"required"`
+	Mm3Hash float64                                              `json:"mm3Hash" api:"required"`
+	Name    string                                               `json:"name" api:"required"`
+	Phash   string                                               `json:"phash" api:"required"`
 	JSON    accountUrlscannerV2GetScanResponsePageScreenshotJSON `json:"-"`
 }
 
@@ -2040,8 +2040,8 @@ func (r accountUrlscannerV2GetScanResponsePageScreenshotJSON) RawJSON() string {
 }
 
 type AccountUrlscannerV2GetScanResponseScanner struct {
-	Colo    string                                        `json:"colo,required"`
-	Country string                                        `json:"country,required"`
+	Colo    string                                        `json:"colo" api:"required"`
+	Country string                                        `json:"country" api:"required"`
 	JSON    accountUrlscannerV2GetScanResponseScannerJSON `json:"-"`
 }
 
@@ -2063,19 +2063,19 @@ func (r accountUrlscannerV2GetScanResponseScannerJSON) RawJSON() string {
 }
 
 type AccountUrlscannerV2GetScanResponseStats struct {
-	DomainStats      []AccountUrlscannerV2GetScanResponseStatsDomainStat   `json:"domainStats,required"`
-	IPStats          []AccountUrlscannerV2GetScanResponseStatsIPStat       `json:"ipStats,required"`
-	IPv6Percentage   float64                                               `json:"IPv6Percentage,required"`
-	Malicious        float64                                               `json:"malicious,required"`
-	ProtocolStats    []AccountUrlscannerV2GetScanResponseStatsProtocolStat `json:"protocolStats,required"`
-	ResourceStats    []AccountUrlscannerV2GetScanResponseStatsResourceStat `json:"resourceStats,required"`
-	SecurePercentage float64                                               `json:"securePercentage,required"`
-	SecureRequests   float64                                               `json:"secureRequests,required"`
-	ServerStats      []AccountUrlscannerV2GetScanResponseStatsServerStat   `json:"serverStats,required"`
-	TlsStats         []AccountUrlscannerV2GetScanResponseStatsTlsStat      `json:"tlsStats,required"`
-	TotalLinks       float64                                               `json:"totalLinks,required"`
-	UniqAsNs         float64                                               `json:"uniqASNs,required"`
-	UniqCountries    float64                                               `json:"uniqCountries,required"`
+	DomainStats      []AccountUrlscannerV2GetScanResponseStatsDomainStat   `json:"domainStats" api:"required"`
+	IPStats          []AccountUrlscannerV2GetScanResponseStatsIPStat       `json:"ipStats" api:"required"`
+	IPv6Percentage   float64                                               `json:"IPv6Percentage" api:"required"`
+	Malicious        float64                                               `json:"malicious" api:"required"`
+	ProtocolStats    []AccountUrlscannerV2GetScanResponseStatsProtocolStat `json:"protocolStats" api:"required"`
+	ResourceStats    []AccountUrlscannerV2GetScanResponseStatsResourceStat `json:"resourceStats" api:"required"`
+	SecurePercentage float64                                               `json:"securePercentage" api:"required"`
+	SecureRequests   float64                                               `json:"secureRequests" api:"required"`
+	ServerStats      []AccountUrlscannerV2GetScanResponseStatsServerStat   `json:"serverStats" api:"required"`
+	TlsStats         []AccountUrlscannerV2GetScanResponseStatsTlsStat      `json:"tlsStats" api:"required"`
+	TotalLinks       float64                                               `json:"totalLinks" api:"required"`
+	UniqAsNs         float64                                               `json:"uniqASNs" api:"required"`
+	UniqCountries    float64                                               `json:"uniqCountries" api:"required"`
 	JSON             accountUrlscannerV2GetScanResponseStatsJSON           `json:"-"`
 }
 
@@ -2108,15 +2108,15 @@ func (r accountUrlscannerV2GetScanResponseStatsJSON) RawJSON() string {
 }
 
 type AccountUrlscannerV2GetScanResponseStatsDomainStat struct {
-	Count       float64                                               `json:"count,required"`
-	Countries   []string                                              `json:"countries,required"`
-	Domain      string                                                `json:"domain,required"`
-	EncodedSize float64                                               `json:"encodedSize,required"`
-	Index       float64                                               `json:"index,required"`
-	Initiators  []string                                              `json:"initiators,required"`
-	IPs         []string                                              `json:"ips,required"`
-	Redirects   float64                                               `json:"redirects,required"`
-	Size        float64                                               `json:"size,required"`
+	Count       float64                                               `json:"count" api:"required"`
+	Countries   []string                                              `json:"countries" api:"required"`
+	Domain      string                                                `json:"domain" api:"required"`
+	EncodedSize float64                                               `json:"encodedSize" api:"required"`
+	Index       float64                                               `json:"index" api:"required"`
+	Initiators  []string                                              `json:"initiators" api:"required"`
+	IPs         []string                                              `json:"ips" api:"required"`
+	Redirects   float64                                               `json:"redirects" api:"required"`
+	Size        float64                                               `json:"size" api:"required"`
 	JSON        accountUrlscannerV2GetScanResponseStatsDomainStatJSON `json:"-"`
 }
 
@@ -2145,17 +2145,17 @@ func (r accountUrlscannerV2GetScanResponseStatsDomainStatJSON) RawJSON() string 
 }
 
 type AccountUrlscannerV2GetScanResponseStatsIPStat struct {
-	Asn         AccountUrlscannerV2GetScanResponseStatsIPStatsAsn   `json:"asn,required"`
-	Countries   []string                                            `json:"countries,required"`
-	Domains     []string                                            `json:"domains,required"`
-	EncodedSize float64                                             `json:"encodedSize,required"`
-	Geoip       AccountUrlscannerV2GetScanResponseStatsIPStatsGeoip `json:"geoip,required"`
-	Index       float64                                             `json:"index,required"`
-	IP          string                                              `json:"ip,required"`
-	Ipv6        bool                                                `json:"ipv6,required"`
-	Redirects   float64                                             `json:"redirects,required"`
-	Requests    float64                                             `json:"requests,required"`
-	Size        float64                                             `json:"size,required"`
+	Asn         AccountUrlscannerV2GetScanResponseStatsIPStatsAsn   `json:"asn" api:"required"`
+	Countries   []string                                            `json:"countries" api:"required"`
+	Domains     []string                                            `json:"domains" api:"required"`
+	EncodedSize float64                                             `json:"encodedSize" api:"required"`
+	Geoip       AccountUrlscannerV2GetScanResponseStatsIPStatsGeoip `json:"geoip" api:"required"`
+	Index       float64                                             `json:"index" api:"required"`
+	IP          string                                              `json:"ip" api:"required"`
+	Ipv6        bool                                                `json:"ipv6" api:"required"`
+	Redirects   float64                                             `json:"redirects" api:"required"`
+	Requests    float64                                             `json:"requests" api:"required"`
+	Size        float64                                             `json:"size" api:"required"`
 	Count       float64                                             `json:"count"`
 	JSON        accountUrlscannerV2GetScanResponseStatsIPStatJSON   `json:"-"`
 }
@@ -2188,12 +2188,12 @@ func (r accountUrlscannerV2GetScanResponseStatsIPStatJSON) RawJSON() string {
 }
 
 type AccountUrlscannerV2GetScanResponseStatsIPStatsAsn struct {
-	Asn         string                                                `json:"asn,required"`
-	Country     string                                                `json:"country,required"`
-	Description string                                                `json:"description,required"`
-	IP          string                                                `json:"ip,required"`
-	Name        string                                                `json:"name,required"`
-	Org         string                                                `json:"org,required"`
+	Asn         string                                                `json:"asn" api:"required"`
+	Country     string                                                `json:"country" api:"required"`
+	Description string                                                `json:"description" api:"required"`
+	IP          string                                                `json:"ip" api:"required"`
+	Name        string                                                `json:"name" api:"required"`
+	Org         string                                                `json:"org" api:"required"`
 	JSON        accountUrlscannerV2GetScanResponseStatsIPStatsAsnJSON `json:"-"`
 }
 
@@ -2219,11 +2219,11 @@ func (r accountUrlscannerV2GetScanResponseStatsIPStatsAsnJSON) RawJSON() string 
 }
 
 type AccountUrlscannerV2GetScanResponseStatsIPStatsGeoip struct {
-	City        string                                                  `json:"city,required"`
-	Country     string                                                  `json:"country,required"`
-	CountryName string                                                  `json:"country_name,required"`
-	Ll          []float64                                               `json:"ll,required"`
-	Region      string                                                  `json:"region,required"`
+	City        string                                                  `json:"city" api:"required"`
+	Country     string                                                  `json:"country" api:"required"`
+	CountryName string                                                  `json:"country_name" api:"required"`
+	Ll          []float64                                               `json:"ll" api:"required"`
+	Region      string                                                  `json:"region" api:"required"`
 	JSON        accountUrlscannerV2GetScanResponseStatsIPStatsGeoipJSON `json:"-"`
 }
 
@@ -2248,12 +2248,12 @@ func (r accountUrlscannerV2GetScanResponseStatsIPStatsGeoipJSON) RawJSON() strin
 }
 
 type AccountUrlscannerV2GetScanResponseStatsProtocolStat struct {
-	Count       float64                                                 `json:"count,required"`
-	Countries   []string                                                `json:"countries,required"`
-	EncodedSize float64                                                 `json:"encodedSize,required"`
-	IPs         []string                                                `json:"ips,required"`
-	Protocol    string                                                  `json:"protocol,required"`
-	Size        float64                                                 `json:"size,required"`
+	Count       float64                                                 `json:"count" api:"required"`
+	Countries   []string                                                `json:"countries" api:"required"`
+	EncodedSize float64                                                 `json:"encodedSize" api:"required"`
+	IPs         []string                                                `json:"ips" api:"required"`
+	Protocol    string                                                  `json:"protocol" api:"required"`
+	Size        float64                                                 `json:"size" api:"required"`
 	JSON        accountUrlscannerV2GetScanResponseStatsProtocolStatJSON `json:"-"`
 }
 
@@ -2279,14 +2279,14 @@ func (r accountUrlscannerV2GetScanResponseStatsProtocolStatJSON) RawJSON() strin
 }
 
 type AccountUrlscannerV2GetScanResponseStatsResourceStat struct {
-	Compression float64                                                 `json:"compression,required"`
-	Count       float64                                                 `json:"count,required"`
-	Countries   []string                                                `json:"countries,required"`
-	EncodedSize float64                                                 `json:"encodedSize,required"`
-	IPs         []string                                                `json:"ips,required"`
-	Percentage  float64                                                 `json:"percentage,required"`
-	Size        float64                                                 `json:"size,required"`
-	Type        string                                                  `json:"type,required"`
+	Compression float64                                                 `json:"compression" api:"required"`
+	Count       float64                                                 `json:"count" api:"required"`
+	Countries   []string                                                `json:"countries" api:"required"`
+	EncodedSize float64                                                 `json:"encodedSize" api:"required"`
+	IPs         []string                                                `json:"ips" api:"required"`
+	Percentage  float64                                                 `json:"percentage" api:"required"`
+	Size        float64                                                 `json:"size" api:"required"`
+	Type        string                                                  `json:"type" api:"required"`
 	JSON        accountUrlscannerV2GetScanResponseStatsResourceStatJSON `json:"-"`
 }
 
@@ -2314,12 +2314,12 @@ func (r accountUrlscannerV2GetScanResponseStatsResourceStatJSON) RawJSON() strin
 }
 
 type AccountUrlscannerV2GetScanResponseStatsServerStat struct {
-	Count       float64                                               `json:"count,required"`
-	Countries   []string                                              `json:"countries,required"`
-	EncodedSize float64                                               `json:"encodedSize,required"`
-	IPs         []string                                              `json:"ips,required"`
-	Server      string                                                `json:"server,required"`
-	Size        float64                                               `json:"size,required"`
+	Count       float64                                               `json:"count" api:"required"`
+	Countries   []string                                              `json:"countries" api:"required"`
+	EncodedSize float64                                               `json:"encodedSize" api:"required"`
+	IPs         []string                                              `json:"ips" api:"required"`
+	Server      string                                                `json:"server" api:"required"`
+	Size        float64                                               `json:"size" api:"required"`
 	JSON        accountUrlscannerV2GetScanResponseStatsServerStatJSON `json:"-"`
 }
 
@@ -2345,13 +2345,13 @@ func (r accountUrlscannerV2GetScanResponseStatsServerStatJSON) RawJSON() string 
 }
 
 type AccountUrlscannerV2GetScanResponseStatsTlsStat struct {
-	Count         float64                                                  `json:"count,required"`
-	Countries     []string                                                 `json:"countries,required"`
-	EncodedSize   float64                                                  `json:"encodedSize,required"`
-	IPs           []string                                                 `json:"ips,required"`
-	Protocols     AccountUrlscannerV2GetScanResponseStatsTlsStatsProtocols `json:"protocols,required"`
-	SecurityState string                                                   `json:"securityState,required"`
-	Size          float64                                                  `json:"size,required"`
+	Count         float64                                                  `json:"count" api:"required"`
+	Countries     []string                                                 `json:"countries" api:"required"`
+	EncodedSize   float64                                                  `json:"encodedSize" api:"required"`
+	IPs           []string                                                 `json:"ips" api:"required"`
+	Protocols     AccountUrlscannerV2GetScanResponseStatsTlsStatsProtocols `json:"protocols" api:"required"`
+	SecurityState string                                                   `json:"securityState" api:"required"`
+	Size          float64                                                  `json:"size" api:"required"`
 	JSON          accountUrlscannerV2GetScanResponseStatsTlsStatJSON       `json:"-"`
 }
 
@@ -2378,7 +2378,7 @@ func (r accountUrlscannerV2GetScanResponseStatsTlsStatJSON) RawJSON() string {
 }
 
 type AccountUrlscannerV2GetScanResponseStatsTlsStatsProtocols struct {
-	Tls1_3Aes128Gcm float64                                                      `json:"TLS 1.3 / AES_128_GCM,required"`
+	Tls1_3Aes128Gcm float64                                                      `json:"TLS 1.3 / AES_128_GCM" api:"required"`
 	JSON            accountUrlscannerV2GetScanResponseStatsTlsStatsProtocolsJSON `json:"-"`
 }
 
@@ -2400,19 +2400,19 @@ func (r accountUrlscannerV2GetScanResponseStatsTlsStatsProtocolsJSON) RawJSON() 
 }
 
 type AccountUrlscannerV2GetScanResponseTask struct {
-	ApexDomain    string                                        `json:"apexDomain,required"`
-	Domain        string                                        `json:"domain,required"`
-	DomURL        string                                        `json:"domURL,required"`
-	Method        string                                        `json:"method,required"`
-	Options       AccountUrlscannerV2GetScanResponseTaskOptions `json:"options,required"`
-	ReportURL     string                                        `json:"reportURL,required"`
-	ScreenshotURL string                                        `json:"screenshotURL,required"`
-	Source        string                                        `json:"source,required"`
-	Success       bool                                          `json:"success,required"`
-	Time          string                                        `json:"time,required"`
-	URL           string                                        `json:"url,required"`
-	Uuid          string                                        `json:"uuid,required"`
-	Visibility    string                                        `json:"visibility,required"`
+	ApexDomain    string                                        `json:"apexDomain" api:"required"`
+	Domain        string                                        `json:"domain" api:"required"`
+	DomURL        string                                        `json:"domURL" api:"required"`
+	Method        string                                        `json:"method" api:"required"`
+	Options       AccountUrlscannerV2GetScanResponseTaskOptions `json:"options" api:"required"`
+	ReportURL     string                                        `json:"reportURL" api:"required"`
+	ScreenshotURL string                                        `json:"screenshotURL" api:"required"`
+	Source        string                                        `json:"source" api:"required"`
+	Success       bool                                          `json:"success" api:"required"`
+	Time          string                                        `json:"time" api:"required"`
+	URL           string                                        `json:"url" api:"required"`
+	Uuid          string                                        `json:"uuid" api:"required"`
+	Visibility    string                                        `json:"visibility" api:"required"`
 	JSON          accountUrlscannerV2GetScanResponseTaskJSON    `json:"-"`
 }
 
@@ -2469,7 +2469,7 @@ func (r accountUrlscannerV2GetScanResponseTaskOptionsJSON) RawJSON() string {
 }
 
 type AccountUrlscannerV2GetScanResponseVerdicts struct {
-	Overall AccountUrlscannerV2GetScanResponseVerdictsOverall `json:"overall,required"`
+	Overall AccountUrlscannerV2GetScanResponseVerdictsOverall `json:"overall" api:"required"`
 	JSON    accountUrlscannerV2GetScanResponseVerdictsJSON    `json:"-"`
 }
 
@@ -2490,10 +2490,10 @@ func (r accountUrlscannerV2GetScanResponseVerdictsJSON) RawJSON() string {
 }
 
 type AccountUrlscannerV2GetScanResponseVerdictsOverall struct {
-	Categories  []string                                              `json:"categories,required"`
-	HasVerdicts bool                                                  `json:"hasVerdicts,required"`
-	Malicious   bool                                                  `json:"malicious,required"`
-	Tags        []string                                              `json:"tags,required"`
+	Categories  []string                                              `json:"categories" api:"required"`
+	HasVerdicts bool                                                  `json:"hasVerdicts" api:"required"`
+	Malicious   bool                                                  `json:"malicious" api:"required"`
+	Tags        []string                                              `json:"tags" api:"required"`
 	JSON        accountUrlscannerV2GetScanResponseVerdictsOverallJSON `json:"-"`
 }
 
@@ -2517,7 +2517,7 @@ func (r accountUrlscannerV2GetScanResponseVerdictsOverallJSON) RawJSON() string 
 }
 
 type AccountUrlscannerV2SearchScansResponse struct {
-	Results []AccountUrlscannerV2SearchScansResponseResult `json:"results,required"`
+	Results []AccountUrlscannerV2SearchScansResponseResult `json:"results" api:"required"`
 	JSON    accountUrlscannerV2SearchScansResponseJSON     `json:"-"`
 }
 
@@ -2538,12 +2538,12 @@ func (r accountUrlscannerV2SearchScansResponseJSON) RawJSON() string {
 }
 
 type AccountUrlscannerV2SearchScansResponseResult struct {
-	ID       string                                                `json:"_id,required"`
-	Page     AccountUrlscannerV2SearchScansResponseResultsPage     `json:"page,required"`
-	Result   string                                                `json:"result,required"`
-	Stats    AccountUrlscannerV2SearchScansResponseResultsStats    `json:"stats,required"`
-	Task     AccountUrlscannerV2SearchScansResponseResultsTask     `json:"task,required"`
-	Verdicts AccountUrlscannerV2SearchScansResponseResultsVerdicts `json:"verdicts,required"`
+	ID       string                                                `json:"_id" api:"required"`
+	Page     AccountUrlscannerV2SearchScansResponseResultsPage     `json:"page" api:"required"`
+	Result   string                                                `json:"result" api:"required"`
+	Stats    AccountUrlscannerV2SearchScansResponseResultsStats    `json:"stats" api:"required"`
+	Task     AccountUrlscannerV2SearchScansResponseResultsTask     `json:"task" api:"required"`
+	Verdicts AccountUrlscannerV2SearchScansResponseResultsVerdicts `json:"verdicts" api:"required"`
 	JSON     accountUrlscannerV2SearchScansResponseResultJSON      `json:"-"`
 }
 
@@ -2569,10 +2569,10 @@ func (r accountUrlscannerV2SearchScansResponseResultJSON) RawJSON() string {
 }
 
 type AccountUrlscannerV2SearchScansResponseResultsPage struct {
-	Asn     string                                                `json:"asn,required"`
-	Country string                                                `json:"country,required"`
-	IP      string                                                `json:"ip,required"`
-	URL     string                                                `json:"url,required"`
+	Asn     string                                                `json:"asn" api:"required"`
+	Country string                                                `json:"country" api:"required"`
+	IP      string                                                `json:"ip" api:"required"`
+	URL     string                                                `json:"url" api:"required"`
 	JSON    accountUrlscannerV2SearchScansResponseResultsPageJSON `json:"-"`
 }
 
@@ -2596,10 +2596,10 @@ func (r accountUrlscannerV2SearchScansResponseResultsPageJSON) RawJSON() string 
 }
 
 type AccountUrlscannerV2SearchScansResponseResultsStats struct {
-	DataLength    float64                                                `json:"dataLength,required"`
-	Requests      float64                                                `json:"requests,required"`
-	UniqCountries float64                                                `json:"uniqCountries,required"`
-	UniqIPs       float64                                                `json:"uniqIPs,required"`
+	DataLength    float64                                                `json:"dataLength" api:"required"`
+	Requests      float64                                                `json:"requests" api:"required"`
+	UniqCountries float64                                                `json:"uniqCountries" api:"required"`
+	UniqIPs       float64                                                `json:"uniqIPs" api:"required"`
 	JSON          accountUrlscannerV2SearchScansResponseResultsStatsJSON `json:"-"`
 }
 
@@ -2623,10 +2623,10 @@ func (r accountUrlscannerV2SearchScansResponseResultsStatsJSON) RawJSON() string
 }
 
 type AccountUrlscannerV2SearchScansResponseResultsTask struct {
-	Time       string                                                `json:"time,required"`
-	URL        string                                                `json:"url,required"`
-	Uuid       string                                                `json:"uuid,required"`
-	Visibility string                                                `json:"visibility,required"`
+	Time       string                                                `json:"time" api:"required"`
+	URL        string                                                `json:"url" api:"required"`
+	Uuid       string                                                `json:"uuid" api:"required"`
+	Visibility string                                                `json:"visibility" api:"required"`
 	JSON       accountUrlscannerV2SearchScansResponseResultsTaskJSON `json:"-"`
 }
 
@@ -2650,7 +2650,7 @@ func (r accountUrlscannerV2SearchScansResponseResultsTaskJSON) RawJSON() string 
 }
 
 type AccountUrlscannerV2SearchScansResponseResultsVerdicts struct {
-	Malicious bool                                                      `json:"malicious,required"`
+	Malicious bool                                                      `json:"malicious" api:"required"`
 	JSON      accountUrlscannerV2SearchScansResponseResultsVerdictsJSON `json:"-"`
 }
 
@@ -2680,7 +2680,7 @@ func (r AccountUrlscannerV2BulkNewScansParams) MarshalJSON() (data []byte, err e
 }
 
 type AccountUrlscannerV2BulkNewScansParamsBody struct {
-	URL         param.Field[string] `json:"url,required"`
+	URL         param.Field[string] `json:"url" api:"required"`
 	Customagent param.Field[string] `json:"customagent"`
 	// Set custom headers.
 	CustomHeaders param.Field[map[string]string] `json:"customHeaders"`
@@ -2737,7 +2737,7 @@ func (r AccountUrlscannerV2BulkNewScansParamsBodyVisibility) IsKnown() bool {
 }
 
 type AccountUrlscannerV2NewScanParams struct {
-	URL param.Field[string] `json:"url,required"`
+	URL param.Field[string] `json:"url" api:"required"`
 	// Country to geo egress from
 	Country     param.Field[AccountUrlscannerV2NewScanParamsCountry] `json:"country"`
 	Customagent param.Field[string]                                  `json:"customagent"`

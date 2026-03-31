@@ -14,7 +14,7 @@ import (
 )
 
 func TestAccountZerotrustSubnetListWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,6 +26,7 @@ func TestAccountZerotrustSubnetListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Zerotrust.Subnets.List(
 		context.TODO(),
@@ -54,7 +55,7 @@ func TestAccountZerotrustSubnetListWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountZerotrustSubnetUpdateCloudflareSourceWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -66,6 +67,7 @@ func TestAccountZerotrustSubnetUpdateCloudflareSourceWithOptionalParams(t *testi
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Zerotrust.Subnets.UpdateCloudflareSource(
 		context.TODO(),

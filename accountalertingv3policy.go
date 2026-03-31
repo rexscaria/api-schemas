@@ -40,11 +40,11 @@ func (r *AccountAlertingV3PolicyService) New(ctx context.Context, accountID stri
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/alerting/v3/policies", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get details for a single policy.
@@ -52,15 +52,15 @@ func (r *AccountAlertingV3PolicyService) Get(ctx context.Context, accountID stri
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if policyID == "" {
 		err = errors.New("missing required policy_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/alerting/v3/policies/%s", accountID, policyID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update a Notification policy.
@@ -68,15 +68,15 @@ func (r *AccountAlertingV3PolicyService) Update(ctx context.Context, accountID s
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if policyID == "" {
 		err = errors.New("missing required policy_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/alerting/v3/policies/%s", accountID, policyID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get a list of all Notification policies.
@@ -84,11 +84,11 @@ func (r *AccountAlertingV3PolicyService) List(ctx context.Context, accountID str
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/alerting/v3/policies", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete a Notification policy.
@@ -96,15 +96,15 @@ func (r *AccountAlertingV3PolicyService) Delete(ctx context.Context, accountID s
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if policyID == "" {
 		err = errors.New("missing required policy_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/alerting/v3/policies/%s", accountID, policyID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Optional filters that allow you to be alerted only on a subset of events for
@@ -645,10 +645,10 @@ func (r policiesJSON) RawJSON() string {
 }
 
 type AccountAlertingV3PolicyGetResponse struct {
-	Errors   []AaaMessage `json:"errors,required"`
-	Messages []AaaMessage `json:"messages,required"`
+	Errors   []AaaMessage `json:"errors" api:"required"`
+	Messages []AaaMessage `json:"messages" api:"required"`
 	// Whether the API call was successful
-	Success AccountAlertingV3PolicyGetResponseSuccess `json:"success,required"`
+	Success AccountAlertingV3PolicyGetResponseSuccess `json:"success" api:"required"`
 	Result  Policies                                  `json:"result"`
 	JSON    accountAlertingV3PolicyGetResponseJSON    `json:"-"`
 }
@@ -688,10 +688,10 @@ func (r AccountAlertingV3PolicyGetResponseSuccess) IsKnown() bool {
 }
 
 type AccountAlertingV3PolicyListResponse struct {
-	Errors   []AaaMessage `json:"errors,required"`
-	Messages []AaaMessage `json:"messages,required"`
+	Errors   []AaaMessage `json:"errors" api:"required"`
+	Messages []AaaMessage `json:"messages" api:"required"`
 	// Whether the API call was successful
-	Success    AccountAlertingV3PolicyListResponseSuccess    `json:"success,required"`
+	Success    AccountAlertingV3PolicyListResponseSuccess    `json:"success" api:"required"`
 	Result     []Policies                                    `json:"result"`
 	ResultInfo AccountAlertingV3PolicyListResponseResultInfo `json:"result_info"`
 	JSON       accountAlertingV3PolicyListResponseJSON       `json:"-"`
@@ -767,14 +767,14 @@ type AccountAlertingV3PolicyNewParams struct {
 	// Refers to which event will trigger a Notification dispatch. You can use the
 	// endpoint to get available alert types which then will give you a list of
 	// possible values.
-	AlertType param.Field[AlertType] `json:"alert_type,required"`
+	AlertType param.Field[AlertType] `json:"alert_type" api:"required"`
 	// Whether or not the Notification policy is enabled.
-	Enabled param.Field[bool] `json:"enabled,required"`
+	Enabled param.Field[bool] `json:"enabled" api:"required"`
 	// List of IDs that will be used when dispatching a notification. IDs for email
 	// type will be the email address.
-	Mechanisms param.Field[MechanismsParam] `json:"mechanisms,required"`
+	Mechanisms param.Field[MechanismsParam] `json:"mechanisms" api:"required"`
 	// Name of the policy.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Optional specification of how often to re-alert from the same incident, not
 	// support on all alert types.
 	AlertInterval param.Field[string] `json:"alert_interval"`

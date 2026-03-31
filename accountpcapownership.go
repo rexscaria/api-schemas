@@ -39,11 +39,11 @@ func (r *AccountPcapOwnershipService) New(ctx context.Context, accountID string,
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/pcaps/ownership", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // List all buckets configured for use with PCAPs API.
@@ -51,28 +51,28 @@ func (r *AccountPcapOwnershipService) List(ctx context.Context, accountID string
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/pcaps/ownership", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Deletes buckets added to the packet captures API.
 func (r *AccountPcapOwnershipService) Delete(ctx context.Context, accountID string, ownershipID string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return err
 	}
 	if ownershipID == "" {
 		err = errors.New("missing required ownership_id parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("accounts/%s/pcaps/ownership/%s", accountID, ownershipID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Validates buckets added to the packet captures API.
@@ -80,16 +80,16 @@ func (r *AccountPcapOwnershipService) Validate(ctx context.Context, accountID st
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/pcaps/ownership/validate", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type MessagesMagicVisibilityPcapsItem struct {
-	Code             int64                                  `json:"code,required"`
-	Message          string                                 `json:"message,required"`
+	Code             int64                                  `json:"code" api:"required"`
+	Message          string                                 `json:"message" api:"required"`
 	DocumentationURL string                                 `json:"documentation_url"`
 	Source           MessagesMagicVisibilityPcapsItemSource `json:"source"`
 	JSON             messagesMagicVisibilityPcapsItemJSON   `json:"-"`
@@ -137,15 +137,15 @@ func (r messagesMagicVisibilityPcapsItemSourceJSON) RawJSON() string {
 
 type OwnershipResponse struct {
 	// The bucket ID associated with the packet captures API.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The full URI for the bucket. This field only applies to `full` packet captures.
-	DestinationConf string `json:"destination_conf,required"`
+	DestinationConf string `json:"destination_conf" api:"required"`
 	// The ownership challenge filename stored in the bucket.
-	Filename string `json:"filename,required"`
+	Filename string `json:"filename" api:"required"`
 	// The status of the ownership challenge. Can be pending, success or failed.
-	Status OwnershipResponseStatus `json:"status,required"`
+	Status OwnershipResponseStatus `json:"status" api:"required"`
 	// The RFC 3339 timestamp when the bucket was added to packet captures API.
-	Submitted string `json:"submitted,required"`
+	Submitted string `json:"submitted" api:"required"`
 	// The RFC 3339 timestamp when the bucket was validated.
 	Validated string                `json:"validated"`
 	JSON      ownershipResponseJSON `json:"-"`
@@ -190,11 +190,11 @@ func (r OwnershipResponseStatus) IsKnown() bool {
 }
 
 type OwnershipSingleResponse struct {
-	Errors   []MessagesMagicVisibilityPcapsItem `json:"errors,required"`
-	Messages []MessagesMagicVisibilityPcapsItem `json:"messages,required"`
-	Result   OwnershipResponse                  `json:"result,required"`
+	Errors   []MessagesMagicVisibilityPcapsItem `json:"errors" api:"required"`
+	Messages []MessagesMagicVisibilityPcapsItem `json:"messages" api:"required"`
+	Result   OwnershipResponse                  `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success OwnershipSingleResponseSuccess `json:"success,required"`
+	Success OwnershipSingleResponseSuccess `json:"success" api:"required"`
 	JSON    ownershipSingleResponseJSON    `json:"-"`
 }
 
@@ -233,11 +233,11 @@ func (r OwnershipSingleResponseSuccess) IsKnown() bool {
 }
 
 type AccountPcapOwnershipListResponse struct {
-	Errors   []MessagesMagicVisibilityPcapsItem `json:"errors,required"`
-	Messages []MessagesMagicVisibilityPcapsItem `json:"messages,required"`
-	Result   []OwnershipResponse                `json:"result,required,nullable"`
+	Errors   []MessagesMagicVisibilityPcapsItem `json:"errors" api:"required"`
+	Messages []MessagesMagicVisibilityPcapsItem `json:"messages" api:"required"`
+	Result   []OwnershipResponse                `json:"result" api:"required,nullable"`
 	// Whether the API call was successful
-	Success    AccountPcapOwnershipListResponseSuccess    `json:"success,required"`
+	Success    AccountPcapOwnershipListResponseSuccess    `json:"success" api:"required"`
 	ResultInfo AccountPcapOwnershipListResponseResultInfo `json:"result_info"`
 	JSON       accountPcapOwnershipListResponseJSON       `json:"-"`
 }
@@ -310,7 +310,7 @@ func (r accountPcapOwnershipListResponseResultInfoJSON) RawJSON() string {
 
 type AccountPcapOwnershipNewParams struct {
 	// The full URI for the bucket. This field only applies to `full` packet captures.
-	DestinationConf param.Field[string] `json:"destination_conf,required"`
+	DestinationConf param.Field[string] `json:"destination_conf" api:"required"`
 }
 
 func (r AccountPcapOwnershipNewParams) MarshalJSON() (data []byte, err error) {
@@ -319,9 +319,9 @@ func (r AccountPcapOwnershipNewParams) MarshalJSON() (data []byte, err error) {
 
 type AccountPcapOwnershipValidateParams struct {
 	// The full URI for the bucket. This field only applies to `full` packet captures.
-	DestinationConf param.Field[string] `json:"destination_conf,required"`
+	DestinationConf param.Field[string] `json:"destination_conf" api:"required"`
 	// The ownership challenge filename stored in the bucket.
-	OwnershipChallenge param.Field[string] `json:"ownership_challenge,required"`
+	OwnershipChallenge param.Field[string] `json:"ownership_challenge" api:"required"`
 }
 
 func (r AccountPcapOwnershipValidateParams) MarshalJSON() (data []byte, err error) {

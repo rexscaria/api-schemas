@@ -57,16 +57,16 @@ func (r *AccountDexService) ListColos(ctx context.Context, accountID string, que
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/dex/colos", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type Item struct {
-	Code             int64      `json:"code,required"`
-	Message          string     `json:"message,required"`
+	Code             int64      `json:"code" api:"required"`
+	Message          string     `json:"message" api:"required"`
 	DocumentationURL string     `json:"documentation_url"`
 	Source           ItemSource `json:"source"`
 	JSON             itemJSON   `json:"-"`
@@ -111,10 +111,10 @@ func (r itemSourceJSON) RawJSON() string {
 }
 
 type AccountDexListColosResponse struct {
-	Errors   []Item `json:"errors,required"`
-	Messages []Item `json:"messages,required"`
+	Errors   []Item `json:"errors" api:"required"`
+	Messages []Item `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountDexListColosResponseSuccess `json:"success,required"`
+	Success AccountDexListColosResponseSuccess `json:"success" api:"required"`
 	// array of colos.
 	Result     []interface{}                         `json:"result"`
 	ResultInfo AccountDexListColosResponseResultInfo `json:"result_info"`
@@ -189,9 +189,9 @@ func (r accountDexListColosResponseResultInfoJSON) RawJSON() string {
 
 type AccountDexListColosParams struct {
 	// Start time for connection period in ISO (RFC3339 - ISO 8601) format
-	From param.Field[string] `query:"from,required"`
+	From param.Field[string] `query:"from" api:"required"`
 	// End time for connection period in ISO (RFC3339 - ISO 8601) format
-	To param.Field[string] `query:"to,required"`
+	To param.Field[string] `query:"to" api:"required"`
 	// Type of usage that colos should be sorted by. If unspecified, returns all
 	// Cloudflare colos sorted alphabetically.
 	SortBy param.Field[AccountDexListColosParamsSortBy] `query:"sortBy"`

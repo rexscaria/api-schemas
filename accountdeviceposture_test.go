@@ -14,7 +14,7 @@ import (
 )
 
 func TestAccountDevicePostureNewWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,6 +26,7 @@ func TestAccountDevicePostureNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Devices.Posture.New(
 		context.TODO(),
@@ -58,7 +59,7 @@ func TestAccountDevicePostureNewWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountDevicePostureGet(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -70,6 +71,7 @@ func TestAccountDevicePostureGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Devices.Posture.Get(
 		context.TODO(),
@@ -86,7 +88,7 @@ func TestAccountDevicePostureGet(t *testing.T) {
 }
 
 func TestAccountDevicePostureUpdateWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -98,6 +100,7 @@ func TestAccountDevicePostureUpdateWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Devices.Posture.Update(
 		context.TODO(),
@@ -131,7 +134,7 @@ func TestAccountDevicePostureUpdateWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountDevicePostureList(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -143,6 +146,7 @@ func TestAccountDevicePostureList(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Devices.Posture.List(context.TODO(), "699d98642c564d2e855e9661899b7252")
 	if err != nil {
@@ -155,7 +159,7 @@ func TestAccountDevicePostureList(t *testing.T) {
 }
 
 func TestAccountDevicePostureDelete(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -167,6 +171,7 @@ func TestAccountDevicePostureDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Devices.Posture.Delete(
 		context.TODO(),

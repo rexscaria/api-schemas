@@ -41,11 +41,11 @@ func (r *AccountIntelDomainService) GetDetails(ctx context.Context, accountID st
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/intel/domain", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Same as summary.
@@ -53,11 +53,11 @@ func (r *AccountIntelDomainService) ListMultipleDetails(ctx context.Context, acc
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/intel/domain/bulk", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Additional information related to the host name.
@@ -157,10 +157,10 @@ func (r contentCategoryJSON) RawJSON() string {
 }
 
 type AccountIntelDomainGetDetailsResponse struct {
-	Errors   []AccountIntelDomainGetDetailsResponseError   `json:"errors,required"`
-	Messages []AccountIntelDomainGetDetailsResponseMessage `json:"messages,required"`
+	Errors   []AccountIntelDomainGetDetailsResponseError   `json:"errors" api:"required"`
+	Messages []AccountIntelDomainGetDetailsResponseMessage `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountIntelDomainGetDetailsResponseSuccess `json:"success,required"`
+	Success AccountIntelDomainGetDetailsResponseSuccess `json:"success" api:"required"`
 	Result  AccountIntelDomainGetDetailsResponseResult  `json:"result"`
 	JSON    accountIntelDomainGetDetailsResponseJSON    `json:"-"`
 }
@@ -185,8 +185,8 @@ func (r accountIntelDomainGetDetailsResponseJSON) RawJSON() string {
 }
 
 type AccountIntelDomainGetDetailsResponseError struct {
-	Code             int64                                            `json:"code,required"`
-	Message          string                                           `json:"message,required"`
+	Code             int64                                            `json:"code" api:"required"`
+	Message          string                                           `json:"message" api:"required"`
 	DocumentationURL string                                           `json:"documentation_url"`
 	Source           AccountIntelDomainGetDetailsResponseErrorsSource `json:"source"`
 	JSON             accountIntelDomainGetDetailsResponseErrorJSON    `json:"-"`
@@ -233,8 +233,8 @@ func (r accountIntelDomainGetDetailsResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type AccountIntelDomainGetDetailsResponseMessage struct {
-	Code             int64                                              `json:"code,required"`
-	Message          string                                             `json:"message,required"`
+	Code             int64                                              `json:"code" api:"required"`
+	Message          string                                             `json:"message" api:"required"`
 	DocumentationURL string                                             `json:"documentation_url"`
 	Source           AccountIntelDomainGetDetailsResponseMessagesSource `json:"source"`
 	JSON             accountIntelDomainGetDetailsResponseMessageJSON    `json:"-"`
@@ -374,11 +374,11 @@ func (r accountIntelDomainGetDetailsResponseResultResolvesToRefJSON) RawJSON() s
 }
 
 type AccountIntelDomainListMultipleDetailsResponse struct {
-	Errors   []AccountIntelDomainListMultipleDetailsResponseError   `json:"errors,required"`
-	Messages []AccountIntelDomainListMultipleDetailsResponseMessage `json:"messages,required"`
-	Result   []AccountIntelDomainListMultipleDetailsResponseResult  `json:"result,required,nullable"`
+	Errors   []AccountIntelDomainListMultipleDetailsResponseError   `json:"errors" api:"required"`
+	Messages []AccountIntelDomainListMultipleDetailsResponseMessage `json:"messages" api:"required"`
+	Result   []AccountIntelDomainListMultipleDetailsResponseResult  `json:"result" api:"required,nullable"`
 	// Whether the API call was successful.
-	Success    AccountIntelDomainListMultipleDetailsResponseSuccess `json:"success,required"`
+	Success    AccountIntelDomainListMultipleDetailsResponseSuccess `json:"success" api:"required"`
 	ResultInfo ResultInfoIntel                                      `json:"result_info"`
 	JSON       accountIntelDomainListMultipleDetailsResponseJSON    `json:"-"`
 }
@@ -404,8 +404,8 @@ func (r accountIntelDomainListMultipleDetailsResponseJSON) RawJSON() string {
 }
 
 type AccountIntelDomainListMultipleDetailsResponseError struct {
-	Code             int64                                                     `json:"code,required"`
-	Message          string                                                    `json:"message,required"`
+	Code             int64                                                     `json:"code" api:"required"`
+	Message          string                                                    `json:"message" api:"required"`
 	DocumentationURL string                                                    `json:"documentation_url"`
 	Source           AccountIntelDomainListMultipleDetailsResponseErrorsSource `json:"source"`
 	JSON             accountIntelDomainListMultipleDetailsResponseErrorJSON    `json:"-"`
@@ -453,8 +453,8 @@ func (r accountIntelDomainListMultipleDetailsResponseErrorsSourceJSON) RawJSON()
 }
 
 type AccountIntelDomainListMultipleDetailsResponseMessage struct {
-	Code             int64                                                       `json:"code,required"`
-	Message          string                                                      `json:"message,required"`
+	Code             int64                                                       `json:"code" api:"required"`
+	Message          string                                                      `json:"message" api:"required"`
 	DocumentationURL string                                                      `json:"documentation_url"`
 	Source           AccountIntelDomainListMultipleDetailsResponseMessagesSource `json:"source"`
 	JSON             accountIntelDomainListMultipleDetailsResponseMessageJSON    `json:"-"`

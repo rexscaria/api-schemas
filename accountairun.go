@@ -54,15 +54,15 @@ func (r *AccountAIRunService) ExecuteModel(ctx context.Context, accountID string
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if modelName == "" {
 		err = errors.New("missing required model_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai/run/%s", accountID, modelName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountAIRunExecuteModelResponse struct {
@@ -91,11 +91,11 @@ func (r accountAIRunExecuteModelResponseJSON) RawJSON() string {
 //
 // Union satisfied by [AccountAIRunExecuteModelResponseResultTextClassification],
 // [shared.UnionString], [AccountAIRunExecuteModelResponseResultAudio],
-// [AccountAIRunExecuteModelResponseResultTextEmbeddings],
+// [shared.UnionString], [AccountAIRunExecuteModelResponseResultTextEmbeddings],
 // [AccountAIRunExecuteModelResponseResultAutomaticSpeechRecognition],
 // [AccountAIRunExecuteModelResponseResultImageClassification],
 // [AccountAIRunExecuteModelResponseResultObjectDetection],
-// [AccountAIRunExecuteModelResponseResultObject],
+// [AccountAIRunExecuteModelResponseResultObject], [shared.UnionString],
 // [AccountAIRunExecuteModelResponseResultTranslation],
 // [AccountAIRunExecuteModelResponseResultSummarization],
 // [AccountAIRunExecuteModelResponseResultImageToText] or
@@ -121,6 +121,10 @@ func init() {
 			Type:       reflect.TypeOf(AccountAIRunExecuteModelResponseResultAudio{}),
 		},
 		apijson.UnionVariant{
+			TypeFilter: gjson.String,
+			Type:       reflect.TypeOf(shared.UnionString("")),
+		},
+		apijson.UnionVariant{
 			TypeFilter: gjson.JSON,
 			Type:       reflect.TypeOf(AccountAIRunExecuteModelResponseResultTextEmbeddings{}),
 		},
@@ -139,6 +143,10 @@ func init() {
 		apijson.UnionVariant{
 			TypeFilter: gjson.JSON,
 			Type:       reflect.TypeOf(AccountAIRunExecuteModelResponseResultObject{}),
+		},
+		apijson.UnionVariant{
+			TypeFilter: gjson.String,
+			Type:       reflect.TypeOf(shared.UnionString("")),
 		},
 		apijson.UnionVariant{
 			TypeFilter: gjson.JSON,
@@ -245,7 +253,7 @@ func (r AccountAIRunExecuteModelResponseResultTextEmbeddings) ImplementsAccountA
 
 type AccountAIRunExecuteModelResponseResultAutomaticSpeechRecognition struct {
 	// The transcription
-	Text      string                                                                 `json:"text,required"`
+	Text      string                                                                 `json:"text" api:"required"`
 	Vtt       string                                                                 `json:"vtt"`
 	WordCount float64                                                                `json:"word_count"`
 	Words     []AccountAIRunExecuteModelResponseResultAutomaticSpeechRecognitionWord `json:"words"`
@@ -404,7 +412,7 @@ func (r accountAIRunExecuteModelResponseResultObjectDetectionBoxJSON) RawJSON() 
 
 type AccountAIRunExecuteModelResponseResultObject struct {
 	// The generated text response from the model
-	Response string `json:"response,required"`
+	Response string `json:"response" api:"required"`
 	// An array of tool calls requests made during the response generation
 	ToolCalls []AccountAIRunExecuteModelResponseResultObjectToolCall `json:"tool_calls"`
 	// Usage statistics for the inference request
@@ -689,7 +697,7 @@ type AccountAIRunExecuteModelParamsBodyUnion interface {
 
 type AccountAIRunExecuteModelParamsBodyTextClassification struct {
 	// The text that you want to classify
-	Text param.Field[string] `json:"text,required"`
+	Text param.Field[string] `json:"text" api:"required"`
 }
 
 func (r AccountAIRunExecuteModelParamsBodyTextClassification) MarshalJSON() (data []byte, err error) {
@@ -701,7 +709,7 @@ func (r AccountAIRunExecuteModelParamsBodyTextClassification) implementsAccountA
 
 type AccountAIRunExecuteModelParamsBodyTextToImage struct {
 	// A text description of the image you want to generate
-	Prompt param.Field[string] `json:"prompt,required"`
+	Prompt param.Field[string] `json:"prompt" api:"required"`
 	// Controls how closely the generated image should adhere to the prompt; higher
 	// values make the image more aligned with the prompt
 	Guidance param.Field[float64] `json:"guidance"`
@@ -737,7 +745,7 @@ func (r AccountAIRunExecuteModelParamsBodyTextToImage) implementsAccountAIRunExe
 
 type AccountAIRunExecuteModelParamsBodyTextToSpeech struct {
 	// A text description of the audio you want to generate
-	Prompt param.Field[string] `json:"prompt,required"`
+	Prompt param.Field[string] `json:"prompt" api:"required"`
 	// The speech language (e.g., 'en' for English, 'fr' for French). Defaults to 'en'
 	// if not specified
 	Lang param.Field[string] `json:"lang"`
@@ -752,7 +760,7 @@ func (r AccountAIRunExecuteModelParamsBodyTextToSpeech) implementsAccountAIRunEx
 
 type AccountAIRunExecuteModelParamsBodyTextEmbeddings struct {
 	// The text to embed
-	Text param.Field[AccountAIRunExecuteModelParamsBodyTextEmbeddingsTextUnion] `json:"text,required"`
+	Text param.Field[AccountAIRunExecuteModelParamsBodyTextEmbeddingsTextUnion] `json:"text" api:"required"`
 }
 
 func (r AccountAIRunExecuteModelParamsBodyTextEmbeddings) MarshalJSON() (data []byte, err error) {
@@ -778,7 +786,7 @@ func (r AccountAIRunExecuteModelParamsBodyTextEmbeddingsTextArray) ImplementsAcc
 type AccountAIRunExecuteModelParamsBodyAutomaticSpeechRecognition struct {
 	// An array of integers that represent the audio data constrained to 8-bit unsigned
 	// integer values
-	Audio param.Field[[]float64] `json:"audio,required"`
+	Audio param.Field[[]float64] `json:"audio" api:"required"`
 	// The language of the recorded audio
 	SourceLang param.Field[string] `json:"source_lang"`
 	// The language to translate the transcription into. Currently only English is
@@ -796,7 +804,7 @@ func (r AccountAIRunExecuteModelParamsBodyAutomaticSpeechRecognition) implements
 type AccountAIRunExecuteModelParamsBodyImageClassification struct {
 	// An array of integers that represent the image data constrained to 8-bit unsigned
 	// integer values
-	Image param.Field[[]float64] `json:"image,required"`
+	Image param.Field[[]float64] `json:"image" api:"required"`
 }
 
 func (r AccountAIRunExecuteModelParamsBodyImageClassification) MarshalJSON() (data []byte, err error) {
@@ -821,7 +829,7 @@ func (r AccountAIRunExecuteModelParamsBodyObjectDetection) implementsAccountAIRu
 
 type AccountAIRunExecuteModelParamsBodyPrompt struct {
 	// The input text prompt for the model to generate a response.
-	Prompt param.Field[string] `json:"prompt,required"`
+	Prompt param.Field[string] `json:"prompt" api:"required"`
 	// Decreases the likelihood of the model repeating the same lines verbatim.
 	FrequencyPenalty param.Field[float64] `json:"frequency_penalty"`
 	// Name of the LoRA (Low-Rank Adaptation) model to fine-tune the base model.
@@ -887,7 +895,7 @@ func (r AccountAIRunExecuteModelParamsBodyPromptResponseFormatType) IsKnown() bo
 
 type AccountAIRunExecuteModelParamsBodyTextGeneration struct {
 	// An array of message objects representing the conversation history.
-	Messages param.Field[[]AccountAIRunExecuteModelParamsBodyTextGenerationMessage] `json:"messages,required"`
+	Messages param.Field[[]AccountAIRunExecuteModelParamsBodyTextGenerationMessage] `json:"messages" api:"required"`
 	// Decreases the likelihood of the model repeating the same lines verbatim.
 	FrequencyPenalty param.Field[float64]                                                    `json:"frequency_penalty"`
 	Functions        param.Field[[]AccountAIRunExecuteModelParamsBodyTextGenerationFunction] `json:"functions"`
@@ -930,9 +938,9 @@ func (r AccountAIRunExecuteModelParamsBodyTextGeneration) implementsAccountAIRun
 
 type AccountAIRunExecuteModelParamsBodyTextGenerationMessage struct {
 	// The content of the message as a string.
-	Content param.Field[string] `json:"content,required"`
+	Content param.Field[string] `json:"content" api:"required"`
 	// The role of the message sender (e.g., 'user', 'assistant', 'system', 'tool').
-	Role param.Field[string] `json:"role,required"`
+	Role param.Field[string] `json:"role" api:"required"`
 }
 
 func (r AccountAIRunExecuteModelParamsBodyTextGenerationMessage) MarshalJSON() (data []byte, err error) {
@@ -940,8 +948,8 @@ func (r AccountAIRunExecuteModelParamsBodyTextGenerationMessage) MarshalJSON() (
 }
 
 type AccountAIRunExecuteModelParamsBodyTextGenerationFunction struct {
-	Code param.Field[string] `json:"code,required"`
-	Name param.Field[string] `json:"name,required"`
+	Code param.Field[string] `json:"code" api:"required"`
+	Name param.Field[string] `json:"name" api:"required"`
 }
 
 func (r AccountAIRunExecuteModelParamsBodyTextGenerationFunction) MarshalJSON() (data []byte, err error) {
@@ -999,11 +1007,11 @@ type AccountAIRunExecuteModelParamsBodyTextGenerationToolUnion interface {
 
 type AccountAIRunExecuteModelParamsBodyTextGenerationToolsObject struct {
 	// A brief description of what the tool does.
-	Description param.Field[string] `json:"description,required"`
+	Description param.Field[string] `json:"description" api:"required"`
 	// The name of the tool. More descriptive the better.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Schema defining the parameters accepted by the tool.
-	Parameters param.Field[AccountAIRunExecuteModelParamsBodyTextGenerationToolsObjectParameters] `json:"parameters,required"`
+	Parameters param.Field[AccountAIRunExecuteModelParamsBodyTextGenerationToolsObjectParameters] `json:"parameters" api:"required"`
 }
 
 func (r AccountAIRunExecuteModelParamsBodyTextGenerationToolsObject) MarshalJSON() (data []byte, err error) {
@@ -1016,9 +1024,9 @@ func (r AccountAIRunExecuteModelParamsBodyTextGenerationToolsObject) implementsA
 // Schema defining the parameters accepted by the tool.
 type AccountAIRunExecuteModelParamsBodyTextGenerationToolsObjectParameters struct {
 	// Definitions of each parameter.
-	Properties param.Field[map[string]AccountAIRunExecuteModelParamsBodyTextGenerationToolsObjectParametersProperties] `json:"properties,required"`
+	Properties param.Field[map[string]AccountAIRunExecuteModelParamsBodyTextGenerationToolsObjectParametersProperties] `json:"properties" api:"required"`
 	// The type of the parameters object (usually 'object').
-	Type param.Field[string] `json:"type,required"`
+	Type param.Field[string] `json:"type" api:"required"`
 	// List of required parameter names.
 	Required param.Field[[]string] `json:"required"`
 }
@@ -1029,9 +1037,9 @@ func (r AccountAIRunExecuteModelParamsBodyTextGenerationToolsObjectParameters) M
 
 type AccountAIRunExecuteModelParamsBodyTextGenerationToolsObjectParametersProperties struct {
 	// A description of the expected parameter.
-	Description param.Field[string] `json:"description,required"`
+	Description param.Field[string] `json:"description" api:"required"`
 	// The data type of the parameter.
-	Type param.Field[string] `json:"type,required"`
+	Type param.Field[string] `json:"type" api:"required"`
 }
 
 func (r AccountAIRunExecuteModelParamsBodyTextGenerationToolsObjectParametersProperties) MarshalJSON() (data []byte, err error) {
@@ -1040,9 +1048,9 @@ func (r AccountAIRunExecuteModelParamsBodyTextGenerationToolsObjectParametersPro
 
 type AccountAIRunExecuteModelParamsBodyTextGenerationToolsFunction struct {
 	// Details of the function tool.
-	Function param.Field[AccountAIRunExecuteModelParamsBodyTextGenerationToolsFunctionFunction] `json:"function,required"`
+	Function param.Field[AccountAIRunExecuteModelParamsBodyTextGenerationToolsFunctionFunction] `json:"function" api:"required"`
 	// Specifies the type of tool (e.g., 'function').
-	Type param.Field[string] `json:"type,required"`
+	Type param.Field[string] `json:"type" api:"required"`
 }
 
 func (r AccountAIRunExecuteModelParamsBodyTextGenerationToolsFunction) MarshalJSON() (data []byte, err error) {
@@ -1055,11 +1063,11 @@ func (r AccountAIRunExecuteModelParamsBodyTextGenerationToolsFunction) implement
 // Details of the function tool.
 type AccountAIRunExecuteModelParamsBodyTextGenerationToolsFunctionFunction struct {
 	// A brief description of what the function does.
-	Description param.Field[string] `json:"description,required"`
+	Description param.Field[string] `json:"description" api:"required"`
 	// The name of the function.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Schema defining the parameters accepted by the function.
-	Parameters param.Field[AccountAIRunExecuteModelParamsBodyTextGenerationToolsFunctionFunctionParameters] `json:"parameters,required"`
+	Parameters param.Field[AccountAIRunExecuteModelParamsBodyTextGenerationToolsFunctionFunctionParameters] `json:"parameters" api:"required"`
 }
 
 func (r AccountAIRunExecuteModelParamsBodyTextGenerationToolsFunctionFunction) MarshalJSON() (data []byte, err error) {
@@ -1069,9 +1077,9 @@ func (r AccountAIRunExecuteModelParamsBodyTextGenerationToolsFunctionFunction) M
 // Schema defining the parameters accepted by the function.
 type AccountAIRunExecuteModelParamsBodyTextGenerationToolsFunctionFunctionParameters struct {
 	// Definitions of each parameter.
-	Properties param.Field[map[string]AccountAIRunExecuteModelParamsBodyTextGenerationToolsFunctionFunctionParametersProperties] `json:"properties,required"`
+	Properties param.Field[map[string]AccountAIRunExecuteModelParamsBodyTextGenerationToolsFunctionFunctionParametersProperties] `json:"properties" api:"required"`
 	// The type of the parameters object (usually 'object').
-	Type param.Field[string] `json:"type,required"`
+	Type param.Field[string] `json:"type" api:"required"`
 	// List of required parameter names.
 	Required param.Field[[]string] `json:"required"`
 }
@@ -1082,9 +1090,9 @@ func (r AccountAIRunExecuteModelParamsBodyTextGenerationToolsFunctionFunctionPar
 
 type AccountAIRunExecuteModelParamsBodyTextGenerationToolsFunctionFunctionParametersProperties struct {
 	// A description of the expected parameter.
-	Description param.Field[string] `json:"description,required"`
+	Description param.Field[string] `json:"description" api:"required"`
 	// The data type of the parameter.
-	Type param.Field[string] `json:"type,required"`
+	Type param.Field[string] `json:"type" api:"required"`
 }
 
 func (r AccountAIRunExecuteModelParamsBodyTextGenerationToolsFunctionFunctionParametersProperties) MarshalJSON() (data []byte, err error) {
@@ -1093,9 +1101,9 @@ func (r AccountAIRunExecuteModelParamsBodyTextGenerationToolsFunctionFunctionPar
 
 type AccountAIRunExecuteModelParamsBodyTranslation struct {
 	// The language code to translate the text into (e.g., 'es' for Spanish)
-	TargetLang param.Field[string] `json:"target_lang,required"`
+	TargetLang param.Field[string] `json:"target_lang" api:"required"`
 	// The text to be translated
-	Text param.Field[string] `json:"text,required"`
+	Text param.Field[string] `json:"text" api:"required"`
 	// The language code of the source text (e.g., 'en' for English). Defaults to 'en'
 	// if not specified
 	SourceLang param.Field[string] `json:"source_lang"`
@@ -1110,7 +1118,7 @@ func (r AccountAIRunExecuteModelParamsBodyTranslation) implementsAccountAIRunExe
 
 type AccountAIRunExecuteModelParamsBodySummarization struct {
 	// The text that you want the model to summarize
-	InputText param.Field[string] `json:"input_text,required"`
+	InputText param.Field[string] `json:"input_text" api:"required"`
 	// The maximum length of the generated summary in tokens
 	MaxLength param.Field[int64] `json:"max_length"`
 }
@@ -1125,7 +1133,7 @@ func (r AccountAIRunExecuteModelParamsBodySummarization) implementsAccountAIRunE
 type AccountAIRunExecuteModelParamsBodyImageToText struct {
 	// An array of integers that represent the image data constrained to 8-bit unsigned
 	// integer values
-	Image param.Field[[]float64] `json:"image,required"`
+	Image param.Field[[]float64] `json:"image" api:"required"`
 	// Decreases the likelihood of the model repeating the same lines verbatim.
 	FrequencyPenalty param.Field[float64] `json:"frequency_penalty"`
 	// The maximum number of tokens to generate in the response.
@@ -1163,9 +1171,9 @@ func (r AccountAIRunExecuteModelParamsBodyImageToText) implementsAccountAIRunExe
 
 type AccountAIRunExecuteModelParamsBodyObject struct {
 	// Image in base64 encoded format.
-	Image param.Field[string] `json:"image,required"`
+	Image param.Field[string] `json:"image" api:"required"`
 	// The input text prompt for the model to generate a response.
-	Prompt param.Field[string] `json:"prompt,required"`
+	Prompt param.Field[string] `json:"prompt" api:"required"`
 	// Decreases the likelihood of the model repeating the same lines verbatim.
 	FrequencyPenalty param.Field[float64] `json:"frequency_penalty"`
 	// Whether to ignore the EOS token and continue generating tokens after the EOS
@@ -1201,9 +1209,9 @@ func (r AccountAIRunExecuteModelParamsBodyObject) implementsAccountAIRunExecuteM
 
 type AccountAIRunExecuteModelParamsBodyImageTextToText struct {
 	// Image in base64 encoded format.
-	Image param.Field[string] `json:"image,required"`
+	Image param.Field[string] `json:"image" api:"required"`
 	// An array of message objects representing the conversation history.
-	Messages param.Field[[]AccountAIRunExecuteModelParamsBodyImageTextToTextMessage] `json:"messages,required"`
+	Messages param.Field[[]AccountAIRunExecuteModelParamsBodyImageTextToTextMessage] `json:"messages" api:"required"`
 	// Decreases the likelihood of the model repeating the same lines verbatim.
 	FrequencyPenalty param.Field[float64] `json:"frequency_penalty"`
 	// Whether to ignore the EOS token and continue generating tokens after the EOS
@@ -1239,9 +1247,9 @@ func (r AccountAIRunExecuteModelParamsBodyImageTextToText) implementsAccountAIRu
 
 type AccountAIRunExecuteModelParamsBodyImageTextToTextMessage struct {
 	// The content of the message as a string.
-	Content param.Field[string] `json:"content,required"`
+	Content param.Field[string] `json:"content" api:"required"`
 	// The role of the message sender (e.g., 'user', 'assistant', 'system', 'tool').
-	Role param.Field[string] `json:"role,required"`
+	Role param.Field[string] `json:"role" api:"required"`
 }
 
 func (r AccountAIRunExecuteModelParamsBodyImageTextToTextMessage) MarshalJSON() (data []byte, err error) {

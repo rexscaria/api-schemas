@@ -42,7 +42,7 @@ func (r *RadarDatasetService) GetDownloadURL(ctx context.Context, params RadarDa
 	opts = slices.Concat(r.Options, opts)
 	path := "radar/datasets/download"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves a list of datasets.
@@ -50,7 +50,7 @@ func (r *RadarDatasetService) ListDatasets(ctx context.Context, query RadarDatas
 	opts = slices.Concat(r.Options, opts)
 	path := "radar/datasets"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves the CSV content of a given dataset by alias or ID. When getting the
@@ -61,15 +61,15 @@ func (r *RadarDatasetService) GetCsv(ctx context.Context, alias string, opts ...
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "text/csv")}, opts...)
 	if alias == "" {
 		err = errors.New("missing required alias parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("radar/datasets/%s", alias)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type RadarDatasetGetDownloadURLResponse struct {
-	Result RadarDatasetGetDownloadURLResponseResult `json:"result,required"`
+	Result RadarDatasetGetDownloadURLResponseResult `json:"result" api:"required"`
 	JSON   radarDatasetGetDownloadURLResponseJSON   `json:"-"`
 }
 
@@ -90,7 +90,7 @@ func (r radarDatasetGetDownloadURLResponseJSON) RawJSON() string {
 }
 
 type RadarDatasetGetDownloadURLResponseResult struct {
-	Dataset RadarDatasetGetDownloadURLResponseResultDataset `json:"dataset,required"`
+	Dataset RadarDatasetGetDownloadURLResponseResultDataset `json:"dataset" api:"required"`
 	JSON    radarDatasetGetDownloadURLResponseResultJSON    `json:"-"`
 }
 
@@ -111,7 +111,7 @@ func (r radarDatasetGetDownloadURLResponseResultJSON) RawJSON() string {
 }
 
 type RadarDatasetGetDownloadURLResponseResultDataset struct {
-	URL  string                                              `json:"url,required"`
+	URL  string                                              `json:"url" api:"required"`
 	JSON radarDatasetGetDownloadURLResponseResultDatasetJSON `json:"-"`
 }
 
@@ -132,8 +132,8 @@ func (r radarDatasetGetDownloadURLResponseResultDatasetJSON) RawJSON() string {
 }
 
 type RadarDatasetListDatasetsResponse struct {
-	Result  RadarDatasetListDatasetsResponseResult `json:"result,required"`
-	Success bool                                   `json:"success,required"`
+	Result  RadarDatasetListDatasetsResponseResult `json:"result" api:"required"`
+	Success bool                                   `json:"success" api:"required"`
 	JSON    radarDatasetListDatasetsResponseJSON   `json:"-"`
 }
 
@@ -155,7 +155,7 @@ func (r radarDatasetListDatasetsResponseJSON) RawJSON() string {
 }
 
 type RadarDatasetListDatasetsResponseResult struct {
-	Datasets []RadarDatasetListDatasetsResponseResultDataset `json:"datasets,required"`
+	Datasets []RadarDatasetListDatasetsResponseResultDataset `json:"datasets" api:"required"`
 	JSON     radarDatasetListDatasetsResponseResultJSON      `json:"-"`
 }
 
@@ -176,12 +176,12 @@ func (r radarDatasetListDatasetsResponseResultJSON) RawJSON() string {
 }
 
 type RadarDatasetListDatasetsResponseResultDataset struct {
-	ID          int64                                             `json:"id,required"`
-	Description string                                            `json:"description,required"`
-	Meta        interface{}                                       `json:"meta,required"`
-	Tags        []string                                          `json:"tags,required"`
-	Title       string                                            `json:"title,required"`
-	Type        string                                            `json:"type,required"`
+	ID          int64                                             `json:"id" api:"required"`
+	Description string                                            `json:"description" api:"required"`
+	Meta        interface{}                                       `json:"meta" api:"required"`
+	Tags        []string                                          `json:"tags" api:"required"`
+	Title       string                                            `json:"title" api:"required"`
+	Type        string                                            `json:"type" api:"required"`
 	JSON        radarDatasetListDatasetsResponseResultDatasetJSON `json:"-"`
 }
 
@@ -207,7 +207,7 @@ func (r radarDatasetListDatasetsResponseResultDatasetJSON) RawJSON() string {
 }
 
 type RadarDatasetGetDownloadURLParams struct {
-	DatasetID param.Field[int64] `json:"datasetId,required"`
+	DatasetID param.Field[int64] `json:"datasetId" api:"required"`
 	// Format in which results will be returned.
 	Format param.Field[RadarDatasetGetDownloadURLParamsFormat] `query:"format"`
 }

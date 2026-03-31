@@ -42,7 +42,7 @@ func (r *RadarLeakedCredentialCheckTimeseriesGroupService) GetByBotClass(ctx con
 	opts = slices.Concat(r.Options, opts)
 	path := "radar/leaked_credential_checks/timeseries_groups/bot_class"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves the distribution of HTTP authentication requests by compromised
@@ -51,12 +51,12 @@ func (r *RadarLeakedCredentialCheckTimeseriesGroupService) GetByCompromisedStatu
 	opts = slices.Concat(r.Options, opts)
 	path := "radar/leaked_credential_checks/timeseries_groups/compromised"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponse struct {
-	Result  RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResult `json:"result,required"`
-	Success bool                                                                 `json:"success,required"`
+	Result  RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResult `json:"result" api:"required"`
+	Success bool                                                                 `json:"success" api:"required"`
 	JSON    radarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseJSON   `json:"-"`
 }
 
@@ -80,8 +80,8 @@ func (r radarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseJSON) RawJ
 
 type RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResult struct {
 	// Metadata for the results.
-	Meta   RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMeta   `json:"meta,required"`
-	Serie0 RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultSerie0 `json:"serie_0,required"`
+	Meta   RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMeta   `json:"meta" api:"required"`
+	Serie0 RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultSerie0 `json:"serie_0" api:"required"`
 	JSON   radarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultJSON   `json:"-"`
 }
 
@@ -108,16 +108,16 @@ type RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMeta st
 	// Aggregation interval of the results (e.g., in 15 minutes or 1 hour intervals).
 	// Refer to
 	// [Aggregation intervals](https://developers.cloudflare.com/radar/concepts/aggregation-intervals/).
-	AggInterval    RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaAggInterval    `json:"aggInterval,required"`
-	ConfidenceInfo RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaConfidenceInfo `json:"confidenceInfo,required"`
-	DateRange      []RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaDateRange    `json:"dateRange,required"`
+	AggInterval    RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaAggInterval    `json:"aggInterval" api:"required"`
+	ConfidenceInfo RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaConfidenceInfo `json:"confidenceInfo" api:"required"`
+	DateRange      []RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaDateRange    `json:"dateRange" api:"required"`
 	// Timestamp of the last dataset update.
-	LastUpdated time.Time `json:"lastUpdated,required" format:"date-time"`
+	LastUpdated time.Time `json:"lastUpdated" api:"required" format:"date-time"`
 	// Normalization method applied to the results. Refer to
 	// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
-	Normalization RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaNormalization `json:"normalization,required"`
+	Normalization RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaNormalization `json:"normalization" api:"required"`
 	// Measurement units for the results.
-	Units []RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaUnit `json:"units,required"`
+	Units []RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaUnit `json:"units" api:"required"`
 	JSON  radarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaJSON   `json:"-"`
 }
 
@@ -165,9 +165,9 @@ func (r RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMeta
 }
 
 type RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaConfidenceInfo struct {
-	Annotations []RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaConfidenceInfoAnnotation `json:"annotations,required"`
+	Annotations []RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaConfidenceInfoAnnotation `json:"annotations" api:"required"`
 	// Provides an indication of how much confidence Cloudflare has in the data.
-	Level int64                                                                                      `json:"level,required"`
+	Level int64                                                                                      `json:"level" api:"required"`
 	JSON  radarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaConfidenceInfoJSON `json:"-"`
 }
 
@@ -191,14 +191,14 @@ func (r radarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMeta
 
 // Annotation associated with the result (e.g. outage or other type of event).
 type RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaConfidenceInfoAnnotation struct {
-	DataSource  string    `json:"dataSource,required"`
-	Description string    `json:"description,required"`
-	EndDate     time.Time `json:"endDate,required" format:"date-time"`
-	EventType   string    `json:"eventType,required"`
+	DataSource  string    `json:"dataSource" api:"required"`
+	Description string    `json:"description" api:"required"`
+	EndDate     time.Time `json:"endDate" api:"required" format:"date-time"`
+	EventType   string    `json:"eventType" api:"required"`
 	// Whether event is a single point in time or a time range.
-	IsInstantaneous bool                                                                                                 `json:"isInstantaneous,required"`
-	LinkedURL       string                                                                                               `json:"linkedUrl,required" format:"uri"`
-	StartDate       time.Time                                                                                            `json:"startDate,required" format:"date-time"`
+	IsInstantaneous bool                                                                                                 `json:"isInstantaneous" api:"required"`
+	LinkedURL       string                                                                                               `json:"linkedUrl" api:"required" format:"uri"`
+	StartDate       time.Time                                                                                            `json:"startDate" api:"required" format:"date-time"`
 	JSON            radarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
 }
 
@@ -227,9 +227,9 @@ func (r radarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMeta
 
 type RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaDateRange struct {
 	// Adjusted end of date range.
-	EndTime time.Time `json:"endTime,required" format:"date-time"`
+	EndTime time.Time `json:"endTime" api:"required" format:"date-time"`
 	// Adjusted start of date range.
-	StartTime time.Time                                                                             `json:"startTime,required" format:"date-time"`
+	StartTime time.Time                                                                             `json:"startTime" api:"required" format:"date-time"`
 	JSON      radarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaDateRangeJSON `json:"-"`
 }
 
@@ -275,8 +275,8 @@ func (r RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMeta
 }
 
 type RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaUnit struct {
-	Name  string                                                                           `json:"name,required"`
-	Value string                                                                           `json:"value,required"`
+	Name  string                                                                           `json:"name" api:"required"`
+	Value string                                                                           `json:"value" api:"required"`
 	JSON  radarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMetaUnitJSON `json:"-"`
 }
 
@@ -299,9 +299,9 @@ func (r radarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultMeta
 }
 
 type RadarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultSerie0 struct {
-	Bot        []string                                                                       `json:"bot,required"`
-	Human      []string                                                                       `json:"human,required"`
-	Timestamps []time.Time                                                                    `json:"timestamps,required" format:"date-time"`
+	Bot        []string                                                                       `json:"bot" api:"required"`
+	Human      []string                                                                       `json:"human" api:"required"`
+	Timestamps []time.Time                                                                    `json:"timestamps" api:"required" format:"date-time"`
 	JSON       radarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultSerie0JSON `json:"-"`
 }
 
@@ -325,8 +325,8 @@ func (r radarLeakedCredentialCheckTimeseriesGroupGetByBotClassResponseResultSeri
 }
 
 type RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponse struct {
-	Result  RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResult `json:"result,required"`
-	Success bool                                                                          `json:"success,required"`
+	Result  RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResult `json:"result" api:"required"`
+	Success bool                                                                          `json:"success" api:"required"`
 	JSON    radarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseJSON   `json:"-"`
 }
 
@@ -350,8 +350,8 @@ func (r radarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseJ
 
 type RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResult struct {
 	// Metadata for the results.
-	Meta   RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMeta   `json:"meta,required"`
-	Serie0 RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultSerie0 `json:"serie_0,required"`
+	Meta   RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMeta   `json:"meta" api:"required"`
+	Serie0 RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultSerie0 `json:"serie_0" api:"required"`
 	JSON   radarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultJSON   `json:"-"`
 }
 
@@ -378,16 +378,16 @@ type RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResu
 	// Aggregation interval of the results (e.g., in 15 minutes or 1 hour intervals).
 	// Refer to
 	// [Aggregation intervals](https://developers.cloudflare.com/radar/concepts/aggregation-intervals/).
-	AggInterval    RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaAggInterval    `json:"aggInterval,required"`
-	ConfidenceInfo RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaConfidenceInfo `json:"confidenceInfo,required"`
-	DateRange      []RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaDateRange    `json:"dateRange,required"`
+	AggInterval    RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaAggInterval    `json:"aggInterval" api:"required"`
+	ConfidenceInfo RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaConfidenceInfo `json:"confidenceInfo" api:"required"`
+	DateRange      []RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaDateRange    `json:"dateRange" api:"required"`
 	// Timestamp of the last dataset update.
-	LastUpdated time.Time `json:"lastUpdated,required" format:"date-time"`
+	LastUpdated time.Time `json:"lastUpdated" api:"required" format:"date-time"`
 	// Normalization method applied to the results. Refer to
 	// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
-	Normalization RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaNormalization `json:"normalization,required"`
+	Normalization RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaNormalization `json:"normalization" api:"required"`
 	// Measurement units for the results.
-	Units []RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaUnit `json:"units,required"`
+	Units []RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaUnit `json:"units" api:"required"`
 	JSON  radarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaJSON   `json:"-"`
 }
 
@@ -435,9 +435,9 @@ func (r RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseR
 }
 
 type RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaConfidenceInfo struct {
-	Annotations []RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaConfidenceInfoAnnotation `json:"annotations,required"`
+	Annotations []RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaConfidenceInfoAnnotation `json:"annotations" api:"required"`
 	// Provides an indication of how much confidence Cloudflare has in the data.
-	Level int64                                                                                               `json:"level,required"`
+	Level int64                                                                                               `json:"level" api:"required"`
 	JSON  radarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaConfidenceInfoJSON `json:"-"`
 }
 
@@ -461,14 +461,14 @@ func (r radarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseR
 
 // Annotation associated with the result (e.g. outage or other type of event).
 type RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaConfidenceInfoAnnotation struct {
-	DataSource  string    `json:"dataSource,required"`
-	Description string    `json:"description,required"`
-	EndDate     time.Time `json:"endDate,required" format:"date-time"`
-	EventType   string    `json:"eventType,required"`
+	DataSource  string    `json:"dataSource" api:"required"`
+	Description string    `json:"description" api:"required"`
+	EndDate     time.Time `json:"endDate" api:"required" format:"date-time"`
+	EventType   string    `json:"eventType" api:"required"`
 	// Whether event is a single point in time or a time range.
-	IsInstantaneous bool                                                                                                          `json:"isInstantaneous,required"`
-	LinkedURL       string                                                                                                        `json:"linkedUrl,required" format:"uri"`
-	StartDate       time.Time                                                                                                     `json:"startDate,required" format:"date-time"`
+	IsInstantaneous bool                                                                                                          `json:"isInstantaneous" api:"required"`
+	LinkedURL       string                                                                                                        `json:"linkedUrl" api:"required" format:"uri"`
+	StartDate       time.Time                                                                                                     `json:"startDate" api:"required" format:"date-time"`
 	JSON            radarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
 }
 
@@ -497,9 +497,9 @@ func (r radarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseR
 
 type RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaDateRange struct {
 	// Adjusted end of date range.
-	EndTime time.Time `json:"endTime,required" format:"date-time"`
+	EndTime time.Time `json:"endTime" api:"required" format:"date-time"`
 	// Adjusted start of date range.
-	StartTime time.Time                                                                                      `json:"startTime,required" format:"date-time"`
+	StartTime time.Time                                                                                      `json:"startTime" api:"required" format:"date-time"`
 	JSON      radarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaDateRangeJSON `json:"-"`
 }
 
@@ -545,8 +545,8 @@ func (r RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseR
 }
 
 type RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaUnit struct {
-	Name  string                                                                                    `json:"name,required"`
-	Value string                                                                                    `json:"value,required"`
+	Name  string                                                                                    `json:"name" api:"required"`
+	Value string                                                                                    `json:"value" api:"required"`
 	JSON  radarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultMetaUnitJSON `json:"-"`
 }
 
@@ -569,9 +569,9 @@ func (r radarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseR
 }
 
 type RadarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultSerie0 struct {
-	Clean       []string                                                                                `json:"CLEAN,required"`
-	Compromised []string                                                                                `json:"COMPROMISED,required"`
-	Timestamps  []time.Time                                                                             `json:"timestamps,required" format:"date-time"`
+	Clean       []string                                                                                `json:"CLEAN" api:"required"`
+	Compromised []string                                                                                `json:"COMPROMISED" api:"required"`
+	Timestamps  []time.Time                                                                             `json:"timestamps" api:"required" format:"date-time"`
 	JSON        radarLeakedCredentialCheckTimeseriesGroupGetByCompromisedStatusResponseResultSerie0JSON `json:"-"`
 }
 

@@ -39,11 +39,11 @@ func (r *AccountDeviceNetworkService) New(ctx context.Context, accountID string,
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/devices/networks", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetches details for a single managed network.
@@ -51,15 +51,15 @@ func (r *AccountDeviceNetworkService) Get(ctx context.Context, accountID string,
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if networkID == "" {
 		err = errors.New("missing required network_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/devices/networks/%s", accountID, networkID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates a configured device managed network.
@@ -67,15 +67,15 @@ func (r *AccountDeviceNetworkService) Update(ctx context.Context, accountID stri
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if networkID == "" {
 		err = errors.New("missing required network_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/devices/networks/%s", accountID, networkID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetches a list of managed networks for an account.
@@ -83,11 +83,11 @@ func (r *AccountDeviceNetworkService) List(ctx context.Context, accountID string
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/devices/networks", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Deletes a device managed network and fetches a list of the remaining device
@@ -96,15 +96,15 @@ func (r *AccountDeviceNetworkService) Delete(ctx context.Context, accountID stri
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if networkID == "" {
 		err = errors.New("missing required network_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/devices/networks/%s", accountID, networkID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // The configuration object containing information for the WARP client to detect
@@ -112,7 +112,7 @@ func (r *AccountDeviceNetworkService) Delete(ctx context.Context, accountID stri
 type ConfigRequestNetworkParam struct {
 	// A network address of the form "host:port" that the WARP client will use to
 	// detect the presence of a TLS host.
-	TlsSockaddr param.Field[string] `json:"tls_sockaddr,required"`
+	TlsSockaddr param.Field[string] `json:"tls_sockaddr" api:"required"`
 	// The SHA-256 hash of the TLS certificate presented by the host found at
 	// tls_sockaddr. If absent, regular certificate verification (trusted roots, valid
 	// timestamp, etc) will be used to validate the certificate.
@@ -160,7 +160,7 @@ func (r deviceManagedNetworksJSON) RawJSON() string {
 type DeviceManagedNetworksConfig struct {
 	// A network address of the form "host:port" that the WARP client will use to
 	// detect the presence of a TLS host.
-	TlsSockaddr string `json:"tls_sockaddr,required"`
+	TlsSockaddr string `json:"tls_sockaddr" api:"required"`
 	// The SHA-256 hash of the TLS certificate presented by the host found at
 	// tls_sockaddr. If absent, regular certificate verification (trusted roots, valid
 	// timestamp, etc) will be used to validate the certificate.
@@ -201,11 +201,11 @@ func (r DeviceTypeManagedNetwork) IsKnown() bool {
 }
 
 type ResponseCollectionDevices struct {
-	Errors   []ResponseCollectionDevicesError   `json:"errors,required"`
-	Messages []ResponseCollectionDevicesMessage `json:"messages,required"`
-	Result   []DeviceManagedNetworks            `json:"result,required,nullable"`
+	Errors   []ResponseCollectionDevicesError   `json:"errors" api:"required"`
+	Messages []ResponseCollectionDevicesMessage `json:"messages" api:"required"`
+	Result   []DeviceManagedNetworks            `json:"result" api:"required,nullable"`
 	// Whether the API call was successful.
-	Success    ResponseCollectionDevicesSuccess    `json:"success,required"`
+	Success    ResponseCollectionDevicesSuccess    `json:"success" api:"required"`
 	ResultInfo ResponseCollectionDevicesResultInfo `json:"result_info"`
 	JSON       responseCollectionDevicesJSON       `json:"-"`
 }
@@ -231,8 +231,8 @@ func (r responseCollectionDevicesJSON) RawJSON() string {
 }
 
 type ResponseCollectionDevicesError struct {
-	Code             int64                                 `json:"code,required"`
-	Message          string                                `json:"message,required"`
+	Code             int64                                 `json:"code" api:"required"`
+	Message          string                                `json:"message" api:"required"`
 	DocumentationURL string                                `json:"documentation_url"`
 	Source           ResponseCollectionDevicesErrorsSource `json:"source"`
 	JSON             responseCollectionDevicesErrorJSON    `json:"-"`
@@ -279,8 +279,8 @@ func (r responseCollectionDevicesErrorsSourceJSON) RawJSON() string {
 }
 
 type ResponseCollectionDevicesMessage struct {
-	Code             int64                                   `json:"code,required"`
-	Message          string                                  `json:"message,required"`
+	Code             int64                                   `json:"code" api:"required"`
+	Message          string                                  `json:"message" api:"required"`
 	DocumentationURL string                                  `json:"documentation_url"`
 	Source           ResponseCollectionDevicesMessagesSource `json:"source"`
 	JSON             responseCollectionDevicesMessageJSON    `json:"-"`
@@ -373,11 +373,11 @@ func (r responseCollectionDevicesResultInfoJSON) RawJSON() string {
 }
 
 type SingleResponseNetwork struct {
-	Errors   []SingleResponseNetworkError   `json:"errors,required"`
-	Messages []SingleResponseNetworkMessage `json:"messages,required"`
-	Result   DeviceManagedNetworks          `json:"result,required,nullable"`
+	Errors   []SingleResponseNetworkError   `json:"errors" api:"required"`
+	Messages []SingleResponseNetworkMessage `json:"messages" api:"required"`
+	Result   DeviceManagedNetworks          `json:"result" api:"required,nullable"`
 	// Whether the API call was successful.
-	Success SingleResponseNetworkSuccess `json:"success,required"`
+	Success SingleResponseNetworkSuccess `json:"success" api:"required"`
 	JSON    singleResponseNetworkJSON    `json:"-"`
 }
 
@@ -401,8 +401,8 @@ func (r singleResponseNetworkJSON) RawJSON() string {
 }
 
 type SingleResponseNetworkError struct {
-	Code             int64                             `json:"code,required"`
-	Message          string                            `json:"message,required"`
+	Code             int64                             `json:"code" api:"required"`
+	Message          string                            `json:"message" api:"required"`
 	DocumentationURL string                            `json:"documentation_url"`
 	Source           SingleResponseNetworkErrorsSource `json:"source"`
 	JSON             singleResponseNetworkErrorJSON    `json:"-"`
@@ -449,8 +449,8 @@ func (r singleResponseNetworkErrorsSourceJSON) RawJSON() string {
 }
 
 type SingleResponseNetworkMessage struct {
-	Code             int64                               `json:"code,required"`
-	Message          string                              `json:"message,required"`
+	Code             int64                               `json:"code" api:"required"`
+	Message          string                              `json:"message" api:"required"`
 	DocumentationURL string                              `json:"documentation_url"`
 	Source           SingleResponseNetworkMessagesSource `json:"source"`
 	JSON             singleResponseNetworkMessageJSON    `json:"-"`
@@ -514,11 +514,11 @@ func (r SingleResponseNetworkSuccess) IsKnown() bool {
 type AccountDeviceNetworkNewParams struct {
 	// The configuration object containing information for the WARP client to detect
 	// the managed network.
-	Config param.Field[ConfigRequestNetworkParam] `json:"config,required"`
+	Config param.Field[ConfigRequestNetworkParam] `json:"config" api:"required"`
 	// The name of the device managed network. This name must be unique.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// The type of device managed network.
-	Type param.Field[DeviceTypeManagedNetwork] `json:"type,required"`
+	Type param.Field[DeviceTypeManagedNetwork] `json:"type" api:"required"`
 }
 
 func (r AccountDeviceNetworkNewParams) MarshalJSON() (data []byte, err error) {

@@ -14,7 +14,7 @@ import (
 )
 
 func TestZoneFirewallRuleNewWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,6 +26,7 @@ func TestZoneFirewallRuleNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.Firewall.Rules.New(
 		context.TODO(),
@@ -57,7 +58,7 @@ func TestZoneFirewallRuleNewWithOptionalParams(t *testing.T) {
 }
 
 func TestZoneFirewallRuleGet(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -69,6 +70,7 @@ func TestZoneFirewallRuleGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.Firewall.Rules.Get(
 		context.TODO(),
@@ -85,7 +87,7 @@ func TestZoneFirewallRuleGet(t *testing.T) {
 }
 
 func TestZoneFirewallRuleUpdateWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -97,6 +99,7 @@ func TestZoneFirewallRuleUpdateWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.Firewall.Rules.Update(
 		context.TODO(),
@@ -129,7 +132,7 @@ func TestZoneFirewallRuleUpdateWithOptionalParams(t *testing.T) {
 }
 
 func TestZoneFirewallRuleListWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -141,6 +144,7 @@ func TestZoneFirewallRuleListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.Firewall.Rules.List(
 		context.TODO(),
@@ -164,7 +168,7 @@ func TestZoneFirewallRuleListWithOptionalParams(t *testing.T) {
 }
 
 func TestZoneFirewallRuleDelete(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -176,6 +180,7 @@ func TestZoneFirewallRuleDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.Firewall.Rules.Delete(
 		context.TODO(),
@@ -192,7 +197,7 @@ func TestZoneFirewallRuleDelete(t *testing.T) {
 }
 
 func TestZoneFirewallRuleUpdatePriority(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -204,6 +209,7 @@ func TestZoneFirewallRuleUpdatePriority(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.Firewall.Rules.UpdatePriority(
 		context.TODO(),

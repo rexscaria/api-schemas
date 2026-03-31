@@ -39,15 +39,15 @@ func (r *AccountWorkerScriptTailService) List(ctx context.Context, accountID str
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if scriptName == "" {
 		err = errors.New("missing required script_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/workers/scripts/%s/tails", accountID, scriptName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Deletes a tail from a Worker.
@@ -55,19 +55,19 @@ func (r *AccountWorkerScriptTailService) Delete(ctx context.Context, accountID s
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if scriptName == "" {
 		err = errors.New("missing required script_name parameter")
-		return
+		return nil, err
 	}
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/workers/scripts/%s/tails/%s", accountID, scriptName, id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Starts a tail that receives logs and exception from a Worker.
@@ -75,22 +75,22 @@ func (r *AccountWorkerScriptTailService) Start(ctx context.Context, accountID st
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if scriptName == "" {
 		err = errors.New("missing required script_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/workers/scripts/%s/tails", accountID, scriptName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type CommonResponseWorkers struct {
-	Errors   []WorkersMessages `json:"errors,required"`
-	Messages []WorkersMessages `json:"messages,required"`
+	Errors   []WorkersMessages `json:"errors" api:"required"`
+	Messages []WorkersMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success CommonResponseWorkersSuccess `json:"success,required"`
+	Success CommonResponseWorkersSuccess `json:"success" api:"required"`
 	JSON    commonResponseWorkersJSON    `json:"-"`
 }
 
@@ -128,8 +128,8 @@ func (r CommonResponseWorkersSuccess) IsKnown() bool {
 }
 
 type WorkersMessages struct {
-	Code             int64                 `json:"code,required"`
-	Message          string                `json:"message,required"`
+	Code             int64                 `json:"code" api:"required"`
+	Message          string                `json:"message" api:"required"`
 	DocumentationURL string                `json:"documentation_url"`
 	Source           WorkersMessagesSource `json:"source"`
 	JSON             workersMessagesJSON   `json:"-"`
@@ -175,8 +175,8 @@ func (r workersMessagesSourceJSON) RawJSON() string {
 }
 
 type WorkersMessagesParam struct {
-	Code             param.Field[int64]                      `json:"code,required"`
-	Message          param.Field[string]                     `json:"message,required"`
+	Code             param.Field[int64]                      `json:"code" api:"required"`
+	Message          param.Field[string]                     `json:"message" api:"required"`
 	DocumentationURL param.Field[string]                     `json:"documentation_url"`
 	Source           param.Field[WorkersMessagesSourceParam] `json:"source"`
 }
@@ -194,11 +194,11 @@ func (r WorkersMessagesSourceParam) MarshalJSON() (data []byte, err error) {
 }
 
 type AccountWorkerScriptTailListResponse struct {
-	Errors   []WorkersMessages                         `json:"errors,required"`
-	Messages []WorkersMessages                         `json:"messages,required"`
-	Result   AccountWorkerScriptTailListResponseResult `json:"result,required"`
+	Errors   []WorkersMessages                         `json:"errors" api:"required"`
+	Messages []WorkersMessages                         `json:"messages" api:"required"`
+	Result   AccountWorkerScriptTailListResponseResult `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success AccountWorkerScriptTailListResponseSuccess `json:"success,required"`
+	Success AccountWorkerScriptTailListResponseSuccess `json:"success" api:"required"`
 	JSON    accountWorkerScriptTailListResponseJSON    `json:"-"`
 }
 
@@ -223,9 +223,9 @@ func (r accountWorkerScriptTailListResponseJSON) RawJSON() string {
 
 type AccountWorkerScriptTailListResponseResult struct {
 	// Identifier.
-	ID        string                                        `json:"id,required"`
-	ExpiresAt string                                        `json:"expires_at,required"`
-	URL       string                                        `json:"url,required"`
+	ID        string                                        `json:"id" api:"required"`
+	ExpiresAt string                                        `json:"expires_at" api:"required"`
+	URL       string                                        `json:"url" api:"required"`
 	JSON      accountWorkerScriptTailListResponseResultJSON `json:"-"`
 }
 
@@ -263,11 +263,11 @@ func (r AccountWorkerScriptTailListResponseSuccess) IsKnown() bool {
 }
 
 type AccountWorkerScriptTailStartResponse struct {
-	Errors   []WorkersMessages                          `json:"errors,required"`
-	Messages []WorkersMessages                          `json:"messages,required"`
-	Result   AccountWorkerScriptTailStartResponseResult `json:"result,required"`
+	Errors   []WorkersMessages                          `json:"errors" api:"required"`
+	Messages []WorkersMessages                          `json:"messages" api:"required"`
+	Result   AccountWorkerScriptTailStartResponseResult `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success AccountWorkerScriptTailStartResponseSuccess `json:"success,required"`
+	Success AccountWorkerScriptTailStartResponseSuccess `json:"success" api:"required"`
 	JSON    accountWorkerScriptTailStartResponseJSON    `json:"-"`
 }
 
@@ -292,9 +292,9 @@ func (r accountWorkerScriptTailStartResponseJSON) RawJSON() string {
 
 type AccountWorkerScriptTailStartResponseResult struct {
 	// Identifier.
-	ID        string                                         `json:"id,required"`
-	ExpiresAt string                                         `json:"expires_at,required"`
-	URL       string                                         `json:"url,required"`
+	ID        string                                         `json:"id" api:"required"`
+	ExpiresAt string                                         `json:"expires_at" api:"required"`
+	URL       string                                         `json:"url" api:"required"`
 	JSON      accountWorkerScriptTailStartResponseResultJSON `json:"-"`
 }
 
@@ -332,7 +332,7 @@ func (r AccountWorkerScriptTailStartResponseSuccess) IsKnown() bool {
 }
 
 type AccountWorkerScriptTailStartParams struct {
-	Body interface{} `json:"body,required"`
+	Body interface{} `json:"body" api:"required"`
 }
 
 func (r AccountWorkerScriptTailStartParams) MarshalJSON() (data []byte, err error) {

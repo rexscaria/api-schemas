@@ -15,7 +15,7 @@ import (
 )
 
 func TestRadarHTTPSummaryGetByBotClassWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -27,6 +27,7 @@ func TestRadarHTTPSummaryGetByBotClassWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.HTTP.Summary.GetByBotClass(context.TODO(), cfrex.RadarHTTPSummaryGetByBotClassParams{
 		Asn:           cfrex.F([]string{"string"}),
@@ -55,7 +56,7 @@ func TestRadarHTTPSummaryGetByBotClassWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarHTTPSummaryGetByDeviceTypeWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -67,6 +68,7 @@ func TestRadarHTTPSummaryGetByDeviceTypeWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.HTTP.Summary.GetByDeviceType(context.TODO(), cfrex.RadarHTTPSummaryGetByDeviceTypeParams{
 		Asn:           cfrex.F([]string{"string"}),
@@ -95,7 +97,7 @@ func TestRadarHTTPSummaryGetByDeviceTypeWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarHTTPSummaryGetByHTTPProtocolWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -107,6 +109,7 @@ func TestRadarHTTPSummaryGetByHTTPProtocolWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.HTTP.Summary.GetByHTTPProtocol(context.TODO(), cfrex.RadarHTTPSummaryGetByHTTPProtocolParams{
 		Asn:           cfrex.F([]string{"string"}),
@@ -135,7 +138,7 @@ func TestRadarHTTPSummaryGetByHTTPProtocolWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarHTTPSummaryGetByHTTPVersionWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -147,6 +150,7 @@ func TestRadarHTTPSummaryGetByHTTPVersionWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.HTTP.Summary.GetByHTTPVersion(context.TODO(), cfrex.RadarHTTPSummaryGetByHTTPVersionParams{
 		Asn:           cfrex.F([]string{"string"}),
@@ -175,7 +179,7 @@ func TestRadarHTTPSummaryGetByHTTPVersionWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarHTTPSummaryGetByIPVersionWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -187,6 +191,7 @@ func TestRadarHTTPSummaryGetByIPVersionWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.HTTP.Summary.GetByIPVersion(context.TODO(), cfrex.RadarHTTPSummaryGetByIPVersionParams{
 		Asn:           cfrex.F([]string{"string"}),
@@ -215,7 +220,7 @@ func TestRadarHTTPSummaryGetByIPVersionWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarHTTPSummaryGetByOsWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -227,6 +232,7 @@ func TestRadarHTTPSummaryGetByOsWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.HTTP.Summary.GetByOs(context.TODO(), cfrex.RadarHTTPSummaryGetByOsParams{
 		Asn:           cfrex.F([]string{"string"}),
@@ -255,7 +261,7 @@ func TestRadarHTTPSummaryGetByOsWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarHTTPSummaryGetByPostQuantumWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -267,6 +273,7 @@ func TestRadarHTTPSummaryGetByPostQuantumWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.HTTP.Summary.GetByPostQuantum(context.TODO(), cfrex.RadarHTTPSummaryGetByPostQuantumParams{
 		Asn:           cfrex.F([]string{"string"}),
@@ -296,7 +303,7 @@ func TestRadarHTTPSummaryGetByPostQuantumWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarHTTPSummaryGetByTlsVersionWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -308,6 +315,7 @@ func TestRadarHTTPSummaryGetByTlsVersionWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.HTTP.Summary.GetByTlsVersion(context.TODO(), cfrex.RadarHTTPSummaryGetByTlsVersionParams{
 		Asn:           cfrex.F([]string{"string"}),

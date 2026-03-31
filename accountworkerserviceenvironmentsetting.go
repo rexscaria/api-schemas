@@ -39,19 +39,19 @@ func (r *AccountWorkerServiceEnvironmentSettingService) Get(ctx context.Context,
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if serviceName == "" {
 		err = errors.New("missing required service_name parameter")
-		return
+		return nil, err
 	}
 	if environmentName == "" {
 		err = errors.New("missing required environment_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/workers/services/%s/environments/%s/settings", accountID, serviceName, environmentName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Patch script metadata, such as bindings.
@@ -59,23 +59,23 @@ func (r *AccountWorkerServiceEnvironmentSettingService) Patch(ctx context.Contex
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if serviceName == "" {
 		err = errors.New("missing required service_name parameter")
-		return
+		return nil, err
 	}
 	if environmentName == "" {
 		err = errors.New("missing required environment_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/workers/services/%s/environments/%s/settings", accountID, serviceName, environmentName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountWorkerServiceEnvironmentSettingPatchParams struct {
-	SettingsResponseScriptSettings SettingsResponseScriptSettingsParam `json:"settings_response_script_settings,required"`
+	SettingsResponseScriptSettings SettingsResponseScriptSettingsParam `json:"settings_response_script_settings" api:"required"`
 }
 
 func (r AccountWorkerServiceEnvironmentSettingPatchParams) MarshalJSON() (data []byte, err error) {

@@ -39,11 +39,11 @@ func (r *ZoneSettingRumService) Get(ctx context.Context, zoneID string, opts ...
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/settings/rum", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Toggles RUM on/off for an existing zone.
@@ -51,18 +51,18 @@ func (r *ZoneSettingRumService) Update(ctx context.Context, zoneID string, body 
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/settings/rum", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type RumSiteResponseSingle struct {
-	Errors   []RumMessages `json:"errors,required"`
-	Messages []RumMessages `json:"messages,required"`
+	Errors   []RumMessages `json:"errors" api:"required"`
+	Messages []RumMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success bool                        `json:"success,required"`
+	Success bool                        `json:"success" api:"required"`
 	Result  RumSiteResponseSingleResult `json:"result"`
 	JSON    rumSiteResponseSingleJSON   `json:"-"`
 }

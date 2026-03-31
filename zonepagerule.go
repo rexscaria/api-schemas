@@ -45,11 +45,11 @@ func (r *ZonePageruleService) New(ctx context.Context, zoneID string, body ZoneP
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/pagerules", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetches the details of a Page Rule.
@@ -57,15 +57,15 @@ func (r *ZonePageruleService) Get(ctx context.Context, zoneID string, pageruleID
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if pageruleID == "" {
 		err = errors.New("missing required pagerule_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/pagerules/%s", zoneID, pageruleID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Replaces the configuration of an existing Page Rule. The configuration of the
@@ -74,15 +74,15 @@ func (r *ZonePageruleService) Update(ctx context.Context, zoneID string, pagerul
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if pageruleID == "" {
 		err = errors.New("missing required pagerule_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/pagerules/%s", zoneID, pageruleID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetches Page Rules in a zone.
@@ -90,11 +90,11 @@ func (r *ZonePageruleService) List(ctx context.Context, zoneID string, query Zon
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/pagerules", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Deletes an existing Page Rule.
@@ -102,15 +102,15 @@ func (r *ZonePageruleService) Delete(ctx context.Context, zoneID string, pagerul
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if pageruleID == "" {
 		err = errors.New("missing required pagerule_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/pagerules/%s", zoneID, pageruleID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates one or more fields of an existing Page Rule.
@@ -118,15 +118,15 @@ func (r *ZonePageruleService) Edit(ctx context.Context, zoneID string, pageruleI
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if pageruleID == "" {
 		err = errors.New("missing required pagerule_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/pagerules/%s", zoneID, pageruleID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns a list of settings (and their details) that Page Rules can apply to
@@ -137,33 +137,33 @@ func (r *ZonePageruleService) ListSettings(ctx context.Context, zoneID string, o
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/pagerules/settings", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type PageRule struct {
 	// Identifier.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The set of actions to perform if the targets of this rule match the request.
 	// Actions can redirect to another URL or override settings, but not both.
-	Actions []ZoneAction `json:"actions,required"`
+	Actions []ZoneAction `json:"actions" api:"required"`
 	// The timestamp of when the Page Rule was created.
-	CreatedOn time.Time `json:"created_on,required" format:"date-time"`
+	CreatedOn time.Time `json:"created_on" api:"required" format:"date-time"`
 	// The timestamp of when the Page Rule was last modified.
-	ModifiedOn time.Time `json:"modified_on,required" format:"date-time"`
+	ModifiedOn time.Time `json:"modified_on" api:"required" format:"date-time"`
 	// The priority of the rule, used to define which Page Rule is processed over
 	// another. A higher number indicates a higher priority. For example, if you have a
 	// catch-all Page Rule (rule A: `/images/*`) but want a more specific Page Rule to
 	// take precedence (rule B: `/images/special/*`), specify a higher priority for
 	// rule B so it overrides rule A.
-	Priority int64 `json:"priority,required"`
+	Priority int64 `json:"priority" api:"required"`
 	// The status of the Page Rule.
-	Status PageRuleStatus `json:"status,required"`
+	Status PageRuleStatus `json:"status" api:"required"`
 	// The rule targets to evaluate on each request.
-	Targets []PageRuleTarget `json:"targets,required"`
+	Targets []PageRuleTarget `json:"targets" api:"required"`
 	JSON    pageRuleJSON     `json:"-"`
 }
 
@@ -216,10 +216,10 @@ func (r pageRuleTargetJSON) RawJSON() string {
 // String constraint.
 type PageRuleTargetsConstraint struct {
 	// The matches operator can use asterisks and pipes as wildcard and 'or' operators.
-	Operator PageRuleTargetsConstraintOperator `json:"operator,required"`
+	Operator PageRuleTargetsConstraintOperator `json:"operator" api:"required"`
 	// The URL pattern to match against the current request. The pattern may contain up
 	// to four asterisks ('\*') as placeholders.
-	Value string                        `json:"value,required"`
+	Value string                        `json:"value" api:"required"`
 	JSON  pageRuleTargetsConstraintJSON `json:"-"`
 }
 
@@ -293,9 +293,9 @@ func (r PageRuleStatus) IsKnown() bool {
 // A request condition target.
 type RequestConditionTargetParam struct {
 	// String constraint.
-	Constraint param.Field[RequestConditionTargetConstraintParam] `json:"constraint,required"`
+	Constraint param.Field[RequestConditionTargetConstraintParam] `json:"constraint" api:"required"`
 	// A target based on the URL of the request.
-	Target param.Field[RequestConditionTargetTarget] `json:"target,required"`
+	Target param.Field[RequestConditionTargetTarget] `json:"target" api:"required"`
 }
 
 func (r RequestConditionTargetParam) MarshalJSON() (data []byte, err error) {
@@ -305,10 +305,10 @@ func (r RequestConditionTargetParam) MarshalJSON() (data []byte, err error) {
 // String constraint.
 type RequestConditionTargetConstraintParam struct {
 	// The matches operator can use asterisks and pipes as wildcard and 'or' operators.
-	Operator param.Field[RequestConditionTargetConstraintOperator] `json:"operator,required"`
+	Operator param.Field[RequestConditionTargetConstraintOperator] `json:"operator" api:"required"`
 	// The URL pattern to match against the current request. The pattern may contain up
 	// to four asterisks ('\*') as placeholders.
-	Value param.Field[string] `json:"value,required"`
+	Value param.Field[string] `json:"value" api:"required"`
 }
 
 func (r RequestConditionTargetConstraintParam) MarshalJSON() (data []byte, err error) {
@@ -3531,10 +3531,10 @@ func (r ZoneActionWafParam) MarshalJSON() (data []byte, err error) {
 func (r ZoneActionWafParam) implementsZoneActionUnionParam() {}
 
 type ZonePageruleNewResponse struct {
-	Errors   []ZonePageruleNewResponseError   `json:"errors,required"`
-	Messages []ZonePageruleNewResponseMessage `json:"messages,required"`
+	Errors   []ZonePageruleNewResponseError   `json:"errors" api:"required"`
+	Messages []ZonePageruleNewResponseMessage `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success ZonePageruleNewResponseSuccess `json:"success,required"`
+	Success ZonePageruleNewResponseSuccess `json:"success" api:"required"`
 	Result  PageRule                       `json:"result"`
 	JSON    zonePageruleNewResponseJSON    `json:"-"`
 }
@@ -3559,8 +3559,8 @@ func (r zonePageruleNewResponseJSON) RawJSON() string {
 }
 
 type ZonePageruleNewResponseError struct {
-	Code             int64                               `json:"code,required"`
-	Message          string                              `json:"message,required"`
+	Code             int64                               `json:"code" api:"required"`
+	Message          string                              `json:"message" api:"required"`
 	DocumentationURL string                              `json:"documentation_url"`
 	Source           ZonePageruleNewResponseErrorsSource `json:"source"`
 	JSON             zonePageruleNewResponseErrorJSON    `json:"-"`
@@ -3607,8 +3607,8 @@ func (r zonePageruleNewResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type ZonePageruleNewResponseMessage struct {
-	Code             int64                                 `json:"code,required"`
-	Message          string                                `json:"message,required"`
+	Code             int64                                 `json:"code" api:"required"`
+	Message          string                                `json:"message" api:"required"`
 	DocumentationURL string                                `json:"documentation_url"`
 	Source           ZonePageruleNewResponseMessagesSource `json:"source"`
 	JSON             zonePageruleNewResponseMessageJSON    `json:"-"`
@@ -3670,10 +3670,10 @@ func (r ZonePageruleNewResponseSuccess) IsKnown() bool {
 }
 
 type ZonePageruleGetResponse struct {
-	Errors   []ZonePageruleGetResponseError   `json:"errors,required"`
-	Messages []ZonePageruleGetResponseMessage `json:"messages,required"`
+	Errors   []ZonePageruleGetResponseError   `json:"errors" api:"required"`
+	Messages []ZonePageruleGetResponseMessage `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success ZonePageruleGetResponseSuccess `json:"success,required"`
+	Success ZonePageruleGetResponseSuccess `json:"success" api:"required"`
 	Result  PageRule                       `json:"result"`
 	JSON    zonePageruleGetResponseJSON    `json:"-"`
 }
@@ -3698,8 +3698,8 @@ func (r zonePageruleGetResponseJSON) RawJSON() string {
 }
 
 type ZonePageruleGetResponseError struct {
-	Code             int64                               `json:"code,required"`
-	Message          string                              `json:"message,required"`
+	Code             int64                               `json:"code" api:"required"`
+	Message          string                              `json:"message" api:"required"`
 	DocumentationURL string                              `json:"documentation_url"`
 	Source           ZonePageruleGetResponseErrorsSource `json:"source"`
 	JSON             zonePageruleGetResponseErrorJSON    `json:"-"`
@@ -3746,8 +3746,8 @@ func (r zonePageruleGetResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type ZonePageruleGetResponseMessage struct {
-	Code             int64                                 `json:"code,required"`
-	Message          string                                `json:"message,required"`
+	Code             int64                                 `json:"code" api:"required"`
+	Message          string                                `json:"message" api:"required"`
 	DocumentationURL string                                `json:"documentation_url"`
 	Source           ZonePageruleGetResponseMessagesSource `json:"source"`
 	JSON             zonePageruleGetResponseMessageJSON    `json:"-"`
@@ -3809,10 +3809,10 @@ func (r ZonePageruleGetResponseSuccess) IsKnown() bool {
 }
 
 type ZonePageruleUpdateResponse struct {
-	Errors   []ZonePageruleUpdateResponseError   `json:"errors,required"`
-	Messages []ZonePageruleUpdateResponseMessage `json:"messages,required"`
+	Errors   []ZonePageruleUpdateResponseError   `json:"errors" api:"required"`
+	Messages []ZonePageruleUpdateResponseMessage `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success ZonePageruleUpdateResponseSuccess `json:"success,required"`
+	Success ZonePageruleUpdateResponseSuccess `json:"success" api:"required"`
 	Result  PageRule                          `json:"result"`
 	JSON    zonePageruleUpdateResponseJSON    `json:"-"`
 }
@@ -3837,8 +3837,8 @@ func (r zonePageruleUpdateResponseJSON) RawJSON() string {
 }
 
 type ZonePageruleUpdateResponseError struct {
-	Code             int64                                  `json:"code,required"`
-	Message          string                                 `json:"message,required"`
+	Code             int64                                  `json:"code" api:"required"`
+	Message          string                                 `json:"message" api:"required"`
 	DocumentationURL string                                 `json:"documentation_url"`
 	Source           ZonePageruleUpdateResponseErrorsSource `json:"source"`
 	JSON             zonePageruleUpdateResponseErrorJSON    `json:"-"`
@@ -3885,8 +3885,8 @@ func (r zonePageruleUpdateResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type ZonePageruleUpdateResponseMessage struct {
-	Code             int64                                    `json:"code,required"`
-	Message          string                                   `json:"message,required"`
+	Code             int64                                    `json:"code" api:"required"`
+	Message          string                                   `json:"message" api:"required"`
 	DocumentationURL string                                   `json:"documentation_url"`
 	Source           ZonePageruleUpdateResponseMessagesSource `json:"source"`
 	JSON             zonePageruleUpdateResponseMessageJSON    `json:"-"`
@@ -3948,10 +3948,10 @@ func (r ZonePageruleUpdateResponseSuccess) IsKnown() bool {
 }
 
 type ZonePageruleListResponse struct {
-	Errors   []ZonePageruleListResponseError   `json:"errors,required"`
-	Messages []ZonePageruleListResponseMessage `json:"messages,required"`
+	Errors   []ZonePageruleListResponseError   `json:"errors" api:"required"`
+	Messages []ZonePageruleListResponseMessage `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success ZonePageruleListResponseSuccess `json:"success,required"`
+	Success ZonePageruleListResponseSuccess `json:"success" api:"required"`
 	Result  []PageRule                      `json:"result"`
 	JSON    zonePageruleListResponseJSON    `json:"-"`
 }
@@ -3976,8 +3976,8 @@ func (r zonePageruleListResponseJSON) RawJSON() string {
 }
 
 type ZonePageruleListResponseError struct {
-	Code             int64                                `json:"code,required"`
-	Message          string                               `json:"message,required"`
+	Code             int64                                `json:"code" api:"required"`
+	Message          string                               `json:"message" api:"required"`
 	DocumentationURL string                               `json:"documentation_url"`
 	Source           ZonePageruleListResponseErrorsSource `json:"source"`
 	JSON             zonePageruleListResponseErrorJSON    `json:"-"`
@@ -4024,8 +4024,8 @@ func (r zonePageruleListResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type ZonePageruleListResponseMessage struct {
-	Code             int64                                  `json:"code,required"`
-	Message          string                                 `json:"message,required"`
+	Code             int64                                  `json:"code" api:"required"`
+	Message          string                                 `json:"message" api:"required"`
 	DocumentationURL string                                 `json:"documentation_url"`
 	Source           ZonePageruleListResponseMessagesSource `json:"source"`
 	JSON             zonePageruleListResponseMessageJSON    `json:"-"`
@@ -4087,11 +4087,11 @@ func (r ZonePageruleListResponseSuccess) IsKnown() bool {
 }
 
 type ZonePageruleDeleteResponse struct {
-	Errors   []ZonePageruleDeleteResponseError   `json:"errors,required"`
-	Messages []ZonePageruleDeleteResponseMessage `json:"messages,required"`
+	Errors   []ZonePageruleDeleteResponseError   `json:"errors" api:"required"`
+	Messages []ZonePageruleDeleteResponseMessage `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success ZonePageruleDeleteResponseSuccess `json:"success,required"`
-	Result  ZonePageruleDeleteResponseResult  `json:"result,nullable"`
+	Success ZonePageruleDeleteResponseSuccess `json:"success" api:"required"`
+	Result  ZonePageruleDeleteResponseResult  `json:"result" api:"nullable"`
 	JSON    zonePageruleDeleteResponseJSON    `json:"-"`
 }
 
@@ -4115,8 +4115,8 @@ func (r zonePageruleDeleteResponseJSON) RawJSON() string {
 }
 
 type ZonePageruleDeleteResponseError struct {
-	Code             int64                                  `json:"code,required"`
-	Message          string                                 `json:"message,required"`
+	Code             int64                                  `json:"code" api:"required"`
+	Message          string                                 `json:"message" api:"required"`
 	DocumentationURL string                                 `json:"documentation_url"`
 	Source           ZonePageruleDeleteResponseErrorsSource `json:"source"`
 	JSON             zonePageruleDeleteResponseErrorJSON    `json:"-"`
@@ -4163,8 +4163,8 @@ func (r zonePageruleDeleteResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type ZonePageruleDeleteResponseMessage struct {
-	Code             int64                                    `json:"code,required"`
-	Message          string                                   `json:"message,required"`
+	Code             int64                                    `json:"code" api:"required"`
+	Message          string                                   `json:"message" api:"required"`
 	DocumentationURL string                                   `json:"documentation_url"`
 	Source           ZonePageruleDeleteResponseMessagesSource `json:"source"`
 	JSON             zonePageruleDeleteResponseMessageJSON    `json:"-"`
@@ -4227,7 +4227,7 @@ func (r ZonePageruleDeleteResponseSuccess) IsKnown() bool {
 
 type ZonePageruleDeleteResponseResult struct {
 	// Identifier.
-	ID   string                               `json:"id,required"`
+	ID   string                               `json:"id" api:"required"`
 	JSON zonePageruleDeleteResponseResultJSON `json:"-"`
 }
 
@@ -4248,10 +4248,10 @@ func (r zonePageruleDeleteResponseResultJSON) RawJSON() string {
 }
 
 type ZonePageruleEditResponse struct {
-	Errors   []ZonePageruleEditResponseError   `json:"errors,required"`
-	Messages []ZonePageruleEditResponseMessage `json:"messages,required"`
+	Errors   []ZonePageruleEditResponseError   `json:"errors" api:"required"`
+	Messages []ZonePageruleEditResponseMessage `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success ZonePageruleEditResponseSuccess `json:"success,required"`
+	Success ZonePageruleEditResponseSuccess `json:"success" api:"required"`
 	Result  PageRule                        `json:"result"`
 	JSON    zonePageruleEditResponseJSON    `json:"-"`
 }
@@ -4276,8 +4276,8 @@ func (r zonePageruleEditResponseJSON) RawJSON() string {
 }
 
 type ZonePageruleEditResponseError struct {
-	Code             int64                                `json:"code,required"`
-	Message          string                               `json:"message,required"`
+	Code             int64                                `json:"code" api:"required"`
+	Message          string                               `json:"message" api:"required"`
 	DocumentationURL string                               `json:"documentation_url"`
 	Source           ZonePageruleEditResponseErrorsSource `json:"source"`
 	JSON             zonePageruleEditResponseErrorJSON    `json:"-"`
@@ -4324,8 +4324,8 @@ func (r zonePageruleEditResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type ZonePageruleEditResponseMessage struct {
-	Code             int64                                  `json:"code,required"`
-	Message          string                                 `json:"message,required"`
+	Code             int64                                  `json:"code" api:"required"`
+	Message          string                                 `json:"message" api:"required"`
 	DocumentationURL string                                 `json:"documentation_url"`
 	Source           ZonePageruleEditResponseMessagesSource `json:"source"`
 	JSON             zonePageruleEditResponseMessageJSON    `json:"-"`
@@ -4387,10 +4387,10 @@ func (r ZonePageruleEditResponseSuccess) IsKnown() bool {
 }
 
 type ZonePageruleListSettingsResponse struct {
-	Errors   []ZonePageruleListSettingsResponseError   `json:"errors,required"`
-	Messages []ZonePageruleListSettingsResponseMessage `json:"messages,required"`
+	Errors   []ZonePageruleListSettingsResponseError   `json:"errors" api:"required"`
+	Messages []ZonePageruleListSettingsResponseMessage `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success ZonePageruleListSettingsResponseSuccess `json:"success,required"`
+	Success ZonePageruleListSettingsResponseSuccess `json:"success" api:"required"`
 	// Settings available for the zone.
 	Result []interface{}                        `json:"result"`
 	JSON   zonePageruleListSettingsResponseJSON `json:"-"`
@@ -4416,8 +4416,8 @@ func (r zonePageruleListSettingsResponseJSON) RawJSON() string {
 }
 
 type ZonePageruleListSettingsResponseError struct {
-	Code             int64                                        `json:"code,required"`
-	Message          string                                       `json:"message,required"`
+	Code             int64                                        `json:"code" api:"required"`
+	Message          string                                       `json:"message" api:"required"`
 	DocumentationURL string                                       `json:"documentation_url"`
 	Source           ZonePageruleListSettingsResponseErrorsSource `json:"source"`
 	JSON             zonePageruleListSettingsResponseErrorJSON    `json:"-"`
@@ -4464,8 +4464,8 @@ func (r zonePageruleListSettingsResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type ZonePageruleListSettingsResponseMessage struct {
-	Code             int64                                          `json:"code,required"`
-	Message          string                                         `json:"message,required"`
+	Code             int64                                          `json:"code" api:"required"`
+	Message          string                                         `json:"message" api:"required"`
 	DocumentationURL string                                         `json:"documentation_url"`
 	Source           ZonePageruleListSettingsResponseMessagesSource `json:"source"`
 	JSON             zonePageruleListSettingsResponseMessageJSON    `json:"-"`
@@ -4529,9 +4529,9 @@ func (r ZonePageruleListSettingsResponseSuccess) IsKnown() bool {
 type ZonePageruleNewParams struct {
 	// The set of actions to perform if the targets of this rule match the request.
 	// Actions can redirect to another URL or override settings, but not both.
-	Actions param.Field[[]ZoneActionUnionParam] `json:"actions,required"`
+	Actions param.Field[[]ZoneActionUnionParam] `json:"actions" api:"required"`
 	// The rule targets to evaluate on each request.
-	Targets param.Field[[]RequestConditionTargetParam] `json:"targets,required"`
+	Targets param.Field[[]RequestConditionTargetParam] `json:"targets" api:"required"`
 	// The priority of the rule, used to define which Page Rule is processed over
 	// another. A higher number indicates a higher priority. For example, if you have a
 	// catch-all Page Rule (rule A: `/images/*`) but want a more specific Page Rule to
@@ -4549,9 +4549,9 @@ func (r ZonePageruleNewParams) MarshalJSON() (data []byte, err error) {
 type ZonePageruleUpdateParams struct {
 	// The set of actions to perform if the targets of this rule match the request.
 	// Actions can redirect to another URL or override settings, but not both.
-	Actions param.Field[[]ZoneActionUnionParam] `json:"actions,required"`
+	Actions param.Field[[]ZoneActionUnionParam] `json:"actions" api:"required"`
 	// The rule targets to evaluate on each request.
-	Targets param.Field[[]RequestConditionTargetParam] `json:"targets,required"`
+	Targets param.Field[[]RequestConditionTargetParam] `json:"targets" api:"required"`
 	// The priority of the rule, used to define which Page Rule is processed over
 	// another. A higher number indicates a higher priority. For example, if you have a
 	// catch-all Page Rule (rule A: `/images/*`) but want a more specific Page Rule to

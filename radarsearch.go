@@ -40,12 +40,12 @@ func (r *RadarSearchService) Global(ctx context.Context, query RadarSearchGlobal
 	opts = slices.Concat(r.Options, opts)
 	path := "radar/search/global"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type RadarSearchGlobalResponse struct {
-	Result  RadarSearchGlobalResponseResult `json:"result,required"`
-	Success bool                            `json:"success,required"`
+	Result  RadarSearchGlobalResponseResult `json:"result" api:"required"`
+	Success bool                            `json:"success" api:"required"`
 	JSON    radarSearchGlobalResponseJSON   `json:"-"`
 }
 
@@ -67,7 +67,7 @@ func (r radarSearchGlobalResponseJSON) RawJSON() string {
 }
 
 type RadarSearchGlobalResponseResult struct {
-	Search []RadarSearchGlobalResponseResultSearch `json:"search,required"`
+	Search []RadarSearchGlobalResponseResultSearch `json:"search" api:"required"`
 	JSON   radarSearchGlobalResponseResultJSON     `json:"-"`
 }
 
@@ -88,9 +88,9 @@ func (r radarSearchGlobalResponseResultJSON) RawJSON() string {
 }
 
 type RadarSearchGlobalResponseResultSearch struct {
-	Code string                                    `json:"code,required"`
-	Name string                                    `json:"name,required"`
-	Type string                                    `json:"type,required"`
+	Code string                                    `json:"code" api:"required"`
+	Name string                                    `json:"name" api:"required"`
+	Type string                                    `json:"type" api:"required"`
 	JSON radarSearchGlobalResponseResultSearchJSON `json:"-"`
 }
 
@@ -114,7 +114,7 @@ func (r radarSearchGlobalResponseResultSearchJSON) RawJSON() string {
 
 type RadarSearchGlobalParams struct {
 	// String used to perform the search operation.
-	Query param.Field[string] `query:"query,required"`
+	Query param.Field[string] `query:"query" api:"required"`
 	// Search types excluded from results.
 	Exclude param.Field[[]RadarSearchGlobalParamsExclude] `query:"exclude"`
 	// Format in which results will be returned.

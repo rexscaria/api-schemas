@@ -15,7 +15,7 @@ import (
 )
 
 func TestRadarAttackLayer7SummaryGetHTTPMethodSummaryWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -27,6 +27,7 @@ func TestRadarAttackLayer7SummaryGetHTTPMethodSummaryWithOptionalParams(t *testi
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.Attacks.Layer7.Summary.GetHTTPMethodSummary(context.TODO(), cfrex.RadarAttackLayer7SummaryGetHTTPMethodSummaryParams{
 		Asn:               cfrex.F([]string{"string"}),
@@ -52,7 +53,7 @@ func TestRadarAttackLayer7SummaryGetHTTPMethodSummaryWithOptionalParams(t *testi
 }
 
 func TestRadarAttackLayer7SummaryGetHTTPVersionSummaryWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -64,6 +65,7 @@ func TestRadarAttackLayer7SummaryGetHTTPVersionSummaryWithOptionalParams(t *test
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.Attacks.Layer7.Summary.GetHTTPVersionSummary(context.TODO(), cfrex.RadarAttackLayer7SummaryGetHTTPVersionSummaryParams{
 		Asn:               cfrex.F([]string{"string"}),
@@ -88,7 +90,7 @@ func TestRadarAttackLayer7SummaryGetHTTPVersionSummaryWithOptionalParams(t *test
 }
 
 func TestRadarAttackLayer7SummaryGetIndustrySummaryWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -100,6 +102,7 @@ func TestRadarAttackLayer7SummaryGetIndustrySummaryWithOptionalParams(t *testing
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.Attacks.Layer7.Summary.GetIndustrySummary(context.TODO(), cfrex.RadarAttackLayer7SummaryGetIndustrySummaryParams{
 		Asn:               cfrex.F([]string{"string"}),
@@ -126,7 +129,7 @@ func TestRadarAttackLayer7SummaryGetIndustrySummaryWithOptionalParams(t *testing
 }
 
 func TestRadarAttackLayer7SummaryGetIPVersionSummaryWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -138,6 +141,7 @@ func TestRadarAttackLayer7SummaryGetIPVersionSummaryWithOptionalParams(t *testin
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.Attacks.Layer7.Summary.GetIPVersionSummary(context.TODO(), cfrex.RadarAttackLayer7SummaryGetIPVersionSummaryParams{
 		Asn:               cfrex.F([]string{"string"}),
@@ -162,7 +166,7 @@ func TestRadarAttackLayer7SummaryGetIPVersionSummaryWithOptionalParams(t *testin
 }
 
 func TestRadarAttackLayer7SummaryGetManagedRulesSummaryWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -174,6 +178,7 @@ func TestRadarAttackLayer7SummaryGetManagedRulesSummaryWithOptionalParams(t *tes
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.Attacks.Layer7.Summary.GetManagedRulesSummary(context.TODO(), cfrex.RadarAttackLayer7SummaryGetManagedRulesSummaryParams{
 		Asn:               cfrex.F([]string{"string"}),
@@ -200,7 +205,7 @@ func TestRadarAttackLayer7SummaryGetManagedRulesSummaryWithOptionalParams(t *tes
 }
 
 func TestRadarAttackLayer7SummaryGetMitigationProductSummaryWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -212,6 +217,7 @@ func TestRadarAttackLayer7SummaryGetMitigationProductSummaryWithOptionalParams(t
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.Attacks.Layer7.Summary.GetMitigationProductSummary(context.TODO(), cfrex.RadarAttackLayer7SummaryGetMitigationProductSummaryParams{
 		Asn:           cfrex.F([]string{"string"}),
@@ -237,7 +243,7 @@ func TestRadarAttackLayer7SummaryGetMitigationProductSummaryWithOptionalParams(t
 }
 
 func TestRadarAttackLayer7SummaryGetVerticalSummaryWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -249,6 +255,7 @@ func TestRadarAttackLayer7SummaryGetVerticalSummaryWithOptionalParams(t *testing
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.Attacks.Layer7.Summary.GetVerticalSummary(context.TODO(), cfrex.RadarAttackLayer7SummaryGetVerticalSummaryParams{
 		Asn:               cfrex.F([]string{"string"}),

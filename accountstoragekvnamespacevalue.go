@@ -48,19 +48,19 @@ func (r *AccountStorageKvNamespaceValueService) Get(ctx context.Context, account
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "application/octet-stream")}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if namespaceID == "" {
 		err = errors.New("missing required namespace_id parameter")
-		return
+		return nil, err
 	}
 	if keyName == "" {
 		err = errors.New("missing required key_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/storage/kv/namespaces/%s/values/%s", accountID, namespaceID, keyName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Remove a KV pair from the namespace. Use URL-encoding to use special characters
@@ -69,19 +69,19 @@ func (r *AccountStorageKvNamespaceValueService) Delete(ctx context.Context, acco
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if namespaceID == "" {
 		err = errors.New("missing required namespace_id parameter")
-		return
+		return nil, err
 	}
 	if keyName == "" {
 		err = errors.New("missing required key_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/storage/kv/namespaces/%s/values/%s", accountID, namespaceID, keyName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Write a value identified by a key. Use URL-encoding to use special characters
@@ -96,24 +96,24 @@ func (r *AccountStorageKvNamespaceValueService) Write(ctx context.Context, accou
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if namespaceID == "" {
 		err = errors.New("missing required namespace_id parameter")
-		return
+		return nil, err
 	}
 	if keyName == "" {
 		err = errors.New("missing required key_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/storage/kv/namespaces/%s/values/%s", accountID, namespaceID, keyName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountStorageKvNamespaceValueWriteParams struct {
 	// A byte sequence to be stored, up to 25 MiB in length.
-	Value param.Field[string] `json:"value,required"`
+	Value param.Field[AccountStorageKvNamespaceValueWriteParamsValueUnion] `json:"value" api:"required" format:"binary"`
 	// Expires the key at a certain time, measured in number of seconds since the UNIX
 	// epoch.
 	Expiration param.Field[float64] `query:"expiration"`
@@ -144,4 +144,11 @@ func (r AccountStorageKvNamespaceValueWriteParams) URLQuery() (v url.Values) {
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
+}
+
+// A byte sequence to be stored, up to 25 MiB in length.
+//
+// Satisfied by [shared.UnionString], [shared.UnionString].
+type AccountStorageKvNamespaceValueWriteParamsValueUnion interface {
+	ImplementsAccountStorageKvNamespaceValueWriteParamsValueUnion()
 }

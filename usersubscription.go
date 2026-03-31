@@ -38,11 +38,11 @@ func (r *UserSubscriptionService) Update(ctx context.Context, identifier string,
 	opts = slices.Concat(r.Options, opts)
 	if identifier == "" {
 		err = errors.New("missing required identifier parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("user/subscriptions/%s", identifier)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists all of a user's subscriptions.
@@ -50,7 +50,7 @@ func (r *UserSubscriptionService) List(ctx context.Context, opts ...option.Reque
 	opts = slices.Concat(r.Options, opts)
 	path := "user/subscriptions"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Deletes a user's subscription.
@@ -58,19 +58,19 @@ func (r *UserSubscriptionService) Delete(ctx context.Context, identifier string,
 	opts = slices.Concat(r.Options, opts)
 	if identifier == "" {
 		err = errors.New("missing required identifier parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("user/subscriptions/%s", identifier)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type UserSubscriptionUpdateResponse struct {
-	Errors   []BillSubsAPIMessages `json:"errors,required"`
-	Messages []BillSubsAPIMessages `json:"messages,required"`
-	Result   interface{}           `json:"result,required"`
+	Errors   []BillSubsAPIMessages `json:"errors" api:"required"`
+	Messages []BillSubsAPIMessages `json:"messages" api:"required"`
+	Result   interface{}           `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success UserSubscriptionUpdateResponseSuccess `json:"success,required"`
+	Success UserSubscriptionUpdateResponseSuccess `json:"success" api:"required"`
 	JSON    userSubscriptionUpdateResponseJSON    `json:"-"`
 }
 
@@ -109,11 +109,11 @@ func (r UserSubscriptionUpdateResponseSuccess) IsKnown() bool {
 }
 
 type UserSubscriptionListResponse struct {
-	Errors   []BillSubsAPIMessages `json:"errors,required"`
-	Messages []BillSubsAPIMessages `json:"messages,required"`
-	Result   []Subscription        `json:"result,required,nullable"`
+	Errors   []BillSubsAPIMessages `json:"errors" api:"required"`
+	Messages []BillSubsAPIMessages `json:"messages" api:"required"`
+	Result   []Subscription        `json:"result" api:"required,nullable"`
 	// Whether the API call was successful
-	Success    UserSubscriptionListResponseSuccess    `json:"success,required"`
+	Success    UserSubscriptionListResponseSuccess    `json:"success" api:"required"`
 	ResultInfo UserSubscriptionListResponseResultInfo `json:"result_info"`
 	JSON       userSubscriptionListResponseJSON       `json:"-"`
 }
@@ -207,7 +207,7 @@ func (r userSubscriptionDeleteResponseJSON) RawJSON() string {
 }
 
 type UserSubscriptionUpdateParams struct {
-	SubscriptionV2 SubscriptionV2Param `json:"subscription_v2,required"`
+	SubscriptionV2 SubscriptionV2Param `json:"subscription_v2" api:"required"`
 }
 
 func (r UserSubscriptionUpdateParams) MarshalJSON() (data []byte, err error) {

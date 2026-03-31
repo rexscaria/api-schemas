@@ -44,11 +44,11 @@ func (r *ZoneAPIGatewaySettingSchemaValidationService) Get(ctx context.Context, 
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/api_gateway/settings/schema_validation", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates zone level schema validation settings on the zone
@@ -60,11 +60,11 @@ func (r *ZoneAPIGatewaySettingSchemaValidationService) Update(ctx context.Contex
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/api_gateway/settings/schema_validation", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // The default mitigation action used when there is no mitigation action defined on
@@ -109,7 +109,7 @@ type ZoneSchemaValidationSettings struct {
 	//
 	// - `none` will skip running schema validation entirely for the request
 	// - `null` indicates that no override is in place
-	ValidationOverrideMitigationAction ZoneSchemaValidationSettingsValidationOverrideMitigationAction `json:"validation_override_mitigation_action,nullable"`
+	ValidationOverrideMitigationAction ZoneSchemaValidationSettingsValidationOverrideMitigationAction `json:"validation_override_mitigation_action" api:"nullable"`
 	JSON                               zoneSchemaValidationSettingsJSON                               `json:"-"`
 }
 
@@ -159,7 +159,7 @@ type ZoneAPIGatewaySettingSchemaValidationUpdateParams struct {
 	//
 	// A special value of of `none` will skip running schema validation entirely for
 	// the request when there is no mitigation action defined on the operation
-	ValidationDefaultMitigationAction param.Field[DefaultMitigationAction] `json:"validation_default_mitigation_action,required"`
+	ValidationDefaultMitigationAction param.Field[DefaultMitigationAction] `json:"validation_default_mitigation_action" api:"required"`
 	// When set, this overrides both zone level and operation level mitigation actions.
 	//
 	// - `none` will skip running schema validation entirely for the request

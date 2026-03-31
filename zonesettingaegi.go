@@ -43,11 +43,11 @@ func (r *ZoneSettingAegiService) Get(ctx context.Context, zoneID string, opts ..
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/settings/aegis", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Aegis provides dedicated egress IPs (from Cloudflare to your origin) for your
@@ -58,11 +58,11 @@ func (r *ZoneSettingAegiService) Update(ctx context.Context, zoneID string, body
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/settings/aegis", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Value of the zone setting.
@@ -106,10 +106,10 @@ func (r CacheRulesAegisValueParam) MarshalJSON() (data []byte, err error) {
 }
 
 type ZoneSettingAegiGetResponse struct {
-	Errors   []MessagesCacheRulesItem `json:"errors,required"`
-	Messages []MessagesCacheRulesItem `json:"messages,required"`
+	Errors   []MessagesCacheRulesItem `json:"errors" api:"required"`
+	Messages []MessagesCacheRulesItem `json:"messages" api:"required"`
 	// Whether the API call was successful
-	Success ZoneSettingAegiGetResponseSuccess `json:"success,required"`
+	Success ZoneSettingAegiGetResponseSuccess `json:"success" api:"required"`
 	Result  ZoneSettingAegiGetResponseResult  `json:"result"`
 	JSON    zoneSettingAegiGetResponseJSON    `json:"-"`
 }
@@ -150,13 +150,13 @@ func (r ZoneSettingAegiGetResponseSuccess) IsKnown() bool {
 
 type ZoneSettingAegiGetResponseResult struct {
 	// ID of the zone setting.
-	ID ZoneSettingAegiGetResponseResultID `json:"id,required"`
+	ID ZoneSettingAegiGetResponseResultID `json:"id" api:"required"`
 	// Whether the setting is editable
-	Editable bool `json:"editable,required"`
+	Editable bool `json:"editable" api:"required"`
 	// The value of the feature
-	Value CacheRulesAegisValue `json:"value,required"`
+	Value CacheRulesAegisValue `json:"value" api:"required"`
 	// Last time this setting was modified.
-	ModifiedOn time.Time                            `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time                            `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zoneSettingAegiGetResponseResultJSON `json:"-"`
 }
 
@@ -195,10 +195,10 @@ func (r ZoneSettingAegiGetResponseResultID) IsKnown() bool {
 }
 
 type ZoneSettingAegiUpdateResponse struct {
-	Errors   []MessagesCacheRulesItem `json:"errors,required"`
-	Messages []MessagesCacheRulesItem `json:"messages,required"`
+	Errors   []MessagesCacheRulesItem `json:"errors" api:"required"`
+	Messages []MessagesCacheRulesItem `json:"messages" api:"required"`
 	// Whether the API call was successful
-	Success ZoneSettingAegiUpdateResponseSuccess `json:"success,required"`
+	Success ZoneSettingAegiUpdateResponseSuccess `json:"success" api:"required"`
 	Result  ZoneSettingAegiUpdateResponseResult  `json:"result"`
 	JSON    zoneSettingAegiUpdateResponseJSON    `json:"-"`
 }
@@ -239,13 +239,13 @@ func (r ZoneSettingAegiUpdateResponseSuccess) IsKnown() bool {
 
 type ZoneSettingAegiUpdateResponseResult struct {
 	// ID of the zone setting.
-	ID ZoneSettingAegiUpdateResponseResultID `json:"id,required"`
+	ID ZoneSettingAegiUpdateResponseResultID `json:"id" api:"required"`
 	// Whether the setting is editable
-	Editable bool `json:"editable,required"`
+	Editable bool `json:"editable" api:"required"`
 	// The value of the feature
-	Value CacheRulesAegisValue `json:"value,required"`
+	Value CacheRulesAegisValue `json:"value" api:"required"`
 	// Last time this setting was modified.
-	ModifiedOn time.Time                               `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time                               `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zoneSettingAegiUpdateResponseResultJSON `json:"-"`
 }
 
@@ -285,7 +285,7 @@ func (r ZoneSettingAegiUpdateResponseResultID) IsKnown() bool {
 
 type ZoneSettingAegiUpdateParams struct {
 	// Value of the zone setting.
-	Value param.Field[CacheRulesAegisValueParam] `json:"value,required"`
+	Value param.Field[CacheRulesAegisValueParam] `json:"value" api:"required"`
 }
 
 func (r ZoneSettingAegiUpdateParams) MarshalJSON() (data []byte, err error) {

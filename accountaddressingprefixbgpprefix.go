@@ -42,15 +42,15 @@ func (r *AccountAddressingPrefixBgpPrefixService) New(ctx context.Context, accou
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if prefixID == "" {
 		err = errors.New("missing required prefix_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/addressing/prefixes/%s/bgp/prefixes", accountID, prefixID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve a single BGP Prefix according to its identifier
@@ -58,19 +58,19 @@ func (r *AccountAddressingPrefixBgpPrefixService) Get(ctx context.Context, accou
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if prefixID == "" {
 		err = errors.New("missing required prefix_id parameter")
-		return
+		return nil, err
 	}
 	if bgpPrefixID == "" {
 		err = errors.New("missing required bgp_prefix_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/addressing/prefixes/%s/bgp/prefixes/%s", accountID, prefixID, bgpPrefixID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update the properties of a BGP Prefix, such as the on demand advertisement
@@ -79,19 +79,19 @@ func (r *AccountAddressingPrefixBgpPrefixService) Update(ctx context.Context, ac
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if prefixID == "" {
 		err = errors.New("missing required prefix_id parameter")
-		return
+		return nil, err
 	}
 	if bgpPrefixID == "" {
 		err = errors.New("missing required bgp_prefix_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/addressing/prefixes/%s/bgp/prefixes/%s", accountID, prefixID, bgpPrefixID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // List all BGP Prefixes within the specified IP Prefix. BGP Prefixes are used to
@@ -102,22 +102,22 @@ func (r *AccountAddressingPrefixBgpPrefixService) List(ctx context.Context, acco
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if prefixID == "" {
 		err = errors.New("missing required prefix_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/addressing/prefixes/%s/bgp/prefixes", accountID, prefixID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type BgpPrefixes struct {
 	// Identifier of BGP Prefix.
 	ID string `json:"id"`
 	// Autonomous System Number (ASN) the prefix will be advertised under.
-	Asn int64 `json:"asn,nullable"`
+	Asn int64 `json:"asn" api:"nullable"`
 	// Number of times to prepend the Cloudflare ASN to the BGP AS-Path attribute
 	AsnPrependCount int64 `json:"asn_prepend_count"`
 	// Determines if Cloudflare advertises a BYOIP BGP prefix even when there is no
@@ -163,7 +163,7 @@ type BgpPrefixesBgpSignalOpts struct {
 	Enabled bool `json:"enabled"`
 	// Last time BGP signaling control was toggled. This field is null if BGP signaling
 	// has never been enabled.
-	ModifiedAt time.Time                    `json:"modified_at,nullable" format:"date-time"`
+	ModifiedAt time.Time                    `json:"modified_at" api:"nullable" format:"date-time"`
 	JSON       bgpPrefixesBgpSignalOptsJSON `json:"-"`
 }
 
@@ -187,10 +187,10 @@ func (r bgpPrefixesBgpSignalOptsJSON) RawJSON() string {
 type BgpPrefixesOnDemand struct {
 	// Prefix advertisement status to the Internet. This field is only not 'null' if on
 	// demand is enabled.
-	Advertised bool `json:"advertised,nullable"`
+	Advertised bool `json:"advertised" api:"nullable"`
 	// Last time the advertisement status was changed. This field is only not 'null' if
 	// on demand is enabled.
-	AdvertisedModifiedAt time.Time `json:"advertised_modified_at,nullable" format:"date-time"`
+	AdvertisedModifiedAt time.Time `json:"advertised_modified_at" api:"nullable" format:"date-time"`
 	// Whether advertisement of the prefix to the Internet may be dynamically enabled
 	// or disabled.
 	OnDemandEnabled bool `json:"on_demand_enabled"`
@@ -220,10 +220,10 @@ func (r bgpPrefixesOnDemandJSON) RawJSON() string {
 }
 
 type SingleResponseBgp struct {
-	Errors   []AddressingMessages `json:"errors,required"`
-	Messages []AddressingMessages `json:"messages,required"`
+	Errors   []AddressingMessages `json:"errors" api:"required"`
+	Messages []AddressingMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success SingleResponseBgpSuccess `json:"success,required"`
+	Success SingleResponseBgpSuccess `json:"success" api:"required"`
 	Result  BgpPrefixes              `json:"result"`
 	JSON    singleResponseBgpJSON    `json:"-"`
 }
@@ -263,10 +263,10 @@ func (r SingleResponseBgpSuccess) IsKnown() bool {
 }
 
 type AccountAddressingPrefixBgpPrefixListResponse struct {
-	Errors   []AddressingMessages `json:"errors,required"`
-	Messages []AddressingMessages `json:"messages,required"`
+	Errors   []AddressingMessages `json:"errors" api:"required"`
+	Messages []AddressingMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success    AccountAddressingPrefixBgpPrefixListResponseSuccess    `json:"success,required"`
+	Success    AccountAddressingPrefixBgpPrefixListResponseSuccess    `json:"success" api:"required"`
 	Result     []BgpPrefixes                                          `json:"result"`
 	ResultInfo AccountAddressingPrefixBgpPrefixListResponseResultInfo `json:"result_info"`
 	JSON       accountAddressingPrefixBgpPrefixListResponseJSON       `json:"-"`

@@ -40,11 +40,11 @@ func (r *AccountDeviceResilienceDisconnectService) Get(ctx context.Context, acco
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/devices/resilience/disconnect", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Sets the Global WARP override state.
@@ -52,19 +52,19 @@ func (r *AccountDeviceResilienceDisconnectService) Set(ctx context.Context, acco
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/devices/resilience/disconnect", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type GlobalWarpOverrideResponse struct {
-	Errors   []GlobalWarpOverrideResponseError   `json:"errors,required"`
-	Messages []GlobalWarpOverrideResponseMessage `json:"messages,required"`
-	Result   GlobalWarpOverrideResponseResult    `json:"result,required,nullable"`
+	Errors   []GlobalWarpOverrideResponseError   `json:"errors" api:"required"`
+	Messages []GlobalWarpOverrideResponseMessage `json:"messages" api:"required"`
+	Result   GlobalWarpOverrideResponseResult    `json:"result" api:"required,nullable"`
 	// Whether the API call was successful.
-	Success GlobalWarpOverrideResponseSuccess `json:"success,required"`
+	Success GlobalWarpOverrideResponseSuccess `json:"success" api:"required"`
 	JSON    globalWarpOverrideResponseJSON    `json:"-"`
 }
 
@@ -88,8 +88,8 @@ func (r globalWarpOverrideResponseJSON) RawJSON() string {
 }
 
 type GlobalWarpOverrideResponseError struct {
-	Code             int64                                  `json:"code,required"`
-	Message          string                                 `json:"message,required"`
+	Code             int64                                  `json:"code" api:"required"`
+	Message          string                                 `json:"message" api:"required"`
 	DocumentationURL string                                 `json:"documentation_url"`
 	Source           GlobalWarpOverrideResponseErrorsSource `json:"source"`
 	JSON             globalWarpOverrideResponseErrorJSON    `json:"-"`
@@ -136,8 +136,8 @@ func (r globalWarpOverrideResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type GlobalWarpOverrideResponseMessage struct {
-	Code             int64                                    `json:"code,required"`
-	Message          string                                   `json:"message,required"`
+	Code             int64                                    `json:"code" api:"required"`
+	Message          string                                   `json:"message" api:"required"`
 	DocumentationURL string                                   `json:"documentation_url"`
 	Source           GlobalWarpOverrideResponseMessagesSource `json:"source"`
 	JSON             globalWarpOverrideResponseMessageJSON    `json:"-"`
@@ -225,7 +225,7 @@ func (r GlobalWarpOverrideResponseSuccess) IsKnown() bool {
 
 type AccountDeviceResilienceDisconnectSetParams struct {
 	// Disconnects all devices on the account using Global WARP override.
-	Disconnect param.Field[bool] `json:"disconnect,required"`
+	Disconnect param.Field[bool] `json:"disconnect" api:"required"`
 	// Reasoning for setting the Global WARP override state. This will be surfaced in
 	// the audit log.
 	Justification param.Field[string] `json:"justification"`

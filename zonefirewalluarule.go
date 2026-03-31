@@ -41,11 +41,11 @@ func (r *ZoneFirewallUaRuleService) New(ctx context.Context, zoneID string, body
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/firewall/ua_rules", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetches the details of a User Agent Blocking rule.
@@ -53,15 +53,15 @@ func (r *ZoneFirewallUaRuleService) Get(ctx context.Context, zoneID string, uaRu
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if uaRuleID == "" {
 		err = errors.New("missing required ua_rule_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/firewall/ua_rules/%s", zoneID, uaRuleID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates an existing User Agent Blocking rule.
@@ -69,15 +69,15 @@ func (r *ZoneFirewallUaRuleService) Update(ctx context.Context, zoneID string, u
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if uaRuleID == "" {
 		err = errors.New("missing required ua_rule_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/firewall/ua_rules/%s", zoneID, uaRuleID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetches User Agent Blocking rules in a zone. You can filter the results using
@@ -86,11 +86,11 @@ func (r *ZoneFirewallUaRuleService) List(ctx context.Context, zoneID string, que
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/firewall/ua_rules", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Deletes an existing User Agent Blocking rule.
@@ -98,23 +98,23 @@ func (r *ZoneFirewallUaRuleService) Delete(ctx context.Context, zoneID string, u
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if uaRuleID == "" {
 		err = errors.New("missing required ua_rule_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/firewall/ua_rules/%s", zoneID, uaRuleID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type FirewallUablockResponseSingle struct {
-	Errors   []FirewallUablockResponseSingleError   `json:"errors,required"`
-	Messages []FirewallUablockResponseSingleMessage `json:"messages,required"`
-	Result   FirewallUablockResponseSingleResult    `json:"result,required"`
+	Errors   []FirewallUablockResponseSingleError   `json:"errors" api:"required"`
+	Messages []FirewallUablockResponseSingleMessage `json:"messages" api:"required"`
+	Result   FirewallUablockResponseSingleResult    `json:"result" api:"required"`
 	// Defines whether the API call was successful.
-	Success FirewallUablockResponseSingleSuccess `json:"success,required"`
+	Success FirewallUablockResponseSingleSuccess `json:"success" api:"required"`
 	JSON    firewallUablockResponseSingleJSON    `json:"-"`
 }
 
@@ -138,8 +138,8 @@ func (r firewallUablockResponseSingleJSON) RawJSON() string {
 }
 
 type FirewallUablockResponseSingleError struct {
-	Code             int64                                     `json:"code,required"`
-	Message          string                                    `json:"message,required"`
+	Code             int64                                     `json:"code" api:"required"`
+	Message          string                                    `json:"message" api:"required"`
 	DocumentationURL string                                    `json:"documentation_url"`
 	Source           FirewallUablockResponseSingleErrorsSource `json:"source"`
 	JSON             firewallUablockResponseSingleErrorJSON    `json:"-"`
@@ -186,8 +186,8 @@ func (r firewallUablockResponseSingleErrorsSourceJSON) RawJSON() string {
 }
 
 type FirewallUablockResponseSingleMessage struct {
-	Code             int64                                       `json:"code,required"`
-	Message          string                                      `json:"message,required"`
+	Code             int64                                       `json:"code" api:"required"`
+	Message          string                                      `json:"message" api:"required"`
 	DocumentationURL string                                      `json:"documentation_url"`
 	Source           FirewallUablockResponseSingleMessagesSource `json:"source"`
 	JSON             firewallUablockResponseSingleMessageJSON    `json:"-"`
@@ -329,11 +329,11 @@ func (r FirewallUablockResponseSingleSuccess) IsKnown() bool {
 }
 
 type ZoneFirewallUaRuleListResponse struct {
-	Errors   []ZoneFirewallUaRuleListResponseError   `json:"errors,required"`
-	Messages []ZoneFirewallUaRuleListResponseMessage `json:"messages,required"`
-	Result   []ZoneFirewallUaRuleListResponseResult  `json:"result,required"`
+	Errors   []ZoneFirewallUaRuleListResponseError   `json:"errors" api:"required"`
+	Messages []ZoneFirewallUaRuleListResponseMessage `json:"messages" api:"required"`
+	Result   []ZoneFirewallUaRuleListResponseResult  `json:"result" api:"required"`
 	// Defines whether the API call was successful.
-	Success    ZoneFirewallUaRuleListResponseSuccess    `json:"success,required"`
+	Success    ZoneFirewallUaRuleListResponseSuccess    `json:"success" api:"required"`
 	ResultInfo ZoneFirewallUaRuleListResponseResultInfo `json:"result_info"`
 	JSON       zoneFirewallUaRuleListResponseJSON       `json:"-"`
 }
@@ -359,8 +359,8 @@ func (r zoneFirewallUaRuleListResponseJSON) RawJSON() string {
 }
 
 type ZoneFirewallUaRuleListResponseError struct {
-	Code             int64                                      `json:"code,required"`
-	Message          string                                     `json:"message,required"`
+	Code             int64                                      `json:"code" api:"required"`
+	Message          string                                     `json:"message" api:"required"`
 	DocumentationURL string                                     `json:"documentation_url"`
 	Source           ZoneFirewallUaRuleListResponseErrorsSource `json:"source"`
 	JSON             zoneFirewallUaRuleListResponseErrorJSON    `json:"-"`
@@ -407,8 +407,8 @@ func (r zoneFirewallUaRuleListResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type ZoneFirewallUaRuleListResponseMessage struct {
-	Code             int64                                        `json:"code,required"`
-	Message          string                                       `json:"message,required"`
+	Code             int64                                        `json:"code" api:"required"`
+	Message          string                                       `json:"message" api:"required"`
 	DocumentationURL string                                       `json:"documentation_url"`
 	Source           ZoneFirewallUaRuleListResponseMessagesSource `json:"source"`
 	JSON             zoneFirewallUaRuleListResponseMessageJSON    `json:"-"`
@@ -581,11 +581,11 @@ func (r zoneFirewallUaRuleListResponseResultInfoJSON) RawJSON() string {
 }
 
 type ZoneFirewallUaRuleDeleteResponse struct {
-	Errors   []FirewallMessagesItem                 `json:"errors,required"`
-	Messages []FirewallMessagesItem                 `json:"messages,required"`
-	Result   ZoneFirewallUaRuleDeleteResponseResult `json:"result,required"`
+	Errors   []FirewallMessagesItem                 `json:"errors" api:"required"`
+	Messages []FirewallMessagesItem                 `json:"messages" api:"required"`
+	Result   ZoneFirewallUaRuleDeleteResponseResult `json:"result" api:"required"`
 	// Defines whether the API call was successful.
-	Success ZoneFirewallUaRuleDeleteResponseSuccess `json:"success,required"`
+	Success ZoneFirewallUaRuleDeleteResponseSuccess `json:"success" api:"required"`
 	JSON    zoneFirewallUaRuleDeleteResponseJSON    `json:"-"`
 }
 
@@ -704,9 +704,9 @@ func (r ZoneFirewallUaRuleDeleteResponseSuccess) IsKnown() bool {
 }
 
 type ZoneFirewallUaRuleNewParams struct {
-	Configuration param.Field[ZoneFirewallUaRuleNewParamsConfiguration] `json:"configuration,required"`
+	Configuration param.Field[ZoneFirewallUaRuleNewParamsConfiguration] `json:"configuration" api:"required"`
 	// The action to apply to a matched request.
-	Mode param.Field[FirewallSchemasMode] `json:"mode,required"`
+	Mode param.Field[FirewallSchemasMode] `json:"mode" api:"required"`
 	// An informative summary of the rule. This value is sanitized and any tags will be
 	// removed.
 	Description param.Field[string] `json:"description"`
@@ -748,9 +748,9 @@ func (r ZoneFirewallUaRuleNewParamsConfigurationTarget) IsKnown() bool {
 
 type ZoneFirewallUaRuleUpdateParams struct {
 	// The rule configuration.
-	Configuration param.Field[FirewallRuleConfigurationUnionParam] `json:"configuration,required"`
+	Configuration param.Field[FirewallRuleConfigurationUnionParam] `json:"configuration" api:"required"`
 	// The action to apply to a matched request.
-	Mode param.Field[FirewallSchemasMode] `json:"mode,required"`
+	Mode param.Field[FirewallSchemasMode] `json:"mode" api:"required"`
 	// An informative summary of the rule. This value is sanitized and any tags will be
 	// removed.
 	Description param.Field[string] `json:"description"`

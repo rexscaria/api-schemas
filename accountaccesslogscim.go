@@ -44,18 +44,18 @@ func (r *AccountAccessLogScimService) Updates(ctx context.Context, accountID str
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/access/logs/scim/updates", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountAccessLogScimUpdatesResponse struct {
-	Errors   []MessagesAccessItem `json:"errors,required"`
-	Messages []MessagesAccessItem `json:"messages,required"`
+	Errors   []MessagesAccessItem `json:"errors" api:"required"`
+	Messages []MessagesAccessItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success    AccountAccessLogScimUpdatesResponseSuccess    `json:"success,required"`
+	Success    AccountAccessLogScimUpdatesResponseSuccess    `json:"success" api:"required"`
 	Result     []AccountAccessLogScimUpdatesResponseResult   `json:"result"`
 	ResultInfo AccountAccessLogScimUpdatesResponseResultInfo `json:"result_info"`
 	JSON       accountAccessLogScimUpdatesResponseJSON       `json:"-"`
@@ -181,7 +181,7 @@ func (r accountAccessLogScimUpdatesResponseResultInfoJSON) RawJSON() string {
 
 type AccountAccessLogScimUpdatesParams struct {
 	// The unique Id of the IdP that has SCIM enabled.
-	IdpID param.Field[[]string] `query:"idp_id,required"`
+	IdpID param.Field[[]string] `query:"idp_id" api:"required"`
 	// The unique Cloudflare-generated Id of the SCIM resource.
 	CfResourceID param.Field[string] `query:"cf_resource_id"`
 	// The chronological order used to sort the logs.

@@ -39,15 +39,15 @@ func (r *AccountDNSFirewallReverseDNSService) Get(ctx context.Context, accountID
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if dnsFirewallID == "" {
 		err = errors.New("missing required dns_firewall_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/dns_firewall/%s/reverse_dns", accountID, dnsFirewallID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update reverse DNS configuration (PTR records) for a DNS Firewall cluster
@@ -55,15 +55,15 @@ func (r *AccountDNSFirewallReverseDNSService) Update(ctx context.Context, accoun
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if dnsFirewallID == "" {
 		err = errors.New("missing required dns_firewall_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/dns_firewall/%s/reverse_dns", accountID, dnsFirewallID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type DNSFirewallReverseDNS struct {
@@ -98,10 +98,10 @@ func (r DNSFirewallReverseDNSParam) MarshalJSON() (data []byte, err error) {
 }
 
 type DNSFirewallReverseDNSResponse struct {
-	Errors   []MessagesDNSFirewallItem `json:"errors,required"`
-	Messages []MessagesDNSFirewallItem `json:"messages,required"`
+	Errors   []MessagesDNSFirewallItem `json:"errors" api:"required"`
+	Messages []MessagesDNSFirewallItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success DNSFirewallReverseDNSResponseSuccess `json:"success,required"`
+	Success DNSFirewallReverseDNSResponseSuccess `json:"success" api:"required"`
 	Result  DNSFirewallReverseDNS                `json:"result"`
 	JSON    dnsFirewallReverseDNSResponseJSON    `json:"-"`
 }
@@ -141,7 +141,7 @@ func (r DNSFirewallReverseDNSResponseSuccess) IsKnown() bool {
 }
 
 type AccountDNSFirewallReverseDNSUpdateParams struct {
-	DNSFirewallReverseDNS DNSFirewallReverseDNSParam `json:"dns_firewall_reverse_dns,required"`
+	DNSFirewallReverseDNS DNSFirewallReverseDNSParam `json:"dns_firewall_reverse_dns" api:"required"`
 }
 
 func (r AccountDNSFirewallReverseDNSUpdateParams) MarshalJSON() (data []byte, err error) {

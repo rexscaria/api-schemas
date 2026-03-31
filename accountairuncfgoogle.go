@@ -41,11 +41,11 @@ func (r *AccountAIRunCfGoogleService) ExecuteGemma2bItLora(ctx context.Context, 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai/run/@cf/google/gemma-2b-it-lora", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Execute @cf/google/gemma-7b-it-lora model.
@@ -53,11 +53,11 @@ func (r *AccountAIRunCfGoogleService) ExecuteGemma7bItLora(ctx context.Context, 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai/run/@cf/google/gemma-7b-it-lora", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountAIRunCfGoogleExecuteGemma2bItLoraResponse = interface{}
@@ -136,7 +136,7 @@ type AccountAIRunCfGoogleExecuteGemma2bItLoraParamsBodyUnion interface {
 
 type AccountAIRunCfGoogleExecuteGemma2bItLoraParamsBodyPrompt struct {
 	// The input text prompt for the model to generate a response.
-	Prompt param.Field[string] `json:"prompt,required"`
+	Prompt param.Field[string] `json:"prompt" api:"required"`
 	// Decreases the likelihood of the model repeating the same lines verbatim.
 	FrequencyPenalty param.Field[float64] `json:"frequency_penalty"`
 	// Name of the LoRA (Low-Rank Adaptation) model to fine-tune the base model.
@@ -202,7 +202,7 @@ func (r AccountAIRunCfGoogleExecuteGemma2bItLoraParamsBodyPromptResponseFormatTy
 
 type AccountAIRunCfGoogleExecuteGemma2bItLoraParamsBodyMessages struct {
 	// An array of message objects representing the conversation history.
-	Messages param.Field[[]AccountAIRunCfGoogleExecuteGemma2bItLoraParamsBodyMessagesMessage] `json:"messages,required"`
+	Messages param.Field[[]AccountAIRunCfGoogleExecuteGemma2bItLoraParamsBodyMessagesMessage] `json:"messages" api:"required"`
 	// Decreases the likelihood of the model repeating the same lines verbatim.
 	FrequencyPenalty param.Field[float64]                                                              `json:"frequency_penalty"`
 	Functions        param.Field[[]AccountAIRunCfGoogleExecuteGemma2bItLoraParamsBodyMessagesFunction] `json:"functions"`
@@ -245,9 +245,9 @@ func (r AccountAIRunCfGoogleExecuteGemma2bItLoraParamsBodyMessages) implementsAc
 
 type AccountAIRunCfGoogleExecuteGemma2bItLoraParamsBodyMessagesMessage struct {
 	// The content of the message as a string.
-	Content param.Field[string] `json:"content,required"`
+	Content param.Field[string] `json:"content" api:"required"`
 	// The role of the message sender (e.g., 'user', 'assistant', 'system', 'tool').
-	Role param.Field[string] `json:"role,required"`
+	Role param.Field[string] `json:"role" api:"required"`
 }
 
 func (r AccountAIRunCfGoogleExecuteGemma2bItLoraParamsBodyMessagesMessage) MarshalJSON() (data []byte, err error) {
@@ -255,8 +255,8 @@ func (r AccountAIRunCfGoogleExecuteGemma2bItLoraParamsBodyMessagesMessage) Marsh
 }
 
 type AccountAIRunCfGoogleExecuteGemma2bItLoraParamsBodyMessagesFunction struct {
-	Code param.Field[string] `json:"code,required"`
-	Name param.Field[string] `json:"name,required"`
+	Code param.Field[string] `json:"code" api:"required"`
+	Name param.Field[string] `json:"name" api:"required"`
 }
 
 func (r AccountAIRunCfGoogleExecuteGemma2bItLoraParamsBodyMessagesFunction) MarshalJSON() (data []byte, err error) {
@@ -315,11 +315,11 @@ type AccountAIRunCfGoogleExecuteGemma2bItLoraParamsBodyMessagesToolUnion interfa
 
 type AccountAIRunCfGoogleExecuteGemma2bItLoraParamsBodyMessagesToolsObject struct {
 	// A brief description of what the tool does.
-	Description param.Field[string] `json:"description,required"`
+	Description param.Field[string] `json:"description" api:"required"`
 	// The name of the tool. More descriptive the better.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Schema defining the parameters accepted by the tool.
-	Parameters param.Field[AccountAIRunCfGoogleExecuteGemma2bItLoraParamsBodyMessagesToolsObjectParameters] `json:"parameters,required"`
+	Parameters param.Field[AccountAIRunCfGoogleExecuteGemma2bItLoraParamsBodyMessagesToolsObjectParameters] `json:"parameters" api:"required"`
 }
 
 func (r AccountAIRunCfGoogleExecuteGemma2bItLoraParamsBodyMessagesToolsObject) MarshalJSON() (data []byte, err error) {
@@ -332,9 +332,9 @@ func (r AccountAIRunCfGoogleExecuteGemma2bItLoraParamsBodyMessagesToolsObject) i
 // Schema defining the parameters accepted by the tool.
 type AccountAIRunCfGoogleExecuteGemma2bItLoraParamsBodyMessagesToolsObjectParameters struct {
 	// Definitions of each parameter.
-	Properties param.Field[map[string]AccountAIRunCfGoogleExecuteGemma2bItLoraParamsBodyMessagesToolsObjectParametersProperties] `json:"properties,required"`
+	Properties param.Field[map[string]AccountAIRunCfGoogleExecuteGemma2bItLoraParamsBodyMessagesToolsObjectParametersProperties] `json:"properties" api:"required"`
 	// The type of the parameters object (usually 'object').
-	Type param.Field[string] `json:"type,required"`
+	Type param.Field[string] `json:"type" api:"required"`
 	// List of required parameter names.
 	Required param.Field[[]string] `json:"required"`
 }
@@ -345,9 +345,9 @@ func (r AccountAIRunCfGoogleExecuteGemma2bItLoraParamsBodyMessagesToolsObjectPar
 
 type AccountAIRunCfGoogleExecuteGemma2bItLoraParamsBodyMessagesToolsObjectParametersProperties struct {
 	// A description of the expected parameter.
-	Description param.Field[string] `json:"description,required"`
+	Description param.Field[string] `json:"description" api:"required"`
 	// The data type of the parameter.
-	Type param.Field[string] `json:"type,required"`
+	Type param.Field[string] `json:"type" api:"required"`
 }
 
 func (r AccountAIRunCfGoogleExecuteGemma2bItLoraParamsBodyMessagesToolsObjectParametersProperties) MarshalJSON() (data []byte, err error) {
@@ -426,7 +426,7 @@ type AccountAIRunCfGoogleExecuteGemma7bItLoraParamsBodyUnion interface {
 
 type AccountAIRunCfGoogleExecuteGemma7bItLoraParamsBodyPrompt struct {
 	// The input text prompt for the model to generate a response.
-	Prompt param.Field[string] `json:"prompt,required"`
+	Prompt param.Field[string] `json:"prompt" api:"required"`
 	// Decreases the likelihood of the model repeating the same lines verbatim.
 	FrequencyPenalty param.Field[float64] `json:"frequency_penalty"`
 	// Name of the LoRA (Low-Rank Adaptation) model to fine-tune the base model.
@@ -492,7 +492,7 @@ func (r AccountAIRunCfGoogleExecuteGemma7bItLoraParamsBodyPromptResponseFormatTy
 
 type AccountAIRunCfGoogleExecuteGemma7bItLoraParamsBodyMessages struct {
 	// An array of message objects representing the conversation history.
-	Messages param.Field[[]AccountAIRunCfGoogleExecuteGemma7bItLoraParamsBodyMessagesMessage] `json:"messages,required"`
+	Messages param.Field[[]AccountAIRunCfGoogleExecuteGemma7bItLoraParamsBodyMessagesMessage] `json:"messages" api:"required"`
 	// Decreases the likelihood of the model repeating the same lines verbatim.
 	FrequencyPenalty param.Field[float64]                                                              `json:"frequency_penalty"`
 	Functions        param.Field[[]AccountAIRunCfGoogleExecuteGemma7bItLoraParamsBodyMessagesFunction] `json:"functions"`
@@ -535,9 +535,9 @@ func (r AccountAIRunCfGoogleExecuteGemma7bItLoraParamsBodyMessages) implementsAc
 
 type AccountAIRunCfGoogleExecuteGemma7bItLoraParamsBodyMessagesMessage struct {
 	// The content of the message as a string.
-	Content param.Field[string] `json:"content,required"`
+	Content param.Field[string] `json:"content" api:"required"`
 	// The role of the message sender (e.g., 'user', 'assistant', 'system', 'tool').
-	Role param.Field[string] `json:"role,required"`
+	Role param.Field[string] `json:"role" api:"required"`
 }
 
 func (r AccountAIRunCfGoogleExecuteGemma7bItLoraParamsBodyMessagesMessage) MarshalJSON() (data []byte, err error) {
@@ -545,8 +545,8 @@ func (r AccountAIRunCfGoogleExecuteGemma7bItLoraParamsBodyMessagesMessage) Marsh
 }
 
 type AccountAIRunCfGoogleExecuteGemma7bItLoraParamsBodyMessagesFunction struct {
-	Code param.Field[string] `json:"code,required"`
-	Name param.Field[string] `json:"name,required"`
+	Code param.Field[string] `json:"code" api:"required"`
+	Name param.Field[string] `json:"name" api:"required"`
 }
 
 func (r AccountAIRunCfGoogleExecuteGemma7bItLoraParamsBodyMessagesFunction) MarshalJSON() (data []byte, err error) {
@@ -605,11 +605,11 @@ type AccountAIRunCfGoogleExecuteGemma7bItLoraParamsBodyMessagesToolUnion interfa
 
 type AccountAIRunCfGoogleExecuteGemma7bItLoraParamsBodyMessagesToolsObject struct {
 	// A brief description of what the tool does.
-	Description param.Field[string] `json:"description,required"`
+	Description param.Field[string] `json:"description" api:"required"`
 	// The name of the tool. More descriptive the better.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Schema defining the parameters accepted by the tool.
-	Parameters param.Field[AccountAIRunCfGoogleExecuteGemma7bItLoraParamsBodyMessagesToolsObjectParameters] `json:"parameters,required"`
+	Parameters param.Field[AccountAIRunCfGoogleExecuteGemma7bItLoraParamsBodyMessagesToolsObjectParameters] `json:"parameters" api:"required"`
 }
 
 func (r AccountAIRunCfGoogleExecuteGemma7bItLoraParamsBodyMessagesToolsObject) MarshalJSON() (data []byte, err error) {
@@ -622,9 +622,9 @@ func (r AccountAIRunCfGoogleExecuteGemma7bItLoraParamsBodyMessagesToolsObject) i
 // Schema defining the parameters accepted by the tool.
 type AccountAIRunCfGoogleExecuteGemma7bItLoraParamsBodyMessagesToolsObjectParameters struct {
 	// Definitions of each parameter.
-	Properties param.Field[map[string]AccountAIRunCfGoogleExecuteGemma7bItLoraParamsBodyMessagesToolsObjectParametersProperties] `json:"properties,required"`
+	Properties param.Field[map[string]AccountAIRunCfGoogleExecuteGemma7bItLoraParamsBodyMessagesToolsObjectParametersProperties] `json:"properties" api:"required"`
 	// The type of the parameters object (usually 'object').
-	Type param.Field[string] `json:"type,required"`
+	Type param.Field[string] `json:"type" api:"required"`
 	// List of required parameter names.
 	Required param.Field[[]string] `json:"required"`
 }
@@ -635,9 +635,9 @@ func (r AccountAIRunCfGoogleExecuteGemma7bItLoraParamsBodyMessagesToolsObjectPar
 
 type AccountAIRunCfGoogleExecuteGemma7bItLoraParamsBodyMessagesToolsObjectParametersProperties struct {
 	// A description of the expected parameter.
-	Description param.Field[string] `json:"description,required"`
+	Description param.Field[string] `json:"description" api:"required"`
 	// The data type of the parameter.
-	Type param.Field[string] `json:"type,required"`
+	Type param.Field[string] `json:"type" api:"required"`
 }
 
 func (r AccountAIRunCfGoogleExecuteGemma7bItLoraParamsBodyMessagesToolsObjectParametersProperties) MarshalJSON() (data []byte, err error) {

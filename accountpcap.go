@@ -44,11 +44,11 @@ func (r *AccountPcapService) New(ctx context.Context, accountID string, body Acc
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/pcaps", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get information for a PCAP request by id.
@@ -56,15 +56,15 @@ func (r *AccountPcapService) Get(ctx context.Context, accountID string, pcapID s
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if pcapID == "" {
 		err = errors.New("missing required pcap_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/pcaps/%s", accountID, pcapID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists all packet capture requests for an account.
@@ -72,11 +72,11 @@ func (r *AccountPcapService) List(ctx context.Context, accountID string, opts ..
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/pcaps", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Download PCAP information into a file. Response is a binary PCAP file.
@@ -85,15 +85,15 @@ func (r *AccountPcapService) Download(ctx context.Context, accountID string, pca
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "application/vnd.tcpdump.pcap")}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if pcapID == "" {
 		err = errors.New("missing required pcap_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/pcaps/%s/download", accountID, pcapID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // The packet capture filter. When this field is empty, all packets are captured.
@@ -281,11 +281,11 @@ func (r ResponseSimple) implementsSingleResponsePcapsResult() {}
 func (r ResponseSimple) implementsAccountPcapListResponseResult() {}
 
 type SingleResponsePcaps struct {
-	Errors   []MessagesMagicVisibilityPcapsItem `json:"errors,required"`
-	Messages []MessagesMagicVisibilityPcapsItem `json:"messages,required"`
-	Result   SingleResponsePcapsResult          `json:"result,required"`
+	Errors   []MessagesMagicVisibilityPcapsItem `json:"errors" api:"required"`
+	Messages []MessagesMagicVisibilityPcapsItem `json:"messages" api:"required"`
+	Result   SingleResponsePcapsResult          `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success SingleResponsePcapsSuccess `json:"success,required"`
+	Success SingleResponsePcapsSuccess `json:"success" api:"required"`
 	JSON    singleResponsePcapsJSON    `json:"-"`
 }
 
@@ -463,11 +463,11 @@ func (r System) IsKnown() bool {
 }
 
 type AccountPcapListResponse struct {
-	Errors   []MessagesMagicVisibilityPcapsItem `json:"errors,required"`
-	Messages []MessagesMagicVisibilityPcapsItem `json:"messages,required"`
-	Result   []AccountPcapListResponseResult    `json:"result,required,nullable"`
+	Errors   []MessagesMagicVisibilityPcapsItem `json:"errors" api:"required"`
+	Messages []MessagesMagicVisibilityPcapsItem `json:"messages" api:"required"`
+	Result   []AccountPcapListResponseResult    `json:"result" api:"required,nullable"`
 	// Whether the API call was successful
-	Success    AccountPcapListResponseSuccess    `json:"success,required"`
+	Success    AccountPcapListResponseSuccess    `json:"success" api:"required"`
 	ResultInfo AccountPcapListResponseResultInfo `json:"result_info"`
 	JSON       accountPcapListResponseJSON       `json:"-"`
 }
@@ -641,7 +641,7 @@ func (r accountPcapListResponseResultInfoJSON) RawJSON() string {
 }
 
 type AccountPcapNewParams struct {
-	Body AccountPcapNewParamsBodyUnion `json:"body,required"`
+	Body AccountPcapNewParamsBodyUnion `json:"body" api:"required"`
 }
 
 func (r AccountPcapNewParams) MarshalJSON() (data []byte, err error) {
@@ -650,12 +650,12 @@ func (r AccountPcapNewParams) MarshalJSON() (data []byte, err error) {
 
 type AccountPcapNewParamsBody struct {
 	// The system used to collect packet captures.
-	System param.Field[System] `json:"system,required"`
+	System param.Field[System] `json:"system" api:"required"`
 	// The packet capture duration in seconds.
-	TimeLimit param.Field[float64] `json:"time_limit,required"`
+	TimeLimit param.Field[float64] `json:"time_limit" api:"required"`
 	// The type of packet capture. `Simple` captures sampled packets, and `full`
 	// captures entire payloads and non-sampled packets.
-	Type param.Field[PacketCaptureType] `json:"type,required"`
+	Type param.Field[PacketCaptureType] `json:"type" api:"required"`
 	// The maximum number of bytes to capture. This field only applies to `full` packet
 	// captures.
 	ByteLimit param.Field[float64] `json:"byte_limit"`
@@ -689,14 +689,14 @@ type AccountPcapNewParamsBodyUnion interface {
 
 type AccountPcapNewParamsBodyMagicVisibilityPcapsPcapsRequestSimple struct {
 	// The limit of packets contained in a packet capture.
-	PacketLimit param.Field[float64] `json:"packet_limit,required"`
+	PacketLimit param.Field[float64] `json:"packet_limit" api:"required"`
 	// The system used to collect packet captures.
-	System param.Field[System] `json:"system,required"`
+	System param.Field[System] `json:"system" api:"required"`
 	// The packet capture duration in seconds.
-	TimeLimit param.Field[float64] `json:"time_limit,required"`
+	TimeLimit param.Field[float64] `json:"time_limit" api:"required"`
 	// The type of packet capture. `Simple` captures sampled packets, and `full`
 	// captures entire payloads and non-sampled packets.
-	Type param.Field[PacketCaptureType] `json:"type,required"`
+	Type param.Field[PacketCaptureType] `json:"type" api:"required"`
 	// The packet capture filter. When this field is empty, all packets are captured.
 	FilterV1 param.Field[FilterV1Param] `json:"filter_v1"`
 	// The RFC 3339 offset timestamp from which to query backwards for packets. Must be
@@ -715,16 +715,16 @@ type AccountPcapNewParamsBodyMagicVisibilityPcapsPcapsRequestFull struct {
 	// The name of the data center used for the packet capture. This can be a specific
 	// colo (ord02) or a multi-colo name (ORD). This field only applies to `full`
 	// packet captures.
-	ColoName param.Field[string] `json:"colo_name,required"`
+	ColoName param.Field[string] `json:"colo_name" api:"required"`
 	// The full URI for the bucket. This field only applies to `full` packet captures.
-	DestinationConf param.Field[string] `json:"destination_conf,required"`
+	DestinationConf param.Field[string] `json:"destination_conf" api:"required"`
 	// The system used to collect packet captures.
-	System param.Field[System] `json:"system,required"`
+	System param.Field[System] `json:"system" api:"required"`
 	// The packet capture duration in seconds.
-	TimeLimit param.Field[float64] `json:"time_limit,required"`
+	TimeLimit param.Field[float64] `json:"time_limit" api:"required"`
 	// The type of packet capture. `Simple` captures sampled packets, and `full`
 	// captures entire payloads and non-sampled packets.
-	Type param.Field[PacketCaptureType] `json:"type,required"`
+	Type param.Field[PacketCaptureType] `json:"type" api:"required"`
 	// The maximum number of bytes to capture. This field only applies to `full` packet
 	// captures.
 	ByteLimit param.Field[float64] `json:"byte_limit"`

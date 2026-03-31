@@ -39,15 +39,15 @@ func (r *AccountDlpProfilePredefinedService) Get(ctx context.Context, accountID 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if profileID == "" {
 		err = errors.New("missing required profile_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/dlp/profiles/predefined/%s", accountID, profileID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates a DLP predefined profile. Only supports enabling/disabling entries.
@@ -55,22 +55,22 @@ func (r *AccountDlpProfilePredefinedService) Update(ctx context.Context, account
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if profileID == "" {
 		err = errors.New("missing required profile_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/dlp/profiles/predefined/%s", accountID, profileID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountDlpProfilePredefinedGetResponse struct {
-	Errors   []MessagesDlpItems `json:"errors,required"`
-	Messages []MessagesDlpItems `json:"messages,required"`
+	Errors   []MessagesDlpItems `json:"errors" api:"required"`
+	Messages []MessagesDlpItems `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountDlpProfilePredefinedGetResponseSuccess `json:"success,required"`
+	Success AccountDlpProfilePredefinedGetResponseSuccess `json:"success" api:"required"`
 	Result  Profile                                       `json:"result"`
 	JSON    accountDlpProfilePredefinedGetResponseJSON    `json:"-"`
 }
@@ -110,10 +110,10 @@ func (r AccountDlpProfilePredefinedGetResponseSuccess) IsKnown() bool {
 }
 
 type AccountDlpProfilePredefinedUpdateResponse struct {
-	Errors   []MessagesDlpItems `json:"errors,required"`
-	Messages []MessagesDlpItems `json:"messages,required"`
+	Errors   []MessagesDlpItems `json:"errors" api:"required"`
+	Messages []MessagesDlpItems `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountDlpProfilePredefinedUpdateResponseSuccess `json:"success,required"`
+	Success AccountDlpProfilePredefinedUpdateResponseSuccess `json:"success" api:"required"`
 	Result  Profile                                          `json:"result"`
 	JSON    accountDlpProfilePredefinedUpdateResponseJSON    `json:"-"`
 }
@@ -168,8 +168,8 @@ func (r AccountDlpProfilePredefinedUpdateParams) MarshalJSON() (data []byte, err
 }
 
 type AccountDlpProfilePredefinedUpdateParamsEntry struct {
-	ID      param.Field[string] `json:"id,required" format:"uuid"`
-	Enabled param.Field[bool]   `json:"enabled,required"`
+	ID      param.Field[string] `json:"id" api:"required" format:"uuid"`
+	Enabled param.Field[bool]   `json:"enabled" api:"required"`
 }
 
 func (r AccountDlpProfilePredefinedUpdateParamsEntry) MarshalJSON() (data []byte, err error) {

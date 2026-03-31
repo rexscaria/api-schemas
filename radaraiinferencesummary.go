@@ -40,7 +40,7 @@ func (r *RadarAIInferenceSummaryService) GetModel(ctx context.Context, query Rad
 	opts = slices.Concat(r.Options, opts)
 	path := "radar/ai/inference/summary/model"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves the distribution of unique accounts by task.
@@ -48,12 +48,12 @@ func (r *RadarAIInferenceSummaryService) GetTask(ctx context.Context, query Rada
 	opts = slices.Concat(r.Options, opts)
 	path := "radar/ai/inference/summary/task"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type RadarAIInferenceSummaryGetModelResponse struct {
-	Result  RadarAIInferenceSummaryGetModelResponseResult `json:"result,required"`
-	Success bool                                          `json:"success,required"`
+	Result  RadarAIInferenceSummaryGetModelResponseResult `json:"result" api:"required"`
+	Success bool                                          `json:"success" api:"required"`
 	JSON    radarAIInferenceSummaryGetModelResponseJSON   `json:"-"`
 }
 
@@ -76,8 +76,8 @@ func (r radarAIInferenceSummaryGetModelResponseJSON) RawJSON() string {
 
 type RadarAIInferenceSummaryGetModelResponseResult struct {
 	// Metadata for the results.
-	Meta     RadarAIInferenceSummaryGetModelResponseResultMeta `json:"meta,required"`
-	Summary0 map[string]string                                 `json:"summary_0,required"`
+	Meta     RadarAIInferenceSummaryGetModelResponseResultMeta `json:"meta" api:"required"`
+	Summary0 map[string]string                                 `json:"summary_0" api:"required"`
 	JSON     radarAIInferenceSummaryGetModelResponseResultJSON `json:"-"`
 }
 
@@ -100,15 +100,15 @@ func (r radarAIInferenceSummaryGetModelResponseResultJSON) RawJSON() string {
 
 // Metadata for the results.
 type RadarAIInferenceSummaryGetModelResponseResultMeta struct {
-	ConfidenceInfo RadarAIInferenceSummaryGetModelResponseResultMetaConfidenceInfo `json:"confidenceInfo,required"`
-	DateRange      []RadarAIInferenceSummaryGetModelResponseResultMetaDateRange    `json:"dateRange,required"`
+	ConfidenceInfo RadarAIInferenceSummaryGetModelResponseResultMetaConfidenceInfo `json:"confidenceInfo" api:"required"`
+	DateRange      []RadarAIInferenceSummaryGetModelResponseResultMetaDateRange    `json:"dateRange" api:"required"`
 	// Timestamp of the last dataset update.
-	LastUpdated time.Time `json:"lastUpdated,required" format:"date-time"`
+	LastUpdated time.Time `json:"lastUpdated" api:"required" format:"date-time"`
 	// Normalization method applied to the results. Refer to
 	// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
-	Normalization RadarAIInferenceSummaryGetModelResponseResultMetaNormalization `json:"normalization,required"`
+	Normalization RadarAIInferenceSummaryGetModelResponseResultMetaNormalization `json:"normalization" api:"required"`
 	// Measurement units for the results.
-	Units []RadarAIInferenceSummaryGetModelResponseResultMetaUnit `json:"units,required"`
+	Units []RadarAIInferenceSummaryGetModelResponseResultMetaUnit `json:"units" api:"required"`
 	JSON  radarAIInferenceSummaryGetModelResponseResultMetaJSON   `json:"-"`
 }
 
@@ -133,9 +133,9 @@ func (r radarAIInferenceSummaryGetModelResponseResultMetaJSON) RawJSON() string 
 }
 
 type RadarAIInferenceSummaryGetModelResponseResultMetaConfidenceInfo struct {
-	Annotations []RadarAIInferenceSummaryGetModelResponseResultMetaConfidenceInfoAnnotation `json:"annotations,required"`
+	Annotations []RadarAIInferenceSummaryGetModelResponseResultMetaConfidenceInfoAnnotation `json:"annotations" api:"required"`
 	// Provides an indication of how much confidence Cloudflare has in the data.
-	Level int64                                                               `json:"level,required"`
+	Level int64                                                               `json:"level" api:"required"`
 	JSON  radarAIInferenceSummaryGetModelResponseResultMetaConfidenceInfoJSON `json:"-"`
 }
 
@@ -159,14 +159,14 @@ func (r radarAIInferenceSummaryGetModelResponseResultMetaConfidenceInfoJSON) Raw
 
 // Annotation associated with the result (e.g. outage or other type of event).
 type RadarAIInferenceSummaryGetModelResponseResultMetaConfidenceInfoAnnotation struct {
-	DataSource  string    `json:"dataSource,required"`
-	Description string    `json:"description,required"`
-	EndDate     time.Time `json:"endDate,required" format:"date-time"`
-	EventType   string    `json:"eventType,required"`
+	DataSource  string    `json:"dataSource" api:"required"`
+	Description string    `json:"description" api:"required"`
+	EndDate     time.Time `json:"endDate" api:"required" format:"date-time"`
+	EventType   string    `json:"eventType" api:"required"`
 	// Whether event is a single point in time or a time range.
-	IsInstantaneous bool                                                                          `json:"isInstantaneous,required"`
-	LinkedURL       string                                                                        `json:"linkedUrl,required" format:"uri"`
-	StartDate       time.Time                                                                     `json:"startDate,required" format:"date-time"`
+	IsInstantaneous bool                                                                          `json:"isInstantaneous" api:"required"`
+	LinkedURL       string                                                                        `json:"linkedUrl" api:"required" format:"uri"`
+	StartDate       time.Time                                                                     `json:"startDate" api:"required" format:"date-time"`
 	JSON            radarAIInferenceSummaryGetModelResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
 }
 
@@ -195,9 +195,9 @@ func (r radarAIInferenceSummaryGetModelResponseResultMetaConfidenceInfoAnnotatio
 
 type RadarAIInferenceSummaryGetModelResponseResultMetaDateRange struct {
 	// Adjusted end of date range.
-	EndTime time.Time `json:"endTime,required" format:"date-time"`
+	EndTime time.Time `json:"endTime" api:"required" format:"date-time"`
 	// Adjusted start of date range.
-	StartTime time.Time                                                      `json:"startTime,required" format:"date-time"`
+	StartTime time.Time                                                      `json:"startTime" api:"required" format:"date-time"`
 	JSON      radarAIInferenceSummaryGetModelResponseResultMetaDateRangeJSON `json:"-"`
 }
 
@@ -243,8 +243,8 @@ func (r RadarAIInferenceSummaryGetModelResponseResultMetaNormalization) IsKnown(
 }
 
 type RadarAIInferenceSummaryGetModelResponseResultMetaUnit struct {
-	Name  string                                                    `json:"name,required"`
-	Value string                                                    `json:"value,required"`
+	Name  string                                                    `json:"name" api:"required"`
+	Value string                                                    `json:"value" api:"required"`
 	JSON  radarAIInferenceSummaryGetModelResponseResultMetaUnitJSON `json:"-"`
 }
 
@@ -266,8 +266,8 @@ func (r radarAIInferenceSummaryGetModelResponseResultMetaUnitJSON) RawJSON() str
 }
 
 type RadarAIInferenceSummaryGetTaskResponse struct {
-	Result  RadarAIInferenceSummaryGetTaskResponseResult `json:"result,required"`
-	Success bool                                         `json:"success,required"`
+	Result  RadarAIInferenceSummaryGetTaskResponseResult `json:"result" api:"required"`
+	Success bool                                         `json:"success" api:"required"`
 	JSON    radarAIInferenceSummaryGetTaskResponseJSON   `json:"-"`
 }
 
@@ -290,8 +290,8 @@ func (r radarAIInferenceSummaryGetTaskResponseJSON) RawJSON() string {
 
 type RadarAIInferenceSummaryGetTaskResponseResult struct {
 	// Metadata for the results.
-	Meta     RadarAIInferenceSummaryGetTaskResponseResultMeta `json:"meta,required"`
-	Summary0 map[string]string                                `json:"summary_0,required"`
+	Meta     RadarAIInferenceSummaryGetTaskResponseResultMeta `json:"meta" api:"required"`
+	Summary0 map[string]string                                `json:"summary_0" api:"required"`
 	JSON     radarAIInferenceSummaryGetTaskResponseResultJSON `json:"-"`
 }
 
@@ -314,15 +314,15 @@ func (r radarAIInferenceSummaryGetTaskResponseResultJSON) RawJSON() string {
 
 // Metadata for the results.
 type RadarAIInferenceSummaryGetTaskResponseResultMeta struct {
-	ConfidenceInfo RadarAIInferenceSummaryGetTaskResponseResultMetaConfidenceInfo `json:"confidenceInfo,required"`
-	DateRange      []RadarAIInferenceSummaryGetTaskResponseResultMetaDateRange    `json:"dateRange,required"`
+	ConfidenceInfo RadarAIInferenceSummaryGetTaskResponseResultMetaConfidenceInfo `json:"confidenceInfo" api:"required"`
+	DateRange      []RadarAIInferenceSummaryGetTaskResponseResultMetaDateRange    `json:"dateRange" api:"required"`
 	// Timestamp of the last dataset update.
-	LastUpdated time.Time `json:"lastUpdated,required" format:"date-time"`
+	LastUpdated time.Time `json:"lastUpdated" api:"required" format:"date-time"`
 	// Normalization method applied to the results. Refer to
 	// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
-	Normalization RadarAIInferenceSummaryGetTaskResponseResultMetaNormalization `json:"normalization,required"`
+	Normalization RadarAIInferenceSummaryGetTaskResponseResultMetaNormalization `json:"normalization" api:"required"`
 	// Measurement units for the results.
-	Units []RadarAIInferenceSummaryGetTaskResponseResultMetaUnit `json:"units,required"`
+	Units []RadarAIInferenceSummaryGetTaskResponseResultMetaUnit `json:"units" api:"required"`
 	JSON  radarAIInferenceSummaryGetTaskResponseResultMetaJSON   `json:"-"`
 }
 
@@ -347,9 +347,9 @@ func (r radarAIInferenceSummaryGetTaskResponseResultMetaJSON) RawJSON() string {
 }
 
 type RadarAIInferenceSummaryGetTaskResponseResultMetaConfidenceInfo struct {
-	Annotations []RadarAIInferenceSummaryGetTaskResponseResultMetaConfidenceInfoAnnotation `json:"annotations,required"`
+	Annotations []RadarAIInferenceSummaryGetTaskResponseResultMetaConfidenceInfoAnnotation `json:"annotations" api:"required"`
 	// Provides an indication of how much confidence Cloudflare has in the data.
-	Level int64                                                              `json:"level,required"`
+	Level int64                                                              `json:"level" api:"required"`
 	JSON  radarAIInferenceSummaryGetTaskResponseResultMetaConfidenceInfoJSON `json:"-"`
 }
 
@@ -373,14 +373,14 @@ func (r radarAIInferenceSummaryGetTaskResponseResultMetaConfidenceInfoJSON) RawJ
 
 // Annotation associated with the result (e.g. outage or other type of event).
 type RadarAIInferenceSummaryGetTaskResponseResultMetaConfidenceInfoAnnotation struct {
-	DataSource  string    `json:"dataSource,required"`
-	Description string    `json:"description,required"`
-	EndDate     time.Time `json:"endDate,required" format:"date-time"`
-	EventType   string    `json:"eventType,required"`
+	DataSource  string    `json:"dataSource" api:"required"`
+	Description string    `json:"description" api:"required"`
+	EndDate     time.Time `json:"endDate" api:"required" format:"date-time"`
+	EventType   string    `json:"eventType" api:"required"`
 	// Whether event is a single point in time or a time range.
-	IsInstantaneous bool                                                                         `json:"isInstantaneous,required"`
-	LinkedURL       string                                                                       `json:"linkedUrl,required" format:"uri"`
-	StartDate       time.Time                                                                    `json:"startDate,required" format:"date-time"`
+	IsInstantaneous bool                                                                         `json:"isInstantaneous" api:"required"`
+	LinkedURL       string                                                                       `json:"linkedUrl" api:"required" format:"uri"`
+	StartDate       time.Time                                                                    `json:"startDate" api:"required" format:"date-time"`
 	JSON            radarAIInferenceSummaryGetTaskResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
 }
 
@@ -409,9 +409,9 @@ func (r radarAIInferenceSummaryGetTaskResponseResultMetaConfidenceInfoAnnotation
 
 type RadarAIInferenceSummaryGetTaskResponseResultMetaDateRange struct {
 	// Adjusted end of date range.
-	EndTime time.Time `json:"endTime,required" format:"date-time"`
+	EndTime time.Time `json:"endTime" api:"required" format:"date-time"`
 	// Adjusted start of date range.
-	StartTime time.Time                                                     `json:"startTime,required" format:"date-time"`
+	StartTime time.Time                                                     `json:"startTime" api:"required" format:"date-time"`
 	JSON      radarAIInferenceSummaryGetTaskResponseResultMetaDateRangeJSON `json:"-"`
 }
 
@@ -457,8 +457,8 @@ func (r RadarAIInferenceSummaryGetTaskResponseResultMetaNormalization) IsKnown()
 }
 
 type RadarAIInferenceSummaryGetTaskResponseResultMetaUnit struct {
-	Name  string                                                   `json:"name,required"`
-	Value string                                                   `json:"value,required"`
+	Name  string                                                   `json:"name" api:"required"`
+	Value string                                                   `json:"value" api:"required"`
 	JSON  radarAIInferenceSummaryGetTaskResponseResultMetaUnitJSON `json:"-"`
 }
 

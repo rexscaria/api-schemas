@@ -39,11 +39,11 @@ func (r *AccountCustomNService) New(ctx context.Context, accountID string, body 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/custom_ns", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // List an account's custom nameservers.
@@ -51,11 +51,11 @@ func (r *AccountCustomNService) List(ctx context.Context, accountID string, opts
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/custom_ns", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete Account Custom Nameserver
@@ -63,29 +63,29 @@ func (r *AccountCustomNService) Delete(ctx context.Context, accountID string, cu
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if customNsID == "" {
 		err = errors.New("missing required custom_ns_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/custom_ns/%s", accountID, customNsID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // A single account custom nameserver.
 type CustomNs struct {
 	// A and AAAA records associated with the nameserver.
-	DNSRecords []CustomNsDNSRecord `json:"dns_records,required"`
+	DNSRecords []CustomNsDNSRecord `json:"dns_records" api:"required"`
 	// The FQDN of the name server.
-	NsName string `json:"ns_name,required" format:"hostname"`
+	NsName string `json:"ns_name" api:"required" format:"hostname"`
 	// Verification status of the nameserver.
 	//
 	// Deprecated: deprecated
-	Status CustomNsStatus `json:"status,required"`
+	Status CustomNsStatus `json:"status" api:"required"`
 	// Identifier
-	ZoneTag string `json:"zone_tag,required"`
+	ZoneTag string `json:"zone_tag" api:"required"`
 	// The number of the set that this name server belongs to.
 	NsSet float64      `json:"ns_set"`
 	JSON  customNsJSON `json:"-"`
@@ -169,8 +169,8 @@ func (r CustomNsStatus) IsKnown() bool {
 }
 
 type CustomNsMessages struct {
-	Code             int64                  `json:"code,required"`
-	Message          string                 `json:"message,required"`
+	Code             int64                  `json:"code" api:"required"`
+	Message          string                 `json:"message" api:"required"`
 	DocumentationURL string                 `json:"documentation_url"`
 	Source           CustomNsMessagesSource `json:"source"`
 	JSON             customNsMessagesJSON   `json:"-"`
@@ -217,10 +217,10 @@ func (r customNsMessagesSourceJSON) RawJSON() string {
 }
 
 type AccountCustomNNewResponse struct {
-	Errors   []AccountCustomNNewResponseError   `json:"errors,required"`
-	Messages []AccountCustomNNewResponseMessage `json:"messages,required"`
+	Errors   []AccountCustomNNewResponseError   `json:"errors" api:"required"`
+	Messages []AccountCustomNNewResponseMessage `json:"messages" api:"required"`
 	// Whether the API call was successful
-	Success AccountCustomNNewResponseSuccess `json:"success,required"`
+	Success AccountCustomNNewResponseSuccess `json:"success" api:"required"`
 	// A single account custom nameserver.
 	Result CustomNs                      `json:"result"`
 	JSON   accountCustomNNewResponseJSON `json:"-"`
@@ -246,8 +246,8 @@ func (r accountCustomNNewResponseJSON) RawJSON() string {
 }
 
 type AccountCustomNNewResponseError struct {
-	Code             int64                                 `json:"code,required"`
-	Message          string                                `json:"message,required"`
+	Code             int64                                 `json:"code" api:"required"`
+	Message          string                                `json:"message" api:"required"`
 	DocumentationURL string                                `json:"documentation_url"`
 	Source           AccountCustomNNewResponseErrorsSource `json:"source"`
 	JSON             accountCustomNNewResponseErrorJSON    `json:"-"`
@@ -294,8 +294,8 @@ func (r accountCustomNNewResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type AccountCustomNNewResponseMessage struct {
-	Code             int64                                   `json:"code,required"`
-	Message          string                                  `json:"message,required"`
+	Code             int64                                   `json:"code" api:"required"`
+	Message          string                                  `json:"message" api:"required"`
 	DocumentationURL string                                  `json:"documentation_url"`
 	Source           AccountCustomNNewResponseMessagesSource `json:"source"`
 	JSON             accountCustomNNewResponseMessageJSON    `json:"-"`
@@ -357,10 +357,10 @@ func (r AccountCustomNNewResponseSuccess) IsKnown() bool {
 }
 
 type AccountCustomNListResponse struct {
-	Errors   []AccountCustomNListResponseError   `json:"errors,required"`
-	Messages []AccountCustomNListResponseMessage `json:"messages,required"`
+	Errors   []AccountCustomNListResponseError   `json:"errors" api:"required"`
+	Messages []AccountCustomNListResponseMessage `json:"messages" api:"required"`
 	// Whether the API call was successful
-	Success    AccountCustomNListResponseSuccess    `json:"success,required"`
+	Success    AccountCustomNListResponseSuccess    `json:"success" api:"required"`
 	Result     []CustomNs                           `json:"result"`
 	ResultInfo AccountCustomNListResponseResultInfo `json:"result_info"`
 	JSON       accountCustomNListResponseJSON       `json:"-"`
@@ -387,8 +387,8 @@ func (r accountCustomNListResponseJSON) RawJSON() string {
 }
 
 type AccountCustomNListResponseError struct {
-	Code             int64                                  `json:"code,required"`
-	Message          string                                 `json:"message,required"`
+	Code             int64                                  `json:"code" api:"required"`
+	Message          string                                 `json:"message" api:"required"`
 	DocumentationURL string                                 `json:"documentation_url"`
 	Source           AccountCustomNListResponseErrorsSource `json:"source"`
 	JSON             accountCustomNListResponseErrorJSON    `json:"-"`
@@ -435,8 +435,8 @@ func (r accountCustomNListResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type AccountCustomNListResponseMessage struct {
-	Code             int64                                    `json:"code,required"`
-	Message          string                                   `json:"message,required"`
+	Code             int64                                    `json:"code" api:"required"`
+	Message          string                                   `json:"message" api:"required"`
 	DocumentationURL string                                   `json:"documentation_url"`
 	Source           AccountCustomNListResponseMessagesSource `json:"source"`
 	JSON             accountCustomNListResponseMessageJSON    `json:"-"`
@@ -529,10 +529,10 @@ func (r accountCustomNListResponseResultInfoJSON) RawJSON() string {
 }
 
 type AccountCustomNDeleteResponse struct {
-	Errors   []AccountCustomNDeleteResponseError   `json:"errors,required"`
-	Messages []AccountCustomNDeleteResponseMessage `json:"messages,required"`
+	Errors   []AccountCustomNDeleteResponseError   `json:"errors" api:"required"`
+	Messages []AccountCustomNDeleteResponseMessage `json:"messages" api:"required"`
 	// Whether the API call was successful
-	Success    AccountCustomNDeleteResponseSuccess    `json:"success,required"`
+	Success    AccountCustomNDeleteResponseSuccess    `json:"success" api:"required"`
 	Result     []string                               `json:"result"`
 	ResultInfo AccountCustomNDeleteResponseResultInfo `json:"result_info"`
 	JSON       accountCustomNDeleteResponseJSON       `json:"-"`
@@ -559,8 +559,8 @@ func (r accountCustomNDeleteResponseJSON) RawJSON() string {
 }
 
 type AccountCustomNDeleteResponseError struct {
-	Code             int64                                    `json:"code,required"`
-	Message          string                                   `json:"message,required"`
+	Code             int64                                    `json:"code" api:"required"`
+	Message          string                                   `json:"message" api:"required"`
 	DocumentationURL string                                   `json:"documentation_url"`
 	Source           AccountCustomNDeleteResponseErrorsSource `json:"source"`
 	JSON             accountCustomNDeleteResponseErrorJSON    `json:"-"`
@@ -607,8 +607,8 @@ func (r accountCustomNDeleteResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type AccountCustomNDeleteResponseMessage struct {
-	Code             int64                                      `json:"code,required"`
-	Message          string                                     `json:"message,required"`
+	Code             int64                                      `json:"code" api:"required"`
+	Message          string                                     `json:"message" api:"required"`
 	DocumentationURL string                                     `json:"documentation_url"`
 	Source           AccountCustomNDeleteResponseMessagesSource `json:"source"`
 	JSON             accountCustomNDeleteResponseMessageJSON    `json:"-"`
@@ -702,7 +702,7 @@ func (r accountCustomNDeleteResponseResultInfoJSON) RawJSON() string {
 
 type AccountCustomNNewParams struct {
 	// The FQDN of the name server.
-	NsName param.Field[string] `json:"ns_name,required" format:"hostname"`
+	NsName param.Field[string] `json:"ns_name" api:"required" format:"hostname"`
 	// The number of the set that this name server belongs to.
 	NsSet param.Field[float64] `json:"ns_set"`
 }

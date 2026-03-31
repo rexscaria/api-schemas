@@ -46,11 +46,11 @@ func (r *ZoneCacheTieredCacheSmartTopologyEnableService) Get(ctx context.Context
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/cache/tiered_cache_smart_topology_enable", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Smart Tiered Cache dynamically selects the single closest upper tier for each of
@@ -63,11 +63,11 @@ func (r *ZoneCacheTieredCacheSmartTopologyEnableService) Update(ctx context.Cont
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/cache/tiered_cache_smart_topology_enable", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Smart Tiered Cache dynamically selects the single closest upper tier for each of
@@ -80,18 +80,18 @@ func (r *ZoneCacheTieredCacheSmartTopologyEnableService) Delete(ctx context.Cont
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/cache/tiered_cache_smart_topology_enable", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type ZoneCacheTieredCacheSmartTopologyEnableGetResponse struct {
-	Errors   []MessagesCacheRulesItem `json:"errors,required"`
-	Messages []MessagesCacheRulesItem `json:"messages,required"`
+	Errors   []MessagesCacheRulesItem `json:"errors" api:"required"`
+	Messages []MessagesCacheRulesItem `json:"messages" api:"required"`
 	// Whether the API call was successful
-	Success ZoneCacheTieredCacheSmartTopologyEnableGetResponseSuccess `json:"success,required"`
+	Success ZoneCacheTieredCacheSmartTopologyEnableGetResponseSuccess `json:"success" api:"required"`
 	Result  ZoneCacheTieredCacheSmartTopologyEnableGetResponseResult  `json:"result"`
 	JSON    zoneCacheTieredCacheSmartTopologyEnableGetResponseJSON    `json:"-"`
 }
@@ -132,13 +132,13 @@ func (r ZoneCacheTieredCacheSmartTopologyEnableGetResponseSuccess) IsKnown() boo
 
 type ZoneCacheTieredCacheSmartTopologyEnableGetResponseResult struct {
 	// ID of the zone setting.
-	ID ZoneCacheTieredCacheSmartTopologyEnableGetResponseResultID `json:"id,required"`
+	ID ZoneCacheTieredCacheSmartTopologyEnableGetResponseResultID `json:"id" api:"required"`
 	// Whether the setting is editable
-	Editable bool `json:"editable,required"`
+	Editable bool `json:"editable" api:"required"`
 	// The value of the feature
-	Value ZoneCacheTieredCacheSmartTopologyEnableGetResponseResultValue `json:"value,required"`
+	Value ZoneCacheTieredCacheSmartTopologyEnableGetResponseResultValue `json:"value" api:"required"`
 	// Last time this setting was modified.
-	ModifiedOn time.Time                                                    `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time                                                    `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zoneCacheTieredCacheSmartTopologyEnableGetResponseResultJSON `json:"-"`
 }
 
@@ -194,10 +194,10 @@ func (r ZoneCacheTieredCacheSmartTopologyEnableGetResponseResultValue) IsKnown()
 }
 
 type ZoneCacheTieredCacheSmartTopologyEnableUpdateResponse struct {
-	Errors   []MessagesCacheRulesItem `json:"errors,required"`
-	Messages []MessagesCacheRulesItem `json:"messages,required"`
+	Errors   []MessagesCacheRulesItem `json:"errors" api:"required"`
+	Messages []MessagesCacheRulesItem `json:"messages" api:"required"`
 	// Whether the API call was successful
-	Success ZoneCacheTieredCacheSmartTopologyEnableUpdateResponseSuccess `json:"success,required"`
+	Success ZoneCacheTieredCacheSmartTopologyEnableUpdateResponseSuccess `json:"success" api:"required"`
 	Result  ZoneCacheTieredCacheSmartTopologyEnableUpdateResponseResult  `json:"result"`
 	JSON    zoneCacheTieredCacheSmartTopologyEnableUpdateResponseJSON    `json:"-"`
 }
@@ -238,13 +238,13 @@ func (r ZoneCacheTieredCacheSmartTopologyEnableUpdateResponseSuccess) IsKnown() 
 
 type ZoneCacheTieredCacheSmartTopologyEnableUpdateResponseResult struct {
 	// ID of the zone setting.
-	ID ZoneCacheTieredCacheSmartTopologyEnableUpdateResponseResultID `json:"id,required"`
+	ID ZoneCacheTieredCacheSmartTopologyEnableUpdateResponseResultID `json:"id" api:"required"`
 	// Whether the setting is editable
-	Editable bool `json:"editable,required"`
+	Editable bool `json:"editable" api:"required"`
 	// The value of the feature
-	Value ZoneCacheTieredCacheSmartTopologyEnableUpdateResponseResultValue `json:"value,required"`
+	Value ZoneCacheTieredCacheSmartTopologyEnableUpdateResponseResultValue `json:"value" api:"required"`
 	// Last time this setting was modified.
-	ModifiedOn time.Time                                                       `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time                                                       `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zoneCacheTieredCacheSmartTopologyEnableUpdateResponseResultJSON `json:"-"`
 }
 
@@ -300,10 +300,10 @@ func (r ZoneCacheTieredCacheSmartTopologyEnableUpdateResponseResultValue) IsKnow
 }
 
 type ZoneCacheTieredCacheSmartTopologyEnableDeleteResponse struct {
-	Errors   []MessagesCacheRulesItem `json:"errors,required"`
-	Messages []MessagesCacheRulesItem `json:"messages,required"`
+	Errors   []MessagesCacheRulesItem `json:"errors" api:"required"`
+	Messages []MessagesCacheRulesItem `json:"messages" api:"required"`
 	// Whether the API call was successful
-	Success ZoneCacheTieredCacheSmartTopologyEnableDeleteResponseSuccess `json:"success,required"`
+	Success ZoneCacheTieredCacheSmartTopologyEnableDeleteResponseSuccess `json:"success" api:"required"`
 	Result  ZoneCacheTieredCacheSmartTopologyEnableDeleteResponseResult  `json:"result"`
 	JSON    zoneCacheTieredCacheSmartTopologyEnableDeleteResponseJSON    `json:"-"`
 }
@@ -344,11 +344,11 @@ func (r ZoneCacheTieredCacheSmartTopologyEnableDeleteResponseSuccess) IsKnown() 
 
 type ZoneCacheTieredCacheSmartTopologyEnableDeleteResponseResult struct {
 	// ID of the zone setting.
-	ID ZoneCacheTieredCacheSmartTopologyEnableDeleteResponseResultID `json:"id,required"`
+	ID ZoneCacheTieredCacheSmartTopologyEnableDeleteResponseResultID `json:"id" api:"required"`
 	// Whether the setting is editable
-	Editable bool `json:"editable,required"`
+	Editable bool `json:"editable" api:"required"`
 	// Last time this setting was modified.
-	ModifiedOn time.Time                                                       `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time                                                       `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zoneCacheTieredCacheSmartTopologyEnableDeleteResponseResultJSON `json:"-"`
 }
 
@@ -388,7 +388,7 @@ func (r ZoneCacheTieredCacheSmartTopologyEnableDeleteResponseResultID) IsKnown()
 
 type ZoneCacheTieredCacheSmartTopologyEnableUpdateParams struct {
 	// Enable or disable the Smart Tiered Cache
-	Value param.Field[ZoneCacheTieredCacheSmartTopologyEnableUpdateParamsValue] `json:"value,required"`
+	Value param.Field[ZoneCacheTieredCacheSmartTopologyEnableUpdateParamsValue] `json:"value" api:"required"`
 }
 
 func (r ZoneCacheTieredCacheSmartTopologyEnableUpdateParams) MarshalJSON() (data []byte, err error) {

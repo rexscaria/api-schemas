@@ -41,19 +41,19 @@ func (r *ZoneAPIGatewayDiscoveryService) Get(ctx context.Context, zoneID string,
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/api_gateway/discovery", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type ZoneAPIGatewayDiscoveryGetResponse struct {
-	Errors   []MessagesAPIShieldItem                  `json:"errors,required"`
-	Messages []MessagesAPIShieldItem                  `json:"messages,required"`
-	Result   ZoneAPIGatewayDiscoveryGetResponseResult `json:"result,required"`
+	Errors   []MessagesAPIShieldItem                  `json:"errors" api:"required"`
+	Messages []MessagesAPIShieldItem                  `json:"messages" api:"required"`
+	Result   ZoneAPIGatewayDiscoveryGetResponseResult `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success ZoneAPIGatewayDiscoveryGetResponseSuccess `json:"success,required"`
+	Success ZoneAPIGatewayDiscoveryGetResponseSuccess `json:"success" api:"required"`
 	JSON    zoneAPIGatewayDiscoveryGetResponseJSON    `json:"-"`
 }
 
@@ -77,8 +77,8 @@ func (r zoneAPIGatewayDiscoveryGetResponseJSON) RawJSON() string {
 }
 
 type ZoneAPIGatewayDiscoveryGetResponseResult struct {
-	Schemas   []interface{}                                `json:"schemas,required"`
-	Timestamp SchemasTimestamp                             `json:"timestamp,required" format:"date-time"`
+	Schemas   []interface{}                                `json:"schemas" api:"required"`
+	Timestamp SchemasTimestamp                             `json:"timestamp" api:"required" format:"date-time"`
 	JSON      zoneAPIGatewayDiscoveryGetResponseResultJSON `json:"-"`
 }
 

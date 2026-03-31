@@ -40,15 +40,15 @@ func (r *AccountCfdTunnelConfigurationService) Get(ctx context.Context, accountI
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if tunnelID == "" {
 		err = errors.New("missing required tunnel_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/cfd_tunnel/%s/configurations", accountID, tunnelID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Adds or updates the configuration for a remotely-managed tunnel.
@@ -56,22 +56,22 @@ func (r *AccountCfdTunnelConfigurationService) Update(ctx context.Context, accou
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if tunnelID == "" {
 		err = errors.New("missing required tunnel_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/cfd_tunnel/%s/configurations", accountID, tunnelID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type ConfigurationResponse struct {
-	Errors   []ConfigurationResponseError   `json:"errors,required"`
-	Messages []ConfigurationResponseMessage `json:"messages,required"`
+	Errors   []ConfigurationResponseError   `json:"errors" api:"required"`
+	Messages []ConfigurationResponseMessage `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success ConfigurationResponseSuccess `json:"success,required"`
+	Success ConfigurationResponseSuccess `json:"success" api:"required"`
 	// Cloudflare Tunnel configuration
 	Result ConfigurationResponseResult `json:"result"`
 	JSON   configurationResponseJSON   `json:"-"`
@@ -97,8 +97,8 @@ func (r configurationResponseJSON) RawJSON() string {
 }
 
 type ConfigurationResponseError struct {
-	Code             int64                             `json:"code,required"`
-	Message          string                            `json:"message,required"`
+	Code             int64                             `json:"code" api:"required"`
+	Message          string                            `json:"message" api:"required"`
 	DocumentationURL string                            `json:"documentation_url"`
 	Source           ConfigurationResponseErrorsSource `json:"source"`
 	JSON             configurationResponseErrorJSON    `json:"-"`
@@ -145,8 +145,8 @@ func (r configurationResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type ConfigurationResponseMessage struct {
-	Code             int64                               `json:"code,required"`
-	Message          string                              `json:"message,required"`
+	Code             int64                               `json:"code" api:"required"`
+	Message          string                              `json:"message" api:"required"`
 	DocumentationURL string                              `json:"documentation_url"`
 	Source           ConfigurationResponseMessagesSource `json:"source"`
 	JSON             configurationResponseMessageJSON    `json:"-"`
@@ -343,8 +343,8 @@ type OriginRequestAccess struct {
 	// Access applications that are allowed to reach this hostname for this Tunnel.
 	// Audience tags can be identified in the dashboard or via the List Access policies
 	// API.
-	AudTag   []string `json:"audTag,required"`
-	TeamName string   `json:"teamName,required"`
+	AudTag   []string `json:"audTag" api:"required"`
+	TeamName string   `json:"teamName" api:"required"`
 	// Deny traffic that has not fulfilled Access authorization.
 	Required bool                    `json:"required"`
 	JSON     originRequestAccessJSON `json:"-"`
@@ -422,8 +422,8 @@ type OriginRequestAccessParam struct {
 	// Access applications that are allowed to reach this hostname for this Tunnel.
 	// Audience tags can be identified in the dashboard or via the List Access policies
 	// API.
-	AudTag   param.Field[[]string] `json:"audTag,required"`
-	TeamName param.Field[string]   `json:"teamName,required"`
+	AudTag   param.Field[[]string] `json:"audTag" api:"required"`
+	TeamName param.Field[string]   `json:"teamName" api:"required"`
 	// Deny traffic that has not fulfilled Access authorization.
 	Required param.Field[bool] `json:"required"`
 }
@@ -466,11 +466,11 @@ func (r tunnelConfigJSON) RawJSON() string {
 // Public hostname
 type TunnelConfigIngress struct {
 	// Public hostname for this service.
-	Hostname string `json:"hostname,required"`
+	Hostname string `json:"hostname" api:"required"`
 	// Protocol and address of destination server. Supported protocols: http://,
 	// https://, unix://, tcp://, ssh://, rdp://, unix+tls://, smb://. Alternatively
 	// can return a HTTP status code http_status:[code] e.g. 'http_status:404'.
-	Service string `json:"service,required"`
+	Service string `json:"service" api:"required"`
 	// Configuration parameters for the public hostname specific connection settings
 	// between cloudflared and origin server.
 	OriginRequest OriginRequest `json:"originRequest"`
@@ -538,11 +538,11 @@ func (r TunnelConfigParam) MarshalJSON() (data []byte, err error) {
 // Public hostname
 type TunnelConfigIngressParam struct {
 	// Public hostname for this service.
-	Hostname param.Field[string] `json:"hostname,required"`
+	Hostname param.Field[string] `json:"hostname" api:"required"`
 	// Protocol and address of destination server. Supported protocols: http://,
 	// https://, unix://, tcp://, ssh://, rdp://, unix+tls://, smb://. Alternatively
 	// can return a HTTP status code http_status:[code] e.g. 'http_status:404'.
-	Service param.Field[string] `json:"service,required"`
+	Service param.Field[string] `json:"service" api:"required"`
 	// Configuration parameters for the public hostname specific connection settings
 	// between cloudflared and origin server.
 	OriginRequest param.Field[OriginRequestParam] `json:"originRequest"`

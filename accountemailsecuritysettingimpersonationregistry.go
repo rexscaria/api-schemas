@@ -43,11 +43,11 @@ func (r *AccountEmailSecuritySettingImpersonationRegistryService) New(ctx contex
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/email-security/settings/impersonation_registry", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get an entry in impersonation registry
@@ -55,11 +55,11 @@ func (r *AccountEmailSecuritySettingImpersonationRegistryService) Get(ctx contex
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/email-security/settings/impersonation_registry/%v", accountID, displayNameID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update an entry in impersonation registry
@@ -67,11 +67,11 @@ func (r *AccountEmailSecuritySettingImpersonationRegistryService) Update(ctx con
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/email-security/settings/impersonation_registry/%v", accountID, displayNameID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists, searches, and sorts entries in the impersonation registry.
@@ -79,11 +79,11 @@ func (r *AccountEmailSecuritySettingImpersonationRegistryService) List(ctx conte
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/email-security/settings/impersonation_registry", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete an entry from impersonation registry
@@ -91,18 +91,18 @@ func (r *AccountEmailSecuritySettingImpersonationRegistryService) Delete(ctx con
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/email-security/settings/impersonation_registry/%v", accountID, displayNameID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountEmailSecuritySettingImpersonationRegistryNewResponse struct {
-	Errors   []EmailSecurityMessage                                            `json:"errors,required"`
-	Messages []EmailSecurityMessage                                            `json:"messages,required"`
-	Result   AccountEmailSecuritySettingImpersonationRegistryNewResponseResult `json:"result,required"`
-	Success  bool                                                              `json:"success,required"`
+	Errors   []EmailSecurityMessage                                            `json:"errors" api:"required"`
+	Messages []EmailSecurityMessage                                            `json:"messages" api:"required"`
+	Result   AccountEmailSecuritySettingImpersonationRegistryNewResponseResult `json:"result" api:"required"`
+	Success  bool                                                              `json:"success" api:"required"`
 	JSON     accountEmailSecuritySettingImpersonationRegistryNewResponseJSON   `json:"-"`
 }
 
@@ -127,18 +127,18 @@ func (r accountEmailSecuritySettingImpersonationRegistryNewResponseJSON) RawJSON
 }
 
 type AccountEmailSecuritySettingImpersonationRegistryNewResponseResult struct {
-	ID              int64     `json:"id,required"`
-	CreatedAt       time.Time `json:"created_at,required" format:"date-time"`
-	Email           string    `json:"email,required"`
-	IsEmailRegex    bool      `json:"is_email_regex,required"`
-	LastModified    time.Time `json:"last_modified,required" format:"date-time"`
-	Name            string    `json:"name,required"`
-	Comments        string    `json:"comments,nullable"`
-	DirectoryID     int64     `json:"directory_id,nullable"`
-	DirectoryNodeID int64     `json:"directory_node_id,nullable"`
+	ID              int64     `json:"id" api:"required"`
+	CreatedAt       time.Time `json:"created_at" api:"required" format:"date-time"`
+	Email           string    `json:"email" api:"required"`
+	IsEmailRegex    bool      `json:"is_email_regex" api:"required"`
+	LastModified    time.Time `json:"last_modified" api:"required" format:"date-time"`
+	Name            string    `json:"name" api:"required"`
+	Comments        string    `json:"comments" api:"nullable"`
+	DirectoryID     int64     `json:"directory_id" api:"nullable"`
+	DirectoryNodeID int64     `json:"directory_node_id" api:"nullable"`
 	// Deprecated: deprecated
-	ExternalDirectoryNodeID string                                                                `json:"external_directory_node_id,nullable"`
-	Provenance              string                                                                `json:"provenance,nullable"`
+	ExternalDirectoryNodeID string                                                                `json:"external_directory_node_id" api:"nullable"`
+	Provenance              string                                                                `json:"provenance" api:"nullable"`
 	JSON                    accountEmailSecuritySettingImpersonationRegistryNewResponseResultJSON `json:"-"`
 }
 
@@ -170,10 +170,10 @@ func (r accountEmailSecuritySettingImpersonationRegistryNewResponseResultJSON) R
 }
 
 type AccountEmailSecuritySettingImpersonationRegistryGetResponse struct {
-	Errors   []EmailSecurityMessage                                            `json:"errors,required"`
-	Messages []EmailSecurityMessage                                            `json:"messages,required"`
-	Result   AccountEmailSecuritySettingImpersonationRegistryGetResponseResult `json:"result,required"`
-	Success  bool                                                              `json:"success,required"`
+	Errors   []EmailSecurityMessage                                            `json:"errors" api:"required"`
+	Messages []EmailSecurityMessage                                            `json:"messages" api:"required"`
+	Result   AccountEmailSecuritySettingImpersonationRegistryGetResponseResult `json:"result" api:"required"`
+	Success  bool                                                              `json:"success" api:"required"`
 	JSON     accountEmailSecuritySettingImpersonationRegistryGetResponseJSON   `json:"-"`
 }
 
@@ -198,18 +198,18 @@ func (r accountEmailSecuritySettingImpersonationRegistryGetResponseJSON) RawJSON
 }
 
 type AccountEmailSecuritySettingImpersonationRegistryGetResponseResult struct {
-	ID              int64     `json:"id,required"`
-	CreatedAt       time.Time `json:"created_at,required" format:"date-time"`
-	Email           string    `json:"email,required"`
-	IsEmailRegex    bool      `json:"is_email_regex,required"`
-	LastModified    time.Time `json:"last_modified,required" format:"date-time"`
-	Name            string    `json:"name,required"`
-	Comments        string    `json:"comments,nullable"`
-	DirectoryID     int64     `json:"directory_id,nullable"`
-	DirectoryNodeID int64     `json:"directory_node_id,nullable"`
+	ID              int64     `json:"id" api:"required"`
+	CreatedAt       time.Time `json:"created_at" api:"required" format:"date-time"`
+	Email           string    `json:"email" api:"required"`
+	IsEmailRegex    bool      `json:"is_email_regex" api:"required"`
+	LastModified    time.Time `json:"last_modified" api:"required" format:"date-time"`
+	Name            string    `json:"name" api:"required"`
+	Comments        string    `json:"comments" api:"nullable"`
+	DirectoryID     int64     `json:"directory_id" api:"nullable"`
+	DirectoryNodeID int64     `json:"directory_node_id" api:"nullable"`
 	// Deprecated: deprecated
-	ExternalDirectoryNodeID string                                                                `json:"external_directory_node_id,nullable"`
-	Provenance              string                                                                `json:"provenance,nullable"`
+	ExternalDirectoryNodeID string                                                                `json:"external_directory_node_id" api:"nullable"`
+	Provenance              string                                                                `json:"provenance" api:"nullable"`
 	JSON                    accountEmailSecuritySettingImpersonationRegistryGetResponseResultJSON `json:"-"`
 }
 
@@ -241,10 +241,10 @@ func (r accountEmailSecuritySettingImpersonationRegistryGetResponseResultJSON) R
 }
 
 type AccountEmailSecuritySettingImpersonationRegistryUpdateResponse struct {
-	Errors   []EmailSecurityMessage                                               `json:"errors,required"`
-	Messages []EmailSecurityMessage                                               `json:"messages,required"`
-	Result   AccountEmailSecuritySettingImpersonationRegistryUpdateResponseResult `json:"result,required"`
-	Success  bool                                                                 `json:"success,required"`
+	Errors   []EmailSecurityMessage                                               `json:"errors" api:"required"`
+	Messages []EmailSecurityMessage                                               `json:"messages" api:"required"`
+	Result   AccountEmailSecuritySettingImpersonationRegistryUpdateResponseResult `json:"result" api:"required"`
+	Success  bool                                                                 `json:"success" api:"required"`
 	JSON     accountEmailSecuritySettingImpersonationRegistryUpdateResponseJSON   `json:"-"`
 }
 
@@ -269,18 +269,18 @@ func (r accountEmailSecuritySettingImpersonationRegistryUpdateResponseJSON) RawJ
 }
 
 type AccountEmailSecuritySettingImpersonationRegistryUpdateResponseResult struct {
-	ID              int64     `json:"id,required"`
-	CreatedAt       time.Time `json:"created_at,required" format:"date-time"`
-	Email           string    `json:"email,required"`
-	IsEmailRegex    bool      `json:"is_email_regex,required"`
-	LastModified    time.Time `json:"last_modified,required" format:"date-time"`
-	Name            string    `json:"name,required"`
-	Comments        string    `json:"comments,nullable"`
-	DirectoryID     int64     `json:"directory_id,nullable"`
-	DirectoryNodeID int64     `json:"directory_node_id,nullable"`
+	ID              int64     `json:"id" api:"required"`
+	CreatedAt       time.Time `json:"created_at" api:"required" format:"date-time"`
+	Email           string    `json:"email" api:"required"`
+	IsEmailRegex    bool      `json:"is_email_regex" api:"required"`
+	LastModified    time.Time `json:"last_modified" api:"required" format:"date-time"`
+	Name            string    `json:"name" api:"required"`
+	Comments        string    `json:"comments" api:"nullable"`
+	DirectoryID     int64     `json:"directory_id" api:"nullable"`
+	DirectoryNodeID int64     `json:"directory_node_id" api:"nullable"`
 	// Deprecated: deprecated
-	ExternalDirectoryNodeID string                                                                   `json:"external_directory_node_id,nullable"`
-	Provenance              string                                                                   `json:"provenance,nullable"`
+	ExternalDirectoryNodeID string                                                                   `json:"external_directory_node_id" api:"nullable"`
+	Provenance              string                                                                   `json:"provenance" api:"nullable"`
 	JSON                    accountEmailSecuritySettingImpersonationRegistryUpdateResponseResultJSON `json:"-"`
 }
 
@@ -312,11 +312,11 @@ func (r accountEmailSecuritySettingImpersonationRegistryUpdateResponseResultJSON
 }
 
 type AccountEmailSecuritySettingImpersonationRegistryListResponse struct {
-	Errors     []EmailSecurityMessage                                               `json:"errors,required"`
-	Messages   []EmailSecurityMessage                                               `json:"messages,required"`
-	Result     []AccountEmailSecuritySettingImpersonationRegistryListResponseResult `json:"result,required"`
-	ResultInfo ResultInfoEmailSecurity                                              `json:"result_info,required"`
-	Success    bool                                                                 `json:"success,required"`
+	Errors     []EmailSecurityMessage                                               `json:"errors" api:"required"`
+	Messages   []EmailSecurityMessage                                               `json:"messages" api:"required"`
+	Result     []AccountEmailSecuritySettingImpersonationRegistryListResponseResult `json:"result" api:"required"`
+	ResultInfo ResultInfoEmailSecurity                                              `json:"result_info" api:"required"`
+	Success    bool                                                                 `json:"success" api:"required"`
 	JSON       accountEmailSecuritySettingImpersonationRegistryListResponseJSON     `json:"-"`
 }
 
@@ -342,18 +342,18 @@ func (r accountEmailSecuritySettingImpersonationRegistryListResponseJSON) RawJSO
 }
 
 type AccountEmailSecuritySettingImpersonationRegistryListResponseResult struct {
-	ID              int64     `json:"id,required"`
-	CreatedAt       time.Time `json:"created_at,required" format:"date-time"`
-	Email           string    `json:"email,required"`
-	IsEmailRegex    bool      `json:"is_email_regex,required"`
-	LastModified    time.Time `json:"last_modified,required" format:"date-time"`
-	Name            string    `json:"name,required"`
-	Comments        string    `json:"comments,nullable"`
-	DirectoryID     int64     `json:"directory_id,nullable"`
-	DirectoryNodeID int64     `json:"directory_node_id,nullable"`
+	ID              int64     `json:"id" api:"required"`
+	CreatedAt       time.Time `json:"created_at" api:"required" format:"date-time"`
+	Email           string    `json:"email" api:"required"`
+	IsEmailRegex    bool      `json:"is_email_regex" api:"required"`
+	LastModified    time.Time `json:"last_modified" api:"required" format:"date-time"`
+	Name            string    `json:"name" api:"required"`
+	Comments        string    `json:"comments" api:"nullable"`
+	DirectoryID     int64     `json:"directory_id" api:"nullable"`
+	DirectoryNodeID int64     `json:"directory_node_id" api:"nullable"`
 	// Deprecated: deprecated
-	ExternalDirectoryNodeID string                                                                 `json:"external_directory_node_id,nullable"`
-	Provenance              string                                                                 `json:"provenance,nullable"`
+	ExternalDirectoryNodeID string                                                                 `json:"external_directory_node_id" api:"nullable"`
+	Provenance              string                                                                 `json:"provenance" api:"nullable"`
 	JSON                    accountEmailSecuritySettingImpersonationRegistryListResponseResultJSON `json:"-"`
 }
 
@@ -385,10 +385,10 @@ func (r accountEmailSecuritySettingImpersonationRegistryListResponseResultJSON) 
 }
 
 type AccountEmailSecuritySettingImpersonationRegistryDeleteResponse struct {
-	Errors   []EmailSecurityMessage                                               `json:"errors,required"`
-	Messages []EmailSecurityMessage                                               `json:"messages,required"`
-	Result   AccountEmailSecuritySettingImpersonationRegistryDeleteResponseResult `json:"result,required"`
-	Success  bool                                                                 `json:"success,required"`
+	Errors   []EmailSecurityMessage                                               `json:"errors" api:"required"`
+	Messages []EmailSecurityMessage                                               `json:"messages" api:"required"`
+	Result   AccountEmailSecuritySettingImpersonationRegistryDeleteResponseResult `json:"result" api:"required"`
+	Success  bool                                                                 `json:"success" api:"required"`
 	JSON     accountEmailSecuritySettingImpersonationRegistryDeleteResponseJSON   `json:"-"`
 }
 
@@ -413,7 +413,7 @@ func (r accountEmailSecuritySettingImpersonationRegistryDeleteResponseJSON) RawJ
 }
 
 type AccountEmailSecuritySettingImpersonationRegistryDeleteResponseResult struct {
-	ID   int64                                                                    `json:"id,required"`
+	ID   int64                                                                    `json:"id" api:"required"`
 	JSON accountEmailSecuritySettingImpersonationRegistryDeleteResponseResultJSON `json:"-"`
 }
 
@@ -435,9 +435,9 @@ func (r accountEmailSecuritySettingImpersonationRegistryDeleteResponseResultJSON
 }
 
 type AccountEmailSecuritySettingImpersonationRegistryNewParams struct {
-	Email        param.Field[string] `json:"email,required"`
-	IsEmailRegex param.Field[bool]   `json:"is_email_regex,required"`
-	Name         param.Field[string] `json:"name,required"`
+	Email        param.Field[string] `json:"email" api:"required"`
+	IsEmailRegex param.Field[bool]   `json:"is_email_regex" api:"required"`
+	Name         param.Field[string] `json:"name" api:"required"`
 }
 
 func (r AccountEmailSecuritySettingImpersonationRegistryNewParams) MarshalJSON() (data []byte, err error) {

@@ -45,15 +45,15 @@ func (r *AccountAddressingPrefixBgpStatusService) Update(ctx context.Context, ac
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if prefixID == "" {
 		err = errors.New("missing required prefix_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/addressing/prefixes/%s/bgp/status", accountID, prefixID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // View the current advertisement state for a prefix.
@@ -66,22 +66,22 @@ func (r *AccountAddressingPrefixBgpStatusService) Get(ctx context.Context, accou
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if prefixID == "" {
 		err = errors.New("missing required prefix_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/addressing/prefixes/%s/bgp/status", accountID, prefixID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type AdvertisedResponse struct {
-	Errors   []AddressingMessages `json:"errors,required"`
-	Messages []AddressingMessages `json:"messages,required"`
+	Errors   []AddressingMessages `json:"errors" api:"required"`
+	Messages []AddressingMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AdvertisedResponseSuccess `json:"success,required"`
+	Success AdvertisedResponseSuccess `json:"success" api:"required"`
 	Result  AdvertisedResponseResult  `json:"result"`
 	JSON    advertisedResponseJSON    `json:"-"`
 }
@@ -126,7 +126,7 @@ type AdvertisedResponseResult struct {
 	Advertised bool `json:"advertised"`
 	// Last time the advertisement status was changed. This field is only not 'null' if
 	// on demand is enabled.
-	AdvertisedModifiedAt time.Time                    `json:"advertised_modified_at,nullable" format:"date-time"`
+	AdvertisedModifiedAt time.Time                    `json:"advertised_modified_at" api:"nullable" format:"date-time"`
 	JSON                 advertisedResponseResultJSON `json:"-"`
 }
 
@@ -150,7 +150,7 @@ func (r advertisedResponseResultJSON) RawJSON() string {
 type AccountAddressingPrefixBgpStatusUpdateParams struct {
 	// Advertisement status of the prefix. If `true`, the BGP route for the prefix is
 	// advertised to the Internet. If `false`, the BGP route is withdrawn.
-	Advertised param.Field[bool] `json:"advertised,required"`
+	Advertised param.Field[bool] `json:"advertised" api:"required"`
 }
 
 func (r AccountAddressingPrefixBgpStatusUpdateParams) MarshalJSON() (data []byte, err error) {

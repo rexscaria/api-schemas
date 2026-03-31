@@ -44,15 +44,15 @@ func (r *AccountEmailSecurityInvestigateService) Get(ctx context.Context, accoun
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if postfixID == "" {
 		err = errors.New("missing required postfix_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/email-security/investigate/%s", accountID, postfixID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns information for each email that matches the search parameter(s).
@@ -60,11 +60,11 @@ func (r *AccountEmailSecurityInvestigateService) List(ctx context.Context, accou
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/email-security/investigate", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns detection details such as threat categories and sender information for
@@ -73,15 +73,15 @@ func (r *AccountEmailSecurityInvestigateService) GetDetections(ctx context.Conte
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if postfixID == "" {
 		err = errors.New("missing required postfix_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/email-security/investigate/%s/detections", accountID, postfixID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns the raw eml of any non-benign message.
@@ -89,15 +89,15 @@ func (r *AccountEmailSecurityInvestigateService) GetRaw(ctx context.Context, acc
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if postfixID == "" {
 		err = errors.New("missing required postfix_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/email-security/investigate/%s/raw", accountID, postfixID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Get email trace
@@ -105,15 +105,15 @@ func (r *AccountEmailSecurityInvestigateService) GetTrace(ctx context.Context, a
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if postfixID == "" {
 		err = errors.New("missing required postfix_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/email-security/investigate/%s/trace", accountID, postfixID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Move multiple messages
@@ -121,11 +121,11 @@ func (r *AccountEmailSecurityInvestigateService) MoveMultiple(ctx context.Contex
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/email-security/investigate/move", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns a preview of the message body as a base64 encoded PNG image for
@@ -134,15 +134,15 @@ func (r *AccountEmailSecurityInvestigateService) Preview(ctx context.Context, ac
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if postfixID == "" {
 		err = errors.New("missing required postfix_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/email-security/investigate/%s/preview", accountID, postfixID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Preview for non-detection messages
@@ -150,11 +150,11 @@ func (r *AccountEmailSecurityInvestigateService) PreviewMultiple(ctx context.Con
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/email-security/investigate/preview", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Change email classfication
@@ -162,15 +162,15 @@ func (r *AccountEmailSecurityInvestigateService) Reclassify(ctx context.Context,
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if postfixID == "" {
 		err = errors.New("missing required postfix_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/email-security/investigate/%s/reclassify", accountID, postfixID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Release messages from quarantine
@@ -178,16 +178,16 @@ func (r *AccountEmailSecurityInvestigateService) Release(ctx context.Context, ac
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/email-security/investigate/release", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type EmailSecurityMessage struct {
-	Code             int64                      `json:"code,required"`
-	Message          string                     `json:"message,required"`
+	Code             int64                      `json:"code" api:"required"`
+	Message          string                     `json:"message" api:"required"`
 	DocumentationURL string                     `json:"documentation_url"`
 	Source           EmailSecurityMessageSource `json:"source"`
 	JSON             emailSecurityMessageJSON   `json:"-"`
@@ -259,13 +259,13 @@ func (r MessageDeliveryMode) IsKnown() bool {
 
 type ResultInfoEmailSecurity struct {
 	// Total number of results for the requested service
-	Count int64 `json:"count,required"`
+	Count int64 `json:"count" api:"required"`
 	// Current page within paginated list of results
-	Page int64 `json:"page,required"`
+	Page int64 `json:"page" api:"required"`
 	// Number of results per page of results
-	PerPage int64 `json:"per_page,required"`
+	PerPage int64 `json:"per_page" api:"required"`
 	// Total results available without any search parameters
-	TotalCount int64                       `json:"total_count,required"`
+	TotalCount int64                       `json:"total_count" api:"required"`
 	JSON       resultInfoEmailSecurityJSON `json:"-"`
 }
 
@@ -289,9 +289,9 @@ func (r resultInfoEmailSecurityJSON) RawJSON() string {
 }
 
 type TraceLine struct {
-	Lineno  int64         `json:"lineno,required"`
-	Message string        `json:"message,required"`
-	Ts      time.Time     `json:"ts,required" format:"date-time"`
+	Lineno  int64         `json:"lineno" api:"required"`
+	Message string        `json:"message" api:"required"`
+	Ts      time.Time     `json:"ts" api:"required" format:"date-time"`
 	JSON    traceLineJSON `json:"-"`
 }
 
@@ -331,10 +331,10 @@ func (r ValidationStatus) IsKnown() bool {
 }
 
 type AccountEmailSecurityInvestigateGetResponse struct {
-	Errors   []EmailSecurityMessage                           `json:"errors,required"`
-	Messages []EmailSecurityMessage                           `json:"messages,required"`
-	Result   AccountEmailSecurityInvestigateGetResponseResult `json:"result,required"`
-	Success  bool                                             `json:"success,required"`
+	Errors   []EmailSecurityMessage                           `json:"errors" api:"required"`
+	Messages []EmailSecurityMessage                           `json:"messages" api:"required"`
+	Result   AccountEmailSecurityInvestigateGetResponseResult `json:"result" api:"required"`
+	Success  bool                                             `json:"success" api:"required"`
 	JSON     accountEmailSecurityInvestigateGetResponseJSON   `json:"-"`
 }
 
@@ -358,30 +358,30 @@ func (r accountEmailSecurityInvestigateGetResponseJSON) RawJSON() string {
 }
 
 type AccountEmailSecurityInvestigateGetResponseResult struct {
-	ID                string      `json:"id,required"`
-	ActionLog         interface{} `json:"action_log,required"`
-	ClientRecipients  []string    `json:"client_recipients,required"`
-	DetectionReasons  []string    `json:"detection_reasons,required"`
-	IsPhishSubmission bool        `json:"is_phish_submission,required"`
-	IsQuarantined     bool        `json:"is_quarantined,required"`
+	ID                string      `json:"id" api:"required"`
+	ActionLog         interface{} `json:"action_log" api:"required"`
+	ClientRecipients  []string    `json:"client_recipients" api:"required"`
+	DetectionReasons  []string    `json:"detection_reasons" api:"required"`
+	IsPhishSubmission bool        `json:"is_phish_submission" api:"required"`
+	IsQuarantined     bool        `json:"is_quarantined" api:"required"`
 	// The identifier of the message.
-	PostfixID        string                                                     `json:"postfix_id,required"`
-	Properties       AccountEmailSecurityInvestigateGetResponseResultProperties `json:"properties,required"`
-	Ts               string                                                     `json:"ts,required"`
-	AlertID          string                                                     `json:"alert_id,nullable"`
-	DeliveryMode     MessageDeliveryMode                                        `json:"delivery_mode,nullable"`
-	EdfHash          string                                                     `json:"edf_hash,nullable"`
-	FinalDisposition DispositionLabel                                           `json:"final_disposition,nullable"`
-	Findings         []AccountEmailSecurityInvestigateGetResponseResultFinding  `json:"findings,nullable"`
-	From             string                                                     `json:"from,nullable"`
-	FromName         string                                                     `json:"from_name,nullable"`
-	MessageID        string                                                     `json:"message_id,nullable"`
-	SentDate         string                                                     `json:"sent_date,nullable"`
-	Subject          string                                                     `json:"subject,nullable"`
-	ThreatCategories []string                                                   `json:"threat_categories,nullable"`
-	To               []string                                                   `json:"to,nullable"`
-	ToName           []string                                                   `json:"to_name,nullable"`
-	Validation       AccountEmailSecurityInvestigateGetResponseResultValidation `json:"validation,nullable"`
+	PostfixID        string                                                     `json:"postfix_id" api:"required"`
+	Properties       AccountEmailSecurityInvestigateGetResponseResultProperties `json:"properties" api:"required"`
+	Ts               string                                                     `json:"ts" api:"required"`
+	AlertID          string                                                     `json:"alert_id" api:"nullable"`
+	DeliveryMode     MessageDeliveryMode                                        `json:"delivery_mode" api:"nullable"`
+	EdfHash          string                                                     `json:"edf_hash" api:"nullable"`
+	FinalDisposition DispositionLabel                                           `json:"final_disposition" api:"nullable"`
+	Findings         []AccountEmailSecurityInvestigateGetResponseResultFinding  `json:"findings" api:"nullable"`
+	From             string                                                     `json:"from" api:"nullable"`
+	FromName         string                                                     `json:"from_name" api:"nullable"`
+	MessageID        string                                                     `json:"message_id" api:"nullable"`
+	SentDate         string                                                     `json:"sent_date" api:"nullable"`
+	Subject          string                                                     `json:"subject" api:"nullable"`
+	ThreatCategories []string                                                   `json:"threat_categories" api:"nullable"`
+	To               []string                                                   `json:"to" api:"nullable"`
+	ToName           []string                                                   `json:"to_name" api:"nullable"`
+	Validation       AccountEmailSecurityInvestigateGetResponseResultValidation `json:"validation" api:"nullable"`
 	JSON             accountEmailSecurityInvestigateGetResponseResultJSON       `json:"-"`
 }
 
@@ -494,9 +494,9 @@ func (r AccountEmailSecurityInvestigateGetResponseResultPropertiesWhitelistedPat
 }
 
 type AccountEmailSecurityInvestigateGetResponseResultFinding struct {
-	Detail string                                                      `json:"detail,nullable"`
-	Name   string                                                      `json:"name,nullable"`
-	Value  string                                                      `json:"value,nullable"`
+	Detail string                                                      `json:"detail" api:"nullable"`
+	Name   string                                                      `json:"name" api:"nullable"`
+	Value  string                                                      `json:"value" api:"nullable"`
 	JSON   accountEmailSecurityInvestigateGetResponseResultFindingJSON `json:"-"`
 }
 
@@ -520,10 +520,10 @@ func (r accountEmailSecurityInvestigateGetResponseResultFindingJSON) RawJSON() s
 }
 
 type AccountEmailSecurityInvestigateGetResponseResultValidation struct {
-	Comment string                                                         `json:"comment,nullable"`
-	Dkim    ValidationStatus                                               `json:"dkim,nullable"`
-	Dmarc   ValidationStatus                                               `json:"dmarc,nullable"`
-	Spf     ValidationStatus                                               `json:"spf,nullable"`
+	Comment string                                                         `json:"comment" api:"nullable"`
+	Dkim    ValidationStatus                                               `json:"dkim" api:"nullable"`
+	Dmarc   ValidationStatus                                               `json:"dmarc" api:"nullable"`
+	Spf     ValidationStatus                                               `json:"spf" api:"nullable"`
 	JSON    accountEmailSecurityInvestigateGetResponseResultValidationJSON `json:"-"`
 }
 
@@ -548,11 +548,11 @@ func (r accountEmailSecurityInvestigateGetResponseResultValidationJSON) RawJSON(
 }
 
 type AccountEmailSecurityInvestigateListResponse struct {
-	Errors     []EmailSecurityMessage                              `json:"errors,required"`
-	Messages   []EmailSecurityMessage                              `json:"messages,required"`
-	Result     []AccountEmailSecurityInvestigateListResponseResult `json:"result,required"`
-	ResultInfo ResultInfoEmailSecurity                             `json:"result_info,required"`
-	Success    bool                                                `json:"success,required"`
+	Errors     []EmailSecurityMessage                              `json:"errors" api:"required"`
+	Messages   []EmailSecurityMessage                              `json:"messages" api:"required"`
+	Result     []AccountEmailSecurityInvestigateListResponseResult `json:"result" api:"required"`
+	ResultInfo ResultInfoEmailSecurity                             `json:"result_info" api:"required"`
+	Success    bool                                                `json:"success" api:"required"`
 	JSON       accountEmailSecurityInvestigateListResponseJSON     `json:"-"`
 }
 
@@ -577,30 +577,30 @@ func (r accountEmailSecurityInvestigateListResponseJSON) RawJSON() string {
 }
 
 type AccountEmailSecurityInvestigateListResponseResult struct {
-	ID                string      `json:"id,required"`
-	ActionLog         interface{} `json:"action_log,required"`
-	ClientRecipients  []string    `json:"client_recipients,required"`
-	DetectionReasons  []string    `json:"detection_reasons,required"`
-	IsPhishSubmission bool        `json:"is_phish_submission,required"`
-	IsQuarantined     bool        `json:"is_quarantined,required"`
+	ID                string      `json:"id" api:"required"`
+	ActionLog         interface{} `json:"action_log" api:"required"`
+	ClientRecipients  []string    `json:"client_recipients" api:"required"`
+	DetectionReasons  []string    `json:"detection_reasons" api:"required"`
+	IsPhishSubmission bool        `json:"is_phish_submission" api:"required"`
+	IsQuarantined     bool        `json:"is_quarantined" api:"required"`
 	// The identifier of the message.
-	PostfixID        string                                                      `json:"postfix_id,required"`
-	Properties       AccountEmailSecurityInvestigateListResponseResultProperties `json:"properties,required"`
-	Ts               string                                                      `json:"ts,required"`
-	AlertID          string                                                      `json:"alert_id,nullable"`
-	DeliveryMode     MessageDeliveryMode                                         `json:"delivery_mode,nullable"`
-	EdfHash          string                                                      `json:"edf_hash,nullable"`
-	FinalDisposition DispositionLabel                                            `json:"final_disposition,nullable"`
-	Findings         []AccountEmailSecurityInvestigateListResponseResultFinding  `json:"findings,nullable"`
-	From             string                                                      `json:"from,nullable"`
-	FromName         string                                                      `json:"from_name,nullable"`
-	MessageID        string                                                      `json:"message_id,nullable"`
-	SentDate         string                                                      `json:"sent_date,nullable"`
-	Subject          string                                                      `json:"subject,nullable"`
-	ThreatCategories []string                                                    `json:"threat_categories,nullable"`
-	To               []string                                                    `json:"to,nullable"`
-	ToName           []string                                                    `json:"to_name,nullable"`
-	Validation       AccountEmailSecurityInvestigateListResponseResultValidation `json:"validation,nullable"`
+	PostfixID        string                                                      `json:"postfix_id" api:"required"`
+	Properties       AccountEmailSecurityInvestigateListResponseResultProperties `json:"properties" api:"required"`
+	Ts               string                                                      `json:"ts" api:"required"`
+	AlertID          string                                                      `json:"alert_id" api:"nullable"`
+	DeliveryMode     MessageDeliveryMode                                         `json:"delivery_mode" api:"nullable"`
+	EdfHash          string                                                      `json:"edf_hash" api:"nullable"`
+	FinalDisposition DispositionLabel                                            `json:"final_disposition" api:"nullable"`
+	Findings         []AccountEmailSecurityInvestigateListResponseResultFinding  `json:"findings" api:"nullable"`
+	From             string                                                      `json:"from" api:"nullable"`
+	FromName         string                                                      `json:"from_name" api:"nullable"`
+	MessageID        string                                                      `json:"message_id" api:"nullable"`
+	SentDate         string                                                      `json:"sent_date" api:"nullable"`
+	Subject          string                                                      `json:"subject" api:"nullable"`
+	ThreatCategories []string                                                    `json:"threat_categories" api:"nullable"`
+	To               []string                                                    `json:"to" api:"nullable"`
+	ToName           []string                                                    `json:"to_name" api:"nullable"`
+	Validation       AccountEmailSecurityInvestigateListResponseResultValidation `json:"validation" api:"nullable"`
 	JSON             accountEmailSecurityInvestigateListResponseResultJSON       `json:"-"`
 }
 
@@ -713,9 +713,9 @@ func (r AccountEmailSecurityInvestigateListResponseResultPropertiesWhitelistedPa
 }
 
 type AccountEmailSecurityInvestigateListResponseResultFinding struct {
-	Detail string                                                       `json:"detail,nullable"`
-	Name   string                                                       `json:"name,nullable"`
-	Value  string                                                       `json:"value,nullable"`
+	Detail string                                                       `json:"detail" api:"nullable"`
+	Name   string                                                       `json:"name" api:"nullable"`
+	Value  string                                                       `json:"value" api:"nullable"`
 	JSON   accountEmailSecurityInvestigateListResponseResultFindingJSON `json:"-"`
 }
 
@@ -739,10 +739,10 @@ func (r accountEmailSecurityInvestigateListResponseResultFindingJSON) RawJSON() 
 }
 
 type AccountEmailSecurityInvestigateListResponseResultValidation struct {
-	Comment string                                                          `json:"comment,nullable"`
-	Dkim    ValidationStatus                                                `json:"dkim,nullable"`
-	Dmarc   ValidationStatus                                                `json:"dmarc,nullable"`
-	Spf     ValidationStatus                                                `json:"spf,nullable"`
+	Comment string                                                          `json:"comment" api:"nullable"`
+	Dkim    ValidationStatus                                                `json:"dkim" api:"nullable"`
+	Dmarc   ValidationStatus                                                `json:"dmarc" api:"nullable"`
+	Spf     ValidationStatus                                                `json:"spf" api:"nullable"`
 	JSON    accountEmailSecurityInvestigateListResponseResultValidationJSON `json:"-"`
 }
 
@@ -767,10 +767,10 @@ func (r accountEmailSecurityInvestigateListResponseResultValidationJSON) RawJSON
 }
 
 type AccountEmailSecurityInvestigateGetDetectionsResponse struct {
-	Errors   []EmailSecurityMessage                                     `json:"errors,required"`
-	Messages []EmailSecurityMessage                                     `json:"messages,required"`
-	Result   AccountEmailSecurityInvestigateGetDetectionsResponseResult `json:"result,required"`
-	Success  bool                                                       `json:"success,required"`
+	Errors   []EmailSecurityMessage                                     `json:"errors" api:"required"`
+	Messages []EmailSecurityMessage                                     `json:"messages" api:"required"`
+	Result   AccountEmailSecurityInvestigateGetDetectionsResponseResult `json:"result" api:"required"`
+	Success  bool                                                       `json:"success" api:"required"`
 	JSON     accountEmailSecurityInvestigateGetDetectionsResponseJSON   `json:"-"`
 }
 
@@ -794,14 +794,14 @@ func (r accountEmailSecurityInvestigateGetDetectionsResponseJSON) RawJSON() stri
 }
 
 type AccountEmailSecurityInvestigateGetDetectionsResponseResult struct {
-	Action           string                                                                     `json:"action,required"`
-	Attachments      []AccountEmailSecurityInvestigateGetDetectionsResponseResultAttachment     `json:"attachments,required"`
-	Headers          []AccountEmailSecurityInvestigateGetDetectionsResponseResultHeader         `json:"headers,required"`
-	Links            []AccountEmailSecurityInvestigateGetDetectionsResponseResultLink           `json:"links,required"`
-	SenderInfo       AccountEmailSecurityInvestigateGetDetectionsResponseResultSenderInfo       `json:"sender_info,required"`
-	ThreatCategories []AccountEmailSecurityInvestigateGetDetectionsResponseResultThreatCategory `json:"threat_categories,required"`
-	Validation       AccountEmailSecurityInvestigateGetDetectionsResponseResultValidation       `json:"validation,required"`
-	FinalDisposition DispositionLabel                                                           `json:"final_disposition,nullable"`
+	Action           string                                                                     `json:"action" api:"required"`
+	Attachments      []AccountEmailSecurityInvestigateGetDetectionsResponseResultAttachment     `json:"attachments" api:"required"`
+	Headers          []AccountEmailSecurityInvestigateGetDetectionsResponseResultHeader         `json:"headers" api:"required"`
+	Links            []AccountEmailSecurityInvestigateGetDetectionsResponseResultLink           `json:"links" api:"required"`
+	SenderInfo       AccountEmailSecurityInvestigateGetDetectionsResponseResultSenderInfo       `json:"sender_info" api:"required"`
+	ThreatCategories []AccountEmailSecurityInvestigateGetDetectionsResponseResultThreatCategory `json:"threat_categories" api:"required"`
+	Validation       AccountEmailSecurityInvestigateGetDetectionsResponseResultValidation       `json:"validation" api:"required"`
+	FinalDisposition DispositionLabel                                                           `json:"final_disposition" api:"nullable"`
 	JSON             accountEmailSecurityInvestigateGetDetectionsResponseResultJSON             `json:"-"`
 }
 
@@ -830,11 +830,11 @@ func (r accountEmailSecurityInvestigateGetDetectionsResponseResultJSON) RawJSON(
 }
 
 type AccountEmailSecurityInvestigateGetDetectionsResponseResultAttachment struct {
-	Size        int64                                                                    `json:"size,required"`
-	ContentType string                                                                   `json:"content_type,nullable"`
-	Detection   DispositionLabel                                                         `json:"detection,nullable"`
-	Encrypted   bool                                                                     `json:"encrypted,nullable"`
-	Name        string                                                                   `json:"name,nullable"`
+	Size        int64                                                                    `json:"size" api:"required"`
+	ContentType string                                                                   `json:"content_type" api:"nullable"`
+	Detection   DispositionLabel                                                         `json:"detection" api:"nullable"`
+	Encrypted   bool                                                                     `json:"encrypted" api:"nullable"`
+	Name        string                                                                   `json:"name" api:"nullable"`
 	JSON        accountEmailSecurityInvestigateGetDetectionsResponseResultAttachmentJSON `json:"-"`
 }
 
@@ -860,8 +860,8 @@ func (r accountEmailSecurityInvestigateGetDetectionsResponseResultAttachmentJSON
 }
 
 type AccountEmailSecurityInvestigateGetDetectionsResponseResultHeader struct {
-	Name  string                                                               `json:"name,required"`
-	Value string                                                               `json:"value,required"`
+	Name  string                                                               `json:"name" api:"required"`
+	Value string                                                               `json:"value" api:"required"`
 	JSON  accountEmailSecurityInvestigateGetDetectionsResponseResultHeaderJSON `json:"-"`
 }
 
@@ -884,8 +884,8 @@ func (r accountEmailSecurityInvestigateGetDetectionsResponseResultHeaderJSON) Ra
 }
 
 type AccountEmailSecurityInvestigateGetDetectionsResponseResultLink struct {
-	Href string                                                             `json:"href,required"`
-	Text string                                                             `json:"text,nullable"`
+	Href string                                                             `json:"href" api:"required"`
+	Text string                                                             `json:"text" api:"nullable"`
 	JSON accountEmailSecurityInvestigateGetDetectionsResponseResultLinkJSON `json:"-"`
 }
 
@@ -909,12 +909,12 @@ func (r accountEmailSecurityInvestigateGetDetectionsResponseResultLinkJSON) RawJ
 
 type AccountEmailSecurityInvestigateGetDetectionsResponseResultSenderInfo struct {
 	// The name of the autonomous system.
-	AsName string `json:"as_name,nullable"`
+	AsName string `json:"as_name" api:"nullable"`
 	// The number of the autonomous system.
-	AsNumber int64                                                                    `json:"as_number,nullable"`
-	Geo      string                                                                   `json:"geo,nullable"`
-	IP       string                                                                   `json:"ip,nullable"`
-	Pld      string                                                                   `json:"pld,nullable"`
+	AsNumber int64                                                                    `json:"as_number" api:"nullable"`
+	Geo      string                                                                   `json:"geo" api:"nullable"`
+	IP       string                                                                   `json:"ip" api:"nullable"`
+	Pld      string                                                                   `json:"pld" api:"nullable"`
 	JSON     accountEmailSecurityInvestigateGetDetectionsResponseResultSenderInfoJSON `json:"-"`
 }
 
@@ -940,9 +940,9 @@ func (r accountEmailSecurityInvestigateGetDetectionsResponseResultSenderInfoJSON
 }
 
 type AccountEmailSecurityInvestigateGetDetectionsResponseResultThreatCategory struct {
-	ID          int64                                                                        `json:"id,required"`
-	Description string                                                                       `json:"description,nullable"`
-	Name        string                                                                       `json:"name,nullable"`
+	ID          int64                                                                        `json:"id" api:"required"`
+	Description string                                                                       `json:"description" api:"nullable"`
+	Name        string                                                                       `json:"name" api:"nullable"`
 	JSON        accountEmailSecurityInvestigateGetDetectionsResponseResultThreatCategoryJSON `json:"-"`
 }
 
@@ -966,10 +966,10 @@ func (r accountEmailSecurityInvestigateGetDetectionsResponseResultThreatCategory
 }
 
 type AccountEmailSecurityInvestigateGetDetectionsResponseResultValidation struct {
-	Comment string                                                                   `json:"comment,nullable"`
-	Dkim    ValidationStatus                                                         `json:"dkim,nullable"`
-	Dmarc   ValidationStatus                                                         `json:"dmarc,nullable"`
-	Spf     ValidationStatus                                                         `json:"spf,nullable"`
+	Comment string                                                                   `json:"comment" api:"nullable"`
+	Dkim    ValidationStatus                                                         `json:"dkim" api:"nullable"`
+	Dmarc   ValidationStatus                                                         `json:"dmarc" api:"nullable"`
+	Spf     ValidationStatus                                                         `json:"spf" api:"nullable"`
 	JSON    accountEmailSecurityInvestigateGetDetectionsResponseResultValidationJSON `json:"-"`
 }
 
@@ -994,10 +994,10 @@ func (r accountEmailSecurityInvestigateGetDetectionsResponseResultValidationJSON
 }
 
 type AccountEmailSecurityInvestigateGetRawResponse struct {
-	Errors   []EmailSecurityMessage                              `json:"errors,required"`
-	Messages []EmailSecurityMessage                              `json:"messages,required"`
-	Result   AccountEmailSecurityInvestigateGetRawResponseResult `json:"result,required"`
-	Success  bool                                                `json:"success,required"`
+	Errors   []EmailSecurityMessage                              `json:"errors" api:"required"`
+	Messages []EmailSecurityMessage                              `json:"messages" api:"required"`
+	Result   AccountEmailSecurityInvestigateGetRawResponseResult `json:"result" api:"required"`
+	Success  bool                                                `json:"success" api:"required"`
 	JSON     accountEmailSecurityInvestigateGetRawResponseJSON   `json:"-"`
 }
 
@@ -1022,7 +1022,7 @@ func (r accountEmailSecurityInvestigateGetRawResponseJSON) RawJSON() string {
 
 type AccountEmailSecurityInvestigateGetRawResponseResult struct {
 	// A UTF-8 encoded eml file of the email.
-	Raw  string                                                  `json:"raw,required"`
+	Raw  string                                                  `json:"raw" api:"required"`
 	JSON accountEmailSecurityInvestigateGetRawResponseResultJSON `json:"-"`
 }
 
@@ -1043,10 +1043,10 @@ func (r accountEmailSecurityInvestigateGetRawResponseResultJSON) RawJSON() strin
 }
 
 type AccountEmailSecurityInvestigateGetTraceResponse struct {
-	Errors   []EmailSecurityMessage                                `json:"errors,required"`
-	Messages []EmailSecurityMessage                                `json:"messages,required"`
-	Result   AccountEmailSecurityInvestigateGetTraceResponseResult `json:"result,required"`
-	Success  bool                                                  `json:"success,required"`
+	Errors   []EmailSecurityMessage                                `json:"errors" api:"required"`
+	Messages []EmailSecurityMessage                                `json:"messages" api:"required"`
+	Result   AccountEmailSecurityInvestigateGetTraceResponseResult `json:"result" api:"required"`
+	Success  bool                                                  `json:"success" api:"required"`
 	JSON     accountEmailSecurityInvestigateGetTraceResponseJSON   `json:"-"`
 }
 
@@ -1070,8 +1070,8 @@ func (r accountEmailSecurityInvestigateGetTraceResponseJSON) RawJSON() string {
 }
 
 type AccountEmailSecurityInvestigateGetTraceResponseResult struct {
-	Inbound  AccountEmailSecurityInvestigateGetTraceResponseResultInbound  `json:"inbound,required"`
-	Outbound AccountEmailSecurityInvestigateGetTraceResponseResultOutbound `json:"outbound,required"`
+	Inbound  AccountEmailSecurityInvestigateGetTraceResponseResultInbound  `json:"inbound" api:"required"`
+	Outbound AccountEmailSecurityInvestigateGetTraceResponseResultOutbound `json:"outbound" api:"required"`
 	JSON     accountEmailSecurityInvestigateGetTraceResponseResultJSON     `json:"-"`
 }
 
@@ -1093,8 +1093,8 @@ func (r accountEmailSecurityInvestigateGetTraceResponseResultJSON) RawJSON() str
 }
 
 type AccountEmailSecurityInvestigateGetTraceResponseResultInbound struct {
-	Lines   []TraceLine                                                      `json:"lines,nullable"`
-	Pending bool                                                             `json:"pending,nullable"`
+	Lines   []TraceLine                                                      `json:"lines" api:"nullable"`
+	Pending bool                                                             `json:"pending" api:"nullable"`
 	JSON    accountEmailSecurityInvestigateGetTraceResponseResultInboundJSON `json:"-"`
 }
 
@@ -1117,8 +1117,8 @@ func (r accountEmailSecurityInvestigateGetTraceResponseResultInboundJSON) RawJSO
 }
 
 type AccountEmailSecurityInvestigateGetTraceResponseResultOutbound struct {
-	Lines   []TraceLine                                                       `json:"lines,nullable"`
-	Pending bool                                                              `json:"pending,nullable"`
+	Lines   []TraceLine                                                       `json:"lines" api:"nullable"`
+	Pending bool                                                              `json:"pending" api:"nullable"`
 	JSON    accountEmailSecurityInvestigateGetTraceResponseResultOutboundJSON `json:"-"`
 }
 
@@ -1141,10 +1141,10 @@ func (r accountEmailSecurityInvestigateGetTraceResponseResultOutboundJSON) RawJS
 }
 
 type AccountEmailSecurityInvestigateMoveMultipleResponse struct {
-	Errors   []EmailSecurityMessage                                  `json:"errors,required"`
-	Messages []EmailSecurityMessage                                  `json:"messages,required"`
-	Result   []RetractionResponseItem                                `json:"result,required"`
-	Success  bool                                                    `json:"success,required"`
+	Errors   []EmailSecurityMessage                                  `json:"errors" api:"required"`
+	Messages []EmailSecurityMessage                                  `json:"messages" api:"required"`
+	Result   []RetractionResponseItem                                `json:"result" api:"required"`
+	Success  bool                                                    `json:"success" api:"required"`
 	JSON     accountEmailSecurityInvestigateMoveMultipleResponseJSON `json:"-"`
 }
 
@@ -1168,10 +1168,10 @@ func (r accountEmailSecurityInvestigateMoveMultipleResponseJSON) RawJSON() strin
 }
 
 type AccountEmailSecurityInvestigatePreviewResponse struct {
-	Errors   []EmailSecurityMessage                               `json:"errors,required"`
-	Messages []EmailSecurityMessage                               `json:"messages,required"`
-	Result   AccountEmailSecurityInvestigatePreviewResponseResult `json:"result,required"`
-	Success  bool                                                 `json:"success,required"`
+	Errors   []EmailSecurityMessage                               `json:"errors" api:"required"`
+	Messages []EmailSecurityMessage                               `json:"messages" api:"required"`
+	Result   AccountEmailSecurityInvestigatePreviewResponseResult `json:"result" api:"required"`
+	Success  bool                                                 `json:"success" api:"required"`
 	JSON     accountEmailSecurityInvestigatePreviewResponseJSON   `json:"-"`
 }
 
@@ -1196,7 +1196,7 @@ func (r accountEmailSecurityInvestigatePreviewResponseJSON) RawJSON() string {
 
 type AccountEmailSecurityInvestigatePreviewResponseResult struct {
 	// A base64 encoded PNG image of the email.
-	Screenshot string                                                   `json:"screenshot,required"`
+	Screenshot string                                                   `json:"screenshot" api:"required"`
 	JSON       accountEmailSecurityInvestigatePreviewResponseResultJSON `json:"-"`
 }
 
@@ -1217,10 +1217,10 @@ func (r accountEmailSecurityInvestigatePreviewResponseResultJSON) RawJSON() stri
 }
 
 type AccountEmailSecurityInvestigatePreviewMultipleResponse struct {
-	Errors   []EmailSecurityMessage                                       `json:"errors,required"`
-	Messages []EmailSecurityMessage                                       `json:"messages,required"`
-	Result   AccountEmailSecurityInvestigatePreviewMultipleResponseResult `json:"result,required"`
-	Success  bool                                                         `json:"success,required"`
+	Errors   []EmailSecurityMessage                                       `json:"errors" api:"required"`
+	Messages []EmailSecurityMessage                                       `json:"messages" api:"required"`
+	Result   AccountEmailSecurityInvestigatePreviewMultipleResponseResult `json:"result" api:"required"`
+	Success  bool                                                         `json:"success" api:"required"`
 	JSON     accountEmailSecurityInvestigatePreviewMultipleResponseJSON   `json:"-"`
 }
 
@@ -1245,7 +1245,7 @@ func (r accountEmailSecurityInvestigatePreviewMultipleResponseJSON) RawJSON() st
 
 type AccountEmailSecurityInvestigatePreviewMultipleResponseResult struct {
 	// A base64 encoded PNG image of the email.
-	Screenshot string                                                           `json:"screenshot,required"`
+	Screenshot string                                                           `json:"screenshot" api:"required"`
 	JSON       accountEmailSecurityInvestigatePreviewMultipleResponseResultJSON `json:"-"`
 }
 
@@ -1267,10 +1267,10 @@ func (r accountEmailSecurityInvestigatePreviewMultipleResponseResultJSON) RawJSO
 }
 
 type AccountEmailSecurityInvestigateReclassifyResponse struct {
-	Errors   []EmailSecurityMessage                                `json:"errors,required"`
-	Messages []EmailSecurityMessage                                `json:"messages,required"`
-	Result   interface{}                                           `json:"result,required"`
-	Success  bool                                                  `json:"success,required"`
+	Errors   []EmailSecurityMessage                                `json:"errors" api:"required"`
+	Messages []EmailSecurityMessage                                `json:"messages" api:"required"`
+	Result   interface{}                                           `json:"result" api:"required"`
+	Success  bool                                                  `json:"success" api:"required"`
 	JSON     accountEmailSecurityInvestigateReclassifyResponseJSON `json:"-"`
 }
 
@@ -1294,10 +1294,10 @@ func (r accountEmailSecurityInvestigateReclassifyResponseJSON) RawJSON() string 
 }
 
 type AccountEmailSecurityInvestigateReleaseResponse struct {
-	Errors   []EmailSecurityMessage                                 `json:"errors,required"`
-	Messages []EmailSecurityMessage                                 `json:"messages,required"`
-	Result   []AccountEmailSecurityInvestigateReleaseResponseResult `json:"result,required"`
-	Success  bool                                                   `json:"success,required"`
+	Errors   []EmailSecurityMessage                                 `json:"errors" api:"required"`
+	Messages []EmailSecurityMessage                                 `json:"messages" api:"required"`
+	Result   []AccountEmailSecurityInvestigateReleaseResponseResult `json:"result" api:"required"`
+	Success  bool                                                   `json:"success" api:"required"`
 	JSON     accountEmailSecurityInvestigateReleaseResponseJSON     `json:"-"`
 }
 
@@ -1322,10 +1322,10 @@ func (r accountEmailSecurityInvestigateReleaseResponseJSON) RawJSON() string {
 
 type AccountEmailSecurityInvestigateReleaseResponseResult struct {
 	// The identifier of the message.
-	PostfixID   string                                                   `json:"postfix_id,required"`
-	Delivered   []string                                                 `json:"delivered,nullable"`
-	Failed      []string                                                 `json:"failed,nullable"`
-	Undelivered []string                                                 `json:"undelivered,nullable"`
+	PostfixID   string                                                   `json:"postfix_id" api:"required"`
+	Delivered   []string                                                 `json:"delivered" api:"nullable"`
+	Failed      []string                                                 `json:"failed" api:"nullable"`
+	Undelivered []string                                                 `json:"undelivered" api:"nullable"`
 	JSON        accountEmailSecurityInvestigateReleaseResponseResultJSON `json:"-"`
 }
 
@@ -1447,8 +1447,8 @@ func (r AccountEmailSecurityInvestigateListParamsMessageAction) IsKnown() bool {
 }
 
 type AccountEmailSecurityInvestigateMoveMultipleParams struct {
-	Destination param.Field[AccountEmailSecurityInvestigateMoveMultipleParamsDestination] `json:"destination,required"`
-	PostfixIDs  param.Field[[]string]                                                     `json:"postfix_ids,required"`
+	Destination param.Field[AccountEmailSecurityInvestigateMoveMultipleParamsDestination] `json:"destination" api:"required"`
+	PostfixIDs  param.Field[[]string]                                                     `json:"postfix_ids" api:"required"`
 }
 
 func (r AccountEmailSecurityInvestigateMoveMultipleParams) MarshalJSON() (data []byte, err error) {
@@ -1475,7 +1475,7 @@ func (r AccountEmailSecurityInvestigateMoveMultipleParamsDestination) IsKnown() 
 
 type AccountEmailSecurityInvestigatePreviewMultipleParams struct {
 	// The identifier of the message.
-	PostfixID param.Field[string] `json:"postfix_id,required"`
+	PostfixID param.Field[string] `json:"postfix_id" api:"required"`
 }
 
 func (r AccountEmailSecurityInvestigatePreviewMultipleParams) MarshalJSON() (data []byte, err error) {
@@ -1483,7 +1483,7 @@ func (r AccountEmailSecurityInvestigatePreviewMultipleParams) MarshalJSON() (dat
 }
 
 type AccountEmailSecurityInvestigateReclassifyParams struct {
-	ExpectedDisposition param.Field[AccountEmailSecurityInvestigateReclassifyParamsExpectedDisposition] `json:"expected_disposition,required"`
+	ExpectedDisposition param.Field[AccountEmailSecurityInvestigateReclassifyParamsExpectedDisposition] `json:"expected_disposition" api:"required"`
 	// Base64 encoded content of the EML file
 	EmlContent param.Field[string] `json:"eml_content"`
 }
@@ -1513,7 +1513,7 @@ func (r AccountEmailSecurityInvestigateReclassifyParamsExpectedDisposition) IsKn
 
 type AccountEmailSecurityInvestigateReleaseParams struct {
 	// A list of messages identfied by their `postfix_id`s that should be released.
-	Body []string `json:"body,required"`
+	Body []string `json:"body" api:"required"`
 }
 
 func (r AccountEmailSecurityInvestigateReleaseParams) MarshalJSON() (data []byte, err error) {

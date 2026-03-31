@@ -40,11 +40,11 @@ func (r *AccountGatewayCertificateService) New(ctx context.Context, accountID st
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/gateway/certificates", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetches a single Zero Trust certificate.
@@ -52,15 +52,15 @@ func (r *AccountGatewayCertificateService) Get(ctx context.Context, accountID st
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if certificateID == "" {
 		err = errors.New("missing required certificate_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/gateway/certificates/%s", accountID, certificateID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetches all Zero Trust certificates for an account.
@@ -68,11 +68,11 @@ func (r *AccountGatewayCertificateService) List(ctx context.Context, accountID s
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/gateway/certificates", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Deletes a gateway-managed Zero Trust certificate. A certificate must be
@@ -81,15 +81,15 @@ func (r *AccountGatewayCertificateService) Delete(ctx context.Context, accountID
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if certificateID == "" {
 		err = errors.New("missing required certificate_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/gateway/certificates/%s", accountID, certificateID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Binds a single Zero Trust certificate to the edge.
@@ -97,15 +97,15 @@ func (r *AccountGatewayCertificateService) Activate(ctx context.Context, account
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if certificateID == "" {
 		err = errors.New("missing required certificate_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/gateway/certificates/%s/activate", accountID, certificateID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Unbinds a single Zero Trust certificate from the edge
@@ -113,15 +113,15 @@ func (r *AccountGatewayCertificateService) Deactivate(ctx context.Context, accou
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if certificateID == "" {
 		err = errors.New("missing required certificate_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/gateway/certificates/%s/deactivate", accountID, certificateID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type Certificate struct {
@@ -213,10 +213,10 @@ func (r CertificateType) IsKnown() bool {
 }
 
 type SingleResponseCertificateGateway struct {
-	Errors   []ZeroTrustGatewayMessages `json:"errors,required"`
-	Messages []ZeroTrustGatewayMessages `json:"messages,required"`
+	Errors   []ZeroTrustGatewayMessages `json:"errors" api:"required"`
+	Messages []ZeroTrustGatewayMessages `json:"messages" api:"required"`
 	// Whether the API call was successful
-	Success SingleResponseCertificateGatewaySuccess `json:"success,required"`
+	Success SingleResponseCertificateGatewaySuccess `json:"success" api:"required"`
 	Result  Certificate                             `json:"result"`
 	JSON    singleResponseCertificateGatewayJSON    `json:"-"`
 }
@@ -256,10 +256,10 @@ func (r SingleResponseCertificateGatewaySuccess) IsKnown() bool {
 }
 
 type AccountGatewayCertificateListResponse struct {
-	Errors   []ZeroTrustGatewayMessages `json:"errors,required"`
-	Messages []ZeroTrustGatewayMessages `json:"messages,required"`
+	Errors   []ZeroTrustGatewayMessages `json:"errors" api:"required"`
+	Messages []ZeroTrustGatewayMessages `json:"messages" api:"required"`
 	// Whether the API call was successful
-	Success    AccountGatewayCertificateListResponseSuccess    `json:"success,required"`
+	Success    AccountGatewayCertificateListResponseSuccess    `json:"success" api:"required"`
 	Result     []Certificate                                   `json:"result"`
 	ResultInfo AccountGatewayCertificateListResponseResultInfo `json:"result_info"`
 	JSON       accountGatewayCertificateListResponseJSON       `json:"-"`
@@ -344,7 +344,7 @@ func (r AccountGatewayCertificateNewParams) MarshalJSON() (data []byte, err erro
 }
 
 type AccountGatewayCertificateActivateParams struct {
-	Body interface{} `json:"body,required"`
+	Body interface{} `json:"body" api:"required"`
 }
 
 func (r AccountGatewayCertificateActivateParams) MarshalJSON() (data []byte, err error) {
@@ -352,7 +352,7 @@ func (r AccountGatewayCertificateActivateParams) MarshalJSON() (data []byte, err
 }
 
 type AccountGatewayCertificateDeactivateParams struct {
-	Body interface{} `json:"body,required"`
+	Body interface{} `json:"body" api:"required"`
 }
 
 func (r AccountGatewayCertificateDeactivateParams) MarshalJSON() (data []byte, err error) {

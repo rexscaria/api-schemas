@@ -45,11 +45,11 @@ func (r *AccountEmailSecuritySettingTrustedDomainService) New(ctx context.Contex
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/email-security/settings/trusted_domains", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get a trusted email domain
@@ -57,11 +57,11 @@ func (r *AccountEmailSecuritySettingTrustedDomainService) Get(ctx context.Contex
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/email-security/settings/trusted_domains/%v", accountID, trustedDomainID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update a trusted email domain
@@ -69,11 +69,11 @@ func (r *AccountEmailSecuritySettingTrustedDomainService) Update(ctx context.Con
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/email-security/settings/trusted_domains/%v", accountID, trustedDomainID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists, searches, and sorts an account’s trusted email domains.
@@ -81,11 +81,11 @@ func (r *AccountEmailSecuritySettingTrustedDomainService) List(ctx context.Conte
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/email-security/settings/trusted_domains", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete a trusted email domain
@@ -93,22 +93,22 @@ func (r *AccountEmailSecuritySettingTrustedDomainService) Delete(ctx context.Con
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/email-security/settings/trusted_domains/%v", accountID, trustedDomainID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type CreateTrustedDomainParam struct {
 	// Select to prevent recently registered domains from triggering a Suspicious or
 	// Malicious disposition.
-	IsRecent param.Field[bool] `json:"is_recent,required"`
-	IsRegex  param.Field[bool] `json:"is_regex,required"`
+	IsRecent param.Field[bool] `json:"is_recent" api:"required"`
+	IsRegex  param.Field[bool] `json:"is_regex" api:"required"`
 	// Select for partner or other approved domains that have similar spelling to your
 	// connected domains. Prevents listed domains from triggering a Spoof disposition.
-	IsSimilarity param.Field[bool]   `json:"is_similarity,required"`
-	Pattern      param.Field[string] `json:"pattern,required"`
+	IsSimilarity param.Field[bool]   `json:"is_similarity" api:"required"`
+	Pattern      param.Field[string] `json:"pattern" api:"required"`
 	Comments     param.Field[string] `json:"comments"`
 }
 
@@ -121,18 +121,18 @@ func (r CreateTrustedDomainParam) implementsAccountEmailSecuritySettingTrustedDo
 
 type TrustedDomain struct {
 	// The unique identifier for the trusted domain.
-	ID        int64     `json:"id,required"`
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	ID        int64     `json:"id" api:"required"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Select to prevent recently registered domains from triggering a Suspicious or
 	// Malicious disposition.
-	IsRecent bool `json:"is_recent,required"`
-	IsRegex  bool `json:"is_regex,required"`
+	IsRecent bool `json:"is_recent" api:"required"`
+	IsRegex  bool `json:"is_regex" api:"required"`
 	// Select for partner or other approved domains that have similar spelling to your
 	// connected domains. Prevents listed domains from triggering a Spoof disposition.
-	IsSimilarity bool              `json:"is_similarity,required"`
-	LastModified time.Time         `json:"last_modified,required" format:"date-time"`
-	Pattern      string            `json:"pattern,required"`
-	Comments     string            `json:"comments,nullable"`
+	IsSimilarity bool              `json:"is_similarity" api:"required"`
+	LastModified time.Time         `json:"last_modified" api:"required" format:"date-time"`
+	Pattern      string            `json:"pattern" api:"required"`
+	Comments     string            `json:"comments" api:"nullable"`
 	JSON         trustedDomainJSON `json:"-"`
 }
 
@@ -161,10 +161,10 @@ func (r trustedDomainJSON) RawJSON() string {
 func (r TrustedDomain) implementsAccountEmailSecuritySettingTrustedDomainNewResponseResultUnion() {}
 
 type AccountEmailSecuritySettingTrustedDomainNewResponse struct {
-	Errors   []EmailSecurityMessage                                         `json:"errors,required"`
-	Messages []EmailSecurityMessage                                         `json:"messages,required"`
-	Result   AccountEmailSecuritySettingTrustedDomainNewResponseResultUnion `json:"result,required"`
-	Success  bool                                                           `json:"success,required"`
+	Errors   []EmailSecurityMessage                                         `json:"errors" api:"required"`
+	Messages []EmailSecurityMessage                                         `json:"messages" api:"required"`
+	Result   AccountEmailSecuritySettingTrustedDomainNewResponseResultUnion `json:"result" api:"required"`
+	Success  bool                                                           `json:"success" api:"required"`
 	JSON     accountEmailSecuritySettingTrustedDomainNewResponseJSON        `json:"-"`
 }
 
@@ -214,10 +214,10 @@ func (r AccountEmailSecuritySettingTrustedDomainNewResponseResultArray) implemen
 }
 
 type AccountEmailSecuritySettingTrustedDomainGetResponse struct {
-	Errors   []EmailSecurityMessage                                    `json:"errors,required"`
-	Messages []EmailSecurityMessage                                    `json:"messages,required"`
-	Result   AccountEmailSecuritySettingTrustedDomainGetResponseResult `json:"result,required"`
-	Success  bool                                                      `json:"success,required"`
+	Errors   []EmailSecurityMessage                                    `json:"errors" api:"required"`
+	Messages []EmailSecurityMessage                                    `json:"messages" api:"required"`
+	Result   AccountEmailSecuritySettingTrustedDomainGetResponseResult `json:"result" api:"required"`
+	Success  bool                                                      `json:"success" api:"required"`
 	JSON     accountEmailSecuritySettingTrustedDomainGetResponseJSON   `json:"-"`
 }
 
@@ -242,18 +242,18 @@ func (r accountEmailSecuritySettingTrustedDomainGetResponseJSON) RawJSON() strin
 
 type AccountEmailSecuritySettingTrustedDomainGetResponseResult struct {
 	// The unique identifier for the trusted domain.
-	ID        int64     `json:"id,required"`
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	ID        int64     `json:"id" api:"required"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Select to prevent recently registered domains from triggering a Suspicious or
 	// Malicious disposition.
-	IsRecent bool `json:"is_recent,required"`
-	IsRegex  bool `json:"is_regex,required"`
+	IsRecent bool `json:"is_recent" api:"required"`
+	IsRegex  bool `json:"is_regex" api:"required"`
 	// Select for partner or other approved domains that have similar spelling to your
 	// connected domains. Prevents listed domains from triggering a Spoof disposition.
-	IsSimilarity bool                                                          `json:"is_similarity,required"`
-	LastModified time.Time                                                     `json:"last_modified,required" format:"date-time"`
-	Pattern      string                                                        `json:"pattern,required"`
-	Comments     string                                                        `json:"comments,nullable"`
+	IsSimilarity bool                                                          `json:"is_similarity" api:"required"`
+	LastModified time.Time                                                     `json:"last_modified" api:"required" format:"date-time"`
+	Pattern      string                                                        `json:"pattern" api:"required"`
+	Comments     string                                                        `json:"comments" api:"nullable"`
 	JSON         accountEmailSecuritySettingTrustedDomainGetResponseResultJSON `json:"-"`
 }
 
@@ -282,10 +282,10 @@ func (r accountEmailSecuritySettingTrustedDomainGetResponseResultJSON) RawJSON()
 }
 
 type AccountEmailSecuritySettingTrustedDomainUpdateResponse struct {
-	Errors   []EmailSecurityMessage                                       `json:"errors,required"`
-	Messages []EmailSecurityMessage                                       `json:"messages,required"`
-	Result   AccountEmailSecuritySettingTrustedDomainUpdateResponseResult `json:"result,required"`
-	Success  bool                                                         `json:"success,required"`
+	Errors   []EmailSecurityMessage                                       `json:"errors" api:"required"`
+	Messages []EmailSecurityMessage                                       `json:"messages" api:"required"`
+	Result   AccountEmailSecuritySettingTrustedDomainUpdateResponseResult `json:"result" api:"required"`
+	Success  bool                                                         `json:"success" api:"required"`
 	JSON     accountEmailSecuritySettingTrustedDomainUpdateResponseJSON   `json:"-"`
 }
 
@@ -310,18 +310,18 @@ func (r accountEmailSecuritySettingTrustedDomainUpdateResponseJSON) RawJSON() st
 
 type AccountEmailSecuritySettingTrustedDomainUpdateResponseResult struct {
 	// The unique identifier for the trusted domain.
-	ID        int64     `json:"id,required"`
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	ID        int64     `json:"id" api:"required"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Select to prevent recently registered domains from triggering a Suspicious or
 	// Malicious disposition.
-	IsRecent bool `json:"is_recent,required"`
-	IsRegex  bool `json:"is_regex,required"`
+	IsRecent bool `json:"is_recent" api:"required"`
+	IsRegex  bool `json:"is_regex" api:"required"`
 	// Select for partner or other approved domains that have similar spelling to your
 	// connected domains. Prevents listed domains from triggering a Spoof disposition.
-	IsSimilarity bool                                                             `json:"is_similarity,required"`
-	LastModified time.Time                                                        `json:"last_modified,required" format:"date-time"`
-	Pattern      string                                                           `json:"pattern,required"`
-	Comments     string                                                           `json:"comments,nullable"`
+	IsSimilarity bool                                                             `json:"is_similarity" api:"required"`
+	LastModified time.Time                                                        `json:"last_modified" api:"required" format:"date-time"`
+	Pattern      string                                                           `json:"pattern" api:"required"`
+	Comments     string                                                           `json:"comments" api:"nullable"`
 	JSON         accountEmailSecuritySettingTrustedDomainUpdateResponseResultJSON `json:"-"`
 }
 
@@ -350,11 +350,11 @@ func (r accountEmailSecuritySettingTrustedDomainUpdateResponseResultJSON) RawJSO
 }
 
 type AccountEmailSecuritySettingTrustedDomainListResponse struct {
-	Errors     []EmailSecurityMessage                                   `json:"errors,required"`
-	Messages   []EmailSecurityMessage                                   `json:"messages,required"`
-	Result     []TrustedDomain                                          `json:"result,required"`
-	ResultInfo ResultInfoEmailSecurity                                  `json:"result_info,required"`
-	Success    bool                                                     `json:"success,required"`
+	Errors     []EmailSecurityMessage                                   `json:"errors" api:"required"`
+	Messages   []EmailSecurityMessage                                   `json:"messages" api:"required"`
+	Result     []TrustedDomain                                          `json:"result" api:"required"`
+	ResultInfo ResultInfoEmailSecurity                                  `json:"result_info" api:"required"`
+	Success    bool                                                     `json:"success" api:"required"`
 	JSON       accountEmailSecuritySettingTrustedDomainListResponseJSON `json:"-"`
 }
 
@@ -379,10 +379,10 @@ func (r accountEmailSecuritySettingTrustedDomainListResponseJSON) RawJSON() stri
 }
 
 type AccountEmailSecuritySettingTrustedDomainDeleteResponse struct {
-	Errors   []EmailSecurityMessage                                       `json:"errors,required"`
-	Messages []EmailSecurityMessage                                       `json:"messages,required"`
-	Result   AccountEmailSecuritySettingTrustedDomainDeleteResponseResult `json:"result,required"`
-	Success  bool                                                         `json:"success,required"`
+	Errors   []EmailSecurityMessage                                       `json:"errors" api:"required"`
+	Messages []EmailSecurityMessage                                       `json:"messages" api:"required"`
+	Result   AccountEmailSecuritySettingTrustedDomainDeleteResponseResult `json:"result" api:"required"`
+	Success  bool                                                         `json:"success" api:"required"`
 	JSON     accountEmailSecuritySettingTrustedDomainDeleteResponseJSON   `json:"-"`
 }
 
@@ -407,7 +407,7 @@ func (r accountEmailSecuritySettingTrustedDomainDeleteResponseJSON) RawJSON() st
 
 type AccountEmailSecuritySettingTrustedDomainDeleteResponseResult struct {
 	// The unique identifier for the trusted domain.
-	ID   int64                                                            `json:"id,required"`
+	ID   int64                                                            `json:"id" api:"required"`
 	JSON accountEmailSecuritySettingTrustedDomainDeleteResponseResultJSON `json:"-"`
 }
 
@@ -429,7 +429,7 @@ func (r accountEmailSecuritySettingTrustedDomainDeleteResponseResultJSON) RawJSO
 }
 
 type AccountEmailSecuritySettingTrustedDomainNewParams struct {
-	Body AccountEmailSecuritySettingTrustedDomainNewParamsBodyUnion `json:"body,required"`
+	Body AccountEmailSecuritySettingTrustedDomainNewParamsBodyUnion `json:"body" api:"required"`
 }
 
 func (r AccountEmailSecuritySettingTrustedDomainNewParams) MarshalJSON() (data []byte, err error) {

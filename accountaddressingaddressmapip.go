@@ -38,19 +38,19 @@ func (r *AccountAddressingAddressMapIPService) Add(ctx context.Context, accountI
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if addressMapID == "" {
 		err = errors.New("missing required address_map_id parameter")
-		return
+		return nil, err
 	}
 	if ipAddress == "" {
 		err = errors.New("missing required ip_address parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/addressing/address_maps/%s/ips/%s", accountID, addressMapID, ipAddress)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Remove an IP from a particular address map.
@@ -58,23 +58,23 @@ func (r *AccountAddressingAddressMapIPService) Remove(ctx context.Context, accou
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if addressMapID == "" {
 		err = errors.New("missing required address_map_id parameter")
-		return
+		return nil, err
 	}
 	if ipAddress == "" {
 		err = errors.New("missing required ip_address parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/addressing/address_maps/%s/ips/%s", accountID, addressMapID, ipAddress)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountAddressingAddressMapIPAddParams struct {
-	Body interface{} `json:"body,required"`
+	Body interface{} `json:"body" api:"required"`
 }
 
 func (r AccountAddressingAddressMapIPAddParams) MarshalJSON() (data []byte, err error) {

@@ -42,12 +42,12 @@ func (r *RadarRobotsTxtTopService) GetTopDomainCategories(ctx context.Context, q
 	opts = slices.Concat(r.Options, opts)
 	path := "radar/robots_txt/top/domain_categories"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type RadarRobotsTxtTopGetTopDomainCategoriesResponse struct {
-	Result  RadarRobotsTxtTopGetTopDomainCategoriesResponseResult `json:"result,required"`
-	Success bool                                                  `json:"success,required"`
+	Result  RadarRobotsTxtTopGetTopDomainCategoriesResponseResult `json:"result" api:"required"`
+	Success bool                                                  `json:"success" api:"required"`
 	JSON    radarRobotsTxtTopGetTopDomainCategoriesResponseJSON   `json:"-"`
 }
 
@@ -70,8 +70,8 @@ func (r radarRobotsTxtTopGetTopDomainCategoriesResponseJSON) RawJSON() string {
 
 type RadarRobotsTxtTopGetTopDomainCategoriesResponseResult struct {
 	// Metadata for the results.
-	Meta RadarRobotsTxtTopGetTopDomainCategoriesResponseResultMeta   `json:"meta,required"`
-	Top0 []RadarRobotsTxtTopGetTopDomainCategoriesResponseResultTop0 `json:"top_0,required"`
+	Meta RadarRobotsTxtTopGetTopDomainCategoriesResponseResultMeta   `json:"meta" api:"required"`
+	Top0 []RadarRobotsTxtTopGetTopDomainCategoriesResponseResultTop0 `json:"top_0" api:"required"`
 	JSON radarRobotsTxtTopGetTopDomainCategoriesResponseResultJSON   `json:"-"`
 }
 
@@ -94,15 +94,15 @@ func (r radarRobotsTxtTopGetTopDomainCategoriesResponseResultJSON) RawJSON() str
 
 // Metadata for the results.
 type RadarRobotsTxtTopGetTopDomainCategoriesResponseResultMeta struct {
-	ConfidenceInfo RadarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaConfidenceInfo `json:"confidenceInfo,required,nullable"`
-	DateRange      []RadarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaDateRange    `json:"dateRange,required"`
+	ConfidenceInfo RadarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaConfidenceInfo `json:"confidenceInfo" api:"required,nullable"`
+	DateRange      []RadarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaDateRange    `json:"dateRange" api:"required"`
 	// Timestamp of the last dataset update.
-	LastUpdated time.Time `json:"lastUpdated,required" format:"date-time"`
+	LastUpdated time.Time `json:"lastUpdated" api:"required" format:"date-time"`
 	// Normalization method applied to the results. Refer to
 	// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
-	Normalization RadarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaNormalization `json:"normalization,required"`
+	Normalization RadarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaNormalization `json:"normalization" api:"required"`
 	// Measurement units for the results.
-	Units []RadarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaUnit `json:"units,required"`
+	Units []RadarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaUnit `json:"units" api:"required"`
 	JSON  radarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaJSON   `json:"-"`
 }
 
@@ -128,9 +128,9 @@ func (r radarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaJSON) RawJSON()
 }
 
 type RadarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaConfidenceInfo struct {
-	Annotations []RadarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaConfidenceInfoAnnotation `json:"annotations,required"`
+	Annotations []RadarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaConfidenceInfoAnnotation `json:"annotations" api:"required"`
 	// Provides an indication of how much confidence Cloudflare has in the data.
-	Level int64                                                                       `json:"level,required"`
+	Level int64                                                                       `json:"level" api:"required"`
 	JSON  radarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaConfidenceInfoJSON `json:"-"`
 }
 
@@ -154,14 +154,14 @@ func (r radarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaConfidenceInfoJ
 
 // Annotation associated with the result (e.g. outage or other type of event).
 type RadarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaConfidenceInfoAnnotation struct {
-	DataSource  string    `json:"dataSource,required"`
-	Description string    `json:"description,required"`
-	EndDate     time.Time `json:"endDate,required" format:"date-time"`
-	EventType   string    `json:"eventType,required"`
+	DataSource  string    `json:"dataSource" api:"required"`
+	Description string    `json:"description" api:"required"`
+	EndDate     time.Time `json:"endDate" api:"required" format:"date-time"`
+	EventType   string    `json:"eventType" api:"required"`
 	// Whether event is a single point in time or a time range.
-	IsInstantaneous bool                                                                                  `json:"isInstantaneous,required"`
-	LinkedURL       string                                                                                `json:"linkedUrl,required" format:"uri"`
-	StartDate       time.Time                                                                             `json:"startDate,required" format:"date-time"`
+	IsInstantaneous bool                                                                                  `json:"isInstantaneous" api:"required"`
+	LinkedURL       string                                                                                `json:"linkedUrl" api:"required" format:"uri"`
+	StartDate       time.Time                                                                             `json:"startDate" api:"required" format:"date-time"`
 	JSON            radarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
 }
 
@@ -190,9 +190,9 @@ func (r radarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaConfidenceInfoA
 
 type RadarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaDateRange struct {
 	// Adjusted end of date range.
-	EndTime time.Time `json:"endTime,required" format:"date-time"`
+	EndTime time.Time `json:"endTime" api:"required" format:"date-time"`
 	// Adjusted start of date range.
-	StartTime time.Time                                                              `json:"startTime,required" format:"date-time"`
+	StartTime time.Time                                                              `json:"startTime" api:"required" format:"date-time"`
 	JSON      radarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaDateRangeJSON `json:"-"`
 }
 
@@ -238,8 +238,8 @@ func (r RadarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaNormalization) 
 }
 
 type RadarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaUnit struct {
-	Name  string                                                            `json:"name,required"`
-	Value string                                                            `json:"value,required"`
+	Name  string                                                            `json:"name" api:"required"`
+	Value string                                                            `json:"value" api:"required"`
 	JSON  radarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaUnitJSON `json:"-"`
 }
 
@@ -262,8 +262,8 @@ func (r radarRobotsTxtTopGetTopDomainCategoriesResponseResultMetaUnitJSON) RawJS
 }
 
 type RadarRobotsTxtTopGetTopDomainCategoriesResponseResultTop0 struct {
-	Name  string                                                        `json:"name,required"`
-	Value int64                                                         `json:"value,required"`
+	Name  string                                                        `json:"name" api:"required"`
+	Value int64                                                         `json:"value" api:"required"`
 	JSON  radarRobotsTxtTopGetTopDomainCategoriesResponseResultTop0JSON `json:"-"`
 }
 

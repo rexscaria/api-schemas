@@ -39,11 +39,11 @@ func (r *ZoneLogpushEdgeService) NewJob(ctx context.Context, zoneID string, body
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/logpush/edge", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists Instant Logs jobs for a zone.
@@ -51,11 +51,11 @@ func (r *ZoneLogpushEdgeService) ListJobs(ctx context.Context, zoneID string, op
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/logpush/edge", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type InstantLogsJob struct {
@@ -93,11 +93,11 @@ func (r instantLogsJobJSON) RawJSON() string {
 }
 
 type ZoneLogpushEdgeNewJobResponse struct {
-	Errors   []MessagesLogpushItem `json:"errors,required"`
-	Messages []MessagesLogpushItem `json:"messages,required"`
+	Errors   []MessagesLogpushItem `json:"errors" api:"required"`
+	Messages []MessagesLogpushItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success ZoneLogpushEdgeNewJobResponseSuccess `json:"success,required"`
-	Result  InstantLogsJob                       `json:"result,nullable"`
+	Success ZoneLogpushEdgeNewJobResponseSuccess `json:"success" api:"required"`
+	Result  InstantLogsJob                       `json:"result" api:"nullable"`
 	JSON    zoneLogpushEdgeNewJobResponseJSON    `json:"-"`
 }
 
@@ -136,10 +136,10 @@ func (r ZoneLogpushEdgeNewJobResponseSuccess) IsKnown() bool {
 }
 
 type ZoneLogpushEdgeListJobsResponse struct {
-	Errors   []MessagesLogpushItem `json:"errors,required"`
-	Messages []MessagesLogpushItem `json:"messages,required"`
+	Errors   []MessagesLogpushItem `json:"errors" api:"required"`
+	Messages []MessagesLogpushItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success ZoneLogpushEdgeListJobsResponseSuccess `json:"success,required"`
+	Success ZoneLogpushEdgeListJobsResponseSuccess `json:"success" api:"required"`
 	Result  []InstantLogsJob                       `json:"result"`
 	JSON    zoneLogpushEdgeListJobsResponseJSON    `json:"-"`
 }

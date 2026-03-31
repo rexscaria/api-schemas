@@ -14,7 +14,7 @@ import (
 )
 
 func TestAccountGatewayConfigurationGet(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,6 +26,7 @@ func TestAccountGatewayConfigurationGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Gateway.Configuration.Get(context.TODO(), "699d98642c564d2e855e9661899b7252")
 	if err != nil {
@@ -38,7 +39,7 @@ func TestAccountGatewayConfigurationGet(t *testing.T) {
 }
 
 func TestAccountGatewayConfigurationUpdateWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -50,6 +51,7 @@ func TestAccountGatewayConfigurationUpdateWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Gateway.Configuration.Update(
 		context.TODO(),
@@ -135,7 +137,7 @@ func TestAccountGatewayConfigurationUpdateWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountGatewayConfigurationPatchWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -147,6 +149,7 @@ func TestAccountGatewayConfigurationPatchWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Gateway.Configuration.Patch(
 		context.TODO(),
@@ -232,7 +235,7 @@ func TestAccountGatewayConfigurationPatchWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountGatewayConfigurationGetCustomCertificate(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -244,6 +247,7 @@ func TestAccountGatewayConfigurationGetCustomCertificate(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Gateway.Configuration.GetCustomCertificate(context.TODO(), "699d98642c564d2e855e9661899b7252")
 	if err != nil {

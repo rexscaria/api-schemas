@@ -47,15 +47,15 @@ func (r *AccountDNSFirewallDNSAnalyticsReportService) Get(ctx context.Context, a
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if dnsFirewallID == "" {
 		err = errors.New("missing required dns_firewall_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/dns_firewall/%s/dns_analytics/report", accountID, dnsFirewallID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves a list of aggregate metrics grouped by time interval.
@@ -67,35 +67,35 @@ func (r *AccountDNSFirewallDNSAnalyticsReportService) ListByTime(ctx context.Con
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if dnsFirewallID == "" {
 		err = errors.New("missing required dns_firewall_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/dns_firewall/%s/dns_analytics/report/bytime", accountID, dnsFirewallID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type DataReport struct {
 	// Array with one row per combination of dimension values.
-	Data []DataReportData `json:"data,required"`
+	Data []DataReportData `json:"data" api:"required"`
 	// Number of seconds between current time and last processed event, in another
 	// words how many seconds of data could be missing.
-	DataLag float64 `json:"data_lag,required"`
+	DataLag float64 `json:"data_lag" api:"required"`
 	// Maximum results for each metric (object mapping metric names to values).
 	// Currently always an empty object.
-	Max interface{} `json:"max,required"`
+	Max interface{} `json:"max" api:"required"`
 	// Minimum results for each metric (object mapping metric names to values).
 	// Currently always an empty object.
-	Min   interface{}     `json:"min,required"`
-	Query DataReportQuery `json:"query,required"`
+	Min   interface{}     `json:"min" api:"required"`
+	Query DataReportQuery `json:"query" api:"required"`
 	// Total number of rows in the result.
-	Rows float64 `json:"rows,required"`
+	Rows float64 `json:"rows" api:"required"`
 	// Total results for metrics across all data (object mapping metric names to
 	// values).
-	Totals interface{}    `json:"totals,required"`
+	Totals interface{}    `json:"totals" api:"required"`
 	JSON   dataReportJSON `json:"-"`
 }
 
@@ -123,9 +123,9 @@ func (r dataReportJSON) RawJSON() string {
 type DataReportData struct {
 	// Array of dimension values, representing the combination of dimension values
 	// corresponding to this row.
-	Dimensions []string `json:"dimensions,required"`
+	Dimensions []string `json:"dimensions" api:"required"`
 	// Array with one item per requested metric. Each item is a single value.
-	Metrics []float64          `json:"metrics,required"`
+	Metrics []float64          `json:"metrics" api:"required"`
 	JSON    dataReportDataJSON `json:"-"`
 }
 
@@ -147,15 +147,15 @@ func (r dataReportDataJSON) RawJSON() string {
 
 type DataReportQuery struct {
 	// Array of dimension names.
-	Dimensions []string `json:"dimensions,required"`
+	Dimensions []string `json:"dimensions" api:"required"`
 	// Limit number of returned metrics.
-	Limit int64 `json:"limit,required"`
+	Limit int64 `json:"limit" api:"required"`
 	// Array of metric names.
-	Metrics []string `json:"metrics,required"`
+	Metrics []string `json:"metrics" api:"required"`
 	// Start date and time of requesting data period in ISO 8601 format.
-	Since time.Time `json:"since,required" format:"date-time"`
+	Since time.Time `json:"since" api:"required" format:"date-time"`
 	// End date and time of requesting data period in ISO 8601 format.
-	Until time.Time `json:"until,required" format:"date-time"`
+	Until time.Time `json:"until" api:"required" format:"date-time"`
 	// Segmentation filter in 'attribute operator value' format.
 	Filters string `json:"filters"`
 	// Array of dimensions to sort by, where each dimension may be prefixed by -
@@ -186,8 +186,8 @@ func (r dataReportQueryJSON) RawJSON() string {
 }
 
 type MessagesDNSAnalyticsItem struct {
-	Code             int64                          `json:"code,required"`
-	Message          string                         `json:"message,required"`
+	Code             int64                          `json:"code" api:"required"`
+	Message          string                         `json:"message" api:"required"`
 	DocumentationURL string                         `json:"documentation_url"`
 	Source           MessagesDNSAnalyticsItemSource `json:"source"`
 	JSON             messagesDNSAnalyticsItemJSON   `json:"-"`
@@ -235,25 +235,25 @@ func (r messagesDNSAnalyticsItemSourceJSON) RawJSON() string {
 
 type ReportByTime struct {
 	// Array with one row per combination of dimension values.
-	Data []ReportByTimeData `json:"data,required"`
+	Data []ReportByTimeData `json:"data" api:"required"`
 	// Number of seconds between current time and last processed event, in another
 	// words how many seconds of data could be missing.
-	DataLag float64 `json:"data_lag,required"`
+	DataLag float64 `json:"data_lag" api:"required"`
 	// Maximum results for each metric (object mapping metric names to values).
 	// Currently always an empty object.
-	Max interface{} `json:"max,required"`
+	Max interface{} `json:"max" api:"required"`
 	// Minimum results for each metric (object mapping metric names to values).
 	// Currently always an empty object.
-	Min   interface{}       `json:"min,required"`
-	Query ReportByTimeQuery `json:"query,required"`
+	Min   interface{}       `json:"min" api:"required"`
+	Query ReportByTimeQuery `json:"query" api:"required"`
 	// Total number of rows in the result.
-	Rows float64 `json:"rows,required"`
+	Rows float64 `json:"rows" api:"required"`
 	// Array of time intervals in the response data. Each interval is represented as an
 	// array containing two values: the start time, and the end time.
-	TimeIntervals [][]time.Time `json:"time_intervals,required" format:"date-time"`
+	TimeIntervals [][]time.Time `json:"time_intervals" api:"required" format:"date-time"`
 	// Total results for metrics across all data (object mapping metric names to
 	// values).
-	Totals interface{}      `json:"totals,required"`
+	Totals interface{}      `json:"totals" api:"required"`
 	JSON   reportByTimeJSON `json:"-"`
 }
 
@@ -282,10 +282,10 @@ func (r reportByTimeJSON) RawJSON() string {
 type ReportByTimeData struct {
 	// Array of dimension values, representing the combination of dimension values
 	// corresponding to this row.
-	Dimensions []string `json:"dimensions,required"`
+	Dimensions []string `json:"dimensions" api:"required"`
 	// Array with one item per requested metric. Each item is an array of values,
 	// broken down by time interval.
-	Metrics [][]interface{}      `json:"metrics,required"`
+	Metrics [][]interface{}      `json:"metrics" api:"required"`
 	JSON    reportByTimeDataJSON `json:"-"`
 }
 
@@ -308,17 +308,17 @@ func (r reportByTimeDataJSON) RawJSON() string {
 
 type ReportByTimeQuery struct {
 	// Array of dimension names.
-	Dimensions []string `json:"dimensions,required"`
+	Dimensions []string `json:"dimensions" api:"required"`
 	// Limit number of returned metrics.
-	Limit int64 `json:"limit,required"`
+	Limit int64 `json:"limit" api:"required"`
 	// Array of metric names.
-	Metrics []string `json:"metrics,required"`
+	Metrics []string `json:"metrics" api:"required"`
 	// Start date and time of requesting data period in ISO 8601 format.
-	Since time.Time `json:"since,required" format:"date-time"`
+	Since time.Time `json:"since" api:"required" format:"date-time"`
 	// Unit of time to group data by.
-	TimeDelta TimeDelta `json:"time_delta,required"`
+	TimeDelta TimeDelta `json:"time_delta" api:"required"`
 	// End date and time of requesting data period in ISO 8601 format.
-	Until time.Time `json:"until,required" format:"date-time"`
+	Until time.Time `json:"until" api:"required" format:"date-time"`
 	// Segmentation filter in 'attribute operator value' format.
 	Filters string `json:"filters"`
 	// Array of dimensions to sort by, where each dimension may be prefixed by -
@@ -375,10 +375,10 @@ func (r TimeDelta) IsKnown() bool {
 }
 
 type AccountDNSFirewallDNSAnalyticsReportGetResponse struct {
-	Errors   []MessagesDNSAnalyticsItem `json:"errors,required"`
-	Messages []MessagesDNSAnalyticsItem `json:"messages,required"`
+	Errors   []MessagesDNSAnalyticsItem `json:"errors" api:"required"`
+	Messages []MessagesDNSAnalyticsItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountDNSFirewallDNSAnalyticsReportGetResponseSuccess `json:"success,required"`
+	Success AccountDNSFirewallDNSAnalyticsReportGetResponseSuccess `json:"success" api:"required"`
 	Result  DataReport                                             `json:"result"`
 	JSON    accountDNSFirewallDNSAnalyticsReportGetResponseJSON    `json:"-"`
 }
@@ -418,10 +418,10 @@ func (r AccountDNSFirewallDNSAnalyticsReportGetResponseSuccess) IsKnown() bool {
 }
 
 type AccountDNSFirewallDNSAnalyticsReportListByTimeResponse struct {
-	Errors   []MessagesDNSAnalyticsItem `json:"errors,required"`
-	Messages []MessagesDNSAnalyticsItem `json:"messages,required"`
+	Errors   []MessagesDNSAnalyticsItem `json:"errors" api:"required"`
+	Messages []MessagesDNSAnalyticsItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountDNSFirewallDNSAnalyticsReportListByTimeResponseSuccess `json:"success,required"`
+	Success AccountDNSFirewallDNSAnalyticsReportListByTimeResponseSuccess `json:"success" api:"required"`
 	Result  ReportByTime                                                  `json:"result"`
 	JSON    accountDNSFirewallDNSAnalyticsReportListByTimeResponseJSON    `json:"-"`
 }

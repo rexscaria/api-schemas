@@ -14,7 +14,7 @@ import (
 )
 
 func TestRadarEntityAsnGetWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,6 +26,7 @@ func TestRadarEntityAsnGetWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.Entities.Asns.Get(
 		context.TODO(),
@@ -44,7 +45,7 @@ func TestRadarEntityAsnGetWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarEntityAsnListWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -56,6 +57,7 @@ func TestRadarEntityAsnListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.Entities.Asns.List(context.TODO(), cfrex.RadarEntityAsnListParams{
 		Asn:      cfrex.F("174,7922"),
@@ -75,7 +77,7 @@ func TestRadarEntityAsnListWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarEntityAsnGetRelationshipsWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -87,6 +89,7 @@ func TestRadarEntityAsnGetRelationshipsWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.Entities.Asns.GetRelationships(
 		context.TODO(),
@@ -106,7 +109,7 @@ func TestRadarEntityAsnGetRelationshipsWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarEntityAsnGetByIPWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -118,6 +121,7 @@ func TestRadarEntityAsnGetByIPWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.Entities.Asns.GetByIP(context.TODO(), cfrex.RadarEntityAsnGetByIPParams{
 		IP:     cfrex.F("8.8.8.8"),

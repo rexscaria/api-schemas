@@ -43,35 +43,35 @@ func NewAccountMagicIpsecTunnelService(opts ...option.RequestOption) (r *Account
 // changes.
 func (r *AccountMagicIpsecTunnelService) New(ctx context.Context, accountID string, params AccountMagicIpsecTunnelNewParams, opts ...option.RequestOption) (res *AccountMagicIpsecTunnelNewResponse, err error) {
 	if params.XMagicNewHcTarget.Present {
-		opts = append(opts, option.WithHeader("x-magic-new-hc-target", fmt.Sprintf("%s", params.XMagicNewHcTarget)))
+		opts = append(opts, option.WithHeader("x-magic-new-hc-target", fmt.Sprintf("%v", params.XMagicNewHcTarget)))
 	}
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/ipsec_tunnels", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists details for a specific IPsec tunnel.
 func (r *AccountMagicIpsecTunnelService) Get(ctx context.Context, accountID string, ipsecTunnelID string, query AccountMagicIpsecTunnelGetParams, opts ...option.RequestOption) (res *AccountMagicIpsecTunnelGetResponse, err error) {
 	if query.XMagicNewHcTarget.Present {
-		opts = append(opts, option.WithHeader("x-magic-new-hc-target", fmt.Sprintf("%s", query.XMagicNewHcTarget)))
+		opts = append(opts, option.WithHeader("x-magic-new-hc-target", fmt.Sprintf("%v", query.XMagicNewHcTarget)))
 	}
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if ipsecTunnelID == "" {
 		err = errors.New("missing required ipsec_tunnel_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/ipsec_tunnels/%s", accountID, ipsecTunnelID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates a specific IPsec tunnel associated with an account. Use
@@ -79,35 +79,35 @@ func (r *AccountMagicIpsecTunnelService) Get(ctx context.Context, accountID stri
 // without persisting changes.
 func (r *AccountMagicIpsecTunnelService) Update(ctx context.Context, accountID string, ipsecTunnelID string, params AccountMagicIpsecTunnelUpdateParams, opts ...option.RequestOption) (res *AccountMagicIpsecTunnelUpdateResponse, err error) {
 	if params.XMagicNewHcTarget.Present {
-		opts = append(opts, option.WithHeader("x-magic-new-hc-target", fmt.Sprintf("%s", params.XMagicNewHcTarget)))
+		opts = append(opts, option.WithHeader("x-magic-new-hc-target", fmt.Sprintf("%v", params.XMagicNewHcTarget)))
 	}
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if ipsecTunnelID == "" {
 		err = errors.New("missing required ipsec_tunnel_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/ipsec_tunnels/%s", accountID, ipsecTunnelID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists IPsec tunnels associated with an account.
 func (r *AccountMagicIpsecTunnelService) List(ctx context.Context, accountID string, query AccountMagicIpsecTunnelListParams, opts ...option.RequestOption) (res *MagicSchemasTunnelsCollectionResponse, err error) {
 	if query.XMagicNewHcTarget.Present {
-		opts = append(opts, option.WithHeader("x-magic-new-hc-target", fmt.Sprintf("%s", query.XMagicNewHcTarget)))
+		opts = append(opts, option.WithHeader("x-magic-new-hc-target", fmt.Sprintf("%v", query.XMagicNewHcTarget)))
 	}
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/ipsec_tunnels", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Disables and removes a specific static IPsec Tunnel associated with an account.
@@ -115,20 +115,20 @@ func (r *AccountMagicIpsecTunnelService) List(ctx context.Context, accountID str
 // without persisting changes.
 func (r *AccountMagicIpsecTunnelService) Delete(ctx context.Context, accountID string, ipsecTunnelID string, body AccountMagicIpsecTunnelDeleteParams, opts ...option.RequestOption) (res *AccountMagicIpsecTunnelDeleteResponse, err error) {
 	if body.XMagicNewHcTarget.Present {
-		opts = append(opts, option.WithHeader("x-magic-new-hc-target", fmt.Sprintf("%s", body.XMagicNewHcTarget)))
+		opts = append(opts, option.WithHeader("x-magic-new-hc-target", fmt.Sprintf("%v", body.XMagicNewHcTarget)))
 	}
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if ipsecTunnelID == "" {
 		err = errors.New("missing required ipsec_tunnel_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/ipsec_tunnels/%s", accountID, ipsecTunnelID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Generates a Pre Shared Key for a specific IPsec tunnel used in the IKE session.
@@ -140,28 +140,28 @@ func (r *AccountMagicIpsecTunnelService) GeneratePsk(ctx context.Context, accoun
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if ipsecTunnelID == "" {
 		err = errors.New("missing required ipsec_tunnel_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/ipsec_tunnels/%s/psk_generate", accountID, ipsecTunnelID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type MagicIpsecTunnel struct {
 	// Identifier
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The IP address assigned to the Cloudflare side of the IPsec tunnel.
-	CloudflareEndpoint string `json:"cloudflare_endpoint,required"`
+	CloudflareEndpoint string `json:"cloudflare_endpoint" api:"required"`
 	// A 31-bit prefix (/31 in CIDR notation) supporting two hosts, one for each side
 	// of the tunnel. Select the subnet from the following private IP space:
 	// 10.0.0.0–10.255.255.255, 172.16.0.0–172.31.255.255, 192.168.0.0–192.168.255.255.
-	InterfaceAddress string `json:"interface_address,required"`
+	InterfaceAddress string `json:"interface_address" api:"required"`
 	// The name of the IPsec tunnel. The name cannot share a name with other tunnels.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// When `true`, the tunnel can use a null-cipher (`ENCR_NULL`) in the ESP tunnel
 	// (Phase 2).
 	AllowNullCipher bool `json:"allow_null_cipher"`
@@ -212,13 +212,13 @@ func (r magicIpsecTunnelJSON) RawJSON() string {
 
 type MagicIpsecTunnelAddSingleRequestParam struct {
 	// The IP address assigned to the Cloudflare side of the IPsec tunnel.
-	CloudflareEndpoint param.Field[string] `json:"cloudflare_endpoint,required"`
+	CloudflareEndpoint param.Field[string] `json:"cloudflare_endpoint" api:"required"`
 	// A 31-bit prefix (/31 in CIDR notation) supporting two hosts, one for each side
 	// of the tunnel. Select the subnet from the following private IP space:
 	// 10.0.0.0–10.255.255.255, 172.16.0.0–172.31.255.255, 192.168.0.0–192.168.255.255.
-	InterfaceAddress param.Field[string] `json:"interface_address,required"`
+	InterfaceAddress param.Field[string] `json:"interface_address" api:"required"`
 	// The name of the IPsec tunnel. The name cannot share a name with other tunnels.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// The IP address assigned to the customer side of the IPsec tunnel. Not required,
 	// but must be set for proactive traceroutes to work.
 	CustomerEndpoint param.Field[string] `json:"customer_endpoint"`
@@ -260,11 +260,11 @@ func (r magicPskMetadataJSON) RawJSON() string {
 }
 
 type MagicSchemasTunnelsCollectionResponse struct {
-	Errors   []MagicMessageItem                          `json:"errors,required"`
-	Messages []MagicMessageItem                          `json:"messages,required"`
-	Result   MagicSchemasTunnelsCollectionResponseResult `json:"result,required"`
+	Errors   []MagicMessageItem                          `json:"errors" api:"required"`
+	Messages []MagicMessageItem                          `json:"messages" api:"required"`
+	Result   MagicSchemasTunnelsCollectionResponseResult `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success MagicSchemasTunnelsCollectionResponseSuccess `json:"success,required"`
+	Success MagicSchemasTunnelsCollectionResponseSuccess `json:"success" api:"required"`
 	JSON    magicSchemasTunnelsCollectionResponseJSON    `json:"-"`
 }
 
@@ -542,11 +542,11 @@ func (r MagicTunnelHealthCheckTargetMagicHealthCheckTargetParam) ImplementsMagic
 }
 
 type AccountMagicIpsecTunnelNewResponse struct {
-	Errors   []MagicMessageItem `json:"errors,required"`
-	Messages []MagicMessageItem `json:"messages,required"`
-	Result   MagicIpsecTunnel   `json:"result,required"`
+	Errors   []MagicMessageItem `json:"errors" api:"required"`
+	Messages []MagicMessageItem `json:"messages" api:"required"`
+	Result   MagicIpsecTunnel   `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success AccountMagicIpsecTunnelNewResponseSuccess `json:"success,required"`
+	Success AccountMagicIpsecTunnelNewResponseSuccess `json:"success" api:"required"`
 	JSON    accountMagicIpsecTunnelNewResponseJSON    `json:"-"`
 }
 
@@ -585,11 +585,11 @@ func (r AccountMagicIpsecTunnelNewResponseSuccess) IsKnown() bool {
 }
 
 type AccountMagicIpsecTunnelGetResponse struct {
-	Errors   []MagicMessageItem                       `json:"errors,required"`
-	Messages []MagicMessageItem                       `json:"messages,required"`
-	Result   AccountMagicIpsecTunnelGetResponseResult `json:"result,required"`
+	Errors   []MagicMessageItem                       `json:"errors" api:"required"`
+	Messages []MagicMessageItem                       `json:"messages" api:"required"`
+	Result   AccountMagicIpsecTunnelGetResponseResult `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success AccountMagicIpsecTunnelGetResponseSuccess `json:"success,required"`
+	Success AccountMagicIpsecTunnelGetResponseSuccess `json:"success" api:"required"`
 	JSON    accountMagicIpsecTunnelGetResponseJSON    `json:"-"`
 }
 
@@ -649,11 +649,11 @@ func (r AccountMagicIpsecTunnelGetResponseSuccess) IsKnown() bool {
 }
 
 type AccountMagicIpsecTunnelUpdateResponse struct {
-	Errors   []MagicMessageItem                          `json:"errors,required"`
-	Messages []MagicMessageItem                          `json:"messages,required"`
-	Result   AccountMagicIpsecTunnelUpdateResponseResult `json:"result,required"`
+	Errors   []MagicMessageItem                          `json:"errors" api:"required"`
+	Messages []MagicMessageItem                          `json:"messages" api:"required"`
+	Result   AccountMagicIpsecTunnelUpdateResponseResult `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success AccountMagicIpsecTunnelUpdateResponseSuccess `json:"success,required"`
+	Success AccountMagicIpsecTunnelUpdateResponseSuccess `json:"success" api:"required"`
 	JSON    accountMagicIpsecTunnelUpdateResponseJSON    `json:"-"`
 }
 
@@ -715,11 +715,11 @@ func (r AccountMagicIpsecTunnelUpdateResponseSuccess) IsKnown() bool {
 }
 
 type AccountMagicIpsecTunnelDeleteResponse struct {
-	Errors   []MagicMessageItem                          `json:"errors,required"`
-	Messages []MagicMessageItem                          `json:"messages,required"`
-	Result   AccountMagicIpsecTunnelDeleteResponseResult `json:"result,required"`
+	Errors   []MagicMessageItem                          `json:"errors" api:"required"`
+	Messages []MagicMessageItem                          `json:"messages" api:"required"`
+	Result   AccountMagicIpsecTunnelDeleteResponseResult `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success AccountMagicIpsecTunnelDeleteResponseSuccess `json:"success,required"`
+	Success AccountMagicIpsecTunnelDeleteResponseSuccess `json:"success" api:"required"`
 	JSON    accountMagicIpsecTunnelDeleteResponseJSON    `json:"-"`
 }
 
@@ -781,11 +781,11 @@ func (r AccountMagicIpsecTunnelDeleteResponseSuccess) IsKnown() bool {
 }
 
 type AccountMagicIpsecTunnelGeneratePskResponse struct {
-	Errors   []MagicMessageItem                               `json:"errors,required"`
-	Messages []MagicMessageItem                               `json:"messages,required"`
-	Result   AccountMagicIpsecTunnelGeneratePskResponseResult `json:"result,required"`
+	Errors   []MagicMessageItem                               `json:"errors" api:"required"`
+	Messages []MagicMessageItem                               `json:"messages" api:"required"`
+	Result   AccountMagicIpsecTunnelGeneratePskResponseResult `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success AccountMagicIpsecTunnelGeneratePskResponseSuccess `json:"success,required"`
+	Success AccountMagicIpsecTunnelGeneratePskResponseSuccess `json:"success" api:"required"`
 	JSON    accountMagicIpsecTunnelGeneratePskResponseJSON    `json:"-"`
 }
 
@@ -852,7 +852,7 @@ func (r AccountMagicIpsecTunnelGeneratePskResponseSuccess) IsKnown() bool {
 }
 
 type AccountMagicIpsecTunnelNewParams struct {
-	MagicIpsecTunnelAddSingleRequest MagicIpsecTunnelAddSingleRequestParam `json:"magic_ipsec_tunnel_add_single_request,required"`
+	MagicIpsecTunnelAddSingleRequest MagicIpsecTunnelAddSingleRequestParam `json:"magic_ipsec_tunnel_add_single_request" api:"required"`
 	XMagicNewHcTarget                param.Field[bool]                     `header:"x-magic-new-hc-target"`
 }
 
@@ -865,7 +865,7 @@ type AccountMagicIpsecTunnelGetParams struct {
 }
 
 type AccountMagicIpsecTunnelUpdateParams struct {
-	MagicIpsecTunnelAddSingleRequest MagicIpsecTunnelAddSingleRequestParam `json:"magic_ipsec_tunnel_add_single_request,required"`
+	MagicIpsecTunnelAddSingleRequest MagicIpsecTunnelAddSingleRequestParam `json:"magic_ipsec_tunnel_add_single_request" api:"required"`
 	XMagicNewHcTarget                param.Field[bool]                     `header:"x-magic-new-hc-target"`
 }
 
@@ -882,7 +882,7 @@ type AccountMagicIpsecTunnelDeleteParams struct {
 }
 
 type AccountMagicIpsecTunnelGeneratePskParams struct {
-	Body interface{} `json:"body,required"`
+	Body interface{} `json:"body" api:"required"`
 }
 
 func (r AccountMagicIpsecTunnelGeneratePskParams) MarshalJSON() (data []byte, err error) {

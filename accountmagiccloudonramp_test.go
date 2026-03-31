@@ -18,7 +18,7 @@ import (
 )
 
 func TestAccountMagicCloudOnrampNewWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -30,6 +30,7 @@ func TestAccountMagicCloudOnrampNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Magic.Cloud.Onramps.New(
 		context.TODO(),
@@ -62,7 +63,7 @@ func TestAccountMagicCloudOnrampNewWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountMagicCloudOnrampGetWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -74,6 +75,7 @@ func TestAccountMagicCloudOnrampGetWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Magic.Cloud.Onramps.Get(
 		context.TODO(),
@@ -96,7 +98,7 @@ func TestAccountMagicCloudOnrampGetWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountMagicCloudOnrampUpdateWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -108,6 +110,7 @@ func TestAccountMagicCloudOnrampUpdateWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Magic.Cloud.Onramps.Update(
 		context.TODO(),
@@ -137,7 +140,7 @@ func TestAccountMagicCloudOnrampUpdateWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountMagicCloudOnrampListWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -149,6 +152,7 @@ func TestAccountMagicCloudOnrampListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Magic.Cloud.Onramps.List(
 		context.TODO(),
@@ -170,7 +174,7 @@ func TestAccountMagicCloudOnrampListWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountMagicCloudOnrampDeleteWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -182,6 +186,7 @@ func TestAccountMagicCloudOnrampDeleteWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Magic.Cloud.Onramps.Delete(
 		context.TODO(),
@@ -202,7 +207,7 @@ func TestAccountMagicCloudOnrampDeleteWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountMagicCloudOnrampApply(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -214,6 +219,7 @@ func TestAccountMagicCloudOnrampApply(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Magic.Cloud.Onramps.Apply(
 		context.TODO(),
@@ -240,6 +246,7 @@ func TestAccountMagicCloudOnrampExport(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	resp, err := client.Accounts.Magic.Cloud.Onramps.Export(
 		context.TODO(),
@@ -269,7 +276,7 @@ func TestAccountMagicCloudOnrampExport(t *testing.T) {
 }
 
 func TestAccountMagicCloudOnrampPatchWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -281,6 +288,7 @@ func TestAccountMagicCloudOnrampPatchWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Magic.Cloud.Onramps.Patch(
 		context.TODO(),
@@ -310,7 +318,7 @@ func TestAccountMagicCloudOnrampPatchWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountMagicCloudOnrampPlan(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -322,6 +330,7 @@ func TestAccountMagicCloudOnrampPlan(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Magic.Cloud.Onramps.Plan(
 		context.TODO(),

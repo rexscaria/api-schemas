@@ -40,11 +40,11 @@ func (r *AccountZtRiskScoringIntegrationService) NewIntegration(ctx context.Cont
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/zt_risk_scoring/integrations", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete a risk score integration.
@@ -52,15 +52,15 @@ func (r *AccountZtRiskScoringIntegrationService) DeleteIntegration(ctx context.C
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if integrationID == "" {
 		err = errors.New("missing required integration_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/zt_risk_scoring/integrations/%s", accountID, integrationID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // List all risk score integrations for the account.
@@ -68,11 +68,11 @@ func (r *AccountZtRiskScoringIntegrationService) ListIntegrations(ctx context.Co
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/zt_risk_scoring/integrations", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Get risk score integration by id.
@@ -80,15 +80,15 @@ func (r *AccountZtRiskScoringIntegrationService) GetIntegration(ctx context.Cont
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if integrationID == "" {
 		err = errors.New("missing required integration_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/zt_risk_scoring/integrations/%s", accountID, integrationID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Get risk score integration by reference id.
@@ -96,15 +96,15 @@ func (r *AccountZtRiskScoringIntegrationService) GetIntegrationByReferenceID(ctx
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if referenceID == "" {
 		err = errors.New("missing required reference_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/zt_risk_scoring/integrations/reference_id/%s", accountID, referenceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Overwrite the reference_id, tenant_url, and active values with the ones
@@ -113,37 +113,37 @@ func (r *AccountZtRiskScoringIntegrationService) UpdateIntegration(ctx context.C
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if integrationID == "" {
 		err = errors.New("missing required integration_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/zt_risk_scoring/integrations/%s", accountID, integrationID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type RiskScoreIntegration struct {
 	// The id of the integration, a UUIDv4.
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// The Cloudflare account tag.
-	AccountTag string `json:"account_tag,required"`
+	AccountTag string `json:"account_tag" api:"required"`
 	// Whether this integration is enabled and should export changes in risk score.
-	Active bool `json:"active,required"`
+	Active bool `json:"active" api:"required"`
 	// When the integration was created in RFC3339 format.
-	CreatedAt       time.Time                `json:"created_at,required" format:"date-time"`
-	IntegrationType RiskScoreIntegrationType `json:"integration_type,required"`
+	CreatedAt       time.Time                `json:"created_at" api:"required" format:"date-time"`
+	IntegrationType RiskScoreIntegrationType `json:"integration_type" api:"required"`
 	// A reference ID defined by the client. Should be set to the Access-Okta IDP
 	// integration ID. Useful when the risk-score integration needs to be associated
 	// with a secondary asset and recalled using that ID.
-	ReferenceID string `json:"reference_id,required"`
+	ReferenceID string `json:"reference_id" api:"required"`
 	// The base URL for the tenant. E.g. "https://tenant.okta.com".
-	TenantURL string `json:"tenant_url,required"`
+	TenantURL string `json:"tenant_url" api:"required"`
 	// The URL for the Shared Signals Framework configuration, e.g.
 	// "/.well-known/sse-configuration/{integration_uuid}/".
 	// https://openid.net/specs/openid-sse-framework-1_0.html#rfc.section.6.2.1.
-	WellKnownURL string                   `json:"well_known_url,required"`
+	WellKnownURL string                   `json:"well_known_url" api:"required"`
 	JSON         riskScoreIntegrationJSON `json:"-"`
 }
 
@@ -185,10 +185,10 @@ func (r RiskScoreIntegrationType) IsKnown() bool {
 }
 
 type AccountZtRiskScoringIntegrationNewIntegrationResponse struct {
-	Errors   []MessagesDlpItems `json:"errors,required"`
-	Messages []MessagesDlpItems `json:"messages,required"`
+	Errors   []MessagesDlpItems `json:"errors" api:"required"`
+	Messages []MessagesDlpItems `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountZtRiskScoringIntegrationNewIntegrationResponseSuccess `json:"success,required"`
+	Success AccountZtRiskScoringIntegrationNewIntegrationResponseSuccess `json:"success" api:"required"`
 	Result  RiskScoreIntegration                                         `json:"result"`
 	JSON    accountZtRiskScoringIntegrationNewIntegrationResponseJSON    `json:"-"`
 }
@@ -228,11 +228,11 @@ func (r AccountZtRiskScoringIntegrationNewIntegrationResponseSuccess) IsKnown() 
 }
 
 type AccountZtRiskScoringIntegrationDeleteIntegrationResponse struct {
-	Errors   []MessagesDlpItems `json:"errors,required"`
-	Messages []MessagesDlpItems `json:"messages,required"`
+	Errors   []MessagesDlpItems `json:"errors" api:"required"`
+	Messages []MessagesDlpItems `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountZtRiskScoringIntegrationDeleteIntegrationResponseSuccess `json:"success,required"`
-	Result  interface{}                                                     `json:"result,nullable"`
+	Success AccountZtRiskScoringIntegrationDeleteIntegrationResponseSuccess `json:"success" api:"required"`
+	Result  interface{}                                                     `json:"result" api:"nullable"`
 	JSON    accountZtRiskScoringIntegrationDeleteIntegrationResponseJSON    `json:"-"`
 }
 
@@ -272,10 +272,10 @@ func (r AccountZtRiskScoringIntegrationDeleteIntegrationResponseSuccess) IsKnown
 }
 
 type AccountZtRiskScoringIntegrationListIntegrationsResponse struct {
-	Errors   []MessagesDlpItems `json:"errors,required"`
-	Messages []MessagesDlpItems `json:"messages,required"`
+	Errors   []MessagesDlpItems `json:"errors" api:"required"`
+	Messages []MessagesDlpItems `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountZtRiskScoringIntegrationListIntegrationsResponseSuccess `json:"success,required"`
+	Success AccountZtRiskScoringIntegrationListIntegrationsResponseSuccess `json:"success" api:"required"`
 	Result  []RiskScoreIntegration                                         `json:"result"`
 	JSON    accountZtRiskScoringIntegrationListIntegrationsResponseJSON    `json:"-"`
 }
@@ -316,10 +316,10 @@ func (r AccountZtRiskScoringIntegrationListIntegrationsResponseSuccess) IsKnown(
 }
 
 type AccountZtRiskScoringIntegrationGetIntegrationResponse struct {
-	Errors   []MessagesDlpItems `json:"errors,required"`
-	Messages []MessagesDlpItems `json:"messages,required"`
+	Errors   []MessagesDlpItems `json:"errors" api:"required"`
+	Messages []MessagesDlpItems `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountZtRiskScoringIntegrationGetIntegrationResponseSuccess `json:"success,required"`
+	Success AccountZtRiskScoringIntegrationGetIntegrationResponseSuccess `json:"success" api:"required"`
 	Result  RiskScoreIntegration                                         `json:"result"`
 	JSON    accountZtRiskScoringIntegrationGetIntegrationResponseJSON    `json:"-"`
 }
@@ -359,10 +359,10 @@ func (r AccountZtRiskScoringIntegrationGetIntegrationResponseSuccess) IsKnown() 
 }
 
 type AccountZtRiskScoringIntegrationGetIntegrationByReferenceIDResponse struct {
-	Errors   []MessagesDlpItems `json:"errors,required"`
-	Messages []MessagesDlpItems `json:"messages,required"`
+	Errors   []MessagesDlpItems `json:"errors" api:"required"`
+	Messages []MessagesDlpItems `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountZtRiskScoringIntegrationGetIntegrationByReferenceIDResponseSuccess `json:"success,required"`
+	Success AccountZtRiskScoringIntegrationGetIntegrationByReferenceIDResponseSuccess `json:"success" api:"required"`
 	Result  RiskScoreIntegration                                                      `json:"result"`
 	JSON    accountZtRiskScoringIntegrationGetIntegrationByReferenceIDResponseJSON    `json:"-"`
 }
@@ -403,10 +403,10 @@ func (r AccountZtRiskScoringIntegrationGetIntegrationByReferenceIDResponseSucces
 }
 
 type AccountZtRiskScoringIntegrationUpdateIntegrationResponse struct {
-	Errors   []MessagesDlpItems `json:"errors,required"`
-	Messages []MessagesDlpItems `json:"messages,required"`
+	Errors   []MessagesDlpItems `json:"errors" api:"required"`
+	Messages []MessagesDlpItems `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountZtRiskScoringIntegrationUpdateIntegrationResponseSuccess `json:"success,required"`
+	Success AccountZtRiskScoringIntegrationUpdateIntegrationResponseSuccess `json:"success" api:"required"`
 	Result  RiskScoreIntegration                                            `json:"result"`
 	JSON    accountZtRiskScoringIntegrationUpdateIntegrationResponseJSON    `json:"-"`
 }
@@ -447,9 +447,9 @@ func (r AccountZtRiskScoringIntegrationUpdateIntegrationResponseSuccess) IsKnown
 }
 
 type AccountZtRiskScoringIntegrationNewIntegrationParams struct {
-	IntegrationType param.Field[RiskScoreIntegrationType] `json:"integration_type,required"`
+	IntegrationType param.Field[RiskScoreIntegrationType] `json:"integration_type" api:"required"`
 	// The base url of the tenant, e.g. "https://tenant.okta.com".
-	TenantURL param.Field[string] `json:"tenant_url,required" format:"uri"`
+	TenantURL param.Field[string] `json:"tenant_url" api:"required" format:"uri"`
 	// A reference id that can be supplied by the client. Currently this should be set
 	// to the Access-Okta IDP ID (a UUIDv4).
 	// https://developers.cloudflare.com/api/operations/access-identity-providers-get-an-access-identity-provider
@@ -463,9 +463,9 @@ func (r AccountZtRiskScoringIntegrationNewIntegrationParams) MarshalJSON() (data
 type AccountZtRiskScoringIntegrationUpdateIntegrationParams struct {
 	// Whether this integration is enabled. If disabled, no risk changes will be
 	// exported to the third-party.
-	Active param.Field[bool] `json:"active,required"`
+	Active param.Field[bool] `json:"active" api:"required"`
 	// The base url of the tenant, e.g. "https://tenant.okta.com".
-	TenantURL param.Field[string] `json:"tenant_url,required" format:"uri"`
+	TenantURL param.Field[string] `json:"tenant_url" api:"required" format:"uri"`
 	// A reference id that can be supplied by the client. Currently this should be set
 	// to the Access-Okta IDP ID (a UUIDv4).
 	// https://developers.cloudflare.com/api/operations/access-identity-providers-get-an-access-identity-provider

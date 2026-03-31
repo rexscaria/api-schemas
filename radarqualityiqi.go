@@ -41,7 +41,7 @@ func (r *RadarQualityIqiService) GetSummary(ctx context.Context, query RadarQual
 	opts = slices.Concat(r.Options, opts)
 	path := "radar/quality/iqi/summary"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves a time series (percentiles) of bandwidth, latency, or DNS response
@@ -50,12 +50,12 @@ func (r *RadarQualityIqiService) GetTimeseriesGroups(ctx context.Context, query 
 	opts = slices.Concat(r.Options, opts)
 	path := "radar/quality/iqi/timeseries_groups"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type RadarQualityIqiGetSummaryResponse struct {
-	Result  RadarQualityIqiGetSummaryResponseResult `json:"result,required"`
-	Success bool                                    `json:"success,required"`
+	Result  RadarQualityIqiGetSummaryResponseResult `json:"result" api:"required"`
+	Success bool                                    `json:"success" api:"required"`
 	JSON    radarQualityIqiGetSummaryResponseJSON   `json:"-"`
 }
 
@@ -78,8 +78,8 @@ func (r radarQualityIqiGetSummaryResponseJSON) RawJSON() string {
 
 type RadarQualityIqiGetSummaryResponseResult struct {
 	// Metadata for the results.
-	Meta     RadarQualityIqiGetSummaryResponseResultMeta     `json:"meta,required"`
-	Summary0 RadarQualityIqiGetSummaryResponseResultSummary0 `json:"summary_0,required"`
+	Meta     RadarQualityIqiGetSummaryResponseResultMeta     `json:"meta" api:"required"`
+	Summary0 RadarQualityIqiGetSummaryResponseResultSummary0 `json:"summary_0" api:"required"`
 	JSON     radarQualityIqiGetSummaryResponseResultJSON     `json:"-"`
 }
 
@@ -102,15 +102,15 @@ func (r radarQualityIqiGetSummaryResponseResultJSON) RawJSON() string {
 
 // Metadata for the results.
 type RadarQualityIqiGetSummaryResponseResultMeta struct {
-	ConfidenceInfo RadarQualityIqiGetSummaryResponseResultMetaConfidenceInfo `json:"confidenceInfo,required"`
-	DateRange      []RadarQualityIqiGetSummaryResponseResultMetaDateRange    `json:"dateRange,required"`
+	ConfidenceInfo RadarQualityIqiGetSummaryResponseResultMetaConfidenceInfo `json:"confidenceInfo" api:"required"`
+	DateRange      []RadarQualityIqiGetSummaryResponseResultMetaDateRange    `json:"dateRange" api:"required"`
 	// Timestamp of the last dataset update.
-	LastUpdated time.Time `json:"lastUpdated,required" format:"date-time"`
+	LastUpdated time.Time `json:"lastUpdated" api:"required" format:"date-time"`
 	// Normalization method applied to the results. Refer to
 	// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
-	Normalization RadarQualityIqiGetSummaryResponseResultMetaNormalization `json:"normalization,required"`
+	Normalization RadarQualityIqiGetSummaryResponseResultMetaNormalization `json:"normalization" api:"required"`
 	// Measurement units for the results.
-	Units []RadarQualityIqiGetSummaryResponseResultMetaUnit `json:"units,required"`
+	Units []RadarQualityIqiGetSummaryResponseResultMetaUnit `json:"units" api:"required"`
 	JSON  radarQualityIqiGetSummaryResponseResultMetaJSON   `json:"-"`
 }
 
@@ -135,9 +135,9 @@ func (r radarQualityIqiGetSummaryResponseResultMetaJSON) RawJSON() string {
 }
 
 type RadarQualityIqiGetSummaryResponseResultMetaConfidenceInfo struct {
-	Annotations []RadarQualityIqiGetSummaryResponseResultMetaConfidenceInfoAnnotation `json:"annotations,required"`
+	Annotations []RadarQualityIqiGetSummaryResponseResultMetaConfidenceInfoAnnotation `json:"annotations" api:"required"`
 	// Provides an indication of how much confidence Cloudflare has in the data.
-	Level int64                                                         `json:"level,required"`
+	Level int64                                                         `json:"level" api:"required"`
 	JSON  radarQualityIqiGetSummaryResponseResultMetaConfidenceInfoJSON `json:"-"`
 }
 
@@ -161,14 +161,14 @@ func (r radarQualityIqiGetSummaryResponseResultMetaConfidenceInfoJSON) RawJSON()
 
 // Annotation associated with the result (e.g. outage or other type of event).
 type RadarQualityIqiGetSummaryResponseResultMetaConfidenceInfoAnnotation struct {
-	DataSource  string    `json:"dataSource,required"`
-	Description string    `json:"description,required"`
-	EndDate     time.Time `json:"endDate,required" format:"date-time"`
-	EventType   string    `json:"eventType,required"`
+	DataSource  string    `json:"dataSource" api:"required"`
+	Description string    `json:"description" api:"required"`
+	EndDate     time.Time `json:"endDate" api:"required" format:"date-time"`
+	EventType   string    `json:"eventType" api:"required"`
 	// Whether event is a single point in time or a time range.
-	IsInstantaneous bool                                                                    `json:"isInstantaneous,required"`
-	LinkedURL       string                                                                  `json:"linkedUrl,required" format:"uri"`
-	StartDate       time.Time                                                               `json:"startDate,required" format:"date-time"`
+	IsInstantaneous bool                                                                    `json:"isInstantaneous" api:"required"`
+	LinkedURL       string                                                                  `json:"linkedUrl" api:"required" format:"uri"`
+	StartDate       time.Time                                                               `json:"startDate" api:"required" format:"date-time"`
 	JSON            radarQualityIqiGetSummaryResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
 }
 
@@ -197,9 +197,9 @@ func (r radarQualityIqiGetSummaryResponseResultMetaConfidenceInfoAnnotationJSON)
 
 type RadarQualityIqiGetSummaryResponseResultMetaDateRange struct {
 	// Adjusted end of date range.
-	EndTime time.Time `json:"endTime,required" format:"date-time"`
+	EndTime time.Time `json:"endTime" api:"required" format:"date-time"`
 	// Adjusted start of date range.
-	StartTime time.Time                                                `json:"startTime,required" format:"date-time"`
+	StartTime time.Time                                                `json:"startTime" api:"required" format:"date-time"`
 	JSON      radarQualityIqiGetSummaryResponseResultMetaDateRangeJSON `json:"-"`
 }
 
@@ -244,8 +244,8 @@ func (r RadarQualityIqiGetSummaryResponseResultMetaNormalization) IsKnown() bool
 }
 
 type RadarQualityIqiGetSummaryResponseResultMetaUnit struct {
-	Name  string                                              `json:"name,required"`
-	Value string                                              `json:"value,required"`
+	Name  string                                              `json:"name" api:"required"`
+	Value string                                              `json:"value" api:"required"`
 	JSON  radarQualityIqiGetSummaryResponseResultMetaUnitJSON `json:"-"`
 }
 
@@ -267,9 +267,9 @@ func (r radarQualityIqiGetSummaryResponseResultMetaUnitJSON) RawJSON() string {
 }
 
 type RadarQualityIqiGetSummaryResponseResultSummary0 struct {
-	P25  string                                              `json:"p25,required"`
-	P50  string                                              `json:"p50,required"`
-	P75  string                                              `json:"p75,required"`
+	P25  string                                              `json:"p25" api:"required"`
+	P50  string                                              `json:"p50" api:"required"`
+	P75  string                                              `json:"p75" api:"required"`
 	JSON radarQualityIqiGetSummaryResponseResultSummary0JSON `json:"-"`
 }
 
@@ -292,8 +292,8 @@ func (r radarQualityIqiGetSummaryResponseResultSummary0JSON) RawJSON() string {
 }
 
 type RadarQualityIqiGetTimeseriesGroupsResponse struct {
-	Result  RadarQualityIqiGetTimeseriesGroupsResponseResult `json:"result,required"`
-	Success bool                                             `json:"success,required"`
+	Result  RadarQualityIqiGetTimeseriesGroupsResponseResult `json:"result" api:"required"`
+	Success bool                                             `json:"success" api:"required"`
 	JSON    radarQualityIqiGetTimeseriesGroupsResponseJSON   `json:"-"`
 }
 
@@ -316,8 +316,8 @@ func (r radarQualityIqiGetTimeseriesGroupsResponseJSON) RawJSON() string {
 
 type RadarQualityIqiGetTimeseriesGroupsResponseResult struct {
 	// Metadata for the results.
-	Meta   RadarQualityIqiGetTimeseriesGroupsResponseResultMeta   `json:"meta,required"`
-	Serie0 RadarQualityIqiGetTimeseriesGroupsResponseResultSerie0 `json:"serie_0,required"`
+	Meta   RadarQualityIqiGetTimeseriesGroupsResponseResultMeta   `json:"meta" api:"required"`
+	Serie0 RadarQualityIqiGetTimeseriesGroupsResponseResultSerie0 `json:"serie_0" api:"required"`
 	JSON   radarQualityIqiGetTimeseriesGroupsResponseResultJSON   `json:"-"`
 }
 
@@ -343,16 +343,16 @@ type RadarQualityIqiGetTimeseriesGroupsResponseResultMeta struct {
 	// Aggregation interval of the results (e.g., in 15 minutes or 1 hour intervals).
 	// Refer to
 	// [Aggregation intervals](https://developers.cloudflare.com/radar/concepts/aggregation-intervals/).
-	AggInterval    RadarQualityIqiGetTimeseriesGroupsResponseResultMetaAggInterval    `json:"aggInterval,required"`
-	ConfidenceInfo RadarQualityIqiGetTimeseriesGroupsResponseResultMetaConfidenceInfo `json:"confidenceInfo,required"`
-	DateRange      []RadarQualityIqiGetTimeseriesGroupsResponseResultMetaDateRange    `json:"dateRange,required"`
+	AggInterval    RadarQualityIqiGetTimeseriesGroupsResponseResultMetaAggInterval    `json:"aggInterval" api:"required"`
+	ConfidenceInfo RadarQualityIqiGetTimeseriesGroupsResponseResultMetaConfidenceInfo `json:"confidenceInfo" api:"required"`
+	DateRange      []RadarQualityIqiGetTimeseriesGroupsResponseResultMetaDateRange    `json:"dateRange" api:"required"`
 	// Timestamp of the last dataset update.
-	LastUpdated time.Time `json:"lastUpdated,required" format:"date-time"`
+	LastUpdated time.Time `json:"lastUpdated" api:"required" format:"date-time"`
 	// Normalization method applied to the results. Refer to
 	// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
-	Normalization RadarQualityIqiGetTimeseriesGroupsResponseResultMetaNormalization `json:"normalization,required"`
+	Normalization RadarQualityIqiGetTimeseriesGroupsResponseResultMetaNormalization `json:"normalization" api:"required"`
 	// Measurement units for the results.
-	Units []RadarQualityIqiGetTimeseriesGroupsResponseResultMetaUnit `json:"units,required"`
+	Units []RadarQualityIqiGetTimeseriesGroupsResponseResultMetaUnit `json:"units" api:"required"`
 	JSON  radarQualityIqiGetTimeseriesGroupsResponseResultMetaJSON   `json:"-"`
 }
 
@@ -399,9 +399,9 @@ func (r RadarQualityIqiGetTimeseriesGroupsResponseResultMetaAggInterval) IsKnown
 }
 
 type RadarQualityIqiGetTimeseriesGroupsResponseResultMetaConfidenceInfo struct {
-	Annotations []RadarQualityIqiGetTimeseriesGroupsResponseResultMetaConfidenceInfoAnnotation `json:"annotations,required"`
+	Annotations []RadarQualityIqiGetTimeseriesGroupsResponseResultMetaConfidenceInfoAnnotation `json:"annotations" api:"required"`
 	// Provides an indication of how much confidence Cloudflare has in the data.
-	Level int64                                                                  `json:"level,required"`
+	Level int64                                                                  `json:"level" api:"required"`
 	JSON  radarQualityIqiGetTimeseriesGroupsResponseResultMetaConfidenceInfoJSON `json:"-"`
 }
 
@@ -425,14 +425,14 @@ func (r radarQualityIqiGetTimeseriesGroupsResponseResultMetaConfidenceInfoJSON) 
 
 // Annotation associated with the result (e.g. outage or other type of event).
 type RadarQualityIqiGetTimeseriesGroupsResponseResultMetaConfidenceInfoAnnotation struct {
-	DataSource  string    `json:"dataSource,required"`
-	Description string    `json:"description,required"`
-	EndDate     time.Time `json:"endDate,required" format:"date-time"`
-	EventType   string    `json:"eventType,required"`
+	DataSource  string    `json:"dataSource" api:"required"`
+	Description string    `json:"description" api:"required"`
+	EndDate     time.Time `json:"endDate" api:"required" format:"date-time"`
+	EventType   string    `json:"eventType" api:"required"`
 	// Whether event is a single point in time or a time range.
-	IsInstantaneous bool                                                                             `json:"isInstantaneous,required"`
-	LinkedURL       string                                                                           `json:"linkedUrl,required" format:"uri"`
-	StartDate       time.Time                                                                        `json:"startDate,required" format:"date-time"`
+	IsInstantaneous bool                                                                             `json:"isInstantaneous" api:"required"`
+	LinkedURL       string                                                                           `json:"linkedUrl" api:"required" format:"uri"`
+	StartDate       time.Time                                                                        `json:"startDate" api:"required" format:"date-time"`
 	JSON            radarQualityIqiGetTimeseriesGroupsResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
 }
 
@@ -461,9 +461,9 @@ func (r radarQualityIqiGetTimeseriesGroupsResponseResultMetaConfidenceInfoAnnota
 
 type RadarQualityIqiGetTimeseriesGroupsResponseResultMetaDateRange struct {
 	// Adjusted end of date range.
-	EndTime time.Time `json:"endTime,required" format:"date-time"`
+	EndTime time.Time `json:"endTime" api:"required" format:"date-time"`
 	// Adjusted start of date range.
-	StartTime time.Time                                                         `json:"startTime,required" format:"date-time"`
+	StartTime time.Time                                                         `json:"startTime" api:"required" format:"date-time"`
 	JSON      radarQualityIqiGetTimeseriesGroupsResponseResultMetaDateRangeJSON `json:"-"`
 }
 
@@ -509,8 +509,8 @@ func (r RadarQualityIqiGetTimeseriesGroupsResponseResultMetaNormalization) IsKno
 }
 
 type RadarQualityIqiGetTimeseriesGroupsResponseResultMetaUnit struct {
-	Name  string                                                       `json:"name,required"`
-	Value string                                                       `json:"value,required"`
+	Name  string                                                       `json:"name" api:"required"`
+	Value string                                                       `json:"value" api:"required"`
 	JSON  radarQualityIqiGetTimeseriesGroupsResponseResultMetaUnitJSON `json:"-"`
 }
 
@@ -533,10 +533,10 @@ func (r radarQualityIqiGetTimeseriesGroupsResponseResultMetaUnitJSON) RawJSON() 
 }
 
 type RadarQualityIqiGetTimeseriesGroupsResponseResultSerie0 struct {
-	P25        []string                                                   `json:"p25,required"`
-	P50        []string                                                   `json:"p50,required"`
-	P75        []string                                                   `json:"p75,required"`
-	Timestamps []string                                                   `json:"timestamps,required"`
+	P25        []string                                                   `json:"p25" api:"required"`
+	P50        []string                                                   `json:"p50" api:"required"`
+	P75        []string                                                   `json:"p75" api:"required"`
+	Timestamps []string                                                   `json:"timestamps" api:"required"`
 	JSON       radarQualityIqiGetTimeseriesGroupsResponseResultSerie0JSON `json:"-"`
 }
 
@@ -561,7 +561,7 @@ func (r radarQualityIqiGetTimeseriesGroupsResponseResultSerie0JSON) RawJSON() st
 
 type RadarQualityIqiGetSummaryParams struct {
 	// Defines which metric to return (bandwidth, latency, or DNS response time).
-	Metric param.Field[RadarQualityIqiGetSummaryParamsMetric] `query:"metric,required"`
+	Metric param.Field[RadarQualityIqiGetSummaryParamsMetric] `query:"metric" api:"required"`
 	// Filters results by Autonomous System. Specify one or more Autonomous System
 	// Numbers (ASNs) as a comma-separated list. Prefix with `-` to exclude ASNs from
 	// results. For example, `-174, 3356` excludes results from AS174, but includes
@@ -633,7 +633,7 @@ func (r RadarQualityIqiGetSummaryParamsFormat) IsKnown() bool {
 
 type RadarQualityIqiGetTimeseriesGroupsParams struct {
 	// Defines which metric to return (bandwidth, latency, or DNS response time).
-	Metric param.Field[RadarQualityIqiGetTimeseriesGroupsParamsMetric] `query:"metric,required"`
+	Metric param.Field[RadarQualityIqiGetTimeseriesGroupsParamsMetric] `query:"metric" api:"required"`
 	// Aggregation interval of the results (e.g., in 15 minutes or 1 hour intervals).
 	// Refer to
 	// [Aggregation intervals](https://developers.cloudflare.com/radar/concepts/aggregation-intervals/).

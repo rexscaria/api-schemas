@@ -42,15 +42,15 @@ func (r *ZonePageShieldConnectionService) Get(ctx context.Context, zoneID string
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if connectionID == "" {
 		err = errors.New("missing required connection_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/page_shield/connections/%s", zoneID, connectionID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists all connections detected by Page Shield.
@@ -58,22 +58,22 @@ func (r *ZonePageShieldConnectionService) List(ctx context.Context, zoneID strin
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/page_shield/connections", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type Connection struct {
 	// Identifier
-	ID                        string         `json:"id,required"`
-	AddedAt                   time.Time      `json:"added_at,required" format:"date-time"`
-	FirstSeenAt               time.Time      `json:"first_seen_at,required" format:"date-time"`
-	Host                      string         `json:"host,required"`
-	LastSeenAt                time.Time      `json:"last_seen_at,required" format:"date-time"`
-	URL                       string         `json:"url,required"`
-	URLContainsCdnCgiPath     bool           `json:"url_contains_cdn_cgi_path,required"`
+	ID                        string         `json:"id" api:"required"`
+	AddedAt                   time.Time      `json:"added_at" api:"required" format:"date-time"`
+	FirstSeenAt               time.Time      `json:"first_seen_at" api:"required" format:"date-time"`
+	Host                      string         `json:"host" api:"required"`
+	LastSeenAt                time.Time      `json:"last_seen_at" api:"required" format:"date-time"`
+	URL                       string         `json:"url" api:"required"`
+	URLContainsCdnCgiPath     bool           `json:"url_contains_cdn_cgi_path" api:"required"`
 	DomainReportedMalicious   bool           `json:"domain_reported_malicious"`
 	FirstPageURL              string         `json:"first_page_url"`
 	MaliciousDomainCategories []string       `json:"malicious_domain_categories"`
@@ -111,9 +111,9 @@ func (r connectionJSON) RawJSON() string {
 }
 
 type ZonePageShieldConnectionGetResponse struct {
-	Result Connection `json:"result,required,nullable"`
+	Result Connection `json:"result" api:"required,nullable"`
 	// Whether the API call was successful
-	Success  ZonePageShieldConnectionGetResponseSuccess   `json:"success,required"`
+	Success  ZonePageShieldConnectionGetResponseSuccess   `json:"success" api:"required"`
 	Errors   []ZonePageShieldConnectionGetResponseError   `json:"errors"`
 	Messages []ZonePageShieldConnectionGetResponseMessage `json:"messages"`
 	JSON     zonePageShieldConnectionGetResponseJSON      `json:"-"`
@@ -154,8 +154,8 @@ func (r ZonePageShieldConnectionGetResponseSuccess) IsKnown() bool {
 }
 
 type ZonePageShieldConnectionGetResponseError struct {
-	Code             int64                                           `json:"code,required"`
-	Message          string                                          `json:"message,required"`
+	Code             int64                                           `json:"code" api:"required"`
+	Message          string                                          `json:"message" api:"required"`
 	DocumentationURL string                                          `json:"documentation_url"`
 	Source           ZonePageShieldConnectionGetResponseErrorsSource `json:"source"`
 	JSON             zonePageShieldConnectionGetResponseErrorJSON    `json:"-"`
@@ -202,8 +202,8 @@ func (r zonePageShieldConnectionGetResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type ZonePageShieldConnectionGetResponseMessage struct {
-	Code             int64                                             `json:"code,required"`
-	Message          string                                            `json:"message,required"`
+	Code             int64                                             `json:"code" api:"required"`
+	Message          string                                            `json:"message" api:"required"`
 	DocumentationURL string                                            `json:"documentation_url"`
 	Source           ZonePageShieldConnectionGetResponseMessagesSource `json:"source"`
 	JSON             zonePageShieldConnectionGetResponseMessageJSON    `json:"-"`
@@ -250,9 +250,9 @@ func (r zonePageShieldConnectionGetResponseMessagesSourceJSON) RawJSON() string 
 }
 
 type ZonePageShieldConnectionListResponse struct {
-	ResultInfo ZonePageShieldConnectionListResponseResultInfo `json:"result_info,required"`
+	ResultInfo ZonePageShieldConnectionListResponseResultInfo `json:"result_info" api:"required"`
 	// Whether the API call was successful
-	Success  ZonePageShieldConnectionListResponseSuccess   `json:"success,required"`
+	Success  ZonePageShieldConnectionListResponseSuccess   `json:"success" api:"required"`
 	Errors   []ZonePageShieldConnectionListResponseError   `json:"errors"`
 	Messages []ZonePageShieldConnectionListResponseMessage `json:"messages"`
 	Result   []Connection                                  `json:"result"`
@@ -281,15 +281,15 @@ func (r zonePageShieldConnectionListResponseJSON) RawJSON() string {
 
 type ZonePageShieldConnectionListResponseResultInfo struct {
 	// Total number of results for the requested service
-	Count float64 `json:"count,required"`
+	Count float64 `json:"count" api:"required"`
 	// Current page within paginated list of results
-	Page float64 `json:"page,required"`
+	Page float64 `json:"page" api:"required"`
 	// Number of results per page of results
-	PerPage float64 `json:"per_page,required"`
+	PerPage float64 `json:"per_page" api:"required"`
 	// Total results available without any search parameters
-	TotalCount float64 `json:"total_count,required"`
+	TotalCount float64 `json:"total_count" api:"required"`
 	// Total number of pages
-	TotalPages float64                                            `json:"total_pages,required"`
+	TotalPages float64                                            `json:"total_pages" api:"required"`
 	JSON       zonePageShieldConnectionListResponseResultInfoJSON `json:"-"`
 }
 
@@ -329,8 +329,8 @@ func (r ZonePageShieldConnectionListResponseSuccess) IsKnown() bool {
 }
 
 type ZonePageShieldConnectionListResponseError struct {
-	Code             int64                                            `json:"code,required"`
-	Message          string                                           `json:"message,required"`
+	Code             int64                                            `json:"code" api:"required"`
+	Message          string                                           `json:"message" api:"required"`
 	DocumentationURL string                                           `json:"documentation_url"`
 	Source           ZonePageShieldConnectionListResponseErrorsSource `json:"source"`
 	JSON             zonePageShieldConnectionListResponseErrorJSON    `json:"-"`
@@ -377,8 +377,8 @@ func (r zonePageShieldConnectionListResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type ZonePageShieldConnectionListResponseMessage struct {
-	Code             int64                                              `json:"code,required"`
-	Message          string                                             `json:"message,required"`
+	Code             int64                                              `json:"code" api:"required"`
+	Message          string                                             `json:"message" api:"required"`
 	DocumentationURL string                                             `json:"documentation_url"`
 	Source           ZonePageShieldConnectionListResponseMessagesSource `json:"source"`
 	JSON             zonePageShieldConnectionListResponseMessageJSON    `json:"-"`

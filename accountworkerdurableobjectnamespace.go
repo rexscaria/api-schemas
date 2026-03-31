@@ -42,11 +42,11 @@ func (r *AccountWorkerDurableObjectNamespaceService) List(ctx context.Context, a
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/workers/durable_objects/namespaces", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns the Durable Objects in a given namespace.
@@ -54,22 +54,22 @@ func (r *AccountWorkerDurableObjectNamespaceService) ListObjects(ctx context.Con
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/workers/durable_objects/namespaces/%s/objects", accountID, id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountWorkerDurableObjectNamespaceListResponse struct {
-	Errors   []WorkersMessages `json:"errors,required"`
-	Messages []WorkersMessages `json:"messages,required"`
+	Errors   []WorkersMessages `json:"errors" api:"required"`
+	Messages []WorkersMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success    AccountWorkerDurableObjectNamespaceListResponseSuccess    `json:"success,required"`
+	Success    AccountWorkerDurableObjectNamespaceListResponseSuccess    `json:"success" api:"required"`
 	Result     []AccountWorkerDurableObjectNamespaceListResponseResult   `json:"result"`
 	ResultInfo AccountWorkerDurableObjectNamespaceListResponseResultInfo `json:"result_info"`
 	JSON       accountWorkerDurableObjectNamespaceListResponseJSON       `json:"-"`
@@ -172,10 +172,10 @@ func (r accountWorkerDurableObjectNamespaceListResponseResultInfoJSON) RawJSON()
 }
 
 type AccountWorkerDurableObjectNamespaceListObjectsResponse struct {
-	Errors   []WorkersMessages `json:"errors,required"`
-	Messages []WorkersMessages `json:"messages,required"`
+	Errors   []WorkersMessages `json:"errors" api:"required"`
+	Messages []WorkersMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success    AccountWorkerDurableObjectNamespaceListObjectsResponseSuccess    `json:"success,required"`
+	Success    AccountWorkerDurableObjectNamespaceListObjectsResponseSuccess    `json:"success" api:"required"`
 	Result     []AccountWorkerDurableObjectNamespaceListObjectsResponseResult   `json:"result"`
 	ResultInfo AccountWorkerDurableObjectNamespaceListObjectsResponseResultInfo `json:"result_info"`
 	JSON       accountWorkerDurableObjectNamespaceListObjectsResponseJSON       `json:"-"`

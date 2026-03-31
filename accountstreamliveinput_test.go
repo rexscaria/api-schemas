@@ -14,7 +14,7 @@ import (
 )
 
 func TestAccountStreamLiveInputNewWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,6 +26,7 @@ func TestAccountStreamLiveInputNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Stream.LiveInputs.New(
 		context.TODO(),
@@ -55,7 +56,7 @@ func TestAccountStreamLiveInputNewWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountStreamLiveInputGet(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -67,6 +68,7 @@ func TestAccountStreamLiveInputGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Stream.LiveInputs.Get(
 		context.TODO(),
@@ -83,7 +85,7 @@ func TestAccountStreamLiveInputGet(t *testing.T) {
 }
 
 func TestAccountStreamLiveInputUpdateWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -95,6 +97,7 @@ func TestAccountStreamLiveInputUpdateWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Stream.LiveInputs.Update(
 		context.TODO(),
@@ -125,7 +128,7 @@ func TestAccountStreamLiveInputUpdateWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountStreamLiveInputListWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -137,6 +140,7 @@ func TestAccountStreamLiveInputListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Stream.LiveInputs.List(
 		context.TODO(),
@@ -155,7 +159,7 @@ func TestAccountStreamLiveInputListWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountStreamLiveInputDelete(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -167,6 +171,7 @@ func TestAccountStreamLiveInputDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	err := client.Accounts.Stream.LiveInputs.Delete(
 		context.TODO(),

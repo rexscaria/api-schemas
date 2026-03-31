@@ -39,16 +39,16 @@ func (r *AccountDiagnosticService) RunTraceroute(ctx context.Context, accountID 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/diagnostics/traceroute", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type MessagesMagicTransitItem struct {
-	Code             int64                          `json:"code,required"`
-	Message          string                         `json:"message,required"`
+	Code             int64                          `json:"code" api:"required"`
+	Message          string                         `json:"message" api:"required"`
 	DocumentationURL string                         `json:"documentation_url"`
 	Source           MessagesMagicTransitItemSource `json:"source"`
 	JSON             messagesMagicTransitItemJSON   `json:"-"`
@@ -95,10 +95,10 @@ func (r messagesMagicTransitItemSourceJSON) RawJSON() string {
 }
 
 type AccountDiagnosticRunTracerouteResponse struct {
-	Errors   []MessagesMagicTransitItem `json:"errors,required"`
-	Messages []MessagesMagicTransitItem `json:"messages,required"`
+	Errors   []MessagesMagicTransitItem `json:"errors" api:"required"`
+	Messages []MessagesMagicTransitItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountDiagnosticRunTracerouteResponseSuccess  `json:"success,required"`
+	Success AccountDiagnosticRunTracerouteResponseSuccess  `json:"success" api:"required"`
 	Result  []AccountDiagnosticRunTracerouteResponseResult `json:"result"`
 	JSON    accountDiagnosticRunTracerouteResponseJSON     `json:"-"`
 }
@@ -318,7 +318,7 @@ func (r accountDiagnosticRunTracerouteResponseResultColosHopsNodeJSON) RawJSON()
 }
 
 type AccountDiagnosticRunTracerouteParams struct {
-	Targets param.Field[[]string] `json:"targets,required"`
+	Targets param.Field[[]string] `json:"targets" api:"required"`
 	// If no source colo names specified, all colos will be used. China colos are
 	// unavailable for traceroutes.
 	Colos   param.Field[[]string]                                    `json:"colos"`

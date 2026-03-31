@@ -39,15 +39,15 @@ func (r *AccountWorkerScriptScheduleService) Update(ctx context.Context, account
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if scriptName == "" {
 		err = errors.New("missing required script_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/workers/scripts/%s/schedules", accountID, scriptName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetches Cron Triggers for a Worker.
@@ -55,23 +55,23 @@ func (r *AccountWorkerScriptScheduleService) Get(ctx context.Context, accountID 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if scriptName == "" {
 		err = errors.New("missing required script_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/workers/scripts/%s/schedules", accountID, scriptName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountWorkerScriptScheduleUpdateResponse struct {
-	Errors   []WorkersMessages                               `json:"errors,required"`
-	Messages []WorkersMessages                               `json:"messages,required"`
-	Result   AccountWorkerScriptScheduleUpdateResponseResult `json:"result,required"`
+	Errors   []WorkersMessages                               `json:"errors" api:"required"`
+	Messages []WorkersMessages                               `json:"messages" api:"required"`
+	Result   AccountWorkerScriptScheduleUpdateResponseResult `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success AccountWorkerScriptScheduleUpdateResponseSuccess `json:"success,required"`
+	Success AccountWorkerScriptScheduleUpdateResponseSuccess `json:"success" api:"required"`
 	JSON    accountWorkerScriptScheduleUpdateResponseJSON    `json:"-"`
 }
 
@@ -95,7 +95,7 @@ func (r accountWorkerScriptScheduleUpdateResponseJSON) RawJSON() string {
 }
 
 type AccountWorkerScriptScheduleUpdateResponseResult struct {
-	Schedules []AccountWorkerScriptScheduleUpdateResponseResultSchedule `json:"schedules,required"`
+	Schedules []AccountWorkerScriptScheduleUpdateResponseResultSchedule `json:"schedules" api:"required"`
 	JSON      accountWorkerScriptScheduleUpdateResponseResultJSON       `json:"-"`
 }
 
@@ -116,7 +116,7 @@ func (r accountWorkerScriptScheduleUpdateResponseResultJSON) RawJSON() string {
 }
 
 type AccountWorkerScriptScheduleUpdateResponseResultSchedule struct {
-	Cron       string                                                      `json:"cron,required"`
+	Cron       string                                                      `json:"cron" api:"required"`
 	CreatedOn  string                                                      `json:"created_on"`
 	ModifiedOn string                                                      `json:"modified_on"`
 	JSON       accountWorkerScriptScheduleUpdateResponseResultScheduleJSON `json:"-"`
@@ -157,11 +157,11 @@ func (r AccountWorkerScriptScheduleUpdateResponseSuccess) IsKnown() bool {
 }
 
 type AccountWorkerScriptScheduleGetResponse struct {
-	Errors   []WorkersMessages                            `json:"errors,required"`
-	Messages []WorkersMessages                            `json:"messages,required"`
-	Result   AccountWorkerScriptScheduleGetResponseResult `json:"result,required"`
+	Errors   []WorkersMessages                            `json:"errors" api:"required"`
+	Messages []WorkersMessages                            `json:"messages" api:"required"`
+	Result   AccountWorkerScriptScheduleGetResponseResult `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success AccountWorkerScriptScheduleGetResponseSuccess `json:"success,required"`
+	Success AccountWorkerScriptScheduleGetResponseSuccess `json:"success" api:"required"`
 	JSON    accountWorkerScriptScheduleGetResponseJSON    `json:"-"`
 }
 
@@ -185,7 +185,7 @@ func (r accountWorkerScriptScheduleGetResponseJSON) RawJSON() string {
 }
 
 type AccountWorkerScriptScheduleGetResponseResult struct {
-	Schedules []AccountWorkerScriptScheduleGetResponseResultSchedule `json:"schedules,required"`
+	Schedules []AccountWorkerScriptScheduleGetResponseResultSchedule `json:"schedules" api:"required"`
 	JSON      accountWorkerScriptScheduleGetResponseResultJSON       `json:"-"`
 }
 
@@ -206,7 +206,7 @@ func (r accountWorkerScriptScheduleGetResponseResultJSON) RawJSON() string {
 }
 
 type AccountWorkerScriptScheduleGetResponseResultSchedule struct {
-	Cron       string                                                   `json:"cron,required"`
+	Cron       string                                                   `json:"cron" api:"required"`
 	CreatedOn  string                                                   `json:"created_on"`
 	ModifiedOn string                                                   `json:"modified_on"`
 	JSON       accountWorkerScriptScheduleGetResponseResultScheduleJSON `json:"-"`
@@ -246,7 +246,7 @@ func (r AccountWorkerScriptScheduleGetResponseSuccess) IsKnown() bool {
 }
 
 type AccountWorkerScriptScheduleUpdateParams struct {
-	Body []AccountWorkerScriptScheduleUpdateParamsBody `json:"body,required"`
+	Body []AccountWorkerScriptScheduleUpdateParamsBody `json:"body" api:"required"`
 }
 
 func (r AccountWorkerScriptScheduleUpdateParams) MarshalJSON() (data []byte, err error) {
@@ -254,7 +254,7 @@ func (r AccountWorkerScriptScheduleUpdateParams) MarshalJSON() (data []byte, err
 }
 
 type AccountWorkerScriptScheduleUpdateParamsBody struct {
-	Cron param.Field[string] `json:"cron,required"`
+	Cron param.Field[string] `json:"cron" api:"required"`
 }
 
 func (r AccountWorkerScriptScheduleUpdateParamsBody) MarshalJSON() (data []byte, err error) {

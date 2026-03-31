@@ -46,11 +46,11 @@ func (r *AccountDNSFirewallService) New(ctx context.Context, accountID string, b
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/dns_firewall", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Show a single DNS Firewall cluster for an account
@@ -58,15 +58,15 @@ func (r *AccountDNSFirewallService) Get(ctx context.Context, accountID string, d
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if dnsFirewallID == "" {
 		err = errors.New("missing required dns_firewall_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/dns_firewall/%s", accountID, dnsFirewallID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Modify the configuration of a DNS Firewall cluster
@@ -74,15 +74,15 @@ func (r *AccountDNSFirewallService) Update(ctx context.Context, accountID string
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if dnsFirewallID == "" {
 		err = errors.New("missing required dns_firewall_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/dns_firewall/%s", accountID, dnsFirewallID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // List DNS Firewall clusters for an account
@@ -90,11 +90,11 @@ func (r *AccountDNSFirewallService) List(ctx context.Context, accountID string, 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/dns_firewall", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete a DNS Firewall cluster
@@ -102,15 +102,15 @@ func (r *AccountDNSFirewallService) Delete(ctx context.Context, accountID string
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if dnsFirewallID == "" {
 		err = errors.New("missing required dns_firewall_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/dns_firewall/%s", accountID, dnsFirewallID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type DNSFirewallClusterParam struct {
@@ -161,36 +161,36 @@ func (r DNSFirewallClusterAttackMitigationParam) MarshalJSON() (data []byte, err
 
 type DNSFirewallClusterResponse struct {
 	// Identifier.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Whether to refuse to answer queries for the ANY type
-	DeprecateAnyRequests bool     `json:"deprecate_any_requests,required"`
-	DNSFirewallIPs       []string `json:"dns_firewall_ips,required" format:"ipv4"`
+	DeprecateAnyRequests bool     `json:"deprecate_any_requests" api:"required"`
+	DNSFirewallIPs       []string `json:"dns_firewall_ips" api:"required" format:"ipv4"`
 	// Whether to forward client IP (resolver) subnet if no EDNS Client Subnet is sent
-	EcsFallback bool `json:"ecs_fallback,required"`
+	EcsFallback bool `json:"ecs_fallback" api:"required"`
 	// Maximum DNS cache TTL This setting sets an upper bound on DNS TTLs for purposes
 	// of caching between DNS Firewall and the upstream servers. Higher TTLs will be
 	// decreased to the maximum defined here for caching purposes.
-	MaximumCacheTtl float64 `json:"maximum_cache_ttl,required"`
+	MaximumCacheTtl float64 `json:"maximum_cache_ttl" api:"required"`
 	// Minimum DNS cache TTL This setting sets a lower bound on DNS TTLs for purposes
 	// of caching between DNS Firewall and the upstream servers. Lower TTLs will be
 	// increased to the minimum defined here for caching purposes.
-	MinimumCacheTtl float64 `json:"minimum_cache_ttl,required"`
+	MinimumCacheTtl float64 `json:"minimum_cache_ttl" api:"required"`
 	// Last modification of DNS Firewall cluster
-	ModifiedOn time.Time `json:"modified_on,required" format:"date-time"`
+	ModifiedOn time.Time `json:"modified_on" api:"required" format:"date-time"`
 	// DNS Firewall cluster name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Negative DNS cache TTL This setting controls how long DNS Firewall should cache
 	// negative responses (e.g., NXDOMAIN) from the upstream servers.
-	NegativeCacheTtl float64 `json:"negative_cache_ttl,required,nullable"`
+	NegativeCacheTtl float64 `json:"negative_cache_ttl" api:"required,nullable"`
 	// Ratelimit in queries per second per datacenter (applies to DNS queries sent to
 	// the upstream nameservers configured on the cluster)
-	Ratelimit float64 `json:"ratelimit,required,nullable"`
+	Ratelimit float64 `json:"ratelimit" api:"required,nullable"`
 	// Number of retries for fetching DNS responses from upstream nameservers (not
 	// counting the initial attempt)
-	Retries     float64  `json:"retries,required"`
-	UpstreamIPs []string `json:"upstream_ips,required" format:"ipv4"`
+	Retries     float64  `json:"retries" api:"required"`
+	UpstreamIPs []string `json:"upstream_ips" api:"required" format:"ipv4"`
 	// Attack mitigation settings
-	AttackMitigation DNSFirewallClusterResponseAttackMitigation `json:"attack_mitigation,nullable"`
+	AttackMitigation DNSFirewallClusterResponseAttackMitigation `json:"attack_mitigation" api:"nullable"`
 	JSON             dnsFirewallClusterResponseJSON             `json:"-"`
 }
 
@@ -250,10 +250,10 @@ func (r dnsFirewallClusterResponseAttackMitigationJSON) RawJSON() string {
 }
 
 type DNSFirewallSingleResponse struct {
-	Errors   []MessagesDNSFirewallItem `json:"errors,required"`
-	Messages []MessagesDNSFirewallItem `json:"messages,required"`
+	Errors   []MessagesDNSFirewallItem `json:"errors" api:"required"`
+	Messages []MessagesDNSFirewallItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success DNSFirewallSingleResponseSuccess `json:"success,required"`
+	Success DNSFirewallSingleResponseSuccess `json:"success" api:"required"`
 	Result  DNSFirewallClusterResponse       `json:"result"`
 	JSON    dnsFirewallSingleResponseJSON    `json:"-"`
 }
@@ -293,8 +293,8 @@ func (r DNSFirewallSingleResponseSuccess) IsKnown() bool {
 }
 
 type MessagesDNSFirewallItem struct {
-	Code             int64                         `json:"code,required"`
-	Message          string                        `json:"message,required"`
+	Code             int64                         `json:"code" api:"required"`
+	Message          string                        `json:"message" api:"required"`
 	DocumentationURL string                        `json:"documentation_url"`
 	Source           MessagesDNSFirewallItemSource `json:"source"`
 	JSON             messagesDNSFirewallItemJSON   `json:"-"`
@@ -341,10 +341,10 @@ func (r messagesDNSFirewallItemSourceJSON) RawJSON() string {
 }
 
 type AccountDNSFirewallListResponse struct {
-	Errors   []MessagesDNSFirewallItem `json:"errors,required"`
-	Messages []MessagesDNSFirewallItem `json:"messages,required"`
+	Errors   []MessagesDNSFirewallItem `json:"errors" api:"required"`
+	Messages []MessagesDNSFirewallItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success    AccountDNSFirewallListResponseSuccess    `json:"success,required"`
+	Success    AccountDNSFirewallListResponseSuccess    `json:"success" api:"required"`
 	Result     []DNSFirewallClusterResponse             `json:"result"`
 	ResultInfo AccountDNSFirewallListResponseResultInfo `json:"result_info"`
 	JSON       accountDNSFirewallListResponseJSON       `json:"-"`
@@ -417,10 +417,10 @@ func (r accountDNSFirewallListResponseResultInfoJSON) RawJSON() string {
 }
 
 type AccountDNSFirewallDeleteResponse struct {
-	Errors   []MessagesDNSFirewallItem `json:"errors,required"`
-	Messages []MessagesDNSFirewallItem `json:"messages,required"`
+	Errors   []MessagesDNSFirewallItem `json:"errors" api:"required"`
+	Messages []MessagesDNSFirewallItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountDNSFirewallDeleteResponseSuccess `json:"success,required"`
+	Success AccountDNSFirewallDeleteResponseSuccess `json:"success" api:"required"`
 	Result  AccountDNSFirewallDeleteResponseResult  `json:"result"`
 	JSON    accountDNSFirewallDeleteResponseJSON    `json:"-"`
 }
@@ -482,7 +482,7 @@ func (r accountDNSFirewallDeleteResponseResultJSON) RawJSON() string {
 }
 
 type AccountDNSFirewallNewParams struct {
-	DNSFirewallCluster DNSFirewallClusterParam `json:"dns_firewall_cluster,required"`
+	DNSFirewallCluster DNSFirewallClusterParam `json:"dns_firewall_cluster" api:"required"`
 }
 
 func (r AccountDNSFirewallNewParams) MarshalJSON() (data []byte, err error) {
@@ -490,7 +490,7 @@ func (r AccountDNSFirewallNewParams) MarshalJSON() (data []byte, err error) {
 }
 
 type AccountDNSFirewallUpdateParams struct {
-	DNSFirewallCluster DNSFirewallClusterParam `json:"dns_firewall_cluster,required"`
+	DNSFirewallCluster DNSFirewallClusterParam `json:"dns_firewall_cluster" api:"required"`
 }
 
 func (r AccountDNSFirewallUpdateParams) MarshalJSON() (data []byte, err error) {

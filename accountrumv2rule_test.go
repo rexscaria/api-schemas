@@ -14,7 +14,7 @@ import (
 )
 
 func TestAccountRumV2RuleNewWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,6 +26,7 @@ func TestAccountRumV2RuleNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Rum.V2.Rules.New(
 		context.TODO(),
@@ -50,7 +51,7 @@ func TestAccountRumV2RuleNewWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountRumV2RuleList(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -62,6 +63,7 @@ func TestAccountRumV2RuleList(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Rum.V2.Rules.List(
 		context.TODO(),
@@ -78,7 +80,7 @@ func TestAccountRumV2RuleList(t *testing.T) {
 }
 
 func TestAccountRumV2RuleDelete(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -90,6 +92,7 @@ func TestAccountRumV2RuleDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Rum.V2.Rules.Delete(
 		context.TODO(),
@@ -107,7 +110,7 @@ func TestAccountRumV2RuleDelete(t *testing.T) {
 }
 
 func TestAccountRumV2RuleUpdate0WithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -119,6 +122,7 @@ func TestAccountRumV2RuleUpdate0WithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Rum.V2.Rules.Update0(
 		context.TODO(),
@@ -144,7 +148,7 @@ func TestAccountRumV2RuleUpdate0WithOptionalParams(t *testing.T) {
 }
 
 func TestAccountRumV2RuleUpdate1WithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -156,6 +160,7 @@ func TestAccountRumV2RuleUpdate1WithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Rum.V2.Rules.Update1(
 		context.TODO(),

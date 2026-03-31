@@ -39,11 +39,11 @@ func (r *AccountCloudforceOneScanConfigService) New(ctx context.Context, account
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/cloudforce-one/scans/config", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Update an existing Scan Config
@@ -51,15 +51,15 @@ func (r *AccountCloudforceOneScanConfigService) Update(ctx context.Context, acco
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if configID == "" {
 		err = errors.New("missing required config_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/cloudforce-one/scans/config/%s", accountID, configID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // List Scan Configs
@@ -67,11 +67,11 @@ func (r *AccountCloudforceOneScanConfigService) List(ctx context.Context, accoun
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/cloudforce-one/scans/config", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete a Scan Config
@@ -79,20 +79,20 @@ func (r *AccountCloudforceOneScanConfigService) Delete(ctx context.Context, acco
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if configID == "" {
 		err = errors.New("missing required config_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/cloudforce-one/scans/config/%s", accountID, configID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type MessagesPortScanItems struct {
-	Code             int64                       `json:"code,required"`
-	Message          string                      `json:"message,required"`
+	Code             int64                       `json:"code" api:"required"`
+	Message          string                      `json:"message" api:"required"`
 	DocumentationURL string                      `json:"documentation_url"`
 	Source           MessagesPortScanItemsSource `json:"source"`
 	JSON             messagesPortScanItemsJSON   `json:"-"`
@@ -140,17 +140,17 @@ func (r messagesPortScanItemsSourceJSON) RawJSON() string {
 
 type ScanConfig struct {
 	// Defines the Config ID.
-	ID        string `json:"id,required"`
-	AccountID string `json:"account_id,required"`
+	ID        string `json:"id" api:"required"`
+	AccountID string `json:"account_id" api:"required"`
 	// Defines the number of days between each scan (0 = One-off scan).
-	Frequency float64 `json:"frequency,required"`
+	Frequency float64 `json:"frequency" api:"required"`
 	// Defines a list of IP addresses or CIDR blocks to scan. The maximum number of
 	// total IP addresses allowed is 5000.
-	IPs []string `json:"ips,required"`
+	IPs []string `json:"ips" api:"required"`
 	// Defines a list of ports to scan. Valid values are:"default", "all", or a
 	// comma-separated list of ports or range of ports (e.g. ["1-80", "443"]).
 	// "default" scans the 100 most commonly open ports.
-	Ports []string       `json:"ports,required"`
+	Ports []string       `json:"ports" api:"required"`
 	JSON  scanConfigJSON `json:"-"`
 }
 
@@ -174,10 +174,10 @@ func (r scanConfigJSON) RawJSON() string {
 }
 
 type AccountCloudforceOneScanConfigNewResponse struct {
-	Errors   []MessagesPortScanItems `json:"errors,required"`
-	Messages []MessagesPortScanItems `json:"messages,required"`
+	Errors   []MessagesPortScanItems `json:"errors" api:"required"`
+	Messages []MessagesPortScanItems `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountCloudforceOneScanConfigNewResponseSuccess `json:"success,required"`
+	Success AccountCloudforceOneScanConfigNewResponseSuccess `json:"success" api:"required"`
 	Result  ScanConfig                                       `json:"result"`
 	JSON    accountCloudforceOneScanConfigNewResponseJSON    `json:"-"`
 }
@@ -217,10 +217,10 @@ func (r AccountCloudforceOneScanConfigNewResponseSuccess) IsKnown() bool {
 }
 
 type AccountCloudforceOneScanConfigUpdateResponse struct {
-	Errors   []MessagesPortScanItems `json:"errors,required"`
-	Messages []MessagesPortScanItems `json:"messages,required"`
+	Errors   []MessagesPortScanItems `json:"errors" api:"required"`
+	Messages []MessagesPortScanItems `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountCloudforceOneScanConfigUpdateResponseSuccess `json:"success,required"`
+	Success AccountCloudforceOneScanConfigUpdateResponseSuccess `json:"success" api:"required"`
 	Result  ScanConfig                                          `json:"result"`
 	JSON    accountCloudforceOneScanConfigUpdateResponseJSON    `json:"-"`
 }
@@ -260,10 +260,10 @@ func (r AccountCloudforceOneScanConfigUpdateResponseSuccess) IsKnown() bool {
 }
 
 type AccountCloudforceOneScanConfigListResponse struct {
-	Errors   []MessagesPortScanItems `json:"errors,required"`
-	Messages []MessagesPortScanItems `json:"messages,required"`
+	Errors   []MessagesPortScanItems `json:"errors" api:"required"`
+	Messages []MessagesPortScanItems `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountCloudforceOneScanConfigListResponseSuccess `json:"success,required"`
+	Success AccountCloudforceOneScanConfigListResponseSuccess `json:"success" api:"required"`
 	Result  []ScanConfig                                      `json:"result"`
 	JSON    accountCloudforceOneScanConfigListResponseJSON    `json:"-"`
 }
@@ -303,10 +303,10 @@ func (r AccountCloudforceOneScanConfigListResponseSuccess) IsKnown() bool {
 }
 
 type AccountCloudforceOneScanConfigDeleteResponse struct {
-	Errors   []string                                         `json:"errors,required"`
-	Messages []string                                         `json:"messages,required"`
-	Result   interface{}                                      `json:"result,required"`
-	Success  bool                                             `json:"success,required"`
+	Errors   []string                                         `json:"errors" api:"required"`
+	Messages []string                                         `json:"messages" api:"required"`
+	Result   interface{}                                      `json:"result" api:"required"`
+	Success  bool                                             `json:"success" api:"required"`
 	JSON     accountCloudforceOneScanConfigDeleteResponseJSON `json:"-"`
 }
 
@@ -332,7 +332,7 @@ func (r accountCloudforceOneScanConfigDeleteResponseJSON) RawJSON() string {
 type AccountCloudforceOneScanConfigNewParams struct {
 	// Defines a list of IP addresses or CIDR blocks to scan. The maximum number of
 	// total IP addresses allowed is 5000.
-	IPs param.Field[[]string] `json:"ips,required"`
+	IPs param.Field[[]string] `json:"ips" api:"required"`
 	// Defines the number of days between each scan (0 = One-off scan).
 	Frequency param.Field[float64] `json:"frequency"`
 	// Defines a list of ports to scan. Valid values are:"default", "all", or a

@@ -14,7 +14,7 @@ import (
 )
 
 func TestAccountTeamnetRouteNetworkNewWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,6 +26,7 @@ func TestAccountTeamnetRouteNetworkNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Teamnet.Routes.Network.New(
 		context.TODO(),
@@ -47,7 +48,7 @@ func TestAccountTeamnetRouteNetworkNewWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountTeamnetRouteNetworkUpdate(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -59,6 +60,7 @@ func TestAccountTeamnetRouteNetworkUpdate(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Teamnet.Routes.Network.Update(
 		context.TODO(),
@@ -75,7 +77,7 @@ func TestAccountTeamnetRouteNetworkUpdate(t *testing.T) {
 }
 
 func TestAccountTeamnetRouteNetworkDeleteWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -87,6 +89,7 @@ func TestAccountTeamnetRouteNetworkDeleteWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Teamnet.Routes.Network.Delete(
 		context.TODO(),

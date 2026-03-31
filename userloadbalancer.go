@@ -41,9 +41,9 @@ func (r *UserLoadBalancerService) PreviewResult(ctx context.Context, previewID s
 	opts = slices.Concat(r.Options, opts)
 	if previewID == "" {
 		err = errors.New("missing required preview_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("user/load_balancers/preview/%s", previewID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }

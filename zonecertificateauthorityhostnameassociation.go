@@ -42,11 +42,11 @@ func (r *ZoneCertificateAuthorityHostnameAssociationService) List(ctx context.Co
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/certificate_authorities/hostname_associations", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Replace Hostname Associations
@@ -54,18 +54,18 @@ func (r *ZoneCertificateAuthorityHostnameAssociationService) Replace(ctx context
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/certificate_authorities/hostname_associations", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type HostnameAssociationsResponse struct {
-	Errors   []MessagesTlsCertificatesItem `json:"errors,required"`
-	Messages []MessagesTlsCertificatesItem `json:"messages,required"`
+	Errors   []MessagesTlsCertificatesItem `json:"errors" api:"required"`
+	Messages []MessagesTlsCertificatesItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success HostnameAssociationsResponseSuccess `json:"success,required"`
+	Success HostnameAssociationsResponseSuccess `json:"success" api:"required"`
 	Result  HostnameAssociationsResponseResult  `json:"result"`
 	JSON    hostnameAssociationsResponseJSON    `json:"-"`
 }

@@ -47,11 +47,11 @@ func (r *AccountStorageKvNamespaceService) New(ctx context.Context, accountID st
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/storage/kv/namespaces", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get the namespace corresponding to the given ID.
@@ -59,15 +59,15 @@ func (r *AccountStorageKvNamespaceService) Get(ctx context.Context, accountID st
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if namespaceID == "" {
 		err = errors.New("missing required namespace_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/storage/kv/namespaces/%s", accountID, namespaceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Modifies a namespace's title.
@@ -75,15 +75,15 @@ func (r *AccountStorageKvNamespaceService) Update(ctx context.Context, accountID
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if namespaceID == "" {
 		err = errors.New("missing required namespace_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/storage/kv/namespaces/%s", accountID, namespaceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns the namespaces owned by an account.
@@ -91,11 +91,11 @@ func (r *AccountStorageKvNamespaceService) List(ctx context.Context, accountID s
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/storage/kv/namespaces", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Deletes the namespace corresponding to the given ID.
@@ -103,15 +103,15 @@ func (r *AccountStorageKvNamespaceService) Delete(ctx context.Context, accountID
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if namespaceID == "" {
 		err = errors.New("missing required namespace_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/storage/kv/namespaces/%s", accountID, namespaceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns the metadata associated with the given key in the given namespace. Use
@@ -121,19 +121,19 @@ func (r *AccountStorageKvNamespaceService) GetMetadata(ctx context.Context, acco
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if namespaceID == "" {
 		err = errors.New("missing required namespace_id parameter")
-		return
+		return nil, err
 	}
 	if keyName == "" {
 		err = errors.New("missing required key_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/storage/kv/namespaces/%s/metadata/%s", accountID, namespaceID, keyName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists a namespace's keys.
@@ -141,23 +141,23 @@ func (r *AccountStorageKvNamespaceService) ListKeys(ctx context.Context, account
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if namespaceID == "" {
 		err = errors.New("missing required namespace_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/storage/kv/namespaces/%s/keys", accountID, namespaceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type APIResponseCommonNoResult struct {
-	Errors   []APIResponseCommonNoResultError   `json:"errors,required"`
-	Messages []APIResponseCommonNoResultMessage `json:"messages,required"`
+	Errors   []APIResponseCommonNoResultError   `json:"errors" api:"required"`
+	Messages []APIResponseCommonNoResultMessage `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success APIResponseCommonNoResultSuccess `json:"success,required"`
-	Result  APIResponseCommonNoResultResult  `json:"result,nullable"`
+	Success APIResponseCommonNoResultSuccess `json:"success" api:"required"`
+	Result  APIResponseCommonNoResultResult  `json:"result" api:"nullable"`
 	JSON    apiResponseCommonNoResultJSON    `json:"-"`
 }
 
@@ -181,8 +181,8 @@ func (r apiResponseCommonNoResultJSON) RawJSON() string {
 }
 
 type APIResponseCommonNoResultError struct {
-	Code             int64                                 `json:"code,required"`
-	Message          string                                `json:"message,required"`
+	Code             int64                                 `json:"code" api:"required"`
+	Message          string                                `json:"message" api:"required"`
 	DocumentationURL string                                `json:"documentation_url"`
 	Source           APIResponseCommonNoResultErrorsSource `json:"source"`
 	JSON             apiResponseCommonNoResultErrorJSON    `json:"-"`
@@ -229,8 +229,8 @@ func (r apiResponseCommonNoResultErrorsSourceJSON) RawJSON() string {
 }
 
 type APIResponseCommonNoResultMessage struct {
-	Code             int64                                   `json:"code,required"`
-	Message          string                                  `json:"message,required"`
+	Code             int64                                   `json:"code" api:"required"`
+	Message          string                                  `json:"message" api:"required"`
 	DocumentationURL string                                  `json:"documentation_url"`
 	Source           APIResponseCommonNoResultMessagesSource `json:"source"`
 	JSON             apiResponseCommonNoResultMessageJSON    `json:"-"`
@@ -312,7 +312,7 @@ func (r apiResponseCommonNoResultResultJSON) RawJSON() string {
 
 type CreateRenameNamespaceBodyParam struct {
 	// A human-readable string name for a Namespace.
-	Title param.Field[string] `json:"title,required"`
+	Title param.Field[string] `json:"title" api:"required"`
 }
 
 func (r CreateRenameNamespaceBodyParam) MarshalJSON() (data []byte, err error) {
@@ -320,8 +320,8 @@ func (r CreateRenameNamespaceBodyParam) MarshalJSON() (data []byte, err error) {
 }
 
 type MessagesWorkersKvItem struct {
-	Code             int64                       `json:"code,required"`
-	Message          string                      `json:"message,required"`
+	Code             int64                       `json:"code" api:"required"`
+	Message          string                      `json:"message" api:"required"`
 	DocumentationURL string                      `json:"documentation_url"`
 	Source           MessagesWorkersKvItemSource `json:"source"`
 	JSON             messagesWorkersKvItemJSON   `json:"-"`
@@ -369,9 +369,9 @@ func (r messagesWorkersKvItemSourceJSON) RawJSON() string {
 
 type Namespace struct {
 	// Namespace identifier tag.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// A human-readable string name for a Namespace.
-	Title string `json:"title,required"`
+	Title string `json:"title" api:"required"`
 	// True if new beta namespace, with additional preview features.
 	Beta bool `json:"beta"`
 	// True if keys written on the URL will be URL-decoded before storing. For example,
@@ -399,10 +399,10 @@ func (r namespaceJSON) RawJSON() string {
 }
 
 type AccountStorageKvNamespaceNewResponse struct {
-	Errors   []MessagesWorkersKvItem `json:"errors,required"`
-	Messages []MessagesWorkersKvItem `json:"messages,required"`
+	Errors   []MessagesWorkersKvItem `json:"errors" api:"required"`
+	Messages []MessagesWorkersKvItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountStorageKvNamespaceNewResponseSuccess `json:"success,required"`
+	Success AccountStorageKvNamespaceNewResponseSuccess `json:"success" api:"required"`
 	Result  Namespace                                   `json:"result"`
 	JSON    accountStorageKvNamespaceNewResponseJSON    `json:"-"`
 }
@@ -442,10 +442,10 @@ func (r AccountStorageKvNamespaceNewResponseSuccess) IsKnown() bool {
 }
 
 type AccountStorageKvNamespaceGetResponse struct {
-	Errors   []MessagesWorkersKvItem `json:"errors,required"`
-	Messages []MessagesWorkersKvItem `json:"messages,required"`
+	Errors   []MessagesWorkersKvItem `json:"errors" api:"required"`
+	Messages []MessagesWorkersKvItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountStorageKvNamespaceGetResponseSuccess `json:"success,required"`
+	Success AccountStorageKvNamespaceGetResponseSuccess `json:"success" api:"required"`
 	Result  Namespace                                   `json:"result"`
 	JSON    accountStorageKvNamespaceGetResponseJSON    `json:"-"`
 }
@@ -485,11 +485,11 @@ func (r AccountStorageKvNamespaceGetResponseSuccess) IsKnown() bool {
 }
 
 type AccountStorageKvNamespaceUpdateResponse struct {
-	Errors   []MessagesWorkersKvItem `json:"errors,required"`
-	Messages []MessagesWorkersKvItem `json:"messages,required"`
-	Result   Namespace               `json:"result,required"`
+	Errors   []MessagesWorkersKvItem `json:"errors" api:"required"`
+	Messages []MessagesWorkersKvItem `json:"messages" api:"required"`
+	Result   Namespace               `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success AccountStorageKvNamespaceUpdateResponseSuccess `json:"success,required"`
+	Success AccountStorageKvNamespaceUpdateResponseSuccess `json:"success" api:"required"`
 	JSON    accountStorageKvNamespaceUpdateResponseJSON    `json:"-"`
 }
 
@@ -528,10 +528,10 @@ func (r AccountStorageKvNamespaceUpdateResponseSuccess) IsKnown() bool {
 }
 
 type AccountStorageKvNamespaceListResponse struct {
-	Errors   []MessagesWorkersKvItem `json:"errors,required"`
-	Messages []MessagesWorkersKvItem `json:"messages,required"`
+	Errors   []MessagesWorkersKvItem `json:"errors" api:"required"`
+	Messages []MessagesWorkersKvItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success    AccountStorageKvNamespaceListResponseSuccess    `json:"success,required"`
+	Success    AccountStorageKvNamespaceListResponseSuccess    `json:"success" api:"required"`
 	Result     []Namespace                                     `json:"result"`
 	ResultInfo AccountStorageKvNamespaceListResponseResultInfo `json:"result_info"`
 	JSON       accountStorageKvNamespaceListResponseJSON       `json:"-"`
@@ -604,10 +604,10 @@ func (r accountStorageKvNamespaceListResponseResultInfoJSON) RawJSON() string {
 }
 
 type AccountStorageKvNamespaceGetMetadataResponse struct {
-	Errors   []MessagesWorkersKvItem `json:"errors,required"`
-	Messages []MessagesWorkersKvItem `json:"messages,required"`
+	Errors   []MessagesWorkersKvItem `json:"errors" api:"required"`
+	Messages []MessagesWorkersKvItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountStorageKvNamespaceGetMetadataResponseSuccess `json:"success,required"`
+	Success AccountStorageKvNamespaceGetMetadataResponseSuccess `json:"success" api:"required"`
 	Result  interface{}                                         `json:"result"`
 	JSON    accountStorageKvNamespaceGetMetadataResponseJSON    `json:"-"`
 }
@@ -647,10 +647,10 @@ func (r AccountStorageKvNamespaceGetMetadataResponseSuccess) IsKnown() bool {
 }
 
 type AccountStorageKvNamespaceListKeysResponse struct {
-	Errors   []MessagesWorkersKvItem `json:"errors,required"`
-	Messages []MessagesWorkersKvItem `json:"messages,required"`
+	Errors   []MessagesWorkersKvItem `json:"errors" api:"required"`
+	Messages []MessagesWorkersKvItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success    AccountStorageKvNamespaceListKeysResponseSuccess    `json:"success,required"`
+	Success    AccountStorageKvNamespaceListKeysResponseSuccess    `json:"success" api:"required"`
 	Result     []AccountStorageKvNamespaceListKeysResponseResult   `json:"result"`
 	ResultInfo AccountStorageKvNamespaceListKeysResponseResultInfo `json:"result_info"`
 	JSON       accountStorageKvNamespaceListKeysResponseJSON       `json:"-"`
@@ -696,7 +696,7 @@ func (r AccountStorageKvNamespaceListKeysResponseSuccess) IsKnown() bool {
 type AccountStorageKvNamespaceListKeysResponseResult struct {
 	// A key's name. The name may be at most 512 bytes. All printable, non-whitespace
 	// characters are valid. Use percent-encoding to define key names as part of a URL.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// The time, measured in number of seconds since the UNIX epoch, at which the key
 	// will expire. This property is omitted for keys that will not expire.
 	Expiration float64                                             `json:"expiration"`
@@ -751,7 +751,7 @@ func (r accountStorageKvNamespaceListKeysResponseResultInfoJSON) RawJSON() strin
 }
 
 type AccountStorageKvNamespaceNewParams struct {
-	CreateRenameNamespaceBody CreateRenameNamespaceBodyParam `json:"create_rename_namespace_body,required"`
+	CreateRenameNamespaceBody CreateRenameNamespaceBodyParam `json:"create_rename_namespace_body" api:"required"`
 }
 
 func (r AccountStorageKvNamespaceNewParams) MarshalJSON() (data []byte, err error) {
@@ -759,7 +759,7 @@ func (r AccountStorageKvNamespaceNewParams) MarshalJSON() (data []byte, err erro
 }
 
 type AccountStorageKvNamespaceUpdateParams struct {
-	CreateRenameNamespaceBody CreateRenameNamespaceBodyParam `json:"create_rename_namespace_body,required"`
+	CreateRenameNamespaceBody CreateRenameNamespaceBodyParam `json:"create_rename_namespace_body" api:"required"`
 }
 
 func (r AccountStorageKvNamespaceUpdateParams) MarshalJSON() (data []byte, err error) {

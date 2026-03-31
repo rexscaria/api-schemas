@@ -41,11 +41,11 @@ func (r *ZoneClientCertificateService) New(ctx context.Context, zoneID string, b
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/client_certificates", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get Details for a single mTLS API Shield Client Certificate
@@ -53,15 +53,15 @@ func (r *ZoneClientCertificateService) Get(ctx context.Context, zoneID string, c
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if clientCertificateID == "" {
 		err = errors.New("missing required client_certificate_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/client_certificates/%s", zoneID, clientCertificateID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // List all of your Zone's API Shield mTLS Client Certificates by Status and/or
@@ -70,11 +70,11 @@ func (r *ZoneClientCertificateService) List(ctx context.Context, zoneID string, 
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/client_certificates", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // If a API Shield mTLS Client Certificate is in a pending_revocation state, you
@@ -83,15 +83,15 @@ func (r *ZoneClientCertificateService) Reactivate(ctx context.Context, zoneID st
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if clientCertificateID == "" {
 		err = errors.New("missing required client_certificate_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/client_certificates/%s", zoneID, clientCertificateID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Set a API Shield mTLS Client Certificate to pending_revocation status for
@@ -100,15 +100,15 @@ func (r *ZoneClientCertificateService) Revoke(ctx context.Context, zoneID string
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if clientCertificateID == "" {
 		err = errors.New("missing required client_certificate_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/client_certificates/%s", zoneID, clientCertificateID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type ClientCertificate struct {
@@ -229,10 +229,10 @@ func (r ClientCertificateStatus) IsKnown() bool {
 }
 
 type ClientCertificateResponseSingle struct {
-	Errors   []MessagesTlsCertificatesItem `json:"errors,required"`
-	Messages []MessagesTlsCertificatesItem `json:"messages,required"`
+	Errors   []MessagesTlsCertificatesItem `json:"errors" api:"required"`
+	Messages []MessagesTlsCertificatesItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success ClientCertificateResponseSingleSuccess `json:"success,required"`
+	Success ClientCertificateResponseSingleSuccess `json:"success" api:"required"`
 	Result  ClientCertificate                      `json:"result"`
 	JSON    clientCertificateResponseSingleJSON    `json:"-"`
 }
@@ -272,10 +272,10 @@ func (r ClientCertificateResponseSingleSuccess) IsKnown() bool {
 }
 
 type ZoneClientCertificateListResponse struct {
-	Errors   []MessagesTlsCertificatesItem `json:"errors,required"`
-	Messages []MessagesTlsCertificatesItem `json:"messages,required"`
+	Errors   []MessagesTlsCertificatesItem `json:"errors" api:"required"`
+	Messages []MessagesTlsCertificatesItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success    ZoneClientCertificateListResponseSuccess    `json:"success,required"`
+	Success    ZoneClientCertificateListResponseSuccess    `json:"success" api:"required"`
 	Result     []ClientCertificate                         `json:"result"`
 	ResultInfo ZoneClientCertificateListResponseResultInfo `json:"result_info"`
 	JSON       zoneClientCertificateListResponseJSON       `json:"-"`
@@ -349,9 +349,9 @@ func (r zoneClientCertificateListResponseResultInfoJSON) RawJSON() string {
 
 type ZoneClientCertificateNewParams struct {
 	// The Certificate Signing Request (CSR). Must be newline-encoded.
-	Csr param.Field[string] `json:"csr,required"`
+	Csr param.Field[string] `json:"csr" api:"required"`
 	// The number of days the Client Certificate will be valid after the issued_on date
-	ValidityDays param.Field[int64] `json:"validity_days,required"`
+	ValidityDays param.Field[int64] `json:"validity_days" api:"required"`
 }
 
 func (r ZoneClientCertificateNewParams) MarshalJSON() (data []byte, err error) {

@@ -27,8 +27,8 @@ func NewAccountDeviceDexTestService(opts ...option.RequestOption) (r *AccountDev
 }
 
 type MessagesDeviceTestsItems struct {
-	Code             int64                          `json:"code,required"`
-	Message          string                         `json:"message,required"`
+	Code             int64                          `json:"code" api:"required"`
+	Message          string                         `json:"message" api:"required"`
 	DocumentationURL string                         `json:"documentation_url"`
 	Source           MessagesDeviceTestsItemsSource `json:"source"`
 	JSON             messagesDeviceTestsItemsJSON   `json:"-"`

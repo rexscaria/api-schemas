@@ -39,18 +39,18 @@ func (r *ZoneDcvDelegationService) Get(ctx context.Context, zoneID string, opts 
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/dcv_delegation/uuid", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type ZoneDcvDelegationGetResponse struct {
-	Errors   []MessagesTlsCertificatesItem `json:"errors,required"`
-	Messages []MessagesTlsCertificatesItem `json:"messages,required"`
+	Errors   []MessagesTlsCertificatesItem `json:"errors" api:"required"`
+	Messages []MessagesTlsCertificatesItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success ZoneDcvDelegationGetResponseSuccess `json:"success,required"`
+	Success ZoneDcvDelegationGetResponseSuccess `json:"success" api:"required"`
 	Result  ZoneDcvDelegationGetResponseResult  `json:"result"`
 	JSON    zoneDcvDelegationGetResponseJSON    `json:"-"`
 }

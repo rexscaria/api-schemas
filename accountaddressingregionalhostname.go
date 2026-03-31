@@ -38,18 +38,18 @@ func (r *AccountAddressingRegionalHostnameService) List(ctx context.Context, acc
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/addressing/regional_hostnames/regions", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountAddressingRegionalHostnameListResponse struct {
-	Errors   []MessagesDlsItem `json:"errors,required"`
-	Messages []MessagesDlsItem `json:"messages,required"`
+	Errors   []MessagesDlsItem `json:"errors" api:"required"`
+	Messages []MessagesDlsItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success    AccountAddressingRegionalHostnameListResponseSuccess    `json:"success,required"`
+	Success    AccountAddressingRegionalHostnameListResponseSuccess    `json:"success" api:"required"`
 	Result     []AccountAddressingRegionalHostnameListResponseResult   `json:"result"`
 	ResultInfo AccountAddressingRegionalHostnameListResponseResultInfo `json:"result_info"`
 	JSON       accountAddressingRegionalHostnameListResponseJSON       `json:"-"`

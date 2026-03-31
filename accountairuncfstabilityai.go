@@ -41,18 +41,18 @@ func (r *AccountAIRunCfStabilityaiService) ExecuteStableDiffusionXlBase1_0(ctx c
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai/run/@cf/stabilityai/stable-diffusion-xl-base-1.0", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountAIRunCfStabilityaiExecuteStableDiffusionXlBase1_0Response = interface{}
 
 type AccountAIRunCfStabilityaiExecuteStableDiffusionXlBase1_0Params struct {
 	// A text description of the image you want to generate
-	Prompt       param.Field[string] `json:"prompt,required"`
+	Prompt       param.Field[string] `json:"prompt" api:"required"`
 	QueueRequest param.Field[string] `query:"queueRequest"`
 	// Controls how closely the generated image should adhere to the prompt; higher
 	// values make the image more aligned with the prompt

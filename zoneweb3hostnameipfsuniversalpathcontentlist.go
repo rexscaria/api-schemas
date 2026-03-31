@@ -42,15 +42,15 @@ func (r *ZoneWeb3HostnameIpfsUniversalPathContentListService) Get(ctx context.Co
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if identifier == "" {
 		err = errors.New("missing required identifier parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/web3/hostnames/%s/ipfs_universal_path/content_list", zoneID, identifier)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update IPFS Universal Path Gateway Content List
@@ -58,15 +58,15 @@ func (r *ZoneWeb3HostnameIpfsUniversalPathContentListService) Update(ctx context
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if identifier == "" {
 		err = errors.New("missing required identifier parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/web3/hostnames/%s/ipfs_universal_path/content_list", zoneID, identifier)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Behavior of the content list.
@@ -85,11 +85,11 @@ func (r ActionBehavior) IsKnown() bool {
 }
 
 type DetailsResponse struct {
-	Errors   []DetailsResponseError   `json:"errors,required"`
-	Messages []DetailsResponseMessage `json:"messages,required"`
-	Result   DetailsResponseResult    `json:"result,required"`
+	Errors   []DetailsResponseError   `json:"errors" api:"required"`
+	Messages []DetailsResponseMessage `json:"messages" api:"required"`
+	Result   DetailsResponseResult    `json:"result" api:"required"`
 	// Specifies whether the API call was successful.
-	Success DetailsResponseSuccess `json:"success,required"`
+	Success DetailsResponseSuccess `json:"success" api:"required"`
 	// Provides the API response.
 	ResultInfo interface{}         `json:"result_info"`
 	JSON       detailsResponseJSON `json:"-"`
@@ -115,8 +115,8 @@ func (r detailsResponseJSON) RawJSON() string {
 }
 
 type DetailsResponseError struct {
-	Code             int64                       `json:"code,required"`
-	Message          string                      `json:"message,required"`
+	Code             int64                       `json:"code" api:"required"`
+	Message          string                      `json:"message" api:"required"`
 	DocumentationURL string                      `json:"documentation_url"`
 	Source           DetailsResponseErrorsSource `json:"source"`
 	JSON             detailsResponseErrorJSON    `json:"-"`
@@ -163,8 +163,8 @@ func (r detailsResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type DetailsResponseMessage struct {
-	Code             int64                         `json:"code,required"`
-	Message          string                        `json:"message,required"`
+	Code             int64                         `json:"code" api:"required"`
+	Message          string                        `json:"message" api:"required"`
 	DocumentationURL string                        `json:"documentation_url"`
 	Source           DetailsResponseMessagesSource `json:"source"`
 	JSON             detailsResponseMessageJSON    `json:"-"`
@@ -249,9 +249,9 @@ func (r DetailsResponseSuccess) IsKnown() bool {
 
 type ZoneWeb3HostnameIpfsUniversalPathContentListUpdateParams struct {
 	// Behavior of the content list.
-	Action param.Field[ActionBehavior] `json:"action,required"`
+	Action param.Field[ActionBehavior] `json:"action" api:"required"`
 	// Provides content list entries.
-	Entries param.Field[[]ContentListEntryParam] `json:"entries,required"`
+	Entries param.Field[[]ContentListEntryParam] `json:"entries" api:"required"`
 }
 
 func (r ZoneWeb3HostnameIpfsUniversalPathContentListUpdateParams) MarshalJSON() (data []byte, err error) {

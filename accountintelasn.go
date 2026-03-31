@@ -38,11 +38,11 @@ func (r *AccountIntelAsnService) ListSubnets(ctx context.Context, accountID stri
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/intel/asn/%v/subnets", accountID, asn)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Gets an overview of the Autonomous System Number (ASN) and a list of subnets for
@@ -51,11 +51,11 @@ func (r *AccountIntelAsnService) GetOverview(ctx context.Context, accountID stri
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/intel/asn/%v", accountID, asn)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountIntelAsnListSubnetsResponse struct {
@@ -93,10 +93,10 @@ func (r accountIntelAsnListSubnetsResponseJSON) RawJSON() string {
 }
 
 type AccountIntelAsnGetOverviewResponse struct {
-	Errors   []AccountIntelAsnGetOverviewResponseError   `json:"errors,required"`
-	Messages []AccountIntelAsnGetOverviewResponseMessage `json:"messages,required"`
+	Errors   []AccountIntelAsnGetOverviewResponseError   `json:"errors" api:"required"`
+	Messages []AccountIntelAsnGetOverviewResponseMessage `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountIntelAsnGetOverviewResponseSuccess `json:"success,required"`
+	Success AccountIntelAsnGetOverviewResponseSuccess `json:"success" api:"required"`
 	Result  int64                                     `json:"result"`
 	JSON    accountIntelAsnGetOverviewResponseJSON    `json:"-"`
 }
@@ -121,8 +121,8 @@ func (r accountIntelAsnGetOverviewResponseJSON) RawJSON() string {
 }
 
 type AccountIntelAsnGetOverviewResponseError struct {
-	Code             int64                                          `json:"code,required"`
-	Message          string                                         `json:"message,required"`
+	Code             int64                                          `json:"code" api:"required"`
+	Message          string                                         `json:"message" api:"required"`
 	DocumentationURL string                                         `json:"documentation_url"`
 	Source           AccountIntelAsnGetOverviewResponseErrorsSource `json:"source"`
 	JSON             accountIntelAsnGetOverviewResponseErrorJSON    `json:"-"`
@@ -169,8 +169,8 @@ func (r accountIntelAsnGetOverviewResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type AccountIntelAsnGetOverviewResponseMessage struct {
-	Code             int64                                            `json:"code,required"`
-	Message          string                                           `json:"message,required"`
+	Code             int64                                            `json:"code" api:"required"`
+	Message          string                                           `json:"message" api:"required"`
 	DocumentationURL string                                           `json:"documentation_url"`
 	Source           AccountIntelAsnGetOverviewResponseMessagesSource `json:"source"`
 	JSON             accountIntelAsnGetOverviewResponseMessageJSON    `json:"-"`

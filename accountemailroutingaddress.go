@@ -43,11 +43,11 @@ func (r *AccountEmailRoutingAddressService) New(ctx context.Context, accountID s
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/email/routing/addresses", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Gets information for a specific destination email already created.
@@ -55,15 +55,15 @@ func (r *AccountEmailRoutingAddressService) Get(ctx context.Context, accountID s
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if destinationAddressIdentifier == "" {
 		err = errors.New("missing required destination_address_identifier parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/email/routing/addresses/%s", accountID, destinationAddressIdentifier)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists existing destination addresses.
@@ -71,11 +71,11 @@ func (r *AccountEmailRoutingAddressService) List(ctx context.Context, accountID 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/email/routing/addresses", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Deletes a specific destination address.
@@ -83,22 +83,22 @@ func (r *AccountEmailRoutingAddressService) Delete(ctx context.Context, accountI
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if destinationAddressIdentifier == "" {
 		err = errors.New("missing required destination_address_identifier parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/email/routing/addresses/%s", accountID, destinationAddressIdentifier)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type DestinationAddressResponseSingle struct {
-	Errors   []EmailMessagesItem `json:"errors,required"`
-	Messages []EmailMessagesItem `json:"messages,required"`
+	Errors   []EmailMessagesItem `json:"errors" api:"required"`
+	Messages []EmailMessagesItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success DestinationAddressResponseSingleSuccess `json:"success,required"`
+	Success DestinationAddressResponseSingleSuccess `json:"success" api:"required"`
 	Result  EmailAddress                            `json:"result"`
 	JSON    destinationAddressResponseSingleJSON    `json:"-"`
 }
@@ -178,10 +178,10 @@ func (r emailAddressJSON) RawJSON() string {
 }
 
 type AccountEmailRoutingAddressListResponse struct {
-	Errors   []EmailMessagesItem `json:"errors,required"`
-	Messages []EmailMessagesItem `json:"messages,required"`
+	Errors   []EmailMessagesItem `json:"errors" api:"required"`
+	Messages []EmailMessagesItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success    AccountEmailRoutingAddressListResponseSuccess    `json:"success,required"`
+	Success    AccountEmailRoutingAddressListResponseSuccess    `json:"success" api:"required"`
 	Result     []EmailAddress                                   `json:"result"`
 	ResultInfo AccountEmailRoutingAddressListResponseResultInfo `json:"result_info"`
 	JSON       accountEmailRoutingAddressListResponseJSON       `json:"-"`
@@ -255,7 +255,7 @@ func (r accountEmailRoutingAddressListResponseResultInfoJSON) RawJSON() string {
 
 type AccountEmailRoutingAddressNewParams struct {
 	// The contact email address of the user.
-	Email param.Field[string] `json:"email,required"`
+	Email param.Field[string] `json:"email" api:"required"`
 }
 
 func (r AccountEmailRoutingAddressNewParams) MarshalJSON() (data []byte, err error) {

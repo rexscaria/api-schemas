@@ -39,11 +39,11 @@ func (r *AccountMnmConfigService) New(ctx context.Context, accountID string, bod
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/mnm/config", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Update an existing network monitoring configuration, requires the entire
@@ -52,11 +52,11 @@ func (r *AccountMnmConfigService) Update(ctx context.Context, accountID string, 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/mnm/config", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists default sampling, router IPs and warp devices for account.
@@ -64,11 +64,11 @@ func (r *AccountMnmConfigService) List(ctx context.Context, accountID string, op
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/mnm/config", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete an existing network monitoring configuration.
@@ -76,11 +76,11 @@ func (r *AccountMnmConfigService) Delete(ctx context.Context, accountID string, 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/mnm/config", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists default sampling, router IPs, warp devices, and rules for account.
@@ -88,11 +88,11 @@ func (r *AccountMnmConfigService) ListFull(ctx context.Context, accountID string
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/mnm/config/full", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update fields in an existing network monitoring configuration.
@@ -100,19 +100,19 @@ func (r *AccountMnmConfigService) UpdateFields(ctx context.Context, accountID st
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/mnm/config", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type ConfigSingleResponse struct {
-	Errors   []MessagesMagicVisibilityMnmItem `json:"errors,required"`
-	Messages []MessagesMagicVisibilityMnmItem `json:"messages,required"`
-	Result   ConfigSingleResponseResult       `json:"result,required"`
+	Errors   []MessagesMagicVisibilityMnmItem `json:"errors" api:"required"`
+	Messages []MessagesMagicVisibilityMnmItem `json:"messages" api:"required"`
+	Result   ConfigSingleResponseResult       `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success ConfigSingleResponseSuccess `json:"success,required"`
+	Success ConfigSingleResponseSuccess `json:"success" api:"required"`
 	JSON    configSingleResponseJSON    `json:"-"`
 }
 
@@ -138,11 +138,11 @@ func (r configSingleResponseJSON) RawJSON() string {
 type ConfigSingleResponseResult struct {
 	// Fallback sampling rate of flow messages being sent in packets per second. This
 	// should match the packet sampling rate configured on the router.
-	DefaultSampling float64 `json:"default_sampling,required"`
+	DefaultSampling float64 `json:"default_sampling" api:"required"`
 	// The account name.
-	Name        string                         `json:"name,required"`
-	RouterIPs   []string                       `json:"router_ips,required"`
-	WarpDevices []WarpDevice                   `json:"warp_devices,required"`
+	Name        string                         `json:"name" api:"required"`
+	RouterIPs   []string                       `json:"router_ips" api:"required"`
+	WarpDevices []WarpDevice                   `json:"warp_devices" api:"required"`
 	JSON        configSingleResponseResultJSON `json:"-"`
 }
 
@@ -181,8 +181,8 @@ func (r ConfigSingleResponseSuccess) IsKnown() bool {
 }
 
 type MessagesMagicVisibilityMnmItem struct {
-	Code             int64                                `json:"code,required"`
-	Message          string                               `json:"message,required"`
+	Code             int64                                `json:"code" api:"required"`
+	Message          string                               `json:"message" api:"required"`
 	DocumentationURL string                               `json:"documentation_url"`
 	Source           MessagesMagicVisibilityMnmItemSource `json:"source"`
 	JSON             messagesMagicVisibilityMnmItemJSON   `json:"-"`
@@ -231,12 +231,12 @@ func (r messagesMagicVisibilityMnmItemSourceJSON) RawJSON() string {
 // Object representing a warp device with an ID and name.
 type WarpDevice struct {
 	// Unique identifier for the warp device.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Name of the warp device.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// IPv4 CIDR of the router sourcing flow data associated with this warp device.
 	// Only /32 addresses are currently supported.
-	RouterIP string         `json:"router_ip,required"`
+	RouterIP string         `json:"router_ip" api:"required"`
 	JSON     warpDeviceJSON `json:"-"`
 }
 
@@ -260,12 +260,12 @@ func (r warpDeviceJSON) RawJSON() string {
 // Object representing a warp device with an ID and name.
 type WarpDeviceParam struct {
 	// Unique identifier for the warp device.
-	ID param.Field[string] `json:"id,required"`
+	ID param.Field[string] `json:"id" api:"required"`
 	// Name of the warp device.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// IPv4 CIDR of the router sourcing flow data associated with this warp device.
 	// Only /32 addresses are currently supported.
-	RouterIP param.Field[string] `json:"router_ip,required"`
+	RouterIP param.Field[string] `json:"router_ip" api:"required"`
 }
 
 func (r WarpDeviceParam) MarshalJSON() (data []byte, err error) {
@@ -275,9 +275,9 @@ func (r WarpDeviceParam) MarshalJSON() (data []byte, err error) {
 type AccountMnmConfigNewParams struct {
 	// Fallback sampling rate of flow messages being sent in packets per second. This
 	// should match the packet sampling rate configured on the router.
-	DefaultSampling param.Field[float64] `json:"default_sampling,required"`
+	DefaultSampling param.Field[float64] `json:"default_sampling" api:"required"`
 	// The account name.
-	Name        param.Field[string]            `json:"name,required"`
+	Name        param.Field[string]            `json:"name" api:"required"`
 	RouterIPs   param.Field[[]string]          `json:"router_ips"`
 	WarpDevices param.Field[[]WarpDeviceParam] `json:"warp_devices"`
 }
@@ -289,9 +289,9 @@ func (r AccountMnmConfigNewParams) MarshalJSON() (data []byte, err error) {
 type AccountMnmConfigUpdateParams struct {
 	// Fallback sampling rate of flow messages being sent in packets per second. This
 	// should match the packet sampling rate configured on the router.
-	DefaultSampling param.Field[float64] `json:"default_sampling,required"`
+	DefaultSampling param.Field[float64] `json:"default_sampling" api:"required"`
 	// The account name.
-	Name        param.Field[string]            `json:"name,required"`
+	Name        param.Field[string]            `json:"name" api:"required"`
 	RouterIPs   param.Field[[]string]          `json:"router_ips"`
 	WarpDevices param.Field[[]WarpDeviceParam] `json:"warp_devices"`
 }

@@ -41,11 +41,11 @@ func (r *AccountRuleListService) New(ctx context.Context, accountID string, body
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/rules/lists", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetches the details of a list.
@@ -53,15 +53,15 @@ func (r *AccountRuleListService) Get(ctx context.Context, accountID string, list
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if listID == "" {
 		err = errors.New("missing required list_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/rules/lists/%s", accountID, listID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates the description of a list.
@@ -69,15 +69,15 @@ func (r *AccountRuleListService) Update(ctx context.Context, accountID string, l
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if listID == "" {
 		err = errors.New("missing required list_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/rules/lists/%s", accountID, listID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetches all lists in the account.
@@ -85,11 +85,11 @@ func (r *AccountRuleListService) List(ctx context.Context, accountID string, opt
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/rules/lists", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Deletes a specific list and all its items.
@@ -97,15 +97,15 @@ func (r *AccountRuleListService) Delete(ctx context.Context, accountID string, l
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if listID == "" {
 		err = errors.New("missing required list_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/rules/lists/%s", accountID, listID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // The type of the list. Each type supports specific list items (IP addresses,
@@ -128,11 +128,11 @@ func (r ListKind) IsKnown() bool {
 }
 
 type ListResponseCollection struct {
-	Errors   []ListResponseCollectionError   `json:"errors,required"`
-	Messages []ListResponseCollectionMessage `json:"messages,required"`
-	Result   ListResponseCollectionResult    `json:"result,required"`
+	Errors   []ListResponseCollectionError   `json:"errors" api:"required"`
+	Messages []ListResponseCollectionMessage `json:"messages" api:"required"`
+	Result   ListResponseCollectionResult    `json:"result" api:"required"`
 	// Defines whether the API call was successful.
-	Success ListResponseCollectionSuccess `json:"success,required"`
+	Success ListResponseCollectionSuccess `json:"success" api:"required"`
 	JSON    listResponseCollectionJSON    `json:"-"`
 }
 
@@ -156,8 +156,8 @@ func (r listResponseCollectionJSON) RawJSON() string {
 }
 
 type ListResponseCollectionError struct {
-	Code             int64                              `json:"code,required"`
-	Message          string                             `json:"message,required"`
+	Code             int64                              `json:"code" api:"required"`
+	Message          string                             `json:"message" api:"required"`
 	DocumentationURL string                             `json:"documentation_url"`
 	Source           ListResponseCollectionErrorsSource `json:"source"`
 	JSON             listResponseCollectionErrorJSON    `json:"-"`
@@ -204,8 +204,8 @@ func (r listResponseCollectionErrorsSourceJSON) RawJSON() string {
 }
 
 type ListResponseCollectionMessage struct {
-	Code             int64                                `json:"code,required"`
-	Message          string                               `json:"message,required"`
+	Code             int64                                `json:"code" api:"required"`
+	Message          string                               `json:"message" api:"required"`
 	DocumentationURL string                               `json:"documentation_url"`
 	Source           ListResponseCollectionMessagesSource `json:"source"`
 	JSON             listResponseCollectionMessageJSON    `json:"-"`
@@ -253,20 +253,20 @@ func (r listResponseCollectionMessagesSourceJSON) RawJSON() string {
 
 type ListResponseCollectionResult struct {
 	// The unique ID of the list.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The RFC 3339 timestamp of when the list was created.
-	CreatedOn string `json:"created_on,required"`
+	CreatedOn string `json:"created_on" api:"required"`
 	// The type of the list. Each type supports specific list items (IP addresses,
 	// ASNs, hostnames or redirects).
-	Kind ListKind `json:"kind,required"`
+	Kind ListKind `json:"kind" api:"required"`
 	// The RFC 3339 timestamp of when the list was last modified.
-	ModifiedOn string `json:"modified_on,required"`
+	ModifiedOn string `json:"modified_on" api:"required"`
 	// An informative name for the list. Use this name in filter and rule expressions.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// The number of items in the list.
-	NumItems float64 `json:"num_items,required"`
+	NumItems float64 `json:"num_items" api:"required"`
 	// The number of [filters](/api/resources/filters/) referencing the list.
-	NumReferencingFilters float64 `json:"num_referencing_filters,required"`
+	NumReferencingFilters float64 `json:"num_referencing_filters" api:"required"`
 	// An informative summary of the list.
 	Description string                           `json:"description"`
 	JSON        listResponseCollectionResultJSON `json:"-"`
@@ -312,20 +312,20 @@ func (r ListResponseCollectionSuccess) IsKnown() bool {
 
 type ListRules struct {
 	// The unique ID of the list.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The RFC 3339 timestamp of when the list was created.
-	CreatedOn string `json:"created_on,required"`
+	CreatedOn string `json:"created_on" api:"required"`
 	// The type of the list. Each type supports specific list items (IP addresses,
 	// ASNs, hostnames or redirects).
-	Kind ListKind `json:"kind,required"`
+	Kind ListKind `json:"kind" api:"required"`
 	// The RFC 3339 timestamp of when the list was last modified.
-	ModifiedOn string `json:"modified_on,required"`
+	ModifiedOn string `json:"modified_on" api:"required"`
 	// An informative name for the list. Use this name in filter and rule expressions.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// The number of items in the list.
-	NumItems float64 `json:"num_items,required"`
+	NumItems float64 `json:"num_items" api:"required"`
 	// The number of [filters](/api/resources/filters/) referencing the list.
-	NumReferencingFilters float64 `json:"num_referencing_filters,required"`
+	NumReferencingFilters float64 `json:"num_referencing_filters" api:"required"`
 	// An informative summary of the list.
 	Description string        `json:"description"`
 	JSON        listRulesJSON `json:"-"`
@@ -354,11 +354,11 @@ func (r listRulesJSON) RawJSON() string {
 }
 
 type AccountRuleListListResponse struct {
-	Errors   []AccountRuleListListResponseError   `json:"errors,required"`
-	Messages []AccountRuleListListResponseMessage `json:"messages,required"`
-	Result   []ListRules                          `json:"result,required"`
+	Errors   []AccountRuleListListResponseError   `json:"errors" api:"required"`
+	Messages []AccountRuleListListResponseMessage `json:"messages" api:"required"`
+	Result   []ListRules                          `json:"result" api:"required"`
 	// Defines whether the API call was successful.
-	Success AccountRuleListListResponseSuccess `json:"success,required"`
+	Success AccountRuleListListResponseSuccess `json:"success" api:"required"`
 	JSON    accountRuleListListResponseJSON    `json:"-"`
 }
 
@@ -382,8 +382,8 @@ func (r accountRuleListListResponseJSON) RawJSON() string {
 }
 
 type AccountRuleListListResponseError struct {
-	Code             int64                                   `json:"code,required"`
-	Message          string                                  `json:"message,required"`
+	Code             int64                                   `json:"code" api:"required"`
+	Message          string                                  `json:"message" api:"required"`
 	DocumentationURL string                                  `json:"documentation_url"`
 	Source           AccountRuleListListResponseErrorsSource `json:"source"`
 	JSON             accountRuleListListResponseErrorJSON    `json:"-"`
@@ -430,8 +430,8 @@ func (r accountRuleListListResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type AccountRuleListListResponseMessage struct {
-	Code             int64                                     `json:"code,required"`
-	Message          string                                    `json:"message,required"`
+	Code             int64                                     `json:"code" api:"required"`
+	Message          string                                    `json:"message" api:"required"`
 	DocumentationURL string                                    `json:"documentation_url"`
 	Source           AccountRuleListListResponseMessagesSource `json:"source"`
 	JSON             accountRuleListListResponseMessageJSON    `json:"-"`
@@ -493,11 +493,11 @@ func (r AccountRuleListListResponseSuccess) IsKnown() bool {
 }
 
 type AccountRuleListDeleteResponse struct {
-	Errors   []AccountRuleListDeleteResponseError   `json:"errors,required"`
-	Messages []AccountRuleListDeleteResponseMessage `json:"messages,required"`
-	Result   AccountRuleListDeleteResponseResult    `json:"result,required"`
+	Errors   []AccountRuleListDeleteResponseError   `json:"errors" api:"required"`
+	Messages []AccountRuleListDeleteResponseMessage `json:"messages" api:"required"`
+	Result   AccountRuleListDeleteResponseResult    `json:"result" api:"required"`
 	// Defines whether the API call was successful.
-	Success AccountRuleListDeleteResponseSuccess `json:"success,required"`
+	Success AccountRuleListDeleteResponseSuccess `json:"success" api:"required"`
 	JSON    accountRuleListDeleteResponseJSON    `json:"-"`
 }
 
@@ -521,8 +521,8 @@ func (r accountRuleListDeleteResponseJSON) RawJSON() string {
 }
 
 type AccountRuleListDeleteResponseError struct {
-	Code             int64                                     `json:"code,required"`
-	Message          string                                    `json:"message,required"`
+	Code             int64                                     `json:"code" api:"required"`
+	Message          string                                    `json:"message" api:"required"`
 	DocumentationURL string                                    `json:"documentation_url"`
 	Source           AccountRuleListDeleteResponseErrorsSource `json:"source"`
 	JSON             accountRuleListDeleteResponseErrorJSON    `json:"-"`
@@ -569,8 +569,8 @@ func (r accountRuleListDeleteResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type AccountRuleListDeleteResponseMessage struct {
-	Code             int64                                       `json:"code,required"`
-	Message          string                                      `json:"message,required"`
+	Code             int64                                       `json:"code" api:"required"`
+	Message          string                                      `json:"message" api:"required"`
 	DocumentationURL string                                      `json:"documentation_url"`
 	Source           AccountRuleListDeleteResponseMessagesSource `json:"source"`
 	JSON             accountRuleListDeleteResponseMessageJSON    `json:"-"`
@@ -618,7 +618,7 @@ func (r accountRuleListDeleteResponseMessagesSourceJSON) RawJSON() string {
 
 type AccountRuleListDeleteResponseResult struct {
 	// The unique ID of the list.
-	ID   string                                  `json:"id,required"`
+	ID   string                                  `json:"id" api:"required"`
 	JSON accountRuleListDeleteResponseResultJSON `json:"-"`
 }
 
@@ -656,9 +656,9 @@ func (r AccountRuleListDeleteResponseSuccess) IsKnown() bool {
 type AccountRuleListNewParams struct {
 	// The type of the list. Each type supports specific list items (IP addresses,
 	// ASNs, hostnames or redirects).
-	Kind param.Field[ListKind] `json:"kind,required"`
+	Kind param.Field[ListKind] `json:"kind" api:"required"`
 	// An informative name for the list. Use this name in filter and rule expressions.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// An informative summary of the list.
 	Description param.Field[string] `json:"description"`
 }

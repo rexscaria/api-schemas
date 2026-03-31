@@ -40,11 +40,11 @@ func (r *ZoneContentUploadScanService) Disable(ctx context.Context, zoneID strin
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/content-upload-scan/disable", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Enable Content Scanning.
@@ -52,11 +52,11 @@ func (r *ZoneContentUploadScanService) Enable(ctx context.Context, zoneID string
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/content-upload-scan/enable", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve the current status of Content Scanning.
@@ -64,19 +64,19 @@ func (r *ZoneContentUploadScanService) GetStatus(ctx context.Context, zoneID str
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/content-upload-scan/settings", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type APIResponseCommon struct {
-	Errors   []WafProductAPIBundleMessages `json:"errors,required"`
-	Messages []WafProductAPIBundleMessages `json:"messages,required"`
-	Result   interface{}                   `json:"result,required"`
+	Errors   []WafProductAPIBundleMessages `json:"errors" api:"required"`
+	Messages []WafProductAPIBundleMessages `json:"messages" api:"required"`
+	Result   interface{}                   `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success APIResponseCommonSuccess `json:"success,required"`
+	Success APIResponseCommonSuccess `json:"success" api:"required"`
 	JSON    apiResponseCommonJSON    `json:"-"`
 }
 
@@ -115,8 +115,8 @@ func (r APIResponseCommonSuccess) IsKnown() bool {
 }
 
 type WafProductAPIBundleMessages struct {
-	Code             int64                             `json:"code,required"`
-	Message          string                            `json:"message,required"`
+	Code             int64                             `json:"code" api:"required"`
+	Message          string                            `json:"message" api:"required"`
 	DocumentationURL string                            `json:"documentation_url"`
 	Source           WafProductAPIBundleMessagesSource `json:"source"`
 	JSON             wafProductAPIBundleMessagesJSON   `json:"-"`
@@ -163,12 +163,12 @@ func (r wafProductAPIBundleMessagesSourceJSON) RawJSON() string {
 }
 
 type ZoneContentUploadScanGetStatusResponse struct {
-	Errors   []WafProductAPIBundleMessages `json:"errors,required"`
-	Messages []WafProductAPIBundleMessages `json:"messages,required"`
+	Errors   []WafProductAPIBundleMessages `json:"errors" api:"required"`
+	Messages []WafProductAPIBundleMessages `json:"messages" api:"required"`
 	// Defines the status for Content Scanning.
-	Result ZoneContentUploadScanGetStatusResponseResult `json:"result,required"`
+	Result ZoneContentUploadScanGetStatusResponseResult `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success ZoneContentUploadScanGetStatusResponseSuccess `json:"success,required"`
+	Success ZoneContentUploadScanGetStatusResponseSuccess `json:"success" api:"required"`
 	JSON    zoneContentUploadScanGetStatusResponseJSON    `json:"-"`
 }
 

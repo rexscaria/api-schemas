@@ -43,15 +43,15 @@ func (r *AccountAccessIdentityProviderScimService) ListGroups(ctx context.Contex
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if identityProviderID == "" {
 		err = errors.New("missing required identity_provider_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/access/identity_providers/%s/scim/groups", accountID, identityProviderID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists SCIM User resources synced to Cloudflare via the System for Cross-domain
@@ -60,15 +60,15 @@ func (r *AccountAccessIdentityProviderScimService) ListUsers(ctx context.Context
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if identityProviderID == "" {
 		err = errors.New("missing required identity_provider_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/access/identity_providers/%s/scim/users", accountID, identityProviderID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // The metadata of the SCIM resource.
@@ -97,10 +97,10 @@ func (r metaJSON) RawJSON() string {
 }
 
 type AccountAccessIdentityProviderScimListGroupsResponse struct {
-	Errors   []MessagesAccessItem `json:"errors,required"`
-	Messages []MessagesAccessItem `json:"messages,required"`
+	Errors   []MessagesAccessItem `json:"errors" api:"required"`
+	Messages []MessagesAccessItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success    AccountAccessIdentityProviderScimListGroupsResponseSuccess    `json:"success,required"`
+	Success    AccountAccessIdentityProviderScimListGroupsResponseSuccess    `json:"success" api:"required"`
 	Result     []AccountAccessIdentityProviderScimListGroupsResponseResult   `json:"result"`
 	ResultInfo AccountAccessIdentityProviderScimListGroupsResponseResultInfo `json:"result_info"`
 	JSON       accountAccessIdentityProviderScimListGroupsResponseJSON       `json:"-"`
@@ -209,10 +209,10 @@ func (r accountAccessIdentityProviderScimListGroupsResponseResultInfoJSON) RawJS
 }
 
 type AccountAccessIdentityProviderScimListUsersResponse struct {
-	Errors   []MessagesAccessItem `json:"errors,required"`
-	Messages []MessagesAccessItem `json:"messages,required"`
+	Errors   []MessagesAccessItem `json:"errors" api:"required"`
+	Messages []MessagesAccessItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success    AccountAccessIdentityProviderScimListUsersResponseSuccess    `json:"success,required"`
+	Success    AccountAccessIdentityProviderScimListUsersResponseSuccess    `json:"success" api:"required"`
 	Result     []AccountAccessIdentityProviderScimListUsersResponseResult   `json:"result"`
 	ResultInfo AccountAccessIdentityProviderScimListUsersResponseResultInfo `json:"result_info"`
 	JSON       accountAccessIdentityProviderScimListUsersResponseJSON       `json:"-"`

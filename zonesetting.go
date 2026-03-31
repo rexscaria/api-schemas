@@ -61,11 +61,11 @@ func (r *ZoneSettingService) Get(ctx context.Context, zoneID string, opts ...opt
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/settings", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Edit settings for a zone.
@@ -76,11 +76,11 @@ func (r *ZoneSettingService) Update(ctx context.Context, zoneID string, body Zon
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/settings", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetch a single zone setting by name
@@ -88,15 +88,15 @@ func (r *ZoneSettingService) GetSetting(ctx context.Context, zoneID string, sett
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if settingID == "" {
 		err = errors.New("missing required setting_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/settings/%s", zoneID, settingID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates a single zone setting by the identifier
@@ -104,28 +104,28 @@ func (r *ZoneSettingService) UpdateSetting(ctx context.Context, zoneID string, s
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if settingID == "" {
 		err = errors.New("missing required setting_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/settings/%s", zoneID, settingID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // 0-RTT session resumption enabled for this zone.
 type Zones0rtt struct {
 	// ID of the zone setting.
-	ID Zones0rttID `json:"id,required"`
+	ID Zones0rttID `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value Zones0rttValue `json:"value,required"`
+	Value Zones0rttValue `json:"value" api:"required"`
 	// Whether or not this setting can be modified for this zone (based on your
 	// Cloudflare plan level).
 	Editable Zones0rttEditable `json:"editable"`
 	// last time this setting was modified.
-	ModifiedOn time.Time     `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time     `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zones0rttJSON `json:"-"`
 }
 
@@ -202,9 +202,9 @@ func (r Zones0rttEditable) IsKnown() bool {
 // 0-RTT session resumption enabled for this zone.
 type Zones0rttParam struct {
 	// ID of the zone setting.
-	ID param.Field[Zones0rttID] `json:"id,required"`
+	ID param.Field[Zones0rttID] `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value param.Field[Zones0rttValue] `json:"value,required"`
+	Value param.Field[Zones0rttValue] `json:"value" api:"required"`
 }
 
 func (r Zones0rttParam) MarshalJSON() (data []byte, err error) {
@@ -218,14 +218,14 @@ func (r Zones0rttParam) implementsZoneSettingUpdateParamsBodyUnion() {}
 // Enterprise zones.
 type ZonesAdvancedDdos struct {
 	// ID of the zone setting.
-	ID ZonesAdvancedDdosID `json:"id,required"`
+	ID ZonesAdvancedDdosID `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value ZonesAdvancedDdosValue `json:"value,required"`
+	Value ZonesAdvancedDdosValue `json:"value" api:"required"`
 	// Whether or not this setting can be modified for this zone (based on your
 	// Cloudflare plan level).
 	Editable ZonesAdvancedDdosEditable `json:"editable"`
 	// last time this setting was modified.
-	ModifiedOn time.Time             `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time             `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zonesAdvancedDdosJSON `json:"-"`
 }
 
@@ -305,9 +305,9 @@ func (r ZonesAdvancedDdosEditable) IsKnown() bool {
 // Enterprise zones.
 type ZonesAdvancedDdosParam struct {
 	// ID of the zone setting.
-	ID param.Field[ZonesAdvancedDdosID] `json:"id,required"`
+	ID param.Field[ZonesAdvancedDdosID] `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value param.Field[ZonesAdvancedDdosValue] `json:"value,required"`
+	Value param.Field[ZonesAdvancedDdosValue] `json:"value" api:"required"`
 }
 
 func (r ZonesAdvancedDdosParam) MarshalJSON() (data []byte, err error) {
@@ -323,14 +323,14 @@ func (r ZonesAdvancedDdosParam) implementsZoneSettingUpdateParamsBodyUnion() {}
 // more information.
 type ZonesAlwaysOnline struct {
 	// ID of the zone setting.
-	ID ZonesAlwaysOnlineID `json:"id,required"`
+	ID ZonesAlwaysOnlineID `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value ZonesAlwaysOnlineValue `json:"value,required"`
+	Value ZonesAlwaysOnlineValue `json:"value" api:"required"`
 	// Whether or not this setting can be modified for this zone (based on your
 	// Cloudflare plan level).
 	Editable ZonesAlwaysOnlineEditable `json:"editable"`
 	// last time this setting was modified.
-	ModifiedOn time.Time             `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time             `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zonesAlwaysOnlineJSON `json:"-"`
 }
 
@@ -412,9 +412,9 @@ func (r ZonesAlwaysOnlineEditable) IsKnown() bool {
 // more information.
 type ZonesAlwaysOnlineParam struct {
 	// ID of the zone setting.
-	ID param.Field[ZonesAlwaysOnlineID] `json:"id,required"`
+	ID param.Field[ZonesAlwaysOnlineID] `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value param.Field[ZonesAlwaysOnlineValue] `json:"value,required"`
+	Value param.Field[ZonesAlwaysOnlineValue] `json:"value" api:"required"`
 }
 
 func (r ZonesAlwaysOnlineParam) MarshalJSON() (data []byte, err error) {
@@ -427,14 +427,14 @@ func (r ZonesAlwaysOnlineParam) implementsZoneSettingUpdateParamsBodyUnion() {}
 // Cloudflare will serve a Brotli compressed version of the asset.
 type ZonesBrotli struct {
 	// ID of the zone setting.
-	ID ZonesBrotliID `json:"id,required"`
+	ID ZonesBrotliID `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value ZonesBrotliValue `json:"value,required"`
+	Value ZonesBrotliValue `json:"value" api:"required"`
 	// Whether or not this setting can be modified for this zone (based on your
 	// Cloudflare plan level).
 	Editable ZonesBrotliEditable `json:"editable"`
 	// last time this setting was modified.
-	ModifiedOn time.Time       `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time       `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zonesBrotliJSON `json:"-"`
 }
 
@@ -512,9 +512,9 @@ func (r ZonesBrotliEditable) IsKnown() bool {
 // Cloudflare will serve a Brotli compressed version of the asset.
 type ZonesBrotliParam struct {
 	// ID of the zone setting.
-	ID param.Field[ZonesBrotliID] `json:"id,required"`
+	ID param.Field[ZonesBrotliID] `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value param.Field[ZonesBrotliValue] `json:"value,required"`
+	Value param.Field[ZonesBrotliValue] `json:"value" api:"required"`
 }
 
 func (r ZonesBrotliParam) MarshalJSON() (data []byte, err error) {
@@ -529,9 +529,9 @@ func (r ZonesBrotliParam) implementsZoneSettingUpdateParamsBodyUnion() {}
 // from a small list of IP addresses.
 type ZonesCacheRulesAegis struct {
 	// ID of the zone setting.
-	ID ZonesCacheRulesAegisID `json:"id,required"`
+	ID ZonesCacheRulesAegisID `json:"id" api:"required"`
 	// Last time this setting was modified.
-	ModifiedOn time.Time `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time `json:"modified_on" api:"nullable" format:"date-time"`
 	// Value of the zone setting.
 	Value ZonesCacheRulesAegisValue `json:"value"`
 	JSON  zonesCacheRulesAegisJSON  `json:"-"`
@@ -607,7 +607,7 @@ func (r zonesCacheRulesAegisValueJSON) RawJSON() string {
 // from a small list of IP addresses.
 type ZonesCacheRulesAegisParam struct {
 	// ID of the zone setting.
-	ID param.Field[ZonesCacheRulesAegisID] `json:"id,required"`
+	ID param.Field[ZonesCacheRulesAegisID] `json:"id" api:"required"`
 	// Value of the zone setting.
 	Value param.Field[ZonesCacheRulesAegisValueParam] `json:"value"`
 }
@@ -639,9 +639,9 @@ func (r ZonesCacheRulesAegisValueParam) MarshalJSON() (data []byte, err error) {
 // it is `1`. `1` means that H2 multiplexing is disabled.
 type ZonesCacheRulesOriginH2MaxStreams struct {
 	// Value of the zone setting.
-	ID ZonesCacheRulesOriginH2MaxStreamsID `json:"id,required"`
+	ID ZonesCacheRulesOriginH2MaxStreamsID `json:"id" api:"required"`
 	// Last time this setting was modified.
-	ModifiedOn time.Time `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time `json:"modified_on" api:"nullable" format:"date-time"`
 	// Value of the Origin H2 Max Streams Setting.
 	Value int64                                 `json:"value"`
 	JSON  zonesCacheRulesOriginH2MaxStreamsJSON `json:"-"`
@@ -692,7 +692,7 @@ func (r ZonesCacheRulesOriginH2MaxStreamsID) IsKnown() bool {
 // it is `1`. `1` means that H2 multiplexing is disabled.
 type ZonesCacheRulesOriginH2MaxStreamsParam struct {
 	// Value of the zone setting.
-	ID param.Field[ZonesCacheRulesOriginH2MaxStreamsID] `json:"id,required"`
+	ID param.Field[ZonesCacheRulesOriginH2MaxStreamsID] `json:"id" api:"required"`
 	// Value of the Origin H2 Max Streams Setting.
 	Value param.Field[int64] `json:"value"`
 }
@@ -711,9 +711,9 @@ func (r ZonesCacheRulesOriginH2MaxStreamsParam) implementsZoneSettingUpdateParam
 // Enterprise where it is "1"
 type ZonesCacheRulesOriginMaxHTTPVersion struct {
 	// Value of the zone setting.
-	ID ZonesCacheRulesOriginMaxHTTPVersionID `json:"id,required"`
+	ID ZonesCacheRulesOriginMaxHTTPVersionID `json:"id" api:"required"`
 	// Last time this setting was modified.
-	ModifiedOn time.Time `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time `json:"modified_on" api:"nullable" format:"date-time"`
 	// Value of the Origin Max HTTP Version Setting.
 	Value ZonesCacheRulesOriginMaxHTTPVersionValue `json:"value"`
 	JSON  zonesCacheRulesOriginMaxHTTPVersionJSON  `json:"-"`
@@ -780,7 +780,7 @@ func (r ZonesCacheRulesOriginMaxHTTPVersionValue) IsKnown() bool {
 // Enterprise where it is "1"
 type ZonesCacheRulesOriginMaxHTTPVersionParam struct {
 	// Value of the zone setting.
-	ID param.Field[ZonesCacheRulesOriginMaxHTTPVersionID] `json:"id,required"`
+	ID param.Field[ZonesCacheRulesOriginMaxHTTPVersionID] `json:"id" api:"required"`
 	// Value of the Origin Max HTTP Version Setting.
 	Value param.Field[ZonesCacheRulesOriginMaxHTTPVersionValue] `json:"value"`
 }
@@ -798,14 +798,14 @@ func (r ZonesCacheRulesOriginMaxHTTPVersionParam) implementsZoneSettingUpdatePar
 // (https://support.cloudflare.com/hc/en-us/articles/200170136).
 type ZonesChallengeTtl struct {
 	// ID of the zone setting.
-	ID ZonesChallengeTtlID `json:"id,required"`
+	ID ZonesChallengeTtlID `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value ZonesChallengeTtlValue `json:"value,required"`
+	Value ZonesChallengeTtlValue `json:"value" api:"required"`
 	// Whether or not this setting can be modified for this zone (based on your
 	// Cloudflare plan level).
 	Editable ZonesChallengeTtlEditable `json:"editable"`
 	// last time this setting was modified.
-	ModifiedOn time.Time             `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time             `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zonesChallengeTtlJSON `json:"-"`
 }
 
@@ -899,9 +899,9 @@ func (r ZonesChallengeTtlEditable) IsKnown() bool {
 // (https://support.cloudflare.com/hc/en-us/articles/200170136).
 type ZonesChallengeTtlParam struct {
 	// ID of the zone setting.
-	ID param.Field[ZonesChallengeTtlID] `json:"id,required"`
+	ID param.Field[ZonesChallengeTtlID] `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value param.Field[ZonesChallengeTtlValue] `json:"value,required"`
+	Value param.Field[ZonesChallengeTtlValue] `json:"value" api:"required"`
 }
 
 func (r ZonesChallengeTtlParam) MarshalJSON() (data []byte, err error) {
@@ -914,14 +914,14 @@ func (r ZonesChallengeTtlParam) implementsZoneSettingUpdateParamsBodyUnion() {}
 // BoringSSL format.
 type ZonesCiphers struct {
 	// ID of the zone setting.
-	ID ZonesCiphersID `json:"id,required"`
+	ID ZonesCiphersID `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value []string `json:"value,required"`
+	Value []string `json:"value" api:"required"`
 	// Whether or not this setting can be modified for this zone (based on your
 	// Cloudflare plan level).
 	Editable ZonesCiphersEditable `json:"editable"`
 	// last time this setting was modified.
-	ModifiedOn time.Time        `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time        `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zonesCiphersJSON `json:"-"`
 }
 
@@ -983,9 +983,9 @@ func (r ZonesCiphersEditable) IsKnown() bool {
 // BoringSSL format.
 type ZonesCiphersParam struct {
 	// ID of the zone setting.
-	ID param.Field[ZonesCiphersID] `json:"id,required"`
+	ID param.Field[ZonesCiphersID] `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value param.Field[[]string] `json:"value,required"`
+	Value param.Field[[]string] `json:"value" api:"required"`
 }
 
 func (r ZonesCiphersParam) MarshalJSON() (data []byte, err error) {
@@ -1001,18 +1001,18 @@ func (r ZonesCiphersParam) implementsZoneSettingUpdateParamsBodyUnion() {}
 // https://developers.cloudflare.com/fundamentals/api/reference/deprecations/#2025-03-21
 type ZonesCnameFlattening struct {
 	// How to flatten the cname destination.
-	ID ZonesCnameFlatteningID `json:"id,required"`
+	ID ZonesCnameFlatteningID `json:"id" api:"required"`
 	// Current value of the zone setting.
 	//
 	// Deprecated: This zone setting is deprecated; please use the DNS Settings route
 	// instead. More information at
 	// https://developers.cloudflare.com/fundamentals/api/reference/deprecations/#2025-03-21
-	Value ZonesCnameFlatteningValue `json:"value,required"`
+	Value ZonesCnameFlatteningValue `json:"value" api:"required"`
 	// Whether or not this setting can be modified for this zone (based on your
 	// Cloudflare plan level).
 	Editable ZonesCnameFlatteningEditable `json:"editable"`
 	// last time this setting was modified.
-	ModifiedOn time.Time                `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time                `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zonesCnameFlatteningJSON `json:"-"`
 }
 
@@ -1094,13 +1094,13 @@ func (r ZonesCnameFlatteningEditable) IsKnown() bool {
 // https://developers.cloudflare.com/fundamentals/api/reference/deprecations/#2025-03-21
 type ZonesCnameFlatteningParam struct {
 	// How to flatten the cname destination.
-	ID param.Field[ZonesCnameFlatteningID] `json:"id,required"`
+	ID param.Field[ZonesCnameFlatteningID] `json:"id" api:"required"`
 	// Current value of the zone setting.
 	//
 	// Deprecated: This zone setting is deprecated; please use the DNS Settings route
 	// instead. More information at
 	// https://developers.cloudflare.com/fundamentals/api/reference/deprecations/#2025-03-21
-	Value param.Field[ZonesCnameFlatteningValue] `json:"value,required"`
+	Value param.Field[ZonesCnameFlatteningValue] `json:"value" api:"required"`
 }
 
 func (r ZonesCnameFlatteningParam) MarshalJSON() (data []byte, err error) {
@@ -1117,14 +1117,14 @@ func (r ZonesCnameFlatteningParam) implementsZoneSettingUpdateParamsBodyUnion() 
 // hours and then automatically toggle off.
 type ZonesDevelopmentMode struct {
 	// ID of the zone setting.
-	ID ZonesDevelopmentModeID `json:"id,required"`
+	ID ZonesDevelopmentModeID `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value ZonesDevelopmentModeValue `json:"value,required"`
+	Value ZonesDevelopmentModeValue `json:"value" api:"required"`
 	// Whether or not this setting can be modified for this zone (based on your
 	// Cloudflare plan level).
 	Editable ZonesDevelopmentModeEditable `json:"editable"`
 	// last time this setting was modified.
-	ModifiedOn time.Time `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time `json:"modified_on" api:"nullable" format:"date-time"`
 	// Value of the zone setting. Notes: The interval (in seconds) from when
 	// development mode expires (positive integer) or last expired (negative integer)
 	// for the domain. If development mode has never been enabled, this value is false.
@@ -1212,9 +1212,9 @@ func (r ZonesDevelopmentModeEditable) IsKnown() bool {
 // hours and then automatically toggle off.
 type ZonesDevelopmentModeParam struct {
 	// ID of the zone setting.
-	ID param.Field[ZonesDevelopmentModeID] `json:"id,required"`
+	ID param.Field[ZonesDevelopmentModeID] `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value param.Field[ZonesDevelopmentModeValue] `json:"value,required"`
+	Value param.Field[ZonesDevelopmentModeValue] `json:"value" api:"required"`
 }
 
 func (r ZonesDevelopmentModeParam) MarshalJSON() (data []byte, err error) {
@@ -1229,14 +1229,14 @@ func (r ZonesDevelopmentModeParam) implementsZoneSettingUpdateParamsBodyUnion() 
 // more information.
 type ZonesEarlyHints struct {
 	// ID of the zone setting.
-	ID ZonesEarlyHintsID `json:"id,required"`
+	ID ZonesEarlyHintsID `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value ZonesEarlyHintsValue `json:"value,required"`
+	Value ZonesEarlyHintsValue `json:"value" api:"required"`
 	// Whether or not this setting can be modified for this zone (based on your
 	// Cloudflare plan level).
 	Editable ZonesEarlyHintsEditable `json:"editable"`
 	// last time this setting was modified.
-	ModifiedOn time.Time           `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time           `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zonesEarlyHintsJSON `json:"-"`
 }
 
@@ -1316,9 +1316,9 @@ func (r ZonesEarlyHintsEditable) IsKnown() bool {
 // more information.
 type ZonesEarlyHintsParam struct {
 	// ID of the zone setting.
-	ID param.Field[ZonesEarlyHintsID] `json:"id,required"`
+	ID param.Field[ZonesEarlyHintsID] `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value param.Field[ZonesEarlyHintsValue] `json:"value,required"`
+	Value param.Field[ZonesEarlyHintsValue] `json:"value" api:"required"`
 }
 
 func (r ZonesEarlyHintsParam) MarshalJSON() (data []byte, err error) {
@@ -1332,14 +1332,14 @@ func (r ZonesEarlyHintsParam) implementsZoneSettingUpdateParamsBodyUnion() {}
 // content delivery when used in conjunction with Workers.
 type ZonesH2Prioritization struct {
 	// ID of the zone setting.
-	ID ZonesH2PrioritizationID `json:"id,required"`
+	ID ZonesH2PrioritizationID `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value ZonesH2PrioritizationValue `json:"value,required"`
+	Value ZonesH2PrioritizationValue `json:"value" api:"required"`
 	// Whether or not this setting can be modified for this zone (based on your
 	// Cloudflare plan level).
 	Editable ZonesH2PrioritizationEditable `json:"editable"`
 	// last time this setting was modified.
-	ModifiedOn time.Time                 `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time                 `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zonesH2PrioritizationJSON `json:"-"`
 }
 
@@ -1420,9 +1420,9 @@ func (r ZonesH2PrioritizationEditable) IsKnown() bool {
 // content delivery when used in conjunction with Workers.
 type ZonesH2PrioritizationParam struct {
 	// ID of the zone setting.
-	ID param.Field[ZonesH2PrioritizationID] `json:"id,required"`
+	ID param.Field[ZonesH2PrioritizationID] `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value param.Field[ZonesH2PrioritizationValue] `json:"value,required"`
+	Value param.Field[ZonesH2PrioritizationValue] `json:"value" api:"required"`
 }
 
 func (r ZonesH2PrioritizationParam) MarshalJSON() (data []byte, err error) {
@@ -1440,14 +1440,14 @@ func (r ZonesH2PrioritizationParam) implementsZoneSettingUpdateParamsBodyUnion()
 // (https://support.cloudflare.com/hc/en-us/articles/200170026).
 type ZonesHotlinkProtection struct {
 	// ID of the zone setting.
-	ID ZonesHotlinkProtectionID `json:"id,required"`
+	ID ZonesHotlinkProtectionID `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value ZonesHotlinkProtectionValue `json:"value,required"`
+	Value ZonesHotlinkProtectionValue `json:"value" api:"required"`
 	// Whether or not this setting can be modified for this zone (based on your
 	// Cloudflare plan level).
 	Editable ZonesHotlinkProtectionEditable `json:"editable"`
 	// last time this setting was modified.
-	ModifiedOn time.Time                  `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time                  `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zonesHotlinkProtectionJSON `json:"-"`
 }
 
@@ -1531,9 +1531,9 @@ func (r ZonesHotlinkProtectionEditable) IsKnown() bool {
 // (https://support.cloudflare.com/hc/en-us/articles/200170026).
 type ZonesHotlinkProtectionParam struct {
 	// ID of the zone setting.
-	ID param.Field[ZonesHotlinkProtectionID] `json:"id,required"`
+	ID param.Field[ZonesHotlinkProtectionID] `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value param.Field[ZonesHotlinkProtectionValue] `json:"value,required"`
+	Value param.Field[ZonesHotlinkProtectionValue] `json:"value" api:"required"`
 }
 
 func (r ZonesHotlinkProtectionParam) MarshalJSON() (data []byte, err error) {
@@ -1545,14 +1545,14 @@ func (r ZonesHotlinkProtectionParam) implementsZoneSettingUpdateParamsBodyUnion(
 // HTTP2 enabled for this zone.
 type ZonesHttp2 struct {
 	// ID of the zone setting.
-	ID ZonesHttp2ID `json:"id,required"`
+	ID ZonesHttp2ID `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value ZonesHttp2Value `json:"value,required"`
+	Value ZonesHttp2Value `json:"value" api:"required"`
 	// Whether or not this setting can be modified for this zone (based on your
 	// Cloudflare plan level).
 	Editable ZonesHttp2Editable `json:"editable"`
 	// last time this setting was modified.
-	ModifiedOn time.Time      `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time      `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zonesHttp2JSON `json:"-"`
 }
 
@@ -1629,9 +1629,9 @@ func (r ZonesHttp2Editable) IsKnown() bool {
 // HTTP2 enabled for this zone.
 type ZonesHttp2Param struct {
 	// ID of the zone setting.
-	ID param.Field[ZonesHttp2ID] `json:"id,required"`
+	ID param.Field[ZonesHttp2ID] `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value param.Field[ZonesHttp2Value] `json:"value,required"`
+	Value param.Field[ZonesHttp2Value] `json:"value" api:"required"`
 }
 
 func (r ZonesHttp2Param) MarshalJSON() (data []byte, err error) {
@@ -1643,14 +1643,14 @@ func (r ZonesHttp2Param) implementsZoneSettingUpdateParamsBodyUnion() {}
 // HTTP3 enabled for this zone.
 type ZonesHttp3 struct {
 	// ID of the zone setting.
-	ID ZonesHttp3ID `json:"id,required"`
+	ID ZonesHttp3ID `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value ZonesHttp3Value `json:"value,required"`
+	Value ZonesHttp3Value `json:"value" api:"required"`
 	// Whether or not this setting can be modified for this zone (based on your
 	// Cloudflare plan level).
 	Editable ZonesHttp3Editable `json:"editable"`
 	// last time this setting was modified.
-	ModifiedOn time.Time      `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time      `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zonesHttp3JSON `json:"-"`
 }
 
@@ -1727,9 +1727,9 @@ func (r ZonesHttp3Editable) IsKnown() bool {
 // HTTP3 enabled for this zone.
 type ZonesHttp3Param struct {
 	// ID of the zone setting.
-	ID param.Field[ZonesHttp3ID] `json:"id,required"`
+	ID param.Field[ZonesHttp3ID] `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value param.Field[ZonesHttp3Value] `json:"value,required"`
+	Value param.Field[ZonesHttp3Value] `json:"value" api:"required"`
 }
 
 func (r ZonesHttp3Param) MarshalJSON() (data []byte, err error) {
@@ -1744,14 +1744,14 @@ func (r ZonesHttp3Param) implementsZoneSettingUpdateParamsBodyUnion() {}
 // for more information.
 type ZonesImageResizing struct {
 	// ID of the zone setting.
-	ID ZonesImageResizingID `json:"id,required"`
+	ID ZonesImageResizingID `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value ZonesImageResizingValue `json:"value,required"`
+	Value ZonesImageResizingValue `json:"value" api:"required"`
 	// Whether or not this setting can be modified for this zone (based on your
 	// Cloudflare plan level).
 	Editable ZonesImageResizingEditable `json:"editable"`
 	// last time this setting was modified.
-	ModifiedOn time.Time              `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time              `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zonesImageResizingJSON `json:"-"`
 }
 
@@ -1831,14 +1831,14 @@ func (r ZonesImageResizingEditable) IsKnown() bool {
 // (https://support.cloudflare.com/hc/en-us/articles/200168586).
 type ZonesIpv6 struct {
 	// ID of the zone setting.
-	ID ZonesIpv6ID `json:"id,required"`
+	ID ZonesIpv6ID `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value ZonesIpv6Value `json:"value,required"`
+	Value ZonesIpv6Value `json:"value" api:"required"`
 	// Whether or not this setting can be modified for this zone (based on your
 	// Cloudflare plan level).
 	Editable ZonesIpv6Editable `json:"editable"`
 	// last time this setting was modified.
-	ModifiedOn time.Time     `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time     `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zonesIpv6JSON `json:"-"`
 }
 
@@ -1916,9 +1916,9 @@ func (r ZonesIpv6Editable) IsKnown() bool {
 // (https://support.cloudflare.com/hc/en-us/articles/200168586).
 type ZonesIpv6Param struct {
 	// ID of the zone setting.
-	ID param.Field[ZonesIpv6ID] `json:"id,required"`
+	ID param.Field[ZonesIpv6ID] `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value param.Field[ZonesIpv6Value] `json:"value,required"`
+	Value param.Field[ZonesIpv6Value] `json:"value" api:"required"`
 }
 
 func (r ZonesIpv6Param) MarshalJSON() (data []byte, err error) {
@@ -1930,14 +1930,14 @@ func (r ZonesIpv6Param) implementsZoneSettingUpdateParamsBodyUnion() {}
 // Maximum size of an allowable upload.
 type ZonesMaxUpload struct {
 	// identifier of the zone setting.
-	ID ZonesMaxUploadID `json:"id,required"`
+	ID ZonesMaxUploadID `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value ZonesMaxUploadValue `json:"value,required"`
+	Value ZonesMaxUploadValue `json:"value" api:"required"`
 	// Whether or not this setting can be modified for this zone (based on your
 	// Cloudflare plan level).
 	Editable ZonesMaxUploadEditable `json:"editable"`
 	// last time this setting was modified.
-	ModifiedOn time.Time          `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time          `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zonesMaxUploadJSON `json:"-"`
 }
 
@@ -2030,9 +2030,9 @@ func (r ZonesMaxUploadEditable) IsKnown() bool {
 // Maximum size of an allowable upload.
 type ZonesMaxUploadParam struct {
 	// identifier of the zone setting.
-	ID param.Field[ZonesMaxUploadID] `json:"id,required"`
+	ID param.Field[ZonesMaxUploadID] `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value param.Field[ZonesMaxUploadValue] `json:"value,required"`
+	Value param.Field[ZonesMaxUploadValue] `json:"value" api:"required"`
 }
 
 func (r ZonesMaxUploadParam) MarshalJSON() (data []byte, err error) {
@@ -2046,14 +2046,14 @@ func (r ZonesMaxUploadParam) implementsZoneSettingUpdateParamsBodyUnion() {}
 // rejected, while 1.1, 1.2, and 1.3 (if enabled) will be permitted.
 type ZonesMinTlsVersion struct {
 	// ID of the zone setting.
-	ID ZonesMinTlsVersionID `json:"id,required"`
+	ID ZonesMinTlsVersionID `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value ZonesMinTlsVersionValue `json:"value,required"`
+	Value ZonesMinTlsVersionValue `json:"value" api:"required"`
 	// Whether or not this setting can be modified for this zone (based on your
 	// Cloudflare plan level).
 	Editable ZonesMinTlsVersionEditable `json:"editable"`
 	// last time this setting was modified.
-	ModifiedOn time.Time              `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time              `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zonesMinTlsVersionJSON `json:"-"`
 }
 
@@ -2135,9 +2135,9 @@ func (r ZonesMinTlsVersionEditable) IsKnown() bool {
 // rejected, while 1.1, 1.2, and 1.3 (if enabled) will be permitted.
 type ZonesMinTlsVersionParam struct {
 	// ID of the zone setting.
-	ID param.Field[ZonesMinTlsVersionID] `json:"id,required"`
+	ID param.Field[ZonesMinTlsVersionID] `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value param.Field[ZonesMinTlsVersionValue] `json:"value,required"`
+	Value param.Field[ZonesMinTlsVersionValue] `json:"value" api:"required"`
 }
 
 func (r ZonesMinTlsVersionParam) MarshalJSON() (data []byte, err error) {
@@ -2149,14 +2149,14 @@ func (r ZonesMinTlsVersionParam) implementsZoneSettingUpdateParamsBodyUnion() {}
 // Enable Network Error Logging reporting on your zone. (Beta)
 type ZonesNel struct {
 	// Zone setting identifier.
-	ID ZonesNelID `json:"id,required"`
+	ID ZonesNelID `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value ZonesNelValue `json:"value,required"`
+	Value ZonesNelValue `json:"value" api:"required"`
 	// Whether or not this setting can be modified for this zone (based on your
 	// Cloudflare plan level).
 	Editable ZonesNelEditable `json:"editable"`
 	// last time this setting was modified.
-	ModifiedOn time.Time    `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time    `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zonesNelJSON `json:"-"`
 }
 
@@ -2238,9 +2238,9 @@ func (r ZonesNelEditable) IsKnown() bool {
 // Enable Network Error Logging reporting on your zone. (Beta)
 type ZonesNelParam struct {
 	// Zone setting identifier.
-	ID param.Field[ZonesNelID] `json:"id,required"`
+	ID param.Field[ZonesNelID] `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value param.Field[ZonesNelValueParam] `json:"value,required"`
+	Value param.Field[ZonesNelValueParam] `json:"value" api:"required"`
 }
 
 func (r ZonesNelParam) MarshalJSON() (data []byte, err error) {
@@ -2262,14 +2262,14 @@ func (r ZonesNelValueParam) MarshalJSON() (data []byte, err error) {
 // connection to use our onion services instead of exit nodes.
 type ZonesOpportunisticOnion struct {
 	// ID of the zone setting.
-	ID ZonesOpportunisticOnionID `json:"id,required"`
+	ID ZonesOpportunisticOnionID `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value ZonesOpportunisticOnionValue `json:"value,required"`
+	Value ZonesOpportunisticOnionValue `json:"value" api:"required"`
 	// Whether or not this setting can be modified for this zone (based on your
 	// Cloudflare plan level).
 	Editable ZonesOpportunisticOnionEditable `json:"editable"`
 	// last time this setting was modified.
-	ModifiedOn time.Time                   `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time                   `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zonesOpportunisticOnionJSON `json:"-"`
 }
 
@@ -2348,9 +2348,9 @@ func (r ZonesOpportunisticOnionEditable) IsKnown() bool {
 // connection to use our onion services instead of exit nodes.
 type ZonesOpportunisticOnionParam struct {
 	// ID of the zone setting.
-	ID param.Field[ZonesOpportunisticOnionID] `json:"id,required"`
+	ID param.Field[ZonesOpportunisticOnionID] `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value param.Field[ZonesOpportunisticOnionValue] `json:"value,required"`
+	Value param.Field[ZonesOpportunisticOnionValue] `json:"value" api:"required"`
 }
 
 func (r ZonesOpportunisticOnionParam) MarshalJSON() (data []byte, err error) {
@@ -2363,14 +2363,14 @@ func (r ZonesOpportunisticOnionParam) implementsZoneSettingUpdateParamsBodyUnion
 // on Cloudflare.
 type ZonesOrangeToOrange struct {
 	// ID of the zone setting.
-	ID ZonesOrangeToOrangeID `json:"id,required"`
+	ID ZonesOrangeToOrangeID `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value ZonesOrangeToOrangeValue `json:"value,required"`
+	Value ZonesOrangeToOrangeValue `json:"value" api:"required"`
 	// Whether or not this setting can be modified for this zone (based on your
 	// Cloudflare plan level).
 	Editable ZonesOrangeToOrangeEditable `json:"editable"`
 	// last time this setting was modified.
-	ModifiedOn time.Time               `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time               `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zonesOrangeToOrangeJSON `json:"-"`
 }
 
@@ -2449,9 +2449,9 @@ func (r ZonesOrangeToOrangeEditable) IsKnown() bool {
 // on Cloudflare.
 type ZonesOrangeToOrangeParam struct {
 	// ID of the zone setting.
-	ID param.Field[ZonesOrangeToOrangeID] `json:"id,required"`
+	ID param.Field[ZonesOrangeToOrangeID] `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value param.Field[ZonesOrangeToOrangeValue] `json:"value,required"`
+	Value param.Field[ZonesOrangeToOrangeValue] `json:"value" api:"required"`
 }
 
 func (r ZonesOrangeToOrangeParam) MarshalJSON() (data []byte, err error) {
@@ -2464,14 +2464,14 @@ func (r ZonesOrangeToOrangeParam) implementsZoneSettingUpdateParamsBodyUnion() {
 // This is limited to Enterprise Zones.
 type ZonesPrefetchPreload struct {
 	// ID of the zone setting.
-	ID ZonesPrefetchPreloadID `json:"id,required"`
+	ID ZonesPrefetchPreloadID `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value ZonesPrefetchPreloadValue `json:"value,required"`
+	Value ZonesPrefetchPreloadValue `json:"value" api:"required"`
 	// Whether or not this setting can be modified for this zone (based on your
 	// Cloudflare plan level).
 	Editable ZonesPrefetchPreloadEditable `json:"editable"`
 	// last time this setting was modified.
-	ModifiedOn time.Time                `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time                `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zonesPrefetchPreloadJSON `json:"-"`
 }
 
@@ -2550,9 +2550,9 @@ func (r ZonesPrefetchPreloadEditable) IsKnown() bool {
 // This is limited to Enterprise Zones.
 type ZonesPrefetchPreloadParam struct {
 	// ID of the zone setting.
-	ID param.Field[ZonesPrefetchPreloadID] `json:"id,required"`
+	ID param.Field[ZonesPrefetchPreloadID] `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value param.Field[ZonesPrefetchPreloadValue] `json:"value,required"`
+	Value param.Field[ZonesPrefetchPreloadValue] `json:"value" api:"required"`
 }
 
 func (r ZonesPrefetchPreloadParam) MarshalJSON() (data []byte, err error) {
@@ -2572,19 +2572,19 @@ func (r ZonesPrefetchPreloadParam) implementsZoneSettingUpdateParamsBodyUnion() 
 // https://developers.cloudflare.com/fundamentals/api/reference/deprecations/#2024-03-31)
 type ZonesPrivacyPass struct {
 	// ID of the zone setting.
-	ID ZonesPrivacyPassID `json:"id,required"`
+	ID ZonesPrivacyPassID `json:"id" api:"required"`
 	// Current value of the zone setting.
 	//
 	// Deprecated: Privacy Pass v1 was deprecated in 2023. (Announcement -
 	// https://blog.cloudflare.com/privacy-pass-standard/) and (API deprecation
 	// details -
 	// https://developers.cloudflare.com/fundamentals/api/reference/deprecations/#2024-03-31)
-	Value ZonesPrivacyPassValue `json:"value,required"`
+	Value ZonesPrivacyPassValue `json:"value" api:"required"`
 	// Whether or not this setting can be modified for this zone (based on your
 	// Cloudflare plan level).
 	Editable ZonesPrivacyPassEditable `json:"editable"`
 	// last time this setting was modified.
-	ModifiedOn time.Time            `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time            `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zonesPrivacyPassJSON `json:"-"`
 }
 
@@ -2670,14 +2670,14 @@ func (r ZonesPrivacyPassEditable) IsKnown() bool {
 // https://developers.cloudflare.com/fundamentals/api/reference/deprecations/#2024-03-31)
 type ZonesPrivacyPassParam struct {
 	// ID of the zone setting.
-	ID param.Field[ZonesPrivacyPassID] `json:"id,required"`
+	ID param.Field[ZonesPrivacyPassID] `json:"id" api:"required"`
 	// Current value of the zone setting.
 	//
 	// Deprecated: Privacy Pass v1 was deprecated in 2023. (Announcement -
 	// https://blog.cloudflare.com/privacy-pass-standard/) and (API deprecation
 	// details -
 	// https://developers.cloudflare.com/fundamentals/api/reference/deprecations/#2024-03-31)
-	Value param.Field[ZonesPrivacyPassValue] `json:"value,required"`
+	Value param.Field[ZonesPrivacyPassValue] `json:"value" api:"required"`
 }
 
 func (r ZonesPrivacyPassParam) MarshalJSON() (data []byte, err error) {
@@ -2689,14 +2689,14 @@ func (r ZonesPrivacyPassParam) implementsZoneSettingUpdateParamsBodyUnion() {}
 // Maximum time between two read operations from origin.
 type ZonesProxyReadTimeout struct {
 	// ID of the zone setting.
-	ID ZonesProxyReadTimeoutID `json:"id,required"`
+	ID ZonesProxyReadTimeoutID `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value float64 `json:"value,required"`
+	Value float64 `json:"value" api:"required"`
 	// Whether or not this setting can be modified for this zone (based on your
 	// Cloudflare plan level).
 	Editable ZonesProxyReadTimeoutEditable `json:"editable"`
 	// last time this setting was modified.
-	ModifiedOn time.Time                 `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time                 `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zonesProxyReadTimeoutJSON `json:"-"`
 }
 
@@ -2758,9 +2758,9 @@ func (r ZonesProxyReadTimeoutEditable) IsKnown() bool {
 // Maximum time between two read operations from origin.
 type ZonesProxyReadTimeoutParam struct {
 	// ID of the zone setting.
-	ID param.Field[ZonesProxyReadTimeoutID] `json:"id,required"`
+	ID param.Field[ZonesProxyReadTimeoutID] `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value param.Field[float64] `json:"value,required"`
+	Value param.Field[float64] `json:"value" api:"required"`
 }
 
 func (r ZonesProxyReadTimeoutParam) MarshalJSON() (data []byte, err error) {
@@ -2772,14 +2772,14 @@ func (r ZonesProxyReadTimeoutParam) implementsZoneSettingUpdateParamsBodyUnion()
 // The value set for the Pseudo IPv4 setting.
 type ZonesPseudoIpv4 struct {
 	// Value of the Pseudo IPv4 setting.
-	ID ZonesPseudoIpv4ID `json:"id,required"`
+	ID ZonesPseudoIpv4ID `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value ZonesPseudoIpv4Value `json:"value,required"`
+	Value ZonesPseudoIpv4Value `json:"value" api:"required"`
 	// Whether or not this setting can be modified for this zone (based on your
 	// Cloudflare plan level).
 	Editable ZonesPseudoIpv4Editable `json:"editable"`
 	// last time this setting was modified.
-	ModifiedOn time.Time           `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time           `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zonesPseudoIpv4JSON `json:"-"`
 }
 
@@ -2857,9 +2857,9 @@ func (r ZonesPseudoIpv4Editable) IsKnown() bool {
 // The value set for the Pseudo IPv4 setting.
 type ZonesPseudoIpv4Param struct {
 	// Value of the Pseudo IPv4 setting.
-	ID param.Field[ZonesPseudoIpv4ID] `json:"id,required"`
+	ID param.Field[ZonesPseudoIpv4ID] `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value param.Field[ZonesPseudoIpv4Value] `json:"value,required"`
+	Value param.Field[ZonesPseudoIpv4Value] `json:"value" api:"required"`
 }
 
 func (r ZonesPseudoIpv4Param) MarshalJSON() (data []byte, err error) {
@@ -2873,14 +2873,14 @@ func (r ZonesPseudoIpv4Param) implementsZoneSettingUpdateParamsBodyUnion() {}
 // the following libraries: Polyfill under polyfill.io.
 type ZonesReplaceInsecureJs struct {
 	// ID of the zone setting.
-	ID ZonesReplaceInsecureJsID `json:"id,required"`
+	ID ZonesReplaceInsecureJsID `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value ZonesReplaceInsecureJsValue `json:"value,required"`
+	Value ZonesReplaceInsecureJsValue `json:"value" api:"required"`
 	// Whether or not this setting can be modified for this zone (based on your
 	// Cloudflare plan level).
 	Editable ZonesReplaceInsecureJsEditable `json:"editable"`
 	// last time this setting was modified.
-	ModifiedOn time.Time                  `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time                  `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zonesReplaceInsecureJsJSON `json:"-"`
 }
 
@@ -2960,9 +2960,9 @@ func (r ZonesReplaceInsecureJsEditable) IsKnown() bool {
 // the following libraries: Polyfill under polyfill.io.
 type ZonesReplaceInsecureJsParam struct {
 	// ID of the zone setting.
-	ID param.Field[ZonesReplaceInsecureJsID] `json:"id,required"`
+	ID param.Field[ZonesReplaceInsecureJsID] `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value param.Field[ZonesReplaceInsecureJsValue] `json:"value,required"`
+	Value param.Field[ZonesReplaceInsecureJsValue] `json:"value" api:"required"`
 }
 
 func (r ZonesReplaceInsecureJsParam) MarshalJSON() (data []byte, err error) {
@@ -2976,14 +2976,14 @@ func (r ZonesReplaceInsecureJsParam) implementsZoneSettingUpdateParamsBodyUnion(
 // consider creating an "Always use HTTPS" page rule.
 type ZonesSchemasAlwaysUseHTTPS struct {
 	// ID of the zone setting.
-	ID ZonesSchemasAlwaysUseHTTPSID `json:"id,required"`
+	ID ZonesSchemasAlwaysUseHTTPSID `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value ZonesSchemasAlwaysUseHTTPSValue `json:"value,required"`
+	Value ZonesSchemasAlwaysUseHTTPSValue `json:"value" api:"required"`
 	// Whether or not this setting can be modified for this zone (based on your
 	// Cloudflare plan level).
 	Editable ZonesSchemasAlwaysUseHTTPSEditable `json:"editable"`
 	// last time this setting was modified.
-	ModifiedOn time.Time                      `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time                      `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zonesSchemasAlwaysUseHTTPSJSON `json:"-"`
 }
 
@@ -3063,9 +3063,9 @@ func (r ZonesSchemasAlwaysUseHTTPSEditable) IsKnown() bool {
 // consider creating an "Always use HTTPS" page rule.
 type ZonesSchemasAlwaysUseHTTPSParam struct {
 	// ID of the zone setting.
-	ID param.Field[ZonesSchemasAlwaysUseHTTPSID] `json:"id,required"`
+	ID param.Field[ZonesSchemasAlwaysUseHTTPSID] `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value param.Field[ZonesSchemasAlwaysUseHTTPSValue] `json:"value,required"`
+	Value param.Field[ZonesSchemasAlwaysUseHTTPSValue] `json:"value" api:"required"`
 }
 
 func (r ZonesSchemasAlwaysUseHTTPSParam) MarshalJSON() (data []byte, err error) {
@@ -3077,14 +3077,14 @@ func (r ZonesSchemasAlwaysUseHTTPSParam) implementsZoneSettingUpdateParamsBodyUn
 // Enable the Automatic HTTPS Rewrites feature for this zone.
 type ZonesSchemasAutomaticHTTPSRewrites struct {
 	// ID of the zone setting.
-	ID ZonesSchemasAutomaticHTTPSRewritesID `json:"id,required"`
+	ID ZonesSchemasAutomaticHTTPSRewritesID `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value ZonesSchemasAutomaticHTTPSRewritesValue `json:"value,required"`
+	Value ZonesSchemasAutomaticHTTPSRewritesValue `json:"value" api:"required"`
 	// Whether or not this setting can be modified for this zone (based on your
 	// Cloudflare plan level).
 	Editable ZonesSchemasAutomaticHTTPSRewritesEditable `json:"editable"`
 	// last time this setting was modified.
-	ModifiedOn time.Time                              `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time                              `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zonesSchemasAutomaticHTTPSRewritesJSON `json:"-"`
 }
 
@@ -3162,9 +3162,9 @@ func (r ZonesSchemasAutomaticHTTPSRewritesEditable) IsKnown() bool {
 // Enable the Automatic HTTPS Rewrites feature for this zone.
 type ZonesSchemasAutomaticHTTPSRewritesParam struct {
 	// ID of the zone setting.
-	ID param.Field[ZonesSchemasAutomaticHTTPSRewritesID] `json:"id,required"`
+	ID param.Field[ZonesSchemasAutomaticHTTPSRewritesID] `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value param.Field[ZonesSchemasAutomaticHTTPSRewritesValue] `json:"value,required"`
+	Value param.Field[ZonesSchemasAutomaticHTTPSRewritesValue] `json:"value" api:"required"`
 }
 
 func (r ZonesSchemasAutomaticHTTPSRewritesParam) MarshalJSON() (data []byte, err error) {
@@ -3178,14 +3178,14 @@ func (r ZonesSchemasAutomaticHTTPSRewritesParam) implementsZoneSettingUpdatePara
 // fonts.
 type ZonesSchemasAutomaticPlatformOptimization struct {
 	// ID of the zone setting.
-	ID ZonesSchemasAutomaticPlatformOptimizationID `json:"id,required"`
+	ID ZonesSchemasAutomaticPlatformOptimizationID `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value ZonesSchemasAutomaticPlatformOptimizationValue `json:"value,required"`
+	Value ZonesSchemasAutomaticPlatformOptimizationValue `json:"value" api:"required"`
 	// Whether or not this setting can be modified for this zone (based on your
 	// Cloudflare plan level).
 	Editable ZonesSchemasAutomaticPlatformOptimizationEditable `json:"editable"`
 	// last time this setting was modified.
-	ModifiedOn time.Time                                     `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time                                     `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zonesSchemasAutomaticPlatformOptimizationJSON `json:"-"`
 }
 
@@ -3233,20 +3233,20 @@ type ZonesSchemasAutomaticPlatformOptimizationValue struct {
 	// Indicates whether or not
 	// [cache by device type](https://developers.cloudflare.com/automatic-platform-optimization/reference/cache-device-type/)
 	// is enabled.
-	CacheByDeviceType bool `json:"cache_by_device_type,required"`
+	CacheByDeviceType bool `json:"cache_by_device_type" api:"required"`
 	// Indicates whether or not Cloudflare proxy is enabled.
-	Cf bool `json:"cf,required"`
+	Cf bool `json:"cf" api:"required"`
 	// Indicates whether or not Automatic Platform Optimization is enabled.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// An array of hostnames where Automatic Platform Optimization for WordPress is
 	// activated.
-	Hostnames []string `json:"hostnames,required" format:"hostname"`
+	Hostnames []string `json:"hostnames" api:"required" format:"hostname"`
 	// Indicates whether or not site is powered by WordPress.
-	Wordpress bool `json:"wordpress,required"`
+	Wordpress bool `json:"wordpress" api:"required"`
 	// Indicates whether or not
 	// [Cloudflare for WordPress plugin](https://wordpress.org/plugins/cloudflare/) is
 	// installed.
-	WpPlugin bool                                               `json:"wp_plugin,required"`
+	WpPlugin bool                                               `json:"wp_plugin" api:"required"`
 	JSON     zonesSchemasAutomaticPlatformOptimizationValueJSON `json:"-"`
 }
 
@@ -3293,9 +3293,9 @@ func (r ZonesSchemasAutomaticPlatformOptimizationEditable) IsKnown() bool {
 // fonts.
 type ZonesSchemasAutomaticPlatformOptimizationParam struct {
 	// ID of the zone setting.
-	ID param.Field[ZonesSchemasAutomaticPlatformOptimizationID] `json:"id,required"`
+	ID param.Field[ZonesSchemasAutomaticPlatformOptimizationID] `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value param.Field[ZonesSchemasAutomaticPlatformOptimizationValueParam] `json:"value,required"`
+	Value param.Field[ZonesSchemasAutomaticPlatformOptimizationValueParam] `json:"value" api:"required"`
 }
 
 func (r ZonesSchemasAutomaticPlatformOptimizationParam) MarshalJSON() (data []byte, err error) {
@@ -3310,20 +3310,20 @@ type ZonesSchemasAutomaticPlatformOptimizationValueParam struct {
 	// Indicates whether or not
 	// [cache by device type](https://developers.cloudflare.com/automatic-platform-optimization/reference/cache-device-type/)
 	// is enabled.
-	CacheByDeviceType param.Field[bool] `json:"cache_by_device_type,required"`
+	CacheByDeviceType param.Field[bool] `json:"cache_by_device_type" api:"required"`
 	// Indicates whether or not Cloudflare proxy is enabled.
-	Cf param.Field[bool] `json:"cf,required"`
+	Cf param.Field[bool] `json:"cf" api:"required"`
 	// Indicates whether or not Automatic Platform Optimization is enabled.
-	Enabled param.Field[bool] `json:"enabled,required"`
+	Enabled param.Field[bool] `json:"enabled" api:"required"`
 	// An array of hostnames where Automatic Platform Optimization for WordPress is
 	// activated.
-	Hostnames param.Field[[]string] `json:"hostnames,required" format:"hostname"`
+	Hostnames param.Field[[]string] `json:"hostnames" api:"required" format:"hostname"`
 	// Indicates whether or not site is powered by WordPress.
-	Wordpress param.Field[bool] `json:"wordpress,required"`
+	Wordpress param.Field[bool] `json:"wordpress" api:"required"`
 	// Indicates whether or not
 	// [Cloudflare for WordPress plugin](https://wordpress.org/plugins/cloudflare/) is
 	// installed.
-	WpPlugin param.Field[bool] `json:"wp_plugin,required"`
+	WpPlugin param.Field[bool] `json:"wp_plugin" api:"required"`
 }
 
 func (r ZonesSchemasAutomaticPlatformOptimizationValueParam) MarshalJSON() (data []byte, err error) {
@@ -3336,14 +3336,14 @@ func (r ZonesSchemasAutomaticPlatformOptimizationValueParam) MarshalJSON() (data
 // (https://support.cloudflare.com/hc/en-us/articles/200168276).
 type ZonesSchemasBrowserCacheTtl struct {
 	// ID of the zone setting.
-	ID ZonesSchemasBrowserCacheTtlID `json:"id,required"`
+	ID ZonesSchemasBrowserCacheTtlID `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value ZonesSchemasBrowserCacheTtlValue `json:"value,required"`
+	Value ZonesSchemasBrowserCacheTtlValue `json:"value" api:"required"`
 	// Whether or not this setting can be modified for this zone (based on your
 	// Cloudflare plan level).
 	Editable ZonesSchemasBrowserCacheTtlEditable `json:"editable"`
 	// last time this setting was modified.
-	ModifiedOn time.Time                       `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time                       `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zonesSchemasBrowserCacheTtlJSON `json:"-"`
 }
 
@@ -3450,9 +3450,9 @@ func (r ZonesSchemasBrowserCacheTtlEditable) IsKnown() bool {
 // (https://support.cloudflare.com/hc/en-us/articles/200168276).
 type ZonesSchemasBrowserCacheTtlParam struct {
 	// ID of the zone setting.
-	ID param.Field[ZonesSchemasBrowserCacheTtlID] `json:"id,required"`
+	ID param.Field[ZonesSchemasBrowserCacheTtlID] `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value param.Field[ZonesSchemasBrowserCacheTtlValue] `json:"value,required"`
+	Value param.Field[ZonesSchemasBrowserCacheTtlValue] `json:"value" api:"required"`
 }
 
 func (r ZonesSchemasBrowserCacheTtlParam) MarshalJSON() (data []byte, err error) {
@@ -3468,14 +3468,14 @@ func (r ZonesSchemasBrowserCacheTtlParam) implementsZoneSettingUpdateParamsBodyU
 // (https://support.cloudflare.com/hc/en-us/articles/200170086).
 type ZonesSchemasBrowserCheck struct {
 	// ID of the zone setting.
-	ID ZonesSchemasBrowserCheckID `json:"id,required"`
+	ID ZonesSchemasBrowserCheckID `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value ZonesSchemasBrowserCheckValue `json:"value,required"`
+	Value ZonesSchemasBrowserCheckValue `json:"value" api:"required"`
 	// Whether or not this setting can be modified for this zone (based on your
 	// Cloudflare plan level).
 	Editable ZonesSchemasBrowserCheckEditable `json:"editable"`
 	// last time this setting was modified.
-	ModifiedOn time.Time                    `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time                    `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zonesSchemasBrowserCheckJSON `json:"-"`
 }
 
@@ -3557,9 +3557,9 @@ func (r ZonesSchemasBrowserCheckEditable) IsKnown() bool {
 // (https://support.cloudflare.com/hc/en-us/articles/200170086).
 type ZonesSchemasBrowserCheckParam struct {
 	// ID of the zone setting.
-	ID param.Field[ZonesSchemasBrowserCheckID] `json:"id,required"`
+	ID param.Field[ZonesSchemasBrowserCheckID] `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value param.Field[ZonesSchemasBrowserCheckValue] `json:"value,required"`
+	Value param.Field[ZonesSchemasBrowserCheckValue] `json:"value" api:"required"`
 }
 
 func (r ZonesSchemasBrowserCheckParam) MarshalJSON() (data []byte, err error) {
@@ -3575,14 +3575,14 @@ func (r ZonesSchemasBrowserCheckParam) implementsZoneSettingUpdateParamsBodyUnio
 // string. (https://support.cloudflare.com/hc/en-us/articles/200168256).
 type ZonesSchemasCacheLevel struct {
 	// ID of the zone setting.
-	ID ZonesSchemasCacheLevelID `json:"id,required"`
+	ID ZonesSchemasCacheLevelID `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value ZonesSchemasCacheLevelValue `json:"value,required"`
+	Value ZonesSchemasCacheLevelValue `json:"value" api:"required"`
 	// Whether or not this setting can be modified for this zone (based on your
 	// Cloudflare plan level).
 	Editable ZonesSchemasCacheLevelEditable `json:"editable"`
 	// last time this setting was modified.
-	ModifiedOn time.Time                  `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time                  `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zonesSchemasCacheLevelJSON `json:"-"`
 }
 
@@ -3665,9 +3665,9 @@ func (r ZonesSchemasCacheLevelEditable) IsKnown() bool {
 // string. (https://support.cloudflare.com/hc/en-us/articles/200168256).
 type ZonesSchemasCacheLevelParam struct {
 	// ID of the zone setting.
-	ID param.Field[ZonesSchemasCacheLevelID] `json:"id,required"`
+	ID param.Field[ZonesSchemasCacheLevelID] `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value param.Field[ZonesSchemasCacheLevelValue] `json:"value,required"`
+	Value param.Field[ZonesSchemasCacheLevelValue] `json:"value" api:"required"`
 }
 
 func (r ZonesSchemasCacheLevelParam) MarshalJSON() (data []byte, err error) {
@@ -3680,14 +3680,14 @@ func (r ZonesSchemasCacheLevelParam) implementsZoneSettingUpdateParamsBodyUnion(
 // cache servers.
 type ZonesSchemasEdgeCacheTtl struct {
 	// ID of the zone setting.
-	ID ZonesSchemasEdgeCacheTtlID `json:"id,required"`
+	ID ZonesSchemasEdgeCacheTtlID `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value ZonesSchemasEdgeCacheTtlValue `json:"value,required"`
+	Value ZonesSchemasEdgeCacheTtlValue `json:"value" api:"required"`
 	// Whether or not this setting can be modified for this zone (based on your
 	// Cloudflare plan level).
 	Editable ZonesSchemasEdgeCacheTtlEditable `json:"editable"`
 	// last time this setting was modified.
-	ModifiedOn time.Time                    `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time                    `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zonesSchemasEdgeCacheTtlJSON `json:"-"`
 }
 
@@ -3785,9 +3785,9 @@ func (r ZonesSchemasEdgeCacheTtlEditable) IsKnown() bool {
 // cache servers.
 type ZonesSchemasEdgeCacheTtlParam struct {
 	// ID of the zone setting.
-	ID param.Field[ZonesSchemasEdgeCacheTtlID] `json:"id,required"`
+	ID param.Field[ZonesSchemasEdgeCacheTtlID] `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value param.Field[ZonesSchemasEdgeCacheTtlValue] `json:"value,required"`
+	Value param.Field[ZonesSchemasEdgeCacheTtlValue] `json:"value" api:"required"`
 }
 
 func (r ZonesSchemasEdgeCacheTtlParam) MarshalJSON() (data []byte, err error) {
@@ -3800,14 +3800,14 @@ func (r ZonesSchemasEdgeCacheTtlParam) implementsZoneSettingUpdateParamsBodyUnio
 // humans. (https://support.cloudflare.com/hc/en-us/articles/200170016).
 type ZonesSchemasEmailObfuscation struct {
 	// ID of the zone setting.
-	ID ZonesSchemasEmailObfuscationID `json:"id,required"`
+	ID ZonesSchemasEmailObfuscationID `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value ZonesSchemasEmailObfuscationValue `json:"value,required"`
+	Value ZonesSchemasEmailObfuscationValue `json:"value" api:"required"`
 	// Whether or not this setting can be modified for this zone (based on your
 	// Cloudflare plan level).
 	Editable ZonesSchemasEmailObfuscationEditable `json:"editable"`
 	// last time this setting was modified.
-	ModifiedOn time.Time                        `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time                        `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zonesSchemasEmailObfuscationJSON `json:"-"`
 }
 
@@ -3886,9 +3886,9 @@ func (r ZonesSchemasEmailObfuscationEditable) IsKnown() bool {
 // humans. (https://support.cloudflare.com/hc/en-us/articles/200170016).
 type ZonesSchemasEmailObfuscationParam struct {
 	// ID of the zone setting.
-	ID param.Field[ZonesSchemasEmailObfuscationID] `json:"id,required"`
+	ID param.Field[ZonesSchemasEmailObfuscationID] `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value param.Field[ZonesSchemasEmailObfuscationValue] `json:"value,required"`
+	Value param.Field[ZonesSchemasEmailObfuscationValue] `json:"value" api:"required"`
 }
 
 func (r ZonesSchemasEmailObfuscationParam) MarshalJSON() (data []byte, err error) {
@@ -3902,14 +3902,14 @@ func (r ZonesSchemasEmailObfuscationParam) implementsZoneSettingUpdateParamsBody
 // (https://support.cloudflare.com/hc/en-us/articles/200168236).
 type ZonesSchemasIPGeolocation struct {
 	// ID of the zone setting.
-	ID ZonesSchemasIPGeolocationID `json:"id,required"`
+	ID ZonesSchemasIPGeolocationID `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value ZonesSchemasIPGeolocationValue `json:"value,required"`
+	Value ZonesSchemasIPGeolocationValue `json:"value" api:"required"`
 	// Whether or not this setting can be modified for this zone (based on your
 	// Cloudflare plan level).
 	Editable ZonesSchemasIPGeolocationEditable `json:"editable"`
 	// last time this setting was modified.
-	ModifiedOn time.Time                     `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time                     `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zonesSchemasIPGeolocationJSON `json:"-"`
 }
 
@@ -3989,9 +3989,9 @@ func (r ZonesSchemasIPGeolocationEditable) IsKnown() bool {
 // (https://support.cloudflare.com/hc/en-us/articles/200168236).
 type ZonesSchemasIPGeolocationParam struct {
 	// ID of the zone setting.
-	ID param.Field[ZonesSchemasIPGeolocationID] `json:"id,required"`
+	ID param.Field[ZonesSchemasIPGeolocationID] `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value param.Field[ZonesSchemasIPGeolocationValue] `json:"value,required"`
+	Value param.Field[ZonesSchemasIPGeolocationValue] `json:"value" api:"required"`
 }
 
 func (r ZonesSchemasIPGeolocationParam) MarshalJSON() (data []byte, err error) {
@@ -4006,14 +4006,14 @@ func (r ZonesSchemasIPGeolocationParam) implementsZoneSettingUpdateParamsBodyUni
 // more information.
 type ZonesSchemasMirage struct {
 	// ID of the zone setting.
-	ID ZonesSchemasMirageID `json:"id,required"`
+	ID ZonesSchemasMirageID `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value ZonesSchemasMirageValue `json:"value,required"`
+	Value ZonesSchemasMirageValue `json:"value" api:"required"`
 	// Whether or not this setting can be modified for this zone (based on your
 	// Cloudflare plan level).
 	Editable ZonesSchemasMirageEditable `json:"editable"`
 	// last time this setting was modified.
-	ModifiedOn time.Time              `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time              `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zonesSchemasMirageJSON `json:"-"`
 }
 
@@ -4094,9 +4094,9 @@ func (r ZonesSchemasMirageEditable) IsKnown() bool {
 // more information.
 type ZonesSchemasMirageParam struct {
 	// ID of the zone setting.
-	ID param.Field[ZonesSchemasMirageID] `json:"id,required"`
+	ID param.Field[ZonesSchemasMirageID] `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value param.Field[ZonesSchemasMirageValue] `json:"value,required"`
+	Value param.Field[ZonesSchemasMirageValue] `json:"value" api:"required"`
 }
 
 func (r ZonesSchemasMirageParam) MarshalJSON() (data []byte, err error) {
@@ -4108,14 +4108,14 @@ func (r ZonesSchemasMirageParam) implementsZoneSettingUpdateParamsBodyUnion() {}
 // Enables the Opportunistic Encryption feature for a zone.
 type ZonesSchemasOpportunisticEncryption struct {
 	// ID of the zone setting.
-	ID ZonesSchemasOpportunisticEncryptionID `json:"id,required"`
+	ID ZonesSchemasOpportunisticEncryptionID `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value ZonesSchemasOpportunisticEncryptionValue `json:"value,required"`
+	Value ZonesSchemasOpportunisticEncryptionValue `json:"value" api:"required"`
 	// Whether or not this setting can be modified for this zone (based on your
 	// Cloudflare plan level).
 	Editable ZonesSchemasOpportunisticEncryptionEditable `json:"editable"`
 	// last time this setting was modified.
-	ModifiedOn time.Time                               `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time                               `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zonesSchemasOpportunisticEncryptionJSON `json:"-"`
 }
 
@@ -4193,9 +4193,9 @@ func (r ZonesSchemasOpportunisticEncryptionEditable) IsKnown() bool {
 // Enables the Opportunistic Encryption feature for a zone.
 type ZonesSchemasOpportunisticEncryptionParam struct {
 	// ID of the zone setting.
-	ID param.Field[ZonesSchemasOpportunisticEncryptionID] `json:"id,required"`
+	ID param.Field[ZonesSchemasOpportunisticEncryptionID] `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value param.Field[ZonesSchemasOpportunisticEncryptionValue] `json:"value,required"`
+	Value param.Field[ZonesSchemasOpportunisticEncryptionValue] `json:"value" api:"required"`
 }
 
 func (r ZonesSchemasOpportunisticEncryptionParam) MarshalJSON() (data []byte, err error) {
@@ -4209,14 +4209,14 @@ func (r ZonesSchemasOpportunisticEncryptionParam) implementsZoneSettingUpdatePar
 // to 522 errors and is limited to Enterprise Zones.
 type ZonesSchemasOriginErrorPagePassThru struct {
 	// ID of the zone setting.
-	ID ZonesSchemasOriginErrorPagePassThruID `json:"id,required"`
+	ID ZonesSchemasOriginErrorPagePassThruID `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value ZonesSchemasOriginErrorPagePassThruValue `json:"value,required"`
+	Value ZonesSchemasOriginErrorPagePassThruValue `json:"value" api:"required"`
 	// Whether or not this setting can be modified for this zone (based on your
 	// Cloudflare plan level).
 	Editable ZonesSchemasOriginErrorPagePassThruEditable `json:"editable"`
 	// last time this setting was modified.
-	ModifiedOn time.Time                               `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time                               `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zonesSchemasOriginErrorPagePassThruJSON `json:"-"`
 }
 
@@ -4296,9 +4296,9 @@ func (r ZonesSchemasOriginErrorPagePassThruEditable) IsKnown() bool {
 // to 522 errors and is limited to Enterprise Zones.
 type ZonesSchemasOriginErrorPagePassThruParam struct {
 	// ID of the zone setting.
-	ID param.Field[ZonesSchemasOriginErrorPagePassThruID] `json:"id,required"`
+	ID param.Field[ZonesSchemasOriginErrorPagePassThruID] `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value param.Field[ZonesSchemasOriginErrorPagePassThruValue] `json:"value,required"`
+	Value param.Field[ZonesSchemasOriginErrorPagePassThruValue] `json:"value" api:"required"`
 }
 
 func (r ZonesSchemasOriginErrorPagePassThruParam) MarshalJSON() (data []byte, err error) {
@@ -4315,14 +4315,14 @@ func (r ZonesSchemasOriginErrorPagePassThruParam) implementsZoneSettingUpdatePar
 // recommended for hi-res photography sites.
 type ZonesSchemasPolish struct {
 	// ID of the zone setting.
-	ID ZonesSchemasPolishID `json:"id,required"`
+	ID ZonesSchemasPolishID `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value ZonesSchemasPolishValue `json:"value,required"`
+	Value ZonesSchemasPolishValue `json:"value" api:"required"`
 	// Whether or not this setting can be modified for this zone (based on your
 	// Cloudflare plan level).
 	Editable ZonesSchemasPolishEditable `json:"editable"`
 	// last time this setting was modified.
-	ModifiedOn time.Time              `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time              `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zonesSchemasPolishJSON `json:"-"`
 }
 
@@ -4406,9 +4406,9 @@ func (r ZonesSchemasPolishEditable) IsKnown() bool {
 // recommended for hi-res photography sites.
 type ZonesSchemasPolishParam struct {
 	// ID of the zone setting.
-	ID param.Field[ZonesSchemasPolishID] `json:"id,required"`
+	ID param.Field[ZonesSchemasPolishID] `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value param.Field[ZonesSchemasPolishValue] `json:"value,required"`
+	Value param.Field[ZonesSchemasPolishValue] `json:"value" api:"required"`
 }
 
 func (r ZonesSchemasPolishParam) MarshalJSON() (data []byte, err error) {
@@ -4423,14 +4423,14 @@ func (r ZonesSchemasPolishParam) implementsZoneSettingUpdateParamsBodyUnion() {}
 // and is not buffered by Cloudflare. This is limited to Enterprise Zones.
 type ZonesSchemasResponseBuffering struct {
 	// ID of the zone setting.
-	ID ZonesSchemasResponseBufferingID `json:"id,required"`
+	ID ZonesSchemasResponseBufferingID `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value ZonesSchemasResponseBufferingValue `json:"value,required"`
+	Value ZonesSchemasResponseBufferingValue `json:"value" api:"required"`
 	// Whether or not this setting can be modified for this zone (based on your
 	// Cloudflare plan level).
 	Editable ZonesSchemasResponseBufferingEditable `json:"editable"`
 	// last time this setting was modified.
-	ModifiedOn time.Time                         `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time                         `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zonesSchemasResponseBufferingJSON `json:"-"`
 }
 
@@ -4511,9 +4511,9 @@ func (r ZonesSchemasResponseBufferingEditable) IsKnown() bool {
 // and is not buffered by Cloudflare. This is limited to Enterprise Zones.
 type ZonesSchemasResponseBufferingParam struct {
 	// ID of the zone setting.
-	ID param.Field[ZonesSchemasResponseBufferingID] `json:"id,required"`
+	ID param.Field[ZonesSchemasResponseBufferingID] `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value param.Field[ZonesSchemasResponseBufferingValue] `json:"value,required"`
+	Value param.Field[ZonesSchemasResponseBufferingValue] `json:"value" api:"required"`
 }
 
 func (r ZonesSchemasResponseBufferingParam) MarshalJSON() (data []byte, err error) {
@@ -4534,14 +4534,14 @@ func (r ZonesSchemasResponseBufferingParam) implementsZoneSettingUpdateParamsBod
 // for more information.
 type ZonesSchemasRocketLoader struct {
 	// ID of the zone setting.
-	ID ZonesSchemasRocketLoaderID `json:"id,required"`
+	ID ZonesSchemasRocketLoaderID `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value ZonesSchemasRocketLoaderValue `json:"value,required"`
+	Value ZonesSchemasRocketLoaderValue `json:"value" api:"required"`
 	// Whether or not this setting can be modified for this zone (based on your
 	// Cloudflare plan level).
 	Editable ZonesSchemasRocketLoaderEditable `json:"editable"`
 	// last time this setting was modified.
-	ModifiedOn time.Time                    `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time                    `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zonesSchemasRocketLoaderJSON `json:"-"`
 }
 
@@ -4628,9 +4628,9 @@ func (r ZonesSchemasRocketLoaderEditable) IsKnown() bool {
 // for more information.
 type ZonesSchemasRocketLoaderParam struct {
 	// ID of the zone setting.
-	ID param.Field[ZonesSchemasRocketLoaderID] `json:"id,required"`
+	ID param.Field[ZonesSchemasRocketLoaderID] `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value param.Field[ZonesSchemasRocketLoaderValue] `json:"value,required"`
+	Value param.Field[ZonesSchemasRocketLoaderValue] `json:"value" api:"required"`
 }
 
 func (r ZonesSchemasRocketLoaderParam) MarshalJSON() (data []byte, err error) {
@@ -4645,14 +4645,14 @@ func (r ZonesSchemasRocketLoaderParam) implementsZoneSettingUpdateParamsBodyUnio
 // (https://support.cloudflare.com/hc/en-us/articles/200170056).
 type ZonesSchemasSecurityLevel struct {
 	// ID of the zone setting.
-	ID ZonesSchemasSecurityLevelID `json:"id,required"`
+	ID ZonesSchemasSecurityLevelID `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value ZonesSchemasSecurityLevelValue `json:"value,required"`
+	Value ZonesSchemasSecurityLevelValue `json:"value" api:"required"`
 	// Whether or not this setting can be modified for this zone (based on your
 	// Cloudflare plan level).
 	Editable ZonesSchemasSecurityLevelEditable `json:"editable"`
 	// last time this setting was modified.
-	ModifiedOn time.Time                     `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time                     `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zonesSchemasSecurityLevelJSON `json:"-"`
 }
 
@@ -4737,9 +4737,9 @@ func (r ZonesSchemasSecurityLevelEditable) IsKnown() bool {
 // (https://support.cloudflare.com/hc/en-us/articles/200170056).
 type ZonesSchemasSecurityLevelParam struct {
 	// ID of the zone setting.
-	ID param.Field[ZonesSchemasSecurityLevelID] `json:"id,required"`
+	ID param.Field[ZonesSchemasSecurityLevelID] `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value param.Field[ZonesSchemasSecurityLevelValue] `json:"value,required"`
+	Value param.Field[ZonesSchemasSecurityLevelValue] `json:"value" api:"required"`
 }
 
 func (r ZonesSchemasSecurityLevelParam) MarshalJSON() (data []byte, err error) {
@@ -4753,14 +4753,14 @@ func (r ZonesSchemasSecurityLevelParam) implementsZoneSettingUpdateParamsBodyUni
 // Enterprise Zones.
 type ZonesSchemasSortQueryStringForCache struct {
 	// ID of the zone setting.
-	ID ZonesSchemasSortQueryStringForCacheID `json:"id,required"`
+	ID ZonesSchemasSortQueryStringForCacheID `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value ZonesSchemasSortQueryStringForCacheValue `json:"value,required"`
+	Value ZonesSchemasSortQueryStringForCacheValue `json:"value" api:"required"`
 	// Whether or not this setting can be modified for this zone (based on your
 	// Cloudflare plan level).
 	Editable ZonesSchemasSortQueryStringForCacheEditable `json:"editable"`
 	// last time this setting was modified.
-	ModifiedOn time.Time                               `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time                               `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zonesSchemasSortQueryStringForCacheJSON `json:"-"`
 }
 
@@ -4840,9 +4840,9 @@ func (r ZonesSchemasSortQueryStringForCacheEditable) IsKnown() bool {
 // Enterprise Zones.
 type ZonesSchemasSortQueryStringForCacheParam struct {
 	// ID of the zone setting.
-	ID param.Field[ZonesSchemasSortQueryStringForCacheID] `json:"id,required"`
+	ID param.Field[ZonesSchemasSortQueryStringForCacheID] `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value param.Field[ZonesSchemasSortQueryStringForCacheValue] `json:"value,required"`
+	Value param.Field[ZonesSchemasSortQueryStringForCacheValue] `json:"value" api:"required"`
 }
 
 func (r ZonesSchemasSortQueryStringForCacheParam) MarshalJSON() (data []byte, err error) {
@@ -4869,14 +4869,14 @@ func (r ZonesSchemasSortQueryStringForCacheParam) implementsZoneSettingUpdatePar
 // (hostname). (https://support.cloudflare.com/hc/en-us/articles/200170416).
 type ZonesSchemasSsl struct {
 	// ID of the zone setting.
-	ID ZonesSchemasSslID `json:"id,required"`
+	ID ZonesSchemasSslID `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value ZonesSchemasSslValue `json:"value,required"`
+	Value ZonesSchemasSslValue `json:"value" api:"required"`
 	// Whether or not this setting can be modified for this zone (based on your
 	// Cloudflare plan level).
 	Editable ZonesSchemasSslEditable `json:"editable"`
 	// last time this setting was modified.
-	ModifiedOn time.Time           `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time           `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zonesSchemasSslJSON `json:"-"`
 }
 
@@ -4970,9 +4970,9 @@ func (r ZonesSchemasSslEditable) IsKnown() bool {
 // (hostname). (https://support.cloudflare.com/hc/en-us/articles/200170416).
 type ZonesSchemasSslParam struct {
 	// ID of the zone setting.
-	ID param.Field[ZonesSchemasSslID] `json:"id,required"`
+	ID param.Field[ZonesSchemasSslID] `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value param.Field[ZonesSchemasSslValue] `json:"value,required"`
+	Value param.Field[ZonesSchemasSslValue] `json:"value" api:"required"`
 }
 
 func (r ZonesSchemasSslParam) MarshalJSON() (data []byte, err error) {
@@ -4985,14 +4985,14 @@ func (r ZonesSchemasSslParam) implementsZoneSettingUpdateParamsBodyUnion() {}
 // headers we send to the origin. This is limited to Enterprise Zones.
 type ZonesSchemasTrueClientIPHeader struct {
 	// ID of the zone setting.
-	ID ZonesSchemasTrueClientIPHeaderID `json:"id,required"`
+	ID ZonesSchemasTrueClientIPHeaderID `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value ZonesSchemasTrueClientIPHeaderValue `json:"value,required"`
+	Value ZonesSchemasTrueClientIPHeaderValue `json:"value" api:"required"`
 	// Whether or not this setting can be modified for this zone (based on your
 	// Cloudflare plan level).
 	Editable ZonesSchemasTrueClientIPHeaderEditable `json:"editable"`
 	// last time this setting was modified.
-	ModifiedOn time.Time                          `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time                          `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zonesSchemasTrueClientIPHeaderJSON `json:"-"`
 }
 
@@ -5071,9 +5071,9 @@ func (r ZonesSchemasTrueClientIPHeaderEditable) IsKnown() bool {
 // headers we send to the origin. This is limited to Enterprise Zones.
 type ZonesSchemasTrueClientIPHeaderParam struct {
 	// ID of the zone setting.
-	ID param.Field[ZonesSchemasTrueClientIPHeaderID] `json:"id,required"`
+	ID param.Field[ZonesSchemasTrueClientIPHeaderID] `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value param.Field[ZonesSchemasTrueClientIPHeaderValue] `json:"value,required"`
+	Value param.Field[ZonesSchemasTrueClientIPHeaderValue] `json:"value" api:"required"`
 }
 
 func (r ZonesSchemasTrueClientIPHeaderParam) MarshalJSON() (data []byte, err error) {
@@ -5094,14 +5094,14 @@ func (r ZonesSchemasTrueClientIPHeaderParam) implementsZoneSettingUpdateParamsBo
 // (https://support.cloudflare.com/hc/en-us/articles/200172016).
 type ZonesSchemasWaf struct {
 	// ID of the zone setting.
-	ID ZonesSchemasWafID `json:"id,required"`
+	ID ZonesSchemasWafID `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value ZonesSchemasWafValue `json:"value,required"`
+	Value ZonesSchemasWafValue `json:"value" api:"required"`
 	// Whether or not this setting can be modified for this zone (based on your
 	// Cloudflare plan level).
 	Editable ZonesSchemasWafEditable `json:"editable"`
 	// last time this setting was modified.
-	ModifiedOn time.Time           `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time           `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zonesSchemasWafJSON `json:"-"`
 }
 
@@ -5187,9 +5187,9 @@ func (r ZonesSchemasWafEditable) IsKnown() bool {
 // (https://support.cloudflare.com/hc/en-us/articles/200172016).
 type ZonesSchemasWafParam struct {
 	// ID of the zone setting.
-	ID param.Field[ZonesSchemasWafID] `json:"id,required"`
+	ID param.Field[ZonesSchemasWafID] `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value param.Field[ZonesSchemasWafValue] `json:"value,required"`
+	Value param.Field[ZonesSchemasWafValue] `json:"value" api:"required"`
 }
 
 func (r ZonesSchemasWafParam) MarshalJSON() (data []byte, err error) {
@@ -5201,14 +5201,14 @@ func (r ZonesSchemasWafParam) implementsZoneSettingUpdateParamsBodyUnion() {}
 // Cloudflare security header for a zone.
 type ZonesSecurityHeader struct {
 	// ID of the zone's security header.
-	ID ZonesSecurityHeaderID `json:"id,required"`
+	ID ZonesSecurityHeaderID `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value ZonesSecurityHeaderValue `json:"value,required"`
+	Value ZonesSecurityHeaderValue `json:"value" api:"required"`
 	// Whether or not this setting can be modified for this zone (based on your
 	// Cloudflare plan level).
 	Editable ZonesSecurityHeaderEditable `json:"editable"`
 	// last time this setting was modified.
-	ModifiedOn time.Time               `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time               `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zonesSecurityHeaderJSON `json:"-"`
 }
 
@@ -5328,9 +5328,9 @@ func (r ZonesSecurityHeaderEditable) IsKnown() bool {
 // Cloudflare security header for a zone.
 type ZonesSecurityHeaderParam struct {
 	// ID of the zone's security header.
-	ID param.Field[ZonesSecurityHeaderID] `json:"id,required"`
+	ID param.Field[ZonesSecurityHeaderID] `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value param.Field[ZonesSecurityHeaderValueParam] `json:"value,required"`
+	Value param.Field[ZonesSecurityHeaderValueParam] `json:"value" api:"required"`
 }
 
 func (r ZonesSecurityHeaderParam) MarshalJSON() (data []byte, err error) {
@@ -5380,14 +5380,14 @@ func (r ZonesSecurityHeaderValueStrictTransportSecurityParam) MarshalJSON() (dat
 // (https://support.cloudflare.com/hc/en-us/articles/200170036).
 type ZonesServerSideExclude struct {
 	// ID of the zone setting.
-	ID ZonesServerSideExcludeID `json:"id,required"`
+	ID ZonesServerSideExcludeID `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value ZonesServerSideExcludeValue `json:"value,required"`
+	Value ZonesServerSideExcludeValue `json:"value" api:"required"`
 	// Whether or not this setting can be modified for this zone (based on your
 	// Cloudflare plan level).
 	Editable ZonesServerSideExcludeEditable `json:"editable"`
 	// last time this setting was modified.
-	ModifiedOn time.Time                  `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time                  `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zonesServerSideExcludeJSON `json:"-"`
 }
 
@@ -5475,9 +5475,9 @@ func (r ZonesServerSideExcludeEditable) IsKnown() bool {
 // (https://support.cloudflare.com/hc/en-us/articles/200170036).
 type ZonesServerSideExcludeParam struct {
 	// ID of the zone setting.
-	ID param.Field[ZonesServerSideExcludeID] `json:"id,required"`
+	ID param.Field[ZonesServerSideExcludeID] `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value param.Field[ZonesServerSideExcludeValue] `json:"value,required"`
+	Value param.Field[ZonesServerSideExcludeValue] `json:"value" api:"required"`
 }
 
 func (r ZonesServerSideExcludeParam) MarshalJSON() (data []byte, err error) {
@@ -5496,7 +5496,7 @@ type ZonesSetting struct {
 	// ssl-recommender enrollment setting.
 	Enabled bool `json:"enabled"`
 	// last time this setting was modified.
-	ModifiedOn time.Time `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time `json:"modified_on" api:"nullable" format:"date-time"`
 	// Value of the zone setting. Notes: The interval (in seconds) from when
 	// development mode expires (positive integer) or last expired (negative integer)
 	// for the domain. If development mode has never been enabled, this value is false.
@@ -5870,14 +5870,14 @@ func init() {
 // Determines whether or not the china network is enabled.
 type ZonesSettingZonesChinaNetworkEnabled struct {
 	// ID of the zone setting.
-	ID ZonesSettingZonesChinaNetworkEnabledID `json:"id,required"`
+	ID ZonesSettingZonesChinaNetworkEnabledID `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value ZonesSettingZonesChinaNetworkEnabledValue `json:"value,required"`
+	Value ZonesSettingZonesChinaNetworkEnabledValue `json:"value" api:"required"`
 	// Whether or not this setting can be modified for this zone (based on your
 	// Cloudflare plan level).
 	Editable ZonesSettingZonesChinaNetworkEnabledEditable `json:"editable"`
 	// last time this setting was modified.
-	ModifiedOn time.Time                                `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time                                `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zonesSettingZonesChinaNetworkEnabledJSON `json:"-"`
 }
 
@@ -5958,14 +5958,14 @@ func (r ZonesSettingZonesChinaNetworkEnabledEditable) IsKnown() bool {
 type ZonesSettingZonesTransformations struct {
 	// ID of the zone setting. Shared between Image Transformations and Video
 	// Transformations.
-	ID ZonesSettingZonesTransformationsID `json:"id,required"`
+	ID ZonesSettingZonesTransformationsID `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value ZonesSettingZonesTransformationsValue `json:"value,required"`
+	Value ZonesSettingZonesTransformationsValue `json:"value" api:"required"`
 	// Whether or not this setting can be modified for this zone (based on your
 	// Cloudflare plan level).
 	Editable ZonesSettingZonesTransformationsEditable `json:"editable"`
 	// last time this setting was modified.
-	ModifiedOn time.Time                            `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time                            `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zonesSettingZonesTransformationsJSON `json:"-"`
 }
 
@@ -6048,14 +6048,14 @@ func (r ZonesSettingZonesTransformationsEditable) IsKnown() bool {
 type ZonesSettingZonesTransformationsAllowedOrigins struct {
 	// ID of the zone setting. Shared between Image Transformations and Video
 	// Transformations.
-	ID ZonesSettingZonesTransformationsAllowedOriginsID `json:"id,required"`
+	ID ZonesSettingZonesTransformationsAllowedOriginsID `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value string `json:"value,required"`
+	Value string `json:"value" api:"required"`
 	// Whether or not this setting can be modified for this zone (based on your
 	// Cloudflare plan level).
 	Editable ZonesSettingZonesTransformationsAllowedOriginsEditable `json:"editable"`
 	// last time this setting was modified.
-	ModifiedOn time.Time                                          `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time                                          `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zonesSettingZonesTransformationsAllowedOriginsJSON `json:"-"`
 }
 
@@ -6207,14 +6207,14 @@ func (r ZonesSettingEditable) IsKnown() bool {
 // Allow SHA1 support.
 type ZonesSha1Support struct {
 	// Zone setting identifier.
-	ID ZonesSha1SupportID `json:"id,required"`
+	ID ZonesSha1SupportID `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value ZonesSha1SupportValue `json:"value,required"`
+	Value ZonesSha1SupportValue `json:"value" api:"required"`
 	// Whether or not this setting can be modified for this zone (based on your
 	// Cloudflare plan level).
 	Editable ZonesSha1SupportEditable `json:"editable"`
 	// last time this setting was modified.
-	ModifiedOn time.Time            `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time            `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zonesSha1SupportJSON `json:"-"`
 }
 
@@ -6292,9 +6292,9 @@ func (r ZonesSha1SupportEditable) IsKnown() bool {
 // Allow SHA1 support.
 type ZonesSha1SupportParam struct {
 	// Zone setting identifier.
-	ID param.Field[ZonesSha1SupportID] `json:"id,required"`
+	ID param.Field[ZonesSha1SupportID] `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value param.Field[ZonesSha1SupportValue] `json:"value,required"`
+	Value param.Field[ZonesSha1SupportValue] `json:"value" api:"required"`
 }
 
 func (r ZonesSha1SupportParam) MarshalJSON() (data []byte, err error) {
@@ -6369,14 +6369,14 @@ func (r ZonesSslRecommenderParam) implementsZoneSettingUpdateParamsBodyUnion() {
 // Only allows TLS1.2.
 type ZonesTls1_2Only struct {
 	// Zone setting identifier.
-	ID ZonesTls1_2OnlyID `json:"id,required"`
+	ID ZonesTls1_2OnlyID `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value ZonesTls1_2OnlyValue `json:"value,required"`
+	Value ZonesTls1_2OnlyValue `json:"value" api:"required"`
 	// Whether or not this setting can be modified for this zone (based on your
 	// Cloudflare plan level).
 	Editable ZonesTls1_2OnlyEditable `json:"editable"`
 	// last time this setting was modified.
-	ModifiedOn time.Time           `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time           `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zonesTls1_2OnlyJSON `json:"-"`
 }
 
@@ -6453,9 +6453,9 @@ func (r ZonesTls1_2OnlyEditable) IsKnown() bool {
 // Only allows TLS1.2.
 type ZonesTls1_2OnlyParam struct {
 	// Zone setting identifier.
-	ID param.Field[ZonesTls1_2OnlyID] `json:"id,required"`
+	ID param.Field[ZonesTls1_2OnlyID] `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value param.Field[ZonesTls1_2OnlyValue] `json:"value,required"`
+	Value param.Field[ZonesTls1_2OnlyValue] `json:"value" api:"required"`
 }
 
 func (r ZonesTls1_2OnlyParam) MarshalJSON() (data []byte, err error) {
@@ -6467,14 +6467,14 @@ func (r ZonesTls1_2OnlyParam) implementsZoneSettingUpdateParamsBodyUnion() {}
 // Enables Crypto TLS 1.3 feature for a zone.
 type ZonesTls1_3 struct {
 	// ID of the zone setting.
-	ID ZonesTls1_3ID `json:"id,required"`
+	ID ZonesTls1_3ID `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value ZonesTls1_3Value `json:"value,required"`
+	Value ZonesTls1_3Value `json:"value" api:"required"`
 	// Whether or not this setting can be modified for this zone (based on your
 	// Cloudflare plan level).
 	Editable ZonesTls1_3Editable `json:"editable"`
 	// last time this setting was modified.
-	ModifiedOn time.Time       `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time       `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zonesTls1_3JSON `json:"-"`
 }
 
@@ -6552,9 +6552,9 @@ func (r ZonesTls1_3Editable) IsKnown() bool {
 // Enables Crypto TLS 1.3 feature for a zone.
 type ZonesTls1_3Param struct {
 	// ID of the zone setting.
-	ID param.Field[ZonesTls1_3ID] `json:"id,required"`
+	ID param.Field[ZonesTls1_3ID] `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value param.Field[ZonesTls1_3Value] `json:"value,required"`
+	Value param.Field[ZonesTls1_3Value] `json:"value" api:"required"`
 }
 
 func (r ZonesTls1_3Param) MarshalJSON() (data []byte, err error) {
@@ -6567,14 +6567,14 @@ func (r ZonesTls1_3Param) implementsZoneSettingUpdateParamsBodyUnion() {}
 // client certificate (Enterprise Only).
 type ZonesTlsClientAuth struct {
 	// ID of the zone setting.
-	ID ZonesTlsClientAuthID `json:"id,required"`
+	ID ZonesTlsClientAuthID `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value ZonesTlsClientAuthValue `json:"value,required"`
+	Value ZonesTlsClientAuthValue `json:"value" api:"required"`
 	// Whether or not this setting can be modified for this zone (based on your
 	// Cloudflare plan level).
 	Editable ZonesTlsClientAuthEditable `json:"editable"`
 	// last time this setting was modified.
-	ModifiedOn time.Time              `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time              `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zonesTlsClientAuthJSON `json:"-"`
 }
 
@@ -6653,9 +6653,9 @@ func (r ZonesTlsClientAuthEditable) IsKnown() bool {
 // client certificate (Enterprise Only).
 type ZonesTlsClientAuthParam struct {
 	// ID of the zone setting.
-	ID param.Field[ZonesTlsClientAuthID] `json:"id,required"`
+	ID param.Field[ZonesTlsClientAuthID] `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value param.Field[ZonesTlsClientAuthValue] `json:"value,required"`
+	Value param.Field[ZonesTlsClientAuthValue] `json:"value" api:"required"`
 }
 
 func (r ZonesTlsClientAuthParam) MarshalJSON() (data []byte, err error) {
@@ -6669,14 +6669,14 @@ func (r ZonesTlsClientAuthParam) implementsZoneSettingUpdateParamsBodyUnion() {}
 // serve a WebP version of the original image.
 type ZonesWebp struct {
 	// ID of the zone setting.
-	ID ZonesWebpID `json:"id,required"`
+	ID ZonesWebpID `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value ZonesWebpValue `json:"value,required"`
+	Value ZonesWebpValue `json:"value" api:"required"`
 	// Whether or not this setting can be modified for this zone (based on your
 	// Cloudflare plan level).
 	Editable ZonesWebpEditable `json:"editable"`
 	// last time this setting was modified.
-	ModifiedOn time.Time     `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time     `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zonesWebpJSON `json:"-"`
 }
 
@@ -6755,9 +6755,9 @@ func (r ZonesWebpEditable) IsKnown() bool {
 // serve a WebP version of the original image.
 type ZonesWebpParam struct {
 	// ID of the zone setting.
-	ID param.Field[ZonesWebpID] `json:"id,required"`
+	ID param.Field[ZonesWebpID] `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value param.Field[ZonesWebpValue] `json:"value,required"`
+	Value param.Field[ZonesWebpValue] `json:"value" api:"required"`
 }
 
 func (r ZonesWebpParam) MarshalJSON() (data []byte, err error) {
@@ -6775,14 +6775,14 @@ func (r ZonesWebpParam) implementsZoneSettingUpdateParamsBodyUnion() {}
 // [Can I use Cloudflare with Websockets](https://support.cloudflare.com/hc/en-us/articles/200169466-Can-I-use-Cloudflare-with-WebSockets-).
 type ZonesWebsockets struct {
 	// ID of the zone setting.
-	ID ZonesWebsocketsID `json:"id,required"`
+	ID ZonesWebsocketsID `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value ZonesWebsocketsValue `json:"value,required"`
+	Value ZonesWebsocketsValue `json:"value" api:"required"`
 	// Whether or not this setting can be modified for this zone (based on your
 	// Cloudflare plan level).
 	Editable ZonesWebsocketsEditable `json:"editable"`
 	// last time this setting was modified.
-	ModifiedOn time.Time           `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time           `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zonesWebsocketsJSON `json:"-"`
 }
 
@@ -6865,9 +6865,9 @@ func (r ZonesWebsocketsEditable) IsKnown() bool {
 // [Can I use Cloudflare with Websockets](https://support.cloudflare.com/hc/en-us/articles/200169466-Can-I-use-Cloudflare-with-WebSockets-).
 type ZonesWebsocketsParam struct {
 	// ID of the zone setting.
-	ID param.Field[ZonesWebsocketsID] `json:"id,required"`
+	ID param.Field[ZonesWebsocketsID] `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value param.Field[ZonesWebsocketsValue] `json:"value,required"`
+	Value param.Field[ZonesWebsocketsValue] `json:"value" api:"required"`
 }
 
 func (r ZonesWebsocketsParam) MarshalJSON() (data []byte, err error) {
@@ -6877,10 +6877,10 @@ func (r ZonesWebsocketsParam) MarshalJSON() (data []byte, err error) {
 func (r ZonesWebsocketsParam) implementsZoneSettingUpdateParamsBodyUnion() {}
 
 type ZonesZoneSettingsResponseCollection struct {
-	Errors   []MessagesZonesItem `json:"errors,required"`
-	Messages []MessagesZonesItem `json:"messages,required"`
+	Errors   []MessagesZonesItem `json:"errors" api:"required"`
+	Messages []MessagesZonesItem `json:"messages" api:"required"`
 	// Whether the API call was successful
-	Success bool                                        `json:"success,required"`
+	Success bool                                        `json:"success" api:"required"`
 	Result  []ZonesZoneSettingsResponseCollectionResult `json:"result"`
 	JSON    zonesZoneSettingsResponseCollectionJSON     `json:"-"`
 }
@@ -6914,7 +6914,7 @@ type ZonesZoneSettingsResponseCollectionResult struct {
 	// ssl-recommender enrollment setting.
 	Enabled bool `json:"enabled"`
 	// last time this setting was modified.
-	ModifiedOn time.Time `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time `json:"modified_on" api:"nullable" format:"date-time"`
 	// Value of the zone setting. Notes: The interval (in seconds) from when
 	// development mode expires (positive integer) or last expired (negative integer)
 	// for the domain. If development mode has never been enabled, this value is false.
@@ -7288,14 +7288,14 @@ func init() {
 type ZonesZoneSettingsResponseCollectionResultZonesTransformations struct {
 	// ID of the zone setting. Shared between Image Transformations and Video
 	// Transformations.
-	ID ZonesZoneSettingsResponseCollectionResultZonesTransformationsID `json:"id,required"`
+	ID ZonesZoneSettingsResponseCollectionResultZonesTransformationsID `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value ZonesZoneSettingsResponseCollectionResultZonesTransformationsValue `json:"value,required"`
+	Value ZonesZoneSettingsResponseCollectionResultZonesTransformationsValue `json:"value" api:"required"`
 	// Whether or not this setting can be modified for this zone (based on your
 	// Cloudflare plan level).
 	Editable ZonesZoneSettingsResponseCollectionResultZonesTransformationsEditable `json:"editable"`
 	// last time this setting was modified.
-	ModifiedOn time.Time                                                         `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time                                                         `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zonesZoneSettingsResponseCollectionResultZonesTransformationsJSON `json:"-"`
 }
 
@@ -7380,14 +7380,14 @@ func (r ZonesZoneSettingsResponseCollectionResultZonesTransformationsEditable) I
 type ZonesZoneSettingsResponseCollectionResultZonesTransformationsAllowedOrigins struct {
 	// ID of the zone setting. Shared between Image Transformations and Video
 	// Transformations.
-	ID ZonesZoneSettingsResponseCollectionResultZonesTransformationsAllowedOriginsID `json:"id,required"`
+	ID ZonesZoneSettingsResponseCollectionResultZonesTransformationsAllowedOriginsID `json:"id" api:"required"`
 	// Current value of the zone setting.
-	Value string `json:"value,required"`
+	Value string `json:"value" api:"required"`
 	// Whether or not this setting can be modified for this zone (based on your
 	// Cloudflare plan level).
 	Editable ZonesZoneSettingsResponseCollectionResultZonesTransformationsAllowedOriginsEditable `json:"editable"`
 	// last time this setting was modified.
-	ModifiedOn time.Time                                                                       `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time                                                                       `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zonesZoneSettingsResponseCollectionResultZonesTransformationsAllowedOriginsJSON `json:"-"`
 }
 
@@ -7538,10 +7538,10 @@ func (r ZonesZoneSettingsResponseCollectionResultEditable) IsKnown() bool {
 }
 
 type ZoneSettingGetSettingResponse struct {
-	Errors   []MessagesZonesItem `json:"errors,required"`
-	Messages []MessagesZonesItem `json:"messages,required"`
+	Errors   []MessagesZonesItem `json:"errors" api:"required"`
+	Messages []MessagesZonesItem `json:"messages" api:"required"`
 	// Whether the API call was successful
-	Success bool `json:"success,required"`
+	Success bool `json:"success" api:"required"`
 	// 0-RTT session resumption enabled for this zone.
 	Result ZonesSetting                      `json:"result"`
 	JSON   zoneSettingGetSettingResponseJSON `json:"-"`
@@ -7567,10 +7567,10 @@ func (r zoneSettingGetSettingResponseJSON) RawJSON() string {
 }
 
 type ZoneSettingUpdateSettingResponse struct {
-	Errors   []MessagesZonesItem `json:"errors,required"`
-	Messages []MessagesZonesItem `json:"messages,required"`
+	Errors   []MessagesZonesItem `json:"errors" api:"required"`
+	Messages []MessagesZonesItem `json:"messages" api:"required"`
 	// Whether the API call was successful
-	Success bool `json:"success,required"`
+	Success bool `json:"success" api:"required"`
 	// 0-RTT session resumption enabled for this zone.
 	Result ZonesSetting                         `json:"result"`
 	JSON   zoneSettingUpdateSettingResponseJSON `json:"-"`
@@ -7596,7 +7596,7 @@ func (r zoneSettingUpdateSettingResponseJSON) RawJSON() string {
 }
 
 type ZoneSettingUpdateParams struct {
-	Body []ZoneSettingUpdateParamsBodyUnion `json:"body,required"`
+	Body []ZoneSettingUpdateParamsBodyUnion `json:"body" api:"required"`
 }
 
 func (r ZoneSettingUpdateParams) MarshalJSON() (data []byte, err error) {
@@ -7654,7 +7654,7 @@ type ZoneSettingUpdateParamsBodyUnion interface {
 // Determines whether or not the china network is enabled.
 type ZoneSettingUpdateParamsBodyZonesChinaNetworkEnabled struct {
 	// ID of the zone setting.
-	ID param.Field[ZoneSettingUpdateParamsBodyZonesChinaNetworkEnabledID] `json:"id,required"`
+	ID param.Field[ZoneSettingUpdateParamsBodyZonesChinaNetworkEnabledID] `json:"id" api:"required"`
 }
 
 func (r ZoneSettingUpdateParamsBodyZonesChinaNetworkEnabled) MarshalJSON() (data []byte, err error) {
@@ -7801,7 +7801,7 @@ func (r ZoneSettingUpdateParamsBodyEditable) IsKnown() bool {
 }
 
 type ZoneSettingUpdateSettingParams struct {
-	Body ZoneSettingUpdateSettingParamsBodyUnion `json:"body,required"`
+	Body ZoneSettingUpdateSettingParamsBodyUnion `json:"body" api:"required"`
 }
 
 func (r ZoneSettingUpdateSettingParams) MarshalJSON() (data []byte, err error) {
@@ -7933,20 +7933,20 @@ type ZoneSettingUpdateSettingParamsBodyValueValueZonesAutomaticPlatformOptimizat
 	// Indicates whether or not
 	// [cache by device type](https://developers.cloudflare.com/automatic-platform-optimization/reference/cache-device-type/)
 	// is enabled.
-	CacheByDeviceType param.Field[bool] `json:"cache_by_device_type,required"`
+	CacheByDeviceType param.Field[bool] `json:"cache_by_device_type" api:"required"`
 	// Indicates whether or not Cloudflare proxy is enabled.
-	Cf param.Field[bool] `json:"cf,required"`
+	Cf param.Field[bool] `json:"cf" api:"required"`
 	// Indicates whether or not Automatic Platform Optimization is enabled.
-	Enabled param.Field[bool] `json:"enabled,required"`
+	Enabled param.Field[bool] `json:"enabled" api:"required"`
 	// An array of hostnames where Automatic Platform Optimization for WordPress is
 	// activated.
-	Hostnames param.Field[[]string] `json:"hostnames,required" format:"hostname"`
+	Hostnames param.Field[[]string] `json:"hostnames" api:"required" format:"hostname"`
 	// Indicates whether or not site is powered by WordPress.
-	Wordpress param.Field[bool] `json:"wordpress,required"`
+	Wordpress param.Field[bool] `json:"wordpress" api:"required"`
 	// Indicates whether or not
 	// [Cloudflare for WordPress plugin](https://wordpress.org/plugins/cloudflare/) is
 	// installed.
-	WpPlugin param.Field[bool] `json:"wp_plugin,required"`
+	WpPlugin param.Field[bool] `json:"wp_plugin" api:"required"`
 }
 
 func (r ZoneSettingUpdateSettingParamsBodyValueValueZonesAutomaticPlatformOptimization) MarshalJSON() (data []byte, err error) {

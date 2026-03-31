@@ -40,11 +40,11 @@ func (r *AccountAccessKeyService) Get(ctx context.Context, accountID string, opt
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/access/keys", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates the Access key rotation settings for an account.
@@ -52,11 +52,11 @@ func (r *AccountAccessKeyService) Update(ctx context.Context, accountID string, 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/access/keys", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Perfoms a key rotation for an account.
@@ -64,18 +64,18 @@ func (r *AccountAccessKeyService) Rotate(ctx context.Context, accountID string, 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/access/keys/rotate", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type SingleResponseKey struct {
-	Errors   []MessagesAccessItem `json:"errors,required"`
-	Messages []MessagesAccessItem `json:"messages,required"`
+	Errors   []MessagesAccessItem `json:"errors" api:"required"`
+	Messages []MessagesAccessItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success SingleResponseKeySuccess `json:"success,required"`
+	Success SingleResponseKeySuccess `json:"success" api:"required"`
 	Result  SingleResponseKeyResult  `json:"result"`
 	JSON    singleResponseKeyJSON    `json:"-"`
 }
@@ -144,7 +144,7 @@ func (r singleResponseKeyResultJSON) RawJSON() string {
 
 type AccountAccessKeyUpdateParams struct {
 	// The number of days between key rotations.
-	KeyRotationIntervalDays param.Field[float64] `json:"key_rotation_interval_days,required"`
+	KeyRotationIntervalDays param.Field[float64] `json:"key_rotation_interval_days" api:"required"`
 }
 
 func (r AccountAccessKeyUpdateParams) MarshalJSON() (data []byte, err error) {

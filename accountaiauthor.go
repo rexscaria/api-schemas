@@ -38,18 +38,18 @@ func (r *AccountAIAuthorService) Search(ctx context.Context, accountID string, o
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai/authors/search", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountAIAuthorSearchResponse struct {
-	Errors   []interface{}                     `json:"errors,required"`
-	Messages []string                          `json:"messages,required"`
-	Result   []interface{}                     `json:"result,required"`
-	Success  bool                              `json:"success,required"`
+	Errors   []interface{}                     `json:"errors" api:"required"`
+	Messages []string                          `json:"messages" api:"required"`
+	Result   []interface{}                     `json:"result" api:"required"`
+	Success  bool                              `json:"success" api:"required"`
 	JSON     accountAIAuthorSearchResponseJSON `json:"-"`
 }
 

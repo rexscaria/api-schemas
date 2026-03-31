@@ -41,15 +41,15 @@ func (r *ZoneSpeedAPIScheduleService) New(ctx context.Context, zoneID string, ur
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if url == "" {
 		err = errors.New("missing required url parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/speed_api/schedule/%s", zoneID, url)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Deletes a scheduled test for a page.
@@ -57,15 +57,15 @@ func (r *ZoneSpeedAPIScheduleService) Delete(ctx context.Context, zoneID string,
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if url == "" {
 		err = errors.New("missing required url parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/speed_api/schedule/%s", zoneID, url)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves the test schedule for a page in a specific region.
@@ -73,15 +73,15 @@ func (r *ZoneSpeedAPIScheduleService) Get(ctx context.Context, zoneID string, ur
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if url == "" {
 		err = errors.New("missing required url parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/speed_api/schedule/%s", zoneID, url)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // The test schedule.
@@ -114,10 +114,10 @@ func (r observatoryScheduleJSON) RawJSON() string {
 }
 
 type ZoneSpeedAPIScheduleNewResponse struct {
-	Errors   []ZoneSpeedAPIScheduleNewResponseError   `json:"errors,required"`
-	Messages []ZoneSpeedAPIScheduleNewResponseMessage `json:"messages,required"`
+	Errors   []ZoneSpeedAPIScheduleNewResponseError   `json:"errors" api:"required"`
+	Messages []ZoneSpeedAPIScheduleNewResponseMessage `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success bool                                  `json:"success,required"`
+	Success bool                                  `json:"success" api:"required"`
 	Result  ZoneSpeedAPIScheduleNewResponseResult `json:"result"`
 	JSON    zoneSpeedAPIScheduleNewResponseJSON   `json:"-"`
 }
@@ -142,8 +142,8 @@ func (r zoneSpeedAPIScheduleNewResponseJSON) RawJSON() string {
 }
 
 type ZoneSpeedAPIScheduleNewResponseError struct {
-	Code             int64                                       `json:"code,required"`
-	Message          string                                      `json:"message,required"`
+	Code             int64                                       `json:"code" api:"required"`
+	Message          string                                      `json:"message" api:"required"`
 	DocumentationURL string                                      `json:"documentation_url"`
 	Source           ZoneSpeedAPIScheduleNewResponseErrorsSource `json:"source"`
 	JSON             zoneSpeedAPIScheduleNewResponseErrorJSON    `json:"-"`
@@ -190,8 +190,8 @@ func (r zoneSpeedAPIScheduleNewResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type ZoneSpeedAPIScheduleNewResponseMessage struct {
-	Code             int64                                         `json:"code,required"`
-	Message          string                                        `json:"message,required"`
+	Code             int64                                         `json:"code" api:"required"`
+	Message          string                                        `json:"message" api:"required"`
 	DocumentationURL string                                        `json:"documentation_url"`
 	Source           ZoneSpeedAPIScheduleNewResponseMessagesSource `json:"source"`
 	JSON             zoneSpeedAPIScheduleNewResponseMessageJSON    `json:"-"`
@@ -262,10 +262,10 @@ func (r zoneSpeedAPIScheduleNewResponseResultJSON) RawJSON() string {
 }
 
 type ZoneSpeedAPIScheduleGetResponse struct {
-	Errors   []ObservatoryMessagesItem `json:"errors,required"`
-	Messages []ObservatoryMessagesItem `json:"messages,required"`
+	Errors   []ObservatoryMessagesItem `json:"errors" api:"required"`
+	Messages []ObservatoryMessagesItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success bool `json:"success,required"`
+	Success bool `json:"success" api:"required"`
 	// The test schedule.
 	Result ObservatorySchedule                 `json:"result"`
 	JSON   zoneSpeedAPIScheduleGetResponseJSON `json:"-"`

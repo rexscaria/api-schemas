@@ -39,11 +39,11 @@ func (r *AccountImageV1VariantService) New(ctx context.Context, accountID string
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/images/v1/variants", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetch details for a single variant.
@@ -51,15 +51,15 @@ func (r *AccountImageV1VariantService) Get(ctx context.Context, accountID string
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if variantID == "" {
 		err = errors.New("missing required variant_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/images/v1/variants/%s", accountID, variantID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Updating a variant purges the cache for all images associated with the variant.
@@ -67,15 +67,15 @@ func (r *AccountImageV1VariantService) Update(ctx context.Context, accountID str
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if variantID == "" {
 		err = errors.New("missing required variant_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/images/v1/variants/%s", accountID, variantID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists existing variants.
@@ -83,11 +83,11 @@ func (r *AccountImageV1VariantService) List(ctx context.Context, accountID strin
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/images/v1/variants", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Deleting a variant purges the cache for all images associated with the variant.
@@ -95,21 +95,21 @@ func (r *AccountImageV1VariantService) Delete(ctx context.Context, accountID str
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if variantID == "" {
 		err = errors.New("missing required variant_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/images/v1/variants/%s", accountID, variantID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type ImageVariantDefinition struct {
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Allows you to define image resizing sizes for different use cases.
-	Options ImageVariantOptions `json:"options,required"`
+	Options ImageVariantOptions `json:"options" api:"required"`
 	// Indicates whether the variant can access an image without a signature,
 	// regardless of image access control.
 	NeverRequireSignedURLs bool                       `json:"neverRequireSignedURLs"`
@@ -135,9 +135,9 @@ func (r imageVariantDefinitionJSON) RawJSON() string {
 }
 
 type ImageVariantDefinitionParam struct {
-	ID param.Field[string] `json:"id,required"`
+	ID param.Field[string] `json:"id" api:"required"`
 	// Allows you to define image resizing sizes for different use cases.
-	Options param.Field[ImageVariantOptionsParam] `json:"options,required"`
+	Options param.Field[ImageVariantOptionsParam] `json:"options" api:"required"`
 	// Indicates whether the variant can access an image without a signature,
 	// regardless of image access control.
 	NeverRequireSignedURLs param.Field[bool] `json:"neverRequireSignedURLs"`
@@ -151,13 +151,13 @@ func (r ImageVariantDefinitionParam) MarshalJSON() (data []byte, err error) {
 type ImageVariantOptions struct {
 	// The fit property describes how the width and height dimensions should be
 	// interpreted.
-	Fit ImageVariantOptionsFit `json:"fit,required"`
+	Fit ImageVariantOptionsFit `json:"fit" api:"required"`
 	// Maximum height in image pixels.
-	Height float64 `json:"height,required"`
+	Height float64 `json:"height" api:"required"`
 	// What EXIF data should be preserved in the output image.
-	Metadata ImageVariantOptionsMetadata `json:"metadata,required"`
+	Metadata ImageVariantOptionsMetadata `json:"metadata" api:"required"`
 	// Maximum width in image pixels.
-	Width float64                 `json:"width,required"`
+	Width float64                 `json:"width" api:"required"`
 	JSON  imageVariantOptionsJSON `json:"-"`
 }
 
@@ -221,13 +221,13 @@ func (r ImageVariantOptionsMetadata) IsKnown() bool {
 type ImageVariantOptionsParam struct {
 	// The fit property describes how the width and height dimensions should be
 	// interpreted.
-	Fit param.Field[ImageVariantOptionsFit] `json:"fit,required"`
+	Fit param.Field[ImageVariantOptionsFit] `json:"fit" api:"required"`
 	// Maximum height in image pixels.
-	Height param.Field[float64] `json:"height,required"`
+	Height param.Field[float64] `json:"height" api:"required"`
 	// What EXIF data should be preserved in the output image.
-	Metadata param.Field[ImageVariantOptionsMetadata] `json:"metadata,required"`
+	Metadata param.Field[ImageVariantOptionsMetadata] `json:"metadata" api:"required"`
 	// Maximum width in image pixels.
-	Width param.Field[float64] `json:"width,required"`
+	Width param.Field[float64] `json:"width" api:"required"`
 }
 
 func (r ImageVariantOptionsParam) MarshalJSON() (data []byte, err error) {
@@ -235,11 +235,11 @@ func (r ImageVariantOptionsParam) MarshalJSON() (data []byte, err error) {
 }
 
 type ImageVariantSimpleResponse struct {
-	Errors   []ImageVariantSimpleResponseError   `json:"errors,required"`
-	Messages []ImageVariantSimpleResponseMessage `json:"messages,required"`
-	Result   ImageVariantSimpleResponseResult    `json:"result,required"`
+	Errors   []ImageVariantSimpleResponseError   `json:"errors" api:"required"`
+	Messages []ImageVariantSimpleResponseMessage `json:"messages" api:"required"`
+	Result   ImageVariantSimpleResponseResult    `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success ImageVariantSimpleResponseSuccess `json:"success,required"`
+	Success ImageVariantSimpleResponseSuccess `json:"success" api:"required"`
 	JSON    imageVariantSimpleResponseJSON    `json:"-"`
 }
 
@@ -263,8 +263,8 @@ func (r imageVariantSimpleResponseJSON) RawJSON() string {
 }
 
 type ImageVariantSimpleResponseError struct {
-	Code             int64                                  `json:"code,required"`
-	Message          string                                 `json:"message,required"`
+	Code             int64                                  `json:"code" api:"required"`
+	Message          string                                 `json:"message" api:"required"`
 	DocumentationURL string                                 `json:"documentation_url"`
 	Source           ImageVariantSimpleResponseErrorsSource `json:"source"`
 	JSON             imageVariantSimpleResponseErrorJSON    `json:"-"`
@@ -311,8 +311,8 @@ func (r imageVariantSimpleResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type ImageVariantSimpleResponseMessage struct {
-	Code             int64                                    `json:"code,required"`
-	Message          string                                   `json:"message,required"`
+	Code             int64                                    `json:"code" api:"required"`
+	Message          string                                   `json:"message" api:"required"`
 	DocumentationURL string                                   `json:"documentation_url"`
 	Source           ImageVariantSimpleResponseMessagesSource `json:"source"`
 	JSON             imageVariantSimpleResponseMessageJSON    `json:"-"`
@@ -395,11 +395,11 @@ func (r ImageVariantSimpleResponseSuccess) IsKnown() bool {
 }
 
 type AccountImageV1VariantListResponse struct {
-	Errors   []AccountImageV1VariantListResponseError   `json:"errors,required"`
-	Messages []AccountImageV1VariantListResponseMessage `json:"messages,required"`
-	Result   AccountImageV1VariantListResponseResult    `json:"result,required"`
+	Errors   []AccountImageV1VariantListResponseError   `json:"errors" api:"required"`
+	Messages []AccountImageV1VariantListResponseMessage `json:"messages" api:"required"`
+	Result   AccountImageV1VariantListResponseResult    `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success AccountImageV1VariantListResponseSuccess `json:"success,required"`
+	Success AccountImageV1VariantListResponseSuccess `json:"success" api:"required"`
 	JSON    accountImageV1VariantListResponseJSON    `json:"-"`
 }
 
@@ -423,8 +423,8 @@ func (r accountImageV1VariantListResponseJSON) RawJSON() string {
 }
 
 type AccountImageV1VariantListResponseError struct {
-	Code             int64                                         `json:"code,required"`
-	Message          string                                        `json:"message,required"`
+	Code             int64                                         `json:"code" api:"required"`
+	Message          string                                        `json:"message" api:"required"`
 	DocumentationURL string                                        `json:"documentation_url"`
 	Source           AccountImageV1VariantListResponseErrorsSource `json:"source"`
 	JSON             accountImageV1VariantListResponseErrorJSON    `json:"-"`
@@ -471,8 +471,8 @@ func (r accountImageV1VariantListResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type AccountImageV1VariantListResponseMessage struct {
-	Code             int64                                           `json:"code,required"`
-	Message          string                                          `json:"message,required"`
+	Code             int64                                           `json:"code" api:"required"`
+	Message          string                                          `json:"message" api:"required"`
 	DocumentationURL string                                          `json:"documentation_url"`
 	Source           AccountImageV1VariantListResponseMessagesSource `json:"source"`
 	JSON             accountImageV1VariantListResponseMessageJSON    `json:"-"`
@@ -561,9 +561,9 @@ func (r accountImageV1VariantListResponseResultVariantsJSON) RawJSON() string {
 }
 
 type AccountImageV1VariantListResponseResultVariantsHero struct {
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Allows you to define image resizing sizes for different use cases.
-	Options ImageVariantOptions `json:"options,required"`
+	Options ImageVariantOptions `json:"options" api:"required"`
 	// Indicates whether the variant can access an image without a signature,
 	// regardless of image access control.
 	NeverRequireSignedURLs bool                                                    `json:"neverRequireSignedURLs"`
@@ -604,7 +604,7 @@ func (r AccountImageV1VariantListResponseSuccess) IsKnown() bool {
 }
 
 type AccountImageV1VariantNewParams struct {
-	ImageVariantDefinition ImageVariantDefinitionParam `json:"image_variant_definition,required"`
+	ImageVariantDefinition ImageVariantDefinitionParam `json:"image_variant_definition" api:"required"`
 }
 
 func (r AccountImageV1VariantNewParams) MarshalJSON() (data []byte, err error) {
@@ -613,7 +613,7 @@ func (r AccountImageV1VariantNewParams) MarshalJSON() (data []byte, err error) {
 
 type AccountImageV1VariantUpdateParams struct {
 	// Allows you to define image resizing sizes for different use cases.
-	Options param.Field[ImageVariantOptionsParam] `json:"options,required"`
+	Options param.Field[ImageVariantOptionsParam] `json:"options" api:"required"`
 	// Indicates whether the variant can access an image without a signature,
 	// regardless of image access control.
 	NeverRequireSignedURLs param.Field[bool] `json:"neverRequireSignedURLs"`

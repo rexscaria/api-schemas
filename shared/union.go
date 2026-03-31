@@ -68,6 +68,7 @@ func (UnionString) ImplementsMagicTunnelHealthCheckTargetUnionParam()           
 func (UnionString) ImplementsMagicTunnelHealthCheckTargetUnion()                              {}
 func (UnionString) ImplementsAccountStorageKvNamespaceBulkGetMultipleResponseResultWorkersKvBulkGetResultValuesUnion() {
 }
+func (UnionString) ImplementsAccountStorageKvNamespaceValueWriteParamsValueUnion()      {}
 func (UnionString) ImplementsAccountWorkflowInstanceGetResponseResultOutputUnion()      {}
 func (UnionString) ImplementsRadarRankingGetTimeseriesGroupsResponseResultSerie0Union() {}
 func (UnionString) ImplementsRadarRankingInternetServiceGetTimeseriesGroupsResponseResultSerie0Union() {

@@ -42,11 +42,11 @@ func (r *AccountDexCommandService) New(ctx context.Context, accountID string, bo
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/dex/commands", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves a paginated list of commands issued to devices under the specified
@@ -55,11 +55,11 @@ func (r *AccountDexCommandService) List(ctx context.Context, accountID string, q
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/dex/commands", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Downloads artifacts for an executed command. Bulk downloads are not supported
@@ -68,19 +68,19 @@ func (r *AccountDexCommandService) DownloadOutput(ctx context.Context, accountID
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "application/zip")}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if commandID == "" {
 		err = errors.New("missing required command_id parameter")
-		return
+		return nil, err
 	}
 	if filename == "" {
 		err = errors.New("missing required filename parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/dex/commands/%s/downloads/%s", accountID, commandID, filename)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves the current quota usage and limits for device commands within a
@@ -89,11 +89,11 @@ func (r *AccountDexCommandService) GetQuota(ctx context.Context, accountID strin
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/dex/commands/quota", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // List devices with WARP client support for remote captures which have been
@@ -102,18 +102,18 @@ func (r *AccountDexCommandService) ListEligibleDevices(ctx context.Context, acco
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/dex/commands/devices", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountDexCommandNewResponse struct {
-	Errors   []Item `json:"errors,required"`
-	Messages []Item `json:"messages,required"`
+	Errors   []Item `json:"errors" api:"required"`
+	Messages []Item `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success    AccountDexCommandNewResponseSuccess    `json:"success,required"`
+	Success    AccountDexCommandNewResponseSuccess    `json:"success" api:"required"`
 	Result     AccountDexCommandNewResponseResult     `json:"result"`
 	ResultInfo AccountDexCommandNewResponseResultInfo `json:"result_info"`
 	JSON       accountDexCommandNewResponseJSON       `json:"-"`
@@ -260,10 +260,10 @@ func (r accountDexCommandNewResponseResultInfoJSON) RawJSON() string {
 }
 
 type AccountDexCommandListResponse struct {
-	Errors   []Item `json:"errors,required"`
-	Messages []Item `json:"messages,required"`
+	Errors   []Item `json:"errors" api:"required"`
+	Messages []Item `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success    AccountDexCommandListResponseSuccess    `json:"success,required"`
+	Success    AccountDexCommandListResponseSuccess    `json:"success" api:"required"`
 	Result     AccountDexCommandListResponseResult     `json:"result"`
 	ResultInfo AccountDexCommandListResponseResultInfo `json:"result_info"`
 	JSON       accountDexCommandListResponseJSON       `json:"-"`
@@ -327,10 +327,10 @@ func (r accountDexCommandListResponseResultJSON) RawJSON() string {
 
 type AccountDexCommandListResponseResultCommand struct {
 	ID            string                                         `json:"id"`
-	CompletedDate time.Time                                      `json:"completed_date,nullable" format:"date-time"`
+	CompletedDate time.Time                                      `json:"completed_date" api:"nullable" format:"date-time"`
 	CreatedDate   time.Time                                      `json:"created_date" format:"date-time"`
 	DeviceID      string                                         `json:"device_id"`
-	Filename      string                                         `json:"filename,nullable"`
+	Filename      string                                         `json:"filename" api:"nullable"`
 	Status        string                                         `json:"status"`
 	Type          string                                         `json:"type"`
 	UserEmail     string                                         `json:"user_email"`
@@ -392,10 +392,10 @@ func (r accountDexCommandListResponseResultInfoJSON) RawJSON() string {
 }
 
 type AccountDexCommandGetQuotaResponse struct {
-	Errors   []Item `json:"errors,required"`
-	Messages []Item `json:"messages,required"`
+	Errors   []Item `json:"errors" api:"required"`
+	Messages []Item `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success    AccountDexCommandGetQuotaResponseSuccess    `json:"success,required"`
+	Success    AccountDexCommandGetQuotaResponseSuccess    `json:"success" api:"required"`
 	Result     AccountDexCommandGetQuotaResponseResult     `json:"result"`
 	ResultInfo AccountDexCommandGetQuotaResponseResultInfo `json:"result_info"`
 	JSON       accountDexCommandGetQuotaResponseJSON       `json:"-"`
@@ -438,11 +438,11 @@ func (r AccountDexCommandGetQuotaResponseSuccess) IsKnown() bool {
 
 type AccountDexCommandGetQuotaResponseResult struct {
 	// The remaining number of commands that can be initiated for an account
-	Quota float64 `json:"quota,required"`
+	Quota float64 `json:"quota" api:"required"`
 	// The number of commands that have been initiated for an account
-	QuotaUsage float64 `json:"quota_usage,required"`
+	QuotaUsage float64 `json:"quota_usage" api:"required"`
 	// The time when the quota resets
-	ResetTime time.Time                                   `json:"reset_time,required" format:"date-time"`
+	ResetTime time.Time                                   `json:"reset_time" api:"required" format:"date-time"`
 	JSON      accountDexCommandGetQuotaResponseResultJSON `json:"-"`
 }
 
@@ -496,10 +496,10 @@ func (r accountDexCommandGetQuotaResponseResultInfoJSON) RawJSON() string {
 }
 
 type AccountDexCommandListEligibleDevicesResponse struct {
-	Errors   []Item `json:"errors,required"`
-	Messages []Item `json:"messages,required"`
+	Errors   []Item `json:"errors" api:"required"`
+	Messages []Item `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success    AccountDexCommandListEligibleDevicesResponseSuccess    `json:"success,required"`
+	Success    AccountDexCommandListEligibleDevicesResponseSuccess    `json:"success" api:"required"`
 	Result     AccountDexCommandListEligibleDevicesResponseResult     `json:"result"`
 	ResultInfo AccountDexCommandListEligibleDevicesResponseResultInfo `json:"result_info"`
 	JSON       accountDexCommandListEligibleDevicesResponseJSON       `json:"-"`
@@ -642,7 +642,7 @@ func (r accountDexCommandListEligibleDevicesResponseResultInfoJSON) RawJSON() st
 
 type AccountDexCommandNewParams struct {
 	// List of device-level commands to execute
-	Commands param.Field[[]AccountDexCommandNewParamsCommand] `json:"commands,required"`
+	Commands param.Field[[]AccountDexCommandNewParamsCommand] `json:"commands" api:"required"`
 }
 
 func (r AccountDexCommandNewParams) MarshalJSON() (data []byte, err error) {
@@ -651,11 +651,11 @@ func (r AccountDexCommandNewParams) MarshalJSON() (data []byte, err error) {
 
 type AccountDexCommandNewParamsCommand struct {
 	// Type of command to execute on the device
-	CommandType param.Field[AccountDexCommandNewParamsCommandsCommandType] `json:"command_type,required"`
+	CommandType param.Field[AccountDexCommandNewParamsCommandsCommandType] `json:"command_type" api:"required"`
 	// Unique identifier for the device
-	DeviceID param.Field[string] `json:"device_id,required"`
+	DeviceID param.Field[string] `json:"device_id" api:"required"`
 	// Email tied to the device
-	UserEmail   param.Field[string]                                        `json:"user_email,required"`
+	UserEmail   param.Field[string]                                        `json:"user_email" api:"required"`
 	CommandArgs param.Field[AccountDexCommandNewParamsCommandsCommandArgs] `json:"command_args"`
 }
 
@@ -718,9 +718,9 @@ func (r AccountDexCommandNewParamsCommandsCommandArgsInterface) IsKnown() bool {
 
 type AccountDexCommandListParams struct {
 	// Page number for pagination
-	Page param.Field[float64] `query:"page,required"`
+	Page param.Field[float64] `query:"page" api:"required"`
 	// Number of results per page
-	PerPage param.Field[float64] `query:"per_page,required"`
+	PerPage param.Field[float64] `query:"per_page" api:"required"`
 	// Optionally filter executed commands by command type
 	CommandType param.Field[string] `query:"command_type"`
 	// Unique identifier for a device
@@ -764,9 +764,9 @@ func (r AccountDexCommandListParamsStatus) IsKnown() bool {
 
 type AccountDexCommandListEligibleDevicesParams struct {
 	// Page number of paginated results
-	Page param.Field[float64] `query:"page,required"`
+	Page param.Field[float64] `query:"page" api:"required"`
 	// Number of items per page
-	PerPage param.Field[float64] `query:"per_page,required"`
+	PerPage param.Field[float64] `query:"per_page" api:"required"`
 	// Filter devices by name or email
 	Search param.Field[string] `query:"search"`
 }

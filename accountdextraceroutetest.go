@@ -42,15 +42,15 @@ func (r *AccountDexTracerouteTestService) Get(ctx context.Context, accountID str
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if testID == "" {
 		err = errors.New("missing required test_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/dex/traceroute-tests/%s", accountID, testID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Get a breakdown of metrics by hop for individual traceroute test runs
@@ -58,15 +58,15 @@ func (r *AccountDexTracerouteTestService) GetNetworkPath(ctx context.Context, ac
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if testID == "" {
 		err = errors.New("missing required test_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/dex/traceroute-tests/%s/network-path", accountID, testID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Get percentiles for a traceroute test for a given time period between 1 hour and
@@ -75,22 +75,22 @@ func (r *AccountDexTracerouteTestService) GetPercentiles(ctx context.Context, ac
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if testID == "" {
 		err = errors.New("missing required test_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/dex/traceroute-tests/%s/percentiles", accountID, testID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountDexTracerouteTestGetResponse struct {
-	Errors   []Item `json:"errors,required"`
-	Messages []Item `json:"messages,required"`
+	Errors   []Item `json:"errors" api:"required"`
+	Messages []Item `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountDexTracerouteTestGetResponseSuccess `json:"success,required"`
+	Success AccountDexTracerouteTestGetResponseSuccess `json:"success" api:"required"`
 	Result  AccountDexTracerouteTestGetResponseResult  `json:"result"`
 	JSON    accountDexTracerouteTestGetResponseJSON    `json:"-"`
 }
@@ -131,15 +131,15 @@ func (r AccountDexTracerouteTestGetResponseSuccess) IsKnown() bool {
 
 type AccountDexTracerouteTestGetResponseResult struct {
 	// The host of the Traceroute synthetic application test
-	Host string `json:"host,required"`
+	Host string `json:"host" api:"required"`
 	// The interval at which the Traceroute synthetic application test is set to run.
-	Interval string                                        `json:"interval,required"`
-	Kind     AccountDexTracerouteTestGetResponseResultKind `json:"kind,required"`
+	Interval string                                        `json:"interval" api:"required"`
+	Kind     AccountDexTracerouteTestGetResponseResultKind `json:"kind" api:"required"`
 	// The name of the Traceroute synthetic application test
-	Name                  string                                                           `json:"name,required"`
-	TargetPolicies        []AccountDexTracerouteTestGetResponseResultTargetPolicy          `json:"target_policies,nullable"`
+	Name                  string                                                           `json:"name" api:"required"`
+	TargetPolicies        []AccountDexTracerouteTestGetResponseResultTargetPolicy          `json:"target_policies" api:"nullable"`
 	Targeted              bool                                                             `json:"targeted"`
-	TracerouteStats       AccountDexTracerouteTestGetResponseResultTracerouteStats         `json:"tracerouteStats,nullable"`
+	TracerouteStats       AccountDexTracerouteTestGetResponseResultTracerouteStats         `json:"tracerouteStats" api:"nullable"`
 	TracerouteStatsByColo []AccountDexTracerouteTestGetResponseResultTracerouteStatsByColo `json:"tracerouteStatsByColo"`
 	JSON                  accountDexTracerouteTestGetResponseResultJSON                    `json:"-"`
 }
@@ -182,10 +182,10 @@ func (r AccountDexTracerouteTestGetResponseResultKind) IsKnown() bool {
 }
 
 type AccountDexTracerouteTestGetResponseResultTargetPolicy struct {
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Whether the policy is the default for the account
-	Default bool                                                      `json:"default,required"`
-	Name    string                                                    `json:"name,required"`
+	Default bool                                                      `json:"default" api:"required"`
+	Name    string                                                    `json:"name" api:"required"`
 	JSON    accountDexTracerouteTestGetResponseResultTargetPolicyJSON `json:"-"`
 }
 
@@ -208,12 +208,12 @@ func (r accountDexTracerouteTestGetResponseResultTargetPolicyJSON) RawJSON() str
 }
 
 type AccountDexTracerouteTestGetResponseResultTracerouteStats struct {
-	AvailabilityPct TestStatPctOverTime `json:"availabilityPct,required"`
-	HopsCount       TestStatOverTime    `json:"hopsCount,required"`
-	PacketLossPct   TestStatPctOverTime `json:"packetLossPct,required"`
-	RoundTripTimeMs TestStatOverTime    `json:"roundTripTimeMs,required"`
+	AvailabilityPct TestStatPctOverTime `json:"availabilityPct" api:"required"`
+	HopsCount       TestStatOverTime    `json:"hopsCount" api:"required"`
+	PacketLossPct   TestStatPctOverTime `json:"packetLossPct" api:"required"`
+	RoundTripTimeMs TestStatOverTime    `json:"roundTripTimeMs" api:"required"`
 	// Count of unique devices that have run this test in the given time period
-	UniqueDevicesTotal int64                                                        `json:"uniqueDevicesTotal,required"`
+	UniqueDevicesTotal int64                                                        `json:"uniqueDevicesTotal" api:"required"`
 	JSON               accountDexTracerouteTestGetResponseResultTracerouteStatsJSON `json:"-"`
 }
 
@@ -239,13 +239,13 @@ func (r accountDexTracerouteTestGetResponseResultTracerouteStatsJSON) RawJSON() 
 }
 
 type AccountDexTracerouteTestGetResponseResultTracerouteStatsByColo struct {
-	AvailabilityPct TestStatPctOverTime `json:"availabilityPct,required"`
-	Colo            string              `json:"colo,required"`
-	HopsCount       TestStatOverTime    `json:"hopsCount,required"`
-	PacketLossPct   TestStatPctOverTime `json:"packetLossPct,required"`
-	RoundTripTimeMs TestStatOverTime    `json:"roundTripTimeMs,required"`
+	AvailabilityPct TestStatPctOverTime `json:"availabilityPct" api:"required"`
+	Colo            string              `json:"colo" api:"required"`
+	HopsCount       TestStatOverTime    `json:"hopsCount" api:"required"`
+	PacketLossPct   TestStatPctOverTime `json:"packetLossPct" api:"required"`
+	RoundTripTimeMs TestStatOverTime    `json:"roundTripTimeMs" api:"required"`
 	// Count of unique devices that have run this test in the given time period
-	UniqueDevicesTotal int64                                                              `json:"uniqueDevicesTotal,required"`
+	UniqueDevicesTotal int64                                                              `json:"uniqueDevicesTotal" api:"required"`
 	JSON               accountDexTracerouteTestGetResponseResultTracerouteStatsByColoJSON `json:"-"`
 }
 
@@ -272,10 +272,10 @@ func (r accountDexTracerouteTestGetResponseResultTracerouteStatsByColoJSON) RawJ
 }
 
 type AccountDexTracerouteTestGetNetworkPathResponse struct {
-	Errors   []Item `json:"errors,required"`
-	Messages []Item `json:"messages,required"`
+	Errors   []Item `json:"errors" api:"required"`
+	Messages []Item `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountDexTracerouteTestGetNetworkPathResponseSuccess `json:"success,required"`
+	Success AccountDexTracerouteTestGetNetworkPathResponseSuccess `json:"success" api:"required"`
 	Result  AccountDexTracerouteTestGetNetworkPathResponseResult  `json:"result"`
 	JSON    accountDexTracerouteTestGetNetworkPathResponseJSON    `json:"-"`
 }
@@ -316,13 +316,13 @@ func (r AccountDexTracerouteTestGetNetworkPathResponseSuccess) IsKnown() bool {
 
 type AccountDexTracerouteTestGetNetworkPathResponseResult struct {
 	// API Resource UUID tag.
-	ID         string `json:"id,required"`
+	ID         string `json:"id" api:"required"`
 	DeviceName string `json:"deviceName"`
 	// The interval at which the Traceroute synthetic application test is set to run.
 	Interval    string                                                          `json:"interval"`
 	Kind        AccountDexTracerouteTestGetNetworkPathResponseResultKind        `json:"kind"`
 	Name        string                                                          `json:"name"`
-	NetworkPath AccountDexTracerouteTestGetNetworkPathResponseResultNetworkPath `json:"networkPath,nullable"`
+	NetworkPath AccountDexTracerouteTestGetNetworkPathResponseResultNetworkPath `json:"networkPath" api:"nullable"`
 	// The host of the Traceroute synthetic application test
 	URL  string                                                   `json:"url"`
 	JSON accountDexTracerouteTestGetNetworkPathResponseResultJSON `json:"-"`
@@ -365,11 +365,11 @@ func (r AccountDexTracerouteTestGetNetworkPathResponseResultKind) IsKnown() bool
 }
 
 type AccountDexTracerouteTestGetNetworkPathResponseResultNetworkPath struct {
-	Slots []AccountDexTracerouteTestGetNetworkPathResponseResultNetworkPathSlot `json:"slots,required"`
+	Slots []AccountDexTracerouteTestGetNetworkPathResponseResultNetworkPathSlot `json:"slots" api:"required"`
 	// Specifies the sampling applied, if any, to the slots response. When sampled,
 	// results shown represent the first test run to the start of each sampling
 	// interval.
-	Sampling AccountDexTracerouteTestGetNetworkPathResponseResultNetworkPathSampling `json:"sampling,nullable"`
+	Sampling AccountDexTracerouteTestGetNetworkPathResponseResultNetworkPathSampling `json:"sampling" api:"nullable"`
 	JSON     accountDexTracerouteTestGetNetworkPathResponseResultNetworkPathJSON     `json:"-"`
 }
 
@@ -393,16 +393,16 @@ func (r accountDexTracerouteTestGetNetworkPathResponseResultNetworkPathJSON) Raw
 
 type AccountDexTracerouteTestGetNetworkPathResponseResultNetworkPathSlot struct {
 	// API Resource UUID tag.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Round trip time in ms of the client to app mile
-	ClientToAppRttMs int64 `json:"clientToAppRttMs,required,nullable"`
+	ClientToAppRttMs int64 `json:"clientToAppRttMs" api:"required,nullable"`
 	// Round trip time in ms of the client to Cloudflare egress mile
-	ClientToCfEgressRttMs int64 `json:"clientToCfEgressRttMs,required,nullable"`
+	ClientToCfEgressRttMs int64 `json:"clientToCfEgressRttMs" api:"required,nullable"`
 	// Round trip time in ms of the client to Cloudflare ingress mile
-	ClientToCfIngressRttMs int64  `json:"clientToCfIngressRttMs,required,nullable"`
-	Timestamp              string `json:"timestamp,required"`
+	ClientToCfIngressRttMs int64  `json:"clientToCfIngressRttMs" api:"required,nullable"`
+	Timestamp              string `json:"timestamp" api:"required"`
 	// Round trip time in ms of the client to ISP mile
-	ClientToIspRttMs int64                                                                   `json:"clientToIspRttMs,nullable"`
+	ClientToIspRttMs int64                                                                   `json:"clientToIspRttMs" api:"nullable"`
 	JSON             accountDexTracerouteTestGetNetworkPathResponseResultNetworkPathSlotJSON `json:"-"`
 }
 
@@ -432,8 +432,8 @@ func (r accountDexTracerouteTestGetNetworkPathResponseResultNetworkPathSlotJSON)
 // results shown represent the first test run to the start of each sampling
 // interval.
 type AccountDexTracerouteTestGetNetworkPathResponseResultNetworkPathSampling struct {
-	Unit  AccountDexTracerouteTestGetNetworkPathResponseResultNetworkPathSamplingUnit `json:"unit,required"`
-	Value int64                                                                       `json:"value,required"`
+	Unit  AccountDexTracerouteTestGetNetworkPathResponseResultNetworkPathSamplingUnit `json:"unit" api:"required"`
+	Value int64                                                                       `json:"value" api:"required"`
 	JSON  accountDexTracerouteTestGetNetworkPathResponseResultNetworkPathSamplingJSON `json:"-"`
 }
 
@@ -470,10 +470,10 @@ func (r AccountDexTracerouteTestGetNetworkPathResponseResultNetworkPathSamplingU
 }
 
 type AccountDexTracerouteTestGetPercentilesResponse struct {
-	Errors   []Item `json:"errors,required"`
-	Messages []Item `json:"messages,required"`
+	Errors   []Item `json:"errors" api:"required"`
+	Messages []Item `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountDexTracerouteTestGetPercentilesResponseSuccess `json:"success,required"`
+	Success AccountDexTracerouteTestGetPercentilesResponseSuccess `json:"success" api:"required"`
 	Result  AccountDexTracerouteTestGetPercentilesResponseResult  `json:"result"`
 	JSON    accountDexTracerouteTestGetPercentilesResponseJSON    `json:"-"`
 }
@@ -539,11 +539,11 @@ func (r accountDexTracerouteTestGetPercentilesResponseResultJSON) RawJSON() stri
 
 type AccountDexTracerouteTestGetParams struct {
 	// Start time for aggregate metrics in ISO ms
-	From param.Field[string] `query:"from,required"`
+	From param.Field[string] `query:"from" api:"required"`
 	// Time interval for aggregate time slots.
-	Interval param.Field[AccountDexTracerouteTestGetParamsInterval] `query:"interval,required"`
+	Interval param.Field[AccountDexTracerouteTestGetParamsInterval] `query:"interval" api:"required"`
 	// End time for aggregate metrics in ISO ms
-	To param.Field[string] `query:"to,required"`
+	To param.Field[string] `query:"to" api:"required"`
 	// Optionally filter result stats to a Cloudflare colo. Cannot be used in
 	// combination with deviceId param.
 	Colo param.Field[string] `query:"colo"`
@@ -579,13 +579,13 @@ func (r AccountDexTracerouteTestGetParamsInterval) IsKnown() bool {
 
 type AccountDexTracerouteTestGetNetworkPathParams struct {
 	// Device to filter tracroute result runs to
-	DeviceID param.Field[string] `query:"deviceId,required"`
+	DeviceID param.Field[string] `query:"deviceId" api:"required"`
 	// Start time for aggregate metrics in ISO ms
-	From param.Field[string] `query:"from,required"`
+	From param.Field[string] `query:"from" api:"required"`
 	// Time interval for aggregate time slots.
-	Interval param.Field[AccountDexTracerouteTestGetNetworkPathParamsInterval] `query:"interval,required"`
+	Interval param.Field[AccountDexTracerouteTestGetNetworkPathParamsInterval] `query:"interval" api:"required"`
 	// End time for aggregate metrics in ISO ms
-	To param.Field[string] `query:"to,required"`
+	To param.Field[string] `query:"to" api:"required"`
 }
 
 // URLQuery serializes [AccountDexTracerouteTestGetNetworkPathParams]'s query
@@ -615,9 +615,9 @@ func (r AccountDexTracerouteTestGetNetworkPathParamsInterval) IsKnown() bool {
 
 type AccountDexTracerouteTestGetPercentilesParams struct {
 	// Start time for the query in ISO (RFC3339 - ISO 8601) format
-	From param.Field[string] `query:"from,required"`
+	From param.Field[string] `query:"from" api:"required"`
 	// End time for the query in ISO (RFC3339 - ISO 8601) format
-	To param.Field[string] `query:"to,required"`
+	To param.Field[string] `query:"to" api:"required"`
 	// Optionally filter result stats to a Cloudflare colo. Cannot be used in
 	// combination with deviceId param.
 	Colo param.Field[string] `query:"colo"`

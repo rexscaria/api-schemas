@@ -40,11 +40,11 @@ func (r *OrganizationService) ListShares(ctx context.Context, organizationID str
 	opts = slices.Concat(r.Options, opts)
 	if organizationID == "" {
 		err = errors.New("missing required organization_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("organizations/%s/shares", organizationID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type OrganizationListSharesParams struct {

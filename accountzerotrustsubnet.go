@@ -42,11 +42,11 @@ func (r *AccountZerotrustSubnetService) List(ctx context.Context, accountID stri
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/zerotrust/subnets", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates the Cloudflare Source subnet of the given address family
@@ -54,11 +54,11 @@ func (r *AccountZerotrustSubnetService) UpdateCloudflareSource(ctx context.Conte
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/zerotrust/subnets/cloudflare_source/%v", accountID, addressFamily)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // IP address family, either `v4` (IPv4) or `v6` (IPv6)
@@ -137,11 +137,11 @@ func (r SubnetSubnetType) IsKnown() bool {
 }
 
 type AccountZerotrustSubnetListResponse struct {
-	Errors   []MessagesTunnelItem `json:"errors,required"`
-	Messages []MessagesTunnelItem `json:"messages,required"`
-	Result   []Subnet             `json:"result,required,nullable"`
+	Errors   []MessagesTunnelItem `json:"errors" api:"required"`
+	Messages []MessagesTunnelItem `json:"messages" api:"required"`
+	Result   []Subnet             `json:"result" api:"required,nullable"`
 	// Whether the API call was successful
-	Success    AccountZerotrustSubnetListResponseSuccess    `json:"success,required"`
+	Success    AccountZerotrustSubnetListResponseSuccess    `json:"success" api:"required"`
 	ResultInfo AccountZerotrustSubnetListResponseResultInfo `json:"result_info"`
 	JSON       accountZerotrustSubnetListResponseJSON       `json:"-"`
 }
@@ -213,11 +213,11 @@ func (r accountZerotrustSubnetListResponseResultInfoJSON) RawJSON() string {
 }
 
 type AccountZerotrustSubnetUpdateCloudflareSourceResponse struct {
-	Errors   []MessagesTunnelItem `json:"errors,required"`
-	Messages []MessagesTunnelItem `json:"messages,required"`
-	Result   Subnet               `json:"result,required"`
+	Errors   []MessagesTunnelItem `json:"errors" api:"required"`
+	Messages []MessagesTunnelItem `json:"messages" api:"required"`
+	Result   Subnet               `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success AccountZerotrustSubnetUpdateCloudflareSourceResponseSuccess `json:"success,required"`
+	Success AccountZerotrustSubnetUpdateCloudflareSourceResponseSuccess `json:"success" api:"required"`
 	JSON    accountZerotrustSubnetUpdateCloudflareSourceResponseJSON    `json:"-"`
 }
 

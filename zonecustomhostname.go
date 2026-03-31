@@ -55,11 +55,11 @@ func (r *ZoneCustomHostnameService) New(ctx context.Context, zoneID string, body
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/custom_hostnames", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Custom Hostname Details
@@ -67,15 +67,15 @@ func (r *ZoneCustomHostnameService) Get(ctx context.Context, zoneID string, cust
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if customHostnameID == "" {
 		err = errors.New("missing required custom_hostname_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/custom_hostnames/%s", zoneID, customHostnameID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Modify SSL configuration for a custom hostname. When sent with SSL config that
@@ -89,15 +89,15 @@ func (r *ZoneCustomHostnameService) Update(ctx context.Context, zoneID string, c
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if customHostnameID == "" {
 		err = errors.New("missing required custom_hostname_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/custom_hostnames/%s", zoneID, customHostnameID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // List, search, sort, and filter all of your custom hostnames.
@@ -105,11 +105,11 @@ func (r *ZoneCustomHostnameService) List(ctx context.Context, zoneID string, que
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/custom_hostnames", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete Custom Hostname (and any issued SSL certificates)
@@ -117,15 +117,15 @@ func (r *ZoneCustomHostnameService) Delete(ctx context.Context, zoneID string, c
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if customHostnameID == "" {
 		err = errors.New("missing required custom_hostname_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/custom_hostnames/%s", zoneID, customHostnameID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // The Certificate Authority that will issue the certificate
@@ -148,10 +148,10 @@ func (r CertificateAuthorityCustomHostname) IsKnown() bool {
 
 type CustomHostname struct {
 	// Identifier.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The custom hostname that will point to your hostname via CNAME.
-	Hostname string            `json:"hostname,required"`
-	Ssl      CustomHostnameSsl `json:"ssl,required"`
+	Hostname string            `json:"hostname" api:"required"`
+	Ssl      CustomHostnameSsl `json:"ssl" api:"required"`
 	// This is the time the hostname was created.
 	CreatedAt time.Time `json:"created_at" format:"date-time"`
 	// Unique key/value metadata for this hostname. These are per-hostname (customer)
@@ -634,10 +634,10 @@ func (r CustomHostnameStatus) IsKnown() bool {
 }
 
 type CustomHostnameResponseSingle struct {
-	Errors   []MessagesTlsCertificatesItem `json:"errors,required"`
-	Messages []MessagesTlsCertificatesItem `json:"messages,required"`
+	Errors   []MessagesTlsCertificatesItem `json:"errors" api:"required"`
+	Messages []MessagesTlsCertificatesItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success CustomHostnameResponseSingleSuccess `json:"success,required"`
+	Success CustomHostnameResponseSingleSuccess `json:"success" api:"required"`
 	Result  CustomHostname                      `json:"result"`
 	JSON    customHostnameResponseSingleJSON    `json:"-"`
 }
@@ -848,10 +848,10 @@ func (r SslSettingsTls1_3) IsKnown() bool {
 }
 
 type ZoneCustomHostnameListResponse struct {
-	Errors   []MessagesTlsCertificatesItem `json:"errors,required"`
-	Messages []MessagesTlsCertificatesItem `json:"messages,required"`
+	Errors   []MessagesTlsCertificatesItem `json:"errors" api:"required"`
+	Messages []MessagesTlsCertificatesItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success    ZoneCustomHostnameListResponseSuccess    `json:"success,required"`
+	Success    ZoneCustomHostnameListResponseSuccess    `json:"success" api:"required"`
 	Result     []CustomHostname                         `json:"result"`
 	ResultInfo ZoneCustomHostnameListResponseResultInfo `json:"result_info"`
 	JSON       zoneCustomHostnameListResponseJSON       `json:"-"`
@@ -947,9 +947,9 @@ func (r zoneCustomHostnameDeleteResponseJSON) RawJSON() string {
 
 type ZoneCustomHostnameNewParams struct {
 	// The custom hostname that will point to your hostname via CNAME.
-	Hostname param.Field[string] `json:"hostname,required"`
+	Hostname param.Field[string] `json:"hostname" api:"required"`
 	// SSL properties used when creating the custom hostname.
-	Ssl param.Field[SslPostPropertiesParam] `json:"ssl,required"`
+	Ssl param.Field[SslPostPropertiesParam] `json:"ssl" api:"required"`
 	// Unique key/value metadata for this hostname. These are per-hostname (customer)
 	// settings.
 	CustomMetadata param.Field[map[string]string] `json:"custom_metadata"`

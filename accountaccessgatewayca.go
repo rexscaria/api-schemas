@@ -38,11 +38,11 @@ func (r *AccountAccessGatewayCaService) New(ctx context.Context, accountID strin
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/access/gateway_ca", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists SSH Certificate Authorities (CA).
@@ -50,11 +50,11 @@ func (r *AccountAccessGatewayCaService) List(ctx context.Context, accountID stri
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/access/gateway_ca", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Deletes an SSH Certificate Authority.
@@ -62,15 +62,15 @@ func (r *AccountAccessGatewayCaService) Delete(ctx context.Context, accountID st
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if certificateID == "" {
 		err = errors.New("missing required certificate_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/access/gateway_ca/%s", accountID, certificateID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type SchemasCertificates struct {
@@ -99,10 +99,10 @@ func (r schemasCertificatesJSON) RawJSON() string {
 }
 
 type AccountAccessGatewayCaNewResponse struct {
-	Errors   []MessagesAccessItem `json:"errors,required"`
-	Messages []MessagesAccessItem `json:"messages,required"`
+	Errors   []MessagesAccessItem `json:"errors" api:"required"`
+	Messages []MessagesAccessItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountAccessGatewayCaNewResponseSuccess `json:"success,required"`
+	Success AccountAccessGatewayCaNewResponseSuccess `json:"success" api:"required"`
 	Result  SchemasCertificates                      `json:"result"`
 	JSON    accountAccessGatewayCaNewResponseJSON    `json:"-"`
 }
@@ -142,10 +142,10 @@ func (r AccountAccessGatewayCaNewResponseSuccess) IsKnown() bool {
 }
 
 type AccountAccessGatewayCaListResponse struct {
-	Errors   []MessagesAccessItem `json:"errors,required"`
-	Messages []MessagesAccessItem `json:"messages,required"`
+	Errors   []MessagesAccessItem `json:"errors" api:"required"`
+	Messages []MessagesAccessItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success    AccountAccessGatewayCaListResponseSuccess    `json:"success,required"`
+	Success    AccountAccessGatewayCaListResponseSuccess    `json:"success" api:"required"`
 	Result     []SchemasCertificates                        `json:"result"`
 	ResultInfo AccountAccessGatewayCaListResponseResultInfo `json:"result_info"`
 	JSON       accountAccessGatewayCaListResponseJSON       `json:"-"`

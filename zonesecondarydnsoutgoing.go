@@ -39,11 +39,11 @@ func (r *ZoneSecondaryDNSOutgoingService) New(ctx context.Context, zoneID string
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/secondary_dns/outgoing", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get primary zone configuration for outgoing zone transfers.
@@ -51,11 +51,11 @@ func (r *ZoneSecondaryDNSOutgoingService) Get(ctx context.Context, zoneID string
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/secondary_dns/outgoing", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update primary zone configuration for outgoing zone transfers.
@@ -63,11 +63,11 @@ func (r *ZoneSecondaryDNSOutgoingService) Update(ctx context.Context, zoneID str
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/secondary_dns/outgoing", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete primary zone configuration for outgoing zone transfers.
@@ -75,11 +75,11 @@ func (r *ZoneSecondaryDNSOutgoingService) Delete(ctx context.Context, zoneID str
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/secondary_dns/outgoing", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Disable outgoing zone transfers for primary zone and clears IXFR backlog of
@@ -88,11 +88,11 @@ func (r *ZoneSecondaryDNSOutgoingService) Disable(ctx context.Context, zoneID st
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/secondary_dns/outgoing/disable", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Enable outgoing zone transfers for primary zone.
@@ -100,11 +100,11 @@ func (r *ZoneSecondaryDNSOutgoingService) Enable(ctx context.Context, zoneID str
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/secondary_dns/outgoing/enable", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Notifies the secondary nameserver(s) and clears IXFR backlog of primary zone.
@@ -112,11 +112,11 @@ func (r *ZoneSecondaryDNSOutgoingService) ForceNotify(ctx context.Context, zoneI
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/secondary_dns/outgoing/force_notify", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get primary zone transfer status.
@@ -124,18 +124,18 @@ func (r *ZoneSecondaryDNSOutgoingService) Status(ctx context.Context, zoneID str
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/secondary_dns/outgoing/status", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type EnableTransferResponse struct {
-	Errors   []SecondaryDNSMessages `json:"errors,required"`
-	Messages []SecondaryDNSMessages `json:"messages,required"`
+	Errors   []SecondaryDNSMessages `json:"errors" api:"required"`
+	Messages []SecondaryDNSMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success EnableTransferResponseSuccess `json:"success,required"`
+	Success EnableTransferResponseSuccess `json:"success" api:"required"`
 	// The zone transfer status of a primary zone
 	Result string                     `json:"result"`
 	JSON   enableTransferResponseJSON `json:"-"`
@@ -177,9 +177,9 @@ func (r EnableTransferResponseSuccess) IsKnown() bool {
 
 type SingleRequestParam struct {
 	// Zone name.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// A list of peer tags.
-	Peers param.Field[[]string] `json:"peers,required"`
+	Peers param.Field[[]string] `json:"peers" api:"required"`
 }
 
 func (r SingleRequestParam) MarshalJSON() (data []byte, err error) {
@@ -187,10 +187,10 @@ func (r SingleRequestParam) MarshalJSON() (data []byte, err error) {
 }
 
 type SingleResponseOutgoing struct {
-	Errors   []SecondaryDNSMessages `json:"errors,required"`
-	Messages []SecondaryDNSMessages `json:"messages,required"`
+	Errors   []SecondaryDNSMessages `json:"errors" api:"required"`
+	Messages []SecondaryDNSMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success SingleResponseOutgoingSuccess `json:"success,required"`
+	Success SingleResponseOutgoingSuccess `json:"success" api:"required"`
 	Result  SingleResponseOutgoingResult  `json:"result"`
 	JSON    singleResponseOutgoingJSON    `json:"-"`
 }
@@ -269,10 +269,10 @@ func (r singleResponseOutgoingResultJSON) RawJSON() string {
 }
 
 type ZoneSecondaryDNSOutgoingDisableResponse struct {
-	Errors   []SecondaryDNSMessages `json:"errors,required"`
-	Messages []SecondaryDNSMessages `json:"messages,required"`
+	Errors   []SecondaryDNSMessages `json:"errors" api:"required"`
+	Messages []SecondaryDNSMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success ZoneSecondaryDNSOutgoingDisableResponseSuccess `json:"success,required"`
+	Success ZoneSecondaryDNSOutgoingDisableResponseSuccess `json:"success" api:"required"`
 	// The zone transfer status of a primary zone
 	Result string                                      `json:"result"`
 	JSON   zoneSecondaryDNSOutgoingDisableResponseJSON `json:"-"`
@@ -313,10 +313,10 @@ func (r ZoneSecondaryDNSOutgoingDisableResponseSuccess) IsKnown() bool {
 }
 
 type ZoneSecondaryDNSOutgoingForceNotifyResponse struct {
-	Errors   []SecondaryDNSMessages `json:"errors,required"`
-	Messages []SecondaryDNSMessages `json:"messages,required"`
+	Errors   []SecondaryDNSMessages `json:"errors" api:"required"`
+	Messages []SecondaryDNSMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success ZoneSecondaryDNSOutgoingForceNotifyResponseSuccess `json:"success,required"`
+	Success ZoneSecondaryDNSOutgoingForceNotifyResponseSuccess `json:"success" api:"required"`
 	// When force_notify query parameter is set to true, the response is a simple
 	// string
 	Result string                                          `json:"result"`
@@ -358,7 +358,7 @@ func (r ZoneSecondaryDNSOutgoingForceNotifyResponseSuccess) IsKnown() bool {
 }
 
 type ZoneSecondaryDNSOutgoingNewParams struct {
-	SingleRequest SingleRequestParam `json:"single_request,required"`
+	SingleRequest SingleRequestParam `json:"single_request" api:"required"`
 }
 
 func (r ZoneSecondaryDNSOutgoingNewParams) MarshalJSON() (data []byte, err error) {
@@ -366,7 +366,7 @@ func (r ZoneSecondaryDNSOutgoingNewParams) MarshalJSON() (data []byte, err error
 }
 
 type ZoneSecondaryDNSOutgoingUpdateParams struct {
-	SingleRequest SingleRequestParam `json:"single_request,required"`
+	SingleRequest SingleRequestParam `json:"single_request" api:"required"`
 }
 
 func (r ZoneSecondaryDNSOutgoingUpdateParams) MarshalJSON() (data []byte, err error) {
@@ -374,7 +374,7 @@ func (r ZoneSecondaryDNSOutgoingUpdateParams) MarshalJSON() (data []byte, err er
 }
 
 type ZoneSecondaryDNSOutgoingDisableParams struct {
-	Body interface{} `json:"body,required"`
+	Body interface{} `json:"body" api:"required"`
 }
 
 func (r ZoneSecondaryDNSOutgoingDisableParams) MarshalJSON() (data []byte, err error) {
@@ -382,7 +382,7 @@ func (r ZoneSecondaryDNSOutgoingDisableParams) MarshalJSON() (data []byte, err e
 }
 
 type ZoneSecondaryDNSOutgoingEnableParams struct {
-	Body interface{} `json:"body,required"`
+	Body interface{} `json:"body" api:"required"`
 }
 
 func (r ZoneSecondaryDNSOutgoingEnableParams) MarshalJSON() (data []byte, err error) {
@@ -390,7 +390,7 @@ func (r ZoneSecondaryDNSOutgoingEnableParams) MarshalJSON() (data []byte, err er
 }
 
 type ZoneSecondaryDNSOutgoingForceNotifyParams struct {
-	Body interface{} `json:"body,required"`
+	Body interface{} `json:"body" api:"required"`
 }
 
 func (r ZoneSecondaryDNSOutgoingForceNotifyParams) MarshalJSON() (data []byte, err error) {

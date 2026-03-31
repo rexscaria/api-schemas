@@ -44,11 +44,11 @@ func (r *AccountVectorizeV2IndexService) New(ctx context.Context, accountID stri
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/vectorize/v2/indexes", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns the specified Vectorize Index.
@@ -56,15 +56,15 @@ func (r *AccountVectorizeV2IndexService) Get(ctx context.Context, accountID stri
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if indexName == "" {
 		err = errors.New("missing required index_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/vectorize/v2/indexes/%s", accountID, indexName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns a list of Vectorize Indexes
@@ -72,11 +72,11 @@ func (r *AccountVectorizeV2IndexService) List(ctx context.Context, accountID str
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/vectorize/v2/indexes", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Deletes the specified Vectorize Index.
@@ -84,15 +84,15 @@ func (r *AccountVectorizeV2IndexService) Delete(ctx context.Context, accountID s
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if indexName == "" {
 		err = errors.New("missing required index_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/vectorize/v2/indexes/%s", accountID, indexName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete a set of vectors from an index by their vector identifiers.
@@ -100,15 +100,15 @@ func (r *AccountVectorizeV2IndexService) DeleteByIDs(ctx context.Context, accoun
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if indexName == "" {
 		err = errors.New("missing required index_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/vectorize/v2/indexes/%s/delete_by_ids", accountID, indexName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get a set of vectors from an index by their vector identifiers.
@@ -116,15 +116,15 @@ func (r *AccountVectorizeV2IndexService) GetByIDs(ctx context.Context, accountID
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if indexName == "" {
 		err = errors.New("missing required index_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/vectorize/v2/indexes/%s/get_by_ids", accountID, indexName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get information about a vectorize index.
@@ -132,15 +132,15 @@ func (r *AccountVectorizeV2IndexService) GetInfo(ctx context.Context, accountID 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if indexName == "" {
 		err = errors.New("missing required index_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/vectorize/v2/indexes/%s/info", accountID, indexName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Inserts vectors into the specified index and returns a mutation id corresponding
@@ -149,15 +149,15 @@ func (r *AccountVectorizeV2IndexService) Insert(ctx context.Context, accountID s
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if indexName == "" {
 		err = errors.New("missing required index_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/vectorize/v2/indexes/%s/insert", accountID, indexName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Finds vectors closest to a given vector in an index.
@@ -165,15 +165,15 @@ func (r *AccountVectorizeV2IndexService) Query(ctx context.Context, accountID st
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if indexName == "" {
 		err = errors.New("missing required index_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/vectorize/v2/indexes/%s/query", accountID, indexName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Upserts vectors into the specified index, creating them if they do not exist and
@@ -182,23 +182,23 @@ func (r *AccountVectorizeV2IndexService) Upsert(ctx context.Context, accountID s
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if indexName == "" {
 		err = errors.New("missing required index_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/vectorize/v2/indexes/%s/upsert", accountID, indexName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountVectorizeV2IndexNewResponse struct {
-	Errors   []VectorizeMessages          `json:"errors,required"`
-	Messages []VectorizeMessages          `json:"messages,required"`
-	Result   VectorizeCreateIndexResponse `json:"result,required,nullable"`
+	Errors   []VectorizeMessages          `json:"errors" api:"required"`
+	Messages []VectorizeMessages          `json:"messages" api:"required"`
+	Result   VectorizeCreateIndexResponse `json:"result" api:"required,nullable"`
 	// Whether the API call was successful
-	Success AccountVectorizeV2IndexNewResponseSuccess `json:"success,required"`
+	Success AccountVectorizeV2IndexNewResponseSuccess `json:"success" api:"required"`
 	JSON    accountVectorizeV2IndexNewResponseJSON    `json:"-"`
 }
 
@@ -237,11 +237,11 @@ func (r AccountVectorizeV2IndexNewResponseSuccess) IsKnown() bool {
 }
 
 type AccountVectorizeV2IndexGetResponse struct {
-	Errors   []VectorizeMessages          `json:"errors,required"`
-	Messages []VectorizeMessages          `json:"messages,required"`
-	Result   VectorizeCreateIndexResponse `json:"result,required,nullable"`
+	Errors   []VectorizeMessages          `json:"errors" api:"required"`
+	Messages []VectorizeMessages          `json:"messages" api:"required"`
+	Result   VectorizeCreateIndexResponse `json:"result" api:"required,nullable"`
 	// Whether the API call was successful
-	Success AccountVectorizeV2IndexGetResponseSuccess `json:"success,required"`
+	Success AccountVectorizeV2IndexGetResponseSuccess `json:"success" api:"required"`
 	JSON    accountVectorizeV2IndexGetResponseJSON    `json:"-"`
 }
 
@@ -280,11 +280,11 @@ func (r AccountVectorizeV2IndexGetResponseSuccess) IsKnown() bool {
 }
 
 type AccountVectorizeV2IndexListResponse struct {
-	Errors   []VectorizeMessages            `json:"errors,required"`
-	Messages []VectorizeMessages            `json:"messages,required"`
-	Result   []VectorizeCreateIndexResponse `json:"result,required"`
+	Errors   []VectorizeMessages            `json:"errors" api:"required"`
+	Messages []VectorizeMessages            `json:"messages" api:"required"`
+	Result   []VectorizeCreateIndexResponse `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success AccountVectorizeV2IndexListResponseSuccess `json:"success,required"`
+	Success AccountVectorizeV2IndexListResponseSuccess `json:"success" api:"required"`
 	JSON    accountVectorizeV2IndexListResponseJSON    `json:"-"`
 }
 
@@ -323,11 +323,11 @@ func (r AccountVectorizeV2IndexListResponseSuccess) IsKnown() bool {
 }
 
 type AccountVectorizeV2IndexDeleteResponse struct {
-	Errors   []VectorizeMessages `json:"errors,required"`
-	Messages []VectorizeMessages `json:"messages,required"`
-	Result   interface{}         `json:"result,required,nullable"`
+	Errors   []VectorizeMessages `json:"errors" api:"required"`
+	Messages []VectorizeMessages `json:"messages" api:"required"`
+	Result   interface{}         `json:"result" api:"required,nullable"`
 	// Whether the API call was successful
-	Success AccountVectorizeV2IndexDeleteResponseSuccess `json:"success,required"`
+	Success AccountVectorizeV2IndexDeleteResponseSuccess `json:"success" api:"required"`
 	JSON    accountVectorizeV2IndexDeleteResponseJSON    `json:"-"`
 }
 
@@ -366,11 +366,11 @@ func (r AccountVectorizeV2IndexDeleteResponseSuccess) IsKnown() bool {
 }
 
 type AccountVectorizeV2IndexDeleteByIDsResponse struct {
-	Errors   []VectorizeMessages                              `json:"errors,required"`
-	Messages []VectorizeMessages                              `json:"messages,required"`
-	Result   AccountVectorizeV2IndexDeleteByIDsResponseResult `json:"result,required,nullable"`
+	Errors   []VectorizeMessages                              `json:"errors" api:"required"`
+	Messages []VectorizeMessages                              `json:"messages" api:"required"`
+	Result   AccountVectorizeV2IndexDeleteByIDsResponseResult `json:"result" api:"required,nullable"`
 	// Whether the API call was successful
-	Success AccountVectorizeV2IndexDeleteByIDsResponseSuccess `json:"success,required"`
+	Success AccountVectorizeV2IndexDeleteByIDsResponseSuccess `json:"success" api:"required"`
 	JSON    accountVectorizeV2IndexDeleteByIDsResponseJSON    `json:"-"`
 }
 
@@ -431,12 +431,12 @@ func (r AccountVectorizeV2IndexDeleteByIDsResponseSuccess) IsKnown() bool {
 }
 
 type AccountVectorizeV2IndexGetByIDsResponse struct {
-	Errors   []VectorizeMessages `json:"errors,required"`
-	Messages []VectorizeMessages `json:"messages,required"`
+	Errors   []VectorizeMessages `json:"errors" api:"required"`
+	Messages []VectorizeMessages `json:"messages" api:"required"`
 	// Array of vectors with matching ids.
-	Result interface{} `json:"result,required,nullable"`
+	Result interface{} `json:"result" api:"required,nullable"`
 	// Whether the API call was successful
-	Success AccountVectorizeV2IndexGetByIDsResponseSuccess `json:"success,required"`
+	Success AccountVectorizeV2IndexGetByIDsResponseSuccess `json:"success" api:"required"`
 	JSON    accountVectorizeV2IndexGetByIDsResponseJSON    `json:"-"`
 }
 
@@ -475,11 +475,11 @@ func (r AccountVectorizeV2IndexGetByIDsResponseSuccess) IsKnown() bool {
 }
 
 type AccountVectorizeV2IndexGetInfoResponse struct {
-	Errors   []VectorizeMessages                          `json:"errors,required"`
-	Messages []VectorizeMessages                          `json:"messages,required"`
-	Result   AccountVectorizeV2IndexGetInfoResponseResult `json:"result,required,nullable"`
+	Errors   []VectorizeMessages                          `json:"errors" api:"required"`
+	Messages []VectorizeMessages                          `json:"messages" api:"required"`
+	Result   AccountVectorizeV2IndexGetInfoResponseResult `json:"result" api:"required,nullable"`
 	// Whether the API call was successful
-	Success AccountVectorizeV2IndexGetInfoResponseSuccess `json:"success,required"`
+	Success AccountVectorizeV2IndexGetInfoResponseSuccess `json:"success" api:"required"`
 	JSON    accountVectorizeV2IndexGetInfoResponseJSON    `json:"-"`
 }
 
@@ -507,7 +507,7 @@ type AccountVectorizeV2IndexGetInfoResponseResult struct {
 	Dimensions int64 `json:"dimensions"`
 	// Specifies the timestamp the last mutation batch was processed as an ISO8601
 	// string.
-	ProcessedUpToDatetime time.Time `json:"processedUpToDatetime,nullable" format:"date-time"`
+	ProcessedUpToDatetime time.Time `json:"processedUpToDatetime" api:"nullable" format:"date-time"`
 	// The unique identifier for the async mutation operation containing the changeset.
 	ProcessedUpToMutation string `json:"processedUpToMutation"`
 	// Specifies the number of vectors present in the index
@@ -550,11 +550,11 @@ func (r AccountVectorizeV2IndexGetInfoResponseSuccess) IsKnown() bool {
 }
 
 type AccountVectorizeV2IndexInsertResponse struct {
-	Errors   []VectorizeMessages                         `json:"errors,required"`
-	Messages []VectorizeMessages                         `json:"messages,required"`
-	Result   AccountVectorizeV2IndexInsertResponseResult `json:"result,required,nullable"`
+	Errors   []VectorizeMessages                         `json:"errors" api:"required"`
+	Messages []VectorizeMessages                         `json:"messages" api:"required"`
+	Result   AccountVectorizeV2IndexInsertResponseResult `json:"result" api:"required,nullable"`
 	// Whether the API call was successful
-	Success AccountVectorizeV2IndexInsertResponseSuccess `json:"success,required"`
+	Success AccountVectorizeV2IndexInsertResponseSuccess `json:"success" api:"required"`
 	JSON    accountVectorizeV2IndexInsertResponseJSON    `json:"-"`
 }
 
@@ -615,11 +615,11 @@ func (r AccountVectorizeV2IndexInsertResponseSuccess) IsKnown() bool {
 }
 
 type AccountVectorizeV2IndexQueryResponse struct {
-	Errors   []VectorizeMessages                        `json:"errors,required"`
-	Messages []VectorizeMessages                        `json:"messages,required"`
-	Result   AccountVectorizeV2IndexQueryResponseResult `json:"result,required,nullable"`
+	Errors   []VectorizeMessages                        `json:"errors" api:"required"`
+	Messages []VectorizeMessages                        `json:"messages" api:"required"`
+	Result   AccountVectorizeV2IndexQueryResponseResult `json:"result" api:"required,nullable"`
 	// Whether the API call was successful
-	Success AccountVectorizeV2IndexQueryResponseSuccess `json:"success,required"`
+	Success AccountVectorizeV2IndexQueryResponseSuccess `json:"success" api:"required"`
 	JSON    accountVectorizeV2IndexQueryResponseJSON    `json:"-"`
 }
 
@@ -670,11 +670,11 @@ func (r accountVectorizeV2IndexQueryResponseResultJSON) RawJSON() string {
 type AccountVectorizeV2IndexQueryResponseResultMatch struct {
 	// Identifier for a Vector
 	ID        string      `json:"id"`
-	Metadata  interface{} `json:"metadata,nullable"`
-	Namespace string      `json:"namespace,nullable"`
+	Metadata  interface{} `json:"metadata" api:"nullable"`
+	Namespace string      `json:"namespace" api:"nullable"`
 	// The score of the vector according to the index's distance metric
 	Score  float64                                             `json:"score"`
-	Values []float64                                           `json:"values,nullable"`
+	Values []float64                                           `json:"values" api:"nullable"`
 	JSON   accountVectorizeV2IndexQueryResponseResultMatchJSON `json:"-"`
 }
 
@@ -714,11 +714,11 @@ func (r AccountVectorizeV2IndexQueryResponseSuccess) IsKnown() bool {
 }
 
 type AccountVectorizeV2IndexUpsertResponse struct {
-	Errors   []VectorizeMessages                         `json:"errors,required"`
-	Messages []VectorizeMessages                         `json:"messages,required"`
-	Result   AccountVectorizeV2IndexUpsertResponseResult `json:"result,required,nullable"`
+	Errors   []VectorizeMessages                         `json:"errors" api:"required"`
+	Messages []VectorizeMessages                         `json:"messages" api:"required"`
+	Result   AccountVectorizeV2IndexUpsertResponseResult `json:"result" api:"required,nullable"`
 	// Whether the API call was successful
-	Success AccountVectorizeV2IndexUpsertResponseSuccess `json:"success,required"`
+	Success AccountVectorizeV2IndexUpsertResponseSuccess `json:"success" api:"required"`
 	JSON    accountVectorizeV2IndexUpsertResponseJSON    `json:"-"`
 }
 
@@ -779,7 +779,7 @@ func (r AccountVectorizeV2IndexUpsertResponseSuccess) IsKnown() bool {
 }
 
 type AccountVectorizeV2IndexNewParams struct {
-	VectorizeCreateIndexRequest VectorizeCreateIndexRequestParam `json:"vectorize_create_index_request,required"`
+	VectorizeCreateIndexRequest VectorizeCreateIndexRequestParam `json:"vectorize_create_index_request" api:"required"`
 }
 
 func (r AccountVectorizeV2IndexNewParams) MarshalJSON() (data []byte, err error) {
@@ -787,7 +787,7 @@ func (r AccountVectorizeV2IndexNewParams) MarshalJSON() (data []byte, err error)
 }
 
 type AccountVectorizeV2IndexDeleteByIDsParams struct {
-	VectorizeIndexDeleteVectorsByIDRequest VectorizeIndexDeleteVectorsByIDRequestParam `json:"vectorize_index_delete_vectors_by_id_request,required"`
+	VectorizeIndexDeleteVectorsByIDRequest VectorizeIndexDeleteVectorsByIDRequestParam `json:"vectorize_index_delete_vectors_by_id_request" api:"required"`
 }
 
 func (r AccountVectorizeV2IndexDeleteByIDsParams) MarshalJSON() (data []byte, err error) {
@@ -795,7 +795,7 @@ func (r AccountVectorizeV2IndexDeleteByIDsParams) MarshalJSON() (data []byte, er
 }
 
 type AccountVectorizeV2IndexGetByIDsParams struct {
-	VectorizeIndexGetVectorsByIDRequest VectorizeIndexGetVectorsByIDRequestParam `json:"vectorize_index_get_vectors_by_id_request,required"`
+	VectorizeIndexGetVectorsByIDRequest VectorizeIndexGetVectorsByIDRequestParam `json:"vectorize_index_get_vectors_by_id_request" api:"required"`
 }
 
 func (r AccountVectorizeV2IndexGetByIDsParams) MarshalJSON() (data []byte, err error) {
@@ -804,7 +804,7 @@ func (r AccountVectorizeV2IndexGetByIDsParams) MarshalJSON() (data []byte, err e
 
 type AccountVectorizeV2IndexInsertParams struct {
 	// ndjson file containing vectors to insert.
-	Body string `json:"body,required"`
+	Body string `json:"body" api:"required"`
 	// Behavior for ndjson parse failures.
 	UnparsableBehavior param.Field[AccountVectorizeV2IndexInsertParamsUnparsableBehavior] `query:"unparsable-behavior"`
 }
@@ -840,7 +840,7 @@ func (r AccountVectorizeV2IndexInsertParamsUnparsableBehavior) IsKnown() bool {
 
 type AccountVectorizeV2IndexQueryParams struct {
 	// The search vector that will be used to find the nearest neighbors.
-	Vector param.Field[[]float64] `json:"vector,required"`
+	Vector param.Field[[]float64] `json:"vector" api:"required"`
 	// A metadata filter expression used to limit nearest neighbor results.
 	Filter param.Field[interface{}] `json:"filter"`
 	// Whether to return no metadata, indexed metadata or all metadata associated with
@@ -876,7 +876,7 @@ func (r AccountVectorizeV2IndexQueryParamsReturnMetadata) IsKnown() bool {
 
 type AccountVectorizeV2IndexUpsertParams struct {
 	// ndjson file containing vectors to upsert.
-	Body string `json:"body,required"`
+	Body string `json:"body" api:"required"`
 	// Behavior for ndjson parse failures.
 	UnparsableBehavior param.Field[AccountVectorizeV2IndexUpsertParamsUnparsableBehavior] `query:"unparsable-behavior"`
 }

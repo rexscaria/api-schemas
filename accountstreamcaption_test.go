@@ -14,7 +14,7 @@ import (
 )
 
 func TestAccountStreamCaptionGet(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,6 +26,7 @@ func TestAccountStreamCaptionGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Stream.Captions.Get(
 		context.TODO(),
@@ -43,7 +44,7 @@ func TestAccountStreamCaptionGet(t *testing.T) {
 }
 
 func TestAccountStreamCaptionList(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -55,6 +56,7 @@ func TestAccountStreamCaptionList(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Stream.Captions.List(
 		context.TODO(),
@@ -71,7 +73,7 @@ func TestAccountStreamCaptionList(t *testing.T) {
 }
 
 func TestAccountStreamCaptionDelete(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -83,6 +85,7 @@ func TestAccountStreamCaptionDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Stream.Captions.Delete(
 		context.TODO(),
@@ -100,7 +103,7 @@ func TestAccountStreamCaptionDelete(t *testing.T) {
 }
 
 func TestAccountStreamCaptionGenerate(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -112,6 +115,7 @@ func TestAccountStreamCaptionGenerate(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Stream.Captions.Generate(
 		context.TODO(),
@@ -129,7 +133,7 @@ func TestAccountStreamCaptionGenerate(t *testing.T) {
 }
 
 func TestAccountStreamCaptionGetVtt(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -141,6 +145,7 @@ func TestAccountStreamCaptionGetVtt(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Stream.Captions.GetVtt(
 		context.TODO(),
@@ -158,7 +163,7 @@ func TestAccountStreamCaptionGetVtt(t *testing.T) {
 }
 
 func TestAccountStreamCaptionUpload(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -170,6 +175,7 @@ func TestAccountStreamCaptionUpload(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Stream.Captions.Upload(
 		context.TODO(),

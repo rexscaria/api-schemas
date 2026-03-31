@@ -43,11 +43,11 @@ func (r *ZoneHostnameSettingService) Get(ctx context.Context, zoneID string, set
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/hostnames/settings/%v", zoneID, settingID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update the tls setting value for the hostname.
@@ -55,15 +55,15 @@ func (r *ZoneHostnameSettingService) Update(ctx context.Context, zoneID string, 
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if hostname == "" {
 		err = errors.New("missing required hostname parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/hostnames/settings/%v/%s", zoneID, settingID, hostname)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete the tls setting value for the hostname.
@@ -71,15 +71,15 @@ func (r *ZoneHostnameSettingService) Delete(ctx context.Context, zoneID string, 
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if hostname == "" {
 		err = errors.New("missing required hostname parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/hostnames/settings/%v/%s", zoneID, settingID, hostname)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // The TLS Setting name.
@@ -143,10 +143,10 @@ type TlsSettingValueArrayParam []string
 func (r TlsSettingValueArrayParam) ImplementsTlsSettingValueUnionParam() {}
 
 type ZoneHostnameSettingGetResponse struct {
-	Errors   []MessagesTlsCertificatesItem `json:"errors,required"`
-	Messages []MessagesTlsCertificatesItem `json:"messages,required"`
+	Errors   []MessagesTlsCertificatesItem `json:"errors" api:"required"`
+	Messages []MessagesTlsCertificatesItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success    ZoneHostnameSettingGetResponseSuccess    `json:"success,required"`
+	Success    ZoneHostnameSettingGetResponseSuccess    `json:"success" api:"required"`
 	Result     []ZoneHostnameSettingGetResponseResult   `json:"result"`
 	ResultInfo ZoneHostnameSettingGetResponseResultInfo `json:"result_info"`
 	JSON       zoneHostnameSettingGetResponseJSON       `json:"-"`
@@ -256,10 +256,10 @@ func (r zoneHostnameSettingGetResponseResultInfoJSON) RawJSON() string {
 }
 
 type ZoneHostnameSettingUpdateResponse struct {
-	Errors   []MessagesTlsCertificatesItem `json:"errors,required"`
-	Messages []MessagesTlsCertificatesItem `json:"messages,required"`
+	Errors   []MessagesTlsCertificatesItem `json:"errors" api:"required"`
+	Messages []MessagesTlsCertificatesItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success ZoneHostnameSettingUpdateResponseSuccess `json:"success,required"`
+	Success ZoneHostnameSettingUpdateResponseSuccess `json:"success" api:"required"`
 	Result  ZoneHostnameSettingUpdateResponseResult  `json:"result"`
 	JSON    zoneHostnameSettingUpdateResponseJSON    `json:"-"`
 }
@@ -333,10 +333,10 @@ func (r zoneHostnameSettingUpdateResponseResultJSON) RawJSON() string {
 }
 
 type ZoneHostnameSettingDeleteResponse struct {
-	Errors   []MessagesTlsCertificatesItem `json:"errors,required"`
-	Messages []MessagesTlsCertificatesItem `json:"messages,required"`
+	Errors   []MessagesTlsCertificatesItem `json:"errors" api:"required"`
+	Messages []MessagesTlsCertificatesItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success ZoneHostnameSettingDeleteResponseSuccess `json:"success,required"`
+	Success ZoneHostnameSettingDeleteResponseSuccess `json:"success" api:"required"`
 	Result  ZoneHostnameSettingDeleteResponseResult  `json:"result"`
 	JSON    zoneHostnameSettingDeleteResponseJSON    `json:"-"`
 }
@@ -411,7 +411,7 @@ func (r zoneHostnameSettingDeleteResponseResultJSON) RawJSON() string {
 
 type ZoneHostnameSettingUpdateParams struct {
 	// The tls setting value.
-	Value param.Field[TlsSettingValueUnionParam] `json:"value,required"`
+	Value param.Field[TlsSettingValueUnionParam] `json:"value" api:"required"`
 }
 
 func (r ZoneHostnameSettingUpdateParams) MarshalJSON() (data []byte, err error) {

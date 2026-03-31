@@ -39,19 +39,19 @@ func (r *AccountCloudforceOneEventRawService) Get(ctx context.Context, accountID
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if datasetID == "" {
 		err = errors.New("missing required dataset_id parameter")
-		return
+		return nil, err
 	}
 	if eventID == "" {
 		err = errors.New("missing required event_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/cloudforce-one/events/raw/%s/%s", accountID, datasetID, eventID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates a raw event
@@ -59,28 +59,28 @@ func (r *AccountCloudforceOneEventRawService) Update(ctx context.Context, accoun
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if eventID == "" {
 		err = errors.New("missing required event_id parameter")
-		return
+		return nil, err
 	}
 	if rawID == "" {
 		err = errors.New("missing required raw_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/cloudforce-one/events/%s/raw/%s", accountID, eventID, rawID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountCloudforceOneEventRawGetResponse struct {
-	ID        string                                      `json:"id,required"`
-	AccountID float64                                     `json:"accountId,required"`
-	Created   string                                      `json:"created,required"`
-	Data      interface{}                                 `json:"data,required"`
-	Source    string                                      `json:"source,required"`
-	Tlp       string                                      `json:"tlp,required"`
+	ID        string                                      `json:"id" api:"required"`
+	AccountID float64                                     `json:"accountId" api:"required"`
+	Created   string                                      `json:"created" api:"required"`
+	Data      interface{}                                 `json:"data" api:"required"`
+	Source    string                                      `json:"source" api:"required"`
+	Tlp       string                                      `json:"tlp" api:"required"`
 	JSON      accountCloudforceOneEventRawGetResponseJSON `json:"-"`
 }
 
@@ -106,8 +106,8 @@ func (r accountCloudforceOneEventRawGetResponseJSON) RawJSON() string {
 }
 
 type AccountCloudforceOneEventRawUpdateResponse struct {
-	ID   string                                         `json:"id,required"`
-	Data interface{}                                    `json:"data,required"`
+	ID   string                                         `json:"id" api:"required"`
+	Data interface{}                                    `json:"data" api:"required"`
 	JSON accountCloudforceOneEventRawUpdateResponseJSON `json:"-"`
 }
 

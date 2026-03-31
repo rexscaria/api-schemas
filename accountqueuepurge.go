@@ -39,15 +39,15 @@ func (r *AccountQueuePurgeService) Execute(ctx context.Context, accountID string
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if queueID == "" {
 		err = errors.New("missing required queue_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/queues/%s/purge", accountID, queueID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get details about a Queue's purge status.
@@ -55,15 +55,15 @@ func (r *AccountQueuePurgeService) Status(ctx context.Context, accountID string,
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if queueID == "" {
 		err = errors.New("missing required queue_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/queues/%s/purge", accountID, queueID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountQueuePurgeExecuteResponse struct {
@@ -95,8 +95,8 @@ func (r accountQueuePurgeExecuteResponseJSON) RawJSON() string {
 }
 
 type AccountQueuePurgeExecuteResponseError struct {
-	Code             int64                                        `json:"code,required"`
-	Message          string                                       `json:"message,required"`
+	Code             int64                                        `json:"code" api:"required"`
+	Message          string                                       `json:"message" api:"required"`
 	DocumentationURL string                                       `json:"documentation_url"`
 	Source           AccountQueuePurgeExecuteResponseErrorsSource `json:"source"`
 	JSON             accountQueuePurgeExecuteResponseErrorJSON    `json:"-"`
@@ -186,8 +186,8 @@ func (r accountQueuePurgeStatusResponseJSON) RawJSON() string {
 }
 
 type AccountQueuePurgeStatusResponseError struct {
-	Code             int64                                       `json:"code,required"`
-	Message          string                                      `json:"message,required"`
+	Code             int64                                       `json:"code" api:"required"`
+	Message          string                                      `json:"message" api:"required"`
 	DocumentationURL string                                      `json:"documentation_url"`
 	Source           AccountQueuePurgeStatusResponseErrorsSource `json:"source"`
 	JSON             accountQueuePurgeStatusResponseErrorJSON    `json:"-"`

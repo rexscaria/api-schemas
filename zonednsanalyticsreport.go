@@ -46,11 +46,11 @@ func (r *ZoneDNSAnalyticsReportService) Get(ctx context.Context, zoneID string, 
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/dns_analytics/report", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves a list of aggregate metrics grouped by time interval.
@@ -62,18 +62,18 @@ func (r *ZoneDNSAnalyticsReportService) ByTime(ctx context.Context, zoneID strin
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/dns_analytics/report/bytime", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type ZoneDNSAnalyticsReportGetResponse struct {
-	Errors   []MessagesDNSAnalyticsItem `json:"errors,required"`
-	Messages []MessagesDNSAnalyticsItem `json:"messages,required"`
+	Errors   []MessagesDNSAnalyticsItem `json:"errors" api:"required"`
+	Messages []MessagesDNSAnalyticsItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success ZoneDNSAnalyticsReportGetResponseSuccess `json:"success,required"`
+	Success ZoneDNSAnalyticsReportGetResponseSuccess `json:"success" api:"required"`
 	Result  DataReport                               `json:"result"`
 	JSON    zoneDNSAnalyticsReportGetResponseJSON    `json:"-"`
 }
@@ -113,10 +113,10 @@ func (r ZoneDNSAnalyticsReportGetResponseSuccess) IsKnown() bool {
 }
 
 type ZoneDNSAnalyticsReportByTimeResponse struct {
-	Errors   []MessagesDNSAnalyticsItem `json:"errors,required"`
-	Messages []MessagesDNSAnalyticsItem `json:"messages,required"`
+	Errors   []MessagesDNSAnalyticsItem `json:"errors" api:"required"`
+	Messages []MessagesDNSAnalyticsItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success ZoneDNSAnalyticsReportByTimeResponseSuccess `json:"success,required"`
+	Success ZoneDNSAnalyticsReportByTimeResponseSuccess `json:"success" api:"required"`
 	Result  ReportByTime                                `json:"result"`
 	JSON    zoneDNSAnalyticsReportByTimeResponseJSON    `json:"-"`
 }

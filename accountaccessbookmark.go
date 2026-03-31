@@ -41,15 +41,15 @@ func (r *AccountAccessBookmarkService) New(ctx context.Context, accountID string
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if bookmarkID == "" {
 		err = errors.New("missing required bookmark_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/access/bookmarks/%s", accountID, bookmarkID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetches a single Bookmark application.
@@ -59,15 +59,15 @@ func (r *AccountAccessBookmarkService) Get(ctx context.Context, accountID string
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if bookmarkID == "" {
 		err = errors.New("missing required bookmark_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/access/bookmarks/%s", accountID, bookmarkID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates a configured Bookmark application.
@@ -77,15 +77,15 @@ func (r *AccountAccessBookmarkService) Update(ctx context.Context, accountID str
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if bookmarkID == "" {
 		err = errors.New("missing required bookmark_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/access/bookmarks/%s", accountID, bookmarkID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists Bookmark applications.
@@ -95,11 +95,11 @@ func (r *AccountAccessBookmarkService) List(ctx context.Context, accountID strin
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/access/bookmarks", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Deletes a Bookmark application.
@@ -109,15 +109,15 @@ func (r *AccountAccessBookmarkService) Delete(ctx context.Context, accountID str
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if bookmarkID == "" {
 		err = errors.New("missing required bookmark_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/access/bookmarks/%s", accountID, bookmarkID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type Bookmarks struct {
@@ -158,10 +158,10 @@ func (r bookmarksJSON) RawJSON() string {
 }
 
 type SingleResponseBookmark struct {
-	Errors   []MessagesAccessItem `json:"errors,required"`
-	Messages []MessagesAccessItem `json:"messages,required"`
+	Errors   []MessagesAccessItem `json:"errors" api:"required"`
+	Messages []MessagesAccessItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success SingleResponseBookmarkSuccess `json:"success,required"`
+	Success SingleResponseBookmarkSuccess `json:"success" api:"required"`
 	Result  Bookmarks                     `json:"result"`
 	JSON    singleResponseBookmarkJSON    `json:"-"`
 }
@@ -201,10 +201,10 @@ func (r SingleResponseBookmarkSuccess) IsKnown() bool {
 }
 
 type AccountAccessBookmarkListResponse struct {
-	Errors   []MessagesAccessItem `json:"errors,required"`
-	Messages []MessagesAccessItem `json:"messages,required"`
+	Errors   []MessagesAccessItem `json:"errors" api:"required"`
+	Messages []MessagesAccessItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success    AccountAccessBookmarkListResponseSuccess    `json:"success,required"`
+	Success    AccountAccessBookmarkListResponseSuccess    `json:"success" api:"required"`
 	Result     []Bookmarks                                 `json:"result"`
 	ResultInfo AccountAccessBookmarkListResponseResultInfo `json:"result_info"`
 	JSON       accountAccessBookmarkListResponseJSON       `json:"-"`
@@ -277,7 +277,7 @@ func (r accountAccessBookmarkListResponseResultInfoJSON) RawJSON() string {
 }
 
 type AccountAccessBookmarkNewParams struct {
-	Body interface{} `json:"body,required"`
+	Body interface{} `json:"body" api:"required"`
 }
 
 func (r AccountAccessBookmarkNewParams) MarshalJSON() (data []byte, err error) {
@@ -285,7 +285,7 @@ func (r AccountAccessBookmarkNewParams) MarshalJSON() (data []byte, err error) {
 }
 
 type AccountAccessBookmarkUpdateParams struct {
-	Body interface{} `json:"body,required"`
+	Body interface{} `json:"body" api:"required"`
 }
 
 func (r AccountAccessBookmarkUpdateParams) MarshalJSON() (data []byte, err error) {

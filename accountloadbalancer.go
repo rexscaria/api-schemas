@@ -47,15 +47,15 @@ func (r *AccountLoadBalancerService) PreviewResult(ctx context.Context, accountI
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if previewID == "" {
 		err = errors.New("missing required preview_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/load_balancers/preview/%s", accountID, previewID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Search for Load Balancing resources.
@@ -63,20 +63,20 @@ func (r *AccountLoadBalancerService) Search(ctx context.Context, accountID strin
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/load_balancers/search", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type PreviewResultResponse struct {
-	Errors   []LoadBalancingMessages `json:"errors,required"`
-	Messages []LoadBalancingMessages `json:"messages,required"`
+	Errors   []LoadBalancingMessages `json:"errors" api:"required"`
+	Messages []LoadBalancingMessages `json:"messages" api:"required"`
 	// Resulting health data from a preview operation.
-	Result map[string]PreviewResultResponseResult `json:"result,required"`
+	Result map[string]PreviewResultResponseResult `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success PreviewResultResponseSuccess `json:"success,required"`
+	Success PreviewResultResponseSuccess `json:"success" api:"required"`
 	JSON    previewResultResponseJSON    `json:"-"`
 }
 
@@ -166,11 +166,11 @@ func (r PreviewResultResponseSuccess) IsKnown() bool {
 }
 
 type AccountLoadBalancerSearchResponse struct {
-	Errors   []LoadBalancingMessages                 `json:"errors,required"`
-	Messages []LoadBalancingMessages                 `json:"messages,required"`
-	Result   AccountLoadBalancerSearchResponseResult `json:"result,required"`
+	Errors   []LoadBalancingMessages                 `json:"errors" api:"required"`
+	Messages []LoadBalancingMessages                 `json:"messages" api:"required"`
+	Result   AccountLoadBalancerSearchResponseResult `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success    AccountLoadBalancerSearchResponseSuccess    `json:"success,required"`
+	Success    AccountLoadBalancerSearchResponseSuccess    `json:"success" api:"required"`
 	ResultInfo AccountLoadBalancerSearchResponseResultInfo `json:"result_info"`
 	JSON       accountLoadBalancerSearchResponseJSON       `json:"-"`
 }

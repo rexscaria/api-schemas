@@ -42,15 +42,15 @@ func (r *AccountAIGatewayGatewayLogService) DeleteGatewayLogs(ctx context.Contex
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if gatewayID == "" {
 		err = errors.New("missing required gateway_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai-gateway/gateways/%s/logs", accountID, gatewayID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get Gateway Log Detail
@@ -58,19 +58,19 @@ func (r *AccountAIGatewayGatewayLogService) GetGatewayLogDetail(ctx context.Cont
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if gatewayID == "" {
 		err = errors.New("missing required gateway_id parameter")
-		return
+		return nil, err
 	}
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai-gateway/gateways/%s/logs/%s", accountID, gatewayID, id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Get Gateway Log Request
@@ -78,19 +78,19 @@ func (r *AccountAIGatewayGatewayLogService) GetGatewayLogRequest(ctx context.Con
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if gatewayID == "" {
 		err = errors.New("missing required gateway_id parameter")
-		return
+		return nil, err
 	}
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai-gateway/gateways/%s/logs/%s/request", accountID, gatewayID, id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Get Gateway Log Response
@@ -98,19 +98,19 @@ func (r *AccountAIGatewayGatewayLogService) GetGatewayLogResponse(ctx context.Co
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if gatewayID == "" {
 		err = errors.New("missing required gateway_id parameter")
-		return
+		return nil, err
 	}
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai-gateway/gateways/%s/logs/%s/response", accountID, gatewayID, id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // List Gateway Logs
@@ -118,15 +118,15 @@ func (r *AccountAIGatewayGatewayLogService) ListGatewayLogs(ctx context.Context,
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if gatewayID == "" {
 		err = errors.New("missing required gateway_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai-gateway/gateways/%s/logs", accountID, gatewayID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Patch Gateway Log
@@ -134,23 +134,23 @@ func (r *AccountAIGatewayGatewayLogService) PatchGatewayLog(ctx context.Context,
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if gatewayID == "" {
 		err = errors.New("missing required gateway_id parameter")
-		return
+		return nil, err
 	}
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai-gateway/gateways/%s/logs/%s", accountID, gatewayID, id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountAIGatewayGatewayLogDeleteGatewayLogsResponse struct {
-	Success bool                                                    `json:"success,required"`
+	Success bool                                                    `json:"success" api:"required"`
 	JSON    accountAIGatewayGatewayLogDeleteGatewayLogsResponseJSON `json:"-"`
 }
 
@@ -171,8 +171,8 @@ func (r accountAIGatewayGatewayLogDeleteGatewayLogsResponseJSON) RawJSON() strin
 }
 
 type AccountAIGatewayGatewayLogGetGatewayLogDetailResponse struct {
-	Result  AccountAIGatewayGatewayLogGetGatewayLogDetailResponseResult `json:"result,required"`
-	Success bool                                                        `json:"success,required"`
+	Result  AccountAIGatewayGatewayLogGetGatewayLogDetailResponseResult `json:"result" api:"required"`
+	Success bool                                                        `json:"success" api:"required"`
 	JSON    accountAIGatewayGatewayLogGetGatewayLogDetailResponseJSON   `json:"-"`
 }
 
@@ -194,16 +194,16 @@ func (r accountAIGatewayGatewayLogGetGatewayLogDetailResponseJSON) RawJSON() str
 }
 
 type AccountAIGatewayGatewayLogGetGatewayLogDetailResponseResult struct {
-	ID                   string                                                          `json:"id,required"`
-	Cached               bool                                                            `json:"cached,required"`
-	CreatedAt            time.Time                                                       `json:"created_at,required" format:"date-time"`
-	Duration             int64                                                           `json:"duration,required"`
-	Model                string                                                          `json:"model,required"`
-	Path                 string                                                          `json:"path,required"`
-	Provider             string                                                          `json:"provider,required"`
-	Success              bool                                                            `json:"success,required"`
-	TokensIn             int64                                                           `json:"tokens_in,required,nullable"`
-	TokensOut            int64                                                           `json:"tokens_out,required,nullable"`
+	ID                   string                                                          `json:"id" api:"required"`
+	Cached               bool                                                            `json:"cached" api:"required"`
+	CreatedAt            time.Time                                                       `json:"created_at" api:"required" format:"date-time"`
+	Duration             int64                                                           `json:"duration" api:"required"`
+	Model                string                                                          `json:"model" api:"required"`
+	Path                 string                                                          `json:"path" api:"required"`
+	Provider             string                                                          `json:"provider" api:"required"`
+	Success              bool                                                            `json:"success" api:"required"`
+	TokensIn             int64                                                           `json:"tokens_in" api:"required,nullable"`
+	TokensOut            int64                                                           `json:"tokens_out" api:"required,nullable"`
 	Cost                 float64                                                         `json:"cost"`
 	CustomCost           bool                                                            `json:"custom_cost"`
 	Metadata             string                                                          `json:"metadata"`
@@ -268,9 +268,9 @@ type AccountAIGatewayGatewayLogGetGatewayLogRequestResponse = interface{}
 type AccountAIGatewayGatewayLogGetGatewayLogResponseResponse = interface{}
 
 type AccountAIGatewayGatewayLogListGatewayLogsResponse struct {
-	Result     []AccountAIGatewayGatewayLogListGatewayLogsResponseResult   `json:"result,required"`
-	ResultInfo AccountAIGatewayGatewayLogListGatewayLogsResponseResultInfo `json:"result_info,required"`
-	Success    bool                                                        `json:"success,required"`
+	Result     []AccountAIGatewayGatewayLogListGatewayLogsResponseResult   `json:"result" api:"required"`
+	ResultInfo AccountAIGatewayGatewayLogListGatewayLogsResponseResultInfo `json:"result_info" api:"required"`
+	Success    bool                                                        `json:"success" api:"required"`
 	JSON       accountAIGatewayGatewayLogListGatewayLogsResponseJSON       `json:"-"`
 }
 
@@ -293,16 +293,16 @@ func (r accountAIGatewayGatewayLogListGatewayLogsResponseJSON) RawJSON() string 
 }
 
 type AccountAIGatewayGatewayLogListGatewayLogsResponseResult struct {
-	ID                  string                                                      `json:"id,required"`
-	Cached              bool                                                        `json:"cached,required"`
-	CreatedAt           time.Time                                                   `json:"created_at,required" format:"date-time"`
-	Duration            int64                                                       `json:"duration,required"`
-	Model               string                                                      `json:"model,required"`
-	Path                string                                                      `json:"path,required"`
-	Provider            string                                                      `json:"provider,required"`
-	Success             bool                                                        `json:"success,required"`
-	TokensIn            int64                                                       `json:"tokens_in,required,nullable"`
-	TokensOut           int64                                                       `json:"tokens_out,required,nullable"`
+	ID                  string                                                      `json:"id" api:"required"`
+	Cached              bool                                                        `json:"cached" api:"required"`
+	CreatedAt           time.Time                                                   `json:"created_at" api:"required" format:"date-time"`
+	Duration            int64                                                       `json:"duration" api:"required"`
+	Model               string                                                      `json:"model" api:"required"`
+	Path                string                                                      `json:"path" api:"required"`
+	Provider            string                                                      `json:"provider" api:"required"`
+	Success             bool                                                        `json:"success" api:"required"`
+	TokensIn            int64                                                       `json:"tokens_in" api:"required,nullable"`
+	TokensOut           int64                                                       `json:"tokens_out" api:"required,nullable"`
 	Cost                float64                                                     `json:"cost"`
 	CustomCost          bool                                                        `json:"custom_cost"`
 	Metadata            string                                                      `json:"metadata"`
@@ -399,8 +399,8 @@ func (r accountAIGatewayGatewayLogListGatewayLogsResponseResultInfoJSON) RawJSON
 }
 
 type AccountAIGatewayGatewayLogPatchGatewayLogResponse struct {
-	Result  interface{}                                           `json:"result,required"`
-	Success bool                                                  `json:"success,required"`
+	Result  interface{}                                           `json:"result" api:"required"`
+	Success bool                                                  `json:"success" api:"required"`
 	JSON    accountAIGatewayGatewayLogPatchGatewayLogResponseJSON `json:"-"`
 }
 
@@ -438,9 +438,9 @@ func (r AccountAIGatewayGatewayLogDeleteGatewayLogsParams) URLQuery() (v url.Val
 }
 
 type AccountAIGatewayGatewayLogDeleteGatewayLogsParamsFilter struct {
-	Key      param.Field[AccountAIGatewayGatewayLogDeleteGatewayLogsParamsFiltersKey]          `query:"key,required"`
-	Operator param.Field[AccountAIGatewayGatewayLogDeleteGatewayLogsParamsFiltersOperator]     `query:"operator,required"`
-	Value    param.Field[[]AccountAIGatewayGatewayLogDeleteGatewayLogsParamsFiltersValueUnion] `query:"value,required"`
+	Key      param.Field[AccountAIGatewayGatewayLogDeleteGatewayLogsParamsFiltersKey]          `query:"key" api:"required"`
+	Operator param.Field[AccountAIGatewayGatewayLogDeleteGatewayLogsParamsFiltersOperator]     `query:"operator" api:"required"`
+	Value    param.Field[[]AccountAIGatewayGatewayLogDeleteGatewayLogsParamsFiltersValueUnion] `query:"value" api:"required"`
 }
 
 // URLQuery serializes [AccountAIGatewayGatewayLogDeleteGatewayLogsParamsFilter]'s
@@ -619,9 +619,9 @@ func (r AccountAIGatewayGatewayLogListGatewayLogsParamsFeedback) IsKnown() bool 
 }
 
 type AccountAIGatewayGatewayLogListGatewayLogsParamsFilter struct {
-	Key      param.Field[AccountAIGatewayGatewayLogListGatewayLogsParamsFiltersKey]          `query:"key,required"`
-	Operator param.Field[AccountAIGatewayGatewayLogListGatewayLogsParamsFiltersOperator]     `query:"operator,required"`
-	Value    param.Field[[]AccountAIGatewayGatewayLogListGatewayLogsParamsFiltersValueUnion] `query:"value,required"`
+	Key      param.Field[AccountAIGatewayGatewayLogListGatewayLogsParamsFiltersKey]          `query:"key" api:"required"`
+	Operator param.Field[AccountAIGatewayGatewayLogListGatewayLogsParamsFiltersOperator]     `query:"operator" api:"required"`
+	Value    param.Field[[]AccountAIGatewayGatewayLogListGatewayLogsParamsFiltersValueUnion] `query:"value" api:"required"`
 }
 
 // URLQuery serializes [AccountAIGatewayGatewayLogListGatewayLogsParamsFilter]'s

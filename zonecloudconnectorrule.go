@@ -39,11 +39,11 @@ func (r *ZoneCloudConnectorRuleService) Update(ctx context.Context, zoneID strin
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/cloud_connector/rules", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Rules
@@ -51,16 +51,16 @@ func (r *ZoneCloudConnectorRuleService) List(ctx context.Context, zoneID string,
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/cloud_connector/rules", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type MessagesCloudConnectorItem struct {
-	Code             int64                            `json:"code,required"`
-	Message          string                           `json:"message,required"`
+	Code             int64                            `json:"code" api:"required"`
+	Message          string                           `json:"message" api:"required"`
 	DocumentationURL string                           `json:"documentation_url"`
 	Source           MessagesCloudConnectorItemSource `json:"source"`
 	JSON             messagesCloudConnectorItemJSON   `json:"-"`
@@ -180,10 +180,10 @@ func (r RuleItemProvider) IsKnown() bool {
 }
 
 type ZoneCloudConnectorRuleUpdateResponse struct {
-	Errors   []MessagesCloudConnectorItem `json:"errors,required"`
-	Messages []MessagesCloudConnectorItem `json:"messages,required"`
+	Errors   []MessagesCloudConnectorItem `json:"errors" api:"required"`
+	Messages []MessagesCloudConnectorItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success ZoneCloudConnectorRuleUpdateResponseSuccess `json:"success,required"`
+	Success ZoneCloudConnectorRuleUpdateResponseSuccess `json:"success" api:"required"`
 	// List of Cloud Connector rules
 	Result []RuleItem                               `json:"result"`
 	JSON   zoneCloudConnectorRuleUpdateResponseJSON `json:"-"`
@@ -224,10 +224,10 @@ func (r ZoneCloudConnectorRuleUpdateResponseSuccess) IsKnown() bool {
 }
 
 type ZoneCloudConnectorRuleListResponse struct {
-	Errors   []MessagesCloudConnectorItem `json:"errors,required"`
-	Messages []MessagesCloudConnectorItem `json:"messages,required"`
+	Errors   []MessagesCloudConnectorItem `json:"errors" api:"required"`
+	Messages []MessagesCloudConnectorItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success ZoneCloudConnectorRuleListResponseSuccess `json:"success,required"`
+	Success ZoneCloudConnectorRuleListResponseSuccess `json:"success" api:"required"`
 	// List of Cloud Connector rules
 	Result []RuleItem                             `json:"result"`
 	JSON   zoneCloudConnectorRuleListResponseJSON `json:"-"`

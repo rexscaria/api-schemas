@@ -42,15 +42,15 @@ func (r *AccountShareResourceService) New(ctx context.Context, accountID string,
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if shareID == "" {
 		err = errors.New("missing required share_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/shares/%s/resources", accountID, shareID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get share resource by ID.
@@ -58,19 +58,19 @@ func (r *AccountShareResourceService) Get(ctx context.Context, accountID string,
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if shareID == "" {
 		err = errors.New("missing required share_id parameter")
-		return
+		return nil, err
 	}
 	if resourceID == "" {
 		err = errors.New("missing required resource_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/shares/%s/resources/%s", accountID, shareID, resourceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update is not immediate, an updated share resource object with a new status will
@@ -79,19 +79,19 @@ func (r *AccountShareResourceService) Update(ctx context.Context, accountID stri
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if shareID == "" {
 		err = errors.New("missing required share_id parameter")
-		return
+		return nil, err
 	}
 	if resourceID == "" {
 		err = errors.New("missing required resource_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/shares/%s/resources/%s", accountID, shareID, resourceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // List share resources by share ID.
@@ -99,15 +99,15 @@ func (r *AccountShareResourceService) List(ctx context.Context, accountID string
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if shareID == "" {
 		err = errors.New("missing required share_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/shares/%s/resources", accountID, shareID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Deletion is not immediate, an updated share resource object with a new status
@@ -116,30 +116,30 @@ func (r *AccountShareResourceService) Delete(ctx context.Context, accountID stri
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if shareID == "" {
 		err = errors.New("missing required share_id parameter")
-		return
+		return nil, err
 	}
 	if resourceID == "" {
 		err = errors.New("missing required resource_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/shares/%s/resources/%s", accountID, shareID, resourceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type CreateShareResourceRequestParam struct {
 	// Resource Metadata.
-	Meta param.Field[interface{}] `json:"meta,required"`
+	Meta param.Field[interface{}] `json:"meta" api:"required"`
 	// Account identifier.
-	ResourceAccountID param.Field[string] `json:"resource_account_id,required"`
+	ResourceAccountID param.Field[string] `json:"resource_account_id" api:"required"`
 	// Share Resource identifier.
-	ResourceID param.Field[string] `json:"resource_id,required"`
+	ResourceID param.Field[string] `json:"resource_id" api:"required"`
 	// Resource Type.
-	ResourceType param.Field[ResourceType] `json:"resource_type,required"`
+	ResourceType param.Field[ResourceType] `json:"resource_type" api:"required"`
 }
 
 func (r CreateShareResourceRequestParam) MarshalJSON() (data []byte, err error) {
@@ -164,23 +164,23 @@ func (r ResourceType) IsKnown() bool {
 
 type ShareResourceObject struct {
 	// Share Resource identifier.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// When the share was created.
-	Created time.Time `json:"created,required" format:"date-time"`
+	Created time.Time `json:"created" api:"required" format:"date-time"`
 	// Resource Metadata.
-	Meta interface{} `json:"meta,required"`
+	Meta interface{} `json:"meta" api:"required"`
 	// When the share was modified.
-	Modified time.Time `json:"modified,required" format:"date-time"`
+	Modified time.Time `json:"modified" api:"required" format:"date-time"`
 	// Account identifier.
-	ResourceAccountID string `json:"resource_account_id,required"`
+	ResourceAccountID string `json:"resource_account_id" api:"required"`
 	// Share Resource identifier.
-	ResourceID string `json:"resource_id,required"`
+	ResourceID string `json:"resource_id" api:"required"`
 	// Resource Type.
-	ResourceType ResourceType `json:"resource_type,required"`
+	ResourceType ResourceType `json:"resource_type" api:"required"`
 	// Resource Version.
-	ResourceVersion int64 `json:"resource_version,required"`
+	ResourceVersion int64 `json:"resource_version" api:"required"`
 	// Resource Status.
-	Status ShareResourceObjectStatus `json:"status,required"`
+	Status ShareResourceObjectStatus `json:"status" api:"required"`
 	JSON   shareResourceObjectJSON   `json:"-"`
 }
 
@@ -226,9 +226,9 @@ func (r ShareResourceObjectStatus) IsKnown() bool {
 }
 
 type ShareResourceResponseSingle struct {
-	Errors []ShareResourceResponseSingleError `json:"errors,required"`
+	Errors []ShareResourceResponseSingleError `json:"errors" api:"required"`
 	// Whether the API call was successful.
-	Success bool                            `json:"success,required"`
+	Success bool                            `json:"success" api:"required"`
 	Result  ShareResourceObject             `json:"result"`
 	JSON    shareResourceResponseSingleJSON `json:"-"`
 }
@@ -252,8 +252,8 @@ func (r shareResourceResponseSingleJSON) RawJSON() string {
 }
 
 type ShareResourceResponseSingleError struct {
-	Code             int64                                   `json:"code,required"`
-	Message          string                                  `json:"message,required"`
+	Code             int64                                   `json:"code" api:"required"`
+	Message          string                                  `json:"message" api:"required"`
 	DocumentationURL string                                  `json:"documentation_url"`
 	Source           ShareResourceResponseSingleErrorsSource `json:"source"`
 	JSON             shareResourceResponseSingleErrorJSON    `json:"-"`
@@ -300,10 +300,10 @@ func (r shareResourceResponseSingleErrorsSourceJSON) RawJSON() string {
 }
 
 type AccountShareResourceListResponse struct {
-	Errors []AccountShareResourceListResponseError `json:"errors,required"`
+	Errors []AccountShareResourceListResponseError `json:"errors" api:"required"`
 	// Whether the API call was successful.
-	Success    bool                                       `json:"success,required"`
-	Result     []ShareResourceObject                      `json:"result,nullable"`
+	Success    bool                                       `json:"success" api:"required"`
+	Result     []ShareResourceObject                      `json:"result" api:"nullable"`
 	ResultInfo AccountShareResourceListResponseResultInfo `json:"result_info"`
 	JSON       accountShareResourceListResponseJSON       `json:"-"`
 }
@@ -328,8 +328,8 @@ func (r accountShareResourceListResponseJSON) RawJSON() string {
 }
 
 type AccountShareResourceListResponseError struct {
-	Code             int64                                        `json:"code,required"`
-	Message          string                                       `json:"message,required"`
+	Code             int64                                        `json:"code" api:"required"`
+	Message          string                                       `json:"message" api:"required"`
 	DocumentationURL string                                       `json:"documentation_url"`
 	Source           AccountShareResourceListResponseErrorsSource `json:"source"`
 	JSON             accountShareResourceListResponseErrorJSON    `json:"-"`
@@ -410,7 +410,7 @@ func (r accountShareResourceListResponseResultInfoJSON) RawJSON() string {
 }
 
 type AccountShareResourceNewParams struct {
-	CreateShareResourceRequest CreateShareResourceRequestParam `json:"create_share_resource_request,required"`
+	CreateShareResourceRequest CreateShareResourceRequestParam `json:"create_share_resource_request" api:"required"`
 }
 
 func (r AccountShareResourceNewParams) MarshalJSON() (data []byte, err error) {
@@ -419,7 +419,7 @@ func (r AccountShareResourceNewParams) MarshalJSON() (data []byte, err error) {
 
 type AccountShareResourceUpdateParams struct {
 	// Resource Metadata.
-	Meta param.Field[interface{}] `json:"meta,required"`
+	Meta param.Field[interface{}] `json:"meta" api:"required"`
 }
 
 func (r AccountShareResourceUpdateParams) MarshalJSON() (data []byte, err error) {

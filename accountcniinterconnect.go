@@ -43,11 +43,11 @@ func (r *AccountCniInterconnectService) New(ctx context.Context, accountID strin
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/cni/interconnects", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get information about an interconnect object
@@ -55,15 +55,15 @@ func (r *AccountCniInterconnectService) Get(ctx context.Context, accountID strin
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if icon == "" {
 		err = errors.New("missing required icon parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/cni/interconnects/%s", accountID, icon)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // List existing interconnects
@@ -71,45 +71,45 @@ func (r *AccountCniInterconnectService) List(ctx context.Context, accountID stri
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/cni/interconnects", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete an interconnect object
 func (r *AccountCniInterconnectService) Delete(ctx context.Context, accountID string, icon string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return err
 	}
 	if icon == "" {
 		err = errors.New("missing required icon parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("accounts/%s/cni/interconnects/%s", accountID, icon)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Generate the Letter of Authorization (LOA) for a given interconnect
 func (r *AccountCniInterconnectService) GenerateLoa(ctx context.Context, accountID string, icon string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return err
 	}
 	if icon == "" {
 		err = errors.New("missing required icon parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("accounts/%s/cni/interconnects/%s/loa", accountID, icon)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Get the current status of an interconnect object
@@ -117,21 +117,21 @@ func (r *AccountCniInterconnectService) GetStatus(ctx context.Context, accountID
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if icon == "" {
 		err = errors.New("missing required icon parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/cni/interconnects/%s/status", accountID, icon)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type NscInterconnect struct {
-	Account  string          `json:"account,required"`
-	Name     string          `json:"name,required"`
-	Type     string          `json:"type,required"`
+	Account  string          `json:"account" api:"required"`
+	Name     string          `json:"name" api:"required"`
+	Type     string          `json:"type" api:"required"`
 	Facility NscFacilityInfo `json:"facility"`
 	Owner    string          `json:"owner"`
 	Region   string          `json:"region"`
@@ -203,14 +203,14 @@ func init() {
 }
 
 type NscInterconnectNscInterconnectPhysicalBody struct {
-	Account  string          `json:"account,required"`
-	Facility NscFacilityInfo `json:"facility,required"`
-	Name     string          `json:"name,required"`
+	Account  string          `json:"account" api:"required"`
+	Facility NscFacilityInfo `json:"facility" api:"required"`
+	Name     string          `json:"name" api:"required"`
 	// A Cloudflare site name.
-	Site   string                                         `json:"site,required"`
-	SlotID string                                         `json:"slot_id,required" format:"uuid"`
-	Speed  string                                         `json:"speed,required"`
-	Type   string                                         `json:"type,required"`
+	Site   string                                         `json:"site" api:"required"`
+	SlotID string                                         `json:"slot_id" api:"required" format:"uuid"`
+	Speed  string                                         `json:"speed" api:"required"`
+	Type   string                                         `json:"type" api:"required"`
 	Owner  string                                         `json:"owner"`
 	JSON   nscInterconnectNscInterconnectPhysicalBodyJSON `json:"-"`
 }
@@ -241,10 +241,10 @@ func (r nscInterconnectNscInterconnectPhysicalBodyJSON) RawJSON() string {
 func (r NscInterconnectNscInterconnectPhysicalBody) implementsNscInterconnect() {}
 
 type NscInterconnectNscInterconnectGcpPartnerBody struct {
-	Account string `json:"account,required"`
-	Name    string `json:"name,required"`
-	Region  string `json:"region,required"`
-	Type    string `json:"type,required"`
+	Account string `json:"account" api:"required"`
+	Name    string `json:"name" api:"required"`
+	Region  string `json:"region" api:"required"`
+	Type    string `json:"type" api:"required"`
 	Owner   string `json:"owner"`
 	// Bandwidth structure as visible through the customer-facing API.
 	Speed NscInterconnectNscInterconnectGcpPartnerBodySpeed `json:"speed"`
@@ -301,8 +301,8 @@ func (r NscInterconnectNscInterconnectGcpPartnerBodySpeed) IsKnown() bool {
 }
 
 type AccountCniInterconnectListResponse struct {
-	Items []NscInterconnect                      `json:"items,required"`
-	Next  int64                                  `json:"next,nullable"`
+	Items []NscInterconnect                      `json:"items" api:"required"`
+	Next  int64                                  `json:"next" api:"nullable"`
 	JSON  accountCniInterconnectListResponseJSON `json:"-"`
 }
 
@@ -324,9 +324,9 @@ func (r accountCniInterconnectListResponseJSON) RawJSON() string {
 }
 
 type AccountCniInterconnectGetStatusResponse struct {
-	State AccountCniInterconnectGetStatusResponseState `json:"state,required"`
+	State AccountCniInterconnectGetStatusResponseState `json:"state" api:"required"`
 	// Diagnostic information, if available
-	Reason string                                      `json:"reason,nullable"`
+	Reason string                                      `json:"reason" api:"nullable"`
 	JSON   accountCniInterconnectGetStatusResponseJSON `json:"-"`
 	union  AccountCniInterconnectGetStatusResponseUnion
 }
@@ -401,7 +401,7 @@ func init() {
 }
 
 type AccountCniInterconnectGetStatusResponsePending struct {
-	State AccountCniInterconnectGetStatusResponsePendingState `json:"state,required"`
+	State AccountCniInterconnectGetStatusResponsePendingState `json:"state" api:"required"`
 	JSON  accountCniInterconnectGetStatusResponsePendingJSON  `json:"-"`
 }
 
@@ -439,9 +439,9 @@ func (r AccountCniInterconnectGetStatusResponsePendingState) IsKnown() bool {
 }
 
 type AccountCniInterconnectGetStatusResponseDown struct {
-	State AccountCniInterconnectGetStatusResponseDownState `json:"state,required"`
+	State AccountCniInterconnectGetStatusResponseDownState `json:"state" api:"required"`
 	// Diagnostic information, if available
-	Reason string                                          `json:"reason,nullable"`
+	Reason string                                          `json:"reason" api:"nullable"`
 	JSON   accountCniInterconnectGetStatusResponseDownJSON `json:"-"`
 }
 
@@ -480,9 +480,9 @@ func (r AccountCniInterconnectGetStatusResponseDownState) IsKnown() bool {
 }
 
 type AccountCniInterconnectGetStatusResponseUnhealthy struct {
-	State AccountCniInterconnectGetStatusResponseUnhealthyState `json:"state,required"`
+	State AccountCniInterconnectGetStatusResponseUnhealthyState `json:"state" api:"required"`
 	// Diagnostic information, if available
-	Reason string                                               `json:"reason,nullable"`
+	Reason string                                               `json:"reason" api:"nullable"`
 	JSON   accountCniInterconnectGetStatusResponseUnhealthyJSON `json:"-"`
 }
 
@@ -521,7 +521,7 @@ func (r AccountCniInterconnectGetStatusResponseUnhealthyState) IsKnown() bool {
 }
 
 type AccountCniInterconnectGetStatusResponseHealthy struct {
-	State AccountCniInterconnectGetStatusResponseHealthyState `json:"state,required"`
+	State AccountCniInterconnectGetStatusResponseHealthyState `json:"state" api:"required"`
 	JSON  accountCniInterconnectGetStatusResponseHealthyJSON  `json:"-"`
 }
 
@@ -576,7 +576,7 @@ func (r AccountCniInterconnectGetStatusResponseState) IsKnown() bool {
 }
 
 type AccountCniInterconnectNewParams struct {
-	Body AccountCniInterconnectNewParamsBodyUnion `json:"body,required"`
+	Body AccountCniInterconnectNewParamsBodyUnion `json:"body" api:"required"`
 }
 
 func (r AccountCniInterconnectNewParams) MarshalJSON() (data []byte, err error) {
@@ -584,8 +584,8 @@ func (r AccountCniInterconnectNewParams) MarshalJSON() (data []byte, err error) 
 }
 
 type AccountCniInterconnectNewParamsBody struct {
-	Account param.Field[string] `json:"account,required"`
-	Type    param.Field[string] `json:"type,required"`
+	Account param.Field[string] `json:"account" api:"required"`
+	Type    param.Field[string] `json:"type" api:"required"`
 	// Bandwidth structure as visible through the customer-facing API.
 	Bandwidth param.Field[AccountCniInterconnectNewParamsBodyBandwidth] `json:"bandwidth"`
 	// Pairing key provided by GCP
@@ -609,9 +609,9 @@ type AccountCniInterconnectNewParamsBodyUnion interface {
 }
 
 type AccountCniInterconnectNewParamsBodyNscInterconnectCreatePhysicalBody struct {
-	Account param.Field[string] `json:"account,required"`
-	SlotID  param.Field[string] `json:"slot_id,required" format:"uuid"`
-	Type    param.Field[string] `json:"type,required"`
+	Account param.Field[string] `json:"account" api:"required"`
+	SlotID  param.Field[string] `json:"slot_id" api:"required" format:"uuid"`
+	Type    param.Field[string] `json:"type" api:"required"`
 	Speed   param.Field[string] `json:"speed"`
 }
 
@@ -623,12 +623,12 @@ func (r AccountCniInterconnectNewParamsBodyNscInterconnectCreatePhysicalBody) im
 }
 
 type AccountCniInterconnectNewParamsBodyNscInterconnectCreateGcpPartnerBody struct {
-	Account param.Field[string] `json:"account,required"`
+	Account param.Field[string] `json:"account" api:"required"`
 	// Bandwidth structure as visible through the customer-facing API.
-	Bandwidth param.Field[AccountCniInterconnectNewParamsBodyNscInterconnectCreateGcpPartnerBodyBandwidth] `json:"bandwidth,required"`
+	Bandwidth param.Field[AccountCniInterconnectNewParamsBodyNscInterconnectCreateGcpPartnerBodyBandwidth] `json:"bandwidth" api:"required"`
 	// Pairing key provided by GCP
-	PairingKey param.Field[string] `json:"pairing_key,required"`
-	Type       param.Field[string] `json:"type,required"`
+	PairingKey param.Field[string] `json:"pairing_key" api:"required"`
+	Type       param.Field[string] `json:"type" api:"required"`
 }
 
 func (r AccountCniInterconnectNewParamsBodyNscInterconnectCreateGcpPartnerBody) MarshalJSON() (data []byte, err error) {

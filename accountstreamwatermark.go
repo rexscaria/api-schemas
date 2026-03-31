@@ -44,11 +44,11 @@ func (r *AccountStreamWatermarkService) New(ctx context.Context, accountID strin
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/stream/watermarks", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves details for a single watermark profile.
@@ -56,15 +56,15 @@ func (r *AccountStreamWatermarkService) Get(ctx context.Context, accountID strin
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if identifier == "" {
 		err = errors.New("missing required identifier parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/stream/watermarks/%s", accountID, identifier)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists all watermark profiles for an account.
@@ -72,11 +72,11 @@ func (r *AccountStreamWatermarkService) List(ctx context.Context, accountID stri
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/stream/watermarks", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Deletes a watermark profile.
@@ -84,22 +84,22 @@ func (r *AccountStreamWatermarkService) Delete(ctx context.Context, accountID st
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if identifier == "" {
 		err = errors.New("missing required identifier parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/stream/watermarks/%s", accountID, identifier)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type WatermarkResponseSingle struct {
-	Errors   []StreamMessages `json:"errors,required"`
-	Messages []StreamMessages `json:"messages,required"`
+	Errors   []StreamMessages `json:"errors" api:"required"`
+	Messages []StreamMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success WatermarkResponseSingleSuccess `json:"success,required"`
+	Success WatermarkResponseSingleSuccess `json:"success" api:"required"`
 	Result  Watermarks                     `json:"result"`
 	JSON    watermarkResponseSingleJSON    `json:"-"`
 }
@@ -200,10 +200,10 @@ func (r watermarksJSON) RawJSON() string {
 }
 
 type AccountStreamWatermarkListResponse struct {
-	Errors   []StreamMessages `json:"errors,required"`
-	Messages []StreamMessages `json:"messages,required"`
+	Errors   []StreamMessages `json:"errors" api:"required"`
+	Messages []StreamMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountStreamWatermarkListResponseSuccess `json:"success,required"`
+	Success AccountStreamWatermarkListResponseSuccess `json:"success" api:"required"`
 	Result  []Watermarks                              `json:"result"`
 	JSON    accountStreamWatermarkListResponseJSON    `json:"-"`
 }
@@ -243,10 +243,10 @@ func (r AccountStreamWatermarkListResponseSuccess) IsKnown() bool {
 }
 
 type AccountStreamWatermarkDeleteResponse struct {
-	Errors   []StreamMessages `json:"errors,required"`
-	Messages []StreamMessages `json:"messages,required"`
+	Errors   []StreamMessages `json:"errors" api:"required"`
+	Messages []StreamMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountStreamWatermarkDeleteResponseSuccess `json:"success,required"`
+	Success AccountStreamWatermarkDeleteResponseSuccess `json:"success" api:"required"`
 	Result  string                                      `json:"result"`
 	JSON    accountStreamWatermarkDeleteResponseJSON    `json:"-"`
 }
@@ -287,7 +287,7 @@ func (r AccountStreamWatermarkDeleteResponseSuccess) IsKnown() bool {
 
 type AccountStreamWatermarkNewParams struct {
 	// The image file to upload.
-	File param.Field[string] `json:"file,required"`
+	File param.Field[string] `json:"file" api:"required"`
 	// A short description of the watermark profile.
 	Name param.Field[string] `json:"name"`
 	// The translucency of the image. A value of `0.0` makes the image completely

@@ -39,11 +39,11 @@ func (r *ZoneContentUploadScanPayloadService) New(ctx context.Context, zoneID st
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/content-upload-scan/payloads", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get a list of existing custom scan expressions for Content Scanning.
@@ -51,11 +51,11 @@ func (r *ZoneContentUploadScanPayloadService) List(ctx context.Context, zoneID s
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/content-upload-scan/payloads", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete a Content Scan Custom Expression.
@@ -63,23 +63,23 @@ func (r *ZoneContentUploadScanPayloadService) Delete(ctx context.Context, zoneID
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if expressionID == "" {
 		err = errors.New("missing required expression_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/content-upload-scan/payloads/%s", zoneID, expressionID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type CustomScanCollection struct {
-	Errors   []WafProductAPIBundleMessages `json:"errors,required"`
-	Messages []WafProductAPIBundleMessages `json:"messages,required"`
-	Result   []CustomScanCollectionResult  `json:"result,required,nullable"`
+	Errors   []WafProductAPIBundleMessages `json:"errors" api:"required"`
+	Messages []WafProductAPIBundleMessages `json:"messages" api:"required"`
+	Result   []CustomScanCollectionResult  `json:"result" api:"required,nullable"`
 	// Whether the API call was successful.
-	Success CustomScanCollectionSuccess `json:"success,required"`
+	Success CustomScanCollectionSuccess `json:"success" api:"required"`
 	JSON    customScanCollectionJSON    `json:"-"`
 }
 
@@ -148,7 +148,7 @@ type CustomScanID = string
 type CustomScanIDParam = string
 
 type ZoneContentUploadScanPayloadNewParams struct {
-	Body []ZoneContentUploadScanPayloadNewParamsBody `json:"body,required"`
+	Body []ZoneContentUploadScanPayloadNewParamsBody `json:"body" api:"required"`
 }
 
 func (r ZoneContentUploadScanPayloadNewParams) MarshalJSON() (data []byte, err error) {
@@ -157,7 +157,7 @@ func (r ZoneContentUploadScanPayloadNewParams) MarshalJSON() (data []byte, err e
 
 type ZoneContentUploadScanPayloadNewParamsBody struct {
 	// Defines the ruleset expression to use in matching content objects.
-	Payload param.Field[string] `json:"payload,required"`
+	Payload param.Field[string] `json:"payload" api:"required"`
 }
 
 func (r ZoneContentUploadScanPayloadNewParamsBody) MarshalJSON() (data []byte, err error) {

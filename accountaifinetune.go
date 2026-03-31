@@ -46,11 +46,11 @@ func (r *AccountAIFinetuneService) New(ctx context.Context, accountID string, bo
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai/finetunes", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // List Finetunes
@@ -58,11 +58,11 @@ func (r *AccountAIFinetuneService) List(ctx context.Context, accountID string, o
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai/finetunes", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // List Public Finetunes
@@ -70,11 +70,11 @@ func (r *AccountAIFinetuneService) ListPublic(ctx context.Context, accountID str
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai/finetunes/public", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Upload a Finetune Asset
@@ -82,20 +82,20 @@ func (r *AccountAIFinetuneService) UploadAsset(ctx context.Context, accountID st
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if finetuneID == "" {
 		err = errors.New("missing required finetune_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai/finetunes/%s/finetune-assets", accountID, finetuneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountAIFinetuneNewResponse struct {
-	Result  AccountAIFinetuneNewResponseResult `json:"result,required"`
-	Success bool                               `json:"success,required"`
+	Result  AccountAIFinetuneNewResponseResult `json:"result" api:"required"`
+	Success bool                               `json:"success" api:"required"`
 	JSON    accountAIFinetuneNewResponseJSON   `json:"-"`
 }
 
@@ -117,12 +117,12 @@ func (r accountAIFinetuneNewResponseJSON) RawJSON() string {
 }
 
 type AccountAIFinetuneNewResponseResult struct {
-	ID          string                                 `json:"id,required" format:"uuid"`
-	CreatedAt   time.Time                              `json:"created_at,required" format:"date-time"`
-	Model       string                                 `json:"model,required"`
-	ModifiedAt  time.Time                              `json:"modified_at,required" format:"date-time"`
-	Name        string                                 `json:"name,required"`
-	Public      bool                                   `json:"public,required"`
+	ID          string                                 `json:"id" api:"required" format:"uuid"`
+	CreatedAt   time.Time                              `json:"created_at" api:"required" format:"date-time"`
+	Model       string                                 `json:"model" api:"required"`
+	ModifiedAt  time.Time                              `json:"modified_at" api:"required" format:"date-time"`
+	Name        string                                 `json:"name" api:"required"`
+	Public      bool                                   `json:"public" api:"required"`
 	Description string                                 `json:"description"`
 	JSON        accountAIFinetuneNewResponseResultJSON `json:"-"`
 }
@@ -150,8 +150,8 @@ func (r accountAIFinetuneNewResponseResultJSON) RawJSON() string {
 }
 
 type AccountAIFinetuneListResponse struct {
-	Result  AccountAIFinetuneListResponseResult `json:"result,required"`
-	Success bool                                `json:"success,required"`
+	Result  AccountAIFinetuneListResponseResult `json:"result" api:"required"`
+	Success bool                                `json:"success" api:"required"`
 	JSON    accountAIFinetuneListResponseJSON   `json:"-"`
 }
 
@@ -173,11 +173,11 @@ func (r accountAIFinetuneListResponseJSON) RawJSON() string {
 }
 
 type AccountAIFinetuneListResponseResult struct {
-	ID          string                                  `json:"id,required" format:"uuid"`
-	CreatedAt   time.Time                               `json:"created_at,required" format:"date-time"`
-	Model       string                                  `json:"model,required"`
-	ModifiedAt  time.Time                               `json:"modified_at,required" format:"date-time"`
-	Name        string                                  `json:"name,required"`
+	ID          string                                  `json:"id" api:"required" format:"uuid"`
+	CreatedAt   time.Time                               `json:"created_at" api:"required" format:"date-time"`
+	Model       string                                  `json:"model" api:"required"`
+	ModifiedAt  time.Time                               `json:"modified_at" api:"required" format:"date-time"`
+	Name        string                                  `json:"name" api:"required"`
 	Description string                                  `json:"description"`
 	JSON        accountAIFinetuneListResponseResultJSON `json:"-"`
 }
@@ -204,8 +204,8 @@ func (r accountAIFinetuneListResponseResultJSON) RawJSON() string {
 }
 
 type AccountAIFinetuneListPublicResponse struct {
-	Result  []AccountAIFinetuneListPublicResponseResult `json:"result,required"`
-	Success bool                                        `json:"success,required"`
+	Result  []AccountAIFinetuneListPublicResponseResult `json:"result" api:"required"`
+	Success bool                                        `json:"success" api:"required"`
 	JSON    accountAIFinetuneListPublicResponseJSON     `json:"-"`
 }
 
@@ -227,12 +227,12 @@ func (r accountAIFinetuneListPublicResponseJSON) RawJSON() string {
 }
 
 type AccountAIFinetuneListPublicResponseResult struct {
-	ID          string                                        `json:"id,required" format:"uuid"`
-	CreatedAt   time.Time                                     `json:"created_at,required" format:"date-time"`
-	Model       string                                        `json:"model,required"`
-	ModifiedAt  time.Time                                     `json:"modified_at,required" format:"date-time"`
-	Name        string                                        `json:"name,required"`
-	Public      bool                                          `json:"public,required"`
+	ID          string                                        `json:"id" api:"required" format:"uuid"`
+	CreatedAt   time.Time                                     `json:"created_at" api:"required" format:"date-time"`
+	Model       string                                        `json:"model" api:"required"`
+	ModifiedAt  time.Time                                     `json:"modified_at" api:"required" format:"date-time"`
+	Name        string                                        `json:"name" api:"required"`
+	Public      bool                                          `json:"public" api:"required"`
 	Description string                                        `json:"description"`
 	JSON        accountAIFinetuneListPublicResponseResultJSON `json:"-"`
 }
@@ -260,7 +260,7 @@ func (r accountAIFinetuneListPublicResponseResultJSON) RawJSON() string {
 }
 
 type AccountAIFinetuneUploadAssetResponse struct {
-	Success bool                                     `json:"success,required"`
+	Success bool                                     `json:"success" api:"required"`
 	JSON    accountAIFinetuneUploadAssetResponseJSON `json:"-"`
 }
 
@@ -281,8 +281,8 @@ func (r accountAIFinetuneUploadAssetResponseJSON) RawJSON() string {
 }
 
 type AccountAIFinetuneNewParams struct {
-	Model       param.Field[string] `json:"model,required"`
-	Name        param.Field[string] `json:"name,required"`
+	Model       param.Field[string] `json:"model" api:"required"`
+	Name        param.Field[string] `json:"name" api:"required"`
 	Description param.Field[string] `json:"description"`
 	Public      param.Field[bool]   `json:"public"`
 }

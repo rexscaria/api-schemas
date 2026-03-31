@@ -39,15 +39,15 @@ func (r *AccountWorkerScriptSubdomainService) Get(ctx context.Context, accountID
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if scriptName == "" {
 		err = errors.New("missing required script_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/workers/scripts/%s/subdomain", accountID, scriptName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Enable or disable the Worker on the workers.dev subdomain.
@@ -55,23 +55,23 @@ func (r *AccountWorkerScriptSubdomainService) Post(ctx context.Context, accountI
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if scriptName == "" {
 		err = errors.New("missing required script_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/workers/scripts/%s/subdomain", accountID, scriptName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountWorkerScriptSubdomainGetResponse struct {
-	Errors   []WorkersMessages                             `json:"errors,required"`
-	Messages []WorkersMessages                             `json:"messages,required"`
-	Result   AccountWorkerScriptSubdomainGetResponseResult `json:"result,required"`
+	Errors   []WorkersMessages                             `json:"errors" api:"required"`
+	Messages []WorkersMessages                             `json:"messages" api:"required"`
+	Result   AccountWorkerScriptSubdomainGetResponseResult `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success AccountWorkerScriptSubdomainGetResponseSuccess `json:"success,required"`
+	Success AccountWorkerScriptSubdomainGetResponseSuccess `json:"success" api:"required"`
 	JSON    accountWorkerScriptSubdomainGetResponseJSON    `json:"-"`
 }
 
@@ -96,9 +96,9 @@ func (r accountWorkerScriptSubdomainGetResponseJSON) RawJSON() string {
 
 type AccountWorkerScriptSubdomainGetResponseResult struct {
 	// Whether the Worker is available on the workers.dev subdomain.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Whether the Worker's Preview URLs are available on the workers.dev subdomain.
-	PreviewsEnabled bool                                              `json:"previews_enabled,required"`
+	PreviewsEnabled bool                                              `json:"previews_enabled" api:"required"`
 	JSON            accountWorkerScriptSubdomainGetResponseResultJSON `json:"-"`
 }
 
@@ -135,11 +135,11 @@ func (r AccountWorkerScriptSubdomainGetResponseSuccess) IsKnown() bool {
 }
 
 type AccountWorkerScriptSubdomainPostResponse struct {
-	Errors   []WorkersMessages                              `json:"errors,required"`
-	Messages []WorkersMessages                              `json:"messages,required"`
-	Result   AccountWorkerScriptSubdomainPostResponseResult `json:"result,required"`
+	Errors   []WorkersMessages                              `json:"errors" api:"required"`
+	Messages []WorkersMessages                              `json:"messages" api:"required"`
+	Result   AccountWorkerScriptSubdomainPostResponseResult `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success AccountWorkerScriptSubdomainPostResponseSuccess `json:"success,required"`
+	Success AccountWorkerScriptSubdomainPostResponseSuccess `json:"success" api:"required"`
 	JSON    accountWorkerScriptSubdomainPostResponseJSON    `json:"-"`
 }
 
@@ -164,9 +164,9 @@ func (r accountWorkerScriptSubdomainPostResponseJSON) RawJSON() string {
 
 type AccountWorkerScriptSubdomainPostResponseResult struct {
 	// Whether the Worker is available on the workers.dev subdomain.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Whether the Worker's Preview URLs are available on the workers.dev subdomain.
-	PreviewsEnabled bool                                               `json:"previews_enabled,required"`
+	PreviewsEnabled bool                                               `json:"previews_enabled" api:"required"`
 	JSON            accountWorkerScriptSubdomainPostResponseResultJSON `json:"-"`
 }
 
@@ -204,7 +204,7 @@ func (r AccountWorkerScriptSubdomainPostResponseSuccess) IsKnown() bool {
 
 type AccountWorkerScriptSubdomainPostParams struct {
 	// Whether the Worker should be available on the workers.dev subdomain.
-	Enabled param.Field[bool] `json:"enabled,required"`
+	Enabled param.Field[bool] `json:"enabled" api:"required"`
 	// Whether the Worker's Preview URLs should be available on the workers.dev
 	// subdomain.
 	PreviewsEnabled param.Field[bool] `json:"previews_enabled"`

@@ -42,18 +42,18 @@ func (r *AccountAlertingV3DestinationService) ListEligibility(ctx context.Contex
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/alerting/v3/destinations/eligible", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountAlertingV3DestinationListEligibilityResponse struct {
-	Errors   []AaaMessage `json:"errors,required"`
-	Messages []AaaMessage `json:"messages,required"`
+	Errors   []AaaMessage `json:"errors" api:"required"`
+	Messages []AaaMessage `json:"messages" api:"required"`
 	// Whether the API call was successful
-	Success    AccountAlertingV3DestinationListEligibilityResponseSuccess             `json:"success,required"`
+	Success    AccountAlertingV3DestinationListEligibilityResponseSuccess             `json:"success" api:"required"`
 	Result     map[string][]AccountAlertingV3DestinationListEligibilityResponseResult `json:"result"`
 	ResultInfo AccountAlertingV3DestinationListEligibilityResponseResultInfo          `json:"result_info"`
 	JSON       accountAlertingV3DestinationListEligibilityResponseJSON                `json:"-"`

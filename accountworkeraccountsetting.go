@@ -39,11 +39,11 @@ func (r *AccountWorkerAccountSettingService) Get(ctx context.Context, accountID 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/workers/account-settings", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Creates Worker account settings for an account.
@@ -51,11 +51,11 @@ func (r *AccountWorkerAccountSettingService) Update(ctx context.Context, account
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/workers/account-settings", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type WorkersAccountSettings struct {
@@ -91,11 +91,11 @@ func (r WorkersAccountSettingsParam) MarshalJSON() (data []byte, err error) {
 }
 
 type AccountWorkerAccountSettingGetResponse struct {
-	Errors   []WorkersMessages      `json:"errors,required"`
-	Messages []WorkersMessages      `json:"messages,required"`
-	Result   WorkersAccountSettings `json:"result,required"`
+	Errors   []WorkersMessages      `json:"errors" api:"required"`
+	Messages []WorkersMessages      `json:"messages" api:"required"`
+	Result   WorkersAccountSettings `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success AccountWorkerAccountSettingGetResponseSuccess `json:"success,required"`
+	Success AccountWorkerAccountSettingGetResponseSuccess `json:"success" api:"required"`
 	JSON    accountWorkerAccountSettingGetResponseJSON    `json:"-"`
 }
 
@@ -134,11 +134,11 @@ func (r AccountWorkerAccountSettingGetResponseSuccess) IsKnown() bool {
 }
 
 type AccountWorkerAccountSettingUpdateResponse struct {
-	Errors   []WorkersMessages      `json:"errors,required"`
-	Messages []WorkersMessages      `json:"messages,required"`
-	Result   WorkersAccountSettings `json:"result,required"`
+	Errors   []WorkersMessages      `json:"errors" api:"required"`
+	Messages []WorkersMessages      `json:"messages" api:"required"`
+	Result   WorkersAccountSettings `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success AccountWorkerAccountSettingUpdateResponseSuccess `json:"success,required"`
+	Success AccountWorkerAccountSettingUpdateResponseSuccess `json:"success" api:"required"`
 	JSON    accountWorkerAccountSettingUpdateResponseJSON    `json:"-"`
 }
 
@@ -177,7 +177,7 @@ func (r AccountWorkerAccountSettingUpdateResponseSuccess) IsKnown() bool {
 }
 
 type AccountWorkerAccountSettingUpdateParams struct {
-	WorkersAccountSettings WorkersAccountSettingsParam `json:"workers_account_settings,required"`
+	WorkersAccountSettings WorkersAccountSettingsParam `json:"workers_account_settings" api:"required"`
 }
 
 func (r AccountWorkerAccountSettingUpdateParams) MarshalJSON() (data []byte, err error) {

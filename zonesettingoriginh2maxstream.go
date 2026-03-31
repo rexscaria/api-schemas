@@ -45,11 +45,11 @@ func (r *ZoneSettingOriginH2MaxStreamService) Get(ctx context.Context, zoneID st
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/settings/origin_h2_max_streams", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Origin H2 Max Streams configures the max number of concurrent requests that
@@ -62,18 +62,18 @@ func (r *ZoneSettingOriginH2MaxStreamService) Update(ctx context.Context, zoneID
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/settings/origin_h2_max_streams", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type ZoneSettingOriginH2MaxStreamGetResponse struct {
-	Errors   []MessagesCacheRulesItem `json:"errors,required"`
-	Messages []MessagesCacheRulesItem `json:"messages,required"`
+	Errors   []MessagesCacheRulesItem `json:"errors" api:"required"`
+	Messages []MessagesCacheRulesItem `json:"messages" api:"required"`
 	// Whether the API call was successful
-	Success ZoneSettingOriginH2MaxStreamGetResponseSuccess `json:"success,required"`
+	Success ZoneSettingOriginH2MaxStreamGetResponseSuccess `json:"success" api:"required"`
 	Result  ZoneSettingOriginH2MaxStreamGetResponseResult  `json:"result"`
 	JSON    zoneSettingOriginH2MaxStreamGetResponseJSON    `json:"-"`
 }
@@ -114,13 +114,13 @@ func (r ZoneSettingOriginH2MaxStreamGetResponseSuccess) IsKnown() bool {
 
 type ZoneSettingOriginH2MaxStreamGetResponseResult struct {
 	// Value of the zone setting.
-	ID ZoneSettingOriginH2MaxStreamGetResponseResultID `json:"id,required"`
+	ID ZoneSettingOriginH2MaxStreamGetResponseResultID `json:"id" api:"required"`
 	// Whether the setting is editable
-	Editable bool `json:"editable,required"`
+	Editable bool `json:"editable" api:"required"`
 	// The value of the feature
-	Value string `json:"value,required"`
+	Value string `json:"value" api:"required"`
 	// Last time this setting was modified.
-	ModifiedOn time.Time                                         `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time                                         `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zoneSettingOriginH2MaxStreamGetResponseResultJSON `json:"-"`
 }
 
@@ -159,10 +159,10 @@ func (r ZoneSettingOriginH2MaxStreamGetResponseResultID) IsKnown() bool {
 }
 
 type ZoneSettingOriginH2MaxStreamUpdateResponse struct {
-	Errors   []MessagesCacheRulesItem `json:"errors,required"`
-	Messages []MessagesCacheRulesItem `json:"messages,required"`
+	Errors   []MessagesCacheRulesItem `json:"errors" api:"required"`
+	Messages []MessagesCacheRulesItem `json:"messages" api:"required"`
 	// Whether the API call was successful
-	Success ZoneSettingOriginH2MaxStreamUpdateResponseSuccess `json:"success,required"`
+	Success ZoneSettingOriginH2MaxStreamUpdateResponseSuccess `json:"success" api:"required"`
 	Result  ZoneSettingOriginH2MaxStreamUpdateResponseResult  `json:"result"`
 	JSON    zoneSettingOriginH2MaxStreamUpdateResponseJSON    `json:"-"`
 }
@@ -203,13 +203,13 @@ func (r ZoneSettingOriginH2MaxStreamUpdateResponseSuccess) IsKnown() bool {
 
 type ZoneSettingOriginH2MaxStreamUpdateResponseResult struct {
 	// Value of the zone setting.
-	ID ZoneSettingOriginH2MaxStreamUpdateResponseResultID `json:"id,required"`
+	ID ZoneSettingOriginH2MaxStreamUpdateResponseResultID `json:"id" api:"required"`
 	// Whether the setting is editable
-	Editable bool `json:"editable,required"`
+	Editable bool `json:"editable" api:"required"`
 	// The value of the feature
-	Value string `json:"value,required"`
+	Value string `json:"value" api:"required"`
 	// Last time this setting was modified.
-	ModifiedOn time.Time                                            `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time                                            `json:"modified_on" api:"nullable" format:"date-time"`
 	JSON       zoneSettingOriginH2MaxStreamUpdateResponseResultJSON `json:"-"`
 }
 
@@ -249,7 +249,7 @@ func (r ZoneSettingOriginH2MaxStreamUpdateResponseResultID) IsKnown() bool {
 
 type ZoneSettingOriginH2MaxStreamUpdateParams struct {
 	// Value of the Origin H2 Max Streams Setting.
-	Value param.Field[int64] `json:"value,required"`
+	Value param.Field[int64] `json:"value" api:"required"`
 }
 
 func (r ZoneSettingOriginH2MaxStreamUpdateParams) MarshalJSON() (data []byte, err error) {

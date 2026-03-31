@@ -44,11 +44,11 @@ func (r *ZoneRateLimitService) New(ctx context.Context, zoneID string, body Zone
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/rate_limits", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetches the details of a rate limit.
@@ -58,15 +58,15 @@ func (r *ZoneRateLimitService) Get(ctx context.Context, zoneID string, rateLimit
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if rateLimitID == "" {
 		err = errors.New("missing required rate_limit_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/rate_limits/%s", zoneID, rateLimitID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates an existing rate limit.
@@ -76,15 +76,15 @@ func (r *ZoneRateLimitService) Update(ctx context.Context, zoneID string, rateLi
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if rateLimitID == "" {
 		err = errors.New("missing required rate_limit_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/rate_limits/%s", zoneID, rateLimitID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetches the rate limits for a zone.
@@ -94,11 +94,11 @@ func (r *ZoneRateLimitService) List(ctx context.Context, zoneID string, query Zo
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/rate_limits", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Deletes an existing rate limit.
@@ -108,15 +108,15 @@ func (r *ZoneRateLimitService) Delete(ctx context.Context, zoneID string, rateLi
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if rateLimitID == "" {
 		err = errors.New("missing required rate_limit_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/rate_limits/%s", zoneID, rateLimitID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Determines which traffic the rate limit counts towards the threshold.
@@ -415,11 +415,11 @@ func (r FirewallRateLimitsBypassName) IsKnown() bool {
 }
 
 type FirewallRatelimitSingle struct {
-	Errors   []FirewallMessagesItem `json:"errors,required"`
-	Messages []FirewallMessagesItem `json:"messages,required"`
-	Result   FirewallRateLimits     `json:"result,required"`
+	Errors   []FirewallMessagesItem `json:"errors" api:"required"`
+	Messages []FirewallMessagesItem `json:"messages" api:"required"`
+	Result   FirewallRateLimits     `json:"result" api:"required"`
 	// Defines whether the API call was successful.
-	Success FirewallRatelimitSingleSuccess `json:"success,required"`
+	Success FirewallRatelimitSingleSuccess `json:"success" api:"required"`
 	JSON    firewallRatelimitSingleJSON    `json:"-"`
 }
 
@@ -458,11 +458,11 @@ func (r FirewallRatelimitSingleSuccess) IsKnown() bool {
 }
 
 type ZoneRateLimitListResponse struct {
-	Errors   []FirewallMessagesItem `json:"errors,required"`
-	Messages []FirewallMessagesItem `json:"messages,required"`
-	Result   []FirewallRateLimits   `json:"result,required,nullable"`
+	Errors   []FirewallMessagesItem `json:"errors" api:"required"`
+	Messages []FirewallMessagesItem `json:"messages" api:"required"`
+	Result   []FirewallRateLimits   `json:"result" api:"required,nullable"`
 	// Defines whether the API call was successful.
-	Success    ZoneRateLimitListResponseSuccess    `json:"success,required"`
+	Success    ZoneRateLimitListResponseSuccess    `json:"success" api:"required"`
 	ResultInfo ZoneRateLimitListResponseResultInfo `json:"result_info"`
 	JSON       zoneRateLimitListResponseJSON       `json:"-"`
 }
@@ -534,11 +534,11 @@ func (r zoneRateLimitListResponseResultInfoJSON) RawJSON() string {
 }
 
 type ZoneRateLimitDeleteResponse struct {
-	Errors   []FirewallMessagesItem            `json:"errors,required"`
-	Messages []FirewallMessagesItem            `json:"messages,required"`
-	Result   ZoneRateLimitDeleteResponseResult `json:"result,required"`
+	Errors   []FirewallMessagesItem            `json:"errors" api:"required"`
+	Messages []FirewallMessagesItem            `json:"messages" api:"required"`
+	Result   ZoneRateLimitDeleteResponseResult `json:"result" api:"required"`
 	// Defines whether the API call was successful.
-	Success ZoneRateLimitDeleteResponseSuccess `json:"success,required"`
+	Success ZoneRateLimitDeleteResponseSuccess `json:"success" api:"required"`
 	JSON    zoneRateLimitDeleteResponseJSON    `json:"-"`
 }
 
@@ -666,16 +666,16 @@ func (r ZoneRateLimitDeleteResponseSuccess) IsKnown() bool {
 type ZoneRateLimitNewParams struct {
 	// The action to perform when the threshold of matched traffic within the
 	// configured period is exceeded.
-	Action param.Field[FirewallActionParam] `json:"action,required"`
+	Action param.Field[FirewallActionParam] `json:"action" api:"required"`
 	// Determines which traffic the rate limit counts towards the threshold.
-	Match param.Field[FirewallMatchParam] `json:"match,required"`
+	Match param.Field[FirewallMatchParam] `json:"match" api:"required"`
 	// The time in seconds (an integer value) to count matching traffic. If the count
 	// exceeds the configured threshold within this period, Cloudflare will perform the
 	// configured action.
-	Period param.Field[float64] `json:"period,required"`
+	Period param.Field[float64] `json:"period" api:"required"`
 	// The threshold that will trigger the configured mitigation action. Configure this
 	// value along with the `period` property to establish a threshold per period.
-	Threshold param.Field[float64] `json:"threshold,required"`
+	Threshold param.Field[float64] `json:"threshold" api:"required"`
 }
 
 func (r ZoneRateLimitNewParams) MarshalJSON() (data []byte, err error) {
@@ -685,16 +685,16 @@ func (r ZoneRateLimitNewParams) MarshalJSON() (data []byte, err error) {
 type ZoneRateLimitUpdateParams struct {
 	// The action to perform when the threshold of matched traffic within the
 	// configured period is exceeded.
-	Action param.Field[FirewallActionParam] `json:"action,required"`
+	Action param.Field[FirewallActionParam] `json:"action" api:"required"`
 	// Determines which traffic the rate limit counts towards the threshold.
-	Match param.Field[FirewallMatchParam] `json:"match,required"`
+	Match param.Field[FirewallMatchParam] `json:"match" api:"required"`
 	// The time in seconds (an integer value) to count matching traffic. If the count
 	// exceeds the configured threshold within this period, Cloudflare will perform the
 	// configured action.
-	Period param.Field[float64] `json:"period,required"`
+	Period param.Field[float64] `json:"period" api:"required"`
 	// The threshold that will trigger the configured mitigation action. Configure this
 	// value along with the `period` property to establish a threshold per period.
-	Threshold param.Field[float64] `json:"threshold,required"`
+	Threshold param.Field[float64] `json:"threshold" api:"required"`
 }
 
 func (r ZoneRateLimitUpdateParams) MarshalJSON() (data []byte, err error) {

@@ -38,15 +38,15 @@ func (r *ZoneAvailablePlanService) Get(ctx context.Context, zoneID string, planI
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if planIdentifier == "" {
 		err = errors.New("missing required plan_identifier parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/available_plans/%s", zoneID, planIdentifier)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists available plans the zone can subscribe to.
@@ -54,11 +54,11 @@ func (r *ZoneAvailablePlanService) List(ctx context.Context, zoneID string, opts
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/available_plans", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type BillSubsAPIAvailableRatePlan struct {
@@ -129,11 +129,11 @@ func (r BillSubsAPIFrequency) IsKnown() bool {
 }
 
 type ZoneAvailablePlanGetResponse struct {
-	Errors   []BillSubsAPIMessages        `json:"errors,required"`
-	Messages []BillSubsAPIMessages        `json:"messages,required"`
-	Result   BillSubsAPIAvailableRatePlan `json:"result,required"`
+	Errors   []BillSubsAPIMessages        `json:"errors" api:"required"`
+	Messages []BillSubsAPIMessages        `json:"messages" api:"required"`
+	Result   BillSubsAPIAvailableRatePlan `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success ZoneAvailablePlanGetResponseSuccess `json:"success,required"`
+	Success ZoneAvailablePlanGetResponseSuccess `json:"success" api:"required"`
 	JSON    zoneAvailablePlanGetResponseJSON    `json:"-"`
 }
 
@@ -172,11 +172,11 @@ func (r ZoneAvailablePlanGetResponseSuccess) IsKnown() bool {
 }
 
 type ZoneAvailablePlanListResponse struct {
-	Errors   []BillSubsAPIMessages          `json:"errors,required"`
-	Messages []BillSubsAPIMessages          `json:"messages,required"`
-	Result   []BillSubsAPIAvailableRatePlan `json:"result,required,nullable"`
+	Errors   []BillSubsAPIMessages          `json:"errors" api:"required"`
+	Messages []BillSubsAPIMessages          `json:"messages" api:"required"`
+	Result   []BillSubsAPIAvailableRatePlan `json:"result" api:"required,nullable"`
 	// Whether the API call was successful
-	Success    ZoneAvailablePlanListResponseSuccess    `json:"success,required"`
+	Success    ZoneAvailablePlanListResponseSuccess    `json:"success" api:"required"`
 	ResultInfo ZoneAvailablePlanListResponseResultInfo `json:"result_info"`
 	JSON       zoneAvailablePlanListResponseJSON       `json:"-"`
 }

@@ -14,7 +14,7 @@ import (
 )
 
 func TestAccountAIRunCfMetaLlamaExecuteLlama2_7bChatHfLoraWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,6 +26,7 @@ func TestAccountAIRunCfMetaLlamaExecuteLlama2_7bChatHfLoraWithOptionalParams(t *
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.AI.Run.Cf.MetaLlama.ExecuteLlama2_7bChatHfLora(
 		context.TODO(),

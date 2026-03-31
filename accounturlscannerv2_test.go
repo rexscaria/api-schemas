@@ -14,7 +14,7 @@ import (
 )
 
 func TestAccountUrlscannerV2BulkNewScansWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,6 +26,7 @@ func TestAccountUrlscannerV2BulkNewScansWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Urlscanner.V2.BulkNewScans(
 		context.TODO(),
@@ -53,7 +54,7 @@ func TestAccountUrlscannerV2BulkNewScansWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountUrlscannerV2NewScanWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -65,6 +66,7 @@ func TestAccountUrlscannerV2NewScanWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Urlscanner.V2.NewScan(
 		context.TODO(),
@@ -91,7 +93,7 @@ func TestAccountUrlscannerV2NewScanWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountUrlscannerV2GetDom(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -103,6 +105,7 @@ func TestAccountUrlscannerV2GetDom(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Urlscanner.V2.GetDom(
 		context.TODO(),
@@ -119,7 +122,7 @@ func TestAccountUrlscannerV2GetDom(t *testing.T) {
 }
 
 func TestAccountUrlscannerV2GetHar(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -131,6 +134,7 @@ func TestAccountUrlscannerV2GetHar(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Urlscanner.V2.GetHar(
 		context.TODO(),
@@ -147,7 +151,7 @@ func TestAccountUrlscannerV2GetHar(t *testing.T) {
 }
 
 func TestAccountUrlscannerV2GetRawResponse(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -159,6 +163,7 @@ func TestAccountUrlscannerV2GetRawResponse(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Urlscanner.V2.GetRawResponse(
 		context.TODO(),
@@ -175,7 +180,7 @@ func TestAccountUrlscannerV2GetRawResponse(t *testing.T) {
 }
 
 func TestAccountUrlscannerV2GetScan(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -187,6 +192,7 @@ func TestAccountUrlscannerV2GetScan(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Urlscanner.V2.GetScan(
 		context.TODO(),
@@ -203,7 +209,7 @@ func TestAccountUrlscannerV2GetScan(t *testing.T) {
 }
 
 func TestAccountUrlscannerV2SearchScansWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -215,6 +221,7 @@ func TestAccountUrlscannerV2SearchScansWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Urlscanner.V2.SearchScans(
 		context.TODO(),

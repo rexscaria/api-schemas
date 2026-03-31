@@ -39,15 +39,15 @@ func (r *AccountMagicSiteACLService) New(ctx context.Context, accountID string, 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if siteID == "" {
 		err = errors.New("missing required site_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/sites/%s/acls", accountID, siteID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get a specific Site ACL.
@@ -55,19 +55,19 @@ func (r *AccountMagicSiteACLService) Get(ctx context.Context, accountID string, 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if siteID == "" {
 		err = errors.New("missing required site_id parameter")
-		return
+		return nil, err
 	}
 	if aclID == "" {
 		err = errors.New("missing required acl_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/sites/%s/acls/%s", accountID, siteID, aclID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update a specific Site ACL.
@@ -75,19 +75,19 @@ func (r *AccountMagicSiteACLService) Update(ctx context.Context, accountID strin
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if siteID == "" {
 		err = errors.New("missing required site_id parameter")
-		return
+		return nil, err
 	}
 	if aclID == "" {
 		err = errors.New("missing required acl_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/sites/%s/acls/%s", accountID, siteID, aclID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists Site ACLs associated with an account.
@@ -95,15 +95,15 @@ func (r *AccountMagicSiteACLService) List(ctx context.Context, accountID string,
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if siteID == "" {
 		err = errors.New("missing required site_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/sites/%s/acls", accountID, siteID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Remove a specific Site ACL.
@@ -111,19 +111,19 @@ func (r *AccountMagicSiteACLService) Delete(ctx context.Context, accountID strin
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if siteID == "" {
 		err = errors.New("missing required site_id parameter")
-		return
+		return nil, err
 	}
 	if aclID == "" {
 		err = errors.New("missing required acl_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/sites/%s/acls/%s", accountID, siteID, aclID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Patch a specific Site ACL.
@@ -131,19 +131,19 @@ func (r *AccountMagicSiteACLService) Patch(ctx context.Context, accountID string
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if siteID == "" {
 		err = errors.New("missing required site_id parameter")
-		return
+		return nil, err
 	}
 	if aclID == "" {
 		err = errors.New("missing required acl_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/sites/%s/acls/%s", accountID, siteID, aclID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Bidirectional ACL policy for network traffic within a site.
@@ -210,12 +210,12 @@ func (r MagicACLProtocol) IsKnown() bool {
 }
 
 type MagicACLModifiedResponse struct {
-	Errors   []MagicACLModifiedResponseError   `json:"errors,required"`
-	Messages []MagicACLModifiedResponseMessage `json:"messages,required"`
+	Errors   []MagicACLModifiedResponseError   `json:"errors" api:"required"`
+	Messages []MagicACLModifiedResponseMessage `json:"messages" api:"required"`
 	// Bidirectional ACL policy for network traffic within a site.
-	Result MagicACL `json:"result,required"`
+	Result MagicACL `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success MagicACLModifiedResponseSuccess `json:"success,required"`
+	Success MagicACLModifiedResponseSuccess `json:"success" api:"required"`
 	JSON    magicACLModifiedResponseJSON    `json:"-"`
 }
 
@@ -239,8 +239,8 @@ func (r magicACLModifiedResponseJSON) RawJSON() string {
 }
 
 type MagicACLModifiedResponseError struct {
-	Code             int64                                `json:"code,required"`
-	Message          string                               `json:"message,required"`
+	Code             int64                                `json:"code" api:"required"`
+	Message          string                               `json:"message" api:"required"`
 	DocumentationURL string                               `json:"documentation_url"`
 	Source           MagicACLModifiedResponseErrorsSource `json:"source"`
 	JSON             magicACLModifiedResponseErrorJSON    `json:"-"`
@@ -287,8 +287,8 @@ func (r magicACLModifiedResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type MagicACLModifiedResponseMessage struct {
-	Code             int64                                  `json:"code,required"`
-	Message          string                                 `json:"message,required"`
+	Code             int64                                  `json:"code" api:"required"`
+	Message          string                                 `json:"message" api:"required"`
 	DocumentationURL string                                 `json:"documentation_url"`
 	Source           MagicACLModifiedResponseMessagesSource `json:"source"`
 	JSON             magicACLModifiedResponseMessageJSON    `json:"-"`
@@ -350,12 +350,12 @@ func (r MagicACLModifiedResponseSuccess) IsKnown() bool {
 }
 
 type MagicACLSingleResponse struct {
-	Errors   []MagicACLSingleResponseError   `json:"errors,required"`
-	Messages []MagicACLSingleResponseMessage `json:"messages,required"`
+	Errors   []MagicACLSingleResponseError   `json:"errors" api:"required"`
+	Messages []MagicACLSingleResponseMessage `json:"messages" api:"required"`
 	// Bidirectional ACL policy for network traffic within a site.
-	Result MagicACL `json:"result,required"`
+	Result MagicACL `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success MagicACLSingleResponseSuccess `json:"success,required"`
+	Success MagicACLSingleResponseSuccess `json:"success" api:"required"`
 	JSON    magicACLSingleResponseJSON    `json:"-"`
 }
 
@@ -379,8 +379,8 @@ func (r magicACLSingleResponseJSON) RawJSON() string {
 }
 
 type MagicACLSingleResponseError struct {
-	Code             int64                              `json:"code,required"`
-	Message          string                             `json:"message,required"`
+	Code             int64                              `json:"code" api:"required"`
+	Message          string                             `json:"message" api:"required"`
 	DocumentationURL string                             `json:"documentation_url"`
 	Source           MagicACLSingleResponseErrorsSource `json:"source"`
 	JSON             magicACLSingleResponseErrorJSON    `json:"-"`
@@ -427,8 +427,8 @@ func (r magicACLSingleResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type MagicACLSingleResponseMessage struct {
-	Code             int64                                `json:"code,required"`
-	Message          string                               `json:"message,required"`
+	Code             int64                                `json:"code" api:"required"`
+	Message          string                               `json:"message" api:"required"`
 	DocumentationURL string                               `json:"documentation_url"`
 	Source           MagicACLSingleResponseMessagesSource `json:"source"`
 	JSON             magicACLSingleResponseMessageJSON    `json:"-"`
@@ -532,7 +532,7 @@ func (r MagicACLUpdateRequestProtocol) IsKnown() bool {
 
 type MagicLanACLConfiguration struct {
 	// The identifier for the LAN you want to create an ACL policy with.
-	LanID string `json:"lan_id,required"`
+	LanID string `json:"lan_id" api:"required"`
 	// The name of the LAN based on the provided lan_id.
 	LanName string `json:"lan_name"`
 	// Array of port ranges on the provided LAN that will be included in the ACL. If no
@@ -570,7 +570,7 @@ func (r magicLanACLConfigurationJSON) RawJSON() string {
 
 type MagicLanACLConfigurationParam struct {
 	// The identifier for the LAN you want to create an ACL policy with.
-	LanID param.Field[string] `json:"lan_id,required"`
+	LanID param.Field[string] `json:"lan_id" api:"required"`
 	// The name of the LAN based on the provided lan_id.
 	LanName param.Field[string] `json:"lan_name"`
 	// Array of port ranges on the provided LAN that will be included in the ACL. If no
@@ -590,11 +590,11 @@ func (r MagicLanACLConfigurationParam) MarshalJSON() (data []byte, err error) {
 }
 
 type AccountMagicSiteACLListResponse struct {
-	Errors   []AccountMagicSiteACLListResponseError   `json:"errors,required"`
-	Messages []AccountMagicSiteACLListResponseMessage `json:"messages,required"`
-	Result   []MagicACL                               `json:"result,required"`
+	Errors   []AccountMagicSiteACLListResponseError   `json:"errors" api:"required"`
+	Messages []AccountMagicSiteACLListResponseMessage `json:"messages" api:"required"`
+	Result   []MagicACL                               `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success AccountMagicSiteACLListResponseSuccess `json:"success,required"`
+	Success AccountMagicSiteACLListResponseSuccess `json:"success" api:"required"`
 	JSON    accountMagicSiteACLListResponseJSON    `json:"-"`
 }
 
@@ -618,8 +618,8 @@ func (r accountMagicSiteACLListResponseJSON) RawJSON() string {
 }
 
 type AccountMagicSiteACLListResponseError struct {
-	Code             int64                                       `json:"code,required"`
-	Message          string                                      `json:"message,required"`
+	Code             int64                                       `json:"code" api:"required"`
+	Message          string                                      `json:"message" api:"required"`
 	DocumentationURL string                                      `json:"documentation_url"`
 	Source           AccountMagicSiteACLListResponseErrorsSource `json:"source"`
 	JSON             accountMagicSiteACLListResponseErrorJSON    `json:"-"`
@@ -666,8 +666,8 @@ func (r accountMagicSiteACLListResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type AccountMagicSiteACLListResponseMessage struct {
-	Code             int64                                         `json:"code,required"`
-	Message          string                                        `json:"message,required"`
+	Code             int64                                         `json:"code" api:"required"`
+	Message          string                                        `json:"message" api:"required"`
 	DocumentationURL string                                        `json:"documentation_url"`
 	Source           AccountMagicSiteACLListResponseMessagesSource `json:"source"`
 	JSON             accountMagicSiteACLListResponseMessageJSON    `json:"-"`
@@ -729,12 +729,12 @@ func (r AccountMagicSiteACLListResponseSuccess) IsKnown() bool {
 }
 
 type AccountMagicSiteACLDeleteResponse struct {
-	Errors   []AccountMagicSiteACLDeleteResponseError   `json:"errors,required"`
-	Messages []AccountMagicSiteACLDeleteResponseMessage `json:"messages,required"`
+	Errors   []AccountMagicSiteACLDeleteResponseError   `json:"errors" api:"required"`
+	Messages []AccountMagicSiteACLDeleteResponseMessage `json:"messages" api:"required"`
 	// Bidirectional ACL policy for network traffic within a site.
-	Result MagicACL `json:"result,required"`
+	Result MagicACL `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success AccountMagicSiteACLDeleteResponseSuccess `json:"success,required"`
+	Success AccountMagicSiteACLDeleteResponseSuccess `json:"success" api:"required"`
 	JSON    accountMagicSiteACLDeleteResponseJSON    `json:"-"`
 }
 
@@ -758,8 +758,8 @@ func (r accountMagicSiteACLDeleteResponseJSON) RawJSON() string {
 }
 
 type AccountMagicSiteACLDeleteResponseError struct {
-	Code             int64                                         `json:"code,required"`
-	Message          string                                        `json:"message,required"`
+	Code             int64                                         `json:"code" api:"required"`
+	Message          string                                        `json:"message" api:"required"`
 	DocumentationURL string                                        `json:"documentation_url"`
 	Source           AccountMagicSiteACLDeleteResponseErrorsSource `json:"source"`
 	JSON             accountMagicSiteACLDeleteResponseErrorJSON    `json:"-"`
@@ -806,8 +806,8 @@ func (r accountMagicSiteACLDeleteResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type AccountMagicSiteACLDeleteResponseMessage struct {
-	Code             int64                                           `json:"code,required"`
-	Message          string                                          `json:"message,required"`
+	Code             int64                                           `json:"code" api:"required"`
+	Message          string                                          `json:"message" api:"required"`
 	DocumentationURL string                                          `json:"documentation_url"`
 	Source           AccountMagicSiteACLDeleteResponseMessagesSource `json:"source"`
 	JSON             accountMagicSiteACLDeleteResponseMessageJSON    `json:"-"`
@@ -869,10 +869,10 @@ func (r AccountMagicSiteACLDeleteResponseSuccess) IsKnown() bool {
 }
 
 type AccountMagicSiteACLNewParams struct {
-	Lan1 param.Field[MagicLanACLConfigurationParam] `json:"lan_1,required"`
-	Lan2 param.Field[MagicLanACLConfigurationParam] `json:"lan_2,required"`
+	Lan1 param.Field[MagicLanACLConfigurationParam] `json:"lan_1" api:"required"`
+	Lan2 param.Field[MagicLanACLConfigurationParam] `json:"lan_2" api:"required"`
 	// The name of the ACL.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Description for the ACL.
 	Description param.Field[string] `json:"description"`
 	// The desired forwarding action for this ACL policy. If set to "false", the policy
@@ -910,7 +910,7 @@ func (r AccountMagicSiteACLNewParamsProtocol) IsKnown() bool {
 }
 
 type AccountMagicSiteACLUpdateParams struct {
-	MagicACLUpdateRequest MagicACLUpdateRequestParam `json:"magic_acl_update_request,required"`
+	MagicACLUpdateRequest MagicACLUpdateRequestParam `json:"magic_acl_update_request" api:"required"`
 }
 
 func (r AccountMagicSiteACLUpdateParams) MarshalJSON() (data []byte, err error) {
@@ -918,7 +918,7 @@ func (r AccountMagicSiteACLUpdateParams) MarshalJSON() (data []byte, err error) 
 }
 
 type AccountMagicSiteACLPatchParams struct {
-	MagicACLUpdateRequest MagicACLUpdateRequestParam `json:"magic_acl_update_request,required"`
+	MagicACLUpdateRequest MagicACLUpdateRequestParam `json:"magic_acl_update_request" api:"required"`
 }
 
 func (r AccountMagicSiteACLPatchParams) MarshalJSON() (data []byte, err error) {

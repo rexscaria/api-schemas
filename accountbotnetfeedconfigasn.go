@@ -38,11 +38,11 @@ func (r *AccountBotnetFeedConfigAsnService) DeleteAsn(ctx context.Context, accou
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/botnet_feed/configs/asn/%v", accountID, asnID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Gets a list of all ASNs registered for a user for the DDoS Botnet Feed API.
@@ -50,18 +50,18 @@ func (r *AccountBotnetFeedConfigAsnService) ListAsns(ctx context.Context, accoun
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/botnet_feed/configs/asn", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountBotnetFeedConfigAsnDeleteAsnResponse struct {
-	Errors   []DosMessages `json:"errors,required"`
-	Messages []DosMessages `json:"messages,required"`
+	Errors   []DosMessages `json:"errors" api:"required"`
+	Messages []DosMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountBotnetFeedConfigAsnDeleteAsnResponseSuccess `json:"success,required"`
+	Success AccountBotnetFeedConfigAsnDeleteAsnResponseSuccess `json:"success" api:"required"`
 	Result  AccountBotnetFeedConfigAsnDeleteAsnResponseResult  `json:"result"`
 	JSON    accountBotnetFeedConfigAsnDeleteAsnResponseJSON    `json:"-"`
 }
@@ -122,10 +122,10 @@ func (r accountBotnetFeedConfigAsnDeleteAsnResponseResultJSON) RawJSON() string 
 }
 
 type AccountBotnetFeedConfigAsnListAsnsResponse struct {
-	Errors   []DosMessages `json:"errors,required"`
-	Messages []DosMessages `json:"messages,required"`
+	Errors   []DosMessages `json:"errors" api:"required"`
+	Messages []DosMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountBotnetFeedConfigAsnListAsnsResponseSuccess `json:"success,required"`
+	Success AccountBotnetFeedConfigAsnListAsnsResponseSuccess `json:"success" api:"required"`
 	Result  AccountBotnetFeedConfigAsnListAsnsResponseResult  `json:"result"`
 	JSON    accountBotnetFeedConfigAsnListAsnsResponseJSON    `json:"-"`
 }

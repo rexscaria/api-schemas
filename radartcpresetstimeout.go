@@ -41,7 +41,7 @@ func (r *RadarTcpResetsTimeoutService) Summary(ctx context.Context, query RadarT
 	opts = slices.Concat(r.Options, opts)
 	path := "radar/tcp_resets_timeouts/summary"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves the distribution of connection stage by TCP connections terminated
@@ -50,12 +50,12 @@ func (r *RadarTcpResetsTimeoutService) TimeseriesGroups(ctx context.Context, que
 	opts = slices.Concat(r.Options, opts)
 	path := "radar/tcp_resets_timeouts/timeseries_groups"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type RadarTcpResetsTimeoutSummaryResponse struct {
-	Result  RadarTcpResetsTimeoutSummaryResponseResult `json:"result,required"`
-	Success bool                                       `json:"success,required"`
+	Result  RadarTcpResetsTimeoutSummaryResponseResult `json:"result" api:"required"`
+	Success bool                                       `json:"success" api:"required"`
 	JSON    radarTcpResetsTimeoutSummaryResponseJSON   `json:"-"`
 }
 
@@ -78,8 +78,8 @@ func (r radarTcpResetsTimeoutSummaryResponseJSON) RawJSON() string {
 
 type RadarTcpResetsTimeoutSummaryResponseResult struct {
 	// Metadata for the results.
-	Meta     RadarTcpResetsTimeoutSummaryResponseResultMeta     `json:"meta,required"`
-	Summary0 RadarTcpResetsTimeoutSummaryResponseResultSummary0 `json:"summary_0,required"`
+	Meta     RadarTcpResetsTimeoutSummaryResponseResultMeta     `json:"meta" api:"required"`
+	Summary0 RadarTcpResetsTimeoutSummaryResponseResultSummary0 `json:"summary_0" api:"required"`
 	JSON     radarTcpResetsTimeoutSummaryResponseResultJSON     `json:"-"`
 }
 
@@ -102,15 +102,15 @@ func (r radarTcpResetsTimeoutSummaryResponseResultJSON) RawJSON() string {
 
 // Metadata for the results.
 type RadarTcpResetsTimeoutSummaryResponseResultMeta struct {
-	ConfidenceInfo RadarTcpResetsTimeoutSummaryResponseResultMetaConfidenceInfo `json:"confidenceInfo,required"`
-	DateRange      []RadarTcpResetsTimeoutSummaryResponseResultMetaDateRange    `json:"dateRange,required"`
+	ConfidenceInfo RadarTcpResetsTimeoutSummaryResponseResultMetaConfidenceInfo `json:"confidenceInfo" api:"required"`
+	DateRange      []RadarTcpResetsTimeoutSummaryResponseResultMetaDateRange    `json:"dateRange" api:"required"`
 	// Timestamp of the last dataset update.
-	LastUpdated time.Time `json:"lastUpdated,required" format:"date-time"`
+	LastUpdated time.Time `json:"lastUpdated" api:"required" format:"date-time"`
 	// Normalization method applied to the results. Refer to
 	// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
-	Normalization RadarTcpResetsTimeoutSummaryResponseResultMetaNormalization `json:"normalization,required"`
+	Normalization RadarTcpResetsTimeoutSummaryResponseResultMetaNormalization `json:"normalization" api:"required"`
 	// Measurement units for the results.
-	Units []RadarTcpResetsTimeoutSummaryResponseResultMetaUnit `json:"units,required"`
+	Units []RadarTcpResetsTimeoutSummaryResponseResultMetaUnit `json:"units" api:"required"`
 	JSON  radarTcpResetsTimeoutSummaryResponseResultMetaJSON   `json:"-"`
 }
 
@@ -135,9 +135,9 @@ func (r radarTcpResetsTimeoutSummaryResponseResultMetaJSON) RawJSON() string {
 }
 
 type RadarTcpResetsTimeoutSummaryResponseResultMetaConfidenceInfo struct {
-	Annotations []RadarTcpResetsTimeoutSummaryResponseResultMetaConfidenceInfoAnnotation `json:"annotations,required"`
+	Annotations []RadarTcpResetsTimeoutSummaryResponseResultMetaConfidenceInfoAnnotation `json:"annotations" api:"required"`
 	// Provides an indication of how much confidence Cloudflare has in the data.
-	Level int64                                                            `json:"level,required"`
+	Level int64                                                            `json:"level" api:"required"`
 	JSON  radarTcpResetsTimeoutSummaryResponseResultMetaConfidenceInfoJSON `json:"-"`
 }
 
@@ -161,14 +161,14 @@ func (r radarTcpResetsTimeoutSummaryResponseResultMetaConfidenceInfoJSON) RawJSO
 
 // Annotation associated with the result (e.g. outage or other type of event).
 type RadarTcpResetsTimeoutSummaryResponseResultMetaConfidenceInfoAnnotation struct {
-	DataSource  string    `json:"dataSource,required"`
-	Description string    `json:"description,required"`
-	EndDate     time.Time `json:"endDate,required" format:"date-time"`
-	EventType   string    `json:"eventType,required"`
+	DataSource  string    `json:"dataSource" api:"required"`
+	Description string    `json:"description" api:"required"`
+	EndDate     time.Time `json:"endDate" api:"required" format:"date-time"`
+	EventType   string    `json:"eventType" api:"required"`
 	// Whether event is a single point in time or a time range.
-	IsInstantaneous bool                                                                       `json:"isInstantaneous,required"`
-	LinkedURL       string                                                                     `json:"linkedUrl,required" format:"uri"`
-	StartDate       time.Time                                                                  `json:"startDate,required" format:"date-time"`
+	IsInstantaneous bool                                                                       `json:"isInstantaneous" api:"required"`
+	LinkedURL       string                                                                     `json:"linkedUrl" api:"required" format:"uri"`
+	StartDate       time.Time                                                                  `json:"startDate" api:"required" format:"date-time"`
 	JSON            radarTcpResetsTimeoutSummaryResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
 }
 
@@ -197,9 +197,9 @@ func (r radarTcpResetsTimeoutSummaryResponseResultMetaConfidenceInfoAnnotationJS
 
 type RadarTcpResetsTimeoutSummaryResponseResultMetaDateRange struct {
 	// Adjusted end of date range.
-	EndTime time.Time `json:"endTime,required" format:"date-time"`
+	EndTime time.Time `json:"endTime" api:"required" format:"date-time"`
 	// Adjusted start of date range.
-	StartTime time.Time                                                   `json:"startTime,required" format:"date-time"`
+	StartTime time.Time                                                   `json:"startTime" api:"required" format:"date-time"`
 	JSON      radarTcpResetsTimeoutSummaryResponseResultMetaDateRangeJSON `json:"-"`
 }
 
@@ -245,8 +245,8 @@ func (r RadarTcpResetsTimeoutSummaryResponseResultMetaNormalization) IsKnown() b
 }
 
 type RadarTcpResetsTimeoutSummaryResponseResultMetaUnit struct {
-	Name  string                                                 `json:"name,required"`
-	Value string                                                 `json:"value,required"`
+	Name  string                                                 `json:"name" api:"required"`
+	Value string                                                 `json:"value" api:"required"`
 	JSON  radarTcpResetsTimeoutSummaryResponseResultMetaUnitJSON `json:"-"`
 }
 
@@ -270,18 +270,18 @@ func (r radarTcpResetsTimeoutSummaryResponseResultMetaUnitJSON) RawJSON() string
 type RadarTcpResetsTimeoutSummaryResponseResultSummary0 struct {
 	// Connection resets within the first 10 packets from the client, but after the
 	// server has received multiple data packets.
-	LaterInFlow string `json:"later_in_flow,required"`
+	LaterInFlow string `json:"later_in_flow" api:"required"`
 	// All other connections.
-	NoMatch string `json:"no_match,required"`
+	NoMatch string `json:"no_match" api:"required"`
 	// Connection resets or timeouts after the server received both a SYN packet and an
 	// ACK packet, meaning the connection was successfully established.
-	PostAck string `json:"post_ack,required"`
+	PostAck string `json:"post_ack" api:"required"`
 	// Connection resets or timeouts after the server received a packet with PSH flag
 	// set, following connection establishment.
-	PostPsh string `json:"post_psh,required"`
+	PostPsh string `json:"post_psh" api:"required"`
 	// Connection resets or timeouts after the server received only a single SYN
 	// packet.
-	PostSyn string                                                 `json:"post_syn,required"`
+	PostSyn string                                                 `json:"post_syn" api:"required"`
 	JSON    radarTcpResetsTimeoutSummaryResponseResultSummary0JSON `json:"-"`
 }
 
@@ -306,8 +306,8 @@ func (r radarTcpResetsTimeoutSummaryResponseResultSummary0JSON) RawJSON() string
 }
 
 type RadarTcpResetsTimeoutTimeseriesGroupsResponse struct {
-	Result  RadarTcpResetsTimeoutTimeseriesGroupsResponseResult `json:"result,required"`
-	Success bool                                                `json:"success,required"`
+	Result  RadarTcpResetsTimeoutTimeseriesGroupsResponseResult `json:"result" api:"required"`
+	Success bool                                                `json:"success" api:"required"`
 	JSON    radarTcpResetsTimeoutTimeseriesGroupsResponseJSON   `json:"-"`
 }
 
@@ -330,8 +330,8 @@ func (r radarTcpResetsTimeoutTimeseriesGroupsResponseJSON) RawJSON() string {
 
 type RadarTcpResetsTimeoutTimeseriesGroupsResponseResult struct {
 	// Metadata for the results.
-	Meta   RadarTcpResetsTimeoutTimeseriesGroupsResponseResultMeta   `json:"meta,required"`
-	Serie0 RadarTcpResetsTimeoutTimeseriesGroupsResponseResultSerie0 `json:"serie_0,required"`
+	Meta   RadarTcpResetsTimeoutTimeseriesGroupsResponseResultMeta   `json:"meta" api:"required"`
+	Serie0 RadarTcpResetsTimeoutTimeseriesGroupsResponseResultSerie0 `json:"serie_0" api:"required"`
 	JSON   radarTcpResetsTimeoutTimeseriesGroupsResponseResultJSON   `json:"-"`
 }
 
@@ -357,16 +357,16 @@ type RadarTcpResetsTimeoutTimeseriesGroupsResponseResultMeta struct {
 	// Aggregation interval of the results (e.g., in 15 minutes or 1 hour intervals).
 	// Refer to
 	// [Aggregation intervals](https://developers.cloudflare.com/radar/concepts/aggregation-intervals/).
-	AggInterval    RadarTcpResetsTimeoutTimeseriesGroupsResponseResultMetaAggInterval    `json:"aggInterval,required"`
-	ConfidenceInfo RadarTcpResetsTimeoutTimeseriesGroupsResponseResultMetaConfidenceInfo `json:"confidenceInfo,required"`
-	DateRange      []RadarTcpResetsTimeoutTimeseriesGroupsResponseResultMetaDateRange    `json:"dateRange,required"`
+	AggInterval    RadarTcpResetsTimeoutTimeseriesGroupsResponseResultMetaAggInterval    `json:"aggInterval" api:"required"`
+	ConfidenceInfo RadarTcpResetsTimeoutTimeseriesGroupsResponseResultMetaConfidenceInfo `json:"confidenceInfo" api:"required"`
+	DateRange      []RadarTcpResetsTimeoutTimeseriesGroupsResponseResultMetaDateRange    `json:"dateRange" api:"required"`
 	// Timestamp of the last dataset update.
-	LastUpdated time.Time `json:"lastUpdated,required" format:"date-time"`
+	LastUpdated time.Time `json:"lastUpdated" api:"required" format:"date-time"`
 	// Normalization method applied to the results. Refer to
 	// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
-	Normalization RadarTcpResetsTimeoutTimeseriesGroupsResponseResultMetaNormalization `json:"normalization,required"`
+	Normalization RadarTcpResetsTimeoutTimeseriesGroupsResponseResultMetaNormalization `json:"normalization" api:"required"`
 	// Measurement units for the results.
-	Units []RadarTcpResetsTimeoutTimeseriesGroupsResponseResultMetaUnit `json:"units,required"`
+	Units []RadarTcpResetsTimeoutTimeseriesGroupsResponseResultMetaUnit `json:"units" api:"required"`
 	JSON  radarTcpResetsTimeoutTimeseriesGroupsResponseResultMetaJSON   `json:"-"`
 }
 
@@ -414,9 +414,9 @@ func (r RadarTcpResetsTimeoutTimeseriesGroupsResponseResultMetaAggInterval) IsKn
 }
 
 type RadarTcpResetsTimeoutTimeseriesGroupsResponseResultMetaConfidenceInfo struct {
-	Annotations []RadarTcpResetsTimeoutTimeseriesGroupsResponseResultMetaConfidenceInfoAnnotation `json:"annotations,required"`
+	Annotations []RadarTcpResetsTimeoutTimeseriesGroupsResponseResultMetaConfidenceInfoAnnotation `json:"annotations" api:"required"`
 	// Provides an indication of how much confidence Cloudflare has in the data.
-	Level int64                                                                     `json:"level,required"`
+	Level int64                                                                     `json:"level" api:"required"`
 	JSON  radarTcpResetsTimeoutTimeseriesGroupsResponseResultMetaConfidenceInfoJSON `json:"-"`
 }
 
@@ -440,14 +440,14 @@ func (r radarTcpResetsTimeoutTimeseriesGroupsResponseResultMetaConfidenceInfoJSO
 
 // Annotation associated with the result (e.g. outage or other type of event).
 type RadarTcpResetsTimeoutTimeseriesGroupsResponseResultMetaConfidenceInfoAnnotation struct {
-	DataSource  string    `json:"dataSource,required"`
-	Description string    `json:"description,required"`
-	EndDate     time.Time `json:"endDate,required" format:"date-time"`
-	EventType   string    `json:"eventType,required"`
+	DataSource  string    `json:"dataSource" api:"required"`
+	Description string    `json:"description" api:"required"`
+	EndDate     time.Time `json:"endDate" api:"required" format:"date-time"`
+	EventType   string    `json:"eventType" api:"required"`
 	// Whether event is a single point in time or a time range.
-	IsInstantaneous bool                                                                                `json:"isInstantaneous,required"`
-	LinkedURL       string                                                                              `json:"linkedUrl,required" format:"uri"`
-	StartDate       time.Time                                                                           `json:"startDate,required" format:"date-time"`
+	IsInstantaneous bool                                                                                `json:"isInstantaneous" api:"required"`
+	LinkedURL       string                                                                              `json:"linkedUrl" api:"required" format:"uri"`
+	StartDate       time.Time                                                                           `json:"startDate" api:"required" format:"date-time"`
 	JSON            radarTcpResetsTimeoutTimeseriesGroupsResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
 }
 
@@ -476,9 +476,9 @@ func (r radarTcpResetsTimeoutTimeseriesGroupsResponseResultMetaConfidenceInfoAnn
 
 type RadarTcpResetsTimeoutTimeseriesGroupsResponseResultMetaDateRange struct {
 	// Adjusted end of date range.
-	EndTime time.Time `json:"endTime,required" format:"date-time"`
+	EndTime time.Time `json:"endTime" api:"required" format:"date-time"`
 	// Adjusted start of date range.
-	StartTime time.Time                                                            `json:"startTime,required" format:"date-time"`
+	StartTime time.Time                                                            `json:"startTime" api:"required" format:"date-time"`
 	JSON      radarTcpResetsTimeoutTimeseriesGroupsResponseResultMetaDateRangeJSON `json:"-"`
 }
 
@@ -524,8 +524,8 @@ func (r RadarTcpResetsTimeoutTimeseriesGroupsResponseResultMetaNormalization) Is
 }
 
 type RadarTcpResetsTimeoutTimeseriesGroupsResponseResultMetaUnit struct {
-	Name  string                                                          `json:"name,required"`
-	Value string                                                          `json:"value,required"`
+	Name  string                                                          `json:"name" api:"required"`
+	Value string                                                          `json:"value" api:"required"`
 	JSON  radarTcpResetsTimeoutTimeseriesGroupsResponseResultMetaUnitJSON `json:"-"`
 }
 
@@ -548,12 +548,12 @@ func (r radarTcpResetsTimeoutTimeseriesGroupsResponseResultMetaUnitJSON) RawJSON
 }
 
 type RadarTcpResetsTimeoutTimeseriesGroupsResponseResultSerie0 struct {
-	LaterInFlow []string                                                      `json:"later_in_flow,required"`
-	NoMatch     []string                                                      `json:"no_match,required"`
-	PostAck     []string                                                      `json:"post_ack,required"`
-	PostPsh     []string                                                      `json:"post_psh,required"`
-	PostSyn     []string                                                      `json:"post_syn,required"`
-	Timestamps  []time.Time                                                   `json:"timestamps,required" format:"date-time"`
+	LaterInFlow []string                                                      `json:"later_in_flow" api:"required"`
+	NoMatch     []string                                                      `json:"no_match" api:"required"`
+	PostAck     []string                                                      `json:"post_ack" api:"required"`
+	PostPsh     []string                                                      `json:"post_psh" api:"required"`
+	PostSyn     []string                                                      `json:"post_syn" api:"required"`
+	Timestamps  []time.Time                                                   `json:"timestamps" api:"required" format:"date-time"`
 	JSON        radarTcpResetsTimeoutTimeseriesGroupsResponseResultSerie0JSON `json:"-"`
 }
 

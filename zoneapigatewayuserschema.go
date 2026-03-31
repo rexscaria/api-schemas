@@ -53,15 +53,15 @@ func (r *ZoneAPIGatewayUserSchemaService) Get(ctx context.Context, zoneID string
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if schemaID == "" {
 		err = errors.New("missing required schema_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/api_gateway/user_schemas/%s", zoneID, schemaID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve information about all schemas on a zone
@@ -73,11 +73,11 @@ func (r *ZoneAPIGatewayUserSchemaService) List(ctx context.Context, zoneID strin
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/api_gateway/user_schemas", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete a schema
@@ -89,15 +89,15 @@ func (r *ZoneAPIGatewayUserSchemaService) Delete(ctx context.Context, zoneID str
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if schemaID == "" {
 		err = errors.New("missing required schema_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/api_gateway/user_schemas/%s", zoneID, schemaID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Enable validation for a schema
@@ -109,15 +109,15 @@ func (r *ZoneAPIGatewayUserSchemaService) EnableValidation(ctx context.Context, 
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if schemaID == "" {
 		err = errors.New("missing required schema_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/api_gateway/user_schemas/%s", zoneID, schemaID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve schema hosts in a zone
@@ -129,11 +129,11 @@ func (r *ZoneAPIGatewayUserSchemaService) GetHosts(ctx context.Context, zoneID s
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/api_gateway/user_schemas/hosts", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves all operations from the schema. Operations that already exist in API
@@ -146,15 +146,15 @@ func (r *ZoneAPIGatewayUserSchemaService) GetOperations(ctx context.Context, zon
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if schemaID == "" {
 		err = errors.New("missing required schema_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/api_gateway/user_schemas/%s/operations", zoneID, schemaID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Upload a schema to a zone
@@ -166,11 +166,11 @@ func (r *ZoneAPIGatewayUserSchemaService) Upload(ctx context.Context, zoneID str
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/api_gateway/user_schemas", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Kind of schema
@@ -219,14 +219,14 @@ type Operation struct {
 	// will be replaced from left to right with {varN}, starting with {var1}, during
 	// insertion. This will further be Cloudflare-normalized upon insertion. See:
 	// https://developers.cloudflare.com/rules/normalization/how-it-works/.
-	Endpoint string `json:"endpoint,required" format:"uri-template"`
+	Endpoint string `json:"endpoint" api:"required" format:"uri-template"`
 	// RFC3986-compliant host.
-	Host        string           `json:"host,required" format:"hostname"`
-	LastUpdated SchemasTimestamp `json:"last_updated,required" format:"date-time"`
+	Host        string           `json:"host" api:"required" format:"hostname"`
+	LastUpdated SchemasTimestamp `json:"last_updated" api:"required" format:"date-time"`
 	// The HTTP method used to access the endpoint.
-	Method OperationMethod `json:"method,required"`
+	Method OperationMethod `json:"method" api:"required"`
 	// UUID.
-	OperationID SchemasUuid       `json:"operation_id,required"`
+	OperationID SchemasUuid       `json:"operation_id" api:"required"`
 	Features    OperationFeatures `json:"features"`
 	JSON        operationJSON     `json:"-"`
 }
@@ -440,7 +440,7 @@ func (r operationFeaturesAPIShieldOperationFeatureThresholdsThresholdsJSON) RawJ
 }
 
 type OperationFeaturesAPIShieldOperationFeatureParameterSchemas struct {
-	ParameterSchemas OperationFeaturesAPIShieldOperationFeatureParameterSchemasParameterSchemas `json:"parameter_schemas,required"`
+	ParameterSchemas OperationFeaturesAPIShieldOperationFeatureParameterSchemasParameterSchemas `json:"parameter_schemas" api:"required"`
 	JSON             operationFeaturesAPIShieldOperationFeatureParameterSchemasJSON             `json:"-"`
 }
 
@@ -494,7 +494,7 @@ type OperationFeaturesAPIShieldOperationFeatureParameterSchemasParameterSchemasP
 	Parameters []interface{} `json:"parameters"`
 	// An empty response object. This field is required to yield a valid operation
 	// schema.
-	Responses interface{}                                                                                    `json:"responses,nullable"`
+	Responses interface{}                                                                                    `json:"responses" api:"nullable"`
 	JSON      operationFeaturesAPIShieldOperationFeatureParameterSchemasParameterSchemasParameterSchemasJSON `json:"-"`
 }
 
@@ -698,7 +698,7 @@ type OperationFeaturesAPIShieldOperationFeatureSchemaInfoSchemaInfo struct {
 	// True if a Cloudflare-provided learned schema is available for this endpoint.
 	LearnedAvailable bool `json:"learned_available"`
 	// Action taken on requests failing validation.
-	MitigationAction OperationFeaturesAPIShieldOperationFeatureSchemaInfoSchemaInfoMitigationAction `json:"mitigation_action,nullable"`
+	MitigationAction OperationFeaturesAPIShieldOperationFeatureSchemaInfoSchemaInfoMitigationAction `json:"mitigation_action" api:"nullable"`
 	JSON             operationFeaturesAPIShieldOperationFeatureSchemaInfoSchemaInfoJSON             `json:"-"`
 }
 
@@ -771,13 +771,13 @@ func (r OperationFeaturesAPIShieldOperationFeatureSchemaInfoSchemaInfoMitigation
 }
 
 type PublicSchema struct {
-	CreatedAt SchemasTimestamp `json:"created_at,required" format:"date-time"`
+	CreatedAt SchemasTimestamp `json:"created_at" api:"required" format:"date-time"`
 	// Kind of schema
-	Kind APIShieldKind `json:"kind,required"`
+	Kind APIShieldKind `json:"kind" api:"required"`
 	// Name of the schema
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// UUID.
-	SchemaID SchemasUuid `json:"schema_id,required"`
+	SchemaID SchemasUuid `json:"schema_id" api:"required"`
 	// Source of the schema
 	Source string `json:"source"`
 	// Flag whether schema is enabled for validation.
@@ -810,11 +810,11 @@ type SchemasUuid = string
 type SchemasUuidParam = string
 
 type ZoneAPIGatewayUserSchemaGetResponse struct {
-	Errors   []MessagesAPIShieldItem `json:"errors,required"`
-	Messages []MessagesAPIShieldItem `json:"messages,required"`
-	Result   PublicSchema            `json:"result,required"`
+	Errors   []MessagesAPIShieldItem `json:"errors" api:"required"`
+	Messages []MessagesAPIShieldItem `json:"messages" api:"required"`
+	Result   PublicSchema            `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success ZoneAPIGatewayUserSchemaGetResponseSuccess `json:"success,required"`
+	Success ZoneAPIGatewayUserSchemaGetResponseSuccess `json:"success" api:"required"`
 	JSON    zoneAPIGatewayUserSchemaGetResponseJSON    `json:"-"`
 }
 
@@ -853,11 +853,11 @@ func (r ZoneAPIGatewayUserSchemaGetResponseSuccess) IsKnown() bool {
 }
 
 type ZoneAPIGatewayUserSchemaListResponse struct {
-	Errors   []MessagesAPIShieldItem `json:"errors,required"`
-	Messages []MessagesAPIShieldItem `json:"messages,required"`
-	Result   []PublicSchema          `json:"result,required"`
+	Errors   []MessagesAPIShieldItem `json:"errors" api:"required"`
+	Messages []MessagesAPIShieldItem `json:"messages" api:"required"`
+	Result   []PublicSchema          `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success    ZoneAPIGatewayUserSchemaListResponseSuccess    `json:"success,required"`
+	Success    ZoneAPIGatewayUserSchemaListResponseSuccess    `json:"success" api:"required"`
 	ResultInfo ZoneAPIGatewayUserSchemaListResponseResultInfo `json:"result_info"`
 	JSON       zoneAPIGatewayUserSchemaListResponseJSON       `json:"-"`
 }
@@ -929,11 +929,11 @@ func (r zoneAPIGatewayUserSchemaListResponseResultInfoJSON) RawJSON() string {
 }
 
 type ZoneAPIGatewayUserSchemaEnableValidationResponse struct {
-	Errors   []MessagesAPIShieldItem `json:"errors,required"`
-	Messages []MessagesAPIShieldItem `json:"messages,required"`
-	Result   PublicSchema            `json:"result,required"`
+	Errors   []MessagesAPIShieldItem `json:"errors" api:"required"`
+	Messages []MessagesAPIShieldItem `json:"messages" api:"required"`
+	Result   PublicSchema            `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success ZoneAPIGatewayUserSchemaEnableValidationResponseSuccess `json:"success,required"`
+	Success ZoneAPIGatewayUserSchemaEnableValidationResponseSuccess `json:"success" api:"required"`
 	JSON    zoneAPIGatewayUserSchemaEnableValidationResponseJSON    `json:"-"`
 }
 
@@ -972,10 +972,10 @@ func (r ZoneAPIGatewayUserSchemaEnableValidationResponseSuccess) IsKnown() bool 
 }
 
 type ZoneAPIGatewayUserSchemaGetHostsResponse struct {
-	Errors   []MessagesAPIShieldItem `json:"errors,required"`
-	Messages []MessagesAPIShieldItem `json:"messages,required"`
+	Errors   []MessagesAPIShieldItem `json:"errors" api:"required"`
+	Messages []MessagesAPIShieldItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success    ZoneAPIGatewayUserSchemaGetHostsResponseSuccess    `json:"success,required"`
+	Success    ZoneAPIGatewayUserSchemaGetHostsResponseSuccess    `json:"success" api:"required"`
 	Result     []ZoneAPIGatewayUserSchemaGetHostsResponseResult   `json:"result"`
 	ResultInfo ZoneAPIGatewayUserSchemaGetHostsResponseResultInfo `json:"result_info"`
 	JSON       zoneAPIGatewayUserSchemaGetHostsResponseJSON       `json:"-"`
@@ -1017,13 +1017,13 @@ func (r ZoneAPIGatewayUserSchemaGetHostsResponseSuccess) IsKnown() bool {
 }
 
 type ZoneAPIGatewayUserSchemaGetHostsResponseResult struct {
-	CreatedAt SchemasTimestamp `json:"created_at,required" format:"date-time"`
+	CreatedAt SchemasTimestamp `json:"created_at" api:"required" format:"date-time"`
 	// Hosts serving the schema, e.g zone.host.com
-	Hosts []string `json:"hosts,required"`
+	Hosts []string `json:"hosts" api:"required"`
 	// Name of the schema
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// UUID.
-	SchemaID SchemasUuid                                        `json:"schema_id,required"`
+	SchemaID SchemasUuid                                        `json:"schema_id" api:"required"`
 	JSON     zoneAPIGatewayUserSchemaGetHostsResponseResultJSON `json:"-"`
 }
 
@@ -1078,11 +1078,11 @@ func (r zoneAPIGatewayUserSchemaGetHostsResponseResultInfoJSON) RawJSON() string
 }
 
 type ZoneAPIGatewayUserSchemaGetOperationsResponse struct {
-	Errors   []MessagesAPIShieldItem                               `json:"errors,required"`
-	Messages []MessagesAPIShieldItem                               `json:"messages,required"`
-	Result   []ZoneAPIGatewayUserSchemaGetOperationsResponseResult `json:"result,required"`
+	Errors   []MessagesAPIShieldItem                               `json:"errors" api:"required"`
+	Messages []MessagesAPIShieldItem                               `json:"messages" api:"required"`
+	Result   []ZoneAPIGatewayUserSchemaGetOperationsResponseResult `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success    ZoneAPIGatewayUserSchemaGetOperationsResponseSuccess    `json:"success,required"`
+	Success    ZoneAPIGatewayUserSchemaGetOperationsResponseSuccess    `json:"success" api:"required"`
 	ResultInfo ZoneAPIGatewayUserSchemaGetOperationsResponseResultInfo `json:"result_info"`
 	JSON       zoneAPIGatewayUserSchemaGetOperationsResponseJSON       `json:"-"`
 }
@@ -1112,11 +1112,11 @@ type ZoneAPIGatewayUserSchemaGetOperationsResponseResult struct {
 	// will be replaced from left to right with {varN}, starting with {var1}, during
 	// insertion. This will further be Cloudflare-normalized upon insertion. See:
 	// https://developers.cloudflare.com/rules/normalization/how-it-works/.
-	Endpoint string `json:"endpoint,required" format:"uri-template"`
+	Endpoint string `json:"endpoint" api:"required" format:"uri-template"`
 	// RFC3986-compliant host.
-	Host string `json:"host,required" format:"hostname"`
+	Host string `json:"host" api:"required" format:"hostname"`
 	// The HTTP method used to access the endpoint.
-	Method ZoneAPIGatewayUserSchemaGetOperationsResponseResultMethod `json:"method,required"`
+	Method ZoneAPIGatewayUserSchemaGetOperationsResponseResultMethod `json:"method" api:"required"`
 	// This field can have the runtime type of [OperationFeatures].
 	Features    interface{}      `json:"features"`
 	LastUpdated shared.UnionTime `json:"last_updated" format:"date-time"`
@@ -1251,11 +1251,11 @@ func (r zoneAPIGatewayUserSchemaGetOperationsResponseResultInfoJSON) RawJSON() s
 }
 
 type ZoneAPIGatewayUserSchemaUploadResponse struct {
-	Errors   []MessagesAPIShieldItem                      `json:"errors,required"`
-	Messages []MessagesAPIShieldItem                      `json:"messages,required"`
-	Result   ZoneAPIGatewayUserSchemaUploadResponseResult `json:"result,required"`
+	Errors   []MessagesAPIShieldItem                      `json:"errors" api:"required"`
+	Messages []MessagesAPIShieldItem                      `json:"messages" api:"required"`
+	Result   ZoneAPIGatewayUserSchemaUploadResponseResult `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success ZoneAPIGatewayUserSchemaUploadResponseSuccess `json:"success,required"`
+	Success ZoneAPIGatewayUserSchemaUploadResponseSuccess `json:"success" api:"required"`
 	JSON    zoneAPIGatewayUserSchemaUploadResponseJSON    `json:"-"`
 }
 
@@ -1279,7 +1279,7 @@ func (r zoneAPIGatewayUserSchemaUploadResponseJSON) RawJSON() string {
 }
 
 type ZoneAPIGatewayUserSchemaUploadResponseResult struct {
-	Schema        PublicSchema                                              `json:"schema,required"`
+	Schema        PublicSchema                                              `json:"schema" api:"required"`
 	UploadDetails ZoneAPIGatewayUserSchemaUploadResponseResultUploadDetails `json:"upload_details"`
 	JSON          zoneAPIGatewayUserSchemaUploadResponseResultJSON          `json:"-"`
 }
@@ -1327,7 +1327,7 @@ func (r zoneAPIGatewayUserSchemaUploadResponseResultUploadDetailsJSON) RawJSON()
 
 type ZoneAPIGatewayUserSchemaUploadResponseResultUploadDetailsWarning struct {
 	// Code that identifies the event that occurred.
-	Code int64 `json:"code,required"`
+	Code int64 `json:"code" api:"required"`
 	// JSONPath location(s) in the schema where these events were encountered. See
 	// [https://goessner.net/articles/JsonPath/](https://goessner.net/articles/JsonPath/)
 	// for JSONPath specification.
@@ -1513,9 +1513,9 @@ func (r ZoneAPIGatewayUserSchemaGetOperationsParamsOperationStatus) IsKnown() bo
 
 type ZoneAPIGatewayUserSchemaUploadParams struct {
 	// Schema file bytes
-	File param.Field[io.Reader] `json:"file,required" format:"binary"`
+	File param.Field[io.Reader] `json:"file" api:"required" format:"binary"`
 	// Kind of schema
-	Kind param.Field[APIShieldKind] `json:"kind,required"`
+	Kind param.Field[APIShieldKind] `json:"kind" api:"required"`
 	// Name of the schema
 	Name param.Field[string] `json:"name"`
 	// Flag whether schema is enabled for validation.

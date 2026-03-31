@@ -41,16 +41,16 @@ func NewAccountAIRunCfOpenAIService(opts ...option.RequestOption) (r *AccountAIR
 }
 
 // Execute @cf/openai/whisper model.
-func (r *AccountAIRunCfOpenAIService) ExecuteWhisper(ctx context.Context, accountID string, body io.Reader, body AccountAIRunCfOpenAIExecuteWhisperParams, opts ...option.RequestOption) (res *AccountAIRunCfOpenAIExecuteWhisperResponse, err error) {
+func (r *AccountAIRunCfOpenAIService) ExecuteWhisper(ctx context.Context, accountID string, body io.Reader, params AccountAIRunCfOpenAIExecuteWhisperParams, opts ...option.RequestOption) (res *AccountAIRunCfOpenAIExecuteWhisperResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithRequestBody("application/octet-stream", body)}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai/run/@cf/openai/whisper", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Execute @cf/openai/whisper-large-v3-turbo model.
@@ -58,24 +58,24 @@ func (r *AccountAIRunCfOpenAIService) ExecuteWhisperLargeV3Turbo(ctx context.Con
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai/run/@cf/openai/whisper-large-v3-turbo", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Execute @cf/openai/whisper-tiny-en model.
-func (r *AccountAIRunCfOpenAIService) ExecuteWhisperTinyEn(ctx context.Context, accountID string, body io.Reader, body AccountAIRunCfOpenAIExecuteWhisperTinyEnParams, opts ...option.RequestOption) (res *AccountAIRunCfOpenAIExecuteWhisperTinyEnResponse, err error) {
+func (r *AccountAIRunCfOpenAIService) ExecuteWhisperTinyEn(ctx context.Context, accountID string, body io.Reader, params AccountAIRunCfOpenAIExecuteWhisperTinyEnParams, opts ...option.RequestOption) (res *AccountAIRunCfOpenAIExecuteWhisperTinyEnResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithRequestBody("application/octet-stream", body)}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai/run/@cf/openai/whisper-tiny-en", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountAIRunCfOpenAIExecuteWhisperResponse = interface{}
@@ -114,7 +114,7 @@ func (r AccountAIRunCfOpenAIExecuteWhisperParams) URLQuery() (v url.Values) {
 
 type AccountAIRunCfOpenAIExecuteWhisperLargeV3TurboParams struct {
 	// Base64 encoded value of the audio data.
-	Audio        param.Field[string] `json:"audio,required"`
+	Audio        param.Field[string] `json:"audio" api:"required"`
 	QueueRequest param.Field[string] `query:"queueRequest"`
 	// A text prompt to help provide context to the model on the contents of the audio.
 	InitialPrompt param.Field[string] `json:"initial_prompt"`

@@ -14,7 +14,7 @@ import (
 )
 
 func TestAccountPageProjectDeploymentNewWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,6 +26,7 @@ func TestAccountPageProjectDeploymentNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Pages.Projects.Deployments.New(
 		context.TODO(),
@@ -45,7 +46,7 @@ func TestAccountPageProjectDeploymentNewWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountPageProjectDeploymentGet(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -57,6 +58,7 @@ func TestAccountPageProjectDeploymentGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Pages.Projects.Deployments.Get(
 		context.TODO(),
@@ -74,7 +76,7 @@ func TestAccountPageProjectDeploymentGet(t *testing.T) {
 }
 
 func TestAccountPageProjectDeploymentListWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -86,6 +88,7 @@ func TestAccountPageProjectDeploymentListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Pages.Projects.Deployments.List(
 		context.TODO(),
@@ -105,7 +108,7 @@ func TestAccountPageProjectDeploymentListWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountPageProjectDeploymentDelete(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -117,6 +120,7 @@ func TestAccountPageProjectDeploymentDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Pages.Projects.Deployments.Delete(
 		context.TODO(),
@@ -134,7 +138,7 @@ func TestAccountPageProjectDeploymentDelete(t *testing.T) {
 }
 
 func TestAccountPageProjectDeploymentRetry(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -146,6 +150,7 @@ func TestAccountPageProjectDeploymentRetry(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Pages.Projects.Deployments.Retry(
 		context.TODO(),
@@ -166,7 +171,7 @@ func TestAccountPageProjectDeploymentRetry(t *testing.T) {
 }
 
 func TestAccountPageProjectDeploymentRollback(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -178,6 +183,7 @@ func TestAccountPageProjectDeploymentRollback(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Pages.Projects.Deployments.Rollback(
 		context.TODO(),

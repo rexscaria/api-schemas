@@ -26,6 +26,7 @@ func TestAccountUrlscannerV2ScreenshotGetScreenshotWithOptionalParams(t *testing
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	resp, err := client.Accounts.Urlscanner.V2.Screenshots.GetScreenshot(
 		context.TODO(),

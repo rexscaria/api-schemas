@@ -42,11 +42,11 @@ func (r *ZoneCustomCertificateService) New(ctx context.Context, zoneID string, b
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/custom_certificates", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // SSL Configuration Details
@@ -54,15 +54,15 @@ func (r *ZoneCustomCertificateService) Get(ctx context.Context, zoneID string, c
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if customCertificateID == "" {
 		err = errors.New("missing required custom_certificate_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/custom_certificates/%s", zoneID, customCertificateID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Upload a new private key and/or PEM/CRT for the SSL certificate. Note: PATCHing
@@ -72,15 +72,15 @@ func (r *ZoneCustomCertificateService) Update(ctx context.Context, zoneID string
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if customCertificateID == "" {
 		err = errors.New("missing required custom_certificate_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/custom_certificates/%s", zoneID, customCertificateID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // List, search, and filter all of your custom SSL certificates. The higher
@@ -90,11 +90,11 @@ func (r *ZoneCustomCertificateService) List(ctx context.Context, zoneID string, 
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/custom_certificates", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Remove a SSL certificate from a zone.
@@ -102,15 +102,15 @@ func (r *ZoneCustomCertificateService) Delete(ctx context.Context, zoneID string
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if customCertificateID == "" {
 		err = errors.New("missing required custom_certificate_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/custom_certificates/%s", zoneID, customCertificateID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // If a zone has multiple SSL certificates, you can set the order in which they
@@ -120,11 +120,11 @@ func (r *ZoneCustomCertificateService) Prioritize(ctx context.Context, zoneID st
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/custom_certificates/prioritize", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // A ubiquitous bundle has the highest probability of being verified everywhere,
@@ -148,10 +148,10 @@ func (r BundleMethod) IsKnown() bool {
 }
 
 type CertificateResponseCollection struct {
-	Errors   []MessagesTlsCertificatesItem `json:"errors,required"`
-	Messages []MessagesTlsCertificatesItem `json:"messages,required"`
+	Errors   []MessagesTlsCertificatesItem `json:"errors" api:"required"`
+	Messages []MessagesTlsCertificatesItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success    CertificateResponseCollectionSuccess    `json:"success,required"`
+	Success    CertificateResponseCollectionSuccess    `json:"success" api:"required"`
 	Result     []CustomCertificate                     `json:"result"`
 	ResultInfo CertificateResponseCollectionResultInfo `json:"result_info"`
 	JSON       certificateResponseCollectionJSON       `json:"-"`
@@ -224,10 +224,10 @@ func (r certificateResponseCollectionResultInfoJSON) RawJSON() string {
 }
 
 type CertificateResponseSingleCustom struct {
-	Errors   []MessagesTlsCertificatesItem `json:"errors,required"`
-	Messages []MessagesTlsCertificatesItem `json:"messages,required"`
+	Errors   []MessagesTlsCertificatesItem `json:"errors" api:"required"`
+	Messages []MessagesTlsCertificatesItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success CertificateResponseSingleCustomSuccess `json:"success,required"`
+	Success CertificateResponseSingleCustomSuccess `json:"success" api:"required"`
 	Result  CustomCertificate                      `json:"result"`
 	JSON    certificateResponseSingleCustomJSON    `json:"-"`
 }
@@ -268,32 +268,32 @@ func (r CertificateResponseSingleCustomSuccess) IsKnown() bool {
 
 type CustomCertificate struct {
 	// Identifier.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// A ubiquitous bundle has the highest probability of being verified everywhere,
 	// even by clients using outdated or unusual trust stores. An optimal bundle uses
 	// the shortest chain and newest intermediates. And the force bundle verifies the
 	// chain, but does not otherwise modify it.
-	BundleMethod BundleMethod `json:"bundle_method,required"`
+	BundleMethod BundleMethod `json:"bundle_method" api:"required"`
 	// When the certificate from the authority expires.
-	ExpiresOn time.Time `json:"expires_on,required" format:"date-time"`
-	Hosts     []string  `json:"hosts,required"`
+	ExpiresOn time.Time `json:"expires_on" api:"required" format:"date-time"`
+	Hosts     []string  `json:"hosts" api:"required"`
 	// The certificate authority that issued the certificate.
-	Issuer string `json:"issuer,required"`
+	Issuer string `json:"issuer" api:"required"`
 	// When the certificate was last modified.
-	ModifiedOn time.Time `json:"modified_on,required" format:"date-time"`
+	ModifiedOn time.Time `json:"modified_on" api:"required" format:"date-time"`
 	// The order/priority in which the certificate will be used in a request. The
 	// higher priority will break ties across overlapping 'legacy_custom' certificates,
 	// but 'legacy_custom' certificates will always supercede 'sni_custom'
 	// certificates.
-	Priority float64 `json:"priority,required"`
+	Priority float64 `json:"priority" api:"required"`
 	// The type of hash used for the certificate.
-	Signature string `json:"signature,required"`
+	Signature string `json:"signature" api:"required"`
 	// Status of the zone's custom SSL.
-	Status CustomCertificateStatus `json:"status,required"`
+	Status CustomCertificateStatus `json:"status" api:"required"`
 	// When the certificate was uploaded to Cloudflare.
-	UploadedOn time.Time `json:"uploaded_on,required" format:"date-time"`
+	UploadedOn time.Time `json:"uploaded_on" api:"required" format:"date-time"`
 	// Identifier.
-	ZoneID string `json:"zone_id,required"`
+	ZoneID string `json:"zone_id" api:"required"`
 	// Specify the region where your private key can be held locally for optimal TLS
 	// performance. HTTPS connections to any excluded data center will still be fully
 	// encrypted, but will incur some latency while Keyless SSL is used to complete the
@@ -423,10 +423,10 @@ func (r GeoRestrictionsParam) MarshalJSON() (data []byte, err error) {
 }
 
 type ZoneCustomCertificateDeleteResponse struct {
-	Errors   []MessagesTlsCertificatesItem `json:"errors,required"`
-	Messages []MessagesTlsCertificatesItem `json:"messages,required"`
+	Errors   []MessagesTlsCertificatesItem `json:"errors" api:"required"`
+	Messages []MessagesTlsCertificatesItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success ZoneCustomCertificateDeleteResponseSuccess `json:"success,required"`
+	Success ZoneCustomCertificateDeleteResponseSuccess `json:"success" api:"required"`
 	Result  ZoneCustomCertificateDeleteResponseResult  `json:"result"`
 	JSON    zoneCustomCertificateDeleteResponseJSON    `json:"-"`
 }
@@ -489,9 +489,9 @@ func (r zoneCustomCertificateDeleteResponseResultJSON) RawJSON() string {
 
 type ZoneCustomCertificateNewParams struct {
 	// The zone's SSL certificate or certificate and the intermediate(s).
-	Certificate param.Field[string] `json:"certificate,required"`
+	Certificate param.Field[string] `json:"certificate" api:"required"`
 	// The zone's private key.
-	PrivateKey param.Field[string] `json:"private_key,required"`
+	PrivateKey param.Field[string] `json:"private_key" api:"required"`
 	// A ubiquitous bundle has the highest probability of being verified everywhere,
 	// even by clients using outdated or unusual trust stores. An optimal bundle uses
 	// the shortest chain and newest intermediates. And the force bundle verifies the
@@ -632,7 +632,7 @@ func (r ZoneCustomCertificateListParamsStatus) IsKnown() bool {
 
 type ZoneCustomCertificatePrioritizeParams struct {
 	// Array of ordered certificates.
-	Certificates param.Field[[]ZoneCustomCertificatePrioritizeParamsCertificate] `json:"certificates,required"`
+	Certificates param.Field[[]ZoneCustomCertificatePrioritizeParamsCertificate] `json:"certificates" api:"required"`
 }
 
 func (r ZoneCustomCertificatePrioritizeParams) MarshalJSON() (data []byte, err error) {

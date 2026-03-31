@@ -31,10 +31,10 @@ func NewAccountAccessAppService(opts ...option.RequestOption) (r *AccountAccessA
 }
 
 type IDResponseApps struct {
-	Errors   []MessagesAccessItem `json:"errors,required"`
-	Messages []MessagesAccessItem `json:"messages,required"`
+	Errors   []MessagesAccessItem `json:"errors" api:"required"`
+	Messages []MessagesAccessItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success IDResponseAppsSuccess `json:"success,required"`
+	Success IDResponseAppsSuccess `json:"success" api:"required"`
 	Result  IDResponseAppsResult  `json:"result"`
 	JSON    idResponseAppsJSON    `json:"-"`
 }

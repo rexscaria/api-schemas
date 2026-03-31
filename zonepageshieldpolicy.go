@@ -39,11 +39,11 @@ func (r *ZonePageShieldPolicyService) New(ctx context.Context, zoneID string, bo
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/page_shield/policies", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetches a Page Shield policy by ID.
@@ -51,15 +51,15 @@ func (r *ZonePageShieldPolicyService) Get(ctx context.Context, zoneID string, po
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if policyID == "" {
 		err = errors.New("missing required policy_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/page_shield/policies/%s", zoneID, policyID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update a Page Shield policy by ID.
@@ -67,15 +67,15 @@ func (r *ZonePageShieldPolicyService) Update(ctx context.Context, zoneID string,
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if policyID == "" {
 		err = errors.New("missing required policy_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/page_shield/policies/%s", zoneID, policyID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists all Page Shield policies.
@@ -83,34 +83,34 @@ func (r *ZonePageShieldPolicyService) List(ctx context.Context, zoneID string, o
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/page_shield/policies", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete a Page Shield policy by ID.
 func (r *ZonePageShieldPolicyService) Delete(ctx context.Context, zoneID string, policyID string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return err
 	}
 	if policyID == "" {
 		err = errors.New("missing required policy_id parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("zones/%s/page_shield/policies/%s", zoneID, policyID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 type GetZonePolicyResponse struct {
-	Result PolicyWithID `json:"result,required,nullable"`
+	Result PolicyWithID `json:"result" api:"required,nullable"`
 	// Whether the API call was successful
-	Success  GetZonePolicyResponseSuccess   `json:"success,required"`
+	Success  GetZonePolicyResponseSuccess   `json:"success" api:"required"`
 	Errors   []GetZonePolicyResponseError   `json:"errors"`
 	Messages []GetZonePolicyResponseMessage `json:"messages"`
 	JSON     getZonePolicyResponseJSON      `json:"-"`
@@ -151,8 +151,8 @@ func (r GetZonePolicyResponseSuccess) IsKnown() bool {
 }
 
 type GetZonePolicyResponseError struct {
-	Code             int64                             `json:"code,required"`
-	Message          string                            `json:"message,required"`
+	Code             int64                             `json:"code" api:"required"`
+	Message          string                            `json:"message" api:"required"`
 	DocumentationURL string                            `json:"documentation_url"`
 	Source           GetZonePolicyResponseErrorsSource `json:"source"`
 	JSON             getZonePolicyResponseErrorJSON    `json:"-"`
@@ -199,8 +199,8 @@ func (r getZonePolicyResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type GetZonePolicyResponseMessage struct {
-	Code             int64                               `json:"code,required"`
-	Message          string                              `json:"message,required"`
+	Code             int64                               `json:"code" api:"required"`
+	Message          string                              `json:"message" api:"required"`
 	DocumentationURL string                              `json:"documentation_url"`
 	Source           GetZonePolicyResponseMessagesSource `json:"source"`
 	JSON             getZonePolicyResponseMessageJSON    `json:"-"`
@@ -248,16 +248,16 @@ func (r getZonePolicyResponseMessagesSourceJSON) RawJSON() string {
 
 type PolicyParam struct {
 	// The action to take if the expression matches
-	Action param.Field[PolicyAction] `json:"action,required"`
+	Action param.Field[PolicyAction] `json:"action" api:"required"`
 	// A description for the policy
-	Description param.Field[string] `json:"description,required"`
+	Description param.Field[string] `json:"description" api:"required"`
 	// Whether the policy is enabled
-	Enabled param.Field[bool] `json:"enabled,required"`
+	Enabled param.Field[bool] `json:"enabled" api:"required"`
 	// The expression which must match for the policy to be applied, using the
 	// Cloudflare Firewall rule expression syntax
-	Expression param.Field[string] `json:"expression,required"`
+	Expression param.Field[string] `json:"expression" api:"required"`
 	// The policy which will be applied
-	Value param.Field[string] `json:"value,required"`
+	Value param.Field[string] `json:"value" api:"required"`
 }
 
 func (r PolicyParam) MarshalJSON() (data []byte, err error) {
@@ -282,18 +282,18 @@ func (r PolicyAction) IsKnown() bool {
 
 type PolicyWithID struct {
 	// Identifier
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The action to take if the expression matches
-	Action PolicyAction `json:"action,required"`
+	Action PolicyAction `json:"action" api:"required"`
 	// A description for the policy
-	Description string `json:"description,required"`
+	Description string `json:"description" api:"required"`
 	// Whether the policy is enabled
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// The expression which must match for the policy to be applied, using the
 	// Cloudflare Firewall rule expression syntax
-	Expression string `json:"expression,required"`
+	Expression string `json:"expression" api:"required"`
 	// The policy which will be applied
-	Value string           `json:"value,required"`
+	Value string           `json:"value" api:"required"`
 	JSON  policyWithIDJSON `json:"-"`
 }
 
@@ -318,10 +318,10 @@ func (r policyWithIDJSON) RawJSON() string {
 }
 
 type ZonePageShieldPolicyListResponse struct {
-	Result     []PolicyWithID                             `json:"result,required"`
-	ResultInfo ZonePageShieldPolicyListResponseResultInfo `json:"result_info,required"`
+	Result     []PolicyWithID                             `json:"result" api:"required"`
+	ResultInfo ZonePageShieldPolicyListResponseResultInfo `json:"result_info" api:"required"`
 	// Whether the API call was successful
-	Success  ZonePageShieldPolicyListResponseSuccess   `json:"success,required"`
+	Success  ZonePageShieldPolicyListResponseSuccess   `json:"success" api:"required"`
 	Errors   []ZonePageShieldPolicyListResponseError   `json:"errors"`
 	Messages []ZonePageShieldPolicyListResponseMessage `json:"messages"`
 	JSON     zonePageShieldPolicyListResponseJSON      `json:"-"`
@@ -349,15 +349,15 @@ func (r zonePageShieldPolicyListResponseJSON) RawJSON() string {
 
 type ZonePageShieldPolicyListResponseResultInfo struct {
 	// Total number of results for the requested service
-	Count float64 `json:"count,required"`
+	Count float64 `json:"count" api:"required"`
 	// Current page within paginated list of results
-	Page float64 `json:"page,required"`
+	Page float64 `json:"page" api:"required"`
 	// Number of results per page of results
-	PerPage float64 `json:"per_page,required"`
+	PerPage float64 `json:"per_page" api:"required"`
 	// Total results available without any search parameters
-	TotalCount float64 `json:"total_count,required"`
+	TotalCount float64 `json:"total_count" api:"required"`
 	// Total number of pages
-	TotalPages float64                                        `json:"total_pages,required"`
+	TotalPages float64                                        `json:"total_pages" api:"required"`
 	JSON       zonePageShieldPolicyListResponseResultInfoJSON `json:"-"`
 }
 
@@ -397,8 +397,8 @@ func (r ZonePageShieldPolicyListResponseSuccess) IsKnown() bool {
 }
 
 type ZonePageShieldPolicyListResponseError struct {
-	Code             int64                                        `json:"code,required"`
-	Message          string                                       `json:"message,required"`
+	Code             int64                                        `json:"code" api:"required"`
+	Message          string                                       `json:"message" api:"required"`
 	DocumentationURL string                                       `json:"documentation_url"`
 	Source           ZonePageShieldPolicyListResponseErrorsSource `json:"source"`
 	JSON             zonePageShieldPolicyListResponseErrorJSON    `json:"-"`
@@ -445,8 +445,8 @@ func (r zonePageShieldPolicyListResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type ZonePageShieldPolicyListResponseMessage struct {
-	Code             int64                                          `json:"code,required"`
-	Message          string                                         `json:"message,required"`
+	Code             int64                                          `json:"code" api:"required"`
+	Message          string                                         `json:"message" api:"required"`
 	DocumentationURL string                                         `json:"documentation_url"`
 	Source           ZonePageShieldPolicyListResponseMessagesSource `json:"source"`
 	JSON             zonePageShieldPolicyListResponseMessageJSON    `json:"-"`
@@ -493,7 +493,7 @@ func (r zonePageShieldPolicyListResponseMessagesSourceJSON) RawJSON() string {
 }
 
 type ZonePageShieldPolicyNewParams struct {
-	Policy PolicyParam `json:"policy,required"`
+	Policy PolicyParam `json:"policy" api:"required"`
 }
 
 func (r ZonePageShieldPolicyNewParams) MarshalJSON() (data []byte, err error) {

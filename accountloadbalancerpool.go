@@ -42,11 +42,11 @@ func (r *AccountLoadBalancerPoolService) New(ctx context.Context, accountID stri
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/load_balancers/pools", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetch a single configured pool.
@@ -54,15 +54,15 @@ func (r *AccountLoadBalancerPoolService) Get(ctx context.Context, accountID stri
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if poolID == "" {
 		err = errors.New("missing required pool_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/load_balancers/pools/%s", accountID, poolID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Modify a configured pool.
@@ -70,15 +70,15 @@ func (r *AccountLoadBalancerPoolService) Update(ctx context.Context, accountID s
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if poolID == "" {
 		err = errors.New("missing required pool_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/load_balancers/pools/%s", accountID, poolID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // List configured pools.
@@ -86,11 +86,11 @@ func (r *AccountLoadBalancerPoolService) List(ctx context.Context, accountID str
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/load_balancers/pools", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete a configured pool.
@@ -98,15 +98,15 @@ func (r *AccountLoadBalancerPoolService) Delete(ctx context.Context, accountID s
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if poolID == "" {
 		err = errors.New("missing required pool_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/load_balancers/pools/%s", accountID, poolID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetch the latest pool health status for a single pool.
@@ -114,15 +114,15 @@ func (r *AccountLoadBalancerPoolService) Health(ctx context.Context, accountID s
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if poolID == "" {
 		err = errors.New("missing required pool_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/load_balancers/pools/%s/health", accountID, poolID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Get the list of resources that reference the provided pool.
@@ -130,15 +130,15 @@ func (r *AccountLoadBalancerPoolService) ListReferences(ctx context.Context, acc
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if poolID == "" {
 		err = errors.New("missing required pool_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/load_balancers/pools/%s/references", accountID, poolID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Apply changes to an existing pool, overwriting the supplied properties.
@@ -146,15 +146,15 @@ func (r *AccountLoadBalancerPoolService) Patch(ctx context.Context, accountID st
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if poolID == "" {
 		err = errors.New("missing required pool_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/load_balancers/pools/%s", accountID, poolID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Preview pool health using provided monitor details. The returned preview_id can
@@ -163,15 +163,15 @@ func (r *AccountLoadBalancerPoolService) Preview(ctx context.Context, accountID 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if poolID == "" {
 		err = errors.New("missing required pool_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/load_balancers/pools/%s/preview", accountID, poolID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // WNAM: Western North America, ENAM: Eastern North America, WEU: Western Europe,
@@ -213,7 +213,7 @@ type FilterOptions struct {
 	Disable bool `json:"disable"`
 	// If present, send notifications only for this health status (e.g. false for only
 	// DOWN events). Use null to reset (all events).
-	Healthy bool              `json:"healthy,nullable"`
+	Healthy bool              `json:"healthy" api:"nullable"`
 	JSON    filterOptionsJSON `json:"-"`
 }
 
@@ -248,13 +248,13 @@ func (r FilterOptionsParam) MarshalJSON() (data []byte, err error) {
 }
 
 type HealthDetails struct {
-	Errors   []HealthDetailsError   `json:"errors,required"`
-	Messages []HealthDetailsMessage `json:"messages,required"`
+	Errors   []HealthDetailsError   `json:"errors" api:"required"`
+	Messages []HealthDetailsMessage `json:"messages" api:"required"`
 	// A list of regions from which to run health checks. Null means every Cloudflare
 	// data center.
-	Result HealthDetailsResult `json:"result,required"`
+	Result HealthDetailsResult `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success HealthDetailsSuccess `json:"success,required"`
+	Success HealthDetailsSuccess `json:"success" api:"required"`
 	JSON    healthDetailsJSON    `json:"-"`
 }
 
@@ -277,8 +277,8 @@ func (r healthDetailsJSON) RawJSON() string {
 }
 
 type HealthDetailsError struct {
-	Code             int64                     `json:"code,required"`
-	Message          string                    `json:"message,required"`
+	Code             int64                     `json:"code" api:"required"`
+	Message          string                    `json:"message" api:"required"`
 	DocumentationURL string                    `json:"documentation_url"`
 	Source           HealthDetailsErrorsSource `json:"source"`
 	JSON             healthDetailsErrorJSON    `json:"-"`
@@ -325,8 +325,8 @@ func (r healthDetailsErrorsSourceJSON) RawJSON() string {
 }
 
 type HealthDetailsMessage struct {
-	Code             int64                       `json:"code,required"`
-	Message          string                      `json:"message,required"`
+	Code             int64                       `json:"code" api:"required"`
+	Message          string                      `json:"message" api:"required"`
 	DocumentationURL string                      `json:"documentation_url"`
 	Source           HealthDetailsMessagesSource `json:"source"`
 	JSON             healthDetailsMessageJSON    `json:"-"`
@@ -590,10 +590,10 @@ func (r LoadSheddingParam) MarshalJSON() (data []byte, err error) {
 type NotificationFilter struct {
 	// Filter options for a particular resource type (pool or origin). Use null to
 	// reset.
-	Origin FilterOptions `json:"origin,nullable"`
+	Origin FilterOptions `json:"origin" api:"nullable"`
 	// Filter options for a particular resource type (pool or origin). Use null to
 	// reset.
-	Pool FilterOptions          `json:"pool,nullable"`
+	Pool FilterOptions          `json:"pool" api:"nullable"`
 	JSON notificationFilterJSON `json:"-"`
 }
 
@@ -851,7 +851,7 @@ type Pool struct {
 	ID string `json:"id"`
 	// A list of regions from which to run health checks. Null means every Cloudflare
 	// data center.
-	CheckRegions []CheckRegions `json:"check_regions,nullable"`
+	CheckRegions []CheckRegions `json:"check_regions" api:"nullable"`
 	CreatedOn    string         `json:"created_on"`
 	// A human-readable description of the pool.
 	Description string `json:"description"`
@@ -891,7 +891,7 @@ type Pool struct {
 	NotificationEmail string `json:"notification_email"`
 	// Filter pool and origin health notifications by resource type or health status.
 	// Use null to reset.
-	NotificationFilter NotificationFilter `json:"notification_filter,nullable"`
+	NotificationFilter NotificationFilter `json:"notification_filter" api:"nullable"`
 	// Configures origin steering for the pool. Controls how origins are selected for
 	// new sessions and traffic without session affinity.
 	OriginSteering OriginSteering `json:"origin_steering"`
@@ -934,12 +934,12 @@ func (r poolJSON) RawJSON() string {
 }
 
 type ReferencesPoolResponse struct {
-	Errors   []LoadBalancingMessages `json:"errors,required"`
-	Messages []LoadBalancingMessages `json:"messages,required"`
+	Errors   []LoadBalancingMessages `json:"errors" api:"required"`
+	Messages []LoadBalancingMessages `json:"messages" api:"required"`
 	// List of resources that reference a given pool.
-	Result []ReferencesPoolResponseResult `json:"result,required"`
+	Result []ReferencesPoolResponseResult `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success ReferencesPoolResponseSuccess `json:"success,required"`
+	Success ReferencesPoolResponseSuccess `json:"success" api:"required"`
 	JSON    referencesPoolResponseJSON    `json:"-"`
 }
 
@@ -1021,11 +1021,11 @@ func (r ReferencesPoolResponseSuccess) IsKnown() bool {
 }
 
 type SchemasIDResponseLoadBalancing struct {
-	Errors   []LoadBalancingMessages              `json:"errors,required"`
-	Messages []LoadBalancingMessages              `json:"messages,required"`
-	Result   SchemasIDResponseLoadBalancingResult `json:"result,required"`
+	Errors   []LoadBalancingMessages              `json:"errors" api:"required"`
+	Messages []LoadBalancingMessages              `json:"messages" api:"required"`
+	Result   SchemasIDResponseLoadBalancingResult `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success SchemasIDResponseLoadBalancingSuccess `json:"success,required"`
+	Success SchemasIDResponseLoadBalancingSuccess `json:"success" api:"required"`
 	JSON    schemasIDResponseLoadBalancingJSON    `json:"-"`
 }
 
@@ -1085,11 +1085,11 @@ func (r SchemasIDResponseLoadBalancingSuccess) IsKnown() bool {
 }
 
 type SchemasLoadBalancingSingleResponse struct {
-	Errors   []LoadBalancingMessages `json:"errors,required"`
-	Messages []LoadBalancingMessages `json:"messages,required"`
-	Result   Pool                    `json:"result,required"`
+	Errors   []LoadBalancingMessages `json:"errors" api:"required"`
+	Messages []LoadBalancingMessages `json:"messages" api:"required"`
+	Result   Pool                    `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success SchemasLoadBalancingSingleResponseSuccess `json:"success,required"`
+	Success SchemasLoadBalancingSingleResponseSuccess `json:"success" api:"required"`
 	JSON    schemasLoadBalancingSingleResponseJSON    `json:"-"`
 }
 
@@ -1128,11 +1128,11 @@ func (r SchemasLoadBalancingSingleResponseSuccess) IsKnown() bool {
 }
 
 type SchemasResponseCollection struct {
-	Errors   []LoadBalancingMessages `json:"errors,required"`
-	Messages []LoadBalancingMessages `json:"messages,required"`
-	Result   []Pool                  `json:"result,required"`
+	Errors   []LoadBalancingMessages `json:"errors" api:"required"`
+	Messages []LoadBalancingMessages `json:"messages" api:"required"`
+	Result   []Pool                  `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success    SchemasResponseCollectionSuccess    `json:"success,required"`
+	Success    SchemasResponseCollectionSuccess    `json:"success" api:"required"`
 	ResultInfo SchemasResponseCollectionResultInfo `json:"result_info"`
 	JSON       schemasResponseCollectionJSON       `json:"-"`
 }
@@ -1209,10 +1209,10 @@ func (r schemasResponseCollectionResultInfoJSON) RawJSON() string {
 type AccountLoadBalancerPoolNewParams struct {
 	// A short name (tag) for the pool. Only alphanumeric characters, hyphens, and
 	// underscores are allowed.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// The list of origins within this pool. Traffic directed at this pool is balanced
 	// across all currently healthy origins, provided the pool itself is healthy.
-	Origins param.Field[[]OriginParam] `json:"origins,required"`
+	Origins param.Field[[]OriginParam] `json:"origins" api:"required"`
 	// A human-readable description of the pool.
 	Description param.Field[string] `json:"description"`
 	// Whether to enable (the default) or disable this pool. Disabled pools will not
@@ -1255,10 +1255,10 @@ func (r AccountLoadBalancerPoolNewParams) MarshalJSON() (data []byte, err error)
 type AccountLoadBalancerPoolUpdateParams struct {
 	// A short name (tag) for the pool. Only alphanumeric characters, hyphens, and
 	// underscores are allowed.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// The list of origins within this pool. Traffic directed at this pool is balanced
 	// across all currently healthy origins, provided the pool itself is healthy.
-	Origins param.Field[[]OriginParam] `json:"origins,required"`
+	Origins param.Field[[]OriginParam] `json:"origins" api:"required"`
 	// A list of regions from which to run health checks. Null means every Cloudflare
 	// data center.
 	CheckRegions param.Field[[]CheckRegions] `json:"check_regions"`
@@ -1366,7 +1366,7 @@ func (r AccountLoadBalancerPoolPatchParams) MarshalJSON() (data []byte, err erro
 }
 
 type AccountLoadBalancerPoolPreviewParams struct {
-	EditableMonitor EditableMonitorParam `json:"editable_monitor,required"`
+	EditableMonitor EditableMonitorParam `json:"editable_monitor" api:"required"`
 }
 
 func (r AccountLoadBalancerPoolPreviewParams) MarshalJSON() (data []byte, err error) {

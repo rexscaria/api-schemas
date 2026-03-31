@@ -14,7 +14,7 @@ import (
 )
 
 func TestAccountMagicSiteAppConfigNewWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,6 +26,7 @@ func TestAccountMagicSiteAppConfigNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Magic.Sites.AppConfigs.New(
 		context.TODO(),
@@ -49,7 +50,7 @@ func TestAccountMagicSiteAppConfigNewWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountMagicSiteAppConfigUpdateWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -61,6 +62,7 @@ func TestAccountMagicSiteAppConfigUpdateWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Magic.Sites.AppConfigs.Update(
 		context.TODO(),
@@ -84,7 +86,7 @@ func TestAccountMagicSiteAppConfigUpdateWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountMagicSiteAppConfigList(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -96,6 +98,7 @@ func TestAccountMagicSiteAppConfigList(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Magic.Sites.AppConfigs.List(
 		context.TODO(),
@@ -112,7 +115,7 @@ func TestAccountMagicSiteAppConfigList(t *testing.T) {
 }
 
 func TestAccountMagicSiteAppConfigDelete(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -124,6 +127,7 @@ func TestAccountMagicSiteAppConfigDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Magic.Sites.AppConfigs.Delete(
 		context.TODO(),

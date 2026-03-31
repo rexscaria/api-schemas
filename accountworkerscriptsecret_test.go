@@ -14,7 +14,7 @@ import (
 )
 
 func TestAccountWorkerScriptSecretList(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,6 +26,7 @@ func TestAccountWorkerScriptSecretList(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Workers.Scripts.Secrets.List(
 		context.TODO(),
@@ -42,7 +43,7 @@ func TestAccountWorkerScriptSecretList(t *testing.T) {
 }
 
 func TestAccountWorkerScriptSecretDelete(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -54,6 +55,7 @@ func TestAccountWorkerScriptSecretDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Workers.Scripts.Secrets.Delete(
 		context.TODO(),
@@ -71,7 +73,7 @@ func TestAccountWorkerScriptSecretDelete(t *testing.T) {
 }
 
 func TestAccountWorkerScriptSecretAddWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -83,6 +85,7 @@ func TestAccountWorkerScriptSecretAddWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Workers.Scripts.Secrets.Add(
 		context.TODO(),
@@ -106,7 +109,7 @@ func TestAccountWorkerScriptSecretAddWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountWorkerScriptSecretGet(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -118,6 +121,7 @@ func TestAccountWorkerScriptSecretGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Workers.Scripts.Secrets.Get(
 		context.TODO(),

@@ -40,11 +40,11 @@ func (r *ZoneCustomHostnameFallbackOriginService) Get(ctx context.Context, zoneI
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/custom_hostnames/fallback_origin", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update Fallback Origin for Custom Hostnames
@@ -52,11 +52,11 @@ func (r *ZoneCustomHostnameFallbackOriginService) Update(ctx context.Context, zo
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/custom_hostnames/fallback_origin", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete Fallback Origin for Custom Hostnames
@@ -64,18 +64,18 @@ func (r *ZoneCustomHostnameFallbackOriginService) Delete(ctx context.Context, zo
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/custom_hostnames/fallback_origin", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type FallbackOriginResponse struct {
-	Errors   []MessagesTlsCertificatesItem `json:"errors,required"`
-	Messages []MessagesTlsCertificatesItem `json:"messages,required"`
+	Errors   []MessagesTlsCertificatesItem `json:"errors" api:"required"`
+	Messages []MessagesTlsCertificatesItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success FallbackOriginResponseSuccess `json:"success,required"`
+	Success FallbackOriginResponseSuccess `json:"success" api:"required"`
 	Result  FallbackOriginResponseResult  `json:"result"`
 	JSON    fallbackOriginResponseJSON    `json:"-"`
 }
@@ -171,7 +171,7 @@ func (r FallbackOriginResponseResultStatus) IsKnown() bool {
 
 type ZoneCustomHostnameFallbackOriginUpdateParams struct {
 	// Your origin hostname that requests to your custom hostnames will be sent to.
-	Origin param.Field[string] `json:"origin,required"`
+	Origin param.Field[string] `json:"origin" api:"required"`
 }
 
 func (r ZoneCustomHostnameFallbackOriginUpdateParams) MarshalJSON() (data []byte, err error) {

@@ -40,11 +40,11 @@ func (r *AccountAccessTagService) New(ctx context.Context, accountID string, bod
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/access/tags", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get a tag
@@ -52,15 +52,15 @@ func (r *AccountAccessTagService) Get(ctx context.Context, accountID string, tag
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if tagName == "" {
 		err = errors.New("missing required tag_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/access/tags/%s", accountID, tagName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update a tag
@@ -68,15 +68,15 @@ func (r *AccountAccessTagService) Update(ctx context.Context, accountID string, 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if tagName == "" {
 		err = errors.New("missing required tag_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/access/tags/%s", accountID, tagName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // List tags
@@ -84,11 +84,11 @@ func (r *AccountAccessTagService) List(ctx context.Context, accountID string, op
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/access/tags", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete a tag
@@ -96,22 +96,22 @@ func (r *AccountAccessTagService) Delete(ctx context.Context, accountID string, 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if tagName == "" {
 		err = errors.New("missing required tag_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/access/tags/%s", accountID, tagName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type SingleResponseTag struct {
-	Errors   []MessagesAccessItem `json:"errors,required"`
-	Messages []MessagesAccessItem `json:"messages,required"`
+	Errors   []MessagesAccessItem `json:"errors" api:"required"`
+	Messages []MessagesAccessItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success SingleResponseTagSuccess `json:"success,required"`
+	Success SingleResponseTagSuccess `json:"success" api:"required"`
 	// A tag
 	Result Tag                   `json:"result"`
 	JSON   singleResponseTagJSON `json:"-"`
@@ -154,7 +154,7 @@ func (r SingleResponseTagSuccess) IsKnown() bool {
 // A tag
 type Tag struct {
 	// The name of the tag
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// The number of applications that have this tag
 	AppCount  int64     `json:"app_count"`
 	CreatedAt time.Time `json:"created_at" format:"date-time"`
@@ -181,10 +181,10 @@ func (r tagJSON) RawJSON() string {
 }
 
 type AccountAccessTagListResponse struct {
-	Errors   []MessagesAccessItem `json:"errors,required"`
-	Messages []MessagesAccessItem `json:"messages,required"`
+	Errors   []MessagesAccessItem `json:"errors" api:"required"`
+	Messages []MessagesAccessItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success    AccountAccessTagListResponseSuccess    `json:"success,required"`
+	Success    AccountAccessTagListResponseSuccess    `json:"success" api:"required"`
 	Result     []Tag                                  `json:"result"`
 	ResultInfo AccountAccessTagListResponseResultInfo `json:"result_info"`
 	JSON       accountAccessTagListResponseJSON       `json:"-"`
@@ -257,10 +257,10 @@ func (r accountAccessTagListResponseResultInfoJSON) RawJSON() string {
 }
 
 type AccountAccessTagDeleteResponse struct {
-	Errors   []MessagesAccessItem `json:"errors,required"`
-	Messages []MessagesAccessItem `json:"messages,required"`
+	Errors   []MessagesAccessItem `json:"errors" api:"required"`
+	Messages []MessagesAccessItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountAccessTagDeleteResponseSuccess `json:"success,required"`
+	Success AccountAccessTagDeleteResponseSuccess `json:"success" api:"required"`
 	Result  AccountAccessTagDeleteResponseResult  `json:"result"`
 	JSON    accountAccessTagDeleteResponseJSON    `json:"-"`
 }
@@ -332,7 +332,7 @@ func (r AccountAccessTagNewParams) MarshalJSON() (data []byte, err error) {
 
 type AccountAccessTagUpdateParams struct {
 	// The name of the tag
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 }
 
 func (r AccountAccessTagUpdateParams) MarshalJSON() (data []byte, err error) {

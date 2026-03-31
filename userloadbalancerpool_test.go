@@ -14,7 +14,7 @@ import (
 )
 
 func TestUserLoadBalancerPoolNewWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,6 +26,7 @@ func TestUserLoadBalancerPoolNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.User.LoadBalancers.Pools.New(context.TODO(), cfrex.UserLoadBalancerPoolNewParams{
 		Name: cfrex.F("primary-dc-1"),
@@ -79,7 +80,7 @@ func TestUserLoadBalancerPoolNewWithOptionalParams(t *testing.T) {
 }
 
 func TestUserLoadBalancerPoolGet(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -91,6 +92,7 @@ func TestUserLoadBalancerPoolGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.User.LoadBalancers.Pools.Get(context.TODO(), "17b5962d775c646f3f9725cbc7a53df4")
 	if err != nil {
@@ -103,7 +105,7 @@ func TestUserLoadBalancerPoolGet(t *testing.T) {
 }
 
 func TestUserLoadBalancerPoolUpdateWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -115,6 +117,7 @@ func TestUserLoadBalancerPoolUpdateWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.User.LoadBalancers.Pools.Update(
 		context.TODO(),
@@ -172,7 +175,7 @@ func TestUserLoadBalancerPoolUpdateWithOptionalParams(t *testing.T) {
 }
 
 func TestUserLoadBalancerPoolListWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -184,6 +187,7 @@ func TestUserLoadBalancerPoolListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.User.LoadBalancers.Pools.List(context.TODO(), cfrex.UserLoadBalancerPoolListParams{
 		Monitor: cfrex.F("monitor"),
@@ -198,7 +202,7 @@ func TestUserLoadBalancerPoolListWithOptionalParams(t *testing.T) {
 }
 
 func TestUserLoadBalancerPoolDelete(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -210,6 +214,7 @@ func TestUserLoadBalancerPoolDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.User.LoadBalancers.Pools.Delete(context.TODO(), "17b5962d775c646f3f9725cbc7a53df4")
 	if err != nil {
@@ -222,7 +227,7 @@ func TestUserLoadBalancerPoolDelete(t *testing.T) {
 }
 
 func TestUserLoadBalancerPoolHealth(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -234,6 +239,7 @@ func TestUserLoadBalancerPoolHealth(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.User.LoadBalancers.Pools.Health(context.TODO(), "17b5962d775c646f3f9725cbc7a53df4")
 	if err != nil {
@@ -246,7 +252,7 @@ func TestUserLoadBalancerPoolHealth(t *testing.T) {
 }
 
 func TestUserLoadBalancerPoolListReferences(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -258,6 +264,7 @@ func TestUserLoadBalancerPoolListReferences(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.User.LoadBalancers.Pools.ListReferences(context.TODO(), "17b5962d775c646f3f9725cbc7a53df4")
 	if err != nil {
@@ -270,7 +277,7 @@ func TestUserLoadBalancerPoolListReferences(t *testing.T) {
 }
 
 func TestUserLoadBalancerPoolPatchWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -282,6 +289,7 @@ func TestUserLoadBalancerPoolPatchWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.User.LoadBalancers.Pools.Patch(
 		context.TODO(),
@@ -338,7 +346,7 @@ func TestUserLoadBalancerPoolPatchWithOptionalParams(t *testing.T) {
 }
 
 func TestUserLoadBalancerPoolPreviewWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -350,6 +358,7 @@ func TestUserLoadBalancerPoolPreviewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.User.LoadBalancers.Pools.Preview(
 		context.TODO(),

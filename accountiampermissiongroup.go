@@ -41,15 +41,15 @@ func (r *AccountIamPermissionGroupService) Get(ctx context.Context, accountID st
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if permissionGroupID == "" {
 		err = errors.New("missing required permission_group_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/iam/permission_groups/%s", accountID, permissionGroupID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // List all the permissions groups for an account.
@@ -57,18 +57,18 @@ func (r *AccountIamPermissionGroupService) List(ctx context.Context, accountID s
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/iam/permission_groups", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // A named group of permissions that map to a group of operations against
 // resources.
 type IamPermissionGroup struct {
 	// Identifier of the permission group.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Attributes associated to the permission group.
 	Meta IamPermissionGroupMeta `json:"meta"`
 	// Name of the permission group.
@@ -122,7 +122,7 @@ func (r iamPermissionGroupMetaJSON) RawJSON() string {
 // resources.
 type IamPermissionGroupParam struct {
 	// Identifier of the permission group.
-	ID param.Field[string] `json:"id,required"`
+	ID param.Field[string] `json:"id" api:"required"`
 	// Attributes associated to the permission group.
 	Meta param.Field[IamPermissionGroupMetaParam] `json:"meta"`
 }
@@ -142,10 +142,10 @@ func (r IamPermissionGroupMetaParam) MarshalJSON() (data []byte, err error) {
 }
 
 type AccountIamPermissionGroupListResponse struct {
-	Errors   []AccountIamPermissionGroupListResponseError   `json:"errors,required"`
-	Messages []AccountIamPermissionGroupListResponseMessage `json:"messages,required"`
+	Errors   []AccountIamPermissionGroupListResponseError   `json:"errors" api:"required"`
+	Messages []AccountIamPermissionGroupListResponseMessage `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountIamPermissionGroupListResponseSuccess `json:"success,required"`
+	Success AccountIamPermissionGroupListResponseSuccess `json:"success" api:"required"`
 	// A set of permission groups that are specified to the policy.
 	Result     []IamPermissionGroup                            `json:"result"`
 	ResultInfo AccountIamPermissionGroupListResponseResultInfo `json:"result_info"`
@@ -173,8 +173,8 @@ func (r accountIamPermissionGroupListResponseJSON) RawJSON() string {
 }
 
 type AccountIamPermissionGroupListResponseError struct {
-	Code             int64                                             `json:"code,required"`
-	Message          string                                            `json:"message,required"`
+	Code             int64                                             `json:"code" api:"required"`
+	Message          string                                            `json:"message" api:"required"`
 	DocumentationURL string                                            `json:"documentation_url"`
 	Source           AccountIamPermissionGroupListResponseErrorsSource `json:"source"`
 	JSON             accountIamPermissionGroupListResponseErrorJSON    `json:"-"`
@@ -221,8 +221,8 @@ func (r accountIamPermissionGroupListResponseErrorsSourceJSON) RawJSON() string 
 }
 
 type AccountIamPermissionGroupListResponseMessage struct {
-	Code             int64                                               `json:"code,required"`
-	Message          string                                              `json:"message,required"`
+	Code             int64                                               `json:"code" api:"required"`
+	Message          string                                              `json:"message" api:"required"`
 	DocumentationURL string                                              `json:"documentation_url"`
 	Source           AccountIamPermissionGroupListResponseMessagesSource `json:"source"`
 	JSON             accountIamPermissionGroupListResponseMessageJSON    `json:"-"`

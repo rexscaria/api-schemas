@@ -150,7 +150,7 @@ func (r *ZoneService) New(ctx context.Context, body ZoneNewParams, opts ...optio
 	opts = slices.Concat(r.Options, opts)
 	path := "zones"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Zone Details
@@ -158,11 +158,11 @@ func (r *ZoneService) Get(ctx context.Context, zoneID string, opts ...option.Req
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Edits a zone. Only one zone property can be changed at a time.
@@ -170,11 +170,11 @@ func (r *ZoneService) Update(ctx context.Context, zoneID string, body ZoneUpdate
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists, searches, sorts, and filters your zones. Listing zones across more than
@@ -183,7 +183,7 @@ func (r *ZoneService) List(ctx context.Context, query ZoneListParams, opts ...op
 	opts = slices.Concat(r.Options, opts)
 	path := "zones"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Deletes an existing zone.
@@ -191,11 +191,11 @@ func (r *ZoneService) Delete(ctx context.Context, zoneID string, opts ...option.
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists all rate plans the zone can subscribe to.
@@ -203,11 +203,11 @@ func (r *ZoneService) ListAvailableRatePlans(ctx context.Context, zoneID string,
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/available_rate_plans", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // ### Purge All Cached Content
@@ -275,11 +275,11 @@ func (r *ZoneService) PurgeCache(ctx context.Context, zoneID string, body ZonePu
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/purge_cache", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Triggeres a new activation check for a PENDING Zone. This can be triggered every
@@ -288,16 +288,16 @@ func (r *ZoneService) RerunActivationCheck(ctx context.Context, zoneID string, o
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/activation_check", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type MessagesZonesItem struct {
-	Code             int64                   `json:"code,required"`
-	Message          string                  `json:"message,required"`
+	Code             int64                   `json:"code" api:"required"`
+	Message          string                  `json:"message" api:"required"`
 	DocumentationURL string                  `json:"documentation_url"`
 	Source           MessagesZonesItemSource `json:"source"`
 	JSON             messagesZonesItemJSON   `json:"-"`
@@ -345,37 +345,37 @@ func (r messagesZonesItemSourceJSON) RawJSON() string {
 
 type Zone struct {
 	// Identifier
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The account the zone belongs to.
-	Account ZoneAccount `json:"account,required"`
+	Account ZoneAccount `json:"account" api:"required"`
 	// The last time proof of ownership was detected and the zone was made active.
-	ActivatedOn time.Time `json:"activated_on,required,nullable" format:"date-time"`
+	ActivatedOn time.Time `json:"activated_on" api:"required,nullable" format:"date-time"`
 	// When the zone was created.
-	CreatedOn time.Time `json:"created_on,required" format:"date-time"`
+	CreatedOn time.Time `json:"created_on" api:"required" format:"date-time"`
 	// The interval (in seconds) from when development mode expires (positive integer)
 	// or last expired (negative integer) for the domain. If development mode has never
 	// been enabled, this value is 0.
-	DevelopmentMode float64 `json:"development_mode,required"`
+	DevelopmentMode float64 `json:"development_mode" api:"required"`
 	// Metadata about the zone.
-	Meta ZoneMeta `json:"meta,required"`
+	Meta ZoneMeta `json:"meta" api:"required"`
 	// When the zone was last modified.
-	ModifiedOn time.Time `json:"modified_on,required" format:"date-time"`
+	ModifiedOn time.Time `json:"modified_on" api:"required" format:"date-time"`
 	// The domain name.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// The name servers Cloudflare assigns to a zone.
-	NameServers []string `json:"name_servers,required" format:"hostname"`
+	NameServers []string `json:"name_servers" api:"required" format:"hostname"`
 	// DNS host at the time of switching to Cloudflare.
-	OriginalDnshost string `json:"original_dnshost,required,nullable"`
+	OriginalDnshost string `json:"original_dnshost" api:"required,nullable"`
 	// Original name servers before moving to Cloudflare.
-	OriginalNameServers []string `json:"original_name_servers,required,nullable" format:"hostname"`
+	OriginalNameServers []string `json:"original_name_servers" api:"required,nullable" format:"hostname"`
 	// Registrar for the domain at the time of switching to Cloudflare.
-	OriginalRegistrar string `json:"original_registrar,required,nullable"`
+	OriginalRegistrar string `json:"original_registrar" api:"required,nullable"`
 	// The owner of the zone.
-	Owner ZoneOwner `json:"owner,required"`
+	Owner ZoneOwner `json:"owner" api:"required"`
 	// A Zones subscription information.
 	//
 	// Deprecated: deprecated
-	Plan ZonePlan `json:"plan,required"`
+	Plan ZonePlan `json:"plan" api:"required"`
 	// Allows the customer to use a custom apex. _Tenants Only Configuration_.
 	CnameSuffix string `json:"cname_suffix"`
 	// Indicates whether the zone is only using Cloudflare DNS services. A true value
@@ -671,10 +671,10 @@ func (r ZoneType) IsKnown() bool {
 }
 
 type ZoneNewResponse struct {
-	Errors   []MessagesZonesItem `json:"errors,required"`
-	Messages []MessagesZonesItem `json:"messages,required"`
+	Errors   []MessagesZonesItem `json:"errors" api:"required"`
+	Messages []MessagesZonesItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success bool                `json:"success,required"`
+	Success bool                `json:"success" api:"required"`
 	Result  Zone                `json:"result"`
 	JSON    zoneNewResponseJSON `json:"-"`
 }
@@ -698,10 +698,10 @@ func (r zoneNewResponseJSON) RawJSON() string {
 }
 
 type ZoneGetResponse struct {
-	Errors   []MessagesZonesItem `json:"errors,required"`
-	Messages []MessagesZonesItem `json:"messages,required"`
+	Errors   []MessagesZonesItem `json:"errors" api:"required"`
+	Messages []MessagesZonesItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success bool                `json:"success,required"`
+	Success bool                `json:"success" api:"required"`
 	Result  Zone                `json:"result"`
 	JSON    zoneGetResponseJSON `json:"-"`
 }
@@ -725,10 +725,10 @@ func (r zoneGetResponseJSON) RawJSON() string {
 }
 
 type ZoneUpdateResponse struct {
-	Errors   []MessagesZonesItem `json:"errors,required"`
-	Messages []MessagesZonesItem `json:"messages,required"`
+	Errors   []MessagesZonesItem `json:"errors" api:"required"`
+	Messages []MessagesZonesItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success bool                   `json:"success,required"`
+	Success bool                   `json:"success" api:"required"`
 	Result  Zone                   `json:"result"`
 	JSON    zoneUpdateResponseJSON `json:"-"`
 }
@@ -753,10 +753,10 @@ func (r zoneUpdateResponseJSON) RawJSON() string {
 }
 
 type ZoneListResponse struct {
-	Errors   []MessagesZonesItem `json:"errors,required"`
-	Messages []MessagesZonesItem `json:"messages,required"`
+	Errors   []MessagesZonesItem `json:"errors" api:"required"`
+	Messages []MessagesZonesItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success    bool                       `json:"success,required"`
+	Success    bool                       `json:"success" api:"required"`
 	Result     []Zone                     `json:"result"`
 	ResultInfo ZoneListResponseResultInfo `json:"result_info"`
 	JSON       zoneListResponseJSON       `json:"-"`
@@ -817,11 +817,11 @@ func (r zoneListResponseResultInfoJSON) RawJSON() string {
 }
 
 type ZoneDeleteResponse struct {
-	Errors   []ZoneDeleteResponseError   `json:"errors,required"`
-	Messages []ZoneDeleteResponseMessage `json:"messages,required"`
+	Errors   []ZoneDeleteResponseError   `json:"errors" api:"required"`
+	Messages []ZoneDeleteResponseMessage `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success bool                     `json:"success,required"`
-	Result  ZoneDeleteResponseResult `json:"result,nullable"`
+	Success bool                     `json:"success" api:"required"`
+	Result  ZoneDeleteResponseResult `json:"result" api:"nullable"`
 	JSON    zoneDeleteResponseJSON   `json:"-"`
 }
 
@@ -845,8 +845,8 @@ func (r zoneDeleteResponseJSON) RawJSON() string {
 }
 
 type ZoneDeleteResponseError struct {
-	Code             int64                          `json:"code,required"`
-	Message          string                         `json:"message,required"`
+	Code             int64                          `json:"code" api:"required"`
+	Message          string                         `json:"message" api:"required"`
 	DocumentationURL string                         `json:"documentation_url"`
 	Source           ZoneDeleteResponseErrorsSource `json:"source"`
 	JSON             zoneDeleteResponseErrorJSON    `json:"-"`
@@ -893,8 +893,8 @@ func (r zoneDeleteResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type ZoneDeleteResponseMessage struct {
-	Code             int64                            `json:"code,required"`
-	Message          string                           `json:"message,required"`
+	Code             int64                            `json:"code" api:"required"`
+	Message          string                           `json:"message" api:"required"`
 	DocumentationURL string                           `json:"documentation_url"`
 	Source           ZoneDeleteResponseMessagesSource `json:"source"`
 	JSON             zoneDeleteResponseMessageJSON    `json:"-"`
@@ -942,7 +942,7 @@ func (r zoneDeleteResponseMessagesSourceJSON) RawJSON() string {
 
 type ZoneDeleteResponseResult struct {
 	// Identifier
-	ID   string                       `json:"id,required"`
+	ID   string                       `json:"id" api:"required"`
 	JSON zoneDeleteResponseResultJSON `json:"-"`
 }
 
@@ -963,11 +963,11 @@ func (r zoneDeleteResponseResultJSON) RawJSON() string {
 }
 
 type ZoneListAvailableRatePlansResponse struct {
-	Errors   []BillSubsAPIMessages                      `json:"errors,required"`
-	Messages []BillSubsAPIMessages                      `json:"messages,required"`
-	Result   []ZoneListAvailableRatePlansResponseResult `json:"result,required,nullable"`
+	Errors   []BillSubsAPIMessages                      `json:"errors" api:"required"`
+	Messages []BillSubsAPIMessages                      `json:"messages" api:"required"`
+	Result   []ZoneListAvailableRatePlansResponseResult `json:"result" api:"required,nullable"`
 	// Whether the API call was successful
-	Success    ZoneListAvailableRatePlansResponseSuccess    `json:"success,required"`
+	Success    ZoneListAvailableRatePlansResponseSuccess    `json:"success" api:"required"`
 	ResultInfo ZoneListAvailableRatePlansResponseResultInfo `json:"result_info"`
 	JSON       zoneListAvailableRatePlansResponseJSON       `json:"-"`
 }
@@ -1122,11 +1122,11 @@ func (r zoneListAvailableRatePlansResponseResultInfoJSON) RawJSON() string {
 }
 
 type ZonePurgeCacheResponse struct {
-	Errors   []ZonePurgeCacheResponseError   `json:"errors,required"`
-	Messages []ZonePurgeCacheResponseMessage `json:"messages,required"`
+	Errors   []ZonePurgeCacheResponseError   `json:"errors" api:"required"`
+	Messages []ZonePurgeCacheResponseMessage `json:"messages" api:"required"`
 	// Indicates the API call's success or failure.
-	Success bool                         `json:"success,required"`
-	Result  ZonePurgeCacheResponseResult `json:"result,nullable"`
+	Success bool                         `json:"success" api:"required"`
+	Result  ZonePurgeCacheResponseResult `json:"result" api:"nullable"`
 	JSON    zonePurgeCacheResponseJSON   `json:"-"`
 }
 
@@ -1150,8 +1150,8 @@ func (r zonePurgeCacheResponseJSON) RawJSON() string {
 }
 
 type ZonePurgeCacheResponseError struct {
-	Code             int64                              `json:"code,required"`
-	Message          string                             `json:"message,required"`
+	Code             int64                              `json:"code" api:"required"`
+	Message          string                             `json:"message" api:"required"`
 	DocumentationURL string                             `json:"documentation_url"`
 	Source           ZonePurgeCacheResponseErrorsSource `json:"source"`
 	JSON             zonePurgeCacheResponseErrorJSON    `json:"-"`
@@ -1198,8 +1198,8 @@ func (r zonePurgeCacheResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type ZonePurgeCacheResponseMessage struct {
-	Code             int64                                `json:"code,required"`
-	Message          string                               `json:"message,required"`
+	Code             int64                                `json:"code" api:"required"`
+	Message          string                               `json:"message" api:"required"`
 	DocumentationURL string                               `json:"documentation_url"`
 	Source           ZonePurgeCacheResponseMessagesSource `json:"source"`
 	JSON             zonePurgeCacheResponseMessageJSON    `json:"-"`
@@ -1246,7 +1246,7 @@ func (r zonePurgeCacheResponseMessagesSourceJSON) RawJSON() string {
 }
 
 type ZonePurgeCacheResponseResult struct {
-	ID   string                           `json:"id,required"`
+	ID   string                           `json:"id" api:"required"`
 	JSON zonePurgeCacheResponseResultJSON `json:"-"`
 }
 
@@ -1267,10 +1267,10 @@ func (r zonePurgeCacheResponseResultJSON) RawJSON() string {
 }
 
 type ZoneRerunActivationCheckResponse struct {
-	Errors   []MessageItem `json:"errors,required"`
-	Messages []MessageItem `json:"messages,required"`
+	Errors   []MessageItem `json:"errors" api:"required"`
+	Messages []MessageItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success ZoneRerunActivationCheckResponseSuccess `json:"success,required"`
+	Success ZoneRerunActivationCheckResponseSuccess `json:"success" api:"required"`
 	Result  ZoneRerunActivationCheckResponseResult  `json:"result"`
 	JSON    zoneRerunActivationCheckResponseJSON    `json:"-"`
 }
@@ -1332,9 +1332,9 @@ func (r zoneRerunActivationCheckResponseResultJSON) RawJSON() string {
 }
 
 type ZoneNewParams struct {
-	Account param.Field[ZoneNewParamsAccount] `json:"account,required"`
+	Account param.Field[ZoneNewParamsAccount] `json:"account" api:"required"`
 	// The domain name.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// A full zone implies that DNS is hosted with Cloudflare. A partial zone is
 	// typically a partner-hosted zone or a CNAME setup.
 	Type param.Field[ZoneType] `json:"type"`
@@ -1523,7 +1523,7 @@ func (r ZoneListParamsStatus) IsKnown() bool {
 }
 
 type ZonePurgeCacheParams struct {
-	Body ZonePurgeCacheParamsBodyUnion `json:"body,required"`
+	Body ZonePurgeCacheParamsBodyUnion `json:"body" api:"required"`
 }
 
 func (r ZonePurgeCacheParams) MarshalJSON() (data []byte, err error) {

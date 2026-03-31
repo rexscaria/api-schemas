@@ -39,11 +39,11 @@ func (r *ZoneWorkerRouteService) New(ctx context.Context, zoneID string, body Zo
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/workers/routes", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns information about a route, including URL pattern and Worker.
@@ -51,15 +51,15 @@ func (r *ZoneWorkerRouteService) Get(ctx context.Context, zoneID string, routeID
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if routeID == "" {
 		err = errors.New("missing required route_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/workers/routes/%s", zoneID, routeID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates the URL pattern or Worker associated with a route.
@@ -67,15 +67,15 @@ func (r *ZoneWorkerRouteService) Update(ctx context.Context, zoneID string, rout
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if routeID == "" {
 		err = errors.New("missing required route_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/workers/routes/%s", zoneID, routeID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns routes for a zone.
@@ -83,11 +83,11 @@ func (r *ZoneWorkerRouteService) List(ctx context.Context, zoneID string, opts .
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/workers/routes", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Deletes a route.
@@ -95,23 +95,23 @@ func (r *ZoneWorkerRouteService) Delete(ctx context.Context, zoneID string, rout
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if routeID == "" {
 		err = errors.New("missing required route_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/workers/routes/%s", zoneID, routeID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type ZoneWorkerRouteNewResponse struct {
-	Errors   []WorkersMessages                `json:"errors,required"`
-	Messages []WorkersMessages                `json:"messages,required"`
-	Result   ZoneWorkerRouteNewResponseResult `json:"result,required"`
+	Errors   []WorkersMessages                `json:"errors" api:"required"`
+	Messages []WorkersMessages                `json:"messages" api:"required"`
+	Result   ZoneWorkerRouteNewResponseResult `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success ZoneWorkerRouteNewResponseSuccess `json:"success,required"`
+	Success ZoneWorkerRouteNewResponseSuccess `json:"success" api:"required"`
 	JSON    zoneWorkerRouteNewResponseJSON    `json:"-"`
 }
 
@@ -136,10 +136,10 @@ func (r zoneWorkerRouteNewResponseJSON) RawJSON() string {
 
 type ZoneWorkerRouteNewResponseResult struct {
 	// Identifier.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Pattern to match incoming requests against.
 	// [Learn more](https://developers.cloudflare.com/workers/configuration/routing/routes/#matching-behavior).
-	Pattern string `json:"pattern,required"`
+	Pattern string `json:"pattern" api:"required"`
 	// Name of the script to run if the route matches.
 	Script string                               `json:"script"`
 	JSON   zoneWorkerRouteNewResponseResultJSON `json:"-"`
@@ -179,11 +179,11 @@ func (r ZoneWorkerRouteNewResponseSuccess) IsKnown() bool {
 }
 
 type ZoneWorkerRouteGetResponse struct {
-	Errors   []WorkersMessages                `json:"errors,required"`
-	Messages []WorkersMessages                `json:"messages,required"`
-	Result   ZoneWorkerRouteGetResponseResult `json:"result,required"`
+	Errors   []WorkersMessages                `json:"errors" api:"required"`
+	Messages []WorkersMessages                `json:"messages" api:"required"`
+	Result   ZoneWorkerRouteGetResponseResult `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success ZoneWorkerRouteGetResponseSuccess `json:"success,required"`
+	Success ZoneWorkerRouteGetResponseSuccess `json:"success" api:"required"`
 	JSON    zoneWorkerRouteGetResponseJSON    `json:"-"`
 }
 
@@ -208,10 +208,10 @@ func (r zoneWorkerRouteGetResponseJSON) RawJSON() string {
 
 type ZoneWorkerRouteGetResponseResult struct {
 	// Identifier.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Pattern to match incoming requests against.
 	// [Learn more](https://developers.cloudflare.com/workers/configuration/routing/routes/#matching-behavior).
-	Pattern string `json:"pattern,required"`
+	Pattern string `json:"pattern" api:"required"`
 	// Name of the script to run if the route matches.
 	Script string                               `json:"script"`
 	JSON   zoneWorkerRouteGetResponseResultJSON `json:"-"`
@@ -251,11 +251,11 @@ func (r ZoneWorkerRouteGetResponseSuccess) IsKnown() bool {
 }
 
 type ZoneWorkerRouteUpdateResponse struct {
-	Errors   []WorkersMessages                   `json:"errors,required"`
-	Messages []WorkersMessages                   `json:"messages,required"`
-	Result   ZoneWorkerRouteUpdateResponseResult `json:"result,required"`
+	Errors   []WorkersMessages                   `json:"errors" api:"required"`
+	Messages []WorkersMessages                   `json:"messages" api:"required"`
+	Result   ZoneWorkerRouteUpdateResponseResult `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success ZoneWorkerRouteUpdateResponseSuccess `json:"success,required"`
+	Success ZoneWorkerRouteUpdateResponseSuccess `json:"success" api:"required"`
 	JSON    zoneWorkerRouteUpdateResponseJSON    `json:"-"`
 }
 
@@ -280,10 +280,10 @@ func (r zoneWorkerRouteUpdateResponseJSON) RawJSON() string {
 
 type ZoneWorkerRouteUpdateResponseResult struct {
 	// Identifier.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Pattern to match incoming requests against.
 	// [Learn more](https://developers.cloudflare.com/workers/configuration/routing/routes/#matching-behavior).
-	Pattern string `json:"pattern,required"`
+	Pattern string `json:"pattern" api:"required"`
 	// Name of the script to run if the route matches.
 	Script string                                  `json:"script"`
 	JSON   zoneWorkerRouteUpdateResponseResultJSON `json:"-"`
@@ -323,11 +323,11 @@ func (r ZoneWorkerRouteUpdateResponseSuccess) IsKnown() bool {
 }
 
 type ZoneWorkerRouteListResponse struct {
-	Errors   []WorkersMessages                   `json:"errors,required"`
-	Messages []WorkersMessages                   `json:"messages,required"`
-	Result   []ZoneWorkerRouteListResponseResult `json:"result,required"`
+	Errors   []WorkersMessages                   `json:"errors" api:"required"`
+	Messages []WorkersMessages                   `json:"messages" api:"required"`
+	Result   []ZoneWorkerRouteListResponseResult `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success ZoneWorkerRouteListResponseSuccess `json:"success,required"`
+	Success ZoneWorkerRouteListResponseSuccess `json:"success" api:"required"`
 	JSON    zoneWorkerRouteListResponseJSON    `json:"-"`
 }
 
@@ -352,10 +352,10 @@ func (r zoneWorkerRouteListResponseJSON) RawJSON() string {
 
 type ZoneWorkerRouteListResponseResult struct {
 	// Identifier.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Pattern to match incoming requests against.
 	// [Learn more](https://developers.cloudflare.com/workers/configuration/routing/routes/#matching-behavior).
-	Pattern string `json:"pattern,required"`
+	Pattern string `json:"pattern" api:"required"`
 	// Name of the script to run if the route matches.
 	Script string                                `json:"script"`
 	JSON   zoneWorkerRouteListResponseResultJSON `json:"-"`
@@ -395,11 +395,11 @@ func (r ZoneWorkerRouteListResponseSuccess) IsKnown() bool {
 }
 
 type ZoneWorkerRouteDeleteResponse struct {
-	Errors   []WorkersMessages                   `json:"errors,required"`
-	Messages []WorkersMessages                   `json:"messages,required"`
-	Result   ZoneWorkerRouteDeleteResponseResult `json:"result,required"`
+	Errors   []WorkersMessages                   `json:"errors" api:"required"`
+	Messages []WorkersMessages                   `json:"messages" api:"required"`
+	Result   ZoneWorkerRouteDeleteResponseResult `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success ZoneWorkerRouteDeleteResponseSuccess `json:"success,required"`
+	Success ZoneWorkerRouteDeleteResponseSuccess `json:"success" api:"required"`
 	JSON    zoneWorkerRouteDeleteResponseJSON    `json:"-"`
 }
 
@@ -462,7 +462,7 @@ func (r ZoneWorkerRouteDeleteResponseSuccess) IsKnown() bool {
 type ZoneWorkerRouteNewParams struct {
 	// Pattern to match incoming requests against.
 	// [Learn more](https://developers.cloudflare.com/workers/configuration/routing/routes/#matching-behavior).
-	Pattern param.Field[string] `json:"pattern,required"`
+	Pattern param.Field[string] `json:"pattern" api:"required"`
 	// Name of the script to run if the route matches.
 	Script param.Field[string] `json:"script"`
 }
@@ -474,7 +474,7 @@ func (r ZoneWorkerRouteNewParams) MarshalJSON() (data []byte, err error) {
 type ZoneWorkerRouteUpdateParams struct {
 	// Pattern to match incoming requests against.
 	// [Learn more](https://developers.cloudflare.com/workers/configuration/routing/routes/#matching-behavior).
-	Pattern param.Field[string] `json:"pattern,required"`
+	Pattern param.Field[string] `json:"pattern" api:"required"`
 	// Name of the script to run if the route matches.
 	Script param.Field[string] `json:"script"`
 }

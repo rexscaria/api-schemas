@@ -41,19 +41,19 @@ func (r *AccountBillingService) GetProfile(ctx context.Context, accountID string
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/billing/profile", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type BillingResponseSingle struct {
-	Errors   []BillingResponseSingleError   `json:"errors,required"`
-	Messages []BillingResponseSingleMessage `json:"messages,required"`
-	Result   BillingResponseSingleResult    `json:"result,required"`
+	Errors   []BillingResponseSingleError   `json:"errors" api:"required"`
+	Messages []BillingResponseSingleMessage `json:"messages" api:"required"`
+	Result   BillingResponseSingleResult    `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success BillingResponseSingleSuccess `json:"success,required"`
+	Success BillingResponseSingleSuccess `json:"success" api:"required"`
 	JSON    billingResponseSingleJSON    `json:"-"`
 }
 
@@ -77,8 +77,8 @@ func (r billingResponseSingleJSON) RawJSON() string {
 }
 
 type BillingResponseSingleError struct {
-	Code             int64                             `json:"code,required"`
-	Message          string                            `json:"message,required"`
+	Code             int64                             `json:"code" api:"required"`
+	Message          string                            `json:"message" api:"required"`
 	DocumentationURL string                            `json:"documentation_url"`
 	Source           BillingResponseSingleErrorsSource `json:"source"`
 	JSON             billingResponseSingleErrorJSON    `json:"-"`
@@ -125,8 +125,8 @@ func (r billingResponseSingleErrorsSourceJSON) RawJSON() string {
 }
 
 type BillingResponseSingleMessage struct {
-	Code             int64                               `json:"code,required"`
-	Message          string                              `json:"message,required"`
+	Code             int64                               `json:"code" api:"required"`
+	Message          string                              `json:"message" api:"required"`
 	DocumentationURL string                              `json:"documentation_url"`
 	Source           BillingResponseSingleMessagesSource `json:"source"`
 	JSON             billingResponseSingleMessageJSON    `json:"-"`

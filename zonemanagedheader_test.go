@@ -14,7 +14,7 @@ import (
 )
 
 func TestZoneManagedHeaderUpdate(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,6 +26,7 @@ func TestZoneManagedHeaderUpdate(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.ManagedHeaders.Update(
 		context.TODO(),
@@ -51,7 +52,7 @@ func TestZoneManagedHeaderUpdate(t *testing.T) {
 }
 
 func TestZoneManagedHeaderList(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -63,6 +64,7 @@ func TestZoneManagedHeaderList(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.ManagedHeaders.List(context.TODO(), "9f1839b6152d298aca64c4e906b6d074")
 	if err != nil {
@@ -75,7 +77,7 @@ func TestZoneManagedHeaderList(t *testing.T) {
 }
 
 func TestZoneManagedHeaderDelete(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -87,6 +89,7 @@ func TestZoneManagedHeaderDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	err := client.Zones.ManagedHeaders.Delete(context.TODO(), "9f1839b6152d298aca64c4e906b6d074")
 	if err != nil {

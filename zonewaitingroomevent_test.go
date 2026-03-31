@@ -14,7 +14,7 @@ import (
 )
 
 func TestZoneWaitingRoomEventNewWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,6 +26,7 @@ func TestZoneWaitingRoomEventNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.WaitingRooms.Events.New(
 		context.TODO(),
@@ -61,7 +62,7 @@ func TestZoneWaitingRoomEventNewWithOptionalParams(t *testing.T) {
 }
 
 func TestZoneWaitingRoomEventGet(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -73,6 +74,7 @@ func TestZoneWaitingRoomEventGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.WaitingRooms.Events.Get(
 		context.TODO(),
@@ -90,7 +92,7 @@ func TestZoneWaitingRoomEventGet(t *testing.T) {
 }
 
 func TestZoneWaitingRoomEventUpdateWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -102,6 +104,7 @@ func TestZoneWaitingRoomEventUpdateWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.WaitingRooms.Events.Update(
 		context.TODO(),
@@ -138,7 +141,7 @@ func TestZoneWaitingRoomEventUpdateWithOptionalParams(t *testing.T) {
 }
 
 func TestZoneWaitingRoomEventListWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -150,6 +153,7 @@ func TestZoneWaitingRoomEventListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.WaitingRooms.Events.List(
 		context.TODO(),
@@ -170,7 +174,7 @@ func TestZoneWaitingRoomEventListWithOptionalParams(t *testing.T) {
 }
 
 func TestZoneWaitingRoomEventDelete(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -182,6 +186,7 @@ func TestZoneWaitingRoomEventDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.WaitingRooms.Events.Delete(
 		context.TODO(),
@@ -199,7 +204,7 @@ func TestZoneWaitingRoomEventDelete(t *testing.T) {
 }
 
 func TestZoneWaitingRoomEventPatchWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -211,6 +216,7 @@ func TestZoneWaitingRoomEventPatchWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.WaitingRooms.Events.Patch(
 		context.TODO(),
@@ -247,7 +253,7 @@ func TestZoneWaitingRoomEventPatchWithOptionalParams(t *testing.T) {
 }
 
 func TestZoneWaitingRoomEventPreview(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -259,6 +265,7 @@ func TestZoneWaitingRoomEventPreview(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.WaitingRooms.Events.Preview(
 		context.TODO(),

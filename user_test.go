@@ -15,7 +15,7 @@ import (
 )
 
 func TestUserGet(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -39,7 +39,7 @@ func TestUserGet(t *testing.T) {
 }
 
 func TestUserUpdateWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -51,6 +51,7 @@ func TestUserUpdateWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.User.Update(context.TODO(), cfrex.UserUpdateParams{
 		Country:   cfrex.F("US"),
@@ -69,7 +70,7 @@ func TestUserUpdateWithOptionalParams(t *testing.T) {
 }
 
 func TestUserListAuditLogsWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -81,6 +82,7 @@ func TestUserListAuditLogsWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.User.ListAuditLogs(context.TODO(), cfrex.UserListAuditLogsParams{
 		ID: cfrex.F("f174be97-19b1-40d6-954d-70cd5fbd52db"),

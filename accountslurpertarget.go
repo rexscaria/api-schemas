@@ -39,11 +39,11 @@ func (r *AccountSlurperTargetService) CheckConnectivity(ctx context.Context, acc
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/slurper/target/connectivity-precheck", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type R2TargetSchemaParam struct {
@@ -100,8 +100,8 @@ func (r accountSlurperTargetCheckConnectivityResponseJSON) RawJSON() string {
 }
 
 type AccountSlurperTargetCheckConnectivityResponseError struct {
-	Code             int64                                                     `json:"code,required"`
-	Message          string                                                    `json:"message,required"`
+	Code             int64                                                     `json:"code" api:"required"`
+	Message          string                                                    `json:"message" api:"required"`
 	DocumentationURL string                                                    `json:"documentation_url"`
 	Source           AccountSlurperTargetCheckConnectivityResponseErrorsSource `json:"source"`
 	JSON             accountSlurperTargetCheckConnectivityResponseErrorJSON    `json:"-"`
@@ -164,7 +164,7 @@ func (r AccountSlurperTargetCheckConnectivityResponseSuccess) IsKnown() bool {
 }
 
 type AccountSlurperTargetCheckConnectivityParams struct {
-	R2TargetSchema R2TargetSchemaParam `json:"r2_target_schema,required"`
+	R2TargetSchema R2TargetSchemaParam `json:"r2_target_schema" api:"required"`
 }
 
 func (r AccountSlurperTargetCheckConnectivityParams) MarshalJSON() (data []byte, err error) {

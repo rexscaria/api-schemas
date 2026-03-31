@@ -42,11 +42,11 @@ func (r *ZoneHoldService) New(ctx context.Context, zoneID string, body ZoneHoldN
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/hold", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve whether the zone is subject to a zone hold, and metadata about the
@@ -55,11 +55,11 @@ func (r *ZoneHoldService) Get(ctx context.Context, zoneID string, opts ...option
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/hold", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update the `hold_after` and/or `include_subdomains` values on an existing zone
@@ -68,11 +68,11 @@ func (r *ZoneHoldService) Update(ctx context.Context, zoneID string, body ZoneHo
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/hold", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Stop enforcement of a zone hold on the zone, permanently or temporarily,
@@ -81,19 +81,19 @@ func (r *ZoneHoldService) Remove(ctx context.Context, zoneID string, body ZoneHo
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/hold", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type ZoneHoldNewResponse struct {
-	Errors   []MessagesZonesItem       `json:"errors,required"`
-	Messages []MessagesZonesItem       `json:"messages,required"`
-	Result   ZoneHoldNewResponseResult `json:"result,required"`
+	Errors   []MessagesZonesItem       `json:"errors" api:"required"`
+	Messages []MessagesZonesItem       `json:"messages" api:"required"`
+	Result   ZoneHoldNewResponseResult `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success ZoneHoldNewResponseSuccess `json:"success,required"`
+	Success ZoneHoldNewResponseSuccess `json:"success" api:"required"`
 	JSON    zoneHoldNewResponseJSON    `json:"-"`
 }
 
@@ -157,11 +157,11 @@ func (r ZoneHoldNewResponseSuccess) IsKnown() bool {
 }
 
 type ZoneHoldGetResponse struct {
-	Errors   []MessagesZonesItem       `json:"errors,required"`
-	Messages []MessagesZonesItem       `json:"messages,required"`
-	Result   ZoneHoldGetResponseResult `json:"result,required"`
+	Errors   []MessagesZonesItem       `json:"errors" api:"required"`
+	Messages []MessagesZonesItem       `json:"messages" api:"required"`
+	Result   ZoneHoldGetResponseResult `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success ZoneHoldGetResponseSuccess `json:"success,required"`
+	Success ZoneHoldGetResponseSuccess `json:"success" api:"required"`
 	JSON    zoneHoldGetResponseJSON    `json:"-"`
 }
 
@@ -225,11 +225,11 @@ func (r ZoneHoldGetResponseSuccess) IsKnown() bool {
 }
 
 type ZoneHoldUpdateResponse struct {
-	Errors   []MessagesZonesItem          `json:"errors,required"`
-	Messages []MessagesZonesItem          `json:"messages,required"`
-	Result   ZoneHoldUpdateResponseResult `json:"result,required"`
+	Errors   []MessagesZonesItem          `json:"errors" api:"required"`
+	Messages []MessagesZonesItem          `json:"messages" api:"required"`
+	Result   ZoneHoldUpdateResponseResult `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success ZoneHoldUpdateResponseSuccess `json:"success,required"`
+	Success ZoneHoldUpdateResponseSuccess `json:"success" api:"required"`
 	JSON    zoneHoldUpdateResponseJSON    `json:"-"`
 }
 
@@ -293,11 +293,11 @@ func (r ZoneHoldUpdateResponseSuccess) IsKnown() bool {
 }
 
 type ZoneHoldRemoveResponse struct {
-	Errors   []MessagesZonesItem          `json:"errors,required"`
-	Messages []MessagesZonesItem          `json:"messages,required"`
-	Result   ZoneHoldRemoveResponseResult `json:"result,required"`
+	Errors   []MessagesZonesItem          `json:"errors" api:"required"`
+	Messages []MessagesZonesItem          `json:"messages" api:"required"`
+	Result   ZoneHoldRemoveResponseResult `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success ZoneHoldRemoveResponseSuccess `json:"success,required"`
+	Success ZoneHoldRemoveResponseSuccess `json:"success" api:"required"`
 	JSON    zoneHoldRemoveResponseJSON    `json:"-"`
 }
 

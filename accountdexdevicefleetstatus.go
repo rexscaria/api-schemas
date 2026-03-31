@@ -42,65 +42,65 @@ func (r *AccountDexDeviceFleetStatusService) GetLiveStatus(ctx context.Context, 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if deviceID == "" {
 		err = errors.New("missing required device_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/dex/devices/%s/fleet-status/live", accountID, deviceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type Device struct {
 	// Cloudflare colo
-	Colo string `json:"colo,required"`
+	Colo string `json:"colo" api:"required"`
 	// Device identifier (UUID v4)
-	DeviceID string `json:"deviceId,required"`
+	DeviceID string `json:"deviceId" api:"required"`
 	// The mode under which the WARP client is run
-	Mode string `json:"mode,required"`
+	Mode string `json:"mode" api:"required"`
 	// Operating system
-	Platform string `json:"platform,required"`
+	Platform string `json:"platform" api:"required"`
 	// Network status
-	Status string `json:"status,required"`
+	Status string `json:"status" api:"required"`
 	// Timestamp in ISO format
-	Timestamp string `json:"timestamp,required"`
+	Timestamp string `json:"timestamp" api:"required"`
 	// WARP client version
-	Version         string                `json:"version,required"`
-	AlwaysOn        bool                  `json:"alwaysOn,nullable"`
-	BatteryCharging bool                  `json:"batteryCharging,nullable"`
-	BatteryCycles   int64                 `json:"batteryCycles,nullable"`
-	BatteryPct      float64               `json:"batteryPct,nullable"`
-	ConnectionType  string                `json:"connectionType,nullable"`
-	CPUPct          float64               `json:"cpuPct,nullable"`
-	CPUPctByApp     [][]DeviceCPUPctByApp `json:"cpuPctByApp,nullable"`
+	Version         string                `json:"version" api:"required"`
+	AlwaysOn        bool                  `json:"alwaysOn" api:"nullable"`
+	BatteryCharging bool                  `json:"batteryCharging" api:"nullable"`
+	BatteryCycles   int64                 `json:"batteryCycles" api:"nullable"`
+	BatteryPct      float64               `json:"batteryPct" api:"nullable"`
+	ConnectionType  string                `json:"connectionType" api:"nullable"`
+	CPUPct          float64               `json:"cpuPct" api:"nullable"`
+	CPUPctByApp     [][]DeviceCPUPctByApp `json:"cpuPctByApp" api:"nullable"`
 	DeviceIpv4      IPInfoFleetStatus     `json:"deviceIpv4"`
 	DeviceIpv6      IPInfoFleetStatus     `json:"deviceIpv6"`
 	// Device identifier (human readable)
 	DeviceName         string            `json:"deviceName"`
-	DiskReadBps        int64             `json:"diskReadBps,nullable"`
-	DiskUsagePct       float64           `json:"diskUsagePct,nullable"`
-	DiskWriteBps       int64             `json:"diskWriteBps,nullable"`
-	DohSubdomain       string            `json:"dohSubdomain,nullable"`
-	EstimatedLossPct   float64           `json:"estimatedLossPct,nullable"`
-	FirewallEnabled    bool              `json:"firewallEnabled,nullable"`
+	DiskReadBps        int64             `json:"diskReadBps" api:"nullable"`
+	DiskUsagePct       float64           `json:"diskUsagePct" api:"nullable"`
+	DiskWriteBps       int64             `json:"diskWriteBps" api:"nullable"`
+	DohSubdomain       string            `json:"dohSubdomain" api:"nullable"`
+	EstimatedLossPct   float64           `json:"estimatedLossPct" api:"nullable"`
+	FirewallEnabled    bool              `json:"firewallEnabled" api:"nullable"`
 	GatewayIpv4        IPInfoFleetStatus `json:"gatewayIpv4"`
 	GatewayIpv6        IPInfoFleetStatus `json:"gatewayIpv6"`
-	HandshakeLatencyMs float64           `json:"handshakeLatencyMs,nullable"`
+	HandshakeLatencyMs float64           `json:"handshakeLatencyMs" api:"nullable"`
 	IspIpv4            IPInfoFleetStatus `json:"ispIpv4"`
 	IspIpv6            IPInfoFleetStatus `json:"ispIpv6"`
-	Metal              string            `json:"metal,nullable"`
-	NetworkRcvdBps     int64             `json:"networkRcvdBps,nullable"`
-	NetworkSentBps     int64             `json:"networkSentBps,nullable"`
-	NetworkSsid        string            `json:"networkSsid,nullable"`
+	Metal              string            `json:"metal" api:"nullable"`
+	NetworkRcvdBps     int64             `json:"networkRcvdBps" api:"nullable"`
+	NetworkSentBps     int64             `json:"networkSentBps" api:"nullable"`
+	NetworkSsid        string            `json:"networkSsid" api:"nullable"`
 	// User contact email address
 	PersonEmail     string                    `json:"personEmail"`
-	RamAvailableKB  int64                     `json:"ramAvailableKb,nullable"`
-	RamUsedPct      float64                   `json:"ramUsedPct,nullable"`
-	RamUsedPctByApp [][]DeviceRamUsedPctByApp `json:"ramUsedPctByApp,nullable"`
-	SwitchLocked    bool                      `json:"switchLocked,nullable"`
-	WifiStrengthDbm int64                     `json:"wifiStrengthDbm,nullable"`
+	RamAvailableKB  int64                     `json:"ramAvailableKb" api:"nullable"`
+	RamUsedPct      float64                   `json:"ramUsedPct" api:"nullable"`
+	RamUsedPctByApp [][]DeviceRamUsedPctByApp `json:"ramUsedPctByApp" api:"nullable"`
+	SwitchLocked    bool                      `json:"switchLocked" api:"nullable"`
+	WifiStrengthDbm int64                     `json:"wifiStrengthDbm" api:"nullable"`
 	JSON            deviceJSON                `json:"-"`
 }
 
@@ -203,12 +203,12 @@ func (r deviceRamUsedPctByAppJSON) RawJSON() string {
 }
 
 type IPInfoFleetStatus struct {
-	Address  string                    `json:"address,nullable"`
-	Asn      int64                     `json:"asn,nullable"`
-	Aso      string                    `json:"aso,nullable"`
+	Address  string                    `json:"address" api:"nullable"`
+	Asn      int64                     `json:"asn" api:"nullable"`
+	Aso      string                    `json:"aso" api:"nullable"`
 	Location IPInfoFleetStatusLocation `json:"location"`
-	Netmask  string                    `json:"netmask,nullable"`
-	Version  string                    `json:"version,nullable"`
+	Netmask  string                    `json:"netmask" api:"nullable"`
+	Version  string                    `json:"version" api:"nullable"`
 	JSON     ipInfoFleetStatusJSON     `json:"-"`
 }
 
@@ -234,10 +234,10 @@ func (r ipInfoFleetStatusJSON) RawJSON() string {
 }
 
 type IPInfoFleetStatusLocation struct {
-	City       string                        `json:"city,nullable"`
-	CountryISO string                        `json:"country_iso,nullable"`
-	StateISO   string                        `json:"state_iso,nullable"`
-	Zip        string                        `json:"zip,nullable"`
+	City       string                        `json:"city" api:"nullable"`
+	CountryISO string                        `json:"country_iso" api:"nullable"`
+	StateISO   string                        `json:"state_iso" api:"nullable"`
+	Zip        string                        `json:"zip" api:"nullable"`
 	JSON       ipInfoFleetStatusLocationJSON `json:"-"`
 }
 
@@ -262,7 +262,7 @@ func (r ipInfoFleetStatusLocationJSON) RawJSON() string {
 
 type AccountDexDeviceFleetStatusGetLiveStatusParams struct {
 	// Number of minutes before current time
-	SinceMinutes param.Field[float64] `query:"since_minutes,required"`
+	SinceMinutes param.Field[float64] `query:"since_minutes" api:"required"`
 	// List of data centers to filter results
 	Colo param.Field[string] `query:"colo"`
 	// Number of minutes before current time

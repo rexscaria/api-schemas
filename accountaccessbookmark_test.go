@@ -14,7 +14,7 @@ import (
 )
 
 func TestAccountAccessBookmarkNew(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,6 +26,7 @@ func TestAccountAccessBookmarkNew(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Access.Bookmarks.New(
 		context.TODO(),
@@ -45,7 +46,7 @@ func TestAccountAccessBookmarkNew(t *testing.T) {
 }
 
 func TestAccountAccessBookmarkGet(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -57,6 +58,7 @@ func TestAccountAccessBookmarkGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Access.Bookmarks.Get(
 		context.TODO(),
@@ -73,7 +75,7 @@ func TestAccountAccessBookmarkGet(t *testing.T) {
 }
 
 func TestAccountAccessBookmarkUpdate(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -85,6 +87,7 @@ func TestAccountAccessBookmarkUpdate(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Access.Bookmarks.Update(
 		context.TODO(),
@@ -104,7 +107,7 @@ func TestAccountAccessBookmarkUpdate(t *testing.T) {
 }
 
 func TestAccountAccessBookmarkList(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -116,6 +119,7 @@ func TestAccountAccessBookmarkList(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Access.Bookmarks.List(context.TODO(), "699d98642c564d2e855e9661899b7252")
 	if err != nil {
@@ -128,7 +132,7 @@ func TestAccountAccessBookmarkList(t *testing.T) {
 }
 
 func TestAccountAccessBookmarkDelete(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -140,6 +144,7 @@ func TestAccountAccessBookmarkDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Access.Bookmarks.Delete(
 		context.TODO(),

@@ -40,11 +40,11 @@ func (r *UserInviteService) Get(ctx context.Context, inviteID string, opts ...op
 	opts = slices.Concat(r.Options, opts)
 	if inviteID == "" {
 		err = errors.New("missing required invite_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("user/invites/%s", inviteID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists all invitations associated with my user.
@@ -52,7 +52,7 @@ func (r *UserInviteService) List(ctx context.Context, opts ...option.RequestOpti
 	opts = slices.Concat(r.Options, opts)
 	path := "user/invites"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Responds to an invitation.
@@ -60,18 +60,18 @@ func (r *UserInviteService) Respond(ctx context.Context, inviteID string, body U
 	opts = slices.Concat(r.Options, opts)
 	if inviteID == "" {
 		err = errors.New("missing required invite_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("user/invites/%s", inviteID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type IamSingleInvite struct {
-	Errors   []IamSingleInviteError   `json:"errors,required"`
-	Messages []IamSingleInviteMessage `json:"messages,required"`
+	Errors   []IamSingleInviteError   `json:"errors" api:"required"`
+	Messages []IamSingleInviteMessage `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success IamSingleInviteSuccess `json:"success,required"`
+	Success IamSingleInviteSuccess `json:"success" api:"required"`
 	Result  IamUserInvite          `json:"result"`
 	JSON    iamSingleInviteJSON    `json:"-"`
 }
@@ -95,8 +95,8 @@ func (r iamSingleInviteJSON) RawJSON() string {
 }
 
 type IamSingleInviteError struct {
-	Code             int64                       `json:"code,required"`
-	Message          string                      `json:"message,required"`
+	Code             int64                       `json:"code" api:"required"`
+	Message          string                      `json:"message" api:"required"`
 	DocumentationURL string                      `json:"documentation_url"`
 	Source           IamSingleInviteErrorsSource `json:"source"`
 	JSON             iamSingleInviteErrorJSON    `json:"-"`
@@ -143,8 +143,8 @@ func (r iamSingleInviteErrorsSourceJSON) RawJSON() string {
 }
 
 type IamSingleInviteMessage struct {
-	Code             int64                         `json:"code,required"`
-	Message          string                        `json:"message,required"`
+	Code             int64                         `json:"code" api:"required"`
+	Message          string                        `json:"message" api:"required"`
 	DocumentationURL string                        `json:"documentation_url"`
 	Source           IamSingleInviteMessagesSource `json:"source"`
 	JSON             iamSingleInviteMessageJSON    `json:"-"`
@@ -207,9 +207,9 @@ func (r IamSingleInviteSuccess) IsKnown() bool {
 
 type IamUserInvite struct {
 	// ID of the user to add to the organization.
-	InvitedMemberID string `json:"invited_member_id,required,nullable"`
+	InvitedMemberID string `json:"invited_member_id" api:"required,nullable"`
 	// ID of the organization the user will be added to.
-	OrganizationID string `json:"organization_id,required"`
+	OrganizationID string `json:"organization_id" api:"required"`
 	// Invite identifier tag.
 	ID string `json:"id"`
 	// When the invite is no longer active.
@@ -274,10 +274,10 @@ func (r IamUserInviteStatus) IsKnown() bool {
 }
 
 type UserInviteListResponse struct {
-	Errors   []UserInviteListResponseError   `json:"errors,required"`
-	Messages []UserInviteListResponseMessage `json:"messages,required"`
+	Errors   []UserInviteListResponseError   `json:"errors" api:"required"`
+	Messages []UserInviteListResponseMessage `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success    UserInviteListResponseSuccess    `json:"success,required"`
+	Success    UserInviteListResponseSuccess    `json:"success" api:"required"`
 	Result     []IamUserInvite                  `json:"result"`
 	ResultInfo UserInviteListResponseResultInfo `json:"result_info"`
 	JSON       userInviteListResponseJSON       `json:"-"`
@@ -304,8 +304,8 @@ func (r userInviteListResponseJSON) RawJSON() string {
 }
 
 type UserInviteListResponseError struct {
-	Code             int64                              `json:"code,required"`
-	Message          string                             `json:"message,required"`
+	Code             int64                              `json:"code" api:"required"`
+	Message          string                             `json:"message" api:"required"`
 	DocumentationURL string                             `json:"documentation_url"`
 	Source           UserInviteListResponseErrorsSource `json:"source"`
 	JSON             userInviteListResponseErrorJSON    `json:"-"`
@@ -352,8 +352,8 @@ func (r userInviteListResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type UserInviteListResponseMessage struct {
-	Code             int64                                `json:"code,required"`
-	Message          string                               `json:"message,required"`
+	Code             int64                                `json:"code" api:"required"`
+	Message          string                               `json:"message" api:"required"`
 	DocumentationURL string                               `json:"documentation_url"`
 	Source           UserInviteListResponseMessagesSource `json:"source"`
 	JSON             userInviteListResponseMessageJSON    `json:"-"`
@@ -447,7 +447,7 @@ func (r userInviteListResponseResultInfoJSON) RawJSON() string {
 
 type UserInviteRespondParams struct {
 	// Status of your response to the invitation (rejected or accepted).
-	Status param.Field[UserInviteRespondParamsStatus] `json:"status,required"`
+	Status param.Field[UserInviteRespondParamsStatus] `json:"status" api:"required"`
 }
 
 func (r UserInviteRespondParams) MarshalJSON() (data []byte, err error) {

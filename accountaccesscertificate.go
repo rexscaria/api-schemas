@@ -29,10 +29,10 @@ func NewAccountAccessCertificateService(opts ...option.RequestOption) (r *Accoun
 }
 
 type IDResponseCertificates struct {
-	Errors   []MessagesAccessItem `json:"errors,required"`
-	Messages []MessagesAccessItem `json:"messages,required"`
+	Errors   []MessagesAccessItem `json:"errors" api:"required"`
+	Messages []MessagesAccessItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success IDResponseCertificatesSuccess `json:"success,required"`
+	Success IDResponseCertificatesSuccess `json:"success" api:"required"`
 	Result  IDResponseCertificatesResult  `json:"result"`
 	JSON    idResponseCertificatesJSON    `json:"-"`
 }
@@ -94,8 +94,8 @@ func (r idResponseCertificatesResultJSON) RawJSON() string {
 }
 
 type MessagesAccessItem struct {
-	Code             int64                    `json:"code,required"`
-	Message          string                   `json:"message,required"`
+	Code             int64                    `json:"code" api:"required"`
+	Message          string                   `json:"message" api:"required"`
 	DocumentationURL string                   `json:"documentation_url"`
 	Source           MessagesAccessItemSource `json:"source"`
 	JSON             messagesAccessItemJSON   `json:"-"`

@@ -44,11 +44,11 @@ func (r *AccountBotnetFeedAsnService) GetDailyReport(ctx context.Context, accoun
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/botnet_feed/asn/%v/day_report", accountID, asnID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Gets all the data the botnet threat feed tracking database has for a given ASN
@@ -57,16 +57,16 @@ func (r *AccountBotnetFeedAsnService) GetFullReport(ctx context.Context, account
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/botnet_feed/asn/%v/full_report", accountID, asnID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type DosMessages struct {
-	Code             int64             `json:"code,required"`
-	Message          string            `json:"message,required"`
+	Code             int64             `json:"code" api:"required"`
+	Message          string            `json:"message" api:"required"`
 	DocumentationURL string            `json:"documentation_url"`
 	Source           DosMessagesSource `json:"source"`
 	JSON             dosMessagesJSON   `json:"-"`
@@ -112,10 +112,10 @@ func (r dosMessagesSourceJSON) RawJSON() string {
 }
 
 type AccountBotnetFeedAsnGetDailyReportResponse struct {
-	Errors   []DosMessages `json:"errors,required"`
-	Messages []DosMessages `json:"messages,required"`
+	Errors   []DosMessages `json:"errors" api:"required"`
+	Messages []DosMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountBotnetFeedAsnGetDailyReportResponseSuccess `json:"success,required"`
+	Success AccountBotnetFeedAsnGetDailyReportResponseSuccess `json:"success" api:"required"`
 	Result  AccountBotnetFeedAsnGetDailyReportResponseResult  `json:"result"`
 	JSON    accountBotnetFeedAsnGetDailyReportResponseJSON    `json:"-"`
 }
@@ -180,10 +180,10 @@ func (r accountBotnetFeedAsnGetDailyReportResponseResultJSON) RawJSON() string {
 }
 
 type AccountBotnetFeedAsnGetFullReportResponse struct {
-	Errors   []DosMessages `json:"errors,required"`
-	Messages []DosMessages `json:"messages,required"`
+	Errors   []DosMessages `json:"errors" api:"required"`
+	Messages []DosMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountBotnetFeedAsnGetFullReportResponseSuccess `json:"success,required"`
+	Success AccountBotnetFeedAsnGetFullReportResponseSuccess `json:"success" api:"required"`
 	Result  AccountBotnetFeedAsnGetFullReportResponseResult  `json:"result"`
 	JSON    accountBotnetFeedAsnGetFullReportResponseJSON    `json:"-"`
 }

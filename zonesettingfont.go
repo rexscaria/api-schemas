@@ -42,11 +42,11 @@ func (r *ZoneSettingFontService) Get(ctx context.Context, zoneID string, opts ..
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/settings/fonts", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Enhance your website's font delivery with Cloudflare Fonts. Deliver Google
@@ -56,11 +56,11 @@ func (r *ZoneSettingFontService) Update(ctx context.Context, zoneID string, body
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/settings/fonts", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type SpeedBase struct {
@@ -70,7 +70,7 @@ type SpeedBase struct {
 	// Cloudflare plan level).
 	Editable SpeedBaseEditable `json:"editable"`
 	// last time this setting was modified.
-	ModifiedOn time.Time `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time `json:"modified_on" api:"nullable" format:"date-time"`
 	// Current value of the zone setting.
 	Value SpeedBaseValue `json:"value"`
 	JSON  speedBaseJSON  `json:"-"`
@@ -137,7 +137,7 @@ type SpeedCloudflareFonts struct {
 	// Cloudflare plan level).
 	Editable SpeedCloudflareFontsEditable `json:"editable"`
 	// last time this setting was modified.
-	ModifiedOn time.Time `json:"modified_on,nullable" format:"date-time"`
+	ModifiedOn time.Time `json:"modified_on" api:"nullable" format:"date-time"`
 	// Current value of the zone setting.
 	Value SpeedCloudflareFontsValue `json:"value"`
 	JSON  speedCloudflareFontsJSON  `json:"-"`
@@ -211,8 +211,8 @@ func (r SpeedCloudflareFontsValue) IsKnown() bool {
 }
 
 type SpeedMessagesItems struct {
-	Code             int64                    `json:"code,required"`
-	Message          string                   `json:"message,required"`
+	Code             int64                    `json:"code" api:"required"`
+	Message          string                   `json:"message" api:"required"`
 	DocumentationURL string                   `json:"documentation_url"`
 	Source           SpeedMessagesItemsSource `json:"source"`
 	JSON             speedMessagesItemsJSON   `json:"-"`
@@ -259,10 +259,10 @@ func (r speedMessagesItemsSourceJSON) RawJSON() string {
 }
 
 type ZoneSettingFontGetResponse struct {
-	Errors   []SpeedMessagesItems `json:"errors,required"`
-	Messages []SpeedMessagesItems `json:"messages,required"`
+	Errors   []SpeedMessagesItems `json:"errors" api:"required"`
+	Messages []SpeedMessagesItems `json:"messages" api:"required"`
 	// Whether the API call was successful
-	Success bool `json:"success,required"`
+	Success bool `json:"success" api:"required"`
 	// Enhance your website's font delivery with Cloudflare Fonts. Deliver Google
 	// Hosted fonts from your own domain, boost performance, and enhance user privacy.
 	// Refer to the Cloudflare Fonts documentation for more information.
@@ -290,10 +290,10 @@ func (r zoneSettingFontGetResponseJSON) RawJSON() string {
 }
 
 type ZoneSettingFontUpdateResponse struct {
-	Errors   []SpeedMessagesItems `json:"errors,required"`
-	Messages []SpeedMessagesItems `json:"messages,required"`
+	Errors   []SpeedMessagesItems `json:"errors" api:"required"`
+	Messages []SpeedMessagesItems `json:"messages" api:"required"`
 	// Whether the API call was successful
-	Success bool `json:"success,required"`
+	Success bool `json:"success" api:"required"`
 	// Enhance your website's font delivery with Cloudflare Fonts. Deliver Google
 	// Hosted fonts from your own domain, boost performance, and enhance user privacy.
 	// Refer to the Cloudflare Fonts documentation for more information.
@@ -322,7 +322,7 @@ func (r zoneSettingFontUpdateResponseJSON) RawJSON() string {
 
 type ZoneSettingFontUpdateParams struct {
 	// Whether the feature is enabled or disabled.
-	Value param.Field[SpeedCloudflareFontsValue] `json:"value,required"`
+	Value param.Field[SpeedCloudflareFontsValue] `json:"value" api:"required"`
 }
 
 func (r ZoneSettingFontUpdateParams) MarshalJSON() (data []byte, err error) {

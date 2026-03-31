@@ -14,7 +14,7 @@ import (
 )
 
 func TestAccountIntelAttackSurfaceReportIssueListWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,6 +26,7 @@ func TestAccountIntelAttackSurfaceReportIssueListWithOptionalParams(t *testing.T
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Intel.AttackSurfaceReport.Issues.List(
 		context.TODO(),
@@ -56,7 +57,7 @@ func TestAccountIntelAttackSurfaceReportIssueListWithOptionalParams(t *testing.T
 }
 
 func TestAccountIntelAttackSurfaceReportIssueListByClassWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -68,6 +69,7 @@ func TestAccountIntelAttackSurfaceReportIssueListByClassWithOptionalParams(t *te
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Intel.AttackSurfaceReport.Issues.ListByClass(
 		context.TODO(),
@@ -96,7 +98,7 @@ func TestAccountIntelAttackSurfaceReportIssueListByClassWithOptionalParams(t *te
 }
 
 func TestAccountIntelAttackSurfaceReportIssueListBySeverityWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -108,6 +110,7 @@ func TestAccountIntelAttackSurfaceReportIssueListBySeverityWithOptionalParams(t 
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Intel.AttackSurfaceReport.Issues.ListBySeverity(
 		context.TODO(),
@@ -136,7 +139,7 @@ func TestAccountIntelAttackSurfaceReportIssueListBySeverityWithOptionalParams(t 
 }
 
 func TestAccountIntelAttackSurfaceReportIssueListByTypeWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -148,6 +151,7 @@ func TestAccountIntelAttackSurfaceReportIssueListByTypeWithOptionalParams(t *tes
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Intel.AttackSurfaceReport.Issues.ListByType(
 		context.TODO(),

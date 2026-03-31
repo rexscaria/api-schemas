@@ -37,58 +37,58 @@ func NewAccountR2BucketSippyService(opts ...option.RequestOption) (r *AccountR2B
 // Gets configuration for Sippy for an existing R2 bucket.
 func (r *AccountR2BucketSippyService) Get(ctx context.Context, accountID string, bucketName string, query AccountR2BucketSippyGetParams, opts ...option.RequestOption) (res *AccountR2BucketSippyGetResponse, err error) {
 	if query.Jurisdiction.Present {
-		opts = append(opts, option.WithHeader("cf-r2-jurisdiction", fmt.Sprintf("%s", query.Jurisdiction)))
+		opts = append(opts, option.WithHeader("cf-r2-jurisdiction", fmt.Sprintf("%v", query.Jurisdiction)))
 	}
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if bucketName == "" {
 		err = errors.New("missing required bucket_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/r2/buckets/%s/sippy", accountID, bucketName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Disables Sippy on this bucket.
 func (r *AccountR2BucketSippyService) Disable(ctx context.Context, accountID string, bucketName string, body AccountR2BucketSippyDisableParams, opts ...option.RequestOption) (res *AccountR2BucketSippyDisableResponse, err error) {
 	if body.Jurisdiction.Present {
-		opts = append(opts, option.WithHeader("cf-r2-jurisdiction", fmt.Sprintf("%s", body.Jurisdiction)))
+		opts = append(opts, option.WithHeader("cf-r2-jurisdiction", fmt.Sprintf("%v", body.Jurisdiction)))
 	}
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if bucketName == "" {
 		err = errors.New("missing required bucket_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/r2/buckets/%s/sippy", accountID, bucketName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Sets configuration for Sippy for an existing R2 bucket.
 func (r *AccountR2BucketSippyService) Enable(ctx context.Context, accountID string, bucketName string, params AccountR2BucketSippyEnableParams, opts ...option.RequestOption) (res *AccountR2BucketSippyEnableResponse, err error) {
 	if params.Jurisdiction.Present {
-		opts = append(opts, option.WithHeader("cf-r2-jurisdiction", fmt.Sprintf("%s", params.Jurisdiction)))
+		opts = append(opts, option.WithHeader("cf-r2-jurisdiction", fmt.Sprintf("%v", params.Jurisdiction)))
 	}
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if bucketName == "" {
 		err = errors.New("missing required bucket_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/r2/buckets/%s/sippy", accountID, bucketName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 type R2Sippy struct {
@@ -168,7 +168,7 @@ type R2SippySource struct {
 	Bucket   string                `json:"bucket"`
 	Provider R2SippySourceProvider `json:"provider"`
 	// Region where the bucket resides (AWS only).
-	Region string            `json:"region,nullable"`
+	Region string            `json:"region" api:"nullable"`
 	JSON   r2SippySourceJSON `json:"-"`
 }
 
@@ -205,11 +205,11 @@ func (r R2SippySourceProvider) IsKnown() bool {
 }
 
 type AccountR2BucketSippyGetResponse struct {
-	Errors   []AccountR2BucketSippyGetResponseError `json:"errors,required"`
-	Messages []string                               `json:"messages,required"`
-	Result   R2Sippy                                `json:"result,required"`
+	Errors   []AccountR2BucketSippyGetResponseError `json:"errors" api:"required"`
+	Messages []string                               `json:"messages" api:"required"`
+	Result   R2Sippy                                `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success AccountR2BucketSippyGetResponseSuccess `json:"success,required"`
+	Success AccountR2BucketSippyGetResponseSuccess `json:"success" api:"required"`
 	JSON    accountR2BucketSippyGetResponseJSON    `json:"-"`
 }
 
@@ -233,8 +233,8 @@ func (r accountR2BucketSippyGetResponseJSON) RawJSON() string {
 }
 
 type AccountR2BucketSippyGetResponseError struct {
-	Code             int64                                       `json:"code,required"`
-	Message          string                                      `json:"message,required"`
+	Code             int64                                       `json:"code" api:"required"`
+	Message          string                                      `json:"message" api:"required"`
 	DocumentationURL string                                      `json:"documentation_url"`
 	Source           AccountR2BucketSippyGetResponseErrorsSource `json:"source"`
 	JSON             accountR2BucketSippyGetResponseErrorJSON    `json:"-"`
@@ -296,11 +296,11 @@ func (r AccountR2BucketSippyGetResponseSuccess) IsKnown() bool {
 }
 
 type AccountR2BucketSippyDisableResponse struct {
-	Errors   []AccountR2BucketSippyDisableResponseError `json:"errors,required"`
-	Messages []string                                   `json:"messages,required"`
-	Result   AccountR2BucketSippyDisableResponseResult  `json:"result,required"`
+	Errors   []AccountR2BucketSippyDisableResponseError `json:"errors" api:"required"`
+	Messages []string                                   `json:"messages" api:"required"`
+	Result   AccountR2BucketSippyDisableResponseResult  `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success AccountR2BucketSippyDisableResponseSuccess `json:"success,required"`
+	Success AccountR2BucketSippyDisableResponseSuccess `json:"success" api:"required"`
 	JSON    accountR2BucketSippyDisableResponseJSON    `json:"-"`
 }
 
@@ -324,8 +324,8 @@ func (r accountR2BucketSippyDisableResponseJSON) RawJSON() string {
 }
 
 type AccountR2BucketSippyDisableResponseError struct {
-	Code             int64                                           `json:"code,required"`
-	Message          string                                          `json:"message,required"`
+	Code             int64                                           `json:"code" api:"required"`
+	Message          string                                          `json:"message" api:"required"`
 	DocumentationURL string                                          `json:"documentation_url"`
 	Source           AccountR2BucketSippyDisableResponseErrorsSource `json:"source"`
 	JSON             accountR2BucketSippyDisableResponseErrorJSON    `json:"-"`
@@ -422,11 +422,11 @@ func (r AccountR2BucketSippyDisableResponseSuccess) IsKnown() bool {
 }
 
 type AccountR2BucketSippyEnableResponse struct {
-	Errors   []AccountR2BucketSippyEnableResponseError `json:"errors,required"`
-	Messages []string                                  `json:"messages,required"`
-	Result   R2Sippy                                   `json:"result,required"`
+	Errors   []AccountR2BucketSippyEnableResponseError `json:"errors" api:"required"`
+	Messages []string                                  `json:"messages" api:"required"`
+	Result   R2Sippy                                   `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success AccountR2BucketSippyEnableResponseSuccess `json:"success,required"`
+	Success AccountR2BucketSippyEnableResponseSuccess `json:"success" api:"required"`
 	JSON    accountR2BucketSippyEnableResponseJSON    `json:"-"`
 }
 
@@ -450,8 +450,8 @@ func (r accountR2BucketSippyEnableResponseJSON) RawJSON() string {
 }
 
 type AccountR2BucketSippyEnableResponseError struct {
-	Code             int64                                          `json:"code,required"`
-	Message          string                                         `json:"message,required"`
+	Code             int64                                          `json:"code" api:"required"`
+	Message          string                                         `json:"message" api:"required"`
 	DocumentationURL string                                         `json:"documentation_url"`
 	Source           AccountR2BucketSippyEnableResponseErrorsSource `json:"source"`
 	JSON             accountR2BucketSippyEnableResponseErrorJSON    `json:"-"`
@@ -557,7 +557,7 @@ func (r AccountR2BucketSippyDisableParamsCfR2Jurisdiction) IsKnown() bool {
 }
 
 type AccountR2BucketSippyEnableParams struct {
-	Body AccountR2BucketSippyEnableParamsBodyUnion `json:"body,required"`
+	Body AccountR2BucketSippyEnableParamsBodyUnion `json:"body" api:"required"`
 	// Jurisdiction where objects in this bucket are guaranteed to be stored.
 	Jurisdiction param.Field[AccountR2BucketSippyEnableParamsCfR2Jurisdiction] `header:"cf-r2-jurisdiction"`
 }

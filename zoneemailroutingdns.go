@@ -43,11 +43,11 @@ func (r *ZoneEmailRoutingDNSService) Get(ctx context.Context, zoneID string, que
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/email/routing/dns", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Disable your Email Routing zone. Also removes additional MX records previously
@@ -56,11 +56,11 @@ func (r *ZoneEmailRoutingDNSService) Delete(ctx context.Context, zoneID string, 
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/email/routing/dns", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Enable you Email Routing zone. Add and lock the necessary MX and SPF records.
@@ -68,11 +68,11 @@ func (r *ZoneEmailRoutingDNSService) Enable(ctx context.Context, zoneID string, 
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/email/routing/dns", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Unlock MX Records previously locked by Email Routing.
@@ -80,18 +80,18 @@ func (r *ZoneEmailRoutingDNSService) Unlock(ctx context.Context, zoneID string, 
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/email/routing/dns", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type EmailAPIResponseSingle struct {
-	Errors   []EmailMessagesItem `json:"errors,required"`
-	Messages []EmailMessagesItem `json:"messages,required"`
+	Errors   []EmailMessagesItem `json:"errors" api:"required"`
+	Messages []EmailMessagesItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success EmailAPIResponseSingleSuccess `json:"success,required"`
+	Success EmailAPIResponseSingleSuccess `json:"success" api:"required"`
 	JSON    emailAPIResponseSingleJSON    `json:"-"`
 }
 
@@ -215,10 +215,10 @@ func (r EmailDNSRecordType) IsKnown() bool {
 }
 
 type EmailDNSSettingsResponseCollection struct {
-	Errors   []EmailMessagesItem `json:"errors,required"`
-	Messages []EmailMessagesItem `json:"messages,required"`
+	Errors   []EmailMessagesItem `json:"errors" api:"required"`
+	Messages []EmailMessagesItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success    EmailDNSSettingsResponseCollectionSuccess    `json:"success,required"`
+	Success    EmailDNSSettingsResponseCollectionSuccess    `json:"success" api:"required"`
 	Result     []EmailDNSRecord                             `json:"result"`
 	ResultInfo EmailDNSSettingsResponseCollectionResultInfo `json:"result_info"`
 	JSON       emailDNSSettingsResponseCollectionJSON       `json:"-"`
@@ -296,7 +296,7 @@ func (r emailDNSSettingsResponseCollectionResultInfoJSON) RawJSON() string {
 
 type EmailEmailSettingDNSRequestBodyParam struct {
 	// Domain of your zone.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 }
 
 func (r EmailEmailSettingDNSRequestBodyParam) MarshalJSON() (data []byte, err error) {
@@ -304,8 +304,8 @@ func (r EmailEmailSettingDNSRequestBodyParam) MarshalJSON() (data []byte, err er
 }
 
 type EmailMessagesItem struct {
-	Code             int64                   `json:"code,required"`
-	Message          string                  `json:"message,required"`
+	Code             int64                   `json:"code" api:"required"`
+	Message          string                  `json:"message" api:"required"`
 	DocumentationURL string                  `json:"documentation_url"`
 	Source           EmailMessagesItemSource `json:"source"`
 	JSON             emailMessagesItemJSON   `json:"-"`
@@ -353,11 +353,11 @@ func (r emailMessagesItemSourceJSON) RawJSON() string {
 
 type ZoneEmailRoutingDNSGetResponse struct {
 	// This field can have the runtime type of [[]EmailMessagesItem].
-	Errors interface{} `json:"errors,required"`
+	Errors interface{} `json:"errors" api:"required"`
 	// This field can have the runtime type of [[]EmailMessagesItem].
-	Messages interface{} `json:"messages,required"`
+	Messages interface{} `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success ZoneEmailRoutingDNSGetResponseSuccess `json:"success,required"`
+	Success ZoneEmailRoutingDNSGetResponseSuccess `json:"success" api:"required"`
 	// This field can have the runtime type of
 	// [ZoneEmailRoutingDNSGetResponseEmailEmailRoutingDNSQueryResponseResult],
 	// [[]EmailDNSRecord].
@@ -428,10 +428,10 @@ func init() {
 }
 
 type ZoneEmailRoutingDNSGetResponseEmailEmailRoutingDNSQueryResponse struct {
-	Errors   []EmailMessagesItem `json:"errors,required"`
-	Messages []EmailMessagesItem `json:"messages,required"`
+	Errors   []EmailMessagesItem `json:"errors" api:"required"`
+	Messages []EmailMessagesItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success    ZoneEmailRoutingDNSGetResponseEmailEmailRoutingDNSQueryResponseSuccess    `json:"success,required"`
+	Success    ZoneEmailRoutingDNSGetResponseEmailEmailRoutingDNSQueryResponseSuccess    `json:"success" api:"required"`
 	Result     ZoneEmailRoutingDNSGetResponseEmailEmailRoutingDNSQueryResponseResult     `json:"result"`
 	ResultInfo ZoneEmailRoutingDNSGetResponseEmailEmailRoutingDNSQueryResponseResultInfo `json:"result_info"`
 	JSON       zoneEmailRoutingDNSGetResponseEmailEmailRoutingDNSQueryResponseJSON       `json:"-"`
@@ -574,11 +574,11 @@ func (r ZoneEmailRoutingDNSGetResponseSuccess) IsKnown() bool {
 
 type ZoneEmailRoutingDNSDeleteResponse struct {
 	// This field can have the runtime type of [[]EmailMessagesItem].
-	Errors interface{} `json:"errors,required"`
+	Errors interface{} `json:"errors" api:"required"`
 	// This field can have the runtime type of [[]EmailMessagesItem].
-	Messages interface{} `json:"messages,required"`
+	Messages interface{} `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success ZoneEmailRoutingDNSDeleteResponseSuccess `json:"success,required"`
+	Success ZoneEmailRoutingDNSDeleteResponseSuccess `json:"success" api:"required"`
 	// This field can have the runtime type of [[]EmailDNSRecord].
 	Result interface{} `json:"result"`
 	// This field can have the runtime type of
@@ -673,7 +673,7 @@ func (r ZoneEmailRoutingDNSGetParams) URLQuery() (v url.Values) {
 }
 
 type ZoneEmailRoutingDNSEnableParams struct {
-	EmailEmailSettingDNSRequestBody EmailEmailSettingDNSRequestBodyParam `json:"email_email_setting_dns_request_body,required"`
+	EmailEmailSettingDNSRequestBody EmailEmailSettingDNSRequestBodyParam `json:"email_email_setting_dns_request_body" api:"required"`
 }
 
 func (r ZoneEmailRoutingDNSEnableParams) MarshalJSON() (data []byte, err error) {
@@ -681,7 +681,7 @@ func (r ZoneEmailRoutingDNSEnableParams) MarshalJSON() (data []byte, err error) 
 }
 
 type ZoneEmailRoutingDNSUnlockParams struct {
-	EmailEmailSettingDNSRequestBody EmailEmailSettingDNSRequestBodyParam `json:"email_email_setting_dns_request_body,required"`
+	EmailEmailSettingDNSRequestBody EmailEmailSettingDNSRequestBodyParam `json:"email_email_setting_dns_request_body" api:"required"`
 }
 
 func (r ZoneEmailRoutingDNSUnlockParams) MarshalJSON() (data []byte, err error) {

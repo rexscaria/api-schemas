@@ -44,14 +44,14 @@ func (r *IPService) List(ctx context.Context, query IPListParams, opts ...option
 	opts = slices.Concat(r.Options, opts)
 	path := "ips"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type IPListResponse struct {
-	Errors   []IPListResponseError   `json:"errors,required"`
-	Messages []IPListResponseMessage `json:"messages,required"`
+	Errors   []IPListResponseError   `json:"errors" api:"required"`
+	Messages []IPListResponseMessage `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success IPListResponseSuccess `json:"success,required"`
+	Success IPListResponseSuccess `json:"success" api:"required"`
 	Result  IPListResponseResult  `json:"result"`
 	JSON    ipListResponseJSON    `json:"-"`
 }
@@ -75,8 +75,8 @@ func (r ipListResponseJSON) RawJSON() string {
 }
 
 type IPListResponseError struct {
-	Code             int64                      `json:"code,required"`
-	Message          string                     `json:"message,required"`
+	Code             int64                      `json:"code" api:"required"`
+	Message          string                     `json:"message" api:"required"`
 	DocumentationURL string                     `json:"documentation_url"`
 	Source           IPListResponseErrorsSource `json:"source"`
 	JSON             ipListResponseErrorJSON    `json:"-"`
@@ -123,8 +123,8 @@ func (r ipListResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type IPListResponseMessage struct {
-	Code             int64                        `json:"code,required"`
-	Message          string                       `json:"message,required"`
+	Code             int64                        `json:"code" api:"required"`
+	Message          string                       `json:"message" api:"required"`
 	DocumentationURL string                       `json:"documentation_url"`
 	Source           IPListResponseMessagesSource `json:"source"`
 	JSON             ipListResponseMessageJSON    `json:"-"`

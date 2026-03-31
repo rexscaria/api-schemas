@@ -42,19 +42,19 @@ func (r *AccountWorkerDispatchNamespaceScriptSecretService) List(ctx context.Con
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if dispatchNamespace == "" {
 		err = errors.New("missing required dispatch_namespace parameter")
-		return
+		return nil, err
 	}
 	if scriptName == "" {
 		err = errors.New("missing required script_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/workers/dispatch/namespaces/%s/scripts/%s/secrets", accountID, dispatchNamespace, scriptName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Remove a secret from a script uploaded to a Workers for Platforms namespace.
@@ -62,23 +62,23 @@ func (r *AccountWorkerDispatchNamespaceScriptSecretService) Delete(ctx context.C
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if dispatchNamespace == "" {
 		err = errors.New("missing required dispatch_namespace parameter")
-		return
+		return nil, err
 	}
 	if scriptName == "" {
 		err = errors.New("missing required script_name parameter")
-		return
+		return nil, err
 	}
 	if secretName == "" {
 		err = errors.New("missing required secret_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/workers/dispatch/namespaces/%s/scripts/%s/secrets/%s", accountID, dispatchNamespace, scriptName, secretName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Add a secret to a script uploaded to a Workers for Platforms namespace.
@@ -86,19 +86,19 @@ func (r *AccountWorkerDispatchNamespaceScriptSecretService) Add(ctx context.Cont
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if dispatchNamespace == "" {
 		err = errors.New("missing required dispatch_namespace parameter")
-		return
+		return nil, err
 	}
 	if scriptName == "" {
 		err = errors.New("missing required script_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/workers/dispatch/namespaces/%s/scripts/%s/secrets", accountID, dispatchNamespace, scriptName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get a given secret binding (value omitted) on a script uploaded to a Workers for
@@ -107,31 +107,31 @@ func (r *AccountWorkerDispatchNamespaceScriptSecretService) Get(ctx context.Cont
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if dispatchNamespace == "" {
 		err = errors.New("missing required dispatch_namespace parameter")
-		return
+		return nil, err
 	}
 	if scriptName == "" {
 		err = errors.New("missing required script_name parameter")
-		return
+		return nil, err
 	}
 	if secretName == "" {
 		err = errors.New("missing required secret_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/workers/dispatch/namespaces/%s/scripts/%s/secrets/%s", accountID, dispatchNamespace, scriptName, secretName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // A secret value accessible through a binding.
 type Secret struct {
 	// A JavaScript variable name for the binding.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// The kind of resource that the binding provides.
-	Type SecretType `json:"type,required"`
+	Type SecretType `json:"type" api:"required"`
 	// This field can have the runtime type of [interface{}].
 	Algorithm interface{} `json:"algorithm"`
 	// Data format of the key.
@@ -207,9 +207,9 @@ func init() {
 
 type SecretWorkersBindingKindSecretText struct {
 	// A JavaScript variable name for the binding.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// The kind of resource that the binding provides.
-	Type SecretWorkersBindingKindSecretTextType `json:"type,required"`
+	Type SecretWorkersBindingKindSecretTextType `json:"type" api:"required"`
 	JSON secretWorkersBindingKindSecretTextJSON `json:"-"`
 }
 
@@ -250,17 +250,17 @@ func (r SecretWorkersBindingKindSecretTextType) IsKnown() bool {
 type SecretWorkersBindingKindSecretKey struct {
 	// Algorithm-specific key parameters.
 	// [Learn more](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/importKey#algorithm).
-	Algorithm interface{} `json:"algorithm,required"`
+	Algorithm interface{} `json:"algorithm" api:"required"`
 	// Data format of the key.
 	// [Learn more](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/importKey#format).
-	Format SecretWorkersBindingKindSecretKeyFormat `json:"format,required"`
+	Format SecretWorkersBindingKindSecretKeyFormat `json:"format" api:"required"`
 	// A JavaScript variable name for the binding.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// The kind of resource that the binding provides.
-	Type SecretWorkersBindingKindSecretKeyType `json:"type,required"`
+	Type SecretWorkersBindingKindSecretKeyType `json:"type" api:"required"`
 	// Allowed operations with the key.
 	// [Learn more](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/importKey#keyUsages).
-	Usages []SecretWorkersBindingKindSecretKeyUsage `json:"usages,required"`
+	Usages []SecretWorkersBindingKindSecretKeyUsage `json:"usages" api:"required"`
 	JSON   secretWorkersBindingKindSecretKeyJSON    `json:"-"`
 }
 
@@ -379,9 +379,9 @@ func (r SecretFormat) IsKnown() bool {
 // A secret value accessible through a binding.
 type SecretParam struct {
 	// A JavaScript variable name for the binding.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// The kind of resource that the binding provides.
-	Type      param.Field[SecretType]  `json:"type,required"`
+	Type      param.Field[SecretType]  `json:"type" api:"required"`
 	Algorithm param.Field[interface{}] `json:"algorithm"`
 	// Data format of the key.
 	// [Learn more](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/importKey#format).
@@ -410,11 +410,11 @@ type SecretUnionParam interface {
 
 type SecretWorkersBindingKindSecretTextParam struct {
 	// A JavaScript variable name for the binding.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// The secret value to use.
-	Text param.Field[string] `json:"text,required"`
+	Text param.Field[string] `json:"text" api:"required"`
 	// The kind of resource that the binding provides.
-	Type param.Field[SecretWorkersBindingKindSecretTextType] `json:"type,required"`
+	Type param.Field[SecretWorkersBindingKindSecretTextType] `json:"type" api:"required"`
 }
 
 func (r SecretWorkersBindingKindSecretTextParam) MarshalJSON() (data []byte, err error) {
@@ -426,17 +426,17 @@ func (r SecretWorkersBindingKindSecretTextParam) implementsSecretUnionParam() {}
 type SecretWorkersBindingKindSecretKeyParam struct {
 	// Algorithm-specific key parameters.
 	// [Learn more](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/importKey#algorithm).
-	Algorithm param.Field[interface{}] `json:"algorithm,required"`
+	Algorithm param.Field[interface{}] `json:"algorithm" api:"required"`
 	// Data format of the key.
 	// [Learn more](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/importKey#format).
-	Format param.Field[SecretWorkersBindingKindSecretKeyFormat] `json:"format,required"`
+	Format param.Field[SecretWorkersBindingKindSecretKeyFormat] `json:"format" api:"required"`
 	// A JavaScript variable name for the binding.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// The kind of resource that the binding provides.
-	Type param.Field[SecretWorkersBindingKindSecretKeyType] `json:"type,required"`
+	Type param.Field[SecretWorkersBindingKindSecretKeyType] `json:"type" api:"required"`
 	// Allowed operations with the key.
 	// [Learn more](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/importKey#keyUsages).
-	Usages param.Field[[]SecretWorkersBindingKindSecretKeyUsage] `json:"usages,required"`
+	Usages param.Field[[]SecretWorkersBindingKindSecretKeyUsage] `json:"usages" api:"required"`
 	// Base64-encoded key data. Required if `format` is "raw", "pkcs8", or "spki".
 	KeyBase64 param.Field[string] `json:"key_base64"`
 	// Key data in
@@ -452,11 +452,11 @@ func (r SecretWorkersBindingKindSecretKeyParam) MarshalJSON() (data []byte, err 
 func (r SecretWorkersBindingKindSecretKeyParam) implementsSecretUnionParam() {}
 
 type AccountWorkerDispatchNamespaceScriptSecretListResponse struct {
-	Errors   []WorkersMessages `json:"errors,required"`
-	Messages []WorkersMessages `json:"messages,required"`
-	Result   []Secret          `json:"result,required"`
+	Errors   []WorkersMessages `json:"errors" api:"required"`
+	Messages []WorkersMessages `json:"messages" api:"required"`
+	Result   []Secret          `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success AccountWorkerDispatchNamespaceScriptSecretListResponseSuccess `json:"success,required"`
+	Success AccountWorkerDispatchNamespaceScriptSecretListResponseSuccess `json:"success" api:"required"`
 	JSON    accountWorkerDispatchNamespaceScriptSecretListResponseJSON    `json:"-"`
 }
 
@@ -495,12 +495,12 @@ func (r AccountWorkerDispatchNamespaceScriptSecretListResponseSuccess) IsKnown()
 }
 
 type AccountWorkerDispatchNamespaceScriptSecretAddResponse struct {
-	Errors   []WorkersMessages `json:"errors,required"`
-	Messages []WorkersMessages `json:"messages,required"`
+	Errors   []WorkersMessages `json:"errors" api:"required"`
+	Messages []WorkersMessages `json:"messages" api:"required"`
 	// A secret value accessible through a binding.
-	Result Secret `json:"result,required"`
+	Result Secret `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success AccountWorkerDispatchNamespaceScriptSecretAddResponseSuccess `json:"success,required"`
+	Success AccountWorkerDispatchNamespaceScriptSecretAddResponseSuccess `json:"success" api:"required"`
 	JSON    accountWorkerDispatchNamespaceScriptSecretAddResponseJSON    `json:"-"`
 }
 
@@ -539,12 +539,12 @@ func (r AccountWorkerDispatchNamespaceScriptSecretAddResponseSuccess) IsKnown() 
 }
 
 type AccountWorkerDispatchNamespaceScriptSecretGetResponse struct {
-	Errors   []WorkersMessages `json:"errors,required"`
-	Messages []WorkersMessages `json:"messages,required"`
+	Errors   []WorkersMessages `json:"errors" api:"required"`
+	Messages []WorkersMessages `json:"messages" api:"required"`
 	// A secret value accessible through a binding.
-	Result Secret `json:"result,required"`
+	Result Secret `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success AccountWorkerDispatchNamespaceScriptSecretGetResponseSuccess `json:"success,required"`
+	Success AccountWorkerDispatchNamespaceScriptSecretGetResponseSuccess `json:"success" api:"required"`
 	JSON    accountWorkerDispatchNamespaceScriptSecretGetResponseJSON    `json:"-"`
 }
 
@@ -584,7 +584,7 @@ func (r AccountWorkerDispatchNamespaceScriptSecretGetResponseSuccess) IsKnown() 
 
 type AccountWorkerDispatchNamespaceScriptSecretAddParams struct {
 	// A secret value accessible through a binding.
-	Secret SecretUnionParam `json:"secret,required"`
+	Secret SecretUnionParam `json:"secret" api:"required"`
 }
 
 func (r AccountWorkerDispatchNamespaceScriptSecretAddParams) MarshalJSON() (data []byte, err error) {

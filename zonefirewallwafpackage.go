@@ -52,15 +52,15 @@ func (r *ZoneFirewallWafPackageService) Get(ctx context.Context, zoneID string, 
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if packageID == "" {
 		err = errors.New("missing required package_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/firewall/waf/packages/%s", zoneID, packageID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates a WAF package. You can update the sensitivity and the action of an
@@ -74,15 +74,15 @@ func (r *ZoneFirewallWafPackageService) Update(ctx context.Context, zoneID strin
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if packageID == "" {
 		err = errors.New("missing required package_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/firewall/waf/packages/%s", zoneID, packageID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetches WAF packages for a zone.
@@ -95,11 +95,11 @@ func (r *ZoneFirewallWafPackageService) List(ctx context.Context, zoneID string,
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/firewall/waf/packages", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // The default action performed by the rules in the WAF package.
@@ -121,17 +121,17 @@ func (r FirewallActionMode) IsKnown() bool {
 
 type FirewallAnomalyPackage struct {
 	// Defines an identifier.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// A summary of the purpose/function of the WAF package.
-	Description string `json:"description,required"`
+	Description string `json:"description" api:"required"`
 	// When a WAF package uses anomaly detection, each rule is given a score when
 	// triggered. If the total score of all triggered rules exceeds the sensitivity
 	// defined on the WAF package, the action defined on the package will be taken.
-	DetectionMode FirewallAnomalyPackageDetectionMode `json:"detection_mode,required"`
+	DetectionMode FirewallAnomalyPackageDetectionMode `json:"detection_mode" api:"required"`
 	// The name of the WAF package.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Defines an identifier.
-	ZoneID string `json:"zone_id,required"`
+	ZoneID string `json:"zone_id" api:"required"`
 	// The default action performed by the rules in the WAF package.
 	ActionMode FirewallActionMode `json:"action_mode"`
 	// The sensitivity of the WAF package.
@@ -203,9 +203,9 @@ func (r FirewallAnomalyPackageStatus) IsKnown() bool {
 
 type FirewallPackageDefinition struct {
 	// Defines an identifier.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// A summary of the purpose/function of the WAF package.
-	Description string `json:"description,required"`
+	Description string `json:"description" api:"required"`
 	// The mode that defines how rules within the package are evaluated during the
 	// course of a request. When a package uses anomaly detection mode (`anomaly`
 	// value), each rule is given a score when triggered. If the total score of all
@@ -215,11 +215,11 @@ type FirewallPackageDefinition struct {
 	// request. If multiple rules are triggered, the action providing the highest
 	// protection will be applied (for example, a 'block' action will win over a
 	// 'challenge' action).
-	DetectionMode FirewallPackageDefinitionDetectionMode `json:"detection_mode,required"`
+	DetectionMode FirewallPackageDefinitionDetectionMode `json:"detection_mode" api:"required"`
 	// The name of the WAF package.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Defines an identifier.
-	ZoneID string `json:"zone_id,required"`
+	ZoneID string `json:"zone_id" api:"required"`
 	// When set to `active`, indicates that the WAF package will be applied to the
 	// zone.
 	Status FirewallPackageDefinitionStatus `json:"status"`
@@ -534,17 +534,17 @@ func (r ZoneFirewallWafPackageUpdateResponseResult) implementsZoneFirewallWafPac
 
 type ZoneFirewallWafPackageUpdateResponseResultResult struct {
 	// Defines an identifier.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// A summary of the purpose/function of the WAF package.
-	Description string `json:"description,required"`
+	Description string `json:"description" api:"required"`
 	// When a WAF package uses anomaly detection, each rule is given a score when
 	// triggered. If the total score of all triggered rules exceeds the sensitivity
 	// defined on the WAF package, the action defined on the package will be taken.
-	DetectionMode ZoneFirewallWafPackageUpdateResponseResultResultDetectionMode `json:"detection_mode,required"`
+	DetectionMode ZoneFirewallWafPackageUpdateResponseResultResultDetectionMode `json:"detection_mode" api:"required"`
 	// The name of the WAF package.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Defines an identifier.
-	ZoneID string `json:"zone_id,required"`
+	ZoneID string `json:"zone_id" api:"required"`
 	// The default action performed by the rules in the WAF package.
 	ActionMode FirewallActionMode `json:"action_mode"`
 	// The sensitivity of the WAF package.
@@ -725,9 +725,9 @@ func (r ZoneFirewallWafPackageListResponseResult) implementsZoneFirewallWafPacka
 
 type ZoneFirewallWafPackageListResponseResultResult struct {
 	// Defines an identifier.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// A summary of the purpose/function of the WAF package.
-	Description string `json:"description,required"`
+	Description string `json:"description" api:"required"`
 	// The mode that defines how rules within the package are evaluated during the
 	// course of a request. When a package uses anomaly detection mode (`anomaly`
 	// value), each rule is given a score when triggered. If the total score of all
@@ -737,11 +737,11 @@ type ZoneFirewallWafPackageListResponseResultResult struct {
 	// request. If multiple rules are triggered, the action providing the highest
 	// protection will be applied (for example, a 'block' action will win over a
 	// 'challenge' action).
-	DetectionMode ZoneFirewallWafPackageListResponseResultResultDetectionMode `json:"detection_mode,required"`
+	DetectionMode ZoneFirewallWafPackageListResponseResultResultDetectionMode `json:"detection_mode" api:"required"`
 	// The name of the WAF package.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Defines an identifier.
-	ZoneID string `json:"zone_id,required"`
+	ZoneID string `json:"zone_id" api:"required"`
 	// The default action performed by the rules in the WAF package.
 	ActionMode FirewallActionMode `json:"action_mode"`
 	// The sensitivity of the WAF package.

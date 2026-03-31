@@ -57,11 +57,11 @@ func (r *AccountGatewayService) New(ctx context.Context, accountID string, opts 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/gateway", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Gets information about the current Zero Trust account.
@@ -69,11 +69,11 @@ func (r *AccountGatewayService) Get(ctx context.Context, accountID string, opts 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/gateway", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetches all application and application type mappings.
@@ -81,11 +81,11 @@ func (r *AccountGatewayService) ListAppTypes(ctx context.Context, accountID stri
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/gateway/app_types", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetches a list of all categories.
@@ -93,11 +93,11 @@ func (r *AccountGatewayService) ListCategories(ctx context.Context, accountID st
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/gateway/categories", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Which account types are allowed to create policies based on this category.
@@ -123,10 +123,10 @@ func (r Class) IsKnown() bool {
 }
 
 type GatewayAccount struct {
-	Errors   []GatewayAccountError   `json:"errors,required"`
-	Messages []GatewayAccountMessage `json:"messages,required"`
+	Errors   []GatewayAccountError   `json:"errors" api:"required"`
+	Messages []GatewayAccountMessage `json:"messages" api:"required"`
 	// Whether the API call was successful
-	Success GatewayAccountSuccess `json:"success,required"`
+	Success GatewayAccountSuccess `json:"success" api:"required"`
 	Result  GatewayAccountResult  `json:"result"`
 	JSON    gatewayAccountJSON    `json:"-"`
 }
@@ -150,8 +150,8 @@ func (r gatewayAccountJSON) RawJSON() string {
 }
 
 type GatewayAccountError struct {
-	Code             int64                      `json:"code,required"`
-	Message          string                     `json:"message,required"`
+	Code             int64                      `json:"code" api:"required"`
+	Message          string                     `json:"message" api:"required"`
 	DocumentationURL string                     `json:"documentation_url"`
 	Source           GatewayAccountErrorsSource `json:"source"`
 	JSON             gatewayAccountErrorJSON    `json:"-"`
@@ -198,8 +198,8 @@ func (r gatewayAccountErrorsSourceJSON) RawJSON() string {
 }
 
 type GatewayAccountMessage struct {
-	Code             int64                        `json:"code,required"`
-	Message          string                       `json:"message,required"`
+	Code             int64                        `json:"code" api:"required"`
+	Message          string                       `json:"message" api:"required"`
 	DocumentationURL string                       `json:"documentation_url"`
 	Source           GatewayAccountMessagesSource `json:"source"`
 	JSON             gatewayAccountMessageJSON    `json:"-"`
@@ -289,8 +289,8 @@ func (r gatewayAccountResultJSON) RawJSON() string {
 }
 
 type ZeroTrustGatewayMessages struct {
-	Code             int64                          `json:"code,required"`
-	Message          string                         `json:"message,required"`
+	Code             int64                          `json:"code" api:"required"`
+	Message          string                         `json:"message" api:"required"`
 	DocumentationURL string                         `json:"documentation_url"`
 	Source           ZeroTrustGatewayMessagesSource `json:"source"`
 	JSON             zeroTrustGatewayMessagesJSON   `json:"-"`
@@ -337,10 +337,10 @@ func (r zeroTrustGatewayMessagesSourceJSON) RawJSON() string {
 }
 
 type AccountGatewayListAppTypesResponse struct {
-	Errors   []AccountGatewayListAppTypesResponseError   `json:"errors,required"`
-	Messages []AccountGatewayListAppTypesResponseMessage `json:"messages,required"`
+	Errors   []AccountGatewayListAppTypesResponseError   `json:"errors" api:"required"`
+	Messages []AccountGatewayListAppTypesResponseMessage `json:"messages" api:"required"`
 	// Whether the API call was successful
-	Success    AccountGatewayListAppTypesResponseSuccess    `json:"success,required"`
+	Success    AccountGatewayListAppTypesResponseSuccess    `json:"success" api:"required"`
 	Result     []AccountGatewayListAppTypesResponseResult   `json:"result"`
 	ResultInfo AccountGatewayListAppTypesResponseResultInfo `json:"result_info"`
 	JSON       accountGatewayListAppTypesResponseJSON       `json:"-"`
@@ -367,8 +367,8 @@ func (r accountGatewayListAppTypesResponseJSON) RawJSON() string {
 }
 
 type AccountGatewayListAppTypesResponseError struct {
-	Code             int64                                          `json:"code,required"`
-	Message          string                                         `json:"message,required"`
+	Code             int64                                          `json:"code" api:"required"`
+	Message          string                                         `json:"message" api:"required"`
 	DocumentationURL string                                         `json:"documentation_url"`
 	Source           AccountGatewayListAppTypesResponseErrorsSource `json:"source"`
 	JSON             accountGatewayListAppTypesResponseErrorJSON    `json:"-"`
@@ -415,8 +415,8 @@ func (r accountGatewayListAppTypesResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type AccountGatewayListAppTypesResponseMessage struct {
-	Code             int64                                            `json:"code,required"`
-	Message          string                                           `json:"message,required"`
+	Code             int64                                            `json:"code" api:"required"`
+	Message          string                                           `json:"message" api:"required"`
 	DocumentationURL string                                           `json:"documentation_url"`
 	Source           AccountGatewayListAppTypesResponseMessagesSource `json:"source"`
 	JSON             accountGatewayListAppTypesResponseMessageJSON    `json:"-"`
@@ -651,10 +651,10 @@ func (r accountGatewayListAppTypesResponseResultInfoJSON) RawJSON() string {
 }
 
 type AccountGatewayListCategoriesResponse struct {
-	Errors   []AccountGatewayListCategoriesResponseError   `json:"errors,required"`
-	Messages []AccountGatewayListCategoriesResponseMessage `json:"messages,required"`
+	Errors   []AccountGatewayListCategoriesResponseError   `json:"errors" api:"required"`
+	Messages []AccountGatewayListCategoriesResponseMessage `json:"messages" api:"required"`
 	// Whether the API call was successful
-	Success    AccountGatewayListCategoriesResponseSuccess    `json:"success,required"`
+	Success    AccountGatewayListCategoriesResponseSuccess    `json:"success" api:"required"`
 	Result     []AccountGatewayListCategoriesResponseResult   `json:"result"`
 	ResultInfo AccountGatewayListCategoriesResponseResultInfo `json:"result_info"`
 	JSON       accountGatewayListCategoriesResponseJSON       `json:"-"`
@@ -681,8 +681,8 @@ func (r accountGatewayListCategoriesResponseJSON) RawJSON() string {
 }
 
 type AccountGatewayListCategoriesResponseError struct {
-	Code             int64                                            `json:"code,required"`
-	Message          string                                           `json:"message,required"`
+	Code             int64                                            `json:"code" api:"required"`
+	Message          string                                           `json:"message" api:"required"`
 	DocumentationURL string                                           `json:"documentation_url"`
 	Source           AccountGatewayListCategoriesResponseErrorsSource `json:"source"`
 	JSON             accountGatewayListCategoriesResponseErrorJSON    `json:"-"`
@@ -729,8 +729,8 @@ func (r accountGatewayListCategoriesResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type AccountGatewayListCategoriesResponseMessage struct {
-	Code             int64                                              `json:"code,required"`
-	Message          string                                             `json:"message,required"`
+	Code             int64                                              `json:"code" api:"required"`
+	Message          string                                             `json:"message" api:"required"`
 	DocumentationURL string                                             `json:"documentation_url"`
 	Source           AccountGatewayListCategoriesResponseMessagesSource `json:"source"`
 	JSON             accountGatewayListCategoriesResponseMessageJSON    `json:"-"`

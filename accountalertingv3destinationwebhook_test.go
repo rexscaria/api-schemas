@@ -14,7 +14,7 @@ import (
 )
 
 func TestAccountAlertingV3DestinationWebhookNewWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,6 +26,7 @@ func TestAccountAlertingV3DestinationWebhookNewWithOptionalParams(t *testing.T) 
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Alerting.V3.Destinations.Webhooks.New(
 		context.TODO(),
@@ -46,7 +47,7 @@ func TestAccountAlertingV3DestinationWebhookNewWithOptionalParams(t *testing.T) 
 }
 
 func TestAccountAlertingV3DestinationWebhookGet(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -58,6 +59,7 @@ func TestAccountAlertingV3DestinationWebhookGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Alerting.V3.Destinations.Webhooks.Get(
 		context.TODO(),
@@ -74,7 +76,7 @@ func TestAccountAlertingV3DestinationWebhookGet(t *testing.T) {
 }
 
 func TestAccountAlertingV3DestinationWebhookUpdateWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -86,6 +88,7 @@ func TestAccountAlertingV3DestinationWebhookUpdateWithOptionalParams(t *testing.
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Alerting.V3.Destinations.Webhooks.Update(
 		context.TODO(),
@@ -107,7 +110,7 @@ func TestAccountAlertingV3DestinationWebhookUpdateWithOptionalParams(t *testing.
 }
 
 func TestAccountAlertingV3DestinationWebhookList(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -119,6 +122,7 @@ func TestAccountAlertingV3DestinationWebhookList(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Alerting.V3.Destinations.Webhooks.List(context.TODO(), "023e105f4ecef8ad9ca31a8372d0c353")
 	if err != nil {
@@ -131,7 +135,7 @@ func TestAccountAlertingV3DestinationWebhookList(t *testing.T) {
 }
 
 func TestAccountAlertingV3DestinationWebhookDelete(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -143,6 +147,7 @@ func TestAccountAlertingV3DestinationWebhookDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Alerting.V3.Destinations.Webhooks.Delete(
 		context.TODO(),

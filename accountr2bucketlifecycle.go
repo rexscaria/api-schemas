@@ -40,46 +40,46 @@ func NewAccountR2BucketLifecycleService(opts ...option.RequestOption) (r *Accoun
 // Get object lifecycle rules for a bucket.
 func (r *AccountR2BucketLifecycleService) Get(ctx context.Context, accountID string, bucketName string, query AccountR2BucketLifecycleGetParams, opts ...option.RequestOption) (res *AccountR2BucketLifecycleGetResponse, err error) {
 	if query.Jurisdiction.Present {
-		opts = append(opts, option.WithHeader("cf-r2-jurisdiction", fmt.Sprintf("%s", query.Jurisdiction)))
+		opts = append(opts, option.WithHeader("cf-r2-jurisdiction", fmt.Sprintf("%v", query.Jurisdiction)))
 	}
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if bucketName == "" {
 		err = errors.New("missing required bucket_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/r2/buckets/%s/lifecycle", accountID, bucketName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Set the object lifecycle rules for a bucket.
 func (r *AccountR2BucketLifecycleService) Update(ctx context.Context, accountID string, bucketName string, params AccountR2BucketLifecycleUpdateParams, opts ...option.RequestOption) (res *R2V4Response, err error) {
 	if params.Jurisdiction.Present {
-		opts = append(opts, option.WithHeader("cf-r2-jurisdiction", fmt.Sprintf("%s", params.Jurisdiction)))
+		opts = append(opts, option.WithHeader("cf-r2-jurisdiction", fmt.Sprintf("%v", params.Jurisdiction)))
 	}
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if bucketName == "" {
 		err = errors.New("missing required bucket_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/r2/buckets/%s/lifecycle", accountID, bucketName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Condition for lifecycle transitions to apply after an object reaches an age in
 // seconds.
 type R2LifecycleAgeCondition struct {
-	MaxAge int64                       `json:"maxAge,required"`
-	Type   R2LifecycleAgeConditionType `json:"type,required"`
+	MaxAge int64                       `json:"maxAge" api:"required"`
+	Type   R2LifecycleAgeConditionType `json:"type" api:"required"`
 	JSON   r2LifecycleAgeConditionJSON `json:"-"`
 }
 
@@ -121,8 +121,8 @@ func (r R2LifecycleAgeConditionType) IsKnown() bool {
 // Condition for lifecycle transitions to apply after an object reaches an age in
 // seconds.
 type R2LifecycleAgeConditionParam struct {
-	MaxAge param.Field[int64]                       `json:"maxAge,required"`
-	Type   param.Field[R2LifecycleAgeConditionType] `json:"type,required"`
+	MaxAge param.Field[int64]                       `json:"maxAge" api:"required"`
+	Type   param.Field[R2LifecycleAgeConditionType] `json:"type" api:"required"`
 }
 
 func (r R2LifecycleAgeConditionParam) MarshalJSON() (data []byte, err error) {
@@ -137,8 +137,8 @@ func (r R2LifecycleAgeConditionParam) implementsR2LifecycleRuleStorageClassTrans
 
 // Condition for lifecycle transitions to apply on a specific date.
 type R2LifecycleDateCondition struct {
-	Date time.Time                    `json:"date,required" format:"date"`
-	Type R2LifecycleDateConditionType `json:"type,required"`
+	Date time.Time                    `json:"date" api:"required" format:"date"`
+	Type R2LifecycleDateConditionType `json:"type" api:"required"`
 	JSON r2LifecycleDateConditionJSON `json:"-"`
 }
 
@@ -179,8 +179,8 @@ func (r R2LifecycleDateConditionType) IsKnown() bool {
 
 // Condition for lifecycle transitions to apply on a specific date.
 type R2LifecycleDateConditionParam struct {
-	Date param.Field[time.Time]                    `json:"date,required" format:"date"`
-	Type param.Field[R2LifecycleDateConditionType] `json:"type,required"`
+	Date param.Field[time.Time]                    `json:"date" api:"required" format:"date"`
+	Type param.Field[R2LifecycleDateConditionType] `json:"type" api:"required"`
 }
 
 func (r R2LifecycleDateConditionParam) MarshalJSON() (data []byte, err error) {
@@ -195,11 +195,11 @@ func (r R2LifecycleDateConditionParam) implementsR2LifecycleRuleStorageClassTran
 
 type R2LifecycleRule struct {
 	// Unique identifier for this rule.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Conditions that apply to all transitions of this rule.
-	Conditions R2LifecycleRuleConditions `json:"conditions,required"`
+	Conditions R2LifecycleRuleConditions `json:"conditions" api:"required"`
 	// Whether or not this rule is in effect.
-	Enabled bool `json:"enabled,required"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Transition to abort ongoing multipart uploads.
 	AbortMultipartUploadsTransition R2LifecycleRuleAbortMultipartUploadsTransition `json:"abortMultipartUploadsTransition"`
 	// Transition to delete objects.
@@ -234,7 +234,7 @@ type R2LifecycleRuleConditions struct {
 	// Transitions will only apply to objects/uploads in the bucket that start with the
 	// given prefix, an empty prefix can be provided to scope rule to all
 	// objects/uploads.
-	Prefix string                        `json:"prefix,required"`
+	Prefix string                        `json:"prefix" api:"required"`
 	JSON   r2LifecycleRuleConditionsJSON `json:"-"`
 }
 
@@ -305,7 +305,7 @@ func (r r2LifecycleRuleDeleteObjectsTransitionJSON) RawJSON() string {
 // Condition for lifecycle transitions to apply after an object reaches an age in
 // seconds.
 type R2LifecycleRuleDeleteObjectsTransitionCondition struct {
-	Type   R2LifecycleRuleDeleteObjectsTransitionConditionType `json:"type,required"`
+	Type   R2LifecycleRuleDeleteObjectsTransitionConditionType `json:"type" api:"required"`
 	Date   time.Time                                           `json:"date" format:"date"`
 	MaxAge int64                                               `json:"maxAge"`
 	JSON   r2LifecycleRuleDeleteObjectsTransitionConditionJSON `json:"-"`
@@ -385,8 +385,8 @@ func (r R2LifecycleRuleDeleteObjectsTransitionConditionType) IsKnown() bool {
 type R2LifecycleRuleStorageClassTransition struct {
 	// Condition for lifecycle transitions to apply after an object reaches an age in
 	// seconds.
-	Condition    R2LifecycleRuleStorageClassTransitionsCondition    `json:"condition,required"`
-	StorageClass R2LifecycleRuleStorageClassTransitionsStorageClass `json:"storageClass,required"`
+	Condition    R2LifecycleRuleStorageClassTransitionsCondition    `json:"condition" api:"required"`
+	StorageClass R2LifecycleRuleStorageClassTransitionsStorageClass `json:"storageClass" api:"required"`
 	JSON         r2LifecycleRuleStorageClassTransitionJSON          `json:"-"`
 }
 
@@ -410,7 +410,7 @@ func (r r2LifecycleRuleStorageClassTransitionJSON) RawJSON() string {
 // Condition for lifecycle transitions to apply after an object reaches an age in
 // seconds.
 type R2LifecycleRuleStorageClassTransitionsCondition struct {
-	Type   R2LifecycleRuleStorageClassTransitionsConditionType `json:"type,required"`
+	Type   R2LifecycleRuleStorageClassTransitionsConditionType `json:"type" api:"required"`
 	Date   time.Time                                           `json:"date" format:"date"`
 	MaxAge int64                                               `json:"maxAge"`
 	JSON   r2LifecycleRuleStorageClassTransitionsConditionJSON `json:"-"`
@@ -503,11 +503,11 @@ func (r R2LifecycleRuleStorageClassTransitionsStorageClass) IsKnown() bool {
 
 type R2LifecycleRuleParam struct {
 	// Unique identifier for this rule.
-	ID param.Field[string] `json:"id,required"`
+	ID param.Field[string] `json:"id" api:"required"`
 	// Conditions that apply to all transitions of this rule.
-	Conditions param.Field[R2LifecycleRuleConditionsParam] `json:"conditions,required"`
+	Conditions param.Field[R2LifecycleRuleConditionsParam] `json:"conditions" api:"required"`
 	// Whether or not this rule is in effect.
-	Enabled param.Field[bool] `json:"enabled,required"`
+	Enabled param.Field[bool] `json:"enabled" api:"required"`
 	// Transition to abort ongoing multipart uploads.
 	AbortMultipartUploadsTransition param.Field[R2LifecycleRuleAbortMultipartUploadsTransitionParam] `json:"abortMultipartUploadsTransition"`
 	// Transition to delete objects.
@@ -525,7 +525,7 @@ type R2LifecycleRuleConditionsParam struct {
 	// Transitions will only apply to objects/uploads in the bucket that start with the
 	// given prefix, an empty prefix can be provided to scope rule to all
 	// objects/uploads.
-	Prefix param.Field[string] `json:"prefix,required"`
+	Prefix param.Field[string] `json:"prefix" api:"required"`
 }
 
 func (r R2LifecycleRuleConditionsParam) MarshalJSON() (data []byte, err error) {
@@ -557,7 +557,7 @@ func (r R2LifecycleRuleDeleteObjectsTransitionParam) MarshalJSON() (data []byte,
 // Condition for lifecycle transitions to apply after an object reaches an age in
 // seconds.
 type R2LifecycleRuleDeleteObjectsTransitionConditionParam struct {
-	Type   param.Field[R2LifecycleRuleDeleteObjectsTransitionConditionType] `json:"type,required"`
+	Type   param.Field[R2LifecycleRuleDeleteObjectsTransitionConditionType] `json:"type" api:"required"`
 	Date   param.Field[time.Time]                                           `json:"date" format:"date"`
 	MaxAge param.Field[int64]                                               `json:"maxAge"`
 }
@@ -581,8 +581,8 @@ type R2LifecycleRuleDeleteObjectsTransitionConditionUnionParam interface {
 type R2LifecycleRuleStorageClassTransitionParam struct {
 	// Condition for lifecycle transitions to apply after an object reaches an age in
 	// seconds.
-	Condition    param.Field[R2LifecycleRuleStorageClassTransitionsConditionUnionParam] `json:"condition,required"`
-	StorageClass param.Field[R2LifecycleRuleStorageClassTransitionsStorageClass]        `json:"storageClass,required"`
+	Condition    param.Field[R2LifecycleRuleStorageClassTransitionsConditionUnionParam] `json:"condition" api:"required"`
+	StorageClass param.Field[R2LifecycleRuleStorageClassTransitionsStorageClass]        `json:"storageClass" api:"required"`
 }
 
 func (r R2LifecycleRuleStorageClassTransitionParam) MarshalJSON() (data []byte, err error) {
@@ -592,7 +592,7 @@ func (r R2LifecycleRuleStorageClassTransitionParam) MarshalJSON() (data []byte, 
 // Condition for lifecycle transitions to apply after an object reaches an age in
 // seconds.
 type R2LifecycleRuleStorageClassTransitionsConditionParam struct {
-	Type   param.Field[R2LifecycleRuleStorageClassTransitionsConditionType] `json:"type,required"`
+	Type   param.Field[R2LifecycleRuleStorageClassTransitionsConditionType] `json:"type" api:"required"`
 	Date   param.Field[time.Time]                                           `json:"date" format:"date"`
 	MaxAge param.Field[int64]                                               `json:"maxAge"`
 }
@@ -614,11 +614,11 @@ type R2LifecycleRuleStorageClassTransitionsConditionUnionParam interface {
 }
 
 type AccountR2BucketLifecycleGetResponse struct {
-	Errors   []AccountR2BucketLifecycleGetResponseError `json:"errors,required"`
-	Messages []string                                   `json:"messages,required"`
-	Result   AccountR2BucketLifecycleGetResponseResult  `json:"result,required"`
+	Errors   []AccountR2BucketLifecycleGetResponseError `json:"errors" api:"required"`
+	Messages []string                                   `json:"messages" api:"required"`
+	Result   AccountR2BucketLifecycleGetResponseResult  `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success AccountR2BucketLifecycleGetResponseSuccess `json:"success,required"`
+	Success AccountR2BucketLifecycleGetResponseSuccess `json:"success" api:"required"`
 	JSON    accountR2BucketLifecycleGetResponseJSON    `json:"-"`
 }
 
@@ -642,8 +642,8 @@ func (r accountR2BucketLifecycleGetResponseJSON) RawJSON() string {
 }
 
 type AccountR2BucketLifecycleGetResponseError struct {
-	Code             int64                                           `json:"code,required"`
-	Message          string                                          `json:"message,required"`
+	Code             int64                                           `json:"code" api:"required"`
+	Message          string                                          `json:"message" api:"required"`
 	DocumentationURL string                                          `json:"documentation_url"`
 	Source           AccountR2BucketLifecycleGetResponseErrorsSource `json:"source"`
 	JSON             accountR2BucketLifecycleGetResponseErrorJSON    `json:"-"`

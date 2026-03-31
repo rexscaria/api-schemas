@@ -14,7 +14,7 @@ import (
 )
 
 func TestAccountDevicePolicyFallbackDomainList(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,6 +26,7 @@ func TestAccountDevicePolicyFallbackDomainList(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Devices.Policy.FallbackDomains.List(
 		context.TODO(),
@@ -42,7 +43,7 @@ func TestAccountDevicePolicyFallbackDomainList(t *testing.T) {
 }
 
 func TestAccountDevicePolicyFallbackDomainGlobalList(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -54,6 +55,7 @@ func TestAccountDevicePolicyFallbackDomainGlobalList(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Devices.Policy.FallbackDomains.GlobalList(context.TODO(), "699d98642c564d2e855e9661899b7252")
 	if err != nil {
@@ -66,7 +68,7 @@ func TestAccountDevicePolicyFallbackDomainGlobalList(t *testing.T) {
 }
 
 func TestAccountDevicePolicyFallbackDomainGlobalSet(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -78,6 +80,7 @@ func TestAccountDevicePolicyFallbackDomainGlobalSet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Devices.Policy.FallbackDomains.GlobalSet(
 		context.TODO(),
@@ -100,7 +103,7 @@ func TestAccountDevicePolicyFallbackDomainGlobalSet(t *testing.T) {
 }
 
 func TestAccountDevicePolicyFallbackDomainSet(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -112,6 +115,7 @@ func TestAccountDevicePolicyFallbackDomainSet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Devices.Policy.FallbackDomains.Set(
 		context.TODO(),

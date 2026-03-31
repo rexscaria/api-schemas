@@ -15,7 +15,7 @@ import (
 )
 
 func TestRadarTcpResetsTimeoutSummaryWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -27,6 +27,7 @@ func TestRadarTcpResetsTimeoutSummaryWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.TcpResetsTimeouts.Summary(context.TODO(), cfrex.RadarTcpResetsTimeoutSummaryParams{
 		Asn:       cfrex.F([]string{"string"}),
@@ -48,7 +49,7 @@ func TestRadarTcpResetsTimeoutSummaryWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarTcpResetsTimeoutTimeseriesGroupsWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -60,6 +61,7 @@ func TestRadarTcpResetsTimeoutTimeseriesGroupsWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.TcpResetsTimeouts.TimeseriesGroups(context.TODO(), cfrex.RadarTcpResetsTimeoutTimeseriesGroupsParams{
 		AggInterval: cfrex.F(cfrex.RadarTcpResetsTimeoutTimeseriesGroupsParamsAggInterval1h),

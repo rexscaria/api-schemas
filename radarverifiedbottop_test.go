@@ -15,7 +15,7 @@ import (
 )
 
 func TestRadarVerifiedBotTopBotsWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -27,6 +27,7 @@ func TestRadarVerifiedBotTopBotsWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.VerifiedBots.Top.Bots(context.TODO(), cfrex.RadarVerifiedBotTopBotsParams{
 		Asn:       cfrex.F([]string{"string"}),
@@ -49,7 +50,7 @@ func TestRadarVerifiedBotTopBotsWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarVerifiedBotTopCategoriesWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -61,6 +62,7 @@ func TestRadarVerifiedBotTopCategoriesWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.VerifiedBots.Top.Categories(context.TODO(), cfrex.RadarVerifiedBotTopCategoriesParams{
 		Asn:       cfrex.F([]string{"string"}),

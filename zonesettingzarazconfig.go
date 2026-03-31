@@ -41,11 +41,11 @@ func (r *ZoneSettingZarazConfigService) Get(ctx context.Context, zoneID string, 
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/settings/zaraz/config", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates Zaraz configuration for a zone.
@@ -53,20 +53,20 @@ func (r *ZoneSettingZarazConfigService) Update(ctx context.Context, zoneID strin
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/settings/zaraz/config", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type ZarazConfigResponse struct {
-	Errors   []ZarazMessagesItems `json:"errors,required"`
-	Messages []ZarazMessagesItems `json:"messages,required"`
+	Errors   []ZarazMessagesItems `json:"errors" api:"required"`
+	Messages []ZarazMessagesItems `json:"messages" api:"required"`
 	// Zaraz configuration
-	Result ZarazConfigReturn `json:"result,required"`
+	Result ZarazConfigReturn `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success bool                    `json:"success,required"`
+	Success bool                    `json:"success" api:"required"`
 	JSON    zarazConfigResponseJSON `json:"-"`
 }
 
@@ -91,23 +91,23 @@ func (r zarazConfigResponseJSON) RawJSON() string {
 
 type ZoneSettingZarazConfigUpdateParams struct {
 	// Data layer compatibility mode enabled.
-	DataLayer param.Field[bool] `json:"dataLayer,required"`
+	DataLayer param.Field[bool] `json:"dataLayer" api:"required"`
 	// The key for Zaraz debug mode.
-	DebugKey param.Field[string] `json:"debugKey,required"`
+	DebugKey param.Field[string] `json:"debugKey" api:"required"`
 	// General Zaraz settings.
-	Settings param.Field[ZoneSettingZarazConfigUpdateParamsSettings] `json:"settings,required"`
+	Settings param.Field[ZoneSettingZarazConfigUpdateParamsSettings] `json:"settings" api:"required"`
 	// Tools set up under Zaraz configuration, where key is the alpha-numeric tool ID
 	// and value is the tool configuration object.
-	Tools param.Field[map[string]ZoneSettingZarazConfigUpdateParamsToolsUnion] `json:"tools,required"`
+	Tools param.Field[map[string]ZoneSettingZarazConfigUpdateParamsToolsUnion] `json:"tools" api:"required"`
 	// Triggers set up under Zaraz configuration, where key is the trigger
 	// alpha-numeric ID and value is the trigger configuration.
-	Triggers param.Field[map[string]ZoneSettingZarazConfigUpdateParamsTriggers] `json:"triggers,required"`
+	Triggers param.Field[map[string]ZoneSettingZarazConfigUpdateParamsTriggers] `json:"triggers" api:"required"`
 	// Variables set up under Zaraz configuration, where key is the variable
 	// alpha-numeric ID and value is the variable configuration. Values of variables of
 	// type secret are not included.
-	Variables param.Field[map[string]ZoneSettingZarazConfigUpdateParamsVariablesUnion] `json:"variables,required"`
+	Variables param.Field[map[string]ZoneSettingZarazConfigUpdateParamsVariablesUnion] `json:"variables" api:"required"`
 	// Zaraz internal version of the config.
-	ZarazVersion param.Field[int64] `json:"zarazVersion,required"`
+	ZarazVersion param.Field[int64] `json:"zarazVersion" api:"required"`
 	// Cloudflare Monitoring settings.
 	Analytics param.Field[ZoneSettingZarazConfigUpdateParamsAnalytics] `json:"analytics"`
 	// Consent management configuration.
@@ -123,7 +123,7 @@ func (r ZoneSettingZarazConfigUpdateParams) MarshalJSON() (data []byte, err erro
 // General Zaraz settings.
 type ZoneSettingZarazConfigUpdateParamsSettings struct {
 	// Automatic injection of Zaraz scripts enabled.
-	AutoInjectScript param.Field[bool] `json:"autoInjectScript,required"`
+	AutoInjectScript param.Field[bool] `json:"autoInjectScript" api:"required"`
 	// Details of the worker that receives and edits Zaraz Context object.
 	ContextEnricher param.Field[ZoneSettingZarazConfigUpdateParamsSettingsContextEnricher] `json:"contextEnricher"`
 	// The domain Zaraz will use for writing and reading its cookies.
@@ -158,8 +158,8 @@ func (r ZoneSettingZarazConfigUpdateParamsSettings) MarshalJSON() (data []byte, 
 
 // Details of the worker that receives and edits Zaraz Context object.
 type ZoneSettingZarazConfigUpdateParamsSettingsContextEnricher struct {
-	EscapedWorkerName param.Field[string] `json:"escapedWorkerName,required"`
-	WorkerTag         param.Field[string] `json:"workerTag,required"`
+	EscapedWorkerName param.Field[string] `json:"escapedWorkerName" api:"required"`
+	WorkerTag         param.Field[string] `json:"workerTag" api:"required"`
 }
 
 func (r ZoneSettingZarazConfigUpdateParamsSettingsContextEnricher) MarshalJSON() (data []byte, err error) {
@@ -167,17 +167,17 @@ func (r ZoneSettingZarazConfigUpdateParamsSettingsContextEnricher) MarshalJSON()
 }
 
 type ZoneSettingZarazConfigUpdateParamsTools struct {
-	BlockingTriggers param.Field[interface{}] `json:"blockingTriggers,required"`
+	BlockingTriggers param.Field[interface{}] `json:"blockingTriggers" api:"required"`
 	// Tool's internal name
-	Component     param.Field[string]      `json:"component,required"`
-	DefaultFields param.Field[interface{}] `json:"defaultFields,required"`
+	Component     param.Field[string]      `json:"component" api:"required"`
+	DefaultFields param.Field[interface{}] `json:"defaultFields" api:"required"`
 	// Whether tool is enabled
-	Enabled param.Field[bool] `json:"enabled,required"`
+	Enabled param.Field[bool] `json:"enabled" api:"required"`
 	// Tool's name defined by the user
-	Name        param.Field[string]                                      `json:"name,required"`
-	Permissions param.Field[interface{}]                                 `json:"permissions,required"`
-	Settings    param.Field[interface{}]                                 `json:"settings,required"`
-	Type        param.Field[ZoneSettingZarazConfigUpdateParamsToolsType] `json:"type,required"`
+	Name        param.Field[string]                                      `json:"name" api:"required"`
+	Permissions param.Field[interface{}]                                 `json:"permissions" api:"required"`
+	Settings    param.Field[interface{}]                                 `json:"settings" api:"required"`
+	Type        param.Field[ZoneSettingZarazConfigUpdateParamsToolsType] `json:"type" api:"required"`
 	Actions     param.Field[interface{}]                                 `json:"actions"`
 	// Default consent purpose ID
 	DefaultPurpose param.Field[string]      `json:"defaultPurpose"`
@@ -207,20 +207,20 @@ type ZoneSettingZarazConfigUpdateParamsToolsUnion interface {
 
 type ZoneSettingZarazConfigUpdateParamsToolsZarazManagedComponent struct {
 	// List of blocking trigger IDs
-	BlockingTriggers param.Field[[]string] `json:"blockingTriggers,required"`
+	BlockingTriggers param.Field[[]string] `json:"blockingTriggers" api:"required"`
 	// Tool's internal name
-	Component param.Field[string] `json:"component,required"`
+	Component param.Field[string] `json:"component" api:"required"`
 	// Default fields for tool's actions
-	DefaultFields param.Field[map[string]ZoneSettingZarazConfigUpdateParamsToolsZarazManagedComponentDefaultFieldsUnion] `json:"defaultFields,required"`
+	DefaultFields param.Field[map[string]ZoneSettingZarazConfigUpdateParamsToolsZarazManagedComponentDefaultFieldsUnion] `json:"defaultFields" api:"required"`
 	// Whether tool is enabled
-	Enabled param.Field[bool] `json:"enabled,required"`
+	Enabled param.Field[bool] `json:"enabled" api:"required"`
 	// Tool's name defined by the user
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// List of permissions granted to the component
-	Permissions param.Field[[]string] `json:"permissions,required"`
+	Permissions param.Field[[]string] `json:"permissions" api:"required"`
 	// Tool's settings
-	Settings param.Field[map[string]ZoneSettingZarazConfigUpdateParamsToolsZarazManagedComponentSettingsUnion] `json:"settings,required"`
-	Type     param.Field[ZoneSettingZarazConfigUpdateParamsToolsZarazManagedComponentType]                     `json:"type,required"`
+	Settings param.Field[map[string]ZoneSettingZarazConfigUpdateParamsToolsZarazManagedComponentSettingsUnion] `json:"settings" api:"required"`
+	Type     param.Field[ZoneSettingZarazConfigUpdateParamsToolsZarazManagedComponentType]                     `json:"type" api:"required"`
 	// Actions configured on a tool. Either this or neoEvents field is required.
 	Actions param.Field[map[string]ZoneSettingZarazConfigUpdateParamsToolsZarazManagedComponentActions] `json:"actions"`
 	// Default consent purpose ID
@@ -269,13 +269,13 @@ func (r ZoneSettingZarazConfigUpdateParamsToolsZarazManagedComponentType) IsKnow
 
 type ZoneSettingZarazConfigUpdateParamsToolsZarazManagedComponentActions struct {
 	// Tool event type
-	ActionType param.Field[string] `json:"actionType,required"`
+	ActionType param.Field[string] `json:"actionType" api:"required"`
 	// List of blocking triggers IDs
-	BlockingTriggers param.Field[[]string] `json:"blockingTriggers,required"`
+	BlockingTriggers param.Field[[]string] `json:"blockingTriggers" api:"required"`
 	// Event payload
-	Data param.Field[interface{}] `json:"data,required"`
+	Data param.Field[interface{}] `json:"data" api:"required"`
 	// List of firing triggers IDs
-	FiringTriggers param.Field[[]string] `json:"firingTriggers,required"`
+	FiringTriggers param.Field[[]string] `json:"firingTriggers" api:"required"`
 }
 
 func (r ZoneSettingZarazConfigUpdateParamsToolsZarazManagedComponentActions) MarshalJSON() (data []byte, err error) {
@@ -284,13 +284,13 @@ func (r ZoneSettingZarazConfigUpdateParamsToolsZarazManagedComponentActions) Mar
 
 type ZoneSettingZarazConfigUpdateParamsToolsZarazManagedComponentNeoEvent struct {
 	// Tool event type
-	ActionType param.Field[string] `json:"actionType,required"`
+	ActionType param.Field[string] `json:"actionType" api:"required"`
 	// List of blocking triggers IDs
-	BlockingTriggers param.Field[[]string] `json:"blockingTriggers,required"`
+	BlockingTriggers param.Field[[]string] `json:"blockingTriggers" api:"required"`
 	// Event payload
-	Data param.Field[interface{}] `json:"data,required"`
+	Data param.Field[interface{}] `json:"data" api:"required"`
 	// List of firing triggers IDs
-	FiringTriggers param.Field[[]string] `json:"firingTriggers,required"`
+	FiringTriggers param.Field[[]string] `json:"firingTriggers" api:"required"`
 }
 
 func (r ZoneSettingZarazConfigUpdateParamsToolsZarazManagedComponentNeoEvent) MarshalJSON() (data []byte, err error) {
@@ -299,22 +299,22 @@ func (r ZoneSettingZarazConfigUpdateParamsToolsZarazManagedComponentNeoEvent) Ma
 
 type ZoneSettingZarazConfigUpdateParamsToolsWorker struct {
 	// List of blocking trigger IDs
-	BlockingTriggers param.Field[[]string] `json:"blockingTriggers,required"`
+	BlockingTriggers param.Field[[]string] `json:"blockingTriggers" api:"required"`
 	// Tool's internal name
-	Component param.Field[string] `json:"component,required"`
+	Component param.Field[string] `json:"component" api:"required"`
 	// Default fields for tool's actions
-	DefaultFields param.Field[map[string]ZoneSettingZarazConfigUpdateParamsToolsWorkerDefaultFieldsUnion] `json:"defaultFields,required"`
+	DefaultFields param.Field[map[string]ZoneSettingZarazConfigUpdateParamsToolsWorkerDefaultFieldsUnion] `json:"defaultFields" api:"required"`
 	// Whether tool is enabled
-	Enabled param.Field[bool] `json:"enabled,required"`
+	Enabled param.Field[bool] `json:"enabled" api:"required"`
 	// Tool's name defined by the user
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// List of permissions granted to the component
-	Permissions param.Field[[]string] `json:"permissions,required"`
+	Permissions param.Field[[]string] `json:"permissions" api:"required"`
 	// Tool's settings
-	Settings param.Field[map[string]ZoneSettingZarazConfigUpdateParamsToolsWorkerSettingsUnion] `json:"settings,required"`
-	Type     param.Field[ZoneSettingZarazConfigUpdateParamsToolsWorkerType]                     `json:"type,required"`
+	Settings param.Field[map[string]ZoneSettingZarazConfigUpdateParamsToolsWorkerSettingsUnion] `json:"settings" api:"required"`
+	Type     param.Field[ZoneSettingZarazConfigUpdateParamsToolsWorkerType]                     `json:"type" api:"required"`
 	// Cloudflare worker that acts as a managed component
-	Worker param.Field[ZoneSettingZarazConfigUpdateParamsToolsWorkerWorker] `json:"worker,required"`
+	Worker param.Field[ZoneSettingZarazConfigUpdateParamsToolsWorkerWorker] `json:"worker" api:"required"`
 	// Actions configured on a tool. Either this or neoEvents field is required.
 	Actions param.Field[map[string]ZoneSettingZarazConfigUpdateParamsToolsWorkerActions] `json:"actions"`
 	// Default consent purpose ID
@@ -363,8 +363,8 @@ func (r ZoneSettingZarazConfigUpdateParamsToolsWorkerType) IsKnown() bool {
 
 // Cloudflare worker that acts as a managed component
 type ZoneSettingZarazConfigUpdateParamsToolsWorkerWorker struct {
-	EscapedWorkerName param.Field[string] `json:"escapedWorkerName,required"`
-	WorkerTag         param.Field[string] `json:"workerTag,required"`
+	EscapedWorkerName param.Field[string] `json:"escapedWorkerName" api:"required"`
+	WorkerTag         param.Field[string] `json:"workerTag" api:"required"`
 }
 
 func (r ZoneSettingZarazConfigUpdateParamsToolsWorkerWorker) MarshalJSON() (data []byte, err error) {
@@ -373,13 +373,13 @@ func (r ZoneSettingZarazConfigUpdateParamsToolsWorkerWorker) MarshalJSON() (data
 
 type ZoneSettingZarazConfigUpdateParamsToolsWorkerActions struct {
 	// Tool event type
-	ActionType param.Field[string] `json:"actionType,required"`
+	ActionType param.Field[string] `json:"actionType" api:"required"`
 	// List of blocking triggers IDs
-	BlockingTriggers param.Field[[]string] `json:"blockingTriggers,required"`
+	BlockingTriggers param.Field[[]string] `json:"blockingTriggers" api:"required"`
 	// Event payload
-	Data param.Field[interface{}] `json:"data,required"`
+	Data param.Field[interface{}] `json:"data" api:"required"`
 	// List of firing triggers IDs
-	FiringTriggers param.Field[[]string] `json:"firingTriggers,required"`
+	FiringTriggers param.Field[[]string] `json:"firingTriggers" api:"required"`
 }
 
 func (r ZoneSettingZarazConfigUpdateParamsToolsWorkerActions) MarshalJSON() (data []byte, err error) {
@@ -388,13 +388,13 @@ func (r ZoneSettingZarazConfigUpdateParamsToolsWorkerActions) MarshalJSON() (dat
 
 type ZoneSettingZarazConfigUpdateParamsToolsWorkerNeoEvent struct {
 	// Tool event type
-	ActionType param.Field[string] `json:"actionType,required"`
+	ActionType param.Field[string] `json:"actionType" api:"required"`
 	// List of blocking triggers IDs
-	BlockingTriggers param.Field[[]string] `json:"blockingTriggers,required"`
+	BlockingTriggers param.Field[[]string] `json:"blockingTriggers" api:"required"`
 	// Event payload
-	Data param.Field[interface{}] `json:"data,required"`
+	Data param.Field[interface{}] `json:"data" api:"required"`
 	// List of firing triggers IDs
-	FiringTriggers param.Field[[]string] `json:"firingTriggers,required"`
+	FiringTriggers param.Field[[]string] `json:"firingTriggers" api:"required"`
 }
 
 func (r ZoneSettingZarazConfigUpdateParamsToolsWorkerNeoEvent) MarshalJSON() (data []byte, err error) {
@@ -418,11 +418,11 @@ func (r ZoneSettingZarazConfigUpdateParamsToolsType) IsKnown() bool {
 
 type ZoneSettingZarazConfigUpdateParamsTriggers struct {
 	// Rules defining when the trigger is not fired.
-	ExcludeRules param.Field[[]ZoneSettingZarazConfigUpdateParamsTriggersExcludeRuleUnion] `json:"excludeRules,required"`
+	ExcludeRules param.Field[[]ZoneSettingZarazConfigUpdateParamsTriggersExcludeRuleUnion] `json:"excludeRules" api:"required"`
 	// Rules defining when the trigger is fired.
-	LoadRules param.Field[[]ZoneSettingZarazConfigUpdateParamsTriggersLoadRuleUnion] `json:"loadRules,required"`
+	LoadRules param.Field[[]ZoneSettingZarazConfigUpdateParamsTriggersLoadRuleUnion] `json:"loadRules" api:"required"`
 	// Trigger name.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Trigger description.
 	Description param.Field[string]                                           `json:"description"`
 	System      param.Field[ZoneSettingZarazConfigUpdateParamsTriggersSystem] `json:"system"`
@@ -433,7 +433,7 @@ func (r ZoneSettingZarazConfigUpdateParamsTriggers) MarshalJSON() (data []byte, 
 }
 
 type ZoneSettingZarazConfigUpdateParamsTriggersExcludeRule struct {
-	ID       param.Field[string]                                                       `json:"id,required"`
+	ID       param.Field[string]                                                       `json:"id" api:"required"`
 	Action   param.Field[ZoneSettingZarazConfigUpdateParamsTriggersExcludeRulesAction] `json:"action"`
 	Match    param.Field[string]                                                       `json:"match"`
 	Op       param.Field[ZoneSettingZarazConfigUpdateParamsTriggersExcludeRulesOp]     `json:"op"`
@@ -462,10 +462,10 @@ type ZoneSettingZarazConfigUpdateParamsTriggersExcludeRuleUnion interface {
 }
 
 type ZoneSettingZarazConfigUpdateParamsTriggersExcludeRulesZarazLoadRule struct {
-	ID    param.Field[string]                                                                `json:"id,required"`
-	Match param.Field[string]                                                                `json:"match,required"`
-	Op    param.Field[ZoneSettingZarazConfigUpdateParamsTriggersExcludeRulesZarazLoadRuleOp] `json:"op,required"`
-	Value param.Field[string]                                                                `json:"value,required"`
+	ID    param.Field[string]                                                                `json:"id" api:"required"`
+	Match param.Field[string]                                                                `json:"match" api:"required"`
+	Op    param.Field[ZoneSettingZarazConfigUpdateParamsTriggersExcludeRulesZarazLoadRuleOp] `json:"op" api:"required"`
+	Value param.Field[string]                                                                `json:"value" api:"required"`
 }
 
 func (r ZoneSettingZarazConfigUpdateParamsTriggersExcludeRulesZarazLoadRule) MarshalJSON() (data []byte, err error) {
@@ -499,9 +499,9 @@ func (r ZoneSettingZarazConfigUpdateParamsTriggersExcludeRulesZarazLoadRuleOp) I
 }
 
 type ZoneSettingZarazConfigUpdateParamsTriggersExcludeRulesZarazClickListenerRule struct {
-	ID       param.Field[string]                                                                               `json:"id,required"`
-	Action   param.Field[ZoneSettingZarazConfigUpdateParamsTriggersExcludeRulesZarazClickListenerRuleAction]   `json:"action,required"`
-	Settings param.Field[ZoneSettingZarazConfigUpdateParamsTriggersExcludeRulesZarazClickListenerRuleSettings] `json:"settings,required"`
+	ID       param.Field[string]                                                                               `json:"id" api:"required"`
+	Action   param.Field[ZoneSettingZarazConfigUpdateParamsTriggersExcludeRulesZarazClickListenerRuleAction]   `json:"action" api:"required"`
+	Settings param.Field[ZoneSettingZarazConfigUpdateParamsTriggersExcludeRulesZarazClickListenerRuleSettings] `json:"settings" api:"required"`
 }
 
 func (r ZoneSettingZarazConfigUpdateParamsTriggersExcludeRulesZarazClickListenerRule) MarshalJSON() (data []byte, err error) {
@@ -526,9 +526,9 @@ func (r ZoneSettingZarazConfigUpdateParamsTriggersExcludeRulesZarazClickListener
 }
 
 type ZoneSettingZarazConfigUpdateParamsTriggersExcludeRulesZarazClickListenerRuleSettings struct {
-	Selector    param.Field[string]                                                                                   `json:"selector,required"`
-	Type        param.Field[ZoneSettingZarazConfigUpdateParamsTriggersExcludeRulesZarazClickListenerRuleSettingsType] `json:"type,required"`
-	WaitForTags param.Field[int64]                                                                                    `json:"waitForTags,required"`
+	Selector    param.Field[string]                                                                                   `json:"selector" api:"required"`
+	Type        param.Field[ZoneSettingZarazConfigUpdateParamsTriggersExcludeRulesZarazClickListenerRuleSettingsType] `json:"type" api:"required"`
+	WaitForTags param.Field[int64]                                                                                    `json:"waitForTags" api:"required"`
 }
 
 func (r ZoneSettingZarazConfigUpdateParamsTriggersExcludeRulesZarazClickListenerRuleSettings) MarshalJSON() (data []byte, err error) {
@@ -551,9 +551,9 @@ func (r ZoneSettingZarazConfigUpdateParamsTriggersExcludeRulesZarazClickListener
 }
 
 type ZoneSettingZarazConfigUpdateParamsTriggersExcludeRulesZarazTimerRule struct {
-	ID       param.Field[string]                                                                       `json:"id,required"`
-	Action   param.Field[ZoneSettingZarazConfigUpdateParamsTriggersExcludeRulesZarazTimerRuleAction]   `json:"action,required"`
-	Settings param.Field[ZoneSettingZarazConfigUpdateParamsTriggersExcludeRulesZarazTimerRuleSettings] `json:"settings,required"`
+	ID       param.Field[string]                                                                       `json:"id" api:"required"`
+	Action   param.Field[ZoneSettingZarazConfigUpdateParamsTriggersExcludeRulesZarazTimerRuleAction]   `json:"action" api:"required"`
+	Settings param.Field[ZoneSettingZarazConfigUpdateParamsTriggersExcludeRulesZarazTimerRuleSettings] `json:"settings" api:"required"`
 }
 
 func (r ZoneSettingZarazConfigUpdateParamsTriggersExcludeRulesZarazTimerRule) MarshalJSON() (data []byte, err error) {
@@ -578,8 +578,8 @@ func (r ZoneSettingZarazConfigUpdateParamsTriggersExcludeRulesZarazTimerRuleActi
 }
 
 type ZoneSettingZarazConfigUpdateParamsTriggersExcludeRulesZarazTimerRuleSettings struct {
-	Interval param.Field[int64] `json:"interval,required"`
-	Limit    param.Field[int64] `json:"limit,required"`
+	Interval param.Field[int64] `json:"interval" api:"required"`
+	Limit    param.Field[int64] `json:"limit" api:"required"`
 }
 
 func (r ZoneSettingZarazConfigUpdateParamsTriggersExcludeRulesZarazTimerRuleSettings) MarshalJSON() (data []byte, err error) {
@@ -587,9 +587,9 @@ func (r ZoneSettingZarazConfigUpdateParamsTriggersExcludeRulesZarazTimerRuleSett
 }
 
 type ZoneSettingZarazConfigUpdateParamsTriggersExcludeRulesZarazFormSubmissionRule struct {
-	ID       param.Field[string]                                                                                `json:"id,required"`
-	Action   param.Field[ZoneSettingZarazConfigUpdateParamsTriggersExcludeRulesZarazFormSubmissionRuleAction]   `json:"action,required"`
-	Settings param.Field[ZoneSettingZarazConfigUpdateParamsTriggersExcludeRulesZarazFormSubmissionRuleSettings] `json:"settings,required"`
+	ID       param.Field[string]                                                                                `json:"id" api:"required"`
+	Action   param.Field[ZoneSettingZarazConfigUpdateParamsTriggersExcludeRulesZarazFormSubmissionRuleAction]   `json:"action" api:"required"`
+	Settings param.Field[ZoneSettingZarazConfigUpdateParamsTriggersExcludeRulesZarazFormSubmissionRuleSettings] `json:"settings" api:"required"`
 }
 
 func (r ZoneSettingZarazConfigUpdateParamsTriggersExcludeRulesZarazFormSubmissionRule) MarshalJSON() (data []byte, err error) {
@@ -614,8 +614,8 @@ func (r ZoneSettingZarazConfigUpdateParamsTriggersExcludeRulesZarazFormSubmissio
 }
 
 type ZoneSettingZarazConfigUpdateParamsTriggersExcludeRulesZarazFormSubmissionRuleSettings struct {
-	Selector param.Field[string] `json:"selector,required"`
-	Validate param.Field[bool]   `json:"validate,required"`
+	Selector param.Field[string] `json:"selector" api:"required"`
+	Validate param.Field[bool]   `json:"validate" api:"required"`
 }
 
 func (r ZoneSettingZarazConfigUpdateParamsTriggersExcludeRulesZarazFormSubmissionRuleSettings) MarshalJSON() (data []byte, err error) {
@@ -623,9 +623,9 @@ func (r ZoneSettingZarazConfigUpdateParamsTriggersExcludeRulesZarazFormSubmissio
 }
 
 type ZoneSettingZarazConfigUpdateParamsTriggersExcludeRulesZarazVariableMatchRule struct {
-	ID       param.Field[string]                                                                               `json:"id,required"`
-	Action   param.Field[ZoneSettingZarazConfigUpdateParamsTriggersExcludeRulesZarazVariableMatchRuleAction]   `json:"action,required"`
-	Settings param.Field[ZoneSettingZarazConfigUpdateParamsTriggersExcludeRulesZarazVariableMatchRuleSettings] `json:"settings,required"`
+	ID       param.Field[string]                                                                               `json:"id" api:"required"`
+	Action   param.Field[ZoneSettingZarazConfigUpdateParamsTriggersExcludeRulesZarazVariableMatchRuleAction]   `json:"action" api:"required"`
+	Settings param.Field[ZoneSettingZarazConfigUpdateParamsTriggersExcludeRulesZarazVariableMatchRuleSettings] `json:"settings" api:"required"`
 }
 
 func (r ZoneSettingZarazConfigUpdateParamsTriggersExcludeRulesZarazVariableMatchRule) MarshalJSON() (data []byte, err error) {
@@ -650,8 +650,8 @@ func (r ZoneSettingZarazConfigUpdateParamsTriggersExcludeRulesZarazVariableMatch
 }
 
 type ZoneSettingZarazConfigUpdateParamsTriggersExcludeRulesZarazVariableMatchRuleSettings struct {
-	Match    param.Field[string] `json:"match,required"`
-	Variable param.Field[string] `json:"variable,required"`
+	Match    param.Field[string] `json:"match" api:"required"`
+	Variable param.Field[string] `json:"variable" api:"required"`
 }
 
 func (r ZoneSettingZarazConfigUpdateParamsTriggersExcludeRulesZarazVariableMatchRuleSettings) MarshalJSON() (data []byte, err error) {
@@ -659,9 +659,9 @@ func (r ZoneSettingZarazConfigUpdateParamsTriggersExcludeRulesZarazVariableMatch
 }
 
 type ZoneSettingZarazConfigUpdateParamsTriggersExcludeRulesZarazScrollDepthRule struct {
-	ID       param.Field[string]                                                                             `json:"id,required"`
-	Action   param.Field[ZoneSettingZarazConfigUpdateParamsTriggersExcludeRulesZarazScrollDepthRuleAction]   `json:"action,required"`
-	Settings param.Field[ZoneSettingZarazConfigUpdateParamsTriggersExcludeRulesZarazScrollDepthRuleSettings] `json:"settings,required"`
+	ID       param.Field[string]                                                                             `json:"id" api:"required"`
+	Action   param.Field[ZoneSettingZarazConfigUpdateParamsTriggersExcludeRulesZarazScrollDepthRuleAction]   `json:"action" api:"required"`
+	Settings param.Field[ZoneSettingZarazConfigUpdateParamsTriggersExcludeRulesZarazScrollDepthRuleSettings] `json:"settings" api:"required"`
 }
 
 func (r ZoneSettingZarazConfigUpdateParamsTriggersExcludeRulesZarazScrollDepthRule) MarshalJSON() (data []byte, err error) {
@@ -686,7 +686,7 @@ func (r ZoneSettingZarazConfigUpdateParamsTriggersExcludeRulesZarazScrollDepthRu
 }
 
 type ZoneSettingZarazConfigUpdateParamsTriggersExcludeRulesZarazScrollDepthRuleSettings struct {
-	Positions param.Field[string] `json:"positions,required"`
+	Positions param.Field[string] `json:"positions" api:"required"`
 }
 
 func (r ZoneSettingZarazConfigUpdateParamsTriggersExcludeRulesZarazScrollDepthRuleSettings) MarshalJSON() (data []byte, err error) {
@@ -694,9 +694,9 @@ func (r ZoneSettingZarazConfigUpdateParamsTriggersExcludeRulesZarazScrollDepthRu
 }
 
 type ZoneSettingZarazConfigUpdateParamsTriggersExcludeRulesZarazElementVisibilityRule struct {
-	ID       param.Field[string]                                                                                   `json:"id,required"`
-	Action   param.Field[ZoneSettingZarazConfigUpdateParamsTriggersExcludeRulesZarazElementVisibilityRuleAction]   `json:"action,required"`
-	Settings param.Field[ZoneSettingZarazConfigUpdateParamsTriggersExcludeRulesZarazElementVisibilityRuleSettings] `json:"settings,required"`
+	ID       param.Field[string]                                                                                   `json:"id" api:"required"`
+	Action   param.Field[ZoneSettingZarazConfigUpdateParamsTriggersExcludeRulesZarazElementVisibilityRuleAction]   `json:"action" api:"required"`
+	Settings param.Field[ZoneSettingZarazConfigUpdateParamsTriggersExcludeRulesZarazElementVisibilityRuleSettings] `json:"settings" api:"required"`
 }
 
 func (r ZoneSettingZarazConfigUpdateParamsTriggersExcludeRulesZarazElementVisibilityRule) MarshalJSON() (data []byte, err error) {
@@ -721,7 +721,7 @@ func (r ZoneSettingZarazConfigUpdateParamsTriggersExcludeRulesZarazElementVisibi
 }
 
 type ZoneSettingZarazConfigUpdateParamsTriggersExcludeRulesZarazElementVisibilityRuleSettings struct {
-	Selector param.Field[string] `json:"selector,required"`
+	Selector param.Field[string] `json:"selector" api:"required"`
 }
 
 func (r ZoneSettingZarazConfigUpdateParamsTriggersExcludeRulesZarazElementVisibilityRuleSettings) MarshalJSON() (data []byte, err error) {
@@ -771,7 +771,7 @@ func (r ZoneSettingZarazConfigUpdateParamsTriggersExcludeRulesOp) IsKnown() bool
 }
 
 type ZoneSettingZarazConfigUpdateParamsTriggersLoadRule struct {
-	ID       param.Field[string]                                                    `json:"id,required"`
+	ID       param.Field[string]                                                    `json:"id" api:"required"`
 	Action   param.Field[ZoneSettingZarazConfigUpdateParamsTriggersLoadRulesAction] `json:"action"`
 	Match    param.Field[string]                                                    `json:"match"`
 	Op       param.Field[ZoneSettingZarazConfigUpdateParamsTriggersLoadRulesOp]     `json:"op"`
@@ -799,10 +799,10 @@ type ZoneSettingZarazConfigUpdateParamsTriggersLoadRuleUnion interface {
 }
 
 type ZoneSettingZarazConfigUpdateParamsTriggersLoadRulesZarazLoadRule struct {
-	ID    param.Field[string]                                                             `json:"id,required"`
-	Match param.Field[string]                                                             `json:"match,required"`
-	Op    param.Field[ZoneSettingZarazConfigUpdateParamsTriggersLoadRulesZarazLoadRuleOp] `json:"op,required"`
-	Value param.Field[string]                                                             `json:"value,required"`
+	ID    param.Field[string]                                                             `json:"id" api:"required"`
+	Match param.Field[string]                                                             `json:"match" api:"required"`
+	Op    param.Field[ZoneSettingZarazConfigUpdateParamsTriggersLoadRulesZarazLoadRuleOp] `json:"op" api:"required"`
+	Value param.Field[string]                                                             `json:"value" api:"required"`
 }
 
 func (r ZoneSettingZarazConfigUpdateParamsTriggersLoadRulesZarazLoadRule) MarshalJSON() (data []byte, err error) {
@@ -836,9 +836,9 @@ func (r ZoneSettingZarazConfigUpdateParamsTriggersLoadRulesZarazLoadRuleOp) IsKn
 }
 
 type ZoneSettingZarazConfigUpdateParamsTriggersLoadRulesZarazClickListenerRule struct {
-	ID       param.Field[string]                                                                            `json:"id,required"`
-	Action   param.Field[ZoneSettingZarazConfigUpdateParamsTriggersLoadRulesZarazClickListenerRuleAction]   `json:"action,required"`
-	Settings param.Field[ZoneSettingZarazConfigUpdateParamsTriggersLoadRulesZarazClickListenerRuleSettings] `json:"settings,required"`
+	ID       param.Field[string]                                                                            `json:"id" api:"required"`
+	Action   param.Field[ZoneSettingZarazConfigUpdateParamsTriggersLoadRulesZarazClickListenerRuleAction]   `json:"action" api:"required"`
+	Settings param.Field[ZoneSettingZarazConfigUpdateParamsTriggersLoadRulesZarazClickListenerRuleSettings] `json:"settings" api:"required"`
 }
 
 func (r ZoneSettingZarazConfigUpdateParamsTriggersLoadRulesZarazClickListenerRule) MarshalJSON() (data []byte, err error) {
@@ -863,9 +863,9 @@ func (r ZoneSettingZarazConfigUpdateParamsTriggersLoadRulesZarazClickListenerRul
 }
 
 type ZoneSettingZarazConfigUpdateParamsTriggersLoadRulesZarazClickListenerRuleSettings struct {
-	Selector    param.Field[string]                                                                                `json:"selector,required"`
-	Type        param.Field[ZoneSettingZarazConfigUpdateParamsTriggersLoadRulesZarazClickListenerRuleSettingsType] `json:"type,required"`
-	WaitForTags param.Field[int64]                                                                                 `json:"waitForTags,required"`
+	Selector    param.Field[string]                                                                                `json:"selector" api:"required"`
+	Type        param.Field[ZoneSettingZarazConfigUpdateParamsTriggersLoadRulesZarazClickListenerRuleSettingsType] `json:"type" api:"required"`
+	WaitForTags param.Field[int64]                                                                                 `json:"waitForTags" api:"required"`
 }
 
 func (r ZoneSettingZarazConfigUpdateParamsTriggersLoadRulesZarazClickListenerRuleSettings) MarshalJSON() (data []byte, err error) {
@@ -888,9 +888,9 @@ func (r ZoneSettingZarazConfigUpdateParamsTriggersLoadRulesZarazClickListenerRul
 }
 
 type ZoneSettingZarazConfigUpdateParamsTriggersLoadRulesZarazTimerRule struct {
-	ID       param.Field[string]                                                                    `json:"id,required"`
-	Action   param.Field[ZoneSettingZarazConfigUpdateParamsTriggersLoadRulesZarazTimerRuleAction]   `json:"action,required"`
-	Settings param.Field[ZoneSettingZarazConfigUpdateParamsTriggersLoadRulesZarazTimerRuleSettings] `json:"settings,required"`
+	ID       param.Field[string]                                                                    `json:"id" api:"required"`
+	Action   param.Field[ZoneSettingZarazConfigUpdateParamsTriggersLoadRulesZarazTimerRuleAction]   `json:"action" api:"required"`
+	Settings param.Field[ZoneSettingZarazConfigUpdateParamsTriggersLoadRulesZarazTimerRuleSettings] `json:"settings" api:"required"`
 }
 
 func (r ZoneSettingZarazConfigUpdateParamsTriggersLoadRulesZarazTimerRule) MarshalJSON() (data []byte, err error) {
@@ -915,8 +915,8 @@ func (r ZoneSettingZarazConfigUpdateParamsTriggersLoadRulesZarazTimerRuleAction)
 }
 
 type ZoneSettingZarazConfigUpdateParamsTriggersLoadRulesZarazTimerRuleSettings struct {
-	Interval param.Field[int64] `json:"interval,required"`
-	Limit    param.Field[int64] `json:"limit,required"`
+	Interval param.Field[int64] `json:"interval" api:"required"`
+	Limit    param.Field[int64] `json:"limit" api:"required"`
 }
 
 func (r ZoneSettingZarazConfigUpdateParamsTriggersLoadRulesZarazTimerRuleSettings) MarshalJSON() (data []byte, err error) {
@@ -924,9 +924,9 @@ func (r ZoneSettingZarazConfigUpdateParamsTriggersLoadRulesZarazTimerRuleSetting
 }
 
 type ZoneSettingZarazConfigUpdateParamsTriggersLoadRulesZarazFormSubmissionRule struct {
-	ID       param.Field[string]                                                                             `json:"id,required"`
-	Action   param.Field[ZoneSettingZarazConfigUpdateParamsTriggersLoadRulesZarazFormSubmissionRuleAction]   `json:"action,required"`
-	Settings param.Field[ZoneSettingZarazConfigUpdateParamsTriggersLoadRulesZarazFormSubmissionRuleSettings] `json:"settings,required"`
+	ID       param.Field[string]                                                                             `json:"id" api:"required"`
+	Action   param.Field[ZoneSettingZarazConfigUpdateParamsTriggersLoadRulesZarazFormSubmissionRuleAction]   `json:"action" api:"required"`
+	Settings param.Field[ZoneSettingZarazConfigUpdateParamsTriggersLoadRulesZarazFormSubmissionRuleSettings] `json:"settings" api:"required"`
 }
 
 func (r ZoneSettingZarazConfigUpdateParamsTriggersLoadRulesZarazFormSubmissionRule) MarshalJSON() (data []byte, err error) {
@@ -951,8 +951,8 @@ func (r ZoneSettingZarazConfigUpdateParamsTriggersLoadRulesZarazFormSubmissionRu
 }
 
 type ZoneSettingZarazConfigUpdateParamsTriggersLoadRulesZarazFormSubmissionRuleSettings struct {
-	Selector param.Field[string] `json:"selector,required"`
-	Validate param.Field[bool]   `json:"validate,required"`
+	Selector param.Field[string] `json:"selector" api:"required"`
+	Validate param.Field[bool]   `json:"validate" api:"required"`
 }
 
 func (r ZoneSettingZarazConfigUpdateParamsTriggersLoadRulesZarazFormSubmissionRuleSettings) MarshalJSON() (data []byte, err error) {
@@ -960,9 +960,9 @@ func (r ZoneSettingZarazConfigUpdateParamsTriggersLoadRulesZarazFormSubmissionRu
 }
 
 type ZoneSettingZarazConfigUpdateParamsTriggersLoadRulesZarazVariableMatchRule struct {
-	ID       param.Field[string]                                                                            `json:"id,required"`
-	Action   param.Field[ZoneSettingZarazConfigUpdateParamsTriggersLoadRulesZarazVariableMatchRuleAction]   `json:"action,required"`
-	Settings param.Field[ZoneSettingZarazConfigUpdateParamsTriggersLoadRulesZarazVariableMatchRuleSettings] `json:"settings,required"`
+	ID       param.Field[string]                                                                            `json:"id" api:"required"`
+	Action   param.Field[ZoneSettingZarazConfigUpdateParamsTriggersLoadRulesZarazVariableMatchRuleAction]   `json:"action" api:"required"`
+	Settings param.Field[ZoneSettingZarazConfigUpdateParamsTriggersLoadRulesZarazVariableMatchRuleSettings] `json:"settings" api:"required"`
 }
 
 func (r ZoneSettingZarazConfigUpdateParamsTriggersLoadRulesZarazVariableMatchRule) MarshalJSON() (data []byte, err error) {
@@ -987,8 +987,8 @@ func (r ZoneSettingZarazConfigUpdateParamsTriggersLoadRulesZarazVariableMatchRul
 }
 
 type ZoneSettingZarazConfigUpdateParamsTriggersLoadRulesZarazVariableMatchRuleSettings struct {
-	Match    param.Field[string] `json:"match,required"`
-	Variable param.Field[string] `json:"variable,required"`
+	Match    param.Field[string] `json:"match" api:"required"`
+	Variable param.Field[string] `json:"variable" api:"required"`
 }
 
 func (r ZoneSettingZarazConfigUpdateParamsTriggersLoadRulesZarazVariableMatchRuleSettings) MarshalJSON() (data []byte, err error) {
@@ -996,9 +996,9 @@ func (r ZoneSettingZarazConfigUpdateParamsTriggersLoadRulesZarazVariableMatchRul
 }
 
 type ZoneSettingZarazConfigUpdateParamsTriggersLoadRulesZarazScrollDepthRule struct {
-	ID       param.Field[string]                                                                          `json:"id,required"`
-	Action   param.Field[ZoneSettingZarazConfigUpdateParamsTriggersLoadRulesZarazScrollDepthRuleAction]   `json:"action,required"`
-	Settings param.Field[ZoneSettingZarazConfigUpdateParamsTriggersLoadRulesZarazScrollDepthRuleSettings] `json:"settings,required"`
+	ID       param.Field[string]                                                                          `json:"id" api:"required"`
+	Action   param.Field[ZoneSettingZarazConfigUpdateParamsTriggersLoadRulesZarazScrollDepthRuleAction]   `json:"action" api:"required"`
+	Settings param.Field[ZoneSettingZarazConfigUpdateParamsTriggersLoadRulesZarazScrollDepthRuleSettings] `json:"settings" api:"required"`
 }
 
 func (r ZoneSettingZarazConfigUpdateParamsTriggersLoadRulesZarazScrollDepthRule) MarshalJSON() (data []byte, err error) {
@@ -1023,7 +1023,7 @@ func (r ZoneSettingZarazConfigUpdateParamsTriggersLoadRulesZarazScrollDepthRuleA
 }
 
 type ZoneSettingZarazConfigUpdateParamsTriggersLoadRulesZarazScrollDepthRuleSettings struct {
-	Positions param.Field[string] `json:"positions,required"`
+	Positions param.Field[string] `json:"positions" api:"required"`
 }
 
 func (r ZoneSettingZarazConfigUpdateParamsTriggersLoadRulesZarazScrollDepthRuleSettings) MarshalJSON() (data []byte, err error) {
@@ -1031,9 +1031,9 @@ func (r ZoneSettingZarazConfigUpdateParamsTriggersLoadRulesZarazScrollDepthRuleS
 }
 
 type ZoneSettingZarazConfigUpdateParamsTriggersLoadRulesZarazElementVisibilityRule struct {
-	ID       param.Field[string]                                                                                `json:"id,required"`
-	Action   param.Field[ZoneSettingZarazConfigUpdateParamsTriggersLoadRulesZarazElementVisibilityRuleAction]   `json:"action,required"`
-	Settings param.Field[ZoneSettingZarazConfigUpdateParamsTriggersLoadRulesZarazElementVisibilityRuleSettings] `json:"settings,required"`
+	ID       param.Field[string]                                                                                `json:"id" api:"required"`
+	Action   param.Field[ZoneSettingZarazConfigUpdateParamsTriggersLoadRulesZarazElementVisibilityRuleAction]   `json:"action" api:"required"`
+	Settings param.Field[ZoneSettingZarazConfigUpdateParamsTriggersLoadRulesZarazElementVisibilityRuleSettings] `json:"settings" api:"required"`
 }
 
 func (r ZoneSettingZarazConfigUpdateParamsTriggersLoadRulesZarazElementVisibilityRule) MarshalJSON() (data []byte, err error) {
@@ -1058,7 +1058,7 @@ func (r ZoneSettingZarazConfigUpdateParamsTriggersLoadRulesZarazElementVisibilit
 }
 
 type ZoneSettingZarazConfigUpdateParamsTriggersLoadRulesZarazElementVisibilityRuleSettings struct {
-	Selector param.Field[string] `json:"selector,required"`
+	Selector param.Field[string] `json:"selector" api:"required"`
 }
 
 func (r ZoneSettingZarazConfigUpdateParamsTriggersLoadRulesZarazElementVisibilityRuleSettings) MarshalJSON() (data []byte, err error) {
@@ -1122,9 +1122,9 @@ func (r ZoneSettingZarazConfigUpdateParamsTriggersSystem) IsKnown() bool {
 }
 
 type ZoneSettingZarazConfigUpdateParamsVariables struct {
-	Name  param.Field[string]                                          `json:"name,required"`
-	Type  param.Field[ZoneSettingZarazConfigUpdateParamsVariablesType] `json:"type,required"`
-	Value param.Field[interface{}]                                     `json:"value,required"`
+	Name  param.Field[string]                                          `json:"name" api:"required"`
+	Type  param.Field[ZoneSettingZarazConfigUpdateParamsVariablesType] `json:"type" api:"required"`
+	Value param.Field[interface{}]                                     `json:"value" api:"required"`
 }
 
 func (r ZoneSettingZarazConfigUpdateParamsVariables) MarshalJSON() (data []byte, err error) {
@@ -1143,9 +1143,9 @@ type ZoneSettingZarazConfigUpdateParamsVariablesUnion interface {
 }
 
 type ZoneSettingZarazConfigUpdateParamsVariablesZarazStringVariable struct {
-	Name  param.Field[string]                                                             `json:"name,required"`
-	Type  param.Field[ZoneSettingZarazConfigUpdateParamsVariablesZarazStringVariableType] `json:"type,required"`
-	Value param.Field[string]                                                             `json:"value,required"`
+	Name  param.Field[string]                                                             `json:"name" api:"required"`
+	Type  param.Field[ZoneSettingZarazConfigUpdateParamsVariablesZarazStringVariableType] `json:"type" api:"required"`
+	Value param.Field[string]                                                             `json:"value" api:"required"`
 }
 
 func (r ZoneSettingZarazConfigUpdateParamsVariablesZarazStringVariable) MarshalJSON() (data []byte, err error) {
@@ -1170,9 +1170,9 @@ func (r ZoneSettingZarazConfigUpdateParamsVariablesZarazStringVariableType) IsKn
 }
 
 type ZoneSettingZarazConfigUpdateParamsVariablesZarazSecretVariable struct {
-	Name  param.Field[string]                                                             `json:"name,required"`
-	Type  param.Field[ZoneSettingZarazConfigUpdateParamsVariablesZarazSecretVariableType] `json:"type,required"`
-	Value param.Field[string]                                                             `json:"value,required"`
+	Name  param.Field[string]                                                             `json:"name" api:"required"`
+	Type  param.Field[ZoneSettingZarazConfigUpdateParamsVariablesZarazSecretVariableType] `json:"type" api:"required"`
+	Value param.Field[string]                                                             `json:"value" api:"required"`
 }
 
 func (r ZoneSettingZarazConfigUpdateParamsVariablesZarazSecretVariable) MarshalJSON() (data []byte, err error) {
@@ -1197,9 +1197,9 @@ func (r ZoneSettingZarazConfigUpdateParamsVariablesZarazSecretVariableType) IsKn
 }
 
 type ZoneSettingZarazConfigUpdateParamsVariablesZarazWorkerVariable struct {
-	Name  param.Field[string]                                                              `json:"name,required"`
-	Type  param.Field[ZoneSettingZarazConfigUpdateParamsVariablesZarazWorkerVariableType]  `json:"type,required"`
-	Value param.Field[ZoneSettingZarazConfigUpdateParamsVariablesZarazWorkerVariableValue] `json:"value,required"`
+	Name  param.Field[string]                                                              `json:"name" api:"required"`
+	Type  param.Field[ZoneSettingZarazConfigUpdateParamsVariablesZarazWorkerVariableType]  `json:"type" api:"required"`
+	Value param.Field[ZoneSettingZarazConfigUpdateParamsVariablesZarazWorkerVariableValue] `json:"value" api:"required"`
 }
 
 func (r ZoneSettingZarazConfigUpdateParamsVariablesZarazWorkerVariable) MarshalJSON() (data []byte, err error) {
@@ -1224,8 +1224,8 @@ func (r ZoneSettingZarazConfigUpdateParamsVariablesZarazWorkerVariableType) IsKn
 }
 
 type ZoneSettingZarazConfigUpdateParamsVariablesZarazWorkerVariableValue struct {
-	EscapedWorkerName param.Field[string] `json:"escapedWorkerName,required"`
-	WorkerTag         param.Field[string] `json:"workerTag,required"`
+	EscapedWorkerName param.Field[string] `json:"escapedWorkerName" api:"required"`
+	WorkerTag         param.Field[string] `json:"workerTag" api:"required"`
 }
 
 func (r ZoneSettingZarazConfigUpdateParamsVariablesZarazWorkerVariableValue) MarshalJSON() (data []byte, err error) {
@@ -1264,7 +1264,7 @@ func (r ZoneSettingZarazConfigUpdateParamsAnalytics) MarshalJSON() (data []byte,
 
 // Consent management configuration.
 type ZoneSettingZarazConfigUpdateParamsConsent struct {
-	Enabled                param.Field[bool]                                                            `json:"enabled,required"`
+	Enabled                param.Field[bool]                                                            `json:"enabled" api:"required"`
 	ButtonTextTranslations param.Field[ZoneSettingZarazConfigUpdateParamsConsentButtonTextTranslations] `json:"buttonTextTranslations"`
 	CompanyEmail           param.Field[string]                                                          `json:"companyEmail"`
 	CompanyName            param.Field[string]                                                          `json:"companyName"`
@@ -1290,11 +1290,11 @@ func (r ZoneSettingZarazConfigUpdateParamsConsent) MarshalJSON() (data []byte, e
 
 type ZoneSettingZarazConfigUpdateParamsConsentButtonTextTranslations struct {
 	// Object where keys are language codes
-	AcceptAll param.Field[map[string]string] `json:"accept_all,required"`
+	AcceptAll param.Field[map[string]string] `json:"accept_all" api:"required"`
 	// Object where keys are language codes
-	ConfirmMyChoices param.Field[map[string]string] `json:"confirm_my_choices,required"`
+	ConfirmMyChoices param.Field[map[string]string] `json:"confirm_my_choices" api:"required"`
 	// Object where keys are language codes
-	RejectAll param.Field[map[string]string] `json:"reject_all,required"`
+	RejectAll param.Field[map[string]string] `json:"reject_all" api:"required"`
 }
 
 func (r ZoneSettingZarazConfigUpdateParamsConsentButtonTextTranslations) MarshalJSON() (data []byte, err error) {
@@ -1302,8 +1302,8 @@ func (r ZoneSettingZarazConfigUpdateParamsConsentButtonTextTranslations) Marshal
 }
 
 type ZoneSettingZarazConfigUpdateParamsConsentPurposes struct {
-	Description param.Field[string] `json:"description,required"`
-	Name        param.Field[string] `json:"name,required"`
+	Description param.Field[string] `json:"description" api:"required"`
+	Name        param.Field[string] `json:"name" api:"required"`
 }
 
 func (r ZoneSettingZarazConfigUpdateParamsConsentPurposes) MarshalJSON() (data []byte, err error) {
@@ -1312,10 +1312,10 @@ func (r ZoneSettingZarazConfigUpdateParamsConsentPurposes) MarshalJSON() (data [
 
 type ZoneSettingZarazConfigUpdateParamsConsentPurposesWithTranslations struct {
 	// Object where keys are language codes
-	Description param.Field[map[string]string] `json:"description,required"`
+	Description param.Field[map[string]string] `json:"description" api:"required"`
 	// Object where keys are language codes
-	Name  param.Field[map[string]string] `json:"name,required"`
-	Order param.Field[int64]             `json:"order,required"`
+	Name  param.Field[map[string]string] `json:"name" api:"required"`
+	Order param.Field[int64]             `json:"order" api:"required"`
 }
 
 func (r ZoneSettingZarazConfigUpdateParamsConsentPurposesWithTranslations) MarshalJSON() (data []byte, err error) {

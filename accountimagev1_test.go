@@ -18,7 +18,7 @@ import (
 )
 
 func TestAccountImageV1Get(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -30,6 +30,7 @@ func TestAccountImageV1Get(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Images.V1.Get(
 		context.TODO(),
@@ -46,7 +47,7 @@ func TestAccountImageV1Get(t *testing.T) {
 }
 
 func TestAccountImageV1UpdateWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -58,6 +59,7 @@ func TestAccountImageV1UpdateWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Images.V1.Update(
 		context.TODO(),
@@ -79,7 +81,7 @@ func TestAccountImageV1UpdateWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountImageV1ListWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -91,6 +93,7 @@ func TestAccountImageV1ListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Images.V1.List(
 		context.TODO(),
@@ -111,7 +114,7 @@ func TestAccountImageV1ListWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountImageV1Delete(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -123,6 +126,7 @@ func TestAccountImageV1Delete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Images.V1.Delete(
 		context.TODO(),
@@ -149,6 +153,7 @@ func TestAccountImageV1FetchBase(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	resp, err := client.Accounts.Images.V1.FetchBase(
 		context.TODO(),
@@ -178,7 +183,7 @@ func TestAccountImageV1FetchBase(t *testing.T) {
 }
 
 func TestAccountImageV1Stats(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -190,6 +195,7 @@ func TestAccountImageV1Stats(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Images.V1.Stats(context.TODO(), "023e105f4ecef8ad9ca31a8372d0c353")
 	if err != nil {
@@ -202,7 +208,7 @@ func TestAccountImageV1Stats(t *testing.T) {
 }
 
 func TestAccountImageV1UploadWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -214,6 +220,7 @@ func TestAccountImageV1UploadWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Images.V1.Upload(
 		context.TODO(),
@@ -221,7 +228,7 @@ func TestAccountImageV1UploadWithOptionalParams(t *testing.T) {
 		cfrex.AccountImageV1UploadParams{
 			ID:                cfrex.F("id"),
 			Creator:           cfrex.F("creator"),
-			File:              cfrex.F(io.Reader(bytes.NewBuffer([]byte("some file contents")))),
+			File:              cfrex.F(io.Reader(bytes.NewBuffer([]byte("Example data")))),
 			Metadata:          cfrex.F[any](map[string]interface{}{}),
 			RequireSignedURLs: cfrex.F(true),
 			URL:               cfrex.F("https://example.com/path/to/logo.png"),

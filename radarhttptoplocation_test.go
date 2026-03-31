@@ -15,7 +15,7 @@ import (
 )
 
 func TestRadarHTTPTopLocationListWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -27,6 +27,7 @@ func TestRadarHTTPTopLocationListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.HTTP.Top.Locations.List(context.TODO(), cfrex.RadarHTTPTopLocationListParams{
 		Asn:           cfrex.F([]string{"string"}),
@@ -57,7 +58,7 @@ func TestRadarHTTPTopLocationListWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarHTTPTopLocationListByBotClassWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -69,6 +70,7 @@ func TestRadarHTTPTopLocationListByBotClassWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.HTTP.Top.Locations.ListByBotClass(
 		context.TODO(),
@@ -102,7 +104,7 @@ func TestRadarHTTPTopLocationListByBotClassWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarHTTPTopLocationListByBrowserFamilyWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -114,6 +116,7 @@ func TestRadarHTTPTopLocationListByBrowserFamilyWithOptionalParams(t *testing.T)
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.HTTP.Top.Locations.ListByBrowserFamily(
 		context.TODO(),
@@ -147,7 +150,7 @@ func TestRadarHTTPTopLocationListByBrowserFamilyWithOptionalParams(t *testing.T)
 }
 
 func TestRadarHTTPTopLocationListByDeviceTypeWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -159,6 +162,7 @@ func TestRadarHTTPTopLocationListByDeviceTypeWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.HTTP.Top.Locations.ListByDeviceType(
 		context.TODO(),
@@ -192,7 +196,7 @@ func TestRadarHTTPTopLocationListByDeviceTypeWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarHTTPTopLocationListByHTTPProtocolWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -204,6 +208,7 @@ func TestRadarHTTPTopLocationListByHTTPProtocolWithOptionalParams(t *testing.T) 
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.HTTP.Top.Locations.ListByHTTPProtocol(
 		context.TODO(),
@@ -237,7 +242,7 @@ func TestRadarHTTPTopLocationListByHTTPProtocolWithOptionalParams(t *testing.T) 
 }
 
 func TestRadarHTTPTopLocationListByHTTPVersionWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -249,6 +254,7 @@ func TestRadarHTTPTopLocationListByHTTPVersionWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.HTTP.Top.Locations.ListByHTTPVersion(
 		context.TODO(),
@@ -282,7 +288,7 @@ func TestRadarHTTPTopLocationListByHTTPVersionWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarHTTPTopLocationListByIPVersionWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -294,6 +300,7 @@ func TestRadarHTTPTopLocationListByIPVersionWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.HTTP.Top.Locations.ListByIPVersion(
 		context.TODO(),
@@ -327,7 +334,7 @@ func TestRadarHTTPTopLocationListByIPVersionWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarHTTPTopLocationListByOsWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -339,6 +346,7 @@ func TestRadarHTTPTopLocationListByOsWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.HTTP.Top.Locations.ListByOs(
 		context.TODO(),
@@ -372,7 +380,7 @@ func TestRadarHTTPTopLocationListByOsWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarHTTPTopLocationListByTlsVersionWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -384,6 +392,7 @@ func TestRadarHTTPTopLocationListByTlsVersionWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.HTTP.Top.Locations.ListByTlsVersion(
 		context.TODO(),

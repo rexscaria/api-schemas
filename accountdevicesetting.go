@@ -39,11 +39,11 @@ func (r *AccountDeviceSettingService) Get(ctx context.Context, accountID string,
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/devices/settings", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates the current device settings for a Zero Trust account.
@@ -51,11 +51,11 @@ func (r *AccountDeviceSettingService) Update(ctx context.Context, accountID stri
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/devices/settings", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Patches the current device settings for a Zero Trust account.
@@ -63,11 +63,11 @@ func (r *AccountDeviceSettingService) Patch(ctx context.Context, accountID strin
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/devices/settings", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type ZeroTrustAccountDeviceSettings struct {
@@ -124,11 +124,11 @@ func (r ZeroTrustAccountDeviceSettingsParam) MarshalJSON() (data []byte, err err
 }
 
 type ZeroTrustAccountDeviceSettingsResponse struct {
-	Errors   []MessagesDeviceTestsItems     `json:"errors,required"`
-	Messages []MessagesDeviceTestsItems     `json:"messages,required"`
-	Result   ZeroTrustAccountDeviceSettings `json:"result,required,nullable"`
+	Errors   []MessagesDeviceTestsItems     `json:"errors" api:"required"`
+	Messages []MessagesDeviceTestsItems     `json:"messages" api:"required"`
+	Result   ZeroTrustAccountDeviceSettings `json:"result" api:"required,nullable"`
 	// Whether the API call was successful.
-	Success ZeroTrustAccountDeviceSettingsResponseSuccess `json:"success,required"`
+	Success ZeroTrustAccountDeviceSettingsResponseSuccess `json:"success" api:"required"`
 	JSON    zeroTrustAccountDeviceSettingsResponseJSON    `json:"-"`
 }
 
@@ -167,7 +167,7 @@ func (r ZeroTrustAccountDeviceSettingsResponseSuccess) IsKnown() bool {
 }
 
 type AccountDeviceSettingUpdateParams struct {
-	ZeroTrustAccountDeviceSettings ZeroTrustAccountDeviceSettingsParam `json:"zero_trust_account_device_settings,required"`
+	ZeroTrustAccountDeviceSettings ZeroTrustAccountDeviceSettingsParam `json:"zero_trust_account_device_settings" api:"required"`
 }
 
 func (r AccountDeviceSettingUpdateParams) MarshalJSON() (data []byte, err error) {
@@ -175,7 +175,7 @@ func (r AccountDeviceSettingUpdateParams) MarshalJSON() (data []byte, err error)
 }
 
 type AccountDeviceSettingPatchParams struct {
-	ZeroTrustAccountDeviceSettings ZeroTrustAccountDeviceSettingsParam `json:"zero_trust_account_device_settings,required"`
+	ZeroTrustAccountDeviceSettings ZeroTrustAccountDeviceSettingsParam `json:"zero_trust_account_device_settings" api:"required"`
 }
 
 func (r AccountDeviceSettingPatchParams) MarshalJSON() (data []byte, err error) {

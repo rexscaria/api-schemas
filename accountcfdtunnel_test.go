@@ -15,7 +15,7 @@ import (
 )
 
 func TestAccountCfdTunnelNewWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -27,6 +27,7 @@ func TestAccountCfdTunnelNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.CfdTunnel.New(
 		context.TODO(),
@@ -47,7 +48,7 @@ func TestAccountCfdTunnelNewWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountCfdTunnelGet(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -59,6 +60,7 @@ func TestAccountCfdTunnelGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.CfdTunnel.Get(
 		context.TODO(),
@@ -75,7 +77,7 @@ func TestAccountCfdTunnelGet(t *testing.T) {
 }
 
 func TestAccountCfdTunnelUpdateWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -87,6 +89,7 @@ func TestAccountCfdTunnelUpdateWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.CfdTunnel.Update(
 		context.TODO(),
@@ -107,7 +110,7 @@ func TestAccountCfdTunnelUpdateWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountCfdTunnelListWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -119,6 +122,7 @@ func TestAccountCfdTunnelListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.CfdTunnel.List(
 		context.TODO(),
@@ -147,7 +151,7 @@ func TestAccountCfdTunnelListWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountCfdTunnelDelete(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -159,6 +163,7 @@ func TestAccountCfdTunnelDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.CfdTunnel.Delete(
 		context.TODO(),
@@ -175,7 +180,7 @@ func TestAccountCfdTunnelDelete(t *testing.T) {
 }
 
 func TestAccountCfdTunnelGetConnector(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -187,6 +192,7 @@ func TestAccountCfdTunnelGetConnector(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.CfdTunnel.GetConnector(
 		context.TODO(),
@@ -204,7 +210,7 @@ func TestAccountCfdTunnelGetConnector(t *testing.T) {
 }
 
 func TestAccountCfdTunnelGetManagementToken(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -216,6 +222,7 @@ func TestAccountCfdTunnelGetManagementToken(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.CfdTunnel.GetManagementToken(
 		context.TODO(),
@@ -235,7 +242,7 @@ func TestAccountCfdTunnelGetManagementToken(t *testing.T) {
 }
 
 func TestAccountCfdTunnelGetToken(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -247,6 +254,7 @@ func TestAccountCfdTunnelGetToken(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.CfdTunnel.GetToken(
 		context.TODO(),

@@ -39,11 +39,11 @@ func (r *AccountLoadBalancerMonitorService) New(ctx context.Context, accountID s
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/load_balancers/monitors", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // List a single configured monitor for an account.
@@ -51,15 +51,15 @@ func (r *AccountLoadBalancerMonitorService) Get(ctx context.Context, accountID s
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if monitorID == "" {
 		err = errors.New("missing required monitor_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/load_balancers/monitors/%s", accountID, monitorID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Modify a configured monitor.
@@ -67,15 +67,15 @@ func (r *AccountLoadBalancerMonitorService) Update(ctx context.Context, accountI
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if monitorID == "" {
 		err = errors.New("missing required monitor_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/load_balancers/monitors/%s", accountID, monitorID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // List configured monitors for an account.
@@ -83,11 +83,11 @@ func (r *AccountLoadBalancerMonitorService) List(ctx context.Context, accountID 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/load_balancers/monitors", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete a configured monitor.
@@ -95,15 +95,15 @@ func (r *AccountLoadBalancerMonitorService) Delete(ctx context.Context, accountI
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if monitorID == "" {
 		err = errors.New("missing required monitor_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/load_balancers/monitors/%s", accountID, monitorID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Get the list of resources that reference the provided monitor.
@@ -111,15 +111,15 @@ func (r *AccountLoadBalancerMonitorService) ListReferences(ctx context.Context, 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if monitorID == "" {
 		err = errors.New("missing required monitor_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/load_balancers/monitors/%s/references", accountID, monitorID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Apply changes to an existing monitor, overwriting the supplied properties.
@@ -127,15 +127,15 @@ func (r *AccountLoadBalancerMonitorService) Patch(ctx context.Context, accountID
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if monitorID == "" {
 		err = errors.New("missing required monitor_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/load_balancers/monitors/%s", accountID, monitorID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Preview pools using the specified monitor with provided monitor details. The
@@ -144,15 +144,15 @@ func (r *AccountLoadBalancerMonitorService) Preview(ctx context.Context, account
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if monitorID == "" {
 		err = errors.New("missing required monitor_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/load_balancers/monitors/%s/preview", accountID, monitorID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type EditableMonitorParam struct {
@@ -233,11 +233,11 @@ func (r EditableMonitorType) IsKnown() bool {
 }
 
 type IDResponseLoadBalancing struct {
-	Errors   []IDResponseLoadBalancingError   `json:"errors,required"`
-	Messages []IDResponseLoadBalancingMessage `json:"messages,required"`
-	Result   IDResponseLoadBalancingResult    `json:"result,required"`
+	Errors   []IDResponseLoadBalancingError   `json:"errors" api:"required"`
+	Messages []IDResponseLoadBalancingMessage `json:"messages" api:"required"`
+	Result   IDResponseLoadBalancingResult    `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success IDResponseLoadBalancingSuccess `json:"success,required"`
+	Success IDResponseLoadBalancingSuccess `json:"success" api:"required"`
 	JSON    idResponseLoadBalancingJSON    `json:"-"`
 }
 
@@ -261,8 +261,8 @@ func (r idResponseLoadBalancingJSON) RawJSON() string {
 }
 
 type IDResponseLoadBalancingError struct {
-	Code             int64                               `json:"code,required"`
-	Message          string                              `json:"message,required"`
+	Code             int64                               `json:"code" api:"required"`
+	Message          string                              `json:"message" api:"required"`
 	DocumentationURL string                              `json:"documentation_url"`
 	Source           IDResponseLoadBalancingErrorsSource `json:"source"`
 	JSON             idResponseLoadBalancingErrorJSON    `json:"-"`
@@ -309,8 +309,8 @@ func (r idResponseLoadBalancingErrorsSourceJSON) RawJSON() string {
 }
 
 type IDResponseLoadBalancingMessage struct {
-	Code             int64                                 `json:"code,required"`
-	Message          string                                `json:"message,required"`
+	Code             int64                                 `json:"code" api:"required"`
+	Message          string                                `json:"message" api:"required"`
 	DocumentationURL string                                `json:"documentation_url"`
 	Source           IDResponseLoadBalancingMessagesSource `json:"source"`
 	JSON             idResponseLoadBalancingMessageJSON    `json:"-"`
@@ -393,8 +393,8 @@ func (r IDResponseLoadBalancingSuccess) IsKnown() bool {
 }
 
 type LoadBalancingMessages struct {
-	Code             int64                       `json:"code,required"`
-	Message          string                      `json:"message,required"`
+	Code             int64                       `json:"code" api:"required"`
+	Message          string                      `json:"message" api:"required"`
 	DocumentationURL string                      `json:"documentation_url"`
 	Source           LoadBalancingMessagesSource `json:"source"`
 	JSON             loadBalancingMessagesJSON   `json:"-"`
@@ -551,11 +551,11 @@ func (r MonitorType) IsKnown() bool {
 }
 
 type PreviewResponse struct {
-	Errors   []LoadBalancingMessages `json:"errors,required"`
-	Messages []LoadBalancingMessages `json:"messages,required"`
-	Result   PreviewResponseResult   `json:"result,required"`
+	Errors   []LoadBalancingMessages `json:"errors" api:"required"`
+	Messages []LoadBalancingMessages `json:"messages" api:"required"`
+	Result   PreviewResponseResult   `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success PreviewResponseSuccess `json:"success,required"`
+	Success PreviewResponseSuccess `json:"success" api:"required"`
 	JSON    previewResponseJSON    `json:"-"`
 }
 
@@ -617,12 +617,12 @@ func (r PreviewResponseSuccess) IsKnown() bool {
 }
 
 type ReferencesMonitorResponse struct {
-	Errors   []LoadBalancingMessages `json:"errors,required"`
-	Messages []LoadBalancingMessages `json:"messages,required"`
+	Errors   []LoadBalancingMessages `json:"errors" api:"required"`
+	Messages []LoadBalancingMessages `json:"messages" api:"required"`
 	// List of resources that reference a given monitor.
-	Result []ReferencesMonitorResponseResult `json:"result,required"`
+	Result []ReferencesMonitorResponseResult `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success ReferencesMonitorResponseSuccess `json:"success,required"`
+	Success ReferencesMonitorResponseSuccess `json:"success" api:"required"`
 	JSON    referencesMonitorResponseJSON    `json:"-"`
 }
 
@@ -704,11 +704,11 @@ func (r ReferencesMonitorResponseSuccess) IsKnown() bool {
 }
 
 type ResponseCollectionMonitor struct {
-	Errors   []LoadBalancingMessages `json:"errors,required"`
-	Messages []LoadBalancingMessages `json:"messages,required"`
-	Result   []Monitor               `json:"result,required"`
+	Errors   []LoadBalancingMessages `json:"errors" api:"required"`
+	Messages []LoadBalancingMessages `json:"messages" api:"required"`
+	Result   []Monitor               `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success    ResponseCollectionMonitorSuccess    `json:"success,required"`
+	Success    ResponseCollectionMonitorSuccess    `json:"success" api:"required"`
 	ResultInfo ResponseCollectionMonitorResultInfo `json:"result_info"`
 	JSON       responseCollectionMonitorJSON       `json:"-"`
 }
@@ -783,11 +783,11 @@ func (r responseCollectionMonitorResultInfoJSON) RawJSON() string {
 }
 
 type ResponseSingleMonitor struct {
-	Errors   []LoadBalancingMessages `json:"errors,required"`
-	Messages []LoadBalancingMessages `json:"messages,required"`
-	Result   Monitor                 `json:"result,required"`
+	Errors   []LoadBalancingMessages `json:"errors" api:"required"`
+	Messages []LoadBalancingMessages `json:"messages" api:"required"`
+	Result   Monitor                 `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success ResponseSingleMonitorSuccess `json:"success,required"`
+	Success ResponseSingleMonitorSuccess `json:"success" api:"required"`
 	JSON    responseSingleMonitorJSON    `json:"-"`
 }
 
@@ -826,7 +826,7 @@ func (r ResponseSingleMonitorSuccess) IsKnown() bool {
 }
 
 type AccountLoadBalancerMonitorNewParams struct {
-	EditableMonitor EditableMonitorParam `json:"editable_monitor,required"`
+	EditableMonitor EditableMonitorParam `json:"editable_monitor" api:"required"`
 }
 
 func (r AccountLoadBalancerMonitorNewParams) MarshalJSON() (data []byte, err error) {
@@ -834,7 +834,7 @@ func (r AccountLoadBalancerMonitorNewParams) MarshalJSON() (data []byte, err err
 }
 
 type AccountLoadBalancerMonitorUpdateParams struct {
-	EditableMonitor EditableMonitorParam `json:"editable_monitor,required"`
+	EditableMonitor EditableMonitorParam `json:"editable_monitor" api:"required"`
 }
 
 func (r AccountLoadBalancerMonitorUpdateParams) MarshalJSON() (data []byte, err error) {
@@ -842,7 +842,7 @@ func (r AccountLoadBalancerMonitorUpdateParams) MarshalJSON() (data []byte, err 
 }
 
 type AccountLoadBalancerMonitorPatchParams struct {
-	EditableMonitor EditableMonitorParam `json:"editable_monitor,required"`
+	EditableMonitor EditableMonitorParam `json:"editable_monitor" api:"required"`
 }
 
 func (r AccountLoadBalancerMonitorPatchParams) MarshalJSON() (data []byte, err error) {
@@ -850,7 +850,7 @@ func (r AccountLoadBalancerMonitorPatchParams) MarshalJSON() (data []byte, err e
 }
 
 type AccountLoadBalancerMonitorPreviewParams struct {
-	EditableMonitor EditableMonitorParam `json:"editable_monitor,required"`
+	EditableMonitor EditableMonitorParam `json:"editable_monitor" api:"required"`
 }
 
 func (r AccountLoadBalancerMonitorPreviewParams) MarshalJSON() (data []byte, err error) {

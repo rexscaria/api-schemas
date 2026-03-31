@@ -40,11 +40,11 @@ func (r *AccountInfrastructureTargetBatchService) New(ctx context.Context, accou
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/infrastructure/targets/batch", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Removes one or more targets.
@@ -52,27 +52,27 @@ func (r *AccountInfrastructureTargetBatchService) New(ctx context.Context, accou
 // Deprecated: deprecated
 func (r *AccountInfrastructureTargetBatchService) Delete(ctx context.Context, accountID string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("accounts/%s/infrastructure/targets/batch", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 type TargetBatch struct {
 	// Target identifier
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// Date and time at which the target was created
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// A non-unique field that refers to a target
-	Hostname string `json:"hostname,required"`
+	Hostname string `json:"hostname" api:"required"`
 	// The IPv4/IPv6 address that identifies where to reach a target
-	IP IPInfoTarget `json:"ip,required"`
+	IP IPInfoTarget `json:"ip" api:"required"`
 	// Date and time at which the target was modified
-	ModifiedAt time.Time       `json:"modified_at,required" format:"date-time"`
+	ModifiedAt time.Time       `json:"modified_at" api:"required" format:"date-time"`
 	JSON       targetBatchJSON `json:"-"`
 }
 
@@ -96,10 +96,10 @@ func (r targetBatchJSON) RawJSON() string {
 }
 
 type AccountInfrastructureTargetBatchNewResponse struct {
-	Errors   []MessagesInfraItem `json:"errors,required"`
-	Messages []MessagesInfraItem `json:"messages,required"`
+	Errors   []MessagesInfraItem `json:"errors" api:"required"`
+	Messages []MessagesInfraItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountInfrastructureTargetBatchNewResponseSuccess `json:"success,required"`
+	Success AccountInfrastructureTargetBatchNewResponseSuccess `json:"success" api:"required"`
 	Result  []TargetBatch                                      `json:"result"`
 	JSON    accountInfrastructureTargetBatchNewResponseJSON    `json:"-"`
 }
@@ -139,7 +139,7 @@ func (r AccountInfrastructureTargetBatchNewResponseSuccess) IsKnown() bool {
 }
 
 type AccountInfrastructureTargetBatchNewParams struct {
-	Body []AccountInfrastructureTargetBatchNewParamsBody `json:"body,required"`
+	Body []AccountInfrastructureTargetBatchNewParamsBody `json:"body" api:"required"`
 }
 
 func (r AccountInfrastructureTargetBatchNewParams) MarshalJSON() (data []byte, err error) {
@@ -150,9 +150,9 @@ type AccountInfrastructureTargetBatchNewParamsBody struct {
 	// A non-unique field that refers to a target. Case insensitive, maximum length of
 	// 255 characters, supports the use of special characters dash and period, does not
 	// support spaces, and must start and end with an alphanumeric character.
-	Hostname param.Field[string] `json:"hostname,required"`
+	Hostname param.Field[string] `json:"hostname" api:"required"`
 	// The IPv4/IPv6 address that identifies where to reach a target
-	IP param.Field[IPInfoTargetParam] `json:"ip,required"`
+	IP param.Field[IPInfoTargetParam] `json:"ip" api:"required"`
 }
 
 func (r AccountInfrastructureTargetBatchNewParamsBody) MarshalJSON() (data []byte, err error) {

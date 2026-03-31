@@ -16,7 +16,7 @@ import (
 )
 
 func TestAccountWorkerDispatchNamespaceScriptGet(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -28,6 +28,7 @@ func TestAccountWorkerDispatchNamespaceScriptGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Workers.Dispatch.Namespaces.Scripts.Get(
 		context.TODO(),
@@ -45,7 +46,7 @@ func TestAccountWorkerDispatchNamespaceScriptGet(t *testing.T) {
 }
 
 func TestAccountWorkerDispatchNamespaceScriptDeleteWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -57,6 +58,7 @@ func TestAccountWorkerDispatchNamespaceScriptDeleteWithOptionalParams(t *testing
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Workers.Dispatch.Namespaces.Scripts.Delete(
 		context.TODO(),
@@ -77,7 +79,7 @@ func TestAccountWorkerDispatchNamespaceScriptDeleteWithOptionalParams(t *testing
 }
 
 func TestAccountWorkerDispatchNamespaceScriptNewAssetsUploadSession(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -89,6 +91,7 @@ func TestAccountWorkerDispatchNamespaceScriptNewAssetsUploadSession(t *testing.T
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Workers.Dispatch.Namespaces.Scripts.NewAssetsUploadSession(
 		context.TODO(),
@@ -116,7 +119,7 @@ func TestAccountWorkerDispatchNamespaceScriptNewAssetsUploadSession(t *testing.T
 }
 
 func TestAccountWorkerDispatchNamespaceScriptGetBindings(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -128,6 +131,7 @@ func TestAccountWorkerDispatchNamespaceScriptGetBindings(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Workers.Dispatch.Namespaces.Scripts.GetBindings(
 		context.TODO(),
@@ -145,7 +149,7 @@ func TestAccountWorkerDispatchNamespaceScriptGetBindings(t *testing.T) {
 }
 
 func TestAccountWorkerDispatchNamespaceScriptUploadWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -157,6 +161,7 @@ func TestAccountWorkerDispatchNamespaceScriptUploadWithOptionalParams(t *testing
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Workers.Dispatch.Namespaces.Scripts.Upload(
 		context.TODO(),
@@ -224,7 +229,7 @@ func TestAccountWorkerDispatchNamespaceScriptUploadWithOptionalParams(t *testing
 				}}),
 				UsageModel: cfrex.F(cfrex.UsageModelStandard),
 			}),
-			Files: cfrex.F([]io.Reader{io.Reader(bytes.NewBuffer([]byte("some file contents")))}),
+			Files: cfrex.F([]io.Reader{io.Reader(bytes.NewBuffer([]byte("Example data")))}),
 		},
 	)
 	if err != nil {

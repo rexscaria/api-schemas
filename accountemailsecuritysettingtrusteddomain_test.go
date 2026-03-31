@@ -14,7 +14,7 @@ import (
 )
 
 func TestAccountEmailSecuritySettingTrustedDomainNewWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -50,7 +50,7 @@ func TestAccountEmailSecuritySettingTrustedDomainNewWithOptionalParams(t *testin
 }
 
 func TestAccountEmailSecuritySettingTrustedDomainGet(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -78,7 +78,7 @@ func TestAccountEmailSecuritySettingTrustedDomainGet(t *testing.T) {
 }
 
 func TestAccountEmailSecuritySettingTrustedDomainUpdateWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -113,7 +113,7 @@ func TestAccountEmailSecuritySettingTrustedDomainUpdateWithOptionalParams(t *tes
 }
 
 func TestAccountEmailSecuritySettingTrustedDomainListWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -150,7 +150,7 @@ func TestAccountEmailSecuritySettingTrustedDomainListWithOptionalParams(t *testi
 }
 
 func TestAccountEmailSecuritySettingTrustedDomainDelete(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL

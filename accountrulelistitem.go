@@ -44,15 +44,15 @@ func (r *AccountRuleListItemService) New(ctx context.Context, accountID string, 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if listID == "" {
 		err = errors.New("missing required list_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/rules/lists/%s/items", accountID, listID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Removes all existing items from the list and adds the provided items to the
@@ -64,15 +64,15 @@ func (r *AccountRuleListItemService) Update(ctx context.Context, accountID strin
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if listID == "" {
 		err = errors.New("missing required list_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/rules/lists/%s/items", accountID, listID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetches all the items in the list.
@@ -80,15 +80,15 @@ func (r *AccountRuleListItemService) List(ctx context.Context, accountID string,
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if listID == "" {
 		err = errors.New("missing required list_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/rules/lists/%s/items", accountID, listID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Removes one or more items from a list.
@@ -99,23 +99,23 @@ func (r *AccountRuleListItemService) Delete(ctx context.Context, accountID strin
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if listID == "" {
 		err = errors.New("missing required list_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/rules/lists/%s/items", accountID, listID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type AsyncResponse struct {
-	Errors   []AsyncResponseError   `json:"errors,required"`
-	Messages []AsyncResponseMessage `json:"messages,required"`
-	Result   AsyncResponseResult    `json:"result,required"`
+	Errors   []AsyncResponseError   `json:"errors" api:"required"`
+	Messages []AsyncResponseMessage `json:"messages" api:"required"`
+	Result   AsyncResponseResult    `json:"result" api:"required"`
 	// Defines whether the API call was successful.
-	Success AsyncResponseSuccess `json:"success,required"`
+	Success AsyncResponseSuccess `json:"success" api:"required"`
 	JSON    asyncResponseJSON    `json:"-"`
 }
 
@@ -138,8 +138,8 @@ func (r asyncResponseJSON) RawJSON() string {
 }
 
 type AsyncResponseError struct {
-	Code             int64                     `json:"code,required"`
-	Message          string                    `json:"message,required"`
+	Code             int64                     `json:"code" api:"required"`
+	Message          string                    `json:"message" api:"required"`
 	DocumentationURL string                    `json:"documentation_url"`
 	Source           AsyncResponseErrorsSource `json:"source"`
 	JSON             asyncResponseErrorJSON    `json:"-"`
@@ -186,8 +186,8 @@ func (r asyncResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type AsyncResponseMessage struct {
-	Code             int64                       `json:"code,required"`
-	Message          string                      `json:"message,required"`
+	Code             int64                       `json:"code" api:"required"`
+	Message          string                      `json:"message" api:"required"`
 	DocumentationURL string                      `json:"documentation_url"`
 	Source           AsyncResponseMessagesSource `json:"source"`
 	JSON             asyncResponseMessageJSON    `json:"-"`
@@ -235,7 +235,7 @@ func (r asyncResponseMessagesSourceJSON) RawJSON() string {
 
 type AsyncResponseResult struct {
 	// The unique operation ID of the asynchronous action.
-	OperationID string                  `json:"operation_id,required"`
+	OperationID string                  `json:"operation_id" api:"required"`
 	JSON        asyncResponseResultJSON `json:"-"`
 }
 
@@ -316,7 +316,7 @@ func (r listItemJSON) RawJSON() string {
 // Valid characters for hostnames are ASCII(7) letters from a to z, the digits from
 // 0 to 9, wildcards (\*), and the hyphen (-).
 type ListItemHostname struct {
-	URLHostname string `json:"url_hostname,required"`
+	URLHostname string `json:"url_hostname" api:"required"`
 	// Only applies to wildcard hostnames (e.g., \*.example.com). When true (default),
 	// only subdomains are blocked. When false, both the root domain and subdomains are
 	// blocked.
@@ -344,7 +344,7 @@ func (r listItemHostnameJSON) RawJSON() string {
 // Valid characters for hostnames are ASCII(7) letters from a to z, the digits from
 // 0 to 9, wildcards (\*), and the hyphen (-).
 type ListItemHostnameParam struct {
-	URLHostname param.Field[string] `json:"url_hostname,required"`
+	URLHostname param.Field[string] `json:"url_hostname" api:"required"`
 	// Only applies to wildcard hostnames (e.g., \*.example.com). When true (default),
 	// only subdomains are blocked. When false, both the root domain and subdomains are
 	// blocked.
@@ -357,8 +357,8 @@ func (r ListItemHostnameParam) MarshalJSON() (data []byte, err error) {
 
 // The definition of the redirect.
 type ListItemRedirect struct {
-	SourceURL           string                     `json:"source_url,required"`
-	TargetURL           string                     `json:"target_url,required"`
+	SourceURL           string                     `json:"source_url" api:"required"`
+	TargetURL           string                     `json:"target_url" api:"required"`
 	IncludeSubdomains   bool                       `json:"include_subdomains"`
 	PreservePathSuffix  bool                       `json:"preserve_path_suffix"`
 	PreserveQueryString bool                       `json:"preserve_query_string"`
@@ -408,8 +408,8 @@ func (r ListItemRedirectStatusCode) IsKnown() bool {
 
 // The definition of the redirect.
 type ListItemRedirectParam struct {
-	SourceURL           param.Field[string]                     `json:"source_url,required"`
-	TargetURL           param.Field[string]                     `json:"target_url,required"`
+	SourceURL           param.Field[string]                     `json:"source_url" api:"required"`
+	TargetURL           param.Field[string]                     `json:"target_url" api:"required"`
 	IncludeSubdomains   param.Field[bool]                       `json:"include_subdomains"`
 	PreservePathSuffix  param.Field[bool]                       `json:"preserve_path_suffix"`
 	PreserveQueryString param.Field[bool]                       `json:"preserve_query_string"`
@@ -451,7 +451,7 @@ type UpdateRequestCollectionItemUnionParam interface {
 
 type UpdateRequestCollectionItemObjectParam struct {
 	// An IPv4 address, an IPv4 CIDR, an IPv6 address, or an IPv6 CIDR.
-	IP param.Field[string] `json:"ip,required"`
+	IP param.Field[string] `json:"ip" api:"required"`
 	// Defines an informative summary of the list item.
 	Comment param.Field[string] `json:"comment"`
 }
@@ -463,11 +463,11 @@ func (r UpdateRequestCollectionItemObjectParam) MarshalJSON() (data []byte, err 
 func (r UpdateRequestCollectionItemObjectParam) implementsUpdateRequestCollectionItemUnionParam() {}
 
 type AccountRuleListItemListResponse struct {
-	Errors   []AccountRuleListItemListResponseError   `json:"errors,required"`
-	Messages []AccountRuleListItemListResponseMessage `json:"messages,required"`
-	Result   []ListItem                               `json:"result,required"`
+	Errors   []AccountRuleListItemListResponseError   `json:"errors" api:"required"`
+	Messages []AccountRuleListItemListResponseMessage `json:"messages" api:"required"`
+	Result   []ListItem                               `json:"result" api:"required"`
 	// Defines whether the API call was successful.
-	Success    AccountRuleListItemListResponseSuccess    `json:"success,required"`
+	Success    AccountRuleListItemListResponseSuccess    `json:"success" api:"required"`
 	ResultInfo AccountRuleListItemListResponseResultInfo `json:"result_info"`
 	JSON       accountRuleListItemListResponseJSON       `json:"-"`
 }
@@ -493,8 +493,8 @@ func (r accountRuleListItemListResponseJSON) RawJSON() string {
 }
 
 type AccountRuleListItemListResponseError struct {
-	Code             int64                                       `json:"code,required"`
-	Message          string                                      `json:"message,required"`
+	Code             int64                                       `json:"code" api:"required"`
+	Message          string                                      `json:"message" api:"required"`
 	DocumentationURL string                                      `json:"documentation_url"`
 	Source           AccountRuleListItemListResponseErrorsSource `json:"source"`
 	JSON             accountRuleListItemListResponseErrorJSON    `json:"-"`
@@ -541,8 +541,8 @@ func (r accountRuleListItemListResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type AccountRuleListItemListResponseMessage struct {
-	Code             int64                                         `json:"code,required"`
-	Message          string                                        `json:"message,required"`
+	Code             int64                                         `json:"code" api:"required"`
+	Message          string                                        `json:"message" api:"required"`
 	DocumentationURL string                                        `json:"documentation_url"`
 	Source           AccountRuleListItemListResponseMessagesSource `json:"source"`
 	JSON             accountRuleListItemListResponseMessageJSON    `json:"-"`
@@ -648,7 +648,7 @@ func (r accountRuleListItemListResponseResultInfoCursorsJSON) RawJSON() string {
 }
 
 type AccountRuleListItemNewParams struct {
-	Body []UpdateRequestCollectionItemUnionParam `json:"body,required"`
+	Body []UpdateRequestCollectionItemUnionParam `json:"body" api:"required"`
 }
 
 func (r AccountRuleListItemNewParams) MarshalJSON() (data []byte, err error) {
@@ -656,7 +656,7 @@ func (r AccountRuleListItemNewParams) MarshalJSON() (data []byte, err error) {
 }
 
 type AccountRuleListItemUpdateParams struct {
-	Body []UpdateRequestCollectionItemUnionParam `json:"body,required"`
+	Body []UpdateRequestCollectionItemUnionParam `json:"body" api:"required"`
 }
 
 func (r AccountRuleListItemUpdateParams) MarshalJSON() (data []byte, err error) {

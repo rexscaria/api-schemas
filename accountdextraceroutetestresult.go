@@ -39,22 +39,22 @@ func (r *AccountDexTracerouteTestResultService) GetNetworkPath(ctx context.Conte
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if testResultID == "" {
 		err = errors.New("missing required test_result_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/dex/traceroute-test-results/%s/network-path", accountID, testResultID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountDexTracerouteTestResultGetNetworkPathResponse struct {
-	Errors   []Item `json:"errors,required"`
-	Messages []Item `json:"messages,required"`
+	Errors   []Item `json:"errors" api:"required"`
+	Messages []Item `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountDexTracerouteTestResultGetNetworkPathResponseSuccess `json:"success,required"`
+	Success AccountDexTracerouteTestResultGetNetworkPathResponseSuccess `json:"success" api:"required"`
 	Result  AccountDexTracerouteTestResultGetNetworkPathResponseResult  `json:"result"`
 	JSON    accountDexTracerouteTestResultGetNetworkPathResponseJSON    `json:"-"`
 }
@@ -95,9 +95,9 @@ func (r AccountDexTracerouteTestResultGetNetworkPathResponseSuccess) IsKnown() b
 
 type AccountDexTracerouteTestResultGetNetworkPathResponseResult struct {
 	// an array of the hops taken by the device to reach the end destination
-	Hops []AccountDexTracerouteTestResultGetNetworkPathResponseResultHop `json:"hops,required"`
+	Hops []AccountDexTracerouteTestResultGetNetworkPathResponseResultHop `json:"hops" api:"required"`
 	// API Resource UUID tag.
-	ResultID string `json:"resultId,required"`
+	ResultID string `json:"resultId" api:"required"`
 	// name of the device associated with this network path response
 	DeviceName string `json:"deviceName"`
 	// API Resource UUID tag.
@@ -129,15 +129,15 @@ func (r accountDexTracerouteTestResultGetNetworkPathResponseResultJSON) RawJSON(
 }
 
 type AccountDexTracerouteTestResultGetNetworkPathResponseResultHop struct {
-	Ttl           int64                                                                  `json:"ttl,required"`
-	Asn           int64                                                                  `json:"asn,nullable"`
-	Aso           string                                                                 `json:"aso,nullable"`
-	IPAddress     string                                                                 `json:"ipAddress,nullable"`
-	Location      AccountDexTracerouteTestResultGetNetworkPathResponseResultHopsLocation `json:"location,nullable"`
-	Mile          AccountDexTracerouteTestResultGetNetworkPathResponseResultHopsMile     `json:"mile,nullable"`
-	Name          string                                                                 `json:"name,nullable"`
-	PacketLossPct float64                                                                `json:"packetLossPct,nullable"`
-	RttMs         int64                                                                  `json:"rttMs,nullable"`
+	Ttl           int64                                                                  `json:"ttl" api:"required"`
+	Asn           int64                                                                  `json:"asn" api:"nullable"`
+	Aso           string                                                                 `json:"aso" api:"nullable"`
+	IPAddress     string                                                                 `json:"ipAddress" api:"nullable"`
+	Location      AccountDexTracerouteTestResultGetNetworkPathResponseResultHopsLocation `json:"location" api:"nullable"`
+	Mile          AccountDexTracerouteTestResultGetNetworkPathResponseResultHopsMile     `json:"mile" api:"nullable"`
+	Name          string                                                                 `json:"name" api:"nullable"`
+	PacketLossPct float64                                                                `json:"packetLossPct" api:"nullable"`
+	RttMs         int64                                                                  `json:"rttMs" api:"nullable"`
 	JSON          accountDexTracerouteTestResultGetNetworkPathResponseResultHopJSON      `json:"-"`
 }
 
@@ -167,9 +167,9 @@ func (r accountDexTracerouteTestResultGetNetworkPathResponseResultHopJSON) RawJS
 }
 
 type AccountDexTracerouteTestResultGetNetworkPathResponseResultHopsLocation struct {
-	City  string                                                                     `json:"city,nullable"`
-	State string                                                                     `json:"state,nullable"`
-	Zip   string                                                                     `json:"zip,nullable"`
+	City  string                                                                     `json:"city" api:"nullable"`
+	State string                                                                     `json:"state" api:"nullable"`
+	Zip   string                                                                     `json:"zip" api:"nullable"`
 	JSON  accountDexTracerouteTestResultGetNetworkPathResponseResultHopsLocationJSON `json:"-"`
 }
 

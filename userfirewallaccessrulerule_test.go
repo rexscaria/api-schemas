@@ -14,7 +14,7 @@ import (
 )
 
 func TestUserFirewallAccessRuleRuleNewWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,6 +26,7 @@ func TestUserFirewallAccessRuleRuleNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.User.Firewall.AccessRules.Rules.New(context.TODO(), cfrex.UserFirewallAccessRuleRuleNewParams{
 		Configuration: cfrex.F[cfrex.FirewallRuleConfigurationUnionParam](cfrex.FirewallRuleConfigurationFirewallIPConfigurationParam{
@@ -45,7 +46,7 @@ func TestUserFirewallAccessRuleRuleNewWithOptionalParams(t *testing.T) {
 }
 
 func TestUserFirewallAccessRuleRuleUpdateWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -57,6 +58,7 @@ func TestUserFirewallAccessRuleRuleUpdateWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.User.Firewall.AccessRules.Rules.Update(
 		context.TODO(),
@@ -76,7 +78,7 @@ func TestUserFirewallAccessRuleRuleUpdateWithOptionalParams(t *testing.T) {
 }
 
 func TestUserFirewallAccessRuleRuleListWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -88,6 +90,7 @@ func TestUserFirewallAccessRuleRuleListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.User.Firewall.AccessRules.Rules.List(context.TODO(), cfrex.UserFirewallAccessRuleRuleListParams{
 		Configuration: cfrex.F(cfrex.UserFirewallAccessRuleRuleListParamsConfiguration{
@@ -112,7 +115,7 @@ func TestUserFirewallAccessRuleRuleListWithOptionalParams(t *testing.T) {
 }
 
 func TestUserFirewallAccessRuleRuleDelete(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -124,6 +127,7 @@ func TestUserFirewallAccessRuleRuleDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.User.Firewall.AccessRules.Rules.Delete(context.TODO(), "023e105f4ecef8ad9ca31a8372d0c353")
 	if err != nil {

@@ -45,15 +45,15 @@ func (r *AccountAIGatewayGatewayDatasetService) NewDataset(ctx context.Context, 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if gatewayID == "" {
 		err = errors.New("missing required gateway_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai-gateway/gateways/%s/datasets", accountID, gatewayID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete a Dataset
@@ -61,19 +61,19 @@ func (r *AccountAIGatewayGatewayDatasetService) DeleteDataset(ctx context.Contex
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if gatewayID == "" {
 		err = errors.New("missing required gateway_id parameter")
-		return
+		return nil, err
 	}
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai-gateway/gateways/%s/datasets/%s", accountID, gatewayID, id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetch a Dataset
@@ -81,19 +81,19 @@ func (r *AccountAIGatewayGatewayDatasetService) FetchDataset(ctx context.Context
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if gatewayID == "" {
 		err = errors.New("missing required gateway_id parameter")
-		return
+		return nil, err
 	}
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai-gateway/gateways/%s/datasets/%s", accountID, gatewayID, id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // List Datasets
@@ -101,15 +101,15 @@ func (r *AccountAIGatewayGatewayDatasetService) ListDatasets(ctx context.Context
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if gatewayID == "" {
 		err = errors.New("missing required gateway_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai-gateway/gateways/%s/datasets", accountID, gatewayID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Update a Dataset
@@ -117,24 +117,24 @@ func (r *AccountAIGatewayGatewayDatasetService) UpdateDataset(ctx context.Contex
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if gatewayID == "" {
 		err = errors.New("missing required gateway_id parameter")
-		return
+		return nil, err
 	}
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai-gateway/gateways/%s/datasets/%s", accountID, gatewayID, id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountAIGatewayGatewayDatasetNewDatasetResponse struct {
-	Result  AccountAIGatewayGatewayDatasetNewDatasetResponseResult `json:"result,required"`
-	Success bool                                                   `json:"success,required"`
+	Result  AccountAIGatewayGatewayDatasetNewDatasetResponseResult `json:"result" api:"required"`
+	Success bool                                                   `json:"success" api:"required"`
 	JSON    accountAIGatewayGatewayDatasetNewDatasetResponseJSON   `json:"-"`
 }
 
@@ -156,16 +156,16 @@ func (r accountAIGatewayGatewayDatasetNewDatasetResponseJSON) RawJSON() string {
 }
 
 type AccountAIGatewayGatewayDatasetNewDatasetResponseResult struct {
-	ID         string                                                         `json:"id,required"`
-	AccountID  string                                                         `json:"account_id,required"`
-	AccountTag string                                                         `json:"account_tag,required"`
-	CreatedAt  time.Time                                                      `json:"created_at,required" format:"date-time"`
-	Enable     bool                                                           `json:"enable,required"`
-	Filters    []AccountAIGatewayGatewayDatasetNewDatasetResponseResultFilter `json:"filters,required"`
+	ID         string                                                         `json:"id" api:"required"`
+	AccountID  string                                                         `json:"account_id" api:"required"`
+	AccountTag string                                                         `json:"account_tag" api:"required"`
+	CreatedAt  time.Time                                                      `json:"created_at" api:"required" format:"date-time"`
+	Enable     bool                                                           `json:"enable" api:"required"`
+	Filters    []AccountAIGatewayGatewayDatasetNewDatasetResponseResultFilter `json:"filters" api:"required"`
 	// gateway id
-	GatewayID  string                                                     `json:"gateway_id,required"`
-	ModifiedAt time.Time                                                  `json:"modified_at,required" format:"date-time"`
-	Name       string                                                     `json:"name,required"`
+	GatewayID  string                                                     `json:"gateway_id" api:"required"`
+	ModifiedAt time.Time                                                  `json:"modified_at" api:"required" format:"date-time"`
+	Name       string                                                     `json:"name" api:"required"`
 	JSON       accountAIGatewayGatewayDatasetNewDatasetResponseResultJSON `json:"-"`
 }
 
@@ -194,9 +194,9 @@ func (r accountAIGatewayGatewayDatasetNewDatasetResponseResultJSON) RawJSON() st
 }
 
 type AccountAIGatewayGatewayDatasetNewDatasetResponseResultFilter struct {
-	Key      AccountAIGatewayGatewayDatasetNewDatasetResponseResultFiltersKey          `json:"key,required"`
-	Operator AccountAIGatewayGatewayDatasetNewDatasetResponseResultFiltersOperator     `json:"operator,required"`
-	Value    []AccountAIGatewayGatewayDatasetNewDatasetResponseResultFiltersValueUnion `json:"value,required"`
+	Key      AccountAIGatewayGatewayDatasetNewDatasetResponseResultFiltersKey          `json:"key" api:"required"`
+	Operator AccountAIGatewayGatewayDatasetNewDatasetResponseResultFiltersOperator     `json:"operator" api:"required"`
+	Value    []AccountAIGatewayGatewayDatasetNewDatasetResponseResultFiltersValueUnion `json:"value" api:"required"`
 	JSON     accountAIGatewayGatewayDatasetNewDatasetResponseResultFilterJSON          `json:"-"`
 }
 
@@ -292,8 +292,8 @@ func init() {
 }
 
 type AccountAIGatewayGatewayDatasetDeleteDatasetResponse struct {
-	Result  AccountAIGatewayGatewayDatasetDeleteDatasetResponseResult `json:"result,required"`
-	Success bool                                                      `json:"success,required"`
+	Result  AccountAIGatewayGatewayDatasetDeleteDatasetResponseResult `json:"result" api:"required"`
+	Success bool                                                      `json:"success" api:"required"`
 	JSON    accountAIGatewayGatewayDatasetDeleteDatasetResponseJSON   `json:"-"`
 }
 
@@ -315,16 +315,16 @@ func (r accountAIGatewayGatewayDatasetDeleteDatasetResponseJSON) RawJSON() strin
 }
 
 type AccountAIGatewayGatewayDatasetDeleteDatasetResponseResult struct {
-	ID         string                                                            `json:"id,required"`
-	AccountID  string                                                            `json:"account_id,required"`
-	AccountTag string                                                            `json:"account_tag,required"`
-	CreatedAt  time.Time                                                         `json:"created_at,required" format:"date-time"`
-	Enable     bool                                                              `json:"enable,required"`
-	Filters    []AccountAIGatewayGatewayDatasetDeleteDatasetResponseResultFilter `json:"filters,required"`
+	ID         string                                                            `json:"id" api:"required"`
+	AccountID  string                                                            `json:"account_id" api:"required"`
+	AccountTag string                                                            `json:"account_tag" api:"required"`
+	CreatedAt  time.Time                                                         `json:"created_at" api:"required" format:"date-time"`
+	Enable     bool                                                              `json:"enable" api:"required"`
+	Filters    []AccountAIGatewayGatewayDatasetDeleteDatasetResponseResultFilter `json:"filters" api:"required"`
 	// gateway id
-	GatewayID  string                                                        `json:"gateway_id,required"`
-	ModifiedAt time.Time                                                     `json:"modified_at,required" format:"date-time"`
-	Name       string                                                        `json:"name,required"`
+	GatewayID  string                                                        `json:"gateway_id" api:"required"`
+	ModifiedAt time.Time                                                     `json:"modified_at" api:"required" format:"date-time"`
+	Name       string                                                        `json:"name" api:"required"`
 	JSON       accountAIGatewayGatewayDatasetDeleteDatasetResponseResultJSON `json:"-"`
 }
 
@@ -354,9 +354,9 @@ func (r accountAIGatewayGatewayDatasetDeleteDatasetResponseResultJSON) RawJSON()
 }
 
 type AccountAIGatewayGatewayDatasetDeleteDatasetResponseResultFilter struct {
-	Key      AccountAIGatewayGatewayDatasetDeleteDatasetResponseResultFiltersKey          `json:"key,required"`
-	Operator AccountAIGatewayGatewayDatasetDeleteDatasetResponseResultFiltersOperator     `json:"operator,required"`
-	Value    []AccountAIGatewayGatewayDatasetDeleteDatasetResponseResultFiltersValueUnion `json:"value,required"`
+	Key      AccountAIGatewayGatewayDatasetDeleteDatasetResponseResultFiltersKey          `json:"key" api:"required"`
+	Operator AccountAIGatewayGatewayDatasetDeleteDatasetResponseResultFiltersOperator     `json:"operator" api:"required"`
+	Value    []AccountAIGatewayGatewayDatasetDeleteDatasetResponseResultFiltersValueUnion `json:"value" api:"required"`
 	JSON     accountAIGatewayGatewayDatasetDeleteDatasetResponseResultFilterJSON          `json:"-"`
 }
 
@@ -452,8 +452,8 @@ func init() {
 }
 
 type AccountAIGatewayGatewayDatasetFetchDatasetResponse struct {
-	Result  AccountAIGatewayGatewayDatasetFetchDatasetResponseResult `json:"result,required"`
-	Success bool                                                     `json:"success,required"`
+	Result  AccountAIGatewayGatewayDatasetFetchDatasetResponseResult `json:"result" api:"required"`
+	Success bool                                                     `json:"success" api:"required"`
 	JSON    accountAIGatewayGatewayDatasetFetchDatasetResponseJSON   `json:"-"`
 }
 
@@ -475,16 +475,16 @@ func (r accountAIGatewayGatewayDatasetFetchDatasetResponseJSON) RawJSON() string
 }
 
 type AccountAIGatewayGatewayDatasetFetchDatasetResponseResult struct {
-	ID         string                                                           `json:"id,required"`
-	AccountID  string                                                           `json:"account_id,required"`
-	AccountTag string                                                           `json:"account_tag,required"`
-	CreatedAt  time.Time                                                        `json:"created_at,required" format:"date-time"`
-	Enable     bool                                                             `json:"enable,required"`
-	Filters    []AccountAIGatewayGatewayDatasetFetchDatasetResponseResultFilter `json:"filters,required"`
+	ID         string                                                           `json:"id" api:"required"`
+	AccountID  string                                                           `json:"account_id" api:"required"`
+	AccountTag string                                                           `json:"account_tag" api:"required"`
+	CreatedAt  time.Time                                                        `json:"created_at" api:"required" format:"date-time"`
+	Enable     bool                                                             `json:"enable" api:"required"`
+	Filters    []AccountAIGatewayGatewayDatasetFetchDatasetResponseResultFilter `json:"filters" api:"required"`
 	// gateway id
-	GatewayID  string                                                       `json:"gateway_id,required"`
-	ModifiedAt time.Time                                                    `json:"modified_at,required" format:"date-time"`
-	Name       string                                                       `json:"name,required"`
+	GatewayID  string                                                       `json:"gateway_id" api:"required"`
+	ModifiedAt time.Time                                                    `json:"modified_at" api:"required" format:"date-time"`
+	Name       string                                                       `json:"name" api:"required"`
 	JSON       accountAIGatewayGatewayDatasetFetchDatasetResponseResultJSON `json:"-"`
 }
 
@@ -514,9 +514,9 @@ func (r accountAIGatewayGatewayDatasetFetchDatasetResponseResultJSON) RawJSON() 
 }
 
 type AccountAIGatewayGatewayDatasetFetchDatasetResponseResultFilter struct {
-	Key      AccountAIGatewayGatewayDatasetFetchDatasetResponseResultFiltersKey          `json:"key,required"`
-	Operator AccountAIGatewayGatewayDatasetFetchDatasetResponseResultFiltersOperator     `json:"operator,required"`
-	Value    []AccountAIGatewayGatewayDatasetFetchDatasetResponseResultFiltersValueUnion `json:"value,required"`
+	Key      AccountAIGatewayGatewayDatasetFetchDatasetResponseResultFiltersKey          `json:"key" api:"required"`
+	Operator AccountAIGatewayGatewayDatasetFetchDatasetResponseResultFiltersOperator     `json:"operator" api:"required"`
+	Value    []AccountAIGatewayGatewayDatasetFetchDatasetResponseResultFiltersValueUnion `json:"value" api:"required"`
 	JSON     accountAIGatewayGatewayDatasetFetchDatasetResponseResultFilterJSON          `json:"-"`
 }
 
@@ -612,8 +612,8 @@ func init() {
 }
 
 type AccountAIGatewayGatewayDatasetListDatasetsResponse struct {
-	Result  []AccountAIGatewayGatewayDatasetListDatasetsResponseResult `json:"result,required"`
-	Success bool                                                       `json:"success,required"`
+	Result  []AccountAIGatewayGatewayDatasetListDatasetsResponseResult `json:"result" api:"required"`
+	Success bool                                                       `json:"success" api:"required"`
 	JSON    accountAIGatewayGatewayDatasetListDatasetsResponseJSON     `json:"-"`
 }
 
@@ -635,16 +635,16 @@ func (r accountAIGatewayGatewayDatasetListDatasetsResponseJSON) RawJSON() string
 }
 
 type AccountAIGatewayGatewayDatasetListDatasetsResponseResult struct {
-	ID         string                                                           `json:"id,required"`
-	AccountID  string                                                           `json:"account_id,required"`
-	AccountTag string                                                           `json:"account_tag,required"`
-	CreatedAt  time.Time                                                        `json:"created_at,required" format:"date-time"`
-	Enable     bool                                                             `json:"enable,required"`
-	Filters    []AccountAIGatewayGatewayDatasetListDatasetsResponseResultFilter `json:"filters,required"`
+	ID         string                                                           `json:"id" api:"required"`
+	AccountID  string                                                           `json:"account_id" api:"required"`
+	AccountTag string                                                           `json:"account_tag" api:"required"`
+	CreatedAt  time.Time                                                        `json:"created_at" api:"required" format:"date-time"`
+	Enable     bool                                                             `json:"enable" api:"required"`
+	Filters    []AccountAIGatewayGatewayDatasetListDatasetsResponseResultFilter `json:"filters" api:"required"`
 	// gateway id
-	GatewayID  string                                                       `json:"gateway_id,required"`
-	ModifiedAt time.Time                                                    `json:"modified_at,required" format:"date-time"`
-	Name       string                                                       `json:"name,required"`
+	GatewayID  string                                                       `json:"gateway_id" api:"required"`
+	ModifiedAt time.Time                                                    `json:"modified_at" api:"required" format:"date-time"`
+	Name       string                                                       `json:"name" api:"required"`
 	JSON       accountAIGatewayGatewayDatasetListDatasetsResponseResultJSON `json:"-"`
 }
 
@@ -674,9 +674,9 @@ func (r accountAIGatewayGatewayDatasetListDatasetsResponseResultJSON) RawJSON() 
 }
 
 type AccountAIGatewayGatewayDatasetListDatasetsResponseResultFilter struct {
-	Key      AccountAIGatewayGatewayDatasetListDatasetsResponseResultFiltersKey          `json:"key,required"`
-	Operator AccountAIGatewayGatewayDatasetListDatasetsResponseResultFiltersOperator     `json:"operator,required"`
-	Value    []AccountAIGatewayGatewayDatasetListDatasetsResponseResultFiltersValueUnion `json:"value,required"`
+	Key      AccountAIGatewayGatewayDatasetListDatasetsResponseResultFiltersKey          `json:"key" api:"required"`
+	Operator AccountAIGatewayGatewayDatasetListDatasetsResponseResultFiltersOperator     `json:"operator" api:"required"`
+	Value    []AccountAIGatewayGatewayDatasetListDatasetsResponseResultFiltersValueUnion `json:"value" api:"required"`
 	JSON     accountAIGatewayGatewayDatasetListDatasetsResponseResultFilterJSON          `json:"-"`
 }
 
@@ -772,8 +772,8 @@ func init() {
 }
 
 type AccountAIGatewayGatewayDatasetUpdateDatasetResponse struct {
-	Result  AccountAIGatewayGatewayDatasetUpdateDatasetResponseResult `json:"result,required"`
-	Success bool                                                      `json:"success,required"`
+	Result  AccountAIGatewayGatewayDatasetUpdateDatasetResponseResult `json:"result" api:"required"`
+	Success bool                                                      `json:"success" api:"required"`
 	JSON    accountAIGatewayGatewayDatasetUpdateDatasetResponseJSON   `json:"-"`
 }
 
@@ -795,16 +795,16 @@ func (r accountAIGatewayGatewayDatasetUpdateDatasetResponseJSON) RawJSON() strin
 }
 
 type AccountAIGatewayGatewayDatasetUpdateDatasetResponseResult struct {
-	ID         string                                                            `json:"id,required"`
-	AccountID  string                                                            `json:"account_id,required"`
-	AccountTag string                                                            `json:"account_tag,required"`
-	CreatedAt  time.Time                                                         `json:"created_at,required" format:"date-time"`
-	Enable     bool                                                              `json:"enable,required"`
-	Filters    []AccountAIGatewayGatewayDatasetUpdateDatasetResponseResultFilter `json:"filters,required"`
+	ID         string                                                            `json:"id" api:"required"`
+	AccountID  string                                                            `json:"account_id" api:"required"`
+	AccountTag string                                                            `json:"account_tag" api:"required"`
+	CreatedAt  time.Time                                                         `json:"created_at" api:"required" format:"date-time"`
+	Enable     bool                                                              `json:"enable" api:"required"`
+	Filters    []AccountAIGatewayGatewayDatasetUpdateDatasetResponseResultFilter `json:"filters" api:"required"`
 	// gateway id
-	GatewayID  string                                                        `json:"gateway_id,required"`
-	ModifiedAt time.Time                                                     `json:"modified_at,required" format:"date-time"`
-	Name       string                                                        `json:"name,required"`
+	GatewayID  string                                                        `json:"gateway_id" api:"required"`
+	ModifiedAt time.Time                                                     `json:"modified_at" api:"required" format:"date-time"`
+	Name       string                                                        `json:"name" api:"required"`
 	JSON       accountAIGatewayGatewayDatasetUpdateDatasetResponseResultJSON `json:"-"`
 }
 
@@ -834,9 +834,9 @@ func (r accountAIGatewayGatewayDatasetUpdateDatasetResponseResultJSON) RawJSON()
 }
 
 type AccountAIGatewayGatewayDatasetUpdateDatasetResponseResultFilter struct {
-	Key      AccountAIGatewayGatewayDatasetUpdateDatasetResponseResultFiltersKey          `json:"key,required"`
-	Operator AccountAIGatewayGatewayDatasetUpdateDatasetResponseResultFiltersOperator     `json:"operator,required"`
-	Value    []AccountAIGatewayGatewayDatasetUpdateDatasetResponseResultFiltersValueUnion `json:"value,required"`
+	Key      AccountAIGatewayGatewayDatasetUpdateDatasetResponseResultFiltersKey          `json:"key" api:"required"`
+	Operator AccountAIGatewayGatewayDatasetUpdateDatasetResponseResultFiltersOperator     `json:"operator" api:"required"`
+	Value    []AccountAIGatewayGatewayDatasetUpdateDatasetResponseResultFiltersValueUnion `json:"value" api:"required"`
 	JSON     accountAIGatewayGatewayDatasetUpdateDatasetResponseResultFilterJSON          `json:"-"`
 }
 
@@ -932,9 +932,9 @@ func init() {
 }
 
 type AccountAIGatewayGatewayDatasetNewDatasetParams struct {
-	Enable  param.Field[bool]                                                   `json:"enable,required"`
-	Filters param.Field[[]AccountAIGatewayGatewayDatasetNewDatasetParamsFilter] `json:"filters,required"`
-	Name    param.Field[string]                                                 `json:"name,required"`
+	Enable  param.Field[bool]                                                   `json:"enable" api:"required"`
+	Filters param.Field[[]AccountAIGatewayGatewayDatasetNewDatasetParamsFilter] `json:"filters" api:"required"`
+	Name    param.Field[string]                                                 `json:"name" api:"required"`
 }
 
 func (r AccountAIGatewayGatewayDatasetNewDatasetParams) MarshalJSON() (data []byte, err error) {
@@ -942,9 +942,9 @@ func (r AccountAIGatewayGatewayDatasetNewDatasetParams) MarshalJSON() (data []by
 }
 
 type AccountAIGatewayGatewayDatasetNewDatasetParamsFilter struct {
-	Key      param.Field[AccountAIGatewayGatewayDatasetNewDatasetParamsFiltersKey]          `json:"key,required"`
-	Operator param.Field[AccountAIGatewayGatewayDatasetNewDatasetParamsFiltersOperator]     `json:"operator,required"`
-	Value    param.Field[[]AccountAIGatewayGatewayDatasetNewDatasetParamsFiltersValueUnion] `json:"value,required"`
+	Key      param.Field[AccountAIGatewayGatewayDatasetNewDatasetParamsFiltersKey]          `json:"key" api:"required"`
+	Operator param.Field[AccountAIGatewayGatewayDatasetNewDatasetParamsFiltersOperator]     `json:"operator" api:"required"`
+	Value    param.Field[[]AccountAIGatewayGatewayDatasetNewDatasetParamsFiltersValueUnion] `json:"value" api:"required"`
 }
 
 func (r AccountAIGatewayGatewayDatasetNewDatasetParamsFilter) MarshalJSON() (data []byte, err error) {
@@ -1018,9 +1018,9 @@ func (r AccountAIGatewayGatewayDatasetListDatasetsParams) URLQuery() (v url.Valu
 }
 
 type AccountAIGatewayGatewayDatasetUpdateDatasetParams struct {
-	Enable  param.Field[bool]                                                      `json:"enable,required"`
-	Filters param.Field[[]AccountAIGatewayGatewayDatasetUpdateDatasetParamsFilter] `json:"filters,required"`
-	Name    param.Field[string]                                                    `json:"name,required"`
+	Enable  param.Field[bool]                                                      `json:"enable" api:"required"`
+	Filters param.Field[[]AccountAIGatewayGatewayDatasetUpdateDatasetParamsFilter] `json:"filters" api:"required"`
+	Name    param.Field[string]                                                    `json:"name" api:"required"`
 }
 
 func (r AccountAIGatewayGatewayDatasetUpdateDatasetParams) MarshalJSON() (data []byte, err error) {
@@ -1028,9 +1028,9 @@ func (r AccountAIGatewayGatewayDatasetUpdateDatasetParams) MarshalJSON() (data [
 }
 
 type AccountAIGatewayGatewayDatasetUpdateDatasetParamsFilter struct {
-	Key      param.Field[AccountAIGatewayGatewayDatasetUpdateDatasetParamsFiltersKey]          `json:"key,required"`
-	Operator param.Field[AccountAIGatewayGatewayDatasetUpdateDatasetParamsFiltersOperator]     `json:"operator,required"`
-	Value    param.Field[[]AccountAIGatewayGatewayDatasetUpdateDatasetParamsFiltersValueUnion] `json:"value,required"`
+	Key      param.Field[AccountAIGatewayGatewayDatasetUpdateDatasetParamsFiltersKey]          `json:"key" api:"required"`
+	Operator param.Field[AccountAIGatewayGatewayDatasetUpdateDatasetParamsFiltersOperator]     `json:"operator" api:"required"`
+	Value    param.Field[[]AccountAIGatewayGatewayDatasetUpdateDatasetParamsFiltersValueUnion] `json:"value" api:"required"`
 }
 
 func (r AccountAIGatewayGatewayDatasetUpdateDatasetParamsFilter) MarshalJSON() (data []byte, err error) {

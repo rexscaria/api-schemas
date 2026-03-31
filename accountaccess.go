@@ -71,18 +71,18 @@ func (r *AccountAccessService) UpdateSeats(ctx context.Context, accountID string
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/access/seats", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountAccessUpdateSeatsResponse struct {
-	Errors   []MessagesAccessItem `json:"errors,required"`
-	Messages []MessagesAccessItem `json:"messages,required"`
+	Errors   []MessagesAccessItem `json:"errors" api:"required"`
+	Messages []MessagesAccessItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success    AccountAccessUpdateSeatsResponseSuccess    `json:"success,required"`
+	Success    AccountAccessUpdateSeatsResponseSuccess    `json:"success" api:"required"`
 	Result     []AccountAccessUpdateSeatsResponseResult   `json:"result"`
 	ResultInfo AccountAccessUpdateSeatsResponseResultInfo `json:"result_info"`
 	JSON       accountAccessUpdateSeatsResponseJSON       `json:"-"`
@@ -187,7 +187,7 @@ func (r accountAccessUpdateSeatsResponseResultInfoJSON) RawJSON() string {
 }
 
 type AccountAccessUpdateSeatsParams struct {
-	Body []AccountAccessUpdateSeatsParamsBody `json:"body,required"`
+	Body []AccountAccessUpdateSeatsParamsBody `json:"body" api:"required"`
 }
 
 func (r AccountAccessUpdateSeatsParams) MarshalJSON() (data []byte, err error) {
@@ -196,11 +196,11 @@ func (r AccountAccessUpdateSeatsParams) MarshalJSON() (data []byte, err error) {
 
 type AccountAccessUpdateSeatsParamsBody struct {
 	// True if the seat is part of Access.
-	AccessSeat param.Field[bool] `json:"access_seat,required"`
+	AccessSeat param.Field[bool] `json:"access_seat" api:"required"`
 	// True if the seat is part of Gateway.
-	GatewaySeat param.Field[bool] `json:"gateway_seat,required"`
+	GatewaySeat param.Field[bool] `json:"gateway_seat" api:"required"`
 	// The unique API identifier for the Zero Trust seat.
-	SeatUid param.Field[string] `json:"seat_uid,required"`
+	SeatUid param.Field[string] `json:"seat_uid" api:"required"`
 }
 
 func (r AccountAccessUpdateSeatsParamsBody) MarshalJSON() (data []byte, err error) {

@@ -14,7 +14,7 @@ import (
 )
 
 func TestZoneSpeedAPIPageTestDeleteAllWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,6 +26,7 @@ func TestZoneSpeedAPIPageTestDeleteAllWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.SpeedAPI.Pages.Tests.DeleteAll(
 		context.TODO(),
@@ -45,7 +46,7 @@ func TestZoneSpeedAPIPageTestDeleteAllWithOptionalParams(t *testing.T) {
 }
 
 func TestZoneSpeedAPIPageTestGetResult(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -57,6 +58,7 @@ func TestZoneSpeedAPIPageTestGetResult(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.SpeedAPI.Pages.Tests.GetResult(
 		context.TODO(),
@@ -74,7 +76,7 @@ func TestZoneSpeedAPIPageTestGetResult(t *testing.T) {
 }
 
 func TestZoneSpeedAPIPageTestListHistoryWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -86,6 +88,7 @@ func TestZoneSpeedAPIPageTestListHistoryWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.SpeedAPI.Pages.Tests.ListHistory(
 		context.TODO(),
@@ -107,7 +110,7 @@ func TestZoneSpeedAPIPageTestListHistoryWithOptionalParams(t *testing.T) {
 }
 
 func TestZoneSpeedAPIPageTestStartWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -119,6 +122,7 @@ func TestZoneSpeedAPIPageTestStartWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.SpeedAPI.Pages.Tests.Start(
 		context.TODO(),

@@ -40,15 +40,15 @@ func (r *AccountAddressingPrefixDelegationService) New(ctx context.Context, acco
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if prefixID == "" {
 		err = errors.New("missing required prefix_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/addressing/prefixes/%s/delegations", accountID, prefixID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // List all delegations for a given account IP prefix.
@@ -56,15 +56,15 @@ func (r *AccountAddressingPrefixDelegationService) List(ctx context.Context, acc
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if prefixID == "" {
 		err = errors.New("missing required prefix_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/addressing/prefixes/%s/delegations", accountID, prefixID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete an account delegation for a given IP prefix.
@@ -72,19 +72,19 @@ func (r *AccountAddressingPrefixDelegationService) Delete(ctx context.Context, a
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if prefixID == "" {
 		err = errors.New("missing required prefix_id parameter")
-		return
+		return nil, err
 	}
 	if delegationID == "" {
 		err = errors.New("missing required delegation_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/addressing/prefixes/%s/delegations/%s", accountID, prefixID, delegationID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type Delegation struct {
@@ -122,10 +122,10 @@ func (r delegationJSON) RawJSON() string {
 }
 
 type AccountAddressingPrefixDelegationNewResponse struct {
-	Errors   []AddressingMessages `json:"errors,required"`
-	Messages []AddressingMessages `json:"messages,required"`
+	Errors   []AddressingMessages `json:"errors" api:"required"`
+	Messages []AddressingMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountAddressingPrefixDelegationNewResponseSuccess `json:"success,required"`
+	Success AccountAddressingPrefixDelegationNewResponseSuccess `json:"success" api:"required"`
 	Result  Delegation                                          `json:"result"`
 	JSON    accountAddressingPrefixDelegationNewResponseJSON    `json:"-"`
 }
@@ -165,10 +165,10 @@ func (r AccountAddressingPrefixDelegationNewResponseSuccess) IsKnown() bool {
 }
 
 type AccountAddressingPrefixDelegationListResponse struct {
-	Errors   []AddressingMessages `json:"errors,required"`
-	Messages []AddressingMessages `json:"messages,required"`
+	Errors   []AddressingMessages `json:"errors" api:"required"`
+	Messages []AddressingMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success    AccountAddressingPrefixDelegationListResponseSuccess    `json:"success,required"`
+	Success    AccountAddressingPrefixDelegationListResponseSuccess    `json:"success" api:"required"`
 	Result     []Delegation                                            `json:"result"`
 	ResultInfo AccountAddressingPrefixDelegationListResponseResultInfo `json:"result_info"`
 	JSON       accountAddressingPrefixDelegationListResponseJSON       `json:"-"`
@@ -242,10 +242,10 @@ func (r accountAddressingPrefixDelegationListResponseResultInfoJSON) RawJSON() s
 }
 
 type AccountAddressingPrefixDelegationDeleteResponse struct {
-	Errors   []AddressingMessages `json:"errors,required"`
-	Messages []AddressingMessages `json:"messages,required"`
+	Errors   []AddressingMessages `json:"errors" api:"required"`
+	Messages []AddressingMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountAddressingPrefixDelegationDeleteResponseSuccess `json:"success,required"`
+	Success AccountAddressingPrefixDelegationDeleteResponseSuccess `json:"success" api:"required"`
 	Result  AccountAddressingPrefixDelegationDeleteResponseResult  `json:"result"`
 	JSON    accountAddressingPrefixDelegationDeleteResponseJSON    `json:"-"`
 }
@@ -308,9 +308,9 @@ func (r accountAddressingPrefixDelegationDeleteResponseResultJSON) RawJSON() str
 
 type AccountAddressingPrefixDelegationNewParams struct {
 	// IP Prefix in Classless Inter-Domain Routing format.
-	Cidr param.Field[string] `json:"cidr,required"`
+	Cidr param.Field[string] `json:"cidr" api:"required"`
 	// Account identifier for the account to which prefix is being delegated.
-	DelegatedAccountID param.Field[string] `json:"delegated_account_id,required"`
+	DelegatedAccountID param.Field[string] `json:"delegated_account_id" api:"required"`
 }
 
 func (r AccountAddressingPrefixDelegationNewParams) MarshalJSON() (data []byte, err error) {

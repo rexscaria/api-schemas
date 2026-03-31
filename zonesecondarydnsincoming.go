@@ -39,11 +39,11 @@ func (r *ZoneSecondaryDNSIncomingService) New(ctx context.Context, zoneID string
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/secondary_dns/incoming", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get secondary zone configuration for incoming zone transfers.
@@ -51,11 +51,11 @@ func (r *ZoneSecondaryDNSIncomingService) Get(ctx context.Context, zoneID string
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/secondary_dns/incoming", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update secondary zone configuration for incoming zone transfers.
@@ -63,11 +63,11 @@ func (r *ZoneSecondaryDNSIncomingService) Update(ctx context.Context, zoneID str
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/secondary_dns/incoming", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete secondary zone configuration for incoming zone transfers.
@@ -75,18 +75,18 @@ func (r *ZoneSecondaryDNSIncomingService) Delete(ctx context.Context, zoneID str
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/secondary_dns/incoming", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type IDResponseSecondaryDNS struct {
-	Errors   []SecondaryDNSMessages `json:"errors,required"`
-	Messages []SecondaryDNSMessages `json:"messages,required"`
+	Errors   []SecondaryDNSMessages `json:"errors" api:"required"`
+	Messages []SecondaryDNSMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success IDResponseSecondaryDNSSuccess `json:"success,required"`
+	Success IDResponseSecondaryDNSSuccess `json:"success" api:"required"`
 	Result  IDResponseSecondaryDNSResult  `json:"result"`
 	JSON    idResponseSecondaryDNSJSON    `json:"-"`
 }
@@ -149,11 +149,11 @@ func (r idResponseSecondaryDNSResultJSON) RawJSON() string {
 type SecondaryZoneParam struct {
 	// How often should a secondary zone auto refresh regardless of DNS NOTIFY. Not
 	// applicable for primary zones.
-	AutoRefreshSeconds param.Field[float64] `json:"auto_refresh_seconds,required"`
+	AutoRefreshSeconds param.Field[float64] `json:"auto_refresh_seconds" api:"required"`
 	// Zone name.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// A list of peer tags.
-	Peers param.Field[[]string] `json:"peers,required"`
+	Peers param.Field[[]string] `json:"peers" api:"required"`
 }
 
 func (r SecondaryZoneParam) MarshalJSON() (data []byte, err error) {
@@ -161,10 +161,10 @@ func (r SecondaryZoneParam) MarshalJSON() (data []byte, err error) {
 }
 
 type SingleResponseIncoming struct {
-	Errors   []SecondaryDNSMessages `json:"errors,required"`
-	Messages []SecondaryDNSMessages `json:"messages,required"`
+	Errors   []SecondaryDNSMessages `json:"errors" api:"required"`
+	Messages []SecondaryDNSMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success SingleResponseIncomingSuccess `json:"success,required"`
+	Success SingleResponseIncomingSuccess `json:"success" api:"required"`
 	Result  SingleResponseIncomingResult  `json:"result"`
 	JSON    singleResponseIncomingJSON    `json:"-"`
 }
@@ -247,7 +247,7 @@ func (r singleResponseIncomingResultJSON) RawJSON() string {
 }
 
 type ZoneSecondaryDNSIncomingNewParams struct {
-	SecondaryZone SecondaryZoneParam `json:"secondary_zone,required"`
+	SecondaryZone SecondaryZoneParam `json:"secondary_zone" api:"required"`
 }
 
 func (r ZoneSecondaryDNSIncomingNewParams) MarshalJSON() (data []byte, err error) {
@@ -255,7 +255,7 @@ func (r ZoneSecondaryDNSIncomingNewParams) MarshalJSON() (data []byte, err error
 }
 
 type ZoneSecondaryDNSIncomingUpdateParams struct {
-	SecondaryZone SecondaryZoneParam `json:"secondary_zone,required"`
+	SecondaryZone SecondaryZoneParam `json:"secondary_zone" api:"required"`
 }
 
 func (r ZoneSecondaryDNSIncomingUpdateParams) MarshalJSON() (data []byte, err error) {

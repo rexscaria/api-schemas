@@ -41,11 +41,11 @@ func (r *AccountAIRunHfTheblokeService) ExecuteDeepseekCoder6_7bBaseAwq(ctx cont
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai/run/@hf/thebloke/deepseek-coder-6.7b-base-awq", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Execute @hf/thebloke/deepseek-coder-6.7b-instruct-awq model.
@@ -53,11 +53,11 @@ func (r *AccountAIRunHfTheblokeService) ExecuteDeepseekCoder6_7bInstructAwq(ctx 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai/run/@hf/thebloke/deepseek-coder-6.7b-instruct-awq", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Execute @hf/thebloke/llama-2-13b-chat-awq model.
@@ -65,11 +65,11 @@ func (r *AccountAIRunHfTheblokeService) ExecuteLlama2_13bChatAwq(ctx context.Con
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai/run/@hf/thebloke/llama-2-13b-chat-awq", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Execute @hf/thebloke/llamaguard-7b-awq model.
@@ -77,11 +77,11 @@ func (r *AccountAIRunHfTheblokeService) ExecuteLlamaguard7bAwq(ctx context.Conte
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai/run/@hf/thebloke/llamaguard-7b-awq", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Execute @hf/thebloke/mistral-7b-instruct-v0.1-awq model.
@@ -89,11 +89,11 @@ func (r *AccountAIRunHfTheblokeService) ExecuteMistral7bInstructV0_1Awq(ctx cont
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai/run/@hf/thebloke/mistral-7b-instruct-v0.1-awq", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Execute @hf/thebloke/neural-chat-7b-v3-1-awq model.
@@ -101,11 +101,11 @@ func (r *AccountAIRunHfTheblokeService) ExecuteNeuralChat7bV3_1Awq(ctx context.C
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai/run/@hf/thebloke/neural-chat-7b-v3-1-awq", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Execute @hf/thebloke/openhermes-2.5-mistral-7b-awq model.
@@ -113,11 +113,11 @@ func (r *AccountAIRunHfTheblokeService) ExecuteOpenhermes2_5Mistral7bAwq(ctx con
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai/run/@hf/thebloke/openhermes-2.5-mistral-7b-awq", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Execute @hf/thebloke/zephyr-7b-beta-awq model.
@@ -125,11 +125,11 @@ func (r *AccountAIRunHfTheblokeService) ExecuteZephyr7bBetaAwq(ctx context.Conte
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai/run/@hf/thebloke/zephyr-7b-beta-awq", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountAIRunHfTheblokeExecuteDeepseekCoder6_7bBaseAwqResponse = interface{}
@@ -222,7 +222,7 @@ type AccountAIRunHfTheblokeExecuteDeepseekCoder6_7bBaseAwqParamsBodyUnion interf
 
 type AccountAIRunHfTheblokeExecuteDeepseekCoder6_7bBaseAwqParamsBodyPrompt struct {
 	// The input text prompt for the model to generate a response.
-	Prompt param.Field[string] `json:"prompt,required"`
+	Prompt param.Field[string] `json:"prompt" api:"required"`
 	// Decreases the likelihood of the model repeating the same lines verbatim.
 	FrequencyPenalty param.Field[float64] `json:"frequency_penalty"`
 	// Name of the LoRA (Low-Rank Adaptation) model to fine-tune the base model.
@@ -288,7 +288,7 @@ func (r AccountAIRunHfTheblokeExecuteDeepseekCoder6_7bBaseAwqParamsBodyPromptRes
 
 type AccountAIRunHfTheblokeExecuteDeepseekCoder6_7bBaseAwqParamsBodyMessages struct {
 	// An array of message objects representing the conversation history.
-	Messages param.Field[[]AccountAIRunHfTheblokeExecuteDeepseekCoder6_7bBaseAwqParamsBodyMessagesMessage] `json:"messages,required"`
+	Messages param.Field[[]AccountAIRunHfTheblokeExecuteDeepseekCoder6_7bBaseAwqParamsBodyMessagesMessage] `json:"messages" api:"required"`
 	// Decreases the likelihood of the model repeating the same lines verbatim.
 	FrequencyPenalty param.Field[float64]                                                                           `json:"frequency_penalty"`
 	Functions        param.Field[[]AccountAIRunHfTheblokeExecuteDeepseekCoder6_7bBaseAwqParamsBodyMessagesFunction] `json:"functions"`
@@ -331,9 +331,9 @@ func (r AccountAIRunHfTheblokeExecuteDeepseekCoder6_7bBaseAwqParamsBodyMessages)
 
 type AccountAIRunHfTheblokeExecuteDeepseekCoder6_7bBaseAwqParamsBodyMessagesMessage struct {
 	// The content of the message as a string.
-	Content param.Field[string] `json:"content,required"`
+	Content param.Field[string] `json:"content" api:"required"`
 	// The role of the message sender (e.g., 'user', 'assistant', 'system', 'tool').
-	Role param.Field[string] `json:"role,required"`
+	Role param.Field[string] `json:"role" api:"required"`
 }
 
 func (r AccountAIRunHfTheblokeExecuteDeepseekCoder6_7bBaseAwqParamsBodyMessagesMessage) MarshalJSON() (data []byte, err error) {
@@ -341,8 +341,8 @@ func (r AccountAIRunHfTheblokeExecuteDeepseekCoder6_7bBaseAwqParamsBodyMessagesM
 }
 
 type AccountAIRunHfTheblokeExecuteDeepseekCoder6_7bBaseAwqParamsBodyMessagesFunction struct {
-	Code param.Field[string] `json:"code,required"`
-	Name param.Field[string] `json:"name,required"`
+	Code param.Field[string] `json:"code" api:"required"`
+	Name param.Field[string] `json:"name" api:"required"`
 }
 
 func (r AccountAIRunHfTheblokeExecuteDeepseekCoder6_7bBaseAwqParamsBodyMessagesFunction) MarshalJSON() (data []byte, err error) {
@@ -401,11 +401,11 @@ type AccountAIRunHfTheblokeExecuteDeepseekCoder6_7bBaseAwqParamsBodyMessagesTool
 
 type AccountAIRunHfTheblokeExecuteDeepseekCoder6_7bBaseAwqParamsBodyMessagesToolsObject struct {
 	// A brief description of what the tool does.
-	Description param.Field[string] `json:"description,required"`
+	Description param.Field[string] `json:"description" api:"required"`
 	// The name of the tool. More descriptive the better.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Schema defining the parameters accepted by the tool.
-	Parameters param.Field[AccountAIRunHfTheblokeExecuteDeepseekCoder6_7bBaseAwqParamsBodyMessagesToolsObjectParameters] `json:"parameters,required"`
+	Parameters param.Field[AccountAIRunHfTheblokeExecuteDeepseekCoder6_7bBaseAwqParamsBodyMessagesToolsObjectParameters] `json:"parameters" api:"required"`
 }
 
 func (r AccountAIRunHfTheblokeExecuteDeepseekCoder6_7bBaseAwqParamsBodyMessagesToolsObject) MarshalJSON() (data []byte, err error) {
@@ -418,9 +418,9 @@ func (r AccountAIRunHfTheblokeExecuteDeepseekCoder6_7bBaseAwqParamsBodyMessagesT
 // Schema defining the parameters accepted by the tool.
 type AccountAIRunHfTheblokeExecuteDeepseekCoder6_7bBaseAwqParamsBodyMessagesToolsObjectParameters struct {
 	// Definitions of each parameter.
-	Properties param.Field[map[string]AccountAIRunHfTheblokeExecuteDeepseekCoder6_7bBaseAwqParamsBodyMessagesToolsObjectParametersProperties] `json:"properties,required"`
+	Properties param.Field[map[string]AccountAIRunHfTheblokeExecuteDeepseekCoder6_7bBaseAwqParamsBodyMessagesToolsObjectParametersProperties] `json:"properties" api:"required"`
 	// The type of the parameters object (usually 'object').
-	Type param.Field[string] `json:"type,required"`
+	Type param.Field[string] `json:"type" api:"required"`
 	// List of required parameter names.
 	Required param.Field[[]string] `json:"required"`
 }
@@ -431,9 +431,9 @@ func (r AccountAIRunHfTheblokeExecuteDeepseekCoder6_7bBaseAwqParamsBodyMessagesT
 
 type AccountAIRunHfTheblokeExecuteDeepseekCoder6_7bBaseAwqParamsBodyMessagesToolsObjectParametersProperties struct {
 	// A description of the expected parameter.
-	Description param.Field[string] `json:"description,required"`
+	Description param.Field[string] `json:"description" api:"required"`
 	// The data type of the parameter.
-	Type param.Field[string] `json:"type,required"`
+	Type param.Field[string] `json:"type" api:"required"`
 }
 
 func (r AccountAIRunHfTheblokeExecuteDeepseekCoder6_7bBaseAwqParamsBodyMessagesToolsObjectParametersProperties) MarshalJSON() (data []byte, err error) {
@@ -514,7 +514,7 @@ type AccountAIRunHfTheblokeExecuteDeepseekCoder6_7bInstructAwqParamsBodyUnion in
 
 type AccountAIRunHfTheblokeExecuteDeepseekCoder6_7bInstructAwqParamsBodyPrompt struct {
 	// The input text prompt for the model to generate a response.
-	Prompt param.Field[string] `json:"prompt,required"`
+	Prompt param.Field[string] `json:"prompt" api:"required"`
 	// Decreases the likelihood of the model repeating the same lines verbatim.
 	FrequencyPenalty param.Field[float64] `json:"frequency_penalty"`
 	// Name of the LoRA (Low-Rank Adaptation) model to fine-tune the base model.
@@ -580,7 +580,7 @@ func (r AccountAIRunHfTheblokeExecuteDeepseekCoder6_7bInstructAwqParamsBodyPromp
 
 type AccountAIRunHfTheblokeExecuteDeepseekCoder6_7bInstructAwqParamsBodyMessages struct {
 	// An array of message objects representing the conversation history.
-	Messages param.Field[[]AccountAIRunHfTheblokeExecuteDeepseekCoder6_7bInstructAwqParamsBodyMessagesMessage] `json:"messages,required"`
+	Messages param.Field[[]AccountAIRunHfTheblokeExecuteDeepseekCoder6_7bInstructAwqParamsBodyMessagesMessage] `json:"messages" api:"required"`
 	// Decreases the likelihood of the model repeating the same lines verbatim.
 	FrequencyPenalty param.Field[float64]                                                                               `json:"frequency_penalty"`
 	Functions        param.Field[[]AccountAIRunHfTheblokeExecuteDeepseekCoder6_7bInstructAwqParamsBodyMessagesFunction] `json:"functions"`
@@ -623,9 +623,9 @@ func (r AccountAIRunHfTheblokeExecuteDeepseekCoder6_7bInstructAwqParamsBodyMessa
 
 type AccountAIRunHfTheblokeExecuteDeepseekCoder6_7bInstructAwqParamsBodyMessagesMessage struct {
 	// The content of the message as a string.
-	Content param.Field[string] `json:"content,required"`
+	Content param.Field[string] `json:"content" api:"required"`
 	// The role of the message sender (e.g., 'user', 'assistant', 'system', 'tool').
-	Role param.Field[string] `json:"role,required"`
+	Role param.Field[string] `json:"role" api:"required"`
 }
 
 func (r AccountAIRunHfTheblokeExecuteDeepseekCoder6_7bInstructAwqParamsBodyMessagesMessage) MarshalJSON() (data []byte, err error) {
@@ -633,8 +633,8 @@ func (r AccountAIRunHfTheblokeExecuteDeepseekCoder6_7bInstructAwqParamsBodyMessa
 }
 
 type AccountAIRunHfTheblokeExecuteDeepseekCoder6_7bInstructAwqParamsBodyMessagesFunction struct {
-	Code param.Field[string] `json:"code,required"`
-	Name param.Field[string] `json:"name,required"`
+	Code param.Field[string] `json:"code" api:"required"`
+	Name param.Field[string] `json:"name" api:"required"`
 }
 
 func (r AccountAIRunHfTheblokeExecuteDeepseekCoder6_7bInstructAwqParamsBodyMessagesFunction) MarshalJSON() (data []byte, err error) {
@@ -693,11 +693,11 @@ type AccountAIRunHfTheblokeExecuteDeepseekCoder6_7bInstructAwqParamsBodyMessages
 
 type AccountAIRunHfTheblokeExecuteDeepseekCoder6_7bInstructAwqParamsBodyMessagesToolsObject struct {
 	// A brief description of what the tool does.
-	Description param.Field[string] `json:"description,required"`
+	Description param.Field[string] `json:"description" api:"required"`
 	// The name of the tool. More descriptive the better.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Schema defining the parameters accepted by the tool.
-	Parameters param.Field[AccountAIRunHfTheblokeExecuteDeepseekCoder6_7bInstructAwqParamsBodyMessagesToolsObjectParameters] `json:"parameters,required"`
+	Parameters param.Field[AccountAIRunHfTheblokeExecuteDeepseekCoder6_7bInstructAwqParamsBodyMessagesToolsObjectParameters] `json:"parameters" api:"required"`
 }
 
 func (r AccountAIRunHfTheblokeExecuteDeepseekCoder6_7bInstructAwqParamsBodyMessagesToolsObject) MarshalJSON() (data []byte, err error) {
@@ -710,9 +710,9 @@ func (r AccountAIRunHfTheblokeExecuteDeepseekCoder6_7bInstructAwqParamsBodyMessa
 // Schema defining the parameters accepted by the tool.
 type AccountAIRunHfTheblokeExecuteDeepseekCoder6_7bInstructAwqParamsBodyMessagesToolsObjectParameters struct {
 	// Definitions of each parameter.
-	Properties param.Field[map[string]AccountAIRunHfTheblokeExecuteDeepseekCoder6_7bInstructAwqParamsBodyMessagesToolsObjectParametersProperties] `json:"properties,required"`
+	Properties param.Field[map[string]AccountAIRunHfTheblokeExecuteDeepseekCoder6_7bInstructAwqParamsBodyMessagesToolsObjectParametersProperties] `json:"properties" api:"required"`
 	// The type of the parameters object (usually 'object').
-	Type param.Field[string] `json:"type,required"`
+	Type param.Field[string] `json:"type" api:"required"`
 	// List of required parameter names.
 	Required param.Field[[]string] `json:"required"`
 }
@@ -723,9 +723,9 @@ func (r AccountAIRunHfTheblokeExecuteDeepseekCoder6_7bInstructAwqParamsBodyMessa
 
 type AccountAIRunHfTheblokeExecuteDeepseekCoder6_7bInstructAwqParamsBodyMessagesToolsObjectParametersProperties struct {
 	// A description of the expected parameter.
-	Description param.Field[string] `json:"description,required"`
+	Description param.Field[string] `json:"description" api:"required"`
 	// The data type of the parameter.
-	Type param.Field[string] `json:"type,required"`
+	Type param.Field[string] `json:"type" api:"required"`
 }
 
 func (r AccountAIRunHfTheblokeExecuteDeepseekCoder6_7bInstructAwqParamsBodyMessagesToolsObjectParametersProperties) MarshalJSON() (data []byte, err error) {
@@ -804,7 +804,7 @@ type AccountAIRunHfTheblokeExecuteLlama2_13bChatAwqParamsBodyUnion interface {
 
 type AccountAIRunHfTheblokeExecuteLlama2_13bChatAwqParamsBodyPrompt struct {
 	// The input text prompt for the model to generate a response.
-	Prompt param.Field[string] `json:"prompt,required"`
+	Prompt param.Field[string] `json:"prompt" api:"required"`
 	// Decreases the likelihood of the model repeating the same lines verbatim.
 	FrequencyPenalty param.Field[float64] `json:"frequency_penalty"`
 	// Name of the LoRA (Low-Rank Adaptation) model to fine-tune the base model.
@@ -870,7 +870,7 @@ func (r AccountAIRunHfTheblokeExecuteLlama2_13bChatAwqParamsBodyPromptResponseFo
 
 type AccountAIRunHfTheblokeExecuteLlama2_13bChatAwqParamsBodyMessages struct {
 	// An array of message objects representing the conversation history.
-	Messages param.Field[[]AccountAIRunHfTheblokeExecuteLlama2_13bChatAwqParamsBodyMessagesMessage] `json:"messages,required"`
+	Messages param.Field[[]AccountAIRunHfTheblokeExecuteLlama2_13bChatAwqParamsBodyMessagesMessage] `json:"messages" api:"required"`
 	// Decreases the likelihood of the model repeating the same lines verbatim.
 	FrequencyPenalty param.Field[float64]                                                                    `json:"frequency_penalty"`
 	Functions        param.Field[[]AccountAIRunHfTheblokeExecuteLlama2_13bChatAwqParamsBodyMessagesFunction] `json:"functions"`
@@ -913,9 +913,9 @@ func (r AccountAIRunHfTheblokeExecuteLlama2_13bChatAwqParamsBodyMessages) implem
 
 type AccountAIRunHfTheblokeExecuteLlama2_13bChatAwqParamsBodyMessagesMessage struct {
 	// The content of the message as a string.
-	Content param.Field[string] `json:"content,required"`
+	Content param.Field[string] `json:"content" api:"required"`
 	// The role of the message sender (e.g., 'user', 'assistant', 'system', 'tool').
-	Role param.Field[string] `json:"role,required"`
+	Role param.Field[string] `json:"role" api:"required"`
 }
 
 func (r AccountAIRunHfTheblokeExecuteLlama2_13bChatAwqParamsBodyMessagesMessage) MarshalJSON() (data []byte, err error) {
@@ -923,8 +923,8 @@ func (r AccountAIRunHfTheblokeExecuteLlama2_13bChatAwqParamsBodyMessagesMessage)
 }
 
 type AccountAIRunHfTheblokeExecuteLlama2_13bChatAwqParamsBodyMessagesFunction struct {
-	Code param.Field[string] `json:"code,required"`
-	Name param.Field[string] `json:"name,required"`
+	Code param.Field[string] `json:"code" api:"required"`
+	Name param.Field[string] `json:"name" api:"required"`
 }
 
 func (r AccountAIRunHfTheblokeExecuteLlama2_13bChatAwqParamsBodyMessagesFunction) MarshalJSON() (data []byte, err error) {
@@ -983,11 +983,11 @@ type AccountAIRunHfTheblokeExecuteLlama2_13bChatAwqParamsBodyMessagesToolUnion i
 
 type AccountAIRunHfTheblokeExecuteLlama2_13bChatAwqParamsBodyMessagesToolsObject struct {
 	// A brief description of what the tool does.
-	Description param.Field[string] `json:"description,required"`
+	Description param.Field[string] `json:"description" api:"required"`
 	// The name of the tool. More descriptive the better.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Schema defining the parameters accepted by the tool.
-	Parameters param.Field[AccountAIRunHfTheblokeExecuteLlama2_13bChatAwqParamsBodyMessagesToolsObjectParameters] `json:"parameters,required"`
+	Parameters param.Field[AccountAIRunHfTheblokeExecuteLlama2_13bChatAwqParamsBodyMessagesToolsObjectParameters] `json:"parameters" api:"required"`
 }
 
 func (r AccountAIRunHfTheblokeExecuteLlama2_13bChatAwqParamsBodyMessagesToolsObject) MarshalJSON() (data []byte, err error) {
@@ -1000,9 +1000,9 @@ func (r AccountAIRunHfTheblokeExecuteLlama2_13bChatAwqParamsBodyMessagesToolsObj
 // Schema defining the parameters accepted by the tool.
 type AccountAIRunHfTheblokeExecuteLlama2_13bChatAwqParamsBodyMessagesToolsObjectParameters struct {
 	// Definitions of each parameter.
-	Properties param.Field[map[string]AccountAIRunHfTheblokeExecuteLlama2_13bChatAwqParamsBodyMessagesToolsObjectParametersProperties] `json:"properties,required"`
+	Properties param.Field[map[string]AccountAIRunHfTheblokeExecuteLlama2_13bChatAwqParamsBodyMessagesToolsObjectParametersProperties] `json:"properties" api:"required"`
 	// The type of the parameters object (usually 'object').
-	Type param.Field[string] `json:"type,required"`
+	Type param.Field[string] `json:"type" api:"required"`
 	// List of required parameter names.
 	Required param.Field[[]string] `json:"required"`
 }
@@ -1013,9 +1013,9 @@ func (r AccountAIRunHfTheblokeExecuteLlama2_13bChatAwqParamsBodyMessagesToolsObj
 
 type AccountAIRunHfTheblokeExecuteLlama2_13bChatAwqParamsBodyMessagesToolsObjectParametersProperties struct {
 	// A description of the expected parameter.
-	Description param.Field[string] `json:"description,required"`
+	Description param.Field[string] `json:"description" api:"required"`
 	// The data type of the parameter.
-	Type param.Field[string] `json:"type,required"`
+	Type param.Field[string] `json:"type" api:"required"`
 }
 
 func (r AccountAIRunHfTheblokeExecuteLlama2_13bChatAwqParamsBodyMessagesToolsObjectParametersProperties) MarshalJSON() (data []byte, err error) {
@@ -1094,7 +1094,7 @@ type AccountAIRunHfTheblokeExecuteLlamaguard7bAwqParamsBodyUnion interface {
 
 type AccountAIRunHfTheblokeExecuteLlamaguard7bAwqParamsBodyPrompt struct {
 	// The input text prompt for the model to generate a response.
-	Prompt param.Field[string] `json:"prompt,required"`
+	Prompt param.Field[string] `json:"prompt" api:"required"`
 	// Decreases the likelihood of the model repeating the same lines verbatim.
 	FrequencyPenalty param.Field[float64] `json:"frequency_penalty"`
 	// Name of the LoRA (Low-Rank Adaptation) model to fine-tune the base model.
@@ -1160,7 +1160,7 @@ func (r AccountAIRunHfTheblokeExecuteLlamaguard7bAwqParamsBodyPromptResponseForm
 
 type AccountAIRunHfTheblokeExecuteLlamaguard7bAwqParamsBodyMessages struct {
 	// An array of message objects representing the conversation history.
-	Messages param.Field[[]AccountAIRunHfTheblokeExecuteLlamaguard7bAwqParamsBodyMessagesMessage] `json:"messages,required"`
+	Messages param.Field[[]AccountAIRunHfTheblokeExecuteLlamaguard7bAwqParamsBodyMessagesMessage] `json:"messages" api:"required"`
 	// Decreases the likelihood of the model repeating the same lines verbatim.
 	FrequencyPenalty param.Field[float64]                                                                  `json:"frequency_penalty"`
 	Functions        param.Field[[]AccountAIRunHfTheblokeExecuteLlamaguard7bAwqParamsBodyMessagesFunction] `json:"functions"`
@@ -1203,9 +1203,9 @@ func (r AccountAIRunHfTheblokeExecuteLlamaguard7bAwqParamsBodyMessages) implemen
 
 type AccountAIRunHfTheblokeExecuteLlamaguard7bAwqParamsBodyMessagesMessage struct {
 	// The content of the message as a string.
-	Content param.Field[string] `json:"content,required"`
+	Content param.Field[string] `json:"content" api:"required"`
 	// The role of the message sender (e.g., 'user', 'assistant', 'system', 'tool').
-	Role param.Field[string] `json:"role,required"`
+	Role param.Field[string] `json:"role" api:"required"`
 }
 
 func (r AccountAIRunHfTheblokeExecuteLlamaguard7bAwqParamsBodyMessagesMessage) MarshalJSON() (data []byte, err error) {
@@ -1213,8 +1213,8 @@ func (r AccountAIRunHfTheblokeExecuteLlamaguard7bAwqParamsBodyMessagesMessage) M
 }
 
 type AccountAIRunHfTheblokeExecuteLlamaguard7bAwqParamsBodyMessagesFunction struct {
-	Code param.Field[string] `json:"code,required"`
-	Name param.Field[string] `json:"name,required"`
+	Code param.Field[string] `json:"code" api:"required"`
+	Name param.Field[string] `json:"name" api:"required"`
 }
 
 func (r AccountAIRunHfTheblokeExecuteLlamaguard7bAwqParamsBodyMessagesFunction) MarshalJSON() (data []byte, err error) {
@@ -1273,11 +1273,11 @@ type AccountAIRunHfTheblokeExecuteLlamaguard7bAwqParamsBodyMessagesToolUnion int
 
 type AccountAIRunHfTheblokeExecuteLlamaguard7bAwqParamsBodyMessagesToolsObject struct {
 	// A brief description of what the tool does.
-	Description param.Field[string] `json:"description,required"`
+	Description param.Field[string] `json:"description" api:"required"`
 	// The name of the tool. More descriptive the better.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Schema defining the parameters accepted by the tool.
-	Parameters param.Field[AccountAIRunHfTheblokeExecuteLlamaguard7bAwqParamsBodyMessagesToolsObjectParameters] `json:"parameters,required"`
+	Parameters param.Field[AccountAIRunHfTheblokeExecuteLlamaguard7bAwqParamsBodyMessagesToolsObjectParameters] `json:"parameters" api:"required"`
 }
 
 func (r AccountAIRunHfTheblokeExecuteLlamaguard7bAwqParamsBodyMessagesToolsObject) MarshalJSON() (data []byte, err error) {
@@ -1290,9 +1290,9 @@ func (r AccountAIRunHfTheblokeExecuteLlamaguard7bAwqParamsBodyMessagesToolsObjec
 // Schema defining the parameters accepted by the tool.
 type AccountAIRunHfTheblokeExecuteLlamaguard7bAwqParamsBodyMessagesToolsObjectParameters struct {
 	// Definitions of each parameter.
-	Properties param.Field[map[string]AccountAIRunHfTheblokeExecuteLlamaguard7bAwqParamsBodyMessagesToolsObjectParametersProperties] `json:"properties,required"`
+	Properties param.Field[map[string]AccountAIRunHfTheblokeExecuteLlamaguard7bAwqParamsBodyMessagesToolsObjectParametersProperties] `json:"properties" api:"required"`
 	// The type of the parameters object (usually 'object').
-	Type param.Field[string] `json:"type,required"`
+	Type param.Field[string] `json:"type" api:"required"`
 	// List of required parameter names.
 	Required param.Field[[]string] `json:"required"`
 }
@@ -1303,9 +1303,9 @@ func (r AccountAIRunHfTheblokeExecuteLlamaguard7bAwqParamsBodyMessagesToolsObjec
 
 type AccountAIRunHfTheblokeExecuteLlamaguard7bAwqParamsBodyMessagesToolsObjectParametersProperties struct {
 	// A description of the expected parameter.
-	Description param.Field[string] `json:"description,required"`
+	Description param.Field[string] `json:"description" api:"required"`
 	// The data type of the parameter.
-	Type param.Field[string] `json:"type,required"`
+	Type param.Field[string] `json:"type" api:"required"`
 }
 
 func (r AccountAIRunHfTheblokeExecuteLlamaguard7bAwqParamsBodyMessagesToolsObjectParametersProperties) MarshalJSON() (data []byte, err error) {
@@ -1386,7 +1386,7 @@ type AccountAIRunHfTheblokeExecuteMistral7bInstructV0_1AwqParamsBodyUnion interf
 
 type AccountAIRunHfTheblokeExecuteMistral7bInstructV0_1AwqParamsBodyPrompt struct {
 	// The input text prompt for the model to generate a response.
-	Prompt param.Field[string] `json:"prompt,required"`
+	Prompt param.Field[string] `json:"prompt" api:"required"`
 	// Decreases the likelihood of the model repeating the same lines verbatim.
 	FrequencyPenalty param.Field[float64] `json:"frequency_penalty"`
 	// Name of the LoRA (Low-Rank Adaptation) model to fine-tune the base model.
@@ -1452,7 +1452,7 @@ func (r AccountAIRunHfTheblokeExecuteMistral7bInstructV0_1AwqParamsBodyPromptRes
 
 type AccountAIRunHfTheblokeExecuteMistral7bInstructV0_1AwqParamsBodyMessages struct {
 	// An array of message objects representing the conversation history.
-	Messages param.Field[[]AccountAIRunHfTheblokeExecuteMistral7bInstructV0_1AwqParamsBodyMessagesMessage] `json:"messages,required"`
+	Messages param.Field[[]AccountAIRunHfTheblokeExecuteMistral7bInstructV0_1AwqParamsBodyMessagesMessage] `json:"messages" api:"required"`
 	// Decreases the likelihood of the model repeating the same lines verbatim.
 	FrequencyPenalty param.Field[float64]                                                                           `json:"frequency_penalty"`
 	Functions        param.Field[[]AccountAIRunHfTheblokeExecuteMistral7bInstructV0_1AwqParamsBodyMessagesFunction] `json:"functions"`
@@ -1495,9 +1495,9 @@ func (r AccountAIRunHfTheblokeExecuteMistral7bInstructV0_1AwqParamsBodyMessages)
 
 type AccountAIRunHfTheblokeExecuteMistral7bInstructV0_1AwqParamsBodyMessagesMessage struct {
 	// The content of the message as a string.
-	Content param.Field[string] `json:"content,required"`
+	Content param.Field[string] `json:"content" api:"required"`
 	// The role of the message sender (e.g., 'user', 'assistant', 'system', 'tool').
-	Role param.Field[string] `json:"role,required"`
+	Role param.Field[string] `json:"role" api:"required"`
 }
 
 func (r AccountAIRunHfTheblokeExecuteMistral7bInstructV0_1AwqParamsBodyMessagesMessage) MarshalJSON() (data []byte, err error) {
@@ -1505,8 +1505,8 @@ func (r AccountAIRunHfTheblokeExecuteMistral7bInstructV0_1AwqParamsBodyMessagesM
 }
 
 type AccountAIRunHfTheblokeExecuteMistral7bInstructV0_1AwqParamsBodyMessagesFunction struct {
-	Code param.Field[string] `json:"code,required"`
-	Name param.Field[string] `json:"name,required"`
+	Code param.Field[string] `json:"code" api:"required"`
+	Name param.Field[string] `json:"name" api:"required"`
 }
 
 func (r AccountAIRunHfTheblokeExecuteMistral7bInstructV0_1AwqParamsBodyMessagesFunction) MarshalJSON() (data []byte, err error) {
@@ -1565,11 +1565,11 @@ type AccountAIRunHfTheblokeExecuteMistral7bInstructV0_1AwqParamsBodyMessagesTool
 
 type AccountAIRunHfTheblokeExecuteMistral7bInstructV0_1AwqParamsBodyMessagesToolsObject struct {
 	// A brief description of what the tool does.
-	Description param.Field[string] `json:"description,required"`
+	Description param.Field[string] `json:"description" api:"required"`
 	// The name of the tool. More descriptive the better.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Schema defining the parameters accepted by the tool.
-	Parameters param.Field[AccountAIRunHfTheblokeExecuteMistral7bInstructV0_1AwqParamsBodyMessagesToolsObjectParameters] `json:"parameters,required"`
+	Parameters param.Field[AccountAIRunHfTheblokeExecuteMistral7bInstructV0_1AwqParamsBodyMessagesToolsObjectParameters] `json:"parameters" api:"required"`
 }
 
 func (r AccountAIRunHfTheblokeExecuteMistral7bInstructV0_1AwqParamsBodyMessagesToolsObject) MarshalJSON() (data []byte, err error) {
@@ -1582,9 +1582,9 @@ func (r AccountAIRunHfTheblokeExecuteMistral7bInstructV0_1AwqParamsBodyMessagesT
 // Schema defining the parameters accepted by the tool.
 type AccountAIRunHfTheblokeExecuteMistral7bInstructV0_1AwqParamsBodyMessagesToolsObjectParameters struct {
 	// Definitions of each parameter.
-	Properties param.Field[map[string]AccountAIRunHfTheblokeExecuteMistral7bInstructV0_1AwqParamsBodyMessagesToolsObjectParametersProperties] `json:"properties,required"`
+	Properties param.Field[map[string]AccountAIRunHfTheblokeExecuteMistral7bInstructV0_1AwqParamsBodyMessagesToolsObjectParametersProperties] `json:"properties" api:"required"`
 	// The type of the parameters object (usually 'object').
-	Type param.Field[string] `json:"type,required"`
+	Type param.Field[string] `json:"type" api:"required"`
 	// List of required parameter names.
 	Required param.Field[[]string] `json:"required"`
 }
@@ -1595,9 +1595,9 @@ func (r AccountAIRunHfTheblokeExecuteMistral7bInstructV0_1AwqParamsBodyMessagesT
 
 type AccountAIRunHfTheblokeExecuteMistral7bInstructV0_1AwqParamsBodyMessagesToolsObjectParametersProperties struct {
 	// A description of the expected parameter.
-	Description param.Field[string] `json:"description,required"`
+	Description param.Field[string] `json:"description" api:"required"`
 	// The data type of the parameter.
-	Type param.Field[string] `json:"type,required"`
+	Type param.Field[string] `json:"type" api:"required"`
 }
 
 func (r AccountAIRunHfTheblokeExecuteMistral7bInstructV0_1AwqParamsBodyMessagesToolsObjectParametersProperties) MarshalJSON() (data []byte, err error) {
@@ -1676,7 +1676,7 @@ type AccountAIRunHfTheblokeExecuteNeuralChat7bV3_1AwqParamsBodyUnion interface {
 
 type AccountAIRunHfTheblokeExecuteNeuralChat7bV3_1AwqParamsBodyPrompt struct {
 	// The input text prompt for the model to generate a response.
-	Prompt param.Field[string] `json:"prompt,required"`
+	Prompt param.Field[string] `json:"prompt" api:"required"`
 	// Decreases the likelihood of the model repeating the same lines verbatim.
 	FrequencyPenalty param.Field[float64] `json:"frequency_penalty"`
 	// Name of the LoRA (Low-Rank Adaptation) model to fine-tune the base model.
@@ -1742,7 +1742,7 @@ func (r AccountAIRunHfTheblokeExecuteNeuralChat7bV3_1AwqParamsBodyPromptResponse
 
 type AccountAIRunHfTheblokeExecuteNeuralChat7bV3_1AwqParamsBodyMessages struct {
 	// An array of message objects representing the conversation history.
-	Messages param.Field[[]AccountAIRunHfTheblokeExecuteNeuralChat7bV3_1AwqParamsBodyMessagesMessage] `json:"messages,required"`
+	Messages param.Field[[]AccountAIRunHfTheblokeExecuteNeuralChat7bV3_1AwqParamsBodyMessagesMessage] `json:"messages" api:"required"`
 	// Decreases the likelihood of the model repeating the same lines verbatim.
 	FrequencyPenalty param.Field[float64]                                                                      `json:"frequency_penalty"`
 	Functions        param.Field[[]AccountAIRunHfTheblokeExecuteNeuralChat7bV3_1AwqParamsBodyMessagesFunction] `json:"functions"`
@@ -1785,9 +1785,9 @@ func (r AccountAIRunHfTheblokeExecuteNeuralChat7bV3_1AwqParamsBodyMessages) impl
 
 type AccountAIRunHfTheblokeExecuteNeuralChat7bV3_1AwqParamsBodyMessagesMessage struct {
 	// The content of the message as a string.
-	Content param.Field[string] `json:"content,required"`
+	Content param.Field[string] `json:"content" api:"required"`
 	// The role of the message sender (e.g., 'user', 'assistant', 'system', 'tool').
-	Role param.Field[string] `json:"role,required"`
+	Role param.Field[string] `json:"role" api:"required"`
 }
 
 func (r AccountAIRunHfTheblokeExecuteNeuralChat7bV3_1AwqParamsBodyMessagesMessage) MarshalJSON() (data []byte, err error) {
@@ -1795,8 +1795,8 @@ func (r AccountAIRunHfTheblokeExecuteNeuralChat7bV3_1AwqParamsBodyMessagesMessag
 }
 
 type AccountAIRunHfTheblokeExecuteNeuralChat7bV3_1AwqParamsBodyMessagesFunction struct {
-	Code param.Field[string] `json:"code,required"`
-	Name param.Field[string] `json:"name,required"`
+	Code param.Field[string] `json:"code" api:"required"`
+	Name param.Field[string] `json:"name" api:"required"`
 }
 
 func (r AccountAIRunHfTheblokeExecuteNeuralChat7bV3_1AwqParamsBodyMessagesFunction) MarshalJSON() (data []byte, err error) {
@@ -1855,11 +1855,11 @@ type AccountAIRunHfTheblokeExecuteNeuralChat7bV3_1AwqParamsBodyMessagesToolUnion
 
 type AccountAIRunHfTheblokeExecuteNeuralChat7bV3_1AwqParamsBodyMessagesToolsObject struct {
 	// A brief description of what the tool does.
-	Description param.Field[string] `json:"description,required"`
+	Description param.Field[string] `json:"description" api:"required"`
 	// The name of the tool. More descriptive the better.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Schema defining the parameters accepted by the tool.
-	Parameters param.Field[AccountAIRunHfTheblokeExecuteNeuralChat7bV3_1AwqParamsBodyMessagesToolsObjectParameters] `json:"parameters,required"`
+	Parameters param.Field[AccountAIRunHfTheblokeExecuteNeuralChat7bV3_1AwqParamsBodyMessagesToolsObjectParameters] `json:"parameters" api:"required"`
 }
 
 func (r AccountAIRunHfTheblokeExecuteNeuralChat7bV3_1AwqParamsBodyMessagesToolsObject) MarshalJSON() (data []byte, err error) {
@@ -1872,9 +1872,9 @@ func (r AccountAIRunHfTheblokeExecuteNeuralChat7bV3_1AwqParamsBodyMessagesToolsO
 // Schema defining the parameters accepted by the tool.
 type AccountAIRunHfTheblokeExecuteNeuralChat7bV3_1AwqParamsBodyMessagesToolsObjectParameters struct {
 	// Definitions of each parameter.
-	Properties param.Field[map[string]AccountAIRunHfTheblokeExecuteNeuralChat7bV3_1AwqParamsBodyMessagesToolsObjectParametersProperties] `json:"properties,required"`
+	Properties param.Field[map[string]AccountAIRunHfTheblokeExecuteNeuralChat7bV3_1AwqParamsBodyMessagesToolsObjectParametersProperties] `json:"properties" api:"required"`
 	// The type of the parameters object (usually 'object').
-	Type param.Field[string] `json:"type,required"`
+	Type param.Field[string] `json:"type" api:"required"`
 	// List of required parameter names.
 	Required param.Field[[]string] `json:"required"`
 }
@@ -1885,9 +1885,9 @@ func (r AccountAIRunHfTheblokeExecuteNeuralChat7bV3_1AwqParamsBodyMessagesToolsO
 
 type AccountAIRunHfTheblokeExecuteNeuralChat7bV3_1AwqParamsBodyMessagesToolsObjectParametersProperties struct {
 	// A description of the expected parameter.
-	Description param.Field[string] `json:"description,required"`
+	Description param.Field[string] `json:"description" api:"required"`
 	// The data type of the parameter.
-	Type param.Field[string] `json:"type,required"`
+	Type param.Field[string] `json:"type" api:"required"`
 }
 
 func (r AccountAIRunHfTheblokeExecuteNeuralChat7bV3_1AwqParamsBodyMessagesToolsObjectParametersProperties) MarshalJSON() (data []byte, err error) {
@@ -1968,7 +1968,7 @@ type AccountAIRunHfTheblokeExecuteOpenhermes2_5Mistral7bAwqParamsBodyUnion inter
 
 type AccountAIRunHfTheblokeExecuteOpenhermes2_5Mistral7bAwqParamsBodyPrompt struct {
 	// The input text prompt for the model to generate a response.
-	Prompt param.Field[string] `json:"prompt,required"`
+	Prompt param.Field[string] `json:"prompt" api:"required"`
 	// Decreases the likelihood of the model repeating the same lines verbatim.
 	FrequencyPenalty param.Field[float64] `json:"frequency_penalty"`
 	// Name of the LoRA (Low-Rank Adaptation) model to fine-tune the base model.
@@ -2034,7 +2034,7 @@ func (r AccountAIRunHfTheblokeExecuteOpenhermes2_5Mistral7bAwqParamsBodyPromptRe
 
 type AccountAIRunHfTheblokeExecuteOpenhermes2_5Mistral7bAwqParamsBodyMessages struct {
 	// An array of message objects representing the conversation history.
-	Messages param.Field[[]AccountAIRunHfTheblokeExecuteOpenhermes2_5Mistral7bAwqParamsBodyMessagesMessage] `json:"messages,required"`
+	Messages param.Field[[]AccountAIRunHfTheblokeExecuteOpenhermes2_5Mistral7bAwqParamsBodyMessagesMessage] `json:"messages" api:"required"`
 	// Decreases the likelihood of the model repeating the same lines verbatim.
 	FrequencyPenalty param.Field[float64]                                                                            `json:"frequency_penalty"`
 	Functions        param.Field[[]AccountAIRunHfTheblokeExecuteOpenhermes2_5Mistral7bAwqParamsBodyMessagesFunction] `json:"functions"`
@@ -2077,9 +2077,9 @@ func (r AccountAIRunHfTheblokeExecuteOpenhermes2_5Mistral7bAwqParamsBodyMessages
 
 type AccountAIRunHfTheblokeExecuteOpenhermes2_5Mistral7bAwqParamsBodyMessagesMessage struct {
 	// The content of the message as a string.
-	Content param.Field[string] `json:"content,required"`
+	Content param.Field[string] `json:"content" api:"required"`
 	// The role of the message sender (e.g., 'user', 'assistant', 'system', 'tool').
-	Role param.Field[string] `json:"role,required"`
+	Role param.Field[string] `json:"role" api:"required"`
 }
 
 func (r AccountAIRunHfTheblokeExecuteOpenhermes2_5Mistral7bAwqParamsBodyMessagesMessage) MarshalJSON() (data []byte, err error) {
@@ -2087,8 +2087,8 @@ func (r AccountAIRunHfTheblokeExecuteOpenhermes2_5Mistral7bAwqParamsBodyMessages
 }
 
 type AccountAIRunHfTheblokeExecuteOpenhermes2_5Mistral7bAwqParamsBodyMessagesFunction struct {
-	Code param.Field[string] `json:"code,required"`
-	Name param.Field[string] `json:"name,required"`
+	Code param.Field[string] `json:"code" api:"required"`
+	Name param.Field[string] `json:"name" api:"required"`
 }
 
 func (r AccountAIRunHfTheblokeExecuteOpenhermes2_5Mistral7bAwqParamsBodyMessagesFunction) MarshalJSON() (data []byte, err error) {
@@ -2147,11 +2147,11 @@ type AccountAIRunHfTheblokeExecuteOpenhermes2_5Mistral7bAwqParamsBodyMessagesToo
 
 type AccountAIRunHfTheblokeExecuteOpenhermes2_5Mistral7bAwqParamsBodyMessagesToolsObject struct {
 	// A brief description of what the tool does.
-	Description param.Field[string] `json:"description,required"`
+	Description param.Field[string] `json:"description" api:"required"`
 	// The name of the tool. More descriptive the better.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Schema defining the parameters accepted by the tool.
-	Parameters param.Field[AccountAIRunHfTheblokeExecuteOpenhermes2_5Mistral7bAwqParamsBodyMessagesToolsObjectParameters] `json:"parameters,required"`
+	Parameters param.Field[AccountAIRunHfTheblokeExecuteOpenhermes2_5Mistral7bAwqParamsBodyMessagesToolsObjectParameters] `json:"parameters" api:"required"`
 }
 
 func (r AccountAIRunHfTheblokeExecuteOpenhermes2_5Mistral7bAwqParamsBodyMessagesToolsObject) MarshalJSON() (data []byte, err error) {
@@ -2164,9 +2164,9 @@ func (r AccountAIRunHfTheblokeExecuteOpenhermes2_5Mistral7bAwqParamsBodyMessages
 // Schema defining the parameters accepted by the tool.
 type AccountAIRunHfTheblokeExecuteOpenhermes2_5Mistral7bAwqParamsBodyMessagesToolsObjectParameters struct {
 	// Definitions of each parameter.
-	Properties param.Field[map[string]AccountAIRunHfTheblokeExecuteOpenhermes2_5Mistral7bAwqParamsBodyMessagesToolsObjectParametersProperties] `json:"properties,required"`
+	Properties param.Field[map[string]AccountAIRunHfTheblokeExecuteOpenhermes2_5Mistral7bAwqParamsBodyMessagesToolsObjectParametersProperties] `json:"properties" api:"required"`
 	// The type of the parameters object (usually 'object').
-	Type param.Field[string] `json:"type,required"`
+	Type param.Field[string] `json:"type" api:"required"`
 	// List of required parameter names.
 	Required param.Field[[]string] `json:"required"`
 }
@@ -2177,9 +2177,9 @@ func (r AccountAIRunHfTheblokeExecuteOpenhermes2_5Mistral7bAwqParamsBodyMessages
 
 type AccountAIRunHfTheblokeExecuteOpenhermes2_5Mistral7bAwqParamsBodyMessagesToolsObjectParametersProperties struct {
 	// A description of the expected parameter.
-	Description param.Field[string] `json:"description,required"`
+	Description param.Field[string] `json:"description" api:"required"`
 	// The data type of the parameter.
-	Type param.Field[string] `json:"type,required"`
+	Type param.Field[string] `json:"type" api:"required"`
 }
 
 func (r AccountAIRunHfTheblokeExecuteOpenhermes2_5Mistral7bAwqParamsBodyMessagesToolsObjectParametersProperties) MarshalJSON() (data []byte, err error) {
@@ -2258,7 +2258,7 @@ type AccountAIRunHfTheblokeExecuteZephyr7bBetaAwqParamsBodyUnion interface {
 
 type AccountAIRunHfTheblokeExecuteZephyr7bBetaAwqParamsBodyPrompt struct {
 	// The input text prompt for the model to generate a response.
-	Prompt param.Field[string] `json:"prompt,required"`
+	Prompt param.Field[string] `json:"prompt" api:"required"`
 	// Decreases the likelihood of the model repeating the same lines verbatim.
 	FrequencyPenalty param.Field[float64] `json:"frequency_penalty"`
 	// Name of the LoRA (Low-Rank Adaptation) model to fine-tune the base model.
@@ -2324,7 +2324,7 @@ func (r AccountAIRunHfTheblokeExecuteZephyr7bBetaAwqParamsBodyPromptResponseForm
 
 type AccountAIRunHfTheblokeExecuteZephyr7bBetaAwqParamsBodyMessages struct {
 	// An array of message objects representing the conversation history.
-	Messages param.Field[[]AccountAIRunHfTheblokeExecuteZephyr7bBetaAwqParamsBodyMessagesMessage] `json:"messages,required"`
+	Messages param.Field[[]AccountAIRunHfTheblokeExecuteZephyr7bBetaAwqParamsBodyMessagesMessage] `json:"messages" api:"required"`
 	// Decreases the likelihood of the model repeating the same lines verbatim.
 	FrequencyPenalty param.Field[float64]                                                                  `json:"frequency_penalty"`
 	Functions        param.Field[[]AccountAIRunHfTheblokeExecuteZephyr7bBetaAwqParamsBodyMessagesFunction] `json:"functions"`
@@ -2367,9 +2367,9 @@ func (r AccountAIRunHfTheblokeExecuteZephyr7bBetaAwqParamsBodyMessages) implemen
 
 type AccountAIRunHfTheblokeExecuteZephyr7bBetaAwqParamsBodyMessagesMessage struct {
 	// The content of the message as a string.
-	Content param.Field[string] `json:"content,required"`
+	Content param.Field[string] `json:"content" api:"required"`
 	// The role of the message sender (e.g., 'user', 'assistant', 'system', 'tool').
-	Role param.Field[string] `json:"role,required"`
+	Role param.Field[string] `json:"role" api:"required"`
 }
 
 func (r AccountAIRunHfTheblokeExecuteZephyr7bBetaAwqParamsBodyMessagesMessage) MarshalJSON() (data []byte, err error) {
@@ -2377,8 +2377,8 @@ func (r AccountAIRunHfTheblokeExecuteZephyr7bBetaAwqParamsBodyMessagesMessage) M
 }
 
 type AccountAIRunHfTheblokeExecuteZephyr7bBetaAwqParamsBodyMessagesFunction struct {
-	Code param.Field[string] `json:"code,required"`
-	Name param.Field[string] `json:"name,required"`
+	Code param.Field[string] `json:"code" api:"required"`
+	Name param.Field[string] `json:"name" api:"required"`
 }
 
 func (r AccountAIRunHfTheblokeExecuteZephyr7bBetaAwqParamsBodyMessagesFunction) MarshalJSON() (data []byte, err error) {
@@ -2437,11 +2437,11 @@ type AccountAIRunHfTheblokeExecuteZephyr7bBetaAwqParamsBodyMessagesToolUnion int
 
 type AccountAIRunHfTheblokeExecuteZephyr7bBetaAwqParamsBodyMessagesToolsObject struct {
 	// A brief description of what the tool does.
-	Description param.Field[string] `json:"description,required"`
+	Description param.Field[string] `json:"description" api:"required"`
 	// The name of the tool. More descriptive the better.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Schema defining the parameters accepted by the tool.
-	Parameters param.Field[AccountAIRunHfTheblokeExecuteZephyr7bBetaAwqParamsBodyMessagesToolsObjectParameters] `json:"parameters,required"`
+	Parameters param.Field[AccountAIRunHfTheblokeExecuteZephyr7bBetaAwqParamsBodyMessagesToolsObjectParameters] `json:"parameters" api:"required"`
 }
 
 func (r AccountAIRunHfTheblokeExecuteZephyr7bBetaAwqParamsBodyMessagesToolsObject) MarshalJSON() (data []byte, err error) {
@@ -2454,9 +2454,9 @@ func (r AccountAIRunHfTheblokeExecuteZephyr7bBetaAwqParamsBodyMessagesToolsObjec
 // Schema defining the parameters accepted by the tool.
 type AccountAIRunHfTheblokeExecuteZephyr7bBetaAwqParamsBodyMessagesToolsObjectParameters struct {
 	// Definitions of each parameter.
-	Properties param.Field[map[string]AccountAIRunHfTheblokeExecuteZephyr7bBetaAwqParamsBodyMessagesToolsObjectParametersProperties] `json:"properties,required"`
+	Properties param.Field[map[string]AccountAIRunHfTheblokeExecuteZephyr7bBetaAwqParamsBodyMessagesToolsObjectParametersProperties] `json:"properties" api:"required"`
 	// The type of the parameters object (usually 'object').
-	Type param.Field[string] `json:"type,required"`
+	Type param.Field[string] `json:"type" api:"required"`
 	// List of required parameter names.
 	Required param.Field[[]string] `json:"required"`
 }
@@ -2467,9 +2467,9 @@ func (r AccountAIRunHfTheblokeExecuteZephyr7bBetaAwqParamsBodyMessagesToolsObjec
 
 type AccountAIRunHfTheblokeExecuteZephyr7bBetaAwqParamsBodyMessagesToolsObjectParametersProperties struct {
 	// A description of the expected parameter.
-	Description param.Field[string] `json:"description,required"`
+	Description param.Field[string] `json:"description" api:"required"`
 	// The data type of the parameter.
-	Type param.Field[string] `json:"type,required"`
+	Type param.Field[string] `json:"type" api:"required"`
 }
 
 func (r AccountAIRunHfTheblokeExecuteZephyr7bBetaAwqParamsBodyMessagesToolsObjectParametersProperties) MarshalJSON() (data []byte, err error) {

@@ -39,16 +39,16 @@ func (r *AccountCloudforceOneEventTagService) New(ctx context.Context, accountID
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/cloudforce-one/events/tags/create", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountCloudforceOneEventTagNewResponse struct {
-	Name string                                      `json:"name,required"`
-	Uuid string                                      `json:"uuid,required"`
+	Name string                                      `json:"name" api:"required"`
+	Uuid string                                      `json:"uuid" api:"required"`
 	JSON accountCloudforceOneEventTagNewResponseJSON `json:"-"`
 }
 
@@ -70,7 +70,7 @@ func (r accountCloudforceOneEventTagNewResponseJSON) RawJSON() string {
 }
 
 type AccountCloudforceOneEventTagNewParams struct {
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 }
 
 func (r AccountCloudforceOneEventTagNewParams) MarshalJSON() (data []byte, err error) {

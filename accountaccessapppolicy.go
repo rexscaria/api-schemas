@@ -41,19 +41,19 @@ func (r *AccountAccessAppPolicyService) MakeReusable(ctx context.Context, accoun
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if appID == "" {
 		err = errors.New("missing required app_id parameter")
-		return
+		return nil, err
 	}
 	if policyID == "" {
 		err = errors.New("missing required policy_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/access/apps/%s/policies/%s/make_reusable", accountID, appID, policyID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type BasePolicyResponse struct {
@@ -149,10 +149,10 @@ func (r policyResponseAppJSON) RawJSON() string {
 }
 
 type ResponseCollectionAppPolicies struct {
-	Errors   []MessagesAccessItem `json:"errors,required"`
-	Messages []MessagesAccessItem `json:"messages,required"`
+	Errors   []MessagesAccessItem `json:"errors" api:"required"`
+	Messages []MessagesAccessItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success    ResponseCollectionAppPoliciesSuccess    `json:"success,required"`
+	Success    ResponseCollectionAppPoliciesSuccess    `json:"success" api:"required"`
 	Result     []PolicyResponseApp                     `json:"result"`
 	ResultInfo ResponseCollectionAppPoliciesResultInfo `json:"result_info"`
 	JSON       responseCollectionAppPoliciesJSON       `json:"-"`

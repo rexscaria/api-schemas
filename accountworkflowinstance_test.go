@@ -15,7 +15,7 @@ import (
 )
 
 func TestAccountWorkflowInstanceNewWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -27,6 +27,7 @@ func TestAccountWorkflowInstanceNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Workflows.Instances.New(
 		context.TODO(),
@@ -48,7 +49,7 @@ func TestAccountWorkflowInstanceNewWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountWorkflowInstanceGet(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -60,6 +61,7 @@ func TestAccountWorkflowInstanceGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Workflows.Instances.Get(
 		context.TODO(),
@@ -77,7 +79,7 @@ func TestAccountWorkflowInstanceGet(t *testing.T) {
 }
 
 func TestAccountWorkflowInstanceListWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -89,6 +91,7 @@ func TestAccountWorkflowInstanceListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Workflows.Instances.List(
 		context.TODO(),
@@ -112,7 +115,7 @@ func TestAccountWorkflowInstanceListWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountWorkflowInstanceBatchNewWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -124,6 +127,7 @@ func TestAccountWorkflowInstanceBatchNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Workflows.Instances.BatchNew(
 		context.TODO(),
@@ -147,7 +151,7 @@ func TestAccountWorkflowInstanceBatchNewWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountWorkflowInstanceSendEventWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -159,6 +163,7 @@ func TestAccountWorkflowInstanceSendEventWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Workflows.Instances.SendEvent(
 		context.TODO(),
@@ -180,7 +185,7 @@ func TestAccountWorkflowInstanceSendEventWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountWorkflowInstanceUpdateStatus(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -192,6 +197,7 @@ func TestAccountWorkflowInstanceUpdateStatus(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Workflows.Instances.UpdateStatus(
 		context.TODO(),

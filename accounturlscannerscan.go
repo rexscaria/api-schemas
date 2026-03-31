@@ -48,11 +48,11 @@ func (r *AccountUrlscannerScanService) New(ctx context.Context, accountID string
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/urlscanner/scan", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get URL scan by uuid
@@ -64,15 +64,15 @@ func (r *AccountUrlscannerScanService) Get(ctx context.Context, accountID string
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if scanID == "" {
 		err = errors.New("missing required scan_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/urlscanner/scan/%s", accountID, scanID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Search scans by date and webpages' requests, including full URL (after
@@ -89,11 +89,11 @@ func (r *AccountUrlscannerScanService) List(ctx context.Context, accountID strin
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/urlscanner/scan", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Get a URL scan's HAR file. See HAR spec at
@@ -106,15 +106,15 @@ func (r *AccountUrlscannerScanService) GetHar(ctx context.Context, accountID str
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if scanID == "" {
 		err = errors.New("missing required scan_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/urlscanner/scan/%s/har", accountID, scanID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Get scan's screenshot by resolution (desktop/mobile/tablet).
@@ -127,22 +127,22 @@ func (r *AccountUrlscannerScanService) GetScreenshot(ctx context.Context, accoun
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "image/png")}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if scanID == "" {
 		err = errors.New("missing required scan_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/urlscanner/scan/%s/screenshot", accountID, scanID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountUrlscannerScanNewResponse struct {
-	Errors   []AccountUrlscannerScanNewResponseError   `json:"errors,required"`
-	Messages []AccountUrlscannerScanNewResponseMessage `json:"messages,required"`
-	Result   AccountUrlscannerScanNewResponseResult    `json:"result,required"`
-	Success  bool                                      `json:"success,required"`
+	Errors   []AccountUrlscannerScanNewResponseError   `json:"errors" api:"required"`
+	Messages []AccountUrlscannerScanNewResponseMessage `json:"messages" api:"required"`
+	Result   AccountUrlscannerScanNewResponseResult    `json:"result" api:"required"`
+	Success  bool                                      `json:"success" api:"required"`
 	JSON     accountUrlscannerScanNewResponseJSON      `json:"-"`
 }
 
@@ -166,7 +166,7 @@ func (r accountUrlscannerScanNewResponseJSON) RawJSON() string {
 }
 
 type AccountUrlscannerScanNewResponseError struct {
-	Message string                                    `json:"message,required"`
+	Message string                                    `json:"message" api:"required"`
 	JSON    accountUrlscannerScanNewResponseErrorJSON `json:"-"`
 }
 
@@ -187,7 +187,7 @@ func (r accountUrlscannerScanNewResponseErrorJSON) RawJSON() string {
 }
 
 type AccountUrlscannerScanNewResponseMessage struct {
-	Message string                                      `json:"message,required"`
+	Message string                                      `json:"message" api:"required"`
 	JSON    accountUrlscannerScanNewResponseMessageJSON `json:"-"`
 }
 
@@ -209,13 +209,13 @@ func (r accountUrlscannerScanNewResponseMessageJSON) RawJSON() string {
 
 type AccountUrlscannerScanNewResponseResult struct {
 	// Time when url was submitted for scanning.
-	Time time.Time `json:"time,required" format:"date-time"`
+	Time time.Time `json:"time" api:"required" format:"date-time"`
 	// Canonical form of submitted URL. Use this if you want to later search by URL.
-	URL string `json:"url,required"`
+	URL string `json:"url" api:"required"`
 	// Scan ID.
-	Uuid string `json:"uuid,required" format:"uuid"`
+	Uuid string `json:"uuid" api:"required" format:"uuid"`
 	// Submitted visibility status.
-	Visibility AccountUrlscannerScanNewResponseResultVisibility `json:"visibility,required"`
+	Visibility AccountUrlscannerScanNewResponseResultVisibility `json:"visibility" api:"required"`
 	JSON       accountUrlscannerScanNewResponseResultJSON       `json:"-"`
 }
 
@@ -255,11 +255,11 @@ func (r AccountUrlscannerScanNewResponseResultVisibility) IsKnown() bool {
 }
 
 type AccountUrlscannerScanGetResponse struct {
-	Errors   []AccountUrlscannerScanGetResponseError   `json:"errors,required"`
-	Messages []AccountUrlscannerScanGetResponseMessage `json:"messages,required"`
-	Result   AccountUrlscannerScanGetResponseResult    `json:"result,required"`
+	Errors   []AccountUrlscannerScanGetResponseError   `json:"errors" api:"required"`
+	Messages []AccountUrlscannerScanGetResponseMessage `json:"messages" api:"required"`
+	Result   AccountUrlscannerScanGetResponseResult    `json:"result" api:"required"`
 	// Whether request was successful or not
-	Success bool                                 `json:"success,required"`
+	Success bool                                 `json:"success" api:"required"`
 	JSON    accountUrlscannerScanGetResponseJSON `json:"-"`
 }
 
@@ -283,7 +283,7 @@ func (r accountUrlscannerScanGetResponseJSON) RawJSON() string {
 }
 
 type AccountUrlscannerScanGetResponseError struct {
-	Message string                                    `json:"message,required"`
+	Message string                                    `json:"message" api:"required"`
 	JSON    accountUrlscannerScanGetResponseErrorJSON `json:"-"`
 }
 
@@ -304,7 +304,7 @@ func (r accountUrlscannerScanGetResponseErrorJSON) RawJSON() string {
 }
 
 type AccountUrlscannerScanGetResponseMessage struct {
-	Message string                                      `json:"message,required"`
+	Message string                                      `json:"message" api:"required"`
 	JSON    accountUrlscannerScanGetResponseMessageJSON `json:"-"`
 }
 
@@ -325,7 +325,7 @@ func (r accountUrlscannerScanGetResponseMessageJSON) RawJSON() string {
 }
 
 type AccountUrlscannerScanGetResponseResult struct {
-	Scan AccountUrlscannerScanGetResponseResultScan `json:"scan,required"`
+	Scan AccountUrlscannerScanGetResponseResultScan `json:"scan" api:"required"`
 	JSON accountUrlscannerScanGetResponseResultJSON `json:"-"`
 }
 
@@ -346,13 +346,13 @@ func (r accountUrlscannerScanGetResponseResultJSON) RawJSON() string {
 }
 
 type AccountUrlscannerScanGetResponseResultScan struct {
-	Certificates []AccountUrlscannerScanGetResponseResultScanCertificate `json:"certificates,required"`
-	Geo          AccountUrlscannerScanGetResponseResultScanGeo           `json:"geo,required"`
-	Meta         AccountUrlscannerScanGetResponseResultScanMeta          `json:"meta,required"`
-	Page         AccountUrlscannerScanGetResponseResultScanPage          `json:"page,required"`
-	Performance  []AccountUrlscannerScanGetResponseResultScanPerformance `json:"performance,required"`
-	Task         AccountUrlscannerScanGetResponseResultScanTask          `json:"task,required"`
-	Verdicts     AccountUrlscannerScanGetResponseResultScanVerdicts      `json:"verdicts,required"`
+	Certificates []AccountUrlscannerScanGetResponseResultScanCertificate `json:"certificates" api:"required"`
+	Geo          AccountUrlscannerScanGetResponseResultScanGeo           `json:"geo" api:"required"`
+	Meta         AccountUrlscannerScanGetResponseResultScanMeta          `json:"meta" api:"required"`
+	Page         AccountUrlscannerScanGetResponseResultScanPage          `json:"page" api:"required"`
+	Performance  []AccountUrlscannerScanGetResponseResultScanPerformance `json:"performance" api:"required"`
+	Task         AccountUrlscannerScanGetResponseResultScanTask          `json:"task" api:"required"`
+	Verdicts     AccountUrlscannerScanGetResponseResultScanVerdicts      `json:"verdicts" api:"required"`
 	// Dictionary of Autonomous System Numbers where ASN's are the keys
 	Asns    AccountUrlscannerScanGetResponseResultScanAsns    `json:"asns"`
 	Domains AccountUrlscannerScanGetResponseResultScanDomains `json:"domains"`
@@ -388,10 +388,10 @@ func (r accountUrlscannerScanGetResponseResultScanJSON) RawJSON() string {
 }
 
 type AccountUrlscannerScanGetResponseResultScanCertificate struct {
-	Issuer      string                                                    `json:"issuer,required"`
-	SubjectName string                                                    `json:"subjectName,required"`
-	ValidFrom   float64                                                   `json:"validFrom,required"`
-	ValidTo     float64                                                   `json:"validTo,required"`
+	Issuer      string                                                    `json:"issuer" api:"required"`
+	SubjectName string                                                    `json:"subjectName" api:"required"`
+	ValidFrom   float64                                                   `json:"validFrom" api:"required"`
+	ValidTo     float64                                                   `json:"validTo" api:"required"`
 	JSON        accountUrlscannerScanGetResponseResultScanCertificateJSON `json:"-"`
 }
 
@@ -415,8 +415,8 @@ func (r accountUrlscannerScanGetResponseResultScanCertificateJSON) RawJSON() str
 }
 
 type AccountUrlscannerScanGetResponseResultScanGeo struct {
-	Continents []string                                          `json:"continents,required"`
-	Locations  []string                                          `json:"locations,required"`
+	Continents []string                                          `json:"continents" api:"required"`
+	Locations  []string                                          `json:"locations" api:"required"`
 	JSON       accountUrlscannerScanGetResponseResultScanGeoJSON `json:"-"`
 }
 
@@ -438,7 +438,7 @@ func (r accountUrlscannerScanGetResponseResultScanGeoJSON) RawJSON() string {
 }
 
 type AccountUrlscannerScanGetResponseResultScanMeta struct {
-	Processors AccountUrlscannerScanGetResponseResultScanMetaProcessors `json:"processors,required"`
+	Processors AccountUrlscannerScanGetResponseResultScanMetaProcessors `json:"processors" api:"required"`
 	JSON       accountUrlscannerScanGetResponseResultScanMetaJSON       `json:"-"`
 }
 
@@ -459,10 +459,10 @@ func (r accountUrlscannerScanGetResponseResultScanMetaJSON) RawJSON() string {
 }
 
 type AccountUrlscannerScanGetResponseResultScanMetaProcessors struct {
-	Categories AccountUrlscannerScanGetResponseResultScanMetaProcessorsCategories `json:"categories,required"`
-	Phishing   []string                                                           `json:"phishing,required"`
-	Rank       AccountUrlscannerScanGetResponseResultScanMetaProcessorsRank       `json:"rank,required"`
-	Tech       []AccountUrlscannerScanGetResponseResultScanMetaProcessorsTech     `json:"tech,required"`
+	Categories AccountUrlscannerScanGetResponseResultScanMetaProcessorsCategories `json:"categories" api:"required"`
+	Phishing   []string                                                           `json:"phishing" api:"required"`
+	Rank       AccountUrlscannerScanGetResponseResultScanMetaProcessorsRank       `json:"rank" api:"required"`
+	Tech       []AccountUrlscannerScanGetResponseResultScanMetaProcessorsTech     `json:"tech" api:"required"`
 	JSON       accountUrlscannerScanGetResponseResultScanMetaProcessorsJSON       `json:"-"`
 }
 
@@ -487,8 +487,8 @@ func (r accountUrlscannerScanGetResponseResultScanMetaProcessorsJSON) RawJSON() 
 }
 
 type AccountUrlscannerScanGetResponseResultScanMetaProcessorsCategories struct {
-	Content []AccountUrlscannerScanGetResponseResultScanMetaProcessorsCategoriesContent `json:"content,required"`
-	Risks   []AccountUrlscannerScanGetResponseResultScanMetaProcessorsCategoriesRisk    `json:"risks,required"`
+	Content []AccountUrlscannerScanGetResponseResultScanMetaProcessorsCategoriesContent `json:"content" api:"required"`
+	Risks   []AccountUrlscannerScanGetResponseResultScanMetaProcessorsCategoriesRisk    `json:"risks" api:"required"`
 	JSON    accountUrlscannerScanGetResponseResultScanMetaProcessorsCategoriesJSON      `json:"-"`
 }
 
@@ -511,8 +511,8 @@ func (r accountUrlscannerScanGetResponseResultScanMetaProcessorsCategoriesJSON) 
 }
 
 type AccountUrlscannerScanGetResponseResultScanMetaProcessorsCategoriesContent struct {
-	ID              int64                                                                         `json:"id,required"`
-	Name            string                                                                        `json:"name,required"`
+	ID              int64                                                                         `json:"id" api:"required"`
+	Name            string                                                                        `json:"name" api:"required"`
 	SuperCategoryID int64                                                                         `json:"super_category_id"`
 	JSON            accountUrlscannerScanGetResponseResultScanMetaProcessorsCategoriesContentJSON `json:"-"`
 }
@@ -537,9 +537,9 @@ func (r accountUrlscannerScanGetResponseResultScanMetaProcessorsCategoriesConten
 }
 
 type AccountUrlscannerScanGetResponseResultScanMetaProcessorsCategoriesRisk struct {
-	ID              int64                                                                      `json:"id,required"`
-	Name            string                                                                     `json:"name,required"`
-	SuperCategoryID int64                                                                      `json:"super_category_id,required"`
+	ID              int64                                                                      `json:"id" api:"required"`
+	Name            string                                                                     `json:"name" api:"required"`
+	SuperCategoryID int64                                                                      `json:"super_category_id" api:"required"`
 	JSON            accountUrlscannerScanGetResponseResultScanMetaProcessorsCategoriesRiskJSON `json:"-"`
 }
 
@@ -563,8 +563,8 @@ func (r accountUrlscannerScanGetResponseResultScanMetaProcessorsCategoriesRiskJS
 }
 
 type AccountUrlscannerScanGetResponseResultScanMetaProcessorsRank struct {
-	Bucket string `json:"bucket,required"`
-	Name   string `json:"name,required"`
+	Bucket string `json:"bucket" api:"required"`
+	Name   string `json:"name" api:"required"`
 	// Rank in the Global Radar Rank, if set. See more at
 	// https://blog.cloudflare.com/radar-domain-rankings/
 	Rank int64                                                            `json:"rank"`
@@ -591,13 +591,13 @@ func (r accountUrlscannerScanGetResponseResultScanMetaProcessorsRankJSON) RawJSO
 }
 
 type AccountUrlscannerScanGetResponseResultScanMetaProcessorsTech struct {
-	Categories  []AccountUrlscannerScanGetResponseResultScanMetaProcessorsTechCategory `json:"categories,required"`
-	Confidence  int64                                                                  `json:"confidence,required"`
-	Evidence    AccountUrlscannerScanGetResponseResultScanMetaProcessorsTechEvidence   `json:"evidence,required"`
-	Icon        string                                                                 `json:"icon,required"`
-	Name        string                                                                 `json:"name,required"`
-	Slug        string                                                                 `json:"slug,required"`
-	Website     string                                                                 `json:"website,required"`
+	Categories  []AccountUrlscannerScanGetResponseResultScanMetaProcessorsTechCategory `json:"categories" api:"required"`
+	Confidence  int64                                                                  `json:"confidence" api:"required"`
+	Evidence    AccountUrlscannerScanGetResponseResultScanMetaProcessorsTechEvidence   `json:"evidence" api:"required"`
+	Icon        string                                                                 `json:"icon" api:"required"`
+	Name        string                                                                 `json:"name" api:"required"`
+	Slug        string                                                                 `json:"slug" api:"required"`
+	Website     string                                                                 `json:"website" api:"required"`
 	Description string                                                                 `json:"description"`
 	JSON        accountUrlscannerScanGetResponseResultScanMetaProcessorsTechJSON       `json:"-"`
 }
@@ -627,11 +627,11 @@ func (r accountUrlscannerScanGetResponseResultScanMetaProcessorsTechJSON) RawJSO
 }
 
 type AccountUrlscannerScanGetResponseResultScanMetaProcessorsTechCategory struct {
-	ID       int64                                                                    `json:"id,required"`
-	Groups   []int64                                                                  `json:"groups,required"`
-	Name     string                                                                   `json:"name,required"`
-	Priority int64                                                                    `json:"priority,required"`
-	Slug     string                                                                   `json:"slug,required"`
+	ID       int64                                                                    `json:"id" api:"required"`
+	Groups   []int64                                                                  `json:"groups" api:"required"`
+	Name     string                                                                   `json:"name" api:"required"`
+	Priority int64                                                                    `json:"priority" api:"required"`
+	Slug     string                                                                   `json:"slug" api:"required"`
 	JSON     accountUrlscannerScanGetResponseResultScanMetaProcessorsTechCategoryJSON `json:"-"`
 }
 
@@ -657,8 +657,8 @@ func (r accountUrlscannerScanGetResponseResultScanMetaProcessorsTechCategoryJSON
 }
 
 type AccountUrlscannerScanGetResponseResultScanMetaProcessorsTechEvidence struct {
-	ImpliedBy []string                                                                      `json:"impliedBy,required"`
-	Patterns  []AccountUrlscannerScanGetResponseResultScanMetaProcessorsTechEvidencePattern `json:"patterns,required"`
+	ImpliedBy []string                                                                      `json:"impliedBy" api:"required"`
+	Patterns  []AccountUrlscannerScanGetResponseResultScanMetaProcessorsTechEvidencePattern `json:"patterns" api:"required"`
 	JSON      accountUrlscannerScanGetResponseResultScanMetaProcessorsTechEvidenceJSON      `json:"-"`
 }
 
@@ -681,16 +681,16 @@ func (r accountUrlscannerScanGetResponseResultScanMetaProcessorsTechEvidenceJSON
 }
 
 type AccountUrlscannerScanGetResponseResultScanMetaProcessorsTechEvidencePattern struct {
-	Confidence int64    `json:"confidence,required"`
-	Excludes   []string `json:"excludes,required"`
-	Implies    []string `json:"implies,required"`
-	Match      string   `json:"match,required"`
+	Confidence int64    `json:"confidence" api:"required"`
+	Excludes   []string `json:"excludes" api:"required"`
+	Implies    []string `json:"implies" api:"required"`
+	Match      string   `json:"match" api:"required"`
 	// Header or Cookie name when set
-	Name    string                                                                          `json:"name,required"`
-	Regex   string                                                                          `json:"regex,required"`
-	Type    string                                                                          `json:"type,required"`
-	Value   string                                                                          `json:"value,required"`
-	Version string                                                                          `json:"version,required"`
+	Name    string                                                                          `json:"name" api:"required"`
+	Regex   string                                                                          `json:"regex" api:"required"`
+	Type    string                                                                          `json:"type" api:"required"`
+	Value   string                                                                          `json:"value" api:"required"`
+	Version string                                                                          `json:"version" api:"required"`
 	JSON    accountUrlscannerScanGetResponseResultScanMetaProcessorsTechEvidencePatternJSON `json:"-"`
 }
 
@@ -720,22 +720,22 @@ func (r accountUrlscannerScanGetResponseResultScanMetaProcessorsTechEvidencePatt
 }
 
 type AccountUrlscannerScanGetResponseResultScanPage struct {
-	Asn                   string                                                            `json:"asn,required"`
-	AsnLocationAlpha2     string                                                            `json:"asnLocationAlpha2,required"`
-	Asnname               string                                                            `json:"asnname,required"`
-	Console               []AccountUrlscannerScanGetResponseResultScanPageConsole           `json:"console,required"`
-	Cookies               []AccountUrlscannerScanGetResponseResultScanPageCookie            `json:"cookies,required"`
-	Country               string                                                            `json:"country,required"`
-	CountryLocationAlpha2 string                                                            `json:"countryLocationAlpha2,required"`
-	Domain                string                                                            `json:"domain,required"`
-	Headers               []AccountUrlscannerScanGetResponseResultScanPageHeader            `json:"headers,required"`
-	IP                    string                                                            `json:"ip,required"`
-	Js                    AccountUrlscannerScanGetResponseResultScanPageJs                  `json:"js,required"`
-	SecurityViolations    []AccountUrlscannerScanGetResponseResultScanPageSecurityViolation `json:"securityViolations,required"`
-	Status                float64                                                           `json:"status,required"`
-	Subdivision1Name      string                                                            `json:"subdivision1Name,required"`
-	Subdivision2name      string                                                            `json:"subdivision2name,required"`
-	URL                   string                                                            `json:"url,required"`
+	Asn                   string                                                            `json:"asn" api:"required"`
+	AsnLocationAlpha2     string                                                            `json:"asnLocationAlpha2" api:"required"`
+	Asnname               string                                                            `json:"asnname" api:"required"`
+	Console               []AccountUrlscannerScanGetResponseResultScanPageConsole           `json:"console" api:"required"`
+	Cookies               []AccountUrlscannerScanGetResponseResultScanPageCookie            `json:"cookies" api:"required"`
+	Country               string                                                            `json:"country" api:"required"`
+	CountryLocationAlpha2 string                                                            `json:"countryLocationAlpha2" api:"required"`
+	Domain                string                                                            `json:"domain" api:"required"`
+	Headers               []AccountUrlscannerScanGetResponseResultScanPageHeader            `json:"headers" api:"required"`
+	IP                    string                                                            `json:"ip" api:"required"`
+	Js                    AccountUrlscannerScanGetResponseResultScanPageJs                  `json:"js" api:"required"`
+	SecurityViolations    []AccountUrlscannerScanGetResponseResultScanPageSecurityViolation `json:"securityViolations" api:"required"`
+	Status                float64                                                           `json:"status" api:"required"`
+	Subdivision1Name      string                                                            `json:"subdivision1Name" api:"required"`
+	Subdivision2name      string                                                            `json:"subdivision2name" api:"required"`
+	URL                   string                                                            `json:"url" api:"required"`
 	JSON                  accountUrlscannerScanGetResponseResultScanPageJSON                `json:"-"`
 }
 
@@ -771,9 +771,9 @@ func (r accountUrlscannerScanGetResponseResultScanPageJSON) RawJSON() string {
 }
 
 type AccountUrlscannerScanGetResponseResultScanPageConsole struct {
-	Category string                                                    `json:"category,required"`
-	Text     string                                                    `json:"text,required"`
-	Type     string                                                    `json:"type,required"`
+	Category string                                                    `json:"category" api:"required"`
+	Text     string                                                    `json:"text" api:"required"`
+	Type     string                                                    `json:"type" api:"required"`
 	URL      string                                                    `json:"url"`
 	JSON     accountUrlscannerScanGetResponseResultScanPageConsoleJSON `json:"-"`
 }
@@ -798,18 +798,18 @@ func (r accountUrlscannerScanGetResponseResultScanPageConsoleJSON) RawJSON() str
 }
 
 type AccountUrlscannerScanGetResponseResultScanPageCookie struct {
-	Domain       string                                                   `json:"domain,required"`
-	Expires      float64                                                  `json:"expires,required"`
-	HTTPOnly     bool                                                     `json:"httpOnly,required"`
-	Name         string                                                   `json:"name,required"`
-	Path         string                                                   `json:"path,required"`
-	SameParty    bool                                                     `json:"sameParty,required"`
-	Secure       bool                                                     `json:"secure,required"`
-	Session      bool                                                     `json:"session,required"`
-	Size         float64                                                  `json:"size,required"`
-	SourcePort   float64                                                  `json:"sourcePort,required"`
-	SourceScheme string                                                   `json:"sourceScheme,required"`
-	Value        string                                                   `json:"value,required"`
+	Domain       string                                                   `json:"domain" api:"required"`
+	Expires      float64                                                  `json:"expires" api:"required"`
+	HTTPOnly     bool                                                     `json:"httpOnly" api:"required"`
+	Name         string                                                   `json:"name" api:"required"`
+	Path         string                                                   `json:"path" api:"required"`
+	SameParty    bool                                                     `json:"sameParty" api:"required"`
+	Secure       bool                                                     `json:"secure" api:"required"`
+	Session      bool                                                     `json:"session" api:"required"`
+	Size         float64                                                  `json:"size" api:"required"`
+	SourcePort   float64                                                  `json:"sourcePort" api:"required"`
+	SourceScheme string                                                   `json:"sourceScheme" api:"required"`
+	Value        string                                                   `json:"value" api:"required"`
 	Priority     string                                                   `json:"priority"`
 	JSON         accountUrlscannerScanGetResponseResultScanPageCookieJSON `json:"-"`
 }
@@ -843,8 +843,8 @@ func (r accountUrlscannerScanGetResponseResultScanPageCookieJSON) RawJSON() stri
 }
 
 type AccountUrlscannerScanGetResponseResultScanPageHeader struct {
-	Name  string                                                   `json:"name,required"`
-	Value string                                                   `json:"value,required"`
+	Name  string                                                   `json:"name" api:"required"`
+	Value string                                                   `json:"value" api:"required"`
 	JSON  accountUrlscannerScanGetResponseResultScanPageHeaderJSON `json:"-"`
 }
 
@@ -866,7 +866,7 @@ func (r accountUrlscannerScanGetResponseResultScanPageHeaderJSON) RawJSON() stri
 }
 
 type AccountUrlscannerScanGetResponseResultScanPageJs struct {
-	Variables []AccountUrlscannerScanGetResponseResultScanPageJsVariable `json:"variables,required"`
+	Variables []AccountUrlscannerScanGetResponseResultScanPageJsVariable `json:"variables" api:"required"`
 	JSON      accountUrlscannerScanGetResponseResultScanPageJsJSON       `json:"-"`
 }
 
@@ -887,8 +887,8 @@ func (r accountUrlscannerScanGetResponseResultScanPageJsJSON) RawJSON() string {
 }
 
 type AccountUrlscannerScanGetResponseResultScanPageJsVariable struct {
-	Name string                                                       `json:"name,required"`
-	Type string                                                       `json:"type,required"`
+	Name string                                                       `json:"name" api:"required"`
+	Type string                                                       `json:"type" api:"required"`
 	JSON accountUrlscannerScanGetResponseResultScanPageJsVariableJSON `json:"-"`
 }
 
@@ -911,9 +911,9 @@ func (r accountUrlscannerScanGetResponseResultScanPageJsVariableJSON) RawJSON() 
 }
 
 type AccountUrlscannerScanGetResponseResultScanPageSecurityViolation struct {
-	Category string                                                              `json:"category,required"`
-	Text     string                                                              `json:"text,required"`
-	URL      string                                                              `json:"url,required"`
+	Category string                                                              `json:"category" api:"required"`
+	Text     string                                                              `json:"text" api:"required"`
+	URL      string                                                              `json:"url" api:"required"`
 	JSON     accountUrlscannerScanGetResponseResultScanPageSecurityViolationJSON `json:"-"`
 }
 
@@ -937,37 +937,37 @@ func (r accountUrlscannerScanGetResponseResultScanPageSecurityViolationJSON) Raw
 }
 
 type AccountUrlscannerScanGetResponseResultScanPerformance struct {
-	ConnectEnd                 float64                                                   `json:"connectEnd,required"`
-	ConnectStart               float64                                                   `json:"connectStart,required"`
-	DecodedBodySize            float64                                                   `json:"decodedBodySize,required"`
-	DomainLookupEnd            float64                                                   `json:"domainLookupEnd,required"`
-	DomainLookupStart          float64                                                   `json:"domainLookupStart,required"`
-	DomComplete                float64                                                   `json:"domComplete,required"`
-	DomContentLoadedEventEnd   float64                                                   `json:"domContentLoadedEventEnd,required"`
-	DomContentLoadedEventStart float64                                                   `json:"domContentLoadedEventStart,required"`
-	DomInteractive             float64                                                   `json:"domInteractive,required"`
-	Duration                   float64                                                   `json:"duration,required"`
-	EncodedBodySize            float64                                                   `json:"encodedBodySize,required"`
-	EntryType                  string                                                    `json:"entryType,required"`
-	FetchStart                 float64                                                   `json:"fetchStart,required"`
-	InitiatorType              string                                                    `json:"initiatorType,required"`
-	LoadEventEnd               float64                                                   `json:"loadEventEnd,required"`
-	LoadEventStart             float64                                                   `json:"loadEventStart,required"`
-	Name                       string                                                    `json:"name,required"`
-	NextHopProtocol            string                                                    `json:"nextHopProtocol,required"`
-	RedirectCount              float64                                                   `json:"redirectCount,required"`
-	RedirectEnd                float64                                                   `json:"redirectEnd,required"`
-	RedirectStart              float64                                                   `json:"redirectStart,required"`
-	RequestStart               float64                                                   `json:"requestStart,required"`
-	ResponseEnd                float64                                                   `json:"responseEnd,required"`
-	ResponseStart              float64                                                   `json:"responseStart,required"`
-	SecureConnectionStart      float64                                                   `json:"secureConnectionStart,required"`
-	StartTime                  float64                                                   `json:"startTime,required"`
-	TransferSize               float64                                                   `json:"transferSize,required"`
-	Type                       string                                                    `json:"type,required"`
-	UnloadEventEnd             float64                                                   `json:"unloadEventEnd,required"`
-	UnloadEventStart           float64                                                   `json:"unloadEventStart,required"`
-	WorkerStart                float64                                                   `json:"workerStart,required"`
+	ConnectEnd                 float64                                                   `json:"connectEnd" api:"required"`
+	ConnectStart               float64                                                   `json:"connectStart" api:"required"`
+	DecodedBodySize            float64                                                   `json:"decodedBodySize" api:"required"`
+	DomainLookupEnd            float64                                                   `json:"domainLookupEnd" api:"required"`
+	DomainLookupStart          float64                                                   `json:"domainLookupStart" api:"required"`
+	DomComplete                float64                                                   `json:"domComplete" api:"required"`
+	DomContentLoadedEventEnd   float64                                                   `json:"domContentLoadedEventEnd" api:"required"`
+	DomContentLoadedEventStart float64                                                   `json:"domContentLoadedEventStart" api:"required"`
+	DomInteractive             float64                                                   `json:"domInteractive" api:"required"`
+	Duration                   float64                                                   `json:"duration" api:"required"`
+	EncodedBodySize            float64                                                   `json:"encodedBodySize" api:"required"`
+	EntryType                  string                                                    `json:"entryType" api:"required"`
+	FetchStart                 float64                                                   `json:"fetchStart" api:"required"`
+	InitiatorType              string                                                    `json:"initiatorType" api:"required"`
+	LoadEventEnd               float64                                                   `json:"loadEventEnd" api:"required"`
+	LoadEventStart             float64                                                   `json:"loadEventStart" api:"required"`
+	Name                       string                                                    `json:"name" api:"required"`
+	NextHopProtocol            string                                                    `json:"nextHopProtocol" api:"required"`
+	RedirectCount              float64                                                   `json:"redirectCount" api:"required"`
+	RedirectEnd                float64                                                   `json:"redirectEnd" api:"required"`
+	RedirectStart              float64                                                   `json:"redirectStart" api:"required"`
+	RequestStart               float64                                                   `json:"requestStart" api:"required"`
+	ResponseEnd                float64                                                   `json:"responseEnd" api:"required"`
+	ResponseStart              float64                                                   `json:"responseStart" api:"required"`
+	SecureConnectionStart      float64                                                   `json:"secureConnectionStart" api:"required"`
+	StartTime                  float64                                                   `json:"startTime" api:"required"`
+	TransferSize               float64                                                   `json:"transferSize" api:"required"`
+	Type                       string                                                    `json:"type" api:"required"`
+	UnloadEventEnd             float64                                                   `json:"unloadEventEnd" api:"required"`
+	UnloadEventStart           float64                                                   `json:"unloadEventStart" api:"required"`
+	WorkerStart                float64                                                   `json:"workerStart" api:"required"`
 	JSON                       accountUrlscannerScanGetResponseResultScanPerformanceJSON `json:"-"`
 }
 
@@ -1019,21 +1019,21 @@ func (r accountUrlscannerScanGetResponseResultScanPerformanceJSON) RawJSON() str
 
 type AccountUrlscannerScanGetResponseResultScanTask struct {
 	// Submitter location
-	ClientLocation string                                                   `json:"clientLocation,required"`
-	ClientType     AccountUrlscannerScanGetResponseResultScanTaskClientType `json:"clientType,required"`
+	ClientLocation string                                                   `json:"clientLocation" api:"required"`
+	ClientType     AccountUrlscannerScanGetResponseResultScanTaskClientType `json:"clientType" api:"required"`
 	// URL of the primary request, after all HTTP redirects
-	EffectiveURL string                                                    `json:"effectiveUrl,required"`
-	Errors       []AccountUrlscannerScanGetResponseResultScanTaskError     `json:"errors,required"`
-	ScannedFrom  AccountUrlscannerScanGetResponseResultScanTaskScannedFrom `json:"scannedFrom,required"`
-	Status       AccountUrlscannerScanGetResponseResultScanTaskStatus      `json:"status,required"`
-	Success      bool                                                      `json:"success,required"`
-	Time         string                                                    `json:"time,required"`
-	TimeEnd      string                                                    `json:"timeEnd,required"`
+	EffectiveURL string                                                    `json:"effectiveUrl" api:"required"`
+	Errors       []AccountUrlscannerScanGetResponseResultScanTaskError     `json:"errors" api:"required"`
+	ScannedFrom  AccountUrlscannerScanGetResponseResultScanTaskScannedFrom `json:"scannedFrom" api:"required"`
+	Status       AccountUrlscannerScanGetResponseResultScanTaskStatus      `json:"status" api:"required"`
+	Success      bool                                                      `json:"success" api:"required"`
+	Time         string                                                    `json:"time" api:"required"`
+	TimeEnd      string                                                    `json:"timeEnd" api:"required"`
 	// Submitted URL
-	URL string `json:"url,required"`
+	URL string `json:"url" api:"required"`
 	// Scan ID
-	Uuid       string                                                   `json:"uuid,required"`
-	Visibility AccountUrlscannerScanGetResponseResultScanTaskVisibility `json:"visibility,required"`
+	Uuid       string                                                   `json:"uuid" api:"required"`
+	Visibility AccountUrlscannerScanGetResponseResultScanTaskVisibility `json:"visibility" api:"required"`
 	JSON       accountUrlscannerScanGetResponseResultScanTaskJSON       `json:"-"`
 }
 
@@ -1081,7 +1081,7 @@ func (r AccountUrlscannerScanGetResponseResultScanTaskClientType) IsKnown() bool
 }
 
 type AccountUrlscannerScanGetResponseResultScanTaskError struct {
-	Message string                                                  `json:"message,required"`
+	Message string                                                  `json:"message" api:"required"`
 	JSON    accountUrlscannerScanGetResponseResultScanTaskErrorJSON `json:"-"`
 }
 
@@ -1103,7 +1103,7 @@ func (r accountUrlscannerScanGetResponseResultScanTaskErrorJSON) RawJSON() strin
 
 type AccountUrlscannerScanGetResponseResultScanTaskScannedFrom struct {
 	// IATA code of Cloudflare datacenter
-	Colo string                                                        `json:"colo,required"`
+	Colo string                                                        `json:"colo" api:"required"`
 	JSON accountUrlscannerScanGetResponseResultScanTaskScannedFromJSON `json:"-"`
 }
 
@@ -1157,7 +1157,7 @@ func (r AccountUrlscannerScanGetResponseResultScanTaskVisibility) IsKnown() bool
 }
 
 type AccountUrlscannerScanGetResponseResultScanVerdicts struct {
-	Overall AccountUrlscannerScanGetResponseResultScanVerdictsOverall `json:"overall,required"`
+	Overall AccountUrlscannerScanGetResponseResultScanVerdictsOverall `json:"overall" api:"required"`
 	JSON    accountUrlscannerScanGetResponseResultScanVerdictsJSON    `json:"-"`
 }
 
@@ -1178,11 +1178,11 @@ func (r accountUrlscannerScanGetResponseResultScanVerdictsJSON) RawJSON() string
 }
 
 type AccountUrlscannerScanGetResponseResultScanVerdictsOverall struct {
-	Categories []AccountUrlscannerScanGetResponseResultScanVerdictsOverallCategory `json:"categories,required"`
+	Categories []AccountUrlscannerScanGetResponseResultScanVerdictsOverallCategory `json:"categories" api:"required"`
 	// At least one of our subsystems marked the site as potentially malicious at the
 	// time of the scan.
-	Malicious bool                                                          `json:"malicious,required"`
-	Phishing  []string                                                      `json:"phishing,required"`
+	Malicious bool                                                          `json:"malicious" api:"required"`
+	Phishing  []string                                                      `json:"phishing" api:"required"`
 	JSON      accountUrlscannerScanGetResponseResultScanVerdictsOverallJSON `json:"-"`
 }
 
@@ -1206,9 +1206,9 @@ func (r accountUrlscannerScanGetResponseResultScanVerdictsOverallJSON) RawJSON()
 }
 
 type AccountUrlscannerScanGetResponseResultScanVerdictsOverallCategory struct {
-	ID              float64                                                               `json:"id,required"`
-	Name            string                                                                `json:"name,required"`
-	SuperCategoryID float64                                                               `json:"super_category_id,required"`
+	ID              float64                                                               `json:"id" api:"required"`
+	Name            string                                                                `json:"name" api:"required"`
+	SuperCategoryID float64                                                               `json:"super_category_id" api:"required"`
 	JSON            accountUrlscannerScanGetResponseResultScanVerdictsOverallCategoryJSON `json:"-"`
 }
 
@@ -1256,11 +1256,11 @@ func (r accountUrlscannerScanGetResponseResultScanAsnsJSON) RawJSON() string {
 
 // ASN's contacted
 type AccountUrlscannerScanGetResponseResultScanAsnsAsn struct {
-	Asn            string                                                `json:"asn,required"`
-	Description    string                                                `json:"description,required"`
-	LocationAlpha2 string                                                `json:"location_alpha2,required"`
-	Name           string                                                `json:"name,required"`
-	OrgName        string                                                `json:"org_name,required"`
+	Asn            string                                                `json:"asn" api:"required"`
+	Description    string                                                `json:"description" api:"required"`
+	LocationAlpha2 string                                                `json:"location_alpha2" api:"required"`
+	Name           string                                                `json:"name" api:"required"`
+	OrgName        string                                                `json:"org_name" api:"required"`
 	JSON           accountUrlscannerScanGetResponseResultScanAsnsAsnJSON `json:"-"`
 }
 
@@ -1306,11 +1306,11 @@ func (r accountUrlscannerScanGetResponseResultScanDomainsJSON) RawJSON() string 
 }
 
 type AccountUrlscannerScanGetResponseResultScanDomainsExampleCom struct {
-	Categories AccountUrlscannerScanGetResponseResultScanDomainsExampleComCategories `json:"categories,required"`
-	DNS        []AccountUrlscannerScanGetResponseResultScanDomainsExampleComDNS      `json:"dns,required"`
-	Name       string                                                                `json:"name,required"`
-	Rank       AccountUrlscannerScanGetResponseResultScanDomainsExampleComRank       `json:"rank,required"`
-	Type       string                                                                `json:"type,required"`
+	Categories AccountUrlscannerScanGetResponseResultScanDomainsExampleComCategories `json:"categories" api:"required"`
+	DNS        []AccountUrlscannerScanGetResponseResultScanDomainsExampleComDNS      `json:"dns" api:"required"`
+	Name       string                                                                `json:"name" api:"required"`
+	Rank       AccountUrlscannerScanGetResponseResultScanDomainsExampleComRank       `json:"rank" api:"required"`
+	Type       string                                                                `json:"type" api:"required"`
 	JSON       accountUrlscannerScanGetResponseResultScanDomainsExampleComJSON       `json:"-"`
 }
 
@@ -1336,7 +1336,7 @@ func (r accountUrlscannerScanGetResponseResultScanDomainsExampleComJSON) RawJSON
 }
 
 type AccountUrlscannerScanGetResponseResultScanDomainsExampleComCategories struct {
-	Inherited AccountUrlscannerScanGetResponseResultScanDomainsExampleComCategoriesInherited `json:"inherited,required"`
+	Inherited AccountUrlscannerScanGetResponseResultScanDomainsExampleComCategoriesInherited `json:"inherited" api:"required"`
 	Content   []AccountUrlscannerScanGetResponseResultScanDomainsExampleComCategoriesContent `json:"content"`
 	Risks     []AccountUrlscannerScanGetResponseResultScanDomainsExampleComCategoriesRisk    `json:"risks"`
 	JSON      accountUrlscannerScanGetResponseResultScanDomainsExampleComCategoriesJSON      `json:"-"`
@@ -1388,8 +1388,8 @@ func (r accountUrlscannerScanGetResponseResultScanDomainsExampleComCategoriesInh
 }
 
 type AccountUrlscannerScanGetResponseResultScanDomainsExampleComCategoriesInheritedContent struct {
-	ID              int64                                                                                     `json:"id,required"`
-	Name            string                                                                                    `json:"name,required"`
+	ID              int64                                                                                     `json:"id" api:"required"`
+	Name            string                                                                                    `json:"name" api:"required"`
 	SuperCategoryID int64                                                                                     `json:"super_category_id"`
 	JSON            accountUrlscannerScanGetResponseResultScanDomainsExampleComCategoriesInheritedContentJSON `json:"-"`
 }
@@ -1414,8 +1414,8 @@ func (r accountUrlscannerScanGetResponseResultScanDomainsExampleComCategoriesInh
 }
 
 type AccountUrlscannerScanGetResponseResultScanDomainsExampleComCategoriesInheritedRisk struct {
-	ID              int64                                                                                  `json:"id,required"`
-	Name            string                                                                                 `json:"name,required"`
+	ID              int64                                                                                  `json:"id" api:"required"`
+	Name            string                                                                                 `json:"name" api:"required"`
 	SuperCategoryID int64                                                                                  `json:"super_category_id"`
 	JSON            accountUrlscannerScanGetResponseResultScanDomainsExampleComCategoriesInheritedRiskJSON `json:"-"`
 }
@@ -1440,8 +1440,8 @@ func (r accountUrlscannerScanGetResponseResultScanDomainsExampleComCategoriesInh
 }
 
 type AccountUrlscannerScanGetResponseResultScanDomainsExampleComCategoriesContent struct {
-	ID              int64                                                                            `json:"id,required"`
-	Name            string                                                                           `json:"name,required"`
+	ID              int64                                                                            `json:"id" api:"required"`
+	Name            string                                                                           `json:"name" api:"required"`
 	SuperCategoryID int64                                                                            `json:"super_category_id"`
 	JSON            accountUrlscannerScanGetResponseResultScanDomainsExampleComCategoriesContentJSON `json:"-"`
 }
@@ -1466,8 +1466,8 @@ func (r accountUrlscannerScanGetResponseResultScanDomainsExampleComCategoriesCon
 }
 
 type AccountUrlscannerScanGetResponseResultScanDomainsExampleComCategoriesRisk struct {
-	ID              int64                                                                         `json:"id,required"`
-	Name            string                                                                        `json:"name,required"`
+	ID              int64                                                                         `json:"id" api:"required"`
+	Name            string                                                                        `json:"name" api:"required"`
 	SuperCategoryID int64                                                                         `json:"super_category_id"`
 	JSON            accountUrlscannerScanGetResponseResultScanDomainsExampleComCategoriesRiskJSON `json:"-"`
 }
@@ -1492,10 +1492,10 @@ func (r accountUrlscannerScanGetResponseResultScanDomainsExampleComCategoriesRis
 }
 
 type AccountUrlscannerScanGetResponseResultScanDomainsExampleComDNS struct {
-	Address     string                                                             `json:"address,required"`
-	DnssecValid bool                                                               `json:"dnssec_valid,required"`
-	Name        string                                                             `json:"name,required"`
-	Type        string                                                             `json:"type,required"`
+	Address     string                                                             `json:"address" api:"required"`
+	DnssecValid bool                                                               `json:"dnssec_valid" api:"required"`
+	Name        string                                                             `json:"name" api:"required"`
+	Type        string                                                             `json:"type" api:"required"`
 	JSON        accountUrlscannerScanGetResponseResultScanDomainsExampleComDNSJSON `json:"-"`
 }
 
@@ -1520,8 +1520,8 @@ func (r accountUrlscannerScanGetResponseResultScanDomainsExampleComDNSJSON) RawJ
 }
 
 type AccountUrlscannerScanGetResponseResultScanDomainsExampleComRank struct {
-	Bucket string `json:"bucket,required"`
-	Name   string `json:"name,required"`
+	Bucket string `json:"bucket" api:"required"`
+	Name   string `json:"name" api:"required"`
 	// Rank in the Global Radar Rank, if set. See more at
 	// https://blog.cloudflare.com/radar-domain-rankings/
 	Rank int64                                                               `json:"rank"`
@@ -1569,21 +1569,21 @@ func (r accountUrlscannerScanGetResponseResultScanIPsJSON) RawJSON() string {
 }
 
 type AccountUrlscannerScanGetResponseResultScanIPsIP struct {
-	Asn               string                                              `json:"asn,required"`
-	AsnDescription    string                                              `json:"asnDescription,required"`
-	AsnLocationAlpha2 string                                              `json:"asnLocationAlpha2,required"`
-	AsnName           string                                              `json:"asnName,required"`
-	AsnOrgName        string                                              `json:"asnOrgName,required"`
-	Continent         string                                              `json:"continent,required"`
-	GeonameID         string                                              `json:"geonameId,required"`
-	IP                string                                              `json:"ip,required"`
-	IPVersion         string                                              `json:"ipVersion,required"`
-	Latitude          string                                              `json:"latitude,required"`
-	LocationAlpha2    string                                              `json:"locationAlpha2,required"`
-	LocationName      string                                              `json:"locationName,required"`
-	Longitude         string                                              `json:"longitude,required"`
-	Subdivision1Name  string                                              `json:"subdivision1Name,required"`
-	Subdivision2Name  string                                              `json:"subdivision2Name,required"`
+	Asn               string                                              `json:"asn" api:"required"`
+	AsnDescription    string                                              `json:"asnDescription" api:"required"`
+	AsnLocationAlpha2 string                                              `json:"asnLocationAlpha2" api:"required"`
+	AsnName           string                                              `json:"asnName" api:"required"`
+	AsnOrgName        string                                              `json:"asnOrgName" api:"required"`
+	Continent         string                                              `json:"continent" api:"required"`
+	GeonameID         string                                              `json:"geonameId" api:"required"`
+	IP                string                                              `json:"ip" api:"required"`
+	IPVersion         string                                              `json:"ipVersion" api:"required"`
+	Latitude          string                                              `json:"latitude" api:"required"`
+	LocationAlpha2    string                                              `json:"locationAlpha2" api:"required"`
+	LocationName      string                                              `json:"locationName" api:"required"`
+	Longitude         string                                              `json:"longitude" api:"required"`
+	Subdivision1Name  string                                              `json:"subdivision1Name" api:"required"`
+	Subdivision2Name  string                                              `json:"subdivision2Name" api:"required"`
 	JSON              accountUrlscannerScanGetResponseResultScanIPsIPJSON `json:"-"`
 }
 
@@ -1640,8 +1640,8 @@ func (r accountUrlscannerScanGetResponseResultScanLinksJSON) RawJSON() string {
 
 type AccountUrlscannerScanGetResponseResultScanLinksLink struct {
 	// Outgoing link detected in the DOM
-	Href string                                                  `json:"href,required"`
-	Text string                                                  `json:"text,required"`
+	Href string                                                  `json:"href" api:"required"`
+	Text string                                                  `json:"text" api:"required"`
 	JSON accountUrlscannerScanGetResponseResultScanLinksLinkJSON `json:"-"`
 }
 
@@ -1663,11 +1663,11 @@ func (r accountUrlscannerScanGetResponseResultScanLinksLinkJSON) RawJSON() strin
 }
 
 type AccountUrlscannerScanListResponse struct {
-	Errors   []AccountUrlscannerScanListResponseError   `json:"errors,required"`
-	Messages []AccountUrlscannerScanListResponseMessage `json:"messages,required"`
-	Result   AccountUrlscannerScanListResponseResult    `json:"result,required"`
+	Errors   []AccountUrlscannerScanListResponseError   `json:"errors" api:"required"`
+	Messages []AccountUrlscannerScanListResponseMessage `json:"messages" api:"required"`
+	Result   AccountUrlscannerScanListResponseResult    `json:"result" api:"required"`
 	// Whether search request was successful or not
-	Success bool                                  `json:"success,required"`
+	Success bool                                  `json:"success" api:"required"`
 	JSON    accountUrlscannerScanListResponseJSON `json:"-"`
 }
 
@@ -1691,7 +1691,7 @@ func (r accountUrlscannerScanListResponseJSON) RawJSON() string {
 }
 
 type AccountUrlscannerScanListResponseError struct {
-	Message string                                     `json:"message,required"`
+	Message string                                     `json:"message" api:"required"`
 	JSON    accountUrlscannerScanListResponseErrorJSON `json:"-"`
 }
 
@@ -1712,7 +1712,7 @@ func (r accountUrlscannerScanListResponseErrorJSON) RawJSON() string {
 }
 
 type AccountUrlscannerScanListResponseMessage struct {
-	Message string                                       `json:"message,required"`
+	Message string                                       `json:"message" api:"required"`
 	JSON    accountUrlscannerScanListResponseMessageJSON `json:"-"`
 }
 
@@ -1733,7 +1733,7 @@ func (r accountUrlscannerScanListResponseMessageJSON) RawJSON() string {
 }
 
 type AccountUrlscannerScanListResponseResult struct {
-	Tasks []AccountUrlscannerScanListResponseResultTask `json:"tasks,required"`
+	Tasks []AccountUrlscannerScanListResponseResultTask `json:"tasks" api:"required"`
 	JSON  accountUrlscannerScanListResponseResultJSON   `json:"-"`
 }
 
@@ -1755,17 +1755,17 @@ func (r accountUrlscannerScanListResponseResultJSON) RawJSON() string {
 
 type AccountUrlscannerScanListResponseResultTask struct {
 	// Alpha-2 country code
-	Country string `json:"country,required"`
+	Country string `json:"country" api:"required"`
 	// Whether scan was successful or not
-	Success bool `json:"success,required"`
+	Success bool `json:"success" api:"required"`
 	// When scan was submitted (UTC)
-	Time time.Time `json:"time,required" format:"date-time"`
+	Time time.Time `json:"time" api:"required" format:"date-time"`
 	// Scan url (after redirects)
-	URL string `json:"url,required"`
+	URL string `json:"url" api:"required"`
 	// Scan id
-	Uuid string `json:"uuid,required" format:"uuid"`
+	Uuid string `json:"uuid" api:"required" format:"uuid"`
 	// Submitted visibility status.
-	Visibility AccountUrlscannerScanListResponseResultTasksVisibility `json:"visibility,required"`
+	Visibility AccountUrlscannerScanListResponseResultTasksVisibility `json:"visibility" api:"required"`
 	JSON       accountUrlscannerScanListResponseResultTaskJSON        `json:"-"`
 }
 
@@ -1807,11 +1807,11 @@ func (r AccountUrlscannerScanListResponseResultTasksVisibility) IsKnown() bool {
 }
 
 type AccountUrlscannerScanGetHarResponse struct {
-	Errors   []AccountUrlscannerScanGetHarResponseError   `json:"errors,required"`
-	Messages []AccountUrlscannerScanGetHarResponseMessage `json:"messages,required"`
-	Result   AccountUrlscannerScanGetHarResponseResult    `json:"result,required"`
+	Errors   []AccountUrlscannerScanGetHarResponseError   `json:"errors" api:"required"`
+	Messages []AccountUrlscannerScanGetHarResponseMessage `json:"messages" api:"required"`
+	Result   AccountUrlscannerScanGetHarResponseResult    `json:"result" api:"required"`
 	// Whether search request was successful or not
-	Success bool                                    `json:"success,required"`
+	Success bool                                    `json:"success" api:"required"`
 	JSON    accountUrlscannerScanGetHarResponseJSON `json:"-"`
 }
 
@@ -1835,7 +1835,7 @@ func (r accountUrlscannerScanGetHarResponseJSON) RawJSON() string {
 }
 
 type AccountUrlscannerScanGetHarResponseError struct {
-	Message string                                       `json:"message,required"`
+	Message string                                       `json:"message" api:"required"`
 	JSON    accountUrlscannerScanGetHarResponseErrorJSON `json:"-"`
 }
 
@@ -1856,7 +1856,7 @@ func (r accountUrlscannerScanGetHarResponseErrorJSON) RawJSON() string {
 }
 
 type AccountUrlscannerScanGetHarResponseMessage struct {
-	Message string                                         `json:"message,required"`
+	Message string                                         `json:"message" api:"required"`
 	JSON    accountUrlscannerScanGetHarResponseMessageJSON `json:"-"`
 }
 
@@ -1877,7 +1877,7 @@ func (r accountUrlscannerScanGetHarResponseMessageJSON) RawJSON() string {
 }
 
 type AccountUrlscannerScanGetHarResponseResult struct {
-	Har  AccountUrlscannerScanGetHarResponseResultHar  `json:"har,required"`
+	Har  AccountUrlscannerScanGetHarResponseResultHar  `json:"har" api:"required"`
 	JSON accountUrlscannerScanGetHarResponseResultJSON `json:"-"`
 }
 
@@ -1898,7 +1898,7 @@ func (r accountUrlscannerScanGetHarResponseResultJSON) RawJSON() string {
 }
 
 type AccountUrlscannerScanGetHarResponseResultHar struct {
-	Log  AccountUrlscannerScanGetHarResponseResultHarLog  `json:"log,required"`
+	Log  AccountUrlscannerScanGetHarResponseResultHarLog  `json:"log" api:"required"`
 	JSON accountUrlscannerScanGetHarResponseResultHarJSON `json:"-"`
 }
 
@@ -1919,10 +1919,10 @@ func (r accountUrlscannerScanGetHarResponseResultHarJSON) RawJSON() string {
 }
 
 type AccountUrlscannerScanGetHarResponseResultHarLog struct {
-	Creator AccountUrlscannerScanGetHarResponseResultHarLogCreator `json:"creator,required"`
-	Entries []AccountUrlscannerScanGetHarResponseResultHarLogEntry `json:"entries,required"`
-	Pages   []AccountUrlscannerScanGetHarResponseResultHarLogPage  `json:"pages,required"`
-	Version string                                                 `json:"version,required"`
+	Creator AccountUrlscannerScanGetHarResponseResultHarLogCreator `json:"creator" api:"required"`
+	Entries []AccountUrlscannerScanGetHarResponseResultHarLogEntry `json:"entries" api:"required"`
+	Pages   []AccountUrlscannerScanGetHarResponseResultHarLogPage  `json:"pages" api:"required"`
+	Version string                                                 `json:"version" api:"required"`
 	JSON    accountUrlscannerScanGetHarResponseResultHarLogJSON    `json:"-"`
 }
 
@@ -1946,9 +1946,9 @@ func (r accountUrlscannerScanGetHarResponseResultHarLogJSON) RawJSON() string {
 }
 
 type AccountUrlscannerScanGetHarResponseResultHarLogCreator struct {
-	Comment string                                                     `json:"comment,required"`
-	Name    string                                                     `json:"name,required"`
-	Version string                                                     `json:"version,required"`
+	Comment string                                                     `json:"comment" api:"required"`
+	Name    string                                                     `json:"name" api:"required"`
+	Version string                                                     `json:"version" api:"required"`
 	JSON    accountUrlscannerScanGetHarResponseResultHarLogCreatorJSON `json:"-"`
 }
 
@@ -1971,20 +1971,20 @@ func (r accountUrlscannerScanGetHarResponseResultHarLogCreatorJSON) RawJSON() st
 }
 
 type AccountUrlscannerScanGetHarResponseResultHarLogEntry struct {
-	InitialPriority string                                                         `json:"_initialPriority,required"`
-	InitiatorType   string                                                         `json:"_initiator_type,required"`
-	Priority        string                                                         `json:"_priority,required"`
-	RequestID       string                                                         `json:"_requestId,required"`
-	RequestTime     float64                                                        `json:"_requestTime,required"`
-	ResourceType    string                                                         `json:"_resourceType,required"`
-	Cache           interface{}                                                    `json:"cache,required"`
-	Connection      string                                                         `json:"connection,required"`
-	Pageref         string                                                         `json:"pageref,required"`
-	Request         AccountUrlscannerScanGetHarResponseResultHarLogEntriesRequest  `json:"request,required"`
-	Response        AccountUrlscannerScanGetHarResponseResultHarLogEntriesResponse `json:"response,required"`
-	ServerIPAddress string                                                         `json:"serverIPAddress,required"`
-	StartedDateTime string                                                         `json:"startedDateTime,required"`
-	Time            float64                                                        `json:"time,required"`
+	InitialPriority string                                                         `json:"_initialPriority" api:"required"`
+	InitiatorType   string                                                         `json:"_initiator_type" api:"required"`
+	Priority        string                                                         `json:"_priority" api:"required"`
+	RequestID       string                                                         `json:"_requestId" api:"required"`
+	RequestTime     float64                                                        `json:"_requestTime" api:"required"`
+	ResourceType    string                                                         `json:"_resourceType" api:"required"`
+	Cache           interface{}                                                    `json:"cache" api:"required"`
+	Connection      string                                                         `json:"connection" api:"required"`
+	Pageref         string                                                         `json:"pageref" api:"required"`
+	Request         AccountUrlscannerScanGetHarResponseResultHarLogEntriesRequest  `json:"request" api:"required"`
+	Response        AccountUrlscannerScanGetHarResponseResultHarLogEntriesResponse `json:"response" api:"required"`
+	ServerIPAddress string                                                         `json:"serverIPAddress" api:"required"`
+	StartedDateTime string                                                         `json:"startedDateTime" api:"required"`
+	Time            float64                                                        `json:"time" api:"required"`
 	JSON            accountUrlscannerScanGetHarResponseResultHarLogEntryJSON       `json:"-"`
 }
 
@@ -2018,12 +2018,12 @@ func (r accountUrlscannerScanGetHarResponseResultHarLogEntryJSON) RawJSON() stri
 }
 
 type AccountUrlscannerScanGetHarResponseResultHarLogEntriesRequest struct {
-	BodySize    float64                                                               `json:"bodySize,required"`
-	Headers     []AccountUrlscannerScanGetHarResponseResultHarLogEntriesRequestHeader `json:"headers,required"`
-	HeadersSize float64                                                               `json:"headersSize,required"`
-	HTTPVersion string                                                                `json:"httpVersion,required"`
-	Method      string                                                                `json:"method,required"`
-	URL         string                                                                `json:"url,required"`
+	BodySize    float64                                                               `json:"bodySize" api:"required"`
+	Headers     []AccountUrlscannerScanGetHarResponseResultHarLogEntriesRequestHeader `json:"headers" api:"required"`
+	HeadersSize float64                                                               `json:"headersSize" api:"required"`
+	HTTPVersion string                                                                `json:"httpVersion" api:"required"`
+	Method      string                                                                `json:"method" api:"required"`
+	URL         string                                                                `json:"url" api:"required"`
 	JSON        accountUrlscannerScanGetHarResponseResultHarLogEntriesRequestJSON     `json:"-"`
 }
 
@@ -2050,8 +2050,8 @@ func (r accountUrlscannerScanGetHarResponseResultHarLogEntriesRequestJSON) RawJS
 }
 
 type AccountUrlscannerScanGetHarResponseResultHarLogEntriesRequestHeader struct {
-	Name  string                                                                  `json:"name,required"`
-	Value string                                                                  `json:"value,required"`
+	Name  string                                                                  `json:"name" api:"required"`
+	Value string                                                                  `json:"value" api:"required"`
 	JSON  accountUrlscannerScanGetHarResponseResultHarLogEntriesRequestHeaderJSON `json:"-"`
 }
 
@@ -2074,15 +2074,15 @@ func (r accountUrlscannerScanGetHarResponseResultHarLogEntriesRequestHeaderJSON)
 }
 
 type AccountUrlscannerScanGetHarResponseResultHarLogEntriesResponse struct {
-	TransferSize float64                                                                `json:"_transferSize,required"`
-	BodySize     float64                                                                `json:"bodySize,required"`
-	Content      AccountUrlscannerScanGetHarResponseResultHarLogEntriesResponseContent  `json:"content,required"`
-	Headers      []AccountUrlscannerScanGetHarResponseResultHarLogEntriesResponseHeader `json:"headers,required"`
-	HeadersSize  float64                                                                `json:"headersSize,required"`
-	HTTPVersion  string                                                                 `json:"httpVersion,required"`
-	RedirectURL  string                                                                 `json:"redirectURL,required"`
-	Status       float64                                                                `json:"status,required"`
-	StatusText   string                                                                 `json:"statusText,required"`
+	TransferSize float64                                                                `json:"_transferSize" api:"required"`
+	BodySize     float64                                                                `json:"bodySize" api:"required"`
+	Content      AccountUrlscannerScanGetHarResponseResultHarLogEntriesResponseContent  `json:"content" api:"required"`
+	Headers      []AccountUrlscannerScanGetHarResponseResultHarLogEntriesResponseHeader `json:"headers" api:"required"`
+	HeadersSize  float64                                                                `json:"headersSize" api:"required"`
+	HTTPVersion  string                                                                 `json:"httpVersion" api:"required"`
+	RedirectURL  string                                                                 `json:"redirectURL" api:"required"`
+	Status       float64                                                                `json:"status" api:"required"`
+	StatusText   string                                                                 `json:"statusText" api:"required"`
 	JSON         accountUrlscannerScanGetHarResponseResultHarLogEntriesResponseJSON     `json:"-"`
 }
 
@@ -2112,8 +2112,8 @@ func (r accountUrlscannerScanGetHarResponseResultHarLogEntriesResponseJSON) RawJ
 }
 
 type AccountUrlscannerScanGetHarResponseResultHarLogEntriesResponseContent struct {
-	MimeType    string                                                                    `json:"mimeType,required"`
-	Size        float64                                                                   `json:"size,required"`
+	MimeType    string                                                                    `json:"mimeType" api:"required"`
+	Size        float64                                                                   `json:"size" api:"required"`
 	Compression int64                                                                     `json:"compression"`
 	JSON        accountUrlscannerScanGetHarResponseResultHarLogEntriesResponseContentJSON `json:"-"`
 }
@@ -2138,8 +2138,8 @@ func (r accountUrlscannerScanGetHarResponseResultHarLogEntriesResponseContentJSO
 }
 
 type AccountUrlscannerScanGetHarResponseResultHarLogEntriesResponseHeader struct {
-	Name  string                                                                   `json:"name,required"`
-	Value string                                                                   `json:"value,required"`
+	Name  string                                                                   `json:"name" api:"required"`
+	Value string                                                                   `json:"value" api:"required"`
 	JSON  accountUrlscannerScanGetHarResponseResultHarLogEntriesResponseHeaderJSON `json:"-"`
 }
 
@@ -2162,10 +2162,10 @@ func (r accountUrlscannerScanGetHarResponseResultHarLogEntriesResponseHeaderJSON
 }
 
 type AccountUrlscannerScanGetHarResponseResultHarLogPage struct {
-	ID              string                                                          `json:"id,required"`
-	PageTimings     AccountUrlscannerScanGetHarResponseResultHarLogPagesPageTimings `json:"pageTimings,required"`
-	StartedDateTime string                                                          `json:"startedDateTime,required"`
-	Title           string                                                          `json:"title,required"`
+	ID              string                                                          `json:"id" api:"required"`
+	PageTimings     AccountUrlscannerScanGetHarResponseResultHarLogPagesPageTimings `json:"pageTimings" api:"required"`
+	StartedDateTime string                                                          `json:"startedDateTime" api:"required"`
+	Title           string                                                          `json:"title" api:"required"`
 	JSON            accountUrlscannerScanGetHarResponseResultHarLogPageJSON         `json:"-"`
 }
 
@@ -2189,8 +2189,8 @@ func (r accountUrlscannerScanGetHarResponseResultHarLogPageJSON) RawJSON() strin
 }
 
 type AccountUrlscannerScanGetHarResponseResultHarLogPagesPageTimings struct {
-	OnContentLoad float64                                                             `json:"onContentLoad,required"`
-	OnLoad        float64                                                             `json:"onLoad,required"`
+	OnContentLoad float64                                                             `json:"onContentLoad" api:"required"`
+	OnLoad        float64                                                             `json:"onLoad" api:"required"`
 	JSON          accountUrlscannerScanGetHarResponseResultHarLogPagesPageTimingsJSON `json:"-"`
 }
 
@@ -2213,7 +2213,7 @@ func (r accountUrlscannerScanGetHarResponseResultHarLogPagesPageTimingsJSON) Raw
 }
 
 type AccountUrlscannerScanNewParams struct {
-	URL param.Field[string] `json:"url,required"`
+	URL param.Field[string] `json:"url" api:"required"`
 	// Country to geo egress from
 	Country param.Field[AccountUrlscannerScanNewParamsCountry] `json:"country"`
 	// Set custom headers.

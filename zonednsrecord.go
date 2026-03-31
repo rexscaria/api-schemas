@@ -54,11 +54,11 @@ func (r *ZoneDNSRecordService) New(ctx context.Context, zoneID string, body Zone
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/dns_records", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // DNS Record Details
@@ -66,15 +66,15 @@ func (r *ZoneDNSRecordService) Get(ctx context.Context, zoneID string, dnsRecord
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if dnsRecordID == "" {
 		err = errors.New("missing required dns_record_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/dns_records/%s", zoneID, dnsRecordID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update an existing DNS record.
@@ -89,15 +89,15 @@ func (r *ZoneDNSRecordService) Update(ctx context.Context, zoneID string, dnsRec
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if dnsRecordID == "" {
 		err = errors.New("missing required dns_record_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/dns_records/%s", zoneID, dnsRecordID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // List, search, sort, and filter a zones' DNS records.
@@ -105,11 +105,11 @@ func (r *ZoneDNSRecordService) List(ctx context.Context, zoneID string, query Zo
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/dns_records", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete DNS Record
@@ -117,15 +117,15 @@ func (r *ZoneDNSRecordService) Delete(ctx context.Context, zoneID string, dnsRec
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if dnsRecordID == "" {
 		err = errors.New("missing required dns_record_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/dns_records/%s", zoneID, dnsRecordID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Send a Batch of DNS Record API calls to be executed together.
@@ -153,11 +153,11 @@ func (r *ZoneDNSRecordService) Batch(ctx context.Context, zoneID string, body Zo
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/dns_records/batch", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // You can export your
@@ -172,11 +172,11 @@ func (r *ZoneDNSRecordService) Export(ctx context.Context, zoneID string, opts .
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "text/plain")}, opts...)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/dns_records/export", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // You can upload your
@@ -191,11 +191,11 @@ func (r *ZoneDNSRecordService) Import(ctx context.Context, zoneID string, body Z
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/dns_records/import", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Overwrite an existing DNS record.
@@ -210,15 +210,15 @@ func (r *ZoneDNSRecordService) Overwrite(ctx context.Context, zoneID string, dns
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if dnsRecordID == "" {
 		err = errors.New("missing required dns_record_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/dns_records/%s", zoneID, dnsRecordID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Scan for common DNS records on your domain and automatically add them to your
@@ -227,16 +227,16 @@ func (r *ZoneDNSRecordService) Scan(ctx context.Context, zoneID string, body Zon
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/dns_records/scan", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type DNSRecordMessageItem struct {
-	Code             int64                      `json:"code,required"`
-	Message          string                     `json:"message,required"`
+	Code             int64                      `json:"code" api:"required"`
+	Message          string                     `json:"message" api:"required"`
 	DocumentationURL string                     `json:"documentation_url"`
 	Source           DNSRecordMessageItemSource `json:"source"`
 	JSON             dnsRecordMessageItemJSON   `json:"-"`
@@ -284,10 +284,10 @@ func (r dnsRecordMessageItemSourceJSON) RawJSON() string {
 
 type DNSRecordPatchParam struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string]      `json:"name,required"`
-	Ttl  param.Field[interface{}] `json:"ttl,required"`
+	Name param.Field[string]      `json:"name" api:"required"`
+	Ttl  param.Field[interface{}] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[DNSRecordPatchType] `json:"type,required"`
+	Type param.Field[DNSRecordPatchType] `json:"type" api:"required"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
 	// responses.
 	Comment param.Field[string] `json:"comment"`
@@ -337,13 +337,13 @@ type DNSRecordPatchUnionParam interface {
 
 type DNSRecordPatchDNSRecordsARecordParam struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[DNSRecordPatchDNSRecordsARecordTtl] `json:"ttl,required"`
+	Ttl param.Field[DNSRecordPatchDNSRecordsARecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[DNSRecordPatchDNSRecordsARecordType] `json:"type,required"`
+	Type param.Field[DNSRecordPatchDNSRecordsARecordType] `json:"type" api:"required"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
 	// responses.
 	Comment param.Field[string] `json:"comment"`
@@ -416,13 +416,13 @@ func (r DNSRecordPatchDNSRecordsARecordSettingsParam) MarshalJSON() (data []byte
 
 type DNSRecordPatchDNSRecordsAaaaRecordParam struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[DNSRecordPatchDNSRecordsAaaaRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[DNSRecordPatchDNSRecordsAaaaRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[DNSRecordPatchDNSRecordsAaaaRecordType] `json:"type,required"`
+	Type param.Field[DNSRecordPatchDNSRecordsAaaaRecordType] `json:"type" api:"required"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
 	// responses.
 	Comment param.Field[string] `json:"comment"`
@@ -495,13 +495,13 @@ func (r DNSRecordPatchDNSRecordsAaaaRecordSettingsParam) MarshalJSON() (data []b
 
 type DNSRecordPatchDNSRecordsCnameRecordParam struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[DNSRecordPatchDNSRecordsCnameRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[DNSRecordPatchDNSRecordsCnameRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[DNSRecordPatchDNSRecordsCnameRecordType] `json:"type,required"`
+	Type param.Field[DNSRecordPatchDNSRecordsCnameRecordType] `json:"type" api:"required"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
 	// responses.
 	Comment param.Field[string] `json:"comment"`
@@ -579,13 +579,13 @@ func (r DNSRecordPatchDNSRecordsCnameRecordSettingsParam) MarshalJSON() (data []
 
 type DNSRecordPatchDNSRecordsMxRecordParam struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[DNSRecordPatchDNSRecordsMxRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[DNSRecordPatchDNSRecordsMxRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[DNSRecordPatchDNSRecordsMxRecordType] `json:"type,required"`
+	Type param.Field[DNSRecordPatchDNSRecordsMxRecordType] `json:"type" api:"required"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
 	// responses.
 	Comment param.Field[string] `json:"comment"`
@@ -661,13 +661,13 @@ func (r DNSRecordPatchDNSRecordsMxRecordSettingsParam) MarshalJSON() (data []byt
 
 type DNSRecordPatchDNSRecordsNsRecordParam struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[DNSRecordPatchDNSRecordsNsRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[DNSRecordPatchDNSRecordsNsRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[DNSRecordPatchDNSRecordsNsRecordType] `json:"type,required"`
+	Type param.Field[DNSRecordPatchDNSRecordsNsRecordType] `json:"type" api:"required"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
 	// responses.
 	Comment param.Field[string] `json:"comment"`
@@ -740,13 +740,13 @@ func (r DNSRecordPatchDNSRecordsNsRecordSettingsParam) MarshalJSON() (data []byt
 
 type DNSRecordPatchDNSRecordsOpenpgpkeyRecordParam struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[DNSRecordPatchDNSRecordsOpenpgpkeyRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[DNSRecordPatchDNSRecordsOpenpgpkeyRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[DNSRecordPatchDNSRecordsOpenpgpkeyRecordType] `json:"type,required"`
+	Type param.Field[DNSRecordPatchDNSRecordsOpenpgpkeyRecordType] `json:"type" api:"required"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
 	// responses.
 	Comment param.Field[string] `json:"comment"`
@@ -819,13 +819,13 @@ func (r DNSRecordPatchDNSRecordsOpenpgpkeyRecordSettingsParam) MarshalJSON() (da
 
 type DNSRecordPatchDNSRecordsPtrRecordParam struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[DNSRecordPatchDNSRecordsPtrRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[DNSRecordPatchDNSRecordsPtrRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[DNSRecordPatchDNSRecordsPtrRecordType] `json:"type,required"`
+	Type param.Field[DNSRecordPatchDNSRecordsPtrRecordType] `json:"type" api:"required"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
 	// responses.
 	Comment param.Field[string] `json:"comment"`
@@ -898,13 +898,13 @@ func (r DNSRecordPatchDNSRecordsPtrRecordSettingsParam) MarshalJSON() (data []by
 
 type DNSRecordPatchDNSRecordsTxtRecordParam struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[DNSRecordPatchDNSRecordsTxtRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[DNSRecordPatchDNSRecordsTxtRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[DNSRecordPatchDNSRecordsTxtRecordType] `json:"type,required"`
+	Type param.Field[DNSRecordPatchDNSRecordsTxtRecordType] `json:"type" api:"required"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
 	// responses.
 	Comment param.Field[string] `json:"comment"`
@@ -982,13 +982,13 @@ func (r DNSRecordPatchDNSRecordsTxtRecordSettingsParam) MarshalJSON() (data []by
 
 type DNSRecordPatchDNSRecordsCaaRecordParam struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[DNSRecordPatchDNSRecordsCaaRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[DNSRecordPatchDNSRecordsCaaRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[DNSRecordPatchDNSRecordsCaaRecordType] `json:"type,required"`
+	Type param.Field[DNSRecordPatchDNSRecordsCaaRecordType] `json:"type" api:"required"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
 	// responses.
 	Comment param.Field[string] `json:"comment"`
@@ -1075,13 +1075,13 @@ func (r DNSRecordPatchDNSRecordsCaaRecordSettingsParam) MarshalJSON() (data []by
 
 type DNSRecordPatchDNSRecordsCertRecordParam struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[DNSRecordPatchDNSRecordsCertRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[DNSRecordPatchDNSRecordsCertRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[DNSRecordPatchDNSRecordsCertRecordType] `json:"type,required"`
+	Type param.Field[DNSRecordPatchDNSRecordsCertRecordType] `json:"type" api:"required"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
 	// responses.
 	Comment param.Field[string] `json:"comment"`
@@ -1170,13 +1170,13 @@ func (r DNSRecordPatchDNSRecordsCertRecordSettingsParam) MarshalJSON() (data []b
 
 type DNSRecordPatchDNSRecordsDnskeyRecordParam struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[DNSRecordPatchDNSRecordsDnskeyRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[DNSRecordPatchDNSRecordsDnskeyRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[DNSRecordPatchDNSRecordsDnskeyRecordType] `json:"type,required"`
+	Type param.Field[DNSRecordPatchDNSRecordsDnskeyRecordType] `json:"type" api:"required"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
 	// responses.
 	Comment param.Field[string] `json:"comment"`
@@ -1265,13 +1265,13 @@ func (r DNSRecordPatchDNSRecordsDnskeyRecordSettingsParam) MarshalJSON() (data [
 
 type DNSRecordPatchDNSRecordsDsRecordParam struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[DNSRecordPatchDNSRecordsDsRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[DNSRecordPatchDNSRecordsDsRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[DNSRecordPatchDNSRecordsDsRecordType] `json:"type,required"`
+	Type param.Field[DNSRecordPatchDNSRecordsDsRecordType] `json:"type" api:"required"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
 	// responses.
 	Comment param.Field[string] `json:"comment"`
@@ -1360,13 +1360,13 @@ func (r DNSRecordPatchDNSRecordsDsRecordSettingsParam) MarshalJSON() (data []byt
 
 type DNSRecordPatchDNSRecordsHTTPSRecordParam struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[DNSRecordPatchDNSRecordsHTTPSRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[DNSRecordPatchDNSRecordsHTTPSRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[DNSRecordPatchDNSRecordsHTTPSRecordType] `json:"type,required"`
+	Type param.Field[DNSRecordPatchDNSRecordsHTTPSRecordType] `json:"type" api:"required"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
 	// responses.
 	Comment param.Field[string] `json:"comment"`
@@ -1453,13 +1453,13 @@ func (r DNSRecordPatchDNSRecordsHTTPSRecordSettingsParam) MarshalJSON() (data []
 
 type DNSRecordPatchDNSRecordsLocRecordParam struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[DNSRecordPatchDNSRecordsLocRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[DNSRecordPatchDNSRecordsLocRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[DNSRecordPatchDNSRecordsLocRecordType] `json:"type,required"`
+	Type param.Field[DNSRecordPatchDNSRecordsLocRecordType] `json:"type" api:"required"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
 	// responses.
 	Comment param.Field[string] `json:"comment"`
@@ -1596,13 +1596,13 @@ func (r DNSRecordPatchDNSRecordsLocRecordSettingsParam) MarshalJSON() (data []by
 
 type DNSRecordPatchDNSRecordsNaptrRecordParam struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[DNSRecordPatchDNSRecordsNaptrRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[DNSRecordPatchDNSRecordsNaptrRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[DNSRecordPatchDNSRecordsNaptrRecordType] `json:"type,required"`
+	Type param.Field[DNSRecordPatchDNSRecordsNaptrRecordType] `json:"type" api:"required"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
 	// responses.
 	Comment param.Field[string] `json:"comment"`
@@ -1695,13 +1695,13 @@ func (r DNSRecordPatchDNSRecordsNaptrRecordSettingsParam) MarshalJSON() (data []
 
 type DNSRecordPatchDNSRecordsSmimeaRecordParam struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[DNSRecordPatchDNSRecordsSmimeaRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[DNSRecordPatchDNSRecordsSmimeaRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[DNSRecordPatchDNSRecordsSmimeaRecordType] `json:"type,required"`
+	Type param.Field[DNSRecordPatchDNSRecordsSmimeaRecordType] `json:"type" api:"required"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
 	// responses.
 	Comment param.Field[string] `json:"comment"`
@@ -1790,13 +1790,13 @@ func (r DNSRecordPatchDNSRecordsSmimeaRecordSettingsParam) MarshalJSON() (data [
 
 type DNSRecordPatchDNSRecordsSrvRecordParam struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[DNSRecordPatchDNSRecordsSrvRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[DNSRecordPatchDNSRecordsSrvRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[DNSRecordPatchDNSRecordsSrvRecordType] `json:"type,required"`
+	Type param.Field[DNSRecordPatchDNSRecordsSrvRecordType] `json:"type" api:"required"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
 	// responses.
 	Comment param.Field[string] `json:"comment"`
@@ -1886,13 +1886,13 @@ func (r DNSRecordPatchDNSRecordsSrvRecordSettingsParam) MarshalJSON() (data []by
 
 type DNSRecordPatchDNSRecordsSshfpRecordParam struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[DNSRecordPatchDNSRecordsSshfpRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[DNSRecordPatchDNSRecordsSshfpRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[DNSRecordPatchDNSRecordsSshfpRecordType] `json:"type,required"`
+	Type param.Field[DNSRecordPatchDNSRecordsSshfpRecordType] `json:"type" api:"required"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
 	// responses.
 	Comment param.Field[string] `json:"comment"`
@@ -1979,13 +1979,13 @@ func (r DNSRecordPatchDNSRecordsSshfpRecordSettingsParam) MarshalJSON() (data []
 
 type DNSRecordPatchDNSRecordsSvcbRecordParam struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[DNSRecordPatchDNSRecordsSvcbRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[DNSRecordPatchDNSRecordsSvcbRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[DNSRecordPatchDNSRecordsSvcbRecordType] `json:"type,required"`
+	Type param.Field[DNSRecordPatchDNSRecordsSvcbRecordType] `json:"type" api:"required"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
 	// responses.
 	Comment param.Field[string] `json:"comment"`
@@ -2072,13 +2072,13 @@ func (r DNSRecordPatchDNSRecordsSvcbRecordSettingsParam) MarshalJSON() (data []b
 
 type DNSRecordPatchDNSRecordsTlsaRecordParam struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[DNSRecordPatchDNSRecordsTlsaRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[DNSRecordPatchDNSRecordsTlsaRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[DNSRecordPatchDNSRecordsTlsaRecordType] `json:"type,required"`
+	Type param.Field[DNSRecordPatchDNSRecordsTlsaRecordType] `json:"type" api:"required"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
 	// responses.
 	Comment param.Field[string] `json:"comment"`
@@ -2167,13 +2167,13 @@ func (r DNSRecordPatchDNSRecordsTlsaRecordSettingsParam) MarshalJSON() (data []b
 
 type DNSRecordPatchDNSRecordsUriRecordParam struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[DNSRecordPatchDNSRecordsUriRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[DNSRecordPatchDNSRecordsUriRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[DNSRecordPatchDNSRecordsUriRecordType] `json:"type,required"`
+	Type param.Field[DNSRecordPatchDNSRecordsUriRecordType] `json:"type" api:"required"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
 	// responses.
 	Comment param.Field[string] `json:"comment"`
@@ -2296,10 +2296,10 @@ func (r DNSRecordPatchType) IsKnown() bool {
 
 type DNSRecordPostParam struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string]      `json:"name,required"`
-	Ttl  param.Field[interface{}] `json:"ttl,required"`
+	Name param.Field[string]      `json:"name" api:"required"`
+	Ttl  param.Field[interface{}] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[DNSRecordPostType] `json:"type,required"`
+	Type param.Field[DNSRecordPostType] `json:"type" api:"required"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
 	// responses.
 	Comment param.Field[string] `json:"comment"`
@@ -2348,13 +2348,13 @@ type DNSRecordPostUnionParam interface {
 
 type DNSRecordPostDNSRecordsARecordParam struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[DNSRecordPostDNSRecordsARecordTtl] `json:"ttl,required"`
+	Ttl param.Field[DNSRecordPostDNSRecordsARecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[DNSRecordPostDNSRecordsARecordType] `json:"type,required"`
+	Type param.Field[DNSRecordPostDNSRecordsARecordType] `json:"type" api:"required"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
 	// responses.
 	Comment param.Field[string] `json:"comment"`
@@ -2427,13 +2427,13 @@ func (r DNSRecordPostDNSRecordsARecordSettingsParam) MarshalJSON() (data []byte,
 
 type DNSRecordPostDNSRecordsAaaaRecordParam struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[DNSRecordPostDNSRecordsAaaaRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[DNSRecordPostDNSRecordsAaaaRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[DNSRecordPostDNSRecordsAaaaRecordType] `json:"type,required"`
+	Type param.Field[DNSRecordPostDNSRecordsAaaaRecordType] `json:"type" api:"required"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
 	// responses.
 	Comment param.Field[string] `json:"comment"`
@@ -2506,13 +2506,13 @@ func (r DNSRecordPostDNSRecordsAaaaRecordSettingsParam) MarshalJSON() (data []by
 
 type DNSRecordPostDNSRecordsCnameRecordParam struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[DNSRecordPostDNSRecordsCnameRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[DNSRecordPostDNSRecordsCnameRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[DNSRecordPostDNSRecordsCnameRecordType] `json:"type,required"`
+	Type param.Field[DNSRecordPostDNSRecordsCnameRecordType] `json:"type" api:"required"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
 	// responses.
 	Comment param.Field[string] `json:"comment"`
@@ -2590,13 +2590,13 @@ func (r DNSRecordPostDNSRecordsCnameRecordSettingsParam) MarshalJSON() (data []b
 
 type DNSRecordPostDNSRecordsMxRecordParam struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[DNSRecordPostDNSRecordsMxRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[DNSRecordPostDNSRecordsMxRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[DNSRecordPostDNSRecordsMxRecordType] `json:"type,required"`
+	Type param.Field[DNSRecordPostDNSRecordsMxRecordType] `json:"type" api:"required"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
 	// responses.
 	Comment param.Field[string] `json:"comment"`
@@ -2672,13 +2672,13 @@ func (r DNSRecordPostDNSRecordsMxRecordSettingsParam) MarshalJSON() (data []byte
 
 type DNSRecordPostDNSRecordsNsRecordParam struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[DNSRecordPostDNSRecordsNsRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[DNSRecordPostDNSRecordsNsRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[DNSRecordPostDNSRecordsNsRecordType] `json:"type,required"`
+	Type param.Field[DNSRecordPostDNSRecordsNsRecordType] `json:"type" api:"required"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
 	// responses.
 	Comment param.Field[string] `json:"comment"`
@@ -2751,13 +2751,13 @@ func (r DNSRecordPostDNSRecordsNsRecordSettingsParam) MarshalJSON() (data []byte
 
 type DNSRecordPostDNSRecordsOpenpgpkeyRecordParam struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[DNSRecordPostDNSRecordsOpenpgpkeyRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[DNSRecordPostDNSRecordsOpenpgpkeyRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[DNSRecordPostDNSRecordsOpenpgpkeyRecordType] `json:"type,required"`
+	Type param.Field[DNSRecordPostDNSRecordsOpenpgpkeyRecordType] `json:"type" api:"required"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
 	// responses.
 	Comment param.Field[string] `json:"comment"`
@@ -2830,13 +2830,13 @@ func (r DNSRecordPostDNSRecordsOpenpgpkeyRecordSettingsParam) MarshalJSON() (dat
 
 type DNSRecordPostDNSRecordsPtrRecordParam struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[DNSRecordPostDNSRecordsPtrRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[DNSRecordPostDNSRecordsPtrRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[DNSRecordPostDNSRecordsPtrRecordType] `json:"type,required"`
+	Type param.Field[DNSRecordPostDNSRecordsPtrRecordType] `json:"type" api:"required"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
 	// responses.
 	Comment param.Field[string] `json:"comment"`
@@ -2909,13 +2909,13 @@ func (r DNSRecordPostDNSRecordsPtrRecordSettingsParam) MarshalJSON() (data []byt
 
 type DNSRecordPostDNSRecordsTxtRecordParam struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[DNSRecordPostDNSRecordsTxtRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[DNSRecordPostDNSRecordsTxtRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[DNSRecordPostDNSRecordsTxtRecordType] `json:"type,required"`
+	Type param.Field[DNSRecordPostDNSRecordsTxtRecordType] `json:"type" api:"required"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
 	// responses.
 	Comment param.Field[string] `json:"comment"`
@@ -2993,13 +2993,13 @@ func (r DNSRecordPostDNSRecordsTxtRecordSettingsParam) MarshalJSON() (data []byt
 
 type DNSRecordPostDNSRecordsCaaRecordParam struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[DNSRecordPostDNSRecordsCaaRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[DNSRecordPostDNSRecordsCaaRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[DNSRecordPostDNSRecordsCaaRecordType] `json:"type,required"`
+	Type param.Field[DNSRecordPostDNSRecordsCaaRecordType] `json:"type" api:"required"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
 	// responses.
 	Comment param.Field[string] `json:"comment"`
@@ -3086,13 +3086,13 @@ func (r DNSRecordPostDNSRecordsCaaRecordSettingsParam) MarshalJSON() (data []byt
 
 type DNSRecordPostDNSRecordsCertRecordParam struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[DNSRecordPostDNSRecordsCertRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[DNSRecordPostDNSRecordsCertRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[DNSRecordPostDNSRecordsCertRecordType] `json:"type,required"`
+	Type param.Field[DNSRecordPostDNSRecordsCertRecordType] `json:"type" api:"required"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
 	// responses.
 	Comment param.Field[string] `json:"comment"`
@@ -3181,13 +3181,13 @@ func (r DNSRecordPostDNSRecordsCertRecordSettingsParam) MarshalJSON() (data []by
 
 type DNSRecordPostDNSRecordsDnskeyRecordParam struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[DNSRecordPostDNSRecordsDnskeyRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[DNSRecordPostDNSRecordsDnskeyRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[DNSRecordPostDNSRecordsDnskeyRecordType] `json:"type,required"`
+	Type param.Field[DNSRecordPostDNSRecordsDnskeyRecordType] `json:"type" api:"required"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
 	// responses.
 	Comment param.Field[string] `json:"comment"`
@@ -3276,13 +3276,13 @@ func (r DNSRecordPostDNSRecordsDnskeyRecordSettingsParam) MarshalJSON() (data []
 
 type DNSRecordPostDNSRecordsDsRecordParam struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[DNSRecordPostDNSRecordsDsRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[DNSRecordPostDNSRecordsDsRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[DNSRecordPostDNSRecordsDsRecordType] `json:"type,required"`
+	Type param.Field[DNSRecordPostDNSRecordsDsRecordType] `json:"type" api:"required"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
 	// responses.
 	Comment param.Field[string] `json:"comment"`
@@ -3371,13 +3371,13 @@ func (r DNSRecordPostDNSRecordsDsRecordSettingsParam) MarshalJSON() (data []byte
 
 type DNSRecordPostDNSRecordsHTTPSRecordParam struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[DNSRecordPostDNSRecordsHTTPSRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[DNSRecordPostDNSRecordsHTTPSRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[DNSRecordPostDNSRecordsHTTPSRecordType] `json:"type,required"`
+	Type param.Field[DNSRecordPostDNSRecordsHTTPSRecordType] `json:"type" api:"required"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
 	// responses.
 	Comment param.Field[string] `json:"comment"`
@@ -3464,13 +3464,13 @@ func (r DNSRecordPostDNSRecordsHTTPSRecordSettingsParam) MarshalJSON() (data []b
 
 type DNSRecordPostDNSRecordsLocRecordParam struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[DNSRecordPostDNSRecordsLocRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[DNSRecordPostDNSRecordsLocRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[DNSRecordPostDNSRecordsLocRecordType] `json:"type,required"`
+	Type param.Field[DNSRecordPostDNSRecordsLocRecordType] `json:"type" api:"required"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
 	// responses.
 	Comment param.Field[string] `json:"comment"`
@@ -3607,13 +3607,13 @@ func (r DNSRecordPostDNSRecordsLocRecordSettingsParam) MarshalJSON() (data []byt
 
 type DNSRecordPostDNSRecordsNaptrRecordParam struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[DNSRecordPostDNSRecordsNaptrRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[DNSRecordPostDNSRecordsNaptrRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[DNSRecordPostDNSRecordsNaptrRecordType] `json:"type,required"`
+	Type param.Field[DNSRecordPostDNSRecordsNaptrRecordType] `json:"type" api:"required"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
 	// responses.
 	Comment param.Field[string] `json:"comment"`
@@ -3706,13 +3706,13 @@ func (r DNSRecordPostDNSRecordsNaptrRecordSettingsParam) MarshalJSON() (data []b
 
 type DNSRecordPostDNSRecordsSmimeaRecordParam struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[DNSRecordPostDNSRecordsSmimeaRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[DNSRecordPostDNSRecordsSmimeaRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[DNSRecordPostDNSRecordsSmimeaRecordType] `json:"type,required"`
+	Type param.Field[DNSRecordPostDNSRecordsSmimeaRecordType] `json:"type" api:"required"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
 	// responses.
 	Comment param.Field[string] `json:"comment"`
@@ -3801,13 +3801,13 @@ func (r DNSRecordPostDNSRecordsSmimeaRecordSettingsParam) MarshalJSON() (data []
 
 type DNSRecordPostDNSRecordsSrvRecordParam struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[DNSRecordPostDNSRecordsSrvRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[DNSRecordPostDNSRecordsSrvRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[DNSRecordPostDNSRecordsSrvRecordType] `json:"type,required"`
+	Type param.Field[DNSRecordPostDNSRecordsSrvRecordType] `json:"type" api:"required"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
 	// responses.
 	Comment param.Field[string] `json:"comment"`
@@ -3897,13 +3897,13 @@ func (r DNSRecordPostDNSRecordsSrvRecordSettingsParam) MarshalJSON() (data []byt
 
 type DNSRecordPostDNSRecordsSshfpRecordParam struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[DNSRecordPostDNSRecordsSshfpRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[DNSRecordPostDNSRecordsSshfpRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[DNSRecordPostDNSRecordsSshfpRecordType] `json:"type,required"`
+	Type param.Field[DNSRecordPostDNSRecordsSshfpRecordType] `json:"type" api:"required"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
 	// responses.
 	Comment param.Field[string] `json:"comment"`
@@ -3990,13 +3990,13 @@ func (r DNSRecordPostDNSRecordsSshfpRecordSettingsParam) MarshalJSON() (data []b
 
 type DNSRecordPostDNSRecordsSvcbRecordParam struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[DNSRecordPostDNSRecordsSvcbRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[DNSRecordPostDNSRecordsSvcbRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[DNSRecordPostDNSRecordsSvcbRecordType] `json:"type,required"`
+	Type param.Field[DNSRecordPostDNSRecordsSvcbRecordType] `json:"type" api:"required"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
 	// responses.
 	Comment param.Field[string] `json:"comment"`
@@ -4083,13 +4083,13 @@ func (r DNSRecordPostDNSRecordsSvcbRecordSettingsParam) MarshalJSON() (data []by
 
 type DNSRecordPostDNSRecordsTlsaRecordParam struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[DNSRecordPostDNSRecordsTlsaRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[DNSRecordPostDNSRecordsTlsaRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[DNSRecordPostDNSRecordsTlsaRecordType] `json:"type,required"`
+	Type param.Field[DNSRecordPostDNSRecordsTlsaRecordType] `json:"type" api:"required"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
 	// responses.
 	Comment param.Field[string] `json:"comment"`
@@ -4178,13 +4178,13 @@ func (r DNSRecordPostDNSRecordsTlsaRecordSettingsParam) MarshalJSON() (data []by
 
 type DNSRecordPostDNSRecordsUriRecordParam struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[DNSRecordPostDNSRecordsUriRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[DNSRecordPostDNSRecordsUriRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[DNSRecordPostDNSRecordsUriRecordType] `json:"type,required"`
+	Type param.Field[DNSRecordPostDNSRecordsUriRecordType] `json:"type" api:"required"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
 	// responses.
 	Comment param.Field[string] `json:"comment"`
@@ -4307,7 +4307,7 @@ func (r DNSRecordPostType) IsKnown() bool {
 
 type DNSRecordResponse struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// This field can have the runtime type of [DNSRecordResponseDNSRecordsARecordTtl],
 	// [DNSRecordResponseDNSRecordsAaaaRecordTtl],
 	// [DNSRecordResponseDNSRecordsCnameRecordTtl],
@@ -4329,9 +4329,9 @@ type DNSRecordResponse struct {
 	// [DNSRecordResponseDNSRecordsSvcbRecordTtl],
 	// [DNSRecordResponseDNSRecordsTlsaRecordTtl],
 	// [DNSRecordResponseDNSRecordsUriRecordTtl].
-	Ttl interface{} `json:"ttl,required"`
+	Ttl interface{} `json:"ttl" api:"required"`
 	// Record type.
-	Type DNSRecordResponseType `json:"type,required"`
+	Type DNSRecordResponseType `json:"type" api:"required"`
 	// Identifier.
 	ID string `json:"id"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
@@ -4574,13 +4574,13 @@ func init() {
 
 type DNSRecordResponseDNSRecordsARecord struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl DNSRecordResponseDNSRecordsARecordTtl `json:"ttl,required"`
+	Ttl DNSRecordResponseDNSRecordsARecordTtl `json:"ttl" api:"required"`
 	// Record type.
-	Type DNSRecordResponseDNSRecordsARecordType `json:"type,required"`
+	Type DNSRecordResponseDNSRecordsARecordType `json:"type" api:"required"`
 	// Identifier.
 	ID string `json:"id"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
@@ -4708,13 +4708,13 @@ func (r dnsRecordResponseDNSRecordsARecordSettingsJSON) RawJSON() string {
 
 type DNSRecordResponseDNSRecordsAaaaRecord struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl DNSRecordResponseDNSRecordsAaaaRecordTtl `json:"ttl,required"`
+	Ttl DNSRecordResponseDNSRecordsAaaaRecordTtl `json:"ttl" api:"required"`
 	// Record type.
-	Type DNSRecordResponseDNSRecordsAaaaRecordType `json:"type,required"`
+	Type DNSRecordResponseDNSRecordsAaaaRecordType `json:"type" api:"required"`
 	// Identifier.
 	ID string `json:"id"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
@@ -4842,13 +4842,13 @@ func (r dnsRecordResponseDNSRecordsAaaaRecordSettingsJSON) RawJSON() string {
 
 type DNSRecordResponseDNSRecordsCnameRecord struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl DNSRecordResponseDNSRecordsCnameRecordTtl `json:"ttl,required"`
+	Ttl DNSRecordResponseDNSRecordsCnameRecordTtl `json:"ttl" api:"required"`
 	// Record type.
-	Type DNSRecordResponseDNSRecordsCnameRecordType `json:"type,required"`
+	Type DNSRecordResponseDNSRecordsCnameRecordType `json:"type" api:"required"`
 	// Identifier.
 	ID string `json:"id"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
@@ -4982,13 +4982,13 @@ func (r dnsRecordResponseDNSRecordsCnameRecordSettingsJSON) RawJSON() string {
 
 type DNSRecordResponseDNSRecordsMxRecord struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl DNSRecordResponseDNSRecordsMxRecordTtl `json:"ttl,required"`
+	Ttl DNSRecordResponseDNSRecordsMxRecordTtl `json:"ttl" api:"required"`
 	// Record type.
-	Type DNSRecordResponseDNSRecordsMxRecordType `json:"type,required"`
+	Type DNSRecordResponseDNSRecordsMxRecordType `json:"type" api:"required"`
 	// Identifier.
 	ID string `json:"id"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
@@ -5120,13 +5120,13 @@ func (r dnsRecordResponseDNSRecordsMxRecordSettingsJSON) RawJSON() string {
 
 type DNSRecordResponseDNSRecordsNsRecord struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl DNSRecordResponseDNSRecordsNsRecordTtl `json:"ttl,required"`
+	Ttl DNSRecordResponseDNSRecordsNsRecordTtl `json:"ttl" api:"required"`
 	// Record type.
-	Type DNSRecordResponseDNSRecordsNsRecordType `json:"type,required"`
+	Type DNSRecordResponseDNSRecordsNsRecordType `json:"type" api:"required"`
 	// Identifier.
 	ID string `json:"id"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
@@ -5254,13 +5254,13 @@ func (r dnsRecordResponseDNSRecordsNsRecordSettingsJSON) RawJSON() string {
 
 type DNSRecordResponseDNSRecordsOpenpgpkeyRecord struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl DNSRecordResponseDNSRecordsOpenpgpkeyRecordTtl `json:"ttl,required"`
+	Ttl DNSRecordResponseDNSRecordsOpenpgpkeyRecordTtl `json:"ttl" api:"required"`
 	// Record type.
-	Type DNSRecordResponseDNSRecordsOpenpgpkeyRecordType `json:"type,required"`
+	Type DNSRecordResponseDNSRecordsOpenpgpkeyRecordType `json:"type" api:"required"`
 	// Identifier.
 	ID string `json:"id"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
@@ -5388,13 +5388,13 @@ func (r dnsRecordResponseDNSRecordsOpenpgpkeyRecordSettingsJSON) RawJSON() strin
 
 type DNSRecordResponseDNSRecordsPtrRecord struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl DNSRecordResponseDNSRecordsPtrRecordTtl `json:"ttl,required"`
+	Ttl DNSRecordResponseDNSRecordsPtrRecordTtl `json:"ttl" api:"required"`
 	// Record type.
-	Type DNSRecordResponseDNSRecordsPtrRecordType `json:"type,required"`
+	Type DNSRecordResponseDNSRecordsPtrRecordType `json:"type" api:"required"`
 	// Identifier.
 	ID string `json:"id"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
@@ -5522,13 +5522,13 @@ func (r dnsRecordResponseDNSRecordsPtrRecordSettingsJSON) RawJSON() string {
 
 type DNSRecordResponseDNSRecordsTxtRecord struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl DNSRecordResponseDNSRecordsTxtRecordTtl `json:"ttl,required"`
+	Ttl DNSRecordResponseDNSRecordsTxtRecordTtl `json:"ttl" api:"required"`
 	// Record type.
-	Type DNSRecordResponseDNSRecordsTxtRecordType `json:"type,required"`
+	Type DNSRecordResponseDNSRecordsTxtRecordType `json:"type" api:"required"`
 	// Identifier.
 	ID string `json:"id"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
@@ -5661,13 +5661,13 @@ func (r dnsRecordResponseDNSRecordsTxtRecordSettingsJSON) RawJSON() string {
 
 type DNSRecordResponseDNSRecordsCaaRecord struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl DNSRecordResponseDNSRecordsCaaRecordTtl `json:"ttl,required"`
+	Ttl DNSRecordResponseDNSRecordsCaaRecordTtl `json:"ttl" api:"required"`
 	// Record type.
-	Type DNSRecordResponseDNSRecordsCaaRecordType `json:"type,required"`
+	Type DNSRecordResponseDNSRecordsCaaRecordType `json:"type" api:"required"`
 	// Identifier.
 	ID string `json:"id"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
@@ -5827,13 +5827,13 @@ func (r dnsRecordResponseDNSRecordsCaaRecordSettingsJSON) RawJSON() string {
 
 type DNSRecordResponseDNSRecordsCertRecord struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl DNSRecordResponseDNSRecordsCertRecordTtl `json:"ttl,required"`
+	Ttl DNSRecordResponseDNSRecordsCertRecordTtl `json:"ttl" api:"required"`
 	// Record type.
-	Type DNSRecordResponseDNSRecordsCertRecordType `json:"type,required"`
+	Type DNSRecordResponseDNSRecordsCertRecordType `json:"type" api:"required"`
 	// Identifier.
 	ID string `json:"id"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
@@ -5996,13 +5996,13 @@ func (r dnsRecordResponseDNSRecordsCertRecordSettingsJSON) RawJSON() string {
 
 type DNSRecordResponseDNSRecordsDnskeyRecord struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl DNSRecordResponseDNSRecordsDnskeyRecordTtl `json:"ttl,required"`
+	Ttl DNSRecordResponseDNSRecordsDnskeyRecordTtl `json:"ttl" api:"required"`
 	// Record type.
-	Type DNSRecordResponseDNSRecordsDnskeyRecordType `json:"type,required"`
+	Type DNSRecordResponseDNSRecordsDnskeyRecordType `json:"type" api:"required"`
 	// Identifier.
 	ID string `json:"id"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
@@ -6165,13 +6165,13 @@ func (r dnsRecordResponseDNSRecordsDnskeyRecordSettingsJSON) RawJSON() string {
 
 type DNSRecordResponseDNSRecordsDsRecord struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl DNSRecordResponseDNSRecordsDsRecordTtl `json:"ttl,required"`
+	Ttl DNSRecordResponseDNSRecordsDsRecordTtl `json:"ttl" api:"required"`
 	// Record type.
-	Type DNSRecordResponseDNSRecordsDsRecordType `json:"type,required"`
+	Type DNSRecordResponseDNSRecordsDsRecordType `json:"type" api:"required"`
 	// Identifier.
 	ID string `json:"id"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
@@ -6334,13 +6334,13 @@ func (r dnsRecordResponseDNSRecordsDsRecordSettingsJSON) RawJSON() string {
 
 type DNSRecordResponseDNSRecordsHTTPSRecord struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl DNSRecordResponseDNSRecordsHTTPSRecordTtl `json:"ttl,required"`
+	Ttl DNSRecordResponseDNSRecordsHTTPSRecordTtl `json:"ttl" api:"required"`
 	// Record type.
-	Type DNSRecordResponseDNSRecordsHTTPSRecordType `json:"type,required"`
+	Type DNSRecordResponseDNSRecordsHTTPSRecordType `json:"type" api:"required"`
 	// Identifier.
 	ID string `json:"id"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
@@ -6500,13 +6500,13 @@ func (r dnsRecordResponseDNSRecordsHTTPSRecordSettingsJSON) RawJSON() string {
 
 type DNSRecordResponseDNSRecordsLocRecord struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl DNSRecordResponseDNSRecordsLocRecordTtl `json:"ttl,required"`
+	Ttl DNSRecordResponseDNSRecordsLocRecordTtl `json:"ttl" api:"required"`
 	// Record type.
-	Type DNSRecordResponseDNSRecordsLocRecordType `json:"type,required"`
+	Type DNSRecordResponseDNSRecordsLocRecordType `json:"type" api:"required"`
 	// Identifier.
 	ID string `json:"id"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
@@ -6725,13 +6725,13 @@ func (r dnsRecordResponseDNSRecordsLocRecordSettingsJSON) RawJSON() string {
 
 type DNSRecordResponseDNSRecordsNaptrRecord struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl DNSRecordResponseDNSRecordsNaptrRecordTtl `json:"ttl,required"`
+	Ttl DNSRecordResponseDNSRecordsNaptrRecordTtl `json:"ttl" api:"required"`
 	// Record type.
-	Type DNSRecordResponseDNSRecordsNaptrRecordType `json:"type,required"`
+	Type DNSRecordResponseDNSRecordsNaptrRecordType `json:"type" api:"required"`
 	// Identifier.
 	ID string `json:"id"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
@@ -6900,13 +6900,13 @@ func (r dnsRecordResponseDNSRecordsNaptrRecordSettingsJSON) RawJSON() string {
 
 type DNSRecordResponseDNSRecordsSmimeaRecord struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl DNSRecordResponseDNSRecordsSmimeaRecordTtl `json:"ttl,required"`
+	Ttl DNSRecordResponseDNSRecordsSmimeaRecordTtl `json:"ttl" api:"required"`
 	// Record type.
-	Type DNSRecordResponseDNSRecordsSmimeaRecordType `json:"type,required"`
+	Type DNSRecordResponseDNSRecordsSmimeaRecordType `json:"type" api:"required"`
 	// Identifier.
 	ID string `json:"id"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
@@ -7069,13 +7069,13 @@ func (r dnsRecordResponseDNSRecordsSmimeaRecordSettingsJSON) RawJSON() string {
 
 type DNSRecordResponseDNSRecordsSrvRecord struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl DNSRecordResponseDNSRecordsSrvRecordTtl `json:"ttl,required"`
+	Ttl DNSRecordResponseDNSRecordsSrvRecordTtl `json:"ttl" api:"required"`
 	// Record type.
-	Type DNSRecordResponseDNSRecordsSrvRecordType `json:"type,required"`
+	Type DNSRecordResponseDNSRecordsSrvRecordType `json:"type" api:"required"`
 	// Identifier.
 	ID string `json:"id"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
@@ -7240,13 +7240,13 @@ func (r dnsRecordResponseDNSRecordsSrvRecordSettingsJSON) RawJSON() string {
 
 type DNSRecordResponseDNSRecordsSshfpRecord struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl DNSRecordResponseDNSRecordsSshfpRecordTtl `json:"ttl,required"`
+	Ttl DNSRecordResponseDNSRecordsSshfpRecordTtl `json:"ttl" api:"required"`
 	// Record type.
-	Type DNSRecordResponseDNSRecordsSshfpRecordType `json:"type,required"`
+	Type DNSRecordResponseDNSRecordsSshfpRecordType `json:"type" api:"required"`
 	// Identifier.
 	ID string `json:"id"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
@@ -7406,13 +7406,13 @@ func (r dnsRecordResponseDNSRecordsSshfpRecordSettingsJSON) RawJSON() string {
 
 type DNSRecordResponseDNSRecordsSvcbRecord struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl DNSRecordResponseDNSRecordsSvcbRecordTtl `json:"ttl,required"`
+	Ttl DNSRecordResponseDNSRecordsSvcbRecordTtl `json:"ttl" api:"required"`
 	// Record type.
-	Type DNSRecordResponseDNSRecordsSvcbRecordType `json:"type,required"`
+	Type DNSRecordResponseDNSRecordsSvcbRecordType `json:"type" api:"required"`
 	// Identifier.
 	ID string `json:"id"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
@@ -7572,13 +7572,13 @@ func (r dnsRecordResponseDNSRecordsSvcbRecordSettingsJSON) RawJSON() string {
 
 type DNSRecordResponseDNSRecordsTlsaRecord struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl DNSRecordResponseDNSRecordsTlsaRecordTtl `json:"ttl,required"`
+	Ttl DNSRecordResponseDNSRecordsTlsaRecordTtl `json:"ttl" api:"required"`
 	// Record type.
-	Type DNSRecordResponseDNSRecordsTlsaRecordType `json:"type,required"`
+	Type DNSRecordResponseDNSRecordsTlsaRecordType `json:"type" api:"required"`
 	// Identifier.
 	ID string `json:"id"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
@@ -7741,13 +7741,13 @@ func (r dnsRecordResponseDNSRecordsTlsaRecordSettingsJSON) RawJSON() string {
 
 type DNSRecordResponseDNSRecordsUriRecord struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl DNSRecordResponseDNSRecordsUriRecordTtl `json:"ttl,required"`
+	Ttl DNSRecordResponseDNSRecordsUriRecordTtl `json:"ttl" api:"required"`
 	// Record type.
-	Type DNSRecordResponseDNSRecordsUriRecordType `json:"type,required"`
+	Type DNSRecordResponseDNSRecordsUriRecordType `json:"type" api:"required"`
 	// Identifier.
 	ID string `json:"id"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
@@ -7942,10 +7942,10 @@ func (r DNSRecordResponseType) IsKnown() bool {
 }
 
 type ImportScanResponse struct {
-	Errors   []DNSRecordMessageItem `json:"errors,required"`
-	Messages []DNSRecordMessageItem `json:"messages,required"`
+	Errors   []DNSRecordMessageItem `json:"errors" api:"required"`
+	Messages []DNSRecordMessageItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success ImportScanResponseSuccess `json:"success,required"`
+	Success ImportScanResponseSuccess `json:"success" api:"required"`
 	Result  ImportScanResponseResult  `json:"result"`
 	JSON    importScanResponseJSON    `json:"-"`
 }
@@ -8010,10 +8010,10 @@ func (r importScanResponseResultJSON) RawJSON() string {
 }
 
 type SingleResponseDNSResponse struct {
-	Errors   []DNSRecordMessageItem `json:"errors,required"`
-	Messages []DNSRecordMessageItem `json:"messages,required"`
+	Errors   []DNSRecordMessageItem `json:"errors" api:"required"`
+	Messages []DNSRecordMessageItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success SingleResponseDNSResponseSuccess `json:"success,required"`
+	Success SingleResponseDNSResponseSuccess `json:"success" api:"required"`
 	Result  DNSRecordResponse                `json:"result"`
 	JSON    singleResponseDNSResponseJSON    `json:"-"`
 }
@@ -8053,10 +8053,10 @@ func (r SingleResponseDNSResponseSuccess) IsKnown() bool {
 }
 
 type ZoneDNSRecordListResponse struct {
-	Errors   []DNSRecordMessageItem `json:"errors,required"`
-	Messages []DNSRecordMessageItem `json:"messages,required"`
+	Errors   []DNSRecordMessageItem `json:"errors" api:"required"`
+	Messages []DNSRecordMessageItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success    ZoneDNSRecordListResponseSuccess    `json:"success,required"`
+	Success    ZoneDNSRecordListResponseSuccess    `json:"success" api:"required"`
 	Result     []DNSRecordResponse                 `json:"result"`
 	ResultInfo ZoneDNSRecordListResponseResultInfo `json:"result_info"`
 	JSON       zoneDNSRecordListResponseJSON       `json:"-"`
@@ -8172,10 +8172,10 @@ func (r zoneDNSRecordDeleteResponseResultJSON) RawJSON() string {
 }
 
 type ZoneDNSRecordBatchResponse struct {
-	Errors   []DNSRecordMessageItem `json:"errors,required"`
-	Messages []DNSRecordMessageItem `json:"messages,required"`
+	Errors   []DNSRecordMessageItem `json:"errors" api:"required"`
+	Messages []DNSRecordMessageItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success ZoneDNSRecordBatchResponseSuccess `json:"success,required"`
+	Success ZoneDNSRecordBatchResponseSuccess `json:"success" api:"required"`
 	Result  ZoneDNSRecordBatchResponseResult  `json:"result"`
 	JSON    zoneDNSRecordBatchResponseJSON    `json:"-"`
 }
@@ -8242,7 +8242,7 @@ func (r zoneDNSRecordBatchResponseResultJSON) RawJSON() string {
 }
 
 type ZoneDNSRecordNewParams struct {
-	DNSRecordPost DNSRecordPostUnionParam `json:"dns_record_post,required"`
+	DNSRecordPost DNSRecordPostUnionParam `json:"dns_record_post" api:"required"`
 }
 
 func (r ZoneDNSRecordNewParams) MarshalJSON() (data []byte, err error) {
@@ -8250,7 +8250,7 @@ func (r ZoneDNSRecordNewParams) MarshalJSON() (data []byte, err error) {
 }
 
 type ZoneDNSRecordUpdateParams struct {
-	DNSRecordPatch DNSRecordPatchUnionParam `json:"dns_record_patch,required"`
+	DNSRecordPatch DNSRecordPatchUnionParam `json:"dns_record_patch" api:"required"`
 }
 
 func (r ZoneDNSRecordUpdateParams) MarshalJSON() (data []byte, err error) {
@@ -8521,7 +8521,7 @@ func (r ZoneDNSRecordBatchParams) MarshalJSON() (data []byte, err error) {
 
 type ZoneDNSRecordBatchParamsDelete struct {
 	// Identifier.
-	ID param.Field[string] `json:"id,required"`
+	ID param.Field[string] `json:"id" api:"required"`
 }
 
 func (r ZoneDNSRecordBatchParamsDelete) MarshalJSON() (data []byte, err error) {
@@ -8530,10 +8530,10 @@ func (r ZoneDNSRecordBatchParamsDelete) MarshalJSON() (data []byte, err error) {
 
 type ZoneDNSRecordBatchParamsPatch struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string]      `json:"name,required"`
-	Ttl  param.Field[interface{}] `json:"ttl,required"`
+	Name param.Field[string]      `json:"name" api:"required"`
+	Ttl  param.Field[interface{}] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[ZoneDNSRecordBatchParamsPatchesType] `json:"type,required"`
+	Type param.Field[ZoneDNSRecordBatchParamsPatchesType] `json:"type" api:"required"`
 	// Identifier.
 	ID param.Field[string] `json:"id"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
@@ -8586,13 +8586,13 @@ type ZoneDNSRecordBatchParamsPatchUnion interface {
 
 type ZoneDNSRecordBatchParamsPatchesDNSRecordsARecord struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsARecordTtl] `json:"ttl,required"`
+	Ttl param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsARecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsARecordType] `json:"type,required"`
+	Type param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsARecordType] `json:"type" api:"required"`
 	// Identifier.
 	ID param.Field[string] `json:"id"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
@@ -8668,13 +8668,13 @@ func (r ZoneDNSRecordBatchParamsPatchesDNSRecordsARecordSettings) MarshalJSON() 
 
 type ZoneDNSRecordBatchParamsPatchesDNSRecordsAaaaRecord struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsAaaaRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsAaaaRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsAaaaRecordType] `json:"type,required"`
+	Type param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsAaaaRecordType] `json:"type" api:"required"`
 	// Identifier.
 	ID param.Field[string] `json:"id"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
@@ -8750,13 +8750,13 @@ func (r ZoneDNSRecordBatchParamsPatchesDNSRecordsAaaaRecordSettings) MarshalJSON
 
 type ZoneDNSRecordBatchParamsPatchesDNSRecordsCnameRecord struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsCnameRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsCnameRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsCnameRecordType] `json:"type,required"`
+	Type param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsCnameRecordType] `json:"type" api:"required"`
 	// Identifier.
 	ID param.Field[string] `json:"id"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
@@ -8837,13 +8837,13 @@ func (r ZoneDNSRecordBatchParamsPatchesDNSRecordsCnameRecordSettings) MarshalJSO
 
 type ZoneDNSRecordBatchParamsPatchesDNSRecordsMxRecord struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsMxRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsMxRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsMxRecordType] `json:"type,required"`
+	Type param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsMxRecordType] `json:"type" api:"required"`
 	// Identifier.
 	ID param.Field[string] `json:"id"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
@@ -8922,13 +8922,13 @@ func (r ZoneDNSRecordBatchParamsPatchesDNSRecordsMxRecordSettings) MarshalJSON()
 
 type ZoneDNSRecordBatchParamsPatchesDNSRecordsNsRecord struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsNsRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsNsRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsNsRecordType] `json:"type,required"`
+	Type param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsNsRecordType] `json:"type" api:"required"`
 	// Identifier.
 	ID param.Field[string] `json:"id"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
@@ -9004,13 +9004,13 @@ func (r ZoneDNSRecordBatchParamsPatchesDNSRecordsNsRecordSettings) MarshalJSON()
 
 type ZoneDNSRecordBatchParamsPatchesDNSRecordsOpenpgpkeyRecord struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsOpenpgpkeyRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsOpenpgpkeyRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsOpenpgpkeyRecordType] `json:"type,required"`
+	Type param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsOpenpgpkeyRecordType] `json:"type" api:"required"`
 	// Identifier.
 	ID param.Field[string] `json:"id"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
@@ -9086,13 +9086,13 @@ func (r ZoneDNSRecordBatchParamsPatchesDNSRecordsOpenpgpkeyRecordSettings) Marsh
 
 type ZoneDNSRecordBatchParamsPatchesDNSRecordsPtrRecord struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsPtrRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsPtrRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsPtrRecordType] `json:"type,required"`
+	Type param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsPtrRecordType] `json:"type" api:"required"`
 	// Identifier.
 	ID param.Field[string] `json:"id"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
@@ -9168,13 +9168,13 @@ func (r ZoneDNSRecordBatchParamsPatchesDNSRecordsPtrRecordSettings) MarshalJSON(
 
 type ZoneDNSRecordBatchParamsPatchesDNSRecordsTxtRecord struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsTxtRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsTxtRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsTxtRecordType] `json:"type,required"`
+	Type param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsTxtRecordType] `json:"type" api:"required"`
 	// Identifier.
 	ID param.Field[string] `json:"id"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
@@ -9255,13 +9255,13 @@ func (r ZoneDNSRecordBatchParamsPatchesDNSRecordsTxtRecordSettings) MarshalJSON(
 
 type ZoneDNSRecordBatchParamsPatchesDNSRecordsCaaRecord struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsCaaRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsCaaRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsCaaRecordType] `json:"type,required"`
+	Type param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsCaaRecordType] `json:"type" api:"required"`
 	// Identifier.
 	ID param.Field[string] `json:"id"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
@@ -9351,13 +9351,13 @@ func (r ZoneDNSRecordBatchParamsPatchesDNSRecordsCaaRecordSettings) MarshalJSON(
 
 type ZoneDNSRecordBatchParamsPatchesDNSRecordsCertRecord struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsCertRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsCertRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsCertRecordType] `json:"type,required"`
+	Type param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsCertRecordType] `json:"type" api:"required"`
 	// Identifier.
 	ID param.Field[string] `json:"id"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
@@ -9449,13 +9449,13 @@ func (r ZoneDNSRecordBatchParamsPatchesDNSRecordsCertRecordSettings) MarshalJSON
 
 type ZoneDNSRecordBatchParamsPatchesDNSRecordsDnskeyRecord struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsDnskeyRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsDnskeyRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsDnskeyRecordType] `json:"type,required"`
+	Type param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsDnskeyRecordType] `json:"type" api:"required"`
 	// Identifier.
 	ID param.Field[string] `json:"id"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
@@ -9547,13 +9547,13 @@ func (r ZoneDNSRecordBatchParamsPatchesDNSRecordsDnskeyRecordSettings) MarshalJS
 
 type ZoneDNSRecordBatchParamsPatchesDNSRecordsDsRecord struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsDsRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsDsRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsDsRecordType] `json:"type,required"`
+	Type param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsDsRecordType] `json:"type" api:"required"`
 	// Identifier.
 	ID param.Field[string] `json:"id"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
@@ -9645,13 +9645,13 @@ func (r ZoneDNSRecordBatchParamsPatchesDNSRecordsDsRecordSettings) MarshalJSON()
 
 type ZoneDNSRecordBatchParamsPatchesDNSRecordsHTTPSRecord struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsHTTPSRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsHTTPSRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsHTTPSRecordType] `json:"type,required"`
+	Type param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsHTTPSRecordType] `json:"type" api:"required"`
 	// Identifier.
 	ID param.Field[string] `json:"id"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
@@ -9741,13 +9741,13 @@ func (r ZoneDNSRecordBatchParamsPatchesDNSRecordsHTTPSRecordSettings) MarshalJSO
 
 type ZoneDNSRecordBatchParamsPatchesDNSRecordsLocRecord struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsLocRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsLocRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsLocRecordType] `json:"type,required"`
+	Type param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsLocRecordType] `json:"type" api:"required"`
 	// Identifier.
 	ID param.Field[string] `json:"id"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
@@ -9887,13 +9887,13 @@ func (r ZoneDNSRecordBatchParamsPatchesDNSRecordsLocRecordSettings) MarshalJSON(
 
 type ZoneDNSRecordBatchParamsPatchesDNSRecordsNaptrRecord struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsNaptrRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsNaptrRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsNaptrRecordType] `json:"type,required"`
+	Type param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsNaptrRecordType] `json:"type" api:"required"`
 	// Identifier.
 	ID param.Field[string] `json:"id"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
@@ -9989,13 +9989,13 @@ func (r ZoneDNSRecordBatchParamsPatchesDNSRecordsNaptrRecordSettings) MarshalJSO
 
 type ZoneDNSRecordBatchParamsPatchesDNSRecordsSmimeaRecord struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsSmimeaRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsSmimeaRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsSmimeaRecordType] `json:"type,required"`
+	Type param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsSmimeaRecordType] `json:"type" api:"required"`
 	// Identifier.
 	ID param.Field[string] `json:"id"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
@@ -10087,13 +10087,13 @@ func (r ZoneDNSRecordBatchParamsPatchesDNSRecordsSmimeaRecordSettings) MarshalJS
 
 type ZoneDNSRecordBatchParamsPatchesDNSRecordsSrvRecord struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsSrvRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsSrvRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsSrvRecordType] `json:"type,required"`
+	Type param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsSrvRecordType] `json:"type" api:"required"`
 	// Identifier.
 	ID param.Field[string] `json:"id"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
@@ -10186,13 +10186,13 @@ func (r ZoneDNSRecordBatchParamsPatchesDNSRecordsSrvRecordSettings) MarshalJSON(
 
 type ZoneDNSRecordBatchParamsPatchesDNSRecordsSshfpRecord struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsSshfpRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsSshfpRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsSshfpRecordType] `json:"type,required"`
+	Type param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsSshfpRecordType] `json:"type" api:"required"`
 	// Identifier.
 	ID param.Field[string] `json:"id"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
@@ -10282,13 +10282,13 @@ func (r ZoneDNSRecordBatchParamsPatchesDNSRecordsSshfpRecordSettings) MarshalJSO
 
 type ZoneDNSRecordBatchParamsPatchesDNSRecordsSvcbRecord struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsSvcbRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsSvcbRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsSvcbRecordType] `json:"type,required"`
+	Type param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsSvcbRecordType] `json:"type" api:"required"`
 	// Identifier.
 	ID param.Field[string] `json:"id"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
@@ -10378,13 +10378,13 @@ func (r ZoneDNSRecordBatchParamsPatchesDNSRecordsSvcbRecordSettings) MarshalJSON
 
 type ZoneDNSRecordBatchParamsPatchesDNSRecordsTlsaRecord struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsTlsaRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsTlsaRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsTlsaRecordType] `json:"type,required"`
+	Type param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsTlsaRecordType] `json:"type" api:"required"`
 	// Identifier.
 	ID param.Field[string] `json:"id"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
@@ -10476,13 +10476,13 @@ func (r ZoneDNSRecordBatchParamsPatchesDNSRecordsTlsaRecordSettings) MarshalJSON
 
 type ZoneDNSRecordBatchParamsPatchesDNSRecordsUriRecord struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsUriRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsUriRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsUriRecordType] `json:"type,required"`
+	Type param.Field[ZoneDNSRecordBatchParamsPatchesDNSRecordsUriRecordType] `json:"type" api:"required"`
 	// Identifier.
 	ID param.Field[string] `json:"id"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
@@ -10608,10 +10608,10 @@ func (r ZoneDNSRecordBatchParamsPatchesType) IsKnown() bool {
 
 type ZoneDNSRecordBatchParamsPut struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string]      `json:"name,required"`
-	Ttl  param.Field[interface{}] `json:"ttl,required"`
+	Name param.Field[string]      `json:"name" api:"required"`
+	Ttl  param.Field[interface{}] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[ZoneDNSRecordBatchParamsPutsType] `json:"type,required"`
+	Type param.Field[ZoneDNSRecordBatchParamsPutsType] `json:"type" api:"required"`
 	// Identifier.
 	ID param.Field[string] `json:"id"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
@@ -10664,13 +10664,13 @@ type ZoneDNSRecordBatchParamsPutUnion interface {
 
 type ZoneDNSRecordBatchParamsPutsDNSRecordsARecord struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsARecordTtl] `json:"ttl,required"`
+	Ttl param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsARecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsARecordType] `json:"type,required"`
+	Type param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsARecordType] `json:"type" api:"required"`
 	// Identifier.
 	ID param.Field[string] `json:"id"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
@@ -10745,13 +10745,13 @@ func (r ZoneDNSRecordBatchParamsPutsDNSRecordsARecordSettings) MarshalJSON() (da
 
 type ZoneDNSRecordBatchParamsPutsDNSRecordsAaaaRecord struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsAaaaRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsAaaaRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsAaaaRecordType] `json:"type,required"`
+	Type param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsAaaaRecordType] `json:"type" api:"required"`
 	// Identifier.
 	ID param.Field[string] `json:"id"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
@@ -10827,13 +10827,13 @@ func (r ZoneDNSRecordBatchParamsPutsDNSRecordsAaaaRecordSettings) MarshalJSON() 
 
 type ZoneDNSRecordBatchParamsPutsDNSRecordsCnameRecord struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsCnameRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsCnameRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsCnameRecordType] `json:"type,required"`
+	Type param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsCnameRecordType] `json:"type" api:"required"`
 	// Identifier.
 	ID param.Field[string] `json:"id"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
@@ -10914,13 +10914,13 @@ func (r ZoneDNSRecordBatchParamsPutsDNSRecordsCnameRecordSettings) MarshalJSON()
 
 type ZoneDNSRecordBatchParamsPutsDNSRecordsMxRecord struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsMxRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsMxRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsMxRecordType] `json:"type,required"`
+	Type param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsMxRecordType] `json:"type" api:"required"`
 	// Identifier.
 	ID param.Field[string] `json:"id"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
@@ -10999,13 +10999,13 @@ func (r ZoneDNSRecordBatchParamsPutsDNSRecordsMxRecordSettings) MarshalJSON() (d
 
 type ZoneDNSRecordBatchParamsPutsDNSRecordsNsRecord struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsNsRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsNsRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsNsRecordType] `json:"type,required"`
+	Type param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsNsRecordType] `json:"type" api:"required"`
 	// Identifier.
 	ID param.Field[string] `json:"id"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
@@ -11081,13 +11081,13 @@ func (r ZoneDNSRecordBatchParamsPutsDNSRecordsNsRecordSettings) MarshalJSON() (d
 
 type ZoneDNSRecordBatchParamsPutsDNSRecordsOpenpgpkeyRecord struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsOpenpgpkeyRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsOpenpgpkeyRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsOpenpgpkeyRecordType] `json:"type,required"`
+	Type param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsOpenpgpkeyRecordType] `json:"type" api:"required"`
 	// Identifier.
 	ID param.Field[string] `json:"id"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
@@ -11163,13 +11163,13 @@ func (r ZoneDNSRecordBatchParamsPutsDNSRecordsOpenpgpkeyRecordSettings) MarshalJ
 
 type ZoneDNSRecordBatchParamsPutsDNSRecordsPtrRecord struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsPtrRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsPtrRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsPtrRecordType] `json:"type,required"`
+	Type param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsPtrRecordType] `json:"type" api:"required"`
 	// Identifier.
 	ID param.Field[string] `json:"id"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
@@ -11245,13 +11245,13 @@ func (r ZoneDNSRecordBatchParamsPutsDNSRecordsPtrRecordSettings) MarshalJSON() (
 
 type ZoneDNSRecordBatchParamsPutsDNSRecordsTxtRecord struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsTxtRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsTxtRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsTxtRecordType] `json:"type,required"`
+	Type param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsTxtRecordType] `json:"type" api:"required"`
 	// Identifier.
 	ID param.Field[string] `json:"id"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
@@ -11332,13 +11332,13 @@ func (r ZoneDNSRecordBatchParamsPutsDNSRecordsTxtRecordSettings) MarshalJSON() (
 
 type ZoneDNSRecordBatchParamsPutsDNSRecordsCaaRecord struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsCaaRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsCaaRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsCaaRecordType] `json:"type,required"`
+	Type param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsCaaRecordType] `json:"type" api:"required"`
 	// Identifier.
 	ID param.Field[string] `json:"id"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
@@ -11428,13 +11428,13 @@ func (r ZoneDNSRecordBatchParamsPutsDNSRecordsCaaRecordSettings) MarshalJSON() (
 
 type ZoneDNSRecordBatchParamsPutsDNSRecordsCertRecord struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsCertRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsCertRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsCertRecordType] `json:"type,required"`
+	Type param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsCertRecordType] `json:"type" api:"required"`
 	// Identifier.
 	ID param.Field[string] `json:"id"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
@@ -11526,13 +11526,13 @@ func (r ZoneDNSRecordBatchParamsPutsDNSRecordsCertRecordSettings) MarshalJSON() 
 
 type ZoneDNSRecordBatchParamsPutsDNSRecordsDnskeyRecord struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsDnskeyRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsDnskeyRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsDnskeyRecordType] `json:"type,required"`
+	Type param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsDnskeyRecordType] `json:"type" api:"required"`
 	// Identifier.
 	ID param.Field[string] `json:"id"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
@@ -11624,13 +11624,13 @@ func (r ZoneDNSRecordBatchParamsPutsDNSRecordsDnskeyRecordSettings) MarshalJSON(
 
 type ZoneDNSRecordBatchParamsPutsDNSRecordsDsRecord struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsDsRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsDsRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsDsRecordType] `json:"type,required"`
+	Type param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsDsRecordType] `json:"type" api:"required"`
 	// Identifier.
 	ID param.Field[string] `json:"id"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
@@ -11722,13 +11722,13 @@ func (r ZoneDNSRecordBatchParamsPutsDNSRecordsDsRecordSettings) MarshalJSON() (d
 
 type ZoneDNSRecordBatchParamsPutsDNSRecordsHTTPSRecord struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsHTTPSRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsHTTPSRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsHTTPSRecordType] `json:"type,required"`
+	Type param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsHTTPSRecordType] `json:"type" api:"required"`
 	// Identifier.
 	ID param.Field[string] `json:"id"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
@@ -11818,13 +11818,13 @@ func (r ZoneDNSRecordBatchParamsPutsDNSRecordsHTTPSRecordSettings) MarshalJSON()
 
 type ZoneDNSRecordBatchParamsPutsDNSRecordsLocRecord struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsLocRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsLocRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsLocRecordType] `json:"type,required"`
+	Type param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsLocRecordType] `json:"type" api:"required"`
 	// Identifier.
 	ID param.Field[string] `json:"id"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
@@ -11964,13 +11964,13 @@ func (r ZoneDNSRecordBatchParamsPutsDNSRecordsLocRecordSettings) MarshalJSON() (
 
 type ZoneDNSRecordBatchParamsPutsDNSRecordsNaptrRecord struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsNaptrRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsNaptrRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsNaptrRecordType] `json:"type,required"`
+	Type param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsNaptrRecordType] `json:"type" api:"required"`
 	// Identifier.
 	ID param.Field[string] `json:"id"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
@@ -12066,13 +12066,13 @@ func (r ZoneDNSRecordBatchParamsPutsDNSRecordsNaptrRecordSettings) MarshalJSON()
 
 type ZoneDNSRecordBatchParamsPutsDNSRecordsSmimeaRecord struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsSmimeaRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsSmimeaRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsSmimeaRecordType] `json:"type,required"`
+	Type param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsSmimeaRecordType] `json:"type" api:"required"`
 	// Identifier.
 	ID param.Field[string] `json:"id"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
@@ -12164,13 +12164,13 @@ func (r ZoneDNSRecordBatchParamsPutsDNSRecordsSmimeaRecordSettings) MarshalJSON(
 
 type ZoneDNSRecordBatchParamsPutsDNSRecordsSrvRecord struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsSrvRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsSrvRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsSrvRecordType] `json:"type,required"`
+	Type param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsSrvRecordType] `json:"type" api:"required"`
 	// Identifier.
 	ID param.Field[string] `json:"id"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
@@ -12263,13 +12263,13 @@ func (r ZoneDNSRecordBatchParamsPutsDNSRecordsSrvRecordSettings) MarshalJSON() (
 
 type ZoneDNSRecordBatchParamsPutsDNSRecordsSshfpRecord struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsSshfpRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsSshfpRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsSshfpRecordType] `json:"type,required"`
+	Type param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsSshfpRecordType] `json:"type" api:"required"`
 	// Identifier.
 	ID param.Field[string] `json:"id"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
@@ -12359,13 +12359,13 @@ func (r ZoneDNSRecordBatchParamsPutsDNSRecordsSshfpRecordSettings) MarshalJSON()
 
 type ZoneDNSRecordBatchParamsPutsDNSRecordsSvcbRecord struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsSvcbRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsSvcbRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsSvcbRecordType] `json:"type,required"`
+	Type param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsSvcbRecordType] `json:"type" api:"required"`
 	// Identifier.
 	ID param.Field[string] `json:"id"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
@@ -12455,13 +12455,13 @@ func (r ZoneDNSRecordBatchParamsPutsDNSRecordsSvcbRecordSettings) MarshalJSON() 
 
 type ZoneDNSRecordBatchParamsPutsDNSRecordsTlsaRecord struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsTlsaRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsTlsaRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsTlsaRecordType] `json:"type,required"`
+	Type param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsTlsaRecordType] `json:"type" api:"required"`
 	// Identifier.
 	ID param.Field[string] `json:"id"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
@@ -12553,13 +12553,13 @@ func (r ZoneDNSRecordBatchParamsPutsDNSRecordsTlsaRecordSettings) MarshalJSON() 
 
 type ZoneDNSRecordBatchParamsPutsDNSRecordsUriRecord struct {
 	// Complete DNS record name, including the zone name, in Punycode.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Time To Live (TTL) of the DNS record in seconds. Setting to 1 means 'automatic'.
 	// Value must be between 60 and 86400, with the minimum reduced to 30 for
 	// Enterprise zones.
-	Ttl param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsUriRecordTtl] `json:"ttl,required"`
+	Ttl param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsUriRecordTtl] `json:"ttl" api:"required"`
 	// Record type.
-	Type param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsUriRecordType] `json:"type,required"`
+	Type param.Field[ZoneDNSRecordBatchParamsPutsDNSRecordsUriRecordType] `json:"type" api:"required"`
 	// Identifier.
 	ID param.Field[string] `json:"id"`
 	// Comments or notes about the DNS record. This field has no effect on DNS
@@ -12688,7 +12688,7 @@ type ZoneDNSRecordImportParams struct {
 	//
 	// **Tip:** When using cURL, a file can be uploaded using
 	// `--form 'file=@bind_config.txt'`.
-	File param.Field[string] `json:"file,required"`
+	File param.Field[string] `json:"file" api:"required"`
 	// Whether or not proxiable records should receive the performance and security
 	// benefits of Cloudflare.
 	//
@@ -12712,7 +12712,7 @@ func (r ZoneDNSRecordImportParams) MarshalMultipart() (data []byte, contentType 
 }
 
 type ZoneDNSRecordOverwriteParams struct {
-	DNSRecordPost DNSRecordPostUnionParam `json:"dns_record_post,required"`
+	DNSRecordPost DNSRecordPostUnionParam `json:"dns_record_post" api:"required"`
 }
 
 func (r ZoneDNSRecordOverwriteParams) MarshalJSON() (data []byte, err error) {
@@ -12720,7 +12720,7 @@ func (r ZoneDNSRecordOverwriteParams) MarshalJSON() (data []byte, err error) {
 }
 
 type ZoneDNSRecordScanParams struct {
-	Body interface{} `json:"body,required"`
+	Body interface{} `json:"body" api:"required"`
 }
 
 func (r ZoneDNSRecordScanParams) MarshalJSON() (data []byte, err error) {

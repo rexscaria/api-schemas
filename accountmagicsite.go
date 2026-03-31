@@ -49,30 +49,30 @@ func (r *AccountMagicSiteService) New(ctx context.Context, accountID string, bod
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/sites", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get a specific Site.
 func (r *AccountMagicSiteService) Get(ctx context.Context, accountID string, siteID string, query AccountMagicSiteGetParams, opts ...option.RequestOption) (res *MagicSiteSingleResponse, err error) {
 	if query.XMagicNewHcTarget.Present {
-		opts = append(opts, option.WithHeader("x-magic-new-hc-target", fmt.Sprintf("%s", query.XMagicNewHcTarget)))
+		opts = append(opts, option.WithHeader("x-magic-new-hc-target", fmt.Sprintf("%v", query.XMagicNewHcTarget)))
 	}
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if siteID == "" {
 		err = errors.New("missing required site_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/sites/%s", accountID, siteID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update a specific Site.
@@ -80,15 +80,15 @@ func (r *AccountMagicSiteService) Update(ctx context.Context, accountID string, 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if siteID == "" {
 		err = errors.New("missing required site_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/sites/%s", accountID, siteID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists Sites associated with an account. Use connectorid query param to return
@@ -98,11 +98,11 @@ func (r *AccountMagicSiteService) List(ctx context.Context, accountID string, qu
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/sites", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Remove a specific Site.
@@ -110,15 +110,15 @@ func (r *AccountMagicSiteService) Delete(ctx context.Context, accountID string, 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if siteID == "" {
 		err = errors.New("missing required site_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/sites/%s", accountID, siteID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Patch a specific Site.
@@ -126,15 +126,15 @@ func (r *AccountMagicSiteService) Patch(ctx context.Context, accountID string, s
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if siteID == "" {
 		err = errors.New("missing required site_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/sites/%s", accountID, siteID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type MagicSite struct {
@@ -215,11 +215,11 @@ func (r MagicSiteLocationParam) MarshalJSON() (data []byte, err error) {
 }
 
 type MagicSiteModifiedResponse struct {
-	Errors   []MagicMessageItem `json:"errors,required"`
-	Messages []MagicMessageItem `json:"messages,required"`
-	Result   MagicSite          `json:"result,required"`
+	Errors   []MagicMessageItem `json:"errors" api:"required"`
+	Messages []MagicMessageItem `json:"messages" api:"required"`
+	Result   MagicSite          `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success MagicSiteModifiedResponseSuccess `json:"success,required"`
+	Success MagicSiteModifiedResponseSuccess `json:"success" api:"required"`
 	JSON    magicSiteModifiedResponseJSON    `json:"-"`
 }
 
@@ -258,11 +258,11 @@ func (r MagicSiteModifiedResponseSuccess) IsKnown() bool {
 }
 
 type MagicSiteSingleResponse struct {
-	Errors   []MagicMessageItem `json:"errors,required"`
-	Messages []MagicMessageItem `json:"messages,required"`
-	Result   MagicSite          `json:"result,required"`
+	Errors   []MagicMessageItem `json:"errors" api:"required"`
+	Messages []MagicMessageItem `json:"messages" api:"required"`
+	Result   MagicSite          `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success MagicSiteSingleResponseSuccess `json:"success,required"`
+	Success MagicSiteSingleResponseSuccess `json:"success" api:"required"`
 	JSON    magicSiteSingleResponseJSON    `json:"-"`
 }
 
@@ -317,11 +317,11 @@ func (r MagicSiteUpdateRequestParam) MarshalJSON() (data []byte, err error) {
 }
 
 type AccountMagicSiteListResponse struct {
-	Errors   []MagicMessageItem `json:"errors,required"`
-	Messages []MagicMessageItem `json:"messages,required"`
-	Result   []MagicSite        `json:"result,required"`
+	Errors   []MagicMessageItem `json:"errors" api:"required"`
+	Messages []MagicMessageItem `json:"messages" api:"required"`
+	Result   []MagicSite        `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success AccountMagicSiteListResponseSuccess `json:"success,required"`
+	Success AccountMagicSiteListResponseSuccess `json:"success" api:"required"`
 	JSON    accountMagicSiteListResponseJSON    `json:"-"`
 }
 
@@ -360,11 +360,11 @@ func (r AccountMagicSiteListResponseSuccess) IsKnown() bool {
 }
 
 type AccountMagicSiteDeleteResponse struct {
-	Errors   []MagicMessageItem `json:"errors,required"`
-	Messages []MagicMessageItem `json:"messages,required"`
-	Result   MagicSite          `json:"result,required"`
+	Errors   []MagicMessageItem `json:"errors" api:"required"`
+	Messages []MagicMessageItem `json:"messages" api:"required"`
+	Result   MagicSite          `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success AccountMagicSiteDeleteResponseSuccess `json:"success,required"`
+	Success AccountMagicSiteDeleteResponseSuccess `json:"success" api:"required"`
 	JSON    accountMagicSiteDeleteResponseJSON    `json:"-"`
 }
 
@@ -404,7 +404,7 @@ func (r AccountMagicSiteDeleteResponseSuccess) IsKnown() bool {
 
 type AccountMagicSiteNewParams struct {
 	// The name of the site.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Magic Connector identifier tag.
 	ConnectorID param.Field[string] `json:"connector_id"`
 	Description param.Field[string] `json:"description"`
@@ -426,7 +426,7 @@ type AccountMagicSiteGetParams struct {
 }
 
 type AccountMagicSiteUpdateParams struct {
-	MagicSiteUpdateRequest MagicSiteUpdateRequestParam `json:"magic_site_update_request,required"`
+	MagicSiteUpdateRequest MagicSiteUpdateRequestParam `json:"magic_site_update_request" api:"required"`
 }
 
 func (r AccountMagicSiteUpdateParams) MarshalJSON() (data []byte, err error) {
@@ -448,7 +448,7 @@ func (r AccountMagicSiteListParams) URLQuery() (v url.Values) {
 }
 
 type AccountMagicSitePatchParams struct {
-	MagicSiteUpdateRequest MagicSiteUpdateRequestParam `json:"magic_site_update_request,required"`
+	MagicSiteUpdateRequest MagicSiteUpdateRequestParam `json:"magic_site_update_request" api:"required"`
 }
 
 func (r AccountMagicSitePatchParams) MarshalJSON() (data []byte, err error) {

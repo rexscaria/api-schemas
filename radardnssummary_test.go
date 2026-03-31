@@ -15,7 +15,7 @@ import (
 )
 
 func TestRadarDNSSummaryGetCacheHitWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -27,6 +27,7 @@ func TestRadarDNSSummaryGetCacheHitWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.DNS.Summary.GetCacheHit(context.TODO(), cfrex.RadarDNSSummaryGetCacheHitParams{
 		Asn:          cfrex.F([]string{"string"}),
@@ -53,7 +54,7 @@ func TestRadarDNSSummaryGetCacheHitWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarDNSSummaryGetDnssecWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -65,6 +66,7 @@ func TestRadarDNSSummaryGetDnssecWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.DNS.Summary.GetDnssec(context.TODO(), cfrex.RadarDNSSummaryGetDnssecParams{
 		Asn:          cfrex.F([]string{"string"}),
@@ -91,7 +93,7 @@ func TestRadarDNSSummaryGetDnssecWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarDNSSummaryGetDnssecAwareWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -103,6 +105,7 @@ func TestRadarDNSSummaryGetDnssecAwareWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.DNS.Summary.GetDnssecAware(context.TODO(), cfrex.RadarDNSSummaryGetDnssecAwareParams{
 		Asn:          cfrex.F([]string{"string"}),
@@ -129,7 +132,7 @@ func TestRadarDNSSummaryGetDnssecAwareWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarDNSSummaryGetDnssecE2EWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -141,6 +144,7 @@ func TestRadarDNSSummaryGetDnssecE2EWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.DNS.Summary.GetDnssecE2E(context.TODO(), cfrex.RadarDNSSummaryGetDnssecE2EParams{
 		Asn:          cfrex.F([]string{"string"}),
@@ -167,7 +171,7 @@ func TestRadarDNSSummaryGetDnssecE2EWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarDNSSummaryGetIPVersionWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -179,6 +183,7 @@ func TestRadarDNSSummaryGetIPVersionWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.DNS.Summary.GetIPVersion(context.TODO(), cfrex.RadarDNSSummaryGetIPVersionParams{
 		Asn:          cfrex.F([]string{"string"}),
@@ -205,7 +210,7 @@ func TestRadarDNSSummaryGetIPVersionWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarDNSSummaryGetMatchingAnswerWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -217,6 +222,7 @@ func TestRadarDNSSummaryGetMatchingAnswerWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.DNS.Summary.GetMatchingAnswer(context.TODO(), cfrex.RadarDNSSummaryGetMatchingAnswerParams{
 		Asn:          cfrex.F([]string{"string"}),
@@ -243,7 +249,7 @@ func TestRadarDNSSummaryGetMatchingAnswerWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarDNSSummaryGetProtocolWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -255,6 +261,7 @@ func TestRadarDNSSummaryGetProtocolWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.DNS.Summary.GetProtocol(context.TODO(), cfrex.RadarDNSSummaryGetProtocolParams{
 		Asn:          cfrex.F([]string{"string"}),
@@ -280,7 +287,7 @@ func TestRadarDNSSummaryGetProtocolWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarDNSSummaryGetQueryTypeWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -292,6 +299,7 @@ func TestRadarDNSSummaryGetQueryTypeWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.DNS.Summary.GetQueryType(context.TODO(), cfrex.RadarDNSSummaryGetQueryTypeParams{
 		Asn:           cfrex.F([]string{"string"}),
@@ -318,7 +326,7 @@ func TestRadarDNSSummaryGetQueryTypeWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarDNSSummaryGetResponseCodeWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -330,6 +338,7 @@ func TestRadarDNSSummaryGetResponseCodeWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.DNS.Summary.GetResponseCode(context.TODO(), cfrex.RadarDNSSummaryGetResponseCodeParams{
 		Asn:           cfrex.F([]string{"string"}),
@@ -356,7 +365,7 @@ func TestRadarDNSSummaryGetResponseCodeWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarDNSSummaryGetResponseTtlWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -368,6 +377,7 @@ func TestRadarDNSSummaryGetResponseTtlWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.DNS.Summary.GetResponseTtl(context.TODO(), cfrex.RadarDNSSummaryGetResponseTtlParams{
 		Asn:          cfrex.F([]string{"string"}),

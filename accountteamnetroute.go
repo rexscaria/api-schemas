@@ -44,11 +44,11 @@ func (r *AccountTeamnetRouteService) New(ctx context.Context, accountID string, 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/teamnet/routes", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get a private network route in an account.
@@ -56,15 +56,15 @@ func (r *AccountTeamnetRouteService) Get(ctx context.Context, accountID string, 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if routeID == "" {
 		err = errors.New("missing required route_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/teamnet/routes/%s", accountID, routeID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates an existing private network route in an account. The fields that are
@@ -73,15 +73,15 @@ func (r *AccountTeamnetRouteService) Update(ctx context.Context, accountID strin
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if routeID == "" {
 		err = errors.New("missing required route_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/teamnet/routes/%s", accountID, routeID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists and filters private network routes in an account.
@@ -89,11 +89,11 @@ func (r *AccountTeamnetRouteService) List(ctx context.Context, accountID string,
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/teamnet/routes", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Deletes a private network route from an account.
@@ -101,15 +101,15 @@ func (r *AccountTeamnetRouteService) Delete(ctx context.Context, accountID strin
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if routeID == "" {
 		err = errors.New("missing required route_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/teamnet/routes/%s", accountID, routeID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetches routes that contain the given IP address.
@@ -117,15 +117,15 @@ func (r *AccountTeamnetRouteService) GetByIP(ctx context.Context, accountID stri
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if ip == "" {
 		err = errors.New("missing required ip parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/teamnet/routes/ip/%s", accountID, ip)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type Teamnet struct {
@@ -178,11 +178,11 @@ func (r teamnetJSON) RawJSON() string {
 }
 
 type TunnelRouteResponseSingle struct {
-	Errors   []MessagesTunnelItem            `json:"errors,required"`
-	Messages []MessagesTunnelItem            `json:"messages,required"`
-	Result   TunnelRouteResponseSingleResult `json:"result,required"`
+	Errors   []MessagesTunnelItem            `json:"errors" api:"required"`
+	Messages []MessagesTunnelItem            `json:"messages" api:"required"`
+	Result   TunnelRouteResponseSingleResult `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success TunnelRouteResponseSingleSuccess `json:"success,required"`
+	Success TunnelRouteResponseSingleSuccess `json:"success" api:"required"`
 	JSON    tunnelRouteResponseSingleJSON    `json:"-"`
 }
 
@@ -262,11 +262,11 @@ func (r TunnelRouteResponseSingleSuccess) IsKnown() bool {
 }
 
 type AccountTeamnetRouteListResponse struct {
-	Errors   []MessagesTunnelItem `json:"errors,required"`
-	Messages []MessagesTunnelItem `json:"messages,required"`
-	Result   []Teamnet            `json:"result,required,nullable"`
+	Errors   []MessagesTunnelItem `json:"errors" api:"required"`
+	Messages []MessagesTunnelItem `json:"messages" api:"required"`
+	Result   []Teamnet            `json:"result" api:"required,nullable"`
 	// Whether the API call was successful
-	Success    AccountTeamnetRouteListResponseSuccess    `json:"success,required"`
+	Success    AccountTeamnetRouteListResponseSuccess    `json:"success" api:"required"`
 	ResultInfo AccountTeamnetRouteListResponseResultInfo `json:"result_info"`
 	JSON       accountTeamnetRouteListResponseJSON       `json:"-"`
 }
@@ -338,11 +338,11 @@ func (r accountTeamnetRouteListResponseResultInfoJSON) RawJSON() string {
 }
 
 type AccountTeamnetRouteGetByIPResponse struct {
-	Errors   []MessagesTunnelItem `json:"errors,required"`
-	Messages []MessagesTunnelItem `json:"messages,required"`
-	Result   Teamnet              `json:"result,required"`
+	Errors   []MessagesTunnelItem `json:"errors" api:"required"`
+	Messages []MessagesTunnelItem `json:"messages" api:"required"`
+	Result   Teamnet              `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success AccountTeamnetRouteGetByIPResponseSuccess `json:"success,required"`
+	Success AccountTeamnetRouteGetByIPResponseSuccess `json:"success" api:"required"`
 	JSON    accountTeamnetRouteGetByIPResponseJSON    `json:"-"`
 }
 
@@ -382,9 +382,9 @@ func (r AccountTeamnetRouteGetByIPResponseSuccess) IsKnown() bool {
 
 type AccountTeamnetRouteNewParams struct {
 	// The private IPv4 or IPv6 range connected by the route, in CIDR notation.
-	Network param.Field[string] `json:"network,required"`
+	Network param.Field[string] `json:"network" api:"required"`
 	// UUID of the tunnel.
-	TunnelID param.Field[string] `json:"tunnel_id,required" format:"uuid"`
+	TunnelID param.Field[string] `json:"tunnel_id" api:"required" format:"uuid"`
 	// Optional remark describing the route.
 	Comment param.Field[string] `json:"comment"`
 	// UUID of the virtual network.

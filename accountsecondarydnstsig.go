@@ -39,11 +39,11 @@ func (r *AccountSecondaryDNSTsigService) New(ctx context.Context, accountID stri
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/secondary_dns/tsigs", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get TSIG.
@@ -51,15 +51,15 @@ func (r *AccountSecondaryDNSTsigService) Get(ctx context.Context, accountID stri
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if tsigID == "" {
 		err = errors.New("missing required tsig_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/secondary_dns/tsigs/%s", accountID, tsigID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Modify TSIG.
@@ -67,15 +67,15 @@ func (r *AccountSecondaryDNSTsigService) Update(ctx context.Context, accountID s
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if tsigID == "" {
 		err = errors.New("missing required tsig_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/secondary_dns/tsigs/%s", accountID, tsigID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // List TSIGs.
@@ -83,11 +83,11 @@ func (r *AccountSecondaryDNSTsigService) List(ctx context.Context, accountID str
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/secondary_dns/tsigs", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete TSIG.
@@ -95,22 +95,22 @@ func (r *AccountSecondaryDNSTsigService) Delete(ctx context.Context, accountID s
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if tsigID == "" {
 		err = errors.New("missing required tsig_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/secondary_dns/tsigs/%s", accountID, tsigID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type SingleResponseTsigs struct {
-	Errors   []SecondaryDNSMessages `json:"errors,required"`
-	Messages []SecondaryDNSMessages `json:"messages,required"`
+	Errors   []SecondaryDNSMessages `json:"errors" api:"required"`
+	Messages []SecondaryDNSMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success SingleResponseTsigsSuccess `json:"success,required"`
+	Success SingleResponseTsigsSuccess `json:"success" api:"required"`
 	Result  Tsig                       `json:"result"`
 	JSON    singleResponseTsigsJSON    `json:"-"`
 }
@@ -150,13 +150,13 @@ func (r SingleResponseTsigsSuccess) IsKnown() bool {
 }
 
 type Tsig struct {
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// TSIG algorithm.
-	Algo string `json:"algo,required"`
+	Algo string `json:"algo" api:"required"`
 	// TSIG key name.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// TSIG secret.
-	Secret string   `json:"secret,required"`
+	Secret string   `json:"secret" api:"required"`
 	JSON   tsigJSON `json:"-"`
 }
 
@@ -180,11 +180,11 @@ func (r tsigJSON) RawJSON() string {
 
 type TsigParam struct {
 	// TSIG algorithm.
-	Algo param.Field[string] `json:"algo,required"`
+	Algo param.Field[string] `json:"algo" api:"required"`
 	// TSIG key name.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// TSIG secret.
-	Secret param.Field[string] `json:"secret,required"`
+	Secret param.Field[string] `json:"secret" api:"required"`
 }
 
 func (r TsigParam) MarshalJSON() (data []byte, err error) {
@@ -192,10 +192,10 @@ func (r TsigParam) MarshalJSON() (data []byte, err error) {
 }
 
 type AccountSecondaryDNSTsigListResponse struct {
-	Errors   []SecondaryDNSMessages `json:"errors,required"`
-	Messages []SecondaryDNSMessages `json:"messages,required"`
+	Errors   []SecondaryDNSMessages `json:"errors" api:"required"`
+	Messages []SecondaryDNSMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success    AccountSecondaryDNSTsigListResponseSuccess    `json:"success,required"`
+	Success    AccountSecondaryDNSTsigListResponseSuccess    `json:"success" api:"required"`
 	Result     []Tsig                                        `json:"result"`
 	ResultInfo AccountSecondaryDNSTsigListResponseResultInfo `json:"result_info"`
 	JSON       accountSecondaryDNSTsigListResponseJSON       `json:"-"`
@@ -268,10 +268,10 @@ func (r accountSecondaryDNSTsigListResponseResultInfoJSON) RawJSON() string {
 }
 
 type AccountSecondaryDNSTsigDeleteResponse struct {
-	Errors   []SecondaryDNSMessages `json:"errors,required"`
-	Messages []SecondaryDNSMessages `json:"messages,required"`
+	Errors   []SecondaryDNSMessages `json:"errors" api:"required"`
+	Messages []SecondaryDNSMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountSecondaryDNSTsigDeleteResponseSuccess `json:"success,required"`
+	Success AccountSecondaryDNSTsigDeleteResponseSuccess `json:"success" api:"required"`
 	Result  AccountSecondaryDNSTsigDeleteResponseResult  `json:"result"`
 	JSON    accountSecondaryDNSTsigDeleteResponseJSON    `json:"-"`
 }
@@ -332,7 +332,7 @@ func (r accountSecondaryDNSTsigDeleteResponseResultJSON) RawJSON() string {
 }
 
 type AccountSecondaryDNSTsigNewParams struct {
-	Tsig TsigParam `json:"tsig,required"`
+	Tsig TsigParam `json:"tsig" api:"required"`
 }
 
 func (r AccountSecondaryDNSTsigNewParams) MarshalJSON() (data []byte, err error) {
@@ -340,7 +340,7 @@ func (r AccountSecondaryDNSTsigNewParams) MarshalJSON() (data []byte, err error)
 }
 
 type AccountSecondaryDNSTsigUpdateParams struct {
-	Tsig TsigParam `json:"tsig,required"`
+	Tsig TsigParam `json:"tsig" api:"required"`
 }
 
 func (r AccountSecondaryDNSTsigUpdateParams) MarshalJSON() (data []byte, err error) {

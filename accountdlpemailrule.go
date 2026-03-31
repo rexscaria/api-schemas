@@ -43,11 +43,11 @@ func (r *AccountDlpEmailRuleService) New(ctx context.Context, accountID string, 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/dlp/email/rules", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get an email scanner rule
@@ -55,15 +55,15 @@ func (r *AccountDlpEmailRuleService) Get(ctx context.Context, accountID string, 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if ruleID == "" {
 		err = errors.New("missing required rule_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/dlp/email/rules/%s", accountID, ruleID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update email scanner rule
@@ -71,15 +71,15 @@ func (r *AccountDlpEmailRuleService) Update(ctx context.Context, accountID strin
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if ruleID == "" {
 		err = errors.New("missing required rule_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/dlp/email/rules/%s", accountID, ruleID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists all email scanner rules for an account.
@@ -87,11 +87,11 @@ func (r *AccountDlpEmailRuleService) List(ctx context.Context, accountID string,
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/dlp/email/rules", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete email scanner rule
@@ -99,15 +99,15 @@ func (r *AccountDlpEmailRuleService) Delete(ctx context.Context, accountID strin
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if ruleID == "" {
 		err = errors.New("missing required rule_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/dlp/email/rules/%s", accountID, ruleID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update email scanner rule priorities
@@ -115,19 +115,19 @@ func (r *AccountDlpEmailRuleService) UpdatePriorities(ctx context.Context, accou
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/dlp/email/rules", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type CreateEmailRuleParam struct {
-	Action param.Field[EmailRuleActionRuleParam] `json:"action,required"`
+	Action param.Field[EmailRuleActionRuleParam] `json:"action" api:"required"`
 	// Rule is triggered if all conditions match.
-	Conditions  param.Field[[]EmailRuleConditionParam] `json:"conditions,required"`
-	Enabled     param.Field[bool]                      `json:"enabled,required"`
-	Name        param.Field[string]                    `json:"name,required"`
+	Conditions  param.Field[[]EmailRuleConditionParam] `json:"conditions" api:"required"`
+	Enabled     param.Field[bool]                      `json:"enabled" api:"required"`
+	Name        param.Field[string]                    `json:"name" api:"required"`
 	Description param.Field[string]                    `json:"description"`
 }
 
@@ -136,16 +136,16 @@ func (r CreateEmailRuleParam) MarshalJSON() (data []byte, err error) {
 }
 
 type EmailRule struct {
-	Action EmailRuleActionRule `json:"action,required"`
+	Action EmailRuleActionRule `json:"action" api:"required"`
 	// Rule is triggered if all conditions match.
-	Conditions  []EmailRuleCondition `json:"conditions,required"`
-	CreatedAt   time.Time            `json:"created_at,required" format:"date-time"`
-	Enabled     bool                 `json:"enabled,required"`
-	Name        string               `json:"name,required"`
-	Priority    int64                `json:"priority,required"`
-	RuleID      string               `json:"rule_id,required" format:"uuid"`
-	UpdatedAt   time.Time            `json:"updated_at,required" format:"date-time"`
-	Description string               `json:"description,nullable"`
+	Conditions  []EmailRuleCondition `json:"conditions" api:"required"`
+	CreatedAt   time.Time            `json:"created_at" api:"required" format:"date-time"`
+	Enabled     bool                 `json:"enabled" api:"required"`
+	Name        string               `json:"name" api:"required"`
+	Priority    int64                `json:"priority" api:"required"`
+	RuleID      string               `json:"rule_id" api:"required" format:"uuid"`
+	UpdatedAt   time.Time            `json:"updated_at" api:"required" format:"date-time"`
+	Description string               `json:"description" api:"nullable"`
 	JSON        emailRuleJSON        `json:"-"`
 }
 
@@ -173,8 +173,8 @@ func (r emailRuleJSON) RawJSON() string {
 }
 
 type EmailRuleActionRule struct {
-	Action  EmailRuleActionRuleAction `json:"action,required"`
-	Message string                    `json:"message,nullable"`
+	Action  EmailRuleActionRuleAction `json:"action" api:"required"`
+	Message string                    `json:"message" api:"nullable"`
 	JSON    emailRuleActionRuleJSON   `json:"-"`
 }
 
@@ -210,7 +210,7 @@ func (r EmailRuleActionRuleAction) IsKnown() bool {
 }
 
 type EmailRuleActionRuleParam struct {
-	Action  param.Field[EmailRuleActionRuleAction] `json:"action,required"`
+	Action  param.Field[EmailRuleActionRuleAction] `json:"action" api:"required"`
 	Message param.Field[string]                    `json:"message"`
 }
 
@@ -219,9 +219,9 @@ func (r EmailRuleActionRuleParam) MarshalJSON() (data []byte, err error) {
 }
 
 type EmailRuleCondition struct {
-	Operator EmailRuleConditionOperator   `json:"operator,required"`
-	Selector EmailRuleConditionSelector   `json:"selector,required"`
-	Value    EmailRuleConditionValueUnion `json:"value,required"`
+	Operator EmailRuleConditionOperator   `json:"operator" api:"required"`
+	Selector EmailRuleConditionSelector   `json:"selector" api:"required"`
+	Value    EmailRuleConditionValueUnion `json:"value" api:"required"`
 	JSON     emailRuleConditionJSON       `json:"-"`
 }
 
@@ -301,9 +301,9 @@ type EmailRuleConditionValueArray []string
 func (r EmailRuleConditionValueArray) ImplementsEmailRuleConditionValueUnion() {}
 
 type EmailRuleConditionParam struct {
-	Operator param.Field[EmailRuleConditionOperator]        `json:"operator,required"`
-	Selector param.Field[EmailRuleConditionSelector]        `json:"selector,required"`
-	Value    param.Field[EmailRuleConditionValueUnionParam] `json:"value,required"`
+	Operator param.Field[EmailRuleConditionOperator]        `json:"operator" api:"required"`
+	Selector param.Field[EmailRuleConditionSelector]        `json:"selector" api:"required"`
+	Value    param.Field[EmailRuleConditionValueUnionParam] `json:"value" api:"required"`
 }
 
 func (r EmailRuleConditionParam) MarshalJSON() (data []byte, err error) {
@@ -320,10 +320,10 @@ type EmailRuleConditionValueArrayParam []string
 func (r EmailRuleConditionValueArrayParam) ImplementsEmailRuleConditionValueUnionParam() {}
 
 type AccountDlpEmailRuleNewResponse struct {
-	Errors   []MessagesDlpItems `json:"errors,required"`
-	Messages []MessagesDlpItems `json:"messages,required"`
+	Errors   []MessagesDlpItems `json:"errors" api:"required"`
+	Messages []MessagesDlpItems `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountDlpEmailRuleNewResponseSuccess `json:"success,required"`
+	Success AccountDlpEmailRuleNewResponseSuccess `json:"success" api:"required"`
 	Result  EmailRule                             `json:"result"`
 	JSON    accountDlpEmailRuleNewResponseJSON    `json:"-"`
 }
@@ -363,10 +363,10 @@ func (r AccountDlpEmailRuleNewResponseSuccess) IsKnown() bool {
 }
 
 type AccountDlpEmailRuleGetResponse struct {
-	Errors   []MessagesDlpItems `json:"errors,required"`
-	Messages []MessagesDlpItems `json:"messages,required"`
+	Errors   []MessagesDlpItems `json:"errors" api:"required"`
+	Messages []MessagesDlpItems `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountDlpEmailRuleGetResponseSuccess `json:"success,required"`
+	Success AccountDlpEmailRuleGetResponseSuccess `json:"success" api:"required"`
 	Result  EmailRule                             `json:"result"`
 	JSON    accountDlpEmailRuleGetResponseJSON    `json:"-"`
 }
@@ -406,10 +406,10 @@ func (r AccountDlpEmailRuleGetResponseSuccess) IsKnown() bool {
 }
 
 type AccountDlpEmailRuleUpdateResponse struct {
-	Errors   []MessagesDlpItems `json:"errors,required"`
-	Messages []MessagesDlpItems `json:"messages,required"`
+	Errors   []MessagesDlpItems `json:"errors" api:"required"`
+	Messages []MessagesDlpItems `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountDlpEmailRuleUpdateResponseSuccess `json:"success,required"`
+	Success AccountDlpEmailRuleUpdateResponseSuccess `json:"success" api:"required"`
 	Result  EmailRule                                `json:"result"`
 	JSON    accountDlpEmailRuleUpdateResponseJSON    `json:"-"`
 }
@@ -449,10 +449,10 @@ func (r AccountDlpEmailRuleUpdateResponseSuccess) IsKnown() bool {
 }
 
 type AccountDlpEmailRuleListResponse struct {
-	Errors   []MessagesDlpItems `json:"errors,required"`
-	Messages []MessagesDlpItems `json:"messages,required"`
+	Errors   []MessagesDlpItems `json:"errors" api:"required"`
+	Messages []MessagesDlpItems `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountDlpEmailRuleListResponseSuccess `json:"success,required"`
+	Success AccountDlpEmailRuleListResponseSuccess `json:"success" api:"required"`
 	Result  []EmailRule                            `json:"result"`
 	JSON    accountDlpEmailRuleListResponseJSON    `json:"-"`
 }
@@ -492,10 +492,10 @@ func (r AccountDlpEmailRuleListResponseSuccess) IsKnown() bool {
 }
 
 type AccountDlpEmailRuleDeleteResponse struct {
-	Errors   []MessagesDlpItems `json:"errors,required"`
-	Messages []MessagesDlpItems `json:"messages,required"`
+	Errors   []MessagesDlpItems `json:"errors" api:"required"`
+	Messages []MessagesDlpItems `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountDlpEmailRuleDeleteResponseSuccess `json:"success,required"`
+	Success AccountDlpEmailRuleDeleteResponseSuccess `json:"success" api:"required"`
 	Result  EmailRule                                `json:"result"`
 	JSON    accountDlpEmailRuleDeleteResponseJSON    `json:"-"`
 }
@@ -535,10 +535,10 @@ func (r AccountDlpEmailRuleDeleteResponseSuccess) IsKnown() bool {
 }
 
 type AccountDlpEmailRuleUpdatePrioritiesResponse struct {
-	Errors   []MessagesDlpItems `json:"errors,required"`
-	Messages []MessagesDlpItems `json:"messages,required"`
+	Errors   []MessagesDlpItems `json:"errors" api:"required"`
+	Messages []MessagesDlpItems `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountDlpEmailRuleUpdatePrioritiesResponseSuccess `json:"success,required"`
+	Success AccountDlpEmailRuleUpdatePrioritiesResponseSuccess `json:"success" api:"required"`
 	Result  EmailRule                                          `json:"result"`
 	JSON    accountDlpEmailRuleUpdatePrioritiesResponseJSON    `json:"-"`
 }
@@ -578,7 +578,7 @@ func (r AccountDlpEmailRuleUpdatePrioritiesResponseSuccess) IsKnown() bool {
 }
 
 type AccountDlpEmailRuleNewParams struct {
-	CreateEmailRule CreateEmailRuleParam `json:"create_email_rule,required"`
+	CreateEmailRule CreateEmailRuleParam `json:"create_email_rule" api:"required"`
 }
 
 func (r AccountDlpEmailRuleNewParams) MarshalJSON() (data []byte, err error) {
@@ -586,7 +586,7 @@ func (r AccountDlpEmailRuleNewParams) MarshalJSON() (data []byte, err error) {
 }
 
 type AccountDlpEmailRuleUpdateParams struct {
-	CreateEmailRule CreateEmailRuleParam `json:"create_email_rule,required"`
+	CreateEmailRule CreateEmailRuleParam `json:"create_email_rule" api:"required"`
 }
 
 func (r AccountDlpEmailRuleUpdateParams) MarshalJSON() (data []byte, err error) {
@@ -594,7 +594,7 @@ func (r AccountDlpEmailRuleUpdateParams) MarshalJSON() (data []byte, err error) 
 }
 
 type AccountDlpEmailRuleUpdatePrioritiesParams struct {
-	NewPriorities param.Field[map[string]int64] `json:"new_priorities,required"`
+	NewPriorities param.Field[map[string]int64] `json:"new_priorities" api:"required"`
 }
 
 func (r AccountDlpEmailRuleUpdatePrioritiesParams) MarshalJSON() (data []byte, err error) {

@@ -39,11 +39,11 @@ func (r *AccountWorkerSubdomainService) New(ctx context.Context, accountID strin
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/workers/subdomain", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns a Workers subdomain for an account.
@@ -51,19 +51,19 @@ func (r *AccountWorkerSubdomainService) Get(ctx context.Context, accountID strin
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/workers/subdomain", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountWorkerSubdomainNewResponse struct {
-	Errors   []WorkersMessages                       `json:"errors,required"`
-	Messages []WorkersMessages                       `json:"messages,required"`
-	Result   AccountWorkerSubdomainNewResponseResult `json:"result,required"`
+	Errors   []WorkersMessages                       `json:"errors" api:"required"`
+	Messages []WorkersMessages                       `json:"messages" api:"required"`
+	Result   AccountWorkerSubdomainNewResponseResult `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success AccountWorkerSubdomainNewResponseSuccess `json:"success,required"`
+	Success AccountWorkerSubdomainNewResponseSuccess `json:"success" api:"required"`
 	JSON    accountWorkerSubdomainNewResponseJSON    `json:"-"`
 }
 
@@ -87,7 +87,7 @@ func (r accountWorkerSubdomainNewResponseJSON) RawJSON() string {
 }
 
 type AccountWorkerSubdomainNewResponseResult struct {
-	Subdomain string                                      `json:"subdomain,required"`
+	Subdomain string                                      `json:"subdomain" api:"required"`
 	JSON      accountWorkerSubdomainNewResponseResultJSON `json:"-"`
 }
 
@@ -123,11 +123,11 @@ func (r AccountWorkerSubdomainNewResponseSuccess) IsKnown() bool {
 }
 
 type AccountWorkerSubdomainGetResponse struct {
-	Errors   []WorkersMessages                       `json:"errors,required"`
-	Messages []WorkersMessages                       `json:"messages,required"`
-	Result   AccountWorkerSubdomainGetResponseResult `json:"result,required"`
+	Errors   []WorkersMessages                       `json:"errors" api:"required"`
+	Messages []WorkersMessages                       `json:"messages" api:"required"`
+	Result   AccountWorkerSubdomainGetResponseResult `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success AccountWorkerSubdomainGetResponseSuccess `json:"success,required"`
+	Success AccountWorkerSubdomainGetResponseSuccess `json:"success" api:"required"`
 	JSON    accountWorkerSubdomainGetResponseJSON    `json:"-"`
 }
 
@@ -151,7 +151,7 @@ func (r accountWorkerSubdomainGetResponseJSON) RawJSON() string {
 }
 
 type AccountWorkerSubdomainGetResponseResult struct {
-	Subdomain string                                      `json:"subdomain,required"`
+	Subdomain string                                      `json:"subdomain" api:"required"`
 	JSON      accountWorkerSubdomainGetResponseResultJSON `json:"-"`
 }
 
@@ -187,7 +187,7 @@ func (r AccountWorkerSubdomainGetResponseSuccess) IsKnown() bool {
 }
 
 type AccountWorkerSubdomainNewParams struct {
-	Subdomain param.Field[string] `json:"subdomain,required"`
+	Subdomain param.Field[string] `json:"subdomain" api:"required"`
 }
 
 func (r AccountWorkerSubdomainNewParams) MarshalJSON() (data []byte, err error) {

@@ -14,7 +14,7 @@ import (
 )
 
 func TestZoneAddressingRegionalHostnameNewWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,6 +26,7 @@ func TestZoneAddressingRegionalHostnameNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.Addressing.RegionalHostnames.New(
 		context.TODO(),
@@ -46,7 +47,7 @@ func TestZoneAddressingRegionalHostnameNewWithOptionalParams(t *testing.T) {
 }
 
 func TestZoneAddressingRegionalHostnameGet(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -58,6 +59,7 @@ func TestZoneAddressingRegionalHostnameGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.Addressing.RegionalHostnames.Get(
 		context.TODO(),
@@ -74,7 +76,7 @@ func TestZoneAddressingRegionalHostnameGet(t *testing.T) {
 }
 
 func TestZoneAddressingRegionalHostnameUpdate(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -86,6 +88,7 @@ func TestZoneAddressingRegionalHostnameUpdate(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.Addressing.RegionalHostnames.Update(
 		context.TODO(),
@@ -105,7 +108,7 @@ func TestZoneAddressingRegionalHostnameUpdate(t *testing.T) {
 }
 
 func TestZoneAddressingRegionalHostnameList(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -117,6 +120,7 @@ func TestZoneAddressingRegionalHostnameList(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.Addressing.RegionalHostnames.List(context.TODO(), "023e105f4ecef8ad9ca31a8372d0c353")
 	if err != nil {
@@ -129,7 +133,7 @@ func TestZoneAddressingRegionalHostnameList(t *testing.T) {
 }
 
 func TestZoneAddressingRegionalHostnameDelete(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -141,6 +145,7 @@ func TestZoneAddressingRegionalHostnameDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.Addressing.RegionalHostnames.Delete(
 		context.TODO(),

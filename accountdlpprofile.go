@@ -48,15 +48,15 @@ func (r *AccountDlpProfileService) Get(ctx context.Context, accountID string, pr
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if profileID == "" {
 		err = errors.New("missing required profile_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/dlp/profiles/%s", accountID, profileID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists all DLP profiles in an account.
@@ -64,11 +64,11 @@ func (r *AccountDlpProfileService) List(ctx context.Context, accountID string, q
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/dlp/profiles", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type Confidence string
@@ -90,12 +90,12 @@ func (r Confidence) IsKnown() bool {
 
 type Profile struct {
 	// The id of the profile (uuid).
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// This field can have the runtime type of [[]DlpEntry].
-	Entries interface{} `json:"entries,required"`
+	Entries interface{} `json:"entries" api:"required"`
 	// The name of the profile.
-	Name             string      `json:"name,required"`
-	Type             ProfileType `json:"type,required"`
+	Name             string      `json:"name" api:"required"`
+	Type             ProfileType `json:"type" api:"required"`
 	AIContextEnabled bool        `json:"ai_context_enabled"`
 	// Related DLP policies will trigger when the match count exceeds the number set.
 	AllowedMatchCount   int64      `json:"allowed_match_count"`
@@ -108,7 +108,7 @@ type Profile struct {
 	// When the profile was created.
 	CreatedAt time.Time `json:"created_at" format:"date-time"`
 	// The description of the profile.
-	Description string `json:"description,nullable"`
+	Description string `json:"description" api:"nullable"`
 	OcrEnabled  bool   `json:"ocr_enabled"`
 	// Whether this profile can be accessed by anyone.
 	OpenAccess bool `json:"open_access"`
@@ -186,18 +186,18 @@ func init() {
 
 type ProfileCustomProfile struct {
 	// The id of the profile (uuid).
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// Related DLP policies will trigger when the match count exceeds the number set.
-	AllowedMatchCount int64 `json:"allowed_match_count,required"`
+	AllowedMatchCount int64 `json:"allowed_match_count" api:"required"`
 	// When the profile was created.
-	CreatedAt time.Time  `json:"created_at,required" format:"date-time"`
-	Entries   []DlpEntry `json:"entries,required"`
+	CreatedAt time.Time  `json:"created_at" api:"required" format:"date-time"`
+	Entries   []DlpEntry `json:"entries" api:"required"`
 	// The name of the profile.
-	Name       string                   `json:"name,required"`
-	OcrEnabled bool                     `json:"ocr_enabled,required"`
-	Type       ProfileCustomProfileType `json:"type,required"`
+	Name       string                   `json:"name" api:"required"`
+	OcrEnabled bool                     `json:"ocr_enabled" api:"required"`
+	Type       ProfileCustomProfileType `json:"type" api:"required"`
 	// When the profile was lasted updated.
-	UpdatedAt           time.Time  `json:"updated_at,required" format:"date-time"`
+	UpdatedAt           time.Time  `json:"updated_at" api:"required" format:"date-time"`
 	AIContextEnabled    bool       `json:"ai_context_enabled"`
 	ConfidenceThreshold Confidence `json:"confidence_threshold"`
 	// Scan the context of predefined entries to only return matches surrounded by
@@ -206,7 +206,7 @@ type ProfileCustomProfile struct {
 	// Deprecated: deprecated
 	ContextAwareness ContextAwareness `json:"context_awareness"`
 	// The description of the profile.
-	Description string                   `json:"description,nullable"`
+	Description string                   `json:"description" api:"nullable"`
 	JSON        profileCustomProfileJSON `json:"-"`
 }
 
@@ -255,12 +255,12 @@ func (r ProfileCustomProfileType) IsKnown() bool {
 
 type ProfilePredefinedProfile struct {
 	// The id of the predefined profile (uuid).
-	ID                string     `json:"id,required" format:"uuid"`
-	AllowedMatchCount int64      `json:"allowed_match_count,required"`
-	Entries           []DlpEntry `json:"entries,required"`
+	ID                string     `json:"id" api:"required" format:"uuid"`
+	AllowedMatchCount int64      `json:"allowed_match_count" api:"required"`
+	Entries           []DlpEntry `json:"entries" api:"required"`
 	// The name of the predefined profile.
-	Name                string                       `json:"name,required"`
-	Type                ProfilePredefinedProfileType `json:"type,required"`
+	Name                string                       `json:"name" api:"required"`
+	Type                ProfilePredefinedProfileType `json:"type" api:"required"`
 	AIContextEnabled    bool                         `json:"ai_context_enabled"`
 	ConfidenceThreshold Confidence                   `json:"confidence_threshold"`
 	// Scan the context of predefined entries to only return matches surrounded by
@@ -316,14 +316,14 @@ func (r ProfilePredefinedProfileType) IsKnown() bool {
 }
 
 type ProfileIntegrationProfile struct {
-	ID        string                        `json:"id,required" format:"uuid"`
-	CreatedAt time.Time                     `json:"created_at,required" format:"date-time"`
-	Entries   []DlpEntry                    `json:"entries,required"`
-	Name      string                        `json:"name,required"`
-	Type      ProfileIntegrationProfileType `json:"type,required"`
-	UpdatedAt time.Time                     `json:"updated_at,required" format:"date-time"`
+	ID        string                        `json:"id" api:"required" format:"uuid"`
+	CreatedAt time.Time                     `json:"created_at" api:"required" format:"date-time"`
+	Entries   []DlpEntry                    `json:"entries" api:"required"`
+	Name      string                        `json:"name" api:"required"`
+	Type      ProfileIntegrationProfileType `json:"type" api:"required"`
+	UpdatedAt time.Time                     `json:"updated_at" api:"required" format:"date-time"`
 	// The description of the profile.
-	Description string                        `json:"description,nullable"`
+	Description string                        `json:"description" api:"nullable"`
 	JSON        profileIntegrationProfileJSON `json:"-"`
 }
 
@@ -382,10 +382,10 @@ func (r ProfileType) IsKnown() bool {
 }
 
 type AccountDlpProfileGetResponse struct {
-	Errors   []MessagesDlpItems `json:"errors,required"`
-	Messages []MessagesDlpItems `json:"messages,required"`
+	Errors   []MessagesDlpItems `json:"errors" api:"required"`
+	Messages []MessagesDlpItems `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountDlpProfileGetResponseSuccess `json:"success,required"`
+	Success AccountDlpProfileGetResponseSuccess `json:"success" api:"required"`
 	Result  Profile                             `json:"result"`
 	JSON    accountDlpProfileGetResponseJSON    `json:"-"`
 }
@@ -425,10 +425,10 @@ func (r AccountDlpProfileGetResponseSuccess) IsKnown() bool {
 }
 
 type AccountDlpProfileListResponse struct {
-	Errors   []MessagesDlpItems `json:"errors,required"`
-	Messages []MessagesDlpItems `json:"messages,required"`
+	Errors   []MessagesDlpItems `json:"errors" api:"required"`
+	Messages []MessagesDlpItems `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountDlpProfileListResponseSuccess `json:"success,required"`
+	Success AccountDlpProfileListResponseSuccess `json:"success" api:"required"`
 	Result  []Profile                            `json:"result"`
 	JSON    accountDlpProfileListResponseJSON    `json:"-"`
 }

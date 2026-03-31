@@ -40,11 +40,11 @@ func (r *AccountIntelIndicatorFeedPermissionService) AddPermission(ctx context.C
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/intel/indicator-feeds/permissions/add", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // List indicator feed permissions
@@ -52,11 +52,11 @@ func (r *AccountIntelIndicatorFeedPermissionService) ListPermissions(ctx context
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/intel/indicator-feeds/permissions/view", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Revoke permission to indicator feed
@@ -64,18 +64,18 @@ func (r *AccountIntelIndicatorFeedPermissionService) RemovePermission(ctx contex
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/intel/indicator-feeds/permissions/remove", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type PermissionsResponse struct {
-	Errors   []PermissionsResponseError   `json:"errors,required"`
-	Messages []PermissionsResponseMessage `json:"messages,required"`
+	Errors   []PermissionsResponseError   `json:"errors" api:"required"`
+	Messages []PermissionsResponseMessage `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success PermissionsResponseSuccess `json:"success,required"`
+	Success PermissionsResponseSuccess `json:"success" api:"required"`
 	Result  PermissionsResponseResult  `json:"result"`
 	JSON    permissionsResponseJSON    `json:"-"`
 }
@@ -100,8 +100,8 @@ func (r permissionsResponseJSON) RawJSON() string {
 }
 
 type PermissionsResponseError struct {
-	Code             int64                           `json:"code,required"`
-	Message          string                          `json:"message,required"`
+	Code             int64                           `json:"code" api:"required"`
+	Message          string                          `json:"message" api:"required"`
 	DocumentationURL string                          `json:"documentation_url"`
 	Source           PermissionsResponseErrorsSource `json:"source"`
 	JSON             permissionsResponseErrorJSON    `json:"-"`
@@ -148,8 +148,8 @@ func (r permissionsResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type PermissionsResponseMessage struct {
-	Code             int64                             `json:"code,required"`
-	Message          string                            `json:"message,required"`
+	Code             int64                             `json:"code" api:"required"`
+	Message          string                            `json:"message" api:"required"`
 	DocumentationURL string                            `json:"documentation_url"`
 	Source           PermissionsResponseMessagesSource `json:"source"`
 	JSON             permissionsResponseMessageJSON    `json:"-"`
@@ -244,10 +244,10 @@ func (r RequestParam) MarshalJSON() (data []byte, err error) {
 }
 
 type AccountIntelIndicatorFeedPermissionListPermissionsResponse struct {
-	Errors   []AccountIntelIndicatorFeedPermissionListPermissionsResponseError   `json:"errors,required"`
-	Messages []AccountIntelIndicatorFeedPermissionListPermissionsResponseMessage `json:"messages,required"`
+	Errors   []AccountIntelIndicatorFeedPermissionListPermissionsResponseError   `json:"errors" api:"required"`
+	Messages []AccountIntelIndicatorFeedPermissionListPermissionsResponseMessage `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountIntelIndicatorFeedPermissionListPermissionsResponseSuccess  `json:"success,required"`
+	Success AccountIntelIndicatorFeedPermissionListPermissionsResponseSuccess  `json:"success" api:"required"`
 	Result  []AccountIntelIndicatorFeedPermissionListPermissionsResponseResult `json:"result"`
 	JSON    accountIntelIndicatorFeedPermissionListPermissionsResponseJSON     `json:"-"`
 }
@@ -273,8 +273,8 @@ func (r accountIntelIndicatorFeedPermissionListPermissionsResponseJSON) RawJSON(
 }
 
 type AccountIntelIndicatorFeedPermissionListPermissionsResponseError struct {
-	Code             int64                                                                  `json:"code,required"`
-	Message          string                                                                 `json:"message,required"`
+	Code             int64                                                                  `json:"code" api:"required"`
+	Message          string                                                                 `json:"message" api:"required"`
 	DocumentationURL string                                                                 `json:"documentation_url"`
 	Source           AccountIntelIndicatorFeedPermissionListPermissionsResponseErrorsSource `json:"source"`
 	JSON             accountIntelIndicatorFeedPermissionListPermissionsResponseErrorJSON    `json:"-"`
@@ -323,8 +323,8 @@ func (r accountIntelIndicatorFeedPermissionListPermissionsResponseErrorsSourceJS
 }
 
 type AccountIntelIndicatorFeedPermissionListPermissionsResponseMessage struct {
-	Code             int64                                                                    `json:"code,required"`
-	Message          string                                                                   `json:"message,required"`
+	Code             int64                                                                    `json:"code" api:"required"`
+	Message          string                                                                   `json:"message" api:"required"`
 	DocumentationURL string                                                                   `json:"documentation_url"`
 	Source           AccountIntelIndicatorFeedPermissionListPermissionsResponseMessagesSource `json:"source"`
 	JSON             accountIntelIndicatorFeedPermissionListPermissionsResponseMessageJSON    `json:"-"`
@@ -426,7 +426,7 @@ func (r accountIntelIndicatorFeedPermissionListPermissionsResponseResultJSON) Ra
 }
 
 type AccountIntelIndicatorFeedPermissionAddPermissionParams struct {
-	Request RequestParam `json:"request,required"`
+	Request RequestParam `json:"request" api:"required"`
 }
 
 func (r AccountIntelIndicatorFeedPermissionAddPermissionParams) MarshalJSON() (data []byte, err error) {
@@ -434,7 +434,7 @@ func (r AccountIntelIndicatorFeedPermissionAddPermissionParams) MarshalJSON() (d
 }
 
 type AccountIntelIndicatorFeedPermissionRemovePermissionParams struct {
-	Request RequestParam `json:"request,required"`
+	Request RequestParam `json:"request" api:"required"`
 }
 
 func (r AccountIntelIndicatorFeedPermissionRemovePermissionParams) MarshalJSON() (data []byte, err error) {

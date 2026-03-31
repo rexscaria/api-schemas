@@ -16,7 +16,7 @@ import (
 )
 
 func TestAccountAIFinetuneNewWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -28,6 +28,7 @@ func TestAccountAIFinetuneNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.AI.Finetunes.New(
 		context.TODO(),
@@ -49,7 +50,7 @@ func TestAccountAIFinetuneNewWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountAIFinetuneList(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -61,6 +62,7 @@ func TestAccountAIFinetuneList(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.AI.Finetunes.List(context.TODO(), "023e105f4ecef8ad9ca31a8372d0c353")
 	if err != nil {
@@ -73,7 +75,7 @@ func TestAccountAIFinetuneList(t *testing.T) {
 }
 
 func TestAccountAIFinetuneListPublicWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -85,6 +87,7 @@ func TestAccountAIFinetuneListPublicWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.AI.Finetunes.ListPublic(
 		context.TODO(),
@@ -105,7 +108,7 @@ func TestAccountAIFinetuneListPublicWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountAIFinetuneUploadAssetWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -117,13 +120,14 @@ func TestAccountAIFinetuneUploadAssetWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.AI.Finetunes.UploadAsset(
 		context.TODO(),
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		"bc451aef-f723-4b26-a6b2-901afd2e7a8a",
 		cfrex.AccountAIFinetuneUploadAssetParams{
-			File:     cfrex.F(io.Reader(bytes.NewBuffer([]byte("some file contents")))),
+			File:     cfrex.F(io.Reader(bytes.NewBuffer([]byte("Example data")))),
 			FileName: cfrex.F("file_name"),
 		},
 	)

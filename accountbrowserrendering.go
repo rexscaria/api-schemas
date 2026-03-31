@@ -42,11 +42,11 @@ func (r *AccountBrowserRenderingService) GetHTMLContent(ctx context.Context, acc
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/browser-rendering/content", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Gets json from a webpage from a provided URL or HTML. Pass `prompt` or `schema`
@@ -55,11 +55,11 @@ func (r *AccountBrowserRenderingService) GetJson(ctx context.Context, accountID 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/browser-rendering/json", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Get links from a web page.
@@ -67,11 +67,11 @@ func (r *AccountBrowserRenderingService) GetLinks(ctx context.Context, accountID
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/browser-rendering/links", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Gets markdown of a webpage from provided URL or HTML. Control page loading with
@@ -80,11 +80,11 @@ func (r *AccountBrowserRenderingService) GetMarkdown(ctx context.Context, accoun
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/browser-rendering/markdown", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetches rendered PDF from provided URL or HTML. Check available options like
@@ -94,11 +94,11 @@ func (r *AccountBrowserRenderingService) GetPdf(ctx context.Context, accountID s
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "application/pdf")}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/browser-rendering/pdf", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Takes a screenshot of a webpage from provided URL or HTML. Control page loading
@@ -108,11 +108,11 @@ func (r *AccountBrowserRenderingService) GetScreenshot(ctx context.Context, acco
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/browser-rendering/screenshot", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns the page's HTML content and screenshot. Control page loading with
@@ -122,11 +122,11 @@ func (r *AccountBrowserRenderingService) GetSnapshot(ctx context.Context, accoun
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/browser-rendering/snapshot", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Get meta attributes like height, width, text and others of selected elements.
@@ -134,17 +134,17 @@ func (r *AccountBrowserRenderingService) ScrapeElements(ctx context.Context, acc
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/browser-rendering/scrape", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountBrowserRenderingGetHTMLContentResponse struct {
-	Meta AccountBrowserRenderingGetHTMLContentResponseMeta `json:"meta,required"`
+	Meta AccountBrowserRenderingGetHTMLContentResponseMeta `json:"meta" api:"required"`
 	// Response status
-	Status bool                                                 `json:"status,required"`
+	Status bool                                                 `json:"status" api:"required"`
 	Errors []AccountBrowserRenderingGetHTMLContentResponseError `json:"errors"`
 	// HTML content
 	Result string                                            `json:"result"`
@@ -171,8 +171,8 @@ func (r accountBrowserRenderingGetHTMLContentResponseJSON) RawJSON() string {
 }
 
 type AccountBrowserRenderingGetHTMLContentResponseMeta struct {
-	Status float64                                               `json:"status,required"`
-	Title  string                                                `json:"title,required"`
+	Status float64                                               `json:"status" api:"required"`
+	Title  string                                                `json:"title" api:"required"`
 	JSON   accountBrowserRenderingGetHTMLContentResponseMetaJSON `json:"-"`
 }
 
@@ -195,9 +195,9 @@ func (r accountBrowserRenderingGetHTMLContentResponseMetaJSON) RawJSON() string 
 
 type AccountBrowserRenderingGetHTMLContentResponseError struct {
 	// Error code
-	Code float64 `json:"code,required"`
+	Code float64 `json:"code" api:"required"`
 	// Error Message
-	Message string                                                 `json:"message,required"`
+	Message string                                                 `json:"message" api:"required"`
 	JSON    accountBrowserRenderingGetHTMLContentResponseErrorJSON `json:"-"`
 }
 
@@ -219,9 +219,9 @@ func (r accountBrowserRenderingGetHTMLContentResponseErrorJSON) RawJSON() string
 }
 
 type AccountBrowserRenderingGetJsonResponse struct {
-	Result map[string]interface{} `json:"result,required"`
+	Result map[string]interface{} `json:"result" api:"required"`
 	// Response status
-	Status bool                                          `json:"status,required"`
+	Status bool                                          `json:"status" api:"required"`
 	Errors []AccountBrowserRenderingGetJsonResponseError `json:"errors"`
 	JSON   accountBrowserRenderingGetJsonResponseJSON    `json:"-"`
 }
@@ -246,9 +246,9 @@ func (r accountBrowserRenderingGetJsonResponseJSON) RawJSON() string {
 
 type AccountBrowserRenderingGetJsonResponseError struct {
 	// Error code
-	Code float64 `json:"code,required"`
+	Code float64 `json:"code" api:"required"`
 	// Error Message
-	Message string                                          `json:"message,required"`
+	Message string                                          `json:"message" api:"required"`
 	JSON    accountBrowserRenderingGetJsonResponseErrorJSON `json:"-"`
 }
 
@@ -270,9 +270,9 @@ func (r accountBrowserRenderingGetJsonResponseErrorJSON) RawJSON() string {
 }
 
 type AccountBrowserRenderingGetLinksResponse struct {
-	Result []string `json:"result,required"`
+	Result []string `json:"result" api:"required"`
 	// Response status
-	Status bool                                           `json:"status,required"`
+	Status bool                                           `json:"status" api:"required"`
 	Errors []AccountBrowserRenderingGetLinksResponseError `json:"errors"`
 	JSON   accountBrowserRenderingGetLinksResponseJSON    `json:"-"`
 }
@@ -297,9 +297,9 @@ func (r accountBrowserRenderingGetLinksResponseJSON) RawJSON() string {
 
 type AccountBrowserRenderingGetLinksResponseError struct {
 	// Error code
-	Code float64 `json:"code,required"`
+	Code float64 `json:"code" api:"required"`
 	// Error Message
-	Message string                                           `json:"message,required"`
+	Message string                                           `json:"message" api:"required"`
 	JSON    accountBrowserRenderingGetLinksResponseErrorJSON `json:"-"`
 }
 
@@ -322,7 +322,7 @@ func (r accountBrowserRenderingGetLinksResponseErrorJSON) RawJSON() string {
 
 type AccountBrowserRenderingGetMarkdownResponse struct {
 	// Response status
-	Status bool                                              `json:"status,required"`
+	Status bool                                              `json:"status" api:"required"`
 	Errors []AccountBrowserRenderingGetMarkdownResponseError `json:"errors"`
 	// Markdown
 	Result string                                         `json:"result"`
@@ -349,9 +349,9 @@ func (r accountBrowserRenderingGetMarkdownResponseJSON) RawJSON() string {
 
 type AccountBrowserRenderingGetMarkdownResponseError struct {
 	// Error code
-	Code float64 `json:"code,required"`
+	Code float64 `json:"code" api:"required"`
 	// Error Message
-	Message string                                              `json:"message,required"`
+	Message string                                              `json:"message" api:"required"`
 	JSON    accountBrowserRenderingGetMarkdownResponseErrorJSON `json:"-"`
 }
 
@@ -374,7 +374,7 @@ func (r accountBrowserRenderingGetMarkdownResponseErrorJSON) RawJSON() string {
 
 type AccountBrowserRenderingGetScreenshotResponse struct {
 	// Response status
-	Status bool                                                `json:"status,required"`
+	Status bool                                                `json:"status" api:"required"`
 	Errors []AccountBrowserRenderingGetScreenshotResponseError `json:"errors"`
 	JSON   accountBrowserRenderingGetScreenshotResponseJSON    `json:"-"`
 }
@@ -398,9 +398,9 @@ func (r accountBrowserRenderingGetScreenshotResponseJSON) RawJSON() string {
 
 type AccountBrowserRenderingGetScreenshotResponseError struct {
 	// Error code
-	Code float64 `json:"code,required"`
+	Code float64 `json:"code" api:"required"`
 	// Error Message
-	Message string                                                `json:"message,required"`
+	Message string                                                `json:"message" api:"required"`
 	JSON    accountBrowserRenderingGetScreenshotResponseErrorJSON `json:"-"`
 }
 
@@ -423,7 +423,7 @@ func (r accountBrowserRenderingGetScreenshotResponseErrorJSON) RawJSON() string 
 
 type AccountBrowserRenderingGetSnapshotResponse struct {
 	// Response status
-	Status bool                                              `json:"status,required"`
+	Status bool                                              `json:"status" api:"required"`
 	Errors []AccountBrowserRenderingGetSnapshotResponseError `json:"errors"`
 	Result AccountBrowserRenderingGetSnapshotResponseResult  `json:"result"`
 	JSON   accountBrowserRenderingGetSnapshotResponseJSON    `json:"-"`
@@ -449,9 +449,9 @@ func (r accountBrowserRenderingGetSnapshotResponseJSON) RawJSON() string {
 
 type AccountBrowserRenderingGetSnapshotResponseError struct {
 	// Error code
-	Code float64 `json:"code,required"`
+	Code float64 `json:"code" api:"required"`
 	// Error Message
-	Message string                                              `json:"message,required"`
+	Message string                                              `json:"message" api:"required"`
 	JSON    accountBrowserRenderingGetSnapshotResponseErrorJSON `json:"-"`
 }
 
@@ -474,9 +474,9 @@ func (r accountBrowserRenderingGetSnapshotResponseErrorJSON) RawJSON() string {
 
 type AccountBrowserRenderingGetSnapshotResponseResult struct {
 	// HTML content
-	Content string `json:"content,required"`
+	Content string `json:"content" api:"required"`
 	// Base64 encoded image
-	Screenshot string                                               `json:"screenshot,required"`
+	Screenshot string                                               `json:"screenshot" api:"required"`
 	JSON       accountBrowserRenderingGetSnapshotResponseResultJSON `json:"-"`
 }
 
@@ -498,9 +498,9 @@ func (r accountBrowserRenderingGetSnapshotResponseResultJSON) RawJSON() string {
 }
 
 type AccountBrowserRenderingScrapeElementsResponse struct {
-	Result []AccountBrowserRenderingScrapeElementsResponseResult `json:"result,required"`
+	Result []AccountBrowserRenderingScrapeElementsResponseResult `json:"result" api:"required"`
 	// Response status
-	Status bool                                                 `json:"status,required"`
+	Status bool                                                 `json:"status" api:"required"`
 	Errors []AccountBrowserRenderingScrapeElementsResponseError `json:"errors"`
 	JSON   accountBrowserRenderingScrapeElementsResponseJSON    `json:"-"`
 }
@@ -524,9 +524,9 @@ func (r accountBrowserRenderingScrapeElementsResponseJSON) RawJSON() string {
 }
 
 type AccountBrowserRenderingScrapeElementsResponseResult struct {
-	Results AccountBrowserRenderingScrapeElementsResponseResultResults `json:"results,required"`
+	Results AccountBrowserRenderingScrapeElementsResponseResultResults `json:"results" api:"required"`
 	// Selector
-	Selector string                                                  `json:"selector,required"`
+	Selector string                                                  `json:"selector" api:"required"`
 	JSON     accountBrowserRenderingScrapeElementsResponseResultJSON `json:"-"`
 }
 
@@ -548,19 +548,19 @@ func (r accountBrowserRenderingScrapeElementsResponseResultJSON) RawJSON() strin
 }
 
 type AccountBrowserRenderingScrapeElementsResponseResultResults struct {
-	Attributes []AccountBrowserRenderingScrapeElementsResponseResultResultsAttribute `json:"attributes,required"`
+	Attributes []AccountBrowserRenderingScrapeElementsResponseResultResultsAttribute `json:"attributes" api:"required"`
 	// Element height
-	Height float64 `json:"height,required"`
+	Height float64 `json:"height" api:"required"`
 	// Html content
-	HTML string `json:"html,required"`
+	HTML string `json:"html" api:"required"`
 	// Element left
-	Left float64 `json:"left,required"`
+	Left float64 `json:"left" api:"required"`
 	// Text content
-	Text string `json:"text,required"`
+	Text string `json:"text" api:"required"`
 	// Element top
-	Top float64 `json:"top,required"`
+	Top float64 `json:"top" api:"required"`
 	// Element width
-	Width float64                                                        `json:"width,required"`
+	Width float64                                                        `json:"width" api:"required"`
 	JSON  accountBrowserRenderingScrapeElementsResponseResultResultsJSON `json:"-"`
 }
 
@@ -589,9 +589,9 @@ func (r accountBrowserRenderingScrapeElementsResponseResultResultsJSON) RawJSON(
 
 type AccountBrowserRenderingScrapeElementsResponseResultResultsAttribute struct {
 	// Attribute name
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Attribute value
-	Value string                                                                  `json:"value,required"`
+	Value string                                                                  `json:"value" api:"required"`
 	JSON  accountBrowserRenderingScrapeElementsResponseResultResultsAttributeJSON `json:"-"`
 }
 
@@ -615,9 +615,9 @@ func (r accountBrowserRenderingScrapeElementsResponseResultResultsAttributeJSON)
 
 type AccountBrowserRenderingScrapeElementsResponseError struct {
 	// Error code
-	Code float64 `json:"code,required"`
+	Code float64 `json:"code" api:"required"`
 	// Error Message
-	Message string                                                 `json:"message,required"`
+	Message string                                                 `json:"message" api:"required"`
 	JSON    accountBrowserRenderingScrapeElementsResponseErrorJSON `json:"-"`
 }
 
@@ -753,8 +753,8 @@ func (r AccountBrowserRenderingGetHTMLContentParamsAllowResourceType) IsKnown() 
 
 // Provide credentials for HTTP authentication.
 type AccountBrowserRenderingGetHTMLContentParamsAuthenticate struct {
-	Password param.Field[string] `json:"password,required"`
-	Username param.Field[string] `json:"username,required"`
+	Password param.Field[string] `json:"password" api:"required"`
+	Username param.Field[string] `json:"username" api:"required"`
 }
 
 func (r AccountBrowserRenderingGetHTMLContentParamsAuthenticate) MarshalJSON() (data []byte, err error) {
@@ -762,8 +762,8 @@ func (r AccountBrowserRenderingGetHTMLContentParamsAuthenticate) MarshalJSON() (
 }
 
 type AccountBrowserRenderingGetHTMLContentParamsCookie struct {
-	Name         param.Field[string]                                                         `json:"name,required"`
-	Value        param.Field[string]                                                         `json:"value,required"`
+	Name         param.Field[string]                                                         `json:"name" api:"required"`
+	Value        param.Field[string]                                                         `json:"value" api:"required"`
 	Domain       param.Field[string]                                                         `json:"domain"`
 	Expires      param.Field[float64]                                                        `json:"expires"`
 	HTTPOnly     param.Field[bool]                                                           `json:"httpOnly"`
@@ -924,8 +924,8 @@ func (r AccountBrowserRenderingGetHTMLContentParamsRejectResourceType) IsKnown()
 
 // Check [options](https://pptr.dev/api/puppeteer.page.setviewport).
 type AccountBrowserRenderingGetHTMLContentParamsViewport struct {
-	Height            param.Field[float64] `json:"height,required"`
-	Width             param.Field[float64] `json:"width,required"`
+	Height            param.Field[float64] `json:"height" api:"required"`
+	Width             param.Field[float64] `json:"width" api:"required"`
 	DeviceScaleFactor param.Field[float64] `json:"deviceScaleFactor"`
 	HasTouch          param.Field[bool]    `json:"hasTouch"`
 	IsLandscape       param.Field[bool]    `json:"isLandscape"`
@@ -939,7 +939,7 @@ func (r AccountBrowserRenderingGetHTMLContentParamsViewport) MarshalJSON() (data
 // Wait for the selector to appear in page. Check
 // [options](https://pptr.dev/api/puppeteer.page.waitforselector).
 type AccountBrowserRenderingGetHTMLContentParamsWaitForSelector struct {
-	Selector param.Field[string]                                                            `json:"selector,required"`
+	Selector param.Field[string]                                                            `json:"selector" api:"required"`
 	Hidden   param.Field[AccountBrowserRenderingGetHTMLContentParamsWaitForSelectorHidden]  `json:"hidden"`
 	Timeout  param.Field[float64]                                                           `json:"timeout"`
 	Visible  param.Field[AccountBrowserRenderingGetHTMLContentParamsWaitForSelectorVisible] `json:"visible"`
@@ -1094,8 +1094,8 @@ func (r AccountBrowserRenderingGetJsonParamsAllowResourceType) IsKnown() bool {
 
 // Provide credentials for HTTP authentication.
 type AccountBrowserRenderingGetJsonParamsAuthenticate struct {
-	Password param.Field[string] `json:"password,required"`
-	Username param.Field[string] `json:"username,required"`
+	Password param.Field[string] `json:"password" api:"required"`
+	Username param.Field[string] `json:"username" api:"required"`
 }
 
 func (r AccountBrowserRenderingGetJsonParamsAuthenticate) MarshalJSON() (data []byte, err error) {
@@ -1103,8 +1103,8 @@ func (r AccountBrowserRenderingGetJsonParamsAuthenticate) MarshalJSON() (data []
 }
 
 type AccountBrowserRenderingGetJsonParamsCookie struct {
-	Name         param.Field[string]                                                  `json:"name,required"`
-	Value        param.Field[string]                                                  `json:"value,required"`
+	Name         param.Field[string]                                                  `json:"name" api:"required"`
+	Value        param.Field[string]                                                  `json:"value" api:"required"`
 	Domain       param.Field[string]                                                  `json:"domain"`
 	Expires      param.Field[float64]                                                 `json:"expires"`
 	HTTPOnly     param.Field[bool]                                                    `json:"httpOnly"`
@@ -1263,7 +1263,7 @@ func (r AccountBrowserRenderingGetJsonParamsRejectResourceType) IsKnown() bool {
 }
 
 type AccountBrowserRenderingGetJsonParamsResponseFormat struct {
-	Type param.Field[string] `json:"type,required"`
+	Type param.Field[string] `json:"type" api:"required"`
 	// Schema for the response format. More information here:
 	// https://developers.cloudflare.com/workers-ai/json-mode/
 	Schema param.Field[map[string]interface{}] `json:"schema"`
@@ -1275,8 +1275,8 @@ func (r AccountBrowserRenderingGetJsonParamsResponseFormat) MarshalJSON() (data 
 
 // Check [options](https://pptr.dev/api/puppeteer.page.setviewport).
 type AccountBrowserRenderingGetJsonParamsViewport struct {
-	Height            param.Field[float64] `json:"height,required"`
-	Width             param.Field[float64] `json:"width,required"`
+	Height            param.Field[float64] `json:"height" api:"required"`
+	Width             param.Field[float64] `json:"width" api:"required"`
 	DeviceScaleFactor param.Field[float64] `json:"deviceScaleFactor"`
 	HasTouch          param.Field[bool]    `json:"hasTouch"`
 	IsLandscape       param.Field[bool]    `json:"isLandscape"`
@@ -1290,7 +1290,7 @@ func (r AccountBrowserRenderingGetJsonParamsViewport) MarshalJSON() (data []byte
 // Wait for the selector to appear in page. Check
 // [options](https://pptr.dev/api/puppeteer.page.waitforselector).
 type AccountBrowserRenderingGetJsonParamsWaitForSelector struct {
-	Selector param.Field[string]                                                     `json:"selector,required"`
+	Selector param.Field[string]                                                     `json:"selector" api:"required"`
 	Hidden   param.Field[AccountBrowserRenderingGetJsonParamsWaitForSelectorHidden]  `json:"hidden"`
 	Timeout  param.Field[float64]                                                    `json:"timeout"`
 	Visible  param.Field[AccountBrowserRenderingGetJsonParamsWaitForSelectorVisible] `json:"visible"`
@@ -1444,8 +1444,8 @@ func (r AccountBrowserRenderingGetLinksParamsAllowResourceType) IsKnown() bool {
 
 // Provide credentials for HTTP authentication.
 type AccountBrowserRenderingGetLinksParamsAuthenticate struct {
-	Password param.Field[string] `json:"password,required"`
-	Username param.Field[string] `json:"username,required"`
+	Password param.Field[string] `json:"password" api:"required"`
+	Username param.Field[string] `json:"username" api:"required"`
 }
 
 func (r AccountBrowserRenderingGetLinksParamsAuthenticate) MarshalJSON() (data []byte, err error) {
@@ -1453,8 +1453,8 @@ func (r AccountBrowserRenderingGetLinksParamsAuthenticate) MarshalJSON() (data [
 }
 
 type AccountBrowserRenderingGetLinksParamsCookie struct {
-	Name         param.Field[string]                                                   `json:"name,required"`
-	Value        param.Field[string]                                                   `json:"value,required"`
+	Name         param.Field[string]                                                   `json:"name" api:"required"`
+	Value        param.Field[string]                                                   `json:"value" api:"required"`
 	Domain       param.Field[string]                                                   `json:"domain"`
 	Expires      param.Field[float64]                                                  `json:"expires"`
 	HTTPOnly     param.Field[bool]                                                     `json:"httpOnly"`
@@ -1614,8 +1614,8 @@ func (r AccountBrowserRenderingGetLinksParamsRejectResourceType) IsKnown() bool 
 
 // Check [options](https://pptr.dev/api/puppeteer.page.setviewport).
 type AccountBrowserRenderingGetLinksParamsViewport struct {
-	Height            param.Field[float64] `json:"height,required"`
-	Width             param.Field[float64] `json:"width,required"`
+	Height            param.Field[float64] `json:"height" api:"required"`
+	Width             param.Field[float64] `json:"width" api:"required"`
 	DeviceScaleFactor param.Field[float64] `json:"deviceScaleFactor"`
 	HasTouch          param.Field[bool]    `json:"hasTouch"`
 	IsLandscape       param.Field[bool]    `json:"isLandscape"`
@@ -1629,7 +1629,7 @@ func (r AccountBrowserRenderingGetLinksParamsViewport) MarshalJSON() (data []byt
 // Wait for the selector to appear in page. Check
 // [options](https://pptr.dev/api/puppeteer.page.waitforselector).
 type AccountBrowserRenderingGetLinksParamsWaitForSelector struct {
-	Selector param.Field[string]                                                      `json:"selector,required"`
+	Selector param.Field[string]                                                      `json:"selector" api:"required"`
 	Hidden   param.Field[AccountBrowserRenderingGetLinksParamsWaitForSelectorHidden]  `json:"hidden"`
 	Timeout  param.Field[float64]                                                     `json:"timeout"`
 	Visible  param.Field[AccountBrowserRenderingGetLinksParamsWaitForSelectorVisible] `json:"visible"`
@@ -1782,8 +1782,8 @@ func (r AccountBrowserRenderingGetMarkdownParamsAllowResourceType) IsKnown() boo
 
 // Provide credentials for HTTP authentication.
 type AccountBrowserRenderingGetMarkdownParamsAuthenticate struct {
-	Password param.Field[string] `json:"password,required"`
-	Username param.Field[string] `json:"username,required"`
+	Password param.Field[string] `json:"password" api:"required"`
+	Username param.Field[string] `json:"username" api:"required"`
 }
 
 func (r AccountBrowserRenderingGetMarkdownParamsAuthenticate) MarshalJSON() (data []byte, err error) {
@@ -1791,8 +1791,8 @@ func (r AccountBrowserRenderingGetMarkdownParamsAuthenticate) MarshalJSON() (dat
 }
 
 type AccountBrowserRenderingGetMarkdownParamsCookie struct {
-	Name         param.Field[string]                                                      `json:"name,required"`
-	Value        param.Field[string]                                                      `json:"value,required"`
+	Name         param.Field[string]                                                      `json:"name" api:"required"`
+	Value        param.Field[string]                                                      `json:"value" api:"required"`
 	Domain       param.Field[string]                                                      `json:"domain"`
 	Expires      param.Field[float64]                                                     `json:"expires"`
 	HTTPOnly     param.Field[bool]                                                        `json:"httpOnly"`
@@ -1953,8 +1953,8 @@ func (r AccountBrowserRenderingGetMarkdownParamsRejectResourceType) IsKnown() bo
 
 // Check [options](https://pptr.dev/api/puppeteer.page.setviewport).
 type AccountBrowserRenderingGetMarkdownParamsViewport struct {
-	Height            param.Field[float64] `json:"height,required"`
-	Width             param.Field[float64] `json:"width,required"`
+	Height            param.Field[float64] `json:"height" api:"required"`
+	Width             param.Field[float64] `json:"width" api:"required"`
 	DeviceScaleFactor param.Field[float64] `json:"deviceScaleFactor"`
 	HasTouch          param.Field[bool]    `json:"hasTouch"`
 	IsLandscape       param.Field[bool]    `json:"isLandscape"`
@@ -1968,7 +1968,7 @@ func (r AccountBrowserRenderingGetMarkdownParamsViewport) MarshalJSON() (data []
 // Wait for the selector to appear in page. Check
 // [options](https://pptr.dev/api/puppeteer.page.waitforselector).
 type AccountBrowserRenderingGetMarkdownParamsWaitForSelector struct {
-	Selector param.Field[string]                                                         `json:"selector,required"`
+	Selector param.Field[string]                                                         `json:"selector" api:"required"`
 	Hidden   param.Field[AccountBrowserRenderingGetMarkdownParamsWaitForSelectorHidden]  `json:"hidden"`
 	Timeout  param.Field[float64]                                                        `json:"timeout"`
 	Visible  param.Field[AccountBrowserRenderingGetMarkdownParamsWaitForSelectorVisible] `json:"visible"`
@@ -2123,8 +2123,8 @@ func (r AccountBrowserRenderingGetPdfParamsAllowResourceType) IsKnown() bool {
 
 // Provide credentials for HTTP authentication.
 type AccountBrowserRenderingGetPdfParamsAuthenticate struct {
-	Password param.Field[string] `json:"password,required"`
-	Username param.Field[string] `json:"username,required"`
+	Password param.Field[string] `json:"password" api:"required"`
+	Username param.Field[string] `json:"username" api:"required"`
 }
 
 func (r AccountBrowserRenderingGetPdfParamsAuthenticate) MarshalJSON() (data []byte, err error) {
@@ -2132,8 +2132,8 @@ func (r AccountBrowserRenderingGetPdfParamsAuthenticate) MarshalJSON() (data []b
 }
 
 type AccountBrowserRenderingGetPdfParamsCookie struct {
-	Name         param.Field[string]                                                 `json:"name,required"`
-	Value        param.Field[string]                                                 `json:"value,required"`
+	Name         param.Field[string]                                                 `json:"name" api:"required"`
+	Value        param.Field[string]                                                 `json:"value" api:"required"`
 	Domain       param.Field[string]                                                 `json:"domain"`
 	Expires      param.Field[float64]                                                `json:"expires"`
 	HTTPOnly     param.Field[bool]                                                   `json:"httpOnly"`
@@ -2404,8 +2404,8 @@ func (r AccountBrowserRenderingGetPdfParamsRejectResourceType) IsKnown() bool {
 
 // Check [options](https://pptr.dev/api/puppeteer.page.setviewport).
 type AccountBrowserRenderingGetPdfParamsViewport struct {
-	Height            param.Field[float64] `json:"height,required"`
-	Width             param.Field[float64] `json:"width,required"`
+	Height            param.Field[float64] `json:"height" api:"required"`
+	Width             param.Field[float64] `json:"width" api:"required"`
 	DeviceScaleFactor param.Field[float64] `json:"deviceScaleFactor"`
 	HasTouch          param.Field[bool]    `json:"hasTouch"`
 	IsLandscape       param.Field[bool]    `json:"isLandscape"`
@@ -2419,7 +2419,7 @@ func (r AccountBrowserRenderingGetPdfParamsViewport) MarshalJSON() (data []byte,
 // Wait for the selector to appear in page. Check
 // [options](https://pptr.dev/api/puppeteer.page.waitforselector).
 type AccountBrowserRenderingGetPdfParamsWaitForSelector struct {
-	Selector param.Field[string]                                                    `json:"selector,required"`
+	Selector param.Field[string]                                                    `json:"selector" api:"required"`
 	Hidden   param.Field[AccountBrowserRenderingGetPdfParamsWaitForSelectorHidden]  `json:"hidden"`
 	Timeout  param.Field[float64]                                                   `json:"timeout"`
 	Visible  param.Field[AccountBrowserRenderingGetPdfParamsWaitForSelectorVisible] `json:"visible"`
@@ -2576,8 +2576,8 @@ func (r AccountBrowserRenderingGetScreenshotParamsAllowResourceType) IsKnown() b
 
 // Provide credentials for HTTP authentication.
 type AccountBrowserRenderingGetScreenshotParamsAuthenticate struct {
-	Password param.Field[string] `json:"password,required"`
-	Username param.Field[string] `json:"username,required"`
+	Password param.Field[string] `json:"password" api:"required"`
+	Username param.Field[string] `json:"username" api:"required"`
 }
 
 func (r AccountBrowserRenderingGetScreenshotParamsAuthenticate) MarshalJSON() (data []byte, err error) {
@@ -2585,8 +2585,8 @@ func (r AccountBrowserRenderingGetScreenshotParamsAuthenticate) MarshalJSON() (d
 }
 
 type AccountBrowserRenderingGetScreenshotParamsCookie struct {
-	Name         param.Field[string]                                                        `json:"name,required"`
-	Value        param.Field[string]                                                        `json:"value,required"`
+	Name         param.Field[string]                                                        `json:"name" api:"required"`
+	Value        param.Field[string]                                                        `json:"value" api:"required"`
 	Domain       param.Field[string]                                                        `json:"domain"`
 	Expires      param.Field[float64]                                                       `json:"expires"`
 	HTTPOnly     param.Field[bool]                                                          `json:"httpOnly"`
@@ -2763,10 +2763,10 @@ func (r AccountBrowserRenderingGetScreenshotParamsScreenshotOptions) MarshalJSON
 }
 
 type AccountBrowserRenderingGetScreenshotParamsScreenshotOptionsClip struct {
-	Height param.Field[float64] `json:"height,required"`
-	Width  param.Field[float64] `json:"width,required"`
-	X      param.Field[float64] `json:"x,required"`
-	Y      param.Field[float64] `json:"y,required"`
+	Height param.Field[float64] `json:"height" api:"required"`
+	Width  param.Field[float64] `json:"width" api:"required"`
+	X      param.Field[float64] `json:"x" api:"required"`
+	Y      param.Field[float64] `json:"y" api:"required"`
 	Scale  param.Field[float64] `json:"scale"`
 }
 
@@ -2807,8 +2807,8 @@ func (r AccountBrowserRenderingGetScreenshotParamsScreenshotOptionsType) IsKnown
 
 // Check [options](https://pptr.dev/api/puppeteer.page.setviewport).
 type AccountBrowserRenderingGetScreenshotParamsViewport struct {
-	Height            param.Field[float64] `json:"height,required"`
-	Width             param.Field[float64] `json:"width,required"`
+	Height            param.Field[float64] `json:"height" api:"required"`
+	Width             param.Field[float64] `json:"width" api:"required"`
 	DeviceScaleFactor param.Field[float64] `json:"deviceScaleFactor"`
 	HasTouch          param.Field[bool]    `json:"hasTouch"`
 	IsLandscape       param.Field[bool]    `json:"isLandscape"`
@@ -2822,7 +2822,7 @@ func (r AccountBrowserRenderingGetScreenshotParamsViewport) MarshalJSON() (data 
 // Wait for the selector to appear in page. Check
 // [options](https://pptr.dev/api/puppeteer.page.waitforselector).
 type AccountBrowserRenderingGetScreenshotParamsWaitForSelector struct {
-	Selector param.Field[string]                                                           `json:"selector,required"`
+	Selector param.Field[string]                                                           `json:"selector" api:"required"`
 	Hidden   param.Field[AccountBrowserRenderingGetScreenshotParamsWaitForSelectorHidden]  `json:"hidden"`
 	Timeout  param.Field[float64]                                                          `json:"timeout"`
 	Visible  param.Field[AccountBrowserRenderingGetScreenshotParamsWaitForSelectorVisible] `json:"visible"`
@@ -2976,8 +2976,8 @@ func (r AccountBrowserRenderingGetSnapshotParamsAllowResourceType) IsKnown() boo
 
 // Provide credentials for HTTP authentication.
 type AccountBrowserRenderingGetSnapshotParamsAuthenticate struct {
-	Password param.Field[string] `json:"password,required"`
-	Username param.Field[string] `json:"username,required"`
+	Password param.Field[string] `json:"password" api:"required"`
+	Username param.Field[string] `json:"username" api:"required"`
 }
 
 func (r AccountBrowserRenderingGetSnapshotParamsAuthenticate) MarshalJSON() (data []byte, err error) {
@@ -2985,8 +2985,8 @@ func (r AccountBrowserRenderingGetSnapshotParamsAuthenticate) MarshalJSON() (dat
 }
 
 type AccountBrowserRenderingGetSnapshotParamsCookie struct {
-	Name         param.Field[string]                                                      `json:"name,required"`
-	Value        param.Field[string]                                                      `json:"value,required"`
+	Name         param.Field[string]                                                      `json:"name" api:"required"`
+	Value        param.Field[string]                                                      `json:"value" api:"required"`
 	Domain       param.Field[string]                                                      `json:"domain"`
 	Expires      param.Field[float64]                                                     `json:"expires"`
 	HTTPOnly     param.Field[bool]                                                        `json:"httpOnly"`
@@ -3161,10 +3161,10 @@ func (r AccountBrowserRenderingGetSnapshotParamsScreenshotOptions) MarshalJSON()
 }
 
 type AccountBrowserRenderingGetSnapshotParamsScreenshotOptionsClip struct {
-	Height param.Field[float64] `json:"height,required"`
-	Width  param.Field[float64] `json:"width,required"`
-	X      param.Field[float64] `json:"x,required"`
-	Y      param.Field[float64] `json:"y,required"`
+	Height param.Field[float64] `json:"height" api:"required"`
+	Width  param.Field[float64] `json:"width" api:"required"`
+	X      param.Field[float64] `json:"x" api:"required"`
+	Y      param.Field[float64] `json:"y" api:"required"`
 	Scale  param.Field[float64] `json:"scale"`
 }
 
@@ -3190,8 +3190,8 @@ func (r AccountBrowserRenderingGetSnapshotParamsScreenshotOptionsType) IsKnown()
 
 // Check [options](https://pptr.dev/api/puppeteer.page.setviewport).
 type AccountBrowserRenderingGetSnapshotParamsViewport struct {
-	Height            param.Field[float64] `json:"height,required"`
-	Width             param.Field[float64] `json:"width,required"`
+	Height            param.Field[float64] `json:"height" api:"required"`
+	Width             param.Field[float64] `json:"width" api:"required"`
 	DeviceScaleFactor param.Field[float64] `json:"deviceScaleFactor"`
 	HasTouch          param.Field[bool]    `json:"hasTouch"`
 	IsLandscape       param.Field[bool]    `json:"isLandscape"`
@@ -3205,7 +3205,7 @@ func (r AccountBrowserRenderingGetSnapshotParamsViewport) MarshalJSON() (data []
 // Wait for the selector to appear in page. Check
 // [options](https://pptr.dev/api/puppeteer.page.waitforselector).
 type AccountBrowserRenderingGetSnapshotParamsWaitForSelector struct {
-	Selector param.Field[string]                                                         `json:"selector,required"`
+	Selector param.Field[string]                                                         `json:"selector" api:"required"`
 	Hidden   param.Field[AccountBrowserRenderingGetSnapshotParamsWaitForSelectorHidden]  `json:"hidden"`
 	Timeout  param.Field[float64]                                                        `json:"timeout"`
 	Visible  param.Field[AccountBrowserRenderingGetSnapshotParamsWaitForSelectorVisible] `json:"visible"`
@@ -3244,7 +3244,7 @@ func (r AccountBrowserRenderingGetSnapshotParamsWaitForSelectorVisible) IsKnown(
 }
 
 type AccountBrowserRenderingScrapeElementsParams struct {
-	Elements param.Field[[]AccountBrowserRenderingScrapeElementsParamsElement] `json:"elements,required"`
+	Elements param.Field[[]AccountBrowserRenderingScrapeElementsParamsElement] `json:"elements" api:"required"`
 	// Cache TTL default is 5s. Set to 0 to disable.
 	CacheTtl param.Field[float64] `query:"cacheTTL"`
 	// The maximum duration allowed for the browser action to complete after the page
@@ -3307,7 +3307,7 @@ func (r AccountBrowserRenderingScrapeElementsParams) URLQuery() (v url.Values) {
 }
 
 type AccountBrowserRenderingScrapeElementsParamsElement struct {
-	Selector param.Field[string] `json:"selector,required"`
+	Selector param.Field[string] `json:"selector" api:"required"`
 }
 
 func (r AccountBrowserRenderingScrapeElementsParamsElement) MarshalJSON() (data []byte, err error) {
@@ -3367,8 +3367,8 @@ func (r AccountBrowserRenderingScrapeElementsParamsAllowResourceType) IsKnown() 
 
 // Provide credentials for HTTP authentication.
 type AccountBrowserRenderingScrapeElementsParamsAuthenticate struct {
-	Password param.Field[string] `json:"password,required"`
-	Username param.Field[string] `json:"username,required"`
+	Password param.Field[string] `json:"password" api:"required"`
+	Username param.Field[string] `json:"username" api:"required"`
 }
 
 func (r AccountBrowserRenderingScrapeElementsParamsAuthenticate) MarshalJSON() (data []byte, err error) {
@@ -3376,8 +3376,8 @@ func (r AccountBrowserRenderingScrapeElementsParamsAuthenticate) MarshalJSON() (
 }
 
 type AccountBrowserRenderingScrapeElementsParamsCookie struct {
-	Name         param.Field[string]                                                         `json:"name,required"`
-	Value        param.Field[string]                                                         `json:"value,required"`
+	Name         param.Field[string]                                                         `json:"name" api:"required"`
+	Value        param.Field[string]                                                         `json:"value" api:"required"`
 	Domain       param.Field[string]                                                         `json:"domain"`
 	Expires      param.Field[float64]                                                        `json:"expires"`
 	HTTPOnly     param.Field[bool]                                                           `json:"httpOnly"`
@@ -3538,8 +3538,8 @@ func (r AccountBrowserRenderingScrapeElementsParamsRejectResourceType) IsKnown()
 
 // Check [options](https://pptr.dev/api/puppeteer.page.setviewport).
 type AccountBrowserRenderingScrapeElementsParamsViewport struct {
-	Height            param.Field[float64] `json:"height,required"`
-	Width             param.Field[float64] `json:"width,required"`
+	Height            param.Field[float64] `json:"height" api:"required"`
+	Width             param.Field[float64] `json:"width" api:"required"`
 	DeviceScaleFactor param.Field[float64] `json:"deviceScaleFactor"`
 	HasTouch          param.Field[bool]    `json:"hasTouch"`
 	IsLandscape       param.Field[bool]    `json:"isLandscape"`
@@ -3553,7 +3553,7 @@ func (r AccountBrowserRenderingScrapeElementsParamsViewport) MarshalJSON() (data
 // Wait for the selector to appear in page. Check
 // [options](https://pptr.dev/api/puppeteer.page.waitforselector).
 type AccountBrowserRenderingScrapeElementsParamsWaitForSelector struct {
-	Selector param.Field[string]                                                            `json:"selector,required"`
+	Selector param.Field[string]                                                            `json:"selector" api:"required"`
 	Hidden   param.Field[AccountBrowserRenderingScrapeElementsParamsWaitForSelectorHidden]  `json:"hidden"`
 	Timeout  param.Field[float64]                                                           `json:"timeout"`
 	Visible  param.Field[AccountBrowserRenderingScrapeElementsParamsWaitForSelectorVisible] `json:"visible"`

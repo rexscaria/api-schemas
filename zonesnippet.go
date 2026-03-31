@@ -48,15 +48,15 @@ func (r *ZoneSnippetService) Get(ctx context.Context, zoneID string, snippetName
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if snippetName == "" {
 		err = errors.New("missing required snippet_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/snippets/%s", zoneID, snippetName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Creates or updates a snippet belonging to the zone.
@@ -64,15 +64,15 @@ func (r *ZoneSnippetService) Update(ctx context.Context, zoneID string, snippetN
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if snippetName == "" {
 		err = errors.New("missing required snippet_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/snippets/%s", zoneID, snippetName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetches all snippets belonging to the zone.
@@ -80,11 +80,11 @@ func (r *ZoneSnippetService) List(ctx context.Context, zoneID string, query Zone
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/snippets", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Deletes a snippet belonging to the zone.
@@ -92,15 +92,15 @@ func (r *ZoneSnippetService) Delete(ctx context.Context, zoneID string, snippetN
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if snippetName == "" {
 		err = errors.New("missing required snippet_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/snippets/%s", zoneID, snippetName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetches the content of a snippet belonging to the zone.
@@ -109,27 +109,27 @@ func (r *ZoneSnippetService) GetContent(ctx context.Context, zoneID string, snip
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "multipart/form-data")}, opts...)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if snippetName == "" {
 		err = errors.New("missing required snippet_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/snippets/%s/content", zoneID, snippetName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // A response object.
 type ZoneSnippetGetResponse struct {
 	// A list of error messages.
-	Errors []ZoneSnippetGetResponseError `json:"errors,required"`
+	Errors []ZoneSnippetGetResponseError `json:"errors" api:"required"`
 	// A list of warning messages.
-	Messages []ZoneSnippetGetResponseMessage `json:"messages,required"`
+	Messages []ZoneSnippetGetResponseMessage `json:"messages" api:"required"`
 	// A result.
-	Result ZoneSnippetGetResponseResult `json:"result,required"`
+	Result ZoneSnippetGetResponseResult `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success ZoneSnippetGetResponseSuccess `json:"success,required"`
+	Success ZoneSnippetGetResponseSuccess `json:"success" api:"required"`
 	JSON    zoneSnippetGetResponseJSON    `json:"-"`
 }
 
@@ -155,7 +155,7 @@ func (r zoneSnippetGetResponseJSON) RawJSON() string {
 // A message.
 type ZoneSnippetGetResponseError struct {
 	// A text description of this message.
-	Message string `json:"message,required"`
+	Message string `json:"message" api:"required"`
 	// A unique code for this message.
 	Code int64                           `json:"code"`
 	JSON zoneSnippetGetResponseErrorJSON `json:"-"`
@@ -181,7 +181,7 @@ func (r zoneSnippetGetResponseErrorJSON) RawJSON() string {
 // A message.
 type ZoneSnippetGetResponseMessage struct {
 	// A text description of this message.
-	Message string `json:"message,required"`
+	Message string `json:"message" api:"required"`
 	// A unique code for this message.
 	Code int64                             `json:"code"`
 	JSON zoneSnippetGetResponseMessageJSON `json:"-"`
@@ -207,9 +207,9 @@ func (r zoneSnippetGetResponseMessageJSON) RawJSON() string {
 // A result.
 type ZoneSnippetGetResponseResult struct {
 	// The timestamp of when the snippet was created.
-	CreatedOn time.Time `json:"created_on,required" format:"date-time"`
+	CreatedOn time.Time `json:"created_on" api:"required" format:"date-time"`
 	// The identifying name of the snippet.
-	SnippetName string `json:"snippet_name,required"`
+	SnippetName string `json:"snippet_name" api:"required"`
 	// The timestamp of when the snippet was last modified.
 	ModifiedOn time.Time                        `json:"modified_on" format:"date-time"`
 	JSON       zoneSnippetGetResponseResultJSON `json:"-"`
@@ -251,13 +251,13 @@ func (r ZoneSnippetGetResponseSuccess) IsKnown() bool {
 // A response object.
 type ZoneSnippetUpdateResponse struct {
 	// A list of error messages.
-	Errors []ZoneSnippetUpdateResponseError `json:"errors,required"`
+	Errors []ZoneSnippetUpdateResponseError `json:"errors" api:"required"`
 	// A list of warning messages.
-	Messages []ZoneSnippetUpdateResponseMessage `json:"messages,required"`
+	Messages []ZoneSnippetUpdateResponseMessage `json:"messages" api:"required"`
 	// A result.
-	Result ZoneSnippetUpdateResponseResult `json:"result,required"`
+	Result ZoneSnippetUpdateResponseResult `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success ZoneSnippetUpdateResponseSuccess `json:"success,required"`
+	Success ZoneSnippetUpdateResponseSuccess `json:"success" api:"required"`
 	JSON    zoneSnippetUpdateResponseJSON    `json:"-"`
 }
 
@@ -283,7 +283,7 @@ func (r zoneSnippetUpdateResponseJSON) RawJSON() string {
 // A message.
 type ZoneSnippetUpdateResponseError struct {
 	// A text description of this message.
-	Message string `json:"message,required"`
+	Message string `json:"message" api:"required"`
 	// A unique code for this message.
 	Code int64                              `json:"code"`
 	JSON zoneSnippetUpdateResponseErrorJSON `json:"-"`
@@ -309,7 +309,7 @@ func (r zoneSnippetUpdateResponseErrorJSON) RawJSON() string {
 // A message.
 type ZoneSnippetUpdateResponseMessage struct {
 	// A text description of this message.
-	Message string `json:"message,required"`
+	Message string `json:"message" api:"required"`
 	// A unique code for this message.
 	Code int64                                `json:"code"`
 	JSON zoneSnippetUpdateResponseMessageJSON `json:"-"`
@@ -335,9 +335,9 @@ func (r zoneSnippetUpdateResponseMessageJSON) RawJSON() string {
 // A result.
 type ZoneSnippetUpdateResponseResult struct {
 	// The timestamp of when the snippet was created.
-	CreatedOn time.Time `json:"created_on,required" format:"date-time"`
+	CreatedOn time.Time `json:"created_on" api:"required" format:"date-time"`
 	// The identifying name of the snippet.
-	SnippetName string `json:"snippet_name,required"`
+	SnippetName string `json:"snippet_name" api:"required"`
 	// The timestamp of when the snippet was last modified.
 	ModifiedOn time.Time                           `json:"modified_on" format:"date-time"`
 	JSON       zoneSnippetUpdateResponseResultJSON `json:"-"`
@@ -379,13 +379,13 @@ func (r ZoneSnippetUpdateResponseSuccess) IsKnown() bool {
 // A response object.
 type ZoneSnippetListResponse struct {
 	// A list of error messages.
-	Errors []ZoneSnippetListResponseError `json:"errors,required"`
+	Errors []ZoneSnippetListResponseError `json:"errors" api:"required"`
 	// A list of warning messages.
-	Messages []ZoneSnippetListResponseMessage `json:"messages,required"`
+	Messages []ZoneSnippetListResponseMessage `json:"messages" api:"required"`
 	// A list of snippets.
-	Result []ZoneSnippetListResponseResult `json:"result,required"`
+	Result []ZoneSnippetListResponseResult `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success ZoneSnippetListResponseSuccess `json:"success,required"`
+	Success ZoneSnippetListResponseSuccess `json:"success" api:"required"`
 	// Additional information to navigate the results.
 	ResultInfo ZoneSnippetListResponseResultInfo `json:"result_info"`
 	JSON       zoneSnippetListResponseJSON       `json:"-"`
@@ -414,7 +414,7 @@ func (r zoneSnippetListResponseJSON) RawJSON() string {
 // A message.
 type ZoneSnippetListResponseError struct {
 	// A text description of this message.
-	Message string `json:"message,required"`
+	Message string `json:"message" api:"required"`
 	// A unique code for this message.
 	Code int64                            `json:"code"`
 	JSON zoneSnippetListResponseErrorJSON `json:"-"`
@@ -440,7 +440,7 @@ func (r zoneSnippetListResponseErrorJSON) RawJSON() string {
 // A message.
 type ZoneSnippetListResponseMessage struct {
 	// A text description of this message.
-	Message string `json:"message,required"`
+	Message string `json:"message" api:"required"`
 	// A unique code for this message.
 	Code int64                              `json:"code"`
 	JSON zoneSnippetListResponseMessageJSON `json:"-"`
@@ -466,9 +466,9 @@ func (r zoneSnippetListResponseMessageJSON) RawJSON() string {
 // A snippet object.
 type ZoneSnippetListResponseResult struct {
 	// The timestamp of when the snippet was created.
-	CreatedOn time.Time `json:"created_on,required" format:"date-time"`
+	CreatedOn time.Time `json:"created_on" api:"required" format:"date-time"`
 	// The identifying name of the snippet.
-	SnippetName string `json:"snippet_name,required"`
+	SnippetName string `json:"snippet_name" api:"required"`
 	// The timestamp of when the snippet was last modified.
 	ModifiedOn time.Time                         `json:"modified_on" format:"date-time"`
 	JSON       zoneSnippetListResponseResultJSON `json:"-"`
@@ -510,15 +510,15 @@ func (r ZoneSnippetListResponseSuccess) IsKnown() bool {
 // Additional information to navigate the results.
 type ZoneSnippetListResponseResultInfo struct {
 	// The number of results in the current page.
-	Count int64 `json:"count,required"`
+	Count int64 `json:"count" api:"required"`
 	// The current page number.
-	Page int64 `json:"page,required"`
+	Page int64 `json:"page" api:"required"`
 	// The number of results to return per page.
-	PerPage int64 `json:"per_page,required"`
+	PerPage int64 `json:"per_page" api:"required"`
 	// The total number of results.
-	TotalCount int64 `json:"total_count,required"`
+	TotalCount int64 `json:"total_count" api:"required"`
 	// The total number of pages.
-	TotalPages int64                                 `json:"total_pages,required"`
+	TotalPages int64                                 `json:"total_pages" api:"required"`
 	JSON       zoneSnippetListResponseResultInfoJSON `json:"-"`
 }
 
@@ -545,13 +545,13 @@ func (r zoneSnippetListResponseResultInfoJSON) RawJSON() string {
 // A response object.
 type ZoneSnippetDeleteResponse struct {
 	// A list of error messages.
-	Errors []ZoneSnippetDeleteResponseError `json:"errors,required"`
+	Errors []ZoneSnippetDeleteResponseError `json:"errors" api:"required"`
 	// A list of warning messages.
-	Messages []ZoneSnippetDeleteResponseMessage `json:"messages,required"`
+	Messages []ZoneSnippetDeleteResponseMessage `json:"messages" api:"required"`
 	// A result.
-	Result string `json:"result,required,nullable"`
+	Result string `json:"result" api:"required,nullable"`
 	// Whether the API call was successful.
-	Success ZoneSnippetDeleteResponseSuccess `json:"success,required"`
+	Success ZoneSnippetDeleteResponseSuccess `json:"success" api:"required"`
 	JSON    zoneSnippetDeleteResponseJSON    `json:"-"`
 }
 
@@ -577,7 +577,7 @@ func (r zoneSnippetDeleteResponseJSON) RawJSON() string {
 // A message.
 type ZoneSnippetDeleteResponseError struct {
 	// A text description of this message.
-	Message string `json:"message,required"`
+	Message string `json:"message" api:"required"`
 	// A unique code for this message.
 	Code int64                              `json:"code"`
 	JSON zoneSnippetDeleteResponseErrorJSON `json:"-"`
@@ -603,7 +603,7 @@ func (r zoneSnippetDeleteResponseErrorJSON) RawJSON() string {
 // A message.
 type ZoneSnippetDeleteResponseMessage struct {
 	// A text description of this message.
-	Message string `json:"message,required"`
+	Message string `json:"message" api:"required"`
 	// A unique code for this message.
 	Code int64                                `json:"code"`
 	JSON zoneSnippetDeleteResponseMessageJSON `json:"-"`
@@ -643,9 +643,9 @@ func (r ZoneSnippetDeleteResponseSuccess) IsKnown() bool {
 
 type ZoneSnippetUpdateParams struct {
 	// The list of files belonging to the snippet.
-	Files param.Field[[]io.Reader] `json:"files,required" format:"binary"`
+	Files param.Field[[]io.Reader] `json:"files" api:"required" format:"binary"`
 	// Metadata about the snippet.
-	Metadata param.Field[ZoneSnippetUpdateParamsMetadata] `json:"metadata,required"`
+	Metadata param.Field[ZoneSnippetUpdateParamsMetadata] `json:"metadata" api:"required"`
 }
 
 func (r ZoneSnippetUpdateParams) MarshalMultipart() (data []byte, contentType string, err error) {
@@ -666,7 +666,7 @@ func (r ZoneSnippetUpdateParams) MarshalMultipart() (data []byte, contentType st
 // Metadata about the snippet.
 type ZoneSnippetUpdateParamsMetadata struct {
 	// Name of the file that contains the main module of the snippet.
-	MainModule param.Field[string] `json:"main_module,required"`
+	MainModule param.Field[string] `json:"main_module" api:"required"`
 }
 
 func (r ZoneSnippetUpdateParamsMetadata) MarshalJSON() (data []byte, err error) {

@@ -14,7 +14,7 @@ import (
 )
 
 func TestAccountMagicCloudProviderNewWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,6 +26,7 @@ func TestAccountMagicCloudProviderNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Magic.Cloud.Providers.New(
 		context.TODO(),
@@ -47,7 +48,7 @@ func TestAccountMagicCloudProviderNewWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountMagicCloudProviderGetWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -59,6 +60,7 @@ func TestAccountMagicCloudProviderGetWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Magic.Cloud.Providers.Get(
 		context.TODO(),
@@ -78,7 +80,7 @@ func TestAccountMagicCloudProviderGetWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountMagicCloudProviderUpdateWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -90,6 +92,7 @@ func TestAccountMagicCloudProviderUpdateWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Magic.Cloud.Providers.Update(
 		context.TODO(),
@@ -117,7 +120,7 @@ func TestAccountMagicCloudProviderUpdateWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountMagicCloudProviderListWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -129,6 +132,7 @@ func TestAccountMagicCloudProviderListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Magic.Cloud.Providers.List(
 		context.TODO(),
@@ -150,7 +154,7 @@ func TestAccountMagicCloudProviderListWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountMagicCloudProviderDelete(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -162,6 +166,7 @@ func TestAccountMagicCloudProviderDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Magic.Cloud.Providers.Delete(
 		context.TODO(),
@@ -178,7 +183,7 @@ func TestAccountMagicCloudProviderDelete(t *testing.T) {
 }
 
 func TestAccountMagicCloudProviderDiscoverWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -190,6 +195,7 @@ func TestAccountMagicCloudProviderDiscoverWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Magic.Cloud.Providers.Discover(
 		context.TODO(),
@@ -209,7 +215,7 @@ func TestAccountMagicCloudProviderDiscoverWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountMagicCloudProviderDiscoverAll(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -221,6 +227,7 @@ func TestAccountMagicCloudProviderDiscoverAll(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Magic.Cloud.Providers.DiscoverAll(context.TODO(), "account_id")
 	if err != nil {
@@ -233,7 +240,7 @@ func TestAccountMagicCloudProviderDiscoverAll(t *testing.T) {
 }
 
 func TestAccountMagicCloudProviderGetSetupConfig(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -245,6 +252,7 @@ func TestAccountMagicCloudProviderGetSetupConfig(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Magic.Cloud.Providers.GetSetupConfig(
 		context.TODO(),
@@ -261,7 +269,7 @@ func TestAccountMagicCloudProviderGetSetupConfig(t *testing.T) {
 }
 
 func TestAccountMagicCloudProviderPatchWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -273,6 +281,7 @@ func TestAccountMagicCloudProviderPatchWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Magic.Cloud.Providers.Patch(
 		context.TODO(),

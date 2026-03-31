@@ -43,11 +43,11 @@ func (r *AccountSlurperJobService) New(ctx context.Context, accountID string, bo
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/slurper/jobs", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get job details
@@ -55,15 +55,15 @@ func (r *AccountSlurperJobService) Get(ctx context.Context, accountID string, jo
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if jobID == "" {
 		err = errors.New("missing required job_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/slurper/jobs/%s", accountID, jobID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // List jobs
@@ -71,11 +71,11 @@ func (r *AccountSlurperJobService) List(ctx context.Context, accountID string, q
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/slurper/jobs", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Abort a job
@@ -83,15 +83,15 @@ func (r *AccountSlurperJobService) Abort(ctx context.Context, accountID string, 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if jobID == "" {
 		err = errors.New("missing required job_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/slurper/jobs/%s/abort", accountID, jobID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Abort all jobs
@@ -99,11 +99,11 @@ func (r *AccountSlurperJobService) AbortAll(ctx context.Context, accountID strin
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/slurper/jobs/abortAll", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Get job logs
@@ -111,15 +111,15 @@ func (r *AccountSlurperJobService) GetLogs(ctx context.Context, accountID string
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if jobID == "" {
 		err = errors.New("missing required job_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/slurper/jobs/%s/logs", accountID, jobID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Get job progress
@@ -127,15 +127,15 @@ func (r *AccountSlurperJobService) GetProgress(ctx context.Context, accountID st
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if jobID == "" {
 		err = errors.New("missing required job_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/slurper/jobs/%s/progress", accountID, jobID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Pause a job
@@ -143,15 +143,15 @@ func (r *AccountSlurperJobService) Pause(ctx context.Context, accountID string, 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if jobID == "" {
 		err = errors.New("missing required job_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/slurper/jobs/%s/pause", accountID, jobID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Resume a job
@@ -159,21 +159,21 @@ func (r *AccountSlurperJobService) Resume(ctx context.Context, accountID string,
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if jobID == "" {
 		err = errors.New("missing required job_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/slurper/jobs/%s/resume", accountID, jobID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type JobResponse struct {
 	ID         string            `json:"id"`
 	CreatedAt  string            `json:"createdAt"`
-	FinishedAt string            `json:"finishedAt,nullable"`
+	FinishedAt string            `json:"finishedAt" api:"nullable"`
 	Overwrite  bool              `json:"overwrite"`
 	Source     JobResponseSource `json:"source"`
 	Status     JobStatus         `json:"status"`
@@ -204,9 +204,9 @@ func (r jobResponseJSON) RawJSON() string {
 
 type JobResponseSource struct {
 	Bucket       string                  `json:"bucket"`
-	Endpoint     string                  `json:"endpoint,nullable"`
+	Endpoint     string                  `json:"endpoint" api:"nullable"`
 	Jurisdiction Jurisdiction            `json:"jurisdiction"`
-	PathPrefix   string                  `json:"pathPrefix,nullable"`
+	PathPrefix   string                  `json:"pathPrefix" api:"nullable"`
 	Vendor       JobResponseSourceVendor `json:"vendor"`
 	JSON         jobResponseSourceJSON   `json:"-"`
 	union        JobResponseSourceUnion
@@ -276,8 +276,8 @@ func init() {
 
 type JobResponseSourceS3SourceResponseSchema struct {
 	Bucket     string                                        `json:"bucket"`
-	Endpoint   string                                        `json:"endpoint,nullable"`
-	PathPrefix string                                        `json:"pathPrefix,nullable"`
+	Endpoint   string                                        `json:"endpoint" api:"nullable"`
+	PathPrefix string                                        `json:"pathPrefix" api:"nullable"`
 	Vendor     JobResponseSourceS3SourceResponseSchemaVendor `json:"vendor"`
 	JSON       jobResponseSourceS3SourceResponseSchemaJSON   `json:"-"`
 }
@@ -319,7 +319,7 @@ func (r JobResponseSourceS3SourceResponseSchemaVendor) IsKnown() bool {
 
 type JobResponseSourceGcsSourceResponseSchema struct {
 	Bucket     string                                         `json:"bucket"`
-	PathPrefix string                                         `json:"pathPrefix,nullable"`
+	PathPrefix string                                         `json:"pathPrefix" api:"nullable"`
 	Vendor     JobResponseSourceGcsSourceResponseSchemaVendor `json:"vendor"`
 	JSON       jobResponseSourceGcsSourceResponseSchemaJSON   `json:"-"`
 }
@@ -361,7 +361,7 @@ func (r JobResponseSourceGcsSourceResponseSchemaVendor) IsKnown() bool {
 type JobResponseSourceR2SourceResponseSchema struct {
 	Bucket       string                                        `json:"bucket"`
 	Jurisdiction Jurisdiction                                  `json:"jurisdiction"`
-	PathPrefix   string                                        `json:"pathPrefix,nullable"`
+	PathPrefix   string                                        `json:"pathPrefix" api:"nullable"`
 	Vendor       JobResponseSourceR2SourceResponseSchemaVendor `json:"vendor"`
 	JSON         jobResponseSourceR2SourceResponseSchemaJSON   `json:"-"`
 }
@@ -518,8 +518,8 @@ func (r accountSlurperJobNewResponseJSON) RawJSON() string {
 }
 
 type AccountSlurperJobNewResponseError struct {
-	Code             int64                                    `json:"code,required"`
-	Message          string                                   `json:"message,required"`
+	Code             int64                                    `json:"code" api:"required"`
+	Message          string                                   `json:"message" api:"required"`
 	DocumentationURL string                                   `json:"documentation_url"`
 	Source           AccountSlurperJobNewResponseErrorsSource `json:"source"`
 	JSON             accountSlurperJobNewResponseErrorJSON    `json:"-"`
@@ -630,8 +630,8 @@ func (r accountSlurperJobGetResponseJSON) RawJSON() string {
 }
 
 type AccountSlurperJobGetResponseError struct {
-	Code             int64                                    `json:"code,required"`
-	Message          string                                   `json:"message,required"`
+	Code             int64                                    `json:"code" api:"required"`
+	Message          string                                   `json:"message" api:"required"`
 	DocumentationURL string                                   `json:"documentation_url"`
 	Source           AccountSlurperJobGetResponseErrorsSource `json:"source"`
 	JSON             accountSlurperJobGetResponseErrorJSON    `json:"-"`
@@ -721,8 +721,8 @@ func (r accountSlurperJobListResponseJSON) RawJSON() string {
 }
 
 type AccountSlurperJobListResponseError struct {
-	Code             int64                                     `json:"code,required"`
-	Message          string                                    `json:"message,required"`
+	Code             int64                                     `json:"code" api:"required"`
+	Message          string                                    `json:"message" api:"required"`
 	DocumentationURL string                                    `json:"documentation_url"`
 	Source           AccountSlurperJobListResponseErrorsSource `json:"source"`
 	JSON             accountSlurperJobListResponseErrorJSON    `json:"-"`
@@ -812,8 +812,8 @@ func (r accountSlurperJobAbortResponseJSON) RawJSON() string {
 }
 
 type AccountSlurperJobAbortResponseError struct {
-	Code             int64                                      `json:"code,required"`
-	Message          string                                     `json:"message,required"`
+	Code             int64                                      `json:"code" api:"required"`
+	Message          string                                     `json:"message" api:"required"`
 	DocumentationURL string                                     `json:"documentation_url"`
 	Source           AccountSlurperJobAbortResponseErrorsSource `json:"source"`
 	JSON             accountSlurperJobAbortResponseErrorJSON    `json:"-"`
@@ -903,8 +903,8 @@ func (r accountSlurperJobAbortAllResponseJSON) RawJSON() string {
 }
 
 type AccountSlurperJobAbortAllResponseError struct {
-	Code             int64                                         `json:"code,required"`
-	Message          string                                        `json:"message,required"`
+	Code             int64                                         `json:"code" api:"required"`
+	Message          string                                        `json:"message" api:"required"`
 	DocumentationURL string                                        `json:"documentation_url"`
 	Source           AccountSlurperJobAbortAllResponseErrorsSource `json:"source"`
 	JSON             accountSlurperJobAbortAllResponseErrorJSON    `json:"-"`
@@ -994,8 +994,8 @@ func (r accountSlurperJobGetLogsResponseJSON) RawJSON() string {
 }
 
 type AccountSlurperJobGetLogsResponseError struct {
-	Code             int64                                        `json:"code,required"`
-	Message          string                                       `json:"message,required"`
+	Code             int64                                        `json:"code" api:"required"`
+	Message          string                                       `json:"message" api:"required"`
 	DocumentationURL string                                       `json:"documentation_url"`
 	Source           AccountSlurperJobGetLogsResponseErrorsSource `json:"source"`
 	JSON             accountSlurperJobGetLogsResponseErrorJSON    `json:"-"`
@@ -1045,8 +1045,8 @@ type AccountSlurperJobGetLogsResponseResult struct {
 	CreatedAt string                                        `json:"createdAt"`
 	Job       string                                        `json:"job"`
 	LogType   AccountSlurperJobGetLogsResponseResultLogType `json:"logType"`
-	Message   string                                        `json:"message,nullable"`
-	ObjectKey string                                        `json:"objectKey,nullable"`
+	Message   string                                        `json:"message" api:"nullable"`
+	ObjectKey string                                        `json:"objectKey" api:"nullable"`
 	JSON      accountSlurperJobGetLogsResponseResultJSON    `json:"-"`
 }
 
@@ -1142,8 +1142,8 @@ func (r accountSlurperJobGetProgressResponseJSON) RawJSON() string {
 }
 
 type AccountSlurperJobGetProgressResponseError struct {
-	Code             int64                                            `json:"code,required"`
-	Message          string                                           `json:"message,required"`
+	Code             int64                                            `json:"code" api:"required"`
+	Message          string                                           `json:"message" api:"required"`
 	DocumentationURL string                                           `json:"documentation_url"`
 	Source           AccountSlurperJobGetProgressResponseErrorsSource `json:"source"`
 	JSON             accountSlurperJobGetProgressResponseErrorJSON    `json:"-"`
@@ -1266,8 +1266,8 @@ func (r accountSlurperJobPauseResponseJSON) RawJSON() string {
 }
 
 type AccountSlurperJobPauseResponseError struct {
-	Code             int64                                      `json:"code,required"`
-	Message          string                                     `json:"message,required"`
+	Code             int64                                      `json:"code" api:"required"`
+	Message          string                                     `json:"message" api:"required"`
 	DocumentationURL string                                     `json:"documentation_url"`
 	Source           AccountSlurperJobPauseResponseErrorsSource `json:"source"`
 	JSON             accountSlurperJobPauseResponseErrorJSON    `json:"-"`
@@ -1357,8 +1357,8 @@ func (r accountSlurperJobResumeResponseJSON) RawJSON() string {
 }
 
 type AccountSlurperJobResumeResponseError struct {
-	Code             int64                                       `json:"code,required"`
-	Message          string                                      `json:"message,required"`
+	Code             int64                                       `json:"code" api:"required"`
+	Message          string                                      `json:"message" api:"required"`
 	DocumentationURL string                                      `json:"documentation_url"`
 	Source           AccountSlurperJobResumeResponseErrorsSource `json:"source"`
 	JSON             accountSlurperJobResumeResponseErrorJSON    `json:"-"`

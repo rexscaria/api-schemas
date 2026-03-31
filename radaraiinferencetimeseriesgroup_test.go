@@ -15,7 +15,7 @@ import (
 )
 
 func TestRadarAIInferenceTimeseriesGroupGetModelWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -27,6 +27,7 @@ func TestRadarAIInferenceTimeseriesGroupGetModelWithOptionalParams(t *testing.T)
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.AI.Inference.TimeseriesGroups.GetModel(context.TODO(), cfrex.RadarAIInferenceTimeseriesGroupGetModelParams{
 		AggInterval:   cfrex.F(cfrex.RadarAIInferenceTimeseriesGroupGetModelParamsAggInterval1h),
@@ -47,7 +48,7 @@ func TestRadarAIInferenceTimeseriesGroupGetModelWithOptionalParams(t *testing.T)
 }
 
 func TestRadarAIInferenceTimeseriesGroupGetTaskWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -59,6 +60,7 @@ func TestRadarAIInferenceTimeseriesGroupGetTaskWithOptionalParams(t *testing.T) 
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.AI.Inference.TimeseriesGroups.GetTask(context.TODO(), cfrex.RadarAIInferenceTimeseriesGroupGetTaskParams{
 		AggInterval:   cfrex.F(cfrex.RadarAIInferenceTimeseriesGroupGetTaskParamsAggInterval1h),

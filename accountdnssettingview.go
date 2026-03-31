@@ -42,11 +42,11 @@ func (r *AccountDNSSettingViewService) New(ctx context.Context, accountID string
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/dns_settings/views", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get DNS Internal View
@@ -54,15 +54,15 @@ func (r *AccountDNSSettingViewService) Get(ctx context.Context, accountID string
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if viewID == "" {
 		err = errors.New("missing required view_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/dns_settings/views/%s", accountID, viewID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update an existing Internal DNS View
@@ -70,15 +70,15 @@ func (r *AccountDNSSettingViewService) Update(ctx context.Context, accountID str
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if viewID == "" {
 		err = errors.New("missing required view_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/dns_settings/views/%s", accountID, viewID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // List DNS Internal Views for an Account
@@ -86,11 +86,11 @@ func (r *AccountDNSSettingViewService) List(ctx context.Context, accountID strin
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/dns_settings/views", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete an existing Internal DNS View
@@ -98,15 +98,15 @@ func (r *AccountDNSSettingViewService) Delete(ctx context.Context, accountID str
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if viewID == "" {
 		err = errors.New("missing required view_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/dns_settings/views/%s", accountID, viewID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type DNSViewParam struct {
@@ -122,15 +122,15 @@ func (r DNSViewParam) MarshalJSON() (data []byte, err error) {
 
 type DNSViewResponse struct {
 	// Identifier.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// When the view was created.
-	CreatedTime time.Time `json:"created_time,required" format:"date-time"`
+	CreatedTime time.Time `json:"created_time" api:"required" format:"date-time"`
 	// When the view was last modified.
-	ModifiedTime time.Time `json:"modified_time,required" format:"date-time"`
+	ModifiedTime time.Time `json:"modified_time" api:"required" format:"date-time"`
 	// The name of the view.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// The list of zones linked to this view.
-	Zones []string            `json:"zones,required"`
+	Zones []string            `json:"zones" api:"required"`
 	JSON  dnsViewResponseJSON `json:"-"`
 }
 
@@ -154,10 +154,10 @@ func (r dnsViewResponseJSON) RawJSON() string {
 }
 
 type DNSViewResponseSingle struct {
-	Errors   []DNSSettingsMessages `json:"errors,required"`
-	Messages []DNSSettingsMessages `json:"messages,required"`
+	Errors   []DNSSettingsMessages `json:"errors" api:"required"`
+	Messages []DNSSettingsMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success DNSViewResponseSingleSuccess `json:"success,required"`
+	Success DNSViewResponseSingleSuccess `json:"success" api:"required"`
 	Result  DNSViewResponse              `json:"result"`
 	JSON    dnsViewResponseSingleJSON    `json:"-"`
 }
@@ -197,10 +197,10 @@ func (r DNSViewResponseSingleSuccess) IsKnown() bool {
 }
 
 type AccountDNSSettingViewListResponse struct {
-	Errors   []DNSSettingsMessages `json:"errors,required"`
-	Messages []DNSSettingsMessages `json:"messages,required"`
+	Errors   []DNSSettingsMessages `json:"errors" api:"required"`
+	Messages []DNSSettingsMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success    AccountDNSSettingViewListResponseSuccess    `json:"success,required"`
+	Success    AccountDNSSettingViewListResponseSuccess    `json:"success" api:"required"`
 	Result     []DNSViewResponse                           `json:"result"`
 	ResultInfo AccountDNSSettingViewListResponseResultInfo `json:"result_info"`
 	JSON       accountDNSSettingViewListResponseJSON       `json:"-"`
@@ -316,7 +316,7 @@ func (r accountDNSSettingViewDeleteResponseResultJSON) RawJSON() string {
 }
 
 type AccountDNSSettingViewNewParams struct {
-	DNSView DNSViewParam `json:"dns_view,required"`
+	DNSView DNSViewParam `json:"dns_view" api:"required"`
 }
 
 func (r AccountDNSSettingViewNewParams) MarshalJSON() (data []byte, err error) {
@@ -324,7 +324,7 @@ func (r AccountDNSSettingViewNewParams) MarshalJSON() (data []byte, err error) {
 }
 
 type AccountDNSSettingViewUpdateParams struct {
-	DNSView DNSViewParam `json:"dns_view,required"`
+	DNSView DNSViewParam `json:"dns_view" api:"required"`
 }
 
 func (r AccountDNSSettingViewUpdateParams) MarshalJSON() (data []byte, err error) {

@@ -41,11 +41,11 @@ func (r *ZoneAPIGatewayDiscoveryOperationService) Update(ctx context.Context, zo
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/api_gateway/discovery/operations", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve the most up to date view of discovered operations
@@ -53,11 +53,11 @@ func (r *ZoneAPIGatewayDiscoveryOperationService) List(ctx context.Context, zone
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/api_gateway/discovery/operations", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Update the `state` on a discovered operation
@@ -65,15 +65,15 @@ func (r *ZoneAPIGatewayDiscoveryOperationService) UpdateSingle(ctx context.Conte
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if operationID == "" {
 		err = errors.New("missing required operation_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/api_gateway/discovery/operations/%s", zoneID, operationID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // State of operation in API Discovery
@@ -98,11 +98,11 @@ func (r APIDiscoveryState) IsKnown() bool {
 }
 
 type ZoneAPIGatewayDiscoveryOperationUpdateResponse struct {
-	Errors   []MessagesAPIShieldItem                                         `json:"errors,required"`
-	Messages []MessagesAPIShieldItem                                         `json:"messages,required"`
-	Result   map[string]ZoneAPIGatewayDiscoveryOperationUpdateResponseResult `json:"result,required"`
+	Errors   []MessagesAPIShieldItem                                         `json:"errors" api:"required"`
+	Messages []MessagesAPIShieldItem                                         `json:"messages" api:"required"`
+	Result   map[string]ZoneAPIGatewayDiscoveryOperationUpdateResponseResult `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success ZoneAPIGatewayDiscoveryOperationUpdateResponseSuccess `json:"success,required"`
+	Success ZoneAPIGatewayDiscoveryOperationUpdateResponseSuccess `json:"success" api:"required"`
 	JSON    zoneAPIGatewayDiscoveryOperationUpdateResponseJSON    `json:"-"`
 }
 
@@ -186,11 +186,11 @@ func (r ZoneAPIGatewayDiscoveryOperationUpdateResponseSuccess) IsKnown() bool {
 }
 
 type ZoneAPIGatewayDiscoveryOperationListResponse struct {
-	Errors   []MessagesAPIShieldItem                              `json:"errors,required"`
-	Messages []MessagesAPIShieldItem                              `json:"messages,required"`
-	Result   []ZoneAPIGatewayDiscoveryOperationListResponseResult `json:"result,required"`
+	Errors   []MessagesAPIShieldItem                              `json:"errors" api:"required"`
+	Messages []MessagesAPIShieldItem                              `json:"messages" api:"required"`
+	Result   []ZoneAPIGatewayDiscoveryOperationListResponseResult `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success    ZoneAPIGatewayDiscoveryOperationListResponseSuccess    `json:"success,required"`
+	Success    ZoneAPIGatewayDiscoveryOperationListResponseSuccess    `json:"success" api:"required"`
 	ResultInfo ZoneAPIGatewayDiscoveryOperationListResponseResultInfo `json:"result_info"`
 	JSON       zoneAPIGatewayDiscoveryOperationListResponseJSON       `json:"-"`
 }
@@ -217,25 +217,25 @@ func (r zoneAPIGatewayDiscoveryOperationListResponseJSON) RawJSON() string {
 
 type ZoneAPIGatewayDiscoveryOperationListResponseResult struct {
 	// UUID.
-	ID SchemasUuid `json:"id,required"`
+	ID SchemasUuid `json:"id" api:"required"`
 	// The endpoint which can contain path parameter templates in curly braces, each
 	// will be replaced from left to right with {varN}, starting with {var1}, during
 	// insertion. This will further be Cloudflare-normalized upon insertion. See:
 	// https://developers.cloudflare.com/rules/normalization/how-it-works/.
-	Endpoint string `json:"endpoint,required" format:"uri-template"`
+	Endpoint string `json:"endpoint" api:"required" format:"uri-template"`
 	// RFC3986-compliant host.
-	Host        string           `json:"host,required" format:"hostname"`
-	LastUpdated SchemasTimestamp `json:"last_updated,required" format:"date-time"`
+	Host        string           `json:"host" api:"required" format:"hostname"`
+	LastUpdated SchemasTimestamp `json:"last_updated" api:"required" format:"date-time"`
 	// The HTTP method used to access the endpoint.
-	Method ZoneAPIGatewayDiscoveryOperationListResponseResultMethod `json:"method,required"`
+	Method ZoneAPIGatewayDiscoveryOperationListResponseResultMethod `json:"method" api:"required"`
 	// API discovery engine(s) that discovered this operation
-	Origin []ZoneAPIGatewayDiscoveryOperationListResponseResultOrigin `json:"origin,required"`
+	Origin []ZoneAPIGatewayDiscoveryOperationListResponseResultOrigin `json:"origin" api:"required"`
 	// State of operation in API Discovery
 	//
 	// - `review` - Operation is not saved into API Shield Endpoint Management
 	// - `saved` - Operation is saved into API Shield Endpoint Management
 	// - `ignored` - Operation is marked as ignored
-	State    APIDiscoveryState                                          `json:"state,required"`
+	State    APIDiscoveryState                                          `json:"state" api:"required"`
 	Features ZoneAPIGatewayDiscoveryOperationListResponseResultFeatures `json:"features"`
 	JSON     zoneAPIGatewayDiscoveryOperationListResponseResultJSON     `json:"-"`
 }
@@ -329,11 +329,11 @@ func (r zoneAPIGatewayDiscoveryOperationListResponseResultFeaturesJSON) RawJSON(
 }
 
 type ZoneAPIGatewayDiscoveryOperationListResponseResultFeaturesTrafficStats struct {
-	LastUpdated SchemasTimestamp `json:"last_updated,required" format:"date-time"`
+	LastUpdated SchemasTimestamp `json:"last_updated" api:"required" format:"date-time"`
 	// The period in seconds these statistics were computed over
-	PeriodSeconds int64 `json:"period_seconds,required"`
+	PeriodSeconds int64 `json:"period_seconds" api:"required"`
 	// The average number of requests seen during this period
-	Requests float64                                                                    `json:"requests,required"`
+	Requests float64                                                                    `json:"requests" api:"required"`
 	JSON     zoneAPIGatewayDiscoveryOperationListResponseResultFeaturesTrafficStatsJSON `json:"-"`
 }
 
@@ -403,11 +403,11 @@ func (r zoneAPIGatewayDiscoveryOperationListResponseResultInfoJSON) RawJSON() st
 }
 
 type ZoneAPIGatewayDiscoveryOperationUpdateSingleResponse struct {
-	Errors   []MessagesAPIShieldItem                                    `json:"errors,required"`
-	Messages []MessagesAPIShieldItem                                    `json:"messages,required"`
-	Result   ZoneAPIGatewayDiscoveryOperationUpdateSingleResponseResult `json:"result,required"`
+	Errors   []MessagesAPIShieldItem                                    `json:"errors" api:"required"`
+	Messages []MessagesAPIShieldItem                                    `json:"messages" api:"required"`
+	Result   ZoneAPIGatewayDiscoveryOperationUpdateSingleResponseResult `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success ZoneAPIGatewayDiscoveryOperationUpdateSingleResponseSuccess `json:"success,required"`
+	Success ZoneAPIGatewayDiscoveryOperationUpdateSingleResponseSuccess `json:"success" api:"required"`
 	JSON    zoneAPIGatewayDiscoveryOperationUpdateSingleResponseJSON    `json:"-"`
 }
 
@@ -473,7 +473,7 @@ func (r ZoneAPIGatewayDiscoveryOperationUpdateSingleResponseSuccess) IsKnown() b
 }
 
 type ZoneAPIGatewayDiscoveryOperationUpdateParams struct {
-	Body map[string]ZoneAPIGatewayDiscoveryOperationUpdateParamsBody `json:"body,required"`
+	Body map[string]ZoneAPIGatewayDiscoveryOperationUpdateParamsBody `json:"body" api:"required"`
 }
 
 func (r ZoneAPIGatewayDiscoveryOperationUpdateParams) MarshalJSON() (data []byte, err error) {

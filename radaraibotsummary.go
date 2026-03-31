@@ -40,12 +40,12 @@ func (r *RadarAIBotSummaryService) GetUserAgent(ctx context.Context, query Radar
 	opts = slices.Concat(r.Options, opts)
 	path := "radar/ai/bots/summary/user_agent"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type RadarAIBotSummaryGetUserAgentResponse struct {
-	Result  RadarAIBotSummaryGetUserAgentResponseResult `json:"result,required"`
-	Success bool                                        `json:"success,required"`
+	Result  RadarAIBotSummaryGetUserAgentResponseResult `json:"result" api:"required"`
+	Success bool                                        `json:"success" api:"required"`
 	JSON    radarAIBotSummaryGetUserAgentResponseJSON   `json:"-"`
 }
 
@@ -68,8 +68,8 @@ func (r radarAIBotSummaryGetUserAgentResponseJSON) RawJSON() string {
 
 type RadarAIBotSummaryGetUserAgentResponseResult struct {
 	// Metadata for the results.
-	Meta     RadarAIBotSummaryGetUserAgentResponseResultMeta `json:"meta,required"`
-	Summary0 map[string]string                               `json:"summary_0,required"`
+	Meta     RadarAIBotSummaryGetUserAgentResponseResultMeta `json:"meta" api:"required"`
+	Summary0 map[string]string                               `json:"summary_0" api:"required"`
 	JSON     radarAIBotSummaryGetUserAgentResponseResultJSON `json:"-"`
 }
 
@@ -92,15 +92,15 @@ func (r radarAIBotSummaryGetUserAgentResponseResultJSON) RawJSON() string {
 
 // Metadata for the results.
 type RadarAIBotSummaryGetUserAgentResponseResultMeta struct {
-	ConfidenceInfo RadarAIBotSummaryGetUserAgentResponseResultMetaConfidenceInfo `json:"confidenceInfo,required"`
-	DateRange      []RadarAIBotSummaryGetUserAgentResponseResultMetaDateRange    `json:"dateRange,required"`
+	ConfidenceInfo RadarAIBotSummaryGetUserAgentResponseResultMetaConfidenceInfo `json:"confidenceInfo" api:"required"`
+	DateRange      []RadarAIBotSummaryGetUserAgentResponseResultMetaDateRange    `json:"dateRange" api:"required"`
 	// Timestamp of the last dataset update.
-	LastUpdated time.Time `json:"lastUpdated,required" format:"date-time"`
+	LastUpdated time.Time `json:"lastUpdated" api:"required" format:"date-time"`
 	// Normalization method applied to the results. Refer to
 	// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
-	Normalization RadarAIBotSummaryGetUserAgentResponseResultMetaNormalization `json:"normalization,required"`
+	Normalization RadarAIBotSummaryGetUserAgentResponseResultMetaNormalization `json:"normalization" api:"required"`
 	// Measurement units for the results.
-	Units []RadarAIBotSummaryGetUserAgentResponseResultMetaUnit `json:"units,required"`
+	Units []RadarAIBotSummaryGetUserAgentResponseResultMetaUnit `json:"units" api:"required"`
 	JSON  radarAIBotSummaryGetUserAgentResponseResultMetaJSON   `json:"-"`
 }
 
@@ -125,9 +125,9 @@ func (r radarAIBotSummaryGetUserAgentResponseResultMetaJSON) RawJSON() string {
 }
 
 type RadarAIBotSummaryGetUserAgentResponseResultMetaConfidenceInfo struct {
-	Annotations []RadarAIBotSummaryGetUserAgentResponseResultMetaConfidenceInfoAnnotation `json:"annotations,required"`
+	Annotations []RadarAIBotSummaryGetUserAgentResponseResultMetaConfidenceInfoAnnotation `json:"annotations" api:"required"`
 	// Provides an indication of how much confidence Cloudflare has in the data.
-	Level int64                                                             `json:"level,required"`
+	Level int64                                                             `json:"level" api:"required"`
 	JSON  radarAIBotSummaryGetUserAgentResponseResultMetaConfidenceInfoJSON `json:"-"`
 }
 
@@ -151,14 +151,14 @@ func (r radarAIBotSummaryGetUserAgentResponseResultMetaConfidenceInfoJSON) RawJS
 
 // Annotation associated with the result (e.g. outage or other type of event).
 type RadarAIBotSummaryGetUserAgentResponseResultMetaConfidenceInfoAnnotation struct {
-	DataSource  string    `json:"dataSource,required"`
-	Description string    `json:"description,required"`
-	EndDate     time.Time `json:"endDate,required" format:"date-time"`
-	EventType   string    `json:"eventType,required"`
+	DataSource  string    `json:"dataSource" api:"required"`
+	Description string    `json:"description" api:"required"`
+	EndDate     time.Time `json:"endDate" api:"required" format:"date-time"`
+	EventType   string    `json:"eventType" api:"required"`
 	// Whether event is a single point in time or a time range.
-	IsInstantaneous bool                                                                        `json:"isInstantaneous,required"`
-	LinkedURL       string                                                                      `json:"linkedUrl,required" format:"uri"`
-	StartDate       time.Time                                                                   `json:"startDate,required" format:"date-time"`
+	IsInstantaneous bool                                                                        `json:"isInstantaneous" api:"required"`
+	LinkedURL       string                                                                      `json:"linkedUrl" api:"required" format:"uri"`
+	StartDate       time.Time                                                                   `json:"startDate" api:"required" format:"date-time"`
 	JSON            radarAIBotSummaryGetUserAgentResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
 }
 
@@ -187,9 +187,9 @@ func (r radarAIBotSummaryGetUserAgentResponseResultMetaConfidenceInfoAnnotationJ
 
 type RadarAIBotSummaryGetUserAgentResponseResultMetaDateRange struct {
 	// Adjusted end of date range.
-	EndTime time.Time `json:"endTime,required" format:"date-time"`
+	EndTime time.Time `json:"endTime" api:"required" format:"date-time"`
 	// Adjusted start of date range.
-	StartTime time.Time                                                    `json:"startTime,required" format:"date-time"`
+	StartTime time.Time                                                    `json:"startTime" api:"required" format:"date-time"`
 	JSON      radarAIBotSummaryGetUserAgentResponseResultMetaDateRangeJSON `json:"-"`
 }
 
@@ -235,8 +235,8 @@ func (r RadarAIBotSummaryGetUserAgentResponseResultMetaNormalization) IsKnown() 
 }
 
 type RadarAIBotSummaryGetUserAgentResponseResultMetaUnit struct {
-	Name  string                                                  `json:"name,required"`
-	Value string                                                  `json:"value,required"`
+	Name  string                                                  `json:"name" api:"required"`
+	Value string                                                  `json:"value" api:"required"`
 	JSON  radarAIBotSummaryGetUserAgentResponseResultMetaUnitJSON `json:"-"`
 }
 

@@ -45,11 +45,11 @@ func (r *AccountIntelAttackSurfaceReportIssueService) List(ctx context.Context, 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/intel/attack-surface-report/issues", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Get Security Center Issue Counts by Class
@@ -59,11 +59,11 @@ func (r *AccountIntelAttackSurfaceReportIssueService) ListByClass(ctx context.Co
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/intel/attack-surface-report/issues/class", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Get Security Center Issue Counts by Severity
@@ -73,11 +73,11 @@ func (r *AccountIntelAttackSurfaceReportIssueService) ListBySeverity(ctx context
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/intel/attack-surface-report/issues/severity", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Get Security Center Issue Counts by Type
@@ -87,11 +87,11 @@ func (r *AccountIntelAttackSurfaceReportIssueService) ListByType(ctx context.Con
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/intel/attack-surface-report/issues/type", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type Issue struct {
@@ -185,10 +185,10 @@ func (r SeverityQueryParam) IsKnown() bool {
 }
 
 type ValueCountsResponse struct {
-	Errors   []AttackSurfaceReportMessage `json:"errors,required"`
-	Messages []AttackSurfaceReportMessage `json:"messages,required"`
+	Errors   []AttackSurfaceReportMessage `json:"errors" api:"required"`
+	Messages []AttackSurfaceReportMessage `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success ValueCountsResponseSuccess  `json:"success,required"`
+	Success ValueCountsResponseSuccess  `json:"success" api:"required"`
 	Result  []ValueCountsResponseResult `json:"result"`
 	JSON    valueCountsResponseJSON     `json:"-"`
 }
@@ -251,10 +251,10 @@ func (r valueCountsResponseResultJSON) RawJSON() string {
 }
 
 type AccountIntelAttackSurfaceReportIssueListResponse struct {
-	Errors   []AttackSurfaceReportMessage `json:"errors,required"`
-	Messages []AttackSurfaceReportMessage `json:"messages,required"`
+	Errors   []AttackSurfaceReportMessage `json:"errors" api:"required"`
+	Messages []AttackSurfaceReportMessage `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountIntelAttackSurfaceReportIssueListResponseSuccess `json:"success,required"`
+	Success AccountIntelAttackSurfaceReportIssueListResponseSuccess `json:"success" api:"required"`
 	Result  AccountIntelAttackSurfaceReportIssueListResponseResult  `json:"result"`
 	JSON    accountIntelAttackSurfaceReportIssueListResponseJSON    `json:"-"`
 }

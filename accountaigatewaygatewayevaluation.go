@@ -45,15 +45,15 @@ func (r *AccountAIGatewayGatewayEvaluationService) NewEvaluation(ctx context.Con
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if gatewayID == "" {
 		err = errors.New("missing required gateway_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai-gateway/gateways/%s/evaluations", accountID, gatewayID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete a Evaluation
@@ -61,19 +61,19 @@ func (r *AccountAIGatewayGatewayEvaluationService) DeleteEvaluation(ctx context.
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if gatewayID == "" {
 		err = errors.New("missing required gateway_id parameter")
-		return
+		return nil, err
 	}
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai-gateway/gateways/%s/evaluations/%s", accountID, gatewayID, id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetch a Evaluation
@@ -81,19 +81,19 @@ func (r *AccountAIGatewayGatewayEvaluationService) FetchEvaluation(ctx context.C
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if gatewayID == "" {
 		err = errors.New("missing required gateway_id parameter")
-		return
+		return nil, err
 	}
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai-gateway/gateways/%s/evaluations/%s", accountID, gatewayID, id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // List Evaluations
@@ -101,20 +101,20 @@ func (r *AccountAIGatewayGatewayEvaluationService) ListEvaluations(ctx context.C
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if gatewayID == "" {
 		err = errors.New("missing required gateway_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai-gateway/gateways/%s/evaluations", accountID, gatewayID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountAIGatewayGatewayEvaluationNewEvaluationResponse struct {
-	Result  AccountAIGatewayGatewayEvaluationNewEvaluationResponseResult `json:"result,required"`
-	Success bool                                                         `json:"success,required"`
+	Result  AccountAIGatewayGatewayEvaluationNewEvaluationResponseResult `json:"result" api:"required"`
+	Success bool                                                         `json:"success" api:"required"`
 	JSON    accountAIGatewayGatewayEvaluationNewEvaluationResponseJSON   `json:"-"`
 }
 
@@ -136,18 +136,18 @@ func (r accountAIGatewayGatewayEvaluationNewEvaluationResponseJSON) RawJSON() st
 }
 
 type AccountAIGatewayGatewayEvaluationNewEvaluationResponseResult struct {
-	ID         string                                                                `json:"id,required"`
-	AccountID  string                                                                `json:"account_id,required"`
-	AccountTag string                                                                `json:"account_tag,required"`
-	CreatedAt  time.Time                                                             `json:"created_at,required" format:"date-time"`
-	Datasets   []AccountAIGatewayGatewayEvaluationNewEvaluationResponseResultDataset `json:"datasets,required"`
+	ID         string                                                                `json:"id" api:"required"`
+	AccountID  string                                                                `json:"account_id" api:"required"`
+	AccountTag string                                                                `json:"account_tag" api:"required"`
+	CreatedAt  time.Time                                                             `json:"created_at" api:"required" format:"date-time"`
+	Datasets   []AccountAIGatewayGatewayEvaluationNewEvaluationResponseResultDataset `json:"datasets" api:"required"`
 	// gateway id
-	GatewayID  string                                                               `json:"gateway_id,required"`
-	ModifiedAt time.Time                                                            `json:"modified_at,required" format:"date-time"`
-	Name       string                                                               `json:"name,required"`
-	Processed  bool                                                                 `json:"processed,required"`
-	Results    []AccountAIGatewayGatewayEvaluationNewEvaluationResponseResultResult `json:"results,required"`
-	TotalLogs  float64                                                              `json:"total_logs,required"`
+	GatewayID  string                                                               `json:"gateway_id" api:"required"`
+	ModifiedAt time.Time                                                            `json:"modified_at" api:"required" format:"date-time"`
+	Name       string                                                               `json:"name" api:"required"`
+	Processed  bool                                                                 `json:"processed" api:"required"`
+	Results    []AccountAIGatewayGatewayEvaluationNewEvaluationResponseResultResult `json:"results" api:"required"`
+	TotalLogs  float64                                                              `json:"total_logs" api:"required"`
 	JSON       accountAIGatewayGatewayEvaluationNewEvaluationResponseResultJSON     `json:"-"`
 }
 
@@ -179,16 +179,16 @@ func (r accountAIGatewayGatewayEvaluationNewEvaluationResponseResultJSON) RawJSO
 }
 
 type AccountAIGatewayGatewayEvaluationNewEvaluationResponseResultDataset struct {
-	ID         string                                                                       `json:"id,required"`
-	AccountID  string                                                                       `json:"account_id,required"`
-	AccountTag string                                                                       `json:"account_tag,required"`
-	CreatedAt  time.Time                                                                    `json:"created_at,required" format:"date-time"`
-	Enable     bool                                                                         `json:"enable,required"`
-	Filters    []AccountAIGatewayGatewayEvaluationNewEvaluationResponseResultDatasetsFilter `json:"filters,required"`
+	ID         string                                                                       `json:"id" api:"required"`
+	AccountID  string                                                                       `json:"account_id" api:"required"`
+	AccountTag string                                                                       `json:"account_tag" api:"required"`
+	CreatedAt  time.Time                                                                    `json:"created_at" api:"required" format:"date-time"`
+	Enable     bool                                                                         `json:"enable" api:"required"`
+	Filters    []AccountAIGatewayGatewayEvaluationNewEvaluationResponseResultDatasetsFilter `json:"filters" api:"required"`
 	// gateway id
-	GatewayID  string                                                                  `json:"gateway_id,required"`
-	ModifiedAt time.Time                                                               `json:"modified_at,required" format:"date-time"`
-	Name       string                                                                  `json:"name,required"`
+	GatewayID  string                                                                  `json:"gateway_id" api:"required"`
+	ModifiedAt time.Time                                                               `json:"modified_at" api:"required" format:"date-time"`
+	Name       string                                                                  `json:"name" api:"required"`
 	JSON       accountAIGatewayGatewayEvaluationNewEvaluationResponseResultDatasetJSON `json:"-"`
 }
 
@@ -218,9 +218,9 @@ func (r accountAIGatewayGatewayEvaluationNewEvaluationResponseResultDatasetJSON)
 }
 
 type AccountAIGatewayGatewayEvaluationNewEvaluationResponseResultDatasetsFilter struct {
-	Key      AccountAIGatewayGatewayEvaluationNewEvaluationResponseResultDatasetsFiltersKey          `json:"key,required"`
-	Operator AccountAIGatewayGatewayEvaluationNewEvaluationResponseResultDatasetsFiltersOperator     `json:"operator,required"`
-	Value    []AccountAIGatewayGatewayEvaluationNewEvaluationResponseResultDatasetsFiltersValueUnion `json:"value,required"`
+	Key      AccountAIGatewayGatewayEvaluationNewEvaluationResponseResultDatasetsFiltersKey          `json:"key" api:"required"`
+	Operator AccountAIGatewayGatewayEvaluationNewEvaluationResponseResultDatasetsFiltersOperator     `json:"operator" api:"required"`
+	Value    []AccountAIGatewayGatewayEvaluationNewEvaluationResponseResultDatasetsFiltersValueUnion `json:"value" api:"required"`
 	JSON     accountAIGatewayGatewayEvaluationNewEvaluationResponseResultDatasetsFilterJSON          `json:"-"`
 }
 
@@ -316,15 +316,15 @@ func init() {
 }
 
 type AccountAIGatewayGatewayEvaluationNewEvaluationResponseResultResult struct {
-	ID                string                                                                 `json:"id,required"`
-	CreatedAt         time.Time                                                              `json:"created_at,required" format:"date-time"`
-	EvaluationID      string                                                                 `json:"evaluation_id,required"`
-	EvaluationTypeID  string                                                                 `json:"evaluation_type_id,required"`
-	ModifiedAt        time.Time                                                              `json:"modified_at,required" format:"date-time"`
-	Result            string                                                                 `json:"result,required"`
-	Status            float64                                                                `json:"status,required"`
-	StatusDescription string                                                                 `json:"status_description,required"`
-	TotalLogs         float64                                                                `json:"total_logs,required"`
+	ID                string                                                                 `json:"id" api:"required"`
+	CreatedAt         time.Time                                                              `json:"created_at" api:"required" format:"date-time"`
+	EvaluationID      string                                                                 `json:"evaluation_id" api:"required"`
+	EvaluationTypeID  string                                                                 `json:"evaluation_type_id" api:"required"`
+	ModifiedAt        time.Time                                                              `json:"modified_at" api:"required" format:"date-time"`
+	Result            string                                                                 `json:"result" api:"required"`
+	Status            float64                                                                `json:"status" api:"required"`
+	StatusDescription string                                                                 `json:"status_description" api:"required"`
+	TotalLogs         float64                                                                `json:"total_logs" api:"required"`
 	JSON              accountAIGatewayGatewayEvaluationNewEvaluationResponseResultResultJSON `json:"-"`
 }
 
@@ -354,8 +354,8 @@ func (r accountAIGatewayGatewayEvaluationNewEvaluationResponseResultResultJSON) 
 }
 
 type AccountAIGatewayGatewayEvaluationDeleteEvaluationResponse struct {
-	Result  AccountAIGatewayGatewayEvaluationDeleteEvaluationResponseResult `json:"result,required"`
-	Success bool                                                            `json:"success,required"`
+	Result  AccountAIGatewayGatewayEvaluationDeleteEvaluationResponseResult `json:"result" api:"required"`
+	Success bool                                                            `json:"success" api:"required"`
 	JSON    accountAIGatewayGatewayEvaluationDeleteEvaluationResponseJSON   `json:"-"`
 }
 
@@ -378,18 +378,18 @@ func (r accountAIGatewayGatewayEvaluationDeleteEvaluationResponseJSON) RawJSON()
 }
 
 type AccountAIGatewayGatewayEvaluationDeleteEvaluationResponseResult struct {
-	ID         string                                                                   `json:"id,required"`
-	AccountID  string                                                                   `json:"account_id,required"`
-	AccountTag string                                                                   `json:"account_tag,required"`
-	CreatedAt  time.Time                                                                `json:"created_at,required" format:"date-time"`
-	Datasets   []AccountAIGatewayGatewayEvaluationDeleteEvaluationResponseResultDataset `json:"datasets,required"`
+	ID         string                                                                   `json:"id" api:"required"`
+	AccountID  string                                                                   `json:"account_id" api:"required"`
+	AccountTag string                                                                   `json:"account_tag" api:"required"`
+	CreatedAt  time.Time                                                                `json:"created_at" api:"required" format:"date-time"`
+	Datasets   []AccountAIGatewayGatewayEvaluationDeleteEvaluationResponseResultDataset `json:"datasets" api:"required"`
 	// gateway id
-	GatewayID  string                                                                  `json:"gateway_id,required"`
-	ModifiedAt time.Time                                                               `json:"modified_at,required" format:"date-time"`
-	Name       string                                                                  `json:"name,required"`
-	Processed  bool                                                                    `json:"processed,required"`
-	Results    []AccountAIGatewayGatewayEvaluationDeleteEvaluationResponseResultResult `json:"results,required"`
-	TotalLogs  float64                                                                 `json:"total_logs,required"`
+	GatewayID  string                                                                  `json:"gateway_id" api:"required"`
+	ModifiedAt time.Time                                                               `json:"modified_at" api:"required" format:"date-time"`
+	Name       string                                                                  `json:"name" api:"required"`
+	Processed  bool                                                                    `json:"processed" api:"required"`
+	Results    []AccountAIGatewayGatewayEvaluationDeleteEvaluationResponseResultResult `json:"results" api:"required"`
+	TotalLogs  float64                                                                 `json:"total_logs" api:"required"`
 	JSON       accountAIGatewayGatewayEvaluationDeleteEvaluationResponseResultJSON     `json:"-"`
 }
 
@@ -421,16 +421,16 @@ func (r accountAIGatewayGatewayEvaluationDeleteEvaluationResponseResultJSON) Raw
 }
 
 type AccountAIGatewayGatewayEvaluationDeleteEvaluationResponseResultDataset struct {
-	ID         string                                                                          `json:"id,required"`
-	AccountID  string                                                                          `json:"account_id,required"`
-	AccountTag string                                                                          `json:"account_tag,required"`
-	CreatedAt  time.Time                                                                       `json:"created_at,required" format:"date-time"`
-	Enable     bool                                                                            `json:"enable,required"`
-	Filters    []AccountAIGatewayGatewayEvaluationDeleteEvaluationResponseResultDatasetsFilter `json:"filters,required"`
+	ID         string                                                                          `json:"id" api:"required"`
+	AccountID  string                                                                          `json:"account_id" api:"required"`
+	AccountTag string                                                                          `json:"account_tag" api:"required"`
+	CreatedAt  time.Time                                                                       `json:"created_at" api:"required" format:"date-time"`
+	Enable     bool                                                                            `json:"enable" api:"required"`
+	Filters    []AccountAIGatewayGatewayEvaluationDeleteEvaluationResponseResultDatasetsFilter `json:"filters" api:"required"`
 	// gateway id
-	GatewayID  string                                                                     `json:"gateway_id,required"`
-	ModifiedAt time.Time                                                                  `json:"modified_at,required" format:"date-time"`
-	Name       string                                                                     `json:"name,required"`
+	GatewayID  string                                                                     `json:"gateway_id" api:"required"`
+	ModifiedAt time.Time                                                                  `json:"modified_at" api:"required" format:"date-time"`
+	Name       string                                                                     `json:"name" api:"required"`
 	JSON       accountAIGatewayGatewayEvaluationDeleteEvaluationResponseResultDatasetJSON `json:"-"`
 }
 
@@ -460,9 +460,9 @@ func (r accountAIGatewayGatewayEvaluationDeleteEvaluationResponseResultDatasetJS
 }
 
 type AccountAIGatewayGatewayEvaluationDeleteEvaluationResponseResultDatasetsFilter struct {
-	Key      AccountAIGatewayGatewayEvaluationDeleteEvaluationResponseResultDatasetsFiltersKey          `json:"key,required"`
-	Operator AccountAIGatewayGatewayEvaluationDeleteEvaluationResponseResultDatasetsFiltersOperator     `json:"operator,required"`
-	Value    []AccountAIGatewayGatewayEvaluationDeleteEvaluationResponseResultDatasetsFiltersValueUnion `json:"value,required"`
+	Key      AccountAIGatewayGatewayEvaluationDeleteEvaluationResponseResultDatasetsFiltersKey          `json:"key" api:"required"`
+	Operator AccountAIGatewayGatewayEvaluationDeleteEvaluationResponseResultDatasetsFiltersOperator     `json:"operator" api:"required"`
+	Value    []AccountAIGatewayGatewayEvaluationDeleteEvaluationResponseResultDatasetsFiltersValueUnion `json:"value" api:"required"`
 	JSON     accountAIGatewayGatewayEvaluationDeleteEvaluationResponseResultDatasetsFilterJSON          `json:"-"`
 }
 
@@ -558,15 +558,15 @@ func init() {
 }
 
 type AccountAIGatewayGatewayEvaluationDeleteEvaluationResponseResultResult struct {
-	ID                string                                                                    `json:"id,required"`
-	CreatedAt         time.Time                                                                 `json:"created_at,required" format:"date-time"`
-	EvaluationID      string                                                                    `json:"evaluation_id,required"`
-	EvaluationTypeID  string                                                                    `json:"evaluation_type_id,required"`
-	ModifiedAt        time.Time                                                                 `json:"modified_at,required" format:"date-time"`
-	Result            string                                                                    `json:"result,required"`
-	Status            float64                                                                   `json:"status,required"`
-	StatusDescription string                                                                    `json:"status_description,required"`
-	TotalLogs         float64                                                                   `json:"total_logs,required"`
+	ID                string                                                                    `json:"id" api:"required"`
+	CreatedAt         time.Time                                                                 `json:"created_at" api:"required" format:"date-time"`
+	EvaluationID      string                                                                    `json:"evaluation_id" api:"required"`
+	EvaluationTypeID  string                                                                    `json:"evaluation_type_id" api:"required"`
+	ModifiedAt        time.Time                                                                 `json:"modified_at" api:"required" format:"date-time"`
+	Result            string                                                                    `json:"result" api:"required"`
+	Status            float64                                                                   `json:"status" api:"required"`
+	StatusDescription string                                                                    `json:"status_description" api:"required"`
+	TotalLogs         float64                                                                   `json:"total_logs" api:"required"`
 	JSON              accountAIGatewayGatewayEvaluationDeleteEvaluationResponseResultResultJSON `json:"-"`
 }
 
@@ -596,8 +596,8 @@ func (r accountAIGatewayGatewayEvaluationDeleteEvaluationResponseResultResultJSO
 }
 
 type AccountAIGatewayGatewayEvaluationFetchEvaluationResponse struct {
-	Result  AccountAIGatewayGatewayEvaluationFetchEvaluationResponseResult `json:"result,required"`
-	Success bool                                                           `json:"success,required"`
+	Result  AccountAIGatewayGatewayEvaluationFetchEvaluationResponseResult `json:"result" api:"required"`
+	Success bool                                                           `json:"success" api:"required"`
 	JSON    accountAIGatewayGatewayEvaluationFetchEvaluationResponseJSON   `json:"-"`
 }
 
@@ -620,18 +620,18 @@ func (r accountAIGatewayGatewayEvaluationFetchEvaluationResponseJSON) RawJSON() 
 }
 
 type AccountAIGatewayGatewayEvaluationFetchEvaluationResponseResult struct {
-	ID         string                                                                  `json:"id,required"`
-	AccountID  string                                                                  `json:"account_id,required"`
-	AccountTag string                                                                  `json:"account_tag,required"`
-	CreatedAt  time.Time                                                               `json:"created_at,required" format:"date-time"`
-	Datasets   []AccountAIGatewayGatewayEvaluationFetchEvaluationResponseResultDataset `json:"datasets,required"`
+	ID         string                                                                  `json:"id" api:"required"`
+	AccountID  string                                                                  `json:"account_id" api:"required"`
+	AccountTag string                                                                  `json:"account_tag" api:"required"`
+	CreatedAt  time.Time                                                               `json:"created_at" api:"required" format:"date-time"`
+	Datasets   []AccountAIGatewayGatewayEvaluationFetchEvaluationResponseResultDataset `json:"datasets" api:"required"`
 	// gateway id
-	GatewayID  string                                                                 `json:"gateway_id,required"`
-	ModifiedAt time.Time                                                              `json:"modified_at,required" format:"date-time"`
-	Name       string                                                                 `json:"name,required"`
-	Processed  bool                                                                   `json:"processed,required"`
-	Results    []AccountAIGatewayGatewayEvaluationFetchEvaluationResponseResultResult `json:"results,required"`
-	TotalLogs  float64                                                                `json:"total_logs,required"`
+	GatewayID  string                                                                 `json:"gateway_id" api:"required"`
+	ModifiedAt time.Time                                                              `json:"modified_at" api:"required" format:"date-time"`
+	Name       string                                                                 `json:"name" api:"required"`
+	Processed  bool                                                                   `json:"processed" api:"required"`
+	Results    []AccountAIGatewayGatewayEvaluationFetchEvaluationResponseResultResult `json:"results" api:"required"`
+	TotalLogs  float64                                                                `json:"total_logs" api:"required"`
 	JSON       accountAIGatewayGatewayEvaluationFetchEvaluationResponseResultJSON     `json:"-"`
 }
 
@@ -663,16 +663,16 @@ func (r accountAIGatewayGatewayEvaluationFetchEvaluationResponseResultJSON) RawJ
 }
 
 type AccountAIGatewayGatewayEvaluationFetchEvaluationResponseResultDataset struct {
-	ID         string                                                                         `json:"id,required"`
-	AccountID  string                                                                         `json:"account_id,required"`
-	AccountTag string                                                                         `json:"account_tag,required"`
-	CreatedAt  time.Time                                                                      `json:"created_at,required" format:"date-time"`
-	Enable     bool                                                                           `json:"enable,required"`
-	Filters    []AccountAIGatewayGatewayEvaluationFetchEvaluationResponseResultDatasetsFilter `json:"filters,required"`
+	ID         string                                                                         `json:"id" api:"required"`
+	AccountID  string                                                                         `json:"account_id" api:"required"`
+	AccountTag string                                                                         `json:"account_tag" api:"required"`
+	CreatedAt  time.Time                                                                      `json:"created_at" api:"required" format:"date-time"`
+	Enable     bool                                                                           `json:"enable" api:"required"`
+	Filters    []AccountAIGatewayGatewayEvaluationFetchEvaluationResponseResultDatasetsFilter `json:"filters" api:"required"`
 	// gateway id
-	GatewayID  string                                                                    `json:"gateway_id,required"`
-	ModifiedAt time.Time                                                                 `json:"modified_at,required" format:"date-time"`
-	Name       string                                                                    `json:"name,required"`
+	GatewayID  string                                                                    `json:"gateway_id" api:"required"`
+	ModifiedAt time.Time                                                                 `json:"modified_at" api:"required" format:"date-time"`
+	Name       string                                                                    `json:"name" api:"required"`
 	JSON       accountAIGatewayGatewayEvaluationFetchEvaluationResponseResultDatasetJSON `json:"-"`
 }
 
@@ -702,9 +702,9 @@ func (r accountAIGatewayGatewayEvaluationFetchEvaluationResponseResultDatasetJSO
 }
 
 type AccountAIGatewayGatewayEvaluationFetchEvaluationResponseResultDatasetsFilter struct {
-	Key      AccountAIGatewayGatewayEvaluationFetchEvaluationResponseResultDatasetsFiltersKey          `json:"key,required"`
-	Operator AccountAIGatewayGatewayEvaluationFetchEvaluationResponseResultDatasetsFiltersOperator     `json:"operator,required"`
-	Value    []AccountAIGatewayGatewayEvaluationFetchEvaluationResponseResultDatasetsFiltersValueUnion `json:"value,required"`
+	Key      AccountAIGatewayGatewayEvaluationFetchEvaluationResponseResultDatasetsFiltersKey          `json:"key" api:"required"`
+	Operator AccountAIGatewayGatewayEvaluationFetchEvaluationResponseResultDatasetsFiltersOperator     `json:"operator" api:"required"`
+	Value    []AccountAIGatewayGatewayEvaluationFetchEvaluationResponseResultDatasetsFiltersValueUnion `json:"value" api:"required"`
 	JSON     accountAIGatewayGatewayEvaluationFetchEvaluationResponseResultDatasetsFilterJSON          `json:"-"`
 }
 
@@ -800,15 +800,15 @@ func init() {
 }
 
 type AccountAIGatewayGatewayEvaluationFetchEvaluationResponseResultResult struct {
-	ID                string                                                                   `json:"id,required"`
-	CreatedAt         time.Time                                                                `json:"created_at,required" format:"date-time"`
-	EvaluationID      string                                                                   `json:"evaluation_id,required"`
-	EvaluationTypeID  string                                                                   `json:"evaluation_type_id,required"`
-	ModifiedAt        time.Time                                                                `json:"modified_at,required" format:"date-time"`
-	Result            string                                                                   `json:"result,required"`
-	Status            float64                                                                  `json:"status,required"`
-	StatusDescription string                                                                   `json:"status_description,required"`
-	TotalLogs         float64                                                                  `json:"total_logs,required"`
+	ID                string                                                                   `json:"id" api:"required"`
+	CreatedAt         time.Time                                                                `json:"created_at" api:"required" format:"date-time"`
+	EvaluationID      string                                                                   `json:"evaluation_id" api:"required"`
+	EvaluationTypeID  string                                                                   `json:"evaluation_type_id" api:"required"`
+	ModifiedAt        time.Time                                                                `json:"modified_at" api:"required" format:"date-time"`
+	Result            string                                                                   `json:"result" api:"required"`
+	Status            float64                                                                  `json:"status" api:"required"`
+	StatusDescription string                                                                   `json:"status_description" api:"required"`
+	TotalLogs         float64                                                                  `json:"total_logs" api:"required"`
 	JSON              accountAIGatewayGatewayEvaluationFetchEvaluationResponseResultResultJSON `json:"-"`
 }
 
@@ -838,8 +838,8 @@ func (r accountAIGatewayGatewayEvaluationFetchEvaluationResponseResultResultJSON
 }
 
 type AccountAIGatewayGatewayEvaluationListEvaluationsResponse struct {
-	Result  []AccountAIGatewayGatewayEvaluationListEvaluationsResponseResult `json:"result,required"`
-	Success bool                                                             `json:"success,required"`
+	Result  []AccountAIGatewayGatewayEvaluationListEvaluationsResponseResult `json:"result" api:"required"`
+	Success bool                                                             `json:"success" api:"required"`
 	JSON    accountAIGatewayGatewayEvaluationListEvaluationsResponseJSON     `json:"-"`
 }
 
@@ -862,18 +862,18 @@ func (r accountAIGatewayGatewayEvaluationListEvaluationsResponseJSON) RawJSON() 
 }
 
 type AccountAIGatewayGatewayEvaluationListEvaluationsResponseResult struct {
-	ID         string                                                                  `json:"id,required"`
-	AccountID  string                                                                  `json:"account_id,required"`
-	AccountTag string                                                                  `json:"account_tag,required"`
-	CreatedAt  time.Time                                                               `json:"created_at,required" format:"date-time"`
-	Datasets   []AccountAIGatewayGatewayEvaluationListEvaluationsResponseResultDataset `json:"datasets,required"`
+	ID         string                                                                  `json:"id" api:"required"`
+	AccountID  string                                                                  `json:"account_id" api:"required"`
+	AccountTag string                                                                  `json:"account_tag" api:"required"`
+	CreatedAt  time.Time                                                               `json:"created_at" api:"required" format:"date-time"`
+	Datasets   []AccountAIGatewayGatewayEvaluationListEvaluationsResponseResultDataset `json:"datasets" api:"required"`
 	// gateway id
-	GatewayID  string                                                                 `json:"gateway_id,required"`
-	ModifiedAt time.Time                                                              `json:"modified_at,required" format:"date-time"`
-	Name       string                                                                 `json:"name,required"`
-	Processed  bool                                                                   `json:"processed,required"`
-	Results    []AccountAIGatewayGatewayEvaluationListEvaluationsResponseResultResult `json:"results,required"`
-	TotalLogs  float64                                                                `json:"total_logs,required"`
+	GatewayID  string                                                                 `json:"gateway_id" api:"required"`
+	ModifiedAt time.Time                                                              `json:"modified_at" api:"required" format:"date-time"`
+	Name       string                                                                 `json:"name" api:"required"`
+	Processed  bool                                                                   `json:"processed" api:"required"`
+	Results    []AccountAIGatewayGatewayEvaluationListEvaluationsResponseResultResult `json:"results" api:"required"`
+	TotalLogs  float64                                                                `json:"total_logs" api:"required"`
 	JSON       accountAIGatewayGatewayEvaluationListEvaluationsResponseResultJSON     `json:"-"`
 }
 
@@ -905,16 +905,16 @@ func (r accountAIGatewayGatewayEvaluationListEvaluationsResponseResultJSON) RawJ
 }
 
 type AccountAIGatewayGatewayEvaluationListEvaluationsResponseResultDataset struct {
-	ID         string                                                                         `json:"id,required"`
-	AccountID  string                                                                         `json:"account_id,required"`
-	AccountTag string                                                                         `json:"account_tag,required"`
-	CreatedAt  time.Time                                                                      `json:"created_at,required" format:"date-time"`
-	Enable     bool                                                                           `json:"enable,required"`
-	Filters    []AccountAIGatewayGatewayEvaluationListEvaluationsResponseResultDatasetsFilter `json:"filters,required"`
+	ID         string                                                                         `json:"id" api:"required"`
+	AccountID  string                                                                         `json:"account_id" api:"required"`
+	AccountTag string                                                                         `json:"account_tag" api:"required"`
+	CreatedAt  time.Time                                                                      `json:"created_at" api:"required" format:"date-time"`
+	Enable     bool                                                                           `json:"enable" api:"required"`
+	Filters    []AccountAIGatewayGatewayEvaluationListEvaluationsResponseResultDatasetsFilter `json:"filters" api:"required"`
 	// gateway id
-	GatewayID  string                                                                    `json:"gateway_id,required"`
-	ModifiedAt time.Time                                                                 `json:"modified_at,required" format:"date-time"`
-	Name       string                                                                    `json:"name,required"`
+	GatewayID  string                                                                    `json:"gateway_id" api:"required"`
+	ModifiedAt time.Time                                                                 `json:"modified_at" api:"required" format:"date-time"`
+	Name       string                                                                    `json:"name" api:"required"`
 	JSON       accountAIGatewayGatewayEvaluationListEvaluationsResponseResultDatasetJSON `json:"-"`
 }
 
@@ -944,9 +944,9 @@ func (r accountAIGatewayGatewayEvaluationListEvaluationsResponseResultDatasetJSO
 }
 
 type AccountAIGatewayGatewayEvaluationListEvaluationsResponseResultDatasetsFilter struct {
-	Key      AccountAIGatewayGatewayEvaluationListEvaluationsResponseResultDatasetsFiltersKey          `json:"key,required"`
-	Operator AccountAIGatewayGatewayEvaluationListEvaluationsResponseResultDatasetsFiltersOperator     `json:"operator,required"`
-	Value    []AccountAIGatewayGatewayEvaluationListEvaluationsResponseResultDatasetsFiltersValueUnion `json:"value,required"`
+	Key      AccountAIGatewayGatewayEvaluationListEvaluationsResponseResultDatasetsFiltersKey          `json:"key" api:"required"`
+	Operator AccountAIGatewayGatewayEvaluationListEvaluationsResponseResultDatasetsFiltersOperator     `json:"operator" api:"required"`
+	Value    []AccountAIGatewayGatewayEvaluationListEvaluationsResponseResultDatasetsFiltersValueUnion `json:"value" api:"required"`
 	JSON     accountAIGatewayGatewayEvaluationListEvaluationsResponseResultDatasetsFilterJSON          `json:"-"`
 }
 
@@ -1042,15 +1042,15 @@ func init() {
 }
 
 type AccountAIGatewayGatewayEvaluationListEvaluationsResponseResultResult struct {
-	ID                string                                                                   `json:"id,required"`
-	CreatedAt         time.Time                                                                `json:"created_at,required" format:"date-time"`
-	EvaluationID      string                                                                   `json:"evaluation_id,required"`
-	EvaluationTypeID  string                                                                   `json:"evaluation_type_id,required"`
-	ModifiedAt        time.Time                                                                `json:"modified_at,required" format:"date-time"`
-	Result            string                                                                   `json:"result,required"`
-	Status            float64                                                                  `json:"status,required"`
-	StatusDescription string                                                                   `json:"status_description,required"`
-	TotalLogs         float64                                                                  `json:"total_logs,required"`
+	ID                string                                                                   `json:"id" api:"required"`
+	CreatedAt         time.Time                                                                `json:"created_at" api:"required" format:"date-time"`
+	EvaluationID      string                                                                   `json:"evaluation_id" api:"required"`
+	EvaluationTypeID  string                                                                   `json:"evaluation_type_id" api:"required"`
+	ModifiedAt        time.Time                                                                `json:"modified_at" api:"required" format:"date-time"`
+	Result            string                                                                   `json:"result" api:"required"`
+	Status            float64                                                                  `json:"status" api:"required"`
+	StatusDescription string                                                                   `json:"status_description" api:"required"`
+	TotalLogs         float64                                                                  `json:"total_logs" api:"required"`
 	JSON              accountAIGatewayGatewayEvaluationListEvaluationsResponseResultResultJSON `json:"-"`
 }
 
@@ -1080,9 +1080,9 @@ func (r accountAIGatewayGatewayEvaluationListEvaluationsResponseResultResultJSON
 }
 
 type AccountAIGatewayGatewayEvaluationNewEvaluationParams struct {
-	DatasetIDs        param.Field[[]string] `json:"dataset_ids,required"`
-	EvaluationTypeIDs param.Field[[]string] `json:"evaluation_type_ids,required"`
-	Name              param.Field[string]   `json:"name,required"`
+	DatasetIDs        param.Field[[]string] `json:"dataset_ids" api:"required"`
+	EvaluationTypeIDs param.Field[[]string] `json:"evaluation_type_ids" api:"required"`
+	Name              param.Field[string]   `json:"name" api:"required"`
 }
 
 func (r AccountAIGatewayGatewayEvaluationNewEvaluationParams) MarshalJSON() (data []byte, err error) {

@@ -14,7 +14,7 @@ import (
 )
 
 func TestZoneWaitingRoomRuleNewWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,6 +26,7 @@ func TestZoneWaitingRoomRuleNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.WaitingRooms.Rules.New(
 		context.TODO(),
@@ -50,7 +51,7 @@ func TestZoneWaitingRoomRuleNewWithOptionalParams(t *testing.T) {
 }
 
 func TestZoneWaitingRoomRuleList(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -62,6 +63,7 @@ func TestZoneWaitingRoomRuleList(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.WaitingRooms.Rules.List(
 		context.TODO(),
@@ -78,7 +80,7 @@ func TestZoneWaitingRoomRuleList(t *testing.T) {
 }
 
 func TestZoneWaitingRoomRuleDelete(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -90,6 +92,7 @@ func TestZoneWaitingRoomRuleDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.WaitingRooms.Rules.Delete(
 		context.TODO(),
@@ -107,7 +110,7 @@ func TestZoneWaitingRoomRuleDelete(t *testing.T) {
 }
 
 func TestZoneWaitingRoomRulePatchWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -119,6 +122,7 @@ func TestZoneWaitingRoomRulePatchWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.WaitingRooms.Rules.Patch(
 		context.TODO(),
@@ -145,7 +149,7 @@ func TestZoneWaitingRoomRulePatchWithOptionalParams(t *testing.T) {
 }
 
 func TestZoneWaitingRoomRuleReplace(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -157,6 +161,7 @@ func TestZoneWaitingRoomRuleReplace(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Zones.WaitingRooms.Rules.Replace(
 		context.TODO(),

@@ -19,7 +19,7 @@ import (
 )
 
 func TestAccountDexCommandNew(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -31,6 +31,7 @@ func TestAccountDexCommandNew(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Dex.Commands.New(
 		context.TODO(),
@@ -60,7 +61,7 @@ func TestAccountDexCommandNew(t *testing.T) {
 }
 
 func TestAccountDexCommandListWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -72,6 +73,7 @@ func TestAccountDexCommandListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Dex.Commands.List(
 		context.TODO(),
@@ -107,6 +109,7 @@ func TestAccountDexCommandDownloadOutput(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	resp, err := client.Accounts.Dex.Commands.DownloadOutput(
 		context.TODO(),
@@ -137,7 +140,7 @@ func TestAccountDexCommandDownloadOutput(t *testing.T) {
 }
 
 func TestAccountDexCommandGetQuota(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -149,6 +152,7 @@ func TestAccountDexCommandGetQuota(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Dex.Commands.GetQuota(context.TODO(), "01a7362d577a6c3019a474fd6f485823")
 	if err != nil {
@@ -161,7 +165,7 @@ func TestAccountDexCommandGetQuota(t *testing.T) {
 }
 
 func TestAccountDexCommandListEligibleDevicesWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -173,6 +177,7 @@ func TestAccountDexCommandListEligibleDevicesWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Dex.Commands.ListEligibleDevices(
 		context.TODO(),

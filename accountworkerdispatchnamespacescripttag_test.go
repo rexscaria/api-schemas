@@ -14,7 +14,7 @@ import (
 )
 
 func TestAccountWorkerDispatchNamespaceScriptTagDelete(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,6 +26,7 @@ func TestAccountWorkerDispatchNamespaceScriptTagDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Workers.Dispatch.Namespaces.Scripts.Tags.Delete(
 		context.TODO(),
@@ -44,7 +45,7 @@ func TestAccountWorkerDispatchNamespaceScriptTagDelete(t *testing.T) {
 }
 
 func TestAccountWorkerDispatchNamespaceScriptTagGet(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -56,6 +57,7 @@ func TestAccountWorkerDispatchNamespaceScriptTagGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Workers.Dispatch.Namespaces.Scripts.Tags.Get(
 		context.TODO(),
@@ -73,7 +75,7 @@ func TestAccountWorkerDispatchNamespaceScriptTagGet(t *testing.T) {
 }
 
 func TestAccountWorkerDispatchNamespaceScriptTagPut(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -85,6 +87,7 @@ func TestAccountWorkerDispatchNamespaceScriptTagPut(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Workers.Dispatch.Namespaces.Scripts.Tags.Put(
 		context.TODO(),

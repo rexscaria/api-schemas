@@ -39,11 +39,11 @@ func (r *ZoneLoadBalancerService) New(ctx context.Context, zoneID string, body Z
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/load_balancers", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetch a single configured load balancer.
@@ -51,15 +51,15 @@ func (r *ZoneLoadBalancerService) Get(ctx context.Context, zoneID string, loadBa
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if loadBalancerID == "" {
 		err = errors.New("missing required load_balancer_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/load_balancers/%s", zoneID, loadBalancerID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update a configured load balancer.
@@ -67,15 +67,15 @@ func (r *ZoneLoadBalancerService) Update(ctx context.Context, zoneID string, loa
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if loadBalancerID == "" {
 		err = errors.New("missing required load_balancer_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/load_balancers/%s", zoneID, loadBalancerID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // List configured load balancers.
@@ -83,11 +83,11 @@ func (r *ZoneLoadBalancerService) List(ctx context.Context, zoneID string, opts 
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/load_balancers", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete a configured load balancer.
@@ -95,15 +95,15 @@ func (r *ZoneLoadBalancerService) Delete(ctx context.Context, zoneID string, loa
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if loadBalancerID == "" {
 		err = errors.New("missing required load_balancer_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/load_balancers/%s", zoneID, loadBalancerID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Apply changes to an existing load balancer, overwriting the supplied properties.
@@ -111,15 +111,15 @@ func (r *ZoneLoadBalancerService) Patch(ctx context.Context, zoneID string, load
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if loadBalancerID == "" {
 		err = errors.New("missing required load_balancer_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/load_balancers/%s", zoneID, loadBalancerID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Controls features that modify the routing of requests to pools and origins in
@@ -336,11 +336,11 @@ func (r loadBalancerJSON) RawJSON() string {
 }
 
 type LoadBalancerSingleResponse struct {
-	Errors   []LoadBalancerSingleResponseError   `json:"errors,required"`
-	Messages []LoadBalancerSingleResponseMessage `json:"messages,required"`
-	Result   LoadBalancer                        `json:"result,required"`
+	Errors   []LoadBalancerSingleResponseError   `json:"errors" api:"required"`
+	Messages []LoadBalancerSingleResponseMessage `json:"messages" api:"required"`
+	Result   LoadBalancer                        `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success LoadBalancerSingleResponseSuccess `json:"success,required"`
+	Success LoadBalancerSingleResponseSuccess `json:"success" api:"required"`
 	JSON    loadBalancerSingleResponseJSON    `json:"-"`
 }
 
@@ -364,8 +364,8 @@ func (r loadBalancerSingleResponseJSON) RawJSON() string {
 }
 
 type LoadBalancerSingleResponseError struct {
-	Code             int64                                  `json:"code,required"`
-	Message          string                                 `json:"message,required"`
+	Code             int64                                  `json:"code" api:"required"`
+	Message          string                                 `json:"message" api:"required"`
 	DocumentationURL string                                 `json:"documentation_url"`
 	Source           LoadBalancerSingleResponseErrorsSource `json:"source"`
 	JSON             loadBalancerSingleResponseErrorJSON    `json:"-"`
@@ -412,8 +412,8 @@ func (r loadBalancerSingleResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type LoadBalancerSingleResponseMessage struct {
-	Code             int64                                    `json:"code,required"`
-	Message          string                                   `json:"message,required"`
+	Code             int64                                    `json:"code" api:"required"`
+	Message          string                                   `json:"message" api:"required"`
 	DocumentationURL string                                   `json:"documentation_url"`
 	Source           LoadBalancerSingleResponseMessagesSource `json:"source"`
 	JSON             loadBalancerSingleResponseMessageJSON    `json:"-"`
@@ -1293,11 +1293,11 @@ func (r SteeringPolicy) IsKnown() bool {
 }
 
 type ZoneLoadBalancerListResponse struct {
-	Errors   []ZoneLoadBalancerListResponseError   `json:"errors,required"`
-	Messages []ZoneLoadBalancerListResponseMessage `json:"messages,required"`
-	Result   []LoadBalancer                        `json:"result,required"`
+	Errors   []ZoneLoadBalancerListResponseError   `json:"errors" api:"required"`
+	Messages []ZoneLoadBalancerListResponseMessage `json:"messages" api:"required"`
+	Result   []LoadBalancer                        `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success    ZoneLoadBalancerListResponseSuccess    `json:"success,required"`
+	Success    ZoneLoadBalancerListResponseSuccess    `json:"success" api:"required"`
 	ResultInfo ZoneLoadBalancerListResponseResultInfo `json:"result_info"`
 	JSON       zoneLoadBalancerListResponseJSON       `json:"-"`
 }
@@ -1323,8 +1323,8 @@ func (r zoneLoadBalancerListResponseJSON) RawJSON() string {
 }
 
 type ZoneLoadBalancerListResponseError struct {
-	Code             int64                                    `json:"code,required"`
-	Message          string                                   `json:"message,required"`
+	Code             int64                                    `json:"code" api:"required"`
+	Message          string                                   `json:"message" api:"required"`
 	DocumentationURL string                                   `json:"documentation_url"`
 	Source           ZoneLoadBalancerListResponseErrorsSource `json:"source"`
 	JSON             zoneLoadBalancerListResponseErrorJSON    `json:"-"`
@@ -1371,8 +1371,8 @@ func (r zoneLoadBalancerListResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type ZoneLoadBalancerListResponseMessage struct {
-	Code             int64                                      `json:"code,required"`
-	Message          string                                     `json:"message,required"`
+	Code             int64                                      `json:"code" api:"required"`
+	Message          string                                     `json:"message" api:"required"`
 	DocumentationURL string                                     `json:"documentation_url"`
 	Source           ZoneLoadBalancerListResponseMessagesSource `json:"source"`
 	JSON             zoneLoadBalancerListResponseMessageJSON    `json:"-"`
@@ -1468,11 +1468,11 @@ func (r zoneLoadBalancerListResponseResultInfoJSON) RawJSON() string {
 }
 
 type ZoneLoadBalancerDeleteResponse struct {
-	Errors   []ZoneLoadBalancerDeleteResponseError   `json:"errors,required"`
-	Messages []ZoneLoadBalancerDeleteResponseMessage `json:"messages,required"`
-	Result   ZoneLoadBalancerDeleteResponseResult    `json:"result,required"`
+	Errors   []ZoneLoadBalancerDeleteResponseError   `json:"errors" api:"required"`
+	Messages []ZoneLoadBalancerDeleteResponseMessage `json:"messages" api:"required"`
+	Result   ZoneLoadBalancerDeleteResponseResult    `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success ZoneLoadBalancerDeleteResponseSuccess `json:"success,required"`
+	Success ZoneLoadBalancerDeleteResponseSuccess `json:"success" api:"required"`
 	JSON    zoneLoadBalancerDeleteResponseJSON    `json:"-"`
 }
 
@@ -1496,8 +1496,8 @@ func (r zoneLoadBalancerDeleteResponseJSON) RawJSON() string {
 }
 
 type ZoneLoadBalancerDeleteResponseError struct {
-	Code             int64                                      `json:"code,required"`
-	Message          string                                     `json:"message,required"`
+	Code             int64                                      `json:"code" api:"required"`
+	Message          string                                     `json:"message" api:"required"`
 	DocumentationURL string                                     `json:"documentation_url"`
 	Source           ZoneLoadBalancerDeleteResponseErrorsSource `json:"source"`
 	JSON             zoneLoadBalancerDeleteResponseErrorJSON    `json:"-"`
@@ -1544,8 +1544,8 @@ func (r zoneLoadBalancerDeleteResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type ZoneLoadBalancerDeleteResponseMessage struct {
-	Code             int64                                        `json:"code,required"`
-	Message          string                                       `json:"message,required"`
+	Code             int64                                        `json:"code" api:"required"`
+	Message          string                                       `json:"message" api:"required"`
 	DocumentationURL string                                       `json:"documentation_url"`
 	Source           ZoneLoadBalancerDeleteResponseMessagesSource `json:"source"`
 	JSON             zoneLoadBalancerDeleteResponseMessageJSON    `json:"-"`
@@ -1630,13 +1630,13 @@ func (r ZoneLoadBalancerDeleteResponseSuccess) IsKnown() bool {
 type ZoneLoadBalancerNewParams struct {
 	// A list of pool IDs ordered by their failover priority. Pools defined here are
 	// used by default, or when region_pools are not configured for a given region.
-	DefaultPools param.Field[[]string] `json:"default_pools,required"`
+	DefaultPools param.Field[[]string] `json:"default_pools" api:"required"`
 	// The pool ID to use when all other pools are detected as unhealthy.
-	FallbackPool param.Field[string] `json:"fallback_pool,required"`
+	FallbackPool param.Field[string] `json:"fallback_pool" api:"required"`
 	// The DNS hostname to associate with your Load Balancer. If this hostname already
 	// exists as a DNS record in Cloudflare's DNS, the Load Balancer will take
 	// precedence and the DNS record will not be used.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Controls features that modify the routing of requests to pools and origins in
 	// response to dynamic conditions, such as during the interval between active
 	// health monitoring requests. For example, zero-downtime failover occurs
@@ -1751,13 +1751,13 @@ func (r ZoneLoadBalancerNewParams) MarshalJSON() (data []byte, err error) {
 type ZoneLoadBalancerUpdateParams struct {
 	// A list of pool IDs ordered by their failover priority. Pools defined here are
 	// used by default, or when region_pools are not configured for a given region.
-	DefaultPools param.Field[[]string] `json:"default_pools,required"`
+	DefaultPools param.Field[[]string] `json:"default_pools" api:"required"`
 	// The pool ID to use when all other pools are detected as unhealthy.
-	FallbackPool param.Field[string] `json:"fallback_pool,required"`
+	FallbackPool param.Field[string] `json:"fallback_pool" api:"required"`
 	// The DNS hostname to associate with your Load Balancer. If this hostname already
 	// exists as a DNS record in Cloudflare's DNS, the Load Balancer will take
 	// precedence and the DNS record will not be used.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Controls features that modify the routing of requests to pools and origins in
 	// response to dynamic conditions, such as during the interval between active
 	// health monitoring requests. For example, zero-downtime failover occurs

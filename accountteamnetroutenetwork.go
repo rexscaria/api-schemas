@@ -45,15 +45,15 @@ func (r *AccountTeamnetRouteNetworkService) New(ctx context.Context, accountID s
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if ipNetworkEncoded == "" {
 		err = errors.New("missing required ip_network_encoded parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/teamnet/routes/network/%s", accountID, ipNetworkEncoded)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates an existing private network route in an account. The CIDR in
@@ -65,15 +65,15 @@ func (r *AccountTeamnetRouteNetworkService) Update(ctx context.Context, accountI
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if ipNetworkEncoded == "" {
 		err = errors.New("missing required ip_network_encoded parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/teamnet/routes/network/%s", accountID, ipNetworkEncoded)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Deletes a private network route from an account. The CIDR in
@@ -90,15 +90,15 @@ func (r *AccountTeamnetRouteNetworkService) Delete(ctx context.Context, accountI
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if ipNetworkEncoded == "" {
 		err = errors.New("missing required ip_network_encoded parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/teamnet/routes/network/%s", accountID, ipNetworkEncoded)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // The type of tunnel.
@@ -124,7 +124,7 @@ func (r TunnelType) IsKnown() bool {
 
 type AccountTeamnetRouteNetworkNewParams struct {
 	// UUID of the tunnel.
-	TunnelID param.Field[string] `json:"tunnel_id,required" format:"uuid"`
+	TunnelID param.Field[string] `json:"tunnel_id" api:"required" format:"uuid"`
 	// Optional remark describing the route.
 	Comment param.Field[string] `json:"comment"`
 	// UUID of the virtual network.

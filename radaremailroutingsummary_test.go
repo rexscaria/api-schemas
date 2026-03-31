@@ -15,7 +15,7 @@ import (
 )
 
 func TestRadarEmailRoutingSummaryGetArcWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -27,6 +27,7 @@ func TestRadarEmailRoutingSummaryGetArcWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.Email.Routing.Summary.GetArc(context.TODO(), cfrex.RadarEmailRoutingSummaryGetArcParams{
 		DateEnd:   cfrex.F([]time.Time{time.Now()}),
@@ -50,7 +51,7 @@ func TestRadarEmailRoutingSummaryGetArcWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarEmailRoutingSummaryGetDkimWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -62,6 +63,7 @@ func TestRadarEmailRoutingSummaryGetDkimWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.Email.Routing.Summary.GetDkim(context.TODO(), cfrex.RadarEmailRoutingSummaryGetDkimParams{
 		Arc:       cfrex.F([]cfrex.RadarEmailRoutingSummaryGetDkimParamsArc{cfrex.RadarEmailRoutingSummaryGetDkimParamsArcPass}),
@@ -85,7 +87,7 @@ func TestRadarEmailRoutingSummaryGetDkimWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarEmailRoutingSummaryGetDmarcWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -97,6 +99,7 @@ func TestRadarEmailRoutingSummaryGetDmarcWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.Email.Routing.Summary.GetDmarc(context.TODO(), cfrex.RadarEmailRoutingSummaryGetDmarcParams{
 		Arc:       cfrex.F([]cfrex.RadarEmailRoutingSummaryGetDmarcParamsArc{cfrex.RadarEmailRoutingSummaryGetDmarcParamsArcPass}),
@@ -120,7 +123,7 @@ func TestRadarEmailRoutingSummaryGetDmarcWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarEmailRoutingSummaryGetEncryptedWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -132,6 +135,7 @@ func TestRadarEmailRoutingSummaryGetEncryptedWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.Email.Routing.Summary.GetEncrypted(context.TODO(), cfrex.RadarEmailRoutingSummaryGetEncryptedParams{
 		Arc:       cfrex.F([]cfrex.RadarEmailRoutingSummaryGetEncryptedParamsArc{cfrex.RadarEmailRoutingSummaryGetEncryptedParamsArcPass}),
@@ -155,7 +159,7 @@ func TestRadarEmailRoutingSummaryGetEncryptedWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarEmailRoutingSummaryGetIPVersionWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -167,6 +171,7 @@ func TestRadarEmailRoutingSummaryGetIPVersionWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.Email.Routing.Summary.GetIPVersion(context.TODO(), cfrex.RadarEmailRoutingSummaryGetIPVersionParams{
 		Arc:       cfrex.F([]cfrex.RadarEmailRoutingSummaryGetIPVersionParamsArc{cfrex.RadarEmailRoutingSummaryGetIPVersionParamsArcPass}),
@@ -190,7 +195,7 @@ func TestRadarEmailRoutingSummaryGetIPVersionWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarEmailRoutingSummaryGetSpfWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -202,6 +207,7 @@ func TestRadarEmailRoutingSummaryGetSpfWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.Email.Routing.Summary.GetSpf(context.TODO(), cfrex.RadarEmailRoutingSummaryGetSpfParams{
 		Arc:       cfrex.F([]cfrex.RadarEmailRoutingSummaryGetSpfParamsArc{cfrex.RadarEmailRoutingSummaryGetSpfParamsArcPass}),

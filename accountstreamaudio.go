@@ -39,15 +39,15 @@ func (r *AccountStreamAudioService) New(ctx context.Context, accountID string, i
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if identifier == "" {
 		err = errors.New("missing required identifier parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/stream/%s/audio/copy", accountID, identifier)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Edits additional audio tracks on a video. Editing the default status of an audio
@@ -57,19 +57,19 @@ func (r *AccountStreamAudioService) Update(ctx context.Context, accountID string
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if identifier == "" {
 		err = errors.New("missing required identifier parameter")
-		return
+		return nil, err
 	}
 	if audioIdentifier == "" {
 		err = errors.New("missing required audio_identifier parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/stream/%s/audio/%s", accountID, identifier, audioIdentifier)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists additional audio tracks on a video. Note this API will not return
@@ -78,15 +78,15 @@ func (r *AccountStreamAudioService) List(ctx context.Context, accountID string, 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if identifier == "" {
 		err = errors.New("missing required identifier parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/stream/%s/audio", accountID, identifier)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Deletes additional audio tracks on a video. Deleting a default audio track is
@@ -95,26 +95,26 @@ func (r *AccountStreamAudioService) Delete(ctx context.Context, accountID string
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if identifier == "" {
 		err = errors.New("missing required identifier parameter")
-		return
+		return nil, err
 	}
 	if audioIdentifier == "" {
 		err = errors.New("missing required audio_identifier parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/stream/%s/audio/%s", accountID, identifier, audioIdentifier)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type AddAudioTrack struct {
-	Errors   []StreamMessages `json:"errors,required"`
-	Messages []StreamMessages `json:"messages,required"`
+	Errors   []StreamMessages `json:"errors" api:"required"`
+	Messages []StreamMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AddAudioTrackSuccess `json:"success,required"`
+	Success AddAudioTrackSuccess `json:"success" api:"required"`
 	Result  AdditionalAudio      `json:"result"`
 	JSON    addAudioTrackJSON    `json:"-"`
 }
@@ -201,10 +201,10 @@ func (r AdditionalAudioStatus) IsKnown() bool {
 }
 
 type DeletedStreamResponse struct {
-	Errors   []StreamMessages `json:"errors,required"`
-	Messages []StreamMessages `json:"messages,required"`
+	Errors   []StreamMessages `json:"errors" api:"required"`
+	Messages []StreamMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success DeletedStreamResponseSuccess `json:"success,required"`
+	Success DeletedStreamResponseSuccess `json:"success" api:"required"`
 	Result  string                       `json:"result"`
 	JSON    deletedStreamResponseJSON    `json:"-"`
 }
@@ -244,10 +244,10 @@ func (r DeletedStreamResponseSuccess) IsKnown() bool {
 }
 
 type AccountStreamAudioListResponse struct {
-	Errors   []StreamMessages `json:"errors,required"`
-	Messages []StreamMessages `json:"messages,required"`
+	Errors   []StreamMessages `json:"errors" api:"required"`
+	Messages []StreamMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountStreamAudioListResponseSuccess `json:"success,required"`
+	Success AccountStreamAudioListResponseSuccess `json:"success" api:"required"`
 	Result  []AdditionalAudio                     `json:"result"`
 	JSON    accountStreamAudioListResponseJSON    `json:"-"`
 }
@@ -289,7 +289,7 @@ func (r AccountStreamAudioListResponseSuccess) IsKnown() bool {
 type AccountStreamAudioNewParams struct {
 	// A string to uniquely identify the track amongst other audio track labels for the
 	// specified video.
-	Label param.Field[string] `json:"label,required"`
+	Label param.Field[string] `json:"label" api:"required"`
 	// An audio track URL. The server must be publicly routable and support `HTTP HEAD`
 	// requests and `HTTP GET` range requests. The server should respond to `HTTP HEAD`
 	// requests with a `content-range` header that includes the size of the file.

@@ -45,50 +45,50 @@ func (r *AccountWorkerServiceEnvironmentContentService) Get(ctx context.Context,
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "string")}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if serviceName == "" {
 		err = errors.New("missing required service_name parameter")
-		return
+		return nil, err
 	}
 	if environmentName == "" {
 		err = errors.New("missing required environment_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/workers/services/%s/environments/%s/content", accountID, serviceName, environmentName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Put script content from a worker with an environment.
 func (r *AccountWorkerServiceEnvironmentContentService) Put(ctx context.Context, accountID string, serviceName string, environmentName string, params AccountWorkerServiceEnvironmentContentPutParams, opts ...option.RequestOption) (res *SingleScriptResponse, err error) {
 	if params.CfWorkerBodyPart.Present {
-		opts = append(opts, option.WithHeader("CF-WORKER-BODY-PART", fmt.Sprintf("%s", params.CfWorkerBodyPart)))
+		opts = append(opts, option.WithHeader("CF-WORKER-BODY-PART", fmt.Sprintf("%v", params.CfWorkerBodyPart)))
 	}
 	if params.CfWorkerMainModulePart.Present {
-		opts = append(opts, option.WithHeader("CF-WORKER-MAIN-MODULE-PART", fmt.Sprintf("%s", params.CfWorkerMainModulePart)))
+		opts = append(opts, option.WithHeader("CF-WORKER-MAIN-MODULE-PART", fmt.Sprintf("%v", params.CfWorkerMainModulePart)))
 	}
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if serviceName == "" {
 		err = errors.New("missing required service_name parameter")
-		return
+		return nil, err
 	}
 	if environmentName == "" {
 		err = errors.New("missing required environment_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/workers/services/%s/environments/%s/content", accountID, serviceName, environmentName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountWorkerServiceEnvironmentContentPutParams struct {
 	// JSON encoded metadata about the uploaded parts and Worker configuration.
-	Metadata param.Field[AccountWorkerServiceEnvironmentContentPutParamsMetadata] `json:"metadata,required"`
+	Metadata param.Field[AccountWorkerServiceEnvironmentContentPutParamsMetadata] `json:"metadata" api:"required"`
 	// An array of modules (often JavaScript files) comprising a Worker script. At
 	// least one module must be present and referenced in the metadata as `main_module`
 	// or `body_part` by filename.<br/>Possible Content-Type(s) are:

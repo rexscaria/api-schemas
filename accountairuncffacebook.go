@@ -45,24 +45,24 @@ func (r *AccountAIRunCfFacebookService) ExecuteBartLargeCnn(ctx context.Context,
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai/run/@cf/facebook/bart-large-cnn", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Execute @cf/facebook/detr-resnet-50 model.
-func (r *AccountAIRunCfFacebookService) ExecuteDetrResnet50(ctx context.Context, accountID string, body io.Reader, body AccountAIRunCfFacebookExecuteDetrResnet50Params, opts ...option.RequestOption) (res *AccountAIRunCfFacebookExecuteDetrResnet50Response, err error) {
+func (r *AccountAIRunCfFacebookService) ExecuteDetrResnet50(ctx context.Context, accountID string, body io.Reader, params AccountAIRunCfFacebookExecuteDetrResnet50Params, opts ...option.RequestOption) (res *AccountAIRunCfFacebookExecuteDetrResnet50Response, err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithRequestBody("application/octet-stream", body)}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai/run/@cf/facebook/detr-resnet-50", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountAIRunCfFacebookExecuteBartLargeCnnResponse = interface{}
@@ -71,7 +71,7 @@ type AccountAIRunCfFacebookExecuteDetrResnet50Response = interface{}
 
 type AccountAIRunCfFacebookExecuteBartLargeCnnParams struct {
 	// The text that you want the model to summarize
-	InputText    param.Field[string] `json:"input_text,required"`
+	InputText    param.Field[string] `json:"input_text" api:"required"`
 	QueueRequest param.Field[string] `query:"queueRequest"`
 	// The maximum length of the generated summary in tokens
 	MaxLength param.Field[int64] `json:"max_length"`

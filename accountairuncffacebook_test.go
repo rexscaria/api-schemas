@@ -16,7 +16,7 @@ import (
 )
 
 func TestAccountAIRunCfFacebookExecuteBartLargeCnnWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -28,6 +28,7 @@ func TestAccountAIRunCfFacebookExecuteBartLargeCnnWithOptionalParams(t *testing.
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.AI.Run.Cf.Facebook.ExecuteBartLargeCnn(
 		context.TODO(),
@@ -48,7 +49,7 @@ func TestAccountAIRunCfFacebookExecuteBartLargeCnnWithOptionalParams(t *testing.
 }
 
 func TestAccountAIRunCfFacebookExecuteDetrResnet50WithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -60,11 +61,12 @@ func TestAccountAIRunCfFacebookExecuteDetrResnet50WithOptionalParams(t *testing.
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.AI.Run.Cf.Facebook.ExecuteDetrResnet50(
 		context.TODO(),
 		"023e105f4ecef8ad9ca31a8372d0c353",
-		io.Reader(bytes.NewBuffer([]byte("some file contents"))),
+		io.Reader(bytes.NewBuffer([]byte("Example data"))),
 		cfrex.AccountAIRunCfFacebookExecuteDetrResnet50Params{
 			QueueRequest: cfrex.F("true"),
 		},

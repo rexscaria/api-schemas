@@ -47,19 +47,19 @@ func (r *ZoneLogService) GetRayidLogs(ctx context.Context, zoneID string, rayID 
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if rayID == "" {
 		err = errors.New("missing required ray_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/logs/rayids/%s", zoneID, rayID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &env, opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	res = &env.Value
-	return
+	return res, nil
 }
 
 // By default, timestamps in responses are returned as Unix nanosecond integers.

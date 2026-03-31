@@ -40,13 +40,13 @@ func (r *RadarBgpLeakService) ListEvents(ctx context.Context, query RadarBgpLeak
 	opts = slices.Concat(r.Options, opts)
 	path := "radar/bgp/leaks/events"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type RadarBgpLeakListEventsResponse struct {
-	Result     RadarBgpLeakListEventsResponseResult     `json:"result,required"`
-	ResultInfo RadarBgpLeakListEventsResponseResultInfo `json:"result_info,required"`
-	Success    bool                                     `json:"success,required"`
+	Result     RadarBgpLeakListEventsResponseResult     `json:"result" api:"required"`
+	ResultInfo RadarBgpLeakListEventsResponseResultInfo `json:"result_info" api:"required"`
+	Success    bool                                     `json:"success" api:"required"`
 	JSON       radarBgpLeakListEventsResponseJSON       `json:"-"`
 }
 
@@ -69,8 +69,8 @@ func (r radarBgpLeakListEventsResponseJSON) RawJSON() string {
 }
 
 type RadarBgpLeakListEventsResponseResult struct {
-	AsnInfo []RadarBgpLeakListEventsResponseResultAsnInfo `json:"asn_info,required"`
-	Events  []RadarBgpLeakListEventsResponseResultEvent   `json:"events,required"`
+	AsnInfo []RadarBgpLeakListEventsResponseResultAsnInfo `json:"asn_info" api:"required"`
+	Events  []RadarBgpLeakListEventsResponseResultEvent   `json:"events" api:"required"`
 	JSON    radarBgpLeakListEventsResponseResultJSON      `json:"-"`
 }
 
@@ -92,9 +92,9 @@ func (r radarBgpLeakListEventsResponseResultJSON) RawJSON() string {
 }
 
 type RadarBgpLeakListEventsResponseResultAsnInfo struct {
-	Asn         int64                                           `json:"asn,required"`
-	CountryCode string                                          `json:"country_code,required"`
-	OrgName     string                                          `json:"org_name,required"`
+	Asn         int64                                           `json:"asn" api:"required"`
+	CountryCode string                                          `json:"country_code" api:"required"`
+	OrgName     string                                          `json:"org_name" api:"required"`
 	JSON        radarBgpLeakListEventsResponseResultAsnInfoJSON `json:"-"`
 }
 
@@ -117,19 +117,19 @@ func (r radarBgpLeakListEventsResponseResultAsnInfoJSON) RawJSON() string {
 }
 
 type RadarBgpLeakListEventsResponseResultEvent struct {
-	ID          int64                                         `json:"id,required"`
-	Countries   []string                                      `json:"countries,required"`
-	DetectedTs  string                                        `json:"detected_ts,required"`
-	Finished    bool                                          `json:"finished,required"`
-	LeakAsn     int64                                         `json:"leak_asn,required"`
-	LeakCount   int64                                         `json:"leak_count,required"`
-	LeakSeg     []int64                                       `json:"leak_seg,required"`
-	LeakType    int64                                         `json:"leak_type,required"`
-	MaxTs       string                                        `json:"max_ts,required"`
-	MinTs       string                                        `json:"min_ts,required"`
-	OriginCount int64                                         `json:"origin_count,required"`
-	PeerCount   int64                                         `json:"peer_count,required"`
-	PrefixCount int64                                         `json:"prefix_count,required"`
+	ID          int64                                         `json:"id" api:"required"`
+	Countries   []string                                      `json:"countries" api:"required"`
+	DetectedTs  string                                        `json:"detected_ts" api:"required"`
+	Finished    bool                                          `json:"finished" api:"required"`
+	LeakAsn     int64                                         `json:"leak_asn" api:"required"`
+	LeakCount   int64                                         `json:"leak_count" api:"required"`
+	LeakSeg     []int64                                       `json:"leak_seg" api:"required"`
+	LeakType    int64                                         `json:"leak_type" api:"required"`
+	MaxTs       string                                        `json:"max_ts" api:"required"`
+	MinTs       string                                        `json:"min_ts" api:"required"`
+	OriginCount int64                                         `json:"origin_count" api:"required"`
+	PeerCount   int64                                         `json:"peer_count" api:"required"`
+	PrefixCount int64                                         `json:"prefix_count" api:"required"`
 	JSON        radarBgpLeakListEventsResponseResultEventJSON `json:"-"`
 }
 
@@ -162,10 +162,10 @@ func (r radarBgpLeakListEventsResponseResultEventJSON) RawJSON() string {
 }
 
 type RadarBgpLeakListEventsResponseResultInfo struct {
-	Count      int64                                        `json:"count,required"`
-	Page       int64                                        `json:"page,required"`
-	PerPage    int64                                        `json:"per_page,required"`
-	TotalCount int64                                        `json:"total_count,required"`
+	Count      int64                                        `json:"count" api:"required"`
+	Page       int64                                        `json:"page" api:"required"`
+	PerPage    int64                                        `json:"per_page" api:"required"`
+	TotalCount int64                                        `json:"total_count" api:"required"`
 	JSON       radarBgpLeakListEventsResponseResultInfoJSON `json:"-"`
 }
 

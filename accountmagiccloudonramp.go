@@ -41,16 +41,16 @@ func NewAccountMagicCloudOnrampService(opts ...option.RequestOption) (r *Account
 // Create a new On-ramp (Closed Beta).
 func (r *AccountMagicCloudOnrampService) New(ctx context.Context, accountID string, params AccountMagicCloudOnrampNewParams, opts ...option.RequestOption) (res *AccountMagicCloudOnrampNewResponse, err error) {
 	if params.Forwarded.Present {
-		opts = append(opts, option.WithHeader("forwarded", fmt.Sprintf("%s", params.Forwarded)))
+		opts = append(opts, option.WithHeader("forwarded", fmt.Sprintf("%v", params.Forwarded)))
 	}
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/cloud/onramps", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Read an On-ramp (Closed Beta).
@@ -58,15 +58,15 @@ func (r *AccountMagicCloudOnrampService) Get(ctx context.Context, accountID stri
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if onrampID == "" {
 		err = errors.New("missing required onramp_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/cloud/onramps/%s", accountID, onrampID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Update an On-ramp (Closed Beta).
@@ -74,15 +74,15 @@ func (r *AccountMagicCloudOnrampService) Update(ctx context.Context, accountID s
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if onrampID == "" {
 		err = errors.New("missing required onramp_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/cloud/onramps/%s", accountID, onrampID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // List On-ramps (Closed Beta).
@@ -90,11 +90,11 @@ func (r *AccountMagicCloudOnrampService) List(ctx context.Context, accountID str
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/cloud/onramps", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete an On-ramp (Closed Beta).
@@ -102,15 +102,15 @@ func (r *AccountMagicCloudOnrampService) Delete(ctx context.Context, accountID s
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if onrampID == "" {
 		err = errors.New("missing required onramp_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/cloud/onramps/%s", accountID, onrampID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Apply an On-ramp (Closed Beta).
@@ -118,15 +118,15 @@ func (r *AccountMagicCloudOnrampService) Apply(ctx context.Context, accountID st
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if onrampID == "" {
 		err = errors.New("missing required onramp_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/cloud/onramps/%s/apply", accountID, onrampID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Export an On-ramp to terraform ready file(s) (Closed Beta).
@@ -135,15 +135,15 @@ func (r *AccountMagicCloudOnrampService) Export(ctx context.Context, accountID s
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "application/zip")}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if onrampID == "" {
 		err = errors.New("missing required onramp_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/cloud/onramps/%s/export", accountID, onrampID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update an On-ramp (Closed Beta).
@@ -151,15 +151,15 @@ func (r *AccountMagicCloudOnrampService) Patch(ctx context.Context, accountID st
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if onrampID == "" {
 		err = errors.New("missing required onramp_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/cloud/onramps/%s", accountID, onrampID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Plan an On-ramp (Closed Beta).
@@ -167,20 +167,20 @@ func (r *AccountMagicCloudOnrampService) Plan(ctx context.Context, accountID str
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if onrampID == "" {
 		err = errors.New("missing required onramp_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/cloud/onramps/%s/plan", accountID, onrampID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type McnCost struct {
-	Currency    string      `json:"currency,required"`
-	MonthlyCost float64     `json:"monthly_cost,required"`
+	Currency    string      `json:"currency" api:"required"`
+	MonthlyCost float64     `json:"monthly_cost" api:"required"`
 	JSON        mcnCostJSON `json:"-"`
 }
 
@@ -201,10 +201,10 @@ func (r mcnCostJSON) RawJSON() string {
 }
 
 type McnCostDiff struct {
-	Currency            string          `json:"currency,required"`
-	CurrentMonthlyCost  float64         `json:"current_monthly_cost,required"`
-	Diff                float64         `json:"diff,required"`
-	ProposedMonthlyCost float64         `json:"proposed_monthly_cost,required"`
+	Currency            string          `json:"currency" api:"required"`
+	CurrentMonthlyCost  float64         `json:"current_monthly_cost" api:"required"`
+	Diff                float64         `json:"diff" api:"required"`
+	ProposedMonthlyCost float64         `json:"proposed_monthly_cost" api:"required"`
 	JSON                mcnCostDiffJSON `json:"-"`
 }
 
@@ -227,8 +227,8 @@ func (r mcnCostDiffJSON) RawJSON() string {
 }
 
 type McnError struct {
-	Code             McnErrorCode   `json:"code,required"`
-	Message          string         `json:"message,required"`
+	Code             McnErrorCode   `json:"code" api:"required"`
+	Message          string         `json:"message" api:"required"`
 	DocumentationURL string         `json:"documentation_url"`
 	Meta             McnErrorMeta   `json:"meta"`
 	Source           McnErrorSource `json:"source"`
@@ -466,9 +466,9 @@ func (r mcnErrorSourceJSON) RawJSON() string {
 }
 
 type McnGoodResponse struct {
-	Errors   []McnError          `json:"errors,required"`
-	Messages []McnError          `json:"messages,required"`
-	Success  bool                `json:"success,required"`
+	Errors   []McnError          `json:"errors" api:"required"`
+	Messages []McnError          `json:"messages" api:"required"`
+	Success  bool                `json:"success" api:"required"`
 	JSON     mcnGoodResponseJSON `json:"-"`
 }
 
@@ -490,13 +490,13 @@ func (r mcnGoodResponseJSON) RawJSON() string {
 }
 
 type McnOnramp struct {
-	ID                            string                        `json:"id,required" format:"uuid"`
-	CloudType                     McnOnrampCloudType            `json:"cloud_type,required"`
-	InstallRoutesInCloud          bool                          `json:"install_routes_in_cloud,required"`
-	InstallRoutesInMagicWan       bool                          `json:"install_routes_in_magic_wan,required"`
-	Name                          string                        `json:"name,required"`
-	Type                          McnOnrampType                 `json:"type,required"`
-	UpdatedAt                     string                        `json:"updated_at,required"`
+	ID                            string                        `json:"id" api:"required" format:"uuid"`
+	CloudType                     McnOnrampCloudType            `json:"cloud_type" api:"required"`
+	InstallRoutesInCloud          bool                          `json:"install_routes_in_cloud" api:"required"`
+	InstallRoutesInMagicWan       bool                          `json:"install_routes_in_magic_wan" api:"required"`
+	Name                          string                        `json:"name" api:"required"`
+	Type                          McnOnrampType                 `json:"type" api:"required"`
+	UpdatedAt                     string                        `json:"updated_at" api:"required"`
 	AttachedHubs                  []string                      `json:"attached_hubs" format:"uuid"`
 	AttachedVpcs                  []string                      `json:"attached_vpcs" format:"uuid"`
 	Description                   string                        `json:"description"`
@@ -563,11 +563,11 @@ func (r mcnOnrampJSON) RawJSON() string {
 }
 
 type McnOnrampPlannedResource struct {
-	Diff                    McnYamlDiff                            `json:"diff,required"`
-	KeysRequireReplace      []string                               `json:"keys_require_replace,required"`
-	MonthlyCostEstimateDiff McnCostDiff                            `json:"monthly_cost_estimate_diff,required"`
-	PlannedAction           McnOnrampPlannedResourcesPlannedAction `json:"planned_action,required"`
-	Resource                McnResourcePreview                     `json:"resource,required"`
+	Diff                    McnYamlDiff                            `json:"diff" api:"required"`
+	KeysRequireReplace      []string                               `json:"keys_require_replace" api:"required"`
+	MonthlyCostEstimateDiff McnCostDiff                            `json:"monthly_cost_estimate_diff" api:"required"`
+	PlannedAction           McnOnrampPlannedResourcesPlannedAction `json:"planned_action" api:"required"`
+	Resource                McnResourcePreview                     `json:"resource" api:"required"`
 	JSON                    mcnOnrampPlannedResourceJSON           `json:"-"`
 }
 
@@ -610,11 +610,11 @@ func (r McnOnrampPlannedResourcesPlannedAction) IsKnown() bool {
 }
 
 type McnOnrampStatus struct {
-	ApplyProgress   McnOnrampStatusApplyProgress  `json:"apply_progress,required"`
-	LifecycleState  McnOnrampStatusLifecycleState `json:"lifecycle_state,required"`
-	PlanProgress    McnOnrampStatusPlanProgress   `json:"plan_progress,required"`
-	Routes          []string                      `json:"routes,required" format:"uuid"`
-	Tunnels         []string                      `json:"tunnels,required" format:"uuid"`
+	ApplyProgress   McnOnrampStatusApplyProgress  `json:"apply_progress" api:"required"`
+	LifecycleState  McnOnrampStatusLifecycleState `json:"lifecycle_state" api:"required"`
+	PlanProgress    McnOnrampStatusPlanProgress   `json:"plan_progress" api:"required"`
+	Routes          []string                      `json:"routes" api:"required" format:"uuid"`
+	Tunnels         []string                      `json:"tunnels" api:"required" format:"uuid"`
 	LifecycleErrors map[string]McnError           `json:"lifecycle_errors"`
 	JSON            mcnOnrampStatusJSON           `json:"-"`
 }
@@ -640,8 +640,8 @@ func (r mcnOnrampStatusJSON) RawJSON() string {
 }
 
 type McnOnrampStatusApplyProgress struct {
-	Done  int64                            `json:"done,required"`
-	Total int64                            `json:"total,required"`
+	Done  int64                            `json:"done" api:"required"`
+	Total int64                            `json:"total" api:"required"`
 	JSON  mcnOnrampStatusApplyProgressJSON `json:"-"`
 }
 
@@ -688,8 +688,8 @@ func (r McnOnrampStatusLifecycleState) IsKnown() bool {
 }
 
 type McnOnrampStatusPlanProgress struct {
-	Done  int64                           `json:"done,required"`
-	Total int64                           `json:"total,required"`
+	Done  int64                           `json:"done" api:"required"`
+	Total int64                           `json:"total" api:"required"`
 	JSON  mcnOnrampStatusPlanProgressJSON `json:"-"`
 }
 
@@ -742,12 +742,12 @@ func (r McnOnrampType) IsKnown() bool {
 }
 
 type McnResourcePreview struct {
-	ID           string                 `json:"id,required" format:"uuid"`
-	CloudType    McnCloudType           `json:"cloud_type,required"`
-	Detail       string                 `json:"detail,required"`
-	Name         string                 `json:"name,required"`
-	ResourceType McnResourceType        `json:"resource_type,required"`
-	Title        string                 `json:"title,required"`
+	ID           string                 `json:"id" api:"required" format:"uuid"`
+	CloudType    McnCloudType           `json:"cloud_type" api:"required"`
+	Detail       string                 `json:"detail" api:"required"`
+	Name         string                 `json:"name" api:"required"`
+	ResourceType McnResourceType        `json:"resource_type" api:"required"`
+	Title        string                 `json:"title" api:"required"`
 	JSON         mcnResourcePreviewJSON `json:"-"`
 }
 
@@ -789,10 +789,10 @@ func (r McnUpdateOnrampRequestParam) MarshalJSON() (data []byte, err error) {
 }
 
 type McnUpdateOnrampResponse struct {
-	Errors   []McnError                  `json:"errors,required"`
-	Messages []McnError                  `json:"messages,required"`
-	Result   McnOnramp                   `json:"result,required"`
-	Success  bool                        `json:"success,required"`
+	Errors   []McnError                  `json:"errors" api:"required"`
+	Messages []McnError                  `json:"messages" api:"required"`
+	Result   McnOnramp                   `json:"result" api:"required"`
+	Success  bool                        `json:"success" api:"required"`
 	JSON     mcnUpdateOnrampResponseJSON `json:"-"`
 }
 
@@ -816,11 +816,11 @@ func (r mcnUpdateOnrampResponseJSON) RawJSON() string {
 }
 
 type McnYamlDiff struct {
-	Diff             string          `json:"diff,required"`
-	LeftDescription  string          `json:"left_description,required"`
-	LeftYaml         string          `json:"left_yaml,required"`
-	RightDescription string          `json:"right_description,required"`
-	RightYaml        string          `json:"right_yaml,required"`
+	Diff             string          `json:"diff" api:"required"`
+	LeftDescription  string          `json:"left_description" api:"required"`
+	LeftYaml         string          `json:"left_yaml" api:"required"`
+	RightDescription string          `json:"right_description" api:"required"`
+	RightYaml        string          `json:"right_yaml" api:"required"`
 	JSON             mcnYamlDiffJSON `json:"-"`
 }
 
@@ -844,10 +844,10 @@ func (r mcnYamlDiffJSON) RawJSON() string {
 }
 
 type AccountMagicCloudOnrampNewResponse struct {
-	Errors   []McnError                             `json:"errors,required"`
-	Messages []McnError                             `json:"messages,required"`
-	Result   McnOnramp                              `json:"result,required"`
-	Success  bool                                   `json:"success,required"`
+	Errors   []McnError                             `json:"errors" api:"required"`
+	Messages []McnError                             `json:"messages" api:"required"`
+	Result   McnOnramp                              `json:"result" api:"required"`
+	Success  bool                                   `json:"success" api:"required"`
 	JSON     accountMagicCloudOnrampNewResponseJSON `json:"-"`
 }
 
@@ -871,10 +871,10 @@ func (r accountMagicCloudOnrampNewResponseJSON) RawJSON() string {
 }
 
 type AccountMagicCloudOnrampGetResponse struct {
-	Errors   []McnError                             `json:"errors,required"`
-	Messages []McnError                             `json:"messages,required"`
-	Result   McnOnramp                              `json:"result,required"`
-	Success  bool                                   `json:"success,required"`
+	Errors   []McnError                             `json:"errors" api:"required"`
+	Messages []McnError                             `json:"messages" api:"required"`
+	Result   McnOnramp                              `json:"result" api:"required"`
+	Success  bool                                   `json:"success" api:"required"`
 	JSON     accountMagicCloudOnrampGetResponseJSON `json:"-"`
 }
 
@@ -898,10 +898,10 @@ func (r accountMagicCloudOnrampGetResponseJSON) RawJSON() string {
 }
 
 type AccountMagicCloudOnrampListResponse struct {
-	Errors   []McnError                              `json:"errors,required"`
-	Messages []McnError                              `json:"messages,required"`
-	Result   []McnOnramp                             `json:"result,required"`
-	Success  bool                                    `json:"success,required"`
+	Errors   []McnError                              `json:"errors" api:"required"`
+	Messages []McnError                              `json:"messages" api:"required"`
+	Result   []McnOnramp                             `json:"result" api:"required"`
+	Success  bool                                    `json:"success" api:"required"`
 	JSON     accountMagicCloudOnrampListResponseJSON `json:"-"`
 }
 
@@ -925,10 +925,10 @@ func (r accountMagicCloudOnrampListResponseJSON) RawJSON() string {
 }
 
 type AccountMagicCloudOnrampDeleteResponse struct {
-	Errors   []McnError                                  `json:"errors,required"`
-	Messages []McnError                                  `json:"messages,required"`
-	Result   AccountMagicCloudOnrampDeleteResponseResult `json:"result,required"`
-	Success  bool                                        `json:"success,required"`
+	Errors   []McnError                                  `json:"errors" api:"required"`
+	Messages []McnError                                  `json:"messages" api:"required"`
+	Result   AccountMagicCloudOnrampDeleteResponseResult `json:"result" api:"required"`
+	Success  bool                                        `json:"success" api:"required"`
 	JSON     accountMagicCloudOnrampDeleteResponseJSON   `json:"-"`
 }
 
@@ -952,7 +952,7 @@ func (r accountMagicCloudOnrampDeleteResponseJSON) RawJSON() string {
 }
 
 type AccountMagicCloudOnrampDeleteResponseResult struct {
-	ID   string                                          `json:"id,required" format:"uuid"`
+	ID   string                                          `json:"id" api:"required" format:"uuid"`
 	JSON accountMagicCloudOnrampDeleteResponseResultJSON `json:"-"`
 }
 
@@ -973,11 +973,11 @@ func (r accountMagicCloudOnrampDeleteResponseResultJSON) RawJSON() string {
 }
 
 type AccountMagicCloudOnrampNewParams struct {
-	CloudType                 param.Field[McnOnrampCloudType] `json:"cloud_type,required"`
-	InstallRoutesInCloud      param.Field[bool]               `json:"install_routes_in_cloud,required"`
-	InstallRoutesInMagicWan   param.Field[bool]               `json:"install_routes_in_magic_wan,required"`
-	Name                      param.Field[string]             `json:"name,required"`
-	Type                      param.Field[McnOnrampType]      `json:"type,required"`
+	CloudType                 param.Field[McnOnrampCloudType] `json:"cloud_type" api:"required"`
+	InstallRoutesInCloud      param.Field[bool]               `json:"install_routes_in_cloud" api:"required"`
+	InstallRoutesInMagicWan   param.Field[bool]               `json:"install_routes_in_magic_wan" api:"required"`
+	Name                      param.Field[string]             `json:"name" api:"required"`
+	Type                      param.Field[McnOnrampType]      `json:"type" api:"required"`
 	AdoptedHubID              param.Field[string]             `json:"adopted_hub_id" format:"uuid"`
 	AttachedHubs              param.Field[[]string]           `json:"attached_hubs" format:"uuid"`
 	AttachedVpcs              param.Field[[]string]           `json:"attached_vpcs" format:"uuid"`
@@ -1011,7 +1011,7 @@ func (r AccountMagicCloudOnrampGetParams) URLQuery() (v url.Values) {
 }
 
 type AccountMagicCloudOnrampUpdateParams struct {
-	McnUpdateOnrampRequest McnUpdateOnrampRequestParam `json:"mcn_update_onramp_request,required"`
+	McnUpdateOnrampRequest McnUpdateOnrampRequestParam `json:"mcn_update_onramp_request" api:"required"`
 }
 
 func (r AccountMagicCloudOnrampUpdateParams) MarshalJSON() (data []byte, err error) {
@@ -1050,7 +1050,7 @@ func (r AccountMagicCloudOnrampDeleteParams) URLQuery() (v url.Values) {
 }
 
 type AccountMagicCloudOnrampPatchParams struct {
-	McnUpdateOnrampRequest McnUpdateOnrampRequestParam `json:"mcn_update_onramp_request,required"`
+	McnUpdateOnrampRequest McnUpdateOnrampRequestParam `json:"mcn_update_onramp_request" api:"required"`
 }
 
 func (r AccountMagicCloudOnrampPatchParams) MarshalJSON() (data []byte, err error) {

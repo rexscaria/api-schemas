@@ -39,106 +39,106 @@ func NewAccountMagicGreTunnelService(opts ...option.RequestOption) (r *AccountMa
 // parameter to only run validation without persisting changes.
 func (r *AccountMagicGreTunnelService) New(ctx context.Context, accountID string, params AccountMagicGreTunnelNewParams, opts ...option.RequestOption) (res *AccountMagicGreTunnelNewResponse, err error) {
 	if params.XMagicNewHcTarget.Present {
-		opts = append(opts, option.WithHeader("x-magic-new-hc-target", fmt.Sprintf("%s", params.XMagicNewHcTarget)))
+		opts = append(opts, option.WithHeader("x-magic-new-hc-target", fmt.Sprintf("%v", params.XMagicNewHcTarget)))
 	}
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/gre_tunnels", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists informtion for a specific GRE tunnel.
 func (r *AccountMagicGreTunnelService) Get(ctx context.Context, accountID string, greTunnelID string, query AccountMagicGreTunnelGetParams, opts ...option.RequestOption) (res *AccountMagicGreTunnelGetResponse, err error) {
 	if query.XMagicNewHcTarget.Present {
-		opts = append(opts, option.WithHeader("x-magic-new-hc-target", fmt.Sprintf("%s", query.XMagicNewHcTarget)))
+		opts = append(opts, option.WithHeader("x-magic-new-hc-target", fmt.Sprintf("%v", query.XMagicNewHcTarget)))
 	}
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if greTunnelID == "" {
 		err = errors.New("missing required gre_tunnel_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/gre_tunnels/%s", accountID, greTunnelID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates a specific GRE tunnel. Use `?validate_only=true` as an optional query
 // parameter to only run validation without persisting changes.
 func (r *AccountMagicGreTunnelService) Update(ctx context.Context, accountID string, greTunnelID string, params AccountMagicGreTunnelUpdateParams, opts ...option.RequestOption) (res *AccountMagicGreTunnelUpdateResponse, err error) {
 	if params.XMagicNewHcTarget.Present {
-		opts = append(opts, option.WithHeader("x-magic-new-hc-target", fmt.Sprintf("%s", params.XMagicNewHcTarget)))
+		opts = append(opts, option.WithHeader("x-magic-new-hc-target", fmt.Sprintf("%v", params.XMagicNewHcTarget)))
 	}
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if greTunnelID == "" {
 		err = errors.New("missing required gre_tunnel_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/gre_tunnels/%s", accountID, greTunnelID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists GRE tunnels associated with an account.
 func (r *AccountMagicGreTunnelService) List(ctx context.Context, accountID string, query AccountMagicGreTunnelListParams, opts ...option.RequestOption) (res *MagicTunnelsCollectionResponse, err error) {
 	if query.XMagicNewHcTarget.Present {
-		opts = append(opts, option.WithHeader("x-magic-new-hc-target", fmt.Sprintf("%s", query.XMagicNewHcTarget)))
+		opts = append(opts, option.WithHeader("x-magic-new-hc-target", fmt.Sprintf("%v", query.XMagicNewHcTarget)))
 	}
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/gre_tunnels", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Disables and removes a specific static GRE tunnel. Use `?validate_only=true` as
 // an optional query parameter to only run validation without persisting changes.
 func (r *AccountMagicGreTunnelService) Delete(ctx context.Context, accountID string, greTunnelID string, body AccountMagicGreTunnelDeleteParams, opts ...option.RequestOption) (res *AccountMagicGreTunnelDeleteResponse, err error) {
 	if body.XMagicNewHcTarget.Present {
-		opts = append(opts, option.WithHeader("x-magic-new-hc-target", fmt.Sprintf("%s", body.XMagicNewHcTarget)))
+		opts = append(opts, option.WithHeader("x-magic-new-hc-target", fmt.Sprintf("%v", body.XMagicNewHcTarget)))
 	}
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if greTunnelID == "" {
 		err = errors.New("missing required gre_tunnel_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/gre_tunnels/%s", accountID, greTunnelID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type MagicGreTunnel struct {
 	// Identifier
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The IP address assigned to the Cloudflare side of the GRE tunnel.
-	CloudflareGreEndpoint string `json:"cloudflare_gre_endpoint,required"`
+	CloudflareGreEndpoint string `json:"cloudflare_gre_endpoint" api:"required"`
 	// The IP address assigned to the customer side of the GRE tunnel.
-	CustomerGreEndpoint string `json:"customer_gre_endpoint,required"`
+	CustomerGreEndpoint string `json:"customer_gre_endpoint" api:"required"`
 	// A 31-bit prefix (/31 in CIDR notation) supporting two hosts, one for each side
 	// of the tunnel. Select the subnet from the following private IP space:
 	// 10.0.0.0–10.255.255.255, 172.16.0.0–172.31.255.255, 192.168.0.0–192.168.255.255.
-	InterfaceAddress string `json:"interface_address,required"`
+	InterfaceAddress string `json:"interface_address" api:"required"`
 	// The name of the tunnel. The name cannot contain spaces or special characters,
 	// must be 15 characters or less, and cannot share a name with another GRE tunnel.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// The date and time the tunnel was created.
 	CreatedOn time.Time `json:"created_on" format:"date-time"`
 	// An optional description of the GRE tunnel.
@@ -180,11 +180,11 @@ func (r magicGreTunnelJSON) RawJSON() string {
 }
 
 type MagicTunnelsCollectionResponse struct {
-	Errors   []MagicMessageItem                   `json:"errors,required"`
-	Messages []MagicMessageItem                   `json:"messages,required"`
-	Result   MagicTunnelsCollectionResponseResult `json:"result,required"`
+	Errors   []MagicMessageItem                   `json:"errors" api:"required"`
+	Messages []MagicMessageItem                   `json:"messages" api:"required"`
+	Result   MagicTunnelsCollectionResponseResult `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success MagicTunnelsCollectionResponseSuccess `json:"success,required"`
+	Success MagicTunnelsCollectionResponseSuccess `json:"success" api:"required"`
 	JSON    magicTunnelsCollectionResponseJSON    `json:"-"`
 }
 
@@ -244,11 +244,11 @@ func (r MagicTunnelsCollectionResponseSuccess) IsKnown() bool {
 }
 
 type AccountMagicGreTunnelNewResponse struct {
-	Errors   []AccountMagicGreTunnelNewResponseError   `json:"errors,required"`
-	Messages []AccountMagicGreTunnelNewResponseMessage `json:"messages,required"`
-	Result   MagicGreTunnel                            `json:"result,required"`
+	Errors   []AccountMagicGreTunnelNewResponseError   `json:"errors" api:"required"`
+	Messages []AccountMagicGreTunnelNewResponseMessage `json:"messages" api:"required"`
+	Result   MagicGreTunnel                            `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success AccountMagicGreTunnelNewResponseSuccess `json:"success,required"`
+	Success AccountMagicGreTunnelNewResponseSuccess `json:"success" api:"required"`
 	JSON    accountMagicGreTunnelNewResponseJSON    `json:"-"`
 }
 
@@ -272,8 +272,8 @@ func (r accountMagicGreTunnelNewResponseJSON) RawJSON() string {
 }
 
 type AccountMagicGreTunnelNewResponseError struct {
-	Code             int64                                        `json:"code,required"`
-	Message          string                                       `json:"message,required"`
+	Code             int64                                        `json:"code" api:"required"`
+	Message          string                                       `json:"message" api:"required"`
 	DocumentationURL string                                       `json:"documentation_url"`
 	Source           AccountMagicGreTunnelNewResponseErrorsSource `json:"source"`
 	JSON             accountMagicGreTunnelNewResponseErrorJSON    `json:"-"`
@@ -320,8 +320,8 @@ func (r accountMagicGreTunnelNewResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type AccountMagicGreTunnelNewResponseMessage struct {
-	Code             int64                                          `json:"code,required"`
-	Message          string                                         `json:"message,required"`
+	Code             int64                                          `json:"code" api:"required"`
+	Message          string                                         `json:"message" api:"required"`
 	DocumentationURL string                                         `json:"documentation_url"`
 	Source           AccountMagicGreTunnelNewResponseMessagesSource `json:"source"`
 	JSON             accountMagicGreTunnelNewResponseMessageJSON    `json:"-"`
@@ -383,11 +383,11 @@ func (r AccountMagicGreTunnelNewResponseSuccess) IsKnown() bool {
 }
 
 type AccountMagicGreTunnelGetResponse struct {
-	Errors   []MagicMessageItem                     `json:"errors,required"`
-	Messages []MagicMessageItem                     `json:"messages,required"`
-	Result   AccountMagicGreTunnelGetResponseResult `json:"result,required"`
+	Errors   []MagicMessageItem                     `json:"errors" api:"required"`
+	Messages []MagicMessageItem                     `json:"messages" api:"required"`
+	Result   AccountMagicGreTunnelGetResponseResult `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success AccountMagicGreTunnelGetResponseSuccess `json:"success,required"`
+	Success AccountMagicGreTunnelGetResponseSuccess `json:"success" api:"required"`
 	JSON    accountMagicGreTunnelGetResponseJSON    `json:"-"`
 }
 
@@ -447,11 +447,11 @@ func (r AccountMagicGreTunnelGetResponseSuccess) IsKnown() bool {
 }
 
 type AccountMagicGreTunnelUpdateResponse struct {
-	Errors   []MagicMessageItem                        `json:"errors,required"`
-	Messages []MagicMessageItem                        `json:"messages,required"`
-	Result   AccountMagicGreTunnelUpdateResponseResult `json:"result,required"`
+	Errors   []MagicMessageItem                        `json:"errors" api:"required"`
+	Messages []MagicMessageItem                        `json:"messages" api:"required"`
+	Result   AccountMagicGreTunnelUpdateResponseResult `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success AccountMagicGreTunnelUpdateResponseSuccess `json:"success,required"`
+	Success AccountMagicGreTunnelUpdateResponseSuccess `json:"success" api:"required"`
 	JSON    accountMagicGreTunnelUpdateResponseJSON    `json:"-"`
 }
 
@@ -513,11 +513,11 @@ func (r AccountMagicGreTunnelUpdateResponseSuccess) IsKnown() bool {
 }
 
 type AccountMagicGreTunnelDeleteResponse struct {
-	Errors   []MagicMessageItem                        `json:"errors,required"`
-	Messages []MagicMessageItem                        `json:"messages,required"`
-	Result   AccountMagicGreTunnelDeleteResponseResult `json:"result,required"`
+	Errors   []MagicMessageItem                        `json:"errors" api:"required"`
+	Messages []MagicMessageItem                        `json:"messages" api:"required"`
+	Result   AccountMagicGreTunnelDeleteResponseResult `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success AccountMagicGreTunnelDeleteResponseSuccess `json:"success,required"`
+	Success AccountMagicGreTunnelDeleteResponseSuccess `json:"success" api:"required"`
 	JSON    accountMagicGreTunnelDeleteResponseJSON    `json:"-"`
 }
 
@@ -580,16 +580,16 @@ func (r AccountMagicGreTunnelDeleteResponseSuccess) IsKnown() bool {
 
 type AccountMagicGreTunnelNewParams struct {
 	// The IP address assigned to the Cloudflare side of the GRE tunnel.
-	CloudflareGreEndpoint param.Field[string] `json:"cloudflare_gre_endpoint,required"`
+	CloudflareGreEndpoint param.Field[string] `json:"cloudflare_gre_endpoint" api:"required"`
 	// The IP address assigned to the customer side of the GRE tunnel.
-	CustomerGreEndpoint param.Field[string] `json:"customer_gre_endpoint,required"`
+	CustomerGreEndpoint param.Field[string] `json:"customer_gre_endpoint" api:"required"`
 	// A 31-bit prefix (/31 in CIDR notation) supporting two hosts, one for each side
 	// of the tunnel. Select the subnet from the following private IP space:
 	// 10.0.0.0–10.255.255.255, 172.16.0.0–172.31.255.255, 192.168.0.0–192.168.255.255.
-	InterfaceAddress param.Field[string] `json:"interface_address,required"`
+	InterfaceAddress param.Field[string] `json:"interface_address" api:"required"`
 	// The name of the tunnel. The name cannot contain spaces or special characters,
 	// must be 15 characters or less, and cannot share a name with another GRE tunnel.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// An optional description of the GRE tunnel.
 	Description param.Field[string]                      `json:"description"`
 	HealthCheck param.Field[MagicTunnelHealthCheckParam] `json:"health_check"`
@@ -611,16 +611,16 @@ type AccountMagicGreTunnelGetParams struct {
 
 type AccountMagicGreTunnelUpdateParams struct {
 	// The IP address assigned to the Cloudflare side of the GRE tunnel.
-	CloudflareGreEndpoint param.Field[string] `json:"cloudflare_gre_endpoint,required"`
+	CloudflareGreEndpoint param.Field[string] `json:"cloudflare_gre_endpoint" api:"required"`
 	// The IP address assigned to the customer side of the GRE tunnel.
-	CustomerGreEndpoint param.Field[string] `json:"customer_gre_endpoint,required"`
+	CustomerGreEndpoint param.Field[string] `json:"customer_gre_endpoint" api:"required"`
 	// A 31-bit prefix (/31 in CIDR notation) supporting two hosts, one for each side
 	// of the tunnel. Select the subnet from the following private IP space:
 	// 10.0.0.0–10.255.255.255, 172.16.0.0–172.31.255.255, 192.168.0.0–192.168.255.255.
-	InterfaceAddress param.Field[string] `json:"interface_address,required"`
+	InterfaceAddress param.Field[string] `json:"interface_address" api:"required"`
 	// The name of the tunnel. The name cannot contain spaces or special characters,
 	// must be 15 characters or less, and cannot share a name with another GRE tunnel.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// An optional description of the GRE tunnel.
 	Description param.Field[string]                      `json:"description"`
 	HealthCheck param.Field[MagicTunnelHealthCheckParam] `json:"health_check"`

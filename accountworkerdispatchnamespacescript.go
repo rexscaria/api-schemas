@@ -57,19 +57,19 @@ func (r *AccountWorkerDispatchNamespaceScriptService) Get(ctx context.Context, a
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if dispatchNamespace == "" {
 		err = errors.New("missing required dispatch_namespace parameter")
-		return
+		return nil, err
 	}
 	if scriptName == "" {
 		err = errors.New("missing required script_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/workers/dispatch/namespaces/%s/scripts/%s", accountID, dispatchNamespace, scriptName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete a worker from a Workers for Platforms namespace. This call has no
@@ -78,19 +78,19 @@ func (r *AccountWorkerDispatchNamespaceScriptService) Delete(ctx context.Context
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if dispatchNamespace == "" {
 		err = errors.New("missing required dispatch_namespace parameter")
-		return
+		return nil, err
 	}
 	if scriptName == "" {
 		err = errors.New("missing required script_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/workers/dispatch/namespaces/%s/scripts/%s", accountID, dispatchNamespace, scriptName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Start uploading a collection of assets for use in a Worker version. To learn
@@ -100,19 +100,19 @@ func (r *AccountWorkerDispatchNamespaceScriptService) NewAssetsUploadSession(ctx
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if dispatchNamespace == "" {
 		err = errors.New("missing required dispatch_namespace parameter")
-		return
+		return nil, err
 	}
 	if scriptName == "" {
 		err = errors.New("missing required script_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/workers/dispatch/namespaces/%s/scripts/%s/assets-upload-session", accountID, dispatchNamespace, scriptName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetch script bindings from a script uploaded to a Workers for Platforms
@@ -121,19 +121,19 @@ func (r *AccountWorkerDispatchNamespaceScriptService) GetBindings(ctx context.Co
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if dispatchNamespace == "" {
 		err = errors.New("missing required dispatch_namespace parameter")
-		return
+		return nil, err
 	}
 	if scriptName == "" {
 		err = errors.New("missing required script_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/workers/dispatch/namespaces/%s/scripts/%s/bindings", accountID, dispatchNamespace, scriptName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Upload a worker module to a Workers for Platforms namespace. You can find more
@@ -143,27 +143,27 @@ func (r *AccountWorkerDispatchNamespaceScriptService) Upload(ctx context.Context
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if dispatchNamespace == "" {
 		err = errors.New("missing required dispatch_namespace parameter")
-		return
+		return nil, err
 	}
 	if scriptName == "" {
 		err = errors.New("missing required script_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/workers/dispatch/namespaces/%s/scripts/%s", accountID, dispatchNamespace, scriptName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // A binding to allow the Worker to communicate with resources.
 type BindingItem struct {
 	// A JavaScript variable name for the binding.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// The kind of resource that the binding provides.
-	Type BindingItemType `json:"type,required"`
+	Type BindingItemType `json:"type" api:"required"`
 	// Identifier of the D1 database to bind to.
 	ID string `json:"id"`
 	// This field can have the runtime type of [interface{}].
@@ -439,9 +439,9 @@ func init() {
 
 type BindingItemWorkersBindingKindAI struct {
 	// A JavaScript variable name for the binding.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// The kind of resource that the binding provides.
-	Type BindingItemWorkersBindingKindAIType `json:"type,required"`
+	Type BindingItemWorkersBindingKindAIType `json:"type" api:"required"`
 	JSON bindingItemWorkersBindingKindAIJSON `json:"-"`
 }
 
@@ -481,11 +481,11 @@ func (r BindingItemWorkersBindingKindAIType) IsKnown() bool {
 
 type BindingItemWorkersBindingKindAnalyticsEngine struct {
 	// The name of the dataset to bind to.
-	Dataset string `json:"dataset,required"`
+	Dataset string `json:"dataset" api:"required"`
 	// A JavaScript variable name for the binding.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// The kind of resource that the binding provides.
-	Type BindingItemWorkersBindingKindAnalyticsEngineType `json:"type,required"`
+	Type BindingItemWorkersBindingKindAnalyticsEngineType `json:"type" api:"required"`
 	JSON bindingItemWorkersBindingKindAnalyticsEngineJSON `json:"-"`
 }
 
@@ -526,9 +526,9 @@ func (r BindingItemWorkersBindingKindAnalyticsEngineType) IsKnown() bool {
 
 type BindingItemWorkersBindingKindAssets struct {
 	// A JavaScript variable name for the binding.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// The kind of resource that the binding provides.
-	Type BindingItemWorkersBindingKindAssetsType `json:"type,required"`
+	Type BindingItemWorkersBindingKindAssetsType `json:"type" api:"required"`
 	JSON bindingItemWorkersBindingKindAssetsJSON `json:"-"`
 }
 
@@ -568,9 +568,9 @@ func (r BindingItemWorkersBindingKindAssetsType) IsKnown() bool {
 
 type BindingItemWorkersBindingKindBrowser struct {
 	// A JavaScript variable name for the binding.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// The kind of resource that the binding provides.
-	Type BindingItemWorkersBindingKindBrowserType `json:"type,required"`
+	Type BindingItemWorkersBindingKindBrowserType `json:"type" api:"required"`
 	JSON bindingItemWorkersBindingKindBrowserJSON `json:"-"`
 }
 
@@ -610,11 +610,11 @@ func (r BindingItemWorkersBindingKindBrowserType) IsKnown() bool {
 
 type BindingItemWorkersBindingKindD1 struct {
 	// Identifier of the D1 database to bind to.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// A JavaScript variable name for the binding.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// The kind of resource that the binding provides.
-	Type BindingItemWorkersBindingKindD1Type `json:"type,required"`
+	Type BindingItemWorkersBindingKindD1Type `json:"type" api:"required"`
 	JSON bindingItemWorkersBindingKindD1JSON `json:"-"`
 }
 
@@ -655,11 +655,11 @@ func (r BindingItemWorkersBindingKindD1Type) IsKnown() bool {
 
 type BindingItemWorkersBindingKindDispatchNamespace struct {
 	// A JavaScript variable name for the binding.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Namespace to bind to.
-	Namespace string `json:"namespace,required"`
+	Namespace string `json:"namespace" api:"required"`
 	// The kind of resource that the binding provides.
-	Type BindingItemWorkersBindingKindDispatchNamespaceType `json:"type,required"`
+	Type BindingItemWorkersBindingKindDispatchNamespaceType `json:"type" api:"required"`
 	// Outbound worker.
 	Outbound BindingItemWorkersBindingKindDispatchNamespaceOutbound `json:"outbound"`
 	JSON     bindingItemWorkersBindingKindDispatchNamespaceJSON     `json:"-"`
@@ -757,9 +757,9 @@ func (r bindingItemWorkersBindingKindDispatchNamespaceOutboundWorkerJSON) RawJSO
 
 type BindingItemWorkersBindingKindDurableObjectNamespace struct {
 	// A JavaScript variable name for the binding.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// The kind of resource that the binding provides.
-	Type BindingItemWorkersBindingKindDurableObjectNamespaceType `json:"type,required"`
+	Type BindingItemWorkersBindingKindDurableObjectNamespaceType `json:"type" api:"required"`
 	// The exported class name of the Durable Object.
 	ClassName string `json:"class_name"`
 	// The environment of the script_name to bind to.
@@ -812,11 +812,11 @@ func (r BindingItemWorkersBindingKindDurableObjectNamespaceType) IsKnown() bool 
 
 type BindingItemWorkersBindingKindHyperdrive struct {
 	// Identifier of the Hyperdrive connection to bind to.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// A JavaScript variable name for the binding.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// The kind of resource that the binding provides.
-	Type BindingItemWorkersBindingKindHyperdriveType `json:"type,required"`
+	Type BindingItemWorkersBindingKindHyperdriveType `json:"type" api:"required"`
 	JSON bindingItemWorkersBindingKindHyperdriveJSON `json:"-"`
 }
 
@@ -857,11 +857,11 @@ func (r BindingItemWorkersBindingKindHyperdriveType) IsKnown() bool {
 
 type BindingItemWorkersBindingKindJson struct {
 	// JSON data to use.
-	Json string `json:"json,required"`
+	Json string `json:"json" api:"required"`
 	// A JavaScript variable name for the binding.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// The kind of resource that the binding provides.
-	Type BindingItemWorkersBindingKindJsonType `json:"type,required"`
+	Type BindingItemWorkersBindingKindJsonType `json:"type" api:"required"`
 	JSON bindingItemWorkersBindingKindJsonJSON `json:"-"`
 }
 
@@ -902,11 +902,11 @@ func (r BindingItemWorkersBindingKindJsonType) IsKnown() bool {
 
 type BindingItemWorkersBindingKindKvNamespace struct {
 	// A JavaScript variable name for the binding.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Namespace identifier tag.
-	NamespaceID string `json:"namespace_id,required"`
+	NamespaceID string `json:"namespace_id" api:"required"`
 	// The kind of resource that the binding provides.
-	Type BindingItemWorkersBindingKindKvNamespaceType `json:"type,required"`
+	Type BindingItemWorkersBindingKindKvNamespaceType `json:"type" api:"required"`
 	JSON bindingItemWorkersBindingKindKvNamespaceJSON `json:"-"`
 }
 
@@ -947,11 +947,11 @@ func (r BindingItemWorkersBindingKindKvNamespaceType) IsKnown() bool {
 
 type BindingItemWorkersBindingKindMtlsCertificate struct {
 	// Identifier of the certificate to bind to.
-	CertificateID string `json:"certificate_id,required"`
+	CertificateID string `json:"certificate_id" api:"required"`
 	// A JavaScript variable name for the binding.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// The kind of resource that the binding provides.
-	Type BindingItemWorkersBindingKindMtlsCertificateType `json:"type,required"`
+	Type BindingItemWorkersBindingKindMtlsCertificateType `json:"type" api:"required"`
 	JSON bindingItemWorkersBindingKindMtlsCertificateJSON `json:"-"`
 }
 
@@ -992,11 +992,11 @@ func (r BindingItemWorkersBindingKindMtlsCertificateType) IsKnown() bool {
 
 type BindingItemWorkersBindingKindPlainText struct {
 	// A JavaScript variable name for the binding.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// The text value to use.
-	Text string `json:"text,required"`
+	Text string `json:"text" api:"required"`
 	// The kind of resource that the binding provides.
-	Type BindingItemWorkersBindingKindPlainTextType `json:"type,required"`
+	Type BindingItemWorkersBindingKindPlainTextType `json:"type" api:"required"`
 	JSON bindingItemWorkersBindingKindPlainTextJSON `json:"-"`
 }
 
@@ -1037,11 +1037,11 @@ func (r BindingItemWorkersBindingKindPlainTextType) IsKnown() bool {
 
 type BindingItemWorkersBindingKindPipelines struct {
 	// A JavaScript variable name for the binding.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Name of the Pipeline to bind to.
-	Pipeline string `json:"pipeline,required"`
+	Pipeline string `json:"pipeline" api:"required"`
 	// The kind of resource that the binding provides.
-	Type BindingItemWorkersBindingKindPipelinesType `json:"type,required"`
+	Type BindingItemWorkersBindingKindPipelinesType `json:"type" api:"required"`
 	JSON bindingItemWorkersBindingKindPipelinesJSON `json:"-"`
 }
 
@@ -1082,11 +1082,11 @@ func (r BindingItemWorkersBindingKindPipelinesType) IsKnown() bool {
 
 type BindingItemWorkersBindingKindQueue struct {
 	// A JavaScript variable name for the binding.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Name of the Queue to bind to.
-	QueueName string `json:"queue_name,required"`
+	QueueName string `json:"queue_name" api:"required"`
 	// The kind of resource that the binding provides.
-	Type BindingItemWorkersBindingKindQueueType `json:"type,required"`
+	Type BindingItemWorkersBindingKindQueueType `json:"type" api:"required"`
 	JSON bindingItemWorkersBindingKindQueueJSON `json:"-"`
 }
 
@@ -1127,11 +1127,11 @@ func (r BindingItemWorkersBindingKindQueueType) IsKnown() bool {
 
 type BindingItemWorkersBindingKindR2Bucket struct {
 	// R2 bucket to bind to.
-	BucketName string `json:"bucket_name,required"`
+	BucketName string `json:"bucket_name" api:"required"`
 	// A JavaScript variable name for the binding.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// The kind of resource that the binding provides.
-	Type BindingItemWorkersBindingKindR2BucketType `json:"type,required"`
+	Type BindingItemWorkersBindingKindR2BucketType `json:"type" api:"required"`
 	JSON bindingItemWorkersBindingKindR2BucketJSON `json:"-"`
 }
 
@@ -1172,9 +1172,9 @@ func (r BindingItemWorkersBindingKindR2BucketType) IsKnown() bool {
 
 type BindingItemWorkersBindingKindSecretText struct {
 	// A JavaScript variable name for the binding.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// The kind of resource that the binding provides.
-	Type BindingItemWorkersBindingKindSecretTextType `json:"type,required"`
+	Type BindingItemWorkersBindingKindSecretTextType `json:"type" api:"required"`
 	JSON bindingItemWorkersBindingKindSecretTextJSON `json:"-"`
 }
 
@@ -1214,13 +1214,13 @@ func (r BindingItemWorkersBindingKindSecretTextType) IsKnown() bool {
 
 type BindingItemWorkersBindingKindService struct {
 	// Optional environment if the Worker utilizes one.
-	Environment string `json:"environment,required"`
+	Environment string `json:"environment" api:"required"`
 	// A JavaScript variable name for the binding.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Name of Worker to bind to.
-	Service string `json:"service,required"`
+	Service string `json:"service" api:"required"`
 	// The kind of resource that the binding provides.
-	Type BindingItemWorkersBindingKindServiceType `json:"type,required"`
+	Type BindingItemWorkersBindingKindServiceType `json:"type" api:"required"`
 	JSON bindingItemWorkersBindingKindServiceJSON `json:"-"`
 }
 
@@ -1262,11 +1262,11 @@ func (r BindingItemWorkersBindingKindServiceType) IsKnown() bool {
 
 type BindingItemWorkersBindingKindTailConsumer struct {
 	// A JavaScript variable name for the binding.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Name of Tail Worker to bind to.
-	Service string `json:"service,required"`
+	Service string `json:"service" api:"required"`
 	// The kind of resource that the binding provides.
-	Type BindingItemWorkersBindingKindTailConsumerType `json:"type,required"`
+	Type BindingItemWorkersBindingKindTailConsumerType `json:"type" api:"required"`
 	JSON bindingItemWorkersBindingKindTailConsumerJSON `json:"-"`
 }
 
@@ -1307,11 +1307,11 @@ func (r BindingItemWorkersBindingKindTailConsumerType) IsKnown() bool {
 
 type BindingItemWorkersBindingKindVectorize struct {
 	// Name of the Vectorize index to bind to.
-	IndexName string `json:"index_name,required"`
+	IndexName string `json:"index_name" api:"required"`
 	// A JavaScript variable name for the binding.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// The kind of resource that the binding provides.
-	Type BindingItemWorkersBindingKindVectorizeType `json:"type,required"`
+	Type BindingItemWorkersBindingKindVectorizeType `json:"type" api:"required"`
 	JSON bindingItemWorkersBindingKindVectorizeJSON `json:"-"`
 }
 
@@ -1352,9 +1352,9 @@ func (r BindingItemWorkersBindingKindVectorizeType) IsKnown() bool {
 
 type BindingItemWorkersBindingKindVersionMetadata struct {
 	// A JavaScript variable name for the binding.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// The kind of resource that the binding provides.
-	Type BindingItemWorkersBindingKindVersionMetadataType `json:"type,required"`
+	Type BindingItemWorkersBindingKindVersionMetadataType `json:"type" api:"required"`
 	JSON bindingItemWorkersBindingKindVersionMetadataJSON `json:"-"`
 }
 
@@ -1394,13 +1394,13 @@ func (r BindingItemWorkersBindingKindVersionMetadataType) IsKnown() bool {
 
 type BindingItemWorkersBindingKindSecretsStoreSecret struct {
 	// A JavaScript variable name for the binding.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Name of the secret in the store.
-	SecretName string `json:"secret_name,required"`
+	SecretName string `json:"secret_name" api:"required"`
 	// ID of the store containing the secret.
-	StoreID string `json:"store_id,required"`
+	StoreID string `json:"store_id" api:"required"`
 	// The kind of resource that the binding provides.
-	Type BindingItemWorkersBindingKindSecretsStoreSecretType `json:"type,required"`
+	Type BindingItemWorkersBindingKindSecretsStoreSecretType `json:"type" api:"required"`
 	JSON bindingItemWorkersBindingKindSecretsStoreSecretJSON `json:"-"`
 }
 
@@ -1443,17 +1443,17 @@ func (r BindingItemWorkersBindingKindSecretsStoreSecretType) IsKnown() bool {
 type BindingItemWorkersBindingKindSecretKey struct {
 	// Algorithm-specific key parameters.
 	// [Learn more](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/importKey#algorithm).
-	Algorithm interface{} `json:"algorithm,required"`
+	Algorithm interface{} `json:"algorithm" api:"required"`
 	// Data format of the key.
 	// [Learn more](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/importKey#format).
-	Format BindingItemWorkersBindingKindSecretKeyFormat `json:"format,required"`
+	Format BindingItemWorkersBindingKindSecretKeyFormat `json:"format" api:"required"`
 	// A JavaScript variable name for the binding.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// The kind of resource that the binding provides.
-	Type BindingItemWorkersBindingKindSecretKeyType `json:"type,required"`
+	Type BindingItemWorkersBindingKindSecretKeyType `json:"type" api:"required"`
 	// Allowed operations with the key.
 	// [Learn more](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/importKey#keyUsages).
-	Usages []BindingItemWorkersBindingKindSecretKeyUsage `json:"usages,required"`
+	Usages []BindingItemWorkersBindingKindSecretKeyUsage `json:"usages" api:"required"`
 	JSON   bindingItemWorkersBindingKindSecretKeyJSON    `json:"-"`
 }
 
@@ -1536,11 +1536,11 @@ func (r BindingItemWorkersBindingKindSecretKeyUsage) IsKnown() bool {
 
 type BindingItemWorkersBindingKindWorkflow struct {
 	// A JavaScript variable name for the binding.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// The kind of resource that the binding provides.
-	Type BindingItemWorkersBindingKindWorkflowType `json:"type,required"`
+	Type BindingItemWorkersBindingKindWorkflowType `json:"type" api:"required"`
 	// Name of the Workflow to bind to.
-	WorkflowName string `json:"workflow_name,required"`
+	WorkflowName string `json:"workflow_name" api:"required"`
 	// Class name of the Workflow. Should only be provided if the Workflow belongs to
 	// this script.
 	ClassName string `json:"class_name"`
@@ -1646,9 +1646,9 @@ func (r BindingItemFormat) IsKnown() bool {
 // A binding to allow the Worker to communicate with resources.
 type BindingItemParam struct {
 	// A JavaScript variable name for the binding.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// The kind of resource that the binding provides.
-	Type param.Field[BindingItemType] `json:"type,required"`
+	Type param.Field[BindingItemType] `json:"type" api:"required"`
 	// Identifier of the D1 database to bind to.
 	ID        param.Field[string]      `json:"id"`
 	Algorithm param.Field[interface{}] `json:"algorithm"`
@@ -1734,9 +1734,9 @@ type BindingItemUnionParam interface {
 
 type BindingItemWorkersBindingKindAIParam struct {
 	// A JavaScript variable name for the binding.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// The kind of resource that the binding provides.
-	Type param.Field[BindingItemWorkersBindingKindAIType] `json:"type,required"`
+	Type param.Field[BindingItemWorkersBindingKindAIType] `json:"type" api:"required"`
 }
 
 func (r BindingItemWorkersBindingKindAIParam) MarshalJSON() (data []byte, err error) {
@@ -1747,11 +1747,11 @@ func (r BindingItemWorkersBindingKindAIParam) implementsBindingItemUnionParam() 
 
 type BindingItemWorkersBindingKindAnalyticsEngineParam struct {
 	// The name of the dataset to bind to.
-	Dataset param.Field[string] `json:"dataset,required"`
+	Dataset param.Field[string] `json:"dataset" api:"required"`
 	// A JavaScript variable name for the binding.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// The kind of resource that the binding provides.
-	Type param.Field[BindingItemWorkersBindingKindAnalyticsEngineType] `json:"type,required"`
+	Type param.Field[BindingItemWorkersBindingKindAnalyticsEngineType] `json:"type" api:"required"`
 }
 
 func (r BindingItemWorkersBindingKindAnalyticsEngineParam) MarshalJSON() (data []byte, err error) {
@@ -1762,9 +1762,9 @@ func (r BindingItemWorkersBindingKindAnalyticsEngineParam) implementsBindingItem
 
 type BindingItemWorkersBindingKindAssetsParam struct {
 	// A JavaScript variable name for the binding.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// The kind of resource that the binding provides.
-	Type param.Field[BindingItemWorkersBindingKindAssetsType] `json:"type,required"`
+	Type param.Field[BindingItemWorkersBindingKindAssetsType] `json:"type" api:"required"`
 }
 
 func (r BindingItemWorkersBindingKindAssetsParam) MarshalJSON() (data []byte, err error) {
@@ -1775,9 +1775,9 @@ func (r BindingItemWorkersBindingKindAssetsParam) implementsBindingItemUnionPara
 
 type BindingItemWorkersBindingKindBrowserParam struct {
 	// A JavaScript variable name for the binding.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// The kind of resource that the binding provides.
-	Type param.Field[BindingItemWorkersBindingKindBrowserType] `json:"type,required"`
+	Type param.Field[BindingItemWorkersBindingKindBrowserType] `json:"type" api:"required"`
 }
 
 func (r BindingItemWorkersBindingKindBrowserParam) MarshalJSON() (data []byte, err error) {
@@ -1788,11 +1788,11 @@ func (r BindingItemWorkersBindingKindBrowserParam) implementsBindingItemUnionPar
 
 type BindingItemWorkersBindingKindD1Param struct {
 	// Identifier of the D1 database to bind to.
-	ID param.Field[string] `json:"id,required"`
+	ID param.Field[string] `json:"id" api:"required"`
 	// A JavaScript variable name for the binding.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// The kind of resource that the binding provides.
-	Type param.Field[BindingItemWorkersBindingKindD1Type] `json:"type,required"`
+	Type param.Field[BindingItemWorkersBindingKindD1Type] `json:"type" api:"required"`
 }
 
 func (r BindingItemWorkersBindingKindD1Param) MarshalJSON() (data []byte, err error) {
@@ -1803,11 +1803,11 @@ func (r BindingItemWorkersBindingKindD1Param) implementsBindingItemUnionParam() 
 
 type BindingItemWorkersBindingKindDispatchNamespaceParam struct {
 	// A JavaScript variable name for the binding.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Namespace to bind to.
-	Namespace param.Field[string] `json:"namespace,required"`
+	Namespace param.Field[string] `json:"namespace" api:"required"`
 	// The kind of resource that the binding provides.
-	Type param.Field[BindingItemWorkersBindingKindDispatchNamespaceType] `json:"type,required"`
+	Type param.Field[BindingItemWorkersBindingKindDispatchNamespaceType] `json:"type" api:"required"`
 	// Outbound worker.
 	Outbound param.Field[BindingItemWorkersBindingKindDispatchNamespaceOutboundParam] `json:"outbound"`
 }
@@ -1845,9 +1845,9 @@ func (r BindingItemWorkersBindingKindDispatchNamespaceOutboundWorkerParam) Marsh
 
 type BindingItemWorkersBindingKindDurableObjectNamespaceParam struct {
 	// A JavaScript variable name for the binding.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// The kind of resource that the binding provides.
-	Type param.Field[BindingItemWorkersBindingKindDurableObjectNamespaceType] `json:"type,required"`
+	Type param.Field[BindingItemWorkersBindingKindDurableObjectNamespaceType] `json:"type" api:"required"`
 	// The exported class name of the Durable Object.
 	ClassName param.Field[string] `json:"class_name"`
 	// The environment of the script_name to bind to.
@@ -1867,11 +1867,11 @@ func (r BindingItemWorkersBindingKindDurableObjectNamespaceParam) implementsBind
 
 type BindingItemWorkersBindingKindHyperdriveParam struct {
 	// Identifier of the Hyperdrive connection to bind to.
-	ID param.Field[string] `json:"id,required"`
+	ID param.Field[string] `json:"id" api:"required"`
 	// A JavaScript variable name for the binding.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// The kind of resource that the binding provides.
-	Type param.Field[BindingItemWorkersBindingKindHyperdriveType] `json:"type,required"`
+	Type param.Field[BindingItemWorkersBindingKindHyperdriveType] `json:"type" api:"required"`
 }
 
 func (r BindingItemWorkersBindingKindHyperdriveParam) MarshalJSON() (data []byte, err error) {
@@ -1882,11 +1882,11 @@ func (r BindingItemWorkersBindingKindHyperdriveParam) implementsBindingItemUnion
 
 type BindingItemWorkersBindingKindJsonParam struct {
 	// JSON data to use.
-	Json param.Field[string] `json:"json,required"`
+	Json param.Field[string] `json:"json" api:"required"`
 	// A JavaScript variable name for the binding.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// The kind of resource that the binding provides.
-	Type param.Field[BindingItemWorkersBindingKindJsonType] `json:"type,required"`
+	Type param.Field[BindingItemWorkersBindingKindJsonType] `json:"type" api:"required"`
 }
 
 func (r BindingItemWorkersBindingKindJsonParam) MarshalJSON() (data []byte, err error) {
@@ -1897,11 +1897,11 @@ func (r BindingItemWorkersBindingKindJsonParam) implementsBindingItemUnionParam(
 
 type BindingItemWorkersBindingKindKvNamespaceParam struct {
 	// A JavaScript variable name for the binding.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Namespace identifier tag.
-	NamespaceID param.Field[string] `json:"namespace_id,required"`
+	NamespaceID param.Field[string] `json:"namespace_id" api:"required"`
 	// The kind of resource that the binding provides.
-	Type param.Field[BindingItemWorkersBindingKindKvNamespaceType] `json:"type,required"`
+	Type param.Field[BindingItemWorkersBindingKindKvNamespaceType] `json:"type" api:"required"`
 }
 
 func (r BindingItemWorkersBindingKindKvNamespaceParam) MarshalJSON() (data []byte, err error) {
@@ -1912,11 +1912,11 @@ func (r BindingItemWorkersBindingKindKvNamespaceParam) implementsBindingItemUnio
 
 type BindingItemWorkersBindingKindMtlsCertificateParam struct {
 	// Identifier of the certificate to bind to.
-	CertificateID param.Field[string] `json:"certificate_id,required"`
+	CertificateID param.Field[string] `json:"certificate_id" api:"required"`
 	// A JavaScript variable name for the binding.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// The kind of resource that the binding provides.
-	Type param.Field[BindingItemWorkersBindingKindMtlsCertificateType] `json:"type,required"`
+	Type param.Field[BindingItemWorkersBindingKindMtlsCertificateType] `json:"type" api:"required"`
 }
 
 func (r BindingItemWorkersBindingKindMtlsCertificateParam) MarshalJSON() (data []byte, err error) {
@@ -1927,11 +1927,11 @@ func (r BindingItemWorkersBindingKindMtlsCertificateParam) implementsBindingItem
 
 type BindingItemWorkersBindingKindPlainTextParam struct {
 	// A JavaScript variable name for the binding.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// The text value to use.
-	Text param.Field[string] `json:"text,required"`
+	Text param.Field[string] `json:"text" api:"required"`
 	// The kind of resource that the binding provides.
-	Type param.Field[BindingItemWorkersBindingKindPlainTextType] `json:"type,required"`
+	Type param.Field[BindingItemWorkersBindingKindPlainTextType] `json:"type" api:"required"`
 }
 
 func (r BindingItemWorkersBindingKindPlainTextParam) MarshalJSON() (data []byte, err error) {
@@ -1942,11 +1942,11 @@ func (r BindingItemWorkersBindingKindPlainTextParam) implementsBindingItemUnionP
 
 type BindingItemWorkersBindingKindPipelinesParam struct {
 	// A JavaScript variable name for the binding.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Name of the Pipeline to bind to.
-	Pipeline param.Field[string] `json:"pipeline,required"`
+	Pipeline param.Field[string] `json:"pipeline" api:"required"`
 	// The kind of resource that the binding provides.
-	Type param.Field[BindingItemWorkersBindingKindPipelinesType] `json:"type,required"`
+	Type param.Field[BindingItemWorkersBindingKindPipelinesType] `json:"type" api:"required"`
 }
 
 func (r BindingItemWorkersBindingKindPipelinesParam) MarshalJSON() (data []byte, err error) {
@@ -1957,11 +1957,11 @@ func (r BindingItemWorkersBindingKindPipelinesParam) implementsBindingItemUnionP
 
 type BindingItemWorkersBindingKindQueueParam struct {
 	// A JavaScript variable name for the binding.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Name of the Queue to bind to.
-	QueueName param.Field[string] `json:"queue_name,required"`
+	QueueName param.Field[string] `json:"queue_name" api:"required"`
 	// The kind of resource that the binding provides.
-	Type param.Field[BindingItemWorkersBindingKindQueueType] `json:"type,required"`
+	Type param.Field[BindingItemWorkersBindingKindQueueType] `json:"type" api:"required"`
 }
 
 func (r BindingItemWorkersBindingKindQueueParam) MarshalJSON() (data []byte, err error) {
@@ -1972,11 +1972,11 @@ func (r BindingItemWorkersBindingKindQueueParam) implementsBindingItemUnionParam
 
 type BindingItemWorkersBindingKindR2BucketParam struct {
 	// R2 bucket to bind to.
-	BucketName param.Field[string] `json:"bucket_name,required"`
+	BucketName param.Field[string] `json:"bucket_name" api:"required"`
 	// A JavaScript variable name for the binding.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// The kind of resource that the binding provides.
-	Type param.Field[BindingItemWorkersBindingKindR2BucketType] `json:"type,required"`
+	Type param.Field[BindingItemWorkersBindingKindR2BucketType] `json:"type" api:"required"`
 }
 
 func (r BindingItemWorkersBindingKindR2BucketParam) MarshalJSON() (data []byte, err error) {
@@ -1987,11 +1987,11 @@ func (r BindingItemWorkersBindingKindR2BucketParam) implementsBindingItemUnionPa
 
 type BindingItemWorkersBindingKindSecretTextParam struct {
 	// A JavaScript variable name for the binding.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// The secret value to use.
-	Text param.Field[string] `json:"text,required"`
+	Text param.Field[string] `json:"text" api:"required"`
 	// The kind of resource that the binding provides.
-	Type param.Field[BindingItemWorkersBindingKindSecretTextType] `json:"type,required"`
+	Type param.Field[BindingItemWorkersBindingKindSecretTextType] `json:"type" api:"required"`
 }
 
 func (r BindingItemWorkersBindingKindSecretTextParam) MarshalJSON() (data []byte, err error) {
@@ -2002,13 +2002,13 @@ func (r BindingItemWorkersBindingKindSecretTextParam) implementsBindingItemUnion
 
 type BindingItemWorkersBindingKindServiceParam struct {
 	// Optional environment if the Worker utilizes one.
-	Environment param.Field[string] `json:"environment,required"`
+	Environment param.Field[string] `json:"environment" api:"required"`
 	// A JavaScript variable name for the binding.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Name of Worker to bind to.
-	Service param.Field[string] `json:"service,required"`
+	Service param.Field[string] `json:"service" api:"required"`
 	// The kind of resource that the binding provides.
-	Type param.Field[BindingItemWorkersBindingKindServiceType] `json:"type,required"`
+	Type param.Field[BindingItemWorkersBindingKindServiceType] `json:"type" api:"required"`
 }
 
 func (r BindingItemWorkersBindingKindServiceParam) MarshalJSON() (data []byte, err error) {
@@ -2019,11 +2019,11 @@ func (r BindingItemWorkersBindingKindServiceParam) implementsBindingItemUnionPar
 
 type BindingItemWorkersBindingKindTailConsumerParam struct {
 	// A JavaScript variable name for the binding.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Name of Tail Worker to bind to.
-	Service param.Field[string] `json:"service,required"`
+	Service param.Field[string] `json:"service" api:"required"`
 	// The kind of resource that the binding provides.
-	Type param.Field[BindingItemWorkersBindingKindTailConsumerType] `json:"type,required"`
+	Type param.Field[BindingItemWorkersBindingKindTailConsumerType] `json:"type" api:"required"`
 }
 
 func (r BindingItemWorkersBindingKindTailConsumerParam) MarshalJSON() (data []byte, err error) {
@@ -2034,11 +2034,11 @@ func (r BindingItemWorkersBindingKindTailConsumerParam) implementsBindingItemUni
 
 type BindingItemWorkersBindingKindVectorizeParam struct {
 	// Name of the Vectorize index to bind to.
-	IndexName param.Field[string] `json:"index_name,required"`
+	IndexName param.Field[string] `json:"index_name" api:"required"`
 	// A JavaScript variable name for the binding.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// The kind of resource that the binding provides.
-	Type param.Field[BindingItemWorkersBindingKindVectorizeType] `json:"type,required"`
+	Type param.Field[BindingItemWorkersBindingKindVectorizeType] `json:"type" api:"required"`
 }
 
 func (r BindingItemWorkersBindingKindVectorizeParam) MarshalJSON() (data []byte, err error) {
@@ -2049,9 +2049,9 @@ func (r BindingItemWorkersBindingKindVectorizeParam) implementsBindingItemUnionP
 
 type BindingItemWorkersBindingKindVersionMetadataParam struct {
 	// A JavaScript variable name for the binding.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// The kind of resource that the binding provides.
-	Type param.Field[BindingItemWorkersBindingKindVersionMetadataType] `json:"type,required"`
+	Type param.Field[BindingItemWorkersBindingKindVersionMetadataType] `json:"type" api:"required"`
 }
 
 func (r BindingItemWorkersBindingKindVersionMetadataParam) MarshalJSON() (data []byte, err error) {
@@ -2062,13 +2062,13 @@ func (r BindingItemWorkersBindingKindVersionMetadataParam) implementsBindingItem
 
 type BindingItemWorkersBindingKindSecretsStoreSecretParam struct {
 	// A JavaScript variable name for the binding.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// Name of the secret in the store.
-	SecretName param.Field[string] `json:"secret_name,required"`
+	SecretName param.Field[string] `json:"secret_name" api:"required"`
 	// ID of the store containing the secret.
-	StoreID param.Field[string] `json:"store_id,required"`
+	StoreID param.Field[string] `json:"store_id" api:"required"`
 	// The kind of resource that the binding provides.
-	Type param.Field[BindingItemWorkersBindingKindSecretsStoreSecretType] `json:"type,required"`
+	Type param.Field[BindingItemWorkersBindingKindSecretsStoreSecretType] `json:"type" api:"required"`
 }
 
 func (r BindingItemWorkersBindingKindSecretsStoreSecretParam) MarshalJSON() (data []byte, err error) {
@@ -2080,17 +2080,17 @@ func (r BindingItemWorkersBindingKindSecretsStoreSecretParam) implementsBindingI
 type BindingItemWorkersBindingKindSecretKeyParam struct {
 	// Algorithm-specific key parameters.
 	// [Learn more](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/importKey#algorithm).
-	Algorithm param.Field[interface{}] `json:"algorithm,required"`
+	Algorithm param.Field[interface{}] `json:"algorithm" api:"required"`
 	// Data format of the key.
 	// [Learn more](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/importKey#format).
-	Format param.Field[BindingItemWorkersBindingKindSecretKeyFormat] `json:"format,required"`
+	Format param.Field[BindingItemWorkersBindingKindSecretKeyFormat] `json:"format" api:"required"`
 	// A JavaScript variable name for the binding.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// The kind of resource that the binding provides.
-	Type param.Field[BindingItemWorkersBindingKindSecretKeyType] `json:"type,required"`
+	Type param.Field[BindingItemWorkersBindingKindSecretKeyType] `json:"type" api:"required"`
 	// Allowed operations with the key.
 	// [Learn more](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/importKey#keyUsages).
-	Usages param.Field[[]BindingItemWorkersBindingKindSecretKeyUsage] `json:"usages,required"`
+	Usages param.Field[[]BindingItemWorkersBindingKindSecretKeyUsage] `json:"usages" api:"required"`
 	// Base64-encoded key data. Required if `format` is "raw", "pkcs8", or "spki".
 	KeyBase64 param.Field[string] `json:"key_base64"`
 	// Key data in
@@ -2107,11 +2107,11 @@ func (r BindingItemWorkersBindingKindSecretKeyParam) implementsBindingItemUnionP
 
 type BindingItemWorkersBindingKindWorkflowParam struct {
 	// A JavaScript variable name for the binding.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// The kind of resource that the binding provides.
-	Type param.Field[BindingItemWorkersBindingKindWorkflowType] `json:"type,required"`
+	Type param.Field[BindingItemWorkersBindingKindWorkflowType] `json:"type" api:"required"`
 	// Name of the Workflow to bind to.
-	WorkflowName param.Field[string] `json:"workflow_name,required"`
+	WorkflowName param.Field[string] `json:"workflow_name" api:"required"`
 	// Class name of the Workflow. Should only be provided if the Workflow belongs to
 	// this script.
 	ClassName param.Field[string] `json:"class_name"`
@@ -2129,7 +2129,7 @@ func (r BindingItemWorkersBindingKindWorkflowParam) implementsBindingItemUnionPa
 type UploadSessionObjectParam struct {
 	// A manifest ([path]: {hash, size}) map of files to upload. As an example,
 	// `/blog/hello-world.html` would be a valid path key.
-	Manifest param.Field[map[string]UploadSessionObjectManifestParam] `json:"manifest,required"`
+	Manifest param.Field[map[string]UploadSessionObjectManifestParam] `json:"manifest" api:"required"`
 }
 
 func (r UploadSessionObjectParam) MarshalJSON() (data []byte, err error) {
@@ -2138,9 +2138,9 @@ func (r UploadSessionObjectParam) MarshalJSON() (data []byte, err error) {
 
 type UploadSessionObjectManifestParam struct {
 	// The hash of the file.
-	Hash param.Field[string] `json:"hash,required"`
+	Hash param.Field[string] `json:"hash" api:"required"`
 	// The size of the file in bytes.
-	Size param.Field[int64] `json:"size,required"`
+	Size param.Field[int64] `json:"size" api:"required"`
 }
 
 func (r UploadSessionObjectManifestParam) MarshalJSON() (data []byte, err error) {
@@ -2148,10 +2148,10 @@ func (r UploadSessionObjectManifestParam) MarshalJSON() (data []byte, err error)
 }
 
 type UploadSessionResponse struct {
-	Errors   []WorkersMessages `json:"errors,required"`
-	Messages []WorkersMessages `json:"messages,required"`
+	Errors   []WorkersMessages `json:"errors" api:"required"`
+	Messages []WorkersMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success UploadSessionResponseSuccess `json:"success,required"`
+	Success UploadSessionResponseSuccess `json:"success" api:"required"`
 	Result  UploadSessionResponseResult  `json:"result"`
 	JSON    uploadSessionResponseJSON    `json:"-"`
 }
@@ -2216,12 +2216,12 @@ func (r uploadSessionResponseResultJSON) RawJSON() string {
 }
 
 type AccountWorkerDispatchNamespaceScriptGetResponse struct {
-	Errors   []WorkersMessages `json:"errors,required"`
-	Messages []WorkersMessages `json:"messages,required"`
+	Errors   []WorkersMessages `json:"errors" api:"required"`
+	Messages []WorkersMessages `json:"messages" api:"required"`
 	// Details about a worker uploaded to a Workers for Platforms namespace.
-	Result AccountWorkerDispatchNamespaceScriptGetResponseResult `json:"result,required"`
+	Result AccountWorkerDispatchNamespaceScriptGetResponseResult `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success AccountWorkerDispatchNamespaceScriptGetResponseSuccess `json:"success,required"`
+	Success AccountWorkerDispatchNamespaceScriptGetResponseSuccess `json:"success" api:"required"`
 	JSON    accountWorkerDispatchNamespaceScriptGetResponseJSON    `json:"-"`
 }
 
@@ -2291,14 +2291,14 @@ func (r AccountWorkerDispatchNamespaceScriptGetResponseSuccess) IsKnown() bool {
 }
 
 type AccountWorkerDispatchNamespaceScriptGetBindingsResponse struct {
-	Errors   []WorkersMessages `json:"errors,required"`
-	Messages []WorkersMessages `json:"messages,required"`
+	Errors   []WorkersMessages `json:"errors" api:"required"`
+	Messages []WorkersMessages `json:"messages" api:"required"`
 	// List of bindings attached to a Worker. You can find more about bindings on our
 	// docs:
 	// https://developers.cloudflare.com/workers/configuration/multipart-upload-metadata/#bindings.
-	Result []BindingItem `json:"result,required"`
+	Result []BindingItem `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success AccountWorkerDispatchNamespaceScriptGetBindingsResponseSuccess `json:"success,required"`
+	Success AccountWorkerDispatchNamespaceScriptGetBindingsResponseSuccess `json:"success" api:"required"`
 	JSON    accountWorkerDispatchNamespaceScriptGetBindingsResponseJSON    `json:"-"`
 }
 
@@ -2338,11 +2338,11 @@ func (r AccountWorkerDispatchNamespaceScriptGetBindingsResponseSuccess) IsKnown(
 }
 
 type AccountWorkerDispatchNamespaceScriptUploadResponse struct {
-	Errors   []WorkersMessages                                        `json:"errors,required"`
-	Messages []WorkersMessages                                        `json:"messages,required"`
-	Result   AccountWorkerDispatchNamespaceScriptUploadResponseResult `json:"result,required"`
+	Errors   []WorkersMessages                                        `json:"errors" api:"required"`
+	Messages []WorkersMessages                                        `json:"messages" api:"required"`
+	Result   AccountWorkerDispatchNamespaceScriptUploadResponseResult `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success AccountWorkerDispatchNamespaceScriptUploadResponseSuccess `json:"success,required"`
+	Success AccountWorkerDispatchNamespaceScriptUploadResponseSuccess `json:"success" api:"required"`
 	JSON    accountWorkerDispatchNamespaceScriptUploadResponseJSON    `json:"-"`
 }
 
@@ -2366,7 +2366,7 @@ func (r accountWorkerDispatchNamespaceScriptUploadResponseJSON) RawJSON() string
 }
 
 type AccountWorkerDispatchNamespaceScriptUploadResponseResult struct {
-	StartupTimeMs int64 `json:"startup_time_ms,required"`
+	StartupTimeMs int64 `json:"startup_time_ms" api:"required"`
 	// The id of the script in the Workers system. Usually the script name.
 	ID string `json:"id"`
 	// When the script was created.
@@ -2520,7 +2520,7 @@ func (r AccountWorkerDispatchNamespaceScriptDeleteParams) URLQuery() (v url.Valu
 }
 
 type AccountWorkerDispatchNamespaceScriptNewAssetsUploadSessionParams struct {
-	UploadSessionObject UploadSessionObjectParam `json:"upload_session_object,required"`
+	UploadSessionObject UploadSessionObjectParam `json:"upload_session_object" api:"required"`
 }
 
 func (r AccountWorkerDispatchNamespaceScriptNewAssetsUploadSessionParams) MarshalJSON() (data []byte, err error) {
@@ -2529,7 +2529,7 @@ func (r AccountWorkerDispatchNamespaceScriptNewAssetsUploadSessionParams) Marsha
 
 type AccountWorkerDispatchNamespaceScriptUploadParams struct {
 	// JSON encoded metadata about the uploaded parts and Worker configuration.
-	Metadata param.Field[AccountWorkerDispatchNamespaceScriptUploadParamsMetadata] `json:"metadata,required"`
+	Metadata param.Field[AccountWorkerDispatchNamespaceScriptUploadParamsMetadata] `json:"metadata" api:"required"`
 	// An array of modules (often JavaScript files) comprising a Worker script. At
 	// least one module must be present and referenced in the metadata as `main_module`
 	// or `body_part` by filename.<br/>Possible Content-Type(s) are:

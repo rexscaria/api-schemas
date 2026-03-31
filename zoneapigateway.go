@@ -53,19 +53,19 @@ func (r *ZoneAPIGatewayService) GetSchemas(ctx context.Context, zoneID string, q
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/api_gateway/schemas", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type ZoneAPIGatewayGetSchemasResponse struct {
-	Errors   []MessagesAPIShieldItem                `json:"errors,required"`
-	Messages []MessagesAPIShieldItem                `json:"messages,required"`
-	Result   ZoneAPIGatewayGetSchemasResponseResult `json:"result,required"`
+	Errors   []MessagesAPIShieldItem                `json:"errors" api:"required"`
+	Messages []MessagesAPIShieldItem                `json:"messages" api:"required"`
+	Result   ZoneAPIGatewayGetSchemasResponseResult `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success ZoneAPIGatewayGetSchemasResponseSuccess `json:"success,required"`
+	Success ZoneAPIGatewayGetSchemasResponseSuccess `json:"success" api:"required"`
 	JSON    zoneAPIGatewayGetSchemasResponseJSON    `json:"-"`
 }
 

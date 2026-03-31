@@ -48,11 +48,11 @@ func (r *AccountLogService) GetAuditLogs(ctx context.Context, accountID string, 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/logs/audit", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountLogGetAuditLogsResponse struct {
@@ -86,7 +86,7 @@ func (r accountLogGetAuditLogsResponseJSON) RawJSON() string {
 }
 
 type AccountLogGetAuditLogsResponseError struct {
-	Message string                                  `json:"message,required"`
+	Message string                                  `json:"message" api:"required"`
 	JSON    accountLogGetAuditLogsResponseErrorJSON `json:"-"`
 }
 
@@ -424,11 +424,11 @@ type AccountLogGetAuditLogsParams struct {
 	// Limits the returned results to logs older than the specified date. This can be a
 	// date string 2019-04-30 (interpreted in UTC) or an absolute timestamp that
 	// conforms to RFC3339.
-	Before param.Field[time.Time] `query:"before,required" format:"date"`
+	Before param.Field[time.Time] `query:"before" api:"required" format:"date"`
 	// Limits the returned results to logs newer than the specified date. This can be a
 	// date string 2019-04-30 (interpreted in UTC) or an absolute timestamp that
 	// conforms to RFC3339.
-	Since          param.Field[time.Time]                                  `query:"since,required" format:"date"`
+	Since          param.Field[time.Time]                                  `query:"since" api:"required" format:"date"`
 	AccountName    param.Field[AccountLogGetAuditLogsParamsAccountName]    `query:"account_name"`
 	ActionResult   param.Field[AccountLogGetAuditLogsParamsActionResult]   `query:"action_result"`
 	ActionType     param.Field[AccountLogGetAuditLogsParamsActionType]     `query:"action_type"`

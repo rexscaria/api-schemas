@@ -66,11 +66,11 @@ func (r *AccountWorkerScriptService) List(ctx context.Context, accountID string,
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/workers/scripts", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete your worker. This call has no response body on a successful delete.
@@ -78,15 +78,15 @@ func (r *AccountWorkerScriptService) Delete(ctx context.Context, accountID strin
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if scriptName == "" {
 		err = errors.New("missing required script_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/workers/scripts/%s", accountID, scriptName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Start uploading a collection of assets for use in a Worker version. To learn
@@ -96,15 +96,15 @@ func (r *AccountWorkerScriptService) NewAssetsUploadSession(ctx context.Context,
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if scriptName == "" {
 		err = errors.New("missing required script_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/workers/scripts/%s/assets-upload-session", accountID, scriptName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetch raw script content for your worker. Note this is the original script
@@ -114,15 +114,15 @@ func (r *AccountWorkerScriptService) Download(ctx context.Context, accountID str
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "application/javascript")}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if scriptName == "" {
 		err = errors.New("missing required script_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/workers/scripts/%s", accountID, scriptName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Upload a worker module. You can find more about the multipart metadata on our
@@ -132,23 +132,23 @@ func (r *AccountWorkerScriptService) Upload(ctx context.Context, accountID strin
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if scriptName == "" {
 		err = errors.New("missing required script_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/workers/scripts/%s", accountID, scriptName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountWorkerScriptListResponse struct {
-	Errors   []WorkersMessages `json:"errors,required"`
-	Messages []WorkersMessages `json:"messages,required"`
-	Result   []ScriptResponse  `json:"result,required"`
+	Errors   []WorkersMessages `json:"errors" api:"required"`
+	Messages []WorkersMessages `json:"messages" api:"required"`
+	Result   []ScriptResponse  `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success AccountWorkerScriptListResponseSuccess `json:"success,required"`
+	Success AccountWorkerScriptListResponseSuccess `json:"success" api:"required"`
 	JSON    accountWorkerScriptListResponseJSON    `json:"-"`
 }
 
@@ -187,11 +187,11 @@ func (r AccountWorkerScriptListResponseSuccess) IsKnown() bool {
 }
 
 type AccountWorkerScriptUploadResponse struct {
-	Errors   []WorkersMessages                       `json:"errors,required"`
-	Messages []WorkersMessages                       `json:"messages,required"`
-	Result   AccountWorkerScriptUploadResponseResult `json:"result,required"`
+	Errors   []WorkersMessages                       `json:"errors" api:"required"`
+	Messages []WorkersMessages                       `json:"messages" api:"required"`
+	Result   AccountWorkerScriptUploadResponseResult `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success AccountWorkerScriptUploadResponseSuccess `json:"success,required"`
+	Success AccountWorkerScriptUploadResponseSuccess `json:"success" api:"required"`
 	JSON    accountWorkerScriptUploadResponseJSON    `json:"-"`
 }
 
@@ -215,7 +215,7 @@ func (r accountWorkerScriptUploadResponseJSON) RawJSON() string {
 }
 
 type AccountWorkerScriptUploadResponseResult struct {
-	StartupTimeMs int64 `json:"startup_time_ms,required"`
+	StartupTimeMs int64 `json:"startup_time_ms" api:"required"`
 	// The id of the script in the Workers system. Usually the script name.
 	ID string `json:"id"`
 	// When the script was created.
@@ -367,7 +367,7 @@ func (r AccountWorkerScriptDeleteParams) URLQuery() (v url.Values) {
 }
 
 type AccountWorkerScriptNewAssetsUploadSessionParams struct {
-	UploadSessionObject UploadSessionObjectParam `json:"upload_session_object,required"`
+	UploadSessionObject UploadSessionObjectParam `json:"upload_session_object" api:"required"`
 }
 
 func (r AccountWorkerScriptNewAssetsUploadSessionParams) MarshalJSON() (data []byte, err error) {
@@ -376,7 +376,7 @@ func (r AccountWorkerScriptNewAssetsUploadSessionParams) MarshalJSON() (data []b
 
 type AccountWorkerScriptUploadParams struct {
 	// JSON encoded metadata about the uploaded parts and Worker configuration.
-	Metadata param.Field[AccountWorkerScriptUploadParamsMetadata] `json:"metadata,required"`
+	Metadata param.Field[AccountWorkerScriptUploadParamsMetadata] `json:"metadata" api:"required"`
 	// An array of modules (often JavaScript files) comprising a Worker script. At
 	// least one module must be present and referenced in the metadata as `main_module`
 	// or `body_part` by filename.<br/>Possible Content-Type(s) are:

@@ -43,15 +43,15 @@ func (r *ZoneSpeedAPIPageTestService) DeleteAll(ctx context.Context, zoneID stri
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if url == "" {
 		err = errors.New("missing required url parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/speed_api/pages/%s/tests", zoneID, url)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves the result of a specific test.
@@ -59,19 +59,19 @@ func (r *ZoneSpeedAPIPageTestService) GetResult(ctx context.Context, zoneID stri
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if url == "" {
 		err = errors.New("missing required url parameter")
-		return
+		return nil, err
 	}
 	if testID == "" {
 		err = errors.New("missing required test_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/speed_api/pages/%s/tests/%s", zoneID, url, testID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Test history (list of tests) for a specific webpage.
@@ -79,15 +79,15 @@ func (r *ZoneSpeedAPIPageTestService) ListHistory(ctx context.Context, zoneID st
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if url == "" {
 		err = errors.New("missing required url parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/speed_api/pages/%s/tests", zoneID, url)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Starts a test for a specific webpage, in a specific region.
@@ -95,22 +95,22 @@ func (r *ZoneSpeedAPIPageTestService) Start(ctx context.Context, zoneID string, 
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if url == "" {
 		err = errors.New("missing required url parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/speed_api/pages/%s/tests", zoneID, url)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type ObservatoryCountResponse struct {
-	Errors   []ObservatoryCountResponseError   `json:"errors,required"`
-	Messages []ObservatoryCountResponseMessage `json:"messages,required"`
+	Errors   []ObservatoryCountResponseError   `json:"errors" api:"required"`
+	Messages []ObservatoryCountResponseMessage `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success bool                           `json:"success,required"`
+	Success bool                           `json:"success" api:"required"`
 	Result  ObservatoryCountResponseResult `json:"result"`
 	JSON    observatoryCountResponseJSON   `json:"-"`
 }
@@ -135,8 +135,8 @@ func (r observatoryCountResponseJSON) RawJSON() string {
 }
 
 type ObservatoryCountResponseError struct {
-	Code             int64                                `json:"code,required"`
-	Message          string                               `json:"message,required"`
+	Code             int64                                `json:"code" api:"required"`
+	Message          string                               `json:"message" api:"required"`
 	DocumentationURL string                               `json:"documentation_url"`
 	Source           ObservatoryCountResponseErrorsSource `json:"source"`
 	JSON             observatoryCountResponseErrorJSON    `json:"-"`
@@ -183,8 +183,8 @@ func (r observatoryCountResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type ObservatoryCountResponseMessage struct {
-	Code             int64                                  `json:"code,required"`
-	Message          string                                 `json:"message,required"`
+	Code             int64                                  `json:"code" api:"required"`
+	Message          string                                 `json:"message" api:"required"`
 	DocumentationURL string                                 `json:"documentation_url"`
 	Source           ObservatoryCountResponseMessagesSource `json:"source"`
 	JSON             observatoryCountResponseMessageJSON    `json:"-"`
@@ -411,10 +411,10 @@ func (r observatoryPageTestJSON) RawJSON() string {
 }
 
 type ObservatoryPageTestResponseSingle struct {
-	Errors   []ObservatoryMessagesItem `json:"errors,required"`
-	Messages []ObservatoryMessagesItem `json:"messages,required"`
+	Errors   []ObservatoryMessagesItem `json:"errors" api:"required"`
+	Messages []ObservatoryMessagesItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success bool                                  `json:"success,required"`
+	Success bool                                  `json:"success" api:"required"`
 	Result  ObservatoryPageTest                   `json:"result"`
 	JSON    observatoryPageTestResponseSingleJSON `json:"-"`
 }
@@ -439,10 +439,10 @@ func (r observatoryPageTestResponseSingleJSON) RawJSON() string {
 }
 
 type ZoneSpeedAPIPageTestListHistoryResponse struct {
-	Errors   []ObservatoryMessagesItem `json:"errors,required"`
-	Messages []ObservatoryMessagesItem `json:"messages,required"`
+	Errors   []ObservatoryMessagesItem `json:"errors" api:"required"`
+	Messages []ObservatoryMessagesItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success    bool                                              `json:"success,required"`
+	Success    bool                                              `json:"success" api:"required"`
 	Result     []ObservatoryPageTest                             `json:"result"`
 	ResultInfo ZoneSpeedAPIPageTestListHistoryResponseResultInfo `json:"result_info"`
 	JSON       zoneSpeedAPIPageTestListHistoryResponseJSON       `json:"-"`

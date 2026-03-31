@@ -38,15 +38,15 @@ func (r *AccountImageV1KeyService) New(ctx context.Context, accountID string, si
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if signingKeyName == "" {
 		err = errors.New("missing required signing_key_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/images/v1/keys/%s", accountID, signingKeyName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Lists your signing keys. These can be found on your Cloudflare Images dashboard.
@@ -54,11 +54,11 @@ func (r *AccountImageV1KeyService) List(ctx context.Context, accountID string, o
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/images/v1/keys", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete signing key with specified name. Returns all keys available. When last
@@ -67,23 +67,23 @@ func (r *AccountImageV1KeyService) Delete(ctx context.Context, accountID string,
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if signingKeyName == "" {
 		err = errors.New("missing required signing_key_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/images/v1/keys/%s", accountID, signingKeyName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type ImageKeyResponseCollection struct {
-	Errors   []ImageKeyResponseCollectionError   `json:"errors,required"`
-	Messages []ImageKeyResponseCollectionMessage `json:"messages,required"`
-	Result   ImageKeyResponseCollectionResult    `json:"result,required"`
+	Errors   []ImageKeyResponseCollectionError   `json:"errors" api:"required"`
+	Messages []ImageKeyResponseCollectionMessage `json:"messages" api:"required"`
+	Result   ImageKeyResponseCollectionResult    `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success ImageKeyResponseCollectionSuccess `json:"success,required"`
+	Success ImageKeyResponseCollectionSuccess `json:"success" api:"required"`
 	JSON    imageKeyResponseCollectionJSON    `json:"-"`
 }
 
@@ -107,8 +107,8 @@ func (r imageKeyResponseCollectionJSON) RawJSON() string {
 }
 
 type ImageKeyResponseCollectionError struct {
-	Code             int64                                  `json:"code,required"`
-	Message          string                                 `json:"message,required"`
+	Code             int64                                  `json:"code" api:"required"`
+	Message          string                                 `json:"message" api:"required"`
 	DocumentationURL string                                 `json:"documentation_url"`
 	Source           ImageKeyResponseCollectionErrorsSource `json:"source"`
 	JSON             imageKeyResponseCollectionErrorJSON    `json:"-"`
@@ -155,8 +155,8 @@ func (r imageKeyResponseCollectionErrorsSourceJSON) RawJSON() string {
 }
 
 type ImageKeyResponseCollectionMessage struct {
-	Code             int64                                    `json:"code,required"`
-	Message          string                                   `json:"message,required"`
+	Code             int64                                    `json:"code" api:"required"`
+	Message          string                                   `json:"message" api:"required"`
 	DocumentationURL string                                   `json:"documentation_url"`
 	Source           ImageKeyResponseCollectionMessagesSource `json:"source"`
 	JSON             imageKeyResponseCollectionMessageJSON    `json:"-"`

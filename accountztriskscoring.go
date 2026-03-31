@@ -43,15 +43,15 @@ func (r *AccountZtRiskScoringService) ResetRiskScore(ctx context.Context, accoun
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if userID == "" {
 		err = errors.New("missing required user_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/zt_risk_scoring/%s/reset", accountID, userID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Get risk event/score information for a specific user
@@ -59,15 +59,15 @@ func (r *AccountZtRiskScoringService) GetRiskScore(ctx context.Context, accountI
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if userID == "" {
 		err = errors.New("missing required user_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/zt_risk_scoring/%s", accountID, userID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Get risk score info for all users in the account
@@ -75,11 +75,11 @@ func (r *AccountZtRiskScoringService) GetSummary(ctx context.Context, accountID 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/zt_risk_scoring/summary", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type RiskLevel string
@@ -99,11 +99,11 @@ func (r RiskLevel) IsKnown() bool {
 }
 
 type AccountZtRiskScoringResetRiskScoreResponse struct {
-	Errors   []MessagesDlpItems `json:"errors,required"`
-	Messages []MessagesDlpItems `json:"messages,required"`
+	Errors   []MessagesDlpItems `json:"errors" api:"required"`
+	Messages []MessagesDlpItems `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountZtRiskScoringResetRiskScoreResponseSuccess `json:"success,required"`
-	Result  interface{}                                       `json:"result,nullable"`
+	Success AccountZtRiskScoringResetRiskScoreResponseSuccess `json:"success" api:"required"`
+	Result  interface{}                                       `json:"result" api:"nullable"`
 	JSON    accountZtRiskScoringResetRiskScoreResponseJSON    `json:"-"`
 }
 
@@ -142,10 +142,10 @@ func (r AccountZtRiskScoringResetRiskScoreResponseSuccess) IsKnown() bool {
 }
 
 type AccountZtRiskScoringGetRiskScoreResponse struct {
-	Errors   []MessagesDlpItems `json:"errors,required"`
-	Messages []MessagesDlpItems `json:"messages,required"`
+	Errors   []MessagesDlpItems `json:"errors" api:"required"`
+	Messages []MessagesDlpItems `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success    AccountZtRiskScoringGetRiskScoreResponseSuccess    `json:"success,required"`
+	Success    AccountZtRiskScoringGetRiskScoreResponseSuccess    `json:"success" api:"required"`
 	Result     AccountZtRiskScoringGetRiskScoreResponseResult     `json:"result"`
 	ResultInfo AccountZtRiskScoringGetRiskScoreResponseResultInfo `json:"result_info"`
 	JSON       accountZtRiskScoringGetRiskScoreResponseJSON       `json:"-"`
@@ -187,10 +187,10 @@ func (r AccountZtRiskScoringGetRiskScoreResponseSuccess) IsKnown() bool {
 }
 
 type AccountZtRiskScoringGetRiskScoreResponseResult struct {
-	Email         string                                                `json:"email,required"`
-	Events        []AccountZtRiskScoringGetRiskScoreResponseResultEvent `json:"events,required"`
-	Name          string                                                `json:"name,required"`
-	LastResetTime time.Time                                             `json:"last_reset_time,nullable" format:"date-time"`
+	Email         string                                                `json:"email" api:"required"`
+	Events        []AccountZtRiskScoringGetRiskScoreResponseResultEvent `json:"events" api:"required"`
+	Name          string                                                `json:"name" api:"required"`
+	LastResetTime time.Time                                             `json:"last_reset_time" api:"nullable" format:"date-time"`
 	RiskLevel     RiskLevel                                             `json:"risk_level"`
 	JSON          accountZtRiskScoringGetRiskScoreResponseResultJSON    `json:"-"`
 }
@@ -216,10 +216,10 @@ func (r accountZtRiskScoringGetRiskScoreResponseResultJSON) RawJSON() string {
 }
 
 type AccountZtRiskScoringGetRiskScoreResponseResultEvent struct {
-	ID           string                                                  `json:"id,required"`
-	Name         string                                                  `json:"name,required"`
-	RiskLevel    RiskLevel                                               `json:"risk_level,required"`
-	Timestamp    time.Time                                               `json:"timestamp,required" format:"date-time"`
+	ID           string                                                  `json:"id" api:"required"`
+	Name         string                                                  `json:"name" api:"required"`
+	RiskLevel    RiskLevel                                               `json:"risk_level" api:"required"`
+	Timestamp    time.Time                                               `json:"timestamp" api:"required" format:"date-time"`
 	EventDetails interface{}                                             `json:"event_details"`
 	JSON         accountZtRiskScoringGetRiskScoreResponseResultEventJSON `json:"-"`
 }
@@ -276,10 +276,10 @@ func (r accountZtRiskScoringGetRiskScoreResponseResultInfoJSON) RawJSON() string
 }
 
 type AccountZtRiskScoringGetSummaryResponse struct {
-	Errors   []MessagesDlpItems `json:"errors,required"`
-	Messages []MessagesDlpItems `json:"messages,required"`
+	Errors   []MessagesDlpItems `json:"errors" api:"required"`
+	Messages []MessagesDlpItems `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success    AccountZtRiskScoringGetSummaryResponseSuccess    `json:"success,required"`
+	Success    AccountZtRiskScoringGetSummaryResponseSuccess    `json:"success" api:"required"`
 	Result     AccountZtRiskScoringGetSummaryResponseResult     `json:"result"`
 	ResultInfo AccountZtRiskScoringGetSummaryResponseResultInfo `json:"result_info"`
 	JSON       accountZtRiskScoringGetSummaryResponseJSON       `json:"-"`
@@ -321,7 +321,7 @@ func (r AccountZtRiskScoringGetSummaryResponseSuccess) IsKnown() bool {
 }
 
 type AccountZtRiskScoringGetSummaryResponseResult struct {
-	Users []AccountZtRiskScoringGetSummaryResponseResultUser `json:"users,required"`
+	Users []AccountZtRiskScoringGetSummaryResponseResultUser `json:"users" api:"required"`
 	JSON  accountZtRiskScoringGetSummaryResponseResultJSON   `json:"-"`
 }
 
@@ -342,12 +342,12 @@ func (r accountZtRiskScoringGetSummaryResponseResultJSON) RawJSON() string {
 }
 
 type AccountZtRiskScoringGetSummaryResponseResultUser struct {
-	Email        string                                               `json:"email,required"`
-	EventCount   int64                                                `json:"event_count,required"`
-	LastEvent    time.Time                                            `json:"last_event,required" format:"date-time"`
-	MaxRiskLevel RiskLevel                                            `json:"max_risk_level,required"`
-	Name         string                                               `json:"name,required"`
-	UserID       string                                               `json:"user_id,required" format:"uuid"`
+	Email        string                                               `json:"email" api:"required"`
+	EventCount   int64                                                `json:"event_count" api:"required"`
+	LastEvent    time.Time                                            `json:"last_event" api:"required" format:"date-time"`
+	MaxRiskLevel RiskLevel                                            `json:"max_risk_level" api:"required"`
+	Name         string                                               `json:"name" api:"required"`
+	UserID       string                                               `json:"user_id" api:"required" format:"uuid"`
 	JSON         accountZtRiskScoringGetSummaryResponseResultUserJSON `json:"-"`
 }
 

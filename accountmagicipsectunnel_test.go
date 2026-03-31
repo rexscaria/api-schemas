@@ -14,7 +14,7 @@ import (
 )
 
 func TestAccountMagicIpsecTunnelNewWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,6 +26,7 @@ func TestAccountMagicIpsecTunnelNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Magic.IpsecTunnels.New(
 		context.TODO(),
@@ -62,7 +63,7 @@ func TestAccountMagicIpsecTunnelNewWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountMagicIpsecTunnelGetWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -74,6 +75,7 @@ func TestAccountMagicIpsecTunnelGetWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Magic.IpsecTunnels.Get(
 		context.TODO(),
@@ -93,7 +95,7 @@ func TestAccountMagicIpsecTunnelGetWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountMagicIpsecTunnelUpdateWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -105,6 +107,7 @@ func TestAccountMagicIpsecTunnelUpdateWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Magic.IpsecTunnels.Update(
 		context.TODO(),
@@ -142,7 +145,7 @@ func TestAccountMagicIpsecTunnelUpdateWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountMagicIpsecTunnelListWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -154,6 +157,7 @@ func TestAccountMagicIpsecTunnelListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Magic.IpsecTunnels.List(
 		context.TODO(),
@@ -172,7 +176,7 @@ func TestAccountMagicIpsecTunnelListWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountMagicIpsecTunnelDeleteWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -184,6 +188,7 @@ func TestAccountMagicIpsecTunnelDeleteWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Magic.IpsecTunnels.Delete(
 		context.TODO(),
@@ -203,7 +208,7 @@ func TestAccountMagicIpsecTunnelDeleteWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountMagicIpsecTunnelGeneratePsk(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -215,6 +220,7 @@ func TestAccountMagicIpsecTunnelGeneratePsk(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Magic.IpsecTunnels.GeneratePsk(
 		context.TODO(),

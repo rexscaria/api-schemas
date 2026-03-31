@@ -42,15 +42,15 @@ func (r *AccountDlpDatasetVersionService) SetColumnInfo(ctx context.Context, acc
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if datasetID == "" {
 		err = errors.New("missing required dataset_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/dlp/datasets/%s/versions/%v", accountID, datasetID, version)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // This is used for multi-column EDMv2 datasets. The EDMv2 format can only be
@@ -60,26 +60,26 @@ func (r *AccountDlpDatasetVersionService) UploadEntry(ctx context.Context, accou
 	opts = append([]option.RequestOption{option.WithRequestBody("application/octet-stream", body)}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if datasetID == "" {
 		err = errors.New("missing required dataset_id parameter")
-		return
+		return nil, err
 	}
 	if entryID == "" {
 		err = errors.New("missing required entry_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/dlp/datasets/%s/versions/%v/entries/%s", accountID, datasetID, version, entryID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type DatasetColumn struct {
-	EntryID      string            `json:"entry_id,required" format:"uuid"`
-	HeaderName   string            `json:"header_name,required"`
-	NumCells     int64             `json:"num_cells,required"`
-	UploadStatus UploadStatus      `json:"upload_status,required"`
+	EntryID      string            `json:"entry_id" api:"required" format:"uuid"`
+	HeaderName   string            `json:"header_name" api:"required"`
+	NumCells     int64             `json:"num_cells" api:"required"`
+	UploadStatus UploadStatus      `json:"upload_status" api:"required"`
 	JSON         datasetColumnJSON `json:"-"`
 }
 
@@ -102,10 +102,10 @@ func (r datasetColumnJSON) RawJSON() string {
 }
 
 type AccountDlpDatasetVersionSetColumnInfoResponse struct {
-	Errors   []MessagesDlpItems `json:"errors,required"`
-	Messages []MessagesDlpItems `json:"messages,required"`
+	Errors   []MessagesDlpItems `json:"errors" api:"required"`
+	Messages []MessagesDlpItems `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountDlpDatasetVersionSetColumnInfoResponseSuccess `json:"success,required"`
+	Success AccountDlpDatasetVersionSetColumnInfoResponseSuccess `json:"success" api:"required"`
 	Result  []DatasetColumn                                      `json:"result"`
 	JSON    accountDlpDatasetVersionSetColumnInfoResponseJSON    `json:"-"`
 }
@@ -145,10 +145,10 @@ func (r AccountDlpDatasetVersionSetColumnInfoResponseSuccess) IsKnown() bool {
 }
 
 type AccountDlpDatasetVersionUploadEntryResponse struct {
-	Errors   []MessagesDlpItems `json:"errors,required"`
-	Messages []MessagesDlpItems `json:"messages,required"`
+	Errors   []MessagesDlpItems `json:"errors" api:"required"`
+	Messages []MessagesDlpItems `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountDlpDatasetVersionUploadEntryResponseSuccess `json:"success,required"`
+	Success AccountDlpDatasetVersionUploadEntryResponseSuccess `json:"success" api:"required"`
 	Result  DatasetColumn                                      `json:"result"`
 	JSON    accountDlpDatasetVersionUploadEntryResponseJSON    `json:"-"`
 }
@@ -188,7 +188,7 @@ func (r AccountDlpDatasetVersionUploadEntryResponseSuccess) IsKnown() bool {
 }
 
 type AccountDlpDatasetVersionSetColumnInfoParams struct {
-	Body []AccountDlpDatasetVersionSetColumnInfoParamsBodyUnion `json:"body,required"`
+	Body []AccountDlpDatasetVersionSetColumnInfoParamsBodyUnion `json:"body" api:"required"`
 }
 
 func (r AccountDlpDatasetVersionSetColumnInfoParams) MarshalJSON() (data []byte, err error) {
@@ -217,7 +217,7 @@ type AccountDlpDatasetVersionSetColumnInfoParamsBodyUnion interface {
 }
 
 type AccountDlpDatasetVersionSetColumnInfoParamsBodyExistingColumn struct {
-	EntryID    param.Field[string] `json:"entry_id,required" format:"uuid"`
+	EntryID    param.Field[string] `json:"entry_id" api:"required" format:"uuid"`
 	HeaderName param.Field[string] `json:"header_name"`
 	NumCells   param.Field[int64]  `json:"num_cells"`
 }
@@ -230,7 +230,7 @@ func (r AccountDlpDatasetVersionSetColumnInfoParamsBodyExistingColumn) implement
 }
 
 type AccountDlpDatasetVersionSetColumnInfoParamsBodyNewColumn struct {
-	EntryName  param.Field[string] `json:"entry_name,required"`
+	EntryName  param.Field[string] `json:"entry_name" api:"required"`
 	HeaderName param.Field[string] `json:"header_name"`
 	NumCells   param.Field[int64]  `json:"num_cells"`
 }

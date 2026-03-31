@@ -41,18 +41,18 @@ func (r *AccountAIRunCfBlackForestLabService) ExecuteFlux1Schnell(ctx context.Co
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai/run/@cf/black-forest-labs/flux-1-schnell", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountAIRunCfBlackForestLabExecuteFlux1SchnellResponse = interface{}
 
 type AccountAIRunCfBlackForestLabExecuteFlux1SchnellParams struct {
 	// A text description of the image you want to generate.
-	Prompt       param.Field[string] `json:"prompt,required"`
+	Prompt       param.Field[string] `json:"prompt" api:"required"`
 	QueueRequest param.Field[string] `query:"queueRequest"`
 	// The number of diffusion steps; higher values can improve quality but take
 	// longer.

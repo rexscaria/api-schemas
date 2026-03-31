@@ -39,11 +39,11 @@ func (r *AccountSecondaryDNSACLService) New(ctx context.Context, accountID strin
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/secondary_dns/acls", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get ACL.
@@ -51,15 +51,15 @@ func (r *AccountSecondaryDNSACLService) Get(ctx context.Context, accountID strin
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if aclID == "" {
 		err = errors.New("missing required acl_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/secondary_dns/acls/%s", accountID, aclID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Modify ACL.
@@ -67,15 +67,15 @@ func (r *AccountSecondaryDNSACLService) Update(ctx context.Context, accountID st
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if aclID == "" {
 		err = errors.New("missing required acl_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/secondary_dns/acls/%s", accountID, aclID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // List ACLs.
@@ -83,11 +83,11 @@ func (r *AccountSecondaryDNSACLService) List(ctx context.Context, accountID stri
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/secondary_dns/acls", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete ACL.
@@ -95,27 +95,27 @@ func (r *AccountSecondaryDNSACLService) Delete(ctx context.Context, accountID st
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if aclID == "" {
 		err = errors.New("missing required acl_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/secondary_dns/acls/%s", accountID, aclID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type ACL struct {
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Allowed IPv4/IPv6 address range of primary or secondary nameservers. This will
 	// be applied for the entire account. The IP range is used to allow additional
 	// NOTIFY IPs for secondary zones and IPs Cloudflare allows AXFR/IXFR requests from
 	// for primary zones. CIDRs are limited to a maximum of /24 for IPv4 and /64 for
 	// IPv6 respectively.
-	IPRange string `json:"ip_range,required"`
+	IPRange string `json:"ip_range" api:"required"`
 	// The name of the acl.
-	Name string  `json:"name,required"`
+	Name string  `json:"name" api:"required"`
 	JSON aclJSON `json:"-"`
 }
 
@@ -142,9 +142,9 @@ type ACLParam struct {
 	// NOTIFY IPs for secondary zones and IPs Cloudflare allows AXFR/IXFR requests from
 	// for primary zones. CIDRs are limited to a maximum of /24 for IPv4 and /64 for
 	// IPv6 respectively.
-	IPRange param.Field[string] `json:"ip_range,required"`
+	IPRange param.Field[string] `json:"ip_range" api:"required"`
 	// The name of the acl.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 }
 
 func (r ACLParam) MarshalJSON() (data []byte, err error) {
@@ -152,10 +152,10 @@ func (r ACLParam) MarshalJSON() (data []byte, err error) {
 }
 
 type SchemasIDResponseSecondaryDNS struct {
-	Errors   []SecondaryDNSMessages `json:"errors,required"`
-	Messages []SecondaryDNSMessages `json:"messages,required"`
+	Errors   []SecondaryDNSMessages `json:"errors" api:"required"`
+	Messages []SecondaryDNSMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success SchemasIDResponseSecondaryDNSSuccess `json:"success,required"`
+	Success SchemasIDResponseSecondaryDNSSuccess `json:"success" api:"required"`
 	Result  SchemasIDResponseSecondaryDNSResult  `json:"result"`
 	JSON    schemasIDResponseSecondaryDNSJSON    `json:"-"`
 }
@@ -216,10 +216,10 @@ func (r schemasIDResponseSecondaryDNSResultJSON) RawJSON() string {
 }
 
 type SchemasSecondaryDNSComponentsSingleResponse struct {
-	Errors   []SecondaryDNSMessages `json:"errors,required"`
-	Messages []SecondaryDNSMessages `json:"messages,required"`
+	Errors   []SecondaryDNSMessages `json:"errors" api:"required"`
+	Messages []SecondaryDNSMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success SchemasSecondaryDNSComponentsSingleResponseSuccess `json:"success,required"`
+	Success SchemasSecondaryDNSComponentsSingleResponseSuccess `json:"success" api:"required"`
 	Result  ACL                                                `json:"result"`
 	JSON    schemasSecondaryDNSComponentsSingleResponseJSON    `json:"-"`
 }
@@ -259,8 +259,8 @@ func (r SchemasSecondaryDNSComponentsSingleResponseSuccess) IsKnown() bool {
 }
 
 type SecondaryDNSMessages struct {
-	Code             int64                      `json:"code,required"`
-	Message          string                     `json:"message,required"`
+	Code             int64                      `json:"code" api:"required"`
+	Message          string                     `json:"message" api:"required"`
 	DocumentationURL string                     `json:"documentation_url"`
 	Source           SecondaryDNSMessagesSource `json:"source"`
 	JSON             secondaryDNSMessagesJSON   `json:"-"`
@@ -307,10 +307,10 @@ func (r secondaryDNSMessagesSourceJSON) RawJSON() string {
 }
 
 type AccountSecondaryDnsaclListResponse struct {
-	Errors   []SecondaryDNSMessages `json:"errors,required"`
-	Messages []SecondaryDNSMessages `json:"messages,required"`
+	Errors   []SecondaryDNSMessages `json:"errors" api:"required"`
+	Messages []SecondaryDNSMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success    AccountSecondaryDnsaclListResponseSuccess    `json:"success,required"`
+	Success    AccountSecondaryDnsaclListResponseSuccess    `json:"success" api:"required"`
 	Result     []ACL                                        `json:"result"`
 	ResultInfo AccountSecondaryDnsaclListResponseResultInfo `json:"result_info"`
 	JSON       accountSecondaryDnsaclListResponseJSON       `json:"-"`
@@ -388,9 +388,9 @@ type AccountSecondaryDNSACLNewParams struct {
 	// NOTIFY IPs for secondary zones and IPs Cloudflare allows AXFR/IXFR requests from
 	// for primary zones. CIDRs are limited to a maximum of /24 for IPv4 and /64 for
 	// IPv6 respectively.
-	IPRange param.Field[string] `json:"ip_range,required"`
+	IPRange param.Field[string] `json:"ip_range" api:"required"`
 	// The name of the acl.
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 }
 
 func (r AccountSecondaryDNSACLNewParams) MarshalJSON() (data []byte, err error) {
@@ -398,7 +398,7 @@ func (r AccountSecondaryDNSACLNewParams) MarshalJSON() (data []byte, err error) 
 }
 
 type AccountSecondaryDNSACLUpdateParams struct {
-	ACL ACLParam `json:"acl,required"`
+	ACL ACLParam `json:"acl" api:"required"`
 }
 
 func (r AccountSecondaryDNSACLUpdateParams) MarshalJSON() (data []byte, err error) {

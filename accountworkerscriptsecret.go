@@ -38,15 +38,15 @@ func (r *AccountWorkerScriptSecretService) List(ctx context.Context, accountID s
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if scriptName == "" {
 		err = errors.New("missing required script_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/workers/scripts/%s/secrets", accountID, scriptName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Remove a secret from a script.
@@ -54,19 +54,19 @@ func (r *AccountWorkerScriptSecretService) Delete(ctx context.Context, accountID
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if scriptName == "" {
 		err = errors.New("missing required script_name parameter")
-		return
+		return nil, err
 	}
 	if secretName == "" {
 		err = errors.New("missing required secret_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/workers/scripts/%s/secrets/%s", accountID, scriptName, secretName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Add a secret to a script.
@@ -74,15 +74,15 @@ func (r *AccountWorkerScriptSecretService) Add(ctx context.Context, accountID st
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if scriptName == "" {
 		err = errors.New("missing required script_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/workers/scripts/%s/secrets", accountID, scriptName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get a given secret binding (value omitted) on a script.
@@ -90,26 +90,26 @@ func (r *AccountWorkerScriptSecretService) Get(ctx context.Context, accountID st
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if scriptName == "" {
 		err = errors.New("missing required script_name parameter")
-		return
+		return nil, err
 	}
 	if secretName == "" {
 		err = errors.New("missing required secret_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/workers/scripts/%s/secrets/%s", accountID, scriptName, secretName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountWorkerScriptSecretListResponse struct {
-	Errors   []WorkersMessages `json:"errors,required"`
-	Messages []WorkersMessages `json:"messages,required"`
+	Errors   []WorkersMessages `json:"errors" api:"required"`
+	Messages []WorkersMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountWorkerScriptSecretListResponseSuccess `json:"success,required"`
+	Success AccountWorkerScriptSecretListResponseSuccess `json:"success" api:"required"`
 	Result  []Secret                                     `json:"result"`
 	JSON    accountWorkerScriptSecretListResponseJSON    `json:"-"`
 }
@@ -149,10 +149,10 @@ func (r AccountWorkerScriptSecretListResponseSuccess) IsKnown() bool {
 }
 
 type AccountWorkerScriptSecretAddResponse struct {
-	Errors   []WorkersMessages `json:"errors,required"`
-	Messages []WorkersMessages `json:"messages,required"`
+	Errors   []WorkersMessages `json:"errors" api:"required"`
+	Messages []WorkersMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountWorkerScriptSecretAddResponseSuccess `json:"success,required"`
+	Success AccountWorkerScriptSecretAddResponseSuccess `json:"success" api:"required"`
 	// A secret value accessible through a binding.
 	Result Secret                                   `json:"result"`
 	JSON   accountWorkerScriptSecretAddResponseJSON `json:"-"`
@@ -193,10 +193,10 @@ func (r AccountWorkerScriptSecretAddResponseSuccess) IsKnown() bool {
 }
 
 type AccountWorkerScriptSecretGetResponse struct {
-	Errors   []WorkersMessages `json:"errors,required"`
-	Messages []WorkersMessages `json:"messages,required"`
+	Errors   []WorkersMessages `json:"errors" api:"required"`
+	Messages []WorkersMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountWorkerScriptSecretGetResponseSuccess `json:"success,required"`
+	Success AccountWorkerScriptSecretGetResponseSuccess `json:"success" api:"required"`
 	// A secret value accessible through a binding.
 	Result Secret                                   `json:"result"`
 	JSON   accountWorkerScriptSecretGetResponseJSON `json:"-"`
@@ -238,7 +238,7 @@ func (r AccountWorkerScriptSecretGetResponseSuccess) IsKnown() bool {
 
 type AccountWorkerScriptSecretAddParams struct {
 	// A secret value accessible through a binding.
-	Secret SecretUnionParam `json:"secret,required"`
+	Secret SecretUnionParam `json:"secret" api:"required"`
 }
 
 func (r AccountWorkerScriptSecretAddParams) MarshalJSON() (data []byte, err error) {

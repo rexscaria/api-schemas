@@ -43,15 +43,15 @@ func (r *AccountIntelAttackSurfaceReportService) DismissIssue(ctx context.Contex
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if issueID == "" {
 		err = errors.New("missing required issue_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/intel/attack-surface-report/%s/dismiss", accountID, issueID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get Security Center Issues Types
@@ -59,16 +59,16 @@ func (r *AccountIntelAttackSurfaceReportService) ListIssueTypes(ctx context.Cont
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/intel/attack-surface-report/issue-types", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type AttackSurfaceReportMessage struct {
-	Code             int64                            `json:"code,required"`
-	Message          string                           `json:"message,required"`
+	Code             int64                            `json:"code" api:"required"`
+	Message          string                           `json:"message" api:"required"`
 	DocumentationURL string                           `json:"documentation_url"`
 	Source           AttackSurfaceReportMessageSource `json:"source"`
 	JSON             attackSurfaceReportMessageJSON   `json:"-"`
@@ -115,10 +115,10 @@ func (r attackSurfaceReportMessageSourceJSON) RawJSON() string {
 }
 
 type SingleResponseReport struct {
-	Errors   []AttackSurfaceReportMessage `json:"errors,required"`
-	Messages []AttackSurfaceReportMessage `json:"messages,required"`
+	Errors   []AttackSurfaceReportMessage `json:"errors" api:"required"`
+	Messages []AttackSurfaceReportMessage `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success SingleResponseReportSuccess `json:"success,required"`
+	Success SingleResponseReportSuccess `json:"success" api:"required"`
 	JSON    singleResponseReportJSON    `json:"-"`
 }
 
@@ -156,10 +156,10 @@ func (r SingleResponseReportSuccess) IsKnown() bool {
 }
 
 type AccountIntelAttackSurfaceReportListIssueTypesResponse struct {
-	Errors   []AttackSurfaceReportMessage `json:"errors,required"`
-	Messages []AttackSurfaceReportMessage `json:"messages,required"`
+	Errors   []AttackSurfaceReportMessage `json:"errors" api:"required"`
+	Messages []AttackSurfaceReportMessage `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountIntelAttackSurfaceReportListIssueTypesResponseSuccess `json:"success,required"`
+	Success AccountIntelAttackSurfaceReportListIssueTypesResponseSuccess `json:"success" api:"required"`
 	Result  []string                                                     `json:"result"`
 	JSON    accountIntelAttackSurfaceReportListIssueTypesResponseJSON    `json:"-"`
 }

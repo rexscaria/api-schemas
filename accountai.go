@@ -50,16 +50,16 @@ func (r *AccountAIService) ConvertToMarkdown(ctx context.Context, accountID stri
 	opts = append([]option.RequestOption{option.WithRequestBody("application/octet-stream", body)}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai/tomarkdown", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountAIConvertToMarkdownResponse struct {
-	Result  []AccountAIConvertToMarkdownResponseResult `json:"result,required"`
-	Success bool                                       `json:"success,required"`
+	Result  []AccountAIConvertToMarkdownResponseResult `json:"result" api:"required"`
+	Success bool                                       `json:"success" api:"required"`
 	JSON    accountAIConvertToMarkdownResponseJSON     `json:"-"`
 }
 
@@ -81,11 +81,11 @@ func (r accountAIConvertToMarkdownResponseJSON) RawJSON() string {
 }
 
 type AccountAIConvertToMarkdownResponseResult struct {
-	Data     string                                       `json:"data,required"`
-	Format   string                                       `json:"format,required"`
-	MimeType string                                       `json:"mimeType,required"`
-	Name     string                                       `json:"name,required"`
-	Tokens   string                                       `json:"tokens,required"`
+	Data     string                                       `json:"data" api:"required"`
+	Format   string                                       `json:"format" api:"required"`
+	MimeType string                                       `json:"mimeType" api:"required"`
+	Name     string                                       `json:"name" api:"required"`
+	Tokens   string                                       `json:"tokens" api:"required"`
 	JSON     accountAIConvertToMarkdownResponseResultJSON `json:"-"`
 }
 

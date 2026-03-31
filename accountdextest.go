@@ -42,11 +42,11 @@ func (r *AccountDexTestService) CountUniqueDevices(ctx context.Context, accountI
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/dex/tests/unique-devices", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // List DEX tests with overview metrics
@@ -54,16 +54,16 @@ func (r *AccountDexTestService) ListOverview(ctx context.Context, accountID stri
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/dex/tests/overview", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type AggregateTimePeriod struct {
-	Units AggregateTimePeriodUnits `json:"units,required"`
-	Value int64                    `json:"value,required"`
+	Units AggregateTimePeriodUnits `json:"units" api:"required"`
+	Value int64                    `json:"value" api:"required"`
 	JSON  aggregateTimePeriodJSON  `json:"-"`
 }
 
@@ -101,9 +101,9 @@ func (r AggregateTimePeriodUnits) IsKnown() bool {
 }
 
 type TimingAggregates struct {
-	History  []TimingAggregatesHistory `json:"history,required"`
-	AvgMs    int64                     `json:"avgMs,nullable"`
-	OverTime TimingAggregatesOverTime  `json:"overTime,nullable"`
+	History  []TimingAggregatesHistory `json:"history" api:"required"`
+	AvgMs    int64                     `json:"avgMs" api:"nullable"`
+	OverTime TimingAggregatesOverTime  `json:"overTime" api:"nullable"`
 	JSON     timingAggregatesJSON      `json:"-"`
 }
 
@@ -126,9 +126,9 @@ func (r timingAggregatesJSON) RawJSON() string {
 }
 
 type TimingAggregatesHistory struct {
-	TimePeriod AggregateTimePeriod         `json:"timePeriod,required"`
-	AvgMs      int64                       `json:"avgMs,nullable"`
-	DeltaPct   float64                     `json:"deltaPct,nullable"`
+	TimePeriod AggregateTimePeriod         `json:"timePeriod" api:"required"`
+	AvgMs      int64                       `json:"avgMs" api:"nullable"`
+	DeltaPct   float64                     `json:"deltaPct" api:"nullable"`
 	JSON       timingAggregatesHistoryJSON `json:"-"`
 }
 
@@ -151,8 +151,8 @@ func (r timingAggregatesHistoryJSON) RawJSON() string {
 }
 
 type TimingAggregatesOverTime struct {
-	TimePeriod AggregateTimePeriod             `json:"timePeriod,required"`
-	Values     []TimingAggregatesOverTimeValue `json:"values,required"`
+	TimePeriod AggregateTimePeriod             `json:"timePeriod" api:"required"`
+	Values     []TimingAggregatesOverTimeValue `json:"values" api:"required"`
 	JSON       timingAggregatesOverTimeJSON    `json:"-"`
 }
 
@@ -174,8 +174,8 @@ func (r timingAggregatesOverTimeJSON) RawJSON() string {
 }
 
 type TimingAggregatesOverTimeValue struct {
-	AvgMs     int64                             `json:"avgMs,required"`
-	Timestamp string                            `json:"timestamp,required"`
+	AvgMs     int64                             `json:"avgMs" api:"required"`
+	Timestamp string                            `json:"timestamp" api:"required"`
 	JSON      timingAggregatesOverTimeValueJSON `json:"-"`
 }
 
@@ -197,10 +197,10 @@ func (r timingAggregatesOverTimeValueJSON) RawJSON() string {
 }
 
 type AccountDexTestCountUniqueDevicesResponse struct {
-	Errors   []Item `json:"errors,required"`
-	Messages []Item `json:"messages,required"`
+	Errors   []Item `json:"errors" api:"required"`
+	Messages []Item `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountDexTestCountUniqueDevicesResponseSuccess `json:"success,required"`
+	Success AccountDexTestCountUniqueDevicesResponseSuccess `json:"success" api:"required"`
 	Result  AccountDexTestCountUniqueDevicesResponseResult  `json:"result"`
 	JSON    accountDexTestCountUniqueDevicesResponseJSON    `json:"-"`
 }
@@ -241,7 +241,7 @@ func (r AccountDexTestCountUniqueDevicesResponseSuccess) IsKnown() bool {
 
 type AccountDexTestCountUniqueDevicesResponseResult struct {
 	// total number of unique devices
-	UniqueDevicesTotal int64                                              `json:"uniqueDevicesTotal,required"`
+	UniqueDevicesTotal int64                                              `json:"uniqueDevicesTotal" api:"required"`
 	JSON               accountDexTestCountUniqueDevicesResponseResultJSON `json:"-"`
 }
 
@@ -262,10 +262,10 @@ func (r accountDexTestCountUniqueDevicesResponseResultJSON) RawJSON() string {
 }
 
 type AccountDexTestListOverviewResponse struct {
-	Errors   []Item `json:"errors,required"`
-	Messages []Item `json:"messages,required"`
+	Errors   []Item `json:"errors" api:"required"`
+	Messages []Item `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountDexTestListOverviewResponseSuccess `json:"success,required"`
+	Success AccountDexTestListOverviewResponseSuccess `json:"success" api:"required"`
 	Result  AccountDexTestListOverviewResponseResult  `json:"result"`
 	JSON    accountDexTestListOverviewResponseJSON    `json:"-"`
 }
@@ -305,9 +305,9 @@ func (r AccountDexTestListOverviewResponseSuccess) IsKnown() bool {
 }
 
 type AccountDexTestListOverviewResponseResult struct {
-	OverviewMetrics AccountDexTestListOverviewResponseResultOverviewMetrics `json:"overviewMetrics,required"`
+	OverviewMetrics AccountDexTestListOverviewResponseResultOverviewMetrics `json:"overviewMetrics" api:"required"`
 	// array of test results objects.
-	Tests []AccountDexTestListOverviewResponseResultTest `json:"tests,required"`
+	Tests []AccountDexTestListOverviewResponseResultTest `json:"tests" api:"required"`
 	JSON  accountDexTestListOverviewResponseResultJSON   `json:"-"`
 }
 
@@ -330,11 +330,11 @@ func (r accountDexTestListOverviewResponseResultJSON) RawJSON() string {
 
 type AccountDexTestListOverviewResponseResultOverviewMetrics struct {
 	// number of tests.
-	TestsTotal int64 `json:"testsTotal,required"`
+	TestsTotal int64 `json:"testsTotal" api:"required"`
 	// percentage availability for all HTTP test results in response
-	AvgHTTPAvailabilityPct float64 `json:"avgHttpAvailabilityPct,nullable"`
+	AvgHTTPAvailabilityPct float64 `json:"avgHttpAvailabilityPct" api:"nullable"`
 	// percentage availability for all traceroutes results in response
-	AvgTracerouteAvailabilityPct float64                                                     `json:"avgTracerouteAvailabilityPct,nullable"`
+	AvgTracerouteAvailabilityPct float64                                                     `json:"avgTracerouteAvailabilityPct" api:"nullable"`
 	JSON                         accountDexTestListOverviewResponseResultOverviewMetricsJSON `json:"-"`
 }
 
@@ -359,29 +359,29 @@ func (r accountDexTestListOverviewResponseResultOverviewMetricsJSON) RawJSON() s
 
 type AccountDexTestListOverviewResponseResultTest struct {
 	// API Resource UUID tag.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// date the test was created.
-	Created string `json:"created,required"`
+	Created string `json:"created" api:"required"`
 	// the test description defined during configuration
-	Description string `json:"description,required"`
+	Description string `json:"description" api:"required"`
 	// if true, then the test will run on targeted devices. Else, the test will not
 	// run.
-	Enabled bool   `json:"enabled,required"`
-	Host    string `json:"host,required"`
+	Enabled bool   `json:"enabled" api:"required"`
+	Host    string `json:"host" api:"required"`
 	// The interval at which the synthetic application test is set to run.
-	Interval string `json:"interval,required"`
+	Interval string `json:"interval" api:"required"`
 	// test type, http or traceroute
-	Kind AccountDexTestListOverviewResponseResultTestsKind `json:"kind,required"`
+	Kind AccountDexTestListOverviewResponseResultTestsKind `json:"kind" api:"required"`
 	// name given to this test
-	Name              string                                                           `json:"name,required"`
-	Updated           string                                                           `json:"updated,required"`
-	HTTPResults       AccountDexTestListOverviewResponseResultTestsHTTPResults         `json:"httpResults,nullable"`
+	Name              string                                                           `json:"name" api:"required"`
+	Updated           string                                                           `json:"updated" api:"required"`
+	HTTPResults       AccountDexTestListOverviewResponseResultTestsHTTPResults         `json:"httpResults" api:"nullable"`
 	HTTPResultsByColo []AccountDexTestListOverviewResponseResultTestsHTTPResultsByColo `json:"httpResultsByColo"`
 	// for HTTP, the method to use when running the test
 	Method                  string                                                                 `json:"method"`
-	TargetPolicies          []AccountDexTestListOverviewResponseResultTestsTargetPolicy            `json:"target_policies,nullable"`
+	TargetPolicies          []AccountDexTestListOverviewResponseResultTestsTargetPolicy            `json:"target_policies" api:"nullable"`
 	Targeted                bool                                                                   `json:"targeted"`
-	TracerouteResults       AccountDexTestListOverviewResponseResultTestsTracerouteResults         `json:"tracerouteResults,nullable"`
+	TracerouteResults       AccountDexTestListOverviewResponseResultTestsTracerouteResults         `json:"tracerouteResults" api:"nullable"`
 	TracerouteResultsByColo []AccountDexTestListOverviewResponseResultTestsTracerouteResultsByColo `json:"tracerouteResultsByColo"`
 	JSON                    accountDexTestListOverviewResponseResultTestJSON                       `json:"-"`
 }
@@ -434,7 +434,7 @@ func (r AccountDexTestListOverviewResponseResultTestsKind) IsKnown() bool {
 }
 
 type AccountDexTestListOverviewResponseResultTestsHTTPResults struct {
-	ResourceFetchTime TimingAggregates                                             `json:"resourceFetchTime,required"`
+	ResourceFetchTime TimingAggregates                                             `json:"resourceFetchTime" api:"required"`
 	JSON              accountDexTestListOverviewResponseResultTestsHTTPResultsJSON `json:"-"`
 }
 
@@ -457,8 +457,8 @@ func (r accountDexTestListOverviewResponseResultTestsHTTPResultsJSON) RawJSON() 
 
 type AccountDexTestListOverviewResponseResultTestsHTTPResultsByColo struct {
 	// Cloudflare colo
-	Colo              string                                                             `json:"colo,required"`
-	ResourceFetchTime TimingAggregates                                                   `json:"resourceFetchTime,required"`
+	Colo              string                                                             `json:"colo" api:"required"`
+	ResourceFetchTime TimingAggregates                                                   `json:"resourceFetchTime" api:"required"`
 	JSON              accountDexTestListOverviewResponseResultTestsHTTPResultsByColoJSON `json:"-"`
 }
 
@@ -481,10 +481,10 @@ func (r accountDexTestListOverviewResponseResultTestsHTTPResultsByColoJSON) RawJ
 }
 
 type AccountDexTestListOverviewResponseResultTestsTargetPolicy struct {
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Whether the policy is the default for the account
-	Default bool                                                          `json:"default,required"`
-	Name    string                                                        `json:"name,required"`
+	Default bool                                                          `json:"default" api:"required"`
+	Name    string                                                        `json:"name" api:"required"`
 	JSON    accountDexTestListOverviewResponseResultTestsTargetPolicyJSON `json:"-"`
 }
 
@@ -508,7 +508,7 @@ func (r accountDexTestListOverviewResponseResultTestsTargetPolicyJSON) RawJSON()
 }
 
 type AccountDexTestListOverviewResponseResultTestsTracerouteResults struct {
-	RoundTripTime TimingAggregates                                                   `json:"roundTripTime,required"`
+	RoundTripTime TimingAggregates                                                   `json:"roundTripTime" api:"required"`
 	JSON          accountDexTestListOverviewResponseResultTestsTracerouteResultsJSON `json:"-"`
 }
 
@@ -531,8 +531,8 @@ func (r accountDexTestListOverviewResponseResultTestsTracerouteResultsJSON) RawJ
 
 type AccountDexTestListOverviewResponseResultTestsTracerouteResultsByColo struct {
 	// Cloudflare colo
-	Colo          string                                                                   `json:"colo,required"`
-	RoundTripTime TimingAggregates                                                         `json:"roundTripTime,required"`
+	Colo          string                                                                   `json:"colo" api:"required"`
+	RoundTripTime TimingAggregates                                                         `json:"roundTripTime" api:"required"`
 	JSON          accountDexTestListOverviewResponseResultTestsTracerouteResultsByColoJSON `json:"-"`
 }
 

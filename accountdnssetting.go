@@ -41,11 +41,11 @@ func (r *AccountDNSSettingService) Get(ctx context.Context, accountID string, op
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/dns_settings", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update DNS settings for an account
@@ -53,11 +53,11 @@ func (r *AccountDNSSettingService) Update(ctx context.Context, accountID string,
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/dns_settings", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountSettings struct {
@@ -156,7 +156,7 @@ func (r accountSettingsZoneDefaultsInternalDNSJSON) RawJSON() string {
 // Settings determining the nameservers through which the zone should be available.
 type AccountSettingsZoneDefaultsNameservers struct {
 	// Nameserver type
-	Type AccountSettingsZoneDefaultsNameserversType `json:"type,required"`
+	Type AccountSettingsZoneDefaultsNameserversType `json:"type" api:"required"`
 	JSON accountSettingsZoneDefaultsNameserversJSON `json:"-"`
 }
 
@@ -198,22 +198,22 @@ func (r AccountSettingsZoneDefaultsNameserversType) IsKnown() bool {
 type AccountSettingsZoneDefaultsSoa struct {
 	// Time in seconds of being unable to query the primary server after which
 	// secondary servers should stop serving the zone.
-	Expire float64 `json:"expire,required"`
+	Expire float64 `json:"expire" api:"required"`
 	// The time to live (TTL) for negative caching of records within the zone.
-	MinTtl float64 `json:"min_ttl,required"`
+	MinTtl float64 `json:"min_ttl" api:"required"`
 	// The primary nameserver, which may be used for outbound zone transfers.
-	Mname string `json:"mname,required"`
+	Mname string `json:"mname" api:"required"`
 	// Time in seconds after which secondary servers should re-check the SOA record to
 	// see if the zone has been updated.
-	Refresh float64 `json:"refresh,required"`
+	Refresh float64 `json:"refresh" api:"required"`
 	// Time in seconds after which secondary servers should retry queries after the
 	// primary server was unresponsive.
-	Retry float64 `json:"retry,required"`
+	Retry float64 `json:"retry" api:"required"`
 	// The email address of the zone administrator, with the first label representing
 	// the local part of the email address.
-	Rname string `json:"rname,required"`
+	Rname string `json:"rname" api:"required"`
 	// The time to live (TTL) of the SOA record itself.
-	Ttl  float64                            `json:"ttl,required"`
+	Ttl  float64                            `json:"ttl" api:"required"`
 	JSON accountSettingsZoneDefaultsSoaJSON `json:"-"`
 }
 
@@ -306,7 +306,7 @@ func (r AccountSettingsZoneDefaultsInternalDNSParam) MarshalJSON() (data []byte,
 // Settings determining the nameservers through which the zone should be available.
 type AccountSettingsZoneDefaultsNameserversParam struct {
 	// Nameserver type
-	Type param.Field[AccountSettingsZoneDefaultsNameserversType] `json:"type,required"`
+	Type param.Field[AccountSettingsZoneDefaultsNameserversType] `json:"type" api:"required"`
 }
 
 func (r AccountSettingsZoneDefaultsNameserversParam) MarshalJSON() (data []byte, err error) {
@@ -317,22 +317,22 @@ func (r AccountSettingsZoneDefaultsNameserversParam) MarshalJSON() (data []byte,
 type AccountSettingsZoneDefaultsSoaParam struct {
 	// Time in seconds of being unable to query the primary server after which
 	// secondary servers should stop serving the zone.
-	Expire param.Field[float64] `json:"expire,required"`
+	Expire param.Field[float64] `json:"expire" api:"required"`
 	// The time to live (TTL) for negative caching of records within the zone.
-	MinTtl param.Field[float64] `json:"min_ttl,required"`
+	MinTtl param.Field[float64] `json:"min_ttl" api:"required"`
 	// The primary nameserver, which may be used for outbound zone transfers.
-	Mname param.Field[string] `json:"mname,required"`
+	Mname param.Field[string] `json:"mname" api:"required"`
 	// Time in seconds after which secondary servers should re-check the SOA record to
 	// see if the zone has been updated.
-	Refresh param.Field[float64] `json:"refresh,required"`
+	Refresh param.Field[float64] `json:"refresh" api:"required"`
 	// Time in seconds after which secondary servers should retry queries after the
 	// primary server was unresponsive.
-	Retry param.Field[float64] `json:"retry,required"`
+	Retry param.Field[float64] `json:"retry" api:"required"`
 	// The email address of the zone administrator, with the first label representing
 	// the local part of the email address.
-	Rname param.Field[string] `json:"rname,required"`
+	Rname param.Field[string] `json:"rname" api:"required"`
 	// The time to live (TTL) of the SOA record itself.
-	Ttl param.Field[float64] `json:"ttl,required"`
+	Ttl param.Field[float64] `json:"ttl" api:"required"`
 }
 
 func (r AccountSettingsZoneDefaultsSoaParam) MarshalJSON() (data []byte, err error) {
@@ -340,10 +340,10 @@ func (r AccountSettingsZoneDefaultsSoaParam) MarshalJSON() (data []byte, err err
 }
 
 type DNSResponseSingle struct {
-	Errors   []DNSSettingsMessages `json:"errors,required"`
-	Messages []DNSSettingsMessages `json:"messages,required"`
+	Errors   []DNSSettingsMessages `json:"errors" api:"required"`
+	Messages []DNSSettingsMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success DNSResponseSingleSuccess `json:"success,required"`
+	Success DNSResponseSingleSuccess `json:"success" api:"required"`
 	Result  AccountSettings          `json:"result"`
 	JSON    dnsResponseSingleJSON    `json:"-"`
 }
@@ -383,8 +383,8 @@ func (r DNSResponseSingleSuccess) IsKnown() bool {
 }
 
 type DNSSettingsMessages struct {
-	Code             int64                     `json:"code,required"`
-	Message          string                    `json:"message,required"`
+	Code             int64                     `json:"code" api:"required"`
+	Message          string                    `json:"message" api:"required"`
 	DocumentationURL string                    `json:"documentation_url"`
 	Source           DNSSettingsMessagesSource `json:"source"`
 	JSON             dnsSettingsMessagesJSON   `json:"-"`
@@ -431,7 +431,7 @@ func (r dnsSettingsMessagesSourceJSON) RawJSON() string {
 }
 
 type AccountDNSSettingUpdateParams struct {
-	AccountSettings AccountSettingsParam `json:"account_settings,required"`
+	AccountSettings AccountSettingsParam `json:"account_settings" api:"required"`
 }
 
 func (r AccountDNSSettingUpdateParams) MarshalJSON() (data []byte, err error) {

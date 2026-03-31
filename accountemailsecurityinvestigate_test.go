@@ -15,7 +15,7 @@ import (
 )
 
 func TestAccountEmailSecurityInvestigateGet(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -43,7 +43,7 @@ func TestAccountEmailSecurityInvestigateGet(t *testing.T) {
 }
 
 func TestAccountEmailSecurityInvestigateListWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -88,7 +88,7 @@ func TestAccountEmailSecurityInvestigateListWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountEmailSecurityInvestigateGetDetections(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -116,7 +116,7 @@ func TestAccountEmailSecurityInvestigateGetDetections(t *testing.T) {
 }
 
 func TestAccountEmailSecurityInvestigateGetRaw(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -144,7 +144,7 @@ func TestAccountEmailSecurityInvestigateGetRaw(t *testing.T) {
 }
 
 func TestAccountEmailSecurityInvestigateGetTrace(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -172,7 +172,7 @@ func TestAccountEmailSecurityInvestigateGetTrace(t *testing.T) {
 }
 
 func TestAccountEmailSecurityInvestigateMoveMultiple(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -203,7 +203,7 @@ func TestAccountEmailSecurityInvestigateMoveMultiple(t *testing.T) {
 }
 
 func TestAccountEmailSecurityInvestigatePreview(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -231,7 +231,7 @@ func TestAccountEmailSecurityInvestigatePreview(t *testing.T) {
 }
 
 func TestAccountEmailSecurityInvestigatePreviewMultiple(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -261,7 +261,7 @@ func TestAccountEmailSecurityInvestigatePreviewMultiple(t *testing.T) {
 }
 
 func TestAccountEmailSecurityInvestigateReclassifyWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -293,7 +293,7 @@ func TestAccountEmailSecurityInvestigateReclassifyWithOptionalParams(t *testing.
 }
 
 func TestAccountEmailSecurityInvestigateRelease(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL

@@ -41,11 +41,11 @@ func (r *ZoneBotManagementService) Get(ctx context.Context, zoneID string, opts 
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/bot_management", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates the Bot Management configuration for a zone.
@@ -121,11 +121,11 @@ func (r *ZoneBotManagementService) Update(ctx context.Context, zoneID string, bo
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/bot_management", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type BmSubscriptionConfig struct {
@@ -460,10 +460,10 @@ func (r BotFightModeConfigStaleZoneConfigurationParam) MarshalJSON() (data []byt
 }
 
 type ManagementResponseBody struct {
-	Errors   []MessagesBotManagementItem `json:"errors,required"`
-	Messages []MessagesBotManagementItem `json:"messages,required"`
+	Errors   []MessagesBotManagementItem `json:"errors" api:"required"`
+	Messages []MessagesBotManagementItem `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success ManagementResponseBodySuccess `json:"success,required"`
+	Success ManagementResponseBodySuccess `json:"success" api:"required"`
 	Result  ManagementResponseBodyResult  `json:"result"`
 	JSON    managementResponseBodyJSON    `json:"-"`
 }
@@ -668,8 +668,8 @@ func (r ManagementResponseBodyResultSbfmLikelyAutomated) IsKnown() bool {
 }
 
 type MessagesBotManagementItem struct {
-	Code             int64                           `json:"code,required"`
-	Message          string                          `json:"message,required"`
+	Code             int64                           `json:"code" api:"required"`
+	Message          string                          `json:"message" api:"required"`
 	DocumentationURL string                          `json:"documentation_url"`
 	Source           MessagesBotManagementItemSource `json:"source"`
 	JSON             messagesBotManagementItemJSON   `json:"-"`
@@ -1078,7 +1078,7 @@ func (r SbfmVerifiedBots) IsKnown() bool {
 }
 
 type ZoneBotManagementUpdateParams struct {
-	Body ZoneBotManagementUpdateParamsBodyUnion `json:"body,required"`
+	Body ZoneBotManagementUpdateParamsBodyUnion `json:"body" api:"required"`
 }
 
 func (r ZoneBotManagementUpdateParams) MarshalJSON() (data []byte, err error) {

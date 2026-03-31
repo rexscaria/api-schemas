@@ -49,11 +49,11 @@ func (r *ZoneAnalyticsService) ListColos(ctx context.Context, zoneIdentifier str
 	opts = slices.Concat(r.Options, opts)
 	if zoneIdentifier == "" {
 		err = errors.New("missing required zone_identifier parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/analytics/colos", zoneIdentifier)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // The dashboard view provides both totals and timeseries data for the given zone
@@ -64,11 +64,11 @@ func (r *ZoneAnalyticsService) GetDashboard(ctx context.Context, zoneIdentifier 
 	opts = slices.Concat(r.Options, opts)
 	if zoneIdentifier == "" {
 		err = errors.New("missing required zone_identifier parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/analytics/dashboard", zoneIdentifier)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Breakdown of totals for bandwidth in the form of bytes.
@@ -548,13 +548,13 @@ type ZoneAnalyticsUntilUnionParam interface {
 }
 
 type ZoneAnalyticsListColosResponse struct {
-	Errors   []ZoneAnalyticsListColosResponseError   `json:"errors,required"`
-	Messages []ZoneAnalyticsListColosResponseMessage `json:"messages,required"`
+	Errors   []ZoneAnalyticsListColosResponseError   `json:"errors" api:"required"`
+	Messages []ZoneAnalyticsListColosResponseMessage `json:"messages" api:"required"`
 	// A breakdown of all dashboard analytics data by co-locations. This is limited to
 	// Enterprise zones only.
-	Result []ZoneAnalyticsListColosResponseResult `json:"result,required"`
+	Result []ZoneAnalyticsListColosResponseResult `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success ZoneAnalyticsListColosResponseSuccess `json:"success,required"`
+	Success ZoneAnalyticsListColosResponseSuccess `json:"success" api:"required"`
 	// The exact parameters/timestamps the analytics service used to return data.
 	Query ZoneAnalyticsQueryResponse         `json:"query"`
 	JSON  zoneAnalyticsListColosResponseJSON `json:"-"`
@@ -581,8 +581,8 @@ func (r zoneAnalyticsListColosResponseJSON) RawJSON() string {
 }
 
 type ZoneAnalyticsListColosResponseError struct {
-	Code             int64                                      `json:"code,required"`
-	Message          string                                     `json:"message,required"`
+	Code             int64                                      `json:"code" api:"required"`
+	Message          string                                     `json:"message" api:"required"`
 	DocumentationURL string                                     `json:"documentation_url"`
 	Source           ZoneAnalyticsListColosResponseErrorsSource `json:"source"`
 	JSON             zoneAnalyticsListColosResponseErrorJSON    `json:"-"`
@@ -629,8 +629,8 @@ func (r zoneAnalyticsListColosResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type ZoneAnalyticsListColosResponseMessage struct {
-	Code             int64                                        `json:"code,required"`
-	Message          string                                       `json:"message,required"`
+	Code             int64                                        `json:"code" api:"required"`
+	Message          string                                       `json:"message" api:"required"`
 	DocumentationURL string                                       `json:"documentation_url"`
 	Source           ZoneAnalyticsListColosResponseMessagesSource `json:"source"`
 	JSON             zoneAnalyticsListColosResponseMessageJSON    `json:"-"`
@@ -823,12 +823,12 @@ func (r ZoneAnalyticsListColosResponseSuccess) IsKnown() bool {
 }
 
 type ZoneAnalyticsGetDashboardResponse struct {
-	Errors   []ZoneAnalyticsGetDashboardResponseError   `json:"errors,required"`
-	Messages []ZoneAnalyticsGetDashboardResponseMessage `json:"messages,required"`
+	Errors   []ZoneAnalyticsGetDashboardResponseError   `json:"errors" api:"required"`
+	Messages []ZoneAnalyticsGetDashboardResponseMessage `json:"messages" api:"required"`
 	// Totals and timeseries data.
-	Result ZoneAnalyticsGetDashboardResponseResult `json:"result,required"`
+	Result ZoneAnalyticsGetDashboardResponseResult `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success ZoneAnalyticsGetDashboardResponseSuccess `json:"success,required"`
+	Success ZoneAnalyticsGetDashboardResponseSuccess `json:"success" api:"required"`
 	// The exact parameters/timestamps the analytics service used to return data.
 	Query ZoneAnalyticsQueryResponse            `json:"query"`
 	JSON  zoneAnalyticsGetDashboardResponseJSON `json:"-"`
@@ -855,8 +855,8 @@ func (r zoneAnalyticsGetDashboardResponseJSON) RawJSON() string {
 }
 
 type ZoneAnalyticsGetDashboardResponseError struct {
-	Code             int64                                         `json:"code,required"`
-	Message          string                                        `json:"message,required"`
+	Code             int64                                         `json:"code" api:"required"`
+	Message          string                                        `json:"message" api:"required"`
 	DocumentationURL string                                        `json:"documentation_url"`
 	Source           ZoneAnalyticsGetDashboardResponseErrorsSource `json:"source"`
 	JSON             zoneAnalyticsGetDashboardResponseErrorJSON    `json:"-"`
@@ -903,8 +903,8 @@ func (r zoneAnalyticsGetDashboardResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type ZoneAnalyticsGetDashboardResponseMessage struct {
-	Code             int64                                           `json:"code,required"`
-	Message          string                                          `json:"message,required"`
+	Code             int64                                           `json:"code" api:"required"`
+	Message          string                                          `json:"message" api:"required"`
 	DocumentationURL string                                          `json:"documentation_url"`
 	Source           ZoneAnalyticsGetDashboardResponseMessagesSource `json:"source"`
 	JSON             zoneAnalyticsGetDashboardResponseMessageJSON    `json:"-"`

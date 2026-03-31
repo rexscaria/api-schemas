@@ -258,8 +258,8 @@ func (r aaaAuditLogsObjectJSON) RawJSON() string {
 func (r AaaAuditLogsObject) implementsAaaAuditLogs() {}
 
 type AaaAuditLogsObjectError struct {
-	Code             int64                          `json:"code,required"`
-	Message          string                         `json:"message,required"`
+	Code             int64                          `json:"code" api:"required"`
+	Message          string                         `json:"message" api:"required"`
 	DocumentationURL string                         `json:"documentation_url"`
 	Source           AaaAuditLogsObjectErrorsSource `json:"source"`
 	JSON             aaaAuditLogsObjectErrorJSON    `json:"-"`
@@ -306,8 +306,8 @@ func (r aaaAuditLogsObjectErrorsSourceJSON) RawJSON() string {
 }
 
 type AaaAuditLogsObjectMessage struct {
-	Code             int64                            `json:"code,required"`
-	Message          string                           `json:"message,required"`
+	Code             int64                            `json:"code" api:"required"`
+	Message          string                           `json:"message" api:"required"`
 	DocumentationURL string                           `json:"documentation_url"`
 	Source           AaaAuditLogsObjectMessagesSource `json:"source"`
 	JSON             aaaAuditLogsObjectMessageJSON    `json:"-"`
@@ -521,8 +521,8 @@ func (r aaaAuditLogsObjectResultResourceJSON) RawJSON() string {
 }
 
 type AaaMessage struct {
-	Code             int64            `json:"code,required"`
-	Message          string           `json:"message,required"`
+	Code             int64            `json:"code" api:"required"`
+	Message          string           `json:"message" api:"required"`
 	DocumentationURL string           `json:"documentation_url"`
 	Source           AaaMessageSource `json:"source"`
 	JSON             aaaMessageJSON   `json:"-"`
@@ -568,11 +568,11 @@ func (r aaaMessageSourceJSON) RawJSON() string {
 }
 
 type IamAPIResponseSingleID struct {
-	Errors   []IamAPIResponseSingleIDError   `json:"errors,required"`
-	Messages []IamAPIResponseSingleIDMessage `json:"messages,required"`
+	Errors   []IamAPIResponseSingleIDError   `json:"errors" api:"required"`
+	Messages []IamAPIResponseSingleIDMessage `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success IamAPIResponseSingleIDSuccess `json:"success,required"`
-	Result  IamAPIResponseSingleIDResult  `json:"result,nullable"`
+	Success IamAPIResponseSingleIDSuccess `json:"success" api:"required"`
+	Result  IamAPIResponseSingleIDResult  `json:"result" api:"nullable"`
 	JSON    iamAPIResponseSingleIDJSON    `json:"-"`
 }
 
@@ -596,8 +596,8 @@ func (r iamAPIResponseSingleIDJSON) RawJSON() string {
 }
 
 type IamAPIResponseSingleIDError struct {
-	Code             int64                              `json:"code,required"`
-	Message          string                             `json:"message,required"`
+	Code             int64                              `json:"code" api:"required"`
+	Message          string                             `json:"message" api:"required"`
 	DocumentationURL string                             `json:"documentation_url"`
 	Source           IamAPIResponseSingleIDErrorsSource `json:"source"`
 	JSON             iamAPIResponseSingleIDErrorJSON    `json:"-"`
@@ -644,8 +644,8 @@ func (r iamAPIResponseSingleIDErrorsSourceJSON) RawJSON() string {
 }
 
 type IamAPIResponseSingleIDMessage struct {
-	Code             int64                                `json:"code,required"`
-	Message          string                               `json:"message,required"`
+	Code             int64                                `json:"code" api:"required"`
+	Message          string                               `json:"message" api:"required"`
 	DocumentationURL string                               `json:"documentation_url"`
 	Source           IamAPIResponseSingleIDMessagesSource `json:"source"`
 	JSON             iamAPIResponseSingleIDMessageJSON    `json:"-"`
@@ -708,7 +708,7 @@ func (r IamAPIResponseSingleIDSuccess) IsKnown() bool {
 
 type IamAPIResponseSingleIDResult struct {
 	// Identifier
-	ID   string                           `json:"id,required"`
+	ID   string                           `json:"id" api:"required"`
 	JSON iamAPIResponseSingleIDResultJSON `json:"-"`
 }
 
@@ -729,8 +729,8 @@ func (r iamAPIResponseSingleIDResultJSON) RawJSON() string {
 }
 
 type WaitingroomMessage struct {
-	Code             int64                    `json:"code,required"`
-	Message          string                   `json:"message,required"`
+	Code             int64                    `json:"code" api:"required"`
+	Message          string                   `json:"message" api:"required"`
 	DocumentationURL string                   `json:"documentation_url"`
 	Source           WaitingroomMessageSource `json:"source"`
 	JSON             waitingroomMessageJSON   `json:"-"`

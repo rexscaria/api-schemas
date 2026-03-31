@@ -43,12 +43,12 @@ func (r *RadarEntityService) GetIPDetails(ctx context.Context, query RadarEntity
 	opts = slices.Concat(r.Options, opts)
 	path := "radar/entities/ip"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type RadarEntityGetIPDetailsResponse struct {
-	Result  RadarEntityGetIPDetailsResponseResult `json:"result,required"`
-	Success bool                                  `json:"success,required"`
+	Result  RadarEntityGetIPDetailsResponseResult `json:"result" api:"required"`
+	Success bool                                  `json:"success" api:"required"`
 	JSON    radarEntityGetIPDetailsResponseJSON   `json:"-"`
 }
 
@@ -70,7 +70,7 @@ func (r radarEntityGetIPDetailsResponseJSON) RawJSON() string {
 }
 
 type RadarEntityGetIPDetailsResponseResult struct {
-	IP   RadarEntityGetIPDetailsResponseResultIP   `json:"ip,required"`
+	IP   RadarEntityGetIPDetailsResponseResultIP   `json:"ip" api:"required"`
 	JSON radarEntityGetIPDetailsResponseResultJSON `json:"-"`
 }
 
@@ -91,14 +91,14 @@ func (r radarEntityGetIPDetailsResponseResultJSON) RawJSON() string {
 }
 
 type RadarEntityGetIPDetailsResponseResultIP struct {
-	Asn          string                                      `json:"asn,required"`
-	AsnLocation  string                                      `json:"asnLocation,required"`
-	AsnName      string                                      `json:"asnName,required"`
-	AsnOrgName   string                                      `json:"asnOrgName,required"`
-	IP           string                                      `json:"ip,required"`
-	IPVersion    string                                      `json:"ipVersion,required"`
-	Location     string                                      `json:"location,required"`
-	LocationName string                                      `json:"locationName,required"`
+	Asn          string                                      `json:"asn" api:"required"`
+	AsnLocation  string                                      `json:"asnLocation" api:"required"`
+	AsnName      string                                      `json:"asnName" api:"required"`
+	AsnOrgName   string                                      `json:"asnOrgName" api:"required"`
+	IP           string                                      `json:"ip" api:"required"`
+	IPVersion    string                                      `json:"ipVersion" api:"required"`
+	Location     string                                      `json:"location" api:"required"`
+	LocationName string                                      `json:"locationName" api:"required"`
 	JSON         radarEntityGetIPDetailsResponseResultIPJSON `json:"-"`
 }
 
@@ -127,7 +127,7 @@ func (r radarEntityGetIPDetailsResponseResultIPJSON) RawJSON() string {
 
 type RadarEntityGetIPDetailsParams struct {
 	// IP address.
-	IP param.Field[string] `query:"ip,required" format:"ip"`
+	IP param.Field[string] `query:"ip" api:"required" format:"ip"`
 	// Format in which results will be returned.
 	Format param.Field[RadarEntityGetIPDetailsParamsFormat] `query:"format"`
 }

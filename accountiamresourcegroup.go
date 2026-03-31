@@ -41,11 +41,11 @@ func (r *AccountIamResourceGroupService) New(ctx context.Context, accountID stri
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/iam/resource_groups", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get information about a specific resource group in an account.
@@ -53,15 +53,15 @@ func (r *AccountIamResourceGroupService) Get(ctx context.Context, accountID stri
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if resourceGroupID == "" {
 		err = errors.New("missing required resource_group_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/iam/resource_groups/%s", accountID, resourceGroupID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Modify an existing resource group.
@@ -69,15 +69,15 @@ func (r *AccountIamResourceGroupService) Update(ctx context.Context, accountID s
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if resourceGroupID == "" {
 		err = errors.New("missing required resource_group_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/iam/resource_groups/%s", accountID, resourceGroupID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // List all the resource groups for an account.
@@ -85,11 +85,11 @@ func (r *AccountIamResourceGroupService) List(ctx context.Context, accountID str
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/iam/resource_groups", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Remove a resource group from an account.
@@ -97,25 +97,25 @@ func (r *AccountIamResourceGroupService) Delete(ctx context.Context, accountID s
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if resourceGroupID == "" {
 		err = errors.New("missing required resource_group_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/iam/resource_groups/%s", accountID, resourceGroupID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // A scope is a combination of scope objects which provides additional context.
 type IamCreateScope struct {
 	// This is a combination of pre-defined resource name and identifier (like Account
 	// ID etc.)
-	Key string `json:"key,required"`
+	Key string `json:"key" api:"required"`
 	// A list of scope objects for additional context. The number of Scope objects
 	// should not be zero.
-	Objects []IamCreateScopeObject `json:"objects,required"`
+	Objects []IamCreateScopeObject `json:"objects" api:"required"`
 	JSON    iamCreateScopeJSON     `json:"-"`
 }
 
@@ -140,7 +140,7 @@ func (r iamCreateScopeJSON) RawJSON() string {
 type IamCreateScopeObject struct {
 	// This is a combination of pre-defined resource name and identifier (like Zone ID
 	// etc.)
-	Key  string                   `json:"key,required"`
+	Key  string                   `json:"key" api:"required"`
 	JSON iamCreateScopeObjectJSON `json:"-"`
 }
 
@@ -164,10 +164,10 @@ func (r iamCreateScopeObjectJSON) RawJSON() string {
 type IamCreateScopeParam struct {
 	// This is a combination of pre-defined resource name and identifier (like Account
 	// ID etc.)
-	Key param.Field[string] `json:"key,required"`
+	Key param.Field[string] `json:"key" api:"required"`
 	// A list of scope objects for additional context. The number of Scope objects
 	// should not be zero.
-	Objects param.Field[[]IamCreateScopeObjectParam] `json:"objects,required"`
+	Objects param.Field[[]IamCreateScopeObjectParam] `json:"objects" api:"required"`
 }
 
 func (r IamCreateScopeParam) MarshalJSON() (data []byte, err error) {
@@ -179,7 +179,7 @@ func (r IamCreateScopeParam) MarshalJSON() (data []byte, err error) {
 type IamCreateScopeObjectParam struct {
 	// This is a combination of pre-defined resource name and identifier (like Zone ID
 	// etc.)
-	Key param.Field[string] `json:"key,required"`
+	Key param.Field[string] `json:"key" api:"required"`
 }
 
 func (r IamCreateScopeObjectParam) MarshalJSON() (data []byte, err error) {
@@ -189,9 +189,9 @@ func (r IamCreateScopeObjectParam) MarshalJSON() (data []byte, err error) {
 // A group of scoped resources.
 type IamResourceGroup struct {
 	// Identifier of the resource group.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The scope associated to the resource group
-	Scope []IamResourceGroupScope `json:"scope,required"`
+	Scope []IamResourceGroupScope `json:"scope" api:"required"`
 	// Attributes associated to the resource group.
 	Meta IamResourceGroupMeta `json:"meta"`
 	// Name of the resource group.
@@ -222,9 +222,9 @@ func (r iamResourceGroupJSON) RawJSON() string {
 type IamResourceGroupScope struct {
 	// This is a combination of pre-defined resource name and identifier (like Account
 	// ID etc.)
-	Key string `json:"key,required"`
+	Key string `json:"key" api:"required"`
 	// A list of scope objects for additional context.
-	Objects []IamResourceGroupScopeObject `json:"objects,required"`
+	Objects []IamResourceGroupScopeObject `json:"objects" api:"required"`
 	JSON    iamResourceGroupScopeJSON     `json:"-"`
 }
 
@@ -250,7 +250,7 @@ func (r iamResourceGroupScopeJSON) RawJSON() string {
 type IamResourceGroupScopeObject struct {
 	// This is a combination of pre-defined resource name and identifier (like Zone ID
 	// etc.)
-	Key  string                          `json:"key,required"`
+	Key  string                          `json:"key" api:"required"`
 	JSON iamResourceGroupScopeObjectJSON `json:"-"`
 }
 
@@ -324,10 +324,10 @@ func (r accountIamResourceGroupNewResponseJSON) RawJSON() string {
 }
 
 type AccountIamResourceGroupListResponse struct {
-	Errors   []AccountIamResourceGroupListResponseError   `json:"errors,required"`
-	Messages []AccountIamResourceGroupListResponseMessage `json:"messages,required"`
+	Errors   []AccountIamResourceGroupListResponseError   `json:"errors" api:"required"`
+	Messages []AccountIamResourceGroupListResponseMessage `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountIamResourceGroupListResponseSuccess `json:"success,required"`
+	Success AccountIamResourceGroupListResponseSuccess `json:"success" api:"required"`
 	// A list of resource groups that the policy applies to.
 	Result     []IamResourceGroup                            `json:"result"`
 	ResultInfo AccountIamResourceGroupListResponseResultInfo `json:"result_info"`
@@ -355,8 +355,8 @@ func (r accountIamResourceGroupListResponseJSON) RawJSON() string {
 }
 
 type AccountIamResourceGroupListResponseError struct {
-	Code             int64                                           `json:"code,required"`
-	Message          string                                          `json:"message,required"`
+	Code             int64                                           `json:"code" api:"required"`
+	Message          string                                          `json:"message" api:"required"`
 	DocumentationURL string                                          `json:"documentation_url"`
 	Source           AccountIamResourceGroupListResponseErrorsSource `json:"source"`
 	JSON             accountIamResourceGroupListResponseErrorJSON    `json:"-"`
@@ -403,8 +403,8 @@ func (r accountIamResourceGroupListResponseErrorsSourceJSON) RawJSON() string {
 }
 
 type AccountIamResourceGroupListResponseMessage struct {
-	Code             int64                                             `json:"code,required"`
-	Message          string                                            `json:"message,required"`
+	Code             int64                                             `json:"code" api:"required"`
+	Message          string                                            `json:"message" api:"required"`
 	DocumentationURL string                                            `json:"documentation_url"`
 	Source           AccountIamResourceGroupListResponseMessagesSource `json:"source"`
 	JSON             accountIamResourceGroupListResponseMessageJSON    `json:"-"`
@@ -498,9 +498,9 @@ func (r accountIamResourceGroupListResponseResultInfoJSON) RawJSON() string {
 
 type AccountIamResourceGroupNewParams struct {
 	// Name of the resource group
-	Name param.Field[string] `json:"name,required"`
+	Name param.Field[string] `json:"name" api:"required"`
 	// A scope is a combination of scope objects which provides additional context.
-	Scope param.Field[IamCreateScopeParam] `json:"scope,required"`
+	Scope param.Field[IamCreateScopeParam] `json:"scope" api:"required"`
 }
 
 func (r AccountIamResourceGroupNewParams) MarshalJSON() (data []byte, err error) {

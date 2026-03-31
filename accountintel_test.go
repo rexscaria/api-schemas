@@ -15,7 +15,7 @@ import (
 )
 
 func TestAccountIntelNewMiscategorizationWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -27,6 +27,7 @@ func TestAccountIntelNewMiscategorizationWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Intel.NewMiscategorization(
 		context.TODO(),
@@ -51,7 +52,7 @@ func TestAccountIntelNewMiscategorizationWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountIntelGetDomainHistoryWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -63,6 +64,7 @@ func TestAccountIntelGetDomainHistoryWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Intel.GetDomainHistory(
 		context.TODO(),
@@ -81,7 +83,7 @@ func TestAccountIntelGetDomainHistoryWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountIntelGetIPOverviewWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -93,6 +95,7 @@ func TestAccountIntelGetIPOverviewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Intel.GetIPOverview(
 		context.TODO(),
@@ -112,7 +115,7 @@ func TestAccountIntelGetIPOverviewWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountIntelGetPassiveDNSWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -124,6 +127,7 @@ func TestAccountIntelGetPassiveDNSWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Intel.GetPassiveDNS(
 		context.TODO(),
@@ -148,7 +152,7 @@ func TestAccountIntelGetPassiveDNSWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountIntelGetWhoisRecordWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -160,6 +164,7 @@ func TestAccountIntelGetWhoisRecordWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Intel.GetWhoisRecord(
 		context.TODO(),
@@ -178,7 +183,7 @@ func TestAccountIntelGetWhoisRecordWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountIntelListIPLists(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -190,6 +195,7 @@ func TestAccountIntelListIPLists(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Intel.ListIPLists(context.TODO(), "023e105f4ecef8ad9ca31a8372d0c353")
 	if err != nil {
@@ -202,7 +208,7 @@ func TestAccountIntelListIPLists(t *testing.T) {
 }
 
 func TestAccountIntelListSinkholes(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL

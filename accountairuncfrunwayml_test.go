@@ -14,7 +14,7 @@ import (
 )
 
 func TestAccountAIRunCfRunwaymlExecuteStableDiffusionV1_5Img2imgWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,6 +26,7 @@ func TestAccountAIRunCfRunwaymlExecuteStableDiffusionV1_5Img2imgWithOptionalPara
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.AI.Run.Cf.Runwayml.ExecuteStableDiffusionV1_5Img2img(
 		context.TODO(),
@@ -55,7 +56,7 @@ func TestAccountAIRunCfRunwaymlExecuteStableDiffusionV1_5Img2imgWithOptionalPara
 }
 
 func TestAccountAIRunCfRunwaymlExecuteStableDiffusionV1_5InpaintingWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -67,6 +68,7 @@ func TestAccountAIRunCfRunwaymlExecuteStableDiffusionV1_5InpaintingWithOptionalP
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.AI.Run.Cf.Runwayml.ExecuteStableDiffusionV1_5Inpainting(
 		context.TODO(),

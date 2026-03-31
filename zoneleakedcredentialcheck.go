@@ -41,11 +41,11 @@ func (r *ZoneLeakedCredentialCheckService) Get(ctx context.Context, zoneID strin
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/leaked-credential-checks", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates the current status of Leaked Credential Checks.
@@ -53,20 +53,20 @@ func (r *ZoneLeakedCredentialCheckService) Update(ctx context.Context, zoneID st
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/leaked-credential-checks", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type ResponseStatus struct {
-	Errors   []WafProductAPIBundleMessages `json:"errors,required"`
-	Messages []WafProductAPIBundleMessages `json:"messages,required"`
+	Errors   []WafProductAPIBundleMessages `json:"errors" api:"required"`
+	Messages []WafProductAPIBundleMessages `json:"messages" api:"required"`
 	// Defines the overall status for Leaked Credential Checks.
-	Result StatusLeakedCredentialChecks `json:"result,required"`
+	Result StatusLeakedCredentialChecks `json:"result" api:"required"`
 	// Defines whether the API call was successful.
-	Success ResponseStatusSuccess `json:"success,required"`
+	Success ResponseStatusSuccess `json:"success" api:"required"`
 	JSON    responseStatusJSON    `json:"-"`
 }
 
@@ -138,7 +138,7 @@ func (r StatusLeakedCredentialChecksParam) MarshalJSON() (data []byte, err error
 
 type ZoneLeakedCredentialCheckUpdateParams struct {
 	// Defines the overall status for Leaked Credential Checks.
-	StatusLeakedCredentialChecks StatusLeakedCredentialChecksParam `json:"status_leaked_credential_checks,required"`
+	StatusLeakedCredentialChecks StatusLeakedCredentialChecksParam `json:"status_leaked_credential_checks" api:"required"`
 }
 
 func (r ZoneLeakedCredentialCheckUpdateParams) MarshalJSON() (data []byte, err error) {

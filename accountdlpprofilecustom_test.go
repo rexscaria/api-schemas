@@ -14,7 +14,7 @@ import (
 )
 
 func TestAccountDlpProfileCustomNewWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,6 +26,7 @@ func TestAccountDlpProfileCustomNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Dlp.Profiles.Custom.New(
 		context.TODO(),
@@ -70,7 +71,7 @@ func TestAccountDlpProfileCustomNewWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountDlpProfileCustomGet(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -82,6 +83,7 @@ func TestAccountDlpProfileCustomGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Dlp.Profiles.Custom.Get(
 		context.TODO(),
@@ -98,7 +100,7 @@ func TestAccountDlpProfileCustomGet(t *testing.T) {
 }
 
 func TestAccountDlpProfileCustomUpdateWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -110,6 +112,7 @@ func TestAccountDlpProfileCustomUpdateWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Dlp.Profiles.Custom.Update(
 		context.TODO(),
@@ -154,7 +157,7 @@ func TestAccountDlpProfileCustomUpdateWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountDlpProfileCustomDelete(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -166,6 +169,7 @@ func TestAccountDlpProfileCustomDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Dlp.Profiles.Custom.Delete(
 		context.TODO(),

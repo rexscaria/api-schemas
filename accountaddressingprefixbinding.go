@@ -43,15 +43,15 @@ func (r *AccountAddressingPrefixBindingService) New(ctx context.Context, account
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if prefixID == "" {
 		err = errors.New("missing required prefix_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/addressing/prefixes/%s/bindings", accountID, prefixID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetch a single Service Binding
@@ -59,19 +59,19 @@ func (r *AccountAddressingPrefixBindingService) Get(ctx context.Context, account
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if prefixID == "" {
 		err = errors.New("missing required prefix_id parameter")
-		return
+		return nil, err
 	}
 	if bindingID == "" {
 		err = errors.New("missing required binding_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/addressing/prefixes/%s/bindings/%s", accountID, prefixID, bindingID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // List the Cloudflare services this prefix is currently bound to. Traffic sent to
@@ -84,15 +84,15 @@ func (r *AccountAddressingPrefixBindingService) List(ctx context.Context, accoun
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if prefixID == "" {
 		err = errors.New("missing required prefix_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/addressing/prefixes/%s/bindings", accountID, prefixID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete a Service Binding
@@ -100,24 +100,24 @@ func (r *AccountAddressingPrefixBindingService) Delete(ctx context.Context, acco
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if prefixID == "" {
 		err = errors.New("missing required prefix_id parameter")
-		return
+		return nil, err
 	}
 	if bindingID == "" {
 		err = errors.New("missing required binding_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/addressing/prefixes/%s/bindings/%s", accountID, prefixID, bindingID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type AddressingMessages struct {
-	Code             int64                    `json:"code,required"`
-	Message          string                   `json:"message,required"`
+	Code             int64                    `json:"code" api:"required"`
+	Message          string                   `json:"message" api:"required"`
 	DocumentationURL string                   `json:"documentation_url"`
 	Source           AddressingMessagesSource `json:"source"`
 	JSON             addressingMessagesJSON   `json:"-"`
@@ -164,10 +164,10 @@ func (r addressingMessagesSourceJSON) RawJSON() string {
 }
 
 type APIResponseAddressing struct {
-	Errors   []AddressingMessages `json:"errors,required"`
-	Messages []AddressingMessages `json:"messages,required"`
+	Errors   []AddressingMessages `json:"errors" api:"required"`
+	Messages []AddressingMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success APIResponseAddressingSuccess `json:"success,required"`
+	Success APIResponseAddressingSuccess `json:"success" api:"required"`
 	JSON    apiResponseAddressingJSON    `json:"-"`
 }
 
@@ -280,10 +280,10 @@ func (r ServiceBindingProvisioningState) IsKnown() bool {
 }
 
 type AccountAddressingPrefixBindingNewResponse struct {
-	Errors   []AddressingMessages `json:"errors,required"`
-	Messages []AddressingMessages `json:"messages,required"`
+	Errors   []AddressingMessages `json:"errors" api:"required"`
+	Messages []AddressingMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountAddressingPrefixBindingNewResponseSuccess `json:"success,required"`
+	Success AccountAddressingPrefixBindingNewResponseSuccess `json:"success" api:"required"`
 	Result  ServiceBinding                                   `json:"result"`
 	JSON    accountAddressingPrefixBindingNewResponseJSON    `json:"-"`
 }
@@ -323,10 +323,10 @@ func (r AccountAddressingPrefixBindingNewResponseSuccess) IsKnown() bool {
 }
 
 type AccountAddressingPrefixBindingGetResponse struct {
-	Errors   []AddressingMessages `json:"errors,required"`
-	Messages []AddressingMessages `json:"messages,required"`
+	Errors   []AddressingMessages `json:"errors" api:"required"`
+	Messages []AddressingMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountAddressingPrefixBindingGetResponseSuccess `json:"success,required"`
+	Success AccountAddressingPrefixBindingGetResponseSuccess `json:"success" api:"required"`
 	Result  ServiceBinding                                   `json:"result"`
 	JSON    accountAddressingPrefixBindingGetResponseJSON    `json:"-"`
 }
@@ -366,10 +366,10 @@ func (r AccountAddressingPrefixBindingGetResponseSuccess) IsKnown() bool {
 }
 
 type AccountAddressingPrefixBindingListResponse struct {
-	Errors   []AddressingMessages `json:"errors,required"`
-	Messages []AddressingMessages `json:"messages,required"`
+	Errors   []AddressingMessages `json:"errors" api:"required"`
+	Messages []AddressingMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountAddressingPrefixBindingListResponseSuccess `json:"success,required"`
+	Success AccountAddressingPrefixBindingListResponseSuccess `json:"success" api:"required"`
 	Result  []ServiceBinding                                  `json:"result"`
 	JSON    accountAddressingPrefixBindingListResponseJSON    `json:"-"`
 }

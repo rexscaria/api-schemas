@@ -42,16 +42,16 @@ func (r *ZoneSpeedAPIService) GetAvailabilities(ctx context.Context, zoneID stri
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/speed_api/availabilities", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type ObservatoryMessagesItem struct {
-	Code             int64                         `json:"code,required"`
-	Message          string                        `json:"message,required"`
+	Code             int64                         `json:"code" api:"required"`
+	Message          string                        `json:"message" api:"required"`
 	DocumentationURL string                        `json:"documentation_url"`
 	Source           ObservatoryMessagesItemSource `json:"source"`
 	JSON             observatoryMessagesItemJSON   `json:"-"`
@@ -126,10 +126,10 @@ func (r observatoryPlanPropertiesInfoJSON) RawJSON() string {
 }
 
 type ZoneSpeedAPIGetAvailabilitiesResponse struct {
-	Errors   []ZoneSpeedAPIGetAvailabilitiesResponseError   `json:"errors,required"`
-	Messages []ZoneSpeedAPIGetAvailabilitiesResponseMessage `json:"messages,required"`
+	Errors   []ZoneSpeedAPIGetAvailabilitiesResponseError   `json:"errors" api:"required"`
+	Messages []ZoneSpeedAPIGetAvailabilitiesResponseMessage `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success bool                                        `json:"success,required"`
+	Success bool                                        `json:"success" api:"required"`
 	Result  ZoneSpeedAPIGetAvailabilitiesResponseResult `json:"result"`
 	JSON    zoneSpeedAPIGetAvailabilitiesResponseJSON   `json:"-"`
 }
@@ -154,8 +154,8 @@ func (r zoneSpeedAPIGetAvailabilitiesResponseJSON) RawJSON() string {
 }
 
 type ZoneSpeedAPIGetAvailabilitiesResponseError struct {
-	Code             int64                                             `json:"code,required"`
-	Message          string                                            `json:"message,required"`
+	Code             int64                                             `json:"code" api:"required"`
+	Message          string                                            `json:"message" api:"required"`
 	DocumentationURL string                                            `json:"documentation_url"`
 	Source           ZoneSpeedAPIGetAvailabilitiesResponseErrorsSource `json:"source"`
 	JSON             zoneSpeedAPIGetAvailabilitiesResponseErrorJSON    `json:"-"`
@@ -202,8 +202,8 @@ func (r zoneSpeedAPIGetAvailabilitiesResponseErrorsSourceJSON) RawJSON() string 
 }
 
 type ZoneSpeedAPIGetAvailabilitiesResponseMessage struct {
-	Code             int64                                               `json:"code,required"`
-	Message          string                                              `json:"message,required"`
+	Code             int64                                               `json:"code" api:"required"`
+	Message          string                                              `json:"message" api:"required"`
 	DocumentationURL string                                              `json:"documentation_url"`
 	Source           ZoneSpeedAPIGetAvailabilitiesResponseMessagesSource `json:"source"`
 	JSON             zoneSpeedAPIGetAvailabilitiesResponseMessageJSON    `json:"-"`

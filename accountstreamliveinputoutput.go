@@ -41,15 +41,15 @@ func (r *AccountStreamLiveInputOutputService) New(ctx context.Context, accountID
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if liveInputIdentifier == "" {
 		err = errors.New("missing required live_input_identifier parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/stream/live_inputs/%s/outputs", accountID, liveInputIdentifier)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates the state of an output.
@@ -57,19 +57,19 @@ func (r *AccountStreamLiveInputOutputService) Update(ctx context.Context, accoun
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if liveInputIdentifier == "" {
 		err = errors.New("missing required live_input_identifier parameter")
-		return
+		return nil, err
 	}
 	if outputIdentifier == "" {
 		err = errors.New("missing required output_identifier parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/stream/live_inputs/%s/outputs/%s", accountID, liveInputIdentifier, outputIdentifier)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves all outputs associated with a specified live input.
@@ -77,36 +77,36 @@ func (r *AccountStreamLiveInputOutputService) List(ctx context.Context, accountI
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if liveInputIdentifier == "" {
 		err = errors.New("missing required live_input_identifier parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/stream/live_inputs/%s/outputs", accountID, liveInputIdentifier)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Deletes an output and removes it from the associated live input.
 func (r *AccountStreamLiveInputOutputService) Delete(ctx context.Context, accountID string, liveInputIdentifier string, outputIdentifier string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return err
 	}
 	if liveInputIdentifier == "" {
 		err = errors.New("missing required live_input_identifier parameter")
-		return
+		return err
 	}
 	if outputIdentifier == "" {
 		err = errors.New("missing required output_identifier parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("accounts/%s/stream/live_inputs/%s/outputs/%s", accountID, liveInputIdentifier, outputIdentifier)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 type Output struct {
@@ -144,10 +144,10 @@ func (r outputJSON) RawJSON() string {
 }
 
 type OutputResponseSingle struct {
-	Errors   []StreamMessages `json:"errors,required"`
-	Messages []StreamMessages `json:"messages,required"`
+	Errors   []StreamMessages `json:"errors" api:"required"`
+	Messages []StreamMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success OutputResponseSingleSuccess `json:"success,required"`
+	Success OutputResponseSingleSuccess `json:"success" api:"required"`
 	Result  Output                      `json:"result"`
 	JSON    outputResponseSingleJSON    `json:"-"`
 }
@@ -187,10 +187,10 @@ func (r OutputResponseSingleSuccess) IsKnown() bool {
 }
 
 type AccountStreamLiveInputOutputListResponse struct {
-	Errors   []StreamMessages `json:"errors,required"`
-	Messages []StreamMessages `json:"messages,required"`
+	Errors   []StreamMessages `json:"errors" api:"required"`
+	Messages []StreamMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountStreamLiveInputOutputListResponseSuccess `json:"success,required"`
+	Success AccountStreamLiveInputOutputListResponseSuccess `json:"success" api:"required"`
 	Result  []Output                                        `json:"result"`
 	JSON    accountStreamLiveInputOutputListResponseJSON    `json:"-"`
 }
@@ -231,9 +231,9 @@ func (r AccountStreamLiveInputOutputListResponseSuccess) IsKnown() bool {
 
 type AccountStreamLiveInputOutputNewParams struct {
 	// The streamKey used to authenticate against an output's target.
-	StreamKey param.Field[string] `json:"streamKey,required"`
+	StreamKey param.Field[string] `json:"streamKey" api:"required"`
 	// The URL an output uses to restream.
-	URL param.Field[string] `json:"url,required"`
+	URL param.Field[string] `json:"url" api:"required"`
 	// When enabled, live video streamed to the associated live input will be sent to
 	// the output URL. When disabled, live video will not be sent to the output URL,
 	// even when streaming to the associated live input. Use this to control precisely
@@ -252,7 +252,7 @@ type AccountStreamLiveInputOutputUpdateParams struct {
 	// even when streaming to the associated live input. Use this to control precisely
 	// when you start and stop simulcasting to specific destinations like YouTube and
 	// Twitch.
-	Enabled param.Field[bool] `json:"enabled,required"`
+	Enabled param.Field[bool] `json:"enabled" api:"required"`
 }
 
 func (r AccountStreamLiveInputOutputUpdateParams) MarshalJSON() (data []byte, err error) {

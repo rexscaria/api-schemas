@@ -14,7 +14,7 @@ import (
 )
 
 func TestAccountLoadBalancerPoolNewWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,6 +26,7 @@ func TestAccountLoadBalancerPoolNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.LoadBalancers.Pools.New(
 		context.TODO(),
@@ -81,7 +82,7 @@ func TestAccountLoadBalancerPoolNewWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountLoadBalancerPoolGet(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -93,6 +94,7 @@ func TestAccountLoadBalancerPoolGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.LoadBalancers.Pools.Get(
 		context.TODO(),
@@ -109,7 +111,7 @@ func TestAccountLoadBalancerPoolGet(t *testing.T) {
 }
 
 func TestAccountLoadBalancerPoolUpdateWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -121,6 +123,7 @@ func TestAccountLoadBalancerPoolUpdateWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.LoadBalancers.Pools.Update(
 		context.TODO(),
@@ -178,7 +181,7 @@ func TestAccountLoadBalancerPoolUpdateWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountLoadBalancerPoolListWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -190,6 +193,7 @@ func TestAccountLoadBalancerPoolListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.LoadBalancers.Pools.List(
 		context.TODO(),
@@ -208,7 +212,7 @@ func TestAccountLoadBalancerPoolListWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountLoadBalancerPoolDelete(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -220,6 +224,7 @@ func TestAccountLoadBalancerPoolDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.LoadBalancers.Pools.Delete(
 		context.TODO(),
@@ -236,7 +241,7 @@ func TestAccountLoadBalancerPoolDelete(t *testing.T) {
 }
 
 func TestAccountLoadBalancerPoolHealth(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -248,6 +253,7 @@ func TestAccountLoadBalancerPoolHealth(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.LoadBalancers.Pools.Health(
 		context.TODO(),
@@ -264,7 +270,7 @@ func TestAccountLoadBalancerPoolHealth(t *testing.T) {
 }
 
 func TestAccountLoadBalancerPoolListReferences(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -276,6 +282,7 @@ func TestAccountLoadBalancerPoolListReferences(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.LoadBalancers.Pools.ListReferences(
 		context.TODO(),
@@ -292,7 +299,7 @@ func TestAccountLoadBalancerPoolListReferences(t *testing.T) {
 }
 
 func TestAccountLoadBalancerPoolPatchWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -304,6 +311,7 @@ func TestAccountLoadBalancerPoolPatchWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.LoadBalancers.Pools.Patch(
 		context.TODO(),
@@ -361,7 +369,7 @@ func TestAccountLoadBalancerPoolPatchWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountLoadBalancerPoolPreviewWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -373,6 +381,7 @@ func TestAccountLoadBalancerPoolPreviewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.LoadBalancers.Pools.Preview(
 		context.TODO(),

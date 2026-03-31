@@ -14,7 +14,7 @@ import (
 )
 
 func TestAccountAIGatewayGatewayEvaluationNewEvaluation(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,6 +26,7 @@ func TestAccountAIGatewayGatewayEvaluationNewEvaluation(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.AIGateway.Gateways.Evaluations.NewEvaluation(
 		context.TODO(),
@@ -47,7 +48,7 @@ func TestAccountAIGatewayGatewayEvaluationNewEvaluation(t *testing.T) {
 }
 
 func TestAccountAIGatewayGatewayEvaluationDeleteEvaluation(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -59,6 +60,7 @@ func TestAccountAIGatewayGatewayEvaluationDeleteEvaluation(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.AIGateway.Gateways.Evaluations.DeleteEvaluation(
 		context.TODO(),
@@ -76,7 +78,7 @@ func TestAccountAIGatewayGatewayEvaluationDeleteEvaluation(t *testing.T) {
 }
 
 func TestAccountAIGatewayGatewayEvaluationFetchEvaluation(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -88,6 +90,7 @@ func TestAccountAIGatewayGatewayEvaluationFetchEvaluation(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.AIGateway.Gateways.Evaluations.FetchEvaluation(
 		context.TODO(),
@@ -105,7 +108,7 @@ func TestAccountAIGatewayGatewayEvaluationFetchEvaluation(t *testing.T) {
 }
 
 func TestAccountAIGatewayGatewayEvaluationListEvaluationsWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -117,6 +120,7 @@ func TestAccountAIGatewayGatewayEvaluationListEvaluationsWithOptionalParams(t *t
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.AIGateway.Gateways.Evaluations.ListEvaluations(
 		context.TODO(),

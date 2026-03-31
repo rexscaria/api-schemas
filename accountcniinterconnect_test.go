@@ -14,7 +14,7 @@ import (
 )
 
 func TestAccountCniInterconnectNewWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,6 +26,7 @@ func TestAccountCniInterconnectNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Cni.Interconnects.New(
 		context.TODO(),
@@ -49,7 +50,7 @@ func TestAccountCniInterconnectNewWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountCniInterconnectGet(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -61,6 +62,7 @@ func TestAccountCniInterconnectGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Cni.Interconnects.Get(
 		context.TODO(),
@@ -77,7 +79,7 @@ func TestAccountCniInterconnectGet(t *testing.T) {
 }
 
 func TestAccountCniInterconnectListWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -89,6 +91,7 @@ func TestAccountCniInterconnectListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Cni.Interconnects.List(
 		context.TODO(),
@@ -110,7 +113,7 @@ func TestAccountCniInterconnectListWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountCniInterconnectDelete(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -122,6 +125,7 @@ func TestAccountCniInterconnectDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	err := client.Accounts.Cni.Interconnects.Delete(
 		context.TODO(),
@@ -138,7 +142,7 @@ func TestAccountCniInterconnectDelete(t *testing.T) {
 }
 
 func TestAccountCniInterconnectGenerateLoa(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -150,6 +154,7 @@ func TestAccountCniInterconnectGenerateLoa(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	err := client.Accounts.Cni.Interconnects.GenerateLoa(
 		context.TODO(),
@@ -166,7 +171,7 @@ func TestAccountCniInterconnectGenerateLoa(t *testing.T) {
 }
 
 func TestAccountCniInterconnectGetStatus(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -178,6 +183,7 @@ func TestAccountCniInterconnectGetStatus(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Cni.Interconnects.GetStatus(
 		context.TODO(),

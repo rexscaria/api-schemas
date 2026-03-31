@@ -47,11 +47,11 @@ func (r *AccountQueueService) New(ctx context.Context, accountID string, body Ac
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/queues", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Get details about a specific queue.
@@ -59,15 +59,15 @@ func (r *AccountQueueService) Get(ctx context.Context, accountID string, queueID
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if queueID == "" {
 		err = errors.New("missing required queue_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/queues/%s", accountID, queueID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates a Queue. Note that this endpoint does not support partial updates. If
@@ -77,15 +77,15 @@ func (r *AccountQueueService) Update(ctx context.Context, accountID string, queu
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if queueID == "" {
 		err = errors.New("missing required queue_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/queues/%s", accountID, queueID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Returns the queues owned by an account.
@@ -93,11 +93,11 @@ func (r *AccountQueueService) List(ctx context.Context, accountID string, opts .
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/queues", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Deletes a queue
@@ -105,15 +105,15 @@ func (r *AccountQueueService) Delete(ctx context.Context, accountID string, queu
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if queueID == "" {
 		err = errors.New("missing required queue_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/queues/%s", accountID, queueID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates a Queue.
@@ -121,15 +121,15 @@ func (r *AccountQueueService) UpdatePartial(ctx context.Context, accountID strin
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if queueID == "" {
 		err = errors.New("missing required queue_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/queues/%s", accountID, queueID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type MqAPIV4Success struct {
@@ -158,8 +158,8 @@ func (r mqApiv4SuccessJSON) RawJSON() string {
 }
 
 type MqApiv4SuccessError struct {
-	Code             int64                      `json:"code,required"`
-	Message          string                     `json:"message,required"`
+	Code             int64                      `json:"code" api:"required"`
+	Message          string                     `json:"message" api:"required"`
 	DocumentationURL string                     `json:"documentation_url"`
 	Source           MqAPIV4SuccessErrorsSource `json:"source"`
 	JSON             mqApiv4SuccessErrorJSON    `json:"-"`
@@ -527,8 +527,8 @@ func (r accountQueueNewResponseJSON) RawJSON() string {
 }
 
 type AccountQueueNewResponseError struct {
-	Code             int64                               `json:"code,required"`
-	Message          string                              `json:"message,required"`
+	Code             int64                               `json:"code" api:"required"`
+	Message          string                              `json:"message" api:"required"`
 	DocumentationURL string                              `json:"documentation_url"`
 	Source           AccountQueueNewResponseErrorsSource `json:"source"`
 	JSON             accountQueueNewResponseErrorJSON    `json:"-"`
@@ -618,8 +618,8 @@ func (r accountQueueGetResponseJSON) RawJSON() string {
 }
 
 type AccountQueueGetResponseError struct {
-	Code             int64                               `json:"code,required"`
-	Message          string                              `json:"message,required"`
+	Code             int64                               `json:"code" api:"required"`
+	Message          string                              `json:"message" api:"required"`
 	DocumentationURL string                              `json:"documentation_url"`
 	Source           AccountQueueGetResponseErrorsSource `json:"source"`
 	JSON             accountQueueGetResponseErrorJSON    `json:"-"`
@@ -709,8 +709,8 @@ func (r accountQueueUpdateResponseJSON) RawJSON() string {
 }
 
 type AccountQueueUpdateResponseError struct {
-	Code             int64                                  `json:"code,required"`
-	Message          string                                 `json:"message,required"`
+	Code             int64                                  `json:"code" api:"required"`
+	Message          string                                 `json:"message" api:"required"`
 	DocumentationURL string                                 `json:"documentation_url"`
 	Source           AccountQueueUpdateResponseErrorsSource `json:"source"`
 	JSON             accountQueueUpdateResponseErrorJSON    `json:"-"`
@@ -802,8 +802,8 @@ func (r accountQueueListResponseJSON) RawJSON() string {
 }
 
 type AccountQueueListResponseError struct {
-	Code             int64                                `json:"code,required"`
-	Message          string                               `json:"message,required"`
+	Code             int64                                `json:"code" api:"required"`
+	Message          string                               `json:"message" api:"required"`
 	DocumentationURL string                               `json:"documentation_url"`
 	Source           AccountQueueListResponseErrorsSource `json:"source"`
 	JSON             accountQueueListResponseErrorJSON    `json:"-"`
@@ -927,8 +927,8 @@ func (r accountQueueUpdatePartialResponseJSON) RawJSON() string {
 }
 
 type AccountQueueUpdatePartialResponseError struct {
-	Code             int64                                         `json:"code,required"`
-	Message          string                                        `json:"message,required"`
+	Code             int64                                         `json:"code" api:"required"`
+	Message          string                                        `json:"message" api:"required"`
 	DocumentationURL string                                        `json:"documentation_url"`
 	Source           AccountQueueUpdatePartialResponseErrorsSource `json:"source"`
 	JSON             accountQueueUpdatePartialResponseErrorJSON    `json:"-"`
@@ -990,7 +990,7 @@ func (r AccountQueueUpdatePartialResponseSuccess) IsKnown() bool {
 }
 
 type AccountQueueNewParams struct {
-	QueueName param.Field[string] `json:"queue_name,required"`
+	QueueName param.Field[string] `json:"queue_name" api:"required"`
 }
 
 func (r AccountQueueNewParams) MarshalJSON() (data []byte, err error) {

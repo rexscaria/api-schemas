@@ -46,11 +46,11 @@ func (r *AccountAddressingAddressMapService) New(ctx context.Context, accountID 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/addressing/address_maps", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Show a particular address map owned by the account.
@@ -58,15 +58,15 @@ func (r *AccountAddressingAddressMapService) Get(ctx context.Context, accountID 
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if addressMapID == "" {
 		err = errors.New("missing required address_map_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/addressing/address_maps/%s", accountID, addressMapID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Modify properties of an address map owned by the account.
@@ -74,15 +74,15 @@ func (r *AccountAddressingAddressMapService) Update(ctx context.Context, account
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if addressMapID == "" {
 		err = errors.New("missing required address_map_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/addressing/address_maps/%s", accountID, addressMapID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // List all address maps owned by the account.
@@ -90,11 +90,11 @@ func (r *AccountAddressingAddressMapService) List(ctx context.Context, accountID
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/addressing/address_maps", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete a particular address map owned by the account. An Address Map must be
@@ -103,15 +103,15 @@ func (r *AccountAddressingAddressMapService) Delete(ctx context.Context, account
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if addressMapID == "" {
 		err = errors.New("missing required address_map_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/addressing/address_maps/%s", accountID, addressMapID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type AddressMap struct {
@@ -129,13 +129,13 @@ type AddressMap struct {
 	// handshake from a client without an SNI, it will respond with the default SNI on
 	// those IPs. The default SNI can be any valid zone or subdomain owned by the
 	// account.
-	DefaultSni string `json:"default_sni,nullable"`
+	DefaultSni string `json:"default_sni" api:"nullable"`
 	// An optional description field which may be used to describe the types of IPs or
 	// zones on the map.
-	Description string `json:"description,nullable"`
+	Description string `json:"description" api:"nullable"`
 	// Whether the Address Map is enabled or not. Cloudflare's DNS will not respond
 	// with IP addresses on an Address Map until the map is enabled.
-	Enabled    bool           `json:"enabled,nullable"`
+	Enabled    bool           `json:"enabled" api:"nullable"`
 	ModifiedAt time.Time      `json:"modified_at" format:"date-time"`
 	JSON       addressMapJSON `json:"-"`
 }
@@ -163,10 +163,10 @@ func (r addressMapJSON) RawJSON() string {
 }
 
 type APIResponseCollectionAddressing struct {
-	Errors   []AddressingMessages `json:"errors,required"`
-	Messages []AddressingMessages `json:"messages,required"`
+	Errors   []AddressingMessages `json:"errors" api:"required"`
+	Messages []AddressingMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success    APIResponseCollectionAddressingSuccess    `json:"success,required"`
+	Success    APIResponseCollectionAddressingSuccess    `json:"success" api:"required"`
 	ResultInfo APIResponseCollectionAddressingResultInfo `json:"result_info"`
 	JSON       apiResponseCollectionAddressingJSON       `json:"-"`
 }
@@ -237,10 +237,10 @@ func (r apiResponseCollectionAddressingResultInfoJSON) RawJSON() string {
 }
 
 type FullResponse struct {
-	Errors   []AddressingMessages `json:"errors,required"`
-	Messages []AddressingMessages `json:"messages,required"`
+	Errors   []AddressingMessages `json:"errors" api:"required"`
+	Messages []AddressingMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success FullResponseSuccess `json:"success,required"`
+	Success FullResponseSuccess `json:"success" api:"required"`
 	Result  FullResponseResult  `json:"result"`
 	JSON    fullResponseJSON    `json:"-"`
 }
@@ -293,13 +293,13 @@ type FullResponseResult struct {
 	// handshake from a client without an SNI, it will respond with the default SNI on
 	// those IPs. The default SNI can be any valid zone or subdomain owned by the
 	// account.
-	DefaultSni string `json:"default_sni,nullable"`
+	DefaultSni string `json:"default_sni" api:"nullable"`
 	// An optional description field which may be used to describe the types of IPs or
 	// zones on the map.
-	Description string `json:"description,nullable"`
+	Description string `json:"description" api:"nullable"`
 	// Whether the Address Map is enabled or not. Cloudflare's DNS will not respond
 	// with IP addresses on an Address Map until the map is enabled.
-	Enabled bool `json:"enabled,nullable"`
+	Enabled bool `json:"enabled" api:"nullable"`
 	// The set of IPs on the Address Map.
 	IPs []FullResponseResultIP `json:"ips"`
 	// Zones and Accounts which will be assigned IPs on this Address Map. A zone
@@ -415,10 +415,10 @@ func (r MembershipParam) MarshalJSON() (data []byte, err error) {
 }
 
 type AccountAddressingAddressMapUpdateResponse struct {
-	Errors   []AddressingMessages `json:"errors,required"`
-	Messages []AddressingMessages `json:"messages,required"`
+	Errors   []AddressingMessages `json:"errors" api:"required"`
+	Messages []AddressingMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success AccountAddressingAddressMapUpdateResponseSuccess `json:"success,required"`
+	Success AccountAddressingAddressMapUpdateResponseSuccess `json:"success" api:"required"`
 	Result  AddressMap                                       `json:"result"`
 	JSON    accountAddressingAddressMapUpdateResponseJSON    `json:"-"`
 }
@@ -458,10 +458,10 @@ func (r AccountAddressingAddressMapUpdateResponseSuccess) IsKnown() bool {
 }
 
 type AccountAddressingAddressMapListResponse struct {
-	Errors   []AddressingMessages `json:"errors,required"`
-	Messages []AddressingMessages `json:"messages,required"`
+	Errors   []AddressingMessages `json:"errors" api:"required"`
+	Messages []AddressingMessages `json:"messages" api:"required"`
 	// Whether the API call was successful.
-	Success    AccountAddressingAddressMapListResponseSuccess    `json:"success,required"`
+	Success    AccountAddressingAddressMapListResponseSuccess    `json:"success" api:"required"`
 	Result     []AddressMap                                      `json:"result"`
 	ResultInfo AccountAddressingAddressMapListResponseResultInfo `json:"result_info"`
 	JSON       accountAddressingAddressMapListResponseJSON       `json:"-"`

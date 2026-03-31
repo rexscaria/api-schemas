@@ -44,15 +44,15 @@ func (r *AccountMagicConnectorTelemetryEventService) List(ctx context.Context, a
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if connectorID == "" {
 		err = errors.New("missing required connector_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/connectors/%s/telemetry/events", accountID, connectorID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Get Event
@@ -60,20 +60,20 @@ func (r *AccountMagicConnectorTelemetryEventService) Get(ctx context.Context, ac
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if connectorID == "" {
 		err = errors.New("missing required connector_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/magic/connectors/%s/telemetry/events/%v.%v", accountID, connectorID, eventT, eventN)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type MconnCodedMessage struct {
-	Code    float64               `json:"code,required"`
-	Message string                `json:"message,required"`
+	Code    float64               `json:"code" api:"required"`
+	Message string                `json:"message" api:"required"`
 	JSON    mconnCodedMessageJSON `json:"-"`
 }
 
@@ -95,8 +95,8 @@ func (r mconnCodedMessageJSON) RawJSON() string {
 }
 
 type AccountMagicConnectorTelemetryEventListResponse struct {
-	Result   AccountMagicConnectorTelemetryEventListResponseResult `json:"result,required"`
-	Success  bool                                                  `json:"success,required"`
+	Result   AccountMagicConnectorTelemetryEventListResponseResult `json:"result" api:"required"`
+	Success  bool                                                  `json:"success" api:"required"`
 	Errors   []MconnCodedMessage                                   `json:"errors"`
 	Messages []MconnCodedMessage                                   `json:"messages"`
 	JSON     accountMagicConnectorTelemetryEventListResponseJSON   `json:"-"`
@@ -122,8 +122,8 @@ func (r accountMagicConnectorTelemetryEventListResponseJSON) RawJSON() string {
 }
 
 type AccountMagicConnectorTelemetryEventListResponseResult struct {
-	Count  float64                                                     `json:"count,required"`
-	Items  []AccountMagicConnectorTelemetryEventListResponseResultItem `json:"items,required"`
+	Count  float64                                                     `json:"count" api:"required"`
+	Items  []AccountMagicConnectorTelemetryEventListResponseResultItem `json:"items" api:"required"`
 	Cursor string                                                      `json:"cursor"`
 	JSON   accountMagicConnectorTelemetryEventListResponseResultJSON   `json:"-"`
 }
@@ -148,13 +148,13 @@ func (r accountMagicConnectorTelemetryEventListResponseResultJSON) RawJSON() str
 
 type AccountMagicConnectorTelemetryEventListResponseResultItem struct {
 	// Time the Event was collected (seconds since the Unix epoch)
-	A float64 `json:"a,required"`
+	A float64 `json:"a" api:"required"`
 	// Kind
-	K string `json:"k,required"`
+	K string `json:"k" api:"required"`
 	// Sequence number, used to order events with the same timestamp
-	N float64 `json:"n,required"`
+	N float64 `json:"n" api:"required"`
 	// Time the Event was recorded (seconds since the Unix epoch)
-	T    float64                                                       `json:"t,required"`
+	T    float64                                                       `json:"t" api:"required"`
 	JSON accountMagicConnectorTelemetryEventListResponseResultItemJSON `json:"-"`
 }
 
@@ -180,8 +180,8 @@ func (r accountMagicConnectorTelemetryEventListResponseResultItemJSON) RawJSON()
 
 type AccountMagicConnectorTelemetryEventGetResponse struct {
 	// Recorded Event
-	Result   AccountMagicConnectorTelemetryEventGetResponseResult `json:"result,required"`
-	Success  bool                                                 `json:"success,required"`
+	Result   AccountMagicConnectorTelemetryEventGetResponseResult `json:"result" api:"required"`
+	Success  bool                                                 `json:"success" api:"required"`
 	Errors   []MconnCodedMessage                                  `json:"errors"`
 	Messages []MconnCodedMessage                                  `json:"messages"`
 	JSON     accountMagicConnectorTelemetryEventGetResponseJSON   `json:"-"`
@@ -208,11 +208,11 @@ func (r accountMagicConnectorTelemetryEventGetResponseJSON) RawJSON() string {
 
 // Recorded Event
 type AccountMagicConnectorTelemetryEventGetResponseResult struct {
-	E AccountMagicConnectorTelemetryEventGetResponseResultE `json:"e,required"`
+	E AccountMagicConnectorTelemetryEventGetResponseResultE `json:"e" api:"required"`
 	// Sequence number, used to order events with the same timestamp
-	N float64 `json:"n,required"`
+	N float64 `json:"n" api:"required"`
 	// Time the Event was recorded (seconds since the Unix epoch)
-	T    float64                                                  `json:"t,required"`
+	T    float64                                                  `json:"t" api:"required"`
 	JSON accountMagicConnectorTelemetryEventGetResponseResultJSON `json:"-"`
 }
 
@@ -236,7 +236,7 @@ func (r accountMagicConnectorTelemetryEventGetResponseResultJSON) RawJSON() stri
 
 type AccountMagicConnectorTelemetryEventGetResponseResultE struct {
 	// Initialized process
-	K AccountMagicConnectorTelemetryEventGetResponseResultEK `json:"k,required"`
+	K AccountMagicConnectorTelemetryEventGetResponseResultEK `json:"k" api:"required"`
 	// Location of upgrade bundle
 	URL   string                                                    `json:"url"`
 	JSON  accountMagicConnectorTelemetryEventGetResponseResultEJSON `json:"-"`
@@ -398,7 +398,7 @@ func init() {
 
 type AccountMagicConnectorTelemetryEventGetResponseResultEInit struct {
 	// Initialized process
-	K    AccountMagicConnectorTelemetryEventGetResponseResultEInitK    `json:"k,required"`
+	K    AccountMagicConnectorTelemetryEventGetResponseResultEInitK    `json:"k" api:"required"`
 	JSON accountMagicConnectorTelemetryEventGetResponseResultEInitJSON `json:"-"`
 }
 
@@ -439,7 +439,7 @@ func (r AccountMagicConnectorTelemetryEventGetResponseResultEInitK) IsKnown() bo
 
 type AccountMagicConnectorTelemetryEventGetResponseResultELeave struct {
 	// Stopped process
-	K    AccountMagicConnectorTelemetryEventGetResponseResultELeaveK    `json:"k,required"`
+	K    AccountMagicConnectorTelemetryEventGetResponseResultELeaveK    `json:"k" api:"required"`
 	JSON accountMagicConnectorTelemetryEventGetResponseResultELeaveJSON `json:"-"`
 }
 
@@ -480,7 +480,7 @@ func (r AccountMagicConnectorTelemetryEventGetResponseResultELeaveK) IsKnown() b
 
 type AccountMagicConnectorTelemetryEventGetResponseResultEStartAttestation struct {
 	// Started attestation
-	K    AccountMagicConnectorTelemetryEventGetResponseResultEStartAttestationK    `json:"k,required"`
+	K    AccountMagicConnectorTelemetryEventGetResponseResultEStartAttestationK    `json:"k" api:"required"`
 	JSON accountMagicConnectorTelemetryEventGetResponseResultEStartAttestationJSON `json:"-"`
 }
 
@@ -521,7 +521,7 @@ func (r AccountMagicConnectorTelemetryEventGetResponseResultEStartAttestationK) 
 
 type AccountMagicConnectorTelemetryEventGetResponseResultEFinishAttestationSuccess struct {
 	// Finished attestation
-	K    AccountMagicConnectorTelemetryEventGetResponseResultEFinishAttestationSuccessK    `json:"k,required"`
+	K    AccountMagicConnectorTelemetryEventGetResponseResultEFinishAttestationSuccessK    `json:"k" api:"required"`
 	JSON accountMagicConnectorTelemetryEventGetResponseResultEFinishAttestationSuccessJSON `json:"-"`
 }
 
@@ -562,7 +562,7 @@ func (r AccountMagicConnectorTelemetryEventGetResponseResultEFinishAttestationSu
 
 type AccountMagicConnectorTelemetryEventGetResponseResultEFinishAttestationFailure struct {
 	// Failed attestation
-	K    AccountMagicConnectorTelemetryEventGetResponseResultEFinishAttestationFailureK    `json:"k,required"`
+	K    AccountMagicConnectorTelemetryEventGetResponseResultEFinishAttestationFailureK    `json:"k" api:"required"`
 	JSON accountMagicConnectorTelemetryEventGetResponseResultEFinishAttestationFailureJSON `json:"-"`
 }
 
@@ -603,7 +603,7 @@ func (r AccountMagicConnectorTelemetryEventGetResponseResultEFinishAttestationFa
 
 type AccountMagicConnectorTelemetryEventGetResponseResultEStartRotateCryptKey struct {
 	// Started crypt key rotation
-	K    AccountMagicConnectorTelemetryEventGetResponseResultEStartRotateCryptKeyK    `json:"k,required"`
+	K    AccountMagicConnectorTelemetryEventGetResponseResultEStartRotateCryptKeyK    `json:"k" api:"required"`
 	JSON accountMagicConnectorTelemetryEventGetResponseResultEStartRotateCryptKeyJSON `json:"-"`
 }
 
@@ -644,7 +644,7 @@ func (r AccountMagicConnectorTelemetryEventGetResponseResultEStartRotateCryptKey
 
 type AccountMagicConnectorTelemetryEventGetResponseResultEFinishRotateCryptKeySuccess struct {
 	// Finished crypt key rotation
-	K    AccountMagicConnectorTelemetryEventGetResponseResultEFinishRotateCryptKeySuccessK    `json:"k,required"`
+	K    AccountMagicConnectorTelemetryEventGetResponseResultEFinishRotateCryptKeySuccessK    `json:"k" api:"required"`
 	JSON accountMagicConnectorTelemetryEventGetResponseResultEFinishRotateCryptKeySuccessJSON `json:"-"`
 }
 
@@ -685,7 +685,7 @@ func (r AccountMagicConnectorTelemetryEventGetResponseResultEFinishRotateCryptKe
 
 type AccountMagicConnectorTelemetryEventGetResponseResultEFinishRotateCryptKeyFailure struct {
 	// Failed crypt key rotation
-	K    AccountMagicConnectorTelemetryEventGetResponseResultEFinishRotateCryptKeyFailureK    `json:"k,required"`
+	K    AccountMagicConnectorTelemetryEventGetResponseResultEFinishRotateCryptKeyFailureK    `json:"k" api:"required"`
 	JSON accountMagicConnectorTelemetryEventGetResponseResultEFinishRotateCryptKeyFailureJSON `json:"-"`
 }
 
@@ -726,7 +726,7 @@ func (r AccountMagicConnectorTelemetryEventGetResponseResultEFinishRotateCryptKe
 
 type AccountMagicConnectorTelemetryEventGetResponseResultEStartRotatePki struct {
 	// Started PKI rotation
-	K    AccountMagicConnectorTelemetryEventGetResponseResultEStartRotatePkiK    `json:"k,required"`
+	K    AccountMagicConnectorTelemetryEventGetResponseResultEStartRotatePkiK    `json:"k" api:"required"`
 	JSON accountMagicConnectorTelemetryEventGetResponseResultEStartRotatePkiJSON `json:"-"`
 }
 
@@ -767,7 +767,7 @@ func (r AccountMagicConnectorTelemetryEventGetResponseResultEStartRotatePkiK) Is
 
 type AccountMagicConnectorTelemetryEventGetResponseResultEFinishRotatePkiSuccess struct {
 	// Finished PKI rotation
-	K    AccountMagicConnectorTelemetryEventGetResponseResultEFinishRotatePkiSuccessK    `json:"k,required"`
+	K    AccountMagicConnectorTelemetryEventGetResponseResultEFinishRotatePkiSuccessK    `json:"k" api:"required"`
 	JSON accountMagicConnectorTelemetryEventGetResponseResultEFinishRotatePkiSuccessJSON `json:"-"`
 }
 
@@ -808,7 +808,7 @@ func (r AccountMagicConnectorTelemetryEventGetResponseResultEFinishRotatePkiSucc
 
 type AccountMagicConnectorTelemetryEventGetResponseResultEFinishRotatePkiFailure struct {
 	// Failed PKI rotation
-	K    AccountMagicConnectorTelemetryEventGetResponseResultEFinishRotatePkiFailureK    `json:"k,required"`
+	K    AccountMagicConnectorTelemetryEventGetResponseResultEFinishRotatePkiFailureK    `json:"k" api:"required"`
 	JSON accountMagicConnectorTelemetryEventGetResponseResultEFinishRotatePkiFailureJSON `json:"-"`
 }
 
@@ -849,9 +849,9 @@ func (r AccountMagicConnectorTelemetryEventGetResponseResultEFinishRotatePkiFail
 
 type AccountMagicConnectorTelemetryEventGetResponseResultEStartUpgrade struct {
 	// Started upgrade
-	K AccountMagicConnectorTelemetryEventGetResponseResultEStartUpgradeK `json:"k,required"`
+	K AccountMagicConnectorTelemetryEventGetResponseResultEStartUpgradeK `json:"k" api:"required"`
 	// Location of upgrade bundle
-	URL  string                                                                `json:"url,required"`
+	URL  string                                                                `json:"url" api:"required"`
 	JSON accountMagicConnectorTelemetryEventGetResponseResultEStartUpgradeJSON `json:"-"`
 }
 
@@ -893,7 +893,7 @@ func (r AccountMagicConnectorTelemetryEventGetResponseResultEStartUpgradeK) IsKn
 
 type AccountMagicConnectorTelemetryEventGetResponseResultEFinishUpgradeSuccess struct {
 	// Finished upgrade
-	K    AccountMagicConnectorTelemetryEventGetResponseResultEFinishUpgradeSuccessK    `json:"k,required"`
+	K    AccountMagicConnectorTelemetryEventGetResponseResultEFinishUpgradeSuccessK    `json:"k" api:"required"`
 	JSON accountMagicConnectorTelemetryEventGetResponseResultEFinishUpgradeSuccessJSON `json:"-"`
 }
 
@@ -934,7 +934,7 @@ func (r AccountMagicConnectorTelemetryEventGetResponseResultEFinishUpgradeSucces
 
 type AccountMagicConnectorTelemetryEventGetResponseResultEFinishUpgradeFailure struct {
 	// Failed upgrade
-	K    AccountMagicConnectorTelemetryEventGetResponseResultEFinishUpgradeFailureK    `json:"k,required"`
+	K    AccountMagicConnectorTelemetryEventGetResponseResultEFinishUpgradeFailureK    `json:"k" api:"required"`
 	JSON accountMagicConnectorTelemetryEventGetResponseResultEFinishUpgradeFailureJSON `json:"-"`
 }
 
@@ -975,7 +975,7 @@ func (r AccountMagicConnectorTelemetryEventGetResponseResultEFinishUpgradeFailur
 
 type AccountMagicConnectorTelemetryEventGetResponseResultEReconcile struct {
 	// Reconciled
-	K    AccountMagicConnectorTelemetryEventGetResponseResultEReconcileK    `json:"k,required"`
+	K    AccountMagicConnectorTelemetryEventGetResponseResultEReconcileK    `json:"k" api:"required"`
 	JSON accountMagicConnectorTelemetryEventGetResponseResultEReconcileJSON `json:"-"`
 }
 
@@ -1016,7 +1016,7 @@ func (r AccountMagicConnectorTelemetryEventGetResponseResultEReconcileK) IsKnown
 
 type AccountMagicConnectorTelemetryEventGetResponseResultEConfigureCloudflaredTunnel struct {
 	// Configured Cloudflared tunnel
-	K    AccountMagicConnectorTelemetryEventGetResponseResultEConfigureCloudflaredTunnelK    `json:"k,required"`
+	K    AccountMagicConnectorTelemetryEventGetResponseResultEConfigureCloudflaredTunnelK    `json:"k" api:"required"`
 	JSON accountMagicConnectorTelemetryEventGetResponseResultEConfigureCloudflaredTunnelJSON `json:"-"`
 }
 
@@ -1086,8 +1086,8 @@ func (r AccountMagicConnectorTelemetryEventGetResponseResultEK) IsKnown() bool {
 }
 
 type AccountMagicConnectorTelemetryEventListParams struct {
-	From   param.Field[float64] `query:"from,required"`
-	To     param.Field[float64] `query:"to,required"`
+	From   param.Field[float64] `query:"from" api:"required"`
+	To     param.Field[float64] `query:"to" api:"required"`
 	Cursor param.Field[string]  `query:"cursor"`
 	// Filter by event kind
 	K     param.Field[string]  `query:"k"`

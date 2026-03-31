@@ -47,45 +47,45 @@ func (r *AccountWorkerDispatchNamespaceScriptContentService) Get(ctx context.Con
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "string")}, opts...)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if dispatchNamespace == "" {
 		err = errors.New("missing required dispatch_namespace parameter")
-		return
+		return nil, err
 	}
 	if scriptName == "" {
 		err = errors.New("missing required script_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/workers/dispatch/namespaces/%s/scripts/%s/content", accountID, dispatchNamespace, scriptName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Put script content for a script uploaded to a Workers for Platforms namespace.
 func (r *AccountWorkerDispatchNamespaceScriptContentService) Put(ctx context.Context, accountID string, dispatchNamespace string, scriptName string, params AccountWorkerDispatchNamespaceScriptContentPutParams, opts ...option.RequestOption) (res *SingleScriptResponse, err error) {
 	if params.CfWorkerBodyPart.Present {
-		opts = append(opts, option.WithHeader("CF-WORKER-BODY-PART", fmt.Sprintf("%s", params.CfWorkerBodyPart)))
+		opts = append(opts, option.WithHeader("CF-WORKER-BODY-PART", fmt.Sprintf("%v", params.CfWorkerBodyPart)))
 	}
 	if params.CfWorkerMainModulePart.Present {
-		opts = append(opts, option.WithHeader("CF-WORKER-MAIN-MODULE-PART", fmt.Sprintf("%s", params.CfWorkerMainModulePart)))
+		opts = append(opts, option.WithHeader("CF-WORKER-MAIN-MODULE-PART", fmt.Sprintf("%v", params.CfWorkerMainModulePart)))
 	}
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	if dispatchNamespace == "" {
 		err = errors.New("missing required dispatch_namespace parameter")
-		return
+		return nil, err
 	}
 	if scriptName == "" {
 		err = errors.New("missing required script_name parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/workers/dispatch/namespaces/%s/scripts/%s/content", accountID, dispatchNamespace, scriptName)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 // Status of
@@ -201,11 +201,11 @@ func (r scriptResponsePlacementJSON) RawJSON() string {
 }
 
 type SingleScriptResponse struct {
-	Errors   []WorkersMessages `json:"errors,required"`
-	Messages []WorkersMessages `json:"messages,required"`
-	Result   ScriptResponse    `json:"result,required"`
+	Errors   []WorkersMessages `json:"errors" api:"required"`
+	Messages []WorkersMessages `json:"messages" api:"required"`
+	Result   ScriptResponse    `json:"result" api:"required"`
 	// Whether the API call was successful.
-	Success SingleScriptResponseSuccess `json:"success,required"`
+	Success SingleScriptResponseSuccess `json:"success" api:"required"`
 	JSON    singleScriptResponseJSON    `json:"-"`
 }
 
@@ -245,7 +245,7 @@ func (r SingleScriptResponseSuccess) IsKnown() bool {
 
 type AccountWorkerDispatchNamespaceScriptContentPutParams struct {
 	// JSON encoded metadata about the uploaded parts and Worker configuration.
-	Metadata param.Field[AccountWorkerDispatchNamespaceScriptContentPutParamsMetadata] `json:"metadata,required"`
+	Metadata param.Field[AccountWorkerDispatchNamespaceScriptContentPutParamsMetadata] `json:"metadata" api:"required"`
 	// An array of modules (often JavaScript files) comprising a Worker script. At
 	// least one module must be present and referenced in the metadata as `main_module`
 	// or `body_part` by filename.<br/>Possible Content-Type(s) are:

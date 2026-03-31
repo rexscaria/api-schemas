@@ -42,11 +42,11 @@ func (r *ZoneSettingZarazHistoryService) List(ctx context.Context, zoneID string
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/settings/zaraz/history", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Restores a historical published Zaraz configuration by ID for a zone.
@@ -54,11 +54,11 @@ func (r *ZoneSettingZarazHistoryService) Restore(ctx context.Context, zoneID str
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/settings/zaraz/history", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Gets a history of published Zaraz configurations by ID(s) for a zone.
@@ -66,19 +66,19 @@ func (r *ZoneSettingZarazHistoryService) GetConfigs(ctx context.Context, zoneID 
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/settings/zaraz/history/configs", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type ZoneSettingZarazHistoryListResponse struct {
-	Errors   []ZarazMessagesItems                        `json:"errors,required"`
-	Messages []ZarazMessagesItems                        `json:"messages,required"`
-	Result   []ZoneSettingZarazHistoryListResponseResult `json:"result,required"`
+	Errors   []ZarazMessagesItems                        `json:"errors" api:"required"`
+	Messages []ZarazMessagesItems                        `json:"messages" api:"required"`
+	Result   []ZoneSettingZarazHistoryListResponseResult `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success bool                                    `json:"success,required"`
+	Success bool                                    `json:"success" api:"required"`
 	JSON    zoneSettingZarazHistoryListResponseJSON `json:"-"`
 }
 
@@ -103,15 +103,15 @@ func (r zoneSettingZarazHistoryListResponseJSON) RawJSON() string {
 
 type ZoneSettingZarazHistoryListResponseResult struct {
 	// ID of the configuration
-	ID int64 `json:"id,required"`
+	ID int64 `json:"id" api:"required"`
 	// Date and time the configuration was created
-	CreatedAt time.Time `json:"createdAt,required" format:"date-time"`
+	CreatedAt time.Time `json:"createdAt" api:"required" format:"date-time"`
 	// Configuration description provided by the user who published this configuration
-	Description string `json:"description,required"`
+	Description string `json:"description" api:"required"`
 	// Date and time the configuration was last updated
-	UpdatedAt time.Time `json:"updatedAt,required" format:"date-time"`
+	UpdatedAt time.Time `json:"updatedAt" api:"required" format:"date-time"`
 	// Alpha-numeric ID of the account user who published the configuration
-	UserID string                                        `json:"userId,required"`
+	UserID string                                        `json:"userId" api:"required"`
 	JSON   zoneSettingZarazHistoryListResponseResultJSON `json:"-"`
 }
 
@@ -136,12 +136,12 @@ func (r zoneSettingZarazHistoryListResponseResultJSON) RawJSON() string {
 }
 
 type ZoneSettingZarazHistoryGetConfigsResponse struct {
-	Errors   []ZarazMessagesItems `json:"errors,required"`
-	Messages []ZarazMessagesItems `json:"messages,required"`
+	Errors   []ZarazMessagesItems `json:"errors" api:"required"`
+	Messages []ZarazMessagesItems `json:"messages" api:"required"`
 	// Object where keys are numericc onfiguration IDs
-	Result map[string]ZoneSettingZarazHistoryGetConfigsResponseResult `json:"result,required"`
+	Result map[string]ZoneSettingZarazHistoryGetConfigsResponseResult `json:"result" api:"required"`
 	// Whether the API call was successful
-	Success bool                                          `json:"success,required"`
+	Success bool                                          `json:"success" api:"required"`
 	JSON    zoneSettingZarazHistoryGetConfigsResponseJSON `json:"-"`
 }
 
@@ -166,15 +166,15 @@ func (r zoneSettingZarazHistoryGetConfigsResponseJSON) RawJSON() string {
 
 type ZoneSettingZarazHistoryGetConfigsResponseResult struct {
 	// ID of the configuration
-	ID int64 `json:"id,required"`
+	ID int64 `json:"id" api:"required"`
 	// Zaraz configuration
-	Config ZarazConfigReturn `json:"config,required"`
+	Config ZarazConfigReturn `json:"config" api:"required"`
 	// Date and time the configuration was created
-	CreatedAt time.Time `json:"createdAt,required" format:"date-time"`
+	CreatedAt time.Time `json:"createdAt" api:"required" format:"date-time"`
 	// Date and time the configuration was last updated
-	UpdatedAt time.Time `json:"updatedAt,required" format:"date-time"`
+	UpdatedAt time.Time `json:"updatedAt" api:"required" format:"date-time"`
 	// Alpha-numeric ID of the account user who published the configuration
-	UserID string                                              `json:"userId,required"`
+	UserID string                                              `json:"userId" api:"required"`
 	JSON   zoneSettingZarazHistoryGetConfigsResponseResultJSON `json:"-"`
 }
 
@@ -255,7 +255,7 @@ func (r ZoneSettingZarazHistoryListParamsSortOrder) IsKnown() bool {
 
 type ZoneSettingZarazHistoryRestoreParams struct {
 	// ID of the Zaraz configuration to restore.
-	Body int64 `json:"body,required"`
+	Body int64 `json:"body" api:"required"`
 }
 
 func (r ZoneSettingZarazHistoryRestoreParams) MarshalJSON() (data []byte, err error) {
@@ -264,7 +264,7 @@ func (r ZoneSettingZarazHistoryRestoreParams) MarshalJSON() (data []byte, err er
 
 type ZoneSettingZarazHistoryGetConfigsParams struct {
 	// Comma separated list of Zaraz configuration IDs
-	IDs param.Field[[]int64] `query:"ids,required"`
+	IDs param.Field[[]int64] `query:"ids" api:"required"`
 }
 
 // URLQuery serializes [ZoneSettingZarazHistoryGetConfigsParams]'s query parameters

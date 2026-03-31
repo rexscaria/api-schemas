@@ -46,19 +46,19 @@ func (r *ZoneFirewallWafPackageGroupService) Get(ctx context.Context, zoneID str
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if packageID == "" {
 		err = errors.New("missing required package_id parameter")
-		return
+		return nil, err
 	}
 	if groupID == "" {
 		err = errors.New("missing required group_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/firewall/waf/packages/%s/groups/%s", zoneID, packageID, groupID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates a WAF rule group. You can update the state (`mode` parameter) of a rule
@@ -72,19 +72,19 @@ func (r *ZoneFirewallWafPackageGroupService) Update(ctx context.Context, zoneID 
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if packageID == "" {
 		err = errors.New("missing required package_id parameter")
-		return
+		return nil, err
 	}
 	if groupID == "" {
 		err = errors.New("missing required group_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/firewall/waf/packages/%s/groups/%s", zoneID, packageID, groupID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetches the WAF rule groups in a WAF package.
@@ -97,20 +97,20 @@ func (r *ZoneFirewallWafPackageGroupService) List(ctx context.Context, zoneID st
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if packageID == "" {
 		err = errors.New("missing required package_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/firewall/waf/packages/%s/groups", zoneID, packageID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type WafManagedRulesMessage struct {
-	Code             int64                        `json:"code,required"`
-	Message          string                       `json:"message,required"`
+	Code             int64                        `json:"code" api:"required"`
+	Message          string                       `json:"message" api:"required"`
 	DocumentationURL string                       `json:"documentation_url"`
 	Source           WafManagedRulesMessageSource `json:"source"`
 	JSON             wafManagedRulesMessageJSON   `json:"-"`
@@ -174,11 +174,11 @@ func (r WafManagedRulesMode) IsKnown() bool {
 }
 
 type WafManagedRulesRuleGroupResponseSingle struct {
-	Errors   []WafManagedRulesMessage `json:"errors,required"`
-	Messages []WafManagedRulesMessage `json:"messages,required"`
-	Result   interface{}              `json:"result,required"`
+	Errors   []WafManagedRulesMessage `json:"errors" api:"required"`
+	Messages []WafManagedRulesMessage `json:"messages" api:"required"`
+	Result   interface{}              `json:"result" api:"required"`
 	// Defines whether the API call was successful.
-	Success WafManagedRulesRuleGroupResponseSingleSuccess `json:"success,required"`
+	Success WafManagedRulesRuleGroupResponseSingleSuccess `json:"success" api:"required"`
 	JSON    wafManagedRulesRuleGroupResponseSingleJSON    `json:"-"`
 }
 
@@ -217,11 +217,11 @@ func (r WafManagedRulesRuleGroupResponseSingleSuccess) IsKnown() bool {
 }
 
 type ZoneFirewallWafPackageGroupListResponse struct {
-	Errors   []WafManagedRulesMessage                        `json:"errors,required"`
-	Messages []WafManagedRulesMessage                        `json:"messages,required"`
-	Result   []ZoneFirewallWafPackageGroupListResponseResult `json:"result,required"`
+	Errors   []WafManagedRulesMessage                        `json:"errors" api:"required"`
+	Messages []WafManagedRulesMessage                        `json:"messages" api:"required"`
+	Result   []ZoneFirewallWafPackageGroupListResponseResult `json:"result" api:"required"`
 	// Defines whether the API call was successful.
-	Success    ZoneFirewallWafPackageGroupListResponseSuccess    `json:"success,required"`
+	Success    ZoneFirewallWafPackageGroupListResponseSuccess    `json:"success" api:"required"`
 	ResultInfo ZoneFirewallWafPackageGroupListResponseResultInfo `json:"result_info"`
 	JSON       zoneFirewallWafPackageGroupListResponseJSON       `json:"-"`
 }
@@ -248,16 +248,16 @@ func (r zoneFirewallWafPackageGroupListResponseJSON) RawJSON() string {
 
 type ZoneFirewallWafPackageGroupListResponseResult struct {
 	// Defines the unique identifier of the rule group.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Defines an informative summary of what the rule group does.
-	Description string `json:"description,required,nullable"`
+	Description string `json:"description" api:"required,nullable"`
 	// Defines the state of the rules contained in the rule group. When `on`, the rules
 	// in the group are configurable/usable.
-	Mode WafManagedRulesMode `json:"mode,required"`
+	Mode WafManagedRulesMode `json:"mode" api:"required"`
 	// Defines the name of the rule group.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Defines the number of rules in the current rule group.
-	RulesCount float64 `json:"rules_count,required"`
+	RulesCount float64 `json:"rules_count" api:"required"`
 	// Defines the available states for the rule group.
 	AllowedModes []WafManagedRulesMode `json:"allowed_modes"`
 	// Defines the number of rules within the group that have been modified from their

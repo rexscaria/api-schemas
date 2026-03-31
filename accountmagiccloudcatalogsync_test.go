@@ -14,7 +14,7 @@ import (
 )
 
 func TestAccountMagicCloudCatalogSyncNewWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,6 +26,7 @@ func TestAccountMagicCloudCatalogSyncNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Magic.Cloud.CatalogSyncs.New(
 		context.TODO(),
@@ -49,7 +50,7 @@ func TestAccountMagicCloudCatalogSyncNewWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountMagicCloudCatalogSyncGet(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -61,6 +62,7 @@ func TestAccountMagicCloudCatalogSyncGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Magic.Cloud.CatalogSyncs.Get(
 		context.TODO(),
@@ -77,7 +79,7 @@ func TestAccountMagicCloudCatalogSyncGet(t *testing.T) {
 }
 
 func TestAccountMagicCloudCatalogSyncUpdateWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -89,6 +91,7 @@ func TestAccountMagicCloudCatalogSyncUpdateWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Magic.Cloud.CatalogSyncs.Update(
 		context.TODO(),
@@ -113,7 +116,7 @@ func TestAccountMagicCloudCatalogSyncUpdateWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountMagicCloudCatalogSyncList(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -125,6 +128,7 @@ func TestAccountMagicCloudCatalogSyncList(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Magic.Cloud.CatalogSyncs.List(context.TODO(), "account_id")
 	if err != nil {
@@ -137,7 +141,7 @@ func TestAccountMagicCloudCatalogSyncList(t *testing.T) {
 }
 
 func TestAccountMagicCloudCatalogSyncDeleteWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -149,6 +153,7 @@ func TestAccountMagicCloudCatalogSyncDeleteWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Magic.Cloud.CatalogSyncs.Delete(
 		context.TODO(),
@@ -168,7 +173,7 @@ func TestAccountMagicCloudCatalogSyncDeleteWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountMagicCloudCatalogSyncListPoliciesWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -180,6 +185,7 @@ func TestAccountMagicCloudCatalogSyncListPoliciesWithOptionalParams(t *testing.T
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Magic.Cloud.CatalogSyncs.ListPolicies(
 		context.TODO(),
@@ -198,7 +204,7 @@ func TestAccountMagicCloudCatalogSyncListPoliciesWithOptionalParams(t *testing.T
 }
 
 func TestAccountMagicCloudCatalogSyncPatchWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -210,6 +216,7 @@ func TestAccountMagicCloudCatalogSyncPatchWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Magic.Cloud.CatalogSyncs.Patch(
 		context.TODO(),
@@ -234,7 +241,7 @@ func TestAccountMagicCloudCatalogSyncPatchWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountMagicCloudCatalogSyncRun(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -246,6 +253,7 @@ func TestAccountMagicCloudCatalogSyncRun(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Magic.Cloud.CatalogSyncs.Run(
 		context.TODO(),

@@ -14,7 +14,7 @@ import (
 )
 
 func TestRadarBgpRouteListAsesWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,6 +26,7 @@ func TestRadarBgpRouteListAsesWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.Bgp.Routes.ListAses(context.TODO(), cfrex.RadarBgpRouteListAsesParams{
 		Format:    cfrex.F(cfrex.RadarBgpRouteListAsesParamsFormatJson),
@@ -44,7 +45,7 @@ func TestRadarBgpRouteListAsesWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarBgpRouteListMoasWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -56,6 +57,7 @@ func TestRadarBgpRouteListMoasWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.Bgp.Routes.ListMoas(context.TODO(), cfrex.RadarBgpRouteListMoasParams{
 		Format:      cfrex.F(cfrex.RadarBgpRouteListMoasParamsFormatJson),
@@ -73,7 +75,7 @@ func TestRadarBgpRouteListMoasWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarBgpRouteGetPrefixToAsWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -85,6 +87,7 @@ func TestRadarBgpRouteGetPrefixToAsWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.Bgp.Routes.GetPrefixToAs(context.TODO(), cfrex.RadarBgpRouteGetPrefixToAsParams{
 		Format:             cfrex.F(cfrex.RadarBgpRouteGetPrefixToAsParamsFormatJson),
@@ -103,7 +106,7 @@ func TestRadarBgpRouteGetPrefixToAsWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarBgpRouteGetRealtimeRoutesWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -115,6 +118,7 @@ func TestRadarBgpRouteGetRealtimeRoutesWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.Bgp.Routes.GetRealtimeRoutes(context.TODO(), cfrex.RadarBgpRouteGetRealtimeRoutesParams{
 		Format: cfrex.F(cfrex.RadarBgpRouteGetRealtimeRoutesParamsFormatJson),
@@ -130,7 +134,7 @@ func TestRadarBgpRouteGetRealtimeRoutesWithOptionalParams(t *testing.T) {
 }
 
 func TestRadarBgpRouteGetStatsWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -142,6 +146,7 @@ func TestRadarBgpRouteGetStatsWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Radar.Bgp.Routes.GetStats(context.TODO(), cfrex.RadarBgpRouteGetStatsParams{
 		Asn:      cfrex.F(int64(174)),

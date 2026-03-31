@@ -14,7 +14,7 @@ import (
 )
 
 func TestAccountAIRunCfGoogleExecuteGemma2bItLoraWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,6 +26,7 @@ func TestAccountAIRunCfGoogleExecuteGemma2bItLoraWithOptionalParams(t *testing.T
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.AI.Run.Cf.Google.ExecuteGemma2bItLora(
 		context.TODO(),
@@ -62,7 +63,7 @@ func TestAccountAIRunCfGoogleExecuteGemma2bItLoraWithOptionalParams(t *testing.T
 }
 
 func TestAccountAIRunCfGoogleExecuteGemma7bItLoraWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -74,6 +75,7 @@ func TestAccountAIRunCfGoogleExecuteGemma7bItLoraWithOptionalParams(t *testing.T
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.AI.Run.Cf.Google.ExecuteGemma7bItLora(
 		context.TODO(),

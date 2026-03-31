@@ -16,7 +16,7 @@ import (
 )
 
 func TestAccountVectorizeIndexNewWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -28,6 +28,7 @@ func TestAccountVectorizeIndexNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Vectorize.Indexes.New(
 		context.TODO(),
@@ -53,7 +54,7 @@ func TestAccountVectorizeIndexNewWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountVectorizeIndexGet(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -65,6 +66,7 @@ func TestAccountVectorizeIndexGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Vectorize.Indexes.Get(
 		context.TODO(),
@@ -81,7 +83,7 @@ func TestAccountVectorizeIndexGet(t *testing.T) {
 }
 
 func TestAccountVectorizeIndexUpdate(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -93,6 +95,7 @@ func TestAccountVectorizeIndexUpdate(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Vectorize.Indexes.Update(
 		context.TODO(),
@@ -112,7 +115,7 @@ func TestAccountVectorizeIndexUpdate(t *testing.T) {
 }
 
 func TestAccountVectorizeIndexList(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -124,6 +127,7 @@ func TestAccountVectorizeIndexList(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Vectorize.Indexes.List(context.TODO(), "023e105f4ecef8ad9ca31a8372d0c353")
 	if err != nil {
@@ -136,7 +140,7 @@ func TestAccountVectorizeIndexList(t *testing.T) {
 }
 
 func TestAccountVectorizeIndexDelete(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -148,6 +152,7 @@ func TestAccountVectorizeIndexDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Vectorize.Indexes.Delete(
 		context.TODO(),
@@ -164,7 +169,7 @@ func TestAccountVectorizeIndexDelete(t *testing.T) {
 }
 
 func TestAccountVectorizeIndexDeleteByIDsWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -176,6 +181,7 @@ func TestAccountVectorizeIndexDeleteByIDsWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Vectorize.Indexes.DeleteByIDs(
 		context.TODO(),
@@ -197,7 +203,7 @@ func TestAccountVectorizeIndexDeleteByIDsWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountVectorizeIndexGetByIDsWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -209,6 +215,7 @@ func TestAccountVectorizeIndexGetByIDsWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Vectorize.Indexes.GetByIDs(
 		context.TODO(),
@@ -230,7 +237,7 @@ func TestAccountVectorizeIndexGetByIDsWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountVectorizeIndexInsert(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -242,13 +249,14 @@ func TestAccountVectorizeIndexInsert(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Vectorize.Indexes.Insert(
 		context.TODO(),
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		"example-index",
 		cfrex.AccountVectorizeIndexInsertParams{
-			Body: io.Reader(bytes.NewBuffer([]byte("some file contents"))),
+			Body: io.Reader(bytes.NewBuffer([]byte("Example data"))),
 		},
 	)
 	if err != nil {
@@ -261,7 +269,7 @@ func TestAccountVectorizeIndexInsert(t *testing.T) {
 }
 
 func TestAccountVectorizeIndexQueryWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -273,6 +281,7 @@ func TestAccountVectorizeIndexQueryWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Vectorize.Indexes.Query(
 		context.TODO(),
@@ -301,7 +310,7 @@ func TestAccountVectorizeIndexQueryWithOptionalParams(t *testing.T) {
 }
 
 func TestAccountVectorizeIndexUpsert(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -313,13 +322,14 @@ func TestAccountVectorizeIndexUpsert(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Vectorize.Indexes.Upsert(
 		context.TODO(),
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		"example-index",
 		cfrex.AccountVectorizeIndexUpsertParams{
-			Body: io.Reader(bytes.NewBuffer([]byte("some file contents"))),
+			Body: io.Reader(bytes.NewBuffer([]byte("Example data"))),
 		},
 	)
 	if err != nil {

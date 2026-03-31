@@ -46,11 +46,11 @@ func (r *ZoneFirewallWafOverrideService) New(ctx context.Context, zoneID string,
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/firewall/waf/overrides", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetches the details of a URI-based WAF override.
@@ -63,15 +63,15 @@ func (r *ZoneFirewallWafOverrideService) Get(ctx context.Context, zoneID string,
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if overridesID == "" {
 		err = errors.New("missing required overrides_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/firewall/waf/overrides/%s", zoneID, overridesID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Updates an existing URI-based WAF override.
@@ -84,15 +84,15 @@ func (r *ZoneFirewallWafOverrideService) Update(ctx context.Context, zoneID stri
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if overridesID == "" {
 		err = errors.New("missing required overrides_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/firewall/waf/overrides/%s", zoneID, overridesID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Fetches the URI-based WAF overrides in a zone.
@@ -105,11 +105,11 @@ func (r *ZoneFirewallWafOverrideService) List(ctx context.Context, zoneID string
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/firewall/waf/overrides", zoneID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Deletes an existing URI-based WAF override.
@@ -122,22 +122,22 @@ func (r *ZoneFirewallWafOverrideService) Delete(ctx context.Context, zoneID stri
 	opts = slices.Concat(r.Options, opts)
 	if zoneID == "" {
 		err = errors.New("missing required zone_id parameter")
-		return
+		return nil, err
 	}
 	if overridesID == "" {
 		err = errors.New("missing required overrides_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("zones/%s/firewall/waf/overrides/%s", zoneID, overridesID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type FirewallOverride struct {
 	// The unique identifier of the WAF override.
 	ID string `json:"id"`
 	// An informative summary of the current URI-based WAF override.
-	Description string `json:"description,nullable"`
+	Description string `json:"description" api:"nullable"`
 	// An object that allows you to enable or disable WAF rule groups for the current
 	// WAF override. Each key of this object must be the ID of a WAF rule group, and
 	// each value must be a valid WAF action (usually `default` or `disable`). When
@@ -209,11 +209,11 @@ func (r FirewallOverrideRule) IsKnown() bool {
 }
 
 type FirewallOverrideResponseSingle struct {
-	Errors   []FirewallMessagesItem `json:"errors,required"`
-	Messages []FirewallMessagesItem `json:"messages,required"`
-	Result   FirewallOverride       `json:"result,required"`
+	Errors   []FirewallMessagesItem `json:"errors" api:"required"`
+	Messages []FirewallMessagesItem `json:"messages" api:"required"`
+	Result   FirewallOverride       `json:"result" api:"required"`
 	// Defines whether the API call was successful.
-	Success FirewallOverrideResponseSingleSuccess `json:"success,required"`
+	Success FirewallOverrideResponseSingleSuccess `json:"success" api:"required"`
 	JSON    firewallOverrideResponseSingleJSON    `json:"-"`
 }
 
@@ -326,11 +326,11 @@ func (r FirewallWafRewriteAction) IsKnown() bool {
 }
 
 type ZoneFirewallWafOverrideListResponse struct {
-	Errors   []FirewallMessagesItem `json:"errors,required"`
-	Messages []FirewallMessagesItem `json:"messages,required"`
-	Result   []FirewallOverride     `json:"result,required,nullable"`
+	Errors   []FirewallMessagesItem `json:"errors" api:"required"`
+	Messages []FirewallMessagesItem `json:"messages" api:"required"`
+	Result   []FirewallOverride     `json:"result" api:"required,nullable"`
 	// Defines whether the API call was successful.
-	Success    ZoneFirewallWafOverrideListResponseSuccess    `json:"success,required"`
+	Success    ZoneFirewallWafOverrideListResponseSuccess    `json:"success" api:"required"`
 	ResultInfo ZoneFirewallWafOverrideListResponseResultInfo `json:"result_info"`
 	JSON       zoneFirewallWafOverrideListResponseJSON       `json:"-"`
 }
@@ -448,7 +448,7 @@ type ZoneFirewallWafOverrideNewParams struct {
 	// The URLs to include in the current WAF override. You can use wildcards. Each
 	// entered URL will be escaped before use, which means you can only use simple
 	// wildcard patterns.
-	URLs param.Field[[]string] `json:"urls,required"`
+	URLs param.Field[[]string] `json:"urls" api:"required"`
 }
 
 func (r ZoneFirewallWafOverrideNewParams) MarshalJSON() (data []byte, err error) {
@@ -457,20 +457,20 @@ func (r ZoneFirewallWafOverrideNewParams) MarshalJSON() (data []byte, err error)
 
 type ZoneFirewallWafOverrideUpdateParams struct {
 	// Defines an identifier.
-	ID param.Field[string] `json:"id,required"`
+	ID param.Field[string] `json:"id" api:"required"`
 	// Specifies that, when a WAF rule matches, its configured action will be replaced
 	// by the action configured in this object.
-	RewriteAction param.Field[FirewallRewriteActionParam] `json:"rewrite_action,required"`
+	RewriteAction param.Field[FirewallRewriteActionParam] `json:"rewrite_action" api:"required"`
 	// An object that allows you to override the action of specific WAF rules. Each key
 	// of this object must be the ID of a WAF rule, and each value must be a valid WAF
 	// action. Unless you are disabling a rule, ensure that you also enable the rule
 	// group that this WAF rule belongs to. When creating a new URI-based WAF override,
 	// you must provide a `groups` object or a `rules` object.
-	Rules param.Field[map[string]ZoneFirewallWafOverrideUpdateParamsRules] `json:"rules,required"`
+	Rules param.Field[map[string]ZoneFirewallWafOverrideUpdateParamsRules] `json:"rules" api:"required"`
 	// The URLs to include in the current WAF override. You can use wildcards. Each
 	// entered URL will be escaped before use, which means you can only use simple
 	// wildcard patterns.
-	URLs param.Field[[]string] `json:"urls,required"`
+	URLs param.Field[[]string] `json:"urls" api:"required"`
 }
 
 func (r ZoneFirewallWafOverrideUpdateParams) MarshalJSON() (data []byte, err error) {

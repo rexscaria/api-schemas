@@ -42,7 +42,7 @@ func (r *RadarAttackLayer7TopLocationService) GetTopOriginLocations(ctx context.
 	opts = slices.Concat(r.Options, opts)
 	path := "radar/attacks/layer7/top/locations/origin"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves the top target locations of and by layer 7 attacks. Values are a
@@ -52,12 +52,12 @@ func (r *RadarAttackLayer7TopLocationService) GetTopTargetLocations(ctx context.
 	opts = slices.Concat(r.Options, opts)
 	path := "radar/attacks/layer7/top/locations/target"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type RadarAttackLayer7TopLocationGetTopOriginLocationsResponse struct {
-	Result  RadarAttackLayer7TopLocationGetTopOriginLocationsResponseResult `json:"result,required"`
-	Success bool                                                            `json:"success,required"`
+	Result  RadarAttackLayer7TopLocationGetTopOriginLocationsResponseResult `json:"result" api:"required"`
+	Success bool                                                            `json:"success" api:"required"`
 	JSON    radarAttackLayer7TopLocationGetTopOriginLocationsResponseJSON   `json:"-"`
 }
 
@@ -81,8 +81,8 @@ func (r radarAttackLayer7TopLocationGetTopOriginLocationsResponseJSON) RawJSON()
 
 type RadarAttackLayer7TopLocationGetTopOriginLocationsResponseResult struct {
 	// Metadata for the results.
-	Meta RadarAttackLayer7TopLocationGetTopOriginLocationsResponseResultMeta   `json:"meta,required"`
-	Top0 []RadarAttackLayer7TopLocationGetTopOriginLocationsResponseResultTop0 `json:"top_0,required"`
+	Meta RadarAttackLayer7TopLocationGetTopOriginLocationsResponseResultMeta   `json:"meta" api:"required"`
+	Top0 []RadarAttackLayer7TopLocationGetTopOriginLocationsResponseResultTop0 `json:"top_0" api:"required"`
 	JSON radarAttackLayer7TopLocationGetTopOriginLocationsResponseResultJSON   `json:"-"`
 }
 
@@ -106,15 +106,15 @@ func (r radarAttackLayer7TopLocationGetTopOriginLocationsResponseResultJSON) Raw
 
 // Metadata for the results.
 type RadarAttackLayer7TopLocationGetTopOriginLocationsResponseResultMeta struct {
-	ConfidenceInfo RadarAttackLayer7TopLocationGetTopOriginLocationsResponseResultMetaConfidenceInfo `json:"confidenceInfo,required,nullable"`
-	DateRange      []RadarAttackLayer7TopLocationGetTopOriginLocationsResponseResultMetaDateRange    `json:"dateRange,required"`
+	ConfidenceInfo RadarAttackLayer7TopLocationGetTopOriginLocationsResponseResultMetaConfidenceInfo `json:"confidenceInfo" api:"required,nullable"`
+	DateRange      []RadarAttackLayer7TopLocationGetTopOriginLocationsResponseResultMetaDateRange    `json:"dateRange" api:"required"`
 	// Timestamp of the last dataset update.
-	LastUpdated time.Time `json:"lastUpdated,required" format:"date-time"`
+	LastUpdated time.Time `json:"lastUpdated" api:"required" format:"date-time"`
 	// Normalization method applied to the results. Refer to
 	// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
-	Normalization RadarAttackLayer7TopLocationGetTopOriginLocationsResponseResultMetaNormalization `json:"normalization,required"`
+	Normalization RadarAttackLayer7TopLocationGetTopOriginLocationsResponseResultMetaNormalization `json:"normalization" api:"required"`
 	// Measurement units for the results.
-	Units []RadarAttackLayer7TopLocationGetTopOriginLocationsResponseResultMetaUnit `json:"units,required"`
+	Units []RadarAttackLayer7TopLocationGetTopOriginLocationsResponseResultMetaUnit `json:"units" api:"required"`
 	JSON  radarAttackLayer7TopLocationGetTopOriginLocationsResponseResultMetaJSON   `json:"-"`
 }
 
@@ -140,9 +140,9 @@ func (r radarAttackLayer7TopLocationGetTopOriginLocationsResponseResultMetaJSON)
 }
 
 type RadarAttackLayer7TopLocationGetTopOriginLocationsResponseResultMetaConfidenceInfo struct {
-	Annotations []RadarAttackLayer7TopLocationGetTopOriginLocationsResponseResultMetaConfidenceInfoAnnotation `json:"annotations,required"`
+	Annotations []RadarAttackLayer7TopLocationGetTopOriginLocationsResponseResultMetaConfidenceInfoAnnotation `json:"annotations" api:"required"`
 	// Provides an indication of how much confidence Cloudflare has in the data.
-	Level int64                                                                                 `json:"level,required"`
+	Level int64                                                                                 `json:"level" api:"required"`
 	JSON  radarAttackLayer7TopLocationGetTopOriginLocationsResponseResultMetaConfidenceInfoJSON `json:"-"`
 }
 
@@ -166,14 +166,14 @@ func (r radarAttackLayer7TopLocationGetTopOriginLocationsResponseResultMetaConfi
 
 // Annotation associated with the result (e.g. outage or other type of event).
 type RadarAttackLayer7TopLocationGetTopOriginLocationsResponseResultMetaConfidenceInfoAnnotation struct {
-	DataSource  string    `json:"dataSource,required"`
-	Description string    `json:"description,required"`
-	EndDate     time.Time `json:"endDate,required" format:"date-time"`
-	EventType   string    `json:"eventType,required"`
+	DataSource  string    `json:"dataSource" api:"required"`
+	Description string    `json:"description" api:"required"`
+	EndDate     time.Time `json:"endDate" api:"required" format:"date-time"`
+	EventType   string    `json:"eventType" api:"required"`
 	// Whether event is a single point in time or a time range.
-	IsInstantaneous bool                                                                                            `json:"isInstantaneous,required"`
-	LinkedURL       string                                                                                          `json:"linkedUrl,required" format:"uri"`
-	StartDate       time.Time                                                                                       `json:"startDate,required" format:"date-time"`
+	IsInstantaneous bool                                                                                            `json:"isInstantaneous" api:"required"`
+	LinkedURL       string                                                                                          `json:"linkedUrl" api:"required" format:"uri"`
+	StartDate       time.Time                                                                                       `json:"startDate" api:"required" format:"date-time"`
 	JSON            radarAttackLayer7TopLocationGetTopOriginLocationsResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
 }
 
@@ -202,9 +202,9 @@ func (r radarAttackLayer7TopLocationGetTopOriginLocationsResponseResultMetaConfi
 
 type RadarAttackLayer7TopLocationGetTopOriginLocationsResponseResultMetaDateRange struct {
 	// Adjusted end of date range.
-	EndTime time.Time `json:"endTime,required" format:"date-time"`
+	EndTime time.Time `json:"endTime" api:"required" format:"date-time"`
 	// Adjusted start of date range.
-	StartTime time.Time                                                                        `json:"startTime,required" format:"date-time"`
+	StartTime time.Time                                                                        `json:"startTime" api:"required" format:"date-time"`
 	JSON      radarAttackLayer7TopLocationGetTopOriginLocationsResponseResultMetaDateRangeJSON `json:"-"`
 }
 
@@ -250,8 +250,8 @@ func (r RadarAttackLayer7TopLocationGetTopOriginLocationsResponseResultMetaNorma
 }
 
 type RadarAttackLayer7TopLocationGetTopOriginLocationsResponseResultMetaUnit struct {
-	Name  string                                                                      `json:"name,required"`
-	Value string                                                                      `json:"value,required"`
+	Name  string                                                                      `json:"name" api:"required"`
+	Value string                                                                      `json:"value" api:"required"`
 	JSON  radarAttackLayer7TopLocationGetTopOriginLocationsResponseResultMetaUnitJSON `json:"-"`
 }
 
@@ -274,10 +274,10 @@ func (r radarAttackLayer7TopLocationGetTopOriginLocationsResponseResultMetaUnitJ
 }
 
 type RadarAttackLayer7TopLocationGetTopOriginLocationsResponseResultTop0 struct {
-	OriginCountryAlpha2 string                                                                  `json:"originCountryAlpha2,required"`
-	OriginCountryName   string                                                                  `json:"originCountryName,required"`
-	Rank                float64                                                                 `json:"rank,required"`
-	Value               string                                                                  `json:"value,required"`
+	OriginCountryAlpha2 string                                                                  `json:"originCountryAlpha2" api:"required"`
+	OriginCountryName   string                                                                  `json:"originCountryName" api:"required"`
+	Rank                float64                                                                 `json:"rank" api:"required"`
+	Value               string                                                                  `json:"value" api:"required"`
 	JSON                radarAttackLayer7TopLocationGetTopOriginLocationsResponseResultTop0JSON `json:"-"`
 }
 
@@ -302,8 +302,8 @@ func (r radarAttackLayer7TopLocationGetTopOriginLocationsResponseResultTop0JSON)
 }
 
 type RadarAttackLayer7TopLocationGetTopTargetLocationsResponse struct {
-	Result  RadarAttackLayer7TopLocationGetTopTargetLocationsResponseResult `json:"result,required"`
-	Success bool                                                            `json:"success,required"`
+	Result  RadarAttackLayer7TopLocationGetTopTargetLocationsResponseResult `json:"result" api:"required"`
+	Success bool                                                            `json:"success" api:"required"`
 	JSON    radarAttackLayer7TopLocationGetTopTargetLocationsResponseJSON   `json:"-"`
 }
 
@@ -327,8 +327,8 @@ func (r radarAttackLayer7TopLocationGetTopTargetLocationsResponseJSON) RawJSON()
 
 type RadarAttackLayer7TopLocationGetTopTargetLocationsResponseResult struct {
 	// Metadata for the results.
-	Meta RadarAttackLayer7TopLocationGetTopTargetLocationsResponseResultMeta   `json:"meta,required"`
-	Top0 []RadarAttackLayer7TopLocationGetTopTargetLocationsResponseResultTop0 `json:"top_0,required"`
+	Meta RadarAttackLayer7TopLocationGetTopTargetLocationsResponseResultMeta   `json:"meta" api:"required"`
+	Top0 []RadarAttackLayer7TopLocationGetTopTargetLocationsResponseResultTop0 `json:"top_0" api:"required"`
 	JSON radarAttackLayer7TopLocationGetTopTargetLocationsResponseResultJSON   `json:"-"`
 }
 
@@ -352,15 +352,15 @@ func (r radarAttackLayer7TopLocationGetTopTargetLocationsResponseResultJSON) Raw
 
 // Metadata for the results.
 type RadarAttackLayer7TopLocationGetTopTargetLocationsResponseResultMeta struct {
-	ConfidenceInfo RadarAttackLayer7TopLocationGetTopTargetLocationsResponseResultMetaConfidenceInfo `json:"confidenceInfo,required,nullable"`
-	DateRange      []RadarAttackLayer7TopLocationGetTopTargetLocationsResponseResultMetaDateRange    `json:"dateRange,required"`
+	ConfidenceInfo RadarAttackLayer7TopLocationGetTopTargetLocationsResponseResultMetaConfidenceInfo `json:"confidenceInfo" api:"required,nullable"`
+	DateRange      []RadarAttackLayer7TopLocationGetTopTargetLocationsResponseResultMetaDateRange    `json:"dateRange" api:"required"`
 	// Timestamp of the last dataset update.
-	LastUpdated time.Time `json:"lastUpdated,required" format:"date-time"`
+	LastUpdated time.Time `json:"lastUpdated" api:"required" format:"date-time"`
 	// Normalization method applied to the results. Refer to
 	// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
-	Normalization RadarAttackLayer7TopLocationGetTopTargetLocationsResponseResultMetaNormalization `json:"normalization,required"`
+	Normalization RadarAttackLayer7TopLocationGetTopTargetLocationsResponseResultMetaNormalization `json:"normalization" api:"required"`
 	// Measurement units for the results.
-	Units []RadarAttackLayer7TopLocationGetTopTargetLocationsResponseResultMetaUnit `json:"units,required"`
+	Units []RadarAttackLayer7TopLocationGetTopTargetLocationsResponseResultMetaUnit `json:"units" api:"required"`
 	JSON  radarAttackLayer7TopLocationGetTopTargetLocationsResponseResultMetaJSON   `json:"-"`
 }
 
@@ -386,9 +386,9 @@ func (r radarAttackLayer7TopLocationGetTopTargetLocationsResponseResultMetaJSON)
 }
 
 type RadarAttackLayer7TopLocationGetTopTargetLocationsResponseResultMetaConfidenceInfo struct {
-	Annotations []RadarAttackLayer7TopLocationGetTopTargetLocationsResponseResultMetaConfidenceInfoAnnotation `json:"annotations,required"`
+	Annotations []RadarAttackLayer7TopLocationGetTopTargetLocationsResponseResultMetaConfidenceInfoAnnotation `json:"annotations" api:"required"`
 	// Provides an indication of how much confidence Cloudflare has in the data.
-	Level int64                                                                                 `json:"level,required"`
+	Level int64                                                                                 `json:"level" api:"required"`
 	JSON  radarAttackLayer7TopLocationGetTopTargetLocationsResponseResultMetaConfidenceInfoJSON `json:"-"`
 }
 
@@ -412,14 +412,14 @@ func (r radarAttackLayer7TopLocationGetTopTargetLocationsResponseResultMetaConfi
 
 // Annotation associated with the result (e.g. outage or other type of event).
 type RadarAttackLayer7TopLocationGetTopTargetLocationsResponseResultMetaConfidenceInfoAnnotation struct {
-	DataSource  string    `json:"dataSource,required"`
-	Description string    `json:"description,required"`
-	EndDate     time.Time `json:"endDate,required" format:"date-time"`
-	EventType   string    `json:"eventType,required"`
+	DataSource  string    `json:"dataSource" api:"required"`
+	Description string    `json:"description" api:"required"`
+	EndDate     time.Time `json:"endDate" api:"required" format:"date-time"`
+	EventType   string    `json:"eventType" api:"required"`
 	// Whether event is a single point in time or a time range.
-	IsInstantaneous bool                                                                                            `json:"isInstantaneous,required"`
-	LinkedURL       string                                                                                          `json:"linkedUrl,required" format:"uri"`
-	StartDate       time.Time                                                                                       `json:"startDate,required" format:"date-time"`
+	IsInstantaneous bool                                                                                            `json:"isInstantaneous" api:"required"`
+	LinkedURL       string                                                                                          `json:"linkedUrl" api:"required" format:"uri"`
+	StartDate       time.Time                                                                                       `json:"startDate" api:"required" format:"date-time"`
 	JSON            radarAttackLayer7TopLocationGetTopTargetLocationsResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
 }
 
@@ -448,9 +448,9 @@ func (r radarAttackLayer7TopLocationGetTopTargetLocationsResponseResultMetaConfi
 
 type RadarAttackLayer7TopLocationGetTopTargetLocationsResponseResultMetaDateRange struct {
 	// Adjusted end of date range.
-	EndTime time.Time `json:"endTime,required" format:"date-time"`
+	EndTime time.Time `json:"endTime" api:"required" format:"date-time"`
 	// Adjusted start of date range.
-	StartTime time.Time                                                                        `json:"startTime,required" format:"date-time"`
+	StartTime time.Time                                                                        `json:"startTime" api:"required" format:"date-time"`
 	JSON      radarAttackLayer7TopLocationGetTopTargetLocationsResponseResultMetaDateRangeJSON `json:"-"`
 }
 
@@ -496,8 +496,8 @@ func (r RadarAttackLayer7TopLocationGetTopTargetLocationsResponseResultMetaNorma
 }
 
 type RadarAttackLayer7TopLocationGetTopTargetLocationsResponseResultMetaUnit struct {
-	Name  string                                                                      `json:"name,required"`
-	Value string                                                                      `json:"value,required"`
+	Name  string                                                                      `json:"name" api:"required"`
+	Value string                                                                      `json:"value" api:"required"`
 	JSON  radarAttackLayer7TopLocationGetTopTargetLocationsResponseResultMetaUnitJSON `json:"-"`
 }
 
@@ -520,10 +520,10 @@ func (r radarAttackLayer7TopLocationGetTopTargetLocationsResponseResultMetaUnitJ
 }
 
 type RadarAttackLayer7TopLocationGetTopTargetLocationsResponseResultTop0 struct {
-	Rank                float64                                                                 `json:"rank,required"`
-	TargetCountryAlpha2 string                                                                  `json:"targetCountryAlpha2,required"`
-	TargetCountryName   string                                                                  `json:"targetCountryName,required"`
-	Value               string                                                                  `json:"value,required"`
+	Rank                float64                                                                 `json:"rank" api:"required"`
+	TargetCountryAlpha2 string                                                                  `json:"targetCountryAlpha2" api:"required"`
+	TargetCountryName   string                                                                  `json:"targetCountryName" api:"required"`
+	Value               string                                                                  `json:"value" api:"required"`
 	JSON                radarAttackLayer7TopLocationGetTopTargetLocationsResponseResultTop0JSON `json:"-"`
 }
 

@@ -41,7 +41,7 @@ func (r *RadarQualitySpeedTopService) GetTopAs(ctx context.Context, query RadarQ
 	opts = slices.Concat(r.Options, opts)
 	path := "radar/quality/speed/top/ases"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves the top locations by bandwidth, latency, jitter, or packet loss, from
@@ -50,12 +50,12 @@ func (r *RadarQualitySpeedTopService) GetTopLocations(ctx context.Context, query
 	opts = slices.Concat(r.Options, opts)
 	path := "radar/quality/speed/top/locations"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type RadarQualitySpeedTopGetTopAsResponse struct {
-	Result  RadarQualitySpeedTopGetTopAsResponseResult `json:"result,required"`
-	Success bool                                       `json:"success,required"`
+	Result  RadarQualitySpeedTopGetTopAsResponseResult `json:"result" api:"required"`
+	Success bool                                       `json:"success" api:"required"`
 	JSON    radarQualitySpeedTopGetTopAsResponseJSON   `json:"-"`
 }
 
@@ -78,8 +78,8 @@ func (r radarQualitySpeedTopGetTopAsResponseJSON) RawJSON() string {
 
 type RadarQualitySpeedTopGetTopAsResponseResult struct {
 	// Metadata for the results.
-	Meta RadarQualitySpeedTopGetTopAsResponseResultMeta   `json:"meta,required"`
-	Top0 []RadarQualitySpeedTopGetTopAsResponseResultTop0 `json:"top_0,required"`
+	Meta RadarQualitySpeedTopGetTopAsResponseResultMeta   `json:"meta" api:"required"`
+	Top0 []RadarQualitySpeedTopGetTopAsResponseResultTop0 `json:"top_0" api:"required"`
 	JSON radarQualitySpeedTopGetTopAsResponseResultJSON   `json:"-"`
 }
 
@@ -102,15 +102,15 @@ func (r radarQualitySpeedTopGetTopAsResponseResultJSON) RawJSON() string {
 
 // Metadata for the results.
 type RadarQualitySpeedTopGetTopAsResponseResultMeta struct {
-	ConfidenceInfo RadarQualitySpeedTopGetTopAsResponseResultMetaConfidenceInfo `json:"confidenceInfo,required,nullable"`
-	DateRange      []RadarQualitySpeedTopGetTopAsResponseResultMetaDateRange    `json:"dateRange,required"`
+	ConfidenceInfo RadarQualitySpeedTopGetTopAsResponseResultMetaConfidenceInfo `json:"confidenceInfo" api:"required,nullable"`
+	DateRange      []RadarQualitySpeedTopGetTopAsResponseResultMetaDateRange    `json:"dateRange" api:"required"`
 	// Timestamp of the last dataset update.
-	LastUpdated time.Time `json:"lastUpdated,required" format:"date-time"`
+	LastUpdated time.Time `json:"lastUpdated" api:"required" format:"date-time"`
 	// Normalization method applied to the results. Refer to
 	// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
-	Normalization RadarQualitySpeedTopGetTopAsResponseResultMetaNormalization `json:"normalization,required"`
+	Normalization RadarQualitySpeedTopGetTopAsResponseResultMetaNormalization `json:"normalization" api:"required"`
 	// Measurement units for the results.
-	Units []RadarQualitySpeedTopGetTopAsResponseResultMetaUnit `json:"units,required"`
+	Units []RadarQualitySpeedTopGetTopAsResponseResultMetaUnit `json:"units" api:"required"`
 	JSON  radarQualitySpeedTopGetTopAsResponseResultMetaJSON   `json:"-"`
 }
 
@@ -135,9 +135,9 @@ func (r radarQualitySpeedTopGetTopAsResponseResultMetaJSON) RawJSON() string {
 }
 
 type RadarQualitySpeedTopGetTopAsResponseResultMetaConfidenceInfo struct {
-	Annotations []RadarQualitySpeedTopGetTopAsResponseResultMetaConfidenceInfoAnnotation `json:"annotations,required"`
+	Annotations []RadarQualitySpeedTopGetTopAsResponseResultMetaConfidenceInfoAnnotation `json:"annotations" api:"required"`
 	// Provides an indication of how much confidence Cloudflare has in the data.
-	Level int64                                                            `json:"level,required"`
+	Level int64                                                            `json:"level" api:"required"`
 	JSON  radarQualitySpeedTopGetTopAsResponseResultMetaConfidenceInfoJSON `json:"-"`
 }
 
@@ -161,14 +161,14 @@ func (r radarQualitySpeedTopGetTopAsResponseResultMetaConfidenceInfoJSON) RawJSO
 
 // Annotation associated with the result (e.g. outage or other type of event).
 type RadarQualitySpeedTopGetTopAsResponseResultMetaConfidenceInfoAnnotation struct {
-	DataSource  string    `json:"dataSource,required"`
-	Description string    `json:"description,required"`
-	EndDate     time.Time `json:"endDate,required" format:"date-time"`
-	EventType   string    `json:"eventType,required"`
+	DataSource  string    `json:"dataSource" api:"required"`
+	Description string    `json:"description" api:"required"`
+	EndDate     time.Time `json:"endDate" api:"required" format:"date-time"`
+	EventType   string    `json:"eventType" api:"required"`
 	// Whether event is a single point in time or a time range.
-	IsInstantaneous bool                                                                       `json:"isInstantaneous,required"`
-	LinkedURL       string                                                                     `json:"linkedUrl,required" format:"uri"`
-	StartDate       time.Time                                                                  `json:"startDate,required" format:"date-time"`
+	IsInstantaneous bool                                                                       `json:"isInstantaneous" api:"required"`
+	LinkedURL       string                                                                     `json:"linkedUrl" api:"required" format:"uri"`
+	StartDate       time.Time                                                                  `json:"startDate" api:"required" format:"date-time"`
 	JSON            radarQualitySpeedTopGetTopAsResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
 }
 
@@ -197,9 +197,9 @@ func (r radarQualitySpeedTopGetTopAsResponseResultMetaConfidenceInfoAnnotationJS
 
 type RadarQualitySpeedTopGetTopAsResponseResultMetaDateRange struct {
 	// Adjusted end of date range.
-	EndTime time.Time `json:"endTime,required" format:"date-time"`
+	EndTime time.Time `json:"endTime" api:"required" format:"date-time"`
 	// Adjusted start of date range.
-	StartTime time.Time                                                   `json:"startTime,required" format:"date-time"`
+	StartTime time.Time                                                   `json:"startTime" api:"required" format:"date-time"`
 	JSON      radarQualitySpeedTopGetTopAsResponseResultMetaDateRangeJSON `json:"-"`
 }
 
@@ -245,8 +245,8 @@ func (r RadarQualitySpeedTopGetTopAsResponseResultMetaNormalization) IsKnown() b
 }
 
 type RadarQualitySpeedTopGetTopAsResponseResultMetaUnit struct {
-	Name  string                                                 `json:"name,required"`
-	Value string                                                 `json:"value,required"`
+	Name  string                                                 `json:"name" api:"required"`
+	Value string                                                 `json:"value" api:"required"`
 	JSON  radarQualitySpeedTopGetTopAsResponseResultMetaUnitJSON `json:"-"`
 }
 
@@ -268,16 +268,16 @@ func (r radarQualitySpeedTopGetTopAsResponseResultMetaUnitJSON) RawJSON() string
 }
 
 type RadarQualitySpeedTopGetTopAsResponseResultTop0 struct {
-	BandwidthDownload string                                             `json:"bandwidthDownload,required"`
-	BandwidthUpload   string                                             `json:"bandwidthUpload,required"`
-	ClientAsn         float64                                            `json:"clientASN,required"`
-	ClientAsName      string                                             `json:"clientASName,required"`
-	JitterIdle        string                                             `json:"jitterIdle,required"`
-	JitterLoaded      string                                             `json:"jitterLoaded,required"`
-	LatencyIdle       string                                             `json:"latencyIdle,required"`
-	LatencyLoaded     string                                             `json:"latencyLoaded,required"`
-	NumTests          float64                                            `json:"numTests,required"`
-	RankPower         float64                                            `json:"rankPower,required"`
+	BandwidthDownload string                                             `json:"bandwidthDownload" api:"required"`
+	BandwidthUpload   string                                             `json:"bandwidthUpload" api:"required"`
+	ClientAsn         float64                                            `json:"clientASN" api:"required"`
+	ClientAsName      string                                             `json:"clientASName" api:"required"`
+	JitterIdle        string                                             `json:"jitterIdle" api:"required"`
+	JitterLoaded      string                                             `json:"jitterLoaded" api:"required"`
+	LatencyIdle       string                                             `json:"latencyIdle" api:"required"`
+	LatencyLoaded     string                                             `json:"latencyLoaded" api:"required"`
+	NumTests          float64                                            `json:"numTests" api:"required"`
+	RankPower         float64                                            `json:"rankPower" api:"required"`
 	JSON              radarQualitySpeedTopGetTopAsResponseResultTop0JSON `json:"-"`
 }
 
@@ -307,8 +307,8 @@ func (r radarQualitySpeedTopGetTopAsResponseResultTop0JSON) RawJSON() string {
 }
 
 type RadarQualitySpeedTopGetTopLocationsResponse struct {
-	Result  RadarQualitySpeedTopGetTopLocationsResponseResult `json:"result,required"`
-	Success bool                                              `json:"success,required"`
+	Result  RadarQualitySpeedTopGetTopLocationsResponseResult `json:"result" api:"required"`
+	Success bool                                              `json:"success" api:"required"`
 	JSON    radarQualitySpeedTopGetTopLocationsResponseJSON   `json:"-"`
 }
 
@@ -331,8 +331,8 @@ func (r radarQualitySpeedTopGetTopLocationsResponseJSON) RawJSON() string {
 
 type RadarQualitySpeedTopGetTopLocationsResponseResult struct {
 	// Metadata for the results.
-	Meta RadarQualitySpeedTopGetTopLocationsResponseResultMeta   `json:"meta,required"`
-	Top0 []RadarQualitySpeedTopGetTopLocationsResponseResultTop0 `json:"top_0,required"`
+	Meta RadarQualitySpeedTopGetTopLocationsResponseResultMeta   `json:"meta" api:"required"`
+	Top0 []RadarQualitySpeedTopGetTopLocationsResponseResultTop0 `json:"top_0" api:"required"`
 	JSON radarQualitySpeedTopGetTopLocationsResponseResultJSON   `json:"-"`
 }
 
@@ -355,15 +355,15 @@ func (r radarQualitySpeedTopGetTopLocationsResponseResultJSON) RawJSON() string 
 
 // Metadata for the results.
 type RadarQualitySpeedTopGetTopLocationsResponseResultMeta struct {
-	ConfidenceInfo RadarQualitySpeedTopGetTopLocationsResponseResultMetaConfidenceInfo `json:"confidenceInfo,required,nullable"`
-	DateRange      []RadarQualitySpeedTopGetTopLocationsResponseResultMetaDateRange    `json:"dateRange,required"`
+	ConfidenceInfo RadarQualitySpeedTopGetTopLocationsResponseResultMetaConfidenceInfo `json:"confidenceInfo" api:"required,nullable"`
+	DateRange      []RadarQualitySpeedTopGetTopLocationsResponseResultMetaDateRange    `json:"dateRange" api:"required"`
 	// Timestamp of the last dataset update.
-	LastUpdated time.Time `json:"lastUpdated,required" format:"date-time"`
+	LastUpdated time.Time `json:"lastUpdated" api:"required" format:"date-time"`
 	// Normalization method applied to the results. Refer to
 	// [Normalization methods](https://developers.cloudflare.com/radar/concepts/normalization/).
-	Normalization RadarQualitySpeedTopGetTopLocationsResponseResultMetaNormalization `json:"normalization,required"`
+	Normalization RadarQualitySpeedTopGetTopLocationsResponseResultMetaNormalization `json:"normalization" api:"required"`
 	// Measurement units for the results.
-	Units []RadarQualitySpeedTopGetTopLocationsResponseResultMetaUnit `json:"units,required"`
+	Units []RadarQualitySpeedTopGetTopLocationsResponseResultMetaUnit `json:"units" api:"required"`
 	JSON  radarQualitySpeedTopGetTopLocationsResponseResultMetaJSON   `json:"-"`
 }
 
@@ -388,9 +388,9 @@ func (r radarQualitySpeedTopGetTopLocationsResponseResultMetaJSON) RawJSON() str
 }
 
 type RadarQualitySpeedTopGetTopLocationsResponseResultMetaConfidenceInfo struct {
-	Annotations []RadarQualitySpeedTopGetTopLocationsResponseResultMetaConfidenceInfoAnnotation `json:"annotations,required"`
+	Annotations []RadarQualitySpeedTopGetTopLocationsResponseResultMetaConfidenceInfoAnnotation `json:"annotations" api:"required"`
 	// Provides an indication of how much confidence Cloudflare has in the data.
-	Level int64                                                                   `json:"level,required"`
+	Level int64                                                                   `json:"level" api:"required"`
 	JSON  radarQualitySpeedTopGetTopLocationsResponseResultMetaConfidenceInfoJSON `json:"-"`
 }
 
@@ -414,14 +414,14 @@ func (r radarQualitySpeedTopGetTopLocationsResponseResultMetaConfidenceInfoJSON)
 
 // Annotation associated with the result (e.g. outage or other type of event).
 type RadarQualitySpeedTopGetTopLocationsResponseResultMetaConfidenceInfoAnnotation struct {
-	DataSource  string    `json:"dataSource,required"`
-	Description string    `json:"description,required"`
-	EndDate     time.Time `json:"endDate,required" format:"date-time"`
-	EventType   string    `json:"eventType,required"`
+	DataSource  string    `json:"dataSource" api:"required"`
+	Description string    `json:"description" api:"required"`
+	EndDate     time.Time `json:"endDate" api:"required" format:"date-time"`
+	EventType   string    `json:"eventType" api:"required"`
 	// Whether event is a single point in time or a time range.
-	IsInstantaneous bool                                                                              `json:"isInstantaneous,required"`
-	LinkedURL       string                                                                            `json:"linkedUrl,required" format:"uri"`
-	StartDate       time.Time                                                                         `json:"startDate,required" format:"date-time"`
+	IsInstantaneous bool                                                                              `json:"isInstantaneous" api:"required"`
+	LinkedURL       string                                                                            `json:"linkedUrl" api:"required" format:"uri"`
+	StartDate       time.Time                                                                         `json:"startDate" api:"required" format:"date-time"`
 	JSON            radarQualitySpeedTopGetTopLocationsResponseResultMetaConfidenceInfoAnnotationJSON `json:"-"`
 }
 
@@ -450,9 +450,9 @@ func (r radarQualitySpeedTopGetTopLocationsResponseResultMetaConfidenceInfoAnnot
 
 type RadarQualitySpeedTopGetTopLocationsResponseResultMetaDateRange struct {
 	// Adjusted end of date range.
-	EndTime time.Time `json:"endTime,required" format:"date-time"`
+	EndTime time.Time `json:"endTime" api:"required" format:"date-time"`
 	// Adjusted start of date range.
-	StartTime time.Time                                                          `json:"startTime,required" format:"date-time"`
+	StartTime time.Time                                                          `json:"startTime" api:"required" format:"date-time"`
 	JSON      radarQualitySpeedTopGetTopLocationsResponseResultMetaDateRangeJSON `json:"-"`
 }
 
@@ -498,8 +498,8 @@ func (r RadarQualitySpeedTopGetTopLocationsResponseResultMetaNormalization) IsKn
 }
 
 type RadarQualitySpeedTopGetTopLocationsResponseResultMetaUnit struct {
-	Name  string                                                        `json:"name,required"`
-	Value string                                                        `json:"value,required"`
+	Name  string                                                        `json:"name" api:"required"`
+	Value string                                                        `json:"value" api:"required"`
 	JSON  radarQualitySpeedTopGetTopLocationsResponseResultMetaUnitJSON `json:"-"`
 }
 
@@ -522,16 +522,16 @@ func (r radarQualitySpeedTopGetTopLocationsResponseResultMetaUnitJSON) RawJSON()
 }
 
 type RadarQualitySpeedTopGetTopLocationsResponseResultTop0 struct {
-	BandwidthDownload   string                                                    `json:"bandwidthDownload,required"`
-	BandwidthUpload     string                                                    `json:"bandwidthUpload,required"`
-	ClientCountryAlpha2 string                                                    `json:"clientCountryAlpha2,required"`
-	ClientCountryName   string                                                    `json:"clientCountryName,required"`
-	JitterIdle          string                                                    `json:"jitterIdle,required"`
-	JitterLoaded        string                                                    `json:"jitterLoaded,required"`
-	LatencyIdle         string                                                    `json:"latencyIdle,required"`
-	LatencyLoaded       string                                                    `json:"latencyLoaded,required"`
-	NumTests            float64                                                   `json:"numTests,required"`
-	RankPower           float64                                                   `json:"rankPower,required"`
+	BandwidthDownload   string                                                    `json:"bandwidthDownload" api:"required"`
+	BandwidthUpload     string                                                    `json:"bandwidthUpload" api:"required"`
+	ClientCountryAlpha2 string                                                    `json:"clientCountryAlpha2" api:"required"`
+	ClientCountryName   string                                                    `json:"clientCountryName" api:"required"`
+	JitterIdle          string                                                    `json:"jitterIdle" api:"required"`
+	JitterLoaded        string                                                    `json:"jitterLoaded" api:"required"`
+	LatencyIdle         string                                                    `json:"latencyIdle" api:"required"`
+	LatencyLoaded       string                                                    `json:"latencyLoaded" api:"required"`
+	NumTests            float64                                                   `json:"numTests" api:"required"`
+	RankPower           float64                                                   `json:"rankPower" api:"required"`
 	JSON                radarQualitySpeedTopGetTopLocationsResponseResultTop0JSON `json:"-"`
 }
 

@@ -15,6 +15,7 @@ import (
 	"github.com/rexscaria/api-schemas"
 	"github.com/rexscaria/api-schemas/internal/testutil"
 	"github.com/rexscaria/api-schemas/option"
+	"github.com/rexscaria/api-schemas/shared"
 )
 
 func TestAccountStorageKvNamespaceValueGet(t *testing.T) {
@@ -28,6 +29,7 @@ func TestAccountStorageKvNamespaceValueGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	resp, err := client.Accounts.Storage.Kv.Namespaces.Values.Get(
 		context.TODO(),
@@ -58,7 +60,7 @@ func TestAccountStorageKvNamespaceValueGet(t *testing.T) {
 }
 
 func TestAccountStorageKvNamespaceValueDelete(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -70,6 +72,7 @@ func TestAccountStorageKvNamespaceValueDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Storage.Kv.Namespaces.Values.Delete(
 		context.TODO(),
@@ -87,7 +90,7 @@ func TestAccountStorageKvNamespaceValueDelete(t *testing.T) {
 }
 
 func TestAccountStorageKvNamespaceValueWriteWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -99,6 +102,7 @@ func TestAccountStorageKvNamespaceValueWriteWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIEmail("My API Email"),
 		option.WithAPIKey("My API Key"),
+		option.WithAccessToken("My Access Token"),
 	)
 	_, err := client.Accounts.Storage.Kv.Namespaces.Values.Write(
 		context.TODO(),
@@ -106,7 +110,7 @@ func TestAccountStorageKvNamespaceValueWriteWithOptionalParams(t *testing.T) {
 		"0f2ac74b498b48028cb68387c421e279",
 		"My-Key",
 		cfrex.AccountStorageKvNamespaceValueWriteParams{
-			Value:         cfrex.F("Some Value"),
+			Value:         cfrex.F[cfrex.AccountStorageKvNamespaceValueWriteParamsValueUnion](shared.UnionString("Some Value")),
 			Expiration:    cfrex.F(1578435000.000000),
 			ExpirationTtl: cfrex.F(300.000000),
 			Metadata: cfrex.F[any](map[string]interface{}{

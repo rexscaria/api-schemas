@@ -41,11 +41,11 @@ func (r *AccountAIModelService) GetSchema(ctx context.Context, accountID string,
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai/models/schema", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Model Search
@@ -53,16 +53,16 @@ func (r *AccountAIModelService) Search(ctx context.Context, accountID string, qu
 	opts = slices.Concat(r.Options, opts)
 	if accountID == "" {
 		err = errors.New("missing required account_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("accounts/%s/ai/models/search", accountID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountAIModelGetSchemaResponse struct {
-	Result  interface{}                         `json:"result,required"`
-	Success bool                                `json:"success,required"`
+	Result  interface{}                         `json:"result" api:"required"`
+	Success bool                                `json:"success" api:"required"`
 	JSON    accountAIModelGetSchemaResponseJSON `json:"-"`
 }
 
@@ -84,10 +84,10 @@ func (r accountAIModelGetSchemaResponseJSON) RawJSON() string {
 }
 
 type AccountAIModelSearchResponse struct {
-	Errors   []interface{}                    `json:"errors,required"`
-	Messages []string                         `json:"messages,required"`
-	Result   []interface{}                    `json:"result,required"`
-	Success  bool                             `json:"success,required"`
+	Errors   []interface{}                    `json:"errors" api:"required"`
+	Messages []string                         `json:"messages" api:"required"`
+	Result   []interface{}                    `json:"result" api:"required"`
+	Success  bool                             `json:"success" api:"required"`
 	JSON     accountAIModelSearchResponseJSON `json:"-"`
 }
 
@@ -112,7 +112,7 @@ func (r accountAIModelSearchResponseJSON) RawJSON() string {
 
 type AccountAIModelGetSchemaParams struct {
 	// Model Name
-	Model param.Field[string] `query:"model,required"`
+	Model param.Field[string] `query:"model" api:"required"`
 }
 
 // URLQuery serializes [AccountAIModelGetSchemaParams]'s query parameters as
