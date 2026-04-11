@@ -13,6 +13,7 @@ import (
 	"github.com/rexscaria/api-schemas"
 	"github.com/rexscaria/api-schemas/internal/testutil"
 	"github.com/rexscaria/api-schemas/option"
+	"github.com/rexscaria/api-schemas/shared"
 )
 
 func TestAccountWorkerDispatchNamespaceScriptGet(t *testing.T) {
@@ -176,7 +177,7 @@ func TestAccountWorkerDispatchNamespaceScriptUploadWithOptionalParams(t *testing
 						Redirects:        cfrex.F("/foo /bar 301\n/news/* /blog/:splat"),
 						HTMLHandling:     cfrex.F(cfrex.AccountWorkerDispatchNamespaceScriptUploadParamsMetadataAssetsConfigHTMLHandlingAutoTrailingSlash),
 						NotFoundHandling: cfrex.F(cfrex.AccountWorkerDispatchNamespaceScriptUploadParamsMetadataAssetsConfigNotFoundHandling404Page),
-						RunWorkerFirst:   cfrex.F[cfrex.AccountWorkerDispatchNamespaceScriptUploadParamsMetadataAssetsConfigRunWorkerFirstUnion](cfrex.AccountWorkerDispatchNamespaceScriptUploadParamsMetadataAssetsConfigRunWorkerFirstArray([]string{"string"})),
+						RunWorkerFirst:   cfrex.F[cfrex.AccountWorkerDispatchNamespaceScriptUploadParamsMetadataAssetsConfigRunWorkerFirstUnion](shared.UnionBool(true)),
 						ServeDirectly:    cfrex.F(true),
 					}),
 					Jwt: cfrex.F("jwt"),

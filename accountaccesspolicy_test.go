@@ -35,21 +35,15 @@ func TestAccountAccessPolicyNewWithOptionalParams(t *testing.T) {
 			PolicyRequestForAccess: cfrex.PolicyRequestForAccessParam{
 				BasePolicyRequestParam: cfrex.BasePolicyRequestParam{
 					Decision: cfrex.F(cfrex.AccessDecisionAllow),
-					Include: cfrex.F([]cfrex.AccessRuleUnionParam{cfrex.AccessRuleAccessAccessGroupRuleParam{
-						Group: cfrex.F(cfrex.AccessRuleAccessAccessGroupRuleGroupParam{
-							ID: cfrex.F("aa0a4aab-672b-4bdb-bc33-a59f1130a11f"),
-						}),
+					Include: cfrex.F([]cfrex.AccessRuleUnionParam{cfrex.AccessRuleAccessCertificateRuleParam{
+						Certificate: cfrex.F(cfrex.AccessRuleAccessCertificateRuleCertificateParam{}),
 					}}),
 					Name: cfrex.F("Allow devs"),
-					Exclude: cfrex.F([]cfrex.AccessRuleUnionParam{cfrex.AccessRuleAccessAccessGroupRuleParam{
-						Group: cfrex.F(cfrex.AccessRuleAccessAccessGroupRuleGroupParam{
-							ID: cfrex.F("aa0a4aab-672b-4bdb-bc33-a59f1130a11f"),
-						}),
+					Exclude: cfrex.F([]cfrex.AccessRuleUnionParam{cfrex.AccessRuleAccessCertificateRuleParam{
+						Certificate: cfrex.F(cfrex.AccessRuleAccessCertificateRuleCertificateParam{}),
 					}}),
-					Require: cfrex.F([]cfrex.AccessRuleUnionParam{cfrex.AccessRuleAccessAccessGroupRuleParam{
-						Group: cfrex.F(cfrex.AccessRuleAccessAccessGroupRuleGroupParam{
-							ID: cfrex.F("aa0a4aab-672b-4bdb-bc33-a59f1130a11f"),
-						}),
+					Require: cfrex.F([]cfrex.AccessRuleUnionParam{cfrex.AccessRuleAccessCertificateRuleParam{
+						Certificate: cfrex.F(cfrex.AccessRuleAccessCertificateRuleCertificateParam{}),
 					}}),
 				},
 				ApprovalGroups: cfrex.F([]cfrex.ApprovalGroupEmailParam{{
@@ -130,21 +124,15 @@ func TestAccountAccessPolicyUpdateWithOptionalParams(t *testing.T) {
 			PolicyRequestForAccess: cfrex.PolicyRequestForAccessParam{
 				BasePolicyRequestParam: cfrex.BasePolicyRequestParam{
 					Decision: cfrex.F(cfrex.AccessDecisionAllow),
-					Include: cfrex.F([]cfrex.AccessRuleUnionParam{cfrex.AccessRuleAccessAccessGroupRuleParam{
-						Group: cfrex.F(cfrex.AccessRuleAccessAccessGroupRuleGroupParam{
-							ID: cfrex.F("aa0a4aab-672b-4bdb-bc33-a59f1130a11f"),
-						}),
+					Include: cfrex.F([]cfrex.AccessRuleUnionParam{cfrex.AccessRuleAccessCertificateRuleParam{
+						Certificate: cfrex.F(cfrex.AccessRuleAccessCertificateRuleCertificateParam{}),
 					}}),
 					Name: cfrex.F("Allow devs"),
-					Exclude: cfrex.F([]cfrex.AccessRuleUnionParam{cfrex.AccessRuleAccessAccessGroupRuleParam{
-						Group: cfrex.F(cfrex.AccessRuleAccessAccessGroupRuleGroupParam{
-							ID: cfrex.F("aa0a4aab-672b-4bdb-bc33-a59f1130a11f"),
-						}),
+					Exclude: cfrex.F([]cfrex.AccessRuleUnionParam{cfrex.AccessRuleAccessCertificateRuleParam{
+						Certificate: cfrex.F(cfrex.AccessRuleAccessCertificateRuleCertificateParam{}),
 					}}),
-					Require: cfrex.F([]cfrex.AccessRuleUnionParam{cfrex.AccessRuleAccessAccessGroupRuleParam{
-						Group: cfrex.F(cfrex.AccessRuleAccessAccessGroupRuleGroupParam{
-							ID: cfrex.F("aa0a4aab-672b-4bdb-bc33-a59f1130a11f"),
-						}),
+					Require: cfrex.F([]cfrex.AccessRuleUnionParam{cfrex.AccessRuleAccessCertificateRuleParam{
+						Certificate: cfrex.F(cfrex.AccessRuleAccessCertificateRuleCertificateParam{}),
 					}}),
 				},
 				ApprovalGroups: cfrex.F([]cfrex.ApprovalGroupEmailParam{{
