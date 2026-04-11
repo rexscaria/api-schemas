@@ -11,6 +11,7 @@ import (
 	"github.com/rexscaria/api-schemas"
 	"github.com/rexscaria/api-schemas/internal/testutil"
 	"github.com/rexscaria/api-schemas/option"
+	"github.com/rexscaria/api-schemas/shared"
 )
 
 func TestAccountAccessPolicyTestGet(t *testing.T) {
@@ -61,41 +62,7 @@ func TestAccountAccessPolicyTestStartWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"023e105f4ecef8ad9ca31a8372d0c353",
 		cfrex.AccountAccessPolicyTestStartParams{
-			Policies: cfrex.F([]cfrex.AccountAccessPolicyTestStartParamsPolicyUnion{cfrex.PolicyRequestForAccessParam(cfrex.PolicyRequestForAccessParam{
-				BasePolicyRequestParam: cfrex.BasePolicyRequestParam{
-					Decision: cfrex.F(cfrex.AccessDecisionAllow),
-					Include: cfrex.F([]cfrex.AccessRuleUnionParam{cfrex.AccessRuleAccessAccessGroupRuleParam{
-						Group: cfrex.F(cfrex.AccessRuleAccessAccessGroupRuleGroupParam{
-							ID: cfrex.F("aa0a4aab-672b-4bdb-bc33-a59f1130a11f"),
-						}),
-					}}),
-					Name: cfrex.F("Allow devs"),
-					Exclude: cfrex.F([]cfrex.AccessRuleUnionParam{cfrex.AccessRuleAccessAccessGroupRuleParam{
-						Group: cfrex.F(cfrex.AccessRuleAccessAccessGroupRuleGroupParam{
-							ID: cfrex.F("aa0a4aab-672b-4bdb-bc33-a59f1130a11f"),
-						}),
-					}}),
-					Require: cfrex.F([]cfrex.AccessRuleUnionParam{cfrex.AccessRuleAccessAccessGroupRuleParam{
-						Group: cfrex.F(cfrex.AccessRuleAccessAccessGroupRuleGroupParam{
-							ID: cfrex.F("aa0a4aab-672b-4bdb-bc33-a59f1130a11f"),
-						}),
-					}}),
-				},
-				ApprovalGroups: cfrex.F([]cfrex.ApprovalGroupEmailParam{{
-					ApprovalsNeeded: cfrex.F(1.000000),
-					EmailAddresses:  cfrex.F([]string{"test1@cloudflare.com", "test2@cloudflare.com"}),
-					EmailListUuid:   cfrex.F("email_list_uuid"),
-				}, {
-					ApprovalsNeeded: cfrex.F(3.000000),
-					EmailAddresses:  cfrex.F([]string{"test@cloudflare.com", "test2@cloudflare.com"}),
-					EmailListUuid:   cfrex.F("597147a1-976b-4ef2-9af0-81d5d007fc34"),
-				}}),
-				ApprovalRequired:             cfrex.F(true),
-				IsolationRequired:            cfrex.F(false),
-				PurposeJustificationPrompt:   cfrex.F("Please enter a justification for entering this protected domain."),
-				PurposeJustificationRequired: cfrex.F(true),
-				SessionDuration:              cfrex.F("24h"),
-			})}),
+			Policies: cfrex.F([]cfrex.AccountAccessPolicyTestStartParamsPolicyUnion{shared.UnionString("f1a8b3c9d4e5f6789a0b1c2d3e4f5678a9b0c1d2e3f4a5b67890c1d2e3f4b5a6")}),
 		},
 	)
 	if err != nil {
