@@ -1,0 +1,110 @@
+// File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
+
+package cfrex
+
+import (
+	"context"
+	"errors"
+	"fmt"
+	"io"
+	"net/http"
+	"slices"
+
+	"github.com/rexscaria/api-schemas/internal/apijson"
+	"github.com/rexscaria/api-schemas/internal/requestconfig"
+	"github.com/rexscaria/api-schemas/option"
+)
+
+// AccountAIService contains methods and other services that help with interacting
+// with the cf-rex API.
+//
+// Note, unlike clients, this service does not read variables from the environment
+// automatically. You should not instantiate this service directly, and instead use
+// the [NewAccountAIService] method instead.
+type AccountAIService struct {
+	Options   []option.RequestOption
+	Authors   *AccountAIAuthorService
+	Finetunes *AccountAIFinetuneService
+	Models    *AccountAIModelService
+	Run       *AccountAIRunService
+	Tasks     *AccountAITaskService
+}
+
+// NewAccountAIService generates a new service that applies the given options to
+// each request. These options are applied after the parent client's options (if
+// there is one), and before any request-specific options.
+func NewAccountAIService(opts ...option.RequestOption) (r *AccountAIService) {
+	r = &AccountAIService{}
+	r.Options = opts
+	r.Authors = NewAccountAIAuthorService(opts...)
+	r.Finetunes = NewAccountAIFinetuneService(opts...)
+	r.Models = NewAccountAIModelService(opts...)
+	r.Run = NewAccountAIRunService(opts...)
+	r.Tasks = NewAccountAITaskService(opts...)
+	return
+}
+
+// Convert Files into Markdown
+func (r *AccountAIService) ConvertToMarkdown(ctx context.Context, accountID string, body io.Reader, opts ...option.RequestOption) (res *AccountAIConvertToMarkdownResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithRequestBody("application/octet-stream", body)}, opts...)
+	if accountID == "" {
+		err = errors.New("missing required account_id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("accounts/%s/ai/tomarkdown", accountID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
+	return res, err
+}
+
+type AccountAIConvertToMarkdownResponse struct {
+	Result  []AccountAIConvertToMarkdownResponseResult `json:"result" api:"required"`
+	Success bool                                       `json:"success" api:"required"`
+	JSON    accountAIConvertToMarkdownResponseJSON     `json:"-"`
+}
+
+// accountAIConvertToMarkdownResponseJSON contains the JSON metadata for the struct
+// [AccountAIConvertToMarkdownResponse]
+type accountAIConvertToMarkdownResponseJSON struct {
+	Result      apijson.Field
+	Success     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountAIConvertToMarkdownResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountAIConvertToMarkdownResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+type AccountAIConvertToMarkdownResponseResult struct {
+	Data     string                                       `json:"data" api:"required"`
+	Format   string                                       `json:"format" api:"required"`
+	MimeType string                                       `json:"mimeType" api:"required"`
+	Name     string                                       `json:"name" api:"required"`
+	Tokens   string                                       `json:"tokens" api:"required"`
+	JSON     accountAIConvertToMarkdownResponseResultJSON `json:"-"`
+}
+
+// accountAIConvertToMarkdownResponseResultJSON contains the JSON metadata for the
+// struct [AccountAIConvertToMarkdownResponseResult]
+type accountAIConvertToMarkdownResponseResultJSON struct {
+	Data        apijson.Field
+	Format      apijson.Field
+	MimeType    apijson.Field
+	Name        apijson.Field
+	Tokens      apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *AccountAIConvertToMarkdownResponseResult) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r accountAIConvertToMarkdownResponseResultJSON) RawJSON() string {
+	return r.raw
+}

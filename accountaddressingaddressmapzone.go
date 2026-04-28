@@ -1,0 +1,82 @@
+// File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
+
+package cfrex
+
+import (
+	"context"
+	"errors"
+	"fmt"
+	"net/http"
+	"slices"
+
+	"github.com/rexscaria/api-schemas/internal/apijson"
+	"github.com/rexscaria/api-schemas/internal/requestconfig"
+	"github.com/rexscaria/api-schemas/option"
+)
+
+// AccountAddressingAddressMapZoneService contains methods and other services that
+// help with interacting with the cf-rex API.
+//
+// Note, unlike clients, this service does not read variables from the environment
+// automatically. You should not instantiate this service directly, and instead use
+// the [NewAccountAddressingAddressMapZoneService] method instead.
+type AccountAddressingAddressMapZoneService struct {
+	Options []option.RequestOption
+}
+
+// NewAccountAddressingAddressMapZoneService generates a new service that applies
+// the given options to each request. These options are applied after the parent
+// client's options (if there is one), and before any request-specific options.
+func NewAccountAddressingAddressMapZoneService(opts ...option.RequestOption) (r *AccountAddressingAddressMapZoneService) {
+	r = &AccountAddressingAddressMapZoneService{}
+	r.Options = opts
+	return
+}
+
+// Add a zone as a member of a particular address map.
+func (r *AccountAddressingAddressMapZoneService) Add(ctx context.Context, accountID string, addressMapID string, zoneID string, body AccountAddressingAddressMapZoneAddParams, opts ...option.RequestOption) (res *APIResponseCollectionAddressing, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if accountID == "" {
+		err = errors.New("missing required account_id parameter")
+		return nil, err
+	}
+	if addressMapID == "" {
+		err = errors.New("missing required address_map_id parameter")
+		return nil, err
+	}
+	if zoneID == "" {
+		err = errors.New("missing required zone_id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("accounts/%s/addressing/address_maps/%s/zones/%s", accountID, addressMapID, zoneID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
+	return res, err
+}
+
+// Remove a zone as a member of a particular address map.
+func (r *AccountAddressingAddressMapZoneService) Remove(ctx context.Context, accountID string, addressMapID string, zoneID string, opts ...option.RequestOption) (res *APIResponseCollectionAddressing, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if accountID == "" {
+		err = errors.New("missing required account_id parameter")
+		return nil, err
+	}
+	if addressMapID == "" {
+		err = errors.New("missing required address_map_id parameter")
+		return nil, err
+	}
+	if zoneID == "" {
+		err = errors.New("missing required zone_id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("accounts/%s/addressing/address_maps/%s/zones/%s", accountID, addressMapID, zoneID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
+	return res, err
+}
+
+type AccountAddressingAddressMapZoneAddParams struct {
+	Body interface{} `json:"body" api:"required"`
+}
+
+func (r AccountAddressingAddressMapZoneAddParams) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r.Body)
+}
